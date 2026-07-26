@@ -1,0 +1,16 @@
+package gg.vape.wrapper.impl;
+
+import gg.vape.mapping.mappings.MTeam;
+import gg.vape.wrapper.Wrapper;
+
+public class Team
+extends Wrapper {
+    public boolean isSameTeam(Team team) {
+        return MTeam.s(Team.c.getMappingsMapperCompat().qW, this.I, team.getObject());
+    }
+
+    public Team(Object object) {
+        super(object);
+    }
+}
+

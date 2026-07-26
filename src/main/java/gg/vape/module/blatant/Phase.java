@@ -1,0 +1,23 @@
+package gg.vape.module.blatant;
+
+import gg.vape.module.Category;
+import gg.vape.module.Mod;
+import gg.vape.module.blatant.phase.HypixelPhase;
+import gg.vape.value.SubModuleValue;
+import java.awt.Color;
+
+@Deprecated
+public class Phase
+extends Mod {
+    private final SubModuleValue P = new HypixelPhase(this, "AntiCheat").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+
+    @Override
+    public boolean isBlatantMod() {
+        return true;
+    }
+
+    public Phase() {
+        super("Phase", new Color(73, 208, 176).getRGB(), Category.w, "Phase/Clip through walls.");
+    }
+}
+

@@ -1,0 +1,47 @@
+package gg.vape.ui.click.frame.impl.online;
+
+import gg.vape.manager.client.OnlineConnectionManager;
+import gg.vape.runtime.ObfuscatedRuntimeException;
+import gg.vape.ui.click.component.gui.UnderlinedTextLabel;
+import gg.vape.ui.click.component.layout.PaddedComponent;
+import gg.vape.ui.click.frame.impl.online.OnlineConnectionSettingsPageComponent;
+import java.awt.Color;
+
+public class OnlineConnectionRetryPageComponent
+extends OnlineConnectionSettingsPageComponent {
+    private UnderlinedTextLabel yr;
+
+    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+        return obfuscatedRuntimeException;
+    }
+
+    private static void lambda$new$0() {
+        OnlineConnectionManager.T.a();
+    }
+
+    @Override
+    public void c() {
+        super.c();
+        long l = OnlineConnectionManager.T.b();
+        if (l != -1L) {
+            int n = (int)((l - System.currentTimeMillis()) / 1000L);
+            this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.8).W("Reconnecting in " + n + " second" + (n == 1 ? "" : "s") + "...", this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + 52.0, OnlineConnectionRetryPageComponent.J.A);
+        } else {
+            this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(1.0).W("Reconnecting...", this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + 52.0, OnlineConnectionRetryPageComponent.J.A);
+        }
+        this.yr.q(60.0);
+    }
+
+    public OnlineConnectionRetryPageComponent() {
+        this.yr = new UnderlinedTextLabel("Cancel", (double)0.8f, OnlineConnectionRetryPageComponent.J.A, new Color(255, 255, 255, 255));
+        this.yr.r(OnlineConnectionRetryPageComponent::lambda$new$0);
+        this.yr.o(50.0);
+        this.yr.Y(10.0);
+        this.h(new PaddedComponent(125.0, 0.0, 20.0, 0.0, this.yr), new Object[0]);
+    }
+
+    @Override
+    public void s() {
+    }
+}
+

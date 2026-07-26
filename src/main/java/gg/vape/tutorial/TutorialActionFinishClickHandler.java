@@ -1,0 +1,20 @@
+package gg.vape.tutorial;
+
+import gg.vape.Vape;
+import gg.vape.tutorial.TutorialPage;
+import gg.vape.ui.click.component.GuiClickListener;
+
+class TutorialActionFinishClickHandler
+implements GuiClickListener {
+    final TutorialPage w;
+
+    TutorialActionFinishClickHandler(TutorialPage tutorialPage) {
+        this.w = tutorialPage;
+    }
+
+    @Override
+    public void P() {
+        Vape.INSTANCE.getTutorialManager().o$src$V$e4pt9h();
+    }
+}
+

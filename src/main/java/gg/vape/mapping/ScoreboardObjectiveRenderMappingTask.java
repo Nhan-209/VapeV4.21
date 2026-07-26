@@ -1,0 +1,36 @@
+package gg.vape.mapping;
+
+import gg.vape.Vape;
+import gg.vape.asm.helper.DescUtils;
+import gg.vape.asm.helper.TypedIndexedLocal;
+import gg.vape.asm.transform.ClassTransformer;
+import gg.vape.event.impl.EventScoreboardObjectiveRender;
+import gg.vape.mapping.MappedClasses;
+import gg.vape.runtime.ObfuscatedRuntimeException;
+import gg.vape.wrapper.impl.ForgeVersion;
+
+public class ScoreboardObjectiveRenderMappingTask
+extends ClassTransformer {
+    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+        return obfuscatedRuntimeException;
+    }
+
+    public ScoreboardObjectiveRenderMappingTask() {
+        super(MappedClasses.Zj);
+    }
+
+    @Override
+    public void c() {
+        if (ForgeVersion.MC_1_20_6.d()) {
+            return;
+        }
+        if (ForgeVersion.MC_1_7_10.L()) {
+            this.injectEventAtEntry(Vape.INSTANCE.getMappings().ql.c, EventScoreboardObjectiveRender.class, new TypedIndexedLocal(1, DescUtils.U(MappedClasses.Y)).setDescriptorClass(Object.class), new TypedIndexedLocal(2, "I"), new TypedIndexedLocal(3, "I"), new TypedIndexedLocal(4, DescUtils.U(MappedClasses.uQ)).setDescriptorClass(Object.class));
+        } else if (ForgeVersion.MC_1_16_5.d()) {
+            this.injectEventAtEntry(Vape.INSTANCE.getMappings().ql.c, EventScoreboardObjectiveRender.class, new TypedIndexedLocal(1, DescUtils.U(MappedClasses.DQ)).setDescriptorClass(Object.class), new TypedIndexedLocal(2, DescUtils.U(MappedClasses.Y)).setDescriptorClass(Object.class));
+        } else {
+            this.injectEventAtEntry(Vape.INSTANCE.getMappings().ql.c, EventScoreboardObjectiveRender.class, new TypedIndexedLocal(1, DescUtils.U(MappedClasses.Y)).setDescriptorClass(Object.class), new TypedIndexedLocal(2, DescUtils.U(MappedClasses.Zz)).setDescriptorClass(Object.class));
+        }
+    }
+}
+

@@ -1,0 +1,14 @@
+package gg.vape.module.render.hud;
+
+import gg.vape.module.render.hud.HudModule;
+import gg.vape.module.render.hud.HudModuleGroup;
+
+public class HudModuleVisibilityEntry
+extends HudModule {
+    private boolean H = false;
+
+    public HudModuleVisibilityEntry() {
+        super("Toggle Sprint", HudModuleGroup.T, "toggle_sprint");
+    }
+}
+

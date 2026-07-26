@@ -1,0 +1,33 @@
+package gg.vape.wrapper.impl;
+
+import gg.vape.mapping.mappings.MRenderStateBridge;
+import gg.vape.wrapper.Wrapper;
+import gg.vape.wrapper.impl.ITextComponent;
+
+public class RenderStateBridge
+extends Wrapper {
+    public double k() {
+        return MRenderStateBridge.Z(RenderStateBridge.c.getMappingsMapperCompat().q3, this.I);
+    }
+
+    public ITextComponent d() {
+        return new ITextComponent(RenderStateBridge.c.getMappingsMapperCompat().q3.u(this.I));
+    }
+
+    public double L() {
+        return MRenderStateBridge.g(RenderStateBridge.c.getMappingsMapperCompat().q3, this.I);
+    }
+
+    public RenderStateBridge(Object object) {
+        super(object);
+    }
+
+    public double F() {
+        return MRenderStateBridge.Y(RenderStateBridge.c.getMappingsMapperCompat().q3, this.I);
+    }
+
+    public void Z(ITextComponent t3_02) {
+        RenderStateBridge.c.getMappingsMapperCompat().q3.q(this.I, t3_02.getObject());
+    }
+}
+

@@ -1,0 +1,50 @@
+package gg.vape.friend.ui;
+
+import gg.vape.ui.click.GuiMouseEvent;
+import gg.vape.ui.click.component.PanelComponent;
+import gg.vape.ui.click.frame.FrameScrollbarPlacement;
+
+public class FriendRequestRowsPanel
+extends PanelComponent {
+    private static final String db = "wrap";
+
+    @Override
+    public void v() {
+    }
+
+    @Override
+    public double x() {
+        return 100.0;
+    }
+
+    @Override
+    public void Y() {
+    }
+
+    @Override
+    public void c() {
+        super.c();
+    }
+
+    public int Z$src$I$1nljwqr() {
+        return this.f().size();
+    }
+
+    public FriendRequestRowsPanel() {
+        super(100.0, 96.0);
+        this.d(false);
+        this.F(FrameScrollbarPlacement.OUTSIDE);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
+        this.Z(true);
+        this.t(96.0);
+    }
+
+    @Override
+    public void g(GuiMouseEvent guiMouseEvent) {
+    }
+
+    @Override
+    public void V() {
+    }
+}
+

@@ -1,0 +1,158 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+group = 'gg.vape.recovery'
+version = '4.21-recovered'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ['src/main/java']
+        resources.srcDirs = ['src/main/resources']
+    }
+}
+
+dependencies {
+    implementation 'org.javassist:javassist:3.29.2-GA'
+    implementation 'org.ow2.asm:asm:9.7.1'
+    implementation 'org.ow2.asm:asm-tree:9.7.1'
+    implementation 'org.ow2.asm:asm-analysis:9.7.1'
+    implementation 'org.ow2.asm:asm-util:9.7.1'
+    implementation 'org.ow2.asm:asm-commons:9.7.1'
+    implementation 'com.google.guava:guava:17.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'io.netty:netty-all:4.0.23.Final'
+    implementation 'commons-io:commons-io:2.4'
+    implementation 'org.lwjgl.lwjgl:lwjgl:2.9.3'
+    implementation 'org.lwjgl.lwjgl:lwjgl_util:2.9.3'
+    compileOnly 'org.jetbrains:annotations:24.1.0'
+}
+
+configurations.configureEach {
+    withDependencies { declared ->
+        def localFiles = declared.findAll {
+            it instanceof org.gradle.api.artifacts.SelfResolvingDependency
+        }
+        if (!localFiles.isEmpty()) {
+            throw new GradleException(
+                    "local file dependencies are forbidden; use repository coordinates: ${localFiles}")
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    // The recovered source contains CFR-emitted private interface helpers.
+    // Java 17 accepts these while retaining Java 8 bytecode compatibility as
+    // far as the source permits; the product is a recovery workspace, not a
+    // runtime distribution constrained to a Java 8 compiler.
+    options.release = 17
+    options.compilerArgs += ['-Xmaxerrs', '10000', '-Xdiags:verbose']
+}
+
+def expectedBaselineSha256 =
+        'DEB51671044A6EAE4275A61217AF270F9256FD0D96036EF016DE5E9F6BFE42CE'
+
+tasks.register('verifyManualBaseline') {
+    inputs.file('baseline/final.jar')
+    inputs.file('src/main/resources/recovery-baseline.properties')
+    doLast {
+        def baseline = file('baseline/final.jar')
+        if (!baseline.isFile() || baseline.length() == 0L) {
+            throw new GradleException('missing recovered bytecode baseline JAR')
+        }
+        def properties = new Properties()
+        file('src/main/resources/recovery-baseline.properties').withInputStream {
+            properties.load(it)
+        }
+        if (properties.getProperty('final.sha256') == null
+                || properties.getProperty('cfr.summary') == null) {
+            throw new GradleException('incomplete recovery baseline metadata')
+        }
+        def digest = java.security.MessageDigest.getInstance('SHA-256')
+        baseline.withInputStream { input ->
+            byte[] buffer = new byte[64 * 1024]
+            for (int read = input.read(buffer); read >= 0; read = input.read(buffer)) {
+                if (read > 0) {
+                    digest.update(buffer, 0, read)
+                }
+            }
+        }
+        def actualSha256 = digest.digest().encodeHex().toString().toUpperCase()
+        if (actualSha256 != expectedBaselineSha256
+                || properties.getProperty('final.sha256') != expectedBaselineSha256) {
+            throw new GradleException("recovery baseline SHA-256 mismatch: ${actualSha256}")
+        }
+        println("recovered baseline present: ${baseline.length()} bytes")
+    }
+}
+
+tasks.register('verifyRecoveredSources') {
+    inputs.files(fileTree('src/main/java') { include '**/*.java' })
+    doLast {
+        def sampleSources = fileTree('src/main/java') {
+            include 'gg/**/*.java', 'func/**/*.java'
+        }.files
+        if (sampleSources.size() != 2939) {
+            throw new GradleException(
+                    "expected 2939 sample Java sources under src/main; found ${sampleSources.size()}")
+        }
+        for (String forbiddenRoot : ['javassist', 'org']) {
+            if (file("src/main/java/${forbiddenRoot}").exists()) {
+                throw new GradleException(
+                        "third-party source root must not exist: src/main/java/${forbiddenRoot}")
+            }
+        }
+        println("recovered source coverage: sample=${sampleSources.size()}, "
+                + 'third-party sources=0')
+    }
+}
+
+tasks.register('verifyRecoveredSourceQuality') {
+    inputs.files(fileTree('src/main/java') { include '**/*.java' })
+    doLast {
+        def forbiddenMarkers = [
+                'Decompilation failed',
+                'Unable to fully structure code',
+                'loose catch block',
+                'cfr_ignored'
+        ]
+        def violations = []
+        fileTree('src/main/java') {
+            include '**/*.java'
+        }.files.sort().each { source ->
+            source.eachLine('UTF-8') { line, lineNumber ->
+                forbiddenMarkers.each { marker ->
+                    if (line.contains(marker)) {
+                        violations << "${source}:${lineNumber}: ${marker}"
+                    }
+                }
+            }
+        }
+        if (!violations.isEmpty()) {
+            throw new GradleException(
+                    "fatal recovered-source markers remain:\n${violations.join('\n')}")
+        }
+        println('recovered source quality: fatal CFR markers=0')
+    }
+}
+
+tasks.named('check') {
+    dependsOn(tasks.named('verifyManualBaseline'))
+    dependsOn(tasks.named('verifyRecoveredSources'))
+    dependsOn(tasks.named('verifyRecoveredSourceQuality'))
+}
+
+idea {
+    module {
+        sourceDirs += file('src/main/java')
+        resourceDirs += file('src/main/resources')
+    }
+}

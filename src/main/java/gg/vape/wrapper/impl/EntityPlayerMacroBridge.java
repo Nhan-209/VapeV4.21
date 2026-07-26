@@ -1,0 +1,35 @@
+package gg.vape.wrapper.impl;
+
+import gg.vape.mapping.mappings.MEntityPlayerMacroBridge;
+import gg.vape.module.render.proj.EnderPearlProjectileBridge;
+import gg.vape.runtime.ObfuscatedRuntimeException;
+import gg.vape.wrapper.impl.Entity;
+import gg.vape.wrapper.impl.EntityPlayer;
+import gg.vape.wrapper.impl.ForgeVersion;
+
+public class EntityPlayerMacroBridge
+extends Entity {
+    public Entity A$src$Lgg_vape_wrapper_impl_Entity_$12ijiu4() {
+        if (ForgeVersion.MC_1_16_5.v()) {
+            return new EntityPlayer(MEntityPlayerMacroBridge.F(EntityPlayerMacroBridge.c.getMappings().Da, this.I));
+        }
+        return new EnderPearlProjectileBridge(this.getObject()).C();
+    }
+
+    public Entity r$src$Lgg_vape_wrapper_impl_Entity_$18p7x3h() {
+        return new Entity(MEntityPlayerMacroBridge.W(EntityPlayerMacroBridge.c.getMappings().Da, this.I));
+    }
+
+    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+        return obfuscatedRuntimeException;
+    }
+
+    public EntityPlayerMacroBridge(Object object) {
+        super(object);
+    }
+
+    public boolean o() {
+        return MEntityPlayerMacroBridge.B(EntityPlayerMacroBridge.c.getMappings().Da, this.I);
+    }
+}
+

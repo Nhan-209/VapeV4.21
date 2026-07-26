@@ -1,0 +1,31 @@
+package gg.vape.module.blatant.anchormacro;
+
+public enum AnchorMacroState {
+    IDLE,
+    FINDING_ITEMS,
+    PLACING_ANCHOR,
+    WAITING_FOR_ANCHOR,
+    PLACING_SHIELD,
+    CHARGING_ANCHOR,
+    SWAPPING_TO_EXPLOSION_ITEM,
+    DETONATING_ANCHOR,
+    FINISH;
+
+    private static final AnchorMacroState[] Z;
+
+    static {
+        String[] stringArray = new String[]{"PLACING_SHIELD", "CHARGING_ANCHOR", "SWAPPING_TO_EXPLOSION_ITEM", "FINDING_ITEMS", "WAITING_FOR_ANCHOR", "DETONATING_ANCHOR", "FINISH", "PLACING_ANCHOR", "IDLE"};
+
+
+
+
+
+
+
+
+
+        Z = new AnchorMacroState[]{IDLE, FINDING_ITEMS, PLACING_ANCHOR, WAITING_FOR_ANCHOR, PLACING_SHIELD, CHARGING_ANCHOR, SWAPPING_TO_EXPLOSION_ITEM, DETONATING_ANCHOR, FINISH};
+    }
+
+}
+

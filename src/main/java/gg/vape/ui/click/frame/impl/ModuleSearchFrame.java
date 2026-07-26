@@ -1,0 +1,87 @@
+package gg.vape.ui.click.frame.impl;
+
+import gg.vape.Vape;
+import gg.vape.module.Category;
+import gg.vape.module.Mod;
+import gg.vape.module.none.ClientSettings;
+import gg.vape.runtime.ObfuscatedRuntimeException;
+import gg.vape.ui.click.component.module.ModuleComponent;
+import gg.vape.ui.click.frame.impl.ModuleCategoryFrame;
+import gg.vape.ui.click.frame.impl.ModuleSearchFrameHeader;
+import gg.vape.unmap.ModeSelection;
+import gg.vape.utils.StringUtils;
+import gg.vape.wrapper.impl.Minecraft;
+
+public class ModuleSearchFrame
+extends ModuleCategoryFrame {
+    private ModuleSearchFrameHeader Rt;
+
+    public void D(String string) {
+        this.S();
+        ClientSettings.V = null;
+        if (string == null || string.length() < 1) {
+            return;
+        }
+        for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
+            if (mod.getCategory().equals(Category.b)) continue;
+            String string2 = StringUtils.y(mod.getName());
+            String string3 = StringUtils.y(string);
+            if (mod.getCategory().equals(Category.w) ? !string2.equals(string3) : !string2.contains(string3)) continue;
+            ModuleComponent moduleComponent = new ModuleComponent(this, mod);
+            this.h(moduleComponent, new Object[0]);
+            moduleComponent.d$src$V$m6rlha();
+        }
+    }
+
+    @Override
+    public boolean V$src$Z$1xhop3l() {
+        return ((ModeSelection)ClientSettings.fW.fz.K()).equals(ClientSettings.fW.c) || ClientSettings.fW.O.L() != false;
+    }
+
+    @Override
+    public void w() {
+    }
+
+    @Override
+    public String getName() {
+        return "ModuleSearch";
+    }
+
+    public ModuleSearchFrame() {
+        super(Category.b);
+        this.T(ModuleSearchFrame.J.r);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.I2 = false;
+        this.Rt = new ModuleSearchFrameHeader(this);
+        this.Y(this.Rt);
+    }
+
+    public ModuleSearchFrameHeader n$src$Lgg_vape_ui_click_frame_impl_ModuleSearchFrameHe$xia8v2() {
+        return this.Rt;
+    }
+
+    public void p() {
+        this.M((double)Minecraft.J() / (4.0 * Vape.INSTANCE.getClientSettings().s()) - this.A() / 2.0, 7.0);
+    }
+
+    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+        return obfuscatedRuntimeException;
+    }
+
+    @Override
+    public void v() {
+    }
+
+    @Override
+    public void Y() {
+        if (this.n() != 7.0) {
+            this.p();
+        }
+    }
+
+    @Override
+    public void V() {
+    }
+}
+

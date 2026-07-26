@@ -1,0 +1,19 @@
+package gg.vape.wrapper.impl;
+
+import gg.vape.wrapper.Wrapper;
+
+public class SharedMonsterAttributesVariantBridge
+extends Wrapper {
+    public SharedMonsterAttributesVariantBridge(Object object) {
+        super(object);
+    }
+
+    public static SharedMonsterAttributesVariantBridge C() {
+        return new SharedMonsterAttributesVariantBridge(SharedMonsterAttributesVariantBridge.c.getMappingsMapperCompat().D7.h());
+    }
+
+    public static SharedMonsterAttributesVariantBridge l() {
+        return new SharedMonsterAttributesVariantBridge(SharedMonsterAttributesVariantBridge.c.getMappingsMapperCompat().D7.D());
+    }
+}
+
