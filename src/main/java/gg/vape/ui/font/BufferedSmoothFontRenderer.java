@@ -111,7 +111,7 @@ extends SmoothFontRenderer {
             double d2 = 0.0;
             for (int i = 0; i < string.length(); ++i) {
                 char c = string.charAt(i);
-                SmoothFontGlyph smoothFontGlyph = this.R.get(c);
+                SmoothFontGlyph smoothFontGlyph = this.R.get((int)c);
                 if (smoothFontGlyph == null) {
                     smoothFontGlyph = this.R.get(32);
                 }
@@ -362,7 +362,7 @@ extends SmoothFontRenderer {
             for (int i = 0; i < string.length(); ++i) {
                 char c;
                 char c2 = string.charAt(i);
-                SmoothFontGlyph smoothFontGlyph = this.R.get(c2);
+                SmoothFontGlyph smoothFontGlyph = this.R.get((int)c2);
                 if (smoothFontGlyph == null) {
                     smoothFontGlyph = this.R.get(32);
                 }

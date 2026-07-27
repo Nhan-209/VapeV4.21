@@ -32,6 +32,12 @@ public class Reflections {
                 methodMap.put(id, method);
                 return;
             }
+            for (Method method : cls.getMethods()) {
+                if (method.getDeclaringClass() == cls || !MappingRegistry.matches(method, name) || !ParameterResolver.matchesDescriptor(method.getParameterTypes(), method.getReturnType(), desc) && !skipParameterCheck) continue;
+                method.setAccessible(true);
+                methodMap.put(id, method);
+                return;
+            }
             throw new NoSuchMethodException();
         }
         for (Method method : Reflections.getAllMethods(cls)) {

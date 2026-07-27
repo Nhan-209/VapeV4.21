@@ -135,4 +135,3 @@ implements CollapsibleFrame {
         return this.Hp;
     }
 }
-

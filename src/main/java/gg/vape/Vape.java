@@ -393,7 +393,7 @@ public class Vape {
         this.profilesManager = new ProfilesManager();
         this.modManager.A();
         this.notificationManager = new NotificationManager();
-        this.syncThread.B$src$V$4xbyk3();
+        this.syncThread.loadConfig();
         this.traceStep(25);
         this.modManager.m();
         if (this.publicProfileSettings.t() != null) {

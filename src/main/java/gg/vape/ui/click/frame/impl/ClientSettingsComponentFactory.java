@@ -28,9 +28,6 @@ import gg.vape.ui.click.component.value.ClientSettingsThemeBooleanToggle;
 import gg.vape.ui.click.component.value.NumberSliderComponent;
 import gg.vape.ui.click.component.value.PublicProfileModeDropdownComponent;
 import gg.vape.ui.click.frame.Frame;
-import gg.vape.ui.click.frame.impl.ClientSettingsActionButtonRowComponent;
-import gg.vape.ui.click.frame.impl.ModuleCategoryFrame;
-import gg.vape.ui.click.frame.impl.ThemeComponentGroupKey;
 import gg.vape.ui.click.text.SuffixTextTruncationIndexCache;
 import gg.vape.ui.click.text.TextTruncationIndexCache;
 import gg.vape.ui.font.FontManager;
@@ -49,7 +46,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public final class ClientSettingsComponentFactory {
     private static void lambda$createSubmenuComponents$14() {
@@ -176,7 +172,7 @@ public final class ClientSettingsComponentFactory {
 
     private static void lambda$createMainChildren$3() {
         Vape.debugLog("Reloading settings...");
-        Vape.INSTANCE.getSyncThread().B$src$V$4xbyk3();
+        Vape.INSTANCE.getSyncThread().loadConfig();
     }
 
     private static void lambda$createMainChildren$2() {

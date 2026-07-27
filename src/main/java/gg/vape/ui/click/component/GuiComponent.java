@@ -210,7 +210,7 @@ implements GuiComponentContract {
         this.n(true);
         boolean bl = ClientSettings.fW.fe.L();
         for (GuiComponent guiComponent : this.f()) {
-            if (!guiComponent.V$src$Z$1xhop3l() || !guiComponent.t() || !ClientSettings.P(guiComponent) || this instanceof FrameComponent && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().t() && !(guiComponent instanceof FrameHeaderComponent)) continue;
+            if (!guiComponent.V$src$Z$1xhop3l() || guiComponent.K$src$Z$1wnfv4l() || !guiComponent.t() || !ClientSettings.P(guiComponent) || this instanceof FrameComponent && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().t() && !(guiComponent instanceof FrameHeaderComponent)) continue;
             guiComponent.J();
             if (guiComponent.J$src$Lgg_vape_ui_click_component_ToolTips_$bb9snf() == null || !bl) continue;
             bl = false;
@@ -316,7 +316,7 @@ implements GuiComponentContract {
         Iterator iterator = arrayList.iterator();
         while (iterator.hasNext()) {
             GuiComponent guiComponent = (GuiComponent)iterator.next();
-            if (!guiComponent.V$src$Z$1xhop3l() || !guiComponent.w$src$Z$e457mb() || this instanceof FrameComponent && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().w$src$Z$e457mb() && !(guiComponent instanceof FrameHeaderComponent) || !guiComponent.b$src$Z$1x034rw()) continue;
+            if (!guiComponent.V$src$Z$1xhop3l() || guiComponent.K$src$Z$1wnfv4l() || !guiComponent.w$src$Z$e457mb() || this instanceof FrameComponent && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().w$src$Z$e457mb() && !(guiComponent instanceof FrameHeaderComponent) || !guiComponent.b$src$Z$1x034rw()) continue;
             guiComponent.D(guiMouseEvent);
             if (guiComponent instanceof FrameHeaderComponent || this.x) continue;
             return;
@@ -615,7 +615,12 @@ implements GuiComponentContract {
         }
         for (GuiComponent guiComponent : this.f()) {
             if (!guiComponent.V$src$Z$1xhop3l() || this.K$src$Z$1wnfv4l()) continue;
-            guiComponent.c();
+            try {
+                guiComponent.c();
+            }
+            catch (Exception exception) {
+                Vape.logThrowable(exception);
+            }
         }
     }
 
@@ -635,4 +640,3 @@ implements GuiComponentContract {
         return this.L();
     }
 }
-

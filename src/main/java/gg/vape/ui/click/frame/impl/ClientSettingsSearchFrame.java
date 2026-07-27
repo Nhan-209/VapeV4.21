@@ -38,6 +38,7 @@ import java.util.List;
 
 public class ClientSettingsSearchFrame
 extends ModuleCategoryFrame {
+    private static final double MENU_WIDTH = 110.0;
     private final ClientSettingsSearchFrameHeader Ij;
     private Object IG;
     private final List<GuiComponent> II = new ArrayList<GuiComponent>();
@@ -47,6 +48,11 @@ extends ModuleCategoryFrame {
     @Override
     public String getName() {
         return "GUI";
+    }
+
+    @Override
+    public double A() {
+        return MENU_WIDTH;
     }
 
     private void g(GuiComponent guiComponent) {

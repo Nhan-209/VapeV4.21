@@ -91,8 +91,13 @@ public class ImageRenderer {
             String string2 = "textures/" + string + ".png";
             byte[] resourceData = Vape.readResource(string2);
             if (resourceData == null || resourceData.length == 0) {
+                if ("world".equals(string)) {
+                    return null;
+                }
                 GlImageTexture glImageTexture = ImageRenderer.r("world");
-                f.put(string, glImageTexture);
+                if (glImageTexture != null) {
+                    f.put(string, glImageTexture);
+                }
                 return glImageTexture;
             }
             if (textureAtlas != null) {
@@ -221,6 +226,9 @@ public class ImageRenderer {
     }
 
     public static void i(Color color, Color color2, float f, float f2, GlImageTexture glImageTexture, String string, float f3, float f4, boolean bl, float f5) {
+        if (glImageTexture == null) {
+            return;
+        }
         if (GuiRenderPrimitives.d()) {
             BufferedGuiRenderPrimitives.s(f, f2, f3, f4, glImageTexture, string, f5, color, color2, bl);
             return;

@@ -15,10 +15,6 @@ import gg.vape.config.SettingsDataType;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.notification.SettingsSyncStatusNotification;
 import gg.vape.runtime.NativeBridge;
-import gg.vape.sync.RemoteProfileData;
-import gg.vape.sync.RemoteProfileDataMap;
-import gg.vape.sync.SyncDebounceWorker;
-import gg.vape.sync.SyncStoreRequestWorker;
 import gg.vape.utils.Base64Util;
 import java.io.IOException;
 import java.io.Reader;
@@ -684,7 +680,7 @@ public class SyncThread {
         this.E.set(false);
     }
 
-    public void B$src$V$4xbyk3() {
+    public void loadConfig() {
         try {
             boolean bl = this.F.getAccountInfo().r();
             if (!bl) {

@@ -3,6 +3,7 @@ package gg.vape.runtime;
 import gg.vape.Vape;
 import gg.vape.reflect.Type;
 import gg.vape.ui.click.GuiScreenNativeCallbackBridge;
+import gg.vape.utils.Base64Util;
 import java.lang.reflect.Method;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -11,6 +12,19 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
 public class NativeBridge {
+    private static final String DEFAULT_CONFIG_JSON = "{"
+            + "\"friends\":[],"
+            + "\"profiles\":{},"
+            + "\"otherdata\":[{\"frames\":["
+            + "{\"title\":\"Combat\",\"x\":32,\"y\":32,\"visible\":true,\"pinned\":false},"
+            + "{\"title\":\"Render\",\"x\":144,\"y\":32,\"visible\":true,\"pinned\":false},"
+            + "{\"title\":\"Utility\",\"x\":256,\"y\":32,\"visible\":true,\"pinned\":false},"
+            + "{\"title\":\"World\",\"x\":368,\"y\":32,\"visible\":true,\"pinned\":false},"
+            + "{\"title\":\"Inventory\",\"x\":480,\"y\":32,\"visible\":true,\"pinned\":false},"
+            + "{\"title\":\"Favorites\",\"x\":592,\"y\":32,\"visible\":true,\"pinned\":false},"
+            + "{\"title\":\"Settings\",\"x\":32,\"y\":32,\"visible\":false,\"pinned\":false},"
+            + "{\"title\":\"ModuleSearch\",\"x\":32,\"y\":32,\"visible\":false,\"pinned\":false}"
+            + "]}]}";
     private static boolean v = true;
     static boolean flag;
 
@@ -111,7 +125,7 @@ public class NativeBridge {
     }
 
     public static String gat() {
-        return "";
+        return Base64Util.encodeUtf8Base64(DEFAULT_CONFIG_JSON);
     }
 
     public static Object[] gco(Class clazz) {

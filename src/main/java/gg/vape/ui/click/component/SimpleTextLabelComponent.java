@@ -16,7 +16,6 @@ extends GuiComponent {
     @Nullable
     private Supplier<String> a;
     private float i;
-    private static final long cb;
     private Color Q;
     private boolean v;
     private static final long ab;
@@ -119,7 +118,6 @@ extends GuiComponent {
         ab = ZkmLongKeyState.a(-8502842971929419728L, -9098647339533184222L, MethodHandles.lookup().lookupClass()).a(43695728038406L);
         long l = ab ^ 0x3D5C045C7EC5L;
         SimpleTextLabelComponent.G((String[])null);
-        cb = 5120488845896184655L;
     }
 
     public SimpleTextLabelComponent(String string, double d) {
@@ -127,7 +125,7 @@ extends GuiComponent {
         this.Q = SimpleTextLabelComponent.J.h;
         this.I = 5.0f;
         this.i = 0.0f;
-        this.R = (int)cb;
+        this.R = 0;
         this.O = string;
         this.G = d;
     }

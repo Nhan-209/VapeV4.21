@@ -184,7 +184,7 @@ extends SmoothFontRenderer {
             GL11.glBegin((int)7);
             for (int i = 0; i < string.length(); ++i) {
                 char c = string.charAt(i);
-                SmoothFontGlyph smoothFontGlyph = this.v.get(c);
+                SmoothFontGlyph smoothFontGlyph = this.v.get((int)c);
                 if (smoothFontGlyph == null) {
                     smoothFontGlyph = this.v.get(32);
                 }
@@ -436,7 +436,7 @@ extends SmoothFontRenderer {
             double d2 = 0.0;
             for (int i = 0; i < string.length(); ++i) {
                 char c = string.charAt(i);
-                SmoothFontGlyph smoothFontGlyph = this.v.get(c);
+                SmoothFontGlyph smoothFontGlyph = this.v.get((int)c);
                 if (smoothFontGlyph == null) {
                     smoothFontGlyph = this.v.get(32);
                 }

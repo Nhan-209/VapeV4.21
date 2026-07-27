@@ -601,7 +601,12 @@ extends GuiComponent {
             this.z$src$V$infu7a();
             for (GuiComponent guiComponent : this.f()) {
                 if (!guiComponent.V$src$Z$1xhop3l() || guiComponent.K$src$Z$1wnfv4l()) continue;
-                guiComponent.c();
+                try {
+                    guiComponent.c();
+                }
+                catch (Exception exception) {
+                    Vape.logThrowable(exception);
+                }
             }
             if (this.J$src$D$hx1pag() != 0.0 && this.NS && this.N5 != null) {
                 GuiRenderPrimitives.d(this.N5.G$src$D$1b2f02a(), this.N5.n() + (double)n, this.N5.A(), this.N5.L() - (double)n, this.d());
@@ -687,4 +692,3 @@ extends GuiComponent {
         return guiComponent;
     }
 }
-
