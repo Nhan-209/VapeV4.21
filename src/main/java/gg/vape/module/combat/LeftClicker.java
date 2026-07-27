@@ -7,8 +7,6 @@ import gg.vape.event.EventHandler;
 import gg.vape.event.impl.EventPreTick;
 import gg.vape.input.InputEventDispatcher;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.module.combat.ClickerMod;
-import gg.vape.module.combat.WTap;
 import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.Animations;
@@ -98,11 +96,11 @@ extends ClickerMod {
 
     @Override
     public boolean h$src$Z$qo2e1d() {
-        WTap wTap = Vape.INSTANCE.getModManager().getMod(WTap.class);
-        if (wTap == null) {
+        HitSelect hitSelect = Vape.INSTANCE.getModManager().getMod(HitSelect.class);
+        if (hitSelect == null) {
             return false;
         }
-        return wTap.r$src$Z$14eylz9() && wTap.o$src$Z$1nxkzhj();
+        return hitSelect.r$src$Z$14eylz9() && hitSelect.o$src$Z$1nxkzhj();
     }
 
     public boolean shouldAllowClick(EntityPlayerSP entityPlayerSP) {

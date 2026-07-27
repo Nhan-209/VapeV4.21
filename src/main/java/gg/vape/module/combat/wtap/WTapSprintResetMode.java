@@ -12,7 +12,7 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
 import gg.vape.module.combat.AttackPacketTimingTracker;
-import gg.vape.module.combat.WTap;
+import gg.vape.module.combat.HitSelect;
 import gg.vape.rotation.RotationManager;
 import gg.vape.unmap.ModeOption;
 import gg.vape.value.BooleanValue;
@@ -25,7 +25,7 @@ import gg.vape.wrapper.impl.RayTraceResult;
 import gg.vape.wrapper.impl.SPacketEntityVelocity;
 
 public class WTapSprintResetMode
-extends SubModule<WTap> {
+extends SubModule<HitSelect> {
     private final ModeValue preference;
     private final ModeOption criticalHitsOption;
     private int velocityTicks = 0;
@@ -93,7 +93,7 @@ extends SubModule<WTap> {
     public void onClickMouse(EventClickMouse eventClickMouse) {
         RayTraceResult rayTraceResult;
         String[] stringArray = BooleanValue.H();
-        if (!((WTap)this.getParent()).a$src$Z$1npvv6h()) {
+        if (!((HitSelect)this.getParent()).a$src$Z$1npvv6h()) {
             return;
         }
         boolean bl = false;

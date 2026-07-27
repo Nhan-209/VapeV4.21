@@ -15,7 +15,7 @@ import java.lang.invoke.MutableCallSite;
 import java.util.HashMap;
 import java.util.Map;
 
-public class WTap
+public class HitSelect
 extends Mod {
     private final SubModuleValue<WTapRightClickUseCancelMode> rightClickUseCancel = new WTapRightClickUseCancelMode(this, "Right-click use cancel").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
     private static final String[] stringPoolA;
@@ -29,7 +29,7 @@ extends Mod {
 
     private static Object bootstrapInvoke(MethodHandles.Lookup lookup, MutableCallSite mutableCallSite, String string, Object[] objectArray) {
         if (objectArray != null && objectArray.length >= 2 && objectArray[0] instanceof Integer && objectArray[1] instanceof Long) {
-            return WTap.decodeConstant((Integer)objectArray[0], (Long)objectArray[1]);
+            return HitSelect.decodeConstant((Integer)objectArray[0], (Long)objectArray[1]);
         }
         return "";
     }
@@ -71,8 +71,8 @@ extends Mod {
     }
 
 
-    public WTap() {
-        super("WTap", 0, (int)moduleId, Category.g, "");
+    public HitSelect() {
+        super("HitSelect", 0, (int)moduleId, Category.g, "");
         this.chance = NumberValue.create(this, "Chance", "#", "%", 0.0, 90.0, 100.0);
         this.addValue(this.mode, this.chance);
         this.mode.Z$src$Lgg_vape_value_Value_$16i62fx("Mode");

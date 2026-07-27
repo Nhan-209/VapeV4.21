@@ -6,7 +6,7 @@ import gg.vape.event.impl.EventPreTick;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
-import gg.vape.module.combat.WTap;
+import gg.vape.module.combat.HitSelect;
 import gg.vape.rotation.RotationManager;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.EntityPlayerSP;
@@ -15,7 +15,7 @@ import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.RayTraceResult;
 
 public class WTapRightClickUseCancelMode
-extends SubModule<WTap> {
+extends SubModule<HitSelect> {
     private int cooldownTicks = -1;
     private boolean cancelActive = false;
     private static final long c;
@@ -57,7 +57,7 @@ extends SubModule<WTap> {
             return;
         }
         if (entityLivingBase.isNotNull() && entityPlayerSP.b$src$Z$fqlxe4() && (n = entityLivingBase.V$src$I$fk0dv5()) > 12) {
-            if (!((WTap)this.getParent()).a$src$Z$1npvv6h()) {
+            if (!((HitSelect)this.getParent()).a$src$Z$1npvv6h()) {
                 this.cooldownTicks = (int)c;
             }
             this.cancelActive = true;

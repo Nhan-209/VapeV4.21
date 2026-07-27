@@ -14,7 +14,7 @@ import gg.vape.wrapper.impl.KeyBinding;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.Packet;
 
-public class HitSelect1
+public class WTap
 extends Mod {
     private final NumberValue chance = NumberValue.E(this, "Chance", "#", "%", 0.0, 90.0, 100.0, "Chance of WTapping when hitting a target");
     private final TimerUtil rePressTimer;
@@ -74,7 +74,7 @@ extends Mod {
         }
     }
 
-    public HitSelect1() {
+    public WTap() {
         super("WTap", (int)MODULE_ID, Category.g);
         this.releaseTimer = new TimerUtil();
         this.rePressTimer = new TimerUtil();
