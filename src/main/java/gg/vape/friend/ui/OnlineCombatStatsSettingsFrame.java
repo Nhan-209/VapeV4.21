@@ -11,7 +11,6 @@ import gg.vape.friend.ui.OnlineCombatStatComparisonComponent;
 import gg.vape.friend.ui.OnlineCombatStatsTargetLabelComponent;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
 import gg.vape.ui.click.frame.impl.hud.HudSettingsFrameBase;
 import gg.vape.ui.click.frame.impl.quickactions.QuickActionsFrame;
@@ -63,9 +62,6 @@ implements EventListener {
         return "Duel Info";
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void V() {

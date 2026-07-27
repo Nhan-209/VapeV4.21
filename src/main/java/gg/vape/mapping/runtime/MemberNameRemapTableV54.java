@@ -3,7 +3,6 @@ package gg.vape.mapping.runtime;
 import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.runtime.MemberNameRemapTable;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.List;
 import java.util.UUID;
 
@@ -869,9 +868,6 @@ extends MemberNameRemapTable {
         this.B(MappedClasses.VG, "slot", "target");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     protected void fl() {
         this.t(MappedClasses.zJ, "func_217299_a", "clip");

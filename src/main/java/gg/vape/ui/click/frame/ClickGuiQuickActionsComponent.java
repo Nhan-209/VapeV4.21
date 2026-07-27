@@ -5,7 +5,6 @@ import gg.vape.friend.ui.OnlinePlayerPreviewSettingsFrame;
 import gg.vape.friend.ui.OnlineRadarSettingsFrame;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.none.TextGuiSettingsFrame;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.IconButtonComponent;
@@ -61,9 +60,6 @@ extends GuiComponent {
         this.v.add(new ClickGuiQuickActionActiveFrameIndicator("newradar", ClientSettings.g(OnlineRadarSettingsFrame.class), 7));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {

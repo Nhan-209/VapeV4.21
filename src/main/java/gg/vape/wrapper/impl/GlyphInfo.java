@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.BlockStateBridge;
 import gg.vape.wrapper.impl.FontGlyphInfo;
@@ -37,9 +36,6 @@ extends Wrapper {
         return object != null ? new BlockStateBridge(object) : null;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public float F(boolean bl) {
         FontGlyphInfo fontGlyphInfo = this.z();

@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -55,9 +54,6 @@ extends Mapping {
         this.B = null;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Object P(int n, int n2, int n3, int n4, int n5, int n6) {
         return this.B.O(n, n2, n3, n4, n5, n6);

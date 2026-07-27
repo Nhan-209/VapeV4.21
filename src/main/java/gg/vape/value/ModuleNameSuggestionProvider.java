@@ -3,7 +3,6 @@ package gg.vape.value;
 import gg.vape.Vape;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.value.AbstractListValueSuggestionProvider;
 import java.util.ArrayList;
@@ -44,9 +43,6 @@ extends AbstractListValueSuggestionProvider {
         return this.W;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         if (ModuleNameSuggestionProvider.R() != null) {

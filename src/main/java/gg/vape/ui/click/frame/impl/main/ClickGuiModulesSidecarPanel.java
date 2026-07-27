@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.main;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.IconGlyphComponent;
 import gg.vape.ui.click.component.IconShape;
 import gg.vape.ui.click.component.ShapeIconComponent;
@@ -127,9 +126,6 @@ extends ClickGuiSidecarPanelBase {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void k(boolean bl) {
         this.y9.Z(bl);

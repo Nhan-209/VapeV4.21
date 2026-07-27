@@ -2,7 +2,6 @@ package gg.vape.module.utility.inventory;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.utility.inventory.InventoryActionGuard;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.RotationUtil;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.Entity;
@@ -83,7 +82,4 @@ extends InventoryActionGuard {
         this.W = null;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

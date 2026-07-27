@@ -3,7 +3,6 @@ package gg.vape.protocol.packet;
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.UserDisplayNameResponsePacket;
 import gg.vape.protocol.packet.ZeusTrackedPacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class UserDisplayNamePacket
 extends ZeusTrackedPacket<UserDisplayNameResponsePacket> {
@@ -21,9 +20,6 @@ extends ZeusTrackedPacket<UserDisplayNameResponsePacket> {
         return this.S;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean r() {
         boolean bl = UserDisplayNamePacket.I();

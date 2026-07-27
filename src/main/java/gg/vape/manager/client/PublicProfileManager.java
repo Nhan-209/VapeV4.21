@@ -11,7 +11,6 @@ import gg.vape.event.impl.PublicProfileCreatedEvent;
 import gg.vape.event.impl.PublicProfileDeletedEvent;
 import gg.vape.event.impl.PublicProfileTagsUpdatedEvent;
 import gg.vape.notification.NotificationType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -26,9 +25,6 @@ public class PublicProfileManager {
     private final Map<Long, PublicProfile> g = new LinkedHashMap<Long, PublicProfile>();
     static final boolean m;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static ApiResponse lambda$new$1(Throwable throwable) {
         Vape.logThrowable(throwable);

@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.online;
 
 import gg.vape.manager.client.OnlineConnectionManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.gui.UnderlinedTextLabel;
 import gg.vape.ui.click.component.layout.PaddedComponent;
 import gg.vape.ui.click.frame.impl.online.OnlineConnectionSettingsPageComponent;
@@ -74,8 +73,5 @@ extends OnlineConnectionSettingsPageComponent {
         OnlineConnectionManager.T.a();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

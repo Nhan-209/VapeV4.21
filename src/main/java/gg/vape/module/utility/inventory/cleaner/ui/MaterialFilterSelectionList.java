@@ -10,7 +10,6 @@ import gg.vape.module.utility.inventory.cleaner.ui.ItemPickerSelection;
 import gg.vape.module.utility.inventory.cleaner.ui.MaterialFilterSelectionListClosePopupMouseListener;
 import gg.vape.module.utility.inventory.cleaner.ui.MaterialFilterSelectionRemoveClickHandler;
 import gg.vape.module.utility.inventory.cleaner.ui.MaterialFilterSelectionRow;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GlyphIconComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.layout.PaddedComponent;
@@ -91,9 +90,6 @@ extends ScrollableFrameComponent {
         this.h(new PaddedComponent(3.0, 0.0, 3.0, 0.0, glyphIconComponent), new Object[0]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void C(ItemFilterSelection itemFilterSelection) {
         MaterialFilterSelectionRow materialFilterSelectionRow = new MaterialFilterSelectionRow(itemFilterSelection);

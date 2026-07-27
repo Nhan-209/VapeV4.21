@@ -3,7 +3,6 @@ package gg.vape.value;
 import com.google.gson.JsonObject;
 import gg.vape.Vape;
 import gg.vape.config.ConfigJsonUtils;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.StringUtils;
 import gg.vape.value.Value;
@@ -142,9 +141,6 @@ extends Value<double[], RandomValue> {
         this.g$src$V$1akzyia();
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int s$src$I$vi2lk8() {
         return (int)this.q$src$D$vgz097();

@@ -9,7 +9,6 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.blatant.speed.BhopSpeed;
 import gg.vape.module.blatant.speed.MineplexSpeed;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.value.ModeValue;
 import gg.vape.value.SubModuleValue;
@@ -98,8 +97,5 @@ extends Mod {
         this.U = n;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

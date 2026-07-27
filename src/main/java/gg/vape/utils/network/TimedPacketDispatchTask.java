@@ -1,6 +1,5 @@
 package gg.vape.utils.network;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.network.PacketDispatchTask;
 import gg.vape.utils.network.TimedPacketDispatchTaskMarker;
 
@@ -21,9 +20,6 @@ public class TimedPacketDispatchTask {
         this(vo_22);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public boolean j(long l) {
         long l2 = System.currentTimeMillis();

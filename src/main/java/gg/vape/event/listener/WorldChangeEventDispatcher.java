@@ -5,16 +5,12 @@ import gg.vape.event.EventListener;
 import gg.vape.event.EventPriority;
 import gg.vape.event.impl.EventPreTick;
 import gg.vape.event.impl.EventWorldChange;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.WorldClient;
 
 public class WorldChangeEventDispatcher
 implements EventListener {
     private WorldClient f;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     @EventHandler(A=EventPriority.LOW)
     public void onTick(EventPreTick eventTick) {

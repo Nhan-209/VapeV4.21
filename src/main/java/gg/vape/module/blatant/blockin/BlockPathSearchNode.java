@@ -1,6 +1,5 @@
 package gg.vape.module.blatant.blockin;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.datas.BlockCoordinate;
 import gg.vape.wrapper.impl.BlockPos;
@@ -48,9 +47,6 @@ public class BlockPathSearchNode {
         return t;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean equals(Object object) {
         if (!(object instanceof BlockPathSearchNode)) {

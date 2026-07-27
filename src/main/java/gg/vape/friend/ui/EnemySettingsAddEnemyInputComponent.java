@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.friend.Enemy;
 import gg.vape.friend.ui.EnemySettingsFrame;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.TextInputComponentBase;
 
 public class EnemySettingsAddEnemyInputComponent
@@ -19,9 +18,6 @@ extends TextInputComponentBase {
         return this.A() - 35.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EnemySettingsAddEnemyInputComponent(String string) {
         super(string);

@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gg.vape.config.ConfigJsonUtils;
 import gg.vape.config.PublicProfile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.sync.RemoteProfileData;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -67,9 +66,6 @@ public class UserDataResponse {
         return this.m;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Map<Long, PublicProfile> s() {
         return this.O;

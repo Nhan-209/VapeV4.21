@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
 import gg.vape.module.none.XRay;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Block;
 import gg.vape.wrapper.impl.RenderBlocks;
 
@@ -37,9 +36,6 @@ extends Event {
         return this.isCanceled();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static EventListeners getEventListeners() {
         return Y;

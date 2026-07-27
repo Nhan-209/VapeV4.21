@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.IconGlyphComponent;
 import gg.vape.ui.click.component.IconShape;
@@ -186,9 +185,6 @@ extends InteractiveComponent {
         this.Mo = color;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void U(Color color) {
         this.Mw = color;

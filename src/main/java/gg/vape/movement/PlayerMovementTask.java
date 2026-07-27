@@ -3,7 +3,6 @@ package gg.vape.movement;
 import gg.vape.config.ClientSettings;
 import gg.vape.event.impl.EventTickBase;
 import gg.vape.movement.MovementInputHelper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.SleepUtil;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.KeyBinding;
@@ -93,9 +92,6 @@ public abstract class PlayerMovementTask {
         return this.s;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean b() {
         return this.U;

@@ -17,7 +17,6 @@ import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.RotationAngles;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.BooleanValue;
@@ -170,9 +169,6 @@ extends Mod {
         return bl && MovementInputHelper.k();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void onDisable() {

@@ -9,7 +9,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.UtilityMod;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.none.ConfigSettingsModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.Value;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +33,6 @@ public class ValueManager {
         return jsonArray;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void F(JsonObject jsonObject) {
         for (Mod mod : Vape.INSTANCE.getModManager().s()) {

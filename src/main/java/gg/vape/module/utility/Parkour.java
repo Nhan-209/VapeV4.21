@@ -7,7 +7,6 @@ import gg.vape.input.KeyBindingHelper;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.render.Freecam;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -26,9 +25,6 @@ extends Mod {
         super("Parkour", (int)MODULE_ID, Category.m, "Jumps for you at the edge of blocks.");
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {

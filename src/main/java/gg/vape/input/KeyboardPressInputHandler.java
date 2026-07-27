@@ -5,7 +5,6 @@ import gg.vape.input.InputEventHandler;
 import gg.vape.input.KeyboardCodeUtil;
 import gg.vape.input.KeyboardInputState;
 import gg.vape.runtime.NativeBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiKeyTypedDispatcher;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,9 +13,6 @@ public class KeyboardPressInputHandler
 implements InputEventHandler {
     private final Set<Integer> s = new HashSet<Integer>();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public KeyboardPressInputHandler() {
         this.s.add(37);

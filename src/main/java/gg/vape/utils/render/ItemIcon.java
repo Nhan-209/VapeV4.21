@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.GLUtils;
 import gg.vape.utils.render.GlFramebuffer;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -147,9 +146,6 @@ implements ItemIconRenderBackend {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void e() {

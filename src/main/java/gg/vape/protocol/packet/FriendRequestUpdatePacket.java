@@ -3,7 +3,6 @@ package gg.vape.protocol.packet;
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.FriendRequestUpdateResponsePacket;
 import gg.vape.protocol.packet.ZeusTrackedPacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class FriendRequestUpdatePacket
 extends ZeusTrackedPacket<FriendRequestUpdateResponsePacket> {
@@ -18,9 +17,6 @@ extends ZeusTrackedPacket<FriendRequestUpdateResponsePacket> {
         return this.h;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {

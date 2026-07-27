@@ -2,7 +2,6 @@ package gg.vape.notification;
 
 import gg.vape.Vape;
 import gg.vape.notification.SoundClip;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class NotificationSoundPlayer {
@@ -41,9 +40,6 @@ public class NotificationSoundPlayer {
         A = nArray;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public float B() {
         return ((Double)Vape.INSTANCE.getPublicProfileSettings().h.K()).floatValue();

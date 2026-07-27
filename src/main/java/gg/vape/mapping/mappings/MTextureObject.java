@@ -5,7 +5,6 @@ import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MTextureManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MTextureObject
@@ -15,9 +14,6 @@ extends Mapping {
     private MappingMethod v;
     private MappingField W;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void k(MTextureObject mTextureObject, Object object, boolean bl, boolean bl2) {
         mTextureObject.k(object, bl, bl2);

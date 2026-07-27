@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl.hud;
 import func.skidline.RectData;
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.AnimatedIconButtonComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -71,9 +70,6 @@ implements CollapsibleFrame {
         this.w2();
     }
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void M(GuiComponent ... guiComponentArray) {
         Collections.addAll(this.x$src$Ljava_util_List_$vc8bfc(), guiComponentArray);

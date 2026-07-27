@@ -1,7 +1,6 @@
 package gg.vape.ui.font;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.font.SmoothFontRendererStringCache;
 import gg.vape.ui.font.SmoothFontRendererWidthCache;
@@ -170,9 +169,6 @@ public abstract class SmoothFontRenderer {
 
     public abstract double R(String var1, boolean var2);
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void I(String string, double d, double d2, int n, boolean bl) {
         String string2 = this.f.get(string);

@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.mappings.MTextureManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MTextureAtlasSprite
@@ -38,9 +37,6 @@ extends Mapping {
         this.g.setInt(object, n);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private Object k(Object object) {
         return this.m.getObject(object);

@@ -3,7 +3,6 @@ package gg.vape.protocol.packet;
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.FriendActivityUsersAction;
 import gg.vape.protocol.packet.ZeusSerializablePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 
 public class FriendActivityUsersPacket
@@ -20,9 +19,6 @@ implements ZeusSerializablePacket {
         return new FriendActivityUsersPacket(FriendActivityUsersAction.CHANGED_WORLD, lArray);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static GuiComponent[] L() {
         return j;

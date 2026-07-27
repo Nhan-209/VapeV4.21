@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MRenderHelper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -12,9 +11,6 @@ extends Wrapper {
         super(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void s() {
         if (ForgeVersion.MC_1_17.d()) {

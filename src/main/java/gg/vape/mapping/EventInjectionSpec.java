@@ -4,7 +4,6 @@ import gg.vape.event.EventBus;
 import gg.vape.event.IEvent;
 import gg.vape.mapping.InsertedCallbackEventMarker;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import java.lang.reflect.Method;
 
@@ -85,9 +84,6 @@ public class EventInjectionSpec {
         C = 0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void V(String string) {
         this.S = string;

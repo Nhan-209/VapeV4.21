@@ -9,7 +9,6 @@ import gg.vape.protocol.ZeusConnectionManager;
 import gg.vape.protocol.packet.GroupDeleteResponsePacket;
 import gg.vape.protocol.packet.GroupInviteStateResponsePacket;
 import gg.vape.protocol.packet.GroupInviteStateStatus;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ConfirmationDialogComponent;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -36,9 +35,6 @@ extends PanelComponent {
     private boolean v5;
     IconButtonComponent vB;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$acceptInvite$9() {
         this.v5 = false;

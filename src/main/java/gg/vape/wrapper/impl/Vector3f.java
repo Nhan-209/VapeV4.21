@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MVector3f;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Quaternion;
@@ -35,8 +34,5 @@ extends Wrapper {
         return Vector3f.c.getMappingsMapperCompat().qM.L(this.I);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 }
 

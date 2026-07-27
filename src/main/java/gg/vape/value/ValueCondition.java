@@ -1,6 +1,5 @@
 package gg.vape.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.ConditionalValue;
 import gg.vape.value.Value;
 import java.util.HashMap;
@@ -16,9 +15,6 @@ public class ValueCondition {
         return this;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static boolean lambda$isNotEqual$0(Object object, Object object2) {
         return !object.equals(object2);

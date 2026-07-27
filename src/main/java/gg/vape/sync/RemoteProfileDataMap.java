@@ -2,7 +2,6 @@ package gg.vape.sync;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.sync.RemoteProfileData;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,9 +17,6 @@ public class RemoteProfileDataMap {
         this.Q = map;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")

@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Packet;
 import gg.vape.wrapper.impl.PositionMoveRotation;
@@ -68,9 +67,6 @@ extends Packet {
         return PlayerPositionLookPacketModern.c.getMappings().Ry.g(this.I);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void r(float f) {
         if (ForgeVersion.MC_1_21_4.d()) {

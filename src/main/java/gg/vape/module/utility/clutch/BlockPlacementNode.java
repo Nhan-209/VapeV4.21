@@ -1,7 +1,6 @@
 package gg.vape.module.utility.clutch;
 
 import gg.vape.module.blatant.blockin.BlockPlacementPathSegmentState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.EnumFacing;
 import java.util.ArrayList;
@@ -32,9 +31,6 @@ public class BlockPlacementNode {
         this.F = useSupportBlock ? blockData.y(0, 1, 0) : null;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean D() {
         this.q.forEach(BlockPlacementPathSegmentState::A);

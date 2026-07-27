@@ -8,7 +8,6 @@ import gg.vape.module.none.ClientSettings;
 import gg.vape.module.utility.inventory.HotbarSlotRule;
 import gg.vape.module.utility.inventory.HotbarSlotRuleEditorComponent;
 import gg.vape.module.utility.inventory.HotbarSlotRuleItemPickerFrame;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.GuiComponent;
@@ -106,9 +105,6 @@ extends GuiComponent {
     public void I() {
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static String[] e() {
         return iconNames;

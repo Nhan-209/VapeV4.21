@@ -6,7 +6,6 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.ModuleDisplayScope;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.module.ModuleComponent;
 import gg.vape.ui.click.frame.CollapsibleFrame;
@@ -52,9 +51,6 @@ implements CollapsibleFrame {
     public void G(Mod mod) {
     }
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void w() {

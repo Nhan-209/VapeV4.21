@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.target;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.impl.hud.HudModuleFrameBase;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -39,9 +38,6 @@ extends GuiComponent {
         this.O = hudModuleFrameBase;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void j(int[] nArray) {
         o = nArray;

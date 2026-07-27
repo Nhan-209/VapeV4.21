@@ -11,7 +11,6 @@ import gg.vape.notification.INotification;
 import gg.vape.notification.Notification;
 import gg.vape.notification.NotificationType;
 import gg.vape.notification.TextNotificationContent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,9 +71,6 @@ public class OnlineFriend {
         return I;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public OnlineFriend(String string) {
         this(null, string);

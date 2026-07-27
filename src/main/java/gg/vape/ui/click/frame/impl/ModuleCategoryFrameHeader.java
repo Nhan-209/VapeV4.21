@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl;
 
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.IconButtonComponent;
@@ -73,9 +72,6 @@ extends FrameHeaderComponent {
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ModuleCategoryFrameHeader(ModuleCategoryFrame moduleCategoryFrame, String string, String string2) {
         super(moduleCategoryFrame);

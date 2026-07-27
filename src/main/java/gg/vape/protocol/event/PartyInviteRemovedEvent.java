@@ -3,16 +3,12 @@ package gg.vape.protocol.event;
 import gg.vape.friend.OnlineFriend;
 import gg.vape.protocol.ZeusClient;
 import gg.vape.protocol.event.OnlineEvent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class PartyInviteRemovedEvent
 extends OnlineEvent {
     private final OnlineFriend H;
     private static boolean F;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean R() {
         boolean bl = PartyInviteRemovedEvent.G();

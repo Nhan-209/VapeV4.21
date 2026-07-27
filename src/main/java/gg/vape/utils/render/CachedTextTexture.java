@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.GlFramebuffer;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.wrapper.impl.GlStateManager;
@@ -12,9 +11,6 @@ import org.lwjgl.opengl.GL11;
 class CachedTextTexture {
     GlFramebuffer m;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
 
     void O(float f, float f2, int n, int n2) {

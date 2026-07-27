@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.render.hud.FreeLookHudModule;
 import gg.vape.runtime.NativeBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.GLUtils;
 import gg.vape.utils.datas.HSBAData;
 import gg.vape.utils.datas.HSBData;
@@ -247,9 +246,6 @@ public class RenderUtil {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static Color N(Color color) {
         int n = color.getRGB();

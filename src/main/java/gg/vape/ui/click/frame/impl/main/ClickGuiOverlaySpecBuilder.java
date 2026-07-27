@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.main;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.frame.impl.main.ClickGuiOverlayPlacement;
 import gg.vape.ui.click.frame.impl.main.ClickGuiOverlaySpec;
@@ -66,9 +65,6 @@ public final class ClickGuiOverlaySpecBuilder {
         return this;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ClickGuiOverlaySpecBuilder D(Consumer<ClickGuiSidecarPanelBase> consumer) {
         this.p = consumer;

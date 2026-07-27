@@ -1,7 +1,6 @@
 package gg.vape.unmap;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ColorContrastUtil;
 import gg.vape.utils.MathUtil;
 import java.awt.Color;
@@ -170,9 +169,6 @@ public class ColorUtil {
         return (int)d4;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static float L(float f, float f2, float f3) {
         if (f3 < 0.0f) {

@@ -1,7 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.ui.OnlineFriendCard;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.SpacerComponent;
@@ -10,9 +9,6 @@ class OnlineFriendCardVisibleChildrenHeightComponent
 extends FlowLayoutComponent {
     final OnlineFriendCard Tw;
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     OnlineFriendCardVisibleChildrenHeightComponent(OnlineFriendCard onlineFriendCard, double d) {
         super(d);

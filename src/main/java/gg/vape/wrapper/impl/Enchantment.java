@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEnchantment;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.EnchantmentUtil;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -205,9 +204,6 @@ extends Wrapper {
         return Enchantment.getEnchantmentById(Enchantment.N() ? 36 : 70);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static Enchantment blastProtection() {
         return Enchantment.getEnchantmentById(3);

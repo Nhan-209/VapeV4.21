@@ -5,7 +5,6 @@ import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MEntity;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.util.Map;
 
@@ -44,9 +43,6 @@ extends Mapping {
         this.x.setBoolean(object, bl);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static Object L(MEntityLiving mEntityLiving, Object object, Object object2) {
         return mEntityLiving.P(object, object2);

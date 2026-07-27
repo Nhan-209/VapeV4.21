@@ -4,7 +4,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.control.ModuleControlClaim;
 import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class RotationControlClaim
 extends ModuleControlClaim {
@@ -55,9 +54,6 @@ extends ModuleControlClaim {
         return this.h(mod, false);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean h(Mod mod, boolean bl) {
         if (bl && this.v$src$Z$1r7ksy2() && !this.l(mod) && RotationManager.b.u()) {

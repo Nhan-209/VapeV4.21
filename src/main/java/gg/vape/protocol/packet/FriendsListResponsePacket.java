@@ -5,7 +5,6 @@ import gg.vape.friend.FriendRequestModel;
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.FriendsListPacket;
 import gg.vape.protocol.packet.ZeusTrackedPacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,9 +67,6 @@ extends ZeusTrackedPacket<FriendsListPacket> {
         return this.L;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public List<FriendRequestModel> W() {
         return this.Z;

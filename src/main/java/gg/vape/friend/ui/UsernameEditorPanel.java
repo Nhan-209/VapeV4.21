@@ -10,7 +10,6 @@ import gg.vape.friend.ui.UsernameEditorTextInputComponent;
 import gg.vape.protocol.ZeusConnectionManager;
 import gg.vape.protocol.packet.UserDisplayNameResponsePacket;
 import gg.vape.protocol.packet.UserDisplayNameStatus;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -81,9 +80,6 @@ extends PanelComponent {
         super.H();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void u() {

@@ -1,6 +1,5 @@
 package gg.vape.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.ListValueSuggestionProvider;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -45,9 +44,6 @@ implements ListValueSuggestionProvider {
         this.C = bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     @Override
     public void setComparator(@Nullable Comparator<String> comparator) {

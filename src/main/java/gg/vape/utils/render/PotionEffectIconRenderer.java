@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.PotionEffectIcon;
 import gg.vape.utils.render.PotionEffectIconKey;
@@ -25,9 +24,6 @@ public class PotionEffectIconRenderer {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static void Y(int n) {
         PotionEffectIconKey is_22 = new PotionEffectIconKey(n);

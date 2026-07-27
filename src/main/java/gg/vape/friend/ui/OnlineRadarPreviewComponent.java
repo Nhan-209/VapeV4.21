@@ -7,7 +7,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.entity.RenderEntityContext;
 import gg.vape.module.render.entity.RenderEntityContextCache;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
@@ -41,9 +40,6 @@ extends GuiComponent {
         return ((RenderEntityContext)onlineRadarPreviewState.h()).e();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void a(boolean bl) {
         SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().Y(1.0);

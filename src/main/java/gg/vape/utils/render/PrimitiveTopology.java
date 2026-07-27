@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public enum PrimitiveTopology {
     LINES(2, 2, "line"),
@@ -28,9 +27,6 @@ public enum PrimitiveTopology {
         n = new PrimitiveTopology[]{LINES, LINES_LOOP, QUADS, TRIANGLES};
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int Q() {
         switch (this) {

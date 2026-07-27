@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -100,9 +99,6 @@ extends InteractiveComponent {
         this.X(!this.v);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void u() {

@@ -2,7 +2,6 @@ package gg.vape.utils;
 
 import gg.vape.input.InputEventDispatcher;
 import gg.vape.runtime.NativeBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class KeyBoardUtil {
     public static final int Q;
@@ -21,9 +20,6 @@ public class KeyBoardUtil {
         return (NativeBridge.gks(n) & 0x100) != 0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         long[] lArray = new long[]{8077820790617145376L, 297696900683923521L, 7634409973295874135L, -1542298918925107117L, -3486869839207726942L, -6499915239893499644L, -477195949194608480L, -4462240591253602043L, -3345871758006681532L, 350199465673490688L, 2390434692210884865L};

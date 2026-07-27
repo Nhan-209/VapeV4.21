@@ -1,7 +1,6 @@
 package gg.vape.event;
 
 import gg.vape.event.EventDispatchTrace;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.TimerUtil;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,8 +31,5 @@ public class EventTimingHistory {
         this.O.entrySet().removeIf(arg_0 -> EventTimingHistory.lambda$cleanupOldEvents$0(l, arg_0));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 }
 

@@ -30,7 +30,6 @@ import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.RotationAngles;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
@@ -285,9 +284,6 @@ extends Mod {
         return silentAuraTargetingModule.l();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private float r(float f) {
         return Math.abs(MathUtil.wrapAngleTo180(RotationManager.b.V() - f));

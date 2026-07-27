@@ -5,7 +5,6 @@ import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MEntityRenderer;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MActiveRenderInfo
@@ -55,9 +54,6 @@ extends Mapping {
         return mActiveRenderInfo.F(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static Object Z(MActiveRenderInfo mActiveRenderInfo, Object object) {
         return mActiveRenderInfo.U(object);

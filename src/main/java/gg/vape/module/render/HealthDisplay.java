@@ -4,7 +4,6 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.ModDisplayInfo;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.ActiveModuleStackFrame;
 import gg.vape.unmap.NumberFormat;
 import gg.vape.wrapper.impl.EntityPlayerSP;
@@ -15,9 +14,6 @@ public class HealthDisplay
 extends Mod {
     private final NumberFormat S = new NumberFormat("#.#");
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public HealthDisplay() {
         super("Health", -21075, Category.k, "Displays your health in the center of your screen.");

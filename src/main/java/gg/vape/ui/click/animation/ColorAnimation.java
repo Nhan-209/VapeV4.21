@@ -1,6 +1,5 @@
 package gg.vape.ui.click.animation;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.Animation;
 import java.awt.Color;
 import org.jetbrains.annotations.Nullable;
@@ -70,9 +69,6 @@ extends Animation<Color> {
         return this.getInterpolatedColor();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void setEndColor(Color color) {
         this.s = color;

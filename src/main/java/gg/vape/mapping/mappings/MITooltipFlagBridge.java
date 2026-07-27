@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 
 public class MITooltipFlagBridge
@@ -12,9 +11,6 @@ extends Mapping {
     private final MappingField H;
     private static GuiComponent[] r;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void s(GuiComponent[] guiComponentArray) {
         r = guiComponentArray;

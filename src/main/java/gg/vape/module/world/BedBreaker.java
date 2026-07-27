@@ -9,7 +9,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.world.bedbreaker.BedTargetRenderPosition;
 import gg.vape.module.world.bedbreaker.BedTargetRenderState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.PlayerSimulationUtil;
 import gg.vape.utils.RotationUtil;
@@ -179,9 +178,6 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void setSelectedTarget(BedTargetRenderState bedTargetRenderState) {
         this.selectedTarget = bedTargetRenderState;

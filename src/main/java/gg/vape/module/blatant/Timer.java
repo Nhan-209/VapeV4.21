@@ -4,7 +4,6 @@ import gg.vape.event.EventHandler;
 import gg.vape.event.impl.EventPrePlayerTick;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.NumberValue;
 import gg.vape.wrapper.impl.Minecraft;
 
@@ -31,8 +30,5 @@ extends Mod {
         Minecraft.getTimer().setTimerSpeed(1.0f);
     }
 
-    private static ObfuscatedRuntimeException guard(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

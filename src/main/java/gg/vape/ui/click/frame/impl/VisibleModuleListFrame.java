@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl;
 import gg.vape.Vape;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.module.ModuleComponent;
 import gg.vape.ui.click.frame.impl.ModuleCategoryFrame;
@@ -14,9 +13,6 @@ public class VisibleModuleListFrame
 extends ModuleCategoryFrame {
     private static VisibleModuleListFrame U2;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public VisibleModuleListFrame() {
         super(Category.L);

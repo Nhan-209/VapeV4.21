@@ -1,7 +1,6 @@
 package gg.vape.ui.click.text;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.text.SuffixTextTruncationIndexLruCache;
 import gg.vape.ui.click.text.TruncatedTextSpec;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -12,9 +11,6 @@ public class SuffixTextTruncationIndexCache {
     private static final int h;
     private final LinkedHashMap<Integer, Integer> K = new SuffixTextTruncationIndexLruCache(this, 16, 0.75f, true);
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int n(TruncatedTextSpec truncatedTextSpec) {
         Integer n = this.K.get(truncatedTextSpec.hashCode());

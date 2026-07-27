@@ -6,7 +6,6 @@ import gg.vape.module.utility.inventory.HotbarSlotRuleEditorComponent;
 import gg.vape.module.utility.inventory.HotbarSlotRuleValue;
 import gg.vape.module.utility.inventory.cleaner.InventoryCleanerProfileValue;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryCleanerProfileValueComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.DropdownSelectComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.input.BindValueRowComponent;
@@ -89,9 +88,6 @@ public class ValueComponentFactory {
         return guiComponent;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static GuiComponent Y(Value<?, ?> value) {
         return ValueComponentFactory.K(value, false, ValueComponentMode.MAIN);

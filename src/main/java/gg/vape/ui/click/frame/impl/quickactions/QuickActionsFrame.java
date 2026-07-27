@@ -7,7 +7,6 @@ import gg.vape.friend.ui.OnlinePlayerPreviewSettingsFrame;
 import gg.vape.friend.ui.OnlineRadarSettingsFrame;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.none.TextGuiSettingsFrame;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.ColorDividerComponent;
@@ -133,9 +132,6 @@ extends Frame {
         GuiRenderPrimitives.d(clientSettingsSearchFrame.G$src$D$1b2f02a(), clientSettingsSearchFrame.n(), clientSettingsSearchFrame.A(), clientSettingsSearchFrame.L(), new Color(0, 0, 0, this.mI.getInterpolatedValue().intValue()));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public QuickActionRowComponent E$src$Lgg_vape_ui_click_frame_impl_quickactions_QuickA$1snij4t() {
         return this.mW;

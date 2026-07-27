@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MPlayerControllerMP;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ClickType;
 import gg.vape.wrapper.impl.Entity;
@@ -32,9 +31,6 @@ extends Wrapper {
         PlayerControllerMP.c.getMappingsMapperCompat().hj.o(this.I);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean a() {
         return MPlayerControllerMP.K(PlayerControllerMP.c.getMappingsMapperCompat().hj, this.I);

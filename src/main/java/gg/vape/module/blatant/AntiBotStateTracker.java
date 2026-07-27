@@ -1,7 +1,6 @@
 package gg.vape.module.blatant;
 
 import gg.vape.config.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -24,9 +23,6 @@ public class AntiBotStateTracker {
         return c;
     }
 
-    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public AntiBotStateTracker(Map<ModeOption, Character> map) {
         this.modeChars = map;

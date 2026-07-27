@@ -1,7 +1,6 @@
 package gg.vape.module.render;
 
 import gg.vape.module.render.NameTagsFramebufferState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.EnchantmentUtil;
 import gg.vape.utils.ItemStackFingerprint;
 import gg.vape.utils.render.BufferedRenderPrimitives;
@@ -195,8 +194,5 @@ public class NameTagsNameState {
         return this.framebufferState;
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

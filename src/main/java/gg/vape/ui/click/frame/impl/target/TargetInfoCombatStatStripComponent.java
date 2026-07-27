@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.target;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.target.TargetInfoStatStripComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.render.ImageRenderer;
@@ -30,9 +29,6 @@ extends TargetInfoStatStripComponent {
         ++this.a;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void V$src$V$1wi2ydp() {
         --this.a;

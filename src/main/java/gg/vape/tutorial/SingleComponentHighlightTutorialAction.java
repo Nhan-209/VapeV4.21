@@ -2,7 +2,6 @@ package gg.vape.tutorial;
 
 import func.skidline.RectData;
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.tutorial.HighlightTutorialAction;
 import gg.vape.tutorial.SingleComponentHighlightAdvanceClickListener;
 import gg.vape.tutorial.TutorialActionComponent;
@@ -12,9 +11,6 @@ public class SingleComponentHighlightTutorialAction
 extends HighlightTutorialAction {
     private static final String g = "start ";
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SingleComponentHighlightTutorialAction(GuiComponent guiComponent, String string, String string2, boolean bl) {
         super(new TutorialActionComponent(string, string2), bl);

@@ -1,7 +1,6 @@
 package gg.vape.account;
 
 import gg.vape.mapping.mappings.MSession;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.WorldRendererBuilder;
@@ -10,9 +9,6 @@ import java.util.UUID;
 
 public class MinecraftSessionWrapper
 extends Wrapper {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static MinecraftSessionWrapper J(String string, UUID uUID, String string2, Optional<String> optional, Optional<String> optional2, WorldRendererBuilder worldRendererBuilder) {
         return new MinecraftSessionWrapper(MSession.B(MinecraftSessionWrapper.c.getMappings().hw, string, uUID, string2, optional, optional2, worldRendererBuilder.getObject()));

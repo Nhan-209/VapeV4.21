@@ -1,16 +1,12 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MSPacketSoundEffect;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EnumParticleTypes;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Packet;
 
 public class SPacketSoundEffect
 extends Packet {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SPacketSoundEffect(Object object) {
         super(object);

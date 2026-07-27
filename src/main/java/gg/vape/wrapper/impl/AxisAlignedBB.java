@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MAxisAlignedBB;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EnumFacing;
@@ -83,9 +82,6 @@ extends Wrapper {
         return AxisAlignedBB.create(d4, d5, d6, d7, d8, d9);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public RayTraceResult calculateIntercept(Vec3 vec3, Vec3 vec32) {
         if (ForgeVersion.MC_1_16_5.d()) {

@@ -1,6 +1,5 @@
 package gg.vape.friend.ui;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.CollapsibleFrame;
 import gg.vape.ui.click.frame.OutlinedFrameBase;
@@ -26,9 +25,6 @@ implements CollapsibleFrame {
         this.l$src$V$1mibm4x();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public boolean q() {

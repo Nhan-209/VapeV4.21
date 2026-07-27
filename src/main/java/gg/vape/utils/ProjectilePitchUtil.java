@@ -1,6 +1,5 @@
 package gg.vape.utils;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.Vec3d;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;
@@ -60,8 +59,5 @@ public class ProjectilePitchUtil {
         return f4;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

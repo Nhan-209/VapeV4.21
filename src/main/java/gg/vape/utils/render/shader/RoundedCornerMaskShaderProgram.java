@@ -1,6 +1,5 @@
 package gg.vape.utils.render.shader;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.shader.ShaderProgram;
 import org.lwjgl.opengl.GL20;
 
@@ -52,8 +51,5 @@ extends ShaderProgram {
         GL20.glUniform1f((int)2, (float)f);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

@@ -1,6 +1,5 @@
 package gg.vape.module.utility.inventory;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.RotationUtil;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.Minecraft;
@@ -87,8 +86,5 @@ public class InventoryActionGuard {
         keyConstant = 1665370352093495306L;
     }
 
-    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

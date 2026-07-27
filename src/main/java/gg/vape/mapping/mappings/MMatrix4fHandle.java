@@ -5,7 +5,6 @@ import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MMatrixStack;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 
 public class MMatrix4fHandle
@@ -203,9 +202,6 @@ extends Mapping {
         return mMatrix4fHandle.r(object, f, f2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static Object R(MMatrix4fHandle mMatrix4fHandle, int n) {
         return mMatrix4fHandle.c(n);

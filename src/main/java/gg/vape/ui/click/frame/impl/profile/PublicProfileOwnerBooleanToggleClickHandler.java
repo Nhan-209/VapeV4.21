@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseClickButton;
 import gg.vape.ui.click.component.value.BooleanToggleComponent;
@@ -22,8 +21,5 @@ implements GuiMouseListener {
         this.b = booleanToggleComponent;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

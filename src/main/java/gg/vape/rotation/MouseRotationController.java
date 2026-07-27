@@ -7,7 +7,6 @@ import gg.vape.event.impl.EventPreRenderTick;
 import gg.vape.module.render.Freecam;
 import gg.vape.rotation.PlayerMouseRotationApplier;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.SleepUtil;
 import gg.vape.utils.TimerUtil;
@@ -39,9 +38,6 @@ public abstract class MouseRotationController {
     private static String A;
     private static Freecam N;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean V$src$Z$lb4tvc() {
         return this.Y;

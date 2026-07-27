@@ -5,7 +5,6 @@ import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.OnlineFriendColorUtil;
 import gg.vape.notification.NotificationSounds;
 import gg.vape.protocol.packet.PingTargetData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.RotationUtil;
@@ -272,9 +271,6 @@ public abstract class PingMarker {
         return this.l$src$J$1n68geg() - (System.currentTimeMillis() - this.q);
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public abstract void d();
 

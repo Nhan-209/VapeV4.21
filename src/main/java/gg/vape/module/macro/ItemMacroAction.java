@@ -10,7 +10,6 @@ import gg.vape.module.macro.ItemMacro;
 import gg.vape.module.macro.ItemMacroActionState;
 import gg.vape.module.macro.MacroAction;
 import gg.vape.module.render.Animations;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.RandomUtil;
 import gg.vape.utils.TimerUtil;
 import gg.vape.wrapper.Wrapper;
@@ -50,9 +49,6 @@ implements MacroAction {
         }
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void U(int n) {
         this.savedSlot = n;

@@ -13,7 +13,6 @@ import gg.vape.module.combat.AttackPacketTimingTracker;
 import gg.vape.module.control.SharedModuleControlClaimPrimary;
 import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.world.FastUseModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.SleepUtil;
 import gg.vape.utils.network.PacketDispatchGuard;
@@ -84,9 +83,6 @@ extends SubModule<FastUseModule> {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void D() {
         int n = DelayedPacketSendEntry.I();

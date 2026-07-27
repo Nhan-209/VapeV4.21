@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.value;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.value.AbstractListValueComponent;
 import gg.vape.ui.click.frame.Frame;
@@ -65,9 +64,6 @@ extends Frame {
         ClientSettings.fW.N(((GuiComponent)this.F3).B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), this);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public abstract void e();
 

@@ -1,7 +1,6 @@
 package gg.vape.module.blatant.blockin;
 
 import gg.vape.module.blatant.blockin.HotbarSlotResolutionStatus;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.Nullable;
 
 public class HotbarSlotResolution<T extends HotbarSlotResolution<T>> {
@@ -70,9 +69,6 @@ public class HotbarSlotResolution<T extends HotbarSlotResolution<T>> {
         return this.status;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean v() {
         return this.status == HotbarSlotResolutionStatus.SUCCESS;

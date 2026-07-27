@@ -2,7 +2,6 @@ package gg.vape.module.none;
 
 import com.google.gson.JsonObject;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.Value;
 
 public class ConfigSettingsModule
@@ -18,8 +17,5 @@ extends Mod {
         super(string);
     }
 
-    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

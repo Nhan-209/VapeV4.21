@@ -1,6 +1,5 @@
 package gg.vape.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.ConditionalValue;
 import gg.vape.value.ListValue;
 import gg.vape.value.Value;
@@ -116,9 +115,6 @@ extends ConditionalValue<Boolean, BooleanValue> {
         return false;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void M() {
         this.o(this.L() == false);

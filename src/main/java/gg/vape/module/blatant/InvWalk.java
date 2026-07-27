@@ -9,7 +9,6 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.blatant.InvWalkSettingsState;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.value.BooleanValue;
 import gg.vape.wrapper.impl.EntityPlayerSP;
@@ -121,8 +120,5 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

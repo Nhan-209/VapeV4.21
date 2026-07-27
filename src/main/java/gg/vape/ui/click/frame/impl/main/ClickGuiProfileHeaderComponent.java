@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.main;
 
 import gg.vape.config.Profile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.TruncatedTextComponent;
 import gg.vape.ui.click.component.input.BindableInputComponent;
@@ -33,9 +32,6 @@ extends GuiComponent {
         this.H(this.i, this.K, this.b);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void H() {

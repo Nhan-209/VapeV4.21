@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl;
 
 import gg.vape.account.MinecraftSessionWrapper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.gui.TextButton;
 import gg.vape.ui.click.frame.impl.SessionSpoofFrame;
 import gg.vape.wrapper.impl.Minecraft;
@@ -29,9 +28,6 @@ extends TextButton {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double A() {

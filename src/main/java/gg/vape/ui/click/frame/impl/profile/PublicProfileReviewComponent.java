@@ -5,7 +5,6 @@ import gg.vape.config.PublicProfile;
 import gg.vape.config.PublicProfileReview;
 import gg.vape.config.PublicProfileReviewDisplayType;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ConfirmationDialogComponent;
 import gg.vape.ui.click.component.FilledSpacerComponent;
 import gg.vape.ui.click.component.GlyphIconComponent;
@@ -125,9 +124,6 @@ extends GuiComponent {
         return this;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public PublicProfileReviewComponent(PublicProfile publicProfile, @Nullable PublicProfileReview publicProfileReview, double d, PublicProfileReviewDisplayType publicProfileReviewDisplayType) {
         GuiComponent guiComponent;

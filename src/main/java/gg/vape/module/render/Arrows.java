@@ -8,7 +8,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.render.OffscreenRenderContext;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ColorUtil;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
@@ -127,9 +126,6 @@ extends Mod {
         this.j.clear();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean isOnScreen(double d, double d2, int n, int n2) {
         return d > 0.0 && d2 > 0.0 && d < (double)(n / 2) && d2 < (double)(n2 / 2);

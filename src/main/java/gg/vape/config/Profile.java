@@ -11,7 +11,6 @@ import gg.vape.config.ProfileRemoteMetadata;
 import gg.vape.config.ProfileSnapshot;
 import gg.vape.config.PublicProfile;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.Bendable;
 import gg.vape.utils.Base64Util;
 import java.time.Instant;
@@ -468,7 +467,4 @@ implements Comparable<Profile> {
         return this;
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

@@ -4,7 +4,6 @@ import gg.vape.config.ProfileModuleSnapshot;
 import gg.vape.config.ProfileSnapshot;
 import gg.vape.config.PublicProfile;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.CenteredGlyphComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.InsetFilledSpacerComponent;
@@ -83,9 +82,6 @@ extends PublicProfileOverlayPanelBase {
         this.H1 = runnable;
     }
 
-    private static ObfuscatedRuntimeException f(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$setup$1(ProfileModuleSnapshot profileModuleSnapshot) {
         this.n(profileModuleSnapshot);

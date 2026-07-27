@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MRenderBufferBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.BlockStateBridge;
 import gg.vape.wrapper.impl.BlockStateContainerBridge;
@@ -42,9 +41,6 @@ extends Wrapper {
         return new BlockStateContainerBridge(MRenderBufferBridge.V(RenderBufferBridge.c.getMappings().Ca, this.I));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void j() {
         MRenderBufferBridge.v(RenderBufferBridge.c.getMappings().Ca, this.I);

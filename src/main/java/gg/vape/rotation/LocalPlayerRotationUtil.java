@@ -1,6 +1,5 @@
 package gg.vape.rotation;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.RenderMatrix4f;
 import gg.vape.wrapper.impl.EntityRenderer;
@@ -10,9 +9,6 @@ import gg.vape.wrapper.impl.MatrixStack;
 import gg.vape.wrapper.impl.Minecraft;
 
 public class LocalPlayerRotationUtil {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void Q(float f) {
         Matrix4f matrix4f;

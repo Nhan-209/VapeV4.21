@@ -9,14 +9,10 @@ import gg.vape.event.impl.EventPostRenderTick;
 import gg.vape.event.impl.EventPreRenderTick;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class RenderTickEventMappingTask
 extends ClassTransformer {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void c() {

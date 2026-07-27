@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.FadingTruncatedTextComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -208,9 +207,6 @@ extends GuiComponent {
         return this.o.u();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void o(GuiComponent guiComponent) {
         this.i = guiComponent;

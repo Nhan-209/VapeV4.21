@@ -1,6 +1,5 @@
 package gg.vape.module.utility.armorswitch;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public enum ArmorMaterialType {
     LEATHER("leather"),
@@ -53,8 +52,5 @@ public enum ArmorMaterialType {
         initialized = value;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

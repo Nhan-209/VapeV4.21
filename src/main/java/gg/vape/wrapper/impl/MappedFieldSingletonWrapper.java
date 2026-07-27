@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.Vape;
 import gg.vape.mapping.mappings.MMappedFieldSingletonWrapper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 
 public class MappedFieldSingletonWrapper
@@ -13,9 +12,6 @@ extends Wrapper {
         super(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static MappedFieldSingletonWrapper T() {
         if (A == null) {

@@ -1,15 +1,11 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEntityArrow;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class EntityArrow
 extends Entity {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public double o() {
         if (ForgeVersion.MC_1_21_0.d()) {

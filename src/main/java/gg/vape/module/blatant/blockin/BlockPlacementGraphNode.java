@@ -3,7 +3,6 @@ package gg.vape.module.blatant.blockin;
 import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.MouseRotationController;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.List;
 
 public class BlockPlacementGraphNode {
@@ -34,9 +33,6 @@ public class BlockPlacementGraphNode {
         this.u = f2;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public BlockPlacementGraphNode(AdaptiveRotationController adaptiveRotationController) {
         this(adaptiveRotationController, adaptiveRotationController.J(), adaptiveRotationController.X());

@@ -1,7 +1,6 @@
 package gg.vape.ui.click.text;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.text.TextLabelFitSpec;
 import gg.vape.ui.font.SmoothFontRenderer;
 import java.math.BigDecimal;
@@ -11,9 +10,6 @@ public class TextLabelFitScaleCache {
     LinkedHashMap<String, Double> p = new LinkedHashMap();
     public static TextLabelFitScaleCache m = new TextLabelFitScaleCache();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public double T(TextLabelFitSpec textLabelFitSpec) {
         if (this.p.containsKey(textLabelFitSpec.toString())) {

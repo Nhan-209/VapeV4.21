@@ -1,6 +1,5 @@
 package gg.vape.module.utility.inventory;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -49,8 +48,5 @@ extends InteractiveComponent {
         this.b = new ColorAnimation(0.15, HotbarSlotRuleAddButton.J.l, HotbarSlotRuleAddButton.J.h);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

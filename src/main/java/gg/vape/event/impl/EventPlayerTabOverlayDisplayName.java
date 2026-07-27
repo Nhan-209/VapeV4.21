@@ -2,7 +2,6 @@ package gg.vape.event.impl;
 
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GuiPlayerTabOverlayBridge;
 import gg.vape.wrapper.impl.ITextComponent;
@@ -29,9 +28,6 @@ extends Event {
         return this.getVanillaDisplayName();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static EventListeners getEventListeners() {
         return i;

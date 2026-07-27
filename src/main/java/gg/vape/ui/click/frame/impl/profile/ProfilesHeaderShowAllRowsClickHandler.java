@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.impl.profile.ProfileListEntryComponent;
@@ -27,8 +26,5 @@ implements GuiClickListener {
         this.J.l$src$Lgg_vape_ui_click_frame_PopupFrame_$vsvtwn();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.main;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.awt.Color;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,9 +17,6 @@ public final class ClickGuiModuleCardRenderState {
         return bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Nullable
     public String java_lang_String_n() {

@@ -5,7 +5,6 @@ import gg.vape.manager.client.OnlineAccountState;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.manager.client.OnlineConnectionState;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.SettingsSubpageFrame;
@@ -135,8 +134,5 @@ extends SettingsSubpageFrame {
         ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().m(this);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -73,9 +72,6 @@ extends Mapping {
         this.O = this.Y(string3, bl3, clazz3, classArray3);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String s(Object object) {
         return (String)this.A.L(object, new Object[0]);

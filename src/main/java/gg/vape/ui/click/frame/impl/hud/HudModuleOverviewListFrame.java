@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.hud.HudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.impl.hud.HudModuleOverviewFrame;
 import gg.vape.ui.click.frame.impl.hud.HudModuleToggleComponent;
@@ -67,9 +66,6 @@ extends Frame {
         super.t(bl, bl2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean A$src$Z$1p4vcx7() {
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {

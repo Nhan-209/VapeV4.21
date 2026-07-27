@@ -1,6 +1,5 @@
 package gg.vape.utils;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class FastAtanMath {
     private static final float[] w;
@@ -46,9 +45,6 @@ public class FastAtanMath {
         R = new float[]{-0.33333147f, 0.19993551f, -0.142089f, 0.10656264f, 1.5707964f};
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static float r(float f, float f2) {
         if (f < 0.0f) {

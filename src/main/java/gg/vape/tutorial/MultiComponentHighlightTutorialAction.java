@@ -2,7 +2,6 @@ package gg.vape.tutorial;
 
 import func.skidline.RectData;
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.tutorial.ClassTutorialTargetSelector;
 import gg.vape.tutorial.HighlightTutorialAction;
 import gg.vape.tutorial.MultiComponentHighlightAdvanceClickListener;
@@ -66,9 +65,6 @@ extends HighlightTutorialAction {
         }
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public MultiComponentHighlightTutorialAction(GuiComponent guiComponent, Class clazz, String string, String string2, boolean bl) {
         this(guiComponent, new ClassTutorialTargetSelector(clazz, clazz), string, string2, bl);

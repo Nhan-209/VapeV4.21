@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.input;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.TextInputComponentBase;
 import java.util.ArrayList;
@@ -69,9 +68,6 @@ extends TextInputComponentBase {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void p() {

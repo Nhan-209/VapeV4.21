@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -25,9 +24,6 @@ extends InteractiveComponent {
     public void I() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ClientSettingsFrameSectionLabelComponent(String string) {
         this(string, 0.9);

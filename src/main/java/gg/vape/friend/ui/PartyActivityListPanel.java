@@ -8,7 +8,6 @@ import gg.vape.friend.ui.OnlineActivityPanelOptions;
 import gg.vape.friend.ui.OnlineFriendActivityPanel;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SpacerComponent;
@@ -103,9 +102,6 @@ extends PanelComponent {
         return 114.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void L(boolean bl) {
         this.wC = bl;

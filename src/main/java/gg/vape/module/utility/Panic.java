@@ -3,7 +3,6 @@ package gg.vape.module.utility;
 import gg.vape.Vape;
 import gg.vape.module.Mod;
 import gg.vape.module.UtilityMod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.BooleanValue;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +19,6 @@ extends UtilityMod {
         this.addValue(this.reEnable);
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void U(Mod mod) {

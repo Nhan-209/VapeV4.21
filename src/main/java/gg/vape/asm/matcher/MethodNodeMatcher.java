@@ -3,7 +3,6 @@ package gg.vape.asm.matcher;
 import gg.vape.asm.matcher.ClassMethodReferenceIndex;
 import gg.vape.asm.matcher.ClassNodeCache;
 import gg.vape.asm.matcher.MethodInstructionIndex;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Iterator;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -37,9 +36,6 @@ public abstract class MethodNodeMatcher {
         return this.t.H().get(methodNode);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static String b() {
         return X;

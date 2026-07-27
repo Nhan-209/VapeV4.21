@@ -6,7 +6,6 @@ import gg.vape.config.ConfigJsonUtils;
 import gg.vape.config.PublicProfileSettings;
 import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.value.ValueComponentFactory;
 import gg.vape.unmap.INamed;
@@ -77,9 +76,6 @@ implements INamed {
         return this.t.F();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void Z() {
         for (ValueChangeListener<T> valueChangeListener : this.I) {

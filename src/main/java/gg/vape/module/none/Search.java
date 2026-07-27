@@ -8,7 +8,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.none.search.SearchBlockChunkScanner;
 import gg.vape.module.none.search.SearchBlockRenderEntry;
 import gg.vape.rotation.LocalPlayerRotationUtil;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.unmap.SearchBlock;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.TimerUtil;
@@ -180,9 +179,6 @@ extends Mod {
         OpenGlBackendHolder.d.F();
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {

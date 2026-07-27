@@ -2,16 +2,12 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.Vape;
 import gg.vape.config.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.InputMappingsInput;
 
 public class KeyBinding
 extends Wrapper {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void setPressed(boolean bl) {
         if (bl) {

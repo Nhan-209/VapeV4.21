@@ -14,7 +14,6 @@ import gg.vape.protocol.packet.FriendDeleteResponsePacket;
 import gg.vape.protocol.packet.GroupCreateResponsePacket;
 import gg.vape.protocol.packet.GroupCreateStatus;
 import gg.vape.protocol.packet.GroupInviteResponsePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.ConfirmationDialogComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -81,9 +80,6 @@ extends PanelComponent {
         return onlineFriendActionPanel.RP;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$null$3() {
         this.RV = false;

@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.Vape;
 import gg.vape.mapping.mappings.MStringTextComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.MutableTextComponent;
 
@@ -12,9 +11,6 @@ extends MutableTextComponent {
         super(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static ScorePlayerTeamTextComponent P(String string) {
         if (ForgeVersion.MC_1_20_6.v()) {

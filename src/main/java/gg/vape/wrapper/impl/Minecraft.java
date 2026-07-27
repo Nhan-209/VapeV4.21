@@ -3,7 +3,6 @@ package gg.vape.wrapper.impl;
 import gg.vape.Vape;
 import gg.vape.account.MinecraftSessionWrapper;
 import gg.vape.mapping.mappings.MMinecraft;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.EffectRenderer;
 import gg.vape.wrapper.impl.Entity;
@@ -299,9 +298,6 @@ extends Wrapper {
         Minecraft.c.getMappings().U.G(Minecraft.i(), entityLivingBase == null ? null : entityLivingBase.getObject());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void currentScreen(Object object) {
         Minecraft.c.getMappings().U.Y(Minecraft.i(), object);

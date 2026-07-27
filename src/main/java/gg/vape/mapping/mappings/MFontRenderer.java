@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.ScaledResolution;
@@ -234,9 +233,6 @@ extends Mapping {
         return this.T.Z(object, string);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int C(Object object, Object object2, String string, int n, int n2, int n3, boolean bl) {
         if (ForgeVersion.MC_1_21_6.d()) {

@@ -1,7 +1,6 @@
 package gg.vape.module.render.entity;
 
 import gg.vape.module.render.entity.RenderEntityContext;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.EntityPlayer;
@@ -79,9 +78,6 @@ public class RenderEntityContextCache {
         }
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.

@@ -1,6 +1,5 @@
 package gg.vape.utils;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Enchantment;
 import gg.vape.wrapper.impl.EnchantmentHelper;
 import gg.vape.wrapper.impl.EnchantmentHelperBridge;
@@ -79,9 +78,6 @@ public class EnchantmentUtil {
         return Y[s];
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static EnchantmentRegistryAccess z() {
         if (j == null) {

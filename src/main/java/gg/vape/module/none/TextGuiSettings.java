@@ -5,7 +5,6 @@ import gg.vape.module.MinecraftVersionConstraint;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ConfigSettingsModule;
 import gg.vape.module.none.textgui.TextGuiModuleWidthComparator;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.utils.NameComparator;
 import gg.vape.value.BooleanValue;
@@ -109,8 +108,5 @@ extends ConfigSettingsModule {
         this.o.K(this.Y);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

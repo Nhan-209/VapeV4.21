@@ -1,7 +1,6 @@
 package gg.vape.lifecycle;
 
 import gg.vape.lifecycle.ClientLifecycleCallback;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.io.File;
 
 public class ClientDirectoryCleanupCallback
@@ -22,9 +21,6 @@ implements ClientLifecycleCallback {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void B() {

@@ -3,15 +3,11 @@ package gg.vape.module.combat.silentaura;
 import gg.vape.module.combat.SilentAuraTargetingModule;
 import gg.vape.module.combat.silentaura.SilentAuraAdaptiveRotationEntry;
 import gg.vape.rotation.AdaptiveRotationController;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class SilentAuraAdaptiveRotationController
 extends AdaptiveRotationController {
     final SilentAuraTargetingModule targetingModule;
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SilentAuraAdaptiveRotationController(SilentAuraTargetingModule silentAuraTargetingModule) {
         this.targetingModule = silentAuraTargetingModule;

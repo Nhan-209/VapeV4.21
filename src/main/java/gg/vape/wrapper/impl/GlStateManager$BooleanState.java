@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.wrapper.Wrapper;
 
@@ -10,9 +9,6 @@ extends Wrapper {
         this.O(true);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void z() {
         this.O(false);

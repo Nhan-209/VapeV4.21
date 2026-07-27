@@ -1,6 +1,5 @@
 package gg.vape.utils.datas;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.awt.Color;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -61,9 +60,6 @@ public class HSBData {
         K = n;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         if (HSBData.m() != 0) {

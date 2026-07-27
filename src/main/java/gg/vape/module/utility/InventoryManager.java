@@ -18,7 +18,6 @@ import gg.vape.module.utility.inventory.InventoryActionModule;
 import gg.vape.module.utility.inventory.InventoryManagerPrimaryItemScoreComparator;
 import gg.vape.module.utility.inventory.InventoryManagerSecondaryItemScoreComparator;
 import gg.vape.module.utility.inventory.PotionSlotComparator;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.TimerUtil;
@@ -322,9 +321,6 @@ implements InventoryActionModule {
         this.didClick = false;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private List<Slot> findOverflowSlots(Container container, Slot slot, HotbarSlotRule hotbarSlotRule) {
         List<Slot> list = container.getInventorySlots();

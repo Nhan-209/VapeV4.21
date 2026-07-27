@@ -1,7 +1,6 @@
 package gg.vape.mapping.runtime;
 
 import gg.vape.mapping.runtime.RuntimeNameMappingRegistry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.HashMap;
 
 public class ClassNameRemapTable {
@@ -34,9 +33,6 @@ public class ClassNameRemapTable {
         return this.L.getOrDefault(string, null);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     static {
         ClassNameRemapTable.O(new int[3]);

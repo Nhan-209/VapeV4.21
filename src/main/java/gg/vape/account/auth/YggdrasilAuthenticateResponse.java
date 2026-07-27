@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import gg.vape.account.auth.YggdrasilAuthResponse;
 import gg.vape.account.auth.YggdrasilProfile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.List;
 
 public class YggdrasilAuthenticateResponse
@@ -54,9 +53,6 @@ implements YggdrasilAuthResponse {
         return this.b;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static int Y() {
         return f;

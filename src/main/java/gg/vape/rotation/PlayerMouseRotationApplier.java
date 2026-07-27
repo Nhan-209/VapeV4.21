@@ -3,7 +3,6 @@ package gg.vape.rotation;
 import gg.vape.Vape;
 import gg.vape.module.render.hud.FreeLookHudModule;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;
@@ -82,8 +81,5 @@ public class PlayerMouseRotationApplier {
         entityPlayerSP.D(entityPlayerSP.j() + entityPlayerSP.J() - f4);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

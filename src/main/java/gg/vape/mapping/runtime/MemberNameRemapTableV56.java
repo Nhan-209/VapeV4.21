@@ -3,7 +3,6 @@ package gg.vape.mapping.runtime;
 import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.runtime.MemberNameRemapTable;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.List;
 import java.util.UUID;
 
@@ -270,9 +269,6 @@ extends MemberNameRemapTable {
         this.t(MappedClasses.u6, "func_237500_a_", "formatNameForTeam");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     protected void Z() {
         this.t(MappedClasses.Dt, "bindTexture", "_bind");

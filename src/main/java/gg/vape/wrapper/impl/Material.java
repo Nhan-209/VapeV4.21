@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -14,9 +13,6 @@ extends Wrapper {
         return Material.c.getMappingsMapperCompat().Cn.M(this.I);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static Material w() {
         if (h == null) {

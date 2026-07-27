@@ -9,7 +9,6 @@ import gg.vape.manager.client.OnlineActivityManager;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.manager.client.OnlineConnectionState;
 import gg.vape.manager.client.OnlineInventoryTracker;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 
 public class OnlineManager {
@@ -77,9 +76,6 @@ public class OnlineManager {
         this.P.A();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public FriendRequestManager D() {
         return this.C;

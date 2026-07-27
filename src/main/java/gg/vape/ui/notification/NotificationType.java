@@ -1,6 +1,5 @@
 package gg.vape.ui.notification;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.awt.Color;
 
 public enum NotificationType {
@@ -54,9 +53,6 @@ public enum NotificationType {
         this.M = 3000;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void p(int n) {
         this.M = n;

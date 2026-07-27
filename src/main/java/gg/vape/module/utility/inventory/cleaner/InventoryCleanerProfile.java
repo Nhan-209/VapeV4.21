@@ -7,7 +7,6 @@ import gg.vape.Vape;
 import gg.vape.module.utility.InvCleaner;
 import gg.vape.module.utility.inventory.cleaner.ItemInventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.SlotInventoryFilterRule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.value.ModeValue;
@@ -68,9 +67,6 @@ public class InventoryCleanerProfile {
         this.m.remove(itemInventoryFilterRule);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String Y() {
         return this.N;

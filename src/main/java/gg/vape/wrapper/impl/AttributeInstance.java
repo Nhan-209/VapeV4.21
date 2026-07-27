@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MIAttributeInstance;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.AttributeModifier;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -22,9 +21,6 @@ extends Wrapper {
         MIAttributeInstance.b(AttributeInstance.c.getMappings().Rv, this.I, attributeModifier.getObject());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Collection I() {
         if (ForgeVersion.MC_1_16_5.d()) {

@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MMouseHelper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 
 public class MouseHelper
@@ -26,9 +25,6 @@ extends Wrapper {
         return MMouseHelper.x(MouseHelper.c.getMappings().qI, this.I);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void H(int n) {
         MMouseHelper.r(MouseHelper.c.getMappings().qI, this.I, n);

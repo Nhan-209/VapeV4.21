@@ -2,7 +2,6 @@ package gg.vape.mapping;
 
 import gg.vape.event.impl.EventRenderPlayerPost;
 import gg.vape.mapping.AbstractEventRenderPlayerCallback;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class EventRenderPlayerPostCallback
 extends AbstractEventRenderPlayerCallback {
@@ -13,8 +12,5 @@ extends AbstractEventRenderPlayerCallback {
         new EventRenderPlayerPost(object, object2, object3).fire();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 }
 

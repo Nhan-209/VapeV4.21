@@ -8,7 +8,6 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.blatant.KillAura;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.BooleanValue;
@@ -152,7 +151,4 @@ extends Mod {
         this.addValue(this.swapToDelay, this.swapWeapon, this.instantSwap, this.swapBack, this.swapBackDelay, this.requireMouseDown, this.onlyWhileSneaking);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

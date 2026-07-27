@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GlStateManager;
@@ -34,9 +33,6 @@ extends Event {
         GuiRenderPrimitives.L(A, q);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public EventListeners getListeners() {

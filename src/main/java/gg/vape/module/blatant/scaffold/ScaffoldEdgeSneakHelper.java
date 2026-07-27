@@ -10,7 +10,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
 import gg.vape.module.blatant.Scaffold;
 import gg.vape.module.control.SharedModuleControlClaims;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.RandomValue;
 import gg.vape.wrapper.impl.AxisAlignedBB;
@@ -39,9 +38,6 @@ extends SubModule<Scaffold> {
         Scaffold.Access.V$src$V$dhg0vg(this.scaffold);
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void X(EventPreEntityUpdate eventPreEntityUpdate) {

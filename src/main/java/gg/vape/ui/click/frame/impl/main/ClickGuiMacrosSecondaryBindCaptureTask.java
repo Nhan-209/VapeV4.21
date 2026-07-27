@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.main;
 
 import gg.vape.Vape;
 import gg.vape.input.BindCaptureTask;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.main.ClickGuiMacrosSettingsPanel;
 import gg.vape.unmap.Bendable;
 
@@ -15,9 +14,6 @@ extends BindCaptureTask {
         this.I = clickGuiMacrosSettingsPanel;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void V$src$V$ds8rn1() {
         ClickGuiMacrosSettingsPanel.K(this.I, null);

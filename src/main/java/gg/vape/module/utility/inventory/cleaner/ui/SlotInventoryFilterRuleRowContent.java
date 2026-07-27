@@ -5,7 +5,6 @@ import gg.vape.module.utility.inventory.cleaner.SlotInventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryFilterRuleRowBase;
 import gg.vape.module.utility.inventory.cleaner.ui.ItemFilterSelectionComponent;
 import gg.vape.module.utility.inventory.cleaner.ui.SlotInventoryFilterRuleRow;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import java.awt.Color;
@@ -32,9 +31,6 @@ extends InventoryFilterRuleRowBase {
         this.H(this.itemSelection);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void p() {

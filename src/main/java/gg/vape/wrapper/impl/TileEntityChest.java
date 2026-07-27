@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.TileEntity;
 
@@ -21,8 +20,5 @@ extends TileEntity {
         return TileEntityChest.c.getMappingsMapperCompat().hI.b(this.getObject());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

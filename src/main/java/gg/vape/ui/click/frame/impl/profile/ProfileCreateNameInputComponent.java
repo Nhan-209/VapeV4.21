@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.Vape;
 import gg.vape.config.Profile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.TextInputComponentBase;
 
 public class ProfileCreateNameInputComponent
@@ -42,9 +41,6 @@ extends TextInputComponentBase {
         return this.A() + 2.5;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ProfileCreateNameInputComponent(String string, Profile profile) {
         super(string);

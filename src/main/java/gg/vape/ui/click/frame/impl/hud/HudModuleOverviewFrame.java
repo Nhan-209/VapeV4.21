@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.hud;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.impl.hud.HudModuleOverviewHeaderComponent;
 import gg.vape.ui.click.frame.impl.hud.HudModuleOverviewListFrame;
@@ -57,9 +56,6 @@ extends Frame {
         this.g(true);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void v() {

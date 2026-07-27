@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MPlayerInfo;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GameProfile;
@@ -12,9 +11,6 @@ import gg.vape.wrapper.impl.ScorePlayerTeam;
 
 public class PlayerInfo
 extends Wrapper {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public ITextComponent R() {
         return new ITextComponent(MPlayerInfo.l(PlayerInfo.c.getMappingsMapperCompat().CG, this.getObject()));

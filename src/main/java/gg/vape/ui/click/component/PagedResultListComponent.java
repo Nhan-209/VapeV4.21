@@ -2,7 +2,6 @@ package gg.vape.ui.click.component;
 
 import gg.vape.api.PagedResult;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GlyphIconComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -120,9 +119,6 @@ extends PanelComponent {
         this.K$src$V$1vpc39g();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void e$src$V$1w3mqou() {
         CompletableFuture<List<GuiComponent>> completableFuture = this.px;

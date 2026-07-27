@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.asm.ITramsformNode;
 import gg.vape.asm.helper.MethodInfo;
 import gg.vape.event.EventBus;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.LaunchClassLoader;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,9 +113,6 @@ public class EventBuilder {
         return arrayList;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int j(String string) {
         switch (string) {

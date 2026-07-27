@@ -4,16 +4,12 @@ import com.google.common.collect.ImmutableList;
 import gg.vape.Vape;
 import gg.vape.input.BindSet;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModBendable;
 import java.util.Collections;
 import java.util.List;
 
 public class ClientSettingsGuiBindBendable
 extends ModBendable {
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ClientSettingsGuiBindBendable(Mod mod) {
         super(mod);

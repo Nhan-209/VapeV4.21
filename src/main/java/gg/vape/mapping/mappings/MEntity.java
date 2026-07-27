@@ -6,7 +6,6 @@ import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingFieldBuilder;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.MappingMethodBuilder;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.lang.invoke.CallSite;
@@ -195,9 +194,6 @@ extends Mapping {
         return mEntity.H(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void g(Object object, double d) {
         this.jJ.setDouble(object, d);

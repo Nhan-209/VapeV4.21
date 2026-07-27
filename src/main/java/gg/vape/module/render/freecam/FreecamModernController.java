@@ -16,7 +16,6 @@ import gg.vape.input.KeyboardInput;
 import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.render.Freecam;
 import gg.vape.module.render.freecam.FreecamController;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.impl.ActiveRenderInfo;
 import gg.vape.wrapper.impl.EntityOtherPlayerMP;
@@ -145,9 +144,6 @@ extends FreecamController<Freecam> {
         ((Freecam)this.n).Z.E(entityPlayerSP.t(), entityPlayerSP.q(), entityPlayerSP.T());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void applyFreecamRotation(EntityPlayerSP entityPlayerSP) {
         if (!this.rotationSaved) {

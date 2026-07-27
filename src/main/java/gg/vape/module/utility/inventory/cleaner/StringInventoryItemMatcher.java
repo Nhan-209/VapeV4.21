@@ -6,7 +6,6 @@ import gg.vape.module.utility.inventory.cleaner.AbstractInventoryItemMatcher;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherBuilderBase;
 import gg.vape.module.utility.inventory.cleaner.StringInventoryItemMatcherBuilder;
 import gg.vape.module.utility.inventory.cleaner.StringMatchOperator;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.Map;
@@ -37,9 +36,6 @@ extends AbstractInventoryItemMatcher {
         return new StringInventoryItemMatcherBuilder(inventoryItemMatcherBuilderBase, null);
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public StringInventoryItemMatcher(StringInventoryItemMatcherBuilder stringInventoryItemMatcherBuilder) {
         super(stringInventoryItemMatcherBuilder);

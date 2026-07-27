@@ -3,7 +3,6 @@ package gg.vape.friend.ui;
 import gg.vape.Vape;
 import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.ui.OnlineFriendListEntry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -63,9 +62,6 @@ extends PanelComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void V() {

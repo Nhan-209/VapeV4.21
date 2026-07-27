@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.main;
 
 import gg.vape.module.render.hud.HudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.animation.ColorAnimation;
@@ -77,9 +76,6 @@ extends GuiComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean c$src$Z$11dn9wd() {
         return !this.cX.getInterpolatedValue().equals(this.cX.getStartValue()) && !this.cX.getInterpolatedValue().equals(this.cX.getEndValue());

@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.frame.FrameComponent;
 import gg.vape.ui.click.frame.impl.ClientSettingsFrame;
@@ -29,9 +28,6 @@ implements GuiClickListener {
         ((FrameComponent)clientSettingsFrame).u();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ClientSettingsSearchFrameHeaderSettingsToggleClickHandler(ClientSettingsSearchFrameHeader clientSettingsSearchFrameHeader) {
         this.x = clientSettingsSearchFrameHeader;

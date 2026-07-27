@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.Vape;
 import gg.vape.mapping.mappings.MGameSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GameSettingsGuiScaleValue;
@@ -64,9 +63,6 @@ extends Wrapper {
         MGameSettings.m(GameSettings.c.getMappings().RM, this.I, bl);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public List<String> f$src$Ljava_util_List_$1i0ug5l() {
         return MGameSettings.o(GameSettings.c.getMappings().RM, this.I);

@@ -1,16 +1,12 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.ui.OnlineModeToggleComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 
 public class OnlineModeToggleInactiveClickHandler
 implements GuiClickListener {
     final OnlineModeToggleComponent B;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void P() {

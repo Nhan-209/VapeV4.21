@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MBlockBed;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Block;
 import gg.vape.wrapper.impl.BlockHorizontal;
 import gg.vape.wrapper.impl.BlockPos;
@@ -55,9 +54,6 @@ extends Block {
         return new EnumFacing(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public BlockBed(Object object) {
         super(object);

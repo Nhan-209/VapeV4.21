@@ -2,7 +2,6 @@ package gg.vape.friend;
 
 import gg.vape.friend.GroupUserModel;
 import gg.vape.protocol.ZeusPacketBuffer;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +39,6 @@ public class PartyStateModel {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public List<GroupUserModel> h() {
         return this.s;

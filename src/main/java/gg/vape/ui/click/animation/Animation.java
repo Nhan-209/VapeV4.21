@@ -1,6 +1,5 @@
 package gg.vape.ui.click.animation;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public abstract class Animation<T> {
     private boolean i;
@@ -130,9 +129,6 @@ public abstract class Animation<T> {
         return this.b;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         if (Animation.R$src$Z$c96m65()) {

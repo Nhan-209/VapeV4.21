@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MAbstractGui;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.FontRenderer;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -29,9 +28,6 @@ extends Wrapper {
         MAbstractGui.x(RenderItemTextBridge.c.getMappings().qQ, null, matrixStack.getObject(), n, n2, n3, n4, n5, textureAtlasSprite.getObject());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void P(FontRenderer fontRenderer, String string, int n, int n2, int n3, boolean bl) {
         RenderItemTextBridge.c.getMappings().qQ.Q(this.I, fontRenderer.getObject(), string, n, n2, n3, bl);

@@ -4,7 +4,6 @@ import gg.vape.click.ClickButton;
 import gg.vape.click.ClickEngine;
 import gg.vape.module.combat.ClickerMod;
 import gg.vape.module.control.SharedModuleControlClaims;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.unmap.ModeOption;
 import gg.vape.value.BooleanValue;
@@ -45,9 +44,6 @@ extends ClickerMod {
         return false;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double U() {

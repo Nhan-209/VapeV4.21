@@ -5,7 +5,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.mappings.MModelRenderer;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 
 public class MPlayerModel
@@ -97,9 +96,6 @@ extends Mapping {
         this.S = mPlayerModel.J(string, bl, clazz);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Object J(Object object) {
         return this.q.getObject(object);

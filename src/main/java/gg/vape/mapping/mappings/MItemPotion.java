@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MItemStack;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.util.List;
 
@@ -76,9 +75,6 @@ extends Mapping {
         return mItemPotion.W(object, object2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private String W(Object object, Object object2) {
         return (String)this.f.L(object, object2);

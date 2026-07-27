@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.mappings.MSPacketEntityVelocity;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -41,9 +40,6 @@ extends Mapping {
         return this.f.getObject(null);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public MPlayerInteractEvent() {
         this(MSPacketEntityVelocity.G());

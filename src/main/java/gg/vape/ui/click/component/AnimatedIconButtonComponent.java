@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.animation.ThemeColorAnimation;
 import gg.vape.ui.click.component.IconButtonComponent;
@@ -44,9 +43,6 @@ extends IconButtonComponent {
         this.j1 = bl;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public AnimatedIconButtonComponent(String string, Color color) {
         this(string, 1.0, color);

@@ -13,7 +13,6 @@ import gg.vape.protocol.packet.GroupDeleteResponsePacket;
 import gg.vape.protocol.packet.GroupInviteStateResponsePacket;
 import gg.vape.protocol.packet.GroupInviteStateStatus;
 import gg.vape.protocol.packet.GroupLeaveResponsePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.ConfirmationDialogComponent;
 import gg.vape.ui.click.component.IconShape;
@@ -383,9 +382,6 @@ extends InteractiveComponent {
         this.tu.R(this.tV == PartyMemberEntryMode.CURRENT_PARTY ? t4 : tJ);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$handleCurrentPartyAction$4(ZeusConnectionManager zeusConnectionManager) {
         zeusConnectionManager.u().l(PartyMemberEntryComponent::lambda$null$2, this::lambda$null$3);

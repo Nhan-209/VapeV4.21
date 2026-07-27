@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.value.ListValueComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.ImageRenderer;
@@ -45,9 +44,6 @@ extends ListValueComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double C() {

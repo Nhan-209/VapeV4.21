@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -47,9 +46,6 @@ extends InteractiveComponent {
         return this.oS;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public GlyphIconComponent(String string, double d, double d2, double d3, double d4, @Nullable Color color, @Nullable Color color2, @Nullable Color color3) {
         this.o8 = string;

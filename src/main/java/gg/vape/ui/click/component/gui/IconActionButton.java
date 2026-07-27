@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.gui;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.gui.ActionButtonBase;
 import gg.vape.utils.render.ImageRenderer;
@@ -12,9 +11,6 @@ extends ActionButtonBase {
     protected ColorAnimation K;
     protected float b;
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ColorAnimation gg_vape_ui_click_animation_ColorAnimation_d() {
         return this.K;

@@ -3,7 +3,6 @@ package gg.vape.module.world.cheststeal;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.world.ChestSteal;
 import gg.vape.module.world.cheststeal.ChestStealSlotScore;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemStack;
@@ -23,9 +22,6 @@ public class ChestStealBestSlotTracker {
     private ChestStealSlotScore y;
     private ChestStealSlotScore i;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean v(ItemStack itemStack, int n) {
         if (itemStack.isNull() || itemStack.getItem().isNull()) {

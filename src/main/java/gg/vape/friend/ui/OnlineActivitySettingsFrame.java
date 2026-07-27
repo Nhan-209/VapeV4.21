@@ -5,7 +5,6 @@ import gg.vape.friend.ui.OnlineActivityPanelRefreshClickHandler;
 import gg.vape.friend.ui.PartyActivityListPanel;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.DropdownSelectComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.SpacerComponent;
@@ -54,9 +53,6 @@ extends HudSettingsFrameBase {
         OnlineActivitySettingsFrame.e(new GuiComponent[3]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean X(Bendable bendable) {
         if (bendable.L().isEmpty()) {

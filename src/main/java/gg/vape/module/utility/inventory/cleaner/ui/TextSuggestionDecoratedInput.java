@@ -1,7 +1,6 @@
 package gg.vape.module.utility.inventory.cleaner.ui;
 
 import gg.vape.module.utility.inventory.cleaner.ui.TextSuggestionInputComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.LabeledTextInputComponent;
@@ -26,9 +25,6 @@ extends LabeledTextInputComponent {
         return super.g() + (f + 2.0f);
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     TextSuggestionDecoratedInput(TextSuggestionInputComponent textSuggestionInputComponent, String string, boolean bl, boolean bl2) {
         super(string, bl, bl2);

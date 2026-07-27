@@ -1,6 +1,5 @@
 package gg.vape.utils;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class TimerUtil {
     protected long Q;
@@ -10,9 +9,6 @@ public class TimerUtil {
         return this.Q;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void p(String string) {
         o = string;

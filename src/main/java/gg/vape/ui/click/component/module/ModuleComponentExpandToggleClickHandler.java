@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.module;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.module.ModuleComponent;
 import gg.vape.ui.click.frame.impl.ModuleCategoryFrame;
@@ -10,9 +9,6 @@ implements GuiClickListener {
     final ModuleCategoryFrame i;
     final ModuleComponent x;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void G() {

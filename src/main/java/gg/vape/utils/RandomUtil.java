@@ -1,6 +1,5 @@
 package gg.vape.utils;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.RandomValue;
 import java.util.Random;
 
@@ -17,8 +16,5 @@ public class RandomUtil {
         return RandomUtil.Y(randomValue.int_s(), randomValue.int_y());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

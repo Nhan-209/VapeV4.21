@@ -5,7 +5,6 @@ import gg.vape.module.utility.clutch.BlockPathSearchStrategy;
 import gg.vape.module.utility.clutch.BlockPlacementNode;
 import gg.vape.module.utility.clutch.ClutchPlacementPathUtils;
 import gg.vape.module.utility.clutch.PlacementTarget;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.Block;
@@ -23,9 +22,6 @@ implements BlockPathSearchStrategy<PlacementTarget> {
     final HashSet excludedBlocks;
     final BlockPlacementNode node;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public int t(Vector<PlacementTarget> vector) {

@@ -1,7 +1,6 @@
 package gg.vape.value;
 
 import com.google.gson.JsonObject;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.Base64Util;
 import gg.vape.value.ToggleableListEntry;
@@ -22,9 +21,6 @@ implements ToggleableListEntry {
         this.X = !this.X;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void O(GuiComponent[] guiComponentArray) {
         i = guiComponentArray;

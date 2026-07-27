@@ -14,7 +14,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
 import gg.vape.module.render.ESP;
 import gg.vape.render.OffscreenRenderContext;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.utils.render.RenderUtils;
@@ -75,9 +74,6 @@ extends SubModule<ESP> {
         super(mod, string);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void V(EventSetArmorModel eventSetArmorModel) {

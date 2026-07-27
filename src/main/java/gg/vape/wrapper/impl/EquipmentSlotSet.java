@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEquipmentSlotSet;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.MappedFieldSingletonWrapper;
 
@@ -46,9 +45,6 @@ extends Wrapper {
         return new EquipmentSlotSet(MEquipmentSlotSet.s(EquipmentSlotSet.c.getMappingsMapperCompat().Ro));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static EquipmentSlotSet k() {
         return new EquipmentSlotSet(MEquipmentSlotSet.r(EquipmentSlotSet.c.getMappingsMapperCompat().Ro));

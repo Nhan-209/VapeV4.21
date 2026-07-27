@@ -1,7 +1,6 @@
 package gg.vape.value;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.value.ColorValue;
 import gg.vape.value.Value;
@@ -20,9 +19,6 @@ extends Value<Double, NumberValue> {
     private final DecimalFormat f;
     private double A = 999999.0;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String T() {
         return this.Q;

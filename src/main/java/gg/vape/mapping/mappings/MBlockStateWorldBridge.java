@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MBlockStateWorldBridge
 extends Mapping {
@@ -54,9 +53,6 @@ extends Mapping {
         return this.M.e(object, new Object[0]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean Q() {
         boolean bl = MBlockStateWorldBridge.H();

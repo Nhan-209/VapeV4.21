@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gg.vape.api.ApiHttpClient;
 import gg.vape.config.ProfileRemoteMetadata;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Map;
 import java.util.UUID;
 import org.jetbrains.annotations.Contract;
@@ -64,9 +63,6 @@ public class RemoteProfileData {
         return this.v;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")

@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventPostMove;
 import gg.vape.event.impl.EventPreMove;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.BooleanValue;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;
@@ -16,9 +15,6 @@ extends Mod {
     private static final long k = -5388886013077358019L;
     private final BooleanValue directionCheck = BooleanValue.create(this, "Direction Check", true, "Checks if you're walking forwards and it'll allow you to walk off the edge");
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public boolean isBlatantMod() {

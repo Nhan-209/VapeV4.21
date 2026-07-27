@@ -6,7 +6,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.ReachDisplayHudFrame;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.Entity;
@@ -70,9 +69,6 @@ extends HudModule {
         this.setSuffix("Shows how far away your last attack was");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void K() {
         RotationManager rotationManager = RotationManager.b;

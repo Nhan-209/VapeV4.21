@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.value.ClientSettingsColorValueEditorComponent;
 
@@ -18,8 +17,5 @@ implements GuiClickListener {
         this.O = clientSettingsColorValueEditorComponent;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

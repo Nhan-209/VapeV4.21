@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterCondition;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterConditionGroupBuilder;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +47,6 @@ implements Cloneable {
         return inventoryFilterConditionGroup.conditions;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public JsonObject g() {
         JsonObject jsonObject = new JsonObject();

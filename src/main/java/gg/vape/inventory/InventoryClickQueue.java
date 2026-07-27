@@ -2,7 +2,6 @@ package gg.vape.inventory;
 
 import gg.vape.inventory.InventoryClick;
 import gg.vape.inventory.InventoryClickAction;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Queue;
 
 public class InventoryClickQueue {
@@ -19,9 +18,6 @@ public class InventoryClickQueue {
         new InventoryClickQueue(InventoryClickAction.DROP_SLOT, n, 0).h(n2, queue);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static void Q(int n, int n2, Queue<InventoryClick> queue) {
         new InventoryClickQueue(InventoryClickAction.SHIFTCLICK, n, 0).h(n2, queue);

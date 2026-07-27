@@ -1,6 +1,5 @@
 package gg.vape.tutorial.selector;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.tutorial.TutorialTargetSelector;
 import gg.vape.tutorial.page.TextGuiTutorialPage;
 import gg.vape.ui.click.component.GuiComponent;
@@ -21,8 +20,5 @@ extends TutorialTargetSelector<GuiComponent> {
         return bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

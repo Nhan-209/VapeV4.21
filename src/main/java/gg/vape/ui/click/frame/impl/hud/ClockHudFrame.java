@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.Vape;
 import gg.vape.module.render.hud.ClockHudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.unmap.ModeSelection;
@@ -141,9 +140,6 @@ extends HudModuleConfigFrameBase {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void e() {
         float f = (float)(this.G$src$D$1b2f02a() + this.A() / 2.0);

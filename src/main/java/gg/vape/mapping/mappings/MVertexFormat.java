@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.mappings.MMinecraft;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MVertexFormat
 extends MMinecraft {
@@ -17,9 +16,6 @@ extends MMinecraft {
         MVertexFormat.x(false);
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public MVertexFormat() {
         boolean bl = MVertexFormat.C();

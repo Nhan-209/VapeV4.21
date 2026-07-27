@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import com.google.common.collect.ImmutableMap;
 import gg.vape.mapping.mappings.MIBlockState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.Block;
 import gg.vape.wrapper.impl.BlockProperty;
@@ -56,8 +55,5 @@ extends Wrapper {
         return new BlockStateWorldBridge(MIBlockState.j(BlockState.c.getMappings().DE, this.I));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

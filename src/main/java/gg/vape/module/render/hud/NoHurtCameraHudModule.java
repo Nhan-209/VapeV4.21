@@ -5,15 +5,11 @@ import gg.vape.event.impl.EventPostRenderTick;
 import gg.vape.event.impl.EventPreRenderTick;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class NoHurtCameraHudModule
 extends HudModule {
     private int savedHurtTime;
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void B(EventPreRenderTick eventPreRenderTick) {

@@ -12,7 +12,6 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.utility.inventory.InventoryActionGuard;
 import gg.vape.module.utility.inventory.InventoryActionModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.BooleanValue;
@@ -172,9 +171,6 @@ implements InventoryActionModule {
         return entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(n).I().isNotNull() ? entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(n).I().L() : 999;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public boolean x() {

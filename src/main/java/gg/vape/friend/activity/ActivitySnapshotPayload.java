@@ -4,7 +4,6 @@ import gg.vape.friend.activity.ActivityHealthData;
 import gg.vape.friend.activity.ActivityPositionData;
 import gg.vape.friend.activity.ActivityTargetData;
 import gg.vape.protocol.ZeusPacketBuffer;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.Nullable;
 
 public class ActivitySnapshotPayload {
@@ -58,9 +57,6 @@ public class ActivitySnapshotPayload {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Nullable
     public ActivityTargetData J() {

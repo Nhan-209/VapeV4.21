@@ -1,7 +1,6 @@
 package gg.vape.module.blatant.blockin;
 
 import gg.vape.module.blatant.blockin.BlockInMovementController;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.World;
@@ -47,9 +46,6 @@ implements BlockInMovementController {
         return this.R;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public boolean boolean_z() {
         return this.M;

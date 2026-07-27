@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.input;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.input.BindableInputComponent;
 
@@ -28,8 +27,5 @@ implements GuiClickListener {
         BindableInputComponent.J(this.g).run();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

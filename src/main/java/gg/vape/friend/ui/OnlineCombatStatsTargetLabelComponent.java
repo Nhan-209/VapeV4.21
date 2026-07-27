@@ -1,7 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.ui.OnlineCombatStatsSettingsFrame;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -31,9 +30,6 @@ extends GuiComponent {
         this.R();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public OnlineCombatStatsTargetLabelComponent(OnlineCombatStatsSettingsFrame onlineCombatStatsSettingsFrame) {
         this.I = onlineCombatStatsSettingsFrame;

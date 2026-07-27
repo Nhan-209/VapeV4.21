@@ -1,7 +1,6 @@
 package gg.vape.utils;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityPlayer;
@@ -17,9 +16,6 @@ implements Comparator<Entity> {
         return this.q(entity, entity2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int q(Entity entity, Entity entity2) {
         if (entity.isInstance(MappedClasses.Yl) && entity2.isInstance(MappedClasses.Yl)) {

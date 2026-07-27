@@ -6,14 +6,10 @@ import gg.vape.asm.helper.TypedIndexedLocal;
 import gg.vape.asm.transform.ClassTransformer;
 import gg.vape.event.impl.EventScoreboardObjectiveRender;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class ScoreboardObjectiveRenderMappingTask
 extends ClassTransformer {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ScoreboardObjectiveRenderMappingTask() {
         super(MappedClasses.Zj);

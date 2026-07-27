@@ -4,7 +4,6 @@ import func.skidline.RectData;
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.hud.HudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.ColorDividerComponent;
@@ -78,9 +77,6 @@ extends Frame {
         this.Lo = string;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public String getName() {

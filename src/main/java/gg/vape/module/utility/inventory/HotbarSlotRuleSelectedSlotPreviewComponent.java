@@ -1,7 +1,6 @@
 package gg.vape.module.utility.inventory;
 
 import gg.vape.module.utility.inventory.HotbarSlotRuleItemPickerFrame;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -62,9 +61,6 @@ extends GuiComponent {
         return 70.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public HotbarSlotRuleSelectedSlotPreviewComponent(HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame) {
         this.pickerFrame = hotbarSlotRuleItemPickerFrame;

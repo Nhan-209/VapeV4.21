@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.value.FloatingValueDropdownLayer;
 import gg.vape.ui.click.component.value.ListValueComponent;
 import gg.vape.ui.click.component.value.ListValueDropdownCloseClickHandler;
@@ -17,9 +16,6 @@ extends FloatingValueDropdownLayer<ListValueComponent> {
         return this.Kc;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void e() {

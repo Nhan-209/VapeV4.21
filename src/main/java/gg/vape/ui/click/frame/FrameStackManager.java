@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.PopupFrame;
 import java.util.ArrayList;
@@ -51,9 +50,6 @@ public class FrameStackManager {
         m = string;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void q(Frame frame) {
         if (this.I.contains(frame)) {

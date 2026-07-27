@@ -3,7 +3,6 @@ package gg.vape.module.utility.inventory;
 import com.google.gson.JsonObject;
 import gg.vape.module.utility.inventory.HotbarSlotRule;
 import gg.vape.module.utility.inventory.HotbarSlotRuleEditorComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.Value;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +37,6 @@ extends Value<List<HotbarSlotRule>, HotbarSlotRuleValue> {
         this.f = hotbarSlotRuleEditorComponent;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public HotbarSlotRuleValue(Object object, String string) {
         super(object, string, new ArrayList());

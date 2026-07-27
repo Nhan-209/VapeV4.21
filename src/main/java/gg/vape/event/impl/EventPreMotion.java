@@ -1,7 +1,6 @@
 package gg.vape.event.impl;
 
 import gg.vape.event.impl.EventMotion;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Entity;
 
 public class EventPreMotion
@@ -19,9 +18,6 @@ extends EventMotion {
         return bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EventPreMotion(Object object) {
         super(new Entity(object));

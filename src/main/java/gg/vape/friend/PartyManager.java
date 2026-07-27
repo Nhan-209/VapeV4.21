@@ -8,7 +8,6 @@ import gg.vape.friend.ui.OnlineFriendsFrame;
 import gg.vape.friend.ui.PartyInviteRow;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.notification.NotificationType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -86,9 +85,6 @@ public class PartyManager {
         return this.W;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void r() {
         this.n(null);

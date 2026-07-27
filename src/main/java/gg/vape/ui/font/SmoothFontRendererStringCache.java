@@ -1,6 +1,5 @@
 package gg.vape.ui.font;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.font.SmoothFontRenderer;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,9 +8,6 @@ public class SmoothFontRendererStringCache
 extends LinkedHashMap<String, String> {
     final SmoothFontRenderer L;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     protected boolean removeEldestEntry(Map.Entry<String, String> entry) {

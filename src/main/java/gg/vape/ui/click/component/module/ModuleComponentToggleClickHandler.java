@@ -3,7 +3,6 @@ package gg.vape.ui.click.component.module;
 import func.skidline.RectData;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.module.ModuleComponent;
 import gg.vape.utils.render.RenderUtils;
@@ -26,9 +25,6 @@ implements GuiClickListener {
         this.E = mod;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void P() {

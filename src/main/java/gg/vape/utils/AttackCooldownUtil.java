@@ -1,7 +1,6 @@
 package gg.vape.utils;
 
 import gg.vape.event.EventListener;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Minecraft;
 
@@ -18,8 +17,5 @@ implements EventListener {
         return bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

@@ -3,7 +3,6 @@ package gg.vape.mapping.runtime;
 import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.runtime.MemberNameRemapTable;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.List;
 import java.util.UUID;
 
@@ -903,9 +902,6 @@ extends MemberNameRemapTable {
         this.f(MappedClasses.zm, "getAttribute", "getAttribute", MappedClasses.FJ, new Class[0]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     protected void G() {
         this.B(MappedClasses.qU, "damageReduceAmount", "defense");

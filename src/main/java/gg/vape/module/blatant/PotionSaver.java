@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventPacketSend;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ColorUtil;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;
@@ -14,9 +13,6 @@ public class PotionSaver
 extends Mod {
     private boolean savingPotion;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public boolean isBlatantMod() {

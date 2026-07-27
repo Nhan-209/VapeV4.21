@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEntityLivingBase;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.AttributeInstance;
 import gg.vape.wrapper.impl.AttributeModifier;
 import gg.vape.wrapper.impl.BlockStateWorldBridge;
@@ -272,9 +271,6 @@ extends Entity {
         return (Collection)MEntityLivingBase.C(EntityLivingBase.c.getMappings().hx, this.I);
     }
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int i() {
         return EntityLivingBase.c.getMappings().hx.U(this.I);

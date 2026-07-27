@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.TextureObjectHandle;
 
@@ -22,9 +21,6 @@ extends Wrapper {
         return new TextureObjectHandle(TextureManagerHandle.c.getMappingsMapperCompat().hL.C(this.I));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public TextureManagerHandle(Object object) {
         super(object);

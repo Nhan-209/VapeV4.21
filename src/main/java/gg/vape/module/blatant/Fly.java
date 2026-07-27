@@ -8,7 +8,6 @@ import gg.vape.event.impl.EventPreMotion;
 import gg.vape.event.impl.EventPreMove;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.NumberValue;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;
@@ -83,9 +82,6 @@ extends Mod {
         eventMove.setZ(d2 * d * Math.sin(Math.toRadians(f + 90.0f)) - d3 * d * Math.cos(Math.toRadians(f + 90.0f)));
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static String decodeUtf8(byte[] byArray) {
         int n = byArray.length;

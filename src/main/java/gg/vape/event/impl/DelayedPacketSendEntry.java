@@ -2,7 +2,6 @@ package gg.vape.event.impl;
 
 import gg.vape.event.impl.EventPacketSend;
 import gg.vape.module.world.fastuse.FastUsePacketDelaySubModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class DelayedPacketSendEntry {
     private boolean d;
@@ -39,9 +38,6 @@ public class DelayedPacketSendEntry {
         return this.P;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public boolean E() {
         return this.d;

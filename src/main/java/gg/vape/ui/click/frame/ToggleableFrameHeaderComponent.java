@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.frame.CloseableFrameHeaderComponent;
@@ -64,9 +63,6 @@ extends CloseableFrameHeaderComponent {
         this.i.Y(this.L());
     }
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ToggleableFrameHeaderComponent(Frame frame, String string, String string2, double d) {
         super(frame, string, string2, d);

@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl.hud;
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.hud.PotionEffectsHudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
 import gg.vape.ui.font.FontFamily;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -175,9 +174,6 @@ extends HudModuleConfigFrameBase {
         return arrayList;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double L() {

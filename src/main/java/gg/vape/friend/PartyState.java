@@ -9,7 +9,6 @@ import gg.vape.friend.ui.OnlineFriendUiHelper;
 import gg.vape.friend.ui.PartyMemberRow;
 import gg.vape.friend.ui.PartyPanel;
 import gg.vape.protocol.packet.GroupOption;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.Value;
 import java.util.ArrayList;
@@ -121,9 +120,6 @@ public class PartyState {
         OnlineFriendUiHelper.y(partyMemberRow);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public PartyState(PartyStateModel partyStateModel) {
         this.M = this.l(partyStateModel.g());

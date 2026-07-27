@@ -2,7 +2,6 @@ package gg.vape.account;
 
 import gg.vape.account.AccountEntitlements;
 import gg.vape.account.AccountInfoResponse;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Date;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -16,9 +15,6 @@ public class AccountInfo {
     @Nullable
     private String I;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public void y(@NotNull String string) {
         this.I = string;

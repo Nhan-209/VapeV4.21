@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MItemRendererBridge
 extends Mapping {
@@ -38,9 +37,6 @@ extends Mapping {
         c = "FIRST_PERSON";
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static String y() {
         return D;

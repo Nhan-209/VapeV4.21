@@ -2,7 +2,6 @@ package gg.vape.module.utility.inventory.cleaner;
 
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatchContext;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherGroup;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Comparator;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,9 +51,6 @@ public class InventoryItemMatcherBuilderBase<T extends InventoryItemMatcherBuild
         return this.labelJ;
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     protected InventoryItemMatcherBuilderBase(InventoryItemMatcherBuilderBase<?> qq_12) {
         this.labelL = qq_12.h();

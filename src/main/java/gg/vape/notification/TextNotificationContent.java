@@ -2,7 +2,6 @@ package gg.vape.notification;
 
 import gg.vape.notification.NotificationContent;
 import gg.vape.notification.NotificationType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.gui.WrappedTextComponent;
 import gg.vape.ui.theme.ThemeColors;
@@ -44,9 +43,6 @@ implements NotificationContent {
         this.T.c();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String p() {
         return this.T.c$src$Ljava_lang_String_$1q00otb();

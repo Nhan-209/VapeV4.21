@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.INamed;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,8 +30,5 @@ public interface OptionTextFormatter<T> {
         return iNamed != null ? iNamed.getName() : string;
     }
 
-    static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

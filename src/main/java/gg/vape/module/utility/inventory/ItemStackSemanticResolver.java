@@ -3,7 +3,6 @@ package gg.vape.module.utility.inventory;
 import gg.vape.Vape;
 import gg.vape.mapping.ItemMappingEntry;
 import gg.vape.module.utility.armorswitch.ArmorMaterialType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Item;
@@ -46,9 +45,6 @@ public class ItemStackSemanticResolver {
         return null;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void Q() {
         ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();

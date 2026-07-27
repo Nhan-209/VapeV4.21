@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.RenderVector4f;
 import gg.vape.wrapper.impl.Matrix4f;
 import gg.vape.wrapper.impl.Quaternion;
@@ -143,9 +142,6 @@ public class RenderMatrix4f {
         this.e[15] = renderVector4f.J;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public RenderMatrix4f() {
         this.e = new float[16];

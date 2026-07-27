@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MPacketIdFactory;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -79,9 +78,6 @@ extends Mapping {
         return mCPacketPlayer_Position.L(d, d2, d3, bl);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Object U(double d, double d2, double d3, double d4, boolean bl) {
         return this.S.O(d, d2, d3, d4, bl);

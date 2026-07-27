@@ -11,7 +11,6 @@ import gg.vape.module.render.proj.EnderPearlProjectileBridge;
 import gg.vape.module.render.proj.IProjectile;
 import gg.vape.module.render.proj.PotionProjectile;
 import gg.vape.module.render.proj.Projectile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.BufferedRenderPrimitives;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.OpenGlBackendHolder;
@@ -201,9 +200,6 @@ extends Mod {
         this.addValue(this.k, this.j, this.c, this.P, this.S);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void Q(EntityEnderPearl entityEnderPearl, IProjectile iProjectile) {
         if (!entityEnderPearl.isInstance(MappedClasses.lv)) {

@@ -1,6 +1,5 @@
 package gg.vape.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.main.ClickGuiModuleCardRenderState;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.value.BooleanValue;
@@ -126,9 +125,6 @@ public final class ModuleValueDisplayFormatter {
         return n == 1;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static boolean k$src$Z$jh7n4t(List<ValueDisplayDescriptor> list) {
         int n = 0;

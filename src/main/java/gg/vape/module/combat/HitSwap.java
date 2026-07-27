@@ -15,7 +15,6 @@ import gg.vape.module.control.AttackCancellationAdapter;
 import gg.vape.module.control.PhysicalAttackCancellationAdapter;
 import gg.vape.module.control.SyntheticAttackCancellationAdapter;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.RotationUtil;
@@ -32,7 +31,7 @@ import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.RayTraceResult;
 import java.util.Arrays;
 
-public class AutoMace
+public class HitSwap
 extends Mod {
     public final BooleanValue breachMaces;
     private boolean swingReleasePending = false;
@@ -175,9 +174,6 @@ extends Mod {
         this.handleAttack(new PhysicalAttackCancellationAdapter(eventMouseButton, null));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean isTargetAttacking(EntityOtherPlayerMP entityOtherPlayerMP) {
         EnumHand enumHand = RotationUtil.q(entityOtherPlayerMP);
@@ -356,7 +352,7 @@ extends Mod {
         return false;
     }
 
-    public AutoMace() {
+    public HitSwap() {
         super("HitSwap", (int)v, Category.Y, "Swaps into another weapon on attack, copying its attributes\nAKA BreachSwap, ZeroTick");
         this.smashOnly = BooleanValue.create(this, "Smash only", true, "Only swap to mace if will smash");
         this.breachMaces = BooleanValue.create(this, "Breach maces", false, "Will use Maces with Breach enchantment");

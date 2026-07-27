@@ -3,7 +3,6 @@ package gg.vape.utils;
 import gg.vape.Vape;
 import gg.vape.mapping.ItemMappingEntry;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ArmorMaterial;
 import gg.vape.wrapper.impl.AttributeModifier;
@@ -246,9 +245,6 @@ public class ItemStackScoreUtil {
         return d += 0.1 * (double)Math.max(0, EnchantmentHelper.q(Enchantment.mending().getId(), itemStack));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int t(ItemStack itemStack) {
         if (itemStack.isNull() || itemStack.getItem().isNull()) {

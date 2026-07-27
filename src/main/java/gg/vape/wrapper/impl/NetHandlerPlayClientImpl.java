@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MNetHandlerPlayClientImpl;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.NetHandlerPlayClient;
 import gg.vape.wrapper.impl.NetworkManager;
@@ -10,9 +9,6 @@ import java.util.Collection;
 
 public class NetHandlerPlayClientImpl
 extends NetHandlerPlayClient {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Collection getPlayerInfoMap() {
         return MNetHandlerPlayClientImpl.H(NetHandlerPlayClientImpl.c.getMappings().hB, this.I);

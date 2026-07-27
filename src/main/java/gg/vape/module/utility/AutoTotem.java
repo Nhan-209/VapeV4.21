@@ -24,7 +24,6 @@ import gg.vape.module.utility.inventory.InventoryActionModule;
 import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.ActiveModuleStackFrame;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.TimerUtil;
@@ -244,9 +243,6 @@ implements InventoryActionModule {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         UNUSED_CONST_A = 1215;

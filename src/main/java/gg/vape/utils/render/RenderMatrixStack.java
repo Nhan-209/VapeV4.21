@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.RenderMatrix4f;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -46,9 +45,6 @@ public class RenderMatrixStack {
         this.O.push(new RenderMatrix4f().b());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void e(float f, float f2, float f3, float f4) {
         this.c().d(f, f2, f3, f4);

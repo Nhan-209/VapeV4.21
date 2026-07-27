@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import gg.vape.Vape;
 import gg.vape.config.ConfigJsonUtils;
 import gg.vape.friend.FriendEntry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.Base64Util;
 
 public class Friend
@@ -22,9 +21,6 @@ extends FriendEntry {
         this.a = string2;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public Friend loadJson(JsonObject jsonObject) {

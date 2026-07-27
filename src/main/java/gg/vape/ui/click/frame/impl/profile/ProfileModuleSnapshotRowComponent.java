@@ -4,7 +4,6 @@ import gg.vape.config.Profile;
 import gg.vape.config.ProfileModuleSnapshot;
 import gg.vape.config.ProfileSnapshot;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.TruncatedTextComponent;
@@ -112,9 +111,6 @@ extends GuiComponent {
         return this.i;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Profile j$src$Lgg_vape_config_Profile_$1w1xpa8() {
         return this.a;

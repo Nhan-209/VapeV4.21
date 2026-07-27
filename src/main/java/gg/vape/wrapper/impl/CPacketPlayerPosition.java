@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MCPacketPlayer_Position;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.C03PacketPlayer;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -22,8 +21,5 @@ extends C03PacketPlayer {
         return new CPacketPlayerPosition(CPacketPlayerPosition.c.getMappingsMapperCompat().R5.U(d, d2, d3, d4, bl));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

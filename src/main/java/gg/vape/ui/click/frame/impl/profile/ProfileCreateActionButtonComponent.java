@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.Animation;
 import gg.vape.ui.click.animation.ThemeColorAnimation;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
@@ -57,9 +56,6 @@ extends InteractiveComponent {
         this.dC = d;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double x() {

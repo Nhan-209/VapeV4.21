@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.input;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.component.TextInputComponentBase;
@@ -39,9 +38,6 @@ extends TextInputComponentBase {
         return 0.0f;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public float g() {

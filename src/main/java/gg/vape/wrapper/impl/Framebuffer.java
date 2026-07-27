@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MFramebuffer;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -50,9 +49,6 @@ extends Wrapper {
         MFramebuffer.f(Framebuffer.c.getMappings().R9, this.I, n, n2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void bindFramebuffer(boolean bl) {
         MFramebuffer.bindFramebuffer(Framebuffer.c.getMappings().R9, this.I, bl);

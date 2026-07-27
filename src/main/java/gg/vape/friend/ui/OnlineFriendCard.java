@@ -8,7 +8,6 @@ import gg.vape.friend.ui.OnlineFriendCardToggleDetailsMouseListener;
 import gg.vape.friend.ui.OnlineFriendCardVisibleChildrenHeightComponent;
 import gg.vape.friend.ui.OnlineFriendDetailsPanel;
 import gg.vape.friend.ui.OnlineFriendUiHelper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.MouseClickButton;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.AnimatedPanelComponent;
@@ -249,9 +248,6 @@ extends PanelComponent {
         return this.uC;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void d$src$V$ttzgw7() {
         if (this.uF) {

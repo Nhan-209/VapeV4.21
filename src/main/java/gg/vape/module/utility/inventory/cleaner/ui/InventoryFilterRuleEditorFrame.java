@@ -14,7 +14,6 @@ import gg.vape.module.utility.inventory.cleaner.SlotInventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryCleanerPopupFrame;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryFilterConditionGroupPanel;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryFilterRuleEditorPanel;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ConfirmationDialogComponent;
 import gg.vape.ui.click.component.FilledSpacerComponent;
 import gg.vape.ui.click.component.GlyphIconComponent;
@@ -269,9 +268,6 @@ extends Frame {
         this.closePopup();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException exception) {
-        return exception;
-    }
 
     private void refreshRule(InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset, InventoryFilterPreset inventoryFilterPreset2, boolean bl) {
         this.z(inventoryFilterRule, inventoryFilterPreset, inventoryFilterPreset2, bl, true);

@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.FilledSpacerComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -25,9 +24,6 @@ extends GuiComponent {
     private double i = 1.0;
     private final float I = 1.0f;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public double V$src$D$3dpaje() {
         return this.i;

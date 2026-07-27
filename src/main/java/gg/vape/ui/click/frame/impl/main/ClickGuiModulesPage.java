@@ -7,7 +7,6 @@ import gg.vape.module.ModuleDisplayScope;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.none.Search;
 import gg.vape.module.render.hud.HudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.FriendModuleInteractiveComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -448,9 +447,6 @@ extends ClickGuiPageBase {
         return this.wR == ClickGuiModuleViewMode.MODULE_CATEGORY && this.wG == category;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void u(boolean bl) {
         ClickGuiContentPanel clickGuiContentPanel;

@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MRayTraceResult;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.Block;
 import gg.vape.wrapper.impl.BlockPos;
@@ -88,9 +87,6 @@ extends Wrapper {
         return new Vec3(RayTraceResult.c.getMappings().C0.o(this.I));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean isEntityHit() {
         boolean bl = this.isNotNull() && this.getTypeOfHit().equals(RayTraceResult_type.entity());

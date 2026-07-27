@@ -6,7 +6,6 @@ import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingFieldBuilder;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.MappingMethodBuilder;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -30,9 +29,6 @@ extends Mapping {
         O = string;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public char[] L(Object object) {
         return this.z.getCharArray(object);

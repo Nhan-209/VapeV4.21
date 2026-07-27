@@ -3,7 +3,6 @@ package gg.vape.module.blatant.blockin;
 import gg.vape.module.blatant.BlockIn;
 import gg.vape.module.utility.clutch.BlockPathSearchStrategy;
 import gg.vape.module.utility.clutch.PlacementTarget;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.EnumFacing;
 import java.util.ArrayList;
@@ -46,9 +45,6 @@ public class BlockInSearchPlanner {
         return this.p;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         c = -1361127528260960257L;

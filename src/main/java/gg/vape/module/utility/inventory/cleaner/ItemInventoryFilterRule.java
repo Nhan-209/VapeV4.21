@@ -5,7 +5,6 @@ import gg.vape.Vape;
 import gg.vape.module.utility.inventory.cleaner.AbstractInventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterAction;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterPreset;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,9 +30,6 @@ extends AbstractInventoryFilterRule {
         return jsonObject;
     }
 
-    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     @Nullable

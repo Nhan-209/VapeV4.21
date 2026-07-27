@@ -11,7 +11,6 @@ import gg.vape.module.combat.AimAssist;
 import gg.vape.module.combat.LeftClicker;
 import gg.vape.module.combat.Reach;
 import gg.vape.module.combat.Velocity;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.VisibleModuleListFrame;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +41,6 @@ public class ModuleProfileMetadataCodec {
         return this.o;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void v(Mod mod) {
         if (!this.o.contains(mod)) {

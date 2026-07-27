@@ -4,7 +4,6 @@ import gg.vape.event.EventHandler;
 import gg.vape.event.impl.EventPacketSend;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.NumberValue;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.Entity;
@@ -98,8 +97,5 @@ extends Mod {
         return ((Double)this.expandAmount.K()).floatValue();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

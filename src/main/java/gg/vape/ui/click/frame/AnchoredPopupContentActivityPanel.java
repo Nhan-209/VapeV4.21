@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.PanelComponent;
 
@@ -8,9 +7,6 @@ class AnchoredPopupContentActivityPanel
 extends PanelComponent {
     final GuiComponent jM;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public boolean t() {

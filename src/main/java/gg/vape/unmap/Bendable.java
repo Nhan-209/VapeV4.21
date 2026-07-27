@@ -7,7 +7,6 @@ import gg.vape.config.ConfigJsonUtils;
 import gg.vape.input.BindActivationMode;
 import gg.vape.input.KeyboardInput;
 import gg.vape.input.MouseInput;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.BendableBindList;
 import gg.vape.unmap.BindChangeListener;
 import gg.vape.utils.StringUtils;
@@ -146,9 +145,6 @@ public abstract class Bendable {
         this.j.add(bindChangeListener);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String h() {
         return StringUtils.q(this.L());

@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventPreMove;
 import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
 import gg.vape.module.blatant.Speed;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.PotionRegistry;
@@ -14,9 +13,6 @@ public class MineplexSpeed
 extends SubModule<Speed> {
     private final Speed parentSpeed = (Speed)this.getParent();
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public MineplexSpeed(Mod mod, String string) {
         super(mod, string);

@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.value;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.value.NumberSliderComponent;
 import gg.vape.ui.click.component.value.SliderInputHandle;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -11,9 +10,6 @@ public class NumberSliderInputHandle
 extends SliderInputHandle {
     private NumberSliderComponent XV;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void Y$src$V$npqhoj() {

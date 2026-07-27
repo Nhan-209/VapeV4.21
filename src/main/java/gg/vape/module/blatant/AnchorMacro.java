@@ -18,7 +18,6 @@ import gg.vape.rotation.PointRotationController;
 import gg.vape.rotation.RotationAngles;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
@@ -132,9 +131,6 @@ extends Mod {
         return n2 > 0 ? (float)n / (float)n2 : 0.0f;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private Vec3 centerOf(BlockPos blockPos) {
         return Vec3.create((double)blockPos.P() + 0.5, (double)blockPos.o() + 0.5, (double)blockPos.d() + 0.5);

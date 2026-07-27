@@ -2,7 +2,6 @@ package gg.vape.module.utility.inventory;
 
 import com.google.gson.JsonObject;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemSplashPotion;
 import gg.vape.wrapper.impl.ItemStack;
@@ -38,9 +37,6 @@ public class HotbarSlotRule {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public HotbarSlotRule M(int n) {
         this.q = n;

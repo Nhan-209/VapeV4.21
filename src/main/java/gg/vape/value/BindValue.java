@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gg.vape.input.BindSet;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.Value;
 
 public class BindValue
@@ -13,9 +12,6 @@ extends Value<BindSet, BindValue> {
         super(object, string, bindSet);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public BindValue n() {
         return new BindValue((Object)null, this.P$src$Ljava_lang_String_$1ijjhmj(), (BindSet)this.K());

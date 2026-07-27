@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.main;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.layout.ClickGuiContentLayout;
@@ -49,9 +48,6 @@ extends PanelComponent {
     public void Y() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ClickGuiContentPanel(double d) {
         this(d, 0.0);

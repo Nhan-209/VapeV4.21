@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Vector3f;
@@ -23,9 +22,6 @@ extends Wrapper {
         return Quaternion.c.getMappingsMapperCompat().qf.O(this.I);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static Quaternion K(float f, float f2, float f3, boolean bl) {
         if (ForgeVersion.MC_1_20_6.d()) {

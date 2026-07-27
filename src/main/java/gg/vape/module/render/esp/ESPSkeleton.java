@@ -8,7 +8,6 @@ import gg.vape.module.SubModule;
 import gg.vape.module.render.ESP;
 import gg.vape.module.render.entity.RenderEntityContext;
 import gg.vape.module.render.entity.RenderEntityContextCache;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.utils.render.RenderUtil;
 import gg.vape.utils.render.RenderUtils;
@@ -184,9 +183,6 @@ extends SubModule<ESP> {
         GL11.glPopMatrix();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ESPSkeleton(Mod mod, String string) {
         super(mod, string);

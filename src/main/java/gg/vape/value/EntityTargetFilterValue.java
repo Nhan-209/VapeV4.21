@@ -5,7 +5,6 @@ import gg.vape.Vape;
 import gg.vape.config.ClientSettings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.RotationUtil;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.Value;
@@ -113,9 +112,6 @@ extends Value<Boolean[], EntityTargetFilterValue> {
         return this.G;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void parse(String string) {

@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import gg.vape.Vape;
 import gg.vape.friend.TargetEntry;
 import gg.vape.friend.TargetType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class Enemy
 extends TargetEntry {
@@ -36,9 +35,6 @@ extends TargetEntry {
         return new Enemy(string, string2, bl);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void x(String string) {
         this.V = string;

@@ -1,6 +1,5 @@
 package gg.vape.utils.render.glu;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.glu.GluQuadric;
 import org.lwjgl.opengl.GL11;
 
@@ -269,8 +268,5 @@ extends GluQuadric {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

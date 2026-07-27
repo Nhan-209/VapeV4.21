@@ -2,7 +2,6 @@ package gg.vape.value;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.Base64Util;
 import gg.vape.value.Value;
 import java.util.LinkedHashMap;
@@ -106,9 +105,6 @@ extends Value<Map<String, String>, StringMapValue> {
         this.A = string3;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public String c() {

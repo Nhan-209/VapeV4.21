@@ -8,7 +8,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.UtilityMod;
 import gg.vape.module.utility.armorswitch.ArmorMaterialType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.TimerUtil;
@@ -42,9 +41,6 @@ extends UtilityMod {
     private boolean finished;
     private boolean collecting;
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ArmorSwitch() {
         super("ArmorSwitch", Category.M, "Switches between armor sets");

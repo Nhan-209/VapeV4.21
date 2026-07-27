@@ -1,15 +1,11 @@
 package gg.vape.movement;
 
 import gg.vape.config.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.CPacketPlayerPosition;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;
 
 public class SelfDamagePacketUtil {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void Y() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();

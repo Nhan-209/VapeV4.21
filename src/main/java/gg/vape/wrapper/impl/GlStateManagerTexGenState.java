@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 
 public class GlStateManagerTexGenState
@@ -17,9 +16,6 @@ extends Wrapper {
         F = (int)l2;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void I(int n, int n2) {
         if (Vape.INSTANCE.getMappings().hs != null) {

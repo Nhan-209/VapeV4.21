@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.config.PublicProfileUser;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ImageTextureComponent;
 import gg.vape.ui.click.frame.impl.profile.PublicProfileUserAvatarTextureCache;
 import gg.vape.utils.render.GlImageTexture;
@@ -14,9 +13,6 @@ extends ImageTextureComponent {
     private long R;
     private static final String v = "avatar offline@2x";
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void H() {

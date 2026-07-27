@@ -371,7 +371,6 @@ import gg.vape.mapping.mappings.MWorldCollisionConsumerBridge;
 import gg.vape.mapping.mappings.MWorldInfo;
 import gg.vape.mapping.mappings.MWorldRenderer;
 import gg.vape.mapping.mappings.MWorldRendererBuilder;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -1224,9 +1223,6 @@ public class Mapper {
         return 0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int u() {
         return DH;

@@ -4,7 +4,6 @@ import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.HandshakePacket;
 import gg.vape.protocol.packet.HandshakeStatus;
 import gg.vape.protocol.packet.ZeusTrackedPacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class HandshakeResponsePacket
 extends ZeusTrackedPacket<HandshakePacket> {
@@ -46,9 +45,6 @@ extends ZeusTrackedPacket<HandshakePacket> {
         return true;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     static {
         if (HandshakeResponsePacket.V()) {

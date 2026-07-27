@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.frame.ClickGuiQuickActionsComponent;
 import gg.vape.ui.click.frame.impl.ClientSettingsSearchFrame;
@@ -11,9 +10,6 @@ class ClickGuiQuickActionsFrameToggleClickHandler
 implements GuiClickListener {
     final ClickGuiQuickActionsComponent z;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void P() {

@@ -7,7 +7,6 @@ import gg.vape.input.KeyboardCodeUtil;
 import gg.vape.input.KeyboardInput;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.hud.KeystrokesHudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
 import gg.vape.ui.click.frame.impl.hud.KeystrokesCpsCounterComponent;
 import gg.vape.ui.click.frame.impl.hud.KeystrokesKeyComponent;
@@ -291,8 +290,5 @@ extends HudModuleConfigFrameBase {
         this.o2.h.U(0.01);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

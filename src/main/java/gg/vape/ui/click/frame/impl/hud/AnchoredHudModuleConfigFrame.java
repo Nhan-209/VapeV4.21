@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.module.render.hud.HudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.SimpleTextLabelComponent;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
@@ -128,8 +127,5 @@ extends Frame {
         return wS;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

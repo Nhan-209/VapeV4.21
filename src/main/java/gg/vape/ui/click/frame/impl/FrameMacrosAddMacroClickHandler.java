@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl;
 import gg.vape.Vape;
 import gg.vape.module.Macro;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.frame.impl.FrameMacros;
 import gg.vape.ui.click.frame.impl.FrameMacrosAddMacroInputComponent;
@@ -14,9 +13,6 @@ implements GuiClickListener {
     final FrameMacrosAddMacroInputComponent P;
     final FrameMacros D;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void P() {

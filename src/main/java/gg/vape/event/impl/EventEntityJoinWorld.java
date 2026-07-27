@@ -2,7 +2,6 @@ package gg.vape.event.impl;
 
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Entity;
 
 public class EventEntityJoinWorld
@@ -41,8 +40,5 @@ extends Event {
         return f;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

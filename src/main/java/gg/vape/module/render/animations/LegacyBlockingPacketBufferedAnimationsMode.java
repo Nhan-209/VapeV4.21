@@ -15,7 +15,6 @@ import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.Animations;
 import gg.vape.module.render.animations.AnimationsMode;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.TimerUtil;
 import gg.vape.utils.network.PacketDispatchGuard;
@@ -166,9 +165,6 @@ extends AnimationsMode {
         return string;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler(A=EventPriority.LOWEST)
     public void onPacketSend(EventPacketSend eventPacketSend) {

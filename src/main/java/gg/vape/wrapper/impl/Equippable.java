@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.EntityEquipmentSlot;
 import gg.vape.wrapper.impl.ResourceKey;
@@ -26,9 +25,6 @@ extends Wrapper {
         super(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EntityEquipmentSlot m$src$Lgg_vape_wrapper_impl_EntityEquipmentSlot_$bzr9md() {
         return new EntityEquipmentSlot(Equippable.c.getMappings().C3.G(this.I));

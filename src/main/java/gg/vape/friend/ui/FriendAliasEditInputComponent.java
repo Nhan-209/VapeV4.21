@@ -1,7 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.FriendEntry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.gui.TextButton;
 import gg.vape.ui.click.component.input.TrailingActionTextInputComponent;
 import gg.vape.ui.click.frame.impl.main.ClickGuiFriendsPage;
@@ -24,9 +23,6 @@ extends TrailingActionTextInputComponent {
         this.p4 = friendEntry;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void p() {

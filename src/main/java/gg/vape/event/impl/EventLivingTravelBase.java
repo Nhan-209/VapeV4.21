@@ -3,7 +3,6 @@ package gg.vape.event.impl;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,9 +28,6 @@ extends Event {
         return this.Q;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static EventListeners getEventListeners() {
         return r;

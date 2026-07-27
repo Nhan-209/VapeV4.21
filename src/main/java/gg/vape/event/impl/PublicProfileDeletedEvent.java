@@ -3,7 +3,6 @@ package gg.vape.event.impl;
 import gg.vape.config.PublicProfile;
 import gg.vape.event.EventListeners;
 import gg.vape.event.IEvent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class PublicProfileDeletedEvent
 implements IEvent {
@@ -11,9 +10,6 @@ implements IEvent {
     private static int c;
     private final PublicProfile W;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static void D(int n) {
         c = n;

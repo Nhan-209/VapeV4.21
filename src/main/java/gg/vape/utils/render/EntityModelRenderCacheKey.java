@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.EntityOtherPlayerMP;
 import java.util.Objects;
@@ -39,9 +38,6 @@ public class EntityModelRenderCacheKey {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EntityModelRenderCacheKey(String string) {
         this.b = string != null ? string.hashCode() : 0;

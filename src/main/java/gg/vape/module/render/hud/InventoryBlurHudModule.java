@@ -6,7 +6,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
 import gg.vape.render.ShaderGroupRenderStateManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class InventoryBlurHudModule
 extends HudModule {
@@ -15,9 +14,6 @@ extends HudModule {
         this.setSuffix("Blurs the background while in an inventory");
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void d(EventGuiOpen eventGuiOpen) {

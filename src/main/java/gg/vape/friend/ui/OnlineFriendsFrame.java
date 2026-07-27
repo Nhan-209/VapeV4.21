@@ -19,7 +19,6 @@ import gg.vape.friend.ui.PartyInvitesPanel;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.manager.client.OnlineConnectionState;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.component.ColorDividerComponent;
 import gg.vape.ui.click.component.DropdownSelectComponent;
@@ -225,9 +224,6 @@ extends SettingsSubpageFrame {
         return this.O9.P();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void G(String[] stringArray) {
         O4 = stringArray;

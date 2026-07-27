@@ -17,7 +17,6 @@ import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.MathUtil;
@@ -61,9 +60,6 @@ extends HudModule {
     private int savedPerspective = -1;
     private double mouseDX;
 
-    private static ObfuscatedRuntimeException passException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static float c() {
         return renderYaw;

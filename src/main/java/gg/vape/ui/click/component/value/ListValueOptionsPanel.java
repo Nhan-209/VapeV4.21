@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -25,9 +24,6 @@ extends PanelComponent {
     private final boolean LO;
     private static final Color Lt = new Color(37, 36, 37);
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ListValueOptionsPanel(ListValue listValue, boolean bl, double d, double d2, boolean bl2) {
         super(d, d2);

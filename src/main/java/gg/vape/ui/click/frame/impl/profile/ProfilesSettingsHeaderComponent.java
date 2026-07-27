@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.Vape;
 import gg.vape.config.Profile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.component.gui.TextLabel;
 import gg.vape.ui.click.frame.ToggleableFrameHeaderComponent;
@@ -30,9 +29,6 @@ extends ToggleableFrameHeaderComponent {
         this.H(this.Vr, this.Vu, this.Vn);
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static boolean lambda$onRender$0(Profile profile) {
         return !profile.U();

@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MCPacketAnimation;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EnumHand;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Packet;
@@ -19,8 +18,5 @@ extends Packet {
         super(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 }
 

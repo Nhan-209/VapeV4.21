@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.runtime.NativeBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,9 +123,6 @@ public class DescUtils {
         return NativeBridge.gcj(string2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static String h(Class<?> clazz) {
         return z.get(clazz);

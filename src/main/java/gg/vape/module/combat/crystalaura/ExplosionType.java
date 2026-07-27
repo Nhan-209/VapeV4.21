@@ -1,6 +1,5 @@
 package gg.vape.module.combat.crystalaura;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class ExplosionType {
     public static final ExplosionType ANCHOR;
@@ -41,9 +40,6 @@ public class ExplosionType {
         return 0;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public float I() {
         return this.explosionPower;

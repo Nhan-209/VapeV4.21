@@ -1,6 +1,5 @@
 package gg.vape.utils;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.awt.Color;
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandles;
@@ -216,8 +215,5 @@ extends Color {
         return new MutableCallSite(methodType);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

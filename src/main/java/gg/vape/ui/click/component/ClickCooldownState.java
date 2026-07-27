@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.TimerUtil;
 
 public class ClickCooldownState {
@@ -12,9 +11,6 @@ public class ClickCooldownState {
         return this.e;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public void I(long l) {
         this.e = l;

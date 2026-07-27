@@ -7,7 +7,6 @@ import gg.vape.event.impl.EventRender3D;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.TimerUtil;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.utils.render.RenderUtil;
@@ -35,9 +34,6 @@ extends Mod {
         this.a = Minecraft.D();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {

@@ -5,7 +5,6 @@ import gg.vape.combat.AttackStrengthTracker;
 import gg.vape.config.ClientSettings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.render.NameTags;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.RotationUtil;
@@ -187,9 +186,6 @@ public class RenderEntityContext {
         return this.potionEffects;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException exception) {
-        return exception;
-    }
 
     @Nullable
     public MutableColor E(boolean bl) {

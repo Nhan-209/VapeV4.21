@@ -1,6 +1,5 @@
 package gg.vape.utils;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.TreeMap;
 
 public class RomanNumeralUtil {
@@ -28,9 +27,6 @@ public class RomanNumeralUtil {
         return c == 'M' ? 1000 : -1;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static String a(byte[] byArray) {
         int n = 0;

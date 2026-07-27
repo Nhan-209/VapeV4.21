@@ -10,7 +10,7 @@ implements GuiClickListener {
 
     @Override
     public void P() {
-        Vape.INSTANCE.getSyncThread().o();
+        Vape.INSTANCE.getSyncThread().requestSave();
         ClientSettingsSearchFrameHeader.F(this.z).Z(false);
     }
 
@@ -18,4 +18,3 @@ implements GuiClickListener {
         this.z = clientSettingsSearchFrameHeader;
     }
 }
-

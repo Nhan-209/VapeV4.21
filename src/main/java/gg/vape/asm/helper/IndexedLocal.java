@@ -2,7 +2,6 @@ package gg.vape.asm.helper;
 
 import gg.vape.asm.helper.EventBuilder;
 import gg.vape.asm.helper.Local;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -33,7 +32,4 @@ extends Local {
         }
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 }

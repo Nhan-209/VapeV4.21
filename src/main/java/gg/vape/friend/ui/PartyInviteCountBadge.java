@@ -3,7 +3,6 @@ package gg.vape.friend.ui;
 import func.skidline.RectData;
 import gg.vape.Vape;
 import gg.vape.friend.ui.PartyInviteCountBadgeToggleInvitesClickHandler;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.gui.TextButton;
@@ -61,9 +60,6 @@ extends PanelComponent {
         return this._e;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void H() {

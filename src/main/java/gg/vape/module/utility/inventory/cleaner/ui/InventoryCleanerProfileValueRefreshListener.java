@@ -5,7 +5,6 @@ import gg.vape.event.EventListener;
 import gg.vape.event.impl.ProfileChangeEvent;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryCleanerProfileValueComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.module.ModuleComponent;
 import gg.vape.ui.click.frame.Frame;
@@ -32,8 +31,5 @@ implements EventListener {
         ClientSettings.g(ClientSettingsSearchFrame.class).N$src$V$1ncxuwi();
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

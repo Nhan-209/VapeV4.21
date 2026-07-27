@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.config.Profile;
 import gg.vape.config.ProfileSnapshot;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ConfirmationDialogComponent;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -48,9 +47,6 @@ extends FlowLayoutComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$null$0(ProfileSnapshotFrame profileSnapshotFrame) {
         profileSnapshotFrame.s$src$V$txekt8();

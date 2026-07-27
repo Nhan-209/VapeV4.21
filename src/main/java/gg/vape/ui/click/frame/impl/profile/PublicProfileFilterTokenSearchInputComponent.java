@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.component.GuiComponent;
@@ -53,9 +52,6 @@ extends LabeledTextInputComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {

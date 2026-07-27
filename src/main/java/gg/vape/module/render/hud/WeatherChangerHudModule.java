@@ -4,7 +4,6 @@ import gg.vape.event.EventHandler;
 import gg.vape.event.impl.EventPreRenderTick;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.value.ModeValue;
@@ -67,8 +66,5 @@ extends HudModule {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

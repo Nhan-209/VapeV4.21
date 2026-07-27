@@ -10,7 +10,6 @@ import gg.vape.input.InputEventDispatcher;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.SleepUtil;
 import gg.vape.utils.TimerUtil;
@@ -57,9 +56,6 @@ extends Mod {
         this.clickerWorker.W();
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ClickerMod(String string, int n, Category category) {
         super(string, n, category, "");

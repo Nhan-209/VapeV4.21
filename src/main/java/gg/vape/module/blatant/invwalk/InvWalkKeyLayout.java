@@ -1,6 +1,5 @@
 package gg.vape.module.blatant.invwalk;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.RenderBatchShaderProgram;
 
 public class InvWalkKeyLayout {
@@ -29,9 +28,6 @@ public class InvWalkKeyLayout {
     public static final float f = 7.0f;
     public static final float b = 15.0f;
 
-    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void y() {
         if (Q == null) {

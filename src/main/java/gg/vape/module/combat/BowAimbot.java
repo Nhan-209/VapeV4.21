@@ -17,7 +17,6 @@ import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.TimerUtil;
@@ -256,9 +255,6 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void cleanOwnerMap(World world) {
         this.arrowOwners.entrySet().removeIf(arg_0 -> BowAimbot.lambda$checkOwnerMap$0(world, arg_0));

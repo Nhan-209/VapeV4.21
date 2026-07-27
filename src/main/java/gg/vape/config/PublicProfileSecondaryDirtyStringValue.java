@@ -1,7 +1,6 @@
 package gg.vape.config;
 
 import gg.vape.config.PublicProfileSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.StringValue;
 
 public class PublicProfileSecondaryDirtyStringValue
@@ -14,9 +13,6 @@ extends StringValue {
         this.G = publicProfileSettings;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void Z() {

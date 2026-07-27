@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.gui;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.gui.UnderlinedTextLabel;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -25,9 +24,6 @@ extends UnderlinedTextLabel {
         super(string, d, color, color2);
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void H() {

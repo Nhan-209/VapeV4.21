@@ -9,7 +9,6 @@ import gg.vape.event.EventHandler;
 import gg.vape.event.EventListener;
 import gg.vape.event.impl.ProfileListMutationEvent;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.GlyphIconComponent;
@@ -401,9 +400,6 @@ implements EventListener {
         this.l(null);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void u() {

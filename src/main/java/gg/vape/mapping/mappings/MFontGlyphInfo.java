@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MFontGlyphInfo
 extends Mapping {
@@ -47,9 +46,6 @@ extends Mapping {
         MFontGlyphInfo.M((int[])null);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public float B(Object object) {
         if (this.U == null || this.U.h()) {

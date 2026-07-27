@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEnumWorldBlockLayer;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 
 public class EnumWorldBlockLayer
@@ -16,9 +15,6 @@ extends Wrapper {
         return s;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EnumWorldBlockLayer(Object object) {
         super(object);

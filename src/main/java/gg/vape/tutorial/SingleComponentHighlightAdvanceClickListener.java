@@ -1,7 +1,6 @@
 package gg.vape.tutorial;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.tutorial.SingleComponentHighlightTutorialAction;
 import gg.vape.tutorial.TutorialPage;
 import gg.vape.ui.click.GuiMouseListener;
@@ -16,9 +15,6 @@ implements GuiMouseListener {
     public void I(Point point) {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SingleComponentHighlightAdvanceClickListener(SingleComponentHighlightTutorialAction singleComponentHighlightTutorialAction) {
         this.H = singleComponentHighlightTutorialAction;

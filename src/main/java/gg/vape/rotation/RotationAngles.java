@@ -1,6 +1,5 @@
 package gg.vape.rotation;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 
 public class RotationAngles {
@@ -15,9 +14,6 @@ public class RotationAngles {
         return bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public boolean h(RotationAngles rotationAngles, float f) {
         float f2 = Math.abs(MathUtil.wrapAngleTo180(this.b) - MathUtil.wrapAngleTo180(rotationAngles.b));

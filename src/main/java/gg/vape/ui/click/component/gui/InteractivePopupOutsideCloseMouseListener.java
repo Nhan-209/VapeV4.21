@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.gui;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseClickButton;
 import gg.vape.ui.click.component.PopupMenuButtonComponent;
@@ -17,9 +16,6 @@ implements GuiMouseListener {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public InteractivePopupOutsideCloseMouseListener(PopupMenuButtonComponent popupMenuButtonComponent) {
         this.e = popupMenuButtonComponent;

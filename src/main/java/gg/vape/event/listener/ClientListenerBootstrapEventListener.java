@@ -6,7 +6,6 @@ import gg.vape.event.EventPriority;
 import gg.vape.event.impl.EventLivingUpdate;
 import gg.vape.event.impl.EventPacketReceive;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.Minecraft;
@@ -17,9 +16,6 @@ public class ClientListenerBootstrapEventListener
 implements EventListener {
     private static GuiComponent[] E;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler(A=EventPriority.LOW)
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {

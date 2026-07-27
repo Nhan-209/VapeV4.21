@@ -1,6 +1,5 @@
 package gg.vape.input;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.AxisAlignedBBDistanceComparator;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.AxisAlignedBB;
@@ -58,9 +57,6 @@ public class KeyBindingHelper {
         KeyBindingHelper.v(keyBinding, bl, true);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void k(KeyBinding keyBinding, boolean bl) {
         if (ForgeVersion.MC_1_21_4.v()) {

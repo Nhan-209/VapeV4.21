@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.target;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.target.TargetInfoHealthBarComponent;
 import gg.vape.ui.click.frame.impl.target.TargetInfoPreviewComponent;
 
@@ -18,7 +17,4 @@ extends TargetInfoHealthBarComponent {
         return TargetInfoPreviewComponent.X(this.K) ? 0.6 : super.M();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

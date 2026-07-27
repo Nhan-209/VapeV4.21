@@ -12,7 +12,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherRegistry;
 import gg.vape.module.utility.inventory.cleaner.ItemFilterSelection;
 import gg.vape.module.utility.inventory.cleaner.SharedInventoryFilterPreset;
 import gg.vape.module.utility.inventory.cleaner.ui.ItemPickerSelection;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -139,9 +138,6 @@ implements InventoryFilterRule {
         return jsonObject;
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Nullable
     protected InventoryFilterPreset J() {

@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MTileEntityMobSpawner;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MMobSpawnerBaseLogic
@@ -30,9 +29,6 @@ extends Mapping {
         return (String)this.X.L(object, new Object[0]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static Object getCachedEntity(MMobSpawnerBaseLogic mMobSpawnerBaseLogic, Object object, Object object2) {
         return mMobSpawnerBaseLogic.getCachedEntity(object, object2);

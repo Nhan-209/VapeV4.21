@@ -2,7 +2,6 @@ package gg.vape.event.impl;
 
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.RenderStateBridge;
 
@@ -14,9 +13,6 @@ extends Event {
     private RenderStateBridge x;
     private final Object F;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public EventEntityRenderState(Object object, Object object2) {
         this.F = object;

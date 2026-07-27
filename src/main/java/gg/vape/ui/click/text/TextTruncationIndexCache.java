@@ -1,7 +1,6 @@
 package gg.vape.ui.click.text;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.text.TextTruncationIndexLruCache;
 import gg.vape.ui.click.text.TruncatedTextSpec;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -12,9 +11,6 @@ public class TextTruncationIndexCache {
     private static final int F;
     public static TextTruncationIndexCache J;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int b() {
         return this.U.size();

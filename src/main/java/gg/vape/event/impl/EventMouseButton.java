@@ -7,7 +7,6 @@ import gg.vape.event.EventListeners;
 import gg.vape.event.impl.EventKeyInputBase;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.KeyBinding;
 
@@ -17,9 +16,6 @@ extends EventKeyInputBase {
     private static final EventListeners a;
     public static int E;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static EventListeners getEventListeners() {
         return a;

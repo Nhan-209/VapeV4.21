@@ -1,6 +1,5 @@
 package gg.vape.input;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class GlfwToVirtualKeyCodeMap {
     public static final int fx;
@@ -127,9 +126,6 @@ public class GlfwToVirtualKeyCodeMap {
     public static final int f;
     public static final int fv;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int h(int n) {
         if (n > fa.length - 1) {

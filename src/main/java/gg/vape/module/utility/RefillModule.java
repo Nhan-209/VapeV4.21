@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventPreTick;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.utility.RefillInventoryState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.EnumHand;
 import gg.vape.wrapper.impl.Minecraft;
@@ -22,9 +21,6 @@ implements RefillInventoryState {
     public void onTick(EventPreTick eventPreTick) {
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public RefillModule() {
         super(MODULE_NAME, -1, Category.Y);

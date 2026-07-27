@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.value;
 
 import gg.vape.module.blatant.AntiBotBooleanValue;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -29,9 +28,6 @@ extends GuiComponent {
     public void F() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String N() {
         Integer n = (Integer)this.K.K();

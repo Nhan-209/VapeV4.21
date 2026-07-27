@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.quickactions;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.value.BooleanToggleComponent;
 import gg.vape.ui.click.frame.impl.quickactions.QuickActionRowClickListener;
@@ -14,9 +13,6 @@ extends BooleanToggleComponent {
     private Class Nt;
     private int Nb;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double C() {

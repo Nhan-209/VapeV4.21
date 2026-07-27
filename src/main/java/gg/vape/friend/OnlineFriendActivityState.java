@@ -11,7 +11,6 @@ import gg.vape.friend.activity.ActivitySnapshotPayload;
 import gg.vape.friend.activity.ActivitySnapshotPayloadBuilder;
 import gg.vape.friend.activity.ActivityTargetData;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.utils.EnchantmentUtil;
 import gg.vape.wrapper.impl.Enchantment;
@@ -109,9 +108,6 @@ public class OnlineFriendActivityState {
         this.v.remove((Object)onlineFriendActivityType);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void D() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();

@@ -4,7 +4,6 @@ import gg.vape.friend.UserModel;
 import gg.vape.protocol.PresenceState;
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.ZeusSerializablePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class ServerFriendPresenceStatePacket
 implements ZeusSerializablePacket {
@@ -46,9 +45,6 @@ implements ZeusSerializablePacket {
         this.G = zeusPacketBuffer.Y(PresenceState.class);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean L() {
         return f;

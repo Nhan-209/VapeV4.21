@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.GuiComponent;
@@ -177,9 +176,6 @@ extends GuiComponent {
         this.R.c(this.rE.HSBtoRGB());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static BooleanValue S(SearchBlockEditorComponent searchBlockEditorComponent) {
         return searchBlockEditorComponent.Q;

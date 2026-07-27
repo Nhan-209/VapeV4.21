@@ -1,6 +1,5 @@
 package gg.vape.unmap;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -50,9 +49,6 @@ public class GLUtils {
         this.g[this.N++] = (float)d3;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void X() {
         this.o = new float[this.R * 2];

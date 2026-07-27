@@ -6,7 +6,6 @@ import gg.vape.friend.ui.EnemySettingsAddEnemyInputComponent;
 import gg.vape.friend.ui.EnemySettingsEntryRow;
 import gg.vape.friend.ui.EnemySettingsFrameToggleHeaderComponent;
 import gg.vape.friend.ui.EnemySettingsRemoveEntryClickHandler;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ColorDividerComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.value.BooleanToggleComponent;
@@ -102,9 +101,6 @@ implements CollapsibleFrame {
         return enemySettingsFrame.X5;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static BooleanToggleComponent a(EnemySettingsFrame enemySettingsFrame) {
         return enemySettingsFrame.XH;

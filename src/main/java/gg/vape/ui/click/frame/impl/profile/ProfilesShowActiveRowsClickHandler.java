@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.impl.profile.ProfileListEntryComponent;
@@ -10,9 +9,6 @@ public class ProfilesShowActiveRowsClickHandler
 implements GuiClickListener {
     final ProfilesSettingsFrame a;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ProfilesShowActiveRowsClickHandler(ProfilesSettingsFrame profilesSettingsFrame) {
         this.a = profilesSettingsFrame;

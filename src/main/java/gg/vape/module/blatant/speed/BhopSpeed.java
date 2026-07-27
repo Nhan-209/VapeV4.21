@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventPreMove;
 import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
 import gg.vape.module.blatant.Speed;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -58,9 +57,6 @@ extends SubModule<Speed> {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public BhopSpeed(Mod mod, String string) {
         super(mod, string);

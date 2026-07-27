@@ -1,7 +1,6 @@
 package gg.vape.module.utility.inventory.cleaner;
 
 import gg.vape.module.utility.inventory.cleaner.SharedInventoryFilterPreset;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,9 +34,6 @@ public class InventoryFilterPresetStore {
         this.n(newPreset);
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException exception) {
-        return exception;
-    }
 
     public void n(SharedInventoryFilterPreset preset) {
         this.presets.add(preset);

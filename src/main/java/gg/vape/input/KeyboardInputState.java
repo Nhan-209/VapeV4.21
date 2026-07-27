@@ -2,7 +2,6 @@ package gg.vape.input;
 
 import gg.vape.config.ClientSettings;
 import gg.vape.event.impl.EventKeyPress;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Minecraft;
 import java.util.HashMap;
 
@@ -53,9 +52,6 @@ public class KeyboardInputState {
         this.A = System.nanoTime();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void setKeyState(int n, boolean bl) {
         boolean bl2 = this.m.getOrDefault(n, false);

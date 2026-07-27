@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.RenderBatchBuilder;
@@ -39,8 +38,5 @@ extends Wrapper {
         super(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

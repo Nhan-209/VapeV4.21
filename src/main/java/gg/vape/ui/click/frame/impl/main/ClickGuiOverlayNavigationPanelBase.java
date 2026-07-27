@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.main;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.main.ClickGuiSidecarPanelBase;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,8 +22,5 @@ extends ClickGuiSidecarPanelBase {
         this.y(runnable);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

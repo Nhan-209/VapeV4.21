@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.ImageRenderer;
@@ -69,9 +68,6 @@ extends InteractiveComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void E(double d) {
         this.b = d;

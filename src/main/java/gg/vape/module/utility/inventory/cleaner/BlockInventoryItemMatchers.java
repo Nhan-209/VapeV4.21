@@ -11,7 +11,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryMatcherListMode;
 import gg.vape.module.utility.inventory.cleaner.StringInventoryItemMatcher;
 import gg.vape.module.utility.inventory.cleaner.StringInventoryItemMatcherBuilder;
 import gg.vape.module.utility.inventory.cleaner.StringMatchOperator;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Map;
 
 public class BlockInventoryItemMatchers {
@@ -52,7 +51,4 @@ public class BlockInventoryItemMatchers {
         InventoryItemMatcherRegistry.R(f);
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

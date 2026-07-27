@@ -6,7 +6,6 @@ import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.MappingMethodBuilder;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.BlockPos;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -705,9 +704,6 @@ extends Mapping {
         return mWorld.g(object, n, n2, n3);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public List y$src$Ljava_util_List_$1xik31o(Object object) {
         return (List)this.E.getObject(object);

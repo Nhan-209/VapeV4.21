@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import gg.vape.module.utility.inventory.cleaner.AbstractTextFilterCondition;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterConditionType;
 import gg.vape.module.utility.inventory.cleaner.TextMatchMode;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.List;
 
@@ -27,9 +26,6 @@ extends AbstractTextFilterCondition<LoreFilterCondition> {
         return false;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public LoreFilterCondition() {
     }

@@ -29,7 +29,6 @@ import gg.vape.module.combat.SilentAura;
 import gg.vape.module.render.NameTags;
 import gg.vape.protocol.ZeusConnectionManager;
 import gg.vape.render.OffscreenRenderContext;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.TimerUtil;
@@ -361,9 +360,6 @@ implements EventListener {
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void n(@Nullable EntityPlayer entityPlayer) {
         this.c = entityPlayer;

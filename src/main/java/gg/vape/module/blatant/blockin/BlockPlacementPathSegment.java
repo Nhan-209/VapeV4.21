@@ -2,7 +2,6 @@ package gg.vape.module.blatant.blockin;
 
 import gg.vape.module.blatant.blockin.BlockInTargetRotationState;
 import gg.vape.module.blatant.blockin.BlockPlacementPathSegmentState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.Vec3d;
 import gg.vape.utils.datas.BlockCoordinate;
 import gg.vape.wrapper.impl.Vec3;
@@ -38,9 +37,6 @@ public class BlockPlacementPathSegment {
         this.b = arrayList;
     }
 
-    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void I(String string) {
         if (this.p == null) {

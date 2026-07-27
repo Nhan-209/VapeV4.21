@@ -1,7 +1,6 @@
 package gg.vape.rotation;
 
 import gg.vape.rotation.FixedRotationController;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.GuiScreen;
 
@@ -45,8 +44,5 @@ extends FixedRotationController {
         this.d = Math.abs(f2);
     }
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

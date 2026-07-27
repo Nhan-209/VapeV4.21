@@ -1,6 +1,5 @@
 package gg.vape.ui.click.layout;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.layout.PaddedComponent;
 import gg.vape.ui.click.layout.ComponentLayout;
@@ -165,9 +164,6 @@ extends ComponentLayout {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void l(double d) {
         for (GuiComponent guiComponent : this.c()) {

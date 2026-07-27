@@ -3,7 +3,6 @@ package gg.vape.mapping.runtime;
 import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.runtime.MemberNameRemapTable;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.List;
 import java.util.UUID;
 
@@ -951,9 +950,6 @@ extends MemberNameRemapTable {
         this.t(MappedClasses.uP, "runGameLoop", "runTick");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     protected void O() {
         this.t(MappedClasses.f, "intersectsWith", "intersects");

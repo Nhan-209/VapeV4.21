@@ -3,7 +3,6 @@ package gg.vape.input;
 import gg.vape.event.impl.SyntheticAttackRequestEvent;
 import gg.vape.input.KeyBindingHelper;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.KeyBinding;
 import gg.vape.wrapper.impl.Minecraft;
 
@@ -13,9 +12,6 @@ public class AttackKeyController {
         KeyBindingHelper.v(keyBinding, false, false);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean u(Mod mod) {
         SyntheticAttackRequestEvent syntheticAttackRequestEvent = new SyntheticAttackRequestEvent(mod);

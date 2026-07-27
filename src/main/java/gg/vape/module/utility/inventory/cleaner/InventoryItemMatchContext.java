@@ -2,7 +2,6 @@ package gg.vape.module.utility.inventory.cleaner;
 
 import gg.vape.Vape;
 import gg.vape.mapping.ItemMappingEntry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -12,9 +11,6 @@ public class InventoryItemMatchContext {
     private final Item item;
     private final ItemStack itemStack;
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Item M() {
         return this.item;

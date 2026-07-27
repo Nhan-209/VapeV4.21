@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import gg.vape.Vape;
 import gg.vape.input.BindCaptureTask;
 import gg.vape.module.Macro;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SpacerComponent;
 import gg.vape.ui.click.component.gui.TextButton;
@@ -184,9 +183,6 @@ extends PanelComponent {
         this.w$src$V$xat7or();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$buildActionButtons$1() {
         String string = this.l9.i$src$Ljava_lang_String_$1n2xf3k().trim();

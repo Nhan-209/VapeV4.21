@@ -4,7 +4,6 @@ import gg.vape.account.LicenseInfo;
 import gg.vape.account.LicenseInfoClient;
 import gg.vape.account.LicenseStatus;
 import gg.vape.account.LicenseStatusClient;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class LicenseManager {
     private String D;
@@ -23,9 +22,6 @@ public class LicenseManager {
         t = nArray;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public LicenseStatus a_vt_2_D() {
         if (this.D == null) {

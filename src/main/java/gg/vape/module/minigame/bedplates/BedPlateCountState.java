@@ -3,7 +3,6 @@ package gg.vape.module.minigame.bedplates;
 import gg.vape.module.minigame.bedplates.BedPlateBlockCountComparator;
 import gg.vape.module.minigame.bedplates.BedPlateBlockStateKey;
 import gg.vape.module.world.bedbreaker.BedTargetRenderPosition;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,9 +53,6 @@ public class BedPlateCountState {
         return this.sortedLayers.getOrDefault(n, new ArrayList());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public BedPlateCountState(BedTargetRenderPosition bedTargetRenderPosition) {
         this.position = bedTargetRenderPosition;

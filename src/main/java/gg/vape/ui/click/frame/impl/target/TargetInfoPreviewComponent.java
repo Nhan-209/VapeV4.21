@@ -9,7 +9,6 @@ import gg.vape.event.impl.EventPlayerUseItem;
 import gg.vape.event.impl.EventPostAttack;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -240,9 +239,6 @@ implements EventListener {
         this.wE.c((int)RotationUtil.y(Minecraft.thePlayer(), this.h$src$Lgg_vape_wrapper_impl_EntityLivingBase_$1x3oue()));
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean X(TargetInfoPreviewComponent targetInfoPreviewComponent) {
         return targetInfoPreviewComponent.R$src$Z$1lp7f1();

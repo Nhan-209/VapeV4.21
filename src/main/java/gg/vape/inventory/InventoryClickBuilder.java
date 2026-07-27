@@ -5,7 +5,6 @@ import gg.vape.inventory.InventoryClickBuildStage;
 import gg.vape.inventory.InventoryClickOptionsStage;
 import gg.vape.inventory.InventoryClickSlotStage;
 import gg.vape.inventory.InventoryClickWindowStage;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class InventoryClickBuilder
 implements InventoryClickWindowStage,
@@ -24,9 +23,6 @@ InventoryClickBuildStage {
         return this;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public InventoryClickBuildStage E(int n) {

@@ -2,7 +2,6 @@ package gg.vape.input;
 
 import gg.vape.event.impl.EventMouseButton;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiScreenNativeCallbackBridge;
 import java.util.HashMap;
 
@@ -53,9 +52,6 @@ public class MouseInputState {
         return this.l;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public boolean H(int n) {
         return this.p.getOrDefault(n, false);

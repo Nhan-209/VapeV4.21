@@ -1,7 +1,6 @@
 package gg.vape.ui.click.layout;
 
 import func.skidline.RectData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.layout.ComponentLayout;
 import gg.vape.ui.click.layout.LayoutConstraints;
@@ -14,9 +13,6 @@ extends ComponentLayout {
         super(guiComponent);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void p() {

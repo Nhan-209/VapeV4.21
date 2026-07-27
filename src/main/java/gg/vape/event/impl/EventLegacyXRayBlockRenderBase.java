@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
 import gg.vape.module.none.XRay;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Block;
 import gg.vape.wrapper.impl.Tessellator;
 
@@ -48,9 +47,6 @@ extends Event {
         return v;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EventLegacyXRayBlockRenderBase(Object object) {
         this.x = new Block(object);

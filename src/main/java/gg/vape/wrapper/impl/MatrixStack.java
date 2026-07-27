@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MMatrixStack;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.Matrix4f;
 import gg.vape.wrapper.impl.Matrix4fTransformBridge;
@@ -51,9 +50,6 @@ extends Wrapper {
         MMatrixStack.d(MatrixStack.c.getMappingsMapperCompat().qn, this.I, d, d2, d3);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public void U() {
         if (this.isInstance(MappedClasses.VH)) {

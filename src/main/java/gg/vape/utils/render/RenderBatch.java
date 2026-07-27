@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.GlCapabilityState;
 import gg.vape.utils.render.GlImageTexture;
 import gg.vape.utils.render.GlScissorRect;
@@ -93,9 +92,6 @@ public class RenderBatch {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public GlCapabilityState y() {
         return this.V;

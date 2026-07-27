@@ -6,7 +6,6 @@ import gg.vape.event.impl.EventPreMotion;
 import gg.vape.event.impl.EventPreMove;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.NumberValue;
 import gg.vape.wrapper.impl.BlockPos;
@@ -31,9 +30,6 @@ extends Mod {
         return true;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private double A(EntityPlayerSP entityPlayerSP) {
         double d = 0.28730000691562896;

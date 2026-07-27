@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.LabeledTextInputComponent;
 import gg.vape.ui.click.frame.impl.profile.ProfileSnapshotModuleListPanel;
 import gg.vape.ui.click.frame.impl.profile.ProfileSnapshotModuleRowComponent;
@@ -25,9 +24,6 @@ extends LabeledTextInputComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     ProfileSnapshotModuleSearchInputComponent(ProfileSnapshotModuleListPanel profileSnapshotModuleListPanel, String string, boolean bl, boolean bl2) {
         super(string, bl, bl2);

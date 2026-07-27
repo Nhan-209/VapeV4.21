@@ -8,7 +8,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.render.hud.HudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.GuiScreen;
 
 public class EventGuiOpen
@@ -39,9 +38,6 @@ extends Event {
         return N;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public GuiScreen getGuiScreen() {
         return this.a;

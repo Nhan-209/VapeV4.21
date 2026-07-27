@@ -7,7 +7,6 @@ import gg.vape.event.impl.EventRenderItemInFirstPerson;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.TimerUtil;
@@ -27,9 +26,6 @@ extends HudModule {
     private TimerUtil blockhitTimer = new TimerUtil();
     private boolean renderBlockhit;
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public BlockhitAnimationHudModule() {
         super("Blockhit Animation", HudModuleGroup.T, "animations");

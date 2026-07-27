@@ -5,7 +5,6 @@ import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.ui.OnlineFriendAvatarComponent;
 import gg.vape.friend.ui.PartyMemberNameTextComponent;
 import gg.vape.friend.ui.PartyMemberStatusComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SpacerComponent;
@@ -99,8 +98,5 @@ extends PanelComponent {
         return IQ;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

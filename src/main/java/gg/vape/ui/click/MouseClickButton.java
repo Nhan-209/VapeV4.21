@@ -1,6 +1,5 @@
 package gg.vape.ui.click;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public enum MouseClickButton {
     LEFT_CLICK,
@@ -34,8 +33,5 @@ public enum MouseClickButton {
         I = bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

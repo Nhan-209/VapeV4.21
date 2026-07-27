@@ -1,6 +1,5 @@
 package gg.vape.manager.client;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public enum OnlineConnectionState {
     OFFLINE,
@@ -33,9 +32,6 @@ public enum OnlineConnectionState {
         G = new OnlineConnectionState[]{OFFLINE, OUTDATED_CLIENT, OUTDATED_SERVER, CONNECTING, ONLINE};
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static String[] d() {
         return B;

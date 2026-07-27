@@ -10,7 +10,6 @@ import gg.vape.event.impl.EventPreTick;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.render.Freecam;
 import gg.vape.module.render.freecam.FreecamController;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.C03PacketPlayer;
 import gg.vape.wrapper.impl.C06PacketPlayerPositionLook;
 import gg.vape.wrapper.impl.CPacketPlayerPosition;
@@ -44,9 +43,6 @@ extends FreecamController<Freecam> {
         ((Freecam)this.n).X$src$V$nxfse5();
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private CPacketPlayerPosition buildPositionPacket() {
         if (ForgeVersion.MC_1_7_10.L()) {

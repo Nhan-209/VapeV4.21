@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.gui;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.gui.ActionButtonBase;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -32,9 +31,6 @@ extends ActionButtonBase {
         this.b = colorAnimation;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ColorAnimation n$src$Lgg_vape_ui_click_animation_ColorAnimation_$1ogfbog() {
         return this.b;

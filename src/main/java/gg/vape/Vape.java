@@ -414,9 +414,9 @@ public class Vape {
         InputEventDispatcher.getInstance().registerHandlers();
         this.initClientListeners();
         this.showLoadCompleteNotification();
-        this.syncThread.x();
+        this.syncThread.clearPendingSave();
         this.getFontSelector().N((FontOption)Vape.INSTANCE.getPublicProfileSettings().k.K());
-        new Thread(this.syncThread.a()).start();
+        this.syncThread.start();
         this.traceStep(28);
         NativeBridge.dc();
         this.registerEventListeners();
@@ -515,7 +515,7 @@ public class Vape {
 
     public void saveAndStop() {
         Profile activeProfile;
-        this.syncThread.I();
+        this.syncThread.markDirty();
         if (this.profilesManager != null && (activeProfile = this.profilesManager.o()) != null) {
             activeProfile.c(true);
         }

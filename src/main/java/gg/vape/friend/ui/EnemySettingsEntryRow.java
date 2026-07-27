@@ -1,7 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.Enemy;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.SelectableTextRowComponent;
 
@@ -23,9 +22,6 @@ extends SelectableTextRowComponent {
         this.oi.k(!this.oi.t());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void H() {

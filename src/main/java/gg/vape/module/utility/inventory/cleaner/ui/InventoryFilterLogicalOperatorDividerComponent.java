@@ -1,7 +1,6 @@
 package gg.vape.module.utility.inventory.cleaner.ui;
 
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterLogicalOperator;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -20,9 +19,6 @@ extends GuiComponent {
         return 50.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double C() {

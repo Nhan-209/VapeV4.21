@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.main;
 
 import gg.vape.friend.ExternalFriend;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.impl.main.ClickGuiFriendsFriendRequestComponent;
 import gg.vape.ui.click.frame.impl.main.ClickGuiFriendsRequestStatusComponent;
@@ -40,9 +39,6 @@ extends GuiComponent {
         return 6.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double C() {

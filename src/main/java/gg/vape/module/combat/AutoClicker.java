@@ -12,9 +12,7 @@ import gg.vape.input.InputEventDispatcher;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.combat.AutoMace;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.AttackCooldownUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.TimerUtil;
@@ -125,8 +123,8 @@ extends Mod {
         if (this.shieldCheck.L().booleanValue()) {
             EntityOtherPlayerMP entityOtherPlayerMP;
             boolean bl = true;
-            AutoMace autoMace = Vape.INSTANCE.getModManager().getMod(AutoMace.class);
-            if (autoMace != null && autoMace.r$src$Z$14eylz9() && autoMace.F$src$Z$1746r4n()) {
+            HitSwap hitSwap = Vape.INSTANCE.getModManager().getMod(HitSwap.class);
+            if (hitSwap != null && hitSwap.r$src$Z$14eylz9() && hitSwap.F$src$Z$1746r4n()) {
                 bl = false;
             }
             if (bl && entity.isInstance(MappedClasses.lG) && RotationUtil.n(entityOtherPlayerMP = new EntityOtherPlayerMP(entity.getObject()))) {
@@ -169,12 +167,12 @@ extends Mod {
         if (!RotationUtil.u(Minecraft.thePlayer())) {
             return false;
         }
-        AutoMace autoMace = Vape.INSTANCE.getModManager().getMod(AutoMace.class);
-        if (!autoMace.r$src$Z$14eylz9()) {
+        HitSwap hitSwap = Vape.INSTANCE.getModManager().getMod(HitSwap.class);
+        if (!hitSwap.r$src$Z$14eylz9()) {
             ItemStack itemStack = Minecraft.thePlayer().i(EnumHand.M());
             return itemStack.isNotNull() && itemStack.getItem().isInstance(MappedClasses.zx) && RotationUtil.u(Minecraft.thePlayer());
         }
-        return autoMace.a$src$Z$17j175e();
+        return hitSwap.a$src$Z$17j175e();
     }
 
     private boolean hasMouseOverDelayElapsed(Entity entity) {
@@ -287,9 +285,6 @@ extends Mod {
         this.handleInput(eventMouseButton.getButtonState(), eventMouseButton);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException exception) {
-        return exception;
-    }
 
     private void handleInput(boolean bl, Event event) {
         if (this.requireMouseDown.L().booleanValue() && bl && !this.mouseDown) {

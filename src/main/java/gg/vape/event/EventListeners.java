@@ -1,6 +1,5 @@
 package gg.vape.event;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,9 +24,6 @@ public class EventListeners {
         D = upArray;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public void decrementListenerCount() {
         this.r.decrementAndGet();

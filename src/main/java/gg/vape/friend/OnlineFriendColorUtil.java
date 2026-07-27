@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.friend.OnlineFriend;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.manager.client.OnlineSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeSelection;
 import java.awt.Color;
 import java.util.LinkedHashMap;
@@ -25,9 +24,6 @@ public class OnlineFriendColorUtil {
         return Color.WHITE;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static Color P() {
         return Vape.INSTANCE.getFriendManager().R.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();

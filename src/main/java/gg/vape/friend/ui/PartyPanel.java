@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.PartyState;
 import gg.vape.friend.ui.PartyFriendRowComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -40,9 +39,6 @@ extends PanelComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public IconButtonComponent g$src$Lgg_vape_ui_click_component_IconButtonComponent_$1thfv1k() {
         return this.tQ;

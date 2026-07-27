@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MVertexFormatElement
 extends Mapping {
@@ -19,9 +18,6 @@ extends Mapping {
         MVertexFormatElement.Y(null);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int w(MVertexFormatElement mVertexFormatElement, Object object) {
         return mVertexFormatElement.w(object);

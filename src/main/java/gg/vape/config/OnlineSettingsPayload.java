@@ -6,7 +6,6 @@ import gg.vape.Vape;
 import gg.vape.config.RefreshableSettingsPayload;
 import gg.vape.friend.OnlineFriend;
 import gg.vape.manager.client.OnlineConnectionManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -124,9 +123,6 @@ implements RefreshableSettingsPayload {
         this.D = OnlineConnectionManager.T.S().k().toJson$src$Lcom_google_gson_JsonArray_$13cfbto();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public JsonArray K() {
         return this.F;

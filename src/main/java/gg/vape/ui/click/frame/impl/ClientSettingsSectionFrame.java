@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ColorDividerComponent;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.impl.ClientSettingsSearchFrame;
@@ -26,9 +25,6 @@ extends Frame {
         this.L(false, false);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ClientSettingsSectionFrame z(String string) {
         this.mR = string;

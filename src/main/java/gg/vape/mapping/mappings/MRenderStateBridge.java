@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MRenderStateBridge
 extends Mapping {
@@ -18,9 +17,6 @@ extends Mapping {
         return this.D.getDouble(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private double Z(Object object) {
         return this.h.getDouble(object);

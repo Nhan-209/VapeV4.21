@@ -1,6 +1,5 @@
 package gg.vape.module.utility.invcleaner;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.ItemStackData;
 import java.util.Comparator;
 
@@ -18,9 +17,6 @@ implements Comparator<ItemStackData> {
         return distance1 < distance2 ? -1 : 0;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ItemDataComparator(int target) {
         this.targetSlot = target;

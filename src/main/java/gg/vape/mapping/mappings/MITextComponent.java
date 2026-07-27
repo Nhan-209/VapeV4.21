@@ -3,7 +3,6 @@ package gg.vape.mapping.mappings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.util.List;
@@ -63,9 +62,6 @@ extends Mapping {
         return mITextComponent.A(string);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private List<Object> B(Object object) {
         return (List)this.v.L(object, new Object[0]);

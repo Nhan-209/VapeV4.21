@@ -1,6 +1,5 @@
 package gg.vape.ui.click.animation;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.Animation;
 
 public class DoubleAnimation
@@ -62,7 +61,4 @@ extends Animation<Double> {
         return this.f;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

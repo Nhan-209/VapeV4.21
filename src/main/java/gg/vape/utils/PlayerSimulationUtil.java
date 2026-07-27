@@ -2,7 +2,6 @@ package gg.vape.utils;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.render.hud.FreeLookHudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.BlockPos;
@@ -116,9 +115,6 @@ public class PlayerSimulationUtil {
         return true;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void p(EntityPlayer entityPlayer, double d, double d2, double d3) {
         if (ForgeVersion.MC_1_7_10.L()) {

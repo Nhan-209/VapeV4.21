@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.Vape;
 import gg.vape.module.render.hud.CoordinatesHudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.unmap.ColorUtil;
@@ -203,8 +202,5 @@ extends HudModuleConfigFrameBase {
         this.cO();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

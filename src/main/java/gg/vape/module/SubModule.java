@@ -2,7 +2,6 @@ package gg.vape.module;
 
 import gg.vape.event.IEvent;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.SubModuleValue;
 import java.util.function.Predicate;
 
@@ -40,9 +39,6 @@ extends Mod {
         return a;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public T getParent() {
         return (T)this.k;

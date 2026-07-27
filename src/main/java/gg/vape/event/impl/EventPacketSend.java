@@ -2,7 +2,6 @@ package gg.vape.event.impl;
 
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.network.PacketDispatchGuard;
 import gg.vape.utils.network.PacketDispatchMarkerRegistry;
 import gg.vape.wrapper.impl.NetworkManager;
@@ -32,9 +31,6 @@ extends Event {
         return this.e;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public boolean fire() {

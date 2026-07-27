@@ -7,7 +7,6 @@ import gg.vape.event.impl.EventPrePlayerTick;
 import gg.vape.event.impl.EventPreRenderTick;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.BooleanValue;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -41,9 +40,6 @@ extends Mod {
         this.addValue(this.removeNausea, this.removeBlindness, this.removeSlowness, this.removeEffects);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {

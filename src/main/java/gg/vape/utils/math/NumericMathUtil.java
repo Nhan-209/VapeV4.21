@@ -1,6 +1,5 @@
 package gg.vape.utils.math;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Vec3;
 import java.util.function.Consumer;
 
@@ -134,9 +133,6 @@ public class NumericMathUtil {
         return n2;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static float A(float f) {
         return (float)Math.sqrt(f);

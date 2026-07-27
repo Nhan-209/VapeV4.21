@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MPacketVelocityBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Packet;
 import gg.vape.wrapper.impl.Vec3;
@@ -113,8 +112,5 @@ extends Packet {
         return PacketVelocityBridge.c.getMappingsMapperCompat().qO.M(this.I);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 }
 

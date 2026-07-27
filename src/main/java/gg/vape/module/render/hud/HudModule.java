@@ -2,7 +2,6 @@ package gg.vape.module.render.hud;
 
 import gg.vape.module.Mod;
 import gg.vape.module.render.hud.HudModuleGroup;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class HudModule
 extends Mod {
@@ -65,9 +64,6 @@ extends Mod {
         this(string, hudModuleGroup, string2, null);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int B$src$I$5dcmu4() {
         int n = HudModule.s();

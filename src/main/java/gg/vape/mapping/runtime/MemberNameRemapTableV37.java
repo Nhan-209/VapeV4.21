@@ -3,7 +3,6 @@ package gg.vape.mapping.runtime;
 import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.runtime.MemberNameRemapTable;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MemberNameRemapTableV37
 extends MemberNameRemapTable {
@@ -349,9 +348,6 @@ extends MemberNameRemapTable {
         this.B(MappedClasses.VG, "slot", "target");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     protected void R_() {
         this.B(MappedClasses.e, "field_149615_a", "f_134488_");

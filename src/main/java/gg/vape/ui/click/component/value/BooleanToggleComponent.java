@@ -2,7 +2,6 @@ package gg.vape.ui.click.component.value;
 
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.animation.ThemeColorAnimation;
@@ -207,9 +206,6 @@ implements BooleanStateAdapter<BooleanToggleComponent> {
         this.n$src$V$1tjvir5();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void G(boolean bl) {
         this.Qw = bl;

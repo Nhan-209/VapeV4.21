@@ -7,7 +7,6 @@ import gg.vape.event.impl.EventStepSnapshot;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.blatant.Speed;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.threads.ResetTimerThread;
 import gg.vape.wrapper.impl.CPacketPlayerPosition;
 import gg.vape.wrapper.impl.EntityPlayerSP;
@@ -18,9 +17,6 @@ public class Step
 extends Mod {
     private static final String NAME = "Step";
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void v(EventStepHeightOverride eventStepHeightOverride) {

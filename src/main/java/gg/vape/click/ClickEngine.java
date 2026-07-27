@@ -11,7 +11,6 @@ import gg.vape.input.KeyBindingHelper;
 import gg.vape.input.KeyBindingInputState;
 import gg.vape.module.Mod;
 import gg.vape.rotation.PlayerMouseRotationApplier;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.MathUtil;
 import gg.vape.value.BooleanValue;
@@ -316,7 +315,4 @@ public class ClickEngine {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

@@ -1,7 +1,6 @@
 package gg.vape.ui.font;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.font.BaseFontOption;
 import gg.vape.ui.font.FontFamily;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -82,9 +81,6 @@ extends ModeSelection {
         this.N.put(string, string2);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String s(String string) {
         return this.N.getOrDefault(string, string);

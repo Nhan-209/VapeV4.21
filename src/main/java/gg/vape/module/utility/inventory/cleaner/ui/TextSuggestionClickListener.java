@@ -3,7 +3,6 @@ package gg.vape.module.utility.inventory.cleaner.ui;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.utility.inventory.cleaner.ui.TextSuggestionInputComponent;
 import gg.vape.module.utility.inventory.cleaner.ui.TextSuggestionRow;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseClickButton;
 import java.awt.Point;
@@ -48,8 +47,5 @@ implements GuiMouseListener {
         }
     }
 
-    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

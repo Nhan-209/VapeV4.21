@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MOrdering;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import java.util.Collection;
 
@@ -70,9 +69,6 @@ extends Mapping {
         GuiComponent.D(new GuiComponent[4]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Collection g(Object object) {
         return (Collection)this.z.L(object, new Object[0]);

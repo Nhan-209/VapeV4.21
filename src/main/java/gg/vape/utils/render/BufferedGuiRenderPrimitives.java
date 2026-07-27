@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.font.SmoothFontGlyph;
 import gg.vape.utils.render.GlCapabilityState;
 import gg.vape.utils.render.GlImageTexture;
@@ -265,9 +264,6 @@ public class BufferedGuiRenderPrimitives {
         BufferedGuiRenderPrimitives.U((float)d, (float)d2, (float)d3, (float)d4, color);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void B(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, Color color) {
         RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder().b(PrimitiveTopology.LINES_LOOP).q(f, f2, 0.0f, f3, f4, 0.0f, f5, f6, 0.0f, f7, f8, 0.0f, color);

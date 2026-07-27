@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.impl.hud.CompassHudFrame;
@@ -26,9 +25,6 @@ extends GuiComponent {
         this.H();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private float l$src$F$uzmaa0() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();

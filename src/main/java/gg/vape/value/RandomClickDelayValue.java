@@ -1,6 +1,5 @@
 package gg.vape.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.RandomValue;
 import java.util.Random;
@@ -89,9 +88,6 @@ extends RandomValue {
         return randomClickDelayValue;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean R(long l) {
         return this.f.hasTimeElapsed(l);

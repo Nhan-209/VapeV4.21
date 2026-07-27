@@ -7,7 +7,6 @@ import gg.vape.mapping.EventInjectionSpec;
 import gg.vape.mapping.JavassistMappingTask;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class EntityMoveEventMappingTask
@@ -56,8 +55,5 @@ extends JavassistMappingTask {
         super(MappedClasses.zc);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

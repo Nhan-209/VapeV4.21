@@ -7,7 +7,6 @@ import gg.vape.input.MouseInput;
 import gg.vape.manager.client.ProfilesManager;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.MousePosition;
@@ -118,9 +117,6 @@ extends InteractiveComponent {
         return super.V$src$Z$1xhop3l() && (this.K.u$src$Z$6rsek8() || this.Qz.U());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         ProfileListEntryComponent.L(false);

@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.Vec3d;
 import gg.vape.wrapper.Wrapper;
 
@@ -57,9 +56,6 @@ extends Wrapper {
         return this.addVector(vec3.getX(), vec3.getY(), vec3.getZ());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void Z(double d) {
         Vec3.c.getMappings().g.Z(this.I, d);

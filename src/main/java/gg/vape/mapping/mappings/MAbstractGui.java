@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.ScaledResolution;
@@ -37,9 +36,6 @@ extends Mapping {
         mAbstractGui.q(object, object2, n, n2, n3, n4, n5, object3);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void q(Object object, Object object2, int n, int n2, int n3, int n4, int n5, Object object3) {
         this.V.c(object, object2, n, n2, n3, n4, n5, object3);

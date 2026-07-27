@@ -12,7 +12,6 @@ import gg.vape.config.PublicProfile;
 import gg.vape.friend.ui.OnlineFriendUiHelper;
 import gg.vape.manager.client.PublicProfileManager;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.InsetFilledSpacerComponent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.ProfileSelectionPopupComponent;
@@ -235,9 +234,6 @@ extends PublicProfileOverlayPanelBase {
         this.e();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$setup$1(ProfileModuleSnapshot profileModuleSnapshot) {
         this.u(profileModuleSnapshot);

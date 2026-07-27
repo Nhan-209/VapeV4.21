@@ -6,7 +6,6 @@ import gg.vape.event.EventListener;
 import gg.vape.event.impl.EventPreTick;
 import gg.vape.friend.FriendEntry;
 import gg.vape.manager.client.FriendManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MutablePair;
 import gg.vape.utils.StringUtils;
 import gg.vape.utils.TimerUtil;
@@ -70,9 +69,6 @@ implements EventListener {
         return this.G;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private MutablePair lambda$getReplacedDisplayName$0(String string, Iterable iterable, String string2, MutablePair mutablePair) {
         if (mutablePair == null) {

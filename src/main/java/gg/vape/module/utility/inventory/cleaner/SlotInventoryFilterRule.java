@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import gg.vape.Vape;
 import gg.vape.module.utility.inventory.cleaner.AbstractInventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterPreset;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,9 +21,6 @@ extends AbstractInventoryFilterRule {
         SlotInventoryFilterRule.setSlotStateArray(new int[5]);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void setSlotStateArray(int[] nArray) {
         slotStateArray = nArray;

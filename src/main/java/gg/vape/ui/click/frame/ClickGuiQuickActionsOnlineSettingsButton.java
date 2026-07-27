@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.frame.ClickGuiQuickActionsComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -10,9 +9,6 @@ public class ClickGuiQuickActionsOnlineSettingsButton
 extends IconButtonComponent {
     final ClickGuiQuickActionsComponent PY;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ClickGuiQuickActionsOnlineSettingsButton(ClickGuiQuickActionsComponent clickGuiQuickActionsComponent, String string, double d) {
         super(string, d);

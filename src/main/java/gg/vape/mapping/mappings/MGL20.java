@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MGlStateManagerTexGenState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import java.nio.FloatBuffer;
@@ -69,9 +68,6 @@ extends Mapping {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void X(MGL20 mGL20, int n, boolean bl, FloatBuffer floatBuffer) {
         mGL20.i(n, bl, floatBuffer);

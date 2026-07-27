@@ -3,7 +3,6 @@ package gg.vape.status;
 import gg.vape.Vape;
 import gg.vape.module.none.TextGuiSettings;
 import gg.vape.runtime.NativeBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.TimerUtil;
 import gg.vape.wrapper.impl.Minecraft;
@@ -44,9 +43,6 @@ public class NativePresenceUpdater {
         NativePresenceUpdater.U(new GuiComponent[5]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void U(GuiComponent[] guiComponentArray) {
         R = guiComponentArray;

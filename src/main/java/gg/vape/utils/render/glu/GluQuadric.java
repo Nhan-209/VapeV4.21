@@ -1,6 +1,5 @@
 package gg.vape.utils.render.glu;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.lwjgl.opengl.GL11;
 
 public class GluQuadric {
@@ -51,9 +50,6 @@ public class GluQuadric {
         return (float)Math.cos(f);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean j() {
         return this.O;

@@ -1,6 +1,5 @@
 package gg.vape.utils.datas;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.BlockPos;
@@ -14,9 +13,6 @@ public class BlockCoordinate {
     private final int F;
     private final int o;
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Vec3 P() {
         return Vec3.create(this.o, this.B, this.F);

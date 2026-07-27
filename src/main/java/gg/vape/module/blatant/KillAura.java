@@ -9,7 +9,6 @@ import gg.vape.event.impl.EventRender3D;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.EntityAngleComparator;
@@ -85,9 +84,6 @@ extends Mod {
         return this.r$src$Z$14eylz9() && !this.D.isEmpty();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private float[] getRotations(double d, double d2, double d3) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();

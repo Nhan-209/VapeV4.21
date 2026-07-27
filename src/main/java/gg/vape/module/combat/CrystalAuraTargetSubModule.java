@@ -21,7 +21,6 @@ import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.RotationAngles;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
@@ -785,9 +784,6 @@ extends SubModule<CrystalAura> {
         return !blArray[0];
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean isLookingAtObsidian(RayTraceResult rayTraceResult, World world, BlockData blockData) {
         if (rayTraceResult == null || rayTraceResult.isNull() || blockData == null) {

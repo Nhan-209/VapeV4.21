@@ -8,7 +8,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.UtilityMod;
 import gg.vape.module.utility.RefillInventoryState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.ItemStackScoreUtil;
@@ -246,9 +245,6 @@ implements RefillInventoryState {
         return arrayList2;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void onEnable() {

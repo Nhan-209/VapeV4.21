@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 
 public class GameSettingsGuiScaleValue
@@ -12,9 +11,6 @@ extends Wrapper {
         return GameSettingsGuiScaleValue.c.getMappingsMapperCompat().Dv.V();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public GameSettingsGuiScaleValue(Object object) {
         super(object);

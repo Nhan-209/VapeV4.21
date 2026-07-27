@@ -1,7 +1,6 @@
 package gg.vape.module.render.entity;
 
 import gg.vape.module.render.entity.RenderEntityContext;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.RenderUtil;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.Entity;
@@ -19,9 +18,6 @@ public class ProjectedEntityBounds {
     public final boolean L;
     public double m = -100.0;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ProjectedEntityBounds(double offsetX, double offsetY, double offsetZ, AxisAlignedBB axisAlignedBB, Entity entity, RenderEntityContext renderEntityContext, Color color) {
         this.y = entity;

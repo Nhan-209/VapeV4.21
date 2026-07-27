@@ -5,7 +5,6 @@ import gg.vape.config.Profile;
 import gg.vape.config.ProfileModuleSnapshot;
 import gg.vape.config.ProfileSnapshot;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ConfirmationDialogComponent;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -33,9 +32,6 @@ extends Frame {
     private final PanelComponent CS = new PanelComponent(332.0, 182.0);
     private final IconButtonComponent CM;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void v() {

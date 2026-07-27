@@ -2,7 +2,6 @@ package gg.vape.module.blatant;
 
 import gg.vape.config.ClientSettings;
 import gg.vape.input.KeyBindingHelper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.KeyBinding;
 
 public class InvWalkSettingsState {
@@ -24,9 +23,6 @@ public class InvWalkSettingsState {
         return ClientSettings.B(keyBinding);
     }
 
-    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void C(KeyBinding keyBinding) {
         if (InvWalkSettingsState.S(keyBinding)) {

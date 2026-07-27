@@ -1,6 +1,5 @@
 package gg.vape.module.utility.clutch;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.EnumFacing;
 import gg.vape.wrapper.impl.Vec3;
@@ -22,9 +21,6 @@ public class PlacementTarget {
         return token;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EnumFacing getFacing() {
         return this.G;

@@ -9,7 +9,6 @@ import gg.vape.module.combat.aimassist.AimAssistRotationWorkerThread;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.rotation.PlayerMouseRotationApplier;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.Vec3d;
@@ -455,8 +454,5 @@ extends SubModule<AimAssist> {
         }
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

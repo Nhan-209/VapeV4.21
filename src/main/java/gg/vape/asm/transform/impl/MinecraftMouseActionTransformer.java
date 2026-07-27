@@ -10,7 +10,6 @@ import gg.vape.event.impl.EventGuiOpen;
 import gg.vape.event.impl.EventRightClickMouse;
 import gg.vape.event.impl.EventSendClickBlockToController;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MinecraftMouseActionTransformer
@@ -29,8 +28,5 @@ extends ClassTransformer {
         this.injectEventAtEntry(Vape.INSTANCE.getMappings().U.Of, EventSendClickBlockToController.class, new ITramsformNode[0]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

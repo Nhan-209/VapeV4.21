@@ -13,7 +13,6 @@ import gg.vape.module.render.entity.ProjectedEntityBounds;
 import gg.vape.module.render.entity.RenderEntityContext;
 import gg.vape.module.render.entity.RenderEntityContextCache;
 import gg.vape.render.OffscreenRenderContext;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
@@ -225,9 +224,6 @@ extends SubModule<ESP> {
         this.pendingBounds.clear();
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void S(EventPreRenderLiving eventPreRenderLiving) {

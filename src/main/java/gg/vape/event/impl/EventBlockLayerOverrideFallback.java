@@ -3,7 +3,6 @@ package gg.vape.event.impl;
 import gg.vape.Vape;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class EventBlockLayerOverrideFallback
 extends Event {
@@ -14,9 +13,6 @@ extends Event {
         return F;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public boolean fire() {

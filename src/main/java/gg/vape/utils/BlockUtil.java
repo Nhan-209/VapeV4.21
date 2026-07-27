@@ -1,7 +1,6 @@
 package gg.vape.utils;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.Block;
@@ -203,9 +202,6 @@ public class BlockUtil {
         return bl && bl2;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static AxisAlignedBB F(World world, BlockData blockData) {
         AxisAlignedBB axisAlignedBB = AxisAlignedBB.create((double)blockData.D() + 0.0, (double)blockData.B() + 0.0, (double)blockData.G() + 0.0, (double)blockData.D() + 1.0, (double)blockData.B() + 1.0, (double)blockData.G() + 1.0);

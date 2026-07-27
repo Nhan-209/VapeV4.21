@@ -11,7 +11,6 @@ import gg.vape.friend.PartyManager;
 import gg.vape.friend.ui.FriendAliasEditInputComponent;
 import gg.vape.friend.ui.OnlineFriendUiHelper;
 import gg.vape.friend.ui.PartyMemberEntryComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.FriendModuleInteractiveComponent;
 import gg.vape.ui.click.component.GlyphIconComponent;
@@ -767,9 +766,6 @@ extends ClickGuiPageBase {
         this.X(friendEntry);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         ClickGuiFriendsPage.j((int[])null);

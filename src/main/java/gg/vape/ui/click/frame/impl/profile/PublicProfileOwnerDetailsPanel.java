@@ -20,7 +20,6 @@ import gg.vape.event.EventListener;
 import gg.vape.event.impl.PublicProfileReviewEvent;
 import gg.vape.manager.client.PublicProfileManager;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.sync.RemoteProfileDataMap;
 import gg.vape.ui.click.component.ConfirmationDialogComponent;
 import gg.vape.ui.click.component.DualTextLabelRowComponent;
@@ -241,9 +240,6 @@ implements EventListener {
         return ApiServices.d().c().F(ProfilesSyncPayloadBuilder.T(Collections.singletonList(profile), null));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$markViewedReviewsAsRead$23(List<Long> list, ApiResponse<Boolean> apiResponse, Throwable throwable) {
         if (throwable != null) {

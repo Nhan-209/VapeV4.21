@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.gui;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.component.ClickCooldownState;
@@ -106,9 +105,6 @@ extends GuiComponent {
         return this.i;
     }
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean f$src$Z$qjydh9() {
         boolean bl = InteractiveComponent.h$src$Z$ql1ynz();

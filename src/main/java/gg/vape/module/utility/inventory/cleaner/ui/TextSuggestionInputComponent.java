@@ -3,7 +3,6 @@ package gg.vape.module.utility.inventory.cleaner.ui;
 import gg.vape.module.utility.inventory.cleaner.ui.TextSuggestionClickListener;
 import gg.vape.module.utility.inventory.cleaner.ui.TextSuggestionDecoratedInput;
 import gg.vape.module.utility.inventory.cleaner.ui.TextSuggestionRow;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.LabeledTextInputComponent;
 import gg.vape.ui.click.component.SquareIconButtonComponent;
@@ -137,7 +136,4 @@ extends FlowLayoutComponent {
         this.pB.remove(textSuggestionRow);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

@@ -6,7 +6,6 @@ import gg.vape.event.impl.EventPacketSend;
 import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
 import gg.vape.module.world.FastUseModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.SleepUtil;
 import gg.vape.utils.network.PacketDispatchTask;
 import gg.vape.utils.network.TimedPacketDispatchTask;
@@ -33,9 +32,6 @@ extends SubModule<FastUseModule> {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public FastUseDelayedPacketMode(Mod mod, String string) {
         super(mod, string);

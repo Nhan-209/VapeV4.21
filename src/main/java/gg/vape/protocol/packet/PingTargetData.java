@@ -2,7 +2,6 @@ package gg.vape.protocol.packet;
 
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.PingTargetKind;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.Nullable;
 
 public class PingTargetData {
@@ -25,9 +24,6 @@ public class PingTargetData {
     @Nullable
     private Integer o;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     PingTargetData(int n, int n2, int n3) {
         this.r = PingTargetKind.BLOCK;

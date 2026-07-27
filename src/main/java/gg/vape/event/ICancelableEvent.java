@@ -2,7 +2,6 @@ package gg.vape.event;
 
 import gg.vape.event.EventBus;
 import gg.vape.event.IEvent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public interface ICancelableEvent
 extends IEvent {
@@ -14,9 +13,6 @@ extends IEvent {
         return !iCancelableEvent.isCanceled();
     }
 
-    static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void setCancelled(boolean var1);
 }

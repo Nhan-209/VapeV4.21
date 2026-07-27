@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -23,9 +22,6 @@ extends IconButtonComponent {
         this.Ws = new ColorAnimation(0.1, color, color2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SquareIconButtonComponent(String string, double d) {
         this(string, d, new Color(0, 0, 0, 0), SquareIconButtonComponent.J.h, 8.0, 8.0);

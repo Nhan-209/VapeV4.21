@@ -9,7 +9,6 @@ import gg.vape.event.impl.EventKeyInputBase;
 import gg.vape.input.KeyboardInput;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.KeyBinding;
 import gg.vape.wrapper.impl.Minecraft;
 
@@ -55,8 +54,5 @@ extends EventKeyInputBase {
         return this.getKey() == ClientSettings.H(keyBinding);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

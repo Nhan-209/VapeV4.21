@@ -6,7 +6,6 @@ import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MRenderManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.nio.FloatBuffer;
@@ -50,9 +49,6 @@ extends Mapping {
         return this.Q.L(object, new Object[0]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static FloatBuffer y(MRenderLivingBase mRenderLivingBase, Object object) {
         return mRenderLivingBase.D(object);

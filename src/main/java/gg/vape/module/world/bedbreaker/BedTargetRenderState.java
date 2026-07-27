@@ -3,7 +3,6 @@ package gg.vape.module.world.bedbreaker;
 import func.skidline.RectData;
 import gg.vape.module.render.entity.ProjectedEntityBounds;
 import gg.vape.module.world.bedbreaker.BedTargetRenderPosition;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.TimerUtil;
 import gg.vape.utils.Vec3d;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -118,8 +117,5 @@ public class BedTargetRenderState {
         RenderUtil.Y();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

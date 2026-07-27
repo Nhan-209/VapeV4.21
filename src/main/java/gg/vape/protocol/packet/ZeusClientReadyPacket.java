@@ -2,7 +2,6 @@ package gg.vape.protocol.packet;
 
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.ZeusSerializablePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class ZeusClientReadyPacket
 implements ZeusSerializablePacket {
@@ -29,9 +28,6 @@ implements ZeusSerializablePacket {
         return Q;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         if (ZeusClientReadyPacket.q()) {

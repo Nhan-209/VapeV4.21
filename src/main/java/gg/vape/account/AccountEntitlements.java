@@ -1,7 +1,6 @@
 package gg.vape.account;
 
 import gg.vape.account.AccountInfoResponse;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,9 +25,6 @@ public class AccountEntitlements {
         return this.B;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     AccountEntitlements(boolean bl, boolean bl2, boolean bl3) {
         this.e = bl;

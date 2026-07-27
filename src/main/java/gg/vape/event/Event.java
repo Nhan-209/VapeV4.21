@@ -2,7 +2,6 @@ package gg.vape.event;
 
 import gg.vape.event.EventBus;
 import gg.vape.event.ICancelableEvent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.EntityRenderer;
 import gg.vape.wrapper.impl.FontRenderer;
@@ -85,9 +84,6 @@ implements ICancelableEvent {
         return this.isCanceled();
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public final WorldClient getWorld() {
         if (this.o == null) {

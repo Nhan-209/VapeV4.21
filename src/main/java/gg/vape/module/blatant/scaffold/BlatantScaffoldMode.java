@@ -18,7 +18,6 @@ import gg.vape.movement.PlayerMovementTaskManager;
 import gg.vape.movement.TargetPositionMovementTask;
 import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.TimerUtil;
@@ -403,9 +402,6 @@ extends SubModule<Scaffold> {
         return (float)Math.min(2.0 + Scaffold.Access.P(this.b, RotationUtil.c(), fArray[0]) / (double)n, 12.0);
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean updatePlacement(EntityPlayerSP entityPlayerSP) {
         double d = MathUtil.floor(entityPlayerSP.z());

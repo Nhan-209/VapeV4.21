@@ -1,6 +1,5 @@
 package gg.vape.module.world.bedbreaker;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.impl.RenderManager;
 import java.util.Objects;
@@ -80,9 +79,6 @@ public class BedTargetRenderPosition {
         return this.G;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public BedTargetRenderPosition(int n, int n2, int n3) {
         this.a = n;

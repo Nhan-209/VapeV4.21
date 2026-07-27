@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MFontRenderer;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.GlScissorRect;
 import gg.vape.utils.render.OpenGlBackendHolder;
@@ -235,9 +234,6 @@ extends Wrapper {
         d = new Integer[2];
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int drawStringWithShadow(String string, double d, double d2, Color color) {
         return this.i(string, d, d2, color, ForgeVersion.MC_1_16_5.d() ? MatrixStack.A() : null);

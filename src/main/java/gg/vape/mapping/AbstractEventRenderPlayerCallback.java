@@ -2,7 +2,6 @@ package gg.vape.mapping;
 
 import gg.vape.mapping.InsertedCallbackMarker;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class AbstractEventRenderPlayerCallback
 extends InsertedCallbackMarker {
@@ -21,9 +20,6 @@ extends InsertedCallbackMarker {
         s = string;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean access$000(Object object) {
         return AbstractEventRenderPlayerCallback.isPlayerInstance(object);

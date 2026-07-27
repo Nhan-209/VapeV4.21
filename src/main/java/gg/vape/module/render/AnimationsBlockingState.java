@@ -11,7 +11,6 @@ import gg.vape.module.combat.LeftClicker;
 import gg.vape.module.combat.SilentAura;
 import gg.vape.module.render.Animations;
 import gg.vape.module.render.animations.AnimationsMode;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.RandomValue;
 import gg.vape.wrapper.impl.Minecraft;
 
@@ -72,9 +71,6 @@ extends AnimationsMode {
         }
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void l(EventMouseButton eventMouseButton) {

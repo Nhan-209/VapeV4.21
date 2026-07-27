@@ -3,7 +3,6 @@ package gg.vape.input;
 import gg.vape.input.InputEventDispatcher;
 import gg.vape.input.InputEventHandler;
 import gg.vape.input.KeyboardCodeUtil;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class ExtendedMouseButtonReleaseInputHandler
 implements InputEventHandler {
@@ -18,9 +17,6 @@ implements InputEventHandler {
         return InputEventDispatcher.getInstance().getMouseState().setButtonState(KeyboardCodeUtil.s(l), false);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static boolean I() {
         boolean bl = ExtendedMouseButtonReleaseInputHandler.L();

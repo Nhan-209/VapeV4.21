@@ -3,7 +3,6 @@ package gg.vape.asm.matcher;
 import gg.vape.asm.matcher.FieldInsnPattern;
 import gg.vape.asm.matcher.InstructionPattern;
 import gg.vape.asm.matcher.MethodInsnPattern;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -18,9 +17,6 @@ public class MethodInstructionIndex {
     private MethodNode z;
     private static String[] c;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void s$src$V$s4j71d() {
         InsnList insnList = this.z.instructions;

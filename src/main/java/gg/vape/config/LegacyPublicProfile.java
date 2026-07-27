@@ -2,7 +2,6 @@ package gg.vape.config;
 
 import com.google.gson.JsonObject;
 import gg.vape.config.Profile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.Nullable;
 
 public class LegacyPublicProfile
@@ -29,9 +28,6 @@ extends Profile {
         super(string, string2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public int D() {

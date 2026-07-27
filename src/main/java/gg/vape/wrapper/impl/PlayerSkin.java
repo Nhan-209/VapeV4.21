@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.ResourceLocation;
@@ -8,9 +7,6 @@ import gg.vape.wrapper.impl.TextureAtlasSpriteInfo;
 
 public class PlayerSkin
 extends Wrapper {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public TextureAtlasSpriteInfo c() {
         return new TextureAtlasSpriteInfo(PlayerSkin.c.getMappingsMapperCompat().hU.S(this.I));

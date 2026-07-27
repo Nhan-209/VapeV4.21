@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.ImageRenderer;
@@ -86,9 +85,6 @@ extends GuiComponent {
         ImageRenderer.E(this.I, this.O ? (float)((int)this.G$src$D$1b2f02a()) : (float)this.G$src$D$1b2f02a(), this.O ? (float)((int)this.n()) : (float)this.n(), this.a, this.R, this.G, false);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void r(boolean bl) {
         this.O = bl;

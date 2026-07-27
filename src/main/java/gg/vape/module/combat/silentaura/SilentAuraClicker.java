@@ -7,7 +7,6 @@ import gg.vape.module.Category;
 import gg.vape.module.combat.ClickerMod;
 import gg.vape.module.combat.SilentAura;
 import gg.vape.module.render.Animations;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.BooleanValue;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 
@@ -68,9 +67,6 @@ extends ClickerMod {
         return new String(chars, 0, outIndex);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SilentAuraClicker(SilentAura silentAura) {
         super(c, 0, Category.b);

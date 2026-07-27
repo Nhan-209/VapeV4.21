@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
@@ -104,9 +103,6 @@ public class GlCapabilityState {
     public GlCapabilityState() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     static {
         if (GlCapabilityState.u() != null) {

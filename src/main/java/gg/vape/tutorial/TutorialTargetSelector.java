@@ -1,6 +1,5 @@
 package gg.vape.tutorial;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +33,6 @@ public abstract class TutorialTargetSelector<T extends GuiComponent> {
         return Z;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public TutorialTargetSelector(Class<T> clazz) {
         this.Y = clazz;

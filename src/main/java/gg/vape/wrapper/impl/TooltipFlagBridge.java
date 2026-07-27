@@ -1,15 +1,11 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class TooltipFlagBridge
 extends Wrapper {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public TooltipFlagBridge(Object object) {
         super(object);

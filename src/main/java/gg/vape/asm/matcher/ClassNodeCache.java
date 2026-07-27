@@ -2,7 +2,6 @@ package gg.vape.asm.matcher;
 
 import gg.vape.asm.matcher.ClassMethodReferenceIndex;
 import gg.vape.runtime.ClassBytecodeCache;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.HashMap;
 import java.util.Map;
 import org.objectweb.asm.ClassReader;
@@ -31,9 +30,6 @@ public class ClassNodeCache {
         return P.put(clazz, classNode);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean g() {
         return w;

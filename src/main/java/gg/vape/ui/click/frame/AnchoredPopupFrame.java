@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.frame.AnchoredPopupContentActivityPanel;
@@ -95,9 +94,6 @@ extends PopupFrame {
         return super.G(d, d2) || this.Ti.t();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void p(double d, double d2) {
         if (d > d2) {

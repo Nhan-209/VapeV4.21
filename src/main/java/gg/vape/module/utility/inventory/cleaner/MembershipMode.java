@@ -1,6 +1,5 @@
 package gg.vape.module.utility.inventory.cleaner;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.INamed;
 import java.util.Arrays;
 import java.util.List;
@@ -37,9 +36,6 @@ implements INamed {
         this.label = string2;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean matches(String string, String string2) {
         string = string.toLowerCase();

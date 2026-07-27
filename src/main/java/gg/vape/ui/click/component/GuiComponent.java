@@ -4,7 +4,6 @@ import func.skidline.RectData;
 import gg.vape.Vape;
 import gg.vape.input.MouseInput;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseButton;
@@ -554,9 +553,6 @@ implements GuiComponentContract {
         this.O(0.75).d(String.format("x %f, y %f, w %f, h %f", this.G$src$D$1b2f02a(), this.n(), this.A(), this.L()), this.G$src$D$1b2f02a(), this.n(), Color.WHITE);
     }
 
-    private static ObfuscatedRuntimeException e(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void E(GuiMouseListener guiMouseListener) {
         this.u.remove(guiMouseListener);

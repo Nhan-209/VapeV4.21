@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.GlStateManager;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -134,9 +133,6 @@ public class GlFramebuffer {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void S() {
         int n;

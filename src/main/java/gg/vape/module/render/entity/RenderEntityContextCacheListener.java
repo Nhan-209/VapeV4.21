@@ -12,7 +12,6 @@ import gg.vape.event.listener.EventTimingOverlayListener;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.render.entity.RenderEntityContext;
 import gg.vape.module.render.entity.RenderEntityContextCache;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.EntityPlayerSP;
@@ -97,8 +96,5 @@ implements EventListener {
         }
     }
 
-    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

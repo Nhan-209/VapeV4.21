@@ -1,13 +1,9 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import java.awt.Color;
 
 public class ProfileCardActionState {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static Color t(Color color, DoubleAnimation doubleAnimation, boolean bl) {
         if (color == null) {

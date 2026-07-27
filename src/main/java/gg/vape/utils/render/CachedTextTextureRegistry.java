@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.CachedTextTexture;
 import gg.vape.utils.render.CachedTextTextureKey;
 import gg.vape.wrapper.impl.Minecraft;
@@ -21,9 +20,6 @@ public class CachedTextTextureRegistry {
         e.put(cachedTextTextureKey, cachedTextTexture);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void f(String string) {
         H = string;

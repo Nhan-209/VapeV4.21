@@ -10,7 +10,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcher;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherGroup;
 import gg.vape.module.utility.inventory.cleaner.ToolInventoryItemMatchers;
 import gg.vape.module.utility.inventory.cleaner.WeaponInventoryItemMatchers;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.ArrayList;
@@ -74,9 +73,6 @@ public class InventoryItemMatcherRegistry {
         return Boolean.compare(hasPriorityFirst, hasPrioritySecond);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         HiddenInventoryItemMatchers.D();

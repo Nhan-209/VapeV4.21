@@ -2,7 +2,6 @@ package gg.vape.mapping.mappings;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MMappedClassSlotNRegistration
 extends Mapping {
@@ -25,9 +24,6 @@ extends Mapping {
         return g;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     static {
         if (MMappedClassSlotNRegistration.r() == 0) {

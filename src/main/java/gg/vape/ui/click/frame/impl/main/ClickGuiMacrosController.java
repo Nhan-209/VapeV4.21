@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.main;
 
 import gg.vape.Vape;
 import gg.vape.module.Macro;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.GlyphIconComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -126,9 +125,6 @@ public class ClickGuiMacrosController {
         this.L(macroCardComponent);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void L(@Nullable MacroCardComponent macroCardComponent) {
         if (this.m == null) {

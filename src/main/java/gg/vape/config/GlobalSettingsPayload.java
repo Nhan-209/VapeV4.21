@@ -2,7 +2,6 @@ package gg.vape.config;
 
 import com.google.gson.annotations.SerializedName;
 import gg.vape.config.SettingsPayload;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class GlobalSettingsPayload
 implements SettingsPayload {
@@ -47,9 +46,6 @@ implements SettingsPayload {
         this.U = bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static boolean f() {
         return r;

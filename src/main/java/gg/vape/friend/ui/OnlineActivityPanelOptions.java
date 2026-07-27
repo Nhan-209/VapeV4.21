@@ -11,7 +11,6 @@ import gg.vape.friend.ui.OnlineActivitySettingsFrame;
 import gg.vape.input.MouseClickRateTracker;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.BooleanValue;
 import gg.vape.wrapper.impl.Minecraft;
 import java.util.ArrayList;
@@ -41,9 +40,6 @@ implements EventListener {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public OnlineActivityPanelOptions() {
         this.H = BooleanValue.create(this, "CPS Display", true);

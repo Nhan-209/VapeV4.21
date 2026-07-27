@@ -7,7 +7,6 @@ import gg.vape.event.impl.EventPlayerTabOverlayDisplayNameLegacy;
 import gg.vape.friend.FriendAliasDisplayNameListener;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.world.ChestStealInventoryState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ITextComponent;
 import gg.vape.wrapper.impl.TextComponentString;
 import java.util.HashSet;
@@ -25,9 +24,6 @@ extends FriendAliasDisplayNameListener {
         }
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     @EventHandler
     public void D(EventNameFormat qr_02) {

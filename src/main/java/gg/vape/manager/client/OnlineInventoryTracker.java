@@ -5,7 +5,6 @@ import gg.vape.friend.activity.ActivityItemStack;
 import gg.vape.friend.activity.ActivityItemStackPayload;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.protocol.ZeusConnectionManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.Arrays;
@@ -82,9 +81,6 @@ public class OnlineInventoryTracker {
         Z = bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void A() {
         this.c = false;

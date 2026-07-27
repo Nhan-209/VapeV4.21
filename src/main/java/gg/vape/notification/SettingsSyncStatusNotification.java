@@ -3,7 +3,6 @@ package gg.vape.notification;
 import gg.vape.notification.Notification;
 import gg.vape.notification.NotificationType;
 import gg.vape.notification.TextNotificationContent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class SettingsSyncStatusNotification
 extends Notification {
@@ -75,9 +74,6 @@ extends Notification {
         this.K = string;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SettingsSyncStatusNotification() {
         super(NotificationType.INFO, "Saving settings", new TextNotificationContent("Please wait while your settings save..."), 0.0, 0.0, 10000L);

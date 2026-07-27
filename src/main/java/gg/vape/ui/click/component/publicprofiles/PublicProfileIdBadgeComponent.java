@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.publicprofiles;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -57,9 +56,6 @@ extends GuiComponent {
         return String.valueOf(l);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public PublicProfileIdBadgeComponent(long l) {
         this(l, 0.6);

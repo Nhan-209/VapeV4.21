@@ -1,7 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.ui.OnlineFriendActionPanel;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.BooleanValue;
 
 class OnlineFriendNotificationsValue
@@ -21,9 +20,6 @@ extends BooleanValue {
         OnlineFriendActionPanel.O(this.y).O(bl);
     }
 
-    private static ObfuscatedRuntimeException e(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     OnlineFriendNotificationsValue(OnlineFriendActionPanel onlineFriendActionPanel, Object object, String string, boolean bl) {
         super(object, string, bl);

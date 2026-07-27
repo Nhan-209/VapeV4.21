@@ -4,7 +4,6 @@ import gg.vape.event.EventHandler;
 import gg.vape.event.EventListener;
 import gg.vape.event.impl.EventKeyPress;
 import gg.vape.event.impl.EventMouseButton;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.unmap.Bendable;
 import java.util.ArrayList;
@@ -46,9 +45,6 @@ implements EventListener {
         E = upArray;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     static {
         BendableInputDispatcher.T(new GuiComponent[1]);

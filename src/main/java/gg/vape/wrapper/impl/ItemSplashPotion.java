@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MItemPotion;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.BiomeProvider;
 import gg.vape.wrapper.impl.DataComponents;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -45,9 +44,6 @@ extends Item {
         return arrayList;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean isSplashPotion(ItemStack itemStack) {
         if (ForgeVersion.MC_1_12_2.d()) {

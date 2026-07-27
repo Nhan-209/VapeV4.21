@@ -15,7 +15,6 @@ import gg.vape.protocol.ZeusConnectionManager;
 import gg.vape.protocol.packet.GroupCreateResponsePacket;
 import gg.vape.protocol.packet.GroupCreateStatus;
 import gg.vape.protocol.packet.GroupInviteResponsePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.PopupFrame;
@@ -68,9 +67,6 @@ extends PanelComponent {
         Vape.INSTANCE.getOnlineManager().y().C(new PartyInvite(Vape.INSTANCE.getOnlineManager().r()));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$null$1() {
         this.i1 = false;

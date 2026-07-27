@@ -1,6 +1,5 @@
 package gg.vape.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.Value;
 import gg.vape.value.ValueCondition;
 import java.util.ArrayList;
@@ -34,9 +33,6 @@ extends Value<K, T> {
         super(object, string, k);
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         if (ConditionalValue.o$src$ALjava_lang_String_$17s942p() != null) {

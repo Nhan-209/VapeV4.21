@@ -1,6 +1,5 @@
 package gg.vape.ui.color;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
@@ -123,9 +122,6 @@ public enum NamedColorPreset {
         return this.E;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static double b(double[] dArray, double[] dArray2) {
         return Math.sqrt(Math.pow(dArray[0] - dArray2[0], 2.0) + Math.pow(dArray[1] - dArray2[1], 2.0) + Math.pow(dArray[2] - dArray2[2], 2.0));

@@ -1,7 +1,6 @@
 package gg.vape.tutorial;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.tutorial.TutorialAction;
 import gg.vape.tutorial.TutorialActionFinishClickHandler;
 import gg.vape.tutorial.TutorialActionNextClickHandler;
@@ -46,9 +45,6 @@ public class TutorialPage {
         return q;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         TutorialPage.d(new GuiComponent[2]);

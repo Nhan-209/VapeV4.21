@@ -3,7 +3,6 @@ package gg.vape.protocol.event;
 import gg.vape.friend.UserModel;
 import gg.vape.protocol.ZeusClient;
 import gg.vape.protocol.event.OnlineEvent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class FriendRequestEvent
 extends OnlineEvent {
@@ -22,9 +21,6 @@ extends OnlineEvent {
         return 0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public FriendRequestEvent(ZeusClient oZ, UserModel oj_12) {
         super(oZ);

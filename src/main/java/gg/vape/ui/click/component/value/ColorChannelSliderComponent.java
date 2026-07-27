@@ -3,7 +3,6 @@ package gg.vape.ui.click.component.value;
 import func.skidline.RectData;
 import gg.vape.Vape;
 import gg.vape.input.MouseInput;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.animation.DoubleAnimation;
@@ -330,9 +329,6 @@ extends SliderComponentBase {
         return this.R;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ColorChannelSliderComponent(ColorPaletteSliderComponent colorPaletteSliderComponent) {
         this(ColorChannelType.BLOCK_CHILD, colorPaletteSliderComponent.Z$src$Lgg_vape_value_ColorValue_$1er4i1l());

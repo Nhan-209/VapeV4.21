@@ -1,7 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.ui.PartyDetailsPanel;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import java.awt.Point;
 
@@ -22,8 +21,5 @@ implements GuiMouseListener {
         return GuiMouseListener.super.Q(point);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

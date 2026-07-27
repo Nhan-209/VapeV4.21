@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEntityRenderer;
 import gg.vape.module.control.SharedModuleControlClaims;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ActiveRenderInfo;
@@ -77,9 +76,6 @@ extends Wrapper {
         MEntityRenderer.N(EntityRenderer.c.getMappings().RY, this.I, f);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void m(float f, long l) {
         MEntityRenderer.X(EntityRenderer.c.getMappings().RY, this.I, f, l);

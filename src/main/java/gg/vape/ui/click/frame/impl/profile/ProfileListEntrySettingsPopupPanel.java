@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GlyphIconComponent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.TextInputComponentBase;
@@ -17,9 +16,6 @@ extends PanelComponent {
     final TextInputComponentBase cc;
     final TruncatedTextComponent cf;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void c() {

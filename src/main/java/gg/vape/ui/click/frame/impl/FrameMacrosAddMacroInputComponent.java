@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.TextInputComponentBase;
 import gg.vape.ui.click.frame.impl.FrameMacros;
 import gg.vape.ui.click.frame.impl.FrameMacrosAddMacroClickHandler;
@@ -45,9 +44,6 @@ extends TextInputComponentBase {
         return frameMacrosAddMacroInputComponent.Xa;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double C() {

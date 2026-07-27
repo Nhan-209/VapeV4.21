@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.module.ModuleComponent;
 import gg.vape.ui.click.frame.impl.ModuleCategoryFrame;
 import gg.vape.ui.click.frame.impl.ModuleSearchFrameHeader;
@@ -65,9 +64,6 @@ extends ModuleCategoryFrame {
         this.M((double)Minecraft.J() / (4.0 * Vape.INSTANCE.getClientSettings().s()) - this.A() / 2.0, 7.0);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void v() {

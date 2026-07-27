@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MItemAttributeModifiersComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import java.util.function.Predicate;
 
@@ -17,9 +16,6 @@ extends Mapping {
         return this.n.L(object, object2, Float.valueOf(f), predicate);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static Object A(MEntityRayTraceBridge mEntityRayTraceBridge, Object object, Object object2, float f, Predicate predicate) {
         return mEntityRayTraceBridge.B(object, object2, f, predicate);

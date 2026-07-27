@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Objects;
 
 class CachedTextTextureKey {
@@ -16,9 +15,6 @@ class CachedTextTextureKey {
         this.J = n;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int H() {
         return this.J;

@@ -22,7 +22,6 @@ import gg.vape.module.utility.inventory.ItemStackActionPredicate;
 import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.TimerUtil;
@@ -140,9 +139,6 @@ extends Mod {
     void d(String string, Object ... objectArray) {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public AutoMLG() {
         super("MLG", (int)MAGIC_ID, Category.m, "Automatically places water under you when you fall");

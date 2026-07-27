@@ -1,14 +1,10 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.TextureObjectHandle;
 
 public class BlockStateBridge
 extends Wrapper {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public int v() {
         Object object = this.d();

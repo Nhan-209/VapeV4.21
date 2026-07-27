@@ -2,7 +2,6 @@ package gg.vape.mapping;
 
 import gg.vape.mapping.Mapping;
 import gg.vape.module.MinecraftVersionConstraint;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -76,9 +75,6 @@ public abstract class MappingMemberBuilder<T extends MappingMemberBuilder, C> {
         return (T)this;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public T A(MinecraftVersionConstraint minecraftVersionConstraint, String string) {
         this.K.put(minecraftVersionConstraint, string);

@@ -9,7 +9,6 @@ import gg.vape.event.impl.EventLivingUpdate;
 import gg.vape.event.impl.EventPostTick;
 import gg.vape.event.impl.EventPreAttack;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.wrapper.impl.AttributeModifier;
@@ -239,9 +238,6 @@ implements EventListener {
         return e;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean s() {
         return Vape.INSTANCE.getClientSettings().I.L();

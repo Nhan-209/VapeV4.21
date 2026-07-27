@@ -3,7 +3,6 @@ package gg.vape.value;
 import com.google.gson.JsonObject;
 import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
@@ -182,7 +181,4 @@ extends ConditionalValue<ModeSelection, ModeValue> {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

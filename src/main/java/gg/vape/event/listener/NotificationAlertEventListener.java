@@ -6,7 +6,6 @@ import gg.vape.event.EventListener;
 import gg.vape.event.EventPriority;
 import gg.vape.event.impl.EventPostRenderTick;
 import gg.vape.notification.NotificationType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.lwjgl.opengl.GL11;
 
 public class NotificationAlertEventListener
@@ -27,9 +26,6 @@ implements EventListener {
         return 0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         NotificationAlertEventListener.E(77);

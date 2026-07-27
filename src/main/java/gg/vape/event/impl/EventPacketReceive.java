@@ -3,7 +3,6 @@ package gg.vape.event.impl;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.NetHandlerPlayClientImpl;
 import gg.vape.wrapper.impl.NetworkManager;
 import gg.vape.wrapper.impl.Packet;
@@ -24,9 +23,6 @@ extends Event {
         return x;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Packet getPacket() {
         if (this.w == null) {

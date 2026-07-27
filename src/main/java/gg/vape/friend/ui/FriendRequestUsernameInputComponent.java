@@ -1,16 +1,12 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.ui.FriendRequestsPanel;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.TextInputComponentBase;
 
 class FriendRequestUsernameInputComponent
 extends TextInputComponentBase {
     final FriendRequestsPanel qM;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     FriendRequestUsernameInputComponent(FriendRequestsPanel friendRequestsPanel, String string) {
         super(string);

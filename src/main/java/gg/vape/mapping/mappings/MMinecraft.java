@@ -9,7 +9,6 @@ import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingFieldBuilder;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.MappingMethodBuilder;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.KeyBinding;
@@ -329,9 +328,6 @@ extends Mapping {
         this.w.setObject(object, object2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Object u(Object object) {
         return this.D.L(object, new Object[0]);

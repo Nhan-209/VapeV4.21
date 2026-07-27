@@ -10,7 +10,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherRegistry;
 import gg.vape.module.utility.inventory.cleaner.StringInventoryItemMatcher;
 import gg.vape.module.utility.inventory.cleaner.StringInventoryItemMatcherBuilder;
 import gg.vape.module.utility.inventory.cleaner.StringMatchOperator;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.DataComponentMap;
 import gg.vape.wrapper.impl.DataComponents;
 import gg.vape.wrapper.impl.FoodProperties;
@@ -64,8 +63,5 @@ public class FoodInventoryItemMatchers {
         return Float.compare(f, f3);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

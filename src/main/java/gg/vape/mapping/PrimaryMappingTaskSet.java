@@ -63,7 +63,6 @@ import gg.vape.mapping.ThreadBoundTickEventMappingTask;
 import gg.vape.mapping.VisGraphXRayVisibilityMappingTask;
 import gg.vape.mapping.WorldEntityJoinEventMappingTask;
 import gg.vape.mapping.WorldTimeEventMappingTask;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class PrimaryMappingTaskSet
@@ -214,9 +213,6 @@ extends MappingTaskSet {
         this.S = true;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void L() {
         RenderWorldPassExecutorDrainMappingTask renderWorldPassExecutorDrainMappingTask = new RenderWorldPassExecutorDrainMappingTask();

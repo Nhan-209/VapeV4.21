@@ -21,7 +21,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryFilterAction;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemCategoryRegistry;
 import gg.vape.module.utility.inventory.cleaner.ItemInventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.SlotInventoryFilterRule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.RotationUtil;
@@ -243,9 +242,6 @@ implements InventoryActionModule {
         this.bootsKeywords = new String[]{"boots"};
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static List<Slot> lambda$getFilterClicks$1(ItemInventoryFilterRule itemInventoryFilterRule) {
         return new ArrayList<>();

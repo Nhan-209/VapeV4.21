@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.gui;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.gui.TextLabel;
@@ -45,9 +44,6 @@ extends TextLabel {
         return super.T(color);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double x() {

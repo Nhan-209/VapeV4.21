@@ -3,7 +3,6 @@ package gg.vape.module.utility.inventory.cleaner;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterPreset;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemCategory;
 import gg.vape.module.utility.inventory.cleaner.ItemFilterSelection;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
@@ -29,9 +28,6 @@ public interface InventoryFilterRule {
     @NotNull
     public InventoryItemCategory o();
 
-    static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void y();
 

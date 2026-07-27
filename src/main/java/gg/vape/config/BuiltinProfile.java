@@ -5,7 +5,6 @@ import gg.vape.config.ModuleProfileMetadataCodec;
 import gg.vape.config.Profile;
 import gg.vape.manager.ModManager;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import java.util.ArrayList;
 
@@ -49,9 +48,6 @@ extends Profile {
 
     public abstract boolean E();
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         BuiltinProfile.b(null);

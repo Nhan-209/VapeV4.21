@@ -1,7 +1,6 @@
 package gg.vape.runtime;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class NativeEventBridge {
     public static void reg(Class var0, int var1) {
@@ -13,8 +12,5 @@ public class NativeEventBridge {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException var0) {
-        return var0;
-    }
 }
 

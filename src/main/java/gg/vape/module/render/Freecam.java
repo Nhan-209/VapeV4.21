@@ -12,7 +12,6 @@ import gg.vape.module.render.freecam.FreecamLegacyController;
 import gg.vape.module.render.freecam.FreecamModernController;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.PlayerSimulationUtil;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.NumberValue;
@@ -194,8 +193,5 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

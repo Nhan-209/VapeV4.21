@@ -10,7 +10,6 @@ import gg.vape.module.combat.AttackPacketTimingTracker;
 import gg.vape.module.utility.AutoMLG;
 import gg.vape.module.utility.MLGImpactState;
 import gg.vape.module.utility.inventory.ItemStackActionPredicate;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.TimerUtil;
 import gg.vape.utils.datas.BlockCoordinate;
 import gg.vape.wrapper.Wrapper;
@@ -197,9 +196,6 @@ public class BlockInHotbarSlotHelper {
         return this.equipMlgItem(slot);
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void executeClick(@NotNull InventoryClick inventoryClick, int n) {
         this.autoMLG.kN.reset();

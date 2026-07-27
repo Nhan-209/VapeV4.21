@@ -29,7 +29,6 @@ import gg.vape.mapping.runtime.MemberNameRemapTableV56;
 import gg.vape.mapping.runtime.MemberNameRemapTableV60;
 import gg.vape.mapping.runtime.MemberNameRemapTableV61;
 import gg.vape.runtime.NativeBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -189,9 +188,6 @@ public class RuntimeNameMappingRegistry {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static String remapClassName(String string) {
         if (l == null) {

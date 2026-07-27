@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
 import gg.vape.module.none.XRay;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.WorldRenderer;
 import java.nio.ByteOrder;
 
@@ -24,9 +23,6 @@ extends Event {
         W = new EventListeners();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static EventListeners getEventListeners() {
         return W;

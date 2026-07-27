@@ -11,7 +11,6 @@ import gg.vape.module.render.esp.ESP3D;
 import gg.vape.module.render.esp.ESPOutline;
 import gg.vape.module.render.esp.ESPSkeleton;
 import gg.vape.render.OffscreenRenderContext;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.utils.MutableColor;
 import gg.vape.value.BooleanValue;
@@ -82,9 +81,6 @@ extends Mod {
         this.addValue(this.H, this.O, this.A, this.K, this.c, this.D, this.J, this.U, this.I, this.a, this.C, this.Z);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public MutableColor J(EntityPlayerSP entityPlayerSP, Object object) {
         if (OffscreenRenderContext.W()) {

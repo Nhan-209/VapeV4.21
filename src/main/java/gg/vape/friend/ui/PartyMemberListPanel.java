@@ -1,7 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.ui.PartyMemberRow;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.WrappingTextLabelComponent;
 import gg.vape.ui.click.layout.BottomUpFlowLayout;
@@ -67,8 +66,5 @@ extends PanelComponent {
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

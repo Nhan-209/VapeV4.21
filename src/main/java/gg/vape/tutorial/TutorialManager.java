@@ -2,7 +2,6 @@ package gg.vape.tutorial;
 
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.tutorial.TutorialFinishedPanel;
 import gg.vape.tutorial.TutorialFrame;
 import gg.vape.tutorial.TutorialNextPromptPanel;
@@ -123,9 +122,6 @@ public class TutorialManager {
         this.L.l$src$V$1mibm4x();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void v(TutorialPage tutorialPage) {
         this.W.add(tutorialPage);

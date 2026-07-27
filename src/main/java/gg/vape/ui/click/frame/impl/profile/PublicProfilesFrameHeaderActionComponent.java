@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.SquareIconButtonComponent;
 import gg.vape.ui.click.frame.Frame;
@@ -35,9 +34,6 @@ extends FrameHeaderComponent {
         return this;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String K$src$Ljava_lang_String_$bvh3j6() {
         return this.I;

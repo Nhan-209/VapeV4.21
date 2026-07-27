@@ -3,7 +3,6 @@ package gg.vape.ui.click;
 import gg.vape.Vape;
 import gg.vape.input.InputEventDispatcher;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class GuiScreenNativeCallbackBridge {
     public static void keyTyped(Object screen, char typedChar, int keyCode) {
@@ -37,9 +36,6 @@ public class GuiScreenNativeCallbackBridge {
     public static void mouseMovedOrUp(Object screen, int mouseX, int mouseY, int button) {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException exception) {
-        return exception;
-    }
 
     public static boolean onNotification(int code, long first, long second) {
         return InputEventDispatcher.getInstance().dispatch(code, first, second);

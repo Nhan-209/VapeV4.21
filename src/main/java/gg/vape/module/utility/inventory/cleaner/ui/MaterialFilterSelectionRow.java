@@ -2,7 +2,6 @@ package gg.vape.module.utility.inventory.cleaner.ui;
 
 import gg.vape.module.utility.inventory.cleaner.ItemFilterSelection;
 import gg.vape.module.utility.inventory.cleaner.ui.MaterialFilterSelectionRowContent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -26,9 +25,6 @@ extends GuiComponent {
         ImageRenderer.E(this.closeIconColorAnimation.getInterpolatedColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 4.5), (float)(this.n() + 2.0), CLOSE_ICON, 7.0f, 7.0f, false);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public MaterialFilterSelectionRow(ItemFilterSelection itemFilterSelection) {
         this.lineColorAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), MaterialFilterSelectionRow.J.d);

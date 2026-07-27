@@ -7,7 +7,6 @@ import gg.vape.mapping.EventInjectionSpec;
 import gg.vape.mapping.JavassistMappingTask;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class NetworkPacketEventMappingTask
 extends JavassistMappingTask {
@@ -20,9 +19,6 @@ extends JavassistMappingTask {
         this.k();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void k() {
         EventInjectionSpec eventInjectionSpec;

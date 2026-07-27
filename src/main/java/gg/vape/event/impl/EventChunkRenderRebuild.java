@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
 import gg.vape.module.none.XRay;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class EventChunkRenderRebuild
 extends Event {
@@ -24,9 +23,6 @@ extends Event {
         return t;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     @Override
     public EventListeners getListeners() {

@@ -6,7 +6,6 @@ import gg.vape.event.impl.EventPreTick;
 import gg.vape.event.impl.EventWorldTime;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.NumberValue;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.WorldClient;
@@ -25,9 +24,6 @@ extends HudModule {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void g(EventPreRenderTick eventPreRenderTick) {

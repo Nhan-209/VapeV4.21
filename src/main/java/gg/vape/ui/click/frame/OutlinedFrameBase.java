@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.utils.render.GuiRenderPrimitives;
 
@@ -12,9 +11,6 @@ extends Frame {
         l6 = bl;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean D$src$Z$g1pigg() {
         return l6;

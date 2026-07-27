@@ -6,7 +6,6 @@ import gg.vape.event.impl.EventPacketSend;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class AntiFML
 extends Mod {
@@ -32,8 +31,5 @@ extends Mod {
         super("Anti-FML", (int)MOD_ID, Category.w, "Some servers prevent Forge from connecting\nthis will bypass that.\nYou must reconnect to the server inorder for this to work.");
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MGuiChest;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GuiContainer;
 import gg.vape.wrapper.impl.Inventory;
@@ -27,8 +26,5 @@ extends GuiContainer {
         return new Inventory(MGuiChest.F(GuiChest.c.getMappingsMapperCompat().Ch, this.I));
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

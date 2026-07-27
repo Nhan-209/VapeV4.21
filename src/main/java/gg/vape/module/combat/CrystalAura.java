@@ -15,7 +15,6 @@ import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.Freecam;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.ActiveModuleStackFrame;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.MathUtil;
@@ -272,9 +271,6 @@ extends Mod {
         return 0.0f;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void onEnable() {

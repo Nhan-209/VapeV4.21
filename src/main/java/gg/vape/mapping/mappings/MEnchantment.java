@@ -6,7 +6,6 @@ import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingFieldBuilder;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MEnchantments;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MEnchantment
@@ -51,9 +50,6 @@ extends Mapping {
         return mEnchantment.a();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public MEnchantment() {
         this(MEnchantments.u());

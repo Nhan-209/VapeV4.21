@@ -4,7 +4,6 @@ import gg.vape.mapping.EventInjectionSpec;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.runtime.ClassByteCursor;
 import gg.vape.runtime.NativeBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -174,9 +173,6 @@ public class ClassBytecodeCache {
         return byArray[classByteCursor.G++];
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static int J(byte[] byArray, ClassByteCursor classByteCursor) {
         ByteBuffer byteBuffer;

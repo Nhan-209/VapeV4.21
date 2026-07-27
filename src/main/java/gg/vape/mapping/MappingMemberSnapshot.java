@@ -2,7 +2,6 @@ package gg.vape.mapping;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MappingMemberSnapshot {
     private Class[] t;
@@ -15,9 +14,6 @@ public class MappingMemberSnapshot {
     private String b;
     private Class l;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String a() {
         return MappedClasses.b(this.I);

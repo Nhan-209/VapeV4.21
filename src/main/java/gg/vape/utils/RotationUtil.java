@@ -5,7 +5,6 @@ import gg.vape.combat.AttackStrengthTracker;
 import gg.vape.config.ClientSettings;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.FastAtanMath;
 import gg.vape.utils.ItemStackScoreUtil;
@@ -779,9 +778,6 @@ public class RotationUtil {
         return d;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static float S(double d, double d2, double d3, double d4) {
         double d5 = d3 - d;

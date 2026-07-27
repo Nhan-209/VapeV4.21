@@ -1,6 +1,5 @@
 package gg.vape.friend.ui;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SpacerComponent;
 import gg.vape.ui.click.component.gui.TextButton;
@@ -14,9 +13,6 @@ public class OnlineConnectionStatusPanelBody
 extends PanelComponent {
     private static boolean dw;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static void lambda$new$0() {
         OnlineConnectionSettingsFrame.x4.e(true);

@@ -1,7 +1,6 @@
 package gg.vape.module.utility.inventory.cleaner.ui;
 
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryItemPreviewComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -65,8 +64,5 @@ extends GuiComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseClickButton;
 import gg.vape.ui.click.component.layout.PaddedComponent;
@@ -17,9 +16,6 @@ implements GuiMouseListener {
     final PublicProfileSearchFilterPanel L;
     final AtomicBoolean f;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     PublicProfileFilterTokenClickListener(PublicProfileSearchFilterPanel publicProfileSearchFilterPanel, AtomicBoolean atomicBoolean, PaddedComponent mn_12, PublicProfileFilterTokenComponent _j_02) {
         this.L = publicProfileSearchFilterPanel;

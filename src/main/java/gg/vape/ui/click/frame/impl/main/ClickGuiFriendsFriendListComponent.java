@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.main;
 
 import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.OnlineStatus;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.TruncatedTextComponent;
@@ -216,9 +215,6 @@ extends InteractiveComponent {
         this.Zs.n(bl);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         ZG = "settingdots";

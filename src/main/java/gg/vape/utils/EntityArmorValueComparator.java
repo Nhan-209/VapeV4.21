@@ -1,7 +1,6 @@
 package gg.vape.utils;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityPlayer;
@@ -26,9 +25,6 @@ implements Comparator<Entity> {
         return Float.compare(entityPlayerSP.getDistanceToEntity(entity), entityPlayerSP.getDistanceToEntity(entity2));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private float m(Entity entity) {
         float f = 0.0f;

@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl;
 
 import gg.vape.account.MinecraftSessionWrapper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.SimpleTextLabelComponent;
 import gg.vape.ui.click.component.SpacerComponent;
@@ -86,9 +85,6 @@ extends Frame {
         GuiRenderPrimitives.y(0.0f, 0.0f, Minecraft.J(), Minecraft.h(), new Color(0, 0, 0, 255));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static void W(SessionSpoofFrame sessionSpoofFrame) {
         sessionSpoofFrame.W();

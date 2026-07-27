@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl;
 
 import func.skidline.RectData;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class TextGuiModuleRenderState {
     private float T;
@@ -38,9 +37,6 @@ public class TextGuiModuleRenderState {
         this.B = bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean W() {
         return this.W;

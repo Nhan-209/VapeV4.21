@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MRenderManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ActiveRenderInfo;
 import gg.vape.wrapper.impl.Entity;
@@ -75,9 +74,6 @@ extends Wrapper {
         return new ActiveRenderInfo(MRenderManager.e(RenderManager.c.getMappings().CA, this.I));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static double getInterpolatedRenderPosY() {
         return A;

@@ -8,7 +8,6 @@ import gg.vape.event.impl.EventPreAttack;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.PlayerControllerMPEventMappingTask;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class PlayerControllerMPTransformer
 extends ClassTransformer {
@@ -28,9 +27,6 @@ extends ClassTransformer {
         super(MappedClasses.ld);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void w(int n) {
         D = n;

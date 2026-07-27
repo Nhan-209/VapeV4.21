@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.online;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.value.BooleanToggleComponent;
 import gg.vape.ui.click.frame.impl.online.OnlineAccountSettingsPageComponent;
 import gg.vape.value.BooleanValue;
@@ -26,9 +25,6 @@ extends BooleanToggleComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void u() {

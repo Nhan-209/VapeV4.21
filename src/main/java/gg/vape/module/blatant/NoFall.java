@@ -9,7 +9,6 @@ import gg.vape.input.KeyBindingHelper;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.blatant.Fly;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.value.ModeValue;
@@ -45,9 +44,6 @@ extends Mod {
         return true;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public NoFall() {
         super("NoFall", (int)k, Category.w, "Prevents taking fall damage.\nThis may not bypass AntiCheats.");

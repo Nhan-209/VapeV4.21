@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.frame.ToggleableFrameHeaderComponent;
 
@@ -16,9 +15,6 @@ implements GuiClickListener {
         this.w.R();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     ToggleableFrameHeaderToggleClickHandler(ToggleableFrameHeaderComponent toggleableFrameHeaderComponent) {
         this.w = toggleableFrameHeaderComponent;

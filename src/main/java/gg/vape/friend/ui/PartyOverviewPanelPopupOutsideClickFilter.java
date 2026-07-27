@@ -1,7 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.ui.PartyDetailsPanel;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.frame.PopupFrame;
 import java.awt.Point;
@@ -11,9 +10,6 @@ implements GuiMouseListener {
     final PopupFrame v;
     final PartyDetailsPanel I;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public PartyOverviewPanelPopupOutsideClickFilter(PartyDetailsPanel partyDetailsPanel, PopupFrame popupFrame) {
         this.I = partyDetailsPanel;

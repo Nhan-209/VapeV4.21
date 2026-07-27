@@ -5,7 +5,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.blatant.HitBoxes;
 import gg.vape.module.combat.Reach;
 import gg.vape.module.control.SharedModuleControlClaims;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.BlockPos;
@@ -211,9 +210,6 @@ public class MouseOverRayTraceUpdater {
         return EntityRayTraceResult.x(entity2, vec33);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void b(boolean bl) {
         if (t == null) {

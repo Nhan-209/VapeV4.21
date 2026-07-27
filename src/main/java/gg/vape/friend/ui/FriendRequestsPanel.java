@@ -8,7 +8,6 @@ import gg.vape.friend.ui.FriendRequestListPanel;
 import gg.vape.friend.ui.FriendRequestUsernameInputComponent;
 import gg.vape.friend.ui.OnlineFriendUiHelper;
 import gg.vape.friend.ui.UsernameEditorPanel;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SpacerComponent;
 import gg.vape.ui.click.component.TextInputComponentBase;
@@ -62,8 +61,5 @@ extends PanelComponent {
         super.c();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

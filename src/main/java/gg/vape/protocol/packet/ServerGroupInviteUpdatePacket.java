@@ -4,7 +4,6 @@ import gg.vape.friend.UserModel;
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.GroupInviteUpdateStatus;
 import gg.vape.protocol.packet.ZeusSerializablePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,9 +61,6 @@ implements ZeusSerializablePacket {
         return this.p;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     @Override
     public void S(ZeusPacketBuffer gx_12) {

@@ -7,7 +7,6 @@ import gg.vape.module.combat.LeftClicker;
 import gg.vape.module.combat.Sprint;
 import gg.vape.module.combat.VelocityPacketReceiveMode;
 import gg.vape.module.combat.WTap;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class BuiltinProfileState
@@ -33,8 +32,5 @@ extends BuiltinProfile {
         super(t);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

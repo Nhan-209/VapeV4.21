@@ -2,7 +2,6 @@ package gg.vape.input;
 
 import gg.vape.input.InputEventDispatcher;
 import gg.vape.input.MouseInputState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Minecraft;
 
 public class MouseInput {
@@ -16,9 +15,6 @@ public class MouseInput {
         return MouseInput.O().isButtonDown(n);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int u() {
         return Minecraft.h() - MouseInput.O().getMouseY();

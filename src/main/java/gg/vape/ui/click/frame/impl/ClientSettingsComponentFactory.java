@@ -12,7 +12,6 @@ import gg.vape.module.none.ClientSettings;
 import gg.vape.protocol.ZeusConnectionManager;
 import gg.vape.protocol.packet.GroupCreateResponsePacket;
 import gg.vape.protocol.packet.GroupCreateStatus;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ColorDividerComponent;
 import gg.vape.ui.click.component.DropdownSelectComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -58,7 +57,7 @@ public final class ClientSettingsComponentFactory {
 
     private static void lambda$createMainChildren$9() {
         Vape.debugLog("Saving settings...");
-        JsonObject jsonObject = Vape.INSTANCE.getSyncThread().I(true);
+        JsonObject jsonObject = Vape.INSTANCE.getSyncThread().buildSettingsPayload(true);
         ApiServices.d().c().a(jsonObject).thenAccept(ClientSettingsComponentFactory::lambda$null$7).exceptionally(ClientSettingsComponentFactory::lambda$null$8);
     }
 
@@ -198,9 +197,6 @@ public final class ClientSettingsComponentFactory {
         Vape.debugLog("response = " + apiResponse);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private ClientSettingsComponentFactory() {
     }

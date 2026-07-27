@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl.main;
 import func.skidline.RectData;
 import gg.vape.Vape;
 import gg.vape.config.Profile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.MousePosition;
@@ -116,9 +115,6 @@ extends InteractiveComponent {
         this.iJ = bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String O$src$Ljava_lang_String_$1yvr8j1() {
         return this.Q;

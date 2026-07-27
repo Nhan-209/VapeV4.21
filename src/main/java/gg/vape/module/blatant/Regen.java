@@ -4,7 +4,6 @@ import gg.vape.event.EventHandler;
 import gg.vape.event.impl.EventPrePlayerTick;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.NumberValue;
 import gg.vape.wrapper.impl.C03PacketPlayer;
 import gg.vape.wrapper.impl.EntityPlayerSP;
@@ -35,8 +34,5 @@ extends Mod {
         super("Regen", (int)MOD_ID, Category.w, "Regenerates health quicker.");
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

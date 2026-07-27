@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl.profile;
 import gg.vape.Vape;
 import gg.vape.config.Profile;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -115,9 +114,6 @@ extends SettingsSubpageFrame {
         super.J();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void c() {

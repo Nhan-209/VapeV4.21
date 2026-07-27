@@ -10,7 +10,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryFilterConditionGroup;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.SharedInventoryFilterPreset;
 import gg.vape.module.utility.inventory.cleaner.SlotInventoryFilterRule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,9 +43,6 @@ implements Cloneable {
         return this.h;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public InventoryFilterPreset(@Nullable UUID uUID, String string) {
         super(string);

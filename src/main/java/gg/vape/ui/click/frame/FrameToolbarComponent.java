@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.IconButtonComponent;
@@ -70,9 +69,6 @@ extends FrameHeaderComponent {
         this.I(this.r$src$Ljava_lang_String_$1y8r681() + " settings", bl);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public IconButtonComponent r$src$Lgg_vape_ui_click_component_IconButtonComponent_$86hdsq() {
         return this.MQ;

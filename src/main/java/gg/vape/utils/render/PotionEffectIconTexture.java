@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.GlFramebuffer;
 import gg.vape.utils.render.GlImageTexture;
@@ -35,9 +34,6 @@ public class PotionEffectIconTexture
 implements PotionEffectIconRenderBackend {
     private GlFramebuffer v;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
 
     @Override

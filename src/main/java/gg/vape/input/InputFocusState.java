@@ -1,6 +1,5 @@
 package gg.vape.input;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class InputFocusState {
     private boolean M = true;
@@ -23,9 +22,6 @@ public class InputFocusState {
         D = n;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public void markUnfocused() {
         this.M = false;

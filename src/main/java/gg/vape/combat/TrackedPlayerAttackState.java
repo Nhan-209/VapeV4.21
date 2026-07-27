@@ -2,7 +2,6 @@ package gg.vape.combat;
 
 import gg.vape.combat.AttackStrengthTracker;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
@@ -103,9 +102,6 @@ public class TrackedPlayerAttackState {
         return trackedPlayerAttackState.H;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public TrackedPlayerAttackState(EntityPlayer entityPlayer) {
         this.j = entityPlayer;

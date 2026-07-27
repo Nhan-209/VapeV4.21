@@ -7,7 +7,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
 import gg.vape.module.blatant.HitBoxes;
 import gg.vape.module.render.ESP;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.utils.render.RenderUtil;
@@ -112,8 +111,5 @@ extends SubModule<ESP> {
         super(mod, string);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gg.vape.config.ConfigJsonUtils;
 import gg.vape.module.Macro;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.FrameMacros;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,9 +33,6 @@ public class MacroManager {
         return null;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void clear() {
         for (Macro macro : new HashSet<Macro>(this.U)) {

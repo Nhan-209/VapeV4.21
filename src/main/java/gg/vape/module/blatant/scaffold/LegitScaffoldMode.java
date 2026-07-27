@@ -10,7 +10,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
 import gg.vape.module.blatant.Scaffold;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.RandomValue;
@@ -54,9 +53,6 @@ extends SubModule<Scaffold> {
         return Scaffold.Access.G((Scaffold)this.getParent());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public LegitScaffoldMode(Mod mod, String string) {
         super(mod, string);

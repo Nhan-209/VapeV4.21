@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MBlockPos;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.datas.BlockCoordinate;
 import gg.vape.utils.datas.BlockData;
@@ -61,9 +60,6 @@ extends Vec3i {
         return false;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public BlockPos C(int n, int n2, int n3) {
         return BlockPos.create(this.P() + n, this.o() + n2, this.d() + n3);

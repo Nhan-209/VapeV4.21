@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventPreRenderEntity;
 import gg.vape.mapping.JavassistMappingTask;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class RenderManagerEntityMappingTask
@@ -21,9 +20,6 @@ extends JavassistMappingTask {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public RenderManagerEntityMappingTask() {
         super(MappedClasses.Dc);

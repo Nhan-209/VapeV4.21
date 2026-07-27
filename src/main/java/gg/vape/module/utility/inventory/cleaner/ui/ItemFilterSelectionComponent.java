@@ -10,7 +10,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryFilterPreset;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.ItemFilterSelection;
 import gg.vape.module.utility.inventory.cleaner.MaterialFilterCondition;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.ImageRenderer;
@@ -46,9 +45,6 @@ extends GuiComponent {
         this.selection = itemFilterSelection;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean renderPresetPreview() {
         InventoryFilterPreset inventoryFilterPreset = this.filterRule.W();

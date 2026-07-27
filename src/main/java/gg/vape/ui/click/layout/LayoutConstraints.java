@@ -1,6 +1,5 @@
 package gg.vape.ui.click.layout;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.layout.LayoutAnchor;
 import gg.vape.ui.click.layout.LayoutDock;
 
@@ -39,9 +38,6 @@ public class LayoutConstraints {
         return this.q;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static String java_lang_String_m() {
         return g;

@@ -3,7 +3,6 @@ package gg.vape.mapping;
 import gg.vape.mapping.MappingMemberBuilder;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.module.MinecraftVersionConstraint;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,9 +21,6 @@ extends MappingMemberBuilder<MappingMethodBuilder, MappingMethod> {
         return this.E;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Class<?>[] t() {
         if (!this.Q.isEmpty()) {

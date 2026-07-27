@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Objects;
 
 public class PotionEffectIconKey {
@@ -18,9 +17,6 @@ public class PotionEffectIconKey {
         this.C = n;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public boolean equals(Object object) {
         if (object instanceof PotionEffectIconKey) {

@@ -17,7 +17,6 @@ import gg.vape.movement.MovementInputHelper;
 import gg.vape.movement.PlayerMovementTaskManager;
 import gg.vape.movement.TargetPositionMovementTask;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.TimerUtil;
@@ -280,9 +279,6 @@ extends SubModule<Scaffold> {
         return false;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public TellyBridgeScaffoldMode(Mod mod, String string) {
         super(mod, string);

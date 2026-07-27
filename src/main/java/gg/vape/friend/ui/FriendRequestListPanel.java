@@ -7,7 +7,6 @@ import gg.vape.friend.ui.FriendRequestRow;
 import gg.vape.friend.ui.FriendRequestRowsPanel;
 import gg.vape.friend.ui.IncomingFriendRequestRow;
 import gg.vape.friend.ui.OutgoingFriendRequestRow;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SpacerComponent;
@@ -23,9 +22,6 @@ extends PanelComponent {
     private FriendRequestRowsPanel lr;
     private final PanelComponent l2 = new PanelComponent(100.0, 90.0);
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void W() {
         ArrayList<FriendRequestRow> arrayList = new ArrayList<FriendRequestRow>(this.ln.values());

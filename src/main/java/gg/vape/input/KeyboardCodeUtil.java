@@ -1,7 +1,6 @@
 package gg.vape.input;
 
 import gg.vape.runtime.NativeBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import org.lwjgl.input.Keyboard;
 
@@ -215,9 +214,6 @@ public class KeyboardCodeUtil {
         return 5;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void v() {
         if (ForgeVersion.MC_1_16_5.v() && Keyboard.areRepeatEventsEnabled()) {

@@ -2,7 +2,6 @@ package gg.vape.value;
 
 import com.google.gson.JsonObject;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ColorUtil;
 import gg.vape.utils.MutableColor;
 import gg.vape.value.BooleanValue;
@@ -311,9 +310,6 @@ extends Value<Object[], ColorValue> {
         return this.y;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static ColorValue L(Object object, String string, Color color) {
         float[] fArray = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);

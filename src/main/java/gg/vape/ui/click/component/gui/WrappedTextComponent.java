@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.gui;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.SimpleTextLabelComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
 import java.awt.Color;
@@ -116,9 +115,6 @@ extends SimpleTextLabelComponent {
         this.Di = d2;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double A() {

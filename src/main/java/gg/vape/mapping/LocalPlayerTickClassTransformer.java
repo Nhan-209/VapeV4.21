@@ -7,7 +7,6 @@ import gg.vape.event.impl.EventPostLocalPlayerTick;
 import gg.vape.event.impl.EventPreLocalPlayerTick;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class LocalPlayerTickClassTransformer
@@ -25,9 +24,6 @@ extends ClassTransformer {
         super(MappedClasses.z5);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void c() {

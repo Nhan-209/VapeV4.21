@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.CollapsibleFrame;
 import gg.vape.ui.click.frame.Frame;
@@ -102,9 +101,6 @@ extends Frame {
         return this.FI;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void z(boolean bl) {

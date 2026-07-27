@@ -15,7 +15,6 @@ import gg.vape.movement.PlayerMovementTaskManager;
 import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.MouseRotationController;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.PlayerSimulationUtil;
@@ -314,9 +313,6 @@ public class BlockPathPlanner {
         return this.c.c();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void B() {
         this.I(true);

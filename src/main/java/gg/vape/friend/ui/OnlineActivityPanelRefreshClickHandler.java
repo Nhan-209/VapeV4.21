@@ -1,7 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.ui.OnlineActivitySettingsFrame;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseClickButton;
 import java.awt.Point;
@@ -22,8 +21,5 @@ implements GuiMouseListener {
         OnlineActivitySettingsFrame.b(this.Y).Z$src$V$1pkcfcd();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

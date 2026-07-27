@@ -3,7 +3,6 @@ package gg.vape.event.impl;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayer;
 
 public class EventPlayerTickBase
@@ -16,9 +15,6 @@ extends Event {
         this.T = object;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     @Override
     public EventListeners getListeners() {

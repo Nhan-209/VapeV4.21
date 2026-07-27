@@ -10,7 +10,6 @@ import gg.vape.input.MouseInput;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.NumberValue;
@@ -54,9 +53,6 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public AutoClickerInputModule() {
         super("InventoryFill", -12288, Category.M, "Clicks items in inventory while holding shift");

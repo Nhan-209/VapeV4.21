@@ -8,7 +8,6 @@ import gg.vape.module.blatant.BlockIn;
 import gg.vape.module.blatant.Scaffold;
 import gg.vape.module.none.MouseDelayFix;
 import gg.vape.module.utility.Clutch;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class EventEntityRendererRayTrace
 extends Event {
@@ -57,9 +56,6 @@ extends Event {
         return object;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         Y = new EventListeners();

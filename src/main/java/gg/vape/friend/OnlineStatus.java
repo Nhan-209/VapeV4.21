@@ -1,7 +1,6 @@
 package gg.vape.friend;
 
 import gg.vape.protocol.PresenceState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
@@ -25,9 +24,6 @@ public enum OnlineStatus {
         return this.N;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private OnlineStatus(String string2, PresenceState presenceState, Color color) {
         this.N = string2;

@@ -4,7 +4,6 @@ import gg.vape.event.EventHandler;
 import gg.vape.event.impl.EventPreMotion;
 import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.CPacketPlayerPosition;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -38,8 +37,5 @@ extends SubModule {
         }
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

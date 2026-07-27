@@ -1,7 +1,6 @@
 package gg.vape.tutorial;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.SimpleTextLabelComponent;
 import gg.vape.ui.click.component.gui.TextButton;
@@ -42,9 +41,6 @@ extends FrameComponent {
         return this._i;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void Y() {

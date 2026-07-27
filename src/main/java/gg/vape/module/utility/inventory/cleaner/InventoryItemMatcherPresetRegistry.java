@@ -5,7 +5,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcher;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherPreset;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherPresetBuilder;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -17,9 +16,6 @@ public class InventoryItemMatcherPresetRegistry {
     private static final Map<String, InventoryItemMatcherPreset> presetsByName;
     public static InventoryItemMatcherPreset L;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Nullable
     public static InventoryItemMatcherPreset getByName(String string) {

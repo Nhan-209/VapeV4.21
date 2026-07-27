@@ -19,7 +19,6 @@ import gg.vape.module.utility.inventory.cleaner.SlotInventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryCleanerPopupFrame;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryFilterPresetOptionComponent;
 import gg.vape.module.utility.inventory.cleaner.ui.ItemFilterSelectionComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GlyphIconComponent;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.GuiComponent;
@@ -455,9 +454,6 @@ extends PanelComponent {
         this.h(this.kS, new Object[0]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$render$7(InventoryItemCategory inventoryItemCategory) {
         this.kO.i(inventoryItemCategory);

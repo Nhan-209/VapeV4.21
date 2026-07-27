@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.InsetFilledSpacerComponent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SplitPanelComponent;
@@ -134,8 +133,5 @@ extends SplitPanelComponent {
         return this.gI;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

@@ -7,7 +7,6 @@ import gg.vape.config.PublicProfile;
 import gg.vape.config.PublicProfileReview;
 import gg.vape.manager.client.PublicProfileManager;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FilledSpacerComponent;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.GlyphIconComponent;
@@ -109,9 +108,6 @@ extends GuiComponent {
         return this.a;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$new$0() {
         CompletableFuture.runAsync(this.K, ClientSettings.f6);

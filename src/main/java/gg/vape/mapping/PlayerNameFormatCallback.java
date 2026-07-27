@@ -3,7 +3,6 @@ package gg.vape.mapping;
 import gg.vape.event.impl.EventNameFormat;
 import gg.vape.mapping.InsertedEventCallback;
 import gg.vape.module.render.entity.RenderEntityContextCache;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.ITextComponent;
 
@@ -49,9 +48,6 @@ implements InsertedEventCallback {
         return this.I;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Object getRawDisplayName() {
         return this.I.getObject();

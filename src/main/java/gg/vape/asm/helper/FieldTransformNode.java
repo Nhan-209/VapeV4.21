@@ -1,7 +1,6 @@
 package gg.vape.asm.helper;
 
 import gg.vape.asm.ITramsformNode;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
@@ -26,9 +25,6 @@ implements ITramsformNode {
         return this.u;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public FieldTransformNode(String string) {
         this.y = new InsnList();

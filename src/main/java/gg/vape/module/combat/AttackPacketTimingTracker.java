@@ -6,7 +6,6 @@ import gg.vape.event.impl.EventPacketReceive;
 import gg.vape.event.impl.EventPacketSend;
 import gg.vape.event.impl.EventPreAttack;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.Minecraft;
@@ -162,9 +161,6 @@ implements EventListener {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int r() {
         return this.targetId;

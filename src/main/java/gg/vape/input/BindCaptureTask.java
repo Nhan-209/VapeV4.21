@@ -1,7 +1,6 @@
 package gg.vape.input;
 
 import gg.vape.input.BindCaptureThread;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.Bendable;
 
 public abstract class BindCaptureTask
@@ -39,9 +38,6 @@ implements Runnable {
         return bindCaptureTask.d;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public abstract void void_V();
 

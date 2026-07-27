@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.config.ProfileModuleSnapshot;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.TruncatedTextComponent;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -29,9 +28,6 @@ extends InteractiveComponent {
         this.I = bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ProfileSnapshotModuleRowComponent(ProfileModuleSnapshot profileModuleSnapshot) {
         this.b = profileModuleSnapshot;

@@ -2,7 +2,6 @@ package gg.vape.event.impl;
 
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class LegacyRecursiveCancelGuardEvent
 extends Event {
@@ -15,9 +14,6 @@ extends Event {
         return L;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int[] q() {
         return K;

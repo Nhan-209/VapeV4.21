@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
 import gg.vape.module.render.hud.ScoreboardHudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.ScoreObjective;
 
@@ -17,9 +16,6 @@ extends Event {
         return U;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EventScoreboardObjectiveRender(Object object, Object object2) {
         ScoreboardHudModule scoreboardHudModule = Vape.INSTANCE.getModManager().getMod(ScoreboardHudModule.class);

@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.online;
 
 import gg.vape.manager.client.OnlineAccountState;
 import gg.vape.manager.client.OnlineConnectionManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.IconGlyphComponent;
 import gg.vape.ui.click.component.SpacerComponent;
 import gg.vape.ui.click.component.WrappingTextLabelComponent;
@@ -16,9 +15,6 @@ extends OnlineConnectionSettingsPageComponent {
     private final WrappingTextLabelComponent DX;
     private final UnderlinedTextLabel D2;
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public OnlineAccountUnavailablePageComponent() {
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");

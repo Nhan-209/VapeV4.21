@@ -5,7 +5,6 @@ import gg.vape.api.ApiResponse;
 import gg.vape.api.ApiServices;
 import gg.vape.config.Profile;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -38,9 +37,6 @@ extends GuiComponent {
         return this.G;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static void lambda$null$1(Profile profile, ApiResponse apiResponse, Throwable throwable) {
         if (throwable != null) {

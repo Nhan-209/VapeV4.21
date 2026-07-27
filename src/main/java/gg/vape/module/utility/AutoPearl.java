@@ -19,7 +19,6 @@ import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
@@ -130,9 +129,6 @@ extends Mod {
         this.stateTimeoutTimer.reset();
     }
 
-    private static ObfuscatedRuntimeException guard(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean isNotSelf(EntityPlayer entityPlayer) {
         return !entityPlayer.isInstance(MappedClasses.z5);

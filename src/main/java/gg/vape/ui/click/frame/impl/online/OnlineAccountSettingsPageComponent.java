@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.manager.client.OnlineSettings;
 import gg.vape.notification.NotificationType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FilledSpacerComponent;
 import gg.vape.ui.click.component.GlyphIconComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -94,9 +93,6 @@ extends OnlineConnectionSettingsPageComponent {
         Vape.INSTANCE.getNotificationManager().t("Copied", "Copied " + Vape.INSTANCE.getAccountInfo().h(), NotificationType.INFO, 5000L);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public OnlineAccountSettingsPageComponent() {
         this.f2 = new TextButton("Logout", Color.RED);

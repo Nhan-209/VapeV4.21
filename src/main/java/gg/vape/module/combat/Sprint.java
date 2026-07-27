@@ -7,7 +7,6 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.blatant.Scaffold;
 import gg.vape.module.control.SharedModuleControlClaims;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.BooleanValue;
 import gg.vape.wrapper.impl.KeyBinding;
 import gg.vape.wrapper.impl.Minecraft;
@@ -24,9 +23,6 @@ extends Mod {
         KeyBinding.setKeyBindState(Minecraft.gameSettings().r(), false);
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void onPreEntityUpdate(EventPreEntityUpdate eventPreEntityUpdate) {

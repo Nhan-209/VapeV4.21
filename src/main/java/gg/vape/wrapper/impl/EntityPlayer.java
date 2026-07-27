@@ -3,7 +3,6 @@ package gg.vape.wrapper.impl;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MEntityPlayer;
 import gg.vape.module.render.freecam.FreecamPlayerBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.AbstractClientPlayer;
 import gg.vape.wrapper.impl.Container;
 import gg.vape.wrapper.impl.Entity;
@@ -320,9 +319,6 @@ extends EntityLivingBase {
         return MEntityPlayer.s(EntityPlayer.c.getMappings().hd, this.I);
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EntityPlayerMacroBridge K$src$Lgg_vape_wrapper_impl_EntityPlayerMacroBridge_$1agjn9() {
         return new EntityPlayerMacroBridge(MEntityPlayer.k(EntityPlayer.c.getMappings().hd, this.I));

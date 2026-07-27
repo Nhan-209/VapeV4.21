@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMemberSnapshot;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.StringPair;
 import java.util.ArrayList;
 
@@ -44,9 +43,6 @@ public class MappingProfileSnapshotRegistry {
         ++N;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int[] T() {
         return O;

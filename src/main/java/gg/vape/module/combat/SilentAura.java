@@ -24,7 +24,6 @@ import gg.vape.rotation.MouseRotationController;
 import gg.vape.rotation.RotationAngles;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
@@ -313,9 +312,6 @@ extends Mod {
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean P() {
         if (ForgeVersion.MC_1_12_2.d() && this.perfectSwing.L().booleanValue()) {

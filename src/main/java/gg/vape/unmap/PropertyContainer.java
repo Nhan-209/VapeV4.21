@@ -1,6 +1,5 @@
 package gg.vape.unmap;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.PropertyContainerBooleanKeyA;
 import gg.vape.unmap.PropertyContainerBooleanKeyB;
 import gg.vape.unmap.PropertyContainerBooleanKeyC;
@@ -33,9 +32,6 @@ public class PropertyContainer {
         T = string;
     }
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         x = new PropertyContainerBooleanKeyA();

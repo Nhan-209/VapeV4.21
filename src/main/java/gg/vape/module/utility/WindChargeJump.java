@@ -8,7 +8,6 @@ import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.NumberValue;
 import gg.vape.wrapper.impl.InventoryPlayer;
@@ -69,9 +68,6 @@ extends UtilityMod {
         this.rotationClaim.l(this, 6);
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {

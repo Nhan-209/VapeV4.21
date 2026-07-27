@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEntityPlayerSP;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.impl.AbstractClientPlayer;
 import gg.vape.wrapper.impl.EntityClientPlayerMP;
@@ -97,9 +96,6 @@ extends AbstractClientPlayer {
         return MEntityPlayerSP.a(EntityPlayerSP.c.getMappings().CC, this.I);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public float k$src$F$1u3g0zr() {
         return MEntityPlayerSP.a$src$F$12v06yw(EntityPlayerSP.c.getMappings().CC, this.I);

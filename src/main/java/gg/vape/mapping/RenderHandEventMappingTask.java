@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventPostRenderHand;
 import gg.vape.event.impl.EventPreRenderHand;
 import gg.vape.mapping.JavassistMappingTask;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class RenderHandEventMappingTask
 extends JavassistMappingTask {
@@ -21,8 +20,5 @@ extends JavassistMappingTask {
         super(MappedClasses.lt);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

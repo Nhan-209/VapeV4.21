@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.hud.ArmorStatusHudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.impl.hud.ArmorStatusItemComponent;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
@@ -53,9 +52,6 @@ extends HudModuleConfigFrameBase {
         return this.qS.P.L() != false ? 26.0 : 54.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void e$src$V$3fhwo1() {
         for (GuiComponent guiComponent : this.f()) {

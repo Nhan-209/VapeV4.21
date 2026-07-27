@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.impl.Minecraft;
 
@@ -12,9 +11,6 @@ public class ScaledResolution {
     private int q = Minecraft.h();
     private final double N;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public double X() {
         return this.p;

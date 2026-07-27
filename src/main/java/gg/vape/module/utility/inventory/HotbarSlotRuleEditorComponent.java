@@ -8,7 +8,6 @@ import gg.vape.module.utility.inventory.HotbarSlotRuleAddButton;
 import gg.vape.module.utility.inventory.HotbarSlotRuleGroupComponent;
 import gg.vape.module.utility.inventory.HotbarSlotRuleGroupSelectClickHandler;
 import gg.vape.module.utility.inventory.HotbarSlotRuleValue;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import java.util.ArrayList;
@@ -50,9 +49,6 @@ extends GuiComponent {
         return this.Q;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void u() {

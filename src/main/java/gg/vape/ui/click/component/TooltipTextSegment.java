@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ToolTips;
 import gg.vape.ui.font.SmoothFontRenderer;
 import java.awt.Color;
@@ -38,8 +37,5 @@ class TooltipTextSegment {
         smoothFontRenderer2.v(this.T, d, d2, this.A);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

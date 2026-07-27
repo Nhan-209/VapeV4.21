@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.IconGlyphComponent;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.ui.click.frame.Frame;
@@ -28,9 +27,6 @@ extends InteractiveComponent {
     private BooleanSupplier Q;
     private final IconGlyphComponent sx;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void p(String string) {
         this.b = string;

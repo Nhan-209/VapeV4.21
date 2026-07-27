@@ -8,7 +8,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
 import gg.vape.module.combat.WTap;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.GuiScreen;
@@ -36,9 +35,6 @@ extends SubModule<WTap> {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {

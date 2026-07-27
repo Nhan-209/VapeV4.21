@@ -7,7 +7,6 @@ import gg.vape.event.impl.EventPreTick;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.NumberValue;
@@ -38,9 +37,6 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void onPreAttack(EventPreAttack eventPreAttack) {

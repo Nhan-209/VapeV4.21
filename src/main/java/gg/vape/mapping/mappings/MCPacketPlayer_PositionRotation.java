@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MPacketIdFactory;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.impl.ForgeVersion;
 
@@ -12,9 +11,6 @@ public class MCPacketPlayer_PositionRotation
 extends Mapping {
     private MappingMethod E;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private Object l(double d, double d2, double d3, float f, float f2, boolean bl) {
         return this.E.O(d, d2, d3, Float.valueOf(f), Float.valueOf(f2), bl);

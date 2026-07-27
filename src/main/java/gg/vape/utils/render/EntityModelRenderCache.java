@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.EntityModelFramebufferRenderer;
 import gg.vape.utils.render.EntityModelRenderBackend;
 import gg.vape.utils.render.EntityModelRenderCacheKey;
@@ -73,9 +72,6 @@ public class EntityModelRenderCache {
         return ResourceLocation.create(string);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static void y(EntityLivingBase entityLivingBase, EntityModelRenderCacheKey entityModelRenderCacheKey) {
         EntityModelRenderBackend entityModelRenderBackend = GuiRenderPrimitives.d() ? new Post117EntityModelFramebufferRenderer() : new EntityModelFramebufferRenderer();

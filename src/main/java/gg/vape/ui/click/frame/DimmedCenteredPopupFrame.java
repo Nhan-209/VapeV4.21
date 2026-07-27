@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.CenteredPopupFrame;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -12,9 +11,6 @@ extends CenteredPopupFrame {
         super(guiComponent, guiComponent2);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void c() {

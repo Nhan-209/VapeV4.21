@@ -2,7 +2,6 @@ package gg.vape.value;
 
 import com.google.gson.JsonObject;
 import gg.vape.config.ProfileSnapshot;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.Value;
 import java.util.Arrays;
 import java.util.Objects;
@@ -58,9 +57,6 @@ public class ValueSnapshot<T extends Value<R, ?>, R> {
         this.E.f(false);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ValueSnapshot(ProfileSnapshot profileSnapshot, T t) {
         this.J = profileSnapshot;

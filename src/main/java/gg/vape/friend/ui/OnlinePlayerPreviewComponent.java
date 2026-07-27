@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.event.impl.EventPreRenderTick;
 import gg.vape.friend.ui.OnlinePlayerPreviewRenderContext;
 import gg.vape.friend.ui.OnlinePlayerPreviewSettingsFrame;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -46,9 +45,6 @@ extends GuiComponent {
     public void F() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void H() {

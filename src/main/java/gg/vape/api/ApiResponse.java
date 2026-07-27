@@ -3,7 +3,6 @@ package gg.vape.api;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
@@ -64,9 +63,6 @@ public class ApiResponse<T> {
         this.A = bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void i(GuiComponent[] guiComponentArray) {
         C = guiComponentArray;

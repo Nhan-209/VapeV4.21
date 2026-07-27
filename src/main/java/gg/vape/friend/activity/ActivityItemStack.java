@@ -1,7 +1,6 @@
 package gg.vape.friend.activity;
 
 import gg.vape.friend.activity.ActivityItemStackPayload;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.EnchantmentUtil;
 import gg.vape.wrapper.impl.Enchantment;
 import gg.vape.wrapper.impl.Item;
@@ -27,9 +26,6 @@ public class ActivityItemStack {
         return bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int I() {
         return this.g;

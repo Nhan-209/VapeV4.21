@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame;
 
 import gg.vape.friend.ui.OnlineCombatStatsSettingsFrame;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.frame.CollapsibleFrame;
@@ -83,8 +82,5 @@ extends FrameHeaderComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

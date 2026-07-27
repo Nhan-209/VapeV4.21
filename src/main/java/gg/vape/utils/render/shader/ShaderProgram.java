@@ -1,6 +1,5 @@
 package gg.vape.utils.render.shader;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
@@ -95,9 +94,6 @@ public class ShaderProgram {
         ShaderProgram.m(this.k);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void v(int n) {
         D = n;

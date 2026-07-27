@@ -4,7 +4,6 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.combat.wtap.WTapRightClickUseCancelMode;
 import gg.vape.module.combat.wtap.WTapSprintResetMode;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.value.ModeValue;
 import gg.vape.value.NumberValue;
@@ -71,9 +70,6 @@ extends Mod {
         return this.E() + " " + this.chance.c() + "%";
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public WTap() {
         super("WTap", 0, (int)moduleId, Category.g, "");

@@ -1,6 +1,5 @@
 package gg.vape.module.utility;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MLGImpactState {
     public static final MLGImpactState D = new MLGImpactState(36, 44);
@@ -20,9 +19,6 @@ public class MLGImpactState {
         return 23;
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException error) {
-        return error;
-    }
 
     public static void setCallCounter(int n) {
         callCounter = n;

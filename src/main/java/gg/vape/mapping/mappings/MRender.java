@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MRenderManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MRender
@@ -30,9 +29,6 @@ extends Mapping {
         this.p.c(object, object2, d, d2, d3, Float.valueOf(f), Float.valueOf(f2));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void E(MRender mRender, Object object, Object object2, double d, double d2, double d3, float f, float f2) {
         mRender.S(object, object2, d, d2, d3, f, f2);

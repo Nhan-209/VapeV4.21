@@ -5,7 +5,6 @@ import gg.vape.friend.ui.OnlinePlayerPreviewComponent;
 import gg.vape.friend.ui.OnlinePlayerPreviewDividerComponent;
 import gg.vape.friend.ui.OnlinePlayerPreviewSettings;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.value.BooleanToggleComponent;
 import gg.vape.ui.click.component.value.NumberSliderComponent;
@@ -67,9 +66,6 @@ extends HudSettingsFrameBase {
         this.h(new OnlinePlayerPreviewComponent(this), new Object[0]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static GuiComponent[] r$src$ALgg_vape_ui_click_component_GuiComponent_$1vb3zts() {
         return ST;

@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.main;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.impl.main.ClickGuiMainFrame;
@@ -23,9 +22,6 @@ extends GuiComponent {
         return this.Q;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         if (ClickGuiMainFrameTransitionComponent.L$src$Ljava_lang_String_$yxjgps() == null) {

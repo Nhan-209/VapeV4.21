@@ -5,7 +5,6 @@ import gg.vape.Vape;
 import gg.vape.friend.Friend;
 import gg.vape.friend.TargetEntry;
 import gg.vape.friend.TargetType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public abstract class FriendEntry
 extends TargetEntry {
@@ -62,8 +61,5 @@ extends TargetEntry {
 
     public abstract String s();
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

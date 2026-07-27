@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.component.SquareIconButtonComponent;
 import gg.vape.ui.click.component.TextInputComponentBase;
@@ -75,9 +74,6 @@ extends TextInputComponentBase {
         }
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SquareIconButtonComponent V$src$Lgg_vape_ui_click_component_SquareIconButtonComp$5pfk79() {
         return this.Eo;

@@ -13,7 +13,6 @@ import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
 import gg.vape.rotation.WorldPointRotationTarget;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
@@ -240,9 +239,6 @@ public final class BlockPlacementUtility {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static void v(FixedRotationController fixedRotationController, boolean bl, boolean bl2, @Nullable RotationControlClaim rotationControlClaim, @Nullable Mod mod) {
         if (fixedRotationController == null) {

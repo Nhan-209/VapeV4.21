@@ -1,6 +1,5 @@
 package gg.vape.asm.matcher;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public abstract class InstructionPattern {
     public static final int K;
@@ -34,9 +33,6 @@ public abstract class InstructionPattern {
         return this.O;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String getDescriptor() {
         return this.p;

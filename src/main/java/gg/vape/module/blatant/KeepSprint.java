@@ -9,7 +9,6 @@ import gg.vape.event.impl.EventSetSprinting;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.blatant.Scaffold;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.BooleanValue;
@@ -38,9 +37,6 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public String r() {

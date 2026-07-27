@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl.profile;
 import gg.vape.config.ProfileModuleSnapshot;
 import gg.vape.config.ProfileSnapshot;
 import gg.vape.module.utility.inventory.HotbarSlotRuleValue;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.SimpleTextLabelComponent;
@@ -191,9 +190,6 @@ extends GuiComponent {
         return 15.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void u() {

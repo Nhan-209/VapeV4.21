@@ -2,7 +2,6 @@ package gg.vape.module.combat.silentaura;
 
 import gg.vape.module.combat.SilentAura;
 import gg.vape.rotation.AdaptiveRotationController;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;
 
@@ -32,9 +31,6 @@ extends AdaptiveRotationController {
         return (float)reach;
     }
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SilentAuraRotationController(SilentAura silentAura) {
         this.silentAura = silentAura;

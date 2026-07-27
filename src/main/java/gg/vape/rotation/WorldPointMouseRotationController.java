@@ -2,7 +2,6 @@ package gg.vape.rotation;
 
 import gg.vape.rotation.MouseRotationController;
 import gg.vape.rotation.WorldPointRotationTarget;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.RotationUtil;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.Vec3;
@@ -38,9 +37,6 @@ implements WorldPointRotationTarget {
         return true;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public double a() {
         return this.z;

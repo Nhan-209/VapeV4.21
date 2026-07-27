@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.FontGlyphInfo;
 import gg.vape.wrapper.impl.GlyphInfo;
@@ -26,9 +25,6 @@ extends Wrapper {
         return fontGlyphInfo;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public FontGlyph(Object object) {
         super(object);

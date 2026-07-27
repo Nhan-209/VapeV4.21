@@ -4,7 +4,6 @@ import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.UserDisplayNamePacket;
 import gg.vape.protocol.packet.UserDisplayNameStatus;
 import gg.vape.protocol.packet.ZeusTrackedPacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.Nullable;
 
 public class UserDisplayNameResponsePacket
@@ -14,9 +13,6 @@ extends ZeusTrackedPacket<UserDisplayNamePacket> {
     private static String y;
     private UserDisplayNameStatus t;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void T(ZeusPacketBuffer zeusPacketBuffer) {

@@ -1,6 +1,5 @@
 package gg.vape.module.utility.inventory.cleaner;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.unmap.INamed;
 import java.util.Arrays;
@@ -125,9 +124,6 @@ DescribedOption {
         this.symbol = string3;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean A(double d, double d2) {
         switch (this) {

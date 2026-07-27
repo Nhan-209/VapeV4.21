@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseClickButton;
 import gg.vape.ui.click.frame.impl.profile.PublicProfileFilterTokenComponent;
@@ -23,9 +22,6 @@ implements GuiMouseListener {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {

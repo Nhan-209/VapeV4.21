@@ -1,6 +1,5 @@
 package gg.vape.friend.ui;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.Nullable;
 
 public class OnlineRadarPreviewState<K, V> {
@@ -27,9 +26,6 @@ public class OnlineRadarPreviewState<K, V> {
         return "Pair(key=" + this.P() + ", value=" + this.R() + ")";
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void V(int n) {
         O = n;

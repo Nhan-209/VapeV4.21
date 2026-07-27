@@ -8,7 +8,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.combat.Sprint;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.LimitValue;
@@ -92,8 +91,5 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

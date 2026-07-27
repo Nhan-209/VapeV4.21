@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventEntityJoinWorld;
 import gg.vape.mapping.JavassistMappingTask;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class LegacyWorldEntityJoinEventMappingTask
@@ -24,9 +23,6 @@ extends JavassistMappingTask {
         this.c(mappingMethod, EventEntityJoinWorld.class, c);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public LegacyWorldEntityJoinEventMappingTask() {
         super(MappedClasses.YU);

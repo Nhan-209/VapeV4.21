@@ -15,7 +15,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.notification.NotificationType;
 import gg.vape.protocol.ZeusConnectionManager;
 import gg.vape.protocol.packet.PingResponsePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.RayTraceUtil;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.utils.render.RenderUtils;
@@ -67,9 +66,6 @@ implements EventListener {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void a(PingMarker pingMarker) {
         this.C.remove(pingMarker);

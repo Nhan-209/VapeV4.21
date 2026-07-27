@@ -10,7 +10,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryFilterConditionType;
 import gg.vape.module.utility.inventory.cleaner.ItemFilterSelection;
 import gg.vape.module.utility.inventory.cleaner.MembershipMode;
 import gg.vape.module.utility.inventory.cleaner.ui.ItemPickerSelection;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.ArrayList;
@@ -99,9 +98,6 @@ implements InventoryFilterCondition<MaterialFilterCondition> {
         this.membershipMode = membershipMode;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void b(ItemFilterSelection itemFilterSelection) {
         this.selections.add(itemFilterSelection);

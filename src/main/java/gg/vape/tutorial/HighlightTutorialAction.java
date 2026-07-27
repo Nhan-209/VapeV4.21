@@ -3,7 +3,6 @@ package gg.vape.tutorial;
 import func.skidline.RectData;
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.tutorial.QueuedTutorialMessage;
 import gg.vape.tutorial.TutorialAction;
 import gg.vape.tutorial.TutorialActionComponent;
@@ -32,9 +31,6 @@ extends TutorialAction {
     private Queue<QueuedTutorialMessage> T = new ArrayDeque<QueuedTutorialMessage>();
     private final List<GuiComponent> B;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public TutorialTooltipPlacement j() {
         return this.h;

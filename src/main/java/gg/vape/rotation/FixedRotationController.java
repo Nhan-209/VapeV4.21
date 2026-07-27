@@ -4,7 +4,6 @@ import gg.vape.event.impl.EventPreEntityRendererMouseUpdate;
 import gg.vape.rotation.MouseRotationController;
 import gg.vape.rotation.RotationAngles;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;
@@ -212,9 +211,6 @@ extends MouseRotationController {
         this.J = bl;
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void U(boolean bl) {
         this.k = bl;

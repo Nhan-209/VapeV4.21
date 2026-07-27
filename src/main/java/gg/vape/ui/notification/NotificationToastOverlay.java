@@ -1,7 +1,6 @@
 package gg.vape.ui.notification;
 
 import func.skidline.RectData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.GuiComponent;
@@ -152,9 +151,6 @@ extends GuiComponent {
         return this.R;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public long w$src$J$1j3r3a0() {
         return this.b;

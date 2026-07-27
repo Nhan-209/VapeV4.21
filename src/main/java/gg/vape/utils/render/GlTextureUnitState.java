@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GlStateManagerTexGenState;
@@ -120,8 +119,5 @@ public class GlTextureUnitState {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

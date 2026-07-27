@@ -5,7 +5,6 @@ import gg.vape.Vape;
 import gg.vape.notification.AbstractNotification;
 import gg.vape.notification.NotificationContent;
 import gg.vape.notification.NotificationType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.theme.ThemeColors;
 import gg.vape.utils.render.BlurRegionRenderer;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -32,9 +31,6 @@ extends AbstractNotification {
         return this.q;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public boolean P() {

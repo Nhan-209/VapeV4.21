@@ -17,7 +17,6 @@ import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.PointRotationController;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.ActiveModuleStackFrame;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.unmap.ModeSelection;
@@ -495,9 +494,6 @@ extends Mod {
         return ((ModeSelection)this.s.K()).equals(this.tellyBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) || ((ModeSelection)this.s.K()).equals(this.godBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) || this.whitelistToggle.L() == false || this.whitelistLimit.z(Minecraft.thePlayer().B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt());
     }
 
-    private static ObfuscatedRuntimeException guard(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     protected void A() {
         if (PlayerMovementTaskManager.G.e() != null) {

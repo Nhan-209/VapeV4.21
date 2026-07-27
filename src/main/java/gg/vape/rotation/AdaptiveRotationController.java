@@ -8,7 +8,6 @@ import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.RotationAngles;
 import gg.vape.rotation.RotationManager;
 import gg.vape.rotation.WorldPointRotationTarget;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.RotationVectorMath;
@@ -261,9 +260,6 @@ implements WorldPointRotationTarget {
         this.X = adaptiveRotationController.X;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public AdaptiveRotationController(float f, float f2) {
         super(f, f2);

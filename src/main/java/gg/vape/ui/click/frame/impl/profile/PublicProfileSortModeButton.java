@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.config.PublicProfileSortMode;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.gui.TextButton;
 import gg.vape.ui.click.frame.impl.profile.PublicProfileSearchFilterPanel;
 import gg.vape.ui.click.frame.impl.profile.PublicProfilesFrame;
@@ -26,9 +25,6 @@ extends TextButton {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     PublicProfileSortModeButton(PublicProfileSearchFilterPanel publicProfileSearchFilterPanel, String string, double d, Color color, Color color2, PublicProfileSortMode publicProfileSortMode) {
         super(string, d, color, color2);

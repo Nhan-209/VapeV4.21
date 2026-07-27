@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.target;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.impl.hud.HudModuleFrameBase;
 import gg.vape.utils.RotationUtil;
@@ -100,9 +99,6 @@ extends GuiComponent {
         return f / this.R.I$src$F$14vyvep();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void a(@Nullable EntityLivingBase entityLivingBase) {
         if (entityLivingBase != null && entityLivingBase.isNotNull() && entityLivingBase.equals(this.R)) {

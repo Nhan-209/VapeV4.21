@@ -11,7 +11,6 @@ import gg.vape.friend.ping.PingManager;
 import gg.vape.manager.client.OnlineInventoryTracker;
 import gg.vape.protocol.ZeusConnectionManager;
 import gg.vape.protocol.packet.ClientActivitySnapshotPacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.World;
 import java.util.ArrayList;
@@ -171,9 +170,6 @@ public class OnlineActivityManager {
         return this.m.containsKey(l);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Nullable
     public OnlineFriendActivityState X(String string) {

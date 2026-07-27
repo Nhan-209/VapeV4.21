@@ -2,7 +2,6 @@ package gg.vape.module.blatant.blockin;
 
 import gg.vape.module.blatant.BlockIn;
 import gg.vape.rotation.ThresholdFixedRotationController;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 
 public class BlockInThresholdRotationController
@@ -20,9 +19,6 @@ extends ThresholdFixedRotationController {
         }
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public BlockInThresholdRotationController(BlockIn blockIn, EntityPlayerSP entityPlayerSP, float f, float f2) {
         super(entityPlayerSP, f, f2);

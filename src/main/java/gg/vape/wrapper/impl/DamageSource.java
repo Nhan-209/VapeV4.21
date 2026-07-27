@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEnumCreatureAttribute;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -16,9 +15,6 @@ extends Wrapper {
         return new DamageSource(MEnumCreatureAttribute.X(DamageSource.c.getMappings().hW, null, entityPlayer.getObject()));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public DamageSource(Object object) {
         super(object);

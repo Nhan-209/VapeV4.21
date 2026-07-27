@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.TextureAtlas;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +18,6 @@ public class TextureAtlasRegistry {
         return this.f;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void s(String string) {
         if (!this.M.containsKey(string)) {

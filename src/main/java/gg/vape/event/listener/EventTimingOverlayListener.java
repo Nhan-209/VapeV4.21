@@ -9,7 +9,6 @@ import gg.vape.event.EventListenerTiming;
 import gg.vape.event.impl.EventPreTick;
 import gg.vape.event.impl.EventRender2D;
 import gg.vape.event.listener.EventTimingDisplayLine;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.TimerUtil;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -63,9 +62,6 @@ implements EventListener {
         return j;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void P() {
         this.A.clear();

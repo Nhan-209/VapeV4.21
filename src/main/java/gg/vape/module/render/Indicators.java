@@ -12,7 +12,6 @@ import gg.vape.module.render.proj.IProjectile;
 import gg.vape.module.render.proj.PotionProjectile;
 import gg.vape.module.render.proj.Projectile;
 import gg.vape.render.OffscreenRenderContext;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ColorUtil;
 import gg.vape.unmap.ModeOption;
 import gg.vape.utils.MathUtil;
@@ -84,9 +83,6 @@ extends Mod {
     private final BooleanValue L;
     private final ModeOption Z;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private IProjectile B(EntityEnderPearl entityEnderPearl) {
         if (entityEnderPearl.b$src$Z$fqlxe4()) {

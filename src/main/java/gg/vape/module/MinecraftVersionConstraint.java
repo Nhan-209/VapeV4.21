@@ -1,7 +1,6 @@
 package gg.vape.module;
 
 import gg.vape.module.MinecraftVersionComparisonOperator;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,9 +28,6 @@ public class MinecraftVersionConstraint {
         this.s = minecraftVersionComparisonOperator;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public MinecraftVersionComparisonOperator l() {
         return this.s;

@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MPotionEffect;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.BuiltInRegistries;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -62,9 +61,6 @@ extends Wrapper {
         return MPotionEffect.e(PotionEffect.c.getMappings().C8, this.I);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static PotionEffect v(Potion potion, int n, int n2) {
         return new PotionEffect(PotionEffect.c.getMappings().C8.A(potion.getObject(), n, n2));

@@ -1,6 +1,5 @@
 package gg.vape.ui.font;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.font.SmoothFontRenderer;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,7 +18,4 @@ extends LinkedHashMap<String, Double> {
         this.s = smoothFontRenderer;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

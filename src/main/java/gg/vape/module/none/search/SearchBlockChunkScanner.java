@@ -1,7 +1,6 @@
 package gg.vape.module.none.search;
 
 import gg.vape.module.none.search.SearchBlockRenderEntry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.unmap.SearchBlock;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.Wrapper;
@@ -32,9 +31,6 @@ public class SearchBlockChunkScanner {
         return searchBlockRenderEntry;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void q(SearchBlockRenderEntry searchBlockRenderEntry) {
         entryPool.offer(searchBlockRenderEntry);

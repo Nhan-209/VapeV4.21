@@ -3,7 +3,6 @@ package gg.vape.protocol.packet;
 import gg.vape.friend.activity.ActivitySnapshotPayload;
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.ZeusSerializablePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class ActivitySnapshotsPacket
 implements ZeusSerializablePacket {
@@ -19,9 +18,6 @@ implements ZeusSerializablePacket {
         return this.L;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ActivitySnapshotsPacket() {
     }

@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.none.TextGuiSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.DropdownSelectComponent;
 import gg.vape.ui.click.component.value.BooleanToggleComponent;
 import gg.vape.ui.click.component.value.ColorValueEditorComponent;
@@ -54,9 +53,6 @@ extends HudSettingsFrameBase {
         return super.x();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void H() {

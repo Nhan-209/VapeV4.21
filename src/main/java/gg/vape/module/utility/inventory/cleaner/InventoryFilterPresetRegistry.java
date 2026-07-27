@@ -11,7 +11,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryFilterPresetStore;
 import gg.vape.module.utility.inventory.cleaner.ItemInventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.SharedInventoryFilterPreset;
 import gg.vape.module.utility.inventory.cleaner.SlotInventoryFilterRule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Iterator;
 
 public class InventoryFilterPresetRegistry {
@@ -31,9 +30,6 @@ public class InventoryFilterPresetRegistry {
         return x;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void L(JsonObject jsonObject) {
         JsonArray jsonArray = ConfigJsonUtils.q(jsonObject, "slotRules");

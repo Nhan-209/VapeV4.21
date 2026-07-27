@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.OpenedChestTypeSentinel;
 import gg.vape.wrapper.impl.TileEntity;
@@ -30,9 +29,6 @@ extends TileEntity {
         return TileEntityOpenedChest.c.getMappingsMapperCompat().h5.s(this.getObject());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public TileEntityOpenedChest(Object object) {
         super(object);

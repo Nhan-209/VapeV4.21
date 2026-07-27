@@ -5,7 +5,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryCleanerProfile;
 import gg.vape.module.utility.inventory.cleaner.ItemInventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryCleanerPopupFrame;
 import gg.vape.module.utility.inventory.cleaner.ui.ItemInventoryFilterRuleRow;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FilledSpacerComponent;
 import gg.vape.ui.click.component.GlyphIconComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -101,9 +100,6 @@ extends ScrollableFrameComponent {
         this.popupFrame.M(this.addIcon, inventoryCleanerProfile, itemInventoryFilterRule, () -> this.onRuleCreated(inventoryCleanerProfile, itemInventoryFilterRule));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void updateClearAllVisibility() {
         this.clearAllPanel.Z(!this.profile.Q().isEmpty());

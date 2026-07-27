@@ -21,7 +21,6 @@ import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.manager.client.OnlineConnectionState;
 import gg.vape.manager.client.PublicProfileManager;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FilledSpacerComponent;
 import gg.vape.ui.click.component.GlyphIconComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -315,9 +314,6 @@ implements EventListener {
         EventBus.getInstance().registerListener(this, new Predicate[0]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static void lambda$null$17(ApiResponse apiResponse, PublicProfilesFrame publicProfilesFrame) {
         publicProfilesFrame.l((PublicProfile)apiResponse.T());

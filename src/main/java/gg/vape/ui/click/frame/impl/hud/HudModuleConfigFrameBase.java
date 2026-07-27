@@ -7,7 +7,6 @@ import gg.vape.module.MinecraftVersionConstraint;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.hud.HudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MousePosition;
 import gg.vape.ui.click.component.AnimatedIconButtonComponent;
@@ -359,9 +358,6 @@ extends HudModuleFrameBase {
         }
     }
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public String c$src$Ljava_lang_String_$14h9h1a() {

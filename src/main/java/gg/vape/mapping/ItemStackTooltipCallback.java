@@ -3,7 +3,6 @@ package gg.vape.mapping;
 import gg.vape.Vape;
 import gg.vape.mapping.InsertedEventCallback;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -76,9 +75,6 @@ implements InsertedEventCallback {
         q = guiComponentArray;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ItemStackTooltipCallback(Object object, Object object2, boolean bl) {
         this.z = object;

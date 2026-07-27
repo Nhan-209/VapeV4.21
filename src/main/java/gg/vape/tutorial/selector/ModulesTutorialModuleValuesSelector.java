@@ -1,6 +1,5 @@
 package gg.vape.tutorial.selector;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.tutorial.TutorialTargetSelector;
 import gg.vape.tutorial.page.ModulesTutorialPage;
 import gg.vape.ui.click.component.GuiComponent;
@@ -32,9 +31,6 @@ extends TutorialTargetSelector<ModuleComponent> {
         this.n = null;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public ArrayList<GuiComponent> v(GuiComponent guiComponent) {

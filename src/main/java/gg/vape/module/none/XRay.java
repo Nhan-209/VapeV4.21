@@ -15,7 +15,6 @@ import gg.vape.event.impl.EventPreTick;
 import gg.vape.event.impl.EventRenderWorldPassExecutorDrain;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.NumberValue;
 import gg.vape.value.OptionalLimitValue;
@@ -170,9 +169,6 @@ extends Mod {
         return ((Double)this.opacityValue.K()).intValue();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean isTargetBlock(Block block) {
         return this.blockIds.contains(Block.R(block));

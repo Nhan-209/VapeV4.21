@@ -2,7 +2,6 @@ package gg.vape.input;
 
 import gg.vape.input.InputEventHandler;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiKeyTypedDispatcher;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,9 +11,6 @@ implements InputEventHandler {
     private Set<Integer> b = new HashSet<Integer>();
     private static int q;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     @Override
     public boolean handle(long l, long l2) {

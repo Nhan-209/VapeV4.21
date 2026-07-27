@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MSEntityPacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Packet;
@@ -27,9 +26,6 @@ extends Packet {
         return new Entity(MSEntityPacket.W(SEntityPacket.c.getMappingsMapperCompat().qC, this.I, world.getObject()));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SEntityPacket(Object object) {
         super(object);

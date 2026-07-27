@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import gg.vape.config.ConfigJsonUtils;
 import gg.vape.module.utility.inventory.cleaner.TextFilterCondition;
 import gg.vape.module.utility.inventory.cleaner.TextMatchMode;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.Base64Util;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,9 +74,6 @@ implements TextFilterCondition<T> {
         this.N = TextMatchMode.p(jsonObject.get("operator").getAsString());
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public abstract T H();
 

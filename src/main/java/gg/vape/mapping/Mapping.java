@@ -5,7 +5,6 @@ import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingFieldBuilder;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.MappingMethodBuilder;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 
 public class Mapping {
@@ -34,9 +33,6 @@ public class Mapping {
         return mappingMethod.g();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     protected MappingField s(Class clazz, String string, boolean bl, Class clazz2) {
         MappingField mappingField = new MappingField(this, clazz, string, bl, true, false, clazz2, 0);

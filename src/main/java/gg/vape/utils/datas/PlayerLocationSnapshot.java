@@ -1,6 +1,5 @@
 package gg.vape.utils.datas;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.Entity;
@@ -93,9 +92,6 @@ public class PlayerLocationSnapshot {
         this.u = d;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public double distanceTo(PlayerLocationSnapshot playerLocationSnapshot) {
         return MathUtil.g(playerLocationSnapshot.F - this.F, playerLocationSnapshot.a - this.a, playerLocationSnapshot.u - this.u);

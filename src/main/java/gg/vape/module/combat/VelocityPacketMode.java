@@ -10,7 +10,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.combat.AttackPacketTimingTracker;
 import gg.vape.module.control.SharedModuleControlClaimSecondary;
 import gg.vape.module.control.SharedModuleControlClaims;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.network.PacketDispatchGuard;
@@ -70,9 +69,6 @@ extends Mod {
         return this.groundDelay.c() + "ms";
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean isInWater() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();

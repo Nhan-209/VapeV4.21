@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.PopupSelectorComponent;
 import gg.vape.ui.click.component.SpacerComponent;
@@ -17,9 +16,6 @@ extends PopupSelectorComponent {
     private EntityTargetFilterValue I;
     private final FlowLayoutComponent b = (FlowLayoutComponent)this.u$src$Lgg_vape_ui_click_frame_FrameComponent_$bcl1km();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EntityTargetFilterPopupComponent(EntityTargetFilterValue entityTargetFilterValue) {
         super(new FlowLayoutComponent(50.0));

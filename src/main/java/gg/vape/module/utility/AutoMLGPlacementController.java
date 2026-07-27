@@ -11,7 +11,6 @@ import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.PointRotationController;
 import gg.vape.rotation.RotationManager;
 import gg.vape.rotation.WorldPointRotationTarget;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.TimerUtil;
 import gg.vape.utils.datas.BlockCoordinate;
 import gg.vape.wrapper.impl.BlockPos;
@@ -97,9 +96,6 @@ public class AutoMLGPlacementController {
         return t;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public HotbarSlotResolutionWithValue<BlockPos> D(@NotNull ItemMappingEntry itemMappingEntry, @Nullable BlockCoordinate blockCoordinate, @Nullable TimerUtil timerUtil) {
         HotbarSlotResolution hotbarSlotResolution;

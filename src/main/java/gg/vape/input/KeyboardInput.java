@@ -2,7 +2,6 @@ package gg.vape.input;
 
 import gg.vape.input.InputEventDispatcher;
 import gg.vape.input.KeyboardInputState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import org.lwjgl.input.Keyboard;
 
@@ -24,9 +23,6 @@ public class KeyboardInput {
         return Keyboard.getKeyName((int)n);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static KeyboardInputState getState() {
         if (t == null) {

@@ -2,7 +2,6 @@ package gg.vape.module.blatant.blockin;
 
 import gg.vape.module.blatant.blockin.AbstractBlockInMovementController;
 import gg.vape.module.blatant.blockin.BlockPlacementGraph;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.PlayerSimulationUtil;
 import gg.vape.wrapper.impl.AttributeInstance;
@@ -187,9 +186,6 @@ extends AbstractBlockInMovementController {
         this.A = bl6;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void q() {
         this.d = 0.0f;

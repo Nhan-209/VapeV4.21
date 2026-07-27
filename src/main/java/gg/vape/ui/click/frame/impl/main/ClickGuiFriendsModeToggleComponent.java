@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.main;
 
 import gg.vape.friend.FriendEntry;
 import gg.vape.friend.ui.OnlineFriendUiHelper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.value.BooleanToggleComponent;
 import gg.vape.ui.click.frame.impl.main.ClickGuiFriendsPage;
 
@@ -38,7 +37,4 @@ extends BooleanToggleComponent {
         OnlineFriendUiHelper.U();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

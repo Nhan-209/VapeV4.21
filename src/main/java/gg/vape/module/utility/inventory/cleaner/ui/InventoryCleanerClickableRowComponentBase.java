@@ -1,6 +1,5 @@
 package gg.vape.module.utility.inventory.cleaner.ui;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.GuiComponent;
@@ -12,9 +11,6 @@ extends GuiComponent {
     @Nullable
     private GuiClickListener clickListener;
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void H() {

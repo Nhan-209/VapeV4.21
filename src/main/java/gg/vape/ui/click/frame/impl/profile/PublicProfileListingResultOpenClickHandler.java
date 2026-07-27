@@ -7,7 +7,6 @@ import gg.vape.config.PublicProfile;
 import gg.vape.config.PublicProfileSummary;
 import gg.vape.manager.client.PublicProfileManager;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseClickButton;
 import gg.vape.ui.click.frame.impl.profile.PublicProfileListingDetailsPanel;
@@ -24,9 +23,6 @@ implements GuiMouseListener {
     final PublicProfilesFrame J;
     static final boolean c = !PublicProfilesFrame.class.desiredAssertionStatus();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static ApiResponse lambda$onClick$1(Throwable throwable) {
         Vape.logThrowable(throwable);

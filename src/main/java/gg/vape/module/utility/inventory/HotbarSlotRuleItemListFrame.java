@@ -5,7 +5,6 @@ import gg.vape.module.utility.inventory.HotbarSlotRule;
 import gg.vape.module.utility.inventory.HotbarSlotRuleItemPickerFrame;
 import gg.vape.module.utility.inventory.HotbarSlotRuleItemSelectClickHandler;
 import gg.vape.module.utility.inventory.ItemStackIconButtonComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.InsetFrameBase;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.wrapper.Wrapper;
@@ -53,9 +52,6 @@ extends InsetFrameBase {
         return super.A();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void Y() {

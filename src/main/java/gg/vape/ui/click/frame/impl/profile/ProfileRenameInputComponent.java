@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.TextInputComponentBase;
 import gg.vape.ui.click.component.TruncatedTextComponent;
 import gg.vape.ui.click.frame.impl.profile.ProfileListEntryComponent;
@@ -16,9 +15,6 @@ extends TextInputComponentBase {
         return 100.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     ProfileRenameInputComponent(ProfileListEntryComponent profileListEntryComponent, String string, TruncatedTextComponent truncatedTextComponent) {
         super(string);

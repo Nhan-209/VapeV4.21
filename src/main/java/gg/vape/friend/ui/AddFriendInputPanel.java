@@ -3,7 +3,6 @@ package gg.vape.friend.ui;
 import gg.vape.Vape;
 import gg.vape.friend.Friend;
 import gg.vape.friend.ui.AddFriendInputComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.input.CompactTextInputComponent;
 import gg.vape.ui.click.frame.FrameComponent;
@@ -24,9 +23,6 @@ extends FrameComponent {
         super.c();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static void h(AddFriendInputPanel addFriendInputPanel) {
         addFriendInputPanel.b$src$V$y3rl3d();

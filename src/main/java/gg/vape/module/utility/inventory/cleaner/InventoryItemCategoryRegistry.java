@@ -10,7 +10,6 @@ import gg.vape.module.utility.inventory.cleaner.MatcherBackedInventoryItemCatego
 import gg.vape.module.utility.inventory.cleaner.StackSizeInventoryItemCategoryBuilder;
 import gg.vape.module.utility.inventory.cleaner.ToolInventoryItemMatchers;
 import gg.vape.module.utility.inventory.cleaner.WeaponInventoryItemMatchers;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.wrapper.impl.ItemStack;
@@ -26,9 +25,6 @@ public class InventoryItemCategoryRegistry {
     private static final Map<String, InventoryItemCategory> categoriesById = new LinkedHashMap<String, InventoryItemCategory>();
     public static final InventoryItemCategory m = ((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.L().m().X("any_type")).M("First available")).f("First accessible item found in inventory")).G();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static @UnmodifiableView List<InventoryItemCategory> G() {
         return new ArrayList<InventoryItemCategory>(categoriesById.values());

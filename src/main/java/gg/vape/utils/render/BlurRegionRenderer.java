@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.GlImageTexture;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.OpenGlBackendHolder;
@@ -47,9 +46,6 @@ public class BlurRegionRenderer {
         return e;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void k(boolean bl) {
         e = bl;

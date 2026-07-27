@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.Vape;
 import gg.vape.config.Profile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.FrameNavigationButtonComponent;
 import gg.vape.ui.click.frame.impl.profile.ProfilesSettingsFrame;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -12,9 +11,6 @@ import java.awt.Color;
 
 public class ProfilesFrameNavigationButtonComponent
 extends FrameNavigationButtonComponent {
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ProfilesFrameNavigationButtonComponent() {
         super("Profiles", null, ProfilesSettingsFrame.class);

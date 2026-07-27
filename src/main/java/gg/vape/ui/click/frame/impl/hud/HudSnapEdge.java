@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.hud;
 
 import com.google.common.collect.Sets;
 import func.skidline.RectData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Set;
 
 public enum HudSnapEdge {
@@ -38,9 +37,6 @@ public enum HudSnapEdge {
         return N;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public double t(RectData rectData) {
         switch (this) {

@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.config.ProfileModuleSnapshot;
 import gg.vape.config.ProfileSnapshot;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SimpleTextLabelComponent;
@@ -23,9 +22,6 @@ extends PanelComponent {
     private final PanelComponent CH = new PanelComponent(CP, 144.0);
     private ProfileSnapshot Ce;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ProfileSnapshotModuleDetailsPanel() {
         super(CP, 170.0);

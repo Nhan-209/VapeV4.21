@@ -1,6 +1,5 @@
 package gg.vape.asm.helper;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MethodInfo {
     private String k = null;
@@ -20,8 +19,5 @@ public class MethodInfo {
         return bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

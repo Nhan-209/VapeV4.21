@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.Vape;
 import gg.vape.mapping.mappings.MWorldRenderer;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.nio.ByteBuffer;
@@ -18,9 +17,6 @@ extends Wrapper {
         MWorldRenderer.X(WorldRenderer.c.getMappings().qZ, this.I, bl);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public IntBuffer O() {
         if (ForgeVersion.MC_1_21_0.d()) {

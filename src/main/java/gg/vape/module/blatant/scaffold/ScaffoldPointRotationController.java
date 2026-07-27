@@ -2,7 +2,6 @@ package gg.vape.module.blatant.scaffold;
 
 import gg.vape.module.blatant.Scaffold;
 import gg.vape.rotation.PointRotationController;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.datas.BlockCoordinate;
@@ -17,9 +16,6 @@ extends PointRotationController {
     final double[] placePos;
     final Scaffold scaffold;
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ScaffoldPointRotationController(Scaffold scaffold, double d, double d2, double d3, int n, double[] dArray) {
         super(d, d2, d3);

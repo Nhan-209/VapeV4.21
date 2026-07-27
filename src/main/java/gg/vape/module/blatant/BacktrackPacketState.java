@@ -1,6 +1,5 @@
 package gg.vape.module.blatant;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.datas.PlayerLocationSnapshot;
 import gg.vape.wrapper.impl.Entity;
@@ -41,9 +40,6 @@ public class BacktrackPacketState {
         return new PlayerLocationSnapshot((double)this.encodedX / BacktrackPacketState.positionScale(), (double)this.encodedY / BacktrackPacketState.positionScale(), (double)this.encodedZ / BacktrackPacketState.positionScale());
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void Z(SEntityPacket sentityPacket) {
         this.encodedX += (long)sentityPacket.Y();

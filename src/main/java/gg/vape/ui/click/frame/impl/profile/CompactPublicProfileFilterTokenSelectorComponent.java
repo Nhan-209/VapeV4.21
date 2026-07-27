@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl.profile;
 import gg.vape.Vape;
 import gg.vape.config.LegacyPublicProfile;
 import gg.vape.notification.NotificationType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.LabeledTextInputComponent;
 import gg.vape.ui.click.frame.impl.profile.PublicProfileFilterTokenComponent;
 import gg.vape.ui.click.frame.impl.profile.PublicProfileFilterTokenSelectorComponent;
@@ -55,8 +54,5 @@ extends PublicProfileFilterTokenSelectorComponent {
     private static void lambda$new$0() {
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

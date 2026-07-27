@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.config.ClientSettings;
 import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.wrapper.impl.AxisAlignedBB;
@@ -78,9 +77,6 @@ public class MovementInputHelper {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void A(boolean bl) {
         MovementInputHelper.P(Minecraft.gameSettings().O(), bl);

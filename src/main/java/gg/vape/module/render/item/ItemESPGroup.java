@@ -1,7 +1,6 @@
 package gg.vape.module.render.item;
 
 import gg.vape.module.render.ItemESP;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityItem;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.ItemStack;
@@ -25,9 +24,6 @@ public class ItemESPGroup {
         itemNames = stringArray;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public List<Object> I() {
         return this.itemEntities;

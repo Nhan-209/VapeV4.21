@@ -5,7 +5,6 @@ import gg.vape.module.blatant.blockin.BlockPlacementPathSegment;
 import gg.vape.module.utility.clutch.BlockPathSearchStrategy;
 import gg.vape.module.utility.clutch.ClutchPlacementPathUtils;
 import gg.vape.module.utility.clutch.PlacementTarget;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.Block;
@@ -25,9 +24,6 @@ implements BlockPathSearchStrategy<PlacementTarget> {
     final int W;
     final int M;
 
-    private static ObfuscatedRuntimeException unwrapException(ObfuscatedRuntimeException exception) {
-        return exception;
-    }
 
     @Override
     public boolean B(BlockData blockData) {

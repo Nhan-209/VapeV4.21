@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiKeyTypedListener;
 import gg.vape.ui.click.frame.impl.ClientSettingsSearchFrame;
 import gg.vape.ui.click.frame.impl.ClientSettingsSearchFrameHeader;
@@ -11,9 +10,6 @@ implements GuiKeyTypedListener {
     final ClientSettingsSearchFrameHeader W;
     final ClientSettingsSearchFrame y;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void v(char c, int n) {

@@ -12,7 +12,6 @@ import gg.vape.notification.NotificationSounds;
 import gg.vape.notification.NotificationType;
 import gg.vape.notification.SoundClip;
 import gg.vape.notification.TextNotificationContent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.utils.MathUtil;
@@ -34,9 +33,6 @@ implements EventListener {
     private static int l;
     private final Map<NotificationType, SoundClip> C = new HashMap<NotificationType, SoundClip>();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean X(INotification iNotification) {
         FriendNotificationSettings friendNotificationSettings = OnlineConnectionManager.T.S().m();

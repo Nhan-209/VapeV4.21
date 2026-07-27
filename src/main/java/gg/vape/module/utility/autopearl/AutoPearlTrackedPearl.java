@@ -2,7 +2,6 @@ package gg.vape.module.utility.autopearl;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.utility.autopearl.AutoPearlRotationController;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.BlockUtil;
 import gg.vape.wrapper.impl.Block;
 import gg.vape.wrapper.impl.EntityEnderPearl;
@@ -31,9 +30,6 @@ public class AutoPearlTrackedPearl {
         return this.pearl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public AutoPearlTrackedPearl(EntityEnderPearl entityEnderPearl, EntityPlayer entityPlayer, AutoPearlRotationController autoPearlRotationController) {
         this(entityEnderPearl, entityPlayer);

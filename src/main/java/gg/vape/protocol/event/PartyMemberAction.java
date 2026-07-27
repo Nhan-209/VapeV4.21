@@ -1,7 +1,6 @@
 package gg.vape.protocol.event;
 
 import gg.vape.protocol.packet.PartyMemberActionType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,9 +24,6 @@ public enum PartyMemberAction {
         return null;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         String[] stringArray = new String[]{"ADD", "REMOVE"};

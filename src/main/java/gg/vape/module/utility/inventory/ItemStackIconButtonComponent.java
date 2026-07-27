@@ -1,6 +1,5 @@
 package gg.vape.module.utility.inventory;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.ItemIconRenderer;
@@ -87,9 +86,6 @@ extends InteractiveComponent {
     public void I() {
     }
 
-    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void F() {

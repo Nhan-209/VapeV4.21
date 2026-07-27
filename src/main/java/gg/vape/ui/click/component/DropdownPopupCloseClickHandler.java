@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseClickButton;
 import gg.vape.ui.click.component.DropdownSelectComponent;
@@ -19,9 +18,6 @@ implements GuiMouseListener {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public DropdownPopupCloseClickHandler(DropdownSelectComponent dropdownSelectComponent) {
         this.s = dropdownSelectComponent;

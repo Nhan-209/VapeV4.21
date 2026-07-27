@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEntityLiving;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.EquipmentSlotSet;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -65,9 +64,6 @@ extends EntityLivingBase {
         super(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void C(boolean bl) {
         MEntityLiving.b(EntityLiving.c.getMappings().W, this.I, bl);

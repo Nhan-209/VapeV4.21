@@ -2,7 +2,6 @@ package gg.vape.event.impl;
 
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Minecraft;
 
 public class EventLegacyRenderGlobalUpdateRenderersThrottle
@@ -49,9 +48,6 @@ extends Event {
         EventLegacyRenderGlobalUpdateRenderersThrottle.V(false);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean W() {
         boolean bl = EventLegacyRenderGlobalUpdateRenderersThrottle.c();

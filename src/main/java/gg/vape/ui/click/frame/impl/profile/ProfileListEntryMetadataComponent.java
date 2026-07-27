@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl.profile;
 import gg.vape.config.ClientSettings;
 import gg.vape.config.Profile;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.gui.TextButton;
 import gg.vape.utils.StringUtils;
 import java.awt.Color;
@@ -12,9 +11,6 @@ public class ProfileListEntryMetadataComponent
 extends TextButton {
     private Profile UN;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private String R$src$Ljava_lang_String_$1abziai() {
         if (this.UN == null) {

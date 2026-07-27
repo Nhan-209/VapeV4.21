@@ -6,7 +6,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.render.BufferedRenderPrimitives;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -35,9 +34,6 @@ extends HudModule {
     private ColorValue overlayColor = ColorValue.L(this, "Overlay Color", new Color(255, 0, 0, 95));
     private ColorValue outlineColor = ColorValue.L(this, "Outline Color", new Color(255, 0, 0, 200));
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void drawOutline(AxisAlignedBB axisAlignedBB, Color color) {
         if (GuiRenderPrimitives.d()) {

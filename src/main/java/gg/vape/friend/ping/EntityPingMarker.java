@@ -3,7 +3,6 @@ package gg.vape.friend.ping;
 import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.ping.OnlineFriendPingMarker;
 import gg.vape.protocol.packet.PingTargetData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.World;
 import org.jetbrains.annotations.Nullable;
@@ -28,9 +27,6 @@ extends OnlineFriendPingMarker {
         this.Z(18.0);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EntityPingMarker(OnlineFriend onlineFriend, @Nullable Long l, Entity entity) {
         super(onlineFriend, EntityPingMarker.P(entity));

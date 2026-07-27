@@ -5,7 +5,6 @@ import gg.vape.Vape;
 import gg.vape.config.ConfigJsonUtils;
 import gg.vape.input.MouseInput;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.MousePosition;
@@ -71,9 +70,6 @@ implements FrameStateSerializable {
         this.Iv = bl;
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean n$src$Z$1fa61uz() {
         return this.Iv;

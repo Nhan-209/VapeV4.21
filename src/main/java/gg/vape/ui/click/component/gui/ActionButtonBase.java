@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.gui;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.utils.MutableColor;
@@ -67,9 +66,6 @@ extends InteractiveComponent {
         super.onEnable();
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void e(ColorAnimation colorAnimation) {
         this.v = colorAnimation;

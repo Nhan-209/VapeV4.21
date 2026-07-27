@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEntityPlayerMacroBridge;
 import gg.vape.module.render.proj.EnderPearlProjectileBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -20,9 +19,6 @@ extends Entity {
         return new Entity(MEntityPlayerMacroBridge.W(EntityPlayerMacroBridge.c.getMappings().Da, this.I));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public EntityPlayerMacroBridge(Object object) {
         super(object);

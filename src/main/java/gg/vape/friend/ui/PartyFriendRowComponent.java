@@ -22,7 +22,6 @@ import gg.vape.protocol.packet.ClientGroupLeaderPromoteResponsePacket;
 import gg.vape.protocol.packet.ClientGroupLeaderPromoteStatus;
 import gg.vape.protocol.packet.GroupUninviteResponsePacket;
 import gg.vape.protocol.packet.GroupUninviteStatus;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SpacerComponent;
@@ -56,9 +55,6 @@ extends PanelComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void H() {

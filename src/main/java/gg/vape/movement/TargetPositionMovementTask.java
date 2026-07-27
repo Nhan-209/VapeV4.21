@@ -1,7 +1,6 @@
 package gg.vape.movement;
 
 import gg.vape.movement.PlayerMovementTask;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;
 
@@ -10,9 +9,6 @@ extends PlayerMovementTask {
     public double C;
     public double t;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void i(double d, double d2) {
         this.C = d;

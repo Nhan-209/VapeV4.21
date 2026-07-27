@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.main;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.frame.impl.main.ClickGuiMacrosSettingsPanel;
@@ -97,7 +96,4 @@ extends PanelComponent {
         GuiRenderPrimitives.P(f, f24, f22, 18.0, ClickGuiMacrosSettingsPanel.N$src$Ljava_awt_Color_$1qg5s8k(), 3.0f, 0.75f, 1.0f);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

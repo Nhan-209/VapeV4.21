@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventPacketSend;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.value.LimitValue;
@@ -18,9 +17,6 @@ extends Mod {
     public final LimitValue allowedItems = LimitValue.N(this, "noitemrelease-alloweditems", "Allowed items", LimitValue.r, new ItemLimitData("swords"), new ItemLimitData("food"), new ItemLimitData("potions"));
     private static final long MODULE_ID = -2073545794591715018L;
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public BlockHit() {
         super("NoItemRelease", (int)MODULE_ID, Category.w);

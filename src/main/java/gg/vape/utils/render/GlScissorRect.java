@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class GlScissorRect {
     public int I;
@@ -15,9 +14,6 @@ public class GlScissorRect {
         this.f = n4;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean equals(Object object) {
         if (this == object) {

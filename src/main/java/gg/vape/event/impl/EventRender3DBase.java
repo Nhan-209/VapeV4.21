@@ -1,7 +1,6 @@
 package gg.vape.event.impl;
 
 import gg.vape.event.Event;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.RenderBatchManager;
@@ -39,9 +38,6 @@ extends Event {
         return bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static void t(GuiComponent[] upArray) {
         U = upArray;

@@ -1,7 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.friend.ui.OnlineCombatStatsSettingsFrame;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.value.SliderComponentBase;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -114,9 +113,6 @@ extends SliderComponentBase {
         GuiRenderPrimitives.F(this.a >= this.R ? "greenglowsquare" : "redglowsquare", d17, d13, 20.0, 20.0, Color.WHITE);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public OnlineCombatStatComparisonComponent(String string, OnlineCombatStatsSettingsFrame onlineCombatStatsSettingsFrame) {
         super(string);

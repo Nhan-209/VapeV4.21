@@ -1,6 +1,5 @@
 package gg.vape.tutorial;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.tutorial.TutorialOverlayPanelBase;
 import gg.vape.tutorial.TutorialWelcomeSkipAllClickHandler;
 import gg.vape.tutorial.TutorialWelcomeStartButton;
@@ -70,9 +69,6 @@ extends TutorialOverlayPanelBase {
         return 150.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int P$src$I$x6acxy() {
         int n = TutorialWelcomePanel.E();

@@ -1,7 +1,6 @@
 package gg.vape.event.impl;
 
 import gg.vape.event.impl.EventRenderTickBase;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiScreenNativeCallbackBridge;
 import gg.vape.util.RenderThreadTaskQueue;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -19,9 +18,6 @@ extends EventRenderTickBase {
         super(f);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public boolean fire() {

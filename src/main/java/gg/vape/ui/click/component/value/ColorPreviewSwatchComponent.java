@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.value;
 
 import func.skidline.RectData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.utils.TimerUtil;
@@ -54,9 +53,6 @@ extends InteractiveComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double x() {

@@ -6,7 +6,6 @@ import gg.vape.api.ApiServices;
 import gg.vape.config.Profile;
 import gg.vape.config.PublicProfile;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GlyphIconComponent;
 import gg.vape.ui.click.frame.FrameStackManager;
 import gg.vape.ui.click.frame.impl.main.ClickGuiFrameManager;
@@ -31,9 +30,6 @@ extends GlyphIconComponent {
         ApiServices.d().R().x(l).whenCompleteAsync((arg_0, arg_1) -> ProfileGlyphIconPanel.lambda$openAsOverlay$1(publicProfilesFrame, arg_0, arg_1), (Executor)ClientSettings.f6).exceptionally(ProfileGlyphIconPanel::lambda$openAsOverlay$2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ProfileGlyphIconPanel(@Nullable Profile profile) {
         this(profile, 6.0, 8.0);

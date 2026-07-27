@@ -6,7 +6,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.none.TextGuiSettings;
 import gg.vape.module.none.TextGuiSettingsFrame;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MousePosition;
 import gg.vape.ui.click.component.GuiComponent;
@@ -49,9 +48,6 @@ extends GuiComponent {
     private final Comparator<Mod> BY;
     private HashMap<Mod, Double> a = new HashMap();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean G(TextGuiOverlayComponent textGuiOverlayComponent) {
         return textGuiOverlayComponent.q$src$Z$emgut();

@@ -2,7 +2,6 @@ package gg.vape.protocol.packet;
 
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.ZeusSerializablePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.Nullable;
 
 public class ClientServerAddressPacket
@@ -38,8 +37,5 @@ implements ZeusSerializablePacket {
         this.X = string;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

@@ -1,7 +1,6 @@
 package gg.vape.value;
 
 import com.google.common.collect.ImmutableList;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.ListValueMutableBackingList;
 import gg.vape.value.ListValueSuggestionProvider;
 import gg.vape.value.Value;
@@ -15,9 +14,6 @@ extends Value<List<C>, T> {
     private ListValueSuggestionProvider V;
     private final String K;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ListValue(Object object, String string, String string2) {
         this(object, string, string2, new ArrayList<C>());

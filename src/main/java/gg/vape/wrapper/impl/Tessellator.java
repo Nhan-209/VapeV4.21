@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MTessellator;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.WorldRenderer;
@@ -20,9 +19,6 @@ extends Wrapper {
         MTessellator.E(Tessellator.c.getMappingsMapperCompat().RB, this.I, d, d2, d3, d4, d5);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void M(int n) {
         MTessellator.k(Tessellator.c.getMappingsMapperCompat().RB, this.I, n);

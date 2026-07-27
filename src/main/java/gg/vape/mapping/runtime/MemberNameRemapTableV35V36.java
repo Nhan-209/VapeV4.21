@@ -3,7 +3,6 @@ package gg.vape.mapping.runtime;
 import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.runtime.MemberNameRemapTable;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MemberNameRemapTableV35V36
 extends MemberNameRemapTable {
@@ -626,9 +625,6 @@ extends MemberNameRemapTable {
         this.t(MappedClasses.Fi, "toggleFullscreen", "updateFullscreen");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     protected void QD() {
         this.B(MappedClasses.X, "windowId", "containerId");

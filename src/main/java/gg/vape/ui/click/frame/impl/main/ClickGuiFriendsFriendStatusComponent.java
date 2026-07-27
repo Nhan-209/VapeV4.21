@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.main;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.IconGlyphComponent;
 import gg.vape.ui.click.component.SimpleTextLabelComponent;
@@ -140,9 +139,6 @@ extends InteractiveComponent {
         GuiRenderPrimitives.V(d2 + 0.5, d3 + 0.5, 4.0, 0.75, this.yF);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void l$src$V$zpcs6y() {
         double d = this.v + 3.0 - 0.75;

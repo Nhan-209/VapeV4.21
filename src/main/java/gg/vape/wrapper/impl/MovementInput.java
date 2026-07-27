@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MMovementInput;
 import gg.vape.module.render.freecam.FreecamMovementInputBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.PlayerInput;
@@ -63,9 +62,6 @@ extends Wrapper {
         return MMovementInput.f(MovementInput.c.getMappings().h7, this.I);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean G() {
         if (ForgeVersion.MC_1_21_4.d()) {

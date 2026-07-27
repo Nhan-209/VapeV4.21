@@ -6,7 +6,6 @@ import gg.vape.event.impl.EventRender3D;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.utils.render.RenderUtil;
@@ -30,9 +29,6 @@ extends Mod {
     private final NumberValue scale = NumberValue.create((Object)this, "Scale", "#.#", "", 0.1, 1.0, 1.5, 0.1);
     private static final long moduleId = -5031384321297466627L;
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SpawnerFinder() {
         super("SpawnerFinder", (int)moduleId, Category.k);

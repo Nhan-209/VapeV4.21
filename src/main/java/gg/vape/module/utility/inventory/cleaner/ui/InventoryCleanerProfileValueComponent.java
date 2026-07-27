@@ -6,7 +6,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryCleanerProfile;
 import gg.vape.module.utility.inventory.cleaner.InventoryCleanerProfileValue;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryCleanerProfileRow;
 import gg.vape.notification.NotificationType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.GlyphIconComponent;
@@ -29,9 +28,6 @@ extends GuiComponent {
         return I;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {

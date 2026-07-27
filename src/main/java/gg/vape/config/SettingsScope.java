@@ -2,7 +2,6 @@ package gg.vape.config;
 
 import gg.vape.config.GlobalSettingsPayload;
 import gg.vape.config.SettingsPayload;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Arrays;
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
@@ -40,9 +39,6 @@ public enum SettingsScope {
         this.Z = clazz;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Nullable
     public Class<? extends SettingsPayload> P() {

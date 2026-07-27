@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.ItemIcon;
@@ -56,9 +55,6 @@ public class ItemIconRenderer {
         ItemIconRenderer.j(itemStack, null, f, f2, n, n2, f3, 1.0f, bl);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void R(ItemStack itemStack, float f, float f2, int n, int n2) {
         ItemIconRenderer.j(itemStack, null, f, f2, n, n2, 1.0f, 1.0f, false);

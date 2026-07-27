@@ -1,6 +1,5 @@
 package gg.vape.ui.click;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.MouseClickButton;
 
 public enum MouseButton {
@@ -11,9 +10,6 @@ public enum MouseButton {
 
     private static final MouseButton[] J;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static MouseButton A(int n) {
         for (MouseButton mouseButton : MouseButton.values()) {

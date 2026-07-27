@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.ui.click.frame.Frame;
@@ -52,9 +51,6 @@ extends InteractiveComponent {
         return this._o;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public FrameNavigationButtonComponent(String string, String string2, Class clazz) {
         this(string, string2);

@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.SimpleTextLabelComponent;
 import gg.vape.ui.click.component.TooltipTextSegment;
@@ -16,9 +15,6 @@ extends SimpleTextLabelComponent {
     private TooltipTextSegment o;
     private boolean b = false;
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ToolTips(GuiComponent guiComponent, String string, double d, Color color, boolean bl) {
         super(string, d, color, bl);

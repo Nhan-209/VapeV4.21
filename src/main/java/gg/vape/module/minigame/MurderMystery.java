@@ -6,7 +6,6 @@ import gg.vape.event.impl.EventRender2D;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.BooleanValue;
@@ -35,9 +34,6 @@ extends Mod {
     private final LimitValue murdererItems;
     private final List<Integer> murdererIds = new ArrayList<Integer>();
 
-    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean P(EntityLivingBase entityLivingBase) {
         if (!this.r$src$Z$14eylz9()) {

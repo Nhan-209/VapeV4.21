@@ -1,6 +1,5 @@
 package gg.vape.friend.ui;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.EntityModelRenderCache;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -64,9 +63,6 @@ extends GuiComponent {
         this(null, string, d, d2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void O(String string) {
         this.O = string;

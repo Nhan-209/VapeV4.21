@@ -1,6 +1,5 @@
 package gg.vape.module.utility.inventory.cleaner;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.INamed;
 import java.util.Arrays;
 import java.util.List;
@@ -68,9 +67,6 @@ implements INamed {
         return null;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         String[] stringArray = new String[]{"DOES_NOT_CONTAIN", "is not in", "contains", "CONTAINS", "matches regex", "IS_NOT_IN", "MATCH_REGEX", "does not match regex", "DOES_NOT_MATCH_REGEX", "IS_IN", "does not contain", "is in", "EQUALS", "does not equal", "equals", "DOES_NOT_EQUAL"};

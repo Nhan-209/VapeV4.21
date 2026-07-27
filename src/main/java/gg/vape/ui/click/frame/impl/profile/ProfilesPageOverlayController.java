@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.config.Profile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.input.BindableInputComponent;
 import gg.vape.ui.click.frame.impl.main.ClickGuiSidecarPanelBase;
 import gg.vape.ui.click.frame.impl.profile.ProfileGlyphIconPanel;
@@ -79,9 +78,6 @@ extends ClickGuiSidecarPanelBase {
         super.y(runnable);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public BindableInputComponent W() {
         return this.DL;

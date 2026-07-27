@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.IconGlyphComponent;
 import gg.vape.ui.click.component.IconShape;
@@ -174,9 +173,6 @@ extends GuiComponent {
         return Math.max(this.b, d + this.G * 2.0);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Nullable
     public IconGlyphComponent M() {

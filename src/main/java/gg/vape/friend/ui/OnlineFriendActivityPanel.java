@@ -9,7 +9,6 @@ import gg.vape.friend.ui.OnlineActivityHeldItemSlotComponent;
 import gg.vape.friend.ui.OnlineActivityPanelOptions;
 import gg.vape.friend.ui.OnlineActivitySettingsFrame;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.AnimatedPanelComponent;
 import gg.vape.ui.click.component.ItemStackSlotComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -332,9 +331,6 @@ extends AnimatedPanelComponent {
         return this.pP.i().L();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void U(boolean bl) {
         if (bl == this.pW) {

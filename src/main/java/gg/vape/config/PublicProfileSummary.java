@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gg.vape.config.ConfigJsonUtils;
 import gg.vape.config.PublicProfileUser;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
@@ -65,9 +64,6 @@ public class PublicProfileSummary {
         this.L = string2;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String h$src$Ljava_lang_String_$1lo47nn() {
         return this.B;

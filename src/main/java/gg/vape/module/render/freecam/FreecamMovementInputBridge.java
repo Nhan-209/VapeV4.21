@@ -1,6 +1,5 @@
 package gg.vape.module.render.freecam;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Minecraft;
@@ -35,9 +34,6 @@ extends Wrapper {
         super(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     private void applyMovementInput(boolean bl, boolean bl2, boolean bl3, boolean bl4, boolean bl5, boolean bl6, boolean bl7) {
         FreecamMovementInputBridge input = new FreecamMovementInputBridge(FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.z(bl, bl2, bl3, bl4, bl5, bl6, bl7));

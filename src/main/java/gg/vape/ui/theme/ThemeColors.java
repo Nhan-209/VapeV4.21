@@ -2,7 +2,6 @@ package gg.vape.ui.theme;
 
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ColorUtil;
 import java.awt.Color;
 
@@ -94,9 +93,6 @@ public class ThemeColors {
         this.G = Color.BLACK;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int U() {
         int n = ThemeColors.W();

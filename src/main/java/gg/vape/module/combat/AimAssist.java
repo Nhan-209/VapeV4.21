@@ -8,7 +8,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.combat.AimAssistRotationSubModule;
 import gg.vape.module.combat.AimAssistTargetingSubModule;
 import gg.vape.module.control.SharedModuleControlClaims;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
@@ -145,9 +144,6 @@ extends Mod {
         return this.passesItemFilter(entityLivingBase);
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public NumberValue w$src$Lgg_vape_value_NumberValue_$cwexni() {
         return this.horizontalSpeed;

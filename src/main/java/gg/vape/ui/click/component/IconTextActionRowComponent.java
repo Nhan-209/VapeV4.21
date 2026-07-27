@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.component.IconGlyphComponent;
 import gg.vape.ui.click.component.IconTextActionRowForwardClickMouseListener;
@@ -62,9 +61,6 @@ extends InteractiveComponent {
         return super.r(guiClickListener);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public IconTextActionRowComponent(String string) {
         this.K = new TruncatedTextComponent(string, "...", string, 50.0, 0.8, Color.WHITE, false, false);

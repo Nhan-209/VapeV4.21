@@ -6,15 +6,11 @@ import gg.vape.event.EventPriority;
 import gg.vape.event.impl.EventChat;
 import gg.vape.event.impl.EventPacketReceive;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ClientChatReceivedEvent;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class ForgeClientChatReceivedEvent
 implements EventListener {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler(A=EventPriority.LOW)
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {

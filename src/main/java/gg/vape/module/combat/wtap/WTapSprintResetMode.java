@@ -14,7 +14,6 @@ import gg.vape.module.SubModule;
 import gg.vape.module.combat.AttackPacketTimingTracker;
 import gg.vape.module.combat.WTap;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.ModeValue;
@@ -157,8 +156,5 @@ extends SubModule<WTap> {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

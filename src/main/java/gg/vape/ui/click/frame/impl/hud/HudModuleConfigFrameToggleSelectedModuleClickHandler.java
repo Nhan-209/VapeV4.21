@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl.hud;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrame;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameHeaderComponent;
@@ -28,7 +27,4 @@ implements GuiClickListener {
         this.m = hudModuleConfigFrame;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

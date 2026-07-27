@@ -14,7 +14,6 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
 import gg.vape.module.render.hud.HudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.profile.ProfileSnapshotGuiBuilder;
 import gg.vape.utils.NameComparator;
 import java.util.ArrayList;
@@ -140,9 +139,6 @@ public class ProfileSnapshot {
         return this.N;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static ProfileSnapshot z(PublicProfile publicProfile) {
         Profile profile;

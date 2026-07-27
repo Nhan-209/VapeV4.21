@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.Vape;
 import gg.vape.module.render.hud.FpsDisplayHudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.wrapper.impl.Minecraft;
@@ -12,9 +11,6 @@ public class FpsDisplayHudFrame
 extends HudModuleConfigFrameBase {
     private static final long xb = 5183938735720366080L;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double A() {

@@ -1,7 +1,6 @@
 package gg.vape.module.control;
 
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -35,9 +34,6 @@ public class ModuleControlClaim {
         return this.v;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ModuleControlClaim() {
         this(false);

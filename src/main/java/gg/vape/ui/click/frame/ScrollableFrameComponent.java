@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.FrameComponent;
 import gg.vape.ui.click.layout.WrappingFlowLayout;
 import org.jetbrains.annotations.Nullable;
@@ -23,9 +22,6 @@ extends FrameComponent {
     public void V() {
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ScrollableFrameComponent v(@Nullable Double d) {
         this.qE = d;

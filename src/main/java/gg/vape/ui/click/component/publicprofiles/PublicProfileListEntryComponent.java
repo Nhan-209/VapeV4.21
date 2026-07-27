@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.publicprofiles;
 
 import gg.vape.config.PublicProfile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.TruncatedTextComponent;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.ui.click.component.publicprofiles.PublicProfileIdBadgeComponent;
@@ -16,9 +15,6 @@ extends InteractiveComponent {
     private final TruncatedTextComponent I;
     private static final String ab = "...";
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void u() {

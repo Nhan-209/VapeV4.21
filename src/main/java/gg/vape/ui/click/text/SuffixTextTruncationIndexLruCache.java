@@ -1,6 +1,5 @@
 package gg.vape.ui.click.text;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.text.SuffixTextTruncationIndexCache;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,7 +18,4 @@ extends LinkedHashMap<Integer, Integer> {
         this.g = suffixTextTruncationIndexCache;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

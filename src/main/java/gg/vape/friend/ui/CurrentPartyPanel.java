@@ -11,7 +11,6 @@ import gg.vape.module.none.ClientSettings;
 import gg.vape.protocol.ZeusConnectionManager;
 import gg.vape.protocol.packet.GroupDeleteResponsePacket;
 import gg.vape.protocol.packet.GroupLeaveResponsePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.MouseClickButton;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.AnimatedPanelComponent;
@@ -110,9 +109,6 @@ extends AnimatedPanelComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static PopupFrame f(CurrentPartyPanel currentPartyPanel, PopupFrame popupFrame) {
         currentPartyPanel.D1 = popupFrame;

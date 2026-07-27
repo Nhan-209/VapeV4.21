@@ -2,7 +2,6 @@ package gg.vape.module.utility.inventory;
 
 import gg.vape.module.utility.inventory.HotbarSlotRuleEditorComponent;
 import gg.vape.module.utility.inventory.HotbarSlotRuleGroupComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 
 class HotbarSlotRuleGroupSelectClickHandler
@@ -10,9 +9,6 @@ implements GuiClickListener {
     final HotbarSlotRuleGroupComponent n;
     final HotbarSlotRuleEditorComponent l;
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void P() {

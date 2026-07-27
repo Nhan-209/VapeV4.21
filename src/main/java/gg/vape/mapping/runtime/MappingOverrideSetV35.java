@@ -3,7 +3,6 @@ package gg.vape.mapping.runtime;
 import gg.vape.mapping.mappings.MMinecraft;
 import gg.vape.mapping.mappings.MVertexFormat;
 import gg.vape.mapping.runtime.MappingOverrideSet;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MappingOverrideSetV35
 extends MappingOverrideSet {
@@ -22,9 +21,6 @@ extends MappingOverrideSet {
         super(n);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static boolean isFeatureFlagEnabled() {
         return P;

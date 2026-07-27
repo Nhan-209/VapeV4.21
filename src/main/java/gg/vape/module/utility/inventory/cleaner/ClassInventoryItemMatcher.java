@@ -5,7 +5,6 @@ import gg.vape.module.utility.inventory.cleaner.ClassInventoryItemMatcherBuilder
 import gg.vape.module.utility.inventory.cleaner.InventoryItemCategory;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherBuilderBase;
 import gg.vape.module.utility.inventory.cleaner.InventoryMatcherListMode;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.ArrayList;
@@ -45,8 +44,5 @@ extends AbstractInventoryItemMatcher {
         this.m = inventoryItemCategory;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

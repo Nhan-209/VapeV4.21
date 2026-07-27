@@ -15,7 +15,6 @@ import gg.vape.manager.client.PublicProfileManager;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.sync.RemoteProfileData;
 import gg.vape.ui.click.component.ActionButtonGroupComponent;
 import gg.vape.ui.click.component.CenteredGlyphComponent;
@@ -400,9 +399,6 @@ extends PublicProfileSnapshotPanelBase {
         this.y(bl);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public PublicProfileListingDetailsPanel(PublicProfilesFrame publicProfilesFrame, @Nullable PublicProfile publicProfile, @Nullable ProfileSnapshot profileSnapshot) {
         super(publicProfilesFrame, publicProfile, profileSnapshot);

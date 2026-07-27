@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.impl.hud.HudEditorReturnToMainLayerHeaderComponent;
 import gg.vape.wrapper.impl.Minecraft;
@@ -16,9 +15,6 @@ extends Frame {
         return this.DM;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void Y() {

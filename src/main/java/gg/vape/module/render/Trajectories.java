@@ -12,7 +12,6 @@ import gg.vape.module.render.proj.ArrowProjectile;
 import gg.vape.module.render.proj.IProjectile;
 import gg.vape.module.render.proj.PotionProjectile;
 import gg.vape.module.render.proj.Projectile;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.render.BufferedRenderPrimitives;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -146,9 +145,6 @@ extends Mod {
         this.A.clear();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {

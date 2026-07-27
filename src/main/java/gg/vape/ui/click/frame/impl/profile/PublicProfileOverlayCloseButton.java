@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.AnimatedTextButtonComponent;
 import gg.vape.ui.click.frame.impl.profile.PublicProfileOverlayPanelBase;
 
@@ -11,9 +10,6 @@ extends AnimatedTextButtonComponent {
         this(string, d, false, publicProfileOverlayPanelBase, runnable);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public PublicProfileOverlayCloseButton(String string, double d, boolean bl, PublicProfileOverlayPanelBase publicProfileOverlayPanelBase, Runnable runnable) {
         super(string, d, bl);

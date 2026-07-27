@@ -1,6 +1,5 @@
 package gg.vape.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.Value;
 import gg.vape.value.ValueDisplayNameMode;
 
@@ -57,9 +56,6 @@ public class ValueDisplayDescriptor {
         return new ValueDisplayDescriptor(value, null, ValueDisplayNameMode.SIMPLE);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static ValueDisplayDescriptor o(Value<?, ?> value, String string) {
         return new ValueDisplayDescriptor(value, string, ValueDisplayNameMode.CUSTOM);

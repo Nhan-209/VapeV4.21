@@ -6,7 +6,6 @@ import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.MappingMethodBuilder;
 import gg.vape.mapping.mappings.MSPacketEntityVelocity;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MSPacketBlockChange
@@ -82,9 +81,6 @@ extends Mapping {
         this.G = mSPacketBlockChange.J(string, bl, clazz);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Object j(Object object) {
         return this.U.L(object, new Object[0]);

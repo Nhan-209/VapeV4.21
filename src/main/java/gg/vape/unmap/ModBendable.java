@@ -3,7 +3,6 @@ package gg.vape.unmap;
 import gg.vape.config.ClientSettings;
 import gg.vape.input.BindActivationMode;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.Bendable;
 
 public class ModBendable
@@ -75,9 +74,6 @@ extends Bendable {
         b = " %s7[%sr%s%s7]%sr %s";
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean A(int n) {
         for (int n2 : this.L()) {

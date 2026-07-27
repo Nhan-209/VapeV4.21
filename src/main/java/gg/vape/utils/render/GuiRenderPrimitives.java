@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.render.hud.FreeLookHudModule;
 import gg.vape.runtime.NativeBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.theme.ThemeColors;
 import gg.vape.unmap.GLUtils;
 import gg.vape.utils.MutableColor;
@@ -845,9 +844,6 @@ public class GuiRenderPrimitives {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void R(double d, double d2, double d3, float f, float f2, float f3, Color color) {
         float f4;

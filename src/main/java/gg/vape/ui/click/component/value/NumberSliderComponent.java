@@ -3,7 +3,6 @@ package gg.vape.ui.click.component.value;
 import func.skidline.RectData;
 import gg.vape.Vape;
 import gg.vape.input.MouseInput;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.animation.DoubleAnimation;
@@ -115,9 +114,6 @@ extends SliderComponentBase {
         return this.R;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {

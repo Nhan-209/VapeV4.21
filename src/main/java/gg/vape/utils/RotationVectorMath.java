@@ -2,7 +2,6 @@ package gg.vape.utils;
 
 import gg.vape.rotation.RotationAngles;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.FastAtanMath;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.impl.Vec3;
@@ -33,9 +32,6 @@ public class RotationVectorMath {
         return new RotationAngles((float)(d * 57.29577951308232), (float)(d3 * 57.29577951308232));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static RotationAngles l(RotationAngles rotationAngles, RotationAngles rotationAngles2) {
         float f = MathUtil.wrapAngleTo180(rotationAngles2.z()) - MathUtil.wrapAngleTo180(rotationAngles.z());

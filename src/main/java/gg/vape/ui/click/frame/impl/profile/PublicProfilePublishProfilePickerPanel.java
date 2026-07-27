@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl.profile;
 import gg.vape.Vape;
 import gg.vape.config.Profile;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.IconTextActionRowComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -20,9 +19,6 @@ public class PublicProfilePublishProfilePickerPanel
 extends PanelComponent {
     private final PublicProfilesFrame Yo;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public PublicProfilePublishProfilePickerPanel(PublicProfilesFrame publicProfilesFrame) {
         super(108.0, 155.0);

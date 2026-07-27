@@ -1,6 +1,5 @@
 package gg.vape.module.combat.silentaura;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.TimerUtil;
 import java.util.Random;
@@ -35,9 +34,6 @@ public class SilentAuraAimJitter {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public SilentAuraAimJitter(double min, double max) {
         this.minValue = min;

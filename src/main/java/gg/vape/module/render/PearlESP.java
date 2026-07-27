@@ -6,7 +6,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.render.pearl.PearlEspEnderPearlEntityWrapper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.utils.render.RenderUtil;
 import gg.vape.utils.render.glu.GluSphere;
@@ -64,9 +63,6 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public PearlESP() {
         super("Explosions", 11534100, Category.k, "Shows the explosion radius of TNT");

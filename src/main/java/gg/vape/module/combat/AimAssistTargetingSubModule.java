@@ -9,7 +9,6 @@ import gg.vape.module.combat.AimAssistWorkerThread;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.rotation.PlayerMouseRotationApplier;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.Vec3d;
@@ -725,9 +724,6 @@ extends SubModule<AimAssist> {
         return f4 * f4 * (3.0f - 2.0f * f4);
     }
 
-    private static ObfuscatedRuntimeException passthroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Nullable
     public EntityLivingBase S$src$Lgg_vape_wrapper_impl_EntityLivingBase_$15eeuu3() {

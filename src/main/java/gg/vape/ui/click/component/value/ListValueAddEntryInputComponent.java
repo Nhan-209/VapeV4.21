@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.value.ListValueEntryInputComponentBase;
 import gg.vape.ui.click.component.value.ListValueOptionsPanel;
 import gg.vape.value.ListValue;
@@ -23,9 +22,6 @@ extends ListValueEntryInputComponentBase {
         this.k("");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public ListValueAddEntryInputComponent(ListValueOptionsPanel listValueOptionsPanel, boolean bl, String string, ListValue listValue) {
         super(bl, string);

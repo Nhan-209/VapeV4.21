@@ -5,7 +5,6 @@ import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.GroupInviteStatePacket;
 import gg.vape.protocol.packet.GroupInviteStateStatus;
 import gg.vape.protocol.packet.ZeusTrackedPacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.Nullable;
 
 public class GroupInviteStateResponsePacket
@@ -33,9 +32,6 @@ extends ZeusTrackedPacket<GroupInviteStatePacket> {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     @Nullable
     public PartyStateModel Y() {

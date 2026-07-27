@@ -8,7 +8,6 @@ import gg.vape.config.PublicProfileReview;
 import gg.vape.config.PublicProfileReviewResponse;
 import gg.vape.manager.client.PublicProfileManager;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.InsetFilledSpacerComponent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SpacerComponent;
@@ -87,9 +86,6 @@ extends PanelComponent {
         this.E(publicProfileReview, null);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$null$3(ApiResponse apiResponse, Throwable throwable) {
         this.o$src$V$1sjvopv();

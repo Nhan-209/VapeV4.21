@@ -2,7 +2,6 @@ package gg.vape.friend.ui;
 
 import gg.vape.Vape;
 import gg.vape.friend.Friend;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.TextInputComponentBase;
 
 public class FriendSettingsAddFriendInputComponent
@@ -36,9 +35,6 @@ extends TextInputComponentBase {
         this.a = FriendSettingsAddFriendInputComponent.J.B;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double x() {

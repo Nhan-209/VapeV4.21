@@ -1,7 +1,6 @@
 package gg.vape.utils;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.MouseOverRayTraceUpdater;
 import gg.vape.utils.RotationUtil;
@@ -116,9 +115,6 @@ public class RayTraceUtil {
         return predicate == null || predicate.test(entity);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static RayTraceResult y(EntityLivingBase entityLivingBase, float f, float f2, boolean bl, @Nullable Predicate<Entity> predicate) {
         if (ForgeVersion.MC_1_20_6.d()) {

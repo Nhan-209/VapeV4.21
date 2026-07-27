@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MCPacketPlayerDigging;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.BlockPos;
 import gg.vape.wrapper.impl.EnumFacing;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -14,9 +13,6 @@ extends Packet {
         return new PlayerDiggingAction(MCPacketPlayerDigging.K(CPacketPlayerDigging.c.getMappingsMapperCompat().qA, this.I));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int I() {
         return MCPacketPlayerDigging.a(CPacketPlayerDigging.c.getMappingsMapperCompat().qA, this.I);

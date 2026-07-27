@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.online;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.FlowLayoutComponent;
 
 public abstract class OnlineConnectionSettingsPageComponent
@@ -34,8 +33,5 @@ extends FlowLayoutComponent {
         return N0;
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

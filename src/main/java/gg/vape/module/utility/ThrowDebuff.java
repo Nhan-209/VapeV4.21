@@ -6,7 +6,6 @@ import gg.vape.input.KeyBindingHelper;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.UtilityMod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.TimerUtil;
@@ -95,9 +94,6 @@ extends UtilityMod {
         return !this.itemsToThrow.isEmpty();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void q() {

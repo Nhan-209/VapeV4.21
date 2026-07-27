@@ -4,7 +4,6 @@ import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.OnlineFriendColorUtil;
 import gg.vape.friend.ping.PingMarker;
 import gg.vape.protocol.packet.PingTargetData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
@@ -52,9 +51,6 @@ extends PingMarker {
     public void d() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public OnlineFriendPingMarker(OnlineFriend onlineFriend, double[] dArray) {
         super(onlineFriend, dArray);

@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.module.render.hud.HudModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.component.GuiComponent;
@@ -74,9 +73,6 @@ extends GuiComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public HudModuleToggleComponent(HudModule hudModule) {
         this(hudModule, 1.0f);

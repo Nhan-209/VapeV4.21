@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.mappings.MITooltipFlagBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 
 public class MBlockReader
@@ -29,9 +28,6 @@ extends Mapping {
         GuiComponent.D(new GuiComponent[1]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Object n(Object object, Object object2, Object object3, Object object4, Object object5) {
         return this.A.O(object, object2, object3, object4, object5);

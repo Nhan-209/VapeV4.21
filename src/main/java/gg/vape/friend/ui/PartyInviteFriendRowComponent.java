@@ -11,7 +11,6 @@ import gg.vape.protocol.ZeusConnectionManager;
 import gg.vape.protocol.packet.GroupCreateResponsePacket;
 import gg.vape.protocol.packet.GroupCreateStatus;
 import gg.vape.protocol.packet.GroupInviteResponsePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.gui.AnimatedCenteredTextLabelComponent;
 import gg.vape.ui.notification.NotificationMessage;
 import gg.vape.ui.notification.NotificationType;
@@ -47,9 +46,6 @@ extends PartyFriendRowComponent {
         this.Ff = false;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void a$src$V$18kn00v() {
         if (this.Ff) {

@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.value;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.value.AbstractListValueComponent;
@@ -162,9 +161,6 @@ extends AbstractListValueComponent {
         this.l$src$V$13ocye8();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void a(boolean bl) {

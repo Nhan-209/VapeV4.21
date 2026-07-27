@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.main;
 
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.FrameStackManager;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
@@ -44,9 +43,6 @@ extends FrameStackManager {
         return w;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Frame L() {
         return this.V;

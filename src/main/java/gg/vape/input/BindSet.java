@@ -1,7 +1,6 @@
 package gg.vape.input;
 
 import gg.vape.input.BindActivationMode;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.Bendable;
 import gg.vape.unmap.BendableInputDispatcher;
 import java.util.ArrayList;
@@ -53,9 +52,6 @@ extends Bendable {
         this.h = new ArrayList<Integer>(this.L());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public String y() {

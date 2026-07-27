@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.Stencil;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.wrapper.impl.Framebuffer;
@@ -119,9 +118,6 @@ public final class StencilUtil {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void T(double d, double d2, double d3) {
         GL11.glBegin((int)6);

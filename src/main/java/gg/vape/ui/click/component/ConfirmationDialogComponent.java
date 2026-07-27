@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.component.IconGlyphComponent;
@@ -85,9 +84,6 @@ extends GuiComponent {
         this.H(this.G, this.v, this.a, this.b);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double x() {

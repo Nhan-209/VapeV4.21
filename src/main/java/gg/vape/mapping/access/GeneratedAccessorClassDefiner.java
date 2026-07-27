@@ -2,7 +2,6 @@ package gg.vape.mapping.access;
 
 import com.google.common.collect.MapMaker;
 import gg.vape.mapping.access.GeneratedAccessorClassLoader;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.concurrent.ConcurrentMap;
 
 public class GeneratedAccessorClassDefiner {
@@ -30,9 +29,6 @@ public class GeneratedAccessorClassDefiner {
         x = stringArray;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static String[] getStringTable() {
         return x;

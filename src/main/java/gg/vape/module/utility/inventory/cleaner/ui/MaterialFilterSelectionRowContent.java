@@ -3,7 +3,6 @@ package gg.vape.module.utility.inventory.cleaner.ui;
 import gg.vape.module.utility.inventory.cleaner.ItemFilterSelection;
 import gg.vape.module.utility.inventory.cleaner.ui.ItemFilterSelectionComponent;
 import gg.vape.module.utility.inventory.cleaner.ui.MaterialFilterSelectionRow;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -61,8 +60,5 @@ extends GuiComponent {
         this.backgroundColorAnimation.J();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

@@ -1,6 +1,5 @@
 package gg.vape.unmap;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.INamed;
 import gg.vape.unmap.PropertyContainer;
 import gg.vape.value.ModeValue;
@@ -29,9 +28,6 @@ implements INamed {
         return this.t;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException exception) {
-        return exception;
-    }
 
     public String z() {
         return this.toString();

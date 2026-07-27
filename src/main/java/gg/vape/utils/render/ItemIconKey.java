@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Objects;
 
 public class ItemIconKey {
@@ -9,9 +8,6 @@ public class ItemIconKey {
     private int F;
     private float Q = 1.0f;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public boolean equals(Object object) {
         if (object instanceof ItemIconKey) {

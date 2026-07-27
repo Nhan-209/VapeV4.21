@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventPrePlayerTick;
 import gg.vape.event.impl.EventPreRenderTick;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.TimerUtil;
@@ -131,8 +130,5 @@ extends Mod {
         this.L.B(this::lambda$new$0);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

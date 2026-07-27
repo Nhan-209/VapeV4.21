@@ -3,7 +3,6 @@ package gg.vape.asm.matcher;
 import gg.vape.asm.matcher.InstructionPattern;
 import gg.vape.asm.matcher.MethodInstructionIndex;
 import gg.vape.asm.matcher.MethodNodeMatcher;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.List;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -39,9 +38,6 @@ extends MethodNodeMatcher {
         this.e = instructionPatternArray;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public boolean matchesMethod(MethodNode methodNode) {

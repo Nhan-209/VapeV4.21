@@ -3,7 +3,6 @@ package gg.vape.rotation;
 import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.RotationAngles;
 import gg.vape.rotation.WorldPointRotationTarget;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.RotationVectorMath;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -29,9 +28,6 @@ implements WorldPointRotationTarget {
         return this.X;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void V$src$V$1law04n() {
         this.b(this.N(this.O));

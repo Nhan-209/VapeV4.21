@@ -7,16 +7,12 @@ import gg.vape.event.impl.EventPreRenderTick;
 import gg.vape.event.impl.EventPreTick;
 import gg.vape.friend.ui.OnlinePlayerPreviewComponent;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.RenderUtils;
 
 public class ClientSettingsEventForwarder
 implements EventListener {
     private ClientSettings n;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void H(EventPreRenderTick eventPreRenderTick) {

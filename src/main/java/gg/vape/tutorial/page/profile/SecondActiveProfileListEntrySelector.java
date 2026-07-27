@@ -1,6 +1,5 @@
 package gg.vape.tutorial.page.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.tutorial.TutorialTargetSelector;
 import gg.vape.tutorial.page.ProfilesTutorialPage;
 import gg.vape.ui.click.frame.impl.profile.ProfileListEntryComponent;
@@ -23,7 +22,4 @@ extends TutorialTargetSelector<ProfileListEntryComponent> {
         this.m = profilesTutorialPage;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

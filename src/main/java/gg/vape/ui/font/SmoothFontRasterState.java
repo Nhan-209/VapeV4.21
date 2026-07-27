@@ -1,6 +1,5 @@
 package gg.vape.ui.font;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.font.stb.StbTrueTypeActiveEdge;
 import gg.vape.ui.font.stb.StbTrueTypeAlignedQuad;
 import gg.vape.ui.font.stb.StbTrueTypeBakedChar;
@@ -2866,9 +2865,6 @@ public class SmoothFontRasterState {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static float N(float f) {
         return -f;

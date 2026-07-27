@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.online;
 
 import gg.vape.manager.client.OnlineConnectionManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.gui.UnderlinedTextLabel;
 import gg.vape.ui.click.component.layout.PaddedComponent;
 import gg.vape.ui.click.frame.impl.online.OnlineConnectionSettingsPageComponent;
@@ -11,9 +10,6 @@ public class OnlineConnectionRetryPageComponent
 extends OnlineConnectionSettingsPageComponent {
     private UnderlinedTextLabel yr;
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static void lambda$new$0() {
         OnlineConnectionManager.T.a();

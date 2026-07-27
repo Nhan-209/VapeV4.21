@@ -1,7 +1,6 @@
 package gg.vape.module.minigame.bedplates;
 
 import gg.vape.module.minigame.bedplates.BedPlateBlockStateKeyMarker;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Item;
 import java.util.Objects;
@@ -43,9 +42,6 @@ public class BedPlateBlockStateKey {
         return this.isNull;
     }
 
-    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int hashCode() {
         return Objects.hash(this.i, this.f);

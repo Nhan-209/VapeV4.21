@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 
 public class TextFormatting
@@ -19,9 +18,6 @@ extends Wrapper {
         return TextFormatting.c.getMappingsMapperCompat().Cq.e(this.getObject());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public String A() {
         return TextFormatting.c.getMappingsMapperCompat().Cq.m(this.getObject());

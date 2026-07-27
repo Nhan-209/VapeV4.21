@@ -5,7 +5,6 @@ import gg.vape.event.EventHandler;
 import gg.vape.event.EventListener;
 import gg.vape.event.impl.ProfileChangeEvent;
 import gg.vape.module.Macro;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.CloseableFrameHeaderComponent;
@@ -43,9 +42,6 @@ EventListener {
         this.l$src$V$1mibm4x();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public FrameMacros() {
         this.T(FrameMacros.J.i);

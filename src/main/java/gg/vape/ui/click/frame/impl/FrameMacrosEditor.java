@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl;
 
 import gg.vape.Vape;
 import gg.vape.module.Macro;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.AnimatedIconButtonComponent;
 import gg.vape.ui.click.component.FadingTruncatedTextComponent;
@@ -120,9 +119,6 @@ extends InteractiveComponent {
     public void I() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Macro z() {
         return this.q1;

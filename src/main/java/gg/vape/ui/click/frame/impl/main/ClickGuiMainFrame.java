@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.main;
 
 import func.skidline.RectData;
 import gg.vape.module.Category;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.frame.OutlinedFrameBase;
@@ -270,9 +269,6 @@ extends OutlinedFrameBase {
         return Category.b;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private ClickGuiOverlayController K$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiOverla$14yv086() {
         if (this._X.x()) {

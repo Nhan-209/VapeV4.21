@@ -1,6 +1,5 @@
 package gg.vape.utils;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -35,9 +34,6 @@ public class Base64Util {
         return new String(byArray3);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static byte[] decodeBase64(String string) {
         char c;

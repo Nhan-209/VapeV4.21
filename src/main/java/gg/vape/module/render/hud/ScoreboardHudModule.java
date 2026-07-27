@@ -7,7 +7,6 @@ import gg.vape.event.impl.EventScoreboardScores;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
 import gg.vape.module.render.hud.ScoreboardVisibleScorePredicate;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.ScoreboardHudFrame;
 import gg.vape.utils.TimerUtil;
 import gg.vape.utils.Vec3d;
@@ -58,9 +57,6 @@ extends HudModule {
         this.setSuffix("Allows you to edit the Minecraft scoreboard");
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private String replaceScoreText(String string, String string2, String string3) {
         String string4 = string2;

@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MMatrix4f;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.RenderMatrix4f;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -38,9 +37,6 @@ extends Wrapper {
         return new Matrix4f(MMatrix4f.E(Matrix4f.c.getMappings().qJ));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void M(FloatBuffer floatBuffer) {
         MMatrix4f.M(Matrix4f.c.getMappings().qJ, this.I, floatBuffer);

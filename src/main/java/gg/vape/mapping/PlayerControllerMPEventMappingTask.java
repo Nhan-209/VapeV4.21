@@ -10,7 +10,6 @@ import gg.vape.mapping.JavassistMappingTask;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.PlayerUseItemCallback;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class PlayerControllerMPEventMappingTask
@@ -40,8 +39,5 @@ extends JavassistMappingTask {
         this.O(Vape.INSTANCE.getMappings().hj.I, EventWindowClick.class, "$0", "null");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

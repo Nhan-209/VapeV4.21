@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component;
 
 import func.skidline.RectData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -24,9 +23,6 @@ extends GuiComponent {
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void h(String string, double d, double d2, double d3, double d4, Color color) {
         this.j(string, d, d2, d3, d4, false, color, null);

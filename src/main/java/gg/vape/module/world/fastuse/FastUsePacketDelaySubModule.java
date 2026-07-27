@@ -12,7 +12,6 @@ import gg.vape.module.combat.AttackPacketTimingTracker;
 import gg.vape.module.control.SharedModuleControlClaimPrimary;
 import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.world.FastUseModule;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.RayTraceUtil;
 import gg.vape.utils.concurrent.ReadWriteLockHelper;
@@ -50,9 +49,6 @@ extends SubModule<FastUseModule> {
         this.dispatchGuard.o(DelayedPacketSendEntry.g(delayedPacketSendEntry));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException exception) {
-        return exception;
-    }
 
     private void flushAll() {
         ReadWriteLockHelper writeLock = this.lock;

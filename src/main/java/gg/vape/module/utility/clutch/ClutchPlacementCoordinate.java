@@ -1,6 +1,5 @@
 package gg.vape.module.utility.clutch;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class ClutchPlacementCoordinate {
     public double y;
@@ -27,9 +26,6 @@ public class ClutchPlacementCoordinate {
         this.score = d4;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public int hashCode() {
         long l = Double.doubleToLongBits(this.x);

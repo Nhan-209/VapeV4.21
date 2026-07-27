@@ -8,7 +8,6 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.none.Search;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.MousePosition;
 import gg.vape.ui.click.animation.DoubleAnimation;
@@ -388,9 +387,6 @@ extends InteractiveComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void F() {

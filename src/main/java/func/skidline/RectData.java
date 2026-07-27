@@ -1,6 +1,5 @@
 package func.skidline;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.MousePosition;
 import gg.vape.utils.MathUtil;
 import java.awt.Point;
@@ -13,9 +12,6 @@ public class RectData {
     private static int l;
     private double Y;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean Z(MousePosition mousePosition) {
         return this.J(mousePosition.O, mousePosition.H);

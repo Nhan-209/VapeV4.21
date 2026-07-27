@@ -1,7 +1,6 @@
 package gg.vape.module.utility;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,7 +52,4 @@ public interface RefillInventoryState {
         this.a$src$V$1hjaphc(String.format(string, objectArray));
     }
 
-    static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

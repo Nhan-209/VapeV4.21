@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventRender3D;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.HSBAData;
 import gg.vape.utils.datas.HSBData;
 import gg.vape.utils.render.OpenGlBackendHolder;
@@ -211,7 +210,4 @@ extends Mod {
         this.renderManager = Minecraft.D();
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

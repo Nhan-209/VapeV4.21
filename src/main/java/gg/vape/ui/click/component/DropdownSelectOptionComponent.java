@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.unmap.ColorUtil;
@@ -35,9 +34,6 @@ extends InteractiveComponent {
         this(string, 0.9);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void a(boolean bl) {
         this.Q = bl;

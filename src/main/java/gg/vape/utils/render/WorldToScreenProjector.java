@@ -1,15 +1,11 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.FloatPair;
 import gg.vape.utils.render.RenderMatrix4f;
 import gg.vape.utils.render.RenderVector3f;
 import gg.vape.utils.render.RenderVector4f;
 
 public class WorldToScreenProjector {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static FloatPair d(RenderVector3f renderVector3f, RenderMatrix4f renderMatrix4f, RenderMatrix4f renderMatrix4f2, RenderMatrix4f renderMatrix4f3, int n, int n2) {
         RenderMatrix4f renderMatrix4f4 = renderMatrix4f2.u(renderMatrix4f);

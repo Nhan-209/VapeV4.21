@@ -1,6 +1,5 @@
 package gg.vape.input;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public enum BindActivationMode {
     TOGGLE("Toggle"),
@@ -9,9 +8,6 @@ public enum BindActivationMode {
     private static final /* synthetic */ BindActivationMode[] V;
     private final String l;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String b() {
         return this.l;

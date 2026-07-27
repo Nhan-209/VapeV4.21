@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.Value;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +12,6 @@ import java.util.List;
 public class IndependentSettingsManager {
     private final List<Value<?, ?>> D = new ArrayList();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public JsonArray toJson() {
         JsonArray jsonArray = new JsonArray();

@@ -4,7 +4,6 @@ import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.ui.OnlineChatPanel;
 import gg.vape.friend.ui.OnlineChatSender;
 import gg.vape.friend.ui.OnlineFriendUiHelper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.TextInputComponentBase;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -39,9 +38,6 @@ extends TextInputComponentBase {
         return 100.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void c() {

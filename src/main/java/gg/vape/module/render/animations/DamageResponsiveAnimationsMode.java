@@ -14,7 +14,6 @@ import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.Animations;
 import gg.vape.module.render.animations.AnimationsMode;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.Minecraft;
@@ -89,9 +88,6 @@ extends AnimationsMode {
         return this.V;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public DamageResponsiveAnimationsMode(Mod mod, String string) {
         super(mod, string);

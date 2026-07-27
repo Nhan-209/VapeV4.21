@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.value;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.TextInputComponentBase;
 import gg.vape.ui.click.component.value.SearchBlockListDropdownLayer;
 import gg.vape.ui.unmap.SearchBlock;
@@ -45,9 +44,6 @@ extends TextInputComponentBase {
         return 20.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double x() {

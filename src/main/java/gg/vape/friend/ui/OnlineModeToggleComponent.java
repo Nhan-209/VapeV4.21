@@ -4,7 +4,6 @@ import gg.vape.friend.ui.OnlineModeToggleClickHandler;
 import gg.vape.friend.ui.OnlineModeToggleInactiveClickHandler;
 import gg.vape.friend.ui.OnlineModeToggleLeftTextButton;
 import gg.vape.friend.ui.OnlineModeToggleRightTextButton;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.PanelComponent;
@@ -153,9 +152,6 @@ extends PanelComponent {
     public void v() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void u(String string, String string2) {
         this.q_.w(string);

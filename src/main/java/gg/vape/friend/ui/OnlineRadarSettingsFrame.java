@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import gg.vape.friend.ui.OnlineRadarPreviewComponent;
 import gg.vape.friend.ui.OnlineRadarSettings;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.DropdownSelectComponent;
 import gg.vape.ui.click.component.value.BooleanToggleComponent;
 import gg.vape.ui.click.component.value.ColorValueEditorComponent;
@@ -98,9 +97,6 @@ extends HudSettingsFrameBase {
         return super.L();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void t(JsonObject jsonObject) {

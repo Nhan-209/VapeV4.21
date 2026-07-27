@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.GlImageTexture;
 import gg.vape.utils.render.ImageRenderer;
 import gg.vape.utils.render.RemoteImageTextureCache;
@@ -60,9 +59,6 @@ public class RemoteImageTextureManager {
         return i;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public RemoteImageTextureManager() {
         new RemoteImageTextureCacheUpdateThread(this).start();

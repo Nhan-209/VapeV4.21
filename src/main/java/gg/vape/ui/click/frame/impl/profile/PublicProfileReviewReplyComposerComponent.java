@@ -9,7 +9,6 @@ import gg.vape.config.PublicProfileReviewResponse;
 import gg.vape.event.impl.PublicProfileReviewEvent;
 import gg.vape.manager.client.PublicProfileManager;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.ActionButtonGroupComponent;
 import gg.vape.ui.click.component.GuiComponent;
@@ -116,9 +115,6 @@ extends GuiComponent {
     public void F() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double x() {

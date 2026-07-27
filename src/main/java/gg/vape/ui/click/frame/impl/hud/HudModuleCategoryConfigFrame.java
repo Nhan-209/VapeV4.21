@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.module.render.hud.HudModuleCategoryEntry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ZeroSizeNoOpGuiComponent;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
 import java.util.ArrayList;
@@ -28,9 +27,6 @@ extends HudModuleConfigFrameBase {
         super(HudModuleCategoryEntry.class);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public String getName() {

@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MRegistry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.Holder;
 import gg.vape.wrapper.impl.ResourceLocation;
@@ -30,9 +29,6 @@ extends Wrapper {
         return Optional.of(this.J(object));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Object B(ResourceLocation resourceLocation) {
         return MRegistry.d(Registry.c.getMappingsMapperCompat().CV, this.I, resourceLocation.getObject());

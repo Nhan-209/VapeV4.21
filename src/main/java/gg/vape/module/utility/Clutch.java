@@ -26,7 +26,6 @@ import gg.vape.rotation.FixedRotationController;
 import gg.vape.rotation.PointRotationController;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
@@ -144,9 +143,6 @@ extends Mod {
         return this.isAllowedBlock(itemStack);
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Clutch() {
         super("Block-In", 8191953, Category.m, "Automatically blocks you in by building walls around you");

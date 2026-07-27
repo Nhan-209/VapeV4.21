@@ -1,6 +1,5 @@
 package gg.vape.module;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,9 +12,6 @@ public class VisibleModuleList<T> {
         this.lastSeenTimestamps.entrySet().removeIf(entry -> this.isExpired(now, (Map.Entry)entry));
     }
 
-    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void N(T t) {
         this.cleanUp();

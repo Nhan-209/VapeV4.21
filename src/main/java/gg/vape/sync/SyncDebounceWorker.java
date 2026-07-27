@@ -2,49 +2,38 @@ package gg.vape.sync;
 
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.utils.MathUtil;
 import gg.vape.utils.SleepUtil;
 
 public class SyncDebounceWorker
 implements Runnable {
-    private long j = 3000L;
-    private long z;
+    private static final long DEBOUNCE_MILLIS = 3000L;
+    private long lastChangeTime;
 
     @Override
     public void run() {
         while (!Vape.INSTANCE.isEnabled()) {
-            this.p();
+            this.processPendingSave();
         }
     }
 
-    public void I() {
-        this.z = System.currentTimeMillis();
+    public void markChanged() {
+        this.lastChangeTime = System.currentTimeMillis();
     }
 
-    public long k() {
-        return this.z;
-    }
-
-    public double m() {
-        double d = this.z + this.j;
-        double d2 = System.currentTimeMillis();
-        return MathUtil.clamp((d2 - (double)this.z) / (d - (double)this.z), 0.0, 1.0);
-    }
-
-    void p() {
+    private void processPendingSave() {
         try {
             SleepUtil.sleep(1000L);
-            if (!Vape.INSTANCE.getPublicProfileSettings().o.L().booleanValue()) {
+            if (!Vape.INSTANCE.getPublicProfileSettings().o.L()) {
                 return;
             }
             if (!ClientSettings.fW.l$src$Z$1gzcm82() && !ClientSettings.fW.P) {
                 return;
             }
-            long l = this.z;
-            if (Vape.INSTANCE.getSyncThread().a$src$Z$5edl1q()) {
-                SleepUtil.sleep(this.j);
-                if (this.z == l) {
-                    Vape.INSTANCE.getSyncThread().o();
+            long observedChangeTime = this.lastChangeTime;
+            if (Vape.INSTANCE.getSyncThread().hasPendingSave()) {
+                SleepUtil.sleep(DEBOUNCE_MILLIS);
+                if (this.lastChangeTime == observedChangeTime) {
+                    Vape.INSTANCE.getSyncThread().requestSave();
                 }
             }
         }
@@ -52,9 +41,4 @@ implements Runnable {
             Vape.logThrowable(exception);
         }
     }
-
-    private static Exception a(Exception exception) {
-        return exception;
-    }
 }
-

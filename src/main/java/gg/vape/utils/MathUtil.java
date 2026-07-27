@@ -1,6 +1,5 @@
 package gg.vape.utils;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Vec3i;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -407,9 +406,6 @@ public class MathUtil {
         return d11;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static boolean isPowerOfTwo(int n) {
         return n != 0 && (n & n - 1) == 0;

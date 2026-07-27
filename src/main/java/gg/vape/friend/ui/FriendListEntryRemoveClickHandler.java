@@ -6,7 +6,6 @@ import gg.vape.friend.Friend;
 import gg.vape.friend.FriendEntry;
 import gg.vape.friend.ui.FriendListEntryRow;
 import gg.vape.friend.ui.OnlineFriendUiHelper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 
 public class FriendListEntryRemoveClickHandler
@@ -19,9 +18,6 @@ implements GuiClickListener {
         this.n = friendEntry;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void P() {

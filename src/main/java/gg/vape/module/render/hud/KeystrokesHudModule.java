@@ -8,7 +8,6 @@ import gg.vape.event.impl.SyntheticAttackRequestEvent;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.hud.KeystrokesHudFrame;
 import gg.vape.unmap.ModeOption;
 import gg.vape.value.BooleanValue;
@@ -56,9 +55,6 @@ extends HudModule {
         keystrokesHudFrame.o(keyBinding, bl);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler(A=EventPriority.HIGHEST)
     public void r(SyntheticAttackRequestEvent syntheticAttackRequestEvent) {

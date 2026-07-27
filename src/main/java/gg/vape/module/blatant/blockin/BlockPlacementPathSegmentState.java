@@ -2,7 +2,6 @@ package gg.vape.module.blatant.blockin;
 
 import gg.vape.Vape;
 import gg.vape.module.utility.clutch.PlacementTarget;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.BlockPos;
 import gg.vape.wrapper.impl.EnumFacing;
@@ -53,9 +52,6 @@ public class BlockPlacementPathSegmentState {
         return this.M.size() == this.expectedCount;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private long posKeyFromCoords(int n, int n2, int n3) {
         return BlockPos.f(n, n2, n3);

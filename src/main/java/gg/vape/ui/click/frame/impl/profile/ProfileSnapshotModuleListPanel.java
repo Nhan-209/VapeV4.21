@@ -3,7 +3,6 @@ package gg.vape.ui.click.frame.impl.profile;
 import gg.vape.config.ProfileModuleSnapshot;
 import gg.vape.config.ProfileSnapshot;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.component.LabeledTextInputComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -28,9 +27,6 @@ extends PanelComponent {
     private boolean r9 = false;
     private ProfileSnapshot rB;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void h() {
         this.r8.clear();

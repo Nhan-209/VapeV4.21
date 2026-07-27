@@ -3,7 +3,6 @@ package gg.vape.asm.helper;
 import gg.vape.asm.ITramsformNode;
 import gg.vape.asm.helper.DescUtils;
 import gg.vape.asm.helper.EventBuilder;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.ListIterator;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -63,9 +62,6 @@ implements ITramsformNode {
         return this.F;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         Local.A(true);

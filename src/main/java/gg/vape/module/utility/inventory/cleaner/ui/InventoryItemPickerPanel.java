@@ -18,7 +18,6 @@ import gg.vape.module.utility.inventory.cleaner.ui.InventoryItemPickerSearchResu
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryItemPreviewComponent;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryItemStackSelectionRowComponent;
 import gg.vape.module.utility.inventory.cleaner.ui.ItemPickerSelection;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GlyphIconComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.IconGlyphComponent;
@@ -353,9 +352,6 @@ extends PanelComponent {
         this.VX = bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void lambda$null$3(InventoryItemMatcher inventoryItemMatcher) {
         this.c(ItemPickerSelection.k(inventoryItemMatcher.k()));

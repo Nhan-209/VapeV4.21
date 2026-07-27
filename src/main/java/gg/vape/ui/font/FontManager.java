@@ -1,7 +1,6 @@
 package gg.vape.ui.font;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.font.BufferedSmoothFontRenderer;
 import gg.vape.ui.font.FontFamily;
 import gg.vape.ui.font.FontFamilySwitchMap;
@@ -177,9 +176,6 @@ public class FontManager {
         return stbSmoothFontRenderer;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SmoothFontRenderer w() {
         return this.D(12, false);

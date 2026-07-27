@@ -1,10 +1,9 @@
 package gg.vape.config;
 
-import gg.vape.config.BuiltinProfile;
 import gg.vape.module.blatant.AnchorMacro;
 import gg.vape.module.combat.AimAssist;
 import gg.vape.module.combat.AutoClicker;
-import gg.vape.module.combat.AutoMace;
+import gg.vape.module.combat.HitSwap;
 import gg.vape.module.combat.CrystalAura;
 import gg.vape.module.combat.Sprint;
 import gg.vape.module.utility.AutoTotem;
@@ -19,7 +18,7 @@ extends BuiltinProfile {
     protected void O() {
         this.B(AutoClicker.class);
         this.B(AimAssist.class);
-        this.B(AutoMace.class);
+        this.B(HitSwap.class);
         this.B(Sprint.class);
         this.B(CrystalAura.class);
         this.B(AutoTotem.class);

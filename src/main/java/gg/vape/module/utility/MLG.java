@@ -11,7 +11,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.utility.MLGBlockWrapper;
 import gg.vape.module.utility.MLGImpactState;
 import gg.vape.module.utility.inventory.ItemStackActionPredicate;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.BooleanValue;
@@ -76,9 +75,6 @@ extends Mod {
         return false;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean pumpKeyPresses() {
         KeyBinding keyBinding;

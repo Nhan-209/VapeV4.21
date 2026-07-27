@@ -3,7 +3,6 @@ package gg.vape.config;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,9 +18,6 @@ public class DualJsonArrayPayload {
         return this.P;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     DualJsonArrayPayload(JsonArray jsonArray, JsonArray jsonArray2) {
         this.P = jsonArray;

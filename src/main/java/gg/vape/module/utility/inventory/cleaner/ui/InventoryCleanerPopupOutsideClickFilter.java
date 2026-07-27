@@ -1,7 +1,6 @@
 package gg.vape.module.utility.inventory.cleaner.ui;
 
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryCleanerPopupFrame;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.frame.PopupFrame;
 import java.awt.Point;
@@ -24,8 +23,5 @@ implements GuiMouseListener {
         return GuiMouseListener.super.Q(point);
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

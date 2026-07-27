@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SpacerComponent;
 
@@ -45,9 +44,6 @@ extends PanelComponent {
         this.GC.u(this.L());
     }
 
-    private static ObfuscatedRuntimeException c(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public SplitPanelComponent(double d, double d2, PanelComponent panelComponent, PanelComponent panelComponent2) {
         super(d, d2);

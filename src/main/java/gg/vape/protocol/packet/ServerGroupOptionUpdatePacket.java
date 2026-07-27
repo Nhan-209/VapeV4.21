@@ -3,7 +3,6 @@ package gg.vape.protocol.packet;
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.GroupOption;
 import gg.vape.protocol.packet.ZeusSerializablePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class ServerGroupOptionUpdatePacket
 implements ZeusSerializablePacket {
@@ -55,9 +54,6 @@ implements ZeusSerializablePacket {
     public ServerGroupOptionUpdatePacket() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         if (ServerGroupOptionUpdatePacket.s() != 0) {

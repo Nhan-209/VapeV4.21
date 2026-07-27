@@ -13,7 +13,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.blatant.BacktrackPacketQueueEntry;
 import gg.vape.module.blatant.BacktrackPacketReplayState;
 import gg.vape.module.blatant.BacktrackPacketState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.datas.PlayerLocationSnapshot;
 import gg.vape.utils.network.PacketDispatchGuard;
@@ -319,9 +318,6 @@ extends Mod {
         backtrack.w$src$V$1hcgtu3();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler(A=EventPriority.LOW)
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {

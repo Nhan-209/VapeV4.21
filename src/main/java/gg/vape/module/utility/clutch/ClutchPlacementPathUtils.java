@@ -5,7 +5,6 @@ import gg.vape.module.utility.clutch.BlockPathSearchStrategy;
 import gg.vape.module.utility.clutch.BlockPlacementNode;
 import gg.vape.module.utility.clutch.ClutchPlacementCoordinate;
 import gg.vape.module.utility.clutch.PlacementTarget;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.FastAtanMath;
@@ -377,9 +376,6 @@ public class ClutchPlacementPathUtils {
         return stack;
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static float Z(Vec3d vec3d, Vec3d vec3d2, float f, float f2) {
         double d = vec3d.Y() - vec3d2.Y();

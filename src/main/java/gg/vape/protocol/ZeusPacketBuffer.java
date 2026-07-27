@@ -1,7 +1,6 @@
 package gg.vape.protocol;
 
 import gg.vape.protocol.ZeusPacketBufferUtil;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import io.netty.buffer.ByteBuf;
 import java.nio.ByteBuffer;
@@ -131,9 +130,6 @@ public class ZeusPacketBuffer {
         return this.u.readDouble();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void U(Enum<?> enum_) {
         ZeusPacketBufferUtil.R(this.u, enum_);

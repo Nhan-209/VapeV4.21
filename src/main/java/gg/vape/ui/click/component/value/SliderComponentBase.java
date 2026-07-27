@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.value;
 
 import func.skidline.RectData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.MousePosition;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.RenderUtils;
@@ -71,9 +70,6 @@ extends GuiComponent {
         return Math.min(Math.max(d10 + d, d), d2);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public RectData L(double d, double d2, double d3) {
         return new RectData(d - d3, d2 - d3, d3 * 2.0, d3 * 2.0);

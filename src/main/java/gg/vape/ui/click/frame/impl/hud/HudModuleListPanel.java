@@ -5,7 +5,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.InsetFrameBase;
@@ -49,9 +48,6 @@ extends InsetFrameBase {
         }
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void Y() {

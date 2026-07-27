@@ -1,6 +1,5 @@
 package gg.vape.mapping;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemStack;
@@ -21,9 +20,6 @@ public class ItemMappingEntry {
         A = stringArray;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static ItemMappingEntry w(String string) {
         String string2;

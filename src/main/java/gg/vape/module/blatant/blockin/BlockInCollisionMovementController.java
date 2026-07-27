@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.blatant.blockin.AbstractBlockInMovementController;
 import gg.vape.module.blatant.blockin.BlockPlacementGraph;
 import gg.vape.module.utility.MLGBlockWrapper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.impl.AttributeInstance;
 import gg.vape.wrapper.impl.AttributeModifier;
@@ -90,9 +89,6 @@ extends AbstractBlockInMovementController {
         return this.p.P() || this.p.I$src$Z$fcv2k3();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Vec3 M(Vec3 vec3, float f) {
         this.p.i(this.p.b(f), vec3);

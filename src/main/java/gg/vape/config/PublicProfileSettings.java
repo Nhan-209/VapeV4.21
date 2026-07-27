@@ -6,7 +6,6 @@ import gg.vape.config.PublicProfileSecondaryDirtyStringValue;
 import gg.vape.config.PublicProfileSelectedProfileStringValue;
 import gg.vape.config.PublicProfileSettingsBindSet;
 import gg.vape.config.PublicProfileSettingsBindValue;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.font.FontSelector;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
@@ -91,8 +90,5 @@ public class PublicProfileSettings {
         return s;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

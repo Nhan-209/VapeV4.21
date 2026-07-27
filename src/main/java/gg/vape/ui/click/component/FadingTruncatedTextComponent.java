@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component;
 
 import func.skidline.RectData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.TruncatedTextComponent;
 import gg.vape.ui.click.text.TextTruncationIndexCache;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -150,8 +149,5 @@ extends TruncatedTextComponent {
         this.i = color;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

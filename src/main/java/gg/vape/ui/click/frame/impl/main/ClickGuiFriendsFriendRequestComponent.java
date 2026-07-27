@@ -5,7 +5,6 @@ import gg.vape.friend.Friend;
 import gg.vape.friend.FriendEntry;
 import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.OnlineStatus;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.animation.ColorAnimation;
@@ -199,9 +198,6 @@ extends InteractiveComponent {
         return En;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static Color g$src$Ljava_awt_Color_$1956ipg() {
         return Ez;

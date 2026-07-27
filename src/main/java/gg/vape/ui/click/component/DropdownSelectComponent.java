@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component;
 
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.DropdownPopupCloseClickHandler;
@@ -58,9 +57,6 @@ implements FocusableComponent {
     @Nullable
     private String zV;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double x() {

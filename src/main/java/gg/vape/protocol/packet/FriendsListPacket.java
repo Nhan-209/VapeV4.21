@@ -3,7 +3,6 @@ package gg.vape.protocol.packet;
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.FriendsListResponsePacket;
 import gg.vape.protocol.packet.ZeusTrackedPacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class FriendsListPacket
 extends ZeusTrackedPacket<FriendsListResponsePacket> {
@@ -25,9 +24,6 @@ extends ZeusTrackedPacket<FriendsListResponsePacket> {
     public void T(ZeusPacketBuffer zeusPacketBuffer) {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static boolean e() {
         boolean bl = FriendsListPacket.s();

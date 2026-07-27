@@ -6,7 +6,6 @@ import gg.vape.api.ApiServices;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.notification.NotificationType;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.SpacerComponent;
 import gg.vape.ui.click.component.WrappingTextLabelComponent;
 import gg.vape.ui.click.component.input.DebouncedTextInputComponent;
@@ -30,9 +29,6 @@ extends OnlineConnectionSettingsPageComponent {
         onlineAccountLinkCodePageComponent.W();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public OnlineAccountLinkCodePageComponent() {
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");

@@ -1,7 +1,6 @@
 package gg.vape.api;
 
 import gg.vape.runtime.NativeBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class ApiAccessTokenProvider {
     private static String z;
@@ -34,9 +33,6 @@ public class ApiAccessTokenProvider {
         return ApiAccessTokenProvider.H(false);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     static {
         if (ApiAccessTokenProvider.p() == null) {

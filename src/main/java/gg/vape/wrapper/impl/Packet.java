@@ -3,7 +3,6 @@ package gg.vape.wrapper.impl;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.mappings.MPacket;
 import gg.vape.module.blatant.BacktrackPacketQueueEntry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.NetworkPacketHandle;
@@ -21,9 +20,6 @@ extends Wrapper {
         super(object);
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean hasPriority() {
         return MPacket.hasPriority(Packet.c.getMappings().Cx, this.I);

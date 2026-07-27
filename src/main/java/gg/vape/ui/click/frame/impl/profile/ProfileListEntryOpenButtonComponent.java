@@ -7,7 +7,6 @@ import gg.vape.config.Profile;
 import gg.vape.config.ProfilesSyncPayloadBuilder;
 import gg.vape.config.PublicProfile;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.AnimatedIconButtonComponent;
 import gg.vape.ui.click.frame.FrameStackManager;
 import gg.vape.ui.click.frame.impl.main.ClickGuiFrameManager;
@@ -54,9 +53,6 @@ extends AnimatedIconButtonComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void d$src$V$1k3o55t() {
         if (this.qx == null) {

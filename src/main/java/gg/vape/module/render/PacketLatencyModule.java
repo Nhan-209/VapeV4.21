@@ -6,7 +6,6 @@ import gg.vape.event.impl.EventPostRenderTick;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.render.PacketLatencySample;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.value.NumberValue;
 import gg.vape.wrapper.impl.Minecraft;
 import java.util.ArrayList;
@@ -84,9 +83,6 @@ extends Mod {
         this.addValue(this.benchmarkTime, this.testAmount);
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private double testDurationMillis() {
         return (Double)this.benchmarkTime.K() * 1000.0;

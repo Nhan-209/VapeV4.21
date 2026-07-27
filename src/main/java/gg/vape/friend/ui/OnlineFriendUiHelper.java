@@ -9,7 +9,6 @@ import gg.vape.friend.ui.PartyDetailsAndChatPanel;
 import gg.vape.friend.ui.PartyMemberRow;
 import gg.vape.friend.ui.PartyMemberTextStatusComponent;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.notification.NotificationMessage;
 import gg.vape.ui.notification.NotificationType;
@@ -52,9 +51,6 @@ public final class OnlineFriendUiHelper {
         return (OnlineFriendsFrame)guiComponent;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     static {
         OnlineFriendUiHelper.q(0);

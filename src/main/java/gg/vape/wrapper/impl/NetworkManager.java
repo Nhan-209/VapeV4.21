@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MNetworkManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.EntityFishHookState;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -10,9 +9,6 @@ import gg.vape.wrapper.impl.Packet;
 
 public class NetworkManager
 extends Wrapper {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public void G(Packet packet) {
         if (ForgeVersion.MC_1_20_6.d()) {

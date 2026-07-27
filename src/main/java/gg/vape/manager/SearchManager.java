@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import gg.vape.Vape;
 import gg.vape.module.none.Search;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.unmap.SearchBlock;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,9 +33,6 @@ public class SearchManager {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Set<SearchBlock> O() {
         return this.n;

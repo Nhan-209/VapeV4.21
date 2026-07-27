@@ -9,7 +9,6 @@ import gg.vape.module.utility.inventory.HotbarSlotRuleItemPickerHeaderComponent;
 import gg.vape.module.utility.inventory.HotbarSlotRuleItemSearchComponent;
 import gg.vape.module.utility.inventory.HotbarSlotRuleSelectedSlotPreviewComponent;
 import gg.vape.module.utility.inventory.HotbarSlotRuleSlotSelectorComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.FrameStackManager;
 import gg.vape.ui.click.frame.impl.main.ClickGuiFrameManager;
@@ -112,9 +111,6 @@ extends Frame {
         this.selectedSlot = n;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void y(HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent) {
         this.groupComponent = hotbarSlotRuleGroupComponent;

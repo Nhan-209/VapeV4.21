@@ -3,7 +3,6 @@ package gg.vape.ui.click.component.input;
 import gg.vape.input.BindActivationMode;
 import gg.vape.input.BindCaptureTask;
 import gg.vape.input.KeyboardInput;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ToolTips;
 import gg.vape.ui.click.component.TruncatedTextComponent;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
@@ -118,9 +117,6 @@ extends InteractiveComponent {
         return this.k6;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void f(@Nullable Boolean bl) {
         this.v = bl;

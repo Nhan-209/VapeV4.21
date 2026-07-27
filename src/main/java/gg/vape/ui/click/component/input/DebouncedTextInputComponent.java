@@ -1,7 +1,6 @@
 package gg.vape.ui.click.component.input;
 
 import gg.vape.Vape;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ClickCooldownState;
 import gg.vape.ui.click.component.TextInputComponentBase;
 
@@ -46,8 +45,5 @@ extends TextInputComponentBase {
         return 0.0;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

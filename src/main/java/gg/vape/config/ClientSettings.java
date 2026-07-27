@@ -13,7 +13,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Mod;
 import gg.vape.module.blatant.AntiBot;
 import gg.vape.module.render.entity.RenderEntityContext;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.ItemStackScoreUtil;
@@ -295,9 +294,6 @@ public class ClientSettings {
         ClientSettings.n = n;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static double U(ItemStack itemStack) {
         double d = ItemStackScoreUtil.a$src$F$2aw1mh(itemStack);

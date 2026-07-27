@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component.value;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.TextInputComponentBase;
 import gg.vape.unmap.ColorUtil;
@@ -69,8 +68,5 @@ extends TextInputComponentBase {
 
     public abstract void Y$src$V$npqhoj();
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

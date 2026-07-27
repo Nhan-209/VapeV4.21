@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,8 +38,5 @@ public final class ThemeComponentGroupKey {
         this.h = string2;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 }
 

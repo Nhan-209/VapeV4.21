@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.RotationAngles;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.Vec3d;
 import gg.vape.wrapper.impl.C03PacketPlayer;
@@ -87,9 +86,6 @@ public class RotationDebugSample {
         return stringBuilder.toString();
     }
 
-    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static Vec3d q(RotationDebugSample rotationDebugSample, Vec3d vec3d) {
         rotationDebugSample.target = vec3d;

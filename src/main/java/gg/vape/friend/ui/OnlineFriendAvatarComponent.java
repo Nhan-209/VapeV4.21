@@ -3,7 +3,6 @@ package gg.vape.friend.ui;
 import gg.vape.Vape;
 import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.PartyState;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.GlImageTexture;
@@ -59,9 +58,6 @@ extends GuiComponent {
     public void I() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void u() {

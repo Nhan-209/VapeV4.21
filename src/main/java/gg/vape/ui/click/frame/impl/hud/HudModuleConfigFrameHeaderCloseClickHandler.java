@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.hud;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiClickListener;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrame;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameHeaderComponent;
@@ -26,8 +25,5 @@ implements GuiClickListener {
         this.p = hudModuleConfigFrame;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

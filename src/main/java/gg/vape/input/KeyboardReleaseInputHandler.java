@@ -3,15 +3,11 @@ package gg.vape.input;
 import gg.vape.input.InputEventDispatcher;
 import gg.vape.input.InputEventHandler;
 import gg.vape.input.KeyboardCodeUtil;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class KeyboardReleaseInputHandler
 implements InputEventHandler {
     private static boolean t;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static void w(boolean bl) {
         t = bl;

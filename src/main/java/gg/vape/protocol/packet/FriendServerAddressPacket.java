@@ -3,7 +3,6 @@ package gg.vape.protocol.packet;
 import gg.vape.friend.UserModel;
 import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.ZeusSerializablePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import org.jetbrains.annotations.Nullable;
 
 public class FriendServerAddressPacket
@@ -20,9 +19,6 @@ implements ZeusSerializablePacket {
         return this.Z;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public FriendServerAddressPacket() {
     }

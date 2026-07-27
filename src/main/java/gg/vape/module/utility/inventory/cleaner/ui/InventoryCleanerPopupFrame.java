@@ -21,7 +21,6 @@ import gg.vape.module.utility.inventory.cleaner.ui.InventoryFilterRuleRowBase;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryItemPickerPanel;
 import gg.vape.module.utility.inventory.cleaner.ui.ItemPickerSelection;
 import gg.vape.module.utility.inventory.cleaner.ui.SlotInventoryFilterRuleRow;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.ConfirmationDialogComponent;
 import gg.vape.ui.click.component.DropdownSelectComponent;
 import gg.vape.ui.click.component.FilledSpacerComponent;
@@ -306,9 +305,6 @@ extends Frame {
         return "Managed Inventory Editor";
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void close() {
         FrameStackManager frameStackManager;

@@ -1,6 +1,5 @@
 package gg.vape.utils.render;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.GlScissorRect;
 import gg.vape.utils.render.OpenGlBackend;
@@ -87,9 +86,6 @@ implements OpenGlBackend {
     public void b(double d, float f, float f2) {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void m(double d, double d2, double d3) {

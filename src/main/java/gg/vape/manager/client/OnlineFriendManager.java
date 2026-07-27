@@ -4,7 +4,6 @@ import gg.vape.friend.FriendModel;
 import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.UserModel;
 import gg.vape.friend.ui.OnlineFriendUiHelper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.HashSet;
 import java.util.Set;
 import org.jetbrains.annotations.Nullable;
@@ -12,9 +11,6 @@ import org.jetbrains.annotations.Nullable;
 public class OnlineFriendManager {
     private final Set<OnlineFriend> H = new HashSet<OnlineFriend>();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void g(OnlineFriend onlineFriend) {
         this.H.remove(onlineFriend);

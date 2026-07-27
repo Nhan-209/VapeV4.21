@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.EntityModelRenderBackend;
 import gg.vape.utils.render.EntityModelRenderCache;
 import gg.vape.utils.render.GlFramebuffer;
@@ -165,7 +164,4 @@ implements EntityModelRenderBackend {
     }
 
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

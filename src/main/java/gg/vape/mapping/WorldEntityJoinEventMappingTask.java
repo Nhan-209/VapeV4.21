@@ -5,7 +5,6 @@ import gg.vape.event.impl.EventEntityJoinWorld;
 import gg.vape.mapping.JavassistMappingTask;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class WorldEntityJoinEventMappingTask
@@ -21,8 +20,5 @@ extends JavassistMappingTask {
         super(MappedClasses.Z);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

@@ -2,7 +2,6 @@ package gg.vape.module.utility.inventory.cleaner.ui;
 
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.utility.inventory.cleaner.ui.MaterialFilterSelectionList;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseClickButton;
 import gg.vape.ui.click.frame.AnchoredPopupFrame;
@@ -25,8 +24,5 @@ implements GuiMouseListener {
         }
     }
 
-    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

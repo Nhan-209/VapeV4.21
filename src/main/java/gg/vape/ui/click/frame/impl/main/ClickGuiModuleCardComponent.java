@@ -6,7 +6,6 @@ import gg.vape.input.MouseInput;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.MousePosition;
@@ -601,9 +600,6 @@ extends GuiComponent {
         this.RN.Y(this.Rw.S());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean H$src$Z$ew5873() {
         return this.K;

@@ -1,7 +1,6 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MEnchantmentHelper;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.EnchantmentUtil;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.DamageSource;
@@ -162,9 +161,6 @@ extends Wrapper {
         return MEnchantmentHelper.F(EnchantmentHelper.c.getMappings().Rk, object, itemStack.getObject(), entity.getObject(), damageSource.getObject(), f);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static int q(Enchantment enchantment, ItemStack itemStack) {
         if (ForgeVersion.MC_1_21_4.d()) {

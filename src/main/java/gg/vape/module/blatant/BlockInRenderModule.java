@@ -13,7 +13,6 @@ import gg.vape.module.blatant.blockin.BlockPlacementGraph;
 import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.MouseRotationController;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.utils.render.RenderUtil;
 import gg.vape.utils.render.RenderUtils;
@@ -99,9 +98,6 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {

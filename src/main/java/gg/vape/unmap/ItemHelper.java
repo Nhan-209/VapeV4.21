@@ -1,7 +1,6 @@
 package gg.vape.unmap;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.unmap.ItemMatchRule;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.ItemStackScoreUtil;
@@ -93,9 +92,6 @@ public class ItemHelper {
         this.registerCharacterPredicate(new ItemMatchRule(new String[]{"bed", "beds"}, null), BlockUtil::v);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static boolean lambda$new$1(Item item) {
         if (ForgeVersion.MC_1_20_6.d()) {

@@ -10,7 +10,6 @@ import gg.vape.module.Category;
 import gg.vape.module.Mod;
 import gg.vape.module.render.hud.FreeLookHudModule;
 import gg.vape.module.render.item.ItemESPGroup;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.OpenGlBackendHolder;
@@ -247,9 +246,6 @@ extends Mod {
         RenderUtil.Y();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void r(EventGuiOpen eventGuiOpen) {

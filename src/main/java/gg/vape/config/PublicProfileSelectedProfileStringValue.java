@@ -3,7 +3,6 @@ package gg.vape.config;
 import gg.vape.Vape;
 import gg.vape.config.Profile;
 import gg.vape.config.PublicProfileSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.StringUtils;
 import gg.vape.value.StringValue;
 import java.util.UUID;
@@ -13,9 +12,6 @@ extends StringValue {
     final PublicProfileSettings s;
     private static final String d = " has no online uuid";
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public String D() {
         Profile profile = Vape.INSTANCE.getProfilesManager().M();

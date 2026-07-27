@@ -1,6 +1,5 @@
 package gg.vape.click;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.SplittableRandom;
 
 public class AutoClickerTimingState {
@@ -40,9 +39,6 @@ public class AutoClickerTimingState {
     private static final int A;
     private static final int T;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void h(long l) {
         long l2 = this.P(l, 30000L, 90000L);

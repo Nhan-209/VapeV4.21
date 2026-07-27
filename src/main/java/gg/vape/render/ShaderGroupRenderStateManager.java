@@ -2,7 +2,6 @@ package gg.vape.render;
 
 import gg.vape.Vape;
 import gg.vape.runtime.NativeBridge;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.EntityRenderer;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GameSettings;
@@ -51,9 +50,6 @@ public class ShaderGroupRenderStateManager {
         this.m = true;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean M() {
         return this.m;

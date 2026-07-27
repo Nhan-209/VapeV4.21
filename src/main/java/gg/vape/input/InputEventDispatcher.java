@@ -15,7 +15,6 @@ import gg.vape.input.MouseButtonReleaseInputHandler;
 import gg.vape.input.MouseInputState;
 import gg.vape.input.MouseMoveInputHandler;
 import gg.vape.input.MouseWheelInputHandler;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Minecraft;
@@ -31,9 +30,6 @@ public class InputEventDispatcher {
     private long N;
     private static int[] o;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public static void M(int[] nArray) {
         o = nArray;

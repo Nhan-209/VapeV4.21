@@ -7,7 +7,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryFilterPreset;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryFilterConditionEditor;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryFilterLogicalOperatorDividerComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SpacerComponent;
 import org.jetbrains.annotations.Nullable;
@@ -44,9 +43,6 @@ extends PanelComponent {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public double C() {

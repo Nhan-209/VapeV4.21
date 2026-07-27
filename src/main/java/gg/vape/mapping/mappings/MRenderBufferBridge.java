@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.BlockStateBridge;
 import gg.vape.wrapper.impl.BlockStateContainerBridge;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -43,9 +42,6 @@ extends Mapping {
         this.H.F(object);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public MRenderBufferBridge() {
         this(ScaledResolution.q());

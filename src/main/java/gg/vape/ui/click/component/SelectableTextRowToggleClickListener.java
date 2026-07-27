@@ -1,6 +1,5 @@
 package gg.vape.ui.click.component;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseClickButton;
 import gg.vape.ui.click.frame.impl.main.ClickGuiSidecarPanelBase;
@@ -10,9 +9,6 @@ public class SelectableTextRowToggleClickListener
 implements GuiMouseListener {
     final ClickGuiSidecarPanelBase h;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     @Override
     public void g(Point point, MouseClickButton uA) {

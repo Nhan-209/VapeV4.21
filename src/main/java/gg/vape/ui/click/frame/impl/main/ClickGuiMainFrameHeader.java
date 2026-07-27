@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.main;
 
 import gg.vape.Vape;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GlyphIconComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -38,9 +37,6 @@ extends FrameHeaderComponent {
     public static final double O = 40.0;
     private final GlyphIconComponent Q;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static void lambda$null$5(GuiComponent[] guiComponentArray, PanelComponent panelComponent) {
         if (guiComponentArray != null) {
@@ -54,7 +50,7 @@ extends FrameHeaderComponent {
     }
 
     private void lambda$new$1() {
-        Vape.INSTANCE.getSyncThread().o();
+        Vape.INSTANCE.getSyncThread().requestSave();
         this.I.Z(false);
     }
 
@@ -83,7 +79,7 @@ extends FrameHeaderComponent {
     @Override
     public void H() {
         double d;
-        if (!Vape.INSTANCE.getPublicProfileSettings().o.L().booleanValue() && Vape.INSTANCE.getSyncThread().a$src$Z$5edl1q() && System.currentTimeMillis() > Vape.INSTANCE.getSyncThread().B() + 60000L) {
+        if (!Vape.INSTANCE.getPublicProfileSettings().o.L().booleanValue() && Vape.INSTANCE.getSyncThread().hasPendingSave() && System.currentTimeMillis() > Vape.INSTANCE.getSyncThread().getLastSaveTime() + 60000L) {
             this.I.Z(true);
         } else {
             this.I.Z(false);

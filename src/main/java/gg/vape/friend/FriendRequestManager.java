@@ -13,7 +13,6 @@ import gg.vape.notification.NotificationType;
 import gg.vape.protocol.ZeusConnectionManager;
 import gg.vape.protocol.packet.FriendRequestUpdateResponsePacket;
 import gg.vape.protocol.packet.FriendRequestUpdateStatus;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -92,9 +91,6 @@ public class FriendRequestManager {
         ZeusConnectionManager.T().u().Y(incomingFriendRequest.C(), false, arg_0 -> this.lambda$declineIncomingRequest$1(incomingFriendRequest, arg_0));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void w(long l) {
         FriendRequest friendRequest = null;

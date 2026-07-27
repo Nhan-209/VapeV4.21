@@ -1,6 +1,5 @@
 package gg.vape.input;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -22,9 +21,6 @@ public class MouseClickRateTracker {
         return "M" + (n + 1);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void j() {
         m.add(System.currentTimeMillis() + 1000L);

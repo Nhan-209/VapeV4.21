@@ -3,7 +3,6 @@ package gg.vape.ui.click.component;
 import func.skidline.RectData;
 import gg.vape.module.Macro;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.MousePosition;
@@ -408,9 +407,6 @@ extends GuiComponent {
         this.Cc.Y(d4);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean r$src$Z$kfv1uj() {
         return this.CO;

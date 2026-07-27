@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl;
 
 import gg.vape.module.Mod;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.impl.TextGuiOverlayComponent;
 import java.util.Comparator;
 
@@ -14,9 +13,6 @@ implements Comparator<Mod> {
         return this.W(mod, mod2);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public TextGuiModuleComparator(TextGuiOverlayComponent textGuiOverlayComponent) {
         this.j = textGuiOverlayComponent;

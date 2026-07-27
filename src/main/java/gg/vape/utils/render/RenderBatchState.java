@@ -2,7 +2,6 @@ package gg.vape.utils.render;
 
 import gg.vape.Vape;
 import gg.vape.module.blatant.invwalk.InvWalkKeyLayout;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.render.RenderBatchManager;
 import gg.vape.utils.render.RenderBatchShaderProgram;
 import gg.vape.utils.render.RenderMatrix4f;
@@ -201,9 +200,6 @@ public class RenderBatchState {
         u = 7;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private void a() {
         this.A = GL11.glGetInteger((int)34229);

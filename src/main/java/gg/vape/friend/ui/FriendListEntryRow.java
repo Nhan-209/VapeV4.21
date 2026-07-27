@@ -3,7 +3,6 @@ package gg.vape.friend.ui;
 import gg.vape.friend.ExternalFriend;
 import gg.vape.friend.FriendEntry;
 import gg.vape.friend.ui.FriendListEntryRemoveClickHandler;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.component.SelectableTextRowComponent;
@@ -55,9 +54,6 @@ extends SelectableTextRowComponent {
         this.x$src$Lgg_vape_ui_click_component_SquareIconButtonComp$122v8iw().w("Remove friend from list");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public boolean l() {

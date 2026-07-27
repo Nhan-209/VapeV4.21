@@ -5,7 +5,6 @@ import gg.vape.friend.ui.OnlineChatPanel;
 import gg.vape.friend.ui.PartyChatSender;
 import gg.vape.friend.ui.PartyDetailsPanel;
 import gg.vape.friend.ui.PartyMemberRow;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.component.PanelComponent;
@@ -80,9 +79,6 @@ extends PanelComponent {
         return this.VK;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void u() {

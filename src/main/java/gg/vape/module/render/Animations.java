@@ -13,7 +13,6 @@ import gg.vape.module.render.animations.AnimationsMode;
 import gg.vape.module.render.animations.DamageResponsiveAnimationsMode;
 import gg.vape.module.render.animations.LegacyBlockingPacketBufferedAnimationsMode;
 import gg.vape.module.render.animations.SwordUseMouseGuardAnimationsMode;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
@@ -90,9 +89,6 @@ extends Mod {
         GL11.glTranslatef((float)(-f2), (float)(-f3), (float)(-f4));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean n$src$Z$uk21qf() {
         return this.D.L();

@@ -4,7 +4,6 @@ import gg.vape.module.utility.inventory.cleaner.AbstractInventoryItemCategory;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcher;
 import gg.vape.module.utility.inventory.cleaner.ItemFilterSelection;
 import gg.vape.module.utility.inventory.cleaner.MatcherBackedInventoryItemCategoryBuilder;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemStack;
 
@@ -61,9 +60,6 @@ extends AbstractInventoryItemCategory {
         return matches;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private static boolean matchesItem(ItemStack itemStack, Item item, InventoryItemMatcher inventoryItemMatcher) {
         return inventoryItemMatcher.g(itemStack, item);

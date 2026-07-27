@@ -2,7 +2,6 @@ package gg.vape.ui.click.component;
 
 import gg.vape.config.Profile;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.CenteredGlyphComponent;
 import gg.vape.ui.click.component.ConfirmationDialogComponent;
@@ -82,9 +81,6 @@ extends PopupSelectorComponent {
         this.o(true);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void Z(@Nullable Consumer<Profile> consumer) {
         this.nW = consumer;

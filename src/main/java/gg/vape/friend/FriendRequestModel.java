@@ -2,7 +2,6 @@ package gg.vape.friend;
 
 import gg.vape.friend.UserModel;
 import gg.vape.protocol.ZeusPacketBuffer;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class FriendRequestModel {
     private final UserModel h;
@@ -51,9 +50,6 @@ public class FriendRequestModel {
         return bl;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public long b() {
         return this.c;

@@ -5,7 +5,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryCleanerProfile;
 import gg.vape.module.utility.inventory.cleaner.ItemInventoryFilterRule;
 import gg.vape.module.utility.inventory.cleaner.ui.InventoryFilterRuleRowBase;
 import gg.vape.module.utility.inventory.cleaner.ui.ItemInventoryFilterRuleRowContent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.layout.PaddedComponent;
@@ -73,9 +72,6 @@ extends InventoryFilterRuleRowBase {
         return this.profile;
     }
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void z(@Nullable Runnable runnable) {
         this.onSelect = runnable;

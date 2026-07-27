@@ -3,7 +3,6 @@ package gg.vape.module.utility.inventory;
 import gg.vape.module.utility.inventory.HotbarSlotRuleItemPickerFrame;
 import gg.vape.module.utility.inventory.HotbarSlotRuleSlotSelectClickHandler;
 import gg.vape.module.utility.inventory.ItemStackIconButtonComponent;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import java.util.ArrayList;
@@ -14,9 +13,6 @@ extends GuiComponent {
     private List<ItemStackIconButtonComponent> K = new ArrayList<ItemStackIconButtonComponent>();
     private HotbarSlotRuleItemPickerFrame v;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {

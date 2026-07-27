@@ -1,6 +1,5 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.AnimatedRingIconButtonComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.impl.profile.ProfileSnapshotGuiBuilder;
@@ -26,7 +25,4 @@ extends AnimatedRingIconButtonComponent {
         this.Z(this.eC.V$src$Z$1xhop3l() && !this.eG.h());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }

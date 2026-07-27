@@ -4,7 +4,6 @@ import gg.vape.protocol.ZeusPacketBuffer;
 import gg.vape.protocol.packet.PingAudience;
 import gg.vape.protocol.packet.PingTargetData;
 import gg.vape.protocol.packet.ZeusSerializablePacket;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class ServerPingPacket
 implements ZeusSerializablePacket {
@@ -41,9 +40,6 @@ implements ZeusSerializablePacket {
         this.c = new PingTargetData(zeusPacketBuffer);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void s(int n) {
         A = n;

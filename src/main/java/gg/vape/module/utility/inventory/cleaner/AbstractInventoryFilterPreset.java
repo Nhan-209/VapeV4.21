@@ -2,7 +2,6 @@ package gg.vape.module.utility.inventory.cleaner;
 
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterConditionGroup;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterPresetData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.List;
 
@@ -11,9 +10,6 @@ implements InventoryFilterPresetData {
     private static boolean initialized;
     protected String W;
 
-    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public static void setInitialized(boolean bl) {
         initialized = bl;

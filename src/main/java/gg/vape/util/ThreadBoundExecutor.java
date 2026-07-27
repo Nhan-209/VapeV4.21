@@ -1,6 +1,5 @@
 package gg.vape.util;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -49,21 +48,10 @@ implements Executor {
 
     @Override
     public synchronized void execute(@NotNull Runnable runnable) {
-        boolean onOwnerThread;
-        try {
-            onOwnerThread = this.P != null && Thread.currentThread().equals(this.P);
-        }
-        catch (ObfuscatedRuntimeException exception) {
-            throw ThreadBoundExecutor.sneakyThrow(ThreadBoundExecutor.a(exception));
-        }
+        boolean onOwnerThread = this.P != null && Thread.currentThread().equals(this.P);
         if (onOwnerThread) {
-            try {
-                runnable.run();
-                return;
-            }
-            catch (ObfuscatedRuntimeException exception) {
-                throw ThreadBoundExecutor.sneakyThrow(ThreadBoundExecutor.a(exception));
-            }
+            runnable.run();
+            return;
         }
         this.V.offer(runnable);
     }

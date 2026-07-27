@@ -2,7 +2,6 @@ package gg.vape.ui.click.frame.impl.profile;
 
 import gg.vape.config.PublicProfileSummary;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.animation.ColorAnimation;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.IconGlyphComponent;
@@ -79,9 +78,6 @@ extends GuiComponent {
         return this.I;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public PublicProfileListingResultCardComponent(@Nullable PublicProfileSummary publicProfileSummary) {
         this.getClass();

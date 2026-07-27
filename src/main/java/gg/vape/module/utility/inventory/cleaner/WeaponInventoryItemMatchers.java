@@ -7,7 +7,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcher;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherBuilderFoundation;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherGroup;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherRegistry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemStack;
@@ -55,8 +54,5 @@ public class WeaponInventoryItemMatchers {
         return ClientSettings.U(inventoryItemMatchContext.v());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

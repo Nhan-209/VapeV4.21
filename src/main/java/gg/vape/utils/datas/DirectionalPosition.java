@@ -1,6 +1,5 @@
 package gg.vape.utils.datas;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.datas.BlockCoordinate;
 import gg.vape.wrapper.impl.EnumFacing;
 import java.util.Objects;
@@ -52,9 +51,6 @@ extends BlockCoordinate {
         return this.C == directionalPosition.C;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public int X() {
         return this.C;

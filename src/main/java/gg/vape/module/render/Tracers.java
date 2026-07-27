@@ -9,7 +9,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.render.entity.RenderEntityContext;
 import gg.vape.module.render.entity.RenderEntityContextCache;
 import gg.vape.module.render.entity.RenderEntityContextEntry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.Vec3d;
@@ -118,9 +117,6 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public Tracers() {
         super("Tracers", (int)P, Category.k);

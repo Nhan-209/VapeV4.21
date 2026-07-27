@@ -3,7 +3,6 @@ package gg.vape.friend;
 import gg.vape.friend.UserModel;
 import gg.vape.protocol.PresenceState;
 import gg.vape.protocol.ZeusPacketBuffer;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,9 +23,6 @@ public class FriendModel {
         return this.D;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public FriendModel(ZeusPacketBuffer zeusPacketBuffer) {
         this.D = new UserModel(zeusPacketBuffer);

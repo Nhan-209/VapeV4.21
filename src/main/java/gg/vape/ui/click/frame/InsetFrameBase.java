@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame;
 
 import func.skidline.RectData;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.utils.render.GuiRenderPrimitives;
 
@@ -31,9 +30,6 @@ extends Frame {
         super.o(d - 10.0);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @Override
     public void K(double d) {

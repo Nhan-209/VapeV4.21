@@ -1,7 +1,6 @@
 package gg.vape.friend;
 
 import gg.vape.protocol.ZeusPacketBuffer;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.component.GuiComponent;
 
 public class UserModel {
@@ -22,9 +21,6 @@ public class UserModel {
         UserModel.m(new GuiComponent[5]);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public void a(ZeusPacketBuffer zeusPacketBuffer) {
         zeusPacketBuffer.v(this.i);

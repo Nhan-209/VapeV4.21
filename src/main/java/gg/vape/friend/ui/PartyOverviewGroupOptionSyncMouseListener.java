@@ -3,7 +3,6 @@ package gg.vape.friend.ui;
 import gg.vape.friend.ui.PartyDetailsPanel;
 import gg.vape.protocol.ZeusConnectionManager;
 import gg.vape.protocol.packet.GroupOption;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseListener;
 import gg.vape.ui.click.MouseClickButton;
 import gg.vape.value.BooleanValue;
@@ -34,8 +33,5 @@ implements GuiMouseListener {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 }
 

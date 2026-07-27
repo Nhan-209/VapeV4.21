@@ -1,6 +1,5 @@
 package gg.vape.ui.click.animation;
 
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.MousePosition;
 import gg.vape.ui.click.animation.Animation;
 
@@ -25,9 +24,6 @@ extends Animation<MousePosition> {
         this.w = this.e.H - mousePosition.H;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public MousePosition k() {
         double d = this.q();

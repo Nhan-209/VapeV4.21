@@ -5,7 +5,6 @@ import func.skidline.RectData;
 import gg.vape.Vape;
 import gg.vape.config.ConfigJsonUtils;
 import gg.vape.module.none.ClientSettings;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.component.AnimatedIconButtonComponent;
@@ -358,9 +357,6 @@ extends Frame {
         return this.wO;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     public boolean f$src$Z$1aq8ipk() {
         return this.wu;

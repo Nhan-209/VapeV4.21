@@ -2,7 +2,6 @@ package gg.vape.friend;
 
 import gg.vape.friend.OnlineFriend;
 import gg.vape.friend.ui.OnlineFriendListEntry;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,9 +36,6 @@ public class OnlineFriendCache {
         return this.K.values();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     public OnlineFriend Q(long l, Supplier<OnlineFriend> supplier) {
         OnlineFriend yS = this.m(l);

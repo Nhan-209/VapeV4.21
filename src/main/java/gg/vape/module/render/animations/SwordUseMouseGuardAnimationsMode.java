@@ -7,7 +7,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.render.Animations;
 import gg.vape.module.render.animations.AnimationsMode;
 import gg.vape.rotation.RotationManager;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.utils.ItemStackScoreUtil;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.ItemStack;
@@ -40,9 +39,6 @@ extends AnimationsMode {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     private boolean l() {
         if (((Animations)this.getParent()).n$src$Z$uk21qf() && !ClientSettings.V()) {

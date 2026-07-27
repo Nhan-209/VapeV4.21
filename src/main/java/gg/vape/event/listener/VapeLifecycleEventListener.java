@@ -4,14 +4,10 @@ import gg.vape.event.EventHandler;
 import gg.vape.event.EventListener;
 import gg.vape.event.impl.EventPacketReceive;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.PlayerEventNameFormat;
 
 public class VapeLifecycleEventListener
 implements EventListener {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
-    }
 
     @EventHandler
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {

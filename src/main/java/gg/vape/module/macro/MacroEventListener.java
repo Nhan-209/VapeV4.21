@@ -9,7 +9,6 @@ import gg.vape.event.impl.EventPreTick;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Macro;
 import gg.vape.module.macro.MacroAction;
-import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.Minecraft;
 import java.util.Iterator;
 import java.util.List;
@@ -42,9 +41,6 @@ implements EventListener {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
-    }
 
     @EventHandler
     public void I(EventMouseButton eventMouseButton) {
