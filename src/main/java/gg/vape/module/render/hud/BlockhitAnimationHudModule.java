@@ -24,10 +24,10 @@ import org.lwjgl.opengl.GL11;
 
 public class BlockhitAnimationHudModule
 extends HudModule {
-    private TimerUtil H = new TimerUtil();
-    private boolean A;
+    private TimerUtil blockhitTimer = new TimerUtil();
+    private boolean renderBlockhit;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -36,10 +36,10 @@ extends HudModule {
         this.setSuffix("Shows 1.7 style blockhit animation constantly when blockhitting");
     }
 
-    private void A(float f, float f2) {
+    private void applyViewRotation(float pitch, float yaw) {
         GL11.glPushMatrix();
-        GlStateManager.d(f, 1.0f, 0.0f, 0.0f);
-        GlStateManager.d(f2, 0.0f, 1.0f, 0.0f);
+        GlStateManager.d(pitch, 1.0f, 0.0f, 0.0f);
+        GlStateManager.d(yaw, 0.0f, 1.0f, 0.0f);
         RenderHelper.e();
         GL11.glPopMatrix();
     }
@@ -48,17 +48,17 @@ extends HudModule {
     public void onTick(EventPreTick eventPreTick) {
         if (this.G() && ClientSettings.V()) {
             if (Minecraft.thePlayer().o$src$Z$1iprrmi() && Minecraft.thePlayer().j$src$I$1in0s92() > 0) {
-                this.H.reset();
+                this.blockhitTimer.reset();
             }
-            if (!this.H.hasTimeElapsed(200L)) {
-                this.A = true;
+            if (!this.blockhitTimer.hasTimeElapsed(200L)) {
+                this.renderBlockhit = true;
                 return;
             }
         }
-        this.A = this.R();
+        this.renderBlockhit = this.R();
     }
 
-    private void y(float f, float f2) {
+    private void applyItemTransform(float f, float f2) {
         GL11.glTranslatef((float)0.56f, (float)-0.52f, (float)-0.71999997f);
         GL11.glTranslatef((float)0.0f, (float)(f * -0.6f), (float)0.0f);
         GlStateManager.d(45.0f, 0.0f, 1.0f, 0.0f);
@@ -70,19 +70,19 @@ extends HudModule {
         GL11.glScalef((float)0.4f, (float)0.4f, (float)0.4f);
     }
 
-    private void B(ItemRenderer itemRenderer, float f) {
-        float f2 = 1.0f - (itemRenderer.e() + (itemRenderer.R() - itemRenderer.e()) * f);
+    private void renderBlockhitItem(ItemRenderer itemRenderer, float f) {
+        float equipProgress = 1.0f - (itemRenderer.e() + (itemRenderer.R() - itemRenderer.e()) * f);
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        float f3 = entityPlayerSP.L(f);
-        float f4 = entityPlayerSP.D() + (entityPlayerSP.V() - entityPlayerSP.D()) * f;
-        float f5 = entityPlayerSP.j() + (entityPlayerSP.J() - entityPlayerSP.j()) * f;
-        this.A(f4, f5);
+        float swingProgress = entityPlayerSP.L(f);
+        float pitch = entityPlayerSP.D() + (entityPlayerSP.V() - entityPlayerSP.D()) * f;
+        float yaw = entityPlayerSP.j() + (entityPlayerSP.J() - entityPlayerSP.j()) * f;
+        this.applyViewRotation(pitch, yaw);
         itemRenderer.X(entityPlayerSP);
-        this.K(entityPlayerSP, f);
+        this.applyCameraLag(entityPlayerSP, f);
         OpenGlBackendHolder.d.l(32826);
         GL11.glPushMatrix();
-        this.y(f2, f3);
-        this.U();
+        this.applyItemTransform(equipProgress, swingProgress);
+        this.applyBlockingTransform();
         itemRenderer.g(entityPlayerSP, itemRenderer.k(), ItemRendererBridge.G());
         GL11.glPopMatrix();
         OpenGlBackendHolder.d.u$src$V$hntn98(32826);
@@ -91,24 +91,24 @@ extends HudModule {
 
     @EventHandler
     public void n(EventRenderItemInFirstPerson eventRenderItemInFirstPerson) {
-        if (this.A) {
-            this.B(eventRenderItemInFirstPerson.getItemRenderer(), eventRenderItemInFirstPerson.H);
+        if (this.renderBlockhit) {
+            this.renderBlockhitItem(eventRenderItemInFirstPerson.getItemRenderer(), eventRenderItemInFirstPerson.H);
             eventRenderItemInFirstPerson.setCancelled(true);
         }
     }
 
-    private void K(EntityPlayerSP entityPlayerSP, float f) {
-        float f2 = entityPlayerSP.n$src$F$1u53eru() + (entityPlayerSP.t$src$F$1u8e6c0() - entityPlayerSP.n$src$F$1u53eru()) * f;
-        float f3 = entityPlayerSP.x$src$F$1ualcpg() + (entityPlayerSP.q$src$F$1u6qsjx() - entityPlayerSP.x$src$F$1ualcpg()) * f;
-        GlStateManager.d((entityPlayerSP.V() - f2) * 0.1f, 1.0f, 0.0f, 0.0f);
-        GlStateManager.d((entityPlayerSP.J() - f3) * 0.1f, 0.0f, 1.0f, 0.0f);
+    private void applyCameraLag(EntityPlayerSP entityPlayerSP, float f) {
+        float prevPitch = entityPlayerSP.n$src$F$1u53eru() + (entityPlayerSP.t$src$F$1u8e6c0() - entityPlayerSP.n$src$F$1u53eru()) * f;
+        float prevYaw = entityPlayerSP.x$src$F$1ualcpg() + (entityPlayerSP.q$src$F$1u6qsjx() - entityPlayerSP.x$src$F$1ualcpg()) * f;
+        GlStateManager.d((entityPlayerSP.V() - prevPitch) * 0.1f, 1.0f, 0.0f, 0.0f);
+        GlStateManager.d((entityPlayerSP.J() - prevYaw) * 0.1f, 0.0f, 1.0f, 0.0f);
     }
 
-    private void B(float f) {
-        float f2 = -0.4f * MathUtil.sin(MathUtil.sqrt(f) * (float)Math.PI);
-        float f3 = 0.2f * MathUtil.sin(MathUtil.sqrt(f) * (float)Math.PI * 2.0f);
-        float f4 = -0.2f * MathUtil.sin(f * (float)Math.PI);
-        GL11.glTranslatef((float)f2, (float)f3, (float)f4);
+    private void applySwingOffset(float f) {
+        float offsetX = -0.4f * MathUtil.sin(MathUtil.sqrt(f) * (float)Math.PI);
+        float offsetY = 0.2f * MathUtil.sin(MathUtil.sqrt(f) * (float)Math.PI * 2.0f);
+        float offsetZ = -0.2f * MathUtil.sin(f * (float)Math.PI);
+        GL11.glTranslatef((float)offsetX, (float)offsetY, (float)offsetZ);
     }
 
     private boolean R() {
@@ -121,14 +121,14 @@ extends HudModule {
         }
         if (this.G()) {
             if (Minecraft.thePlayer().o$src$Z$1iprrmi() && Minecraft.thePlayer().j$src$I$1in0s92() > 0) {
-                this.H.reset();
+                this.blockhitTimer.reset();
             }
-            return !this.H.hasTimeElapsed(200L);
+            return !this.blockhitTimer.hasTimeElapsed(200L);
         }
         return false;
     }
 
-    private void U() {
+    private void applyBlockingTransform() {
         GL11.glTranslatef((float)-0.5f, (float)0.2f, (float)0.0f);
         GlStateManager.d(30.0f, 0.0f, 1.0f, 0.0f);
         GlStateManager.d(-80.0f, 1.0f, 0.0f, 0.0f);

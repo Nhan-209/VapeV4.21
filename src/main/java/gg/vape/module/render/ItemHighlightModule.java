@@ -10,9 +10,9 @@ import gg.vape.wrapper.impl.ItemStack;
 
 public class ItemHighlightModule
 extends Mod {
-    private static final long c;
-    private static final String b;
-    public int I = (int)c;
+    private static final long DEFAULT_ID;
+    private static final String MODULE_NAME;
+    public int I = (int)DEFAULT_ID;
 
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {
@@ -22,12 +22,12 @@ extends Mod {
     }
 
     static {
-        b = "Render Test Module";
-        c = -9060873430974332925L;
+        MODULE_NAME = "Render Test Module";
+        DEFAULT_ID = -9060873430974332925L;
     }
 
     public ItemHighlightModule() {
-        super(b, -1, Category.Y);
+        super(MODULE_NAME, -1, Category.Y);
     }
 
     @Override

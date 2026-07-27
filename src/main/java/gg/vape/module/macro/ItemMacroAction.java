@@ -23,97 +23,97 @@ import java.lang.invoke.MethodHandles;
 
 public class ItemMacroAction
 implements MacroAction {
-    private final TimerUtil n = new TimerUtil();
-    private boolean o = false;
-    private final ItemMacro b;
-    private int T = 0;
-    private boolean y = false;
-    private int B = -1;
-    private static final long a;
+    private final TimerUtil timer = new TimerUtil();
+    private boolean finished = false;
+    private final ItemMacro macro;
+    private int step = 0;
+    private boolean doubleClickArmed = false;
+    private int savedSlot = -1;
+    private static final long key;
 
     public int K() {
-        return this.B;
+        return this.savedSlot;
     }
 
     static {
-        long l = a = ZkmLongKeyState.a(2612327236907924835L, 6591889970205458087L, MethodHandles.lookup().lookupClass()).a(138057076883091L);
+        long l = key = ZkmLongKeyState.a(2612327236907924835L, 6591889970205458087L, MethodHandles.lookup().lookupClass()).a(138057076883091L);
     }
 
     @Override
     public Macro g() {
-        return this.b;
+        return this.macro;
     }
 
     @Override
     public void N() {
-        this.o = true;
+        this.finished = true;
     }
 
     @Override
     public void J(MacroAction macroAction) {
         if (macroAction instanceof ItemMacroAction) {
-            this.B = ((ItemMacroAction)macroAction).K();
+            this.savedSlot = ((ItemMacroAction)macroAction).K();
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public void U(int n) {
-        this.B = n;
+        this.savedSlot = n;
     }
 
     @Override
     public boolean h() {
-        return this.o;
+        return this.finished;
     }
 
     public ItemMacroAction(ItemMacro itemMacro) {
-        this.b = itemMacro;
+        this.macro = itemMacro;
     }
 
     @Override
     public void Z() {
         Object object;
         int n;
-        long l = a ^ 0x1A6992AA6D1FL;
-        if (this.B == -1) {
-            n = ItemMacro.k(this.b);
+        long l = key ^ 0x1A6992AA6D1FL;
+        if (this.savedSlot == -1) {
+            n = ItemMacro.k(this.macro);
             if (n == -1) {
-                this.o = true;
+                this.finished = true;
                 return;
             }
-            this.B = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+            this.savedSlot = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
             Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n);
-            this.n.reset();
+            this.timer.reset();
             object = Vape.INSTANCE.getModManager().getMod(Animations.class);
             if (ClientSettings.V()) {
                 if (((Mod)object).r$src$Z$14eylz9() && ((Animations)object).n$src$Z$uk21qf() && ClientSettings.H$src$Z$9w16bz(Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362())) {
                     if (((Animations)object).V$src$Lgg_vape_module_render_animations_AnimationsMode$1evu1tq().M() && !((Animations)object).V$src$Lgg_vape_module_render_animations_AnimationsMode$1evu1tq().i()) {
-                        this.T = 2;
+                        this.step = 2;
                     }
                 } else {
-                    this.T = 2;
+                    this.step = 2;
                 }
             }
         }
-        switch (this.T) {
+        switch (this.step) {
             case 0: {
                 KeyBindingInputState.D();
-                ++this.T;
+                ++this.step;
                 break;
             }
             case 1: {
                 KeyBindingInputState.V();
-                this.n.reset();
-                ++this.T;
+                this.timer.reset();
+                ++this.step;
                 break;
             }
             case 2: {
-                if (this.b.getDoubleClick().L().booleanValue() && !this.y) {
-                    n = this.n.hasTimeElapsed(RandomUtil.i(this.b.getDoubleClickDelay())) ? 1 : 0;
-                    if (this.b instanceof ItemMacroActionState) {
+                if (this.macro.getDoubleClick().L().booleanValue() && !this.doubleClickArmed) {
+                    n = this.timer.hasTimeElapsed(RandomUtil.i(this.macro.getDoubleClickDelay())) ? 1 : 0;
+                    if (this.macro instanceof ItemMacroActionState) {
                         Entity entity;
                         object = Minecraft.thePlayer();
                         EntityPlayerMacroBridge entityPlayerMacroBridge = ((EntityPlayer)object).K$src$Lgg_vape_wrapper_impl_EntityPlayerMacroBridge_$1agjn9();
@@ -122,21 +122,21 @@ implements MacroAction {
                         }
                     }
                     if (n == 0) break;
-                    this.y = true;
-                    this.T = 0;
+                    this.doubleClickArmed = true;
+                    this.step = 0;
                     break;
                 }
-                ++this.T;
+                ++this.step;
                 break;
             }
             case 3: {
-                if (!this.n.hasTimeElapsed(RandomUtil.i(this.b.getDelay()) - 2)) break;
-                ++this.T;
+                if (!this.timer.hasTimeElapsed(RandomUtil.i(this.macro.getDelay()) - 2)) break;
+                ++this.step;
                 break;
             }
             case 4: {
-                Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.B);
-                this.o = true;
+                Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.savedSlot);
+                this.finished = true;
             }
         }
     }

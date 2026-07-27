@@ -12,33 +12,33 @@ implements INamed {
     public static Category g;
     public static Category k;
     public static Category b;
-    private final String B;
+    private final String name;
     public static Category m;
-    private static List<Category> R;
-    private final int C;
-    private final String i;
+    private static List<Category> values;
+    private final int color;
+    private final String description;
     public static Category M;
     public static Category A;
-    private static GuiComponent[] U;
+    private static GuiComponent[] components;
     public static Category Y;
-    private final String y;
+    private final String iconKey;
     public static Category w;
     public static Category L;
     public static Category v;
 
     public static GuiComponent[] N$src$ALgg_vape_ui_click_component_GuiComponent_$lect5v() {
-        return U;
+        return components;
     }
 
     public int getColor() {
-        return this.C;
+        return this.color;
     }
 
     private Category(String string, String string2, String string3, int n) {
-        this.B = string;
-        this.y = string2;
-        this.i = string3;
-        this.C = n;
+        this.name = string;
+        this.iconKey = string2;
+        this.description = string3;
+        this.color = n;
     }
 
     static {
@@ -58,15 +58,15 @@ implements INamed {
         w = new Category(stringArray[4], stringArray[0], (int)lArray[0]);
         L = new Category(stringArray[16], stringArray[7], "", 0);
         A = new Category(stringArray[13], stringArray[19], (int)lArray[6]);
-        R = new ArrayList<Category>();
-        R.add(L);
-        R.add(g);
-        R.add(k);
-        R.add(Y);
-        R.add(m);
-        R.add(M);
-        R.add(w);
-        R.add(b);
+        values = new ArrayList<Category>();
+        values.add(L);
+        values.add(g);
+        values.add(k);
+        values.add(Y);
+        values.add(m);
+        values.add(M);
+        values.add(w);
+        values.add(b);
     }
 
     private Category(String string, String string2, int n) {
@@ -74,25 +74,25 @@ implements INamed {
     }
 
     public String toString() {
-        return this.B;
+        return this.name;
     }
 
     public static void q(GuiComponent[] guiComponentArray) {
-        U = guiComponentArray;
+        components = guiComponentArray;
     }
 
     @Override
     public String getName() {
-        return this.B;
+        return this.name;
     }
 
     public static List<Category> values() {
-        return R;
+        return values;
     }
 
     public static void destruct() {
-        R.clear();
-        R = null;
+        values.clear();
+        values = null;
         b = null;
         g = null;
         Y = null;
@@ -103,11 +103,11 @@ implements INamed {
     }
 
     public String O() {
-        return this.i;
+        return this.description;
     }
 
     public String N() {
-        return this.y;
+        return this.iconKey;
     }
 }
 

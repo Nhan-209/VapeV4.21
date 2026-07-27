@@ -5,10 +5,10 @@ import gg.vape.module.combat.AimAssistRotationSubModule;
 
 public class AimAssistRotationWorkerThread
 extends Thread {
-    final AimAssistRotationSubModule o;
+    final AimAssistRotationSubModule rotationModule;
 
     public AimAssistRotationWorkerThread(AimAssistRotationSubModule aimAssistRotationSubModule) {
-        this.o = aimAssistRotationSubModule;
+        this.rotationModule = aimAssistRotationSubModule;
     }
 
     @Override
@@ -16,8 +16,8 @@ extends Thread {
         while (!Vape.INSTANCE.isEnabled()) {
             try {
                 Thread.sleep(1L);
-                if (!this.o.r$src$Z$14eylz9() || !this.o.J$src$Z$gcqtyf()) continue;
-                AimAssistRotationSubModule.n(this.o);
+                if (!this.rotationModule.r$src$Z$14eylz9() || !this.rotationModule.J$src$Z$gcqtyf()) continue;
+                AimAssistRotationSubModule.n(this.rotationModule);
             }
             catch (Exception exception) {}
         }

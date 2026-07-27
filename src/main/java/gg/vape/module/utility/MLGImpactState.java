@@ -4,44 +4,44 @@ import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class MLGImpactState {
     public static final MLGImpactState D = new MLGImpactState(36, 44);
-    private static int N;
+    private static int callCounter;
     public static final MLGImpactState S;
     public static final MLGImpactState i;
-    private final int u;
-    private final int p;
+    private final int secondaryValue;
+    private final int primaryValue;
 
     public MLGImpactState(int n, int n2) {
-        this.p = n;
-        this.u = n2;
+        this.primaryValue = n;
+        this.secondaryValue = n2;
     }
 
-    public static int L() {
-        int n = MLGImpactState.j();
+    public static int computeThreshold() {
+        int n = MLGImpactState.getCallCounter();
         return 23;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException error) {
+        return error;
     }
 
-    public static void m(int n) {
-        N = n;
+    public static void setCallCounter(int n) {
+        callCounter = n;
     }
 
     public int J() {
-        return this.p;
+        return this.primaryValue;
     }
 
-    public static int j() {
-        return N;
+    public static int getCallCounter() {
+        return callCounter;
     }
 
     public int u() {
-        return this.u;
+        return this.secondaryValue;
     }
 
     static {
-        MLGImpactState.m(0);
+        MLGImpactState.setCallCounter(0);
         i = new MLGImpactState(9, 35);
         S = new MLGImpactState(9, 44);
     }

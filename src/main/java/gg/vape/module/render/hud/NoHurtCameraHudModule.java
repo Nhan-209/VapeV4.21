@@ -9,9 +9,9 @@ import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class NoHurtCameraHudModule
 extends HudModule {
-    private int J;
+    private int savedHurtTime;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -21,7 +21,7 @@ extends HudModule {
             return;
         }
         if (eventPreRenderTick.getThePlayer().c$src$I$15a9iwo() > 0) {
-            this.J = eventPreRenderTick.getThePlayer().c$src$I$15a9iwo();
+            this.savedHurtTime = eventPreRenderTick.getThePlayer().c$src$I$15a9iwo();
             eventPreRenderTick.getThePlayer().I(0);
         }
     }
@@ -36,9 +36,9 @@ extends HudModule {
         if (eventPostRenderTick.getThePlayer().isNull()) {
             return;
         }
-        if (this.J > 0) {
-            eventPostRenderTick.getThePlayer().I(this.J);
-            this.J = 0;
+        if (this.savedHurtTime > 0) {
+            eventPostRenderTick.getThePlayer().I(this.savedHurtTime);
+            this.savedHurtTime = 0;
         }
     }
 }

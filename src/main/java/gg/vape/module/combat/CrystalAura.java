@@ -43,11 +43,11 @@ extends Mod {
     public static final float Z = 0.2f;
     public final ModeValue J;
     public static final float v = 2.0f;
-    private CrystalAuraPlacementSubModule A = new CrystalAuraPlacementSubModule(this, "Auto");
-    private static Freecam L;
+    private CrystalAuraPlacementSubModule autoSubModule = new CrystalAuraPlacementSubModule(this, "Auto");
+    private static Freecam freecam;
     public static final float r = 25.0f;
-    private CrystalAuraTargetSubModule S = new CrystalAuraTargetSubModule(this, "Manual");
-    private final RotationControlClaim t = SharedModuleControlClaims.I;
+    private CrystalAuraTargetSubModule manualSubModule = new CrystalAuraTargetSubModule(this, "Manual");
+    private final RotationControlClaim rotationClaim = SharedModuleControlClaims.I;
     public static final float F = 20.0f;
     private static final int Y;
 
@@ -83,10 +83,10 @@ extends Mod {
     }
 
     public boolean W() {
-        if (L == null) {
-            L = Vape.INSTANCE.getModManager().getMod(Freecam.class);
+        if (freecam == null) {
+            freecam = Vape.INSTANCE.getModManager().getMod(Freecam.class);
         }
-        return L != null && L.r$src$Z$14eylz9() || this.t.e(this) && !this.t.h(this, true);
+        return freecam != null && freecam.r$src$Z$14eylz9() || this.rotationClaim.e(this) && !this.rotationClaim.h(this, true);
     }
 
     protected float b(EntityPlayerSP entityPlayerSP, float f) {
@@ -108,11 +108,11 @@ extends Mod {
 
     @Override
     public String r() {
-        if (this.A.J$src$Z$gcqtyf() && this.A.r$src$Z$14eylz9()) {
-            return this.A.r();
+        if (this.autoSubModule.J$src$Z$gcqtyf() && this.autoSubModule.r$src$Z$14eylz9()) {
+            return this.autoSubModule.r();
         }
-        if (this.S.J$src$Z$gcqtyf() && this.S.r$src$Z$14eylz9()) {
-            return this.S.r();
+        if (this.manualSubModule.J$src$Z$gcqtyf() && this.manualSubModule.r$src$Z$14eylz9()) {
+            return this.manualSubModule.r();
         }
         return "";
     }
@@ -129,7 +129,7 @@ extends Mod {
     }
 
     public RotationControlClaim X$src$Lgg_vape_rotation_RotationControlClaim_$1j4bdqm() {
-        return this.t;
+        return this.rotationClaim;
     }
 
     public int Q(EntityPlayerSP entityPlayerSP) {
@@ -179,8 +179,8 @@ extends Mod {
 
     @Override
     public ModDisplayInfo J() {
-        if (this.A.J$src$Z$gcqtyf() && this.A.r$src$Z$14eylz9()) {
-            return this.A.J();
+        if (this.autoSubModule.J$src$Z$gcqtyf() && this.autoSubModule.r$src$Z$14eylz9()) {
+            return this.autoSubModule.J();
         }
         return null;
     }
@@ -232,9 +232,9 @@ extends Mod {
 
     public CrystalAura() {
         super("CrystalAura", -4263937, Category.g, "Automatically places crystals on obsidian and breaks them for you.");
-        this.J = ModeValue.create((Object)this, "Mode", "Auto - Automatically finds targets and places/breaks crystals\nManual - Hold right-click on obsidian with crystal to place and break crystals", (ModeSelection)this.A.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.A.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.S.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx());
+        this.J = ModeValue.create((Object)this, "Mode", "Auto - Automatically finds targets and places/breaks crystals\nManual - Hold right-click on obsidian with crystal to place and break crystals", (ModeSelection)this.autoSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.autoSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.manualSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx());
         this.P(this.J, new MinecraftVersionConstraint[0]);
-        this.t.l(this, 6);
+        this.rotationClaim.l(this, 6);
     }
 
     public static float O(Vec3 vec3, Entity entity, World world) {
@@ -289,7 +289,7 @@ extends Mod {
     @Override
     public void onDisable() {
         ClientSettings.g(ActiveModuleStackFrame.class).w(this);
-        this.t.X(this);
+        this.rotationClaim.X(this);
     }
 
     public boolean X(BlockState blockState) {

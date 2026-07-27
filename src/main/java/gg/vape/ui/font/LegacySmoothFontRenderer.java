@@ -160,6 +160,7 @@ extends SmoothFontRenderer {
             boolean bl3 = GL11.glIsEnabled((int)3553);
             boolean bl4 = GL11.glIsEnabled((int)2896);
             boolean bl5 = GL11.glIsEnabled((int)3008);
+            boolean bl6 = GL11.glIsEnabled((int)2884);
             if (!bl2) {
                 GlStateManager.enableBlend();
             }
@@ -171,6 +172,9 @@ extends SmoothFontRenderer {
             }
             if (!bl5) {
                 GlStateManager.enableAlpha();
+            }
+            if (bl6) {
+                GlStateManager.Y();
             }
             GL11.glBlendFunc((int)770, (int)771);
             GlStateManager.bindTexture(this.C.F);
@@ -227,6 +231,9 @@ extends SmoothFontRenderer {
             }
             if (!bl3) {
                 GlStateManager.disableTexture2D();
+            }
+            if (bl6) {
+                GlStateManager.L();
             }
             GL11.glColor4f((float)1.0f, (float)1.0f, (float)1.0f, (float)1.0f);
         } else {

@@ -12,9 +12,9 @@ import gg.vape.wrapper.impl.PotionRegistry;
 
 public class MineplexSpeed
 extends SubModule<Speed> {
-    private final Speed P = (Speed)this.getParent();
+    private final Speed parentSpeed = (Speed)this.getParent();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -29,14 +29,14 @@ extends SubModule<Speed> {
             return;
         }
         if ((entityPlayerSP.F() != 0.0f || entityPlayerSP.N$src$F$14ypudi() != 0.0f) && entityPlayerSP.u$src$Z$g120nz()) {
-            double d = 0.42f;
+            double jumpMotion = 0.42f;
             if (entityPlayerSP.i(PotionRegistry.Z)) {
-                d += (double)((float)(entityPlayerSP.b(PotionRegistry.Z).L() + 1) * 0.1f);
+                jumpMotion += (double)((float)(entityPlayerSP.b(PotionRegistry.Z).L() + 1) * 0.1f);
             }
-            eventPreMove.setY(d);
-            entityPlayerSP.k(d);
+            eventPreMove.setY(jumpMotion);
+            entityPlayerSP.k(jumpMotion);
         }
-        this.P.strafe(eventPreMove, 0.4199999976158142, entityPlayerSP);
+        this.parentSpeed.strafe(eventPreMove, 0.4199999976158142, entityPlayerSP);
     }
 }
 

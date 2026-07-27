@@ -10,8 +10,8 @@ import gg.vape.ui.click.component.gui.TextButton;
 
 public class HotbarSlotRuleItemSearchComponent
 extends GuiComponent {
-    private TextButton O;
-    private LabeledTextInputComponent a = new LabeledTextInputComponent("Search Item Name");
+    private TextButton saveExitButton;
+    private LabeledTextInputComponent searchInput = new LabeledTextInputComponent("Search Item Name");
 
     @Override
     public void F() {
@@ -31,26 +31,26 @@ extends GuiComponent {
     }
 
     public static LabeledTextInputComponent g(HotbarSlotRuleItemSearchComponent hotbarSlotRuleItemSearchComponent) {
-        return hotbarSlotRuleItemSearchComponent.a;
+        return hotbarSlotRuleItemSearchComponent.searchInput;
     }
 
     public HotbarSlotRuleItemSearchComponent(HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame) {
-        this.O = new TextButton("Save & Exit", HotbarSlotRuleItemSearchComponent.J.B);
-        this.a.o(new HotbarSlotRuleSearchInputKeyTypedListener(this, hotbarSlotRuleItemPickerFrame));
-        this.O.r(new HotbarSlotRuleItemPickerSearchCloseClickHandler(this));
-        this.H(this.a, this.O);
+        this.saveExitButton = new TextButton("Save & Exit", HotbarSlotRuleItemSearchComponent.J.B);
+        this.searchInput.o(new HotbarSlotRuleSearchInputKeyTypedListener(this, hotbarSlotRuleItemPickerFrame));
+        this.saveExitButton.r(new HotbarSlotRuleItemPickerSearchCloseClickHandler(this));
+        this.H(this.searchInput, this.saveExitButton);
     }
 
     @Override
     public void H() {
-        double d = 27.5;
-        this.a.K(this.G$src$D$1b2f02a());
-        this.a.S(this.n() + 20.0 - 5.0 - 2.5);
-        this.a.o(d * 6.0 + 5.0);
-        this.O.o(d * 2.0);
-        this.O.Y(15.0);
-        this.O.K(this.G$src$D$1b2f02a() + this.a.A());
-        this.O.S(this.n() + 20.0 - 5.0);
+        double unit = 27.5;
+        this.searchInput.K(this.G$src$D$1b2f02a());
+        this.searchInput.S(this.n() + 20.0 - 5.0 - 2.5);
+        this.searchInput.o(unit * 6.0 + 5.0);
+        this.saveExitButton.o(unit * 2.0);
+        this.saveExitButton.Y(15.0);
+        this.saveExitButton.K(this.G$src$D$1b2f02a() + this.searchInput.A());
+        this.saveExitButton.S(this.n() + 20.0 - 5.0);
     }
 
     @Override

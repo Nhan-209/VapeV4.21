@@ -26,11 +26,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockInHotbarSlotHelper {
-    private final AutoMLG c;
+    private final AutoMLG autoMLG;
 
     @Nullable
-    private Slot J(ItemMappingEntry itemMappingEntry) {
-        if (!this.c.kF.L().booleanValue()) {
+    private Slot findEmptyBucketSlot(ItemMappingEntry itemMappingEntry) {
+        if (!this.autoMLG.kF.L().booleanValue()) {
             return null;
         }
         return ItemStackActionPredicate.a(BlockPlacementUtility.F(itemMappingEntry), MLGImpactState.i);
@@ -49,11 +49,11 @@ public class BlockInHotbarSlotHelper {
         boolean bl = itemMappingEntry.equals(Vape.INSTANCE.getItemStackResolver().j(itemStack));
         Slot slot = BlockPlacementUtility.Z(itemMappingEntry);
         if (!bl) {
-            Slot candidateSlot = slot == null || slot.isNull() ? this.J(itemMappingEntry) : slot;
+            Slot candidateSlot = slot == null || slot.isNull() ? this.findEmptyBucketSlot(itemMappingEntry) : slot;
             if (candidateSlot == null || candidateSlot.isNull()) {
                 return HotbarSlotResolution.W("No empty buckets available in the inventory");
             }
-            HotbarSlotResolutionWithValue<Slot> hotbarSlotResolutionWithValue3 = this.l(candidateSlot);
+            HotbarSlotResolutionWithValue<Slot> hotbarSlotResolutionWithValue3 = this.equipMlgItem(candidateSlot);
             if (hotbarSlotResolutionWithValue3.h()) {
                 return HotbarSlotResolution.W(String.format("Failed to move item into hand: %s", hotbarSlotResolutionWithValue3.b())).i(hotbarSlotResolutionWithValue3.B());
             }
@@ -62,78 +62,78 @@ public class BlockInHotbarSlotHelper {
             }
             slot = hotbarSlotResolutionWithValue3.w();
         }
-        if (!this.c.J.hasTimeElapsed(Math.max((attackPacketTimingTracker = AttackPacketTimingTracker.a).Y(), 150L))) {
+        if (!this.autoMLG.J.hasTimeElapsed(Math.max((attackPacketTimingTracker = AttackPacketTimingTracker.a).Y(), 150L))) {
             return HotbarSlotResolution.J("Waiting for latency timer to exceed ping / 50ms");
         }
         if (slot == null || slot.isNull()) {
             return HotbarSlotResolution.J("Waiting to find a Hotbar Slot w/ Empty Bucket.");
         }
-        hotbarSlotResolutionWithValue = this.c.p.D(BlockPlacementUtility.U(), blockCoordinate, timerUtil);
+        hotbarSlotResolutionWithValue = this.autoMLG.p.D(BlockPlacementUtility.U(), blockCoordinate, timerUtil);
         if (hotbarSlotResolutionWithValue.v()) {
-            this.c.J.reset();
+            this.autoMLG.J.reset();
         }
         return hotbarSlotResolutionWithValue;
     }
 
     @Nullable
-    private Slot r() {
-        Slot slot = this.Z();
+    private Slot resolveMlgSlot() {
+        Slot slot = this.findPreferredMlgSlot();
         if (slot != null) {
             return slot;
         }
-        return this.R();
+        return this.findMlgSlotInInventory();
     }
 
     @Nullable
-    private Slot Z() {
+    private Slot findPreferredMlgSlot() {
         Slot slot;
-        if (this.c.k_.L().booleanValue() && (slot = BlockPlacementUtility.Z(BlockPlacementUtility.Y())) != null) {
+        if (this.autoMLG.k_.L().booleanValue() && (slot = BlockPlacementUtility.Z(BlockPlacementUtility.Y())) != null) {
             return slot;
         }
-        if (this.c.K.L().booleanValue()) {
+        if (this.autoMLG.K.L().booleanValue()) {
             return BlockPlacementUtility.Z(BlockPlacementUtility.e());
         }
         return null;
     }
 
     public BlockInHotbarSlotHelper(AutoMLG autoMLG) {
-        this.c = autoMLG;
+        this.autoMLG = autoMLG;
     }
 
     @Nullable
-    private Slot N() {
-        Slot slot = ItemStackActionPredicate.a(BlockInHotbarSlotHelper::lambda$getHotbarReplaceSlot$0, MLGImpactState.D);
+    private Slot findHotbarReplaceSlot() {
+        Slot slot = ItemStackActionPredicate.a(BlockInHotbarSlotHelper::isSlotEmpty, MLGImpactState.D);
         if (slot == null || slot.isNull()) {
-            slot = ItemStackActionPredicate.a(this::lambda$getHotbarReplaceSlot$1, MLGImpactState.D);
+            slot = ItemStackActionPredicate.a(this::isReplaceableBlock, MLGImpactState.D);
         }
         return slot;
     }
 
-    private static boolean lambda$getHotbarReplaceSlot$0(Slot slot) {
+    private static boolean isSlotEmpty(Slot slot) {
         return slot.I().isNull();
     }
 
-    private boolean lambda$getHotbarReplaceSlot$1(Slot slot) {
-        return slot.I().isNotNull() && this.c.j.k(slot.I());
+    private boolean isReplaceableBlock(Slot slot) {
+        return slot.I().isNotNull() && this.autoMLG.j.k(slot.I());
     }
 
     @Nullable
-    private Slot R() {
+    private Slot findMlgSlotInInventory() {
         Slot slot;
-        if (!this.c.kF.L().booleanValue()) {
+        if (!this.autoMLG.kF.L().booleanValue()) {
             return null;
         }
-        if (this.c.k_.L().booleanValue() && (slot = this.J(BlockPlacementUtility.Y())) != null) {
+        if (this.autoMLG.k_.L().booleanValue() && (slot = this.findEmptyBucketSlot(BlockPlacementUtility.Y())) != null) {
             return slot;
         }
-        if (this.c.K.L().booleanValue()) {
-            return this.J(BlockPlacementUtility.e());
+        if (this.autoMLG.K.L().booleanValue()) {
+            return this.findEmptyBucketSlot(BlockPlacementUtility.e());
         }
         return null;
     }
 
     @NotNull
-    private HotbarSlotResolutionWithValue<Slot> l(@NotNull Slot slot) {
+    private HotbarSlotResolutionWithValue<Slot> equipMlgItem(@NotNull Slot slot) {
         InventoryClick inventoryClick;
         boolean bl;
         HotbarSlotResolutionWithValue hotbarSlotResolutionWithValue = new HotbarSlotResolutionWithValue();
@@ -143,7 +143,7 @@ public class BlockInHotbarSlotHelper {
         }
         boolean bl2 = bl = slot.g() >= 36 && slot.g() <= 44;
         if (bl) {
-            HotbarSlotResolution hotbarSlotResolution = this.c.f$src$Lgg_vape_module_blatant_blockin_HotbarSlotResolu$1985fcl();
+            HotbarSlotResolution hotbarSlotResolution = this.autoMLG.f$src$Lgg_vape_module_blatant_blockin_HotbarSlotResolu$1985fcl();
             if (hotbarSlotResolution.h()) {
                 return (HotbarSlotResolutionWithValue)((HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.Q(String.format("Failed to close GUI before equipping MLG item. Reason: %s", hotbarSlotResolution.b()))).i(hotbarSlotResolution.B());
             }
@@ -154,14 +154,14 @@ public class BlockInHotbarSlotHelper {
             entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n);
             return ((HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.m("Equipped MLG Item")).q(slot);
         }
-        if (!this.c.kF.L().booleanValue()) {
+        if (!this.autoMLG.kF.L().booleanValue()) {
             return (HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.Q("MLG Item is in inventory, but inventory use is disabled.");
         }
-        Slot slot2 = this.N();
+        Slot slot2 = this.findHotbarReplaceSlot();
         if (slot2 == null || slot2.isNull()) {
             return (HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.Q("No slot to replace found on Hotbar");
         }
-        HotbarSlotResolution hotbarSlotResolution = this.c.M$src$Lgg_vape_module_blatant_blockin_HotbarSlotResolu$1womqjg();
+        HotbarSlotResolution hotbarSlotResolution = this.autoMLG.M$src$Lgg_vape_module_blatant_blockin_HotbarSlotResolu$1womqjg();
         if (hotbarSlotResolution.h()) {
             return (HotbarSlotResolutionWithValue)((HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.Q(String.format("Failed to open Inventory GUI before equipping MLG item due to: %s", hotbarSlotResolution.b()))).i(hotbarSlotResolution.B());
         }
@@ -177,12 +177,12 @@ public class BlockInHotbarSlotHelper {
             return (HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.f("Inventory slots are null, cannot enqueue click.");
         }
         int n = container.getWindowId();
-        if (this.c.Z.isEmpty()) {
+        if (this.autoMLG.Z.isEmpty()) {
             inventoryClick = InventoryClick.P().g(n).j(slot.g()).D(slot2.g() - 36).V();
-            this.c.Z.add(inventoryClick);
+            this.autoMLG.Z.add(inventoryClick);
         }
-        if (!this.c.Z.isEmpty() && this.c.g$src$Z$1ths2vi() && (inventoryClick = this.c.Z.poll()) != null) {
-            this.D(inventoryClick, n);
+        if (!this.autoMLG.Z.isEmpty() && this.autoMLG.g$src$Z$1ths2vi() && (inventoryClick = this.autoMLG.Z.poll()) != null) {
+            this.executeClick(inventoryClick, n);
         }
         return (HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.f("Waiting to execute queued click");
     }
@@ -190,19 +190,19 @@ public class BlockInHotbarSlotHelper {
     @NotNull
     public HotbarSlotResolutionWithValue<Slot> p() {
         HotbarSlotResolutionWithValue hotbarSlotResolutionWithValue = new HotbarSlotResolutionWithValue();
-        Slot slot = this.r();
+        Slot slot = this.resolveMlgSlot();
         if (slot == null) {
             return (HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.Q("No MLG Item in Inventory");
         }
-        return this.l(slot);
+        return this.equipMlgItem(slot);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private void D(@NotNull InventoryClick inventoryClick, int n) {
-        this.c.kN.reset();
+    private void executeClick(@NotNull InventoryClick inventoryClick, int n) {
+        this.autoMLG.kN.reset();
         int n2 = inventoryClick.t();
         if (n == n2) {
             inventoryClick.k();

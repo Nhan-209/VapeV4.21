@@ -13,7 +13,7 @@ public class EmptySlotInventoryItemMatcher
 extends AbstractInventoryItemMatcher {
     public static final EmptySlotInventoryItemMatcher a = new EmptySlotInventoryItemMatcher();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 

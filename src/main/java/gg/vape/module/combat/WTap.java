@@ -18,24 +18,24 @@ import java.util.Map;
 
 public class WTap
 extends Mod {
-    private final SubModuleValue<WTapRightClickUseCancelMode> I = new WTapRightClickUseCancelMode(this, "Right-click use cancel").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-    private static final String[] k;
-    private static final Map p;
-    private final NumberValue c;
-    private final SubModuleValue<WTapSprintResetMode> a = new WTapSprintResetMode(this, "Normal").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-    private static final long b;
-    private static final long r;
-    private static final String[] o;
-    private final ModeValue j = ModeValue.create((Object)this, "Mode", this.I, this.I, this.a);
+    private final SubModuleValue<WTapRightClickUseCancelMode> rightClickUseCancel = new WTapRightClickUseCancelMode(this, "Right-click use cancel").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+    private static final String[] stringPoolA;
+    private static final Map callSiteCache;
+    private final NumberValue chance;
+    private final SubModuleValue<WTapSprintResetMode> sprintReset = new WTapSprintResetMode(this, "Normal").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+    private static final long constB;
+    private static final long moduleId;
+    private static final String[] stringPoolB;
+    private final ModeValue mode = ModeValue.create((Object)this, "Mode", this.rightClickUseCancel, this.rightClickUseCancel, this.sprintReset);
 
-    private static Object a(MethodHandles.Lookup lookup, MutableCallSite mutableCallSite, String string, Object[] objectArray) {
+    private static Object bootstrapInvoke(MethodHandles.Lookup lookup, MutableCallSite mutableCallSite, String string, Object[] objectArray) {
         if (objectArray != null && objectArray.length >= 2 && objectArray[0] instanceof Integer && objectArray[1] instanceof Long) {
-            return WTap.a((Integer)objectArray[0], (Long)objectArray[1]);
+            return WTap.decodeConstant((Integer)objectArray[0], (Long)objectArray[1]);
         }
         return "";
     }
 
-    private static String a(byte[] byArray) {
+    private static String decodeUtf8(byte[] byArray) {
         int n = byArray.length;
         char[] cArray = new char[n];
         int n2 = 0;
@@ -62,53 +62,53 @@ extends Mod {
         return new String(cArray, 0, n2);
     }
 
-    private static String a(int n, long l) {
+    private static String decodeConstant(int n, long l) {
         return "";
     }
 
     @Override
     public String r() {
-        return this.E() + " " + this.c.c() + "%";
+        return this.E() + " " + this.chance.c() + "%";
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public WTap() {
-        super("WTap", 0, (int)r, Category.g, "");
-        this.c = NumberValue.create(this, "Chance", "#", "%", 0.0, 90.0, 100.0);
-        this.addValue(this.j, this.c);
-        this.j.Z$src$Lgg_vape_value_Value_$16i62fx("Mode");
-        this.c.C(0);
+        super("WTap", 0, (int)moduleId, Category.g, "");
+        this.chance = NumberValue.create(this, "Chance", "#", "%", 0.0, 90.0, 100.0);
+        this.addValue(this.mode, this.chance);
+        this.mode.Z$src$Lgg_vape_value_Value_$16i62fx("Mode");
+        this.chance.C(0);
     }
 
-    private static CallSite a(MethodHandles.Lookup lookup, String string, MethodType methodType) {
+    private static CallSite bootstrapCallSite(MethodHandles.Lookup lookup, String string, MethodType methodType) {
         return new MutableCallSite(methodType);
     }
 
     public boolean a$src$Z$1npvv6h() {
-        return (Double)this.c.java_lang_Object_K() >= Math.random() * 100.0;
+        return (Double)this.chance.java_lang_Object_K() >= Math.random() * 100.0;
     }
 
     public boolean o$src$Z$1nxkzhj() {
-        if (!this.I.o()) {
+        if (!this.rightClickUseCancel.o()) {
             return false;
         }
-        return this.I.getInstance().l();
+        return this.rightClickUseCancel.getInstance().l();
     }
 
     @Override
     public String E() {
-        return ((ModeSelection)this.j.java_lang_Object_K()).getName();
+        return ((ModeSelection)this.mode.java_lang_Object_K()).getName();
     }
 
     static {
-        b = 0L;
-        r = 0L;
-        p = new HashMap(13);
-        k = new String[7];
-        o = new String[7];
+        constB = 0L;
+        moduleId = 0L;
+        callSiteCache = new HashMap(13);
+        stringPoolA = new String[7];
+        stringPoolB = new String[7];
     }
 }
 

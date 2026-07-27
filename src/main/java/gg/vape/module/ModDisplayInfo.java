@@ -3,28 +3,28 @@ package gg.vape.module;
 import java.awt.Color;
 
 public class ModDisplayInfo {
-    private final String K;
-    private final String F;
-    private final String f;
-    private final Color M;
+    private final String suffix;
+    private final String label;
+    private final String description;
+    private final Color color;
 
     public ModDisplayInfo(String string, Color color, String string2, String string3) {
-        this.F = string;
-        this.M = color;
-        this.f = string2;
-        this.K = string3;
+        this.label = string;
+        this.color = color;
+        this.description = string2;
+        this.suffix = string3;
     }
 
     public String P() {
-        return this.F;
+        return this.label;
     }
 
     public String z() {
-        return this.f;
+        return this.description;
     }
 
     public Color g() {
-        return this.M;
+        return this.color;
     }
 
     public ModDisplayInfo(String string, Color color) {
@@ -36,7 +36,7 @@ public class ModDisplayInfo {
     }
 
     public String u() {
-        return this.K;
+        return this.suffix;
     }
 }
 

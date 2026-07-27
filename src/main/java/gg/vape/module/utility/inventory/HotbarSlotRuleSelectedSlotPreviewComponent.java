@@ -11,8 +11,8 @@ import gg.vape.wrapper.impl.ItemStack;
 
 public class HotbarSlotRuleSelectedSlotPreviewComponent
 extends GuiComponent {
-    private static final String b = "SLOT ";
-    private HotbarSlotRuleItemPickerFrame R;
+    private static final String SLOT_PREFIX = "SLOT ";
+    private HotbarSlotRuleItemPickerFrame pickerFrame;
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
@@ -40,7 +40,7 @@ extends GuiComponent {
         SmoothFontRenderer smoothFontRenderer = this.O(0.8);
         double d = 55.0;
         double d2 = (this.A() - d) / 2.0;
-        ItemStack itemStack = this.R.N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f().u$src$Ljava_util_List_$1u5n2i3().get(this.R.X$src$I$7rbe5s()).c();
+        ItemStack itemStack = this.pickerFrame.N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f().u$src$Ljava_util_List_$1u5n2i3().get(this.pickerFrame.X$src$I$7rbe5s()).c();
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + d2 - 0.5, this.n() + 20.0 - 5.0, d + 1.0, d + 1.0, HotbarSlotRuleSelectedSlotPreviewComponent.J.l);
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + d2, this.n() + 20.0 - 5.0 + 0.5, d, d, HotbarSlotRuleSelectedSlotPreviewComponent.J.r);
         if (itemStack != null && itemStack.isNotNull()) {
@@ -48,7 +48,7 @@ extends GuiComponent {
             float f2 = (float)(this.n() + d / 2.0);
             ItemIconRenderer.C(itemStack, f, f2, 32, 32, 1.0f);
         }
-        String string = b + (this.R.X$src$I$7rbe5s() + 1);
+        String string = SLOT_PREFIX + (this.pickerFrame.X$src$I$7rbe5s() + 1);
         smoothFontRenderer.W(string, this.G$src$D$1b2f02a() + 5.0 + d / 2.0, this.n() + 20.0 + d + smoothFontRenderer.d(string), HotbarSlotRuleSelectedSlotPreviewComponent.J.Z);
     }
 
@@ -67,7 +67,7 @@ extends GuiComponent {
     }
 
     public HotbarSlotRuleSelectedSlotPreviewComponent(HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame) {
-        this.R = hotbarSlotRuleItemPickerFrame;
+        this.pickerFrame = hotbarSlotRuleItemPickerFrame;
     }
 
     @Override

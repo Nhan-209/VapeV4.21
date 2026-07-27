@@ -86,6 +86,9 @@ extends Wrapper {
             return arrayList.toArray(new Enchantment[arrayList.size()]);
         }
         Object[] objectArray = MEnchantment.x(Enchantment.c.getMappings().RC);
+        if (objectArray == null) {
+            return new Enchantment[0];
+        }
         Enchantment[] enchantmentArray = new Enchantment[objectArray.length];
         for (int i = 0; i < objectArray.length; ++i) {
             enchantmentArray[i] = new Enchantment(objectArray[i]);

@@ -1,46 +1,46 @@
 package gg.vape.module.none.search;
 
 public class SearchBlockRenderEntry {
-    private int m;
-    private int Z;
-    private int H;
-    private int y;
-    private int E;
+    private int posX;
+    private int posY;
+    private int posZ;
+    private int extra;
+    private int color;
 
     public int f() {
-        return this.E;
+        return this.color;
     }
 
     public int k() {
-        return this.Z;
+        return this.posY;
     }
 
     public int i() {
-        return this.H;
+        return this.posZ;
     }
 
-    public SearchBlockRenderEntry(int n, int n2, int n3, int n4, int n5) {
-        this.m = n;
-        this.Z = n2;
-        this.H = n3;
-        this.E = n4;
-        this.y = n5;
+    public SearchBlockRenderEntry(int x, int y, int z, int colorValue, int extraValue) {
+        this.posX = x;
+        this.posY = y;
+        this.posZ = z;
+        this.color = colorValue;
+        this.extra = extraValue;
     }
 
-    public void L(int n, int n2, int n3, int n4, int n5) {
-        this.m = n;
-        this.Z = n2;
-        this.H = n3;
-        this.E = n4;
-        this.y = n5;
+    public void L(int x, int y, int z, int colorValue, int extraValue) {
+        this.posX = x;
+        this.posY = y;
+        this.posZ = z;
+        this.color = colorValue;
+        this.extra = extraValue;
     }
 
     public int R() {
-        return this.m;
+        return this.posX;
     }
 
     public int N() {
-        return this.y;
+        return this.extra;
     }
 }
 

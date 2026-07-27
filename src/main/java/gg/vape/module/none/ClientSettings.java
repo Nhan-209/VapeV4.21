@@ -117,21 +117,21 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ClientSettings
 extends Mod {
-    private boolean f3;
+    private boolean closeRequested;
     public BooleanValue O;
-    private boolean K = false;
+    private boolean initialized = false;
     public static ClientSettingsSearchFrame J;
     public static ClickGuiFrameManager f5;
     public BooleanValue fc;
     public final ModeOption c;
     public static GuiComponent fT;
-    private float fx = 0.0f;
+    private float rainbowHue = 0.0f;
     public BooleanValue fe;
     public int f7 = 0;
     public static Color fd;
-    private static final int o;
-    private static final List<OffscreenRenderContext> I;
-    private double s = -1.0;
+    private static final int CACHED_SEED;
+    private static final List<OffscreenRenderContext> offscreenContexts;
+    private double lastGuiScale = -1.0;
     public static boolean Y;
     public BooleanValue U;
     public boolean P = true;
@@ -139,51 +139,51 @@ extends Mod {
     public static ModuleCategoryFrame F;
     Set<Frame> v;
     public static FrameStackManager fX;
-    private static RectData j;
-    private boolean fU = false;
+    private static RectData lastScreenRect;
+    private boolean unusedFlag = false;
     public static FrameStackManager L;
     public static ClientSettings fW;
     public BooleanValue fE = BooleanValue.create(this, "Enable Multi-Keybinding", false, "Allows you to set multiple keys to be held together to toggle modules");
-    private FrameStackManager D;
+    private FrameStackManager currentStack;
     public NumberValue fD;
     public ModeValue H;
     public static ModuleSearchFrame fN;
     public final ModeOption fM;
-    private static final List<FrameStackManager> A;
-    private static HashSet<Frame> fk;
+    private static final List<FrameStackManager> allStacks;
+    private static HashSet<Frame> positionedFrames;
     public static FrameStackManager fG;
     public static boolean S;
-    private static final boolean C = true;
+    private static final boolean ALWAYS_TRUE = true;
     public static final ThreadBoundExecutor f6;
     public static FrameStackManager p;
     public final ModeOption fL;
-    private static ImmutableList<Frame> r;
-    private final boolean f9 = false;
+    private static ImmutableList<Frame> frameSnapshot;
+    private final boolean alwaysFalse = false;
     public ModeValue fz;
     public static FrameStackManager a;
     public BooleanValue fH;
-    private final BlurRegionRenderer fb;
-    private static Frame Z;
-    private static final HashMap<Class<?>, Frame> k;
+    private final BlurRegionRenderer blurRenderer;
+    private static Frame lastOpenedFrame;
+    private static final HashMap<Class<?>, Frame> frameCache;
     public static ToolTips V;
-    private boolean fV;
+    private boolean savedChatKeyState;
     public static FrameStackManager f0;
-    private Frame fp;
+    private Frame pendingFrame;
     public static FrameStackManager t;
     public static FrameStackManager fr;
     boolean fI;
-    private static int[] fj;
-    private static final List<Frame> fQ;
+    private static int[] savedPositions;
+    private static final List<Frame> allFrames;
 
-    private void S$src$V$1gllral() {
-        for (Frame frame : fQ) {
+    private void renderFrames() {
+        for (Frame frame : allFrames) {
             if (!frame.V$src$Z$1xhop3l() || !frame.y$src$Z$1f55jvh()) continue;
             frame.q$src$V$1x8c1kv();
         }
     }
 
     public static Frame z(String string) {
-        for (Frame frame : fQ) {
+        for (Frame frame : allFrames) {
             if (frame.getName() == null || !frame.getName().equalsIgnoreCase(string)) continue;
             return frame;
         }
@@ -191,9 +191,9 @@ extends Mod {
     }
 
     private void lambda$updateStandaloneState$1(PublicProfileSettings publicProfileSettings) {
-        if (this.D == a || this.D == f5) {
+        if (this.currentStack == a || this.currentStack == f5) {
             if (publicProfileSettings.P.o()) {
-                if (this.D == f5) {
+                if (this.currentStack == f5) {
                     return;
                 }
                 if (f5.l() == null) {
@@ -201,7 +201,7 @@ extends Mod {
                 }
                 this.I(f5);
             } else {
-                if (this.D == a) {
+                if (this.currentStack == a) {
                     return;
                 }
                 this.I(a);
@@ -211,13 +211,13 @@ extends Mod {
 
     public static void x(Frame frame) {
         boolean bl;
-        if (r == null) {
+        if (frameSnapshot == null) {
             return;
         }
-        if (!r.contains((Object)frame)) {
+        if (!frameSnapshot.contains((Object)frame)) {
             return;
         }
-        if (fk.contains(frame)) {
+        if (positionedFrames.contains(frame)) {
             return;
         }
         if (!frame.J$src$Z$1eqdghz() || !frame.l$src$Z$193vdc5()) {
@@ -227,9 +227,9 @@ extends Mod {
         double d2 = 32.0;
         do {
             bl = false;
-            for (Frame frame2 : r) {
+            for (Frame frame2 : frameSnapshot) {
                 RectData rectData;
-                if (!ClientSettings.fW.D.Y().contains(frame2) || frame2.equals(frame) || !frame2.V$src$Z$1xhop3l() || !(rectData = frame2.Q().y(2.0, 4.0)).J(d, d2)) continue;
+                if (!ClientSettings.fW.currentStack.Y().contains(frame2) || frame2.equals(frame) || !frame2.V$src$Z$1xhop3l() || !(rectData = frame2.Q().y(2.0, 4.0)).J(d, d2)) continue;
                 bl = true;
             }
             if (!((d += 2.0) + frame.A() > (double)Minecraft.G().T())) continue;
@@ -239,7 +239,7 @@ extends Mod {
         frame.K(d);
         frame.S(d2);
         frame.l$src$V$1mibm4x();
-        fk.add(frame);
+        positionedFrames.add(frame);
     }
 
     @Deprecated
@@ -252,7 +252,7 @@ extends Mod {
     }
 
     public static void l(Category category) {
-        for (Frame frame : fQ) {
+        for (Frame frame : allFrames) {
             if (!((ModeSelection)ClientSettings.fW.fz.K()).equals(ClientSettings.fW.fM) && frame instanceof ClientSettingsSearchFrame || !(frame instanceof ModuleCategoryFrame) || !((ModuleCategoryFrame)frame).G$src$Lgg_vape_module_Category_$qyt4o7().equals(category)) continue;
             int n = ((ModuleCategoryFrame)frame).A$src$I$wwnvku();
             if (!(frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() instanceof ModuleCategoryFrameHeader)) continue;
@@ -266,7 +266,7 @@ extends Mod {
         int n2 = 70;
         if ((KeyboardInput.isKeyDown(163) || KeyboardInput.isKeyDown(162)) && n == 70 && bl) {
             ClickGuiFrameManager clickGuiFrameManager;
-            if (this.D instanceof ClickGuiFrameManager && (clickGuiFrameManager = (ClickGuiFrameManager)this.D).l() != null) {
+            if (this.currentStack instanceof ClickGuiFrameManager && (clickGuiFrameManager = (ClickGuiFrameManager)this.currentStack).l() != null) {
                 return clickGuiFrameManager.l().u$src$Z$1fj0nz();
             }
             if (!this.fL.o()) {
@@ -289,7 +289,7 @@ extends Mod {
     }
 
     public boolean R() {
-        return this.f3;
+        return this.closeRequested;
     }
 
     @Override
@@ -297,7 +297,7 @@ extends Mod {
         return false;
     }
 
-    private static Throwable a(Throwable throwable) {
+    private static Throwable passThrough(Throwable throwable) {
         return throwable;
     }
 
@@ -309,11 +309,11 @@ extends Mod {
         }
         if (this.r$src$Z$14eylz9()) {
             Minecraft.R();
-            this.fV = Minecraft.gameSettings().m$src$Z$1s8ei5l();
+            this.savedChatKeyState = Minecraft.gameSettings().m$src$Z$1s8ei5l();
             Minecraft.gameSettings().P(false);
             this.P = false;
         } else {
-            Minecraft.gameSettings().P(this.fV);
+            Minecraft.gameSettings().P(this.savedChatKeyState);
             Vape.debugLog("Gui Closed 2");
             this.P = true;
         }
@@ -328,7 +328,7 @@ extends Mod {
     }
 
     public void p() {
-        this.v$src$V$1h4uk28();
+        this.updateFrames();
         NotificationManager notificationManager = Vape.INSTANCE.getNotificationManager();
         notificationManager.J();
     }
@@ -346,9 +346,9 @@ extends Mod {
                 return;
             }
         }
-        CopyOnWriteArrayList<Frame> copyOnWriteArrayList = new CopyOnWriteArrayList<Frame>(this.D.Y());
+        CopyOnWriteArrayList<Frame> copyOnWriteArrayList = new CopyOnWriteArrayList<Frame>(this.currentStack.Y());
         Collections.reverse(copyOnWriteArrayList);
-        if (!(this.D instanceof ClickGuiFrameManager)) {
+        if (!(this.currentStack instanceof ClickGuiFrameManager)) {
             for (Frame object : copyOnWriteArrayList) {
                 if (!object.V$src$Z$1xhop3l() || !object.t$src$Lgg_vape_ui_click_component_gui_TextButton_$p5ute3().V$src$Z$1xhop3l() || !object.t$src$Lgg_vape_ui_click_component_gui_TextButton_$p5ute3().w$src$Z$e457mb()) continue;
                 object.t$src$Lgg_vape_ui_click_component_gui_TextButton_$p5ute3().P$src$V$q7uwbv();
@@ -357,7 +357,7 @@ extends Mod {
         }
         boolean bl = false;
         block1: for (Frame frame : copyOnWriteArrayList) {
-            if (!frame.V$src$Z$1xhop3l() || this.D instanceof ClickGuiFrameManager && ((ClickGuiFrameManager)this.D).i(frame)) continue;
+            if (!frame.V$src$Z$1xhop3l() || this.currentStack instanceof ClickGuiFrameManager && ((ClickGuiFrameManager)this.currentStack).i(frame)) continue;
             for (GuiMouseListener guiMouseListener : frame.o$src$Ljava_util_List_$10z72du()) {
                 if (guiMouseListener.Q(new Point(guiMouseEvent.getX(), guiMouseEvent.getY()))) {
                     bl = true;
@@ -375,7 +375,7 @@ extends Mod {
             for (Frame frame : copyOnWriteArrayList) {
                 boolean bl2;
                 if (!frame.V$src$Z$1xhop3l()) continue;
-                boolean bl3 = bl2 = this.D instanceof ClickGuiFrameManager && ((ClickGuiFrameManager)this.D).i(frame);
+                boolean bl3 = bl2 = this.currentStack instanceof ClickGuiFrameManager && ((ClickGuiFrameManager)this.currentStack).i(frame);
                 if (!bl2) {
                     frame.e(guiMouseEvent);
                 }
@@ -407,7 +407,7 @@ extends Mod {
     }
 
     public static Frame g$src$Lgg_vape_ui_click_frame_Frame_$b7tr6h() {
-        return Z;
+        return lastOpenedFrame;
     }
 
     @EventHandler
@@ -430,11 +430,11 @@ extends Mod {
         if (!frame.d$src$Z$1lx9d06()) {
             return;
         }
-        ClientSettings.fW.fp = frame;
+        ClientSettings.fW.pendingFrame = frame;
     }
 
     public static void j(OffscreenRenderContext offscreenRenderContext) {
-        I.add(offscreenRenderContext);
+        offscreenContexts.add(offscreenRenderContext);
     }
 
     public void m() {
@@ -448,7 +448,7 @@ extends Mod {
     public void X(EventPreRenderTick eventPreRenderTick) {
         Vape.INSTANCE.getClientSettings().w.F();
         double d = Vape.INSTANCE.getClientSettings().s();
-        if (this.s != d && this.s != -1.0) {
+        if (this.lastGuiScale != d && this.lastGuiScale != -1.0) {
             FontManager fontManager = Vape.INSTANCE.getFontManager();
             for (Map<Integer, SmoothFontRenderer> map : fontManager.n().values()) {
                 for (SmoothFontRenderer smoothFontRenderer : map.values()) {
@@ -457,11 +457,11 @@ extends Mod {
             }
             this.b$src$V$1gtuo70();
         }
-        this.s = d;
+        this.lastGuiScale = d;
     }
 
     public static void M$src$V$1giazqf() {
-        for (Frame frame : fQ) {
+        for (Frame frame : allFrames) {
             if (!(frame instanceof ModuleCategoryFrame) || frame instanceof ClientSettingsSearchFrame) continue;
             int n = ((ModuleCategoryFrame)frame).A$src$I$wwnvku();
             if (!(frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() instanceof ModuleCategoryFrameHeader)) continue;
@@ -479,7 +479,7 @@ extends Mod {
         MutableColor mutableColor = Vape.INSTANCE.getClientSettings().w.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
         float[] fArray = new float[3];
         Color.RGBtoHSB(((Color)mutableColor).getRed(), ((Color)mutableColor).getGreen(), ((Color)mutableColor).getBlue(), fArray);
-        this.fx = fArray[0];
+        this.rainbowHue = fArray[0];
     }
 
     public void j(JsonArray jsonArray) {
@@ -512,7 +512,7 @@ extends Mod {
 
     public static ArrayList<PopupFrame> a$src$Ljava_util_ArrayList_$1scwlwh() {
         ArrayList<PopupFrame> arrayList = new ArrayList<PopupFrame>();
-        for (Frame frame : ClientSettings.fW.D.Y()) {
+        for (Frame frame : ClientSettings.fW.currentStack.Y()) {
             arrayList.addAll(frame.s$src$Ljava_util_ArrayList_$1a2240q());
         }
         return arrayList;
@@ -527,7 +527,7 @@ extends Mod {
             double d = Vape.INSTANCE.getClientSettings().s();
             OpenGlBackendHolder.d.G(d, d, d);
             if (fW.v()) {
-                this.S$src$V$1gllral();
+                this.renderFrames();
                 NotificationManager notificationManager = Vape.INSTANCE.getNotificationManager();
                 notificationManager.J();
             }
@@ -537,12 +537,12 @@ extends Mod {
     }
 
     public static int[] A() {
-        return fj;
+        return savedPositions;
     }
 
     public static void y(String string) {
         Frame frame = null;
-        for (Frame frame2 : fQ) {
+        for (Frame frame2 : allFrames) {
             if (!(frame2 instanceof ModuleCategoryFrame) || !((ModuleCategoryFrame)frame2).L$src$Ljava_lang_String_$ahld16().equalsIgnoreCase(string)) continue;
             frame2.Z(!frame2.V$src$Z$1xhop3l());
             frame = frame2;
@@ -556,22 +556,22 @@ extends Mod {
     public void t() {
     }
 
-    private static void u(Frame frame, FrameStackManager ... frameStackManagerArray) {
-        fQ.add(frame);
-        for (FrameStackManager frameStackManager : frameStackManagerArray) {
-            frameStackManager.q(frame);
-            if (A.contains(frameStackManager)) continue;
-            A.add(frameStackManager);
+    private static void registerFrame(Frame frame, FrameStackManager ... stacks) {
+        allFrames.add(frame);
+        for (FrameStackManager stack : stacks) {
+            stack.q(frame);
+            if (allStacks.contains(stack)) continue;
+            allStacks.add(stack);
         }
     }
 
     private void lambda$update$2(ModeValue modeValue) {
-        this.G$src$V$1gf0869();
+        this.updateStandaloneState();
     }
 
-    private void R$src$V$1gl1yp8() {
+    private void removeClosedPopups() {
         ArrayList<PopupFrame> arrayList = new ArrayList<PopupFrame>();
-        for (Frame frame : this.D.Y()) {
+        for (Frame frame : this.currentStack.Y()) {
             for (PopupFrame popupFrame : frame.s$src$Ljava_util_ArrayList_$1a2240q()) {
                 if (!popupFrame.c$src$Z$1kex42k()) continue;
                 arrayList.add(popupFrame);
@@ -579,24 +579,24 @@ extends Mod {
         }
         for (PopupFrame popupFrame : arrayList) {
             popupFrame.Q$src$Lgg_vape_ui_click_frame_Frame_$1y8ivjg().s$src$Ljava_util_ArrayList_$1a2240q().remove(popupFrame);
-            this.D.m(popupFrame);
+            this.currentStack.m(popupFrame);
         }
         if (fT instanceof DropdownSelectComponent) {
             ((DropdownSelectComponent)fT).A$src$V$1rc4p11();
         }
     }
 
-    private void v$src$V$1h4uk28() {
+    private void updateFrames() {
         Frame frame;
         Object object;
-        this.D.A();
+        this.currentStack.A();
         if (this.fI) {
-            for (Frame copyOnWriteArrayList2 : this.D.Y()) {
+            for (Frame copyOnWriteArrayList2 : this.currentStack.Y()) {
                 copyOnWriteArrayList2.l$src$V$1mibm4x();
             }
             this.fI = false;
         }
-        ArrayList<Frame> arrayList = new ArrayList<Frame>(this.D.Y());
+        ArrayList<Frame> arrayList = new ArrayList<Frame>(this.currentStack.Y());
         Iterator iterator = arrayList.iterator();
         while (iterator.hasNext()) {
             object = (Frame)iterator.next();
@@ -613,7 +613,7 @@ extends Mod {
         while (iterator2.hasNext()) {
             frame = iterator2.next();
             if (frame instanceof TutorialFrame) continue;
-            this.B(frame, copyOnWriteArrayList);
+            this.renderFrame(frame, copyOnWriteArrayList);
         }
         MouseInput.O().resetScrollDelta();
         if (fT instanceof DropdownSelectComponent || fT instanceof PopupMenuButtonComponent) {
@@ -628,7 +628,7 @@ extends Mod {
         iterator2 = frameSnapshot.iterator();
         while (iterator2.hasNext()) {
             frame = iterator2.next();
-            if (frame.V$src$Z$1xhop3l() && frame.a$src$Z$1f30q5a() && !(this.D instanceof ClickGuiFrameManager)) {
+            if (frame.V$src$Z$1xhop3l() && frame.a$src$Z$1f30q5a() && !(this.currentStack instanceof ClickGuiFrameManager)) {
                 frame.t$src$Lgg_vape_ui_click_component_gui_TextButton_$p5ute3().Z(true);
                 frame.t$src$Lgg_vape_ui_click_component_gui_TextButton_$p5ute3().c();
                 if (!frame.t$src$Lgg_vape_ui_click_component_gui_TextButton_$p5ute3().t()) continue;
@@ -648,17 +648,17 @@ extends Mod {
         }
     }
 
-    private static void P() {
-        ClientSettings.u(new CompassHudFrame().Y(Minecraft.J() / 4 - 154, 38.0), t, a);
-        ClientSettings.u(new KeystrokesHudFrame().Y(40.0, 40.0), t, a);
-        ClientSettings.u(new ArmorStatusHudFrame().Y(40.0, 150.0), t, a);
-        ClientSettings.u(new ClockHudFrame().Y(Minecraft.J() / 2 - 90, 10.0), t, a);
-        ClientSettings.u(new PotionEffectsHudFrame().Y(100.0, 150.0), t, a);
-        ClientSettings.u(new FpsDisplayHudFrame().Y(140.0, 40.0), t, a);
-        ClientSettings.u(new CoordinatesHudFrame().Y(140.0, 70.0), t, a);
-        ClientSettings.u(new ReachDisplayHudFrame().Y(140.0, 110.0), t, a);
+    private static void registerHudFrames() {
+        ClientSettings.registerFrame(new CompassHudFrame().Y(Minecraft.J() / 4 - 154, 38.0), t, a);
+        ClientSettings.registerFrame(new KeystrokesHudFrame().Y(40.0, 40.0), t, a);
+        ClientSettings.registerFrame(new ArmorStatusHudFrame().Y(40.0, 150.0), t, a);
+        ClientSettings.registerFrame(new ClockHudFrame().Y(Minecraft.J() / 2 - 90, 10.0), t, a);
+        ClientSettings.registerFrame(new PotionEffectsHudFrame().Y(100.0, 150.0), t, a);
+        ClientSettings.registerFrame(new FpsDisplayHudFrame().Y(140.0, 40.0), t, a);
+        ClientSettings.registerFrame(new CoordinatesHudFrame().Y(140.0, 70.0), t, a);
+        ClientSettings.registerFrame(new ReachDisplayHudFrame().Y(140.0, 110.0), t, a);
         if (ForgeVersion.MC_1_20_6.v()) {
-            ClientSettings.u(new ScoreboardHudFrame(), t, a);
+            ClientSettings.registerFrame(new ScoreboardHudFrame(), t, a);
         }
     }
 
@@ -673,65 +673,65 @@ extends Mod {
 
     public Color O$src$Ljava_awt_Color_$19t4jn1() {
         if (Vape.INSTANCE.getClientSettings().w.g()) {
-            this.fx = (float)((double)this.fx - 0.03);
-            if (this.fx <= 0.0f) {
-                this.fx = 1.0f - -this.fx;
+            this.rainbowHue = (float)((double)this.rainbowHue - 0.03);
+            if (this.rainbowHue <= 0.0f) {
+                this.rainbowHue = 1.0f - -this.rainbowHue;
             }
-            return ColorUtil.Y(this.fx, 0.9f, 1.0f);
+            return ColorUtil.Y(this.rainbowHue, 0.9f, 1.0f);
         }
         return Vape.INSTANCE.getClientSettings().w.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
     }
 
     public static void w$src$V$1h5ecnl() {
-        for (FrameStackManager frameStackManager : A) {
+        for (FrameStackManager frameStackManager : allStacks) {
             frameStackManager.Y().clear();
         }
-        fQ.clear();
+        allFrames.clear();
         Vape.INSTANCE.initializeRender();
-        ClientSettings.P();
-        ClientSettings.u(new ActiveModuleStackFrame(), t, a);
+        ClientSettings.registerHudFrames();
+        ClientSettings.registerFrame(new ActiveModuleStackFrame(), t, a);
         fN = new ModuleSearchFrame();
-        ClientSettings.u(fN, a);
+        ClientSettings.registerFrame(fN, a);
         J = new ClientSettingsSearchFrame();
-        ClientSettings.u(J, a);
-        ClientSettings.u(new ClientSettingsFrame(), a);
-        ClientSettings.u(new ClientSettingsSectionFrame(), a);
+        ClientSettings.registerFrame(J, a);
+        ClientSettings.registerFrame(new ClientSettingsFrame(), a);
+        ClientSettings.registerFrame(new ClientSettingsSectionFrame(), a);
         F = new ModuleCategoryFrame(Category.g);
-        ClientSettings.u(F, a);
+        ClientSettings.registerFrame(F, a);
         Vape vape = Vape.INSTANCE;
         if (vape.isFeatureDisabled()) {
-            ClientSettings.u(new ModuleCategoryFrame(Category.w), a);
+            ClientSettings.registerFrame(new ModuleCategoryFrame(Category.w), a);
         }
-        ClientSettings.u(new ModuleCategoryFrame(Category.k), a);
-        ClientSettings.u(new ModuleCategoryFrame(Category.Y), a);
-        ClientSettings.u(new ModuleCategoryFrame(Category.m), a);
-        ClientSettings.u(new ModuleCategoryFrame(Category.M), a);
-        ClientSettings.u(new VisibleModuleListFrame(), a);
-        ClientSettings.u(new ProfilesSettingsFrame(), a);
-        ClientSettings.u(new FrameMacros(), a);
-        ClientSettings.u(new OnlineFriendsFrame(), a);
-        ClientSettings.u(new QuickActionsFrame(), a);
-        ClientSettings.u(new OnlinePlayerPreviewSettingsFrame(), a);
-        ClientSettings.u(new TextGuiSettingsFrame(), a);
-        ClientSettings.u(new OnlineCombatStatsSettingsFrame(), a);
-        ClientSettings.u(new OnlineRadarSettingsFrame(), a);
-        ClientSettings.u(new TargetInfoSettingsFrame(), a);
-        ClientSettings.u(new OnlineActivitySettingsFrame(), a);
-        ClientSettings.u(new EnemySettingsFrame(), a);
-        ClientSettings.u(new HotbarSlotRuleItemPickerFrame(), L);
-        ClientSettings.u(ClientSettings.g(HotbarSlotRuleItemPickerFrame.class).D$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$dqviyt(), L);
-        ClientSettings.u(new PublicProfilesFrame(), f0);
-        ClientSettings.u(new HudModuleSelectorFrame(), t);
-        ClientSettings.u(HudModuleSelectorFrame.WN, t);
-        ClientSettings.u(new HudModuleOverviewFrame(), t);
-        ClientSettings.u(ClientSettings.g(HudModuleOverviewFrame.class).s$src$Lgg_vape_ui_click_frame_impl_hud_HudModuleOvervi$1xo3dwo(), t);
-        ClientSettings.u(new HudEditorReturnToMainLayerFrame(), t);
-        ClientSettings.u(new HudModuleConfigFrame(), t);
-        ClientSettings.u(new SessionSpoofFrame(), fG);
-        ClientSettings.u(new ProfileSnapshotFrame(), fr);
-        ClientSettings.u(new InventoryCleanerPopupFrame(), p);
-        ClientSettings.u(new InventoryFilterRuleEditorFrame(), p);
-        r = ImmutableList.copyOf(fQ);
+        ClientSettings.registerFrame(new ModuleCategoryFrame(Category.k), a);
+        ClientSettings.registerFrame(new ModuleCategoryFrame(Category.Y), a);
+        ClientSettings.registerFrame(new ModuleCategoryFrame(Category.m), a);
+        ClientSettings.registerFrame(new ModuleCategoryFrame(Category.M), a);
+        ClientSettings.registerFrame(new VisibleModuleListFrame(), a);
+        ClientSettings.registerFrame(new ProfilesSettingsFrame(), a);
+        ClientSettings.registerFrame(new FrameMacros(), a);
+        ClientSettings.registerFrame(new OnlineFriendsFrame(), a);
+        ClientSettings.registerFrame(new QuickActionsFrame(), a);
+        ClientSettings.registerFrame(new OnlinePlayerPreviewSettingsFrame(), a);
+        ClientSettings.registerFrame(new TextGuiSettingsFrame(), a);
+        ClientSettings.registerFrame(new OnlineCombatStatsSettingsFrame(), a);
+        ClientSettings.registerFrame(new OnlineRadarSettingsFrame(), a);
+        ClientSettings.registerFrame(new TargetInfoSettingsFrame(), a);
+        ClientSettings.registerFrame(new OnlineActivitySettingsFrame(), a);
+        ClientSettings.registerFrame(new EnemySettingsFrame(), a);
+        ClientSettings.registerFrame(new HotbarSlotRuleItemPickerFrame(), L);
+        ClientSettings.registerFrame(ClientSettings.g(HotbarSlotRuleItemPickerFrame.class).D$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$dqviyt(), L);
+        ClientSettings.registerFrame(new PublicProfilesFrame(), f0);
+        ClientSettings.registerFrame(new HudModuleSelectorFrame(), t);
+        ClientSettings.registerFrame(HudModuleSelectorFrame.WN, t);
+        ClientSettings.registerFrame(new HudModuleOverviewFrame(), t);
+        ClientSettings.registerFrame(ClientSettings.g(HudModuleOverviewFrame.class).s$src$Lgg_vape_ui_click_frame_impl_hud_HudModuleOvervi$1xo3dwo(), t);
+        ClientSettings.registerFrame(new HudEditorReturnToMainLayerFrame(), t);
+        ClientSettings.registerFrame(new HudModuleConfigFrame(), t);
+        ClientSettings.registerFrame(new SessionSpoofFrame(), fG);
+        ClientSettings.registerFrame(new ProfileSnapshotFrame(), fr);
+        ClientSettings.registerFrame(new InventoryCleanerPopupFrame(), p);
+        ClientSettings.registerFrame(new InventoryFilterRuleEditorFrame(), p);
+        frameSnapshot = ImmutableList.copyOf(allFrames);
         ClientSettings.M$src$V$1giazqf();
         VisibleModuleListFrame.e();
         S = true;
@@ -739,16 +739,16 @@ extends Mod {
 
     @EventHandler
     public void I(EventPreRenderTick eventPreRenderTick) {
-        if (this.fp != null) {
-            this.D.v(this.fp);
-            this.fp.s$src$Ljava_util_ArrayList_$1a2240q().forEach(PopupFrame::A$src$V$4ceaf0);
-            Z = this.fp;
-            this.fp = null;
+        if (this.pendingFrame != null) {
+            this.currentStack.v(this.pendingFrame);
+            this.pendingFrame.s$src$Ljava_util_ArrayList_$1a2240q().forEach(PopupFrame::A$src$V$4ceaf0);
+            lastOpenedFrame = this.pendingFrame;
+            this.pendingFrame = null;
         }
     }
 
     public void b$src$V$1gtuo70() {
-        for (FrameStackManager object : A) {
+        for (FrameStackManager object : allStacks) {
             for (Frame frame : object.Y()) {
                 if (!frame.n$src$Z$1fa61uz()) continue;
                 frame.j(true);
@@ -775,7 +775,7 @@ extends Mod {
         try {
             Constructor<T> constructor = clazz.getConstructor(GuiComponent.class, GuiComponent.class);
             PopupFrame popupFrame = (PopupFrame)constructor.newInstance(guiComponent, guiComponent2);
-            ClientSettings.fW.D.Y().add(popupFrame);
+            ClientSettings.fW.currentStack.Y().add(popupFrame);
             guiComponent.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().s$src$Ljava_util_ArrayList_$1a2240q().add(popupFrame);
             return (T)popupFrame;
         }
@@ -786,7 +786,7 @@ extends Mod {
     }
 
     public static void d() {
-        for (Frame frame : ClientSettings.fW.D.Y()) {
+        for (Frame frame : ClientSettings.fW.currentStack.Y()) {
             if (!(frame instanceof ListValueDropdownLayer)) continue;
             ((ListValueDropdownLayer)frame).e();
         }
@@ -795,11 +795,11 @@ extends Mod {
     static {
         ClientSettings.Z(null);
         long l = 1733723352155029506L;
-        o = (int)l;
-        I = new ArrayList<OffscreenRenderContext>();
+        CACHED_SEED = (int)l;
+        offscreenContexts = new ArrayList<OffscreenRenderContext>();
         fd = Color.WHITE;
-        fQ = new ArrayList<Frame>();
-        A = new ArrayList<FrameStackManager>();
+        allFrames = new ArrayList<Frame>();
+        allStacks = new ArrayList<FrameStackManager>();
         a = new FrameStackManager();
         t = new FrameStackManager();
         f0 = new FrameStackManager();
@@ -810,8 +810,8 @@ extends Mod {
         p = new FrameStackManager();
         fX = new FrameStackManager();
         f6 = new ThreadBoundExecutor();
-        fk = new HashSet();
-        k = new HashMap();
+        positionedFrames = new HashSet();
+        frameCache = new HashMap();
     }
 
     public void e() {
@@ -827,14 +827,14 @@ extends Mod {
             } else if (this.b.L().booleanValue()) {
                 int n = Minecraft.J();
                 int n2 = Minecraft.h();
-                this.fb.L(n, n2);
-                this.fb.t(0, 0, 16.0f, 0.0f);
+                this.blurRenderer.L(n, n2);
+                this.blurRenderer.t(0, 0, 16.0f, 0.0f);
             }
             RectData rectData = new RectData(0.0, 0.0, Minecraft.J(), Minecraft.h());
-            if (j != null && (rectData.e() != j.e() || rectData.R() != j.R())) {
-                this.M(j, rectData);
+            if (lastScreenRect != null && (rectData.e() != lastScreenRect.e() || rectData.R() != lastScreenRect.R())) {
+                this.M(lastScreenRect, rectData);
             }
-            j = rectData;
+            lastScreenRect = rectData;
             OpenGlBackendHolder.d.m();
             double d = Vape.INSTANCE.getClientSettings().s();
             OpenGlBackendHolder.d.G(d, d, d);
@@ -856,24 +856,24 @@ extends Mod {
     }
 
     public static <T extends Frame> T g(Class<T> clazz) {
-        Frame frame = k.get(clazz);
+        Frame frame = frameCache.get(clazz);
         if (frame != null) {
             return (T)frame;
         }
-        for (Frame frame2 : fQ) {
+        for (Frame frame2 : allFrames) {
             if (!frame2.getClass().getCanonicalName().equals(clazz.getCanonicalName())) continue;
-            k.put(clazz, frame2);
+            frameCache.put(clazz, frame2);
             return (T)frame2;
         }
         return null;
     }
 
-    private void B(Frame frame, List<Frame> list) {
+    private void renderFrame(Frame frame, List<Frame> list) {
         if (!frame.V$src$Z$1xhop3l()) {
             return;
         }
         frame.c();
-        if (this.D instanceof ClickGuiFrameManager && ((ClickGuiFrameManager)this.D).i(frame)) {
+        if (this.currentStack instanceof ClickGuiFrameManager && ((ClickGuiFrameManager)this.currentStack).i(frame)) {
             if (frame instanceof HudModuleFrameBase) {
                 HudModuleFrameBase hudModuleFrameBase = (HudModuleFrameBase)frame;
                 boolean bl = frame.t();
@@ -905,7 +905,7 @@ extends Mod {
     }
 
     public static void P(Frame frame) {
-        fk.add(frame);
+        positionedFrames.add(frame);
     }
 
     @Override
@@ -924,7 +924,7 @@ extends Mod {
         }
     }
 
-    private void G$src$V$1gf0869() {
+    private void updateStandaloneState() {
         PublicProfileSettings publicProfileSettings = Vape.INSTANCE.getPublicProfileSettings();
         if (publicProfileSettings.n.L$src$Z$1a65ikz()) {
             return;
@@ -936,7 +936,7 @@ extends Mod {
         double d = 32.0;
         double d2 = 32.0;
         double d3 = 0.0;
-        for (Frame frame : r) {
+        for (Frame frame : frameSnapshot) {
             if (!frame.J$src$Z$1eqdghz() || !frame.l$src$Z$193vdc5()) continue;
             if (d + frame.A() > (double)Minecraft.G().T()) {
                 d = 24.0;
@@ -954,11 +954,11 @@ extends Mod {
     }
 
     public static void h$src$V$1gx5fr6() {
-        fk.clear();
+        positionedFrames.clear();
     }
 
     public void N(Frame frame, Frame frame2) {
-        this.D.R(frame, frame2);
+        this.currentStack.R(frame, frame2);
     }
 
     @Override
@@ -967,7 +967,7 @@ extends Mod {
     }
 
     public static List<Frame> G() {
-        return fQ;
+        return allFrames;
     }
 
     public ClientSettings() {
@@ -979,9 +979,9 @@ extends Mod {
         this.H = (ModeValue)ModeValue.create((Object)this, "Language", FontSelector.j, FontSelector.j, FontSelector.S, FontSelector.c, FontSelector.a, FontSelector.P).n(false);
         this.O = BooleanValue.create(this, "Show legit mode", true, "Shows the button to switch to the legit mod menu");
         this.fc = BooleanValue.create(this, "Show enabled count", true, "Shows the number of enabled modules in the standalone gui");
-        this.fb = new BlurRegionRenderer(0, 0);
-        this.D = a;
-        this.v = new HashSet<Frame>(fQ);
+        this.blurRenderer = new BlurRegionRenderer(0, 0);
+        this.currentStack = a;
+        this.v = new HashSet<Frame>(allFrames);
         fW = this;
         this.c = new ModeOption("Floating", 0.8);
         this.fM = new ModeOption("Integrated", 0.8);
@@ -1027,14 +1027,14 @@ extends Mod {
     }
 
     public static void Z(int[] nArray) {
-        fj = nArray;
+        savedPositions = nArray;
     }
 
     public void I(FrameStackManager frameStackManager) {
         fT = null;
-        this.R$src$V$1gl1yp8();
+        this.removeClosedPopups();
         V = null;
-        FrameStackManager frameStackManager2 = this.D;
+        FrameStackManager frameStackManager2 = this.currentStack;
         if (frameStackManager2 instanceof ClickGuiFrameManager) {
             ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)frameStackManager2;
             if (clickGuiFrameManager.l() != null) {
@@ -1042,7 +1042,7 @@ extends Mod {
             }
             clickGuiFrameManager.G();
         }
-        for (Frame frame : fQ) {
+        for (Frame frame : allFrames) {
             if (!(frame instanceof HudModuleFrameBase)) continue;
             HudModuleFrameBase hudModuleFrameBase = (HudModuleFrameBase)frame;
             hudModuleFrameBase.i(false);
@@ -1053,7 +1053,7 @@ extends Mod {
             }
             frameStackManager.m(anchoredHudModuleConfigFrame);
         }
-        this.D = frameStackManager;
+        this.currentStack = frameStackManager;
         for (Frame frame : frameStackManager.Y()) {
             if (!frame.n$src$Z$1fa61uz()) continue;
             frame.b$src$V$1f3kin7();
@@ -1065,14 +1065,14 @@ extends Mod {
     }
 
     public FrameStackManager b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v() {
-        return this.D;
+        return this.currentStack;
     }
 
     public void d(EventPreTick eventPreTick) {
-        if (!this.K) {
-            this.K = true;
+        if (!this.initialized) {
+            this.initialized = true;
             Vape.INSTANCE.getPublicProfileSettings().n.B(this::lambda$update$2);
-            this.G$src$V$1gf0869();
+            this.updateStandaloneState();
         }
         try {
             if (Minecraft.currentScreen().getObject() != null) {
@@ -1082,7 +1082,7 @@ extends Mod {
                 } else if (this.P || !this.a().K()) {
                     // empty if block
                 }
-                if (this.D.equals(fG) && !Minecraft.currentScreen().isInstance(MappedClasses.u5)) {
+                if (this.currentStack.equals(fG) && !Minecraft.currentScreen().isInstance(MappedClasses.u5)) {
                     this.I(a);
                 }
             } else if (!this.P) {
@@ -1100,10 +1100,10 @@ extends Mod {
                 fT = null;
             }
             this.v.clear();
-            this.v.addAll(fQ);
-            this.v.addAll(this.D.Y());
+            this.v.addAll(allFrames);
+            this.v.addAll(this.currentStack.Y());
             if (ClientSettings.fW.P) {
-                for (Frame frame : fQ) {
+                for (Frame frame : allFrames) {
                     if (!(frame instanceof HudSettingsFrameBase)) continue;
                     this.v.add(frame);
                 }
@@ -1127,7 +1127,7 @@ extends Mod {
     }
 
     public void D(boolean bl) {
-        this.f3 = bl;
+        this.closeRequested = bl;
     }
 
     @Override
@@ -1138,7 +1138,7 @@ extends Mod {
                 ClickGuiFrameManager clickGuiFrameManager;
                 this.P = true;
                 this.Y(false);
-                if (this.D instanceof ClickGuiFrameManager && (clickGuiFrameManager = (ClickGuiFrameManager)this.D).Y$src$Lgg_vape_ui_click_frame_impl_hud_HudOverlaySelec$z60fv4() != null && clickGuiFrameManager.Y$src$Lgg_vape_ui_click_frame_impl_hud_HudOverlaySelec$z60fv4().V$src$Z$1xhop3l()) {
+                if (this.currentStack instanceof ClickGuiFrameManager && (clickGuiFrameManager = (ClickGuiFrameManager)this.currentStack).Y$src$Lgg_vape_ui_click_frame_impl_hud_HudOverlaySelec$z60fv4() != null && clickGuiFrameManager.Y$src$Lgg_vape_ui_click_frame_impl_hud_HudOverlaySelec$z60fv4().V$src$Z$1xhop3l()) {
                     clickGuiFrameManager.G(ClickGuiLayer.MAIN);
                 }
                 if (!this.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().equals(fG)) {

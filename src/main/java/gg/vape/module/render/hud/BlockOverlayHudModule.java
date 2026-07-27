@@ -32,14 +32,14 @@ import org.lwjgl.opengl.GL11;
 
 public class BlockOverlayHudModule
 extends HudModule {
-    private ColorValue S = ColorValue.L(this, "Overlay Color", new Color(255, 0, 0, 95));
-    private ColorValue F = ColorValue.L(this, "Outline Color", new Color(255, 0, 0, 200));
+    private ColorValue overlayColor = ColorValue.L(this, "Overlay Color", new Color(255, 0, 0, 95));
+    private ColorValue outlineColor = ColorValue.L(this, "Outline Color", new Color(255, 0, 0, 200));
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private void n(AxisAlignedBB axisAlignedBB, Color color) {
+    private void drawOutline(AxisAlignedBB axisAlignedBB, Color color) {
         if (GuiRenderPrimitives.d()) {
             BufferedRenderPrimitives.Q(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), 2.0f, color);
             BufferedRenderPrimitives.Q(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), 2.0f, color);
@@ -84,7 +84,7 @@ extends HudModule {
         }
     }
 
-    private void S(AxisAlignedBB axisAlignedBB, Color color) {
+    private void drawFilledBox(AxisAlignedBB axisAlignedBB, Color color) {
         if (GuiRenderPrimitives.d()) {
             BufferedRenderPrimitives.z(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), color);
             BufferedRenderPrimitives.z(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), color);
@@ -176,9 +176,9 @@ extends HudModule {
         }
         axisAlignedBB = axisAlignedBB.expand(0.002f, 0.002f, 0.002f).A(-d3, -d2, -d);
         RenderUtils.g();
-        this.S(axisAlignedBB, this.S.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
+        this.drawFilledBox(axisAlignedBB, this.overlayColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
         OpenGlBackendHolder.d.r(2.0f);
-        this.n(axisAlignedBB, this.F.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
+        this.drawOutline(axisAlignedBB, this.outlineColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
         GlStateManager.depthMask(true);
         RenderUtils.f();
         OpenGlBackendHolder.d.l(3553);
@@ -192,7 +192,7 @@ extends HudModule {
     public BlockOverlayHudModule() {
         super("Block Overlay", HudModuleGroup.T, "block_overlay");
         this.setSuffix("Highlights the block you're hovering by the specified color");
-        this.addValue(this.S, this.F);
+        this.addValue(this.overlayColor, this.outlineColor);
     }
 }
 

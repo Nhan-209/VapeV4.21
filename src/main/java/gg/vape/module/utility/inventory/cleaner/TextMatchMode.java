@@ -19,9 +19,9 @@ implements INamed {
     IS_NOT_IN("is not in", true);
 
     public static final @UnmodifiableView List<TextMatchMode> VALUES;
-    private final String M;
-    private final boolean x;
-    private static final TextMatchMode[] b;
+    private final String name;
+    private final boolean multiValue;
+    private static final TextMatchMode[] valuesCache;
 
     public boolean M(String string, List<String> list) {
         for (String string2 : list) {
@@ -60,7 +60,7 @@ implements INamed {
     }
 
     @Nullable
-    public static TextMatchMode Z(String string) {
+    public static TextMatchMode findByName(String string) {
         for (TextMatchMode textMatchMode : VALUES) {
             if (!textMatchMode.getName().equalsIgnoreCase(string)) continue;
             return textMatchMode;
@@ -82,22 +82,22 @@ implements INamed {
 
 
 
-        b = new TextMatchMode[]{EQUALS, DOES_NOT_EQUAL, MATCH_REGEX, DOES_NOT_MATCH_REGEX, CONTAINS, DOES_NOT_CONTAIN, IS_IN, IS_NOT_IN};
+        valuesCache = new TextMatchMode[]{EQUALS, DOES_NOT_EQUAL, MATCH_REGEX, DOES_NOT_MATCH_REGEX, CONTAINS, DOES_NOT_CONTAIN, IS_IN, IS_NOT_IN};
         VALUES = Arrays.asList(TextMatchMode.values());
     }
 
     @Override
     public String getName() {
-        return this.M;
+        return this.name;
     }
 
     public boolean d() {
-        return this.x;
+        return this.multiValue;
     }
 
     private TextMatchMode(String string2, boolean bl) {
-        this.M = string2;
-        this.x = bl;
+        this.name = string2;
+        this.multiValue = bl;
     }
 
     private TextMatchMode(String string2) {
@@ -105,11 +105,11 @@ implements INamed {
     }
 
     public static TextMatchMode p(String string) {
-        return TextMatchMode.k(string, EQUALS);
+        return TextMatchMode.fromNameOrDefault(string, EQUALS);
     }
 
-    public static TextMatchMode k(String string, TextMatchMode textMatchMode) {
-        TextMatchMode textMatchMode2 = TextMatchMode.Z(string);
+    public static TextMatchMode fromNameOrDefault(String string, TextMatchMode textMatchMode) {
+        TextMatchMode textMatchMode2 = TextMatchMode.findByName(string);
         return textMatchMode2 == null ? textMatchMode : textMatchMode2;
     }
 }

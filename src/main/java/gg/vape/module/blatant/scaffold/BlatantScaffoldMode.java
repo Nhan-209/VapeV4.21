@@ -37,67 +37,67 @@ import java.util.Arrays;
 
 public class BlatantScaffoldMode
 extends SubModule<Scaffold> {
-    private final KeyBinding P;
-    private TimerUtil L;
-    private double[] o;
-    private static final long ib = -7821191894771171308L;
-    private ArrayList<Integer> t;
-    private boolean F = false;
-    private boolean C = false;
-    private boolean Z = false;
-    private int G5;
-    private final KeyBinding Gh;
-    private boolean D = false;
-    private final KeyBinding Gt;
-    private int v;
-    private int Gj;
-    private int U = 0;
-    private final NumberValue GB = NumberValue.E(this, "Activation blocks", "#", "", 1.0, 2.0, 4.0, "Manual blocks placed before bridging");
-    private boolean V = false;
+    private final KeyBinding leftKey;
+    private TimerUtil moveTimer;
+    private double[] targetPos;
+    private static final long DEFAULT_TICK_BUDGET = -7821191894771171308L;
+    private ArrayList<Integer> slotHistory;
+    private boolean rotationPending = false;
+    private boolean atEdge = false;
+    private boolean taskSneak = false;
+    private int taskTickLimit;
+    private final KeyBinding rightKey;
+    private boolean prevLeftDown = false;
+    private final KeyBinding sneakKey;
+    private int blocksPlaced;
+    private int pendingDirection;
+    private int direction = 0;
+    private final NumberValue activationBlocks = NumberValue.E(this, "Activation blocks", "#", "", 1.0, 2.0, 4.0, "Manual blocks placed before bridging");
+    private boolean jumpDown = false;
     boolean S;
-    private int GG;
-    private boolean I;
+    private int taskTicks;
+    private boolean reversed;
     TargetPositionMovementTask Gz = null;
-    private boolean c = true;
+    private boolean keyIdle = true;
     ArrayList<Integer> Gn;
-    private ItemStack H;
-    private TimerUtil r;
-    private boolean A;
-    private double[] GE;
-    private boolean K = false;
+    private ItemStack heldBlock;
+    private TimerUtil switchTimer;
+    private boolean pendingReversed;
+    private double[] pendingPos;
+    private boolean switching = false;
     float[] GF;
-    private boolean s = false;
+    private boolean prevRightDown = false;
     ScaffoldEdgeSneakHelper O;
     Scaffold b = (Scaffold)this.getParent();
-    private boolean p = false;
-    private double[] J;
+    private boolean pendingReset = false;
+    private double[] placePos;
 
-    private boolean b(EntityPlayerSP entityPlayerSP) {
+    private boolean isNextBlockEmpty(EntityPlayerSP entityPlayerSP) {
         double d = entityPlayerSP.z();
         double d2 = entityPlayerSP.h();
-        if (this.U == 1) {
+        if (this.direction == 1) {
             d += 0.2;
             d2 += 0.2;
-        } else if (this.U == 2) {
+        } else if (this.direction == 2) {
             d -= 0.2;
             d2 += 0.2;
-        } else if (this.U == 3) {
+        } else if (this.direction == 3) {
             d -= 0.2;
             d2 -= 0.2;
-        } else if (this.U == 4) {
+        } else if (this.direction == 4) {
             d += 0.2;
             d2 -= 0.2;
-        } else if (this.U == 6) {
+        } else if (this.direction == 6) {
             d += 0.25;
-            d2 = this.o[1];
-        } else if (this.U == 8) {
+            d2 = this.targetPos[1];
+        } else if (this.direction == 8) {
             d -= 0.25;
-            d2 = this.o[1];
-        } else if (this.U == 7) {
-            d = this.o[0];
+            d2 = this.targetPos[1];
+        } else if (this.direction == 7) {
+            d = this.targetPos[0];
             d2 += 0.25;
-        } else if (this.U == 5) {
-            d = this.o[0];
+        } else if (this.direction == 5) {
+            d = this.targetPos[0];
             d2 -= 0.25;
         } else {
             return true;
@@ -118,22 +118,22 @@ extends SubModule<Scaffold> {
         }
     }
 
-    private boolean m() {
+    private boolean advanceTask() {
         if (this.Gz != null) {
-            if (!this.Gz.q$src$Z$naak2i() && this.GG < this.G5) {
-                ++this.GG;
-                if (this.Z) {
+            if (!this.Gz.q$src$Z$naak2i() && this.taskTicks < this.taskTickLimit) {
+                ++this.taskTicks;
+                if (this.taskSneak) {
                     return true;
                 }
             } else if (this.Gz.q$src$Z$naak2i()) {
-                this.GG = 0;
-                this.Z = false;
+                this.taskTicks = 0;
+                this.taskSneak = false;
             } else {
                 this.Gz.s(true);
                 Scaffold.Access.A(this.b);
                 this.Gz = null;
-                this.GG = 0;
-                this.Z = false;
+                this.taskTicks = 0;
+                this.taskSneak = false;
                 return true;
             }
         }
@@ -146,7 +146,7 @@ extends SubModule<Scaffold> {
             double d = RotationUtil.c();
             return Scaffold.Access.P(this.b, d, (dArray = this.T(n))[0]) <= Scaffold.Access.P(this.b, d, dArray[1]);
         }
-        return !this.I;
+        return !this.reversed;
     }
 
     @Override
@@ -154,7 +154,7 @@ extends SubModule<Scaffold> {
         this.S = true;
     }
 
-    private void k(float[] fArray, float f) {
+    private void applyRotation(float[] fArray, float f) {
         if (this.b.A == null) {
             this.b.A = new FixedRotationController(fArray[0], fArray[1]);
             this.b.A.Y(Math.min(Math.max(2.0f, f), 12.0f));
@@ -170,7 +170,7 @@ extends SubModule<Scaffold> {
         }
     }
 
-    private boolean P(EntityPlayerSP entityPlayerSP, int n) {
+    private boolean isPastCorner(EntityPlayerSP entityPlayerSP, int n) {
         double d = entityPlayerSP.z();
         double d2 = entityPlayerSP.h();
         double d3 = MathUtil.floor(d);
@@ -202,13 +202,13 @@ extends SubModule<Scaffold> {
         return false;
     }
 
-    private boolean g(EntityPlayerSP entityPlayerSP) {
+    private boolean ensureBlockSelected(EntityPlayerSP entityPlayerSP) {
         int n = Scaffold.Access.l(this.b);
         if (n == -1) {
             return false;
         }
-        if (this.H != null && !entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt().equals(this.H)) {
-            int n2 = Scaffold.Access.s(this.b, entityPlayerSP, this.H);
+        if (this.heldBlock != null && !entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt().equals(this.heldBlock)) {
+            int n2 = Scaffold.Access.s(this.b, entityPlayerSP, this.heldBlock);
             if (n2 != -1) {
                 Scaffold.Access.s(this.b, n2);
             } else if (entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v() != n) {
@@ -218,7 +218,7 @@ extends SubModule<Scaffold> {
         return true;
     }
 
-    private boolean c(EntityPlayerSP entityPlayerSP) {
+    private boolean isFrontClear(EntityPlayerSP entityPlayerSP) {
         AxisAlignedBB axisAlignedBB;
         double d = -0.2;
         if (ForgeVersion.MC_1_8_9.d()) {
@@ -235,39 +235,39 @@ extends SubModule<Scaffold> {
         return n == 0;
     }
 
-    private void R(EntityPlayerSP entityPlayerSP) {
+    private void updateSneakInput(EntityPlayerSP entityPlayerSP) {
         boolean bl;
         if (Minecraft.currentScreen().getObject() == null) {
             KeyboardCodeUtil.v();
         }
-        boolean bl2 = this.N(entityPlayerSP, this.U);
-        boolean bl3 = bl = this.U < 5;
+        boolean bl2 = this.isAtEdge(entityPlayerSP, this.direction);
+        boolean bl3 = bl = this.direction < 5;
         if (!bl2) {
-            this.L.reset();
+            this.moveTimer.reset();
         }
-        this.C = bl2;
+        this.atEdge = bl2;
         if (bl2) {
-            MovementInputHelper.w(this.Gt, false);
-            MovementInputHelper.w(this.P, false);
-            MovementInputHelper.w(this.Gh, false);
+            MovementInputHelper.w(this.sneakKey, false);
+            MovementInputHelper.w(this.leftKey, false);
+            MovementInputHelper.w(this.rightKey, false);
             if (!bl) {
-                if (this.I) {
-                    MovementInputHelper.w(this.Gh, false);
+                if (this.reversed) {
+                    MovementInputHelper.w(this.rightKey, false);
                 } else {
-                    MovementInputHelper.w(this.P, false);
+                    MovementInputHelper.w(this.leftKey, false);
                 }
             }
         } else {
-            MovementInputHelper.w(this.Gt, true);
+            MovementInputHelper.w(this.sneakKey, true);
             if (!bl) {
-                if (this.I) {
-                    MovementInputHelper.w(this.Gh, true);
+                if (this.reversed) {
+                    MovementInputHelper.w(this.rightKey, true);
                 } else {
-                    MovementInputHelper.w(this.P, true);
+                    MovementInputHelper.w(this.leftKey, true);
                 }
             } else {
-                MovementInputHelper.w(this.P, false);
-                MovementInputHelper.w(this.Gh, false);
+                MovementInputHelper.w(this.leftKey, false);
+                MovementInputHelper.w(this.rightKey, false);
             }
         }
     }
@@ -288,27 +288,27 @@ extends SubModule<Scaffold> {
         return new double[0];
     }
 
-    private double[] e(EntityPlayerSP entityPlayerSP, int n) {
+    private double[] computeAnchorTarget(EntityPlayerSP entityPlayerSP, int n) {
         double[] dArray = new double[]{MathUtil.floor(entityPlayerSP.z()), entityPlayerSP.q() > 0.0 ? Scaffold.Access.J(this.b, entityPlayerSP) + 1.0 : Scaffold.Access.J(this.b, entityPlayerSP), MathUtil.floor(entityPlayerSP.h())};
-        if (Scaffold.Access.U(this.b, dArray) && Scaffold.Access.U(this.b, dArray = Scaffold.Access.X(this.b, dArray, -1, n)) && Scaffold.Access.U(this.b, dArray = Scaffold.Access.X(this.b, dArray, 1, this.Z(n, 2)))) {
-            dArray = Scaffold.Access.X(this.b, dArray, -2, this.Z(n, 2));
+        if (Scaffold.Access.U(this.b, dArray) && Scaffold.Access.U(this.b, dArray = Scaffold.Access.X(this.b, dArray, -1, n)) && Scaffold.Access.U(this.b, dArray = Scaffold.Access.X(this.b, dArray, 1, this.rotateDirection(n, 2)))) {
+            dArray = Scaffold.Access.X(this.b, dArray, -2, this.rotateDirection(n, 2));
         }
         return dArray;
     }
 
-    private boolean v(EntityPlayerSP entityPlayerSP) {
+    private boolean shouldReleaseControl(EntityPlayerSP entityPlayerSP) {
         if (!SharedModuleControlClaims.I.U(this.b)) {
             this.S = true;
             MovementInputHelper.q();
             return true;
         }
-        if (!this.g(entityPlayerSP)) {
+        if (!this.ensureBlockSelected(entityPlayerSP)) {
             this.S = true;
             MovementInputHelper.i();
             return true;
         }
-        if (!ClientSettings.B(this.Gt)) {
-            if (!entityPlayerSP.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying() && !this.b(entityPlayerSP)) {
+        if (!ClientSettings.B(this.sneakKey)) {
+            if (!entityPlayerSP.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying() && !this.isNextBlockEmpty(entityPlayerSP)) {
                 return false;
             }
             MovementInputHelper.i();
@@ -316,8 +316,8 @@ extends SubModule<Scaffold> {
             return true;
         }
         if (!FreeLookHudModule.z()) {
-            this.t = Scaffold.Access.J(this.b, this.t);
-            if (Scaffold.Access.M(this.b, this.t) >= 10) {
+            this.slotHistory = Scaffold.Access.J(this.b, this.slotHistory);
+            if (Scaffold.Access.M(this.b, this.slotHistory) >= 10) {
                 MovementInputHelper.i();
                 this.S = true;
                 return true;
@@ -333,15 +333,15 @@ extends SubModule<Scaffold> {
         }
     }
 
-    private boolean S$src$Z$1ho1ph5() {
+    private boolean isRotationOffTarget() {
         if (this.b.A != null) {
             if (Scaffold.Access.P(this.b, RotationUtil.c(), this.b.A.L) > 4.0) {
-                if (this.F) {
+                if (this.rotationPending) {
                     return true;
                 }
-            } else if (this.F) {
+            } else if (this.rotationPending) {
                 Scaffold.Access.W(this.b);
-                this.F = false;
+                this.rotationPending = false;
             }
         }
         return false;
@@ -352,30 +352,30 @@ extends SubModule<Scaffold> {
         Scaffold.Access.V$src$V$dhg0vg(this.b);
     }
 
-    private boolean w$src$Z$1i7uau5() {
-        boolean bl = this.S$src$Z$1ho1ph5();
-        boolean bl2 = this.m();
+    private boolean handleRotationAndTask() {
+        boolean bl = this.isRotationOffTarget();
+        boolean bl2 = this.advanceTask();
         return bl || bl2;
     }
 
-    private boolean N(EntityPlayerSP entityPlayerSP, int n) {
+    private boolean isAtEdge(EntityPlayerSP entityPlayerSP, int n) {
         AxisAlignedBB axisAlignedBB;
         boolean bl = ClientSettings.B(Minecraft.gameSettings().O());
         if (n > 4) {
             double d = entityPlayerSP.z();
             double d2 = entityPlayerSP.h();
-            this.V = bl;
+            this.jumpDown = bl;
             if (n == 6) {
                 d += -0.15;
-                d2 = this.o[1];
+                d2 = this.targetPos[1];
             } else if (n == 8) {
                 d -= -0.15;
-                d2 = this.o[1];
+                d2 = this.targetPos[1];
             } else if (n == 7) {
-                d = this.o[0];
+                d = this.targetPos[0];
                 d2 += -0.15;
             } else if (n == 5) {
-                d = this.o[0];
+                d = this.targetPos[0];
                 d2 -= -0.15;
             }
             d = MathUtil.floor(d);
@@ -384,7 +384,7 @@ extends SubModule<Scaffold> {
             return Scaffold.Access.i(this.b, d, d3, d2);
         }
         double d = -0.16;
-        this.V = bl;
+        this.jumpDown = bl;
         if (ForgeVersion.MC_1_8_9.d()) {
             axisAlignedBB = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
         } else {
@@ -399,215 +399,215 @@ extends SubModule<Scaffold> {
         return n2 == 0;
     }
 
-    private float V(float[] fArray, int n) {
+    private float computeRotationSpeed(float[] fArray, int n) {
         return (float)Math.min(2.0 + Scaffold.Access.P(this.b, RotationUtil.c(), fArray[0]) / (double)n, 12.0);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private boolean j(EntityPlayerSP entityPlayerSP) {
+    private boolean updatePlacement(EntityPlayerSP entityPlayerSP) {
         double d = MathUtil.floor(entityPlayerSP.z());
         double d2 = MathUtil.floor(entityPlayerSP.h());
         double d3 = Scaffold.Access.J(this.b, entityPlayerSP);
         if (!Scaffold.Access.a(this.b, entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt())) {
-            this.J = null;
-            this.v = 0;
+            this.placePos = null;
+            this.blocksPlaced = 0;
             return true;
         }
         int n = Scaffold.Access.u$src$I$dyhmyg(this.b);
-        if (this.U != 0 && n != this.U) {
-            this.J = null;
-            this.v = 0;
+        if (this.direction != 0 && n != this.direction) {
+            this.placePos = null;
+            this.blocksPlaced = 0;
         }
-        this.U = n;
+        this.direction = n;
         double[] dArray = new double[]{d, d3, d2};
-        double[] dArray2 = Scaffold.Access.X(this.b, dArray, 1, this.U);
-        double[] dArray3 = Scaffold.Access.X(this.b, dArray, 2, this.U);
-        if (this.J == null && entityPlayerSP.b$src$Z$fqlxe4()) {
+        double[] dArray2 = Scaffold.Access.X(this.b, dArray, 1, this.direction);
+        double[] dArray3 = Scaffold.Access.X(this.b, dArray, 2, this.direction);
+        if (this.placePos == null && entityPlayerSP.b$src$Z$fqlxe4()) {
             if (Scaffold.Access.U(this.b, dArray)) {
-                this.J = dArray;
+                this.placePos = dArray;
             } else if (Scaffold.Access.U(this.b, dArray2)) {
-                this.J = dArray2;
+                this.placePos = dArray2;
             } else if (Scaffold.Access.U(this.b, dArray3)) {
-                this.J = dArray3;
+                this.placePos = dArray3;
             }
-        } else if (this.J != null) {
-            if ((double)this.v >= (Double)this.GB.K()) {
-                this.I = this.Z(entityPlayerSP, this.U);
-                this.o = this.W(new double[]{this.J[0], this.J[2]}, this.U, this.I);
-                this.H = entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt();
+        } else if (this.placePos != null) {
+            if ((double)this.blocksPlaced >= (Double)this.activationBlocks.K()) {
+                this.reversed = this.Z(entityPlayerSP, this.direction);
+                this.targetPos = this.computePlacementPoint(new double[]{this.placePos[0], this.placePos[2]}, this.direction, this.reversed);
+                this.heldBlock = entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt();
                 if (!ClientSettings.B(Minecraft.gameSettings().O()) && !entityPlayerSP.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying()) {
-                    this.o(this.o, true, false, 40);
-                    this.GF = this.G(entityPlayerSP, this.I);
-                    Scaffold.Access.S(this.b, this.GF, this.V(this.GF, 15));
+                    this.startMoveTaskNoTurn(this.targetPos, true, false, 40);
+                    this.GF = this.computeDiagonalRotation(entityPlayerSP, this.reversed);
+                    Scaffold.Access.S(this.b, this.GF, this.computeRotationSpeed(this.GF, 15));
                 }
-                this.v = 0;
-                this.J = null;
-                this.L.reset();
+                this.blocksPlaced = 0;
+                this.placePos = null;
+                this.moveTimer.reset();
                 return false;
             }
-            if (!Scaffold.Access.U(this.b, this.J)) {
-                ++this.v;
-                double[] dArray4 = Scaffold.Access.X(this.b, this.J, 1, this.U);
+            if (!Scaffold.Access.U(this.b, this.placePos)) {
+                ++this.blocksPlaced;
+                double[] dArray4 = Scaffold.Access.X(this.b, this.placePos, 1, this.direction);
                 boolean bl = Scaffold.Access.U(this.b, dArray4);
-                if (bl && (double)this.v < (Double)this.GB.K()) {
-                    this.J = dArray4;
+                if (bl && (double)this.blocksPlaced < (Double)this.activationBlocks.K()) {
+                    this.placePos = dArray4;
                 } else if (!bl) {
-                    this.J = null;
-                    this.v = 0;
+                    this.placePos = null;
+                    this.blocksPlaced = 0;
                 }
-            } else if (Scaffold.Access.X(this.b, this.J, dArray, this.U, (Double)this.GB.K(), this.v)) {
-                this.J = null;
-                this.v = 0;
+            } else if (Scaffold.Access.X(this.b, this.placePos, dArray, this.direction, (Double)this.activationBlocks.K(), this.blocksPlaced)) {
+                this.placePos = null;
+                this.blocksPlaced = 0;
             }
         }
         return true;
     }
 
-    private boolean Q(EntityPlayerSP entityPlayerSP) {
+    private boolean handleDirectionSwitch(EntityPlayerSP entityPlayerSP) {
         if (Minecraft.currentScreen().getObject() == null) {
             KeyboardCodeUtil.v();
         }
-        if (this.Gz != null && this.Gz.q$src$Z$naak2i() && this.K) {
-            this.C = true;
+        if (this.Gz != null && this.Gz.q$src$Z$naak2i() && this.switching) {
+            this.atEdge = true;
             this.Gz = null;
-            this.o = this.GE;
-            this.U = this.Gj;
-            this.I = this.A;
-            this.K = false;
-            this.p = false;
+            this.targetPos = this.pendingPos;
+            this.direction = this.pendingDirection;
+            this.reversed = this.pendingReversed;
+            this.switching = false;
+            this.pendingReset = false;
             MovementInputHelper.i();
-            this.L.reset();
-            this.r.reset();
-            if (this.U < 5) {
-                float[] fArray = this.p(entityPlayerSP, this.W(this.o, this.U, this.I), this.U);
-                this.k(fArray, this.V(fArray, 15));
+            this.moveTimer.reset();
+            this.switchTimer.reset();
+            if (this.direction < 5) {
+                float[] fArray = this.p(entityPlayerSP, this.computePlacementPoint(this.targetPos, this.direction, this.reversed), this.direction);
+                this.applyRotation(fArray, this.computeRotationSpeed(fArray, 15));
             } else {
-                float[] fArray = this.G(entityPlayerSP, this.I);
-                this.k(fArray, this.V(fArray, 12));
+                float[] fArray = this.computeDiagonalRotation(entityPlayerSP, this.reversed);
+                this.applyRotation(fArray, this.computeRotationSpeed(fArray, 12));
             }
-            this.F = true;
+            this.rotationPending = true;
             return true;
         }
 
         boolean bl = ClientSettings.B(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
         boolean bl7 = ClientSettings.B(Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
-        if (!this.K) {
+        if (!this.switching) {
             boolean bl4;
             boolean bl3;
-            if (this.c) {
-                bl4 = bl && !this.D;
-                bl3 = bl7 && !this.s;
+            if (this.keyIdle) {
+                bl4 = bl && !this.prevLeftDown;
+                bl3 = bl7 && !this.prevRightDown;
             } else {
-                bl4 = !bl && this.D;
-                bl3 = !bl7 && this.s;
+                bl4 = !bl && this.prevLeftDown;
+                bl3 = !bl7 && this.prevRightDown;
             }
-            this.D = bl;
-            this.s = bl7;
+            this.prevLeftDown = bl;
+            this.prevRightDown = bl7;
 
-            if (this.c && this.r.hasTimeElapsed(0L)) {
-                this.c = !bl4 && !bl3;
+            if (this.keyIdle && this.switchTimer.hasTimeElapsed(0L)) {
+                this.keyIdle = !bl4 && !bl3;
                 if (bl4) {
-                    this.Gj = this.Z(this.U, 1);
+                    this.pendingDirection = this.rotateDirection(this.direction, 1);
                 } else if (bl3) {
-                    this.Gj = this.Z(this.U, -1);
+                    this.pendingDirection = this.rotateDirection(this.direction, -1);
                 }
-            } else if (!this.c) {
-                this.c = bl4 || bl3;
+            } else if (!this.keyIdle) {
+                this.keyIdle = bl4 || bl3;
                 if (bl4) {
-                    this.Gj = this.Z(this.U, -1);
+                    this.pendingDirection = this.rotateDirection(this.direction, -1);
                 } else if (bl3) {
-                    this.Gj = this.Z(this.U, 1);
+                    this.pendingDirection = this.rotateDirection(this.direction, 1);
                 }
             } else {
                 if (bl) {
-                    MovementInputHelper.w(this.P, false);
+                    MovementInputHelper.w(this.leftKey, false);
                 } else if (bl7) {
-                    MovementInputHelper.w(this.Gh, false);
+                    MovementInputHelper.w(this.rightKey, false);
                 }
                 return false;
             }
-            this.K = bl4 || bl3;
+            this.switching = bl4 || bl3;
         }
 
-        if (this.K) {
+        if (this.switching) {
             this.Gz = null;
             double[] dArray = new double[]{MathUtil.floor(entityPlayerSP.z()), Scaffold.Access.J(this.b, entityPlayerSP), MathUtil.floor(entityPlayerSP.h())};
-            if (!(Scaffold.Access.U(this.b, dArray) || this.c(entityPlayerSP) || this.P(entityPlayerSP, this.U))) {
-                this.A = this.Z(entityPlayerSP, this.Gj);
-                this.GE = this.W(new double[]{dArray[0], dArray[2]}, this.Gj, this.A);
+            if (!(Scaffold.Access.U(this.b, dArray) || this.isFrontClear(entityPlayerSP) || this.isPastCorner(entityPlayerSP, this.direction))) {
+                this.pendingReversed = this.Z(entityPlayerSP, this.pendingDirection);
+                this.pendingPos = this.computePlacementPoint(new double[]{dArray[0], dArray[2]}, this.pendingDirection, this.pendingReversed);
                 Scaffold.Access.J$src$V$dauhr4(this.b);
-                if (this.U > 4 && !this.I && this.Gj == this.Z(this.U, -1) || this.U > 4 && this.I && this.Gj == this.Z(this.U, 1)) {
+                if (this.direction > 4 && !this.reversed && this.pendingDirection == this.rotateDirection(this.direction, -1) || this.direction > 4 && this.reversed && this.pendingDirection == this.rotateDirection(this.direction, 1)) {
                     this.Gz = new TargetPositionMovementTask(0.0, 0.0);
                     this.Gz.s(true);
-                } else if (Math.abs(entityPlayerSP.z() - this.GE[0]) > 0.15 || Math.abs(entityPlayerSP.h() - this.GE[1]) > 0.15) {
-                    this.o(this.GE, true, false, 40);
+                } else if (Math.abs(entityPlayerSP.z() - this.pendingPos[0]) > 0.15 || Math.abs(entityPlayerSP.h() - this.pendingPos[1]) > 0.15) {
+                    this.startMoveTaskNoTurn(this.pendingPos, true, false, 40);
                 } else {
                     this.Gz = new TargetPositionMovementTask(0.0, 0.0);
                     this.Gz.s(true);
                 }
-            } else if (!this.I) {
-                if (bl && this.N(entityPlayerSP, this.U)) {
-                    MovementInputHelper.w(this.P, false);
+            } else if (!this.reversed) {
+                if (bl && this.isAtEdge(entityPlayerSP, this.direction)) {
+                    MovementInputHelper.w(this.leftKey, false);
                 } else if (bl7) {
-                    MovementInputHelper.w(this.Gh, false);
+                    MovementInputHelper.w(this.rightKey, false);
                 }
-            } else if (bl7 && this.N(entityPlayerSP, this.U)) {
-                MovementInputHelper.w(this.Gh, false);
+            } else if (bl7 && this.isAtEdge(entityPlayerSP, this.direction)) {
+                MovementInputHelper.w(this.rightKey, false);
             } else if (bl) {
-                MovementInputHelper.w(this.P, false);
+                MovementInputHelper.w(this.leftKey, false);
             }
         }
         return false;
     }
 
-    private void G(double[] dArray, boolean bl, boolean bl2, boolean bl3, int n) {
+    private void startMoveTask(double[] dArray, boolean bl, boolean bl2, boolean bl3, int n) {
         this.Gz = new TargetPositionMovementTask(dArray[0], dArray[1]);
-        this.Z = bl;
+        this.taskSneak = bl;
         this.Gz.g(bl2);
         this.Gz.l(bl3);
         PlayerMovementTaskManager.G.i(this.Gz);
-        this.GG = 0;
-        this.G5 = n;
+        this.taskTicks = 0;
+        this.taskTickLimit = n;
     }
 
-    private boolean T(EntityPlayerSP entityPlayerSP) {
-        if (this.L.hasTimeElapsed(800L)) {
-            double[] dArray = this.e(entityPlayerSP, this.U);
-            this.o = this.W(new double[]{dArray[0], dArray[2]}, this.U, this.I);
-            this.GF = this.G(entityPlayerSP, this.I);
-            Scaffold.Access.S(this.b, this.GF, this.V(this.GF, 15));
-            this.o(this.o, true, false, 40);
-            this.C = true;
-            this.L.reset();
+    private boolean recoverIfStuck(EntityPlayerSP entityPlayerSP) {
+        if (this.moveTimer.hasTimeElapsed(800L)) {
+            double[] dArray = this.computeAnchorTarget(entityPlayerSP, this.direction);
+            this.targetPos = this.computePlacementPoint(new double[]{dArray[0], dArray[2]}, this.direction, this.reversed);
+            this.GF = this.computeDiagonalRotation(entityPlayerSP, this.reversed);
+            Scaffold.Access.S(this.b, this.GF, this.computeRotationSpeed(this.GF, 15));
+            this.startMoveTaskNoTurn(this.targetPos, true, false, 40);
+            this.atEdge = true;
+            this.moveTimer.reset();
             return true;
         }
         return false;
     }
 
-    private float[] G(EntityPlayerSP entityPlayerSP, boolean bl) {
+    private float[] computeDiagonalRotation(EntityPlayerSP entityPlayerSP, boolean bl) {
         double d = entityPlayerSP.J();
         double d2 = entityPlayerSP.f();
         double d3 = entityPlayerSP.R();
         double d4 = d;
         double d5 = d;
-        if (this.U == 6) {
-            d4 = 135.0 + 20.0 * (this.o[1] - d3);
-            d5 = 45.0 + 20.0 * (this.o[1] - d3);
-        } else if (this.U == 8) {
-            d4 = -45.0 - 20.0 * (this.o[1] - d3);
-            d5 = -135.0 - 20.0 * (this.o[1] - d3);
-        } else if (this.U == 7) {
-            d4 = -135.0 - 20.0 * (this.o[0] - d2);
-            d5 = 135.0 + 20.0 * (d2 - this.o[0]);
-        } else if (this.U == 5) {
-            d4 = 45.0 + 20.0 * (this.o[0] - d2);
-            d5 = -45.0 - 20.0 * (d2 - this.o[0]);
+        if (this.direction == 6) {
+            d4 = 135.0 + 20.0 * (this.targetPos[1] - d3);
+            d5 = 45.0 + 20.0 * (this.targetPos[1] - d3);
+        } else if (this.direction == 8) {
+            d4 = -45.0 - 20.0 * (this.targetPos[1] - d3);
+            d5 = -135.0 - 20.0 * (this.targetPos[1] - d3);
+        } else if (this.direction == 7) {
+            d4 = -135.0 - 20.0 * (this.targetPos[0] - d2);
+            d5 = 135.0 + 20.0 * (d2 - this.targetPos[0]);
+        } else if (this.direction == 5) {
+            d4 = 45.0 + 20.0 * (this.targetPos[0] - d2);
+            d5 = -45.0 - 20.0 * (d2 - this.targetPos[0]);
         }
         d = bl ? d4 : d5;
-        return new float[]{(float)d, this.L.hasTimeElapsed(300L) ? 80 : 78};
+        return new float[]{(float)d, this.moveTimer.hasTimeElapsed(300L) ? 80 : 78};
     }
 
     @EventHandler
@@ -619,44 +619,44 @@ extends SubModule<Scaffold> {
         if (!this.S && this.Y(entityPlayerSP)) {
             Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().onTick(1);
         }
-        if (!(this.S || this.F || this.Z)) {
-            this.R(entityPlayerSP);
+        if (!(this.S || this.rotationPending || this.taskSneak)) {
+            this.updateSneakInput(entityPlayerSP);
         }
         if (this.S) {
             if (this.Gz != null || this.GF != null) {
                 Scaffold.Access.J$src$V$dauhr4(this.b);
                 this.O.onEnable();
             }
-            this.c();
-            this.S = this.j(entityPlayerSP);
+            this.resetState();
+            this.S = this.updatePlacement(entityPlayerSP);
             SharedModuleControlClaims.l.T(this);
             SharedModuleControlClaims.x.Q();
             return;
         }
         SharedModuleControlClaims.l.K(this);
         SharedModuleControlClaims.x.i();
-        if (this.v(entityPlayerSP)) {
+        if (this.shouldReleaseControl(entityPlayerSP)) {
             Scaffold.Access.W(this.b);
             this.O.onEnable();
             SharedModuleControlClaims.l.T(this);
             SharedModuleControlClaims.x.Q();
             return;
         }
-        if (this.w$src$Z$1i7uau5()) {
+        if (this.handleRotationAndTask()) {
             return;
         }
-        if (this.Q(entityPlayerSP)) {
+        if (this.handleDirectionSwitch(entityPlayerSP)) {
             return;
         }
-        if (this.T(entityPlayerSP)) {
+        if (this.recoverIfStuck(entityPlayerSP)) {
             return;
         }
-        this.J(entityPlayerSP);
+        this.updateRotation(entityPlayerSP);
         float f = Math.abs(entityPlayerSP.J());
-        this.R(entityPlayerSP);
+        this.updateSneakInput(entityPlayerSP);
     }
 
-    private int Z(int n, int n2) {
+    private int rotateDirection(int n, int n2) {
         int n3 = this.Gn.indexOf(n) + n2 < 0 ? (this.Gn.indexOf(n) + n2) % this.Gn.size() + this.Gn.size() : (this.Gn.indexOf(n) + n2) % this.Gn.size();
         return this.Gn.get(n3);
     }
@@ -664,66 +664,66 @@ extends SubModule<Scaffold> {
     public BlatantScaffoldMode(Mod mod, String string) {
         super(mod, string);
         this.O = new ScaffoldEdgeSneakHelper((Mod)this.getParent(), "legit");
-        this.L = new TimerUtil();
-        this.r = new TimerUtil();
+        this.moveTimer = new TimerUtil();
+        this.switchTimer = new TimerUtil();
         this.Gn = new ArrayList<Integer>(Arrays.asList(5, 4, 6, 1, 7, 2, 8, 3));
-        this.t = new ArrayList();
-        this.Gt = Minecraft.gameSettings().s();
-        this.Gh = Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3();
-        this.P = Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg();
-        this.addValue(this.GB);
+        this.slotHistory = new ArrayList();
+        this.sneakKey = Minecraft.gameSettings().s();
+        this.rightKey = Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3();
+        this.leftKey = Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg();
+        this.addValue(this.activationBlocks);
     }
 
-    private void c() {
+    private void resetState() {
         this.S = true;
-        this.o = null;
+        this.targetPos = null;
         this.Gz = null;
-        this.GG = 0;
+        this.taskTicks = 0;
         this.GF = null;
-        this.D = false;
-        this.s = false;
-        this.p = false;
-        this.K = false;
-        this.C = true;
-        this.U = 0;
-        this.Gj = 0;
-        this.t = new ArrayList();
-        this.G5 = (int)ib;
-        this.H = null;
-        this.A = false;
-        this.c = true;
+        this.prevLeftDown = false;
+        this.prevRightDown = false;
+        this.pendingReset = false;
+        this.switching = false;
+        this.atEdge = true;
+        this.direction = 0;
+        this.pendingDirection = 0;
+        this.slotHistory = new ArrayList();
+        this.taskTickLimit = (int)DEFAULT_TICK_BUDGET;
+        this.heldBlock = null;
+        this.pendingReversed = false;
+        this.keyIdle = true;
         SharedModuleControlClaims.l.T(this);
         SharedModuleControlClaims.x.Q();
     }
 
-    private void o(double[] dArray, boolean bl, boolean bl2, int n) {
+    private void startMoveTaskNoTurn(double[] dArray, boolean bl, boolean bl2, int n) {
         this.Gz = new TargetPositionMovementTask(dArray[0], dArray[1]);
-        this.Z = bl;
+        this.taskSneak = bl;
         this.Gz.g(bl2);
         PlayerMovementTaskManager.G.i(this.Gz);
-        this.GG = 0;
-        this.G5 = n;
+        this.taskTicks = 0;
+        this.taskTickLimit = n;
     }
 
-    private void J(EntityPlayerSP entityPlayerSP) {
-        if (this.U == 0) {
+    private void updateRotation(EntityPlayerSP entityPlayerSP) {
+        if (this.direction == 0) {
             this.GF = new float[]{entityPlayerSP.J(), 90.0f};
-        } else if (this.U < 5) {
+        } else if (this.direction < 5) {
             float[] fArray = this.GF;
-            this.GF = this.p(entityPlayerSP, this.W(this.o, this.U, this.I), this.U);
+            this.GF = this.p(entityPlayerSP, this.computePlacementPoint(this.targetPos, this.direction, this.reversed), this.direction);
             if (this.b.A == null || fArray == null || fArray[0] != this.GF[0] || fArray[1] != this.GF[1]) {
-                Scaffold.Access.S(this.b, this.GF, this.V(this.GF, 15));
+                Scaffold.Access.S(this.b, this.GF, this.computeRotationSpeed(this.GF, 15));
             }
         } else {
             float[] fArray = this.GF;
-            this.GF = this.G(entityPlayerSP, this.I);
+            this.GF = this.computeDiagonalRotation(entityPlayerSP, this.reversed);
             if (this.b.A == null || fArray == null || fArray[0] != this.GF[0] || fArray[1] != this.GF[1]) {
-                Scaffold.Access.S(this.b, this.GF, this.V(this.GF, 15));
+                Scaffold.Access.S(this.b, this.GF, this.computeRotationSpeed(this.GF, 15));
             }
         }
     }
 
-    private double[] W(double[] dArray, int n, boolean bl) {
+    private double[] computePlacementPoint(double[] dArray, int n, boolean bl) {
         double d = dArray[0];
         double d2 = dArray[1];
         if (n == 1) {
@@ -797,7 +797,7 @@ extends SubModule<Scaffold> {
     public float[] p(EntityPlayerSP entityPlayerSP, double[] dArray, int n) {
         float f = 0.1f * this.U(dArray, new double[]{entityPlayerSP.z(), entityPlayerSP.h()}, n);
         float f2 = n == 1 ? 135.0f - f : (n == 2 ? -135.0f - f : (n == 3 ? -45.0f - f : 45.0f - f));
-        return new float[]{f2, this.L.getLastMS() > 500L ? 83.0f : 81.0f};
+        return new float[]{f2, this.moveTimer.getLastMS() > 500L ? 83.0f : 81.0f};
     }
 
     public boolean Y(EntityPlayerSP entityPlayerSP) {
@@ -807,7 +807,7 @@ extends SubModule<Scaffold> {
         }
         int n = rayTraceResult.Z();
         double d = entityPlayerSP.q();
-        if (d > 0.1 || d < -0.1 || this.K) {
+        if (d > 0.1 || d < -0.1 || this.switching) {
             return n != 0;
         }
         return n > 1;
@@ -822,6 +822,6 @@ extends SubModule<Scaffold> {
     @Override
     public void onDisable() {
         Scaffold.Access.J$src$V$dauhr4(this.b);
-        this.c();
+        this.resetState();
     }
 }

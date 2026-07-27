@@ -6,16 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryFilterConditionGroupBuilder {
-    private final List<InventoryFilterCondition<?>> P = new ArrayList();
+    private final List<InventoryFilterCondition<?>> conditions = new ArrayList();
 
     public InventoryFilterConditionGroupBuilder O(InventoryFilterCondition<?> inventoryFilterCondition) {
-        this.P.add(inventoryFilterCondition);
+        this.conditions.add(inventoryFilterCondition);
         return this;
     }
 
     public InventoryFilterConditionGroup w() {
         InventoryFilterConditionGroup inventoryFilterConditionGroup = new InventoryFilterConditionGroup();
-        InventoryFilterConditionGroup.i(inventoryFilterConditionGroup).addAll(this.P);
+        InventoryFilterConditionGroup.i(inventoryFilterConditionGroup).addAll(this.conditions);
         return inventoryFilterConditionGroup;
     }
 }

@@ -9,8 +9,8 @@ implements EventListener {
     protected static final Vape i = Vape.INSTANCE;
     protected final T n;
 
-    public FreecamController(T t) {
-        this.n = t;
+    public FreecamController(T mod) {
+        this.n = mod;
     }
 
     public T l() {

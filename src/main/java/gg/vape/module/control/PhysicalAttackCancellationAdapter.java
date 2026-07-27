@@ -6,15 +6,15 @@ import gg.vape.module.control.AttackCancellationMarker;
 
 public class PhysicalAttackCancellationAdapter
 implements AttackCancellationAdapter {
-    private final EventKeyInputBase y;
+    private final EventKeyInputBase keyInputEvent;
 
     @Override
     public void u(boolean bl) {
-        this.y.setCancelled(bl);
+        this.keyInputEvent.setCancelled(bl);
     }
 
     private PhysicalAttackCancellationAdapter(EventKeyInputBase eventKeyInputBase) {
-        this.y = eventKeyInputBase;
+        this.keyInputEvent = eventKeyInputBase;
     }
 
     public PhysicalAttackCancellationAdapter(EventKeyInputBase eventKeyInputBase, AttackCancellationMarker om_12) {

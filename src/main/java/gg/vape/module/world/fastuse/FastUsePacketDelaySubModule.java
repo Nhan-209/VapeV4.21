@@ -36,73 +36,73 @@ import java.util.Map;
 public class FastUsePacketDelaySubModule
 extends SubModule<FastUseModule> {
     public final NumberValue U = NumberValue.create((Object)this, "Transmission offset", "#", "", 0.0, 5.0, 50.0, 1.0);
-    private final Map<DelayedPacketSendEntry, Long> o = new LinkedHashMap<DelayedPacketSendEntry, Long>();
-    private SharedModuleControlClaimPrimary c;
-    private final PacketDispatchGuard C = PacketDispatchGuard.b;
-    private long t;
-    private Entity L;
-    private PlayerLocationSnapshot v;
-    private long F;
-    private long b;
-    private final ReadWriteLockHelper O = new ReadWriteLockHelper();
+    private final Map<DelayedPacketSendEntry, Long> delayedPackets = new LinkedHashMap<DelayedPacketSendEntry, Long>();
+    private SharedModuleControlClaimPrimary controlClaim;
+    private final PacketDispatchGuard dispatchGuard = PacketDispatchGuard.b;
+    private long lastAttackTime;
+    private Entity targetEntity;
+    private PlayerLocationSnapshot lastGroundSnapshot;
+    private long lastBlockPlaceTime;
+    private long blockPlaceCooldownUntil;
+    private final ReadWriteLockHelper lock = new ReadWriteLockHelper();
 
-    private void lambda$flushPackets$0(DelayedPacketSendEntry delayedPacketSendEntry) {
-        this.C.o(DelayedPacketSendEntry.g(delayedPacketSendEntry));
+    private void flushPacket(DelayedPacketSendEntry delayedPacketSendEntry) {
+        this.dispatchGuard.o(DelayedPacketSendEntry.g(delayedPacketSendEntry));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
+    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException exception) {
+        return exception;
     }
 
-    private void w$src$V$11mudj() {
-        ReadWriteLockHelper readWriteLockHelper = this.O;
-        readWriteLockHelper.lockWrite();
-        ReadWriteLockHelper readWriteLockHelper2 = this.O;
-        readWriteLockHelper2.lockRead();
-        Iterator<Map.Entry<DelayedPacketSendEntry, Long>> iterator = this.o.entrySet().iterator();
+    private void flushAll() {
+        ReadWriteLockHelper writeLock = this.lock;
+        writeLock.lockWrite();
+        ReadWriteLockHelper readLock = this.lock;
+        readLock.lockRead();
+        Iterator<Map.Entry<DelayedPacketSendEntry, Long>> iterator = this.delayedPackets.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<DelayedPacketSendEntry, Long> entry = iterator.next();
-            this.C.o(DelayedPacketSendEntry.g(entry.getKey()));
+            this.dispatchGuard.o(DelayedPacketSendEntry.g(entry.getKey()));
             iterator.remove();
         }
-        ReadWriteLockHelper readWriteLockHelper3 = this.O;
-        readWriteLockHelper3.unlockWrite();
-        ReadWriteLockHelper readWriteLockHelper4 = this.O;
-        readWriteLockHelper4.unlockRead();
+        ReadWriteLockHelper writeUnlock = this.lock;
+        writeUnlock.unlockWrite();
+        ReadWriteLockHelper readUnlock = this.lock;
+        readUnlock.unlockRead();
     }
 
-    private void v(EventPacketSend eventPacketSend) {
+    private void delaySend(EventPacketSend eventPacketSend) {
         int n = DelayedPacketSendEntry.G();
-        ReadWriteLockHelper readWriteLockHelper = this.O;
-        readWriteLockHelper.lockWrite();
+        ReadWriteLockHelper writeLock = this.lock;
+        writeLock.lockWrite();
         int n2 = n;
-        ReadWriteLockHelper readWriteLockHelper2 = this.O;
-        readWriteLockHelper2.lockRead();
-        long l = ((Double)this.U.K()).longValue();
-        if (l > 0L) {
-            long l2 = 0L;
-            for (Map.Entry<DelayedPacketSendEntry, Long> entry : this.o.entrySet()) {
+        ReadWriteLockHelper readLock = this.lock;
+        readLock.lockRead();
+        long offset = ((Double)this.U.K()).longValue();
+        if (offset > 0L) {
+            long accumulated = 0L;
+            for (Map.Entry<DelayedPacketSendEntry, Long> entry : this.delayedPackets.entrySet()) {
                 DelayedPacketSendEntry delayedPacketSendEntry = entry.getKey();
-                l2 += l;
+                accumulated += offset;
                 if (delayedPacketSendEntry.E()) continue;
-                entry.setValue(System.currentTimeMillis() + l2);
+                entry.setValue(System.currentTimeMillis() + accumulated);
                 delayedPacketSendEntry.d(true);
             }
             if (eventPacketSend != null) {
-                this.o.put(new DelayedPacketSendEntry(this, eventPacketSend), System.currentTimeMillis() + l2 + l);
+                this.delayedPackets.put(new DelayedPacketSendEntry(this, eventPacketSend), System.currentTimeMillis() + accumulated + offset);
                 eventPacketSend.setCancelled(true);
             }
         } else {
-            this.o.keySet().forEach(this::lambda$flushPackets$0);
-            this.o.clear();
+            this.delayedPackets.keySet().forEach(this::flushPacket);
+            this.delayedPackets.clear();
         }
-        ReadWriteLockHelper readWriteLockHelper3 = this.O;
-        readWriteLockHelper3.unlockRead();
-        ReadWriteLockHelper readWriteLockHelper4 = this.O;
-        readWriteLockHelper4.unlockWrite();
+        ReadWriteLockHelper readUnlock = this.lock;
+        readUnlock.unlockRead();
+        ReadWriteLockHelper writeUnlock = this.lock;
+        writeUnlock.unlockWrite();
     }
 
-    private void g(EventPacketSend eventPacketSend) {
+    private void processPacket(EventPacketSend eventPacketSend) {
         Object object;
         Object object2;
         Wrapper wrapper;
@@ -118,16 +118,16 @@ extends SubModule<FastUseModule> {
                     FastUsePacketDelaySubModule fastUsePacketDelaySubModule;
                     EntityLivingBase entityLivingBase = new EntityLivingBase(object2);
                     if (entityLivingBase.c$src$I$15a9iwo() <= ((AttackPacketTimingTracker)object).Z()) {
-                        if (System.currentTimeMillis() - this.t > 250L) {
+                        if (System.currentTimeMillis() - this.lastAttackTime > 250L) {
                             FastUsePacketDelaySubModule fastUsePacketDelaySubModule2 = this;
                             EventPacketSend eventPacketSend3 = eventPacketSend;
-                            if (fastUsePacketDelaySubModule2.l(eventPacketSend3)) {
+                            if (fastUsePacketDelaySubModule2.releasePending(eventPacketSend3)) {
                                 return;
                             }
                         } else {
-                            this.t = System.currentTimeMillis();
+                            this.lastAttackTime = System.currentTimeMillis();
                         }
-                    } else if (entityLivingBase.c$src$I$15a9iwo() <= ((AttackPacketTimingTracker)object).Z() + 1 && (fastUsePacketDelaySubModule = this).l(eventPacketSend2 = eventPacketSend)) {
+                    } else if (entityLivingBase.c$src$I$15a9iwo() <= ((AttackPacketTimingTracker)object).Z() + 1 && (fastUsePacketDelaySubModule = this).releasePending(eventPacketSend2 = eventPacketSend)) {
                         return;
                     }
                 }
@@ -136,7 +136,7 @@ extends SubModule<FastUseModule> {
             if (packet.isInstance(MappedClasses.F9) || packet.isInstance(MappedClasses.u7) || packet.isInstance(MappedClasses.DN) || packet.isInstance(MappedClasses.q6)) {
                 EventPacketSend eventPacketSend4 = eventPacketSend;
                 FastUsePacketDelaySubModule fastUsePacketDelaySubModule = this;
-                fastUsePacketDelaySubModule.v(eventPacketSend4);
+                fastUsePacketDelaySubModule.delaySend(eventPacketSend4);
                 return;
             }
             if (packet.isInstance(MappedClasses.YB)) {
@@ -146,35 +146,35 @@ extends SubModule<FastUseModule> {
                     if (!ItemStackScoreUtil.h(((ItemStack)object2).getItem())) {
                         EventPacketSend eventPacketSend5 = eventPacketSend;
                         FastUsePacketDelaySubModule fastUsePacketDelaySubModule = this;
-                        fastUsePacketDelaySubModule.v(eventPacketSend5);
-                        this.b = System.currentTimeMillis() + 500L;
+                        fastUsePacketDelaySubModule.delaySend(eventPacketSend5);
+                        this.blockPlaceCooldownUntil = System.currentTimeMillis() + 500L;
                         return;
                     }
-                    if (System.currentTimeMillis() - this.F >= 500L) {
+                    if (System.currentTimeMillis() - this.lastBlockPlaceTime >= 500L) {
                         EventPacketSend eventPacketSend6 = eventPacketSend;
                         FastUsePacketDelaySubModule fastUsePacketDelaySubModule = this;
-                        fastUsePacketDelaySubModule.v(eventPacketSend6);
-                        this.F = System.currentTimeMillis();
+                        fastUsePacketDelaySubModule.delaySend(eventPacketSend6);
+                        this.lastBlockPlaceTime = System.currentTimeMillis();
                         return;
                     }
                 }
-            } else if (this.b > System.currentTimeMillis() || Minecraft.thePlayer().l$src$Z$1io4duf() && !Minecraft.thePlayer().o$src$Z$1iprrmi() || !Minecraft.thePlayer().b$src$Z$fqlxe4() && Minecraft.thePlayer().M$src$F$ff28gb() > 3.0f) {
+            } else if (this.blockPlaceCooldownUntil > System.currentTimeMillis() || Minecraft.thePlayer().l$src$Z$1io4duf() && !Minecraft.thePlayer().o$src$Z$1iprrmi() || !Minecraft.thePlayer().b$src$Z$fqlxe4() && Minecraft.thePlayer().M$src$F$ff28gb() > 3.0f) {
                 EventPacketSend eventPacketSend7 = eventPacketSend;
                 FastUsePacketDelaySubModule fastUsePacketDelaySubModule = this;
-                fastUsePacketDelaySubModule.v(eventPacketSend7);
+                fastUsePacketDelaySubModule.delaySend(eventPacketSend7);
                 return;
             }
         }
-        if (this.L != null && this.L.isNotNull() && this.L.isInstance(MappedClasses.zm)) {
+        if (this.targetEntity != null && this.targetEntity.isNotNull() && this.targetEntity.isInstance(MappedClasses.zm)) {
             if (packet.isInstance(MappedClasses.qD)) {
                 wrapper = new C03PacketPlayer(packet);
-                if (this.v != null && ((C03PacketPlayer)wrapper).isOnGround()) {
-                    object2 = new PlayerLocationSnapshot(this.L.z(), this.L.N(), this.L.h());
+                if (this.lastGroundSnapshot != null && ((C03PacketPlayer)wrapper).isOnGround()) {
+                    object2 = new PlayerLocationSnapshot(this.targetEntity.z(), this.targetEntity.N(), this.targetEntity.h());
                     object = new PlayerLocationSnapshot(((C03PacketPlayer)wrapper).getX(), ((C03PacketPlayer)wrapper).getY(), ((C03PacketPlayer)wrapper).getZ());
-                    if (PlayerLocationSnapshot.rayIntersectionDistance(this.v, (PlayerLocationSnapshot)object2) < PlayerLocationSnapshot.rayIntersectionDistance((PlayerLocationSnapshot)object, (PlayerLocationSnapshot)object2) - 0.03) {
+                    if (PlayerLocationSnapshot.rayIntersectionDistance(this.lastGroundSnapshot, (PlayerLocationSnapshot)object2) < PlayerLocationSnapshot.rayIntersectionDistance((PlayerLocationSnapshot)object, (PlayerLocationSnapshot)object2) - 0.03) {
                         EventPacketSend eventPacketSend8 = eventPacketSend;
                         FastUsePacketDelaySubModule fastUsePacketDelaySubModule = this;
-                        fastUsePacketDelaySubModule.v(eventPacketSend8);
+                        fastUsePacketDelaySubModule.delaySend(eventPacketSend8);
                         return;
                     }
                 }
@@ -182,36 +182,36 @@ extends SubModule<FastUseModule> {
         } else {
             EventPacketSend eventPacketSend9 = eventPacketSend;
             FastUsePacketDelaySubModule fastUsePacketDelaySubModule = this;
-            fastUsePacketDelaySubModule.v(eventPacketSend9);
+            fastUsePacketDelaySubModule.delaySend(eventPacketSend9);
             return;
         }
-        long l = ((Double)((FastUseModule)this.getParent()).j.K()).longValue();
-        long l2 = System.currentTimeMillis() + l;
-        long l3 = System.currentTimeMillis();
-        ReadWriteLockHelper readWriteLockHelper = this.O;
-        readWriteLockHelper.lockRead();
-        for (Map.Entry<DelayedPacketSendEntry, Long> entry : this.o.entrySet()) {
+        long baseDelay = ((Double)((FastUseModule)this.getParent()).j.K()).longValue();
+        long sendTime = System.currentTimeMillis() + baseDelay;
+        long lastGroundTime = System.currentTimeMillis();
+        ReadWriteLockHelper readLock = this.lock;
+        readLock.lockRead();
+        for (Map.Entry<DelayedPacketSendEntry, Long> entry : this.delayedPackets.entrySet()) {
             C03PacketPlayer c03PacketPlayer;
             DelayedPacketSendEntry delayedPacketSendEntry = entry.getKey();
             Packet packet2 = delayedPacketSendEntry.V().getPacket();
             if (!packet2.isInstance(MappedClasses.qD) || !(c03PacketPlayer = new C03PacketPlayer(packet2)).isOnGround()) continue;
-            l3 = entry.getValue();
+            lastGroundTime = entry.getValue();
         }
-        l2 = Math.min(l3 + 90L, l2);
-        ReadWriteLockHelper readWriteLockHelper2 = this.O;
-        readWriteLockHelper2.unlockRead();
-        ReadWriteLockHelper readWriteLockHelper3 = this.O;
-        readWriteLockHelper3.lockWrite();
-        this.o.put(new DelayedPacketSendEntry(this, eventPacketSend), l2);
-        ReadWriteLockHelper readWriteLockHelper4 = this.O;
-        readWriteLockHelper4.unlockWrite();
+        sendTime = Math.min(lastGroundTime + 90L, sendTime);
+        ReadWriteLockHelper readUnlock = this.lock;
+        readUnlock.unlockRead();
+        ReadWriteLockHelper writeLock = this.lock;
+        writeLock.lockWrite();
+        this.delayedPackets.put(new DelayedPacketSendEntry(this, eventPacketSend), sendTime);
+        ReadWriteLockHelper writeUnlock = this.lock;
+        writeUnlock.unlockWrite();
         eventPacketSend.setCancelled(true);
     }
 
     @EventHandler(A=EventPriority.NORMAL)
     public void X(EventPacketSend eventPacketSend) {
-        if (this.c.v$src$Z$1r7ksy2()) {
-            this.w$src$V$11mudj();
+        if (this.controlClaim.v$src$Z$1r7ksy2()) {
+            this.flushAll();
             return;
         }
         Packet packet = eventPacketSend.getPacket();
@@ -221,33 +221,33 @@ extends SubModule<FastUseModule> {
         if (eventPacketSend.wasModified()) {
             return;
         }
-        if (Minecraft.thePlayer().isNull() || this.C.R(packet) || packet.isInstance(MappedClasses.VP)) {
+        if (Minecraft.thePlayer().isNull() || this.dispatchGuard.R(packet) || packet.isInstance(MappedClasses.VP)) {
             return;
         }
         EventPacketSend eventPacketSend2 = eventPacketSend;
         FastUsePacketDelaySubModule fastUsePacketDelaySubModule = this;
-        fastUsePacketDelaySubModule.g(eventPacketSend2);
+        fastUsePacketDelaySubModule.processPacket(eventPacketSend2);
     }
 
     @EventHandler
     public void i(EventPreRenderTick eventPreRenderTick) {
-        this.L = null;
+        this.targetEntity = null;
         RayTraceResult rayTraceResult = RayTraceUtil.F(10.0, 0.0f, true);
         if (rayTraceResult != null && rayTraceResult.isNotNull()) {
-            this.L = rayTraceResult.getEntity();
+            this.targetEntity = rayTraceResult.getEntity();
         }
-        ReadWriteLockHelper readWriteLockHelper = this.O;
-        readWriteLockHelper.lockWrite();
-        ReadWriteLockHelper readWriteLockHelper2 = this.O;
-        readWriteLockHelper2.lockRead();
-        if (!this.o.isEmpty()) {
+        ReadWriteLockHelper writeLock = this.lock;
+        writeLock.lockWrite();
+        ReadWriteLockHelper readLock = this.lock;
+        readLock.lockRead();
+        if (!this.delayedPackets.isEmpty()) {
             FastUsePacketDelaySubModule fastUsePacketDelaySubModule = this;
-            fastUsePacketDelaySubModule.Q$src$V$gqntt();
+            fastUsePacketDelaySubModule.flushExpired();
         }
-        ReadWriteLockHelper readWriteLockHelper3 = this.O;
-        readWriteLockHelper3.unlockWrite();
-        ReadWriteLockHelper readWriteLockHelper4 = this.O;
-        readWriteLockHelper4.unlockRead();
+        ReadWriteLockHelper writeUnlock = this.lock;
+        writeUnlock.unlockWrite();
+        ReadWriteLockHelper readUnlock = this.lock;
+        readUnlock.unlockRead();
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
@@ -255,51 +255,51 @@ extends SubModule<FastUseModule> {
         C03PacketPlayer c03PacketPlayer;
         Packet packet = eventPacketSend.getPacket();
         if (packet.isInstance(MappedClasses.qD) && (c03PacketPlayer = new C03PacketPlayer(packet)).isOnGround()) {
-            this.v = new PlayerLocationSnapshot(c03PacketPlayer.getX(), c03PacketPlayer.getY(), c03PacketPlayer.getZ());
+            this.lastGroundSnapshot = new PlayerLocationSnapshot(c03PacketPlayer.getX(), c03PacketPlayer.getY(), c03PacketPlayer.getZ());
         }
     }
 
-    private boolean l(EventPacketSend eventPacketSend) {
+    private boolean releasePending(EventPacketSend eventPacketSend) {
         int n = DelayedPacketSendEntry.G();
-        ReadWriteLockHelper readWriteLockHelper = this.O;
-        readWriteLockHelper.lockWrite();
+        ReadWriteLockHelper writeLock = this.lock;
+        writeLock.lockWrite();
         int n2 = n;
         if (n2 != 0) {
-            Iterator<Map.Entry<DelayedPacketSendEntry, Long>> iterator = this.o.entrySet().iterator();
+            Iterator<Map.Entry<DelayedPacketSendEntry, Long>> iterator = this.delayedPackets.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<DelayedPacketSendEntry, Long> entry = iterator.next();
                 DelayedPacketSendEntry delayedPacketSendEntry = entry.getKey();
-                this.C.o(delayedPacketSendEntry.V());
+                this.dispatchGuard.o(delayedPacketSendEntry.V());
                 iterator.remove();
                 Packet packet = delayedPacketSendEntry.V().getPacket();
             }
-            ReadWriteLockHelper readWriteLockHelper2 = this.O;
-            readWriteLockHelper2.unlockWrite();
+            ReadWriteLockHelper writeUnlock = this.lock;
+            writeUnlock.unlockWrite();
             return true;
         }
-        Iterator<Map.Entry<DelayedPacketSendEntry, Long>> iterator = this.o.entrySet().iterator();
+        Iterator<Map.Entry<DelayedPacketSendEntry, Long>> iterator = this.delayedPackets.entrySet().iterator();
         if (iterator.hasNext()) {
             Map.Entry<DelayedPacketSendEntry, Long> entry = iterator.next();
             DelayedPacketSendEntry delayedPacketSendEntry = entry.getKey();
-            this.C.o(delayedPacketSendEntry.V());
+            this.dispatchGuard.o(delayedPacketSendEntry.V());
             iterator.remove();
             Packet packet = delayedPacketSendEntry.V().getPacket();
         } else {
-            ReadWriteLockHelper readWriteLockHelper3 = this.O;
-            readWriteLockHelper3.unlockWrite();
+            ReadWriteLockHelper writeUnlock = this.lock;
+            writeUnlock.unlockWrite();
         }
         return true;
     }
 
     public FastUsePacketDelaySubModule(Mod mod, String string) {
         super(mod, string);
-        this.c = SharedModuleControlClaims.L;
+        this.controlClaim = SharedModuleControlClaims.L;
         this.addValue(this.U);
     }
 
     @Override
     public void g() {
-        this.w$src$V$11mudj();
+        this.flushAll();
     }
 
     @Override
@@ -308,8 +308,8 @@ extends SubModule<FastUseModule> {
         return string;
     }
 
-    private void Q$src$V$gqntt() {
-        Iterator<Map.Entry<DelayedPacketSendEntry, Long>> iterator = this.o.entrySet().iterator();
+    private void flushExpired() {
+        Iterator<Map.Entry<DelayedPacketSendEntry, Long>> iterator = this.delayedPackets.entrySet().iterator();
         int n = DelayedPacketSendEntry.I();
         if (n != 0) {
             if (iterator.hasNext()) {
@@ -322,7 +322,7 @@ extends SubModule<FastUseModule> {
         while (iterator.hasNext()) {
             Map.Entry<DelayedPacketSendEntry, Long> entry = iterator.next();
             if (System.currentTimeMillis() < entry.getValue()) break;
-            this.C.o(DelayedPacketSendEntry.g(entry.getKey()));
+            this.dispatchGuard.o(DelayedPacketSendEntry.g(entry.getKey()));
             iterator.remove();
         }
     }

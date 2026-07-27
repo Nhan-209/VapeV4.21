@@ -11,32 +11,32 @@ public class HudModuleGroup
 implements INamed {
     public static HudModuleGroup T;
     public static List<HudModuleGroup> j;
-    private final String i;
-    private final String W;
+    private final String name;
+    private final String key;
     public static HudModuleGroup J;
-    private static GuiComponent[] E;
+    private static GuiComponent[] components;
     public static HudModuleGroup f;
     public static HudModuleGroup r;
 
     public String toString() {
-        return this.i;
+        return this.name;
     }
 
     public HudModuleGroup(String string, String string2) {
-        this.i = string;
-        this.W = string2;
+        this.name = string;
+        this.key = string2;
     }
 
     public static GuiComponent[] l() {
-        return E;
+        return components;
     }
 
     public String R() {
-        return this.W;
+        return this.key;
     }
 
     public static void C(GuiComponent[] guiComponentArray) {
-        E = guiComponentArray;
+        components = guiComponentArray;
     }
 
     static {
@@ -66,7 +66,7 @@ implements INamed {
 
     @Override
     public String getName() {
-        return this.i;
+        return this.name;
     }
 }
 

@@ -26,46 +26,46 @@ import java.util.Queue;
 
 public class ThrowDebuff
 extends UtilityMod {
-    private TimerUtil s;
-    private final BooleanValue Y;
-    private final NumberValue F;
-    private boolean I = false;
-    private final BooleanValue[] V;
-    private final RandomValue A;
-    int P = 0;
-    private final Queue<ItemStackData> k = new ArrayDeque<ItemStackData>();
-    private TimerUtil Z;
-    private final ModeOption v;
-    private final ModeValue p;
-    private final ModeOption H = new ModeOption("All");
-    private final ModeOption D;
+    private TimerUtil scrollTimer;
+    private final BooleanValue scroll;
+    private final NumberValue scrollDelay;
+    private boolean throwing = false;
+    private final BooleanValue[] debuffValues;
+    private final RandomValue delay;
+    int savedSlot = 0;
+    private final Queue<ItemStackData> itemsToThrow = new ArrayDeque<ItemStackData>();
+    private TimerUtil delayTimer;
+    private final ModeOption oneOfEachOption;
+    private final ModeValue mode;
+    private final ModeOption allOption = new ModeOption("All");
+    private final ModeOption firstOption;
 
     @Override
     public void onDisable() {
-        this.I = false;
-        this.k.clear();
+        this.throwing = false;
+        this.itemsToThrow.clear();
     }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
         ItemStackData itemStackData;
         KeyBinding keyBinding = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
-        if (this.I) {
+        if (this.throwing) {
             KeyBindingHelper.v(keyBinding, false, false);
-            this.I = false;
+            this.throwing = false;
             return;
         }
-        if (this.k.isEmpty()) {
-            if (this.selectHotbarSlotIncrementally(this.P)) {
+        if (this.itemsToThrow.isEmpty()) {
+            if (this.selectHotbarSlotIncrementally(this.savedSlot)) {
                 this.Y(false);
             }
             return;
         }
-        if (this.Z.hasTimeElapsed((long)this.A.B()) && this.selectHotbarSlotIncrementally((itemStackData = this.k.peek()).Y())) {
+        if (this.delayTimer.hasTimeElapsed((long)this.delay.B()) && this.selectHotbarSlotIncrementally((itemStackData = this.itemsToThrow.peek()).Y())) {
             KeyBindingHelper.v(keyBinding, true, true);
-            this.I = true;
-            this.Z.reset();
-            this.k.poll();
+            this.throwing = true;
+            this.delayTimer.reset();
+            this.itemsToThrow.poll();
         }
     }
 
@@ -81,18 +81,18 @@ extends UtilityMod {
             ItemStack itemStack = new ItemStack(objectArray[n]);
             if (itemStack.isNull() || (item = itemStack.getItem()).isNull() || !MappedClasses.Di.isInstance(item.getObject())) continue;
             ItemSplashPotion itemSplashPotion = new ItemSplashPotion(item.getObject());
-            for (BooleanValue booleanValue : this.V) {
-                if (((ModeSelection)this.p.K()).equals(this.v) && arrayList2.contains(booleanValue)) continue;
+            for (BooleanValue booleanValue : this.debuffValues) {
+                if (((ModeSelection)this.mode.K()).equals(this.oneOfEachOption) && arrayList2.contains(booleanValue)) continue;
                 String string = itemSplashPotion.getItemStackDisplayName(itemStack).toLowerCase();
                 String string2 = booleanValue.getName().toLowerCase();
                 if (!booleanValue.L().booleanValue() || !string.contains(string2)) continue;
-                this.k.add(new ItemStackData(n, itemStack));
+                this.itemsToThrow.add(new ItemStackData(n, itemStack));
                 arrayList2.add(booleanValue);
-                if (!((ModeSelection)this.p.K()).equals(this.D)) continue block1;
+                if (!((ModeSelection)this.mode.K()).equals(this.firstOption)) continue block1;
                 break block1;
             }
         }
-        return !this.k.isEmpty();
+        return !this.itemsToThrow.isEmpty();
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -105,41 +105,41 @@ extends UtilityMod {
 
     public ThrowDebuff() {
         super("ThrowDebuff", Category.M, "");
-        this.v = new ModeOption("One of each");
-        this.D = new ModeOption("First");
-        this.p = ModeValue.create((Object)this, "Mode", "All - Throws all debuffs on hotbar\nOne of each - Throws one of each debuff\nFirst - Throws only first debuff on hotbar", (ModeSelection)this.v, this.H, this.v, this.D);
-        this.V = new BooleanValue[]{BooleanValue.create(this, "Harming", true), BooleanValue.create(this, "Weakness", true), BooleanValue.create(this, "Poison", true), BooleanValue.create(this, "Slowness", true)};
-        this.A = RandomValue.create(this, "Delay", "#.#", "", 0.0, 70.0, 120.0, 200.0);
-        this.Y = BooleanValue.create(this, "Scroll", false);
-        this.F = NumberValue.create(this, "Scroll delay", "#", "ms", 0.0, 100.0, 200.0);
-        this.Z = new TimerUtil();
-        this.s = new TimerUtil();
+        this.oneOfEachOption = new ModeOption("One of each");
+        this.firstOption = new ModeOption("First");
+        this.mode = ModeValue.create((Object)this, "Mode", "All - Throws all debuffs on hotbar\nOne of each - Throws one of each debuff\nFirst - Throws only first debuff on hotbar", (ModeSelection)this.oneOfEachOption, this.allOption, this.oneOfEachOption, this.firstOption);
+        this.debuffValues = new BooleanValue[]{BooleanValue.create(this, "Harming", true), BooleanValue.create(this, "Weakness", true), BooleanValue.create(this, "Poison", true), BooleanValue.create(this, "Slowness", true)};
+        this.delay = RandomValue.create(this, "Delay", "#.#", "", 0.0, 70.0, 120.0, 200.0);
+        this.scroll = BooleanValue.create(this, "Scroll", false);
+        this.scrollDelay = NumberValue.create(this, "Scroll delay", "#", "ms", 0.0, 100.0, 200.0);
+        this.delayTimer = new TimerUtil();
+        this.scrollTimer = new TimerUtil();
         this.R(false);
-        this.addValue(this.p);
-        for (BooleanValue booleanValue : this.V) {
+        this.addValue(this.mode);
+        for (BooleanValue booleanValue : this.debuffValues) {
             this.addValue(booleanValue);
         }
-        this.addValue(this.A);
-        this.Y.K(this.F);
-        this.addValue(this.Y);
-        this.addValue(this.F);
+        this.addValue(this.delay);
+        this.scroll.K(this.scrollDelay);
+        this.addValue(this.scroll);
+        this.addValue(this.scrollDelay);
     }
 
     @Override
     public void onEnable() {
         if (this.collectDebuffs()) {
-            this.P = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+            this.savedSlot = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
         } else {
             this.Y(false);
         }
     }
 
     private boolean selectHotbarSlotIncrementally(int n) {
-        if (!this.Y.L().booleanValue()) {
+        if (!this.scroll.L().booleanValue()) {
             Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n);
             return true;
         }
-        if (!this.s.hasTimeElapsed(((Double)this.F.K()).longValue())) {
+        if (!this.scrollTimer.hasTimeElapsed(((Double)this.scrollDelay.K()).longValue())) {
             return false;
         }
         int n2 = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
@@ -148,7 +148,7 @@ extends UtilityMod {
         } else if (n < n2) {
             --n2;
         } else {
-            this.s.reset();
+            this.scrollTimer.reset();
             return true;
         }
         Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n2);

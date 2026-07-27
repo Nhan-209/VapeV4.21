@@ -15,7 +15,7 @@ import java.util.List;
 
 public class BhopSpeed
 extends SubModule<Speed> {
-    private final Speed H = (Speed)this.getParent();
+    private final Speed speed = (Speed)this.getParent();
 
     @EventHandler
     public void onMove(EventPreMove eventPreMove) {
@@ -24,37 +24,37 @@ extends SubModule<Speed> {
             return;
         }
         if (entityPlayerSP.F() == 0.0f && entityPlayerSP.N$src$F$14ypudi() == 0.0f) {
-            this.H.O = this.H.defaultSpeed();
+            this.speed.O = this.speed.defaultSpeed();
         }
-        if (this.H.U == 1 && entityPlayerSP.u$src$Z$g120nz() && (entityPlayerSP.F() != 0.0f || entityPlayerSP.N$src$F$14ypudi() != 0.0f)) {
-            this.H.O = 0.25 + this.H.defaultSpeed() - 0.01;
+        if (this.speed.U == 1 && entityPlayerSP.u$src$Z$g120nz() && (entityPlayerSP.F() != 0.0f || entityPlayerSP.N$src$F$14ypudi() != 0.0f)) {
+            this.speed.O = 0.25 + this.speed.defaultSpeed() - 0.01;
         }
-        if (this.H.U == 2 && (entityPlayerSP.F() != 0.0f || entityPlayerSP.N$src$F$14ypudi() != 0.0f) && entityPlayerSP.b$src$Z$fqlxe4()) {
-            double d = 0.42f;
+        if (this.speed.U == 2 && (entityPlayerSP.F() != 0.0f || entityPlayerSP.N$src$F$14ypudi() != 0.0f) && entityPlayerSP.b$src$Z$fqlxe4()) {
+            double jumpMotion = 0.42f;
             if (entityPlayerSP.i(PotionRegistry.Z)) {
-                d += (double)((float)(entityPlayerSP.b(PotionRegistry.Z).L() + 1) * 0.1f);
+                jumpMotion += (double)((float)(entityPlayerSP.b(PotionRegistry.Z).L() + 1) * 0.1f);
             }
-            eventPreMove.setY(d);
-            entityPlayerSP.k(d);
-            this.H.O *= 2.149;
-        } else if (this.H.U == 3) {
-            double d = 0.66 * (this.H.L - this.H.defaultSpeed());
-            this.H.O = this.H.L - d;
+            eventPreMove.setY(jumpMotion);
+            entityPlayerSP.k(jumpMotion);
+            this.speed.O *= 2.149;
+        } else if (this.speed.U == 3) {
+            double reduction = 0.66 * (this.speed.L - this.speed.defaultSpeed());
+            this.speed.O = this.speed.L - reduction;
         } else {
             AxisAlignedBB axisAlignedBB = null;
             axisAlignedBB = ForgeVersion.MC_1_7_10.L() ? entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().copy().A(0.0, entityPlayerSP.q(), 0.0) : entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().A(0.0, entityPlayerSP.q(), 0.0);
-            List list = Minecraft.theWorld().i(entityPlayerSP, axisAlignedBB);
-            if ((list.size() > 0 || entityPlayerSP.u$src$Z$g120nz()) && this.H.U > 0) {
-                this.H.U = 1.35 * this.H.defaultSpeed() - 0.01 > this.H.O ? 0 : (entityPlayerSP.F() != 0.0f || entityPlayerSP.N$src$F$14ypudi() != 0.0f ? 1 : 0);
+            List collisions = Minecraft.theWorld().i(entityPlayerSP, axisAlignedBB);
+            if ((collisions.size() > 0 || entityPlayerSP.u$src$Z$g120nz()) && this.speed.U > 0) {
+                this.speed.U = 1.35 * this.speed.defaultSpeed() - 0.01 > this.speed.O ? 0 : (entityPlayerSP.F() != 0.0f || entityPlayerSP.N$src$F$14ypudi() != 0.0f ? 1 : 0);
             }
-            this.H.O = this.H.L - this.H.L / 159.0;
+            this.speed.O = this.speed.L - this.speed.L / 159.0;
         }
-        if (this.H.U > 0) {
-            this.H.O = Math.max(this.H.O, this.H.defaultSpeed());
-            this.H.strafe(eventPreMove, this.H.O, entityPlayerSP);
+        if (this.speed.U > 0) {
+            this.speed.O = Math.max(this.speed.O, this.speed.defaultSpeed());
+            this.speed.strafe(eventPreMove, this.speed.O, entityPlayerSP);
         }
         if (entityPlayerSP.F() != 0.0f || entityPlayerSP.N$src$F$14ypudi() != 0.0f) {
-            ++this.H.U;
+            ++this.speed.U;
         }
     }
 

@@ -8,35 +8,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryItemMatcherPresetBuilder {
-    private String D;
-    private final List<InventoryItemMatcher> I;
-    private final List<InventoryFilterConditionGroup> y = new ArrayList<InventoryFilterConditionGroup>();
+    private String name;
+    private final List<InventoryItemMatcher> matchers;
+    private final List<InventoryFilterConditionGroup> conditionGroups = new ArrayList<InventoryFilterConditionGroup>();
 
-    public InventoryItemMatcherPreset z() {
-        return new InventoryItemMatcherPreset(this.D, this.y, this.I);
+    public InventoryItemMatcherPreset build() {
+        return new InventoryItemMatcherPreset(this.name, this.conditionGroups, this.matchers);
     }
 
     public InventoryItemMatcherPresetBuilder() {
-        this.I = new ArrayList<InventoryItemMatcher>();
+        this.matchers = new ArrayList<InventoryItemMatcher>();
     }
 
-    public InventoryItemMatcherPresetBuilder I(InventoryItemMatcher inventoryItemMatcher) {
-        this.I.add(inventoryItemMatcher);
+    public InventoryItemMatcherPresetBuilder addMatcher(InventoryItemMatcher inventoryItemMatcher) {
+        this.matchers.add(inventoryItemMatcher);
         return this;
     }
 
-    public InventoryItemMatcherPresetBuilder b(InventoryFilterConditionGroup inventoryFilterConditionGroup) {
-        this.y.add(inventoryFilterConditionGroup);
+    public InventoryItemMatcherPresetBuilder addConditionGroup(InventoryFilterConditionGroup inventoryFilterConditionGroup) {
+        this.conditionGroups.add(inventoryFilterConditionGroup);
         return this;
     }
 
-    public InventoryItemMatcherPresetBuilder B(String string) {
-        this.D = string;
+    public InventoryItemMatcherPresetBuilder name(String string) {
+        this.name = string;
         return this;
     }
 
-    public InventoryItemMatcherPresetBuilder P(InventoryFilterConditionGroupBuilder inventoryFilterConditionGroupBuilder) {
-        this.y.add(inventoryFilterConditionGroupBuilder.w());
+    public InventoryItemMatcherPresetBuilder addConditionGroup(InventoryFilterConditionGroupBuilder inventoryFilterConditionGroupBuilder) {
+        this.conditionGroups.add(inventoryFilterConditionGroupBuilder.w());
         return this;
     }
 }

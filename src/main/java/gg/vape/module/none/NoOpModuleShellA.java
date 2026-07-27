@@ -4,8 +4,8 @@ import gg.vape.module.Mod;
 
 public class NoOpModuleShellA
 extends Mod {
-    public NoOpModuleShellA(String string) {
-        super(string);
+    public NoOpModuleShellA(String name) {
+        super(name);
     }
 }
 

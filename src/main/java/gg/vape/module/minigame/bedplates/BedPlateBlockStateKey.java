@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class BedPlateBlockStateKey {
     public int f;
-    private boolean n;
+    private boolean isNull;
     public int i;
 
     public boolean equals(Object object) {
@@ -25,25 +25,25 @@ public class BedPlateBlockStateKey {
         return this.i == bedPlateBlockStateKey.i && this.f == bedPlateBlockStateKey.f;
     }
 
-    private BedPlateBlockStateKey(int n, int n2) {
-        this.i = n;
-        this.f = n2;
-        this.n = n == 0 || Item.T(n).isNull();
+    private BedPlateBlockStateKey(int id, int meta) {
+        this.i = id;
+        this.f = meta;
+        this.isNull = id == 0 || Item.T(id).isNull();
     }
 
     public String toString() {
         return "BlockData{id=" + this.i + ", meta=" + this.f + '}';
     }
 
-    public BedPlateBlockStateKey(int n, int n2, BedPlateBlockStateKeyMarker bedPlateBlockStateKeyMarker) {
-        this(n, n2);
+    public BedPlateBlockStateKey(int id, int meta, BedPlateBlockStateKeyMarker bedPlateBlockStateKeyMarker) {
+        this(id, meta);
     }
 
     public boolean U() {
-        return this.n;
+        return this.isNull;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 

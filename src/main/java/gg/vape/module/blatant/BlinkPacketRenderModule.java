@@ -43,56 +43,56 @@ import org.lwjgl.opengl.GL11;
 
 public class BlinkPacketRenderModule
 extends Mod {
-    private boolean b;
-    private EntityOtherPlayerMP V;
-    private boolean J;
-    private boolean C = false;
+    private boolean pendingReEnable;
+    private EntityOtherPlayerMP fakePlayer;
+    private boolean stopped;
+    private boolean threadRunning = false;
     public RenderManager L;
-    private final Queue<PacketSendDispatchGuardCallback> s;
-    private static final long O = -5919086810783803073L;
-    private int o;
-    private final NumberValue j;
-    private final BooleanValue v;
-    private final BooleanValue p;
-    private final List<Vec3d> P;
-    private final TimerUtil I;
-    private final TimerUtil Y;
-    private final PacketDispatchGuard A;
-    private final ModeOption K;
-    private final ModeValue U;
-    private final Runnable c;
-    private final BooleanValue t;
-    private final ModeOption a = new ModeOption("Outgoing only");
+    private final Queue<PacketSendDispatchGuardCallback> pendingCallbacks;
+    private static final long MODULE_ID = -5919086810783803073L;
+    private int fakePlayerEntityId;
+    private final NumberValue sendThreshold;
+    private final BooleanValue breadcrumbs;
+    private final BooleanValue autoSend;
+    private final List<Vec3d> breadcrumbTrail;
+    private final TimerUtil packetTimer;
+    private final TimerUtil fakePlayerTimer;
+    private final PacketDispatchGuard dispatchGuard;
+    private final ModeOption biDirectionalMode;
+    private final ModeValue directionMode;
+    private final Runnable fakePlayerTask;
+    private final BooleanValue spawnFake;
+    private final ModeOption outgoingOnlyMode = new ModeOption("Outgoing only");
     int H = 0;
 
     @Override
     public void s(boolean bl, boolean bl2) {
         if (!bl) {
-            this.J = true;
-            this.b = true;
+            this.stopped = true;
+            this.pendingReEnable = true;
         } else {
             super.s(true, bl2);
         }
     }
 
-    private int b$src$I$1rexx7p() {
+    private int getChokeCount() {
         return this.H;
     }
 
     @Override
     public void onDisable() {
-        this.P.clear();
+        this.breadcrumbTrail.clear();
         if (Minecraft.thePlayer().isNull() || Minecraft.theWorld().isNull()) {
-            this.V = null;
+            this.fakePlayer = null;
         }
-        if (this.V != null && Minecraft.theWorld().V(this.V.S()).isNotNull()) {
-            Minecraft.theWorld().M(this.V);
+        if (this.fakePlayer != null && Minecraft.theWorld().V(this.fakePlayer.S()).isNotNull()) {
+            Minecraft.theWorld().M(this.fakePlayer);
         }
-        this.V = null;
+        this.fakePlayer = null;
     }
 
-    private void lambda$new$0() {
-        while (this.C) {
+    private void fakePlayerLoop() {
+        while (this.threadRunning) {
             try {
                 Thread.sleep(50L);
             }
@@ -106,34 +106,34 @@ extends Mod {
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
     }
 
-    private void m() {
-        this.C = false;
-        this.Y.reset();
-        this.J = false;
+    private void flushPackets() {
+        this.threadRunning = false;
+        this.fakePlayerTimer.reset();
+        this.stopped = false;
         this.H = 0;
-        for (PacketSendDispatchGuardCallback packetSendDispatchGuardCallback : this.s) {
+        for (PacketSendDispatchGuardCallback packetSendDispatchGuardCallback : this.pendingCallbacks) {
             try {
-                packetSendDispatchGuardCallback.O(this.A);
+                packetSendDispatchGuardCallback.O(this.dispatchGuard);
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        this.s.clear();
-        if (this.b) {
+        this.pendingCallbacks.clear();
+        if (this.pendingReEnable) {
             super.s(false, true);
-            this.b = false;
+            this.pendingReEnable = false;
         }
     }
 
-    private boolean R() {
+    private boolean isMoving() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         return entityPlayerSP.t() != 0.0 || entityPlayerSP.T() != 0.0;
     }
 
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {
-        if (!this.v.L().booleanValue() || this.P.isEmpty()) {
+        if (!this.breadcrumbs.L().booleanValue() || this.breadcrumbTrail.isEmpty()) {
             return;
         }
         eventRender3D.getEntityRenderer().B(1.0);
@@ -151,7 +151,7 @@ extends Mod {
         double d2 = RenderManager.getInterpolatedRenderPosY();
         double d3 = RenderManager.getInterpolatedRenderPosZ();
         boolean bl = true;
-        for (Vec3d vec3d : this.P) {
+        for (Vec3d vec3d : this.breadcrumbTrail) {
             Color color = Color.RED;
             if (bl) {
                 color = Color.YELLOW;
@@ -177,59 +177,59 @@ extends Mod {
         EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();
         String[] stringArray = ConditionalValue.o$src$ALjava_lang_String_$17s942p();
         if (entityPlayerSP.isNull() || Minecraft.theWorld().isNull()) {
-            this.C = false;
-            this.s.clear();
-            this.P.clear();
+            this.threadRunning = false;
+            this.pendingCallbacks.clear();
+            this.breadcrumbTrail.clear();
             this.H = 0;
-            this.J = false;
-            this.b = false;
+            this.stopped = false;
+            this.pendingReEnable = false;
             super.s(false, true);
             return;
         }
-        if (((ModeSelection)this.U.K()).equals(this.K) && this.Y.hasTimeElapsed(50L) && !this.C && entityPlayerSP.isNotNull()) {
-            this.Y.reset();
-            this.C = true;
-            entityPlayerSP.sendQueue().a().B().D().F(this.c);
+        if (((ModeSelection)this.directionMode.K()).equals(this.biDirectionalMode) && this.fakePlayerTimer.hasTimeElapsed(50L) && !this.threadRunning && entityPlayerSP.isNotNull()) {
+            this.fakePlayerTimer.reset();
+            this.threadRunning = true;
+            entityPlayerSP.sendQueue().a().B().D().F(this.fakePlayerTask);
         }
-        if (!this.J && this.p.L().booleanValue() && (Double)this.j.K() > 0.0 && (double)(n = this.b$src$I$1rexx7p()) >= (Double)this.j.K()) {
-            if (this.V != null && this.V.isNotNull()) {
-                this.V.t(entityPlayerSP.z(), ClientSettings.H ? entityPlayerSP.N() : entityPlayerSP.N() - 1.5, entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
-                this.V.z(entityPlayerSP.s());
+        if (!this.stopped && this.autoSend.L().booleanValue() && (Double)this.sendThreshold.K() > 0.0 && (double)(n = this.getChokeCount()) >= (Double)this.sendThreshold.K()) {
+            if (this.fakePlayer != null && this.fakePlayer.isNotNull()) {
+                this.fakePlayer.t(entityPlayerSP.z(), ClientSettings.H ? entityPlayerSP.N() : entityPlayerSP.N() - 1.5, entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
+                this.fakePlayer.z(entityPlayerSP.s());
             }
-            this.P.clear();
-            this.J = true;
-            this.b = false;
+            this.breadcrumbTrail.clear();
+            this.stopped = true;
+            this.pendingReEnable = false;
         }
         if ((guiScreen = Minecraft.currentScreen()).isInstance(MappedClasses.u5) || guiScreen.isInstance(MappedClasses.D6) || guiScreen.isInstance(MappedClasses.F_) || Minecraft.thePlayer().isNull()) {
-            this.J = true;
+            this.stopped = true;
         }
-        if (this.J) {
-            this.m();
+        if (this.stopped) {
+            this.flushPackets();
         }
     }
 
     public BlinkPacketRenderModule() {
-        super("Blink", (int)O, Category.Y, "Chokes packets until disabled.");
-        this.K = new ModeOption("Bi-directional");
-        this.U = ModeValue.create((Object)this, "Direction", "Outgoing only - only chokes packets that you're sending\nBi-directional - additionally chokes incoming packets from the server", (ModeSelection)this.a, this.a, this.K);
-        this.v = BooleanValue.create(this, "Breadcrumbs", false, "Drops breadcrumbs in case you forgot where you came from.");
-        this.t = BooleanValue.create(this, "Spawn fake", false, "Spawns a fake player where you started/are on the servers side.");
-        this.p = BooleanValue.create(this, "Auto send", false, "Automatically sends packets after a limit is reached");
-        this.j = NumberValue.create(this, "Send threshold", "#", "", 0.0, 50.0, 100.0, 1.0, "Allows you to choke your packets for a custom set limit.\nAfter the limit is reached, all packets will be sent.\nNOTE: 0 = No Limit");
-        this.A = PacketDispatchGuard.b;
-        this.s = new ConcurrentLinkedQueue<PacketSendDispatchGuardCallback>();
-        this.P = new CopyOnWriteArrayList<Vec3d>();
-        this.I = new TimerUtil();
-        this.Y = new TimerUtil();
-        this.c = this::lambda$new$0;
-        this.p.K(this.j);
-        this.addValue(this.U, this.v, this.t, this.p, this.j);
+        super("Blink", (int)MODULE_ID, Category.Y, "Chokes packets until disabled.");
+        this.biDirectionalMode = new ModeOption("Bi-directional");
+        this.directionMode = ModeValue.create((Object)this, "Direction", "Outgoing only - only chokes packets that you're sending\nBi-directional - additionally chokes incoming packets from the server", (ModeSelection)this.outgoingOnlyMode, this.outgoingOnlyMode, this.biDirectionalMode);
+        this.breadcrumbs = BooleanValue.create(this, "Breadcrumbs", false, "Drops breadcrumbs in case you forgot where you came from.");
+        this.spawnFake = BooleanValue.create(this, "Spawn fake", false, "Spawns a fake player where you started/are on the servers side.");
+        this.autoSend = BooleanValue.create(this, "Auto send", false, "Automatically sends packets after a limit is reached");
+        this.sendThreshold = NumberValue.create(this, "Send threshold", "#", "", 0.0, 50.0, 100.0, 1.0, "Allows you to choke your packets for a custom set limit.\nAfter the limit is reached, all packets will be sent.\nNOTE: 0 = No Limit");
+        this.dispatchGuard = PacketDispatchGuard.b;
+        this.pendingCallbacks = new ConcurrentLinkedQueue<PacketSendDispatchGuardCallback>();
+        this.breadcrumbTrail = new CopyOnWriteArrayList<Vec3d>();
+        this.packetTimer = new TimerUtil();
+        this.fakePlayerTimer = new TimerUtil();
+        this.fakePlayerTask = this::fakePlayerLoop;
+        this.autoSend.K(this.sendThreshold);
+        this.addValue(this.directionMode, this.breadcrumbs, this.spawnFake, this.autoSend, this.sendThreshold);
     }
 
     @EventHandler(A=EventPriority.LOWEREST)
     public void onPacketSend(EventPacketSend eventPacketSend) {
         int n;
-        this.I.reset();
+        this.packetTimer.reset();
         if (!Thread.currentThread().equals(EventTickBase.S.getOwnerThread())) {
             return;
         }
@@ -237,11 +237,11 @@ extends Mod {
             return;
         }
         Packet packet = eventPacketSend.getPacket();
-        if (this.A.R(packet)) {
+        if (this.dispatchGuard.R(packet)) {
             return;
         }
         ++this.H;
-        if (packet.isInstance(MappedClasses.qD) && this.R() && (n = this.b$src$I$1rexx7p()) % 5 == 0) {
+        if (packet.isInstance(MappedClasses.qD) && this.isMoving() && (n = this.getChokeCount()) % 5 == 0) {
             int n2;
             double d;
             int n3;
@@ -266,9 +266,9 @@ extends Mod {
                 n2 = 1;
             }
             double d6 = d * (double)n2 * Math.sin(Math.toRadians(entityPlayerSP.J()));
-            this.P.add(new Vec3d(entityPlayerSP.z() + d4, entityPlayerSP.N(), entityPlayerSP.h() + d6));
+            this.breadcrumbTrail.add(new Vec3d(entityPlayerSP.z() + d4, entityPlayerSP.N(), entityPlayerSP.h() + d6));
         }
-        this.s.add(new PacketSendDispatchGuardCallback(eventPacketSend));
+        this.pendingCallbacks.add(new PacketSendDispatchGuardCallback(eventPacketSend));
         eventPacketSend.setCancelled(true);
     }
 
@@ -279,37 +279,37 @@ extends Mod {
             super.s(false, true);
             return;
         }
-        if (this.t.L().booleanValue()) {
-            this.V = EntityOtherPlayerMP.create(Minecraft.theWorld(), Minecraft.thePlayer().c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937());
-            this.o = ClientSettings.f();
-            this.V.M(entityPlayerSP, true);
+        if (this.spawnFake.L().booleanValue()) {
+            this.fakePlayer = EntityOtherPlayerMP.create(Minecraft.theWorld(), Minecraft.thePlayer().c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937());
+            this.fakePlayerEntityId = ClientSettings.f();
+            this.fakePlayer.M(entityPlayerSP, true);
             if (ForgeVersion.MC_1_17.d()) {
-                this.V.Q(this.o);
+                this.fakePlayer.Q(this.fakePlayerEntityId);
                 UUID uUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + entityPlayerSP.getName()).getBytes(StandardCharsets.UTF_8));
-                this.V.y(uUID);
+                this.fakePlayer.y(uUID);
             }
-            this.C$src$V$1qxwb4p();
-            this.V.z(entityPlayerSP.s());
-            Minecraft.theWorld().D(this.o, this.V);
+            this.updateFakePlayerPosition();
+            this.fakePlayer.z(entityPlayerSP.s());
+            Minecraft.theWorld().D(this.fakePlayerEntityId, this.fakePlayer);
         }
     }
 
-    private void C$src$V$1qxwb4p() {
+    private void updateFakePlayerPosition() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull() || this.V.isNull() || !this.t.L().booleanValue()) {
+        if (entityPlayerSP.isNull() || this.fakePlayer.isNull() || !this.spawnFake.L().booleanValue()) {
             return;
         }
-        this.V.t(entityPlayerSP.z(), ClientSettings.H ? entityPlayerSP.N() : entityPlayerSP.N() - 1.5, entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
-        this.V.z(entityPlayerSP.s());
+        this.fakePlayer.t(entityPlayerSP.z(), ClientSettings.H ? entityPlayerSP.N() : entityPlayerSP.N() - 1.5, entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
+        this.fakePlayer.z(entityPlayerSP.s());
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception passException(Exception exception) {
         return exception;
     }
 
     @Override
     public String E() {
-        int n = this.b$src$I$1rexx7p();
+        int n = this.getChokeCount();
         if (n == 0) {
             return "";
         }

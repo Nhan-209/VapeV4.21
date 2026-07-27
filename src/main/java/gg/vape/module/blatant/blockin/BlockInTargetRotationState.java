@@ -8,104 +8,104 @@ import gg.vape.wrapper.impl.RayTraceResult;
 import gg.vape.wrapper.impl.Vec3;
 
 public class BlockInTargetRotationState {
-    private Vec3d T;
-    private float n;
-    private boolean F;
-    private BlockPlacementGraph P;
-    private RayTraceResult j;
-    private boolean f;
-    private Vec3d E;
-    private double M;
-    private boolean H;
-    private double J;
-    private double a;
-    private float O;
+    private Vec3d lookVec;
+    private float pitch;
+    private boolean flagF;
+    private BlockPlacementGraph placementGraph;
+    private RayTraceResult rayTrace;
+    private boolean flagF2;
+    private Vec3d targetVec;
+    private double posY;
+    private boolean flagH;
+    private double posX;
+    private double posZ;
+    private float yaw;
 
     public RotationAngles Z() {
-        return new RotationAngles(this.O, this.n);
+        return new RotationAngles(this.yaw, this.pitch);
     }
 
     public boolean l() {
-        return this.H;
+        return this.flagH;
     }
 
     public double b() {
-        return this.J;
+        return this.posX;
     }
 
     public boolean n() {
-        return this.F;
+        return this.flagF;
     }
 
     public float i() {
-        return this.O;
+        return this.yaw;
     }
 
     public void e(Vec3d vec3d) {
-        this.T = vec3d;
+        this.lookVec = vec3d;
     }
 
     public void R(RayTraceResult rayTraceResult) {
-        this.j = rayTraceResult;
+        this.rayTrace = rayTraceResult;
     }
 
     public float M() {
-        return this.n;
+        return this.pitch;
     }
 
     public Vec3d m() {
-        return this.T;
+        return this.lookVec;
     }
 
     public Vec3d R() {
-        return this.E;
+        return this.targetVec;
     }
 
     public BlockPlacementGraph U() {
-        return this.P;
+        return this.placementGraph;
     }
 
     public BlockInTargetRotationState(EntityLivingBase entityLivingBase) {
-        this.J = entityLivingBase.z();
-        this.M = entityLivingBase.N();
-        this.a = entityLivingBase.h();
-        this.O = entityLivingBase.J();
-        this.n = entityLivingBase.V();
-        this.f = entityLivingBase.b$src$Z$fqlxe4();
-        this.H = entityLivingBase.P();
-        this.F = entityLivingBase.B$src$Z$f90iek();
+        this.posX = entityLivingBase.z();
+        this.posY = entityLivingBase.N();
+        this.posZ = entityLivingBase.h();
+        this.yaw = entityLivingBase.J();
+        this.pitch = entityLivingBase.V();
+        this.flagF2 = entityLivingBase.b$src$Z$fqlxe4();
+        this.flagH = entityLivingBase.P();
+        this.flagF = entityLivingBase.B$src$Z$f90iek();
     }
 
     public boolean j() {
-        return this.f;
+        return this.flagF2;
     }
 
     public Vec3 M$src$Lgg_vape_wrapper_impl_Vec3_$ofcqpn() {
-        return Vec3.create(this.J, this.M, this.a);
+        return Vec3.create(this.posX, this.posY, this.posZ);
     }
 
     public double x() {
-        return this.M;
+        return this.posY;
     }
 
     public double L() {
-        return this.a;
+        return this.posZ;
     }
 
     public void m(BlockPlacementGraph blockPlacementGraph) {
-        this.P = blockPlacementGraph;
+        this.placementGraph = blockPlacementGraph;
     }
 
     public RayTraceResult X() {
-        return this.j;
+        return this.rayTrace;
     }
 
     public Vec3d h() {
-        return new Vec3d(this.J, this.M, this.a);
+        return new Vec3d(this.posX, this.posY, this.posZ);
     }
 
     public void M(Vec3d vec3d) {
-        this.E = vec3d;
+        this.targetVec = vec3d;
     }
 }
 

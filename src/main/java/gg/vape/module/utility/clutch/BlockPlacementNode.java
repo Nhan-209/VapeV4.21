@@ -25,11 +25,11 @@ public class BlockPlacementNode {
         }
     }
 
-    public BlockPlacementNode(BlockData blockData, EnumFacing enumFacing, boolean bl) {
+    public BlockPlacementNode(BlockData blockData, EnumFacing enumFacing, boolean useSupportBlock) {
         this.q = new ArrayList();
         this.h = blockData;
         this.P = enumFacing;
-        this.F = bl ? blockData.y(0, 1, 0) : null;
+        this.F = useSupportBlock ? blockData.y(0, 1, 0) : null;
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -56,8 +56,8 @@ public class BlockPlacementNode {
     }
 
     public boolean w() {
-        boolean bl = this.F != null;
-        return bl;
+        boolean hasSupportBlock = this.F != null;
+        return hasSupportBlock;
     }
 
     public BlockPlacementNode(BlockData blockData, EnumFacing enumFacing) {

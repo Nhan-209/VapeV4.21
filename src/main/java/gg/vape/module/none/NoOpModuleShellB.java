@@ -5,10 +5,10 @@ import gg.vape.module.Mod;
 
 public class NoOpModuleShellB
 extends Mod {
-    private static final String b = "CPSMod";
+    private static final String NAME = "CPSMod";
 
     public NoOpModuleShellB() {
-        super(b, 0, 0, Category.b, null);
+        super(NAME, 0, 0, Category.b, null);
     }
 
     @Override

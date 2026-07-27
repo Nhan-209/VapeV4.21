@@ -9,10 +9,10 @@ import gg.vape.value.RandomValue;
 
 public class OmniSprint
 extends Mod {
-    private final RandomValue p = RandomValue.create(this, "Rate", "#.#", "", 0.0, 1.0, 3.0, 10.0);
-    private final NumberValue r = NumberValue.create(this, "Rate Change", "#.#", "", 0.0, 1.0, 5.0);
-    private float k;
-    private long U;
+    private final RandomValue rate = RandomValue.create(this, "Rate", "#.#", "", 0.0, 1.0, 3.0, 10.0);
+    private final NumberValue rateChange = NumberValue.create(this, "Rate Change", "#.#", "", 0.0, 1.0, 5.0);
+    private float currentRate;
+    private long lastUpdateTime;
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
@@ -20,7 +20,7 @@ extends Mod {
 
     public OmniSprint() {
         super("OmniSprint", -256, Category.w);
-        this.addValue(this.p, this.r);
+        this.addValue(this.rate, this.rateChange);
     }
 }
 

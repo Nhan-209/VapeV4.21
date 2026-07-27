@@ -20,20 +20,20 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class FastPlace
 extends Mod {
-    private final ModeOption Y;
-    private final ModeValue H;
-    private final ModeOption L;
-    private static final long k = 506362964711178016L;
-    private final NumberValue t = NumberValue.create((Object)this, "Delay", "#", "", 0.0, 1.0, 4.0, 1.0);
-    private final ModeOption o;
+    private final ModeOption projectilesOption;
+    private final ModeValue heldItemMode;
+    private final ModeOption allOption;
+    private static final long MODULE_COLOR = 506362964711178016L;
+    private final NumberValue delayValue = NumberValue.create((Object)this, "Delay", "#", "", 0.0, 1.0, 4.0, 1.0);
+    private final ModeOption blocksOption;
 
     public FastPlace() {
-        super("FastPlace", (int)k, Category.m, "Changes the block place delay.");
-        this.L = new ModeOption("All");
-        this.o = new ModeOption("Blocks");
-        this.Y = new ModeOption("Projectiles");
-        this.H = ModeValue.create((Object)this, "Held Item", "What kind of items should FastPlace function with?\nAll - All items/blocks\nBlocks - All blocks\nProjectiles - Snowballs & Eggs", (ModeSelection)this.L, this.L, this.o, this.Y);
-        this.addValue(this.H, this.t);
+        super("FastPlace", (int)MODULE_COLOR, Category.m, "Changes the block place delay.");
+        this.allOption = new ModeOption("All");
+        this.blocksOption = new ModeOption("Blocks");
+        this.projectilesOption = new ModeOption("Projectiles");
+        this.heldItemMode = ModeValue.create((Object)this, "Held Item", "What kind of items should FastPlace function with?\nAll - All items/blocks\nBlocks - All blocks\nProjectiles - Snowballs & Eggs", (ModeSelection)this.allOption, this.allOption, this.blocksOption, this.projectilesOption);
+        this.addValue(this.heldItemMode, this.delayValue);
     }
 
     @EventHandler
@@ -48,22 +48,22 @@ extends Mod {
         }
         ItemStack itemStack2 = entityPlayerSP.getHeldItemHand();
         ItemStack itemStack3 = itemStack = ForgeVersion.MC_1_12_2.d() ? entityPlayerSP.i(EnumHand.p()) : new ItemStack(null);
-        if (this.H.K() == this.o && !this.r(itemStack2) && !this.r(itemStack)) {
+        if (this.heldItemMode.K() == this.blocksOption && !this.isBlock(itemStack2) && !this.isBlock(itemStack)) {
             return;
         }
-        if (this.H.K() == this.Y && !this.F(itemStack2) && !this.F(itemStack)) {
+        if (this.heldItemMode.K() == this.projectilesOption && !this.isProjectile(itemStack2) && !this.isProjectile(itemStack)) {
             return;
         }
-        if ((double)Minecraft.w() > (Double)this.t.K()) {
-            Minecraft.E(((Double)this.t.K()).intValue());
+        if ((double)Minecraft.w() > (Double)this.delayValue.K()) {
+            Minecraft.E(((Double)this.delayValue.K()).intValue());
         }
     }
 
-    private boolean F(ItemStack itemStack) {
+    private boolean isProjectile(ItemStack itemStack) {
         return itemStack.isNotNull() && itemStack.getItem().isNotNull() && ItemStackScoreUtil.Z(itemStack.getItem());
     }
 
-    private boolean r(ItemStack itemStack) {
+    private boolean isBlock(ItemStack itemStack) {
         return itemStack.isNotNull() && itemStack.getItem().isNotNull() && itemStack.getItem().isInstance(MappedClasses.Vw);
     }
 

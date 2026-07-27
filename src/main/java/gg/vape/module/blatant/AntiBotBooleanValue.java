@@ -7,7 +7,7 @@ import java.awt.Color;
 
 public class AntiBotBooleanValue
 extends Value<Integer, AntiBotBooleanValue> {
-    private static final long l = 2840276557354762239L;
+    private static final long RGB_MASK = 2840276557354762239L;
 
     public AntiBotBooleanValue(Object object, String string, Integer n) {
         super(object, string, n);
@@ -79,11 +79,11 @@ extends Value<Integer, AntiBotBooleanValue> {
         if (color == null) {
             this.o(null);
         } else {
-            this.o(color.getRGB() & (int)l);
+            this.o(color.getRGB() & (int)RGB_MASK);
         }
     }
 
-    private static NumberFormatException a(NumberFormatException numberFormatException) {
+    private static NumberFormatException passThrough(NumberFormatException numberFormatException) {
         return numberFormatException;
     }
 

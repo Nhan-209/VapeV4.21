@@ -18,27 +18,27 @@ import gg.vape.wrapper.impl.PotionRegistry;
 
 public class AntiDebuff
 extends Mod {
-    private final BooleanValue D;
-    private boolean H;
-    private final BooleanValue U = BooleanValue.create(this, "Remove Nausea", true);
-    private final BooleanValue F = BooleanValue.create(this, "Remove Blindness", true);
-    private final BooleanValue t = BooleanValue.create(this, "Remove Slowness", true);
+    private final BooleanValue removeEffects;
+    private boolean duringRenderTick;
+    private final BooleanValue removeNausea = BooleanValue.create(this, "Remove Nausea", true);
+    private final BooleanValue removeBlindness = BooleanValue.create(this, "Remove Blindness", true);
+    private final BooleanValue removeSlowness = BooleanValue.create(this, "Remove Slowness", true);
 
     @EventHandler
     public void w(EventPostRenderTick eventPostRenderTick) {
-        this.H = false;
+        this.duringRenderTick = false;
     }
 
     @EventHandler
     public void F(EventPreRenderTick eventPreRenderTick) {
-        this.H = true;
+        this.duringRenderTick = true;
     }
 
     public AntiDebuff() {
         super("AntiDebuff", -256, Category.k, "Removes negative visual potion effects");
-        this.D = BooleanValue.create(this, "Remove Effects", false, "Removes non-visual effects\nCan be detected by anti-cheat");
+        this.removeEffects = BooleanValue.create(this, "Remove Effects", false, "Removes non-visual effects\nCan be detected by anti-cheat");
         this.R(false);
-        this.addValue(this.U, this.F, this.t, this.D);
+        this.addValue(this.removeNausea, this.removeBlindness, this.removeSlowness, this.removeEffects);
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -48,13 +48,13 @@ extends Mod {
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
         EntityPlayerSP entityPlayerSP = eventPrePlayerTick.getThePlayer();
-        if (this.U.L().booleanValue()) {
+        if (this.removeNausea.L().booleanValue()) {
             entityPlayerSP.q(PotionRegistry.X.D());
         }
-        if (this.F.L().booleanValue() && this.D.L().booleanValue()) {
+        if (this.removeBlindness.L().booleanValue() && this.removeEffects.L().booleanValue()) {
             entityPlayerSP.q(PotionRegistry.K.D());
         }
-        if (this.t.L().booleanValue() && this.D.L().booleanValue()) {
+        if (this.removeSlowness.L().booleanValue() && this.removeEffects.L().booleanValue()) {
             PotionEntry potionEntry = PotionRegistry.o;
             if (ForgeVersion.MC_1_16_5.v()) {
                 PotionEffect potionEffect = entityPlayerSP.b(potionEntry);
@@ -70,7 +70,7 @@ extends Mod {
 
     @EventHandler
     public void i(EventPotionEffectCheck eventPotionEffectCheck) {
-        if (!this.H) {
+        if (!this.duringRenderTick) {
             return;
         }
         if (!eventPotionEffectCheck.getEntity().equals(eventPotionEffectCheck.getThePlayer())) {
@@ -78,7 +78,7 @@ extends Mod {
         }
         Potion potion = eventPotionEffectCheck.getPotion();
         boolean bl = false;
-        if (this.F.L().booleanValue() && PotionRegistry.K.q(potion)) {
+        if (this.removeBlindness.L().booleanValue() && PotionRegistry.K.q(potion)) {
             bl = true;
         }
         if (bl) {

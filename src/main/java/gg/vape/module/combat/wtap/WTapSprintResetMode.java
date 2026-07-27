@@ -27,31 +27,31 @@ import gg.vape.wrapper.impl.SPacketEntityVelocity;
 
 public class WTapSprintResetMode
 extends SubModule<WTap> {
-    private final ModeValue t;
-    private final ModeOption S;
-    private int L = 0;
-    private boolean s;
-    private static final long r = 988881679777005575L;
-    private final ModeOption O = new ModeOption("KB reduction");
-    private long D;
-    private boolean V = true;
+    private final ModeValue preference;
+    private final ModeOption criticalHitsOption;
+    private int velocityTicks = 0;
+    private boolean pendingTimestampUpdate;
+    private static final long VELOCITY_RESET_TICKS = 988881679777005575L;
+    private final ModeOption kbReductionOption = new ModeOption("KB reduction");
+    private long lastResetTime;
+    private boolean cancelUse = true;
 
     public WTapSprintResetMode(Mod mod, String string) {
         super(mod, string);
-        this.S = new ModeOption("Critical hits");
-        this.t = ModeValue.create((Object)this, "Preference", this.O, this.O, this.S);
-        this.t.Z$src$Lgg_vape_value_Value_$16i62fx("KB reduction: Favors knockback reduction\nCritical hits: Favors critical hit frequency");
-        this.addValue(this.t);
+        this.criticalHitsOption = new ModeOption("Critical hits");
+        this.preference = ModeValue.create((Object)this, "Preference", this.kbReductionOption, this.kbReductionOption, this.criticalHitsOption);
+        this.preference.Z$src$Lgg_vape_value_Value_$16i62fx("KB reduction: Favors knockback reduction\nCritical hits: Favors critical hit frequency");
+        this.addValue(this.preference);
     }
 
     @EventHandler
-    public void U(EventPlayerUseItem eventPlayerUseItem) {
-        if (this.V) {
+    public void onPlayerUseItem(EventPlayerUseItem eventPlayerUseItem) {
+        if (this.cancelUse) {
             eventPlayerUseItem.setCancelled(true);
         }
     }
 
-    private boolean g(Entity entity) {
+    private boolean isMovingTowardTarget(Entity entity) {
         double d = entity.z() - Minecraft.thePlayer().z();
         double d2 = entity.h() - Minecraft.thePlayer().h();
         String[] stringArray = BooleanValue.H();
@@ -59,8 +59,8 @@ extends SubModule<WTap> {
     }
 
     @EventHandler
-    public void T(EventRightClickMouse eventRightClickMouse) {
-        if (this.V) {
+    public void onRightClickMouse(EventRightClickMouse eventRightClickMouse) {
+        if (this.cancelUse) {
             eventRightClickMouse.setCancelled(true);
         }
     }
@@ -82,26 +82,26 @@ extends SubModule<WTap> {
             bl = true;
         }
         if (bl) {
-            this.L = (int)r;
+            this.velocityTicks = (int)VELOCITY_RESET_TICKS;
         }
     }
 
     private boolean S$src$Z$s2br6w() {
-        return this.t.K() == this.O;
+        return this.preference.K() == this.kbReductionOption;
     }
 
     @EventHandler
-    public void d(EventClickMouse eventClickMouse) {
+    public void onClickMouse(EventClickMouse eventClickMouse) {
         RayTraceResult rayTraceResult;
         String[] stringArray = BooleanValue.H();
         if (!((WTap)this.getParent()).a$src$Z$1npvv6h()) {
             return;
         }
         boolean bl = false;
-        if (this.L > 0) {
-            --this.L;
+        if (this.velocityTicks > 0) {
+            --this.velocityTicks;
             if (eventClickMouse.getThePlayer().b$src$Z$fqlxe4()) {
-                this.L = 0;
+                this.velocityTicks = 0;
             }
             if (this.S$src$Z$s2br6w()) {
                 return;
@@ -116,7 +116,7 @@ extends SubModule<WTap> {
             WTapSprintResetMode wTapSprintResetMode = this;
             EntityLivingBase entityLivingBase = new EntityLivingBase(rayTraceResult.getEntity());
             EntityLivingBase entityLivingBase2 = entityLivingBase;
-            if (!wTapSprintResetMode.g(entityLivingBase2)) {
+            if (!wTapSprintResetMode.isMovingTowardTarget(entityLivingBase2)) {
                 return;
             }
             if (!bl) {
@@ -125,8 +125,8 @@ extends SubModule<WTap> {
                 int n2 = attackPacketTimingTracker.Z() + 1;
                 if (entityLivingBase.c$src$I$15a9iwo() <= n) {
                     AttackPacketTimingTracker attackPacketTimingTracker2 = attackPacketTimingTracker;
-                    if (System.currentTimeMillis() - this.D >= attackPacketTimingTracker2.Y() * 2L) {
-                        this.s = true;
+                    if (System.currentTimeMillis() - this.lastResetTime >= attackPacketTimingTracker2.Y() * 2L) {
+                        this.pendingTimestampUpdate = true;
                         return;
                     }
                 }
@@ -135,7 +135,7 @@ extends SubModule<WTap> {
                 }
             }
             eventClickMouse.setCancelled(true);
-            this.V = true;
+            this.cancelUse = true;
             EntityLivingBase entityLivingBase3 = entityLivingBase;
             ClientSettings.D(entityLivingBase3);
         }
@@ -143,16 +143,16 @@ extends SubModule<WTap> {
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        if (this.s) {
-            this.D = System.currentTimeMillis();
-            this.s = false;
+        if (this.pendingTimestampUpdate) {
+            this.lastResetTime = System.currentTimeMillis();
+            this.pendingTimestampUpdate = false;
         }
-        this.V = false;
+        this.cancelUse = false;
     }
 
     @EventHandler
-    public void T(EventSendClickBlockToController eventSendClickBlockToController) {
-        if (this.V) {
+    public void onSendClickBlockToController(EventSendClickBlockToController eventSendClickBlockToController) {
+        if (this.cancelUse) {
             eventSendClickBlockToController.setCancelled(true);
         }
     }

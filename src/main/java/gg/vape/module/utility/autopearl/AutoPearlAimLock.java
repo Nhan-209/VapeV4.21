@@ -11,15 +11,15 @@ import org.jetbrains.annotations.Nullable;
 public class AutoPearlAimLock
 extends AutoPearlTrackedPearl {
     @Nullable
-    private Vec3 C = null;
-    private final FixedRotationController s;
+    private Vec3 landingPos = null;
+    private final FixedRotationController rotationController;
 
     public Vec3 b() {
-        return this.C;
+        return this.landingPos;
     }
 
     public FixedRotationController r() {
-        return this.s;
+        return this.rotationController;
     }
 
     public AutoPearlAimLock(EntityEnderPearl entityEnderPearl, EntityPlayer entityPlayer, FixedRotationController fixedRotationController, Vec3 vec3, AutoPearlRotationController autoPearlRotationController) {
@@ -27,11 +27,11 @@ extends AutoPearlTrackedPearl {
     }
 
     public static FixedRotationController E(AutoPearlAimLock autoPearlAimLock) {
-        return autoPearlAimLock.s;
+        return autoPearlAimLock.rotationController;
     }
 
     public void b(Vec3 vec3) {
-        this.C = vec3;
+        this.landingPos = vec3;
     }
 
     private AutoPearlAimLock(EntityEnderPearl entityEnderPearl, EntityPlayer entityPlayer, FixedRotationController fixedRotationController, Vec3 vec3) {
@@ -41,7 +41,7 @@ extends AutoPearlTrackedPearl {
 
     private AutoPearlAimLock(EntityEnderPearl entityEnderPearl, EntityPlayer entityPlayer, FixedRotationController fixedRotationController) {
         super(entityEnderPearl, entityPlayer, null);
-        this.s = fixedRotationController;
+        this.rotationController = fixedRotationController;
     }
 }
 

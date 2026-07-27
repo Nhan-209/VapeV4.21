@@ -27,7 +27,7 @@ extends AbstractTextFilterCondition<DisplayNameFilterCondition> {
         super(jsonObject);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 

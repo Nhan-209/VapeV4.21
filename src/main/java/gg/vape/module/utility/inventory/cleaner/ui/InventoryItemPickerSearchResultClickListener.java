@@ -13,7 +13,7 @@ implements GuiMouseListener {
     final InventoryItemPickerPanel P;
     final ItemMappingEntry D;
 
-    private void lambda$onClick$0(ItemMappingEntry itemMappingEntry) {
+    private void selectItem(ItemMappingEntry itemMappingEntry) {
         InventoryItemPickerPanel.U(this.P, ItemPickerSelection.D(itemMappingEntry));
         InventoryItemPickerPanel.a(this.P).remove(itemMappingEntry.M());
         this.P.a$src$V$bf004p();
@@ -21,7 +21,7 @@ implements GuiMouseListener {
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        ClientSettings.f6.execute(() -> this.lambda$onClick$0(this.D));
+        ClientSettings.f6.execute(() -> this.selectItem(this.D));
     }
 
     public InventoryItemPickerSearchResultClickListener(InventoryItemPickerPanel inventoryItemPickerPanel, ItemMappingEntry itemMappingEntry) {

@@ -23,29 +23,29 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public class InventoryItemMatcherRegistry {
-    private static final Map<String, InventoryItemMatcher> F = new LinkedHashMap<String, InventoryItemMatcher>();
-    private static final Map<InventoryItemMatcherGroup, List<InventoryItemMatcher>> E = new LinkedHashMap<InventoryItemMatcherGroup, List<InventoryItemMatcher>>();
+    private static final Map<String, InventoryItemMatcher> matchersByName = new LinkedHashMap<String, InventoryItemMatcher>();
+    private static final Map<InventoryItemMatcherGroup, List<InventoryItemMatcher>> matchersByGroup = new LinkedHashMap<InventoryItemMatcherGroup, List<InventoryItemMatcher>>();
 
     public static @UnmodifiableView Collection<InventoryItemMatcher> Y() {
-        return F.values();
+        return matchersByName.values();
     }
 
-    private static List lambda$register$0(InventoryItemMatcherGroup inventoryItemMatcherGroup) {
+    private static List createGroupList(InventoryItemMatcherGroup inventoryItemMatcherGroup) {
         return new ArrayList();
     }
 
     @Nullable
     public static InventoryItemMatcher z(String string) {
-        return F.get(string);
+        return matchersByName.get(string);
     }
 
     public static void R(InventoryItemMatcher inventoryItemMatcher) {
-        F.put(inventoryItemMatcher.k(), inventoryItemMatcher);
-        E.computeIfAbsent(inventoryItemMatcher.l(), InventoryItemMatcherRegistry::lambda$register$0).add(inventoryItemMatcher);
+        matchersByName.put(inventoryItemMatcher.k(), inventoryItemMatcher);
+        matchersByGroup.computeIfAbsent(inventoryItemMatcher.l(), InventoryItemMatcherRegistry::createGroupList).add(inventoryItemMatcher);
     }
 
     public static @UnmodifiableView List<InventoryItemMatcher> N(InventoryItemMatcherGroup inventoryItemMatcherGroup) {
-        return E.get(inventoryItemMatcherGroup);
+        return matchersByGroup.get(inventoryItemMatcherGroup);
     }
 
     @Nullable
@@ -58,20 +58,20 @@ public class InventoryItemMatcherRegistry {
             return EmptySlotInventoryItemMatcher.a;
         }
         ArrayList<InventoryItemMatcher> arrayList = new ArrayList<InventoryItemMatcher>();
-        for (InventoryItemMatcher inventoryItemMatcher : F.values()) {
+        for (InventoryItemMatcher inventoryItemMatcher : matchersByName.values()) {
             if (!inventoryItemMatcher.g(itemStack, itemStack.getItem())) continue;
             arrayList.add(inventoryItemMatcher);
         }
-        arrayList.sort(InventoryItemMatcherRegistry::lambda$getByItemStack$1);
+        arrayList.sort(InventoryItemMatcherRegistry::compareByPriority);
         Collections.reverse(arrayList);
         InventoryItemMatcher inventoryItemMatcher = arrayList.isEmpty() ? null : (InventoryItemMatcher)arrayList.get(0);
         return inventoryItemMatcher;
     }
 
-    private static int lambda$getByItemStack$1(InventoryItemMatcher inventoryItemMatcher, InventoryItemMatcher inventoryItemMatcher2) {
-        boolean bl = inventoryItemMatcher.v() != null;
-        boolean bl2 = inventoryItemMatcher2.v() != null;
-        return Boolean.compare(bl, bl2);
+    private static int compareByPriority(InventoryItemMatcher inventoryItemMatcher, InventoryItemMatcher inventoryItemMatcher2) {
+        boolean hasPriorityFirst = inventoryItemMatcher.v() != null;
+        boolean hasPrioritySecond = inventoryItemMatcher2.v() != null;
+        return Boolean.compare(hasPriorityFirst, hasPrioritySecond);
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {

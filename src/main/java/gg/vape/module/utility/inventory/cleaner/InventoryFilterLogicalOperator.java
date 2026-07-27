@@ -11,25 +11,25 @@ implements INamed {
     AND("And"),
     OR("Or");
 
-    private static final /* synthetic */ InventoryFilterLogicalOperator[] A;
-    private final String S;
+    private static final /* synthetic */ InventoryFilterLogicalOperator[] valuesArray;
+    private final String displayName;
     public static final List<InventoryFilterLogicalOperator> VALUES;
 
     static {
         String[] stringArray = new String[]{"AND", "OR", "And", "Or"};
 
 
-        A = new InventoryFilterLogicalOperator[]{AND, OR};
+        valuesArray = new InventoryFilterLogicalOperator[]{AND, OR};
         VALUES = Arrays.asList(InventoryFilterLogicalOperator.values());
     }
 
     private InventoryFilterLogicalOperator(String string2) {
-        this.S = string2;
+        this.displayName = string2;
     }
 
     @Override
     public String getName() {
-        return this.S;
+        return this.displayName;
     }
 
     @Nullable
@@ -41,7 +41,7 @@ implements INamed {
         return null;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 

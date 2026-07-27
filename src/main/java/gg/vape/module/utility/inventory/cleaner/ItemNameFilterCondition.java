@@ -12,13 +12,13 @@ public class ItemNameFilterCondition
 extends AbstractTextFilterCondition<ItemNameFilterCondition> {
     @Override
     public ItemNameFilterCondition H() {
-        return this.n();
+        return this.copy();
     }
     public ItemNameFilterCondition(JsonObject jsonObject) {
         super(jsonObject);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -42,7 +42,7 @@ extends AbstractTextFilterCondition<ItemNameFilterCondition> {
         return InventoryFilterConditionType.ITEM_NAME;
     }
 
-    public ItemNameFilterCondition n() {
+    public ItemNameFilterCondition copy() {
         return new ItemNameFilterCondition(this.M$src$Ljava_util_List_$bgq9xa(), this.M());
     }
 }

@@ -15,10 +15,10 @@ import gg.vape.wrapper.impl.TextFormatting;
 import java.util.List;
 
 public class AntiBotEntityCache {
-    private static final Integer C;
-    private static String[] v;
+    private static final Integer NO_TEAM_COLOR;
+    private static String[] botNames;
 
-    private String C(String string) {
+    private String sanitizeName(String string) {
         if (string == null) {
             return null;
         }
@@ -32,13 +32,13 @@ public class AntiBotEntityCache {
     }
 
     public static void Z(String[] stringArray) {
-        v = stringArray;
+        botNames = stringArray;
     }
 
     static {
         AntiBotEntityCache.Z(null);
         long l = -1068649375749636097L;
-        C = (int)l;
+        NO_TEAM_COLOR = (int)l;
     }
 
     public Integer r(EntityPlayer entityPlayer) {
@@ -56,7 +56,7 @@ public class AntiBotEntityCache {
             if (iTextComponent.isNotNull()) {
                 object2 = iTextComponent.C();
                 if (object2 == null || !((String)object2).contains(string)) continue;
-                Integer formattedColor = this.y(playerInfo, string);
+                Integer formattedColor = this.findColorFromInfo(playerInfo, string);
                 if (formattedColor != null) {
                     return formattedColor;
                 }
@@ -66,7 +66,7 @@ public class AntiBotEntityCache {
                 Integer n2;
                 TextFormatting textFormatting;
                 ScorePlayerTeam scorePlayerTeam = playerInfo.X();
-                if (!scorePlayerTeam.isNotNull() || (textFormatting = scorePlayerTeam.W()) == null || (n2 = textFormatting.K()) == null || n2.equals(C)) continue;
+                if (!scorePlayerTeam.isNotNull() || (textFormatting = scorePlayerTeam.W()) == null || (n2 = textFormatting.K()) == null || n2.equals(NO_TEAM_COLOR)) continue;
                 n = n2;
             }
             catch (Exception exception) {}
@@ -83,7 +83,7 @@ public class AntiBotEntityCache {
         return false;
     }
 
-    private String k(ITextComponent iTextComponent) {
+    private String extractText(ITextComponent iTextComponent) {
         Object object;
         try {
             object = iTextComponent.F();
@@ -98,7 +98,7 @@ public class AntiBotEntityCache {
         try {
             object = iTextComponent.C();
             if (object != null) {
-                return this.C((String)object);
+                return this.sanitizeName((String)object);
             }
         }
         catch (Exception exception) {
@@ -107,20 +107,20 @@ public class AntiBotEntityCache {
         return null;
     }
 
-    private Integer g(ITextComponent iTextComponent, String string) {
+    private Integer findColorInComponent(ITextComponent iTextComponent, String string) {
         if (iTextComponent.isNull()) {
             return null;
         }
-        String string2 = this.k(iTextComponent);
+        String string2 = this.extractText(iTextComponent);
         Integer componentColor;
-        if (string2 != null && this.Q(string2, string) && (componentColor = this.c(iTextComponent)) != null) {
+        if (string2 != null && this.namesMatch(string2, string) && (componentColor = this.extractColorFromStyle(iTextComponent)) != null) {
             return componentColor;
         }
         try {
             List<ITextComponent> siblings = iTextComponent.G();
             for (int i = 0; i < siblings.size(); ++i) {
                 ITextComponent iTextComponent2 = siblings.get(i);
-                Integer n = this.g(iTextComponent2, string);
+                Integer n = this.findColorInComponent(iTextComponent2, string);
                 if (n == null) continue;
                 return n;
             }
@@ -131,15 +131,15 @@ public class AntiBotEntityCache {
         return null;
     }
 
-    private Integer y(PlayerInfo playerInfo, String string) {
+    private Integer findColorFromInfo(PlayerInfo playerInfo, String string) {
         ITextComponent iTextComponent = playerInfo.R();
         if (iTextComponent.isNull()) {
             return null;
         }
-        return this.g(iTextComponent, string);
+        return this.findColorInComponent(iTextComponent, string);
     }
 
-    private Integer c(ITextComponent iTextComponent) {
+    private Integer extractColorFromStyle(ITextComponent iTextComponent) {
         try {
             TextComponentBase textComponentBase = iTextComponent.J();
             if (textComponentBase.isNull()) {
@@ -154,7 +154,7 @@ public class AntiBotEntityCache {
                 }
                 if (n2 > n) {
                     String string2 = string.substring(n, n2);
-                    return this.b(string2);
+                    return this.parseColor(string2);
                 }
             }
         }
@@ -165,25 +165,25 @@ public class AntiBotEntityCache {
     }
 
     public static String[] B() {
-        return v;
+        return botNames;
     }
 
-    private boolean Q(String string, String string2) {
+    private boolean namesMatch(String string, String string2) {
         if (string == null || string2 == null) {
             return false;
         }
         if (string.equals(string2)) {
             return true;
         }
-        String string3 = this.C(string);
+        String string3 = this.sanitizeName(string);
         return string3.equals(string2);
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception passThrough(Exception exception) {
         return exception;
     }
 
-    private Integer b(String string) {
+    private Integer parseColor(String string) {
         if (string == null || string.isEmpty()) {
             return null;
         }

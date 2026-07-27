@@ -9,10 +9,10 @@ import java.util.function.BiPredicate;
 
 public class InventoryItemMatcherBuilderFoundation
 extends InventoryItemMatcherBuilderBase<InventoryItemMatcherBuilderFoundation> {
-    private BiPredicate<ItemStack, Item> O;
+    private BiPredicate<ItemStack, Item> predicate;
 
-    InventoryItemMatcherBuilderFoundation(InventoryItemMatcherBuilderBase qq_12, InventoryMatcherMarker oK) {
-        this(qq_12);
+    InventoryItemMatcherBuilderFoundation(InventoryItemMatcherBuilderBase base, InventoryMatcherMarker marker) {
+        this(base);
     }
 
     public CompositeInventoryItemMatcher q() {
@@ -20,16 +20,16 @@ extends InventoryItemMatcherBuilderBase<InventoryItemMatcherBuilderFoundation> {
     }
 
     public BiPredicate<ItemStack, Item> R() {
-        return this.O;
+        return this.predicate;
     }
 
     public InventoryItemMatcherBuilderFoundation t(BiPredicate<ItemStack, Item> biPredicate) {
-        this.O = biPredicate;
+        this.predicate = biPredicate;
         return this;
     }
 
-    private InventoryItemMatcherBuilderFoundation(InventoryItemMatcherBuilderBase<?> qq_12) {
-        super(qq_12);
+    private InventoryItemMatcherBuilderFoundation(InventoryItemMatcherBuilderBase<?> base) {
+        super(base);
     }
 }
 

@@ -25,7 +25,7 @@ public class FoodInventoryItemMatchers {
     public static final CompositeInventoryItemMatcher a;
     public static final StringInventoryItemMatcher O;
 
-    private static boolean lambda$static$0(ItemStack itemStack, Item item) {
+    private static boolean isFoodItem(ItemStack itemStack, Item item) {
         if (ForgeVersion.MC_1_20_6.d()) {
             DataComponentMap dataComponentMap = item.g();
             return dataComponentMap.V(DataComponents.d());
@@ -36,7 +36,7 @@ public class FoodInventoryItemMatchers {
     static {
         long l = ZkmLongKeyState.a(2786964799863358521L, 7483758666246314709L, MethodHandles.lookup().lookupClass()).a(247062353089996L) ^ 0x23BF6F382913L;
         String[] stringArray = new String[]{"baked_", "cooked_", "cooked-food-hover@2x", "Cooked food", "Any type of cooked food", "food-hover@2x", "Any food", "Any type of food", "cooked-food", "any-food"};
-        a = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(stringArray[9])).m(stringArray[6])).M(stringArray[7])).H(stringArray[5])).A(InventoryItemMatcherGroup.FOOD)).t(FoodInventoryItemMatchers::lambda$static$0).N(FoodInventoryItemMatchers::lambda$static$1)).q();
+        a = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(stringArray[9])).m(stringArray[6])).M(stringArray[7])).H(stringArray[5])).A(InventoryItemMatcherGroup.FOOD)).t(FoodInventoryItemMatchers::isFoodItem).N(FoodInventoryItemMatchers::compareByNutrition)).q();
         O = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.c().y().n(stringArray[8])).m(stringArray[3])).M(stringArray[4])).H(stringArray[2])).A(InventoryItemMatcherGroup.FOOD)).R(stringArray[1], StringMatchOperator.STARTS).R(stringArray[0], StringMatchOperator.STARTS).N(a.v())).g();
     }
 
@@ -45,7 +45,7 @@ public class FoodInventoryItemMatchers {
         InventoryItemMatcherRegistry.R(O);
     }
 
-    private static int lambda$static$1(InventoryItemMatchContext inventoryItemMatchContext, InventoryItemMatchContext inventoryItemMatchContext2) {
+    private static int compareByNutrition(InventoryItemMatchContext inventoryItemMatchContext, InventoryItemMatchContext inventoryItemMatchContext2) {
         if (ForgeVersion.MC_1_20_6.d()) {
             DataComponentMap dataComponentMap = inventoryItemMatchContext.M().g();
             DataComponentMap dataComponentMap2 = inventoryItemMatchContext2.M().g();

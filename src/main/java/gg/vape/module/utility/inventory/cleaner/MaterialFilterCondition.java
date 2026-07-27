@@ -22,44 +22,44 @@ public class MaterialFilterCondition
 implements InventoryFilterCondition<MaterialFilterCondition> {
     @Override
     public MaterialFilterCondition w() {
-        return this.Y();
+        return this.copy();
     }
-    private final List<ItemFilterSelection> i = new ArrayList<ItemFilterSelection>();
-    private static GuiComponent[] E;
-    private MembershipMode t = MembershipMode.IS_IN;
+    private final List<ItemFilterSelection> selections = new ArrayList<ItemFilterSelection>();
+    private static GuiComponent[] cachedComponents;
+    private MembershipMode membershipMode = MembershipMode.IS_IN;
 
     public MembershipMode x() {
-        return this.t;
+        return this.membershipMode;
     }
 
-    public void g() {
-        this.i.clear();
+    public void clear() {
+        this.selections.clear();
     }
 
     @Override
     public boolean g(ItemStack itemStack) {
-        boolean bl = this.t.equals(MembershipMode.IS_IN);
-        for (ItemFilterSelection itemFilterSelection : this.i) {
+        boolean isIn = this.membershipMode.equals(MembershipMode.IS_IN);
+        for (ItemFilterSelection itemFilterSelection : this.selections) {
             if (!itemFilterSelection.h(itemStack)) continue;
-            return bl;
+            return isIn;
         }
-        return !bl;
+        return !isIn;
     }
 
     public MaterialFilterCondition(JsonObject jsonObject) {
-        this.t = MembershipMode.N(jsonObject.get("operator").getAsString());
+        this.membershipMode = MembershipMode.N(jsonObject.get("operator").getAsString());
         JsonArray jsonArray = ConfigJsonUtils.q(jsonObject, "items");
         if (jsonArray != null) {
             for (int i = 0; i < jsonArray.size(); ++i) {
                 JsonElement jsonElement = jsonArray.get(i);
                 ItemFilterSelection itemFilterSelection = new ItemFilterSelection(jsonElement);
-                this.i.add(itemFilterSelection);
+                this.selections.add(itemFilterSelection);
             }
         }
     }
 
     public void A(ItemFilterSelection itemFilterSelection) {
-        this.i.remove(itemFilterSelection);
+        this.selections.remove(itemFilterSelection);
     }
 
     public MaterialFilterCondition() {
@@ -77,18 +77,18 @@ implements InventoryFilterCondition<MaterialFilterCondition> {
     }
 
     public static GuiComponent[] H() {
-        return E;
+        return cachedComponents;
     }
 
     public static void C(GuiComponent[] guiComponentArray) {
-        E = guiComponentArray;
+        cachedComponents = guiComponentArray;
     }
 
     public MaterialFilterCondition(List<ItemFilterSelection> list, MembershipMode membershipMode) {
         for (ItemFilterSelection itemFilterSelection : list) {
-            this.i.add(itemFilterSelection.y());
+            this.selections.add(itemFilterSelection.y());
         }
-        this.t = membershipMode;
+        this.membershipMode = membershipMode;
     }
 
     static {
@@ -96,7 +96,7 @@ implements InventoryFilterCondition<MaterialFilterCondition> {
     }
 
     public void j(MembershipMode membershipMode) {
-        this.t = membershipMode;
+        this.membershipMode = membershipMode;
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -104,25 +104,25 @@ implements InventoryFilterCondition<MaterialFilterCondition> {
     }
 
     public void b(ItemFilterSelection itemFilterSelection) {
-        this.i.add(itemFilterSelection);
+        this.selections.add(itemFilterSelection);
     }
 
-    public MaterialFilterCondition Y() {
-        return new MaterialFilterCondition(this.i, this.t);
+    public MaterialFilterCondition copy() {
+        return new MaterialFilterCondition(this.selections, this.membershipMode);
     }
 
     public @UnmodifiableView List<ItemFilterSelection> U() {
-        return this.i;
+        return this.selections;
     }
 
     @Override
     public JsonObject L() {
         JsonObject jsonObject = InventoryFilterCondition.super.L();
         JsonArray jsonArray = new JsonArray();
-        for (ItemFilterSelection itemFilterSelection : this.i) {
+        for (ItemFilterSelection itemFilterSelection : this.selections) {
             jsonArray.add(itemFilterSelection.Q());
         }
-        jsonObject.addProperty("operator", this.t.getName());
+        jsonObject.addProperty("operator", this.membershipMode.getName());
         if (jsonArray.size() > 0) {
             jsonObject.add("items", (JsonElement)jsonArray);
         }
@@ -131,7 +131,7 @@ implements InventoryFilterCondition<MaterialFilterCondition> {
 
     @Nullable
     public ItemFilterSelection t(String string) {
-        for (ItemFilterSelection itemFilterSelection : this.i) {
+        for (ItemFilterSelection itemFilterSelection : this.selections) {
             if (itemFilterSelection.J() == null || !itemFilterSelection.J().equalsIgnoreCase(string)) continue;
             return itemFilterSelection;
         }

@@ -5,14 +5,14 @@ public enum ModuleDisplayScope {
     STANDALONE_ONLY,
     FRAMES_ONLY;
 
-    private static final ModuleDisplayScope[] y;
+    private static final ModuleDisplayScope[] VALUES;
 
     static {
-        String[] stringArray = new String[]{"STANDALONE_ONLY", "ALL", "FRAMES_ONLY"};
+        String[] names = new String[]{"STANDALONE_ONLY", "ALL", "FRAMES_ONLY"};
 
 
 
-        y = new ModuleDisplayScope[]{ALL, STANDALONE_ONLY, FRAMES_ONLY};
+        VALUES = new ModuleDisplayScope[]{ALL, STANDALONE_ONLY, FRAMES_ONLY};
     }
 
 }

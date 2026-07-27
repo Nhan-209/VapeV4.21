@@ -13,18 +13,18 @@ import java.util.Map;
 
 public class StringInventoryItemMatcher
 extends AbstractInventoryItemMatcher {
-    private final Map<String, StringMatchOperator> t;
+    private final Map<String, StringMatchOperator> matchOperators;
 
     @Override
     public boolean g(ItemStack itemStack, Item item) {
-        if (this.t.isEmpty()) {
+        if (this.matchOperators.isEmpty()) {
             return false;
         }
         ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack);
         if (itemMappingEntry == null) {
             return false;
         }
-        for (Map.Entry<String, StringMatchOperator> entry : this.t.entrySet()) {
+        for (Map.Entry<String, StringMatchOperator> entry : this.matchOperators.entrySet()) {
             String string = entry.getKey();
             StringMatchOperator stringMatchOperator = entry.getValue();
             if (!stringMatchOperator.z().test(itemMappingEntry.q(), string)) continue;
@@ -37,13 +37,13 @@ extends AbstractInventoryItemMatcher {
         return new StringInventoryItemMatcherBuilder(inventoryItemMatcherBuilderBase, null);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public StringInventoryItemMatcher(StringInventoryItemMatcherBuilder stringInventoryItemMatcherBuilder) {
         super(stringInventoryItemMatcherBuilder);
-        this.t = stringInventoryItemMatcherBuilder.X();
+        this.matchOperators = stringInventoryItemMatcherBuilder.X();
     }
 }
 

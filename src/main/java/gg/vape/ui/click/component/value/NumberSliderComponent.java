@@ -107,7 +107,8 @@ extends SliderComponentBase {
 
     private double P(double d) {
         double d2;
-        double d3 = d2 = this.K != null ? ((Double)this.K.K() - this.R) / (this.v - this.R) : 0.0;
+        Double d4 = this.K != null ? (Double)this.K.K() : null;
+        double d3 = d2 = d4 != null ? (d4 - this.R) / (this.v - this.R) : 0.0;
         if (d2 > 1.0) {
             d2 = 1.0;
         } else if (d2 < 0.0) {

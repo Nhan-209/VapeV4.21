@@ -9,7 +9,7 @@ public class FreecamMovementInputBridge
 extends Wrapper {
     public void N(boolean bl) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            this.r(this.x(), this.r(), this.e(), this.F(), this.f(), this.A(), bl);
+            this.applyMovementInput(this.x(), this.r(), this.e(), this.F(), this.f(), this.A(), bl);
             return;
         }
         FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.K(this.I, bl);
@@ -39,10 +39,10 @@ extends Wrapper {
         return o8_02;
     }
 
-    private void r(boolean bl, boolean bl2, boolean bl3, boolean bl4, boolean bl5, boolean bl6, boolean bl7) {
-        FreecamMovementInputBridge jh_22 = new FreecamMovementInputBridge(FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.z(bl, bl2, bl3, bl4, bl5, bl6, bl7));
-        this.I = jh_22.getObject();
-        Minecraft.a_xH_J().a_jw_2_I().r(jh_22);
+    private void applyMovementInput(boolean bl, boolean bl2, boolean bl3, boolean bl4, boolean bl5, boolean bl6, boolean bl7) {
+        FreecamMovementInputBridge input = new FreecamMovementInputBridge(FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.z(bl, bl2, bl3, bl4, bl5, bl6, bl7));
+        this.I = input.getObject();
+        Minecraft.a_xH_J().a_jw_2_I().r(input);
     }
 
     public boolean u() {
@@ -51,7 +51,7 @@ extends Wrapper {
 
     public void P(boolean bl) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            this.r(this.x(), this.r(), this.e(), this.F(), this.f(), bl, this.u());
+            this.applyMovementInput(this.x(), this.r(), this.e(), this.F(), this.f(), bl, this.u());
             return;
         }
         FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.V(this.I, bl);
@@ -63,7 +63,7 @@ extends Wrapper {
 
     public void F(boolean bl) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            this.r(this.x(), this.r(), this.e(), this.F(), bl, this.A(), this.u());
+            this.applyMovementInput(this.x(), this.r(), this.e(), this.F(), bl, this.A(), this.u());
             return;
         }
         FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.A(this.I, bl);

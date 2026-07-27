@@ -22,22 +22,22 @@ import org.jetbrains.annotations.Nullable;
 public class HotbarSlotRuleItemPickerFrame
 extends Frame {
     @Nullable
-    private FrameStackManager qG;
-    private HotbarSlotRuleGroupComponent qN;
-    private List<HotbarSlotRule> qE;
-    private HotbarSlotRuleSelectedSlotPreviewComponent qm = new HotbarSlotRuleSelectedSlotPreviewComponent(this);
-    private HotbarSlotRuleSlotSelectorComponent qc;
-    private HotbarSlotRuleItemSearchComponent qA = new HotbarSlotRuleItemSearchComponent(this);
-    private int qx;
-    private String qI = "";
-    private HotbarSlotRuleItemListFrame qT = new HotbarSlotRuleItemListFrame(this);
+    private FrameStackManager parentStackManager;
+    private HotbarSlotRuleGroupComponent groupComponent;
+    private List<HotbarSlotRule> rules;
+    private HotbarSlotRuleSelectedSlotPreviewComponent previewComponent = new HotbarSlotRuleSelectedSlotPreviewComponent(this);
+    private HotbarSlotRuleSlotSelectorComponent slotSelectorComponent;
+    private HotbarSlotRuleItemSearchComponent searchComponent = new HotbarSlotRuleItemSearchComponent(this);
+    private int selectedSlot;
+    private String searchText = "";
+    private HotbarSlotRuleItemListFrame itemListFrame = new HotbarSlotRuleItemListFrame(this);
 
     public int X$src$I$7rbe5s() {
-        return this.qx;
+        return this.selectedSlot;
     }
 
     public HotbarSlotRuleItemListFrame D$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$dqviyt() {
-        return this.qT;
+        return this.itemListFrame;
     }
 
     @Override
@@ -45,7 +45,7 @@ extends Frame {
     }
 
     public HotbarSlotRuleItemPickerFrame() {
-        this.qc = new HotbarSlotRuleSlotSelectorComponent(this);
+        this.slotSelectorComponent = new HotbarSlotRuleSlotSelectorComponent(this);
         this.K(200.0);
         this.S(200.0);
         ComponentLayout componentLayout = this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij();
@@ -55,22 +55,22 @@ extends Frame {
         componentLayout.I(false);
         componentLayout.u(false);
         this.Y(new HotbarSlotRuleItemPickerHeaderComponent(this, this, null, "AutoHotbar").Q(new HotbarSlotRuleItemPickerHeaderCloseClickHandler(this)));
-        this.H(this.qm);
-        this.h(this.qA, new Object[0]);
-        this.h(this.qc, new Object[0]);
+        this.H(this.previewComponent);
+        this.h(this.searchComponent, new Object[0]);
+        this.h(this.slotSelectorComponent, new Object[0]);
         this.Z(true);
         this.g(true);
     }
 
     public void s(String string) {
-        this.qI = string;
-        this.qT.p();
+        this.searchText = string;
+        this.itemListFrame.p();
     }
 
     @Override
     public void t(boolean bl, boolean bl2) {
         super.t(bl, bl2);
-        this.qT.Z(bl);
+        this.itemListFrame.Z(bl);
     }
 
     @Override
@@ -81,23 +81,23 @@ extends Frame {
     @Override
     public void c() {
         this.W(true);
-        this.qm.K(this.G$src$D$1b2f02a());
-        this.qm.S(this.n() + this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
-        this.qA.K(this.G$src$D$1b2f02a() + this.qm.A());
-        this.qA.S(this.n() + this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
-        this.qT.M(this.G$src$D$1b2f02a() + this.qm.A(), this.n() + this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() + this.qA.L());
-        this.qc.K(this.G$src$D$1b2f02a() + this.qm.A());
-        this.qc.S(this.qT.n() + this.qT.L());
+        this.previewComponent.K(this.G$src$D$1b2f02a());
+        this.previewComponent.S(this.n() + this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
+        this.searchComponent.K(this.G$src$D$1b2f02a() + this.previewComponent.A());
+        this.searchComponent.S(this.n() + this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
+        this.itemListFrame.M(this.G$src$D$1b2f02a() + this.previewComponent.A(), this.n() + this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() + this.searchComponent.L());
+        this.slotSelectorComponent.K(this.G$src$D$1b2f02a() + this.previewComponent.A());
+        this.slotSelectorComponent.S(this.itemListFrame.n() + this.itemListFrame.L());
         super.c();
         GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().n() + this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L(), this.A(), 0.5, HotbarSlotRuleItemPickerFrame.J.l);
     }
 
     public void O(@Nullable FrameStackManager frameStackManager) {
-        this.qG = frameStackManager;
+        this.parentStackManager = frameStackManager;
     }
 
     public HotbarSlotRuleGroupComponent N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f() {
-        return this.qN;
+        return this.groupComponent;
     }
 
     public void Z$src$V$7seznp() {
@@ -109,44 +109,44 @@ extends Frame {
     }
 
     public void t(int n) {
-        this.qx = n;
+        this.selectedSlot = n;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public void y(HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent) {
-        this.qN = hotbarSlotRuleGroupComponent;
-        this.qE = new ArrayList<HotbarSlotRule>(hotbarSlotRuleGroupComponent.u$src$Ljava_util_List_$1u5n2i3());
+        this.groupComponent = hotbarSlotRuleGroupComponent;
+        this.rules = new ArrayList<HotbarSlotRule>(hotbarSlotRuleGroupComponent.u$src$Ljava_util_List_$1u5n2i3());
     }
 
     @Override
     public void U() {
         super.U();
-        this.qT.U();
+        this.itemListFrame.U();
     }
 
     @Nullable
     public FrameStackManager E() {
-        return this.qG;
+        return this.parentStackManager;
     }
 
     public String E$src$Ljava_lang_String_$ous8w6() {
-        return this.qI;
+        return this.searchText;
     }
 
     public void N$src$V$7ltgjd() {
-        FrameStackManager frameStackManager = this.qG;
+        FrameStackManager frameStackManager = this.parentStackManager;
         if (frameStackManager != null) {
             if (frameStackManager instanceof ClickGuiFrameManager) {
                 ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)frameStackManager;
-                clickGuiFrameManager.m(this.qT);
+                clickGuiFrameManager.m(this.itemListFrame);
                 clickGuiFrameManager.G();
             } else {
                 ClientSettings.fW.I(frameStackManager);
             }
-            this.qG = null;
+            this.parentStackManager = null;
         } else {
             ClientSettings.fW.I(ClientSettings.a);
         }

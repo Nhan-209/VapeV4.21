@@ -11,23 +11,23 @@ import java.util.Vector;
 
 public class ClutchSolidBlockPathSearchStrategy
 implements BlockPathSearchStrategy<BlockPlacementNode> {
-    final World L;
-    final Clutch a;
+    final World world;
+    final Clutch clutch;
 
     @Override
     public int t(Vector<BlockPlacementNode> vector) {
-        return Clutch.T(this.a, this.L, vector);
+        return Clutch.T(this.clutch, this.world, vector);
     }
 
     @Override
     public boolean B(BlockData blockData) {
-        Block block = this.L.getBlockByPos(blockData.D(), blockData.B(), blockData.G());
+        Block block = this.world.getBlockByPos(blockData.D(), blockData.B(), blockData.G());
         return BlockUtil.f(block);
     }
 
     public ClutchSolidBlockPathSearchStrategy(Clutch clutch, World world) {
-        this.a = clutch;
-        this.L = world;
+        this.clutch = clutch;
+        this.world = world;
     }
 
     @Override

@@ -5,23 +5,23 @@ import gg.vape.wrapper.impl.BlockPos;
 import gg.vape.wrapper.impl.EnumFacing;
 
 public class AnchorBlockHitTarget {
-    private final BlockPos P;
-    private final EnumFacing v;
+    private final BlockPos hitPos;
+    private final EnumFacing hitFace;
 
-    public static EnumFacing O(AnchorBlockHitTarget zk_22) {
-        return zk_22.v;
+    public static EnumFacing O(AnchorBlockHitTarget target) {
+        return target.hitFace;
     }
 
     private AnchorBlockHitTarget(BlockPos blockPos, EnumFacing enumFacing) {
-        this.P = blockPos;
-        this.v = enumFacing;
+        this.hitPos = blockPos;
+        this.hitFace = enumFacing;
     }
 
-    public static BlockPos q(AnchorBlockHitTarget zk_22) {
-        return zk_22.P;
+    public static BlockPos q(AnchorBlockHitTarget target) {
+        return target.hitPos;
     }
 
-    public AnchorBlockHitTarget(BlockPos blockPos, EnumFacing enumFacing, AnchorMacroStateSwitchMap l6_02) {
+    public AnchorBlockHitTarget(BlockPos blockPos, EnumFacing enumFacing, AnchorMacroStateSwitchMap marker) {
         this(blockPos, enumFacing);
     }
 }

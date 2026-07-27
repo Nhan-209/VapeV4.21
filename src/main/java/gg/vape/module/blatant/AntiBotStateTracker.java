@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class AntiBotStateTracker {
-    private final Map<ModeOption, Character> W;
+    private final Map<ModeOption, Character> modeChars;
     public static final char f;
 
     public char s(EntityPlayer entityPlayer) {
@@ -26,12 +26,12 @@ public class AntiBotStateTracker {
         return c;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public AntiBotStateTracker(Map<ModeOption, Character> map) {
-        this.W = map;
+        this.modeChars = map;
     }
 
     static {
@@ -41,8 +41,8 @@ public class AntiBotStateTracker {
     }
 
     public ModeOption c(char c) {
-        for (ModeOption modeOption : this.W.keySet()) {
-            if (this.W.get(modeOption).charValue() != c) continue;
+        for (ModeOption modeOption : this.modeChars.keySet()) {
+            if (this.modeChars.get(modeOption).charValue() != c) continue;
             return modeOption;
         }
         return null;
@@ -91,7 +91,7 @@ public class AntiBotStateTracker {
 
     public boolean A(ModeOption modeOption, EntityPlayer entityPlayer) {
         char c;
-        char c2 = this.W.get(modeOption).charValue();
+        char c2 = this.modeChars.get(modeOption).charValue();
         return c2 == (c = this.S(entityPlayer));
     }
 }

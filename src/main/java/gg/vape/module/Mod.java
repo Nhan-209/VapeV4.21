@@ -41,26 +41,26 @@ public class Mod
 extends PropertyContainer
 implements INamed,
 EventListener {
-    private boolean g;
-    private static String N;
-    private final List<ValueDisplayDescriptor> l;
-    private final ReusableTextNotification X;
-    private DelayedModuleToggleTask w;
-    private final Bendable y;
+    private boolean enabled;
+    private static String staticName;
+    private final List<ValueDisplayDescriptor> valueDisplayDescriptors;
+    private final ReusableTextNotification toggleNotification;
+    private DelayedModuleToggleTask moduleRunnable;
+    private final Bendable bind;
     protected Category E;
-    private final List<Value<?, ?>> d;
-    private boolean R;
-    private boolean Q;
-    private final String f;
-    private final int G;
-    private final List<SubModule> z;
-    private ModuleDisplayScope e;
-    private final int M;
-    private boolean m;
-    private boolean q = true;
-    private boolean h = true;
-    private final List<Value<?, ?>> i = new ArrayList();
-    private String u;
+    private final List<Value<?, ?>> values;
+    private boolean requiresBind;
+    private boolean favorited;
+    private final String name;
+    private final int defaultKeybind;
+    private final List<SubModule> subModules;
+    private ModuleDisplayScope displayScope;
+    private final int guiColor;
+    private boolean developmentWarningShown;
+    private boolean defaultVisible = true;
+    private boolean visible = true;
+    private final List<Value<?, ?>> allValues = new ArrayList();
+    private String tooltip;
 
     public ModDisplayInfo J() {
         return null;
@@ -75,7 +75,7 @@ EventListener {
     }
 
     public ModuleDisplayScope J$src$Lgg_vape_module_ModuleDisplayScope_$1w905sh() {
-        return this.e;
+        return this.displayScope;
     }
 
     public void onEnable() {
@@ -90,7 +90,7 @@ EventListener {
     }
 
     public void C(boolean bl) {
-        this.h = bl;
+        this.visible = bl;
     }
 
     public boolean Q() {
@@ -98,8 +98,8 @@ EventListener {
     }
 
     public void i(ValueDisplayDescriptor ... valueDisplayDescriptorArray) {
-        this.l.clear();
-        this.l.addAll(Arrays.asList(valueDisplayDescriptorArray));
+        this.valueDisplayDescriptors.clear();
+        this.valueDisplayDescriptors.addAll(Arrays.asList(valueDisplayDescriptorArray));
     }
 
     public String r() {
@@ -108,42 +108,42 @@ EventListener {
 
     public void loadJson(JsonObject jsonObject) {
         String string;
-        if (this.y.Y()) {
-            this.y.L().clear();
+        if (this.bind.Y()) {
+            this.bind.L().clear();
         }
         if ((string = ConfigJsonUtils.P(jsonObject, "name")) != null && string.equalsIgnoreCase(this.getName())) {
             Object object;
             JsonArray jsonArray;
-            if (this.y.Y()) {
+            if (this.bind.Y()) {
                 jsonArray = ConfigJsonUtils.q(jsonObject, "keybinds_2");
                 if (jsonArray != null) {
                     try {
-                        this.y.O(jsonArray, false);
+                        this.bind.O(jsonArray, false);
                     }
                     catch (Exception exception) {}
                 } else {
                     jsonArray = ConfigJsonUtils.q(jsonObject, "keybinds");
                     if (jsonArray != null) {
                         try {
-                            this.y.O(jsonArray, true);
+                            this.bind.O(jsonArray, true);
                         }
                         catch (Exception exception) {}
                     } else {
-                        this.y.L().clear();
-                        if (this.G != 0) {
-                            this.y.L().add(this.G);
+                        this.bind.L().clear();
+                        if (this.defaultKeybind != 0) {
+                            this.bind.L().add(this.defaultKeybind);
                         }
                     }
                 }
-                if ((object = ConfigJsonUtils.P(jsonObject, "bind_mode")) != null && this.y.A$src$Z$jg36ch()) {
+                if ((object = ConfigJsonUtils.P(jsonObject, "bind_mode")) != null && this.bind.A$src$Z$jg36ch()) {
                     try {
-                        this.y.Y(BindActivationMode.valueOf((String)object));
+                        this.bind.Y(BindActivationMode.valueOf((String)object));
                     }
                     catch (IllegalArgumentException illegalArgumentException) {
-                        this.y.Y(BindActivationMode.TOGGLE);
+                        this.bind.Y(BindActivationMode.TOGGLE);
                     }
                 } else {
-                    this.y.Y(BindActivationMode.TOGGLE);
+                    this.bind.Y(BindActivationMode.TOGGLE);
                 }
             }
             if ((jsonArray = jsonObject.getAsJsonArray("values")) != null) {
@@ -151,14 +151,14 @@ EventListener {
                 while (valueIterator.hasNext()) {
                     JsonElement jsonElement = valueIterator.next();
                     JsonObject jsonObject2 = jsonElement.getAsJsonObject();
-                    for (Value<?, ?> value : this.i) {
+                    for (Value<?, ?> value : this.allValues) {
                         if (!value.W(jsonObject2)) continue;
                         value.loadJson(jsonObject2);
                     }
                 }
             }
             if ((object = ConfigJsonUtils.t(jsonObject, "visible")) != null) {
-                this.h = (Boolean)object;
+                this.visible = (Boolean)object;
             }
         }
     }
@@ -168,14 +168,14 @@ EventListener {
     }
 
     public void R(boolean bl) {
-        this.q = bl;
-        this.h = bl;
+        this.defaultVisible = bl;
+        this.visible = bl;
     }
 
     public void B() {
-        this.X.p(1500L);
-        this.X.S("\u00a7f" + this.getName()).m(this.r$src$Z$14eylz9() ? "\u00a72Enabled" : "\u00a7cDisabled").B();
-        Vape.INSTANCE.getNotificationManager().m(this.X);
+        this.toggleNotification.p(1500L);
+        this.toggleNotification.S("\u00a7f" + this.getName()).m(this.r$src$Z$14eylz9() ? "\u00a72Enabled" : "\u00a7cDisabled").B();
+        Vape.INSTANCE.getNotificationManager().m(this.toggleNotification);
     }
 
     @Nullable
@@ -183,17 +183,17 @@ EventListener {
         JsonArray jsonArray;
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("name", this.getName());
-        if (this.y.Y()) {
-            jsonArray = this.y.toJson$src$Lcom_google_gson_JsonArray_$13cfbto();
-            if (this.G == 0 && jsonArray.size() != 0 || jsonArray.size() == 1 && jsonArray.get(0).getAsInt() != this.G) {
+        if (this.bind.Y()) {
+            jsonArray = this.bind.toJson$src$Lcom_google_gson_JsonArray_$13cfbto();
+            if (this.defaultKeybind == 0 && jsonArray.size() != 0 || jsonArray.size() == 1 && jsonArray.get(0).getAsInt() != this.defaultKeybind) {
                 jsonObject.add("keybinds_2", (JsonElement)jsonArray);
             }
-            if (this.y.A$src$Z$jg36ch() && this.y.G() != BindActivationMode.TOGGLE) {
-                jsonObject.addProperty("bind_mode", this.y.G().name());
+            if (this.bind.A$src$Z$jg36ch() && this.bind.G() != BindActivationMode.TOGGLE) {
+                jsonObject.addProperty("bind_mode", this.bind.G().name());
             }
         }
         jsonArray = new JsonArray();
-        for (Value<?, ?> value : this.i) {
+        for (Value<?, ?> value : this.allValues) {
             JsonObject jsonObject2;
             if (!value.s$src$Z$1arlhq2() || value.k() || (jsonObject2 = value.H(bl)).entrySet().size() <= 1) continue;
             jsonArray.add((JsonElement)jsonObject2);
@@ -201,8 +201,8 @@ EventListener {
         if (jsonArray.size() != 0) {
             jsonObject.add("values", (JsonElement)jsonArray);
         }
-        if (this.h != this.q) {
-            jsonObject.addProperty("visible", Boolean.valueOf(this.h));
+        if (this.visible != this.defaultVisible) {
+            jsonObject.addProperty("visible", Boolean.valueOf(this.visible));
         }
         if (jsonObject.entrySet().size() == 1) {
             return null;
@@ -211,7 +211,7 @@ EventListener {
     }
 
     public void setSuffix(String string) {
-        this.u = string;
+        this.tooltip = string;
     }
 
     public void q(boolean bl, boolean bl2) {
@@ -242,15 +242,15 @@ EventListener {
     }
 
     public void M(boolean bl) {
-        this.Q = bl;
+        this.favorited = bl;
     }
 
     public void v(long l, boolean bl) {
-        if (this.w != null) {
-            this.w.y(false);
+        if (this.moduleRunnable != null) {
+            this.moduleRunnable.y(false);
         }
-        this.w = new DelayedModuleToggleTask(this, l, bl);
-        new Thread(this.w).start();
+        this.moduleRunnable = new DelayedModuleToggleTask(this, l, bl);
+        new Thread(this.moduleRunnable).start();
     }
 
     public boolean L() {
@@ -258,15 +258,15 @@ EventListener {
     }
 
     public void F() {
-        if (this.X() && this.y.Y() && this.y.L().isEmpty()) {
+        if (this.X() && this.bind.Y() && this.bind.L().isEmpty()) {
             return;
         }
-        this.Y(!this.g);
+        this.Y(!this.enabled);
     }
 
     public void s(boolean bl, boolean bl2) {
         boolean bl3;
-        boolean bl4 = bl3 = this.g != bl;
+        boolean bl4 = bl3 = this.enabled != bl;
         if (!bl2 && !this.O() && this.E != Category.b && bl) {
             if (Vape.INSTANCE.getNotificationManager() != null) {
                 Vape.INSTANCE.getNotificationManager().t("Hidden Module", "Attempted to toggle " + this.getName() + "!", NotificationType.WARNING, 2500L);
@@ -279,15 +279,15 @@ EventListener {
         if (!bl) {
             this.g();
         }
-        this.g = bl;
-        if (this.g) {
+        this.enabled = bl;
+        if (this.enabled) {
             EventBus.getInstance().registerListener(this, this.w());
             new EventModStateChange(this, true).fire();
             this.onEnable();
         } else {
             new EventModStateChange(this, false).fire();
             this.onDisable();
-            if (!this.g) {
+            if (!this.enabled) {
                 EventBus.getInstance().unregisterListener(this);
             }
         }
@@ -297,7 +297,7 @@ EventListener {
         }
     }
 
-    private static Exception b(Exception exception) {
+    private static Exception passThrough(Exception exception) {
         return exception;
     }
 
@@ -309,14 +309,14 @@ EventListener {
     }
 
     public String n() {
-        return this.u;
+        return this.tooltip;
     }
 
     public void p(SubModuleValue subModuleValue, SubModuleValue subModuleValue2) {
         if (this instanceof SubModule) {
             return;
         }
-        if (!this.g) {
+        if (!this.enabled) {
             return;
         }
         Object t = subModuleValue.getInstance();
@@ -349,10 +349,10 @@ EventListener {
         if (eventKeyPress.getKey() <= 0) {
             return;
         }
-        if (this.y.L().isEmpty()) {
+        if (this.bind.L().isEmpty()) {
             return;
         }
-        if (Minecraft.currentScreen().getObject() == null && this.y.U(eventKeyPress.getKey(), eventKeyPress.isDown())) {
+        if (Minecraft.currentScreen().getObject() == null && this.bind.U(eventKeyPress.getKey(), eventKeyPress.isDown())) {
             eventKeyPress.setCancelled(true);
         }
     }
@@ -370,55 +370,55 @@ EventListener {
 
     @Override
     public String getName() {
-        return this.f;
+        return this.name;
     }
 
     public boolean X() {
-        return this.R;
+        return this.requiresBind;
     }
 
     public boolean O() {
-        return this.h;
+        return this.visible;
     }
 
     public String toString() {
-        return "Module{name='" + this.f + '\'' + ", defaultKeybind=" + this.G + ", guiColor=" + this.M + ", values=" + this.d + ", subModules=" + this.z + ", guiCategory=" + this.E + ", enabled=" + this.g + ", requiresBind=" + this.R + ", tooltip='" + this.u + '\'' + ", moduleRunnable=" + this.w + ", defaultVisible=" + this.q + ", visible=" + this.h + ", favorited=" + this.Q + '}';
+        return "Module{name='" + this.name + '\'' + ", defaultKeybind=" + this.defaultKeybind + ", guiColor=" + this.guiColor + ", values=" + this.values + ", subModules=" + this.subModules + ", guiCategory=" + this.E + ", enabled=" + this.enabled + ", requiresBind=" + this.requiresBind + ", tooltip='" + this.tooltip + '\'' + ", moduleRunnable=" + this.moduleRunnable + ", defaultVisible=" + this.defaultVisible + ", visible=" + this.visible + ", favorited=" + this.favorited + '}';
     }
 
     public List<SubModule> u() {
-        return this.z;
+        return this.subModules;
     }
 
     public void U(Value<?, ?> value, MinecraftVersionConstraint ... minecraftVersionConstraintArray) {
-        this.i.add(value);
+        this.allValues.add(value);
         List<MinecraftVersionConstraint> list = MinecraftVersionConstraint.L(minecraftVersionConstraintArray);
         if (!list.isEmpty()) {
             return;
         }
-        this.d.add(value);
+        this.values.add(value);
     }
 
     protected Predicate<IEvent> w() {
-        return this::lambda$getEventPredicate$0;
+        return this::matchesEnabled;
     }
 
     public boolean b() {
-        return this.q;
+        return this.defaultVisible;
     }
 
     public void q() {
     }
 
     public boolean r$src$Z$14eylz9() {
-        return this.g;
+        return this.enabled;
     }
 
     public static String o() {
-        return N;
+        return staticName;
     }
 
     public boolean k() {
-        return this.g;
+        return this.enabled;
     }
 
     public void X(MinecraftVersionConstraint minecraftVersionConstraint, Value<?, ?> ... valueArray) {
@@ -431,8 +431,8 @@ EventListener {
     }
 
     public String f() {
-        if (!this.l.isEmpty()) {
-            return ModuleValueDisplayFormatter.Z(this.l);
+        if (!this.valueDisplayDescriptors.isEmpty()) {
+            return ModuleValueDisplayFormatter.Z(this.valueDisplayDescriptors);
         }
         if (this.F$src$Ljava_util_List_$1kytx9u().isEmpty()) {
             return "";
@@ -441,11 +441,11 @@ EventListener {
     }
 
     public List<Value<?, ?>> V() {
-        return this.i;
+        return this.allValues;
     }
 
     public void o(ModuleDisplayScope moduleDisplayScope) {
-        this.e = moduleDisplayScope;
+        this.displayScope = moduleDisplayScope;
     }
 
     public Value getValue(String string) {
@@ -457,7 +457,7 @@ EventListener {
     }
 
     public int h() {
-        return this.M;
+        return this.guiColor;
     }
 
     public void addValue(Value<?, ?> ... valueArray) {
@@ -467,8 +467,8 @@ EventListener {
     }
 
     public void j() {
-        if (!this.m && this.Q()) {
-            this.m = true;
+        if (!this.developmentWarningShown && this.Q()) {
+            this.developmentWarningShown = true;
             Vape.INSTANCE.getNotificationManager().t("Module in development", this.getName() + " is in development\n\nUse with caution and report issues to support", NotificationType.WARNING, 10000L);
         }
     }
@@ -478,26 +478,26 @@ EventListener {
     }
 
     public Bendable a() {
-        return this.y;
+        return this.bind;
     }
 
     public void I() {
     }
 
-    private boolean lambda$getEventPredicate$0(IEvent iEvent) {
+    private boolean matchesEnabled(IEvent iEvent) {
         return this.r$src$Z$14eylz9();
     }
 
     public boolean f$src$Z$148d2ux() {
-        return this.Q;
+        return this.favorited;
     }
 
     public int M$src$I$13um7m9() {
-        return this.G;
+        return this.defaultKeybind;
     }
 
     public List<ValueDisplayDescriptor> X$src$Ljava_util_List_$6aol0g() {
-        return this.l;
+        return this.valueDisplayDescriptors;
     }
 
     public boolean isBlatantMod() {
@@ -505,19 +505,19 @@ EventListener {
     }
 
     public static void A(String string) {
-        N = string;
+        staticName = string;
     }
 
     public void onDisable() {
     }
 
     public List<Value<?, ?>> F$src$Ljava_util_List_$1kytx9u() {
-        return this.d;
+        return this.values;
     }
 
     public List<ClickGuiModuleCardRenderState> S() {
-        if (!this.l.isEmpty()) {
-            return ModuleValueDisplayFormatter.b(this.l);
+        if (!this.valueDisplayDescriptors.isEmpty()) {
+            return ModuleValueDisplayFormatter.b(this.valueDisplayDescriptors);
         }
         if (this.F$src$Ljava_util_List_$1kytx9u().isEmpty()) {
             return Collections.emptyList();
@@ -530,19 +530,19 @@ EventListener {
     }
 
     public Mod(String string, int n, int n2, Category category, String string2) {
-        this.d = new ArrayList();
-        this.z = new ArrayList<SubModule>();
-        this.l = new ArrayList<ValueDisplayDescriptor>();
-        this.e = ModuleDisplayScope.ALL;
-        this.X = new ReusableTextNotification(NotificationType.INFO, "", "", 1000L);
-        this.f = string;
-        this.G = n;
-        this.M = n2;
+        this.values = new ArrayList();
+        this.subModules = new ArrayList<SubModule>();
+        this.valueDisplayDescriptors = new ArrayList<ValueDisplayDescriptor>();
+        this.displayScope = ModuleDisplayScope.ALL;
+        this.toggleNotification = new ReusableTextNotification(NotificationType.INFO, "", "", 1000L);
+        this.name = string;
+        this.defaultKeybind = n;
+        this.guiColor = n2;
         this.E = category;
-        this.u = string2;
-        this.y = this.C$src$Lgg_vape_unmap_Bendable_$1we4j6l();
-        if (this.y.Y() && n != 0) {
-            this.y.L().add(n);
+        this.tooltip = string2;
+        this.bind = this.C$src$Lgg_vape_unmap_Bendable_$1we4j6l();
+        if (this.bind.Y() && n != 0) {
+            this.bind.L().add(n);
         }
     }
 
@@ -551,12 +551,12 @@ EventListener {
     }
 
     public void P(Value<?, ?> value, MinecraftVersionConstraint ... minecraftVersionConstraintArray) {
-        this.i.add(0, value);
+        this.allValues.add(0, value);
         List<MinecraftVersionConstraint> list = MinecraftVersionConstraint.L(minecraftVersionConstraintArray);
         if (!list.isEmpty()) {
             return;
         }
-        this.d.add(0, value);
+        this.values.add(0, value);
     }
 
     protected Bendable C$src$Lgg_vape_unmap_Bendable_$1we4j6l() {

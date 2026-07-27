@@ -34,9 +34,9 @@ import org.lwjgl.opengl.GL11;
 
 public class ESP2D
 extends SubModule<ESP> {
-    private final List<ProjectedEntityBounds> O;
-    private final ESP r = (ESP)this.getParent();
-    private static final String c = "[^\u00a7^\\x00-\\x7F]";
+    private final List<ProjectedEntityBounds> pendingBounds;
+    private final ESP parentEsp = (ESP)this.getParent();
+    private static final String NON_ASCII_PATTERN = "[^\u00a7^\\x00-\\x7F]";
 
     @EventHandler
     public void onRender2D(EventRender2D eventRender2D) {
@@ -52,7 +52,7 @@ extends SubModule<ESP> {
         float f3 = RenderWorldLastEvent.getPartialTicks();
         boolean bl = GL11.glIsEnabled((int)3042);
         RenderUtils.g();
-        for (ProjectedEntityBounds projectedEntityBounds : this.O) {
+        for (ProjectedEntityBounds projectedEntityBounds : this.pendingBounds) {
             double d;
             boolean bl2;
             float f4;
@@ -72,7 +72,7 @@ extends SubModule<ESP> {
             boolean bl3 = projectedEntityBounds.c.K$src$Z$1xmao67();
             boolean bl4 = projectedEntityBounds.c.f();
             boolean bl5 = bl2 = bl4 || bl3;
-            if (this.r.c.L().booleanValue() && (!this.r.D.L().booleanValue() || bl2)) {
+            if (this.parentEsp.c.L().booleanValue() && (!this.parentEsp.D.L().booleanValue() || bl2)) {
                 float f6 = (float)projectedEntityBounds.U.getAlpha() / 255.0f;
                 if (GuiRenderPrimitives.d()) {
                     double d6 = d5 - d4;
@@ -122,7 +122,7 @@ extends SubModule<ESP> {
             if (projectedEntityBounds.y.isInstance(MappedClasses.zm)) {
                 EntityLivingBase entityLivingBase = new EntityLivingBase(projectedEntityBounds.y.getObject());
                 float f7 = projectedEntityBounds.c.t();
-                if (this.r.J.L().booleanValue() && f7 >= 0.0f && projectedEntityBounds.c.y() >= 0.0f) {
+                if (this.parentEsp.J.L().booleanValue() && f7 >= 0.0f && projectedEntityBounds.c.y() >= 0.0f) {
                     double d8 = Math.min(1.0f, f7 / projectedEntityBounds.c.y());
                     if (GuiRenderPrimitives.d()) {
                         BufferedGuiRenderPrimitives.r(d2 - 2.0, d5 - 0.5, d2 - 2.0, d4 + 0.5, d2 - 4.0, d4 + 0.5, d2 - 4.0, d5 - 0.5, new Color(0.0f, 0.0f, 0.0f, 0.4f));
@@ -180,18 +180,18 @@ extends SubModule<ESP> {
                         GL11.glEnd();
                     }
                 }
-                if (this.r.U.L().booleanValue()) {
+                if (this.parentEsp.U.L().booleanValue()) {
                     FriendEntry friendEntry;
                     String string2;
-                    String string3 = string2 = this.r.I.L() == false || bl2 ? projectedEntityBounds.c.k() : projectedEntityBounds.c.o();
-                    if (this.r.I.L().booleanValue()) {
-                        string2 = string2.replaceAll(c, "");
+                    String string3 = string2 = this.parentEsp.I.L() == false || bl2 ? projectedEntityBounds.c.k() : projectedEntityBounds.c.o();
+                    if (this.parentEsp.I.L().booleanValue()) {
+                        string2 = string2.replaceAll(NON_ASCII_PATTERN, "");
                     }
                     if (bl3 && (friendEntry = Vape.INSTANCE.getFriendManager().O(projectedEntityBounds.c.k())) != null) {
                         string2 = friendEntry.o();
                     }
                     d = smoothFontRenderer.N(string2);
-                    if (this.r.a.L().booleanValue()) {
+                    if (this.parentEsp.a.L().booleanValue()) {
                         Color color = bl2 ? projectedEntityBounds.U : new Color(0, 0, 0, 95);
                         GlStateManager.disableTexture2D();
                         boolean bl6 = entityLivingBase.P();
@@ -222,10 +222,10 @@ extends SubModule<ESP> {
             GlStateManager.disableBlend();
         }
         RenderUtil.Y();
-        this.O.clear();
+        this.pendingBounds.clear();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -238,7 +238,7 @@ extends SubModule<ESP> {
         double d = eventPreRenderLiving.getX();
         double d2 = eventPreRenderLiving.getY();
         double d3 = eventPreRenderLiving.getZ();
-        MutableColor mutableColor = this.r.J(eventPreRenderLiving.getThePlayer(), entity.getObject());
+        MutableColor mutableColor = this.parentEsp.J(eventPreRenderLiving.getThePlayer(), entity.getObject());
         if (mutableColor == null) {
             return;
         }
@@ -250,8 +250,8 @@ extends SubModule<ESP> {
         RenderEntityContext renderEntityContext = RenderEntityContextCache.V(entityLivingBase, eventPreRenderLiving.getThePlayer());
         ProjectedEntityBounds projectedEntityBounds = new ProjectedEntityBounds(d, d2, d3, axisAlignedBB2, entity, renderEntityContext, mutableColor);
         if (projectedEntityBounds.L) {
-            this.O.add(projectedEntityBounds);
-            if (this.r.U.L().booleanValue()) {
+            this.pendingBounds.add(projectedEntityBounds);
+            if (this.parentEsp.U.L().booleanValue()) {
                 eventPreRenderLiving.setCancelled(true);
             }
         }
@@ -260,7 +260,7 @@ extends SubModule<ESP> {
 
     public ESP2D(Mod mod, String string) {
         super(mod, string);
-        this.O = new ArrayList<ProjectedEntityBounds>();
+        this.pendingBounds = new ArrayList<ProjectedEntityBounds>();
     }
 }
 

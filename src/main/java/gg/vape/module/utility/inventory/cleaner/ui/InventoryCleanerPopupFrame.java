@@ -51,23 +51,23 @@ import org.jetbrains.annotations.Nullable;
 
 public class InventoryCleanerPopupFrame
 extends Frame {
-    private InventoryCleanerProfileEditContext xY;
-    private InventoryFilterRuleListPanel xM;
+    private InventoryCleanerProfileEditContext editContext;
+    private InventoryFilterRuleListPanel ruleListPanel;
     @Nullable
-    private FrameStackManager xh;
-    private static int[] xZ;
-    private final ScrollableFrameComponent xC = new ScrollableFrameComponent(358.0, 171.0);
+    private FrameStackManager parentStack;
+    private static int[] paletteColors;
+    private final ScrollableFrameComponent scrollFrame = new ScrollableFrameComponent(358.0, 171.0);
 
     public void t(InventoryCleanerProfileValue inventoryCleanerProfileValue, InventoryCleanerProfile inventoryCleanerProfile, Runnable runnable) {
         Object object;
-        this.xY = new InventoryCleanerProfileEditContext(inventoryCleanerProfileValue, inventoryCleanerProfile, runnable);
-        this.xC.S();
-        PanelComponent panelComponent = new PanelComponent(this.xC.A() - 10.0, 80.0);
+        this.editContext = new InventoryCleanerProfileEditContext(inventoryCleanerProfileValue, inventoryCleanerProfile, runnable);
+        this.scrollFrame.S();
+        PanelComponent panelComponent = new PanelComponent(this.scrollFrame.A() - 10.0, 80.0);
         panelComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         panelComponent.d(false);
         panelComponent.t(false);
-        this.xC.h(new SpacerComponent(5.0, 2.0), new Object[0]);
-        this.xC.h(panelComponent, "wrap");
+        this.scrollFrame.h(new SpacerComponent(5.0, 2.0), new Object[0]);
+        this.scrollFrame.h(panelComponent, "wrap");
         GuiComponent guiComponent = new SmallTextInputComponent("Inventory name...");
         ((TextInputComponentBase)guiComponent).o(1.0f);
         ((TextInputComponentBase)guiComponent).i(true);
@@ -82,7 +82,7 @@ extends Frame {
         ((SimpleTextLabelComponent)guiComponent2).l(true);
         panelComponent.h(guiComponent2, new Object[0]);
         panelComponent.h(new SpacerComponent(0.0, 5.0), new Object[0]);
-        PanelComponent panelComponent2 = new PanelComponent(this.xC.A() - 5.0, 34.0);
+        PanelComponent panelComponent2 = new PanelComponent(this.scrollFrame.A() - 5.0, 34.0);
         panelComponent2.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         panelComponent2.d(false);
         panelComponent2.T(Color.MAGENTA);
@@ -95,24 +95,24 @@ extends Frame {
             slotInventoryFilterRuleRow.p(() -> this.lambda$setManagedInventory$1(slotRule, slotInventoryFilterRuleRow, inventoryCleanerProfile));
             panelComponent2.h(new PaddedComponent(1.0, 1.0, 2.0, 0.0, slotInventoryFilterRuleRow), new Object[0]);
         }
-        this.xC.h(new SpacerComponent(1.0, 0.0), new Object[0]);
-        this.xC.h(new FilledSpacerComponent(this.A() - 4.0, 1.0, new Color(255, 255, 255, 13)), "wrap");
-        guiComponent = new ScrollableFrameComponent(this.xC.A(), 55.0);
+        this.scrollFrame.h(new SpacerComponent(1.0, 0.0), new Object[0]);
+        this.scrollFrame.h(new FilledSpacerComponent(this.A() - 4.0, 1.0, new Color(255, 255, 255, 13)), "wrap");
+        guiComponent = new ScrollableFrameComponent(this.scrollFrame.A(), 55.0);
         guiComponent.d(true);
         ((FrameComponent)guiComponent).T(InventoryCleanerPopupFrame.J.r);
-        this.xC.h(guiComponent, "wrap");
-        guiComponent2 = new ScrollableFrameComponent(this.xC.A() - 10.0, 45.0);
+        this.scrollFrame.h(guiComponent, "wrap");
+        guiComponent2 = new ScrollableFrameComponent(this.scrollFrame.A() - 10.0, 45.0);
         ((FrameComponent)guiComponent2).l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         guiComponent2.d(false);
         ((FrameComponent)guiComponent).h(new SpacerComponent(5.0, 2.0), new Object[0]);
         ((FrameComponent)guiComponent).h(guiComponent2, "wrap");
         ((FrameComponent)guiComponent2).h(new SpacerComponent(0.0, 5.0), new Object[0]);
         ((FrameComponent)guiComponent2).h(new SpacerComponent(5.0, 0.0), "widthwrap");
-        this.xM = new InventoryFilterRuleListPanel(this, (FrameComponent)guiComponent2, inventoryCleanerProfile);
-        ((FrameComponent)guiComponent2).h(this.xM, new Object[0]);
-        panelComponent2 = new PanelComponent(this.xC.A() - 10.0, 16.0);
+        this.ruleListPanel = new InventoryFilterRuleListPanel(this, (FrameComponent)guiComponent2, inventoryCleanerProfile);
+        ((FrameComponent)guiComponent2).h(this.ruleListPanel, new Object[0]);
+        panelComponent2 = new PanelComponent(this.scrollFrame.A() - 10.0, 16.0);
         panelComponent2.d(false);
-        this.xC.h(new PaddedComponent(3.0, 3.0, 10.0, 5.0, panelComponent2), "wrap");
+        this.scrollFrame.h(new PaddedComponent(3.0, 3.0, 10.0, 5.0, panelComponent2), "wrap");
         DropdownSelectComponent dropdownSelectComponent = new DropdownSelectComponent(inventoryCleanerProfile.n);
         dropdownSelectComponent.v(true);
         dropdownSelectComponent.C(0.0);
@@ -139,14 +139,14 @@ extends Frame {
     }
 
     public void d(@Nullable FrameStackManager frameStackManager) {
-        this.xh = frameStackManager;
+        this.parentStack = frameStackManager;
     }
 
     private void lambda$createItemFilterItemSelectorPopup$9(InventoryFilterRule inventoryFilterRule, InventoryCleanerProfile inventoryCleanerProfile, Runnable runnable, GuiComponent guiComponent, ItemPickerSelection itemPickerSelection) {
         if (inventoryFilterRule instanceof ItemInventoryFilterRule && itemPickerSelection == null) {
             ItemInventoryFilterRule itemInventoryFilterRule = (ItemInventoryFilterRule)inventoryFilterRule;
             inventoryCleanerProfile.U(itemInventoryFilterRule);
-            this.xM.J(itemInventoryFilterRule);
+            this.ruleListPanel.J(itemInventoryFilterRule);
         } else {
             inventoryFilterRule.q().G(itemPickerSelection);
             inventoryFilterRule.i(inventoryFilterRule.L());
@@ -171,13 +171,13 @@ extends Frame {
             inventoryFilterRule.y();
             if (inventoryFilterRule instanceof ItemInventoryFilterRule) {
                 inventoryCleanerProfile.U((ItemInventoryFilterRule)inventoryFilterRule);
-                this.O(this.xY);
+                this.reopenEditor(this.editContext);
             }
         }
         ClientSettings.K((PopupFrame)atomicReference.get());
     }
 
-    private void O(InventoryCleanerProfileEditContext inventoryCleanerProfileEditContext) {
+    private void reopenEditor(InventoryCleanerProfileEditContext inventoryCleanerProfileEditContext) {
         this.t(inventoryCleanerProfileEditContext.I, inventoryCleanerProfileEditContext.s, inventoryCleanerProfileEditContext.T);
     }
 
@@ -190,7 +190,7 @@ extends Frame {
     }
 
     protected void M(GuiComponent guiComponent, InventoryCleanerProfile inventoryCleanerProfile, InventoryFilterRule inventoryFilterRule, @Nullable Runnable runnable) {
-        this.Z(guiComponent, inventoryFilterRule, arg_0 -> this.lambda$createItemFilterItemSelectorPopup$9(inventoryFilterRule, inventoryCleanerProfile, runnable, guiComponent, arg_0));
+        this.openItemPicker(guiComponent, inventoryFilterRule, arg_0 -> this.lambda$createItemFilterItemSelectorPopup$9(inventoryFilterRule, inventoryCleanerProfile, runnable, guiComponent, arg_0));
     }
 
     public static void K(InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset, InventoryFilterPreset inventoryFilterPreset2, boolean bl) {
@@ -218,19 +218,19 @@ extends Frame {
         this.k(true);
         this.X(true);
         this.C$src$V$nadrmg();
-        this.xC.C$src$V$nadrmg();
-        this.xC.d(true);
-        this.xC.T(InventoryCleanerPopupFrame.J.i);
+        this.scrollFrame.C$src$V$nadrmg();
+        this.scrollFrame.d(true);
+        this.scrollFrame.T(InventoryCleanerPopupFrame.J.i);
         PanelComponent panelComponent = new PanelComponent(12.0, 12.0);
         GlyphIconComponent glyphIconComponent = new GlyphIconComponent("newclose", 8.0, 8.0, 10.0, 10.0, InventoryCleanerPopupFrame.J.h, InventoryCleanerPopupFrame.J.A, null);
         panelComponent.h(new PaddedComponent(1.0, glyphIconComponent), new Object[0]);
         panelComponent.d(false);
-        this.xC.h(new SpacerComponent(0.0, 0.0), new Object[0]);
-        this.xC.h(panelComponent, "alignright");
-        for (GuiComponent guiComponent : this.xC.f()) {
+        this.scrollFrame.h(new SpacerComponent(0.0, 0.0), new Object[0]);
+        this.scrollFrame.h(panelComponent, "alignright");
+        for (GuiComponent guiComponent : this.scrollFrame.f()) {
             guiComponent.Q(false);
         }
-        PaddedComponent paddedComponent = new PaddedComponent(1.0, 3.0, 1.0, 1.0, this.xC);
+        PaddedComponent paddedComponent = new PaddedComponent(1.0, 3.0, 1.0, 1.0, this.scrollFrame);
         paddedComponent.d(true);
         paddedComponent.r(false);
         paddedComponent.T(InventoryCleanerPopupFrame.J.y);
@@ -239,7 +239,7 @@ extends Frame {
         glyphIconComponent.i(5.0f);
         glyphIconComponent.R(true);
         glyphIconComponent.q(true);
-        glyphIconComponent.r(this::w$src$V$109w4c3);
+        glyphIconComponent.r(this::close);
     }
 
     public void Z(GuiComponent guiComponent, InventoryCleanerProfile inventoryCleanerProfile, InventoryFilterRule inventoryFilterRule, boolean bl) {
@@ -261,7 +261,7 @@ extends Frame {
         inventoryCleanerProfileValue.i(inventoryCleanerProfile);
         runnable.run();
         ClientSettings.K(popupFrame);
-        this.w$src$V$109w4c3();
+        this.close();
     }
 
     static {
@@ -280,11 +280,11 @@ extends Frame {
         ClientSettings.K((PopupFrame)atomicReference.get());
         consumer.accept(itemPickerSelection);
         if (itemPickerSelection != null && HiddenInventoryItemMatchers.R.k().equals(itemPickerSelection.N())) {
-            this.p(guiComponent, inventoryFilterRule);
+            this.openAnyItemPicker(guiComponent, inventoryFilterRule);
         }
     }
 
-    private void p(GuiComponent guiComponent, InventoryFilterRule inventoryFilterRule) {
+    private void openAnyItemPicker(GuiComponent guiComponent, InventoryFilterRule inventoryFilterRule) {
         MaterialFilterCondition materialFilterCondition = new MaterialFilterCondition();
         InventoryFilterPreset inventoryFilterPreset = new InventoryFilterPreset(inventoryFilterRule instanceof ItemInventoryFilterRule);
         inventoryFilterPreset.x(InventoryFilterConditionGroup.w().O(materialFilterCondition).w());
@@ -298,7 +298,7 @@ extends Frame {
 
     @Nullable
     public FrameStackManager u$src$Lgg_vape_ui_click_frame_FrameStackManager_$12v9ioe() {
-        return this.xh;
+        return this.parentStack;
     }
 
     @Override
@@ -306,24 +306,24 @@ extends Frame {
         return "Managed Inventory Editor";
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private void w$src$V$109w4c3() {
+    private void close() {
         FrameStackManager frameStackManager;
-        InventoryCleanerProfile inventoryCleanerProfile = this.xY.s;
+        InventoryCleanerProfile inventoryCleanerProfile = this.editContext.s;
         if (inventoryCleanerProfile.Y().trim().isEmpty()) {
             inventoryCleanerProfile.q();
         }
-        if ((frameStackManager = this.xh) != null) {
+        if ((frameStackManager = this.parentStack) != null) {
             if (frameStackManager instanceof ClickGuiFrameManager) {
                 ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)frameStackManager;
                 clickGuiFrameManager.G();
             } else {
                 ClientSettings.fW.I(frameStackManager);
             }
-            this.xh = null;
+            this.parentStack = null;
         } else {
             ClientSettings.fW.I(ClientSettings.a);
         }
@@ -344,7 +344,7 @@ extends Frame {
         }
     }
 
-    private void Z(GuiComponent guiComponent, InventoryFilterRule inventoryFilterRule, Consumer<@Nullable ItemPickerSelection<String, ItemMappingEntry>> consumer) {
+    private void openItemPicker(GuiComponent guiComponent, InventoryFilterRule inventoryFilterRule, Consumer<@Nullable ItemPickerSelection<String, ItemMappingEntry>> consumer) {
         AtomicReference<AnchoredPopupFrame> atomicReference = new AtomicReference<AnchoredPopupFrame>();
         InventoryItemPickerPanel inventoryItemPickerPanel = new InventoryItemPickerPanel(inventoryFilterRule, false, null, Collections.emptyList(), arg_0 -> this.lambda$createItemSelecterPopup$5(atomicReference, consumer, guiComponent, inventoryFilterRule, arg_0));
         AnchoredPopupFrame anchoredPopupFrame = ClientSettings.g(guiComponent, inventoryItemPickerPanel, AnchoredPopupFrame.class);
@@ -356,7 +356,7 @@ extends Frame {
     }
 
     public static int[] L$src$AI$12p19wq() {
-        return xZ;
+        return paletteColors;
     }
 
     private void lambda$setManagedInventory$4(InventoryCleanerProfileValue inventoryCleanerProfileValue, InventoryCleanerProfile inventoryCleanerProfile, Runnable runnable) {
@@ -373,7 +373,7 @@ extends Frame {
     }
 
     public static void B(int[] nArray) {
-        xZ = nArray;
+        paletteColors = nArray;
     }
 
     public static void Z$src$V$zty34m() {

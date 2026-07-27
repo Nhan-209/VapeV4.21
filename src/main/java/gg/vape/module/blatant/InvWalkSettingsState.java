@@ -6,7 +6,7 @@ import gg.vape.runtime.ObfuscatedRuntimeException;
 import gg.vape.wrapper.impl.KeyBinding;
 
 public class InvWalkSettingsState {
-    private static int e;
+    private static int keyState;
 
     public static int m() {
         int n = InvWalkSettingsState.r();
@@ -17,14 +17,14 @@ public class InvWalkSettingsState {
     }
 
     public static void y(int n) {
-        e = n;
+        keyState = n;
     }
 
     public static boolean S(KeyBinding keyBinding) {
         return ClientSettings.B(keyBinding);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -41,7 +41,7 @@ public class InvWalkSettingsState {
     }
 
     public static int r() {
-        return e;
+        return keyState;
     }
 
     static {

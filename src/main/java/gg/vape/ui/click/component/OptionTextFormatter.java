@@ -19,7 +19,7 @@ public interface OptionTextFormatter<T> {
         return arg_0 -> OptionTextFormatter.lambda$createNamedFormatter$0(string, arg_0);
     }
 
-    private static String lambda$createStringFormatter$1(String string, String string2) {
+    static String lambda$createStringFormatter$1(String string, String string2) {
         return string2 != null ? string2 : string;
     }
 
@@ -27,11 +27,11 @@ public interface OptionTextFormatter<T> {
         return OptionTextFormatter.W("");
     }
 
-    private static String lambda$createNamedFormatter$0(String string, INamed iNamed) {
+    static String lambda$createNamedFormatter$0(String string, INamed iNamed) {
         return iNamed != null ? iNamed.getName() : string;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

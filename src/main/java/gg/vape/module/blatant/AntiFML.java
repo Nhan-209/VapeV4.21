@@ -10,7 +10,7 @@ import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class AntiFML
 extends Mod {
-    private static final long k = -7613235170337351361L;
+    private static final long MOD_ID = -7613235170337351361L;
 
     @EventHandler
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
@@ -29,10 +29,10 @@ extends Mod {
     }
 
     public AntiFML() {
-        super("Anti-FML", (int)k, Category.w, "Some servers prevent Forge from connecting\nthis will bypass that.\nYou must reconnect to the server inorder for this to work.");
+        super("Anti-FML", (int)MOD_ID, Category.w, "Some servers prevent Forge from connecting\nthis will bypass that.\nYou must reconnect to the server inorder for this to work.");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

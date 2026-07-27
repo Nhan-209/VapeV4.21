@@ -54,15 +54,15 @@ import org.lwjgl.opengl.GL11;
 
 public class BedPlates
 extends Mod {
-    private World C;
-    private BooleanValue a = BooleanValue.create(this, "Show distance", true);
-    private List<BedTargetRenderPosition> k = new CopyOnWriteArrayList<BedTargetRenderPosition>();
-    private static final long p = 8840478352411230313L;
-    private HashMap<BedTargetRenderPosition, BedPlateCountState> I = new HashMap();
+    private World lastWorld;
+    private BooleanValue showDistance = BooleanValue.create(this, "Show distance", true);
+    private List<BedTargetRenderPosition> bedPositions = new CopyOnWriteArrayList<BedTargetRenderPosition>();
+    private static final long GL_TEXTURE_BINDING_2D = 8840478352411230313L;
+    private HashMap<BedTargetRenderPosition, BedPlateCountState> countStates = new HashMap();
     int A = 0;
-    private TimerUtil U = new TimerUtil();
+    private TimerUtil updateTimer = new TimerUtil();
 
-    private static Exception a(Exception exception) {
+    private static Exception rethrow(Exception exception) {
         return exception;
     }
 
@@ -73,33 +73,33 @@ extends Mod {
         if (worldClient.isNull()) {
             return;
         }
-        if (!worldClient.equals(this.C)) {
-            this.k.clear();
-            this.I.clear();
+        if (!worldClient.equals(this.lastWorld)) {
+            this.bedPositions.clear();
+            this.countStates.clear();
             return;
         }
         double d = eventRender3D.getThePlayer().z();
         double d2 = eventRender3D.getThePlayer().h();
-        for (BedTargetRenderPosition object2 : this.k) {
+        for (BedTargetRenderPosition object2 : this.bedPositions) {
             object = worldClient.getBlockByPos(object2.N(), object2.h(), object2.D$src$I$nuyd86());
             if (BlockUtil.f((Block)object) && !(MathUtil.Z(d, 0.0, d2, object2.N(), 0.0, object2.D$src$I$nuyd86()) > 100.0)) continue;
-            this.k.remove(object2);
-            this.I.remove(object2);
+            this.bedPositions.remove(object2);
+            this.countStates.remove(object2);
         }
         try {
-            if (this.U.hasTimeElapsed(500L)) {
-                this.U.reset();
-                this.W();
+            if (this.updateTimer.hasTimeElapsed(500L)) {
+                this.updateTimer.reset();
+                this.updateCountStates();
             }
             if (GuiRenderPrimitives.d()) {
-                for (Map.Entry entry : this.I.entrySet()) {
+                for (Map.Entry entry : this.countStates.entrySet()) {
                     object = (BedPlateCountState)entry.getValue();
-                    this.P(eventRender3D, (BedPlateCountState)object);
+                    this.renderPlate(eventRender3D, (BedPlateCountState)object);
                 }
             } else {
                 Object object2;
                 int n;
-                for (Map.Entry entry : this.I.entrySet()) {
+                for (Map.Entry entry : this.countStates.entrySet()) {
                     object = (BedPlateCountState)entry.getValue();
                     for (n = 1; n < 4; ++n) {
                         List<BedPlateBlockStateKey> list = ((BedPlateCountState)object).c(n);
@@ -112,7 +112,7 @@ extends Mod {
                 }
                 GlFramebuffer.E = true;
                 GuiRenderPrimitives.U = true;
-                int n2 = GL11.glGetInteger((int)((int)p));
+                int n2 = GL11.glGetInteger((int)((int)GL_TEXTURE_BINDING_2D));
                 boolean bl = GL11.glIsEnabled((int)2884);
                 boolean bl2 = GL11.glIsEnabled((int)3042);
                 n = GL11.glIsEnabled((int)2896) ? 1 : 0;
@@ -131,9 +131,9 @@ extends Mod {
                 }
                 GuiRenderPrimitives.G.f();
                 RenderUtils.g();
-                for (Map.Entry entry : this.I.entrySet()) {
+                for (Map.Entry entry : this.countStates.entrySet()) {
                     object2 = (BedPlateCountState)entry.getValue();
-                    this.P(eventRender3D, (BedPlateCountState)object2);
+                    this.renderPlate(eventRender3D, (BedPlateCountState)object2);
                 }
                 RenderUtils.f();
                 GuiRenderPrimitives.G.L();
@@ -175,11 +175,11 @@ extends Mod {
         int n = (int)entityPlayerSP.z();
         int n2 = (int)entityPlayerSP.N();
         int n3 = (int)entityPlayerSP.h();
-        if (worldClient.isNull() || !worldClient.equals(this.C)) {
-            this.k.clear();
-            this.I.clear();
+        if (worldClient.isNull() || !worldClient.equals(this.lastWorld)) {
+            this.bedPositions.clear();
+            this.countStates.clear();
         }
-        this.C = worldClient;
+        this.lastWorld = worldClient;
         if (ForgeVersion.MC_1_8_9.A()) {
             int n4 = 100;
             for (int i = -n4; i < n4; ++i) {
@@ -200,8 +200,8 @@ extends Mod {
                             BedTargetRenderPosition bedTargetRenderPosition = new BedTargetRenderPosition(n6, n8, n9);
                             BlockBed blockBed = new BlockBed(block);
                             boolean bl = blockBed.f(worldClient, n6, n8, n9);
-                            if (this.k.contains(bedTargetRenderPosition) || bl) continue;
-                            this.k.add(bedTargetRenderPosition);
+                            if (this.bedPositions.contains(bedTargetRenderPosition) || bl) continue;
+                            this.bedPositions.add(bedTargetRenderPosition);
                         }
                     }
                 }
@@ -209,7 +209,7 @@ extends Mod {
         }
     }
 
-    private void c() {
+    private void scanLoadedChunks() {
         WorldClient worldClient = Minecraft.theWorld();
         ClientChunkProvider clientChunkProvider = worldClient.U();
         List<Chunk> list = clientChunkProvider.L();
@@ -227,12 +227,12 @@ extends Mod {
                 int n3 = chunk.a();
                 int n4 = (int)MathUtil.Z(d, 0.0, d3, n3 << 4, 0.0, (n = chunk.j()) << 4);
                 if (n4 > 100) continue;
-                this.A(cArray, n3, n2, n);
+                this.scanChunkSection(cArray, n3, n2, n);
             }
         }
     }
 
-    private void P(EventRender3D eventRender3D, BedPlateCountState bedPlateCountState) {
+    private void renderPlate(EventRender3D eventRender3D, BedPlateCountState bedPlateCountState) {
         Object object;
         Object object2;
         float f;
@@ -301,18 +301,18 @@ extends Mod {
         int n = Math.max(visibleBlockStates.size(), 1);
         float f5 = 22.0f;
         float f6 = n * 18 + 6;
-        if (this.a.L().booleanValue()) {
+        if (this.showDistance.L().booleanValue()) {
             f6 = (float)Math.max(((SmoothFontRenderer)object).N(string) + 10.0, (double)f6);
         }
         float f7 = -f6 / 2.0f;
         float f8 = -f5;
-        if (this.a.L().booleanValue()) {
+        if (this.showDistance.L().booleanValue()) {
             f8 -= 8.0f;
             f5 += 8.0f;
         }
         if (GuiRenderPrimitives.d()) {
             boolean bl = visibleBlockStates.isEmpty();
-            float f9 = this.a.L() != false ? 4.0f : 0.0f;
+            float f9 = this.showDistance.L() != false ? 4.0f : 0.0f;
             float f10 = bl ? 0.8f : 0.0f;
             BufferedRenderPrimitives.P(f7, f8 - 1.0f, f6, f5 + 1.0f, 12.0f, 6.0f, new Color(0, 0, 0, 150), 0.0f, 0.0f, 1.0f, new Color(45, 45, 45, 255), new Color(0, 0, 0, 170), f10, f9, new Color(51, 51, 51, 255), false);
             float f11 = f7 + 4.0f;
@@ -325,12 +325,12 @@ extends Mod {
                 ItemIconRenderer.C(itemStack, f11, f12, 16, 16, 1.0f, true);
                 f11 += 18.0f;
             }
-            if (this.a.L().booleanValue()) {
+            if (this.showDistance.L().booleanValue()) {
                 ((BufferedSmoothFontRenderer)object).B(string, f7 + f6 / 2.0f, f8 + 2.0f, -1, false, true);
             }
         } else {
             GuiRenderPrimitives.G.r(false);
-            GuiRenderPrimitives.G.C(visibleBlockStates.isEmpty(), this.a.L());
+            GuiRenderPrimitives.G.C(visibleBlockStates.isEmpty(), this.showDistance.L());
             GuiRenderPrimitives.n(f7, (double)f8, (double)f6, (double)f5);
             GuiRenderPrimitives.G.r(true);
             float f13 = f7 + 4.0f;
@@ -342,7 +342,7 @@ extends Mod {
                 ItemIconRenderer.m(bedPlateBlockStateKey.i, bedPlateBlockStateKey.f, f13, f14, 16, 16);
                 f13 += 18.0f;
             }
-            if (this.a.L().booleanValue()) {
+            if (this.showDistance.L().booleanValue()) {
                 ((SmoothFontRenderer)object).L(string, f7 + f6 / 2.0f, f8 + 2.0f, -1);
             }
         }
@@ -352,18 +352,18 @@ extends Mod {
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
         if (ForgeVersion.MC_1_8_9.L() && Minecraft.theWorld().isNotNull() && this.A++ >= 20) {
-            this.c();
+            this.scanLoadedChunks();
             this.A = 0;
         }
     }
 
-    private void W() {
+    private void updateCountStates() {
         WorldClient worldClient = Minecraft.theWorld();
-        for (BedTargetRenderPosition bedTargetRenderPosition : this.k) {
-            if (!this.I.containsKey(bedTargetRenderPosition)) {
-                this.I.put(bedTargetRenderPosition, new BedPlateCountState(bedTargetRenderPosition));
+        for (BedTargetRenderPosition bedTargetRenderPosition : this.bedPositions) {
+            if (!this.countStates.containsKey(bedTargetRenderPosition)) {
+                this.countStates.put(bedTargetRenderPosition, new BedPlateCountState(bedTargetRenderPosition));
             }
-            BedPlateCountState bedPlateCountState = this.I.get(bedTargetRenderPosition);
+            BedPlateCountState bedPlateCountState = this.countStates.get(bedTargetRenderPosition);
             bedPlateCountState.y();
             Block block = worldClient.getBlockByPos(bedTargetRenderPosition.N(), bedTargetRenderPosition.h(), bedTargetRenderPosition.D$src$I$nuyd86());
             BlockBed blockBed = new BlockBed(block);
@@ -428,10 +428,10 @@ extends Mod {
     public BedPlates() {
         super("BedPlates", new Color(245, 0, 37).getRGB(), Category.k, "Shows block types around beds");
         this.v(10L, true);
-        this.addValue(this.a);
+        this.addValue(this.showDistance);
     }
 
-    private void A(char[] cArray, int n, int n2, int n3) {
+    private void scanChunkSection(char[] cArray, int n, int n2, int n3) {
         for (int i = 0; i < cArray.length; ++i) {
             char c = cArray[i];
             int n4 = c >> 4;
@@ -446,9 +446,9 @@ extends Mod {
             BedTargetRenderPosition bedTargetRenderPosition = new BedTargetRenderPosition(n9, n7, n10);
             BlockBed blockBed = new BlockBed(block);
             boolean bl = blockBed.f(Minecraft.theWorld(), n9, n7, n10);
-            if (this.k.contains(bedTargetRenderPosition) || bl) continue;
-            this.k.add(bedTargetRenderPosition);
-            this.I.put(bedTargetRenderPosition, new BedPlateCountState(bedTargetRenderPosition));
+            if (this.bedPositions.contains(bedTargetRenderPosition) || bl) continue;
+            this.bedPositions.add(bedTargetRenderPosition);
+            this.countStates.put(bedTargetRenderPosition, new BedPlateCountState(bedTargetRenderPosition));
         }
     }
 }

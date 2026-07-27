@@ -104,113 +104,113 @@ import org.lwjgl.opengl.GL11;
 
 public class BlockIn
 extends Mod {
-    private float OI;
-    private BlockPlacementGraph Ow;
-    private final LimitValue Og;
-    private final VisibleModuleList<BlockData> O9;
-    private final BooleanValue Oj;
-    private DirectionalPosition OK;
-    private final RandomValue s;
-    private final BooleanValue OT;
-    private boolean v;
-    private TimerUtil OF;
-    private final RandomValue OW;
-    private boolean OX;
-    private final BooleanValue Ox;
-    private BlockPlacementGraph A;
-    private boolean b = false;
-    private boolean OY;
-    private Notification H;
-    private Object Of;
-    private ArrayList<String> Z;
-    private final BooleanValue OV;
-    private FixedRotationController U;
-    private Boolean Os;
-    private final RandomValue Or;
-    private double OR = -999.0;
-    private final NumberValue Oi;
-    private boolean K;
-    private List<BlockPlacementGraph> Ob;
-    private double OH = -999.0;
-    private int r;
-    private TimerUtil OD;
-    private Boolean O3;
-    private boolean F;
-    private int Op;
-    private final NumberValue On;
-    private final ArrayList<BlockPlacementPathSegment> Ou;
-    private boolean OJ;
-    private int O7 = 0;
-    private HashSet<BlockData> O5;
-    private final MovementInputLock OG;
-    private BlockPathPlanner L;
-    private boolean O2;
-    private final BooleanValue OQ;
-    private final BooleanValue S;
-    private boolean OP;
-    private int OA = 0;
-    private int OS;
-    private Boolean O_;
-    private TimerUtil OB;
-    private HashSet<BlockData> o;
-    private final ArrayList<BlockPlacementPathSegment> p;
-    private float O4;
-    private boolean Oe;
-    private final BooleanValue OE;
-    private int Oh;
+    private float placeYaw;
+    private BlockPlacementGraph currentGraph;
+    private final LimitValue blacklistBlocks;
+    private final VisibleModuleList<BlockData> placedBlocks;
+    private final BooleanValue limitBlocks;
+    private DirectionalPosition fallDirection;
+    private final RandomValue resetAngleDelay;
+    private final BooleanValue silentAim;
+    private boolean inputRight;
+    private TimerUtil failTimer;
+    private final RandomValue returnDelay;
+    private boolean unusedFlagOX;
+    private final BooleanValue heldWhitelist;
+    private BlockPlacementGraph graph;
+    private boolean claimActive = false;
+    private boolean staircaseQueued;
+    private Notification failNotification;
+    private Object unusedRefOf;
+    private ArrayList<String> defaultBlockNames;
+    private final BooleanValue resetAngle;
+    private FixedRotationController rotationController;
+    private Boolean pendingInputBack;
+    private final RandomValue clutchMoveDelay;
+    private double savedYaw = -999.0;
+    private final NumberValue maxBlocks;
+    private boolean inputForward;
+    private List<BlockPlacementGraph> tempGraphs;
+    private double savedPitch = -999.0;
+    private int pendingFailDelayTicks;
+    private TimerUtil staircaseTimer;
+    private Boolean pendingInputLeft;
+    private boolean pendingInputApply;
+    private int moveDelayTicks;
+    private final NumberValue blocksThreshold;
+    private final ArrayList<BlockPlacementPathSegment> pendingSegments;
+    private boolean takingKnockback;
+    private int unusedCounterO7 = 0;
+    private HashSet<BlockData> rejectedBlocks;
+    private final MovementInputLock movementLock;
+    private BlockPathPlanner pathPlanner;
+    private boolean unusedFlagO2;
+    private final BooleanValue showBlockCount;
+    private final BooleanValue returnToLastSlot;
+    private boolean inputBack;
+    private int unusedCounterOA = 0;
+    private int returnDelayTicks;
+    private Boolean pendingInputForward;
+    private TimerUtil landTimer;
+    private HashSet<BlockData> placeableBlocks;
+    private final ArrayList<BlockPlacementPathSegment> pendingSegmentsP;
+    private float originalYaw;
+    private boolean prevRightClickHeld;
+    private final BooleanValue blacklist;
+    private int resetAngleDelayTicks;
     boolean O0;
-    private boolean Oy;
-    private PlacementTarget t;
-    private BlockPathPlanner OO;
-    private int c;
-    private final LimitValue P;
-    private RayTraceResult C;
+    private boolean inputLeft;
+    private PlacementTarget placeTarget;
+    private BlockPathPlanner pathPlannerReturn;
+    private int groundStuckTicks;
+    private final LimitValue whitelistBlocks;
+    private RayTraceResult rayTrace;
     public static final ArrayList<Vector<PlacementTarget>> O = new ArrayList();
-    private double Oa = -999.0;
-    private String ON;
-    private boolean V;
-    private static final boolean Ol = false;
-    private boolean OL;
-    private boolean Y;
-    private Boolean I;
-    private final BooleanValue Od;
-    private final NumberValue O6;
-    private final RotationControlClaim a;
-    private final BooleanValue D = BooleanValue.create(this, "On void", true, "Catches the player if they are about to fall into the void");
-    private boolean Ok = false;
-    private BlockPlacementPathSegment J;
-    private final NumberValue Oo;
-    private int Oq;
-    private final HashMap<BlockData, HashSet<BlockData>> k;
-    private int j = -1;
-    private final BooleanValue Om;
-    private final BooleanValue Oz;
+    private double fallTargetY = -999.0;
+    private String pendingFailMessage;
+    private boolean forcingCounterMotion;
+    private static final boolean debugFlag = false;
+    private boolean counterMotion;
+    private boolean recentlyClutched;
+    private Boolean pendingInputRight;
+    private final BooleanValue onLethalFall;
+    private final NumberValue speed;
+    private final RotationControlClaim rotationClaim;
+    private final BooleanValue onVoid = BooleanValue.create(this, "On void", true, "Catches the player if they are about to fall into the void");
+    private boolean placementRejected = false;
+    private BlockPlacementPathSegment clutchPath;
+    private final NumberValue failDelay;
+    private int knockbackTicks;
+    private final HashMap<BlockData, HashSet<BlockData>> blockGraphMap;
+    private int previousSlot = -1;
+    private final BooleanValue onMoreThanXBlocks;
+    private final BooleanValue allowStaircaseUp;
 
-    private void n$src$V$tzbhlc() {
-        this.ON = null;
-        this.r = 0;
+    private void resetPendingFail() {
+        this.pendingFailMessage = null;
+        this.pendingFailDelayTicks = 0;
     }
 
-    private void V$src$V$tm4fco() {
+    private void resetMovementInputs() {
         if (Minecraft.currentScreen().getObject() == null) {
             KeyboardCodeUtil.v();
         }
         MovementInputHelper.D(false);
-        this.K = false;
-        this.v = false;
-        this.Oy = false;
-        this.OP = false;
+        this.inputForward = false;
+        this.inputRight = false;
+        this.inputLeft = false;
+        this.inputBack = false;
     }
 
-    private boolean z() {
-        return this.J != null && this.J.g != null && !this.J.g.M.isEmpty();
+    private boolean hasPlacementTargets() {
+        return this.clutchPath != null && this.clutchPath.g != null && !this.clutchPath.g.M.isEmpty();
     }
 
-    private int f(BlockPlacementPathSegment blockPlacementPathSegment, PlacementTarget placementTarget, EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP, World world, float f, float f2, BlockPlacementGraph blockPlacementGraph) {
+    private int simulatePlacementTick(BlockPlacementPathSegment blockPlacementPathSegment, PlacementTarget placementTarget, EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP, World world, float f, float f2, BlockPlacementGraph blockPlacementGraph) {
         Object object;
         Object object2;
         BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayer, entityPlayerSP, world, blockPlacementGraph);
-        if (this.OL) {
+        if (this.counterMotion) {
             blockPathPlanner.t();
         } else {
             blockPathPlanner.l();
@@ -220,7 +220,7 @@ extends Mod {
         entityPlayer2.z(f);
         entityPlayer2.C(f2);
         double d = -0.0784000015258789;
-        if (this.V && !this.OJ && entityPlayer.b$src$Z$fqlxe4() && entityPlayer.q() == d) {
+        if (this.forcingCounterMotion && !this.takingKnockback && entityPlayer.b$src$Z$fqlxe4() && entityPlayer.q() == d) {
             blockPathPlanner.h();
         }
         double d2 = ForgeVersion.MC_1_7_10.Y() ? (double)entityPlayerSP.X() : 0.0;
@@ -256,7 +256,7 @@ extends Mod {
             if (vec3d.t() <= (double)blockPlacementPathSegment.R.E()) break;
             object = blockPathPlanner.E().U();
             BlockInBooleanState blockInBooleanState = null;
-            if (!this.OT.L().booleanValue() && (blockInBooleanState = this.j(entityPlayer2, this.OI, bl7 = this.A.M, bl6 = this.A.D, bl5 = this.A.R, bl4 = this.A.Y)) != null) {
+            if (!this.silentAim.L().booleanValue() && (blockInBooleanState = this.computeStrafeState(entityPlayer2, this.placeYaw, bl7 = this.graph.M, bl6 = this.graph.D, bl5 = this.graph.R, bl4 = this.graph.Y)) != null) {
                 blockPathPlanner.G(blockInBooleanState.L, blockInBooleanState.v, blockInBooleanState.h, blockInBooleanState.c);
             }
             blockPathPlanner.B();
@@ -283,14 +283,14 @@ extends Mod {
         return bl ? 2 : 2;
     }
 
-    private void x(String string) {
-        this.ON = string;
-        if (this.r == 0) {
-            this.r = Math.min(3, Math.max(1, ((Double)this.Oo.K()).intValue() / 50));
+    private void queueFailMessage(String string) {
+        this.pendingFailMessage = string;
+        if (this.pendingFailDelayTicks == 0) {
+            this.pendingFailDelayTicks = Math.min(3, Math.max(1, ((Double)this.failDelay.K()).intValue() / 50));
         }
     }
 
-    private boolean y(ItemStack itemStack) {
+    private boolean isValidBlockItem(ItemStack itemStack) {
         if (itemStack.isNull() || itemStack.getItem().isNull()) {
             return false;
         }
@@ -298,37 +298,37 @@ extends Mod {
         if (!item.isInstance(MappedClasses.Vw)) {
             return false;
         }
-        return this.OE.L() == false || this.Og.k(itemStack);
+        return this.blacklist.L() == false || this.blacklistBlocks.k(itemStack);
     }
 
-    private void G() {
-        if (this.r > 0) {
-            --this.r;
-            if (this.r == 0 && this.ON != null) {
-                this.Z(this.ON, false);
-                this.ON = null;
+    private void tickFailDelay() {
+        if (this.pendingFailDelayTicks > 0) {
+            --this.pendingFailDelayTicks;
+            if (this.pendingFailDelayTicks == 0 && this.pendingFailMessage != null) {
+                this.showFailNotification(this.pendingFailMessage, false);
+                this.pendingFailMessage = null;
             }
         }
     }
 
-    private BlockCoordinate B(int n, EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP, ArrayList<Vec3d> arrayList) {
+    private BlockCoordinate findLandingBlock(int n, EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP, ArrayList<Vec3d> arrayList) {
         boolean bl;
         boolean bl2;
         int n2 = ForgeVersion.MC_1_20_6.d() ? entityPlayerSP.getWorld().R() : 0;
-        BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayer, entityPlayerSP, entityPlayerSP.getWorld(), this.A);
-        blockPathPlanner.U(this.A);
+        BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayer, entityPlayerSP, entityPlayerSP.getWorld(), this.graph);
+        blockPathPlanner.U(this.graph);
         blockPathPlanner.l();
         if (arrayList != null) {
             arrayList.add(blockPathPlanner.f());
         }
-        boolean bl3 = this.A.M || this.A.D || this.A.R || this.A.Y;
-        boolean bl4 = bl2 = this.D.L() == false;
+        boolean bl3 = this.graph.M || this.graph.D || this.graph.R || this.graph.Y;
+        boolean bl4 = bl2 = this.onVoid.L() == false;
         if (bl2) {
             int n3;
             int n4;
             int n5;
             boolean bl5;
-            boolean bl6 = bl5 = this.Om.L() == false;
+            boolean bl6 = bl5 = this.onMoreThanXBlocks.L() == false;
             if (bl5) {
                 int n6;
                 int n7;
@@ -416,7 +416,7 @@ extends Mod {
             n3 = MathUtil.floor(entityPlayer3.h());
             return new BlockCoordinate(n5, n4, n3);
         }
-        boolean bl9 = bl = this.Om.L() == false;
+        boolean bl9 = bl = this.onMoreThanXBlocks.L() == false;
         if (bl) {
             int n19 = 1;
             EntityPlayer entityPlayer4 = blockPathPlanner.T();
@@ -496,81 +496,81 @@ extends Mod {
         return null;
     }
 
-    private void p() {
+    private void applyMovementInputs() {
         if (Minecraft.currentScreen().isNotNull()) {
             return;
         }
         if (Minecraft.currentScreen().getObject() == null) {
             KeyboardCodeUtil.v();
         }
-        if (this.O_ != null) {
-            MovementInputHelper.Q(this.O_, this.Os, this.O3, this.I);
+        if (this.pendingInputForward != null) {
+            MovementInputHelper.Q(this.pendingInputForward, this.pendingInputBack, this.pendingInputLeft, this.pendingInputRight);
         } else {
-            MovementInputHelper.Q(this.K, this.OP, this.Oy, this.v);
+            MovementInputHelper.Q(this.inputForward, this.inputBack, this.inputLeft, this.inputRight);
         }
-        if (this.V && !this.OJ) {
+        if (this.forcingCounterMotion && !this.takingKnockback) {
             MovementInputHelper.A(false);
         } else {
-            MovementInputHelper.A(this.A.l);
+            MovementInputHelper.A(this.graph.l);
         }
     }
 
     @EventHandler
     public void L(EventMouseButton eventMouseButton) {
         GameSettings gameSettings = eventMouseButton.getGameSettings();
-        if (this.J != null && eventMouseButton.getButton() == EventMouseButton.E && eventMouseButton.getButtonState()) {
+        if (this.clutchPath != null && eventMouseButton.getButton() == EventMouseButton.E && eventMouseButton.getButtonState()) {
             eventMouseButton.setCancelled(true);
             gameSettings.F().e();
         }
     }
 
     public static RotationControlClaim E(BlockIn blockIn) {
-        return blockIn.a;
+        return blockIn.rotationClaim;
     }
 
     public BlockIn() {
         super("Clutch", -65404, Category.Y, "Saves yourself from falling");
-        this.Od = BooleanValue.create(this, "On lethal fall", true, "Catches the player if they are about to die due to fall damage");
-        this.Om = BooleanValue.create(this, "On more than x blocks", false, "Catches the player if their landing block is more than x amount of blocks");
-        this.On = NumberValue.create((Object)this, "Blocks", "#", "", 3.0, 6.0, 10.0, 1.0);
-        this.O6 = NumberValue.create(this, "Speed", "#.#", "", 1.0, 3.5, 10.0, 0.1, "Maximum flick speed when placing blocks");
-        this.OT = BooleanValue.create(this, "Silent aim", false, "Silent aim when placing blocks");
-        this.Oz = BooleanValue.create(this, "Allow staircase up", true, "Allows clutch to staircase on repeat jumps");
-        this.Or = RandomValue.G(this, "Clutch move delay", "#", "tick", 0.0, 3.0, 6.0, 10.0, 1.0, "Freezes movement for a few ticks after completing a long clutch\nNOTE: Only affects clutches related to high velocity.");
-        this.Oo = NumberValue.create(this, "Fail delay", "#", "ms", 0.0, 100.0, 500.0, 50.0, "Delay before retrying to find a clutch path");
-        this.OQ = BooleanValue.create(this, "Show block count", false);
-        this.Oj = BooleanValue.create(this, "Limit blocks", false, "Only clutch if it requires fewer than the max number of blocks");
-        this.Oi = NumberValue.create(this, "Max blocks", "#", "", 1.0, 5.0, 10.0, 1.0, "Maximum blocks allowed for a clutch");
-        this.S = BooleanValue.create(this, "Return to last slot", true, "Selects previously selected slot when clutch is completed");
-        this.OW = RandomValue.G(this, "Return delay", "#", "tick", 0.0, 3.0, 6.0, 10.0, 1.0, "Delay before returning to the last slot");
-        this.OV = BooleanValue.create(this, "Reset angle", true, "Looks back to your original angle after clutching\nNOTE: Only affects non silent aim.");
-        this.s = RandomValue.G(this, "Reset angle delay", "#", "tick", 0.0, 3.0, 6.0, 10.0, 1.0, "Delay before resetting your angles after clutching");
-        this.OE = BooleanValue.create(this, "Blacklist", true, "Clutch will not use these blocks");
-        this.Og = LimitValue.n(this, "clutch-blacklist", "Block blacklist", LimitValue.G, ItemLimitData.P);
-        this.Ox = BooleanValue.create(this, "Held whitelist", false, "Only activates clutch when a whitelisted block is held\nWill only use held block for Clutching");
-        this.P = LimitValue.N(this, "clutch-allowedblocks", "Held block whitelist", LimitValue.r, new ItemLimitData("blocks"));
-        this.Z = new ArrayList<String>(Arrays.asList("Wool", "Stone", "Wood Planks", "Red Sandstone", "Stained Clay", "End Stone", "Obsidian"));
-        this.a = SharedModuleControlClaims.I;
-        this.OG = SharedModuleControlClaims.l;
-        this.OB = new TimerUtil();
-        this.OF = new TimerUtil();
-        this.OD = new TimerUtil();
-        this.Ob = new ArrayList<BlockPlacementGraph>();
-        this.O9 = new VisibleModuleList(5000L);
-        this.O5 = new HashSet();
-        this.o = new HashSet();
-        this.p = new ArrayList();
-        this.Ou = new ArrayList();
-        this.k = new HashMap();
-        this.OE.K(this.Og);
-        this.Ox.K(this.P);
-        this.Om.K(this.On);
-        this.S.K(this.OW);
-        this.Oj.K(this.Oi);
-        this.OT.C().z(this.OV);
-        this.OV.C(ThemeColors.J.r);
-        this.addValue(this.D, this.Od, this.Om, this.On, this.O6, this.OT, this.OV, this.s, this.S, this.OW, this.Or, this.Oo, this.Oz, this.OQ, this.Oj, this.Oi, this.OE, this.Og, this.Ox, this.P);
-        this.a.l(this, 50);
+        this.onLethalFall = BooleanValue.create(this, "On lethal fall", true, "Catches the player if they are about to die due to fall damage");
+        this.onMoreThanXBlocks = BooleanValue.create(this, "On more than x blocks", false, "Catches the player if their landing block is more than x amount of blocks");
+        this.blocksThreshold = NumberValue.create((Object)this, "Blocks", "#", "", 3.0, 6.0, 10.0, 1.0);
+        this.speed = NumberValue.create(this, "Speed", "#.#", "", 1.0, 3.5, 10.0, 0.1, "Maximum flick speed when placing blocks");
+        this.silentAim = BooleanValue.create(this, "Silent aim", false, "Silent aim when placing blocks");
+        this.allowStaircaseUp = BooleanValue.create(this, "Allow staircase up", true, "Allows clutch to staircase on repeat jumps");
+        this.clutchMoveDelay = RandomValue.G(this, "Clutch move delay", "#", "tick", 0.0, 3.0, 6.0, 10.0, 1.0, "Freezes movement for a few ticks after completing a long clutch\nNOTE: Only affects clutches related to high velocity.");
+        this.failDelay = NumberValue.create(this, "Fail delay", "#", "ms", 0.0, 100.0, 500.0, 50.0, "Delay before retrying to find a clutch path");
+        this.showBlockCount = BooleanValue.create(this, "Show block count", false);
+        this.limitBlocks = BooleanValue.create(this, "Limit blocks", false, "Only clutch if it requires fewer than the max number of blocks");
+        this.maxBlocks = NumberValue.create(this, "Max blocks", "#", "", 1.0, 5.0, 10.0, 1.0, "Maximum blocks allowed for a clutch");
+        this.returnToLastSlot = BooleanValue.create(this, "Return to last slot", true, "Selects previously selected slot when clutch is completed");
+        this.returnDelay = RandomValue.G(this, "Return delay", "#", "tick", 0.0, 3.0, 6.0, 10.0, 1.0, "Delay before returning to the last slot");
+        this.resetAngle = BooleanValue.create(this, "Reset angle", true, "Looks back to your original angle after clutching\nNOTE: Only affects non silent aim.");
+        this.resetAngleDelay = RandomValue.G(this, "Reset angle delay", "#", "tick", 0.0, 3.0, 6.0, 10.0, 1.0, "Delay before resetting your angles after clutching");
+        this.blacklist = BooleanValue.create(this, "Blacklist", true, "Clutch will not use these blocks");
+        this.blacklistBlocks = LimitValue.n(this, "clutch-blacklist", "Block blacklist", LimitValue.G, ItemLimitData.P);
+        this.heldWhitelist = BooleanValue.create(this, "Held whitelist", false, "Only activates clutch when a whitelisted block is held\nWill only use held block for Clutching");
+        this.whitelistBlocks = LimitValue.N(this, "clutch-allowedblocks", "Held block whitelist", LimitValue.r, new ItemLimitData("blocks"));
+        this.defaultBlockNames = new ArrayList<String>(Arrays.asList("Wool", "Stone", "Wood Planks", "Red Sandstone", "Stained Clay", "End Stone", "Obsidian"));
+        this.rotationClaim = SharedModuleControlClaims.I;
+        this.movementLock = SharedModuleControlClaims.l;
+        this.landTimer = new TimerUtil();
+        this.failTimer = new TimerUtil();
+        this.staircaseTimer = new TimerUtil();
+        this.tempGraphs = new ArrayList<BlockPlacementGraph>();
+        this.placedBlocks = new VisibleModuleList(5000L);
+        this.rejectedBlocks = new HashSet();
+        this.placeableBlocks = new HashSet();
+        this.pendingSegmentsP = new ArrayList();
+        this.pendingSegments = new ArrayList();
+        this.blockGraphMap = new HashMap();
+        this.blacklist.K(this.blacklistBlocks);
+        this.heldWhitelist.K(this.whitelistBlocks);
+        this.onMoreThanXBlocks.K(this.blocksThreshold);
+        this.returnToLastSlot.K(this.returnDelay);
+        this.limitBlocks.K(this.maxBlocks);
+        this.silentAim.C().z(this.resetAngle);
+        this.resetAngle.C(ThemeColors.J.r);
+        this.addValue(this.onVoid, this.onLethalFall, this.onMoreThanXBlocks, this.blocksThreshold, this.speed, this.silentAim, this.resetAngle, this.resetAngleDelay, this.returnToLastSlot, this.returnDelay, this.clutchMoveDelay, this.failDelay, this.allowStaircaseUp, this.showBlockCount, this.limitBlocks, this.maxBlocks, this.blacklist, this.blacklistBlocks, this.heldWhitelist, this.whitelistBlocks);
+        this.rotationClaim.l(this, 50);
     }
 
     @EventHandler
@@ -578,72 +578,72 @@ extends Mod {
         EntityPlayerSP entityPlayerSP = eventPostTick.getThePlayer();
         WorldClient worldClient = eventPostTick.getWorld();
         if (entityPlayerSP.isNull() || worldClient.isNull()) {
-            this.J$src$V$tfiw8c();
+            this.resetState();
             return;
         }
         boolean bl = entityPlayerSP.b$src$Z$fqlxe4();
         if (bl) {
-            if (this.Oq > 0) {
-                --this.Oq;
-                this.l("Knockback ticks: " + this.Oq + " " + this.A.A);
+            if (this.knockbackTicks > 0) {
+                --this.knockbackTicks;
+                this.debugLog("Knockback ticks: " + this.knockbackTicks + " " + this.graph.A);
             }
-            if (this.J != null) {
-                if (this.Oq == 0) {
-                    this.l("Reset knockback");
-                    this.Oq = 0;
+            if (this.clutchPath != null) {
+                if (this.knockbackTicks == 0) {
+                    this.debugLog("Reset knockback");
+                    this.knockbackTicks = 0;
                 }
-                if (this.V && this.OJ) {
-                    this.l("Revert to original yaw");
-                    this.OI = this.O4;
+                if (this.forcingCounterMotion && this.takingKnockback) {
+                    this.debugLog("Revert to original yaw");
+                    this.placeYaw = this.originalYaw;
                 }
             }
-            this.Ow = new BlockPlacementGraph(entityPlayerSP);
-            if (this.J != null && this.J.g != null && this.t != null) {
+            this.currentGraph = new BlockPlacementGraph(entityPlayerSP);
+            if (this.clutchPath != null && this.clutchPath.g != null && this.placeTarget != null) {
                 float f;
                 float f2;
-                if (this.U == null) {
+                if (this.rotationController == null) {
                     f2 = entityPlayerSP.J();
                     f = entityPlayerSP.V();
-                } else if (this.U instanceof AdaptiveRotationController) {
-                    f2 = ((AdaptiveRotationController)this.U).J();
-                    f = ((AdaptiveRotationController)this.U).X();
+                } else if (this.rotationController instanceof AdaptiveRotationController) {
+                    f2 = ((AdaptiveRotationController)this.rotationController).J();
+                    f = ((AdaptiveRotationController)this.rotationController).X();
                 } else {
-                    f2 = this.U.k();
-                    f = this.U.d();
+                    f2 = this.rotationController.k();
+                    f = this.rotationController.d();
                 }
-                int n = this.f(this.J, this.t, entityPlayerSP, entityPlayerSP, worldClient, f2, f, this.Ow);
-                Vec3 vec3 = this.J.V;
-                this.U = this.b(entityPlayerSP, vec3, this.t.v, this.U, n, this.OI);
-                RotationManager.b.S(this.U);
+                int n = this.simulatePlacementTick(this.clutchPath, this.placeTarget, entityPlayerSP, entityPlayerSP, worldClient, f2, f, this.currentGraph);
+                Vec3 vec3 = this.clutchPath.V;
+                this.rotationController = this.buildRotation(entityPlayerSP, vec3, this.placeTarget.v, this.rotationController, n, this.placeYaw);
+                RotationManager.b.S(this.rotationController);
             }
             return;
         }
-        if (this.Oq > 0) {
-            --this.Oq;
-            this.l("Knockback ticks: " + this.Oq + " " + this.A.A);
+        if (this.knockbackTicks > 0) {
+            --this.knockbackTicks;
+            this.debugLog("Knockback ticks: " + this.knockbackTicks + " " + this.graph.A);
         }
-        if (this.J != null && this.Oq == 0 && this.V && this.OJ) {
-            this.l("Revert to original yaw");
-            this.OI = this.O4;
+        if (this.clutchPath != null && this.knockbackTicks == 0 && this.forcingCounterMotion && this.takingKnockback) {
+            this.debugLog("Revert to original yaw");
+            this.placeYaw = this.originalYaw;
         }
-        this.Ow = new BlockPlacementGraph(entityPlayerSP);
-        if (this.J != null && this.J.g != null && this.t != null) {
+        this.currentGraph = new BlockPlacementGraph(entityPlayerSP);
+        if (this.clutchPath != null && this.clutchPath.g != null && this.placeTarget != null) {
             float f;
             float f3;
-            if (this.U == null) {
+            if (this.rotationController == null) {
                 f3 = entityPlayerSP.J();
                 f = entityPlayerSP.V();
-            } else if (this.U instanceof AdaptiveRotationController) {
-                f3 = ((AdaptiveRotationController)this.U).J();
-                f = ((AdaptiveRotationController)this.U).X();
+            } else if (this.rotationController instanceof AdaptiveRotationController) {
+                f3 = ((AdaptiveRotationController)this.rotationController).J();
+                f = ((AdaptiveRotationController)this.rotationController).X();
             } else {
-                f3 = this.U.k();
-                f = this.U.d();
+                f3 = this.rotationController.k();
+                f = this.rotationController.d();
             }
-            int n = this.f(this.J, this.t, entityPlayerSP, entityPlayerSP, worldClient, f3, f, this.Ow);
-            Vec3 vec3 = this.J.V;
-            this.U = this.b(entityPlayerSP, vec3, this.t.v, this.U, n, this.OI);
-            RotationManager.b.S(this.U);
+            int n = this.simulatePlacementTick(this.clutchPath, this.placeTarget, entityPlayerSP, entityPlayerSP, worldClient, f3, f, this.currentGraph);
+            Vec3 vec3 = this.clutchPath.V;
+            this.rotationController = this.buildRotation(entityPlayerSP, vec3, this.placeTarget.v, this.rotationController, n, this.placeYaw);
+            RotationManager.b.S(this.rotationController);
         }
     }
 
@@ -652,10 +652,10 @@ extends Mod {
         ClientSettings.g(ActiveModuleStackFrame.class).w(this);
     }
 
-    private void X$src$V$tn80je() {
+    private void noopReset() {
     }
 
-    private int J(BlockPlacementPathSegment blockPlacementPathSegment, ArrayList<Vec3d> arrayList, EntityPlayerSP entityPlayerSP, World world, Vector<PlacementTarget> vector, int n) {
+    private int scorePlacementPath(BlockPlacementPathSegment blockPlacementPathSegment, ArrayList<Vec3d> arrayList, EntityPlayerSP entityPlayerSP, World world, Vector<PlacementTarget> vector, int n) {
         if (vector == null || vector.isEmpty()) {
             return Integer.MAX_VALUE;
         }
@@ -691,7 +691,7 @@ extends Mod {
         return (int)d;
     }
 
-    private void v(BlockPlacementPathSegment blockPlacementPathSegment, int n, EntityPlayerSP entityPlayerSP, World world, ArrayList<Vec3d> arrayList) {
+    private void planPlacementSearch(BlockPlacementPathSegment blockPlacementPathSegment, int n, EntityPlayerSP entityPlayerSP, World world, ArrayList<Vec3d> arrayList) {
         BlockInSearchPlanner blockInSearchPlanner;
         Vector<PlacementTarget> vector;
         if (blockPlacementPathSegment == null) {
@@ -713,7 +713,7 @@ extends Mod {
         }
     }
 
-    private BlockInBooleanState j(EntityPlayer entityPlayer, float f, boolean bl, boolean bl2, boolean bl3, boolean bl4) {
+    private BlockInBooleanState computeStrafeState(EntityPlayer entityPlayer, float f, boolean bl, boolean bl2, boolean bl3, boolean bl4) {
         BlockInBooleanState blockInBooleanState = new BlockInBooleanState();
         boolean bl5 = bl || bl2 || bl3 || bl4;
         float f2 = FreeLookHudModule.z() ? FreeLookHudModule.L$src$F$1jnmc2m() : entityPlayer.J();
@@ -741,11 +741,11 @@ extends Mod {
         return null;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception identityException(Exception exception) {
         return exception;
     }
 
-    private boolean q(EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP, World world, BlockPathPlanner blockPathPlanner, BlockPlacementPathSegment blockPlacementPathSegment) {
+    private boolean simulateLandsOnTarget(EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP, World world, BlockPathPlanner blockPathPlanner, BlockPlacementPathSegment blockPlacementPathSegment) {
         boolean bl = false;
         boolean bl2 = entityPlayer.b$src$Z$fqlxe4();
         double d = entityPlayer.N() - 0.015625;
@@ -784,30 +784,30 @@ extends Mod {
     @Override
     public ModDisplayInfo J() {
         String string;
-        if (!this.OQ.L().booleanValue()) {
+        if (!this.showBlockCount.L().booleanValue()) {
             return null;
         }
-        int n = this.J == null ? this.O$src$I$ti9uvy() : this.J.w();
+        int n = this.clutchPath == null ? this.countBlocks() : this.clutchPath.w();
         Color color = new Color(255, 20, 20);
         if (n >= 32) {
             color = new Color(2, 190, 58);
         } else if (n >= 16) {
             color = new Color(255, 249, 18);
         }
-        if (this.J != null) {
+        if (this.clutchPath != null) {
             string = "\u00a7f\u00a7l";
         } else {
-            boolean bl = this.Oh > 0 && this.s.y() > 0;
-            boolean bl2 = this.j != -1 && this.S.L() != false && this.OS > 0 && this.OW.y() > 0;
-            boolean bl3 = this.Op > 0 && this.Or.y() > 0;
+            boolean bl = this.resetAngleDelayTicks > 0 && this.resetAngleDelay.y() > 0;
+            boolean bl2 = this.previousSlot != -1 && this.returnToLastSlot.L() != false && this.returnDelayTicks > 0 && this.returnDelay.y() > 0;
+            boolean bl3 = this.moveDelayTicks > 0 && this.clutchMoveDelay.y() > 0;
             string = bl || bl2 || bl3 ? "\u00a7e" : "\u00a77";
         }
-        String string2 = (this.J == null ? "\u00a7r" : "\u00a76\u00a7l") + n;
+        String string2 = (this.clutchPath == null ? "\u00a7r" : "\u00a76\u00a7l") + n;
         String string3 = " " + string + "(" + this.getName() + ")";
         return new ModDisplayInfo(string2, color, string3);
     }
 
-    private Vec3 M(EntityPlayer entityPlayer, World world, BlockData blockData, EnumFacing enumFacing) {
+    private Vec3 computePlacementHit(EntityPlayer entityPlayer, World world, BlockData blockData, EnumFacing enumFacing) {
         Vec3 vec3;
         double d = entityPlayer.z();
         double d2 = entityPlayer.h();
@@ -854,29 +854,29 @@ extends Mod {
         return vec3;
     }
 
-    private void v(int n) {
+    private void selectHotbarSlot(int n) {
         Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n);
     }
 
-    private void Z(String string, boolean bl) {
+    private void showFailNotification(String string, boolean bl) {
         boolean bl2;
         boolean bl3 = false;
-        boolean bl4 = bl2 = this.H != null && this.H.M();
-        if (this.H == null) {
-            this.H = new Notification(NotificationType.ALERT, "Clutch Failed", new TextNotificationContent(string), 0.0, 0.0, 3500L);
+        boolean bl4 = bl2 = this.failNotification != null && this.failNotification.M();
+        if (this.failNotification == null) {
+            this.failNotification = new Notification(NotificationType.ALERT, "Clutch Failed", new TextNotificationContent(string), 0.0, 0.0, 3500L);
             bl3 = true;
         } else if (bl2 || bl) {
             bl3 = bl2;
-            TextNotificationContent textNotificationContent = (TextNotificationContent)this.H.X$src$Lgg_vape_notification_NotificationContent_$1gg6y56();
+            TextNotificationContent textNotificationContent = (TextNotificationContent)this.failNotification.X$src$Lgg_vape_notification_NotificationContent_$1gg6y56();
             textNotificationContent.k(string);
-            this.H.d(3500L);
+            this.failNotification.d(3500L);
         }
         if (bl3) {
-            Vape.INSTANCE.getNotificationManager().x(this.H, false);
+            Vape.INSTANCE.getNotificationManager().x(this.failNotification, false);
         }
     }
 
-    private boolean M$src$Z$th6a3v() {
+    private boolean isPlayerMoving() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
             return false;
@@ -884,7 +884,7 @@ extends Mod {
         return entityPlayerSP.t() != 0.0 || entityPlayerSP.q() != 0.0 || entityPlayerSP.T() != 0.0;
     }
 
-    private BlockPlacementPathSegment q(int n, BlockPlacementPathSegment blockPlacementPathSegment, World world, ItemStack itemStack, ArrayList<BlockData> arrayList, EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP) {
+    private BlockPlacementPathSegment simulateClutchPath(int n, BlockPlacementPathSegment blockPlacementPathSegment, World world, ItemStack itemStack, ArrayList<BlockData> arrayList, EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP) {
         int n2;
         Object object;
         int n3 = ForgeVersion.MC_1_20_6.d() ? world.R() : 0;
@@ -892,11 +892,11 @@ extends Mod {
         BlockState blockState = BlockUtil.E(itemStack);
         HashMap<Object, BlockState> hashMap = new HashMap<Object, BlockState>();
         int n4 = blockPlacementPathSegment.g.M.size();
-        BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, world, this.A, this.L);
+        BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, world, this.graph, this.pathPlanner);
         PlayerSimulationUtil.s(blockPathPlanner.T(), entityPlayerSP);
-        blockPathPlanner.U(this.A);
+        blockPathPlanner.U(this.graph);
         EntityPlayer entityPlayer2 = blockPathPlanner.T();
-        if (this.OL) {
+        if (this.counterMotion) {
             blockPathPlanner.t();
         } else {
             blockPathPlanner.l();
@@ -907,14 +907,14 @@ extends Mod {
         blockPlacementPathSegment2.g = new BlockPlacementPathSegmentState(blockPlacementPathSegment.g.W, new Vector<PlacementTarget>(blockPlacementPathSegment.g.M));
         blockPlacementPathSegment2.b.add(blockPathPlanner.f());
         FixedRotationController fixedRotationController = null;
-        if (this.U != null && this.U instanceof AdaptiveRotationController && RotationManager.b.u()) {
+        if (this.rotationController != null && this.rotationController instanceof AdaptiveRotationController && RotationManager.b.u()) {
             fixedRotationController = new AdaptiveRotationController(entityPlayer2);
-            ((AdaptiveRotationController)fixedRotationController).I((AdaptiveRotationController)this.U);
+            ((AdaptiveRotationController)fixedRotationController).I((AdaptiveRotationController)this.rotationController);
             blockPathPlanner.y(fixedRotationController);
         }
         int n6 = 0;
         boolean bl2 = RotationManager.b.u();
-        int n7 = this.Oq;
+        int n7 = this.knockbackTicks;
         boolean bl3 = false;
         boolean bl4 = false;
         boolean bl5 = false;
@@ -937,7 +937,7 @@ extends Mod {
                 if (blockPlacementPathSegment2 != null) {
                     if (entityPlayer2.b$src$Z$fqlxe4()) {
                         BlockPathPlanner blockPathPlanner2 = new BlockPathPlanner(entityPlayer2, entityPlayerSP, world, (BlockPlacementGraph)object);
-                        boolean bl9 = this.q(entityPlayer2, entityPlayerSP, world, blockPathPlanner2, blockPlacementPathSegment2);
+                        boolean bl9 = this.simulateLandsOnTarget(entityPlayer2, entityPlayerSP, world, blockPathPlanner2, blockPlacementPathSegment2);
                         if (++n6 >= 5 || !bl9) {
                             bl4 = true;
                             break;
@@ -948,7 +948,7 @@ extends Mod {
                 }
                 Object object5 = null;
                 if (blockPlacementPathSegment2.g != null) {
-                    object5 = this.t(blockPlacementPathSegment2, entityPlayerSP, world, blockState);
+                    object5 = this.resolvePlaceTarget(blockPlacementPathSegment2, entityPlayerSP, world, blockState);
                     if (object5 != null) {
                         float f2;
                         float f3;
@@ -968,7 +968,7 @@ extends Mod {
                             f3 = fixedRotationController.k();
                             f2 = fixedRotationController.d();
                         }
-                        boolean bl9 = this.U((PlacementTarget)object5, blockPathPlanner);
+                        boolean bl9 = this.canPlaceOnTarget((PlacementTarget)object5, blockPathPlanner);
                         if (bl9) {
                             object2 = ((PlacementTarget)object5).s();
                             f8 = BlockPos.d((BlockData)object2);
@@ -983,7 +983,7 @@ extends Mod {
                                 if (!n12.isEmpty()) {
                                     n12.removeElementAt(0);
                                 }
-                                if (n12.isEmpty() && n5 > 3 && !this.OL && !this.A.A && this.q(entityPlayer2, entityPlayerSP, world, (BlockPathPlanner)(vec3 = new BlockPathPlanner(entityPlayer2, entityPlayerSP, world, (BlockPlacementGraph)object)), blockPlacementPathSegment2)) {
+                                if (n12.isEmpty() && n5 > 3 && !this.counterMotion && !this.graph.A && this.simulateLandsOnTarget(entityPlayer2, entityPlayerSP, world, (BlockPathPlanner)(vec3 = new BlockPathPlanner(entityPlayer2, entityPlayerSP, world, (BlockPlacementGraph)object)), blockPlacementPathSegment2)) {
                                     f9 = ((BlockPathPlanner)vec3).T();
                                     int f6 = MathUtil.floor(((Entity)f9).z());
                                     int n8 = MathUtil.floor(((Entity)f9).h());
@@ -993,7 +993,7 @@ extends Mod {
                                         BlockCoordinate blockCoordinate = blockPlacementPathSegment2.R;
                                         BlockCoordinate blockCoordinate2 = new BlockCoordinate(f6, blockPlacementPathSegment2.R.E(), n8);
                                         BlockPlacementPathSegment blockPlacementPathSegment3 = new BlockPlacementPathSegment(blockCoordinate, blockCoordinate2, new ArrayList<Vec3d>());
-                                        this.v(blockPlacementPathSegment3, 3, entityPlayerSP, world, new ArrayList<Vec3d>());
+                                        this.planPlacementSearch(blockPlacementPathSegment3, 3, entityPlayerSP, world, new ArrayList<Vec3d>());
                                         if (blockPlacementPathSegment3.g != null && blockPlacementPathSegment3.g.M != null && !blockPlacementPathSegment3.g.M.isEmpty()) {
                                             n12.addAll(blockPlacementPathSegment3.g.M);
                                             blockPlacementPathSegment.g.Z(blockPlacementPathSegment3.g.M);
@@ -1018,8 +1018,8 @@ extends Mod {
                                     blockPlacementPathSegment2.V = null;
                                     n12.removeElementAt(0);
                                 }
-                                if (object5 == null && this.V && fixedRotationController != null) {
-                                    float d2 = this.OJ ? this.O4 : this.OI;
+                                if (object5 == null && this.forcingCounterMotion && fixedRotationController != null) {
+                                    float d2 = this.takingKnockback ? this.originalYaw : this.placeYaw;
                                     float f4 = Math.abs(MathUtil.wrapAngleTo180(d2 - f3));
                                     float f5 = Math.abs(f4) / 1.8f / 3.0f;
                                     fixedRotationController.Y(f5);
@@ -1031,7 +1031,7 @@ extends Mod {
                 }
                 boolean f3 = entityPlayer2.b$src$Z$fqlxe4();
                 BlockInBooleanState f2 = null;
-                if (fixedRotationController != null && !(fixedRotationController instanceof AdaptiveRotationController) && (f2 = this.j(entityPlayer2, f = this.OJ && bl3 ? this.O4 : this.OI, bl8 = this.A.M, bl7 = this.A.D, bl6 = this.A.R, d = this.A.Y)) != null) {
+                if (fixedRotationController != null && !(fixedRotationController instanceof AdaptiveRotationController) && (f2 = this.computeStrafeState(entityPlayer2, f = this.takingKnockback && bl3 ? this.originalYaw : this.placeYaw, bl8 = this.graph.M, bl7 = this.graph.D, bl6 = this.graph.R, d = this.graph.Y)) != null) {
                     blockPathPlanner.G(f2.L, f2.v, f2.h, f2.c);
                 }
                 blockPathPlanner.I(false);
@@ -1045,14 +1045,14 @@ extends Mod {
                 if (!f3 && entityPlayer2.b$src$Z$fqlxe4()) {
                     if (MathUtil.floor(entityPlayer2.N()) >= blockPlacementPathSegment2.R.E() + 1) {
                         bl = true;
-                        if (!this.V || this.OJ && this.A.A) {
+                        if (!this.forcingCounterMotion || this.takingKnockback && this.graph.A) {
                             bl4 = true;
                         }
                     }
                 } else if (f3 && !entityPlayer2.b$src$Z$fqlxe4() && bl5) {
                     bl4 = false;
                 }
-                if (this.OJ && (entityPlayer2.b$src$Z$fqlxe4() || --n7 == 0)) {
+                if (this.takingKnockback && (entityPlayer2.b$src$Z$fqlxe4() || --n7 == 0)) {
                     bl3 = true;
                 }
                 object3 = blockPathPlanner.E();
@@ -1081,20 +1081,20 @@ extends Mod {
                         object4.M(((PlacementTarget)object5).v.toVec3d());
                         object4.e(blockPlacementPathSegment2.V.toVec3d());
                     }
-                    int n11 = this.f(blockPlacementPathSegment2, (PlacementTarget)object5, entityPlayer2, entityPlayerSP, world, f7, f6, (BlockPlacementGraph)object2);
+                    int n11 = this.simulatePlacementTick(blockPlacementPathSegment2, (PlacementTarget)object5, entityPlayer2, entityPlayerSP, world, f7, f6, (BlockPlacementGraph)object2);
                     Vec3 vec3 = blockPlacementPathSegment2.V;
-                    float f9 = this.OJ && bl3 ? this.O4 : this.OI;
-                    fixedRotationController = this.b(entityPlayer2, vec3, ((PlacementTarget)object5).v, fixedRotationController, n11, f9);
+                    float f9 = this.takingKnockback && bl3 ? this.originalYaw : this.placeYaw;
+                    fixedRotationController = this.buildRotation(entityPlayer2, vec3, ((PlacementTarget)object5).v, fixedRotationController, n11, f9);
                     blockPathPlanner.y(fixedRotationController);
                 }
                 blockPathPlanner.d();
-                if (this.V && !this.OJ) {
+                if (this.forcingCounterMotion && !this.takingKnockback) {
                     blockPathPlanner.K();
                 }
                 blockPlacementPathSegment2.b.add(blockPathPlanner.f());
                 if (blockPathPlanner.T().N() <= (double)n3) {
                     blockPlacementPathSegment2.I("Player would be below the world");
-                    this.l("[SIM] Player is below the world at tick " + i);
+                    this.debugLog("[SIM] Player is below the world at tick " + i);
                 } else {
                     if (object5 != null) {
                         f8 = BlockUtil.F(world, ((PlacementTarget)object5).s());
@@ -1111,14 +1111,14 @@ extends Mod {
                         } else {
                             blockPlacementPathSegment2.I("Player would be too low to land");
                         }
-                        this.l("[SIM] Player is too low to land on block at tick " + i + " " + bl);
+                        this.debugLog("[SIM] Player is too low to land on block at tick " + i + " " + bl);
                     } else if ((double)blockPlacementPathSegment.R.E() > entityPlayer2.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY() && (double)blockPlacementPathSegment.t.E() > entityPlayer2.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY()) {
                         if (bl && !entityPlayer2.b$src$Z$fqlxe4()) {
                             blockPlacementPathSegment2.I("Player would fall off after landing");
                         } else {
                             blockPlacementPathSegment2.I("Player would be too low to land");
                         }
-                        this.l("[SIM] Player is too low to land on block at tick " + i + " " + bl);
+                        this.debugLog("[SIM] Player is too low to land on block at tick " + i + " " + bl);
                     } else if (object5 != null || blockPlacementPathSegment2.g != null || !bl4) {
                         continue;
                     }
@@ -1150,23 +1150,23 @@ extends Mod {
             return blockPlacementPathSegment;
         }
         double d = (double)(System.nanoTime() - l) / 1000000.0;
-        this.l("Failed to simulate clutch path for " + n + " ticks in " + d + "ms with " + n2 + "/" + n5 + " blocks remaining");
+        this.debugLog("Failed to simulate clutch path for " + n + " ticks in " + d + "ms with " + n2 + "/" + n5 + " blocks remaining");
         return null;
     }
 
-    private boolean C(ItemStack itemStack) {
+    private boolean isWhitelistedBlock(ItemStack itemStack) {
         if (itemStack.isNull() || itemStack.getItem().isNull()) {
             return false;
         }
-        return this.P.A(itemStack);
+        return this.whitelistBlocks.A(itemStack);
     }
 
-    private PlacementTarget Q(BlockPlacementPathSegment blockPlacementPathSegment, EntityPlayer entityPlayer, World world) {
-        return this.t(blockPlacementPathSegment, entityPlayer, world, null);
+    private PlacementTarget findPlaceTarget(BlockPlacementPathSegment blockPlacementPathSegment, EntityPlayer entityPlayer, World world) {
+        return this.resolvePlaceTarget(blockPlacementPathSegment, entityPlayer, world, null);
     }
 
-    private void C(ArrayList<BlockPlacementPathSegment> arrayList, Vec3d vec3d, EntityPlayerSP entityPlayerSP) {
-        arrayList.sort(Comparator.comparingDouble(arg_0 -> this.lambda$sortClutchPaths$0(vec3d, entityPlayerSP, arg_0)));
+    private void sortClutchPaths(ArrayList<BlockPlacementPathSegment> arrayList, Vec3d vec3d, EntityPlayerSP entityPlayerSP) {
+        arrayList.sort(Comparator.comparingDouble(arg_0 -> this.clutchPathSortCost(vec3d, entityPlayerSP, arg_0)));
     }
 
     public void F(Vec3 vec3, Color color) {
@@ -1187,7 +1187,7 @@ extends Mod {
         double d6 = vec32.getZ() - 0.05;
         AxisAlignedBB axisAlignedBB = AxisAlignedBB.create(d4, d5, d6, d4 + 0.1, d5 + 0.1, d6 + 0.1).A(-d, -d2, -d3);
         GL11.glColor4f((float)((float)color.getRed() / 255.0f), (float)((float)color.getGreen() / 255.0f), (float)((float)color.getBlue() / 255.0f), (float)0.25f);
-        this.l(axisAlignedBB);
+        this.renderFilledBox(axisAlignedBB);
         GL11.glEnable((int)2929);
         GL11.glEnable((int)3553);
         GL11.glDisable((int)3042);
@@ -1195,20 +1195,20 @@ extends Mod {
         GL11.glPopMatrix();
     }
 
-    private boolean W(EntityPlayerSP entityPlayerSP) {
-        int n = this.c();
+    private boolean selectBlockSlot(EntityPlayerSP entityPlayerSP) {
+        int n = this.findBestBlockSlot();
         if (n == -1) {
             return false;
         }
-        if (this.j == -1) {
-            this.j = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+        if (this.previousSlot == -1) {
+            this.previousSlot = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
         }
-        this.v(n);
+        this.selectHotbarSlot(n);
         return true;
     }
 
     public static int v(BlockIn blockIn, BlockPlacementPathSegment blockPlacementPathSegment, ArrayList arrayList, EntityPlayerSP entityPlayerSP, World world, Vector vector, int n) {
-        return blockIn.J(blockPlacementPathSegment, arrayList, entityPlayerSP, world, vector, n);
+        return blockIn.scorePlacementPath(blockPlacementPathSegment, arrayList, entityPlayerSP, world, vector, n);
     }
 
     @EventHandler
@@ -1218,23 +1218,23 @@ extends Mod {
     @EventHandler
     public void s(EventClickMouse eventClickMouse) {
         GameSettings gameSettings = eventClickMouse.getGameSettings();
-        if (this.J != null) {
+        if (this.clutchPath != null) {
             eventClickMouse.setCancelled(true);
             gameSettings.F().e();
         }
     }
 
-    private int c() {
+    private int findBestBlockSlot() {
         ArrayList<Integer> arrayList = new ArrayList<Integer>();
         for (int i = 0; i < 9; ++i) {
             ItemStack object = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(i);
-            if (!object.isNotNull() || !this.y(object)) continue;
+            if (!object.isNotNull() || !this.isValidBlockItem(object)) continue;
             arrayList.add(i);
         }
         if (arrayList.isEmpty()) {
             return -1;
         }
-        for (String string : this.Z) {
+        for (String string : this.defaultBlockNames) {
             for (Integer n : arrayList) {
                 if (!Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(n).x().contains(string)) continue;
                 return n;
@@ -1243,21 +1243,21 @@ extends Mod {
         return (Integer)arrayList.get(0);
     }
 
-    private int O$src$I$ti9uvy() {
+    private int countBlocks() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         InventoryPlayer inventoryPlayer = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
         if (inventoryPlayer.isNull() || entityPlayerSP.isNull()) {
             return 0;
         }
         int n = 0;
-        if (this.Ox.L().booleanValue()) {
+        if (this.heldWhitelist.L().booleanValue()) {
             if (entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt().isNull() || entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt().getItem().isNull()) {
                 return 0;
             }
-            if (!this.C(entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt())) {
+            if (!this.isWhitelistedBlock(entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt())) {
                 return 0;
             }
-            if (!this.y(entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt())) {
+            if (!this.isValidBlockItem(entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt())) {
                 return 0;
             }
             return entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt().t();
@@ -1265,11 +1265,11 @@ extends Mod {
         for (int i = 0; i < 9; ++i) {
             ItemStack itemStack = inventoryPlayer.c(i);
             if (itemStack.isNull() || !itemStack.getItem().isInstance(MappedClasses.Vw)) continue;
-            if (this.y(itemStack)) {
+            if (this.isValidBlockItem(itemStack)) {
                 n += itemStack.t();
                 continue;
             }
-            for (String string : this.Z) {
+            for (String string : this.defaultBlockNames) {
                 if (!itemStack.x().contains(string)) continue;
                 n += itemStack.t();
             }
@@ -1278,59 +1278,59 @@ extends Mod {
     }
 
     public static double B(BlockIn blockIn, double d) {
-        blockIn.OR = d;
-        return blockIn.OR;
+        blockIn.savedYaw = d;
+        return blockIn.savedYaw;
     }
 
-    private void U(World world, EntityPlayerSP entityPlayerSP) {
-        if (this.J != null || !this.Ou.isEmpty()) {
+    private void tryStartClutch(World world, EntityPlayerSP entityPlayerSP) {
+        if (this.clutchPath != null || !this.pendingSegments.isEmpty()) {
             return;
         }
-        ItemStack itemStack = this.p(entityPlayerSP);
-        if (this.M$src$Z$th6a3v() && this.J == null) {
+        ItemStack itemStack = this.findBlockItem(entityPlayerSP);
+        if (this.isPlayerMoving() && this.clutchPath == null) {
             boolean bl;
             boolean bl2 = bl = !entityPlayerSP.b$src$Z$fqlxe4() || entityPlayerSP.q() >= 0.0;
             if (bl) {
-                BlockCoordinate blockCoordinate = this.U(50, entityPlayerSP);
+                BlockCoordinate blockCoordinate = this.findLandingBlockSimple(50, entityPlayerSP);
                 boolean bl3 = false;
                 boolean bl4 = false;
                 boolean bl5 = false;
                 if (blockCoordinate != null) {
-                    if (this.Od.L().booleanValue() && entityPlayerSP.N() - (double)blockCoordinate.E() - 3.0 > (double)entityPlayerSP.w$src$F$15l9epb()) {
+                    if (this.onLethalFall.L().booleanValue() && entityPlayerSP.N() - (double)blockCoordinate.E() - 3.0 > (double)entityPlayerSP.w$src$F$15l9epb()) {
                         bl4 = true;
                     }
-                    if (this.Om.L().booleanValue() && entityPlayerSP.N() - (double)(blockCoordinate.E() + 1) >= (Double)this.On.K()) {
+                    if (this.onMoreThanXBlocks.L().booleanValue() && entityPlayerSP.N() - (double)(blockCoordinate.E() + 1) >= (Double)this.blocksThreshold.K()) {
                         bl5 = true;
                     }
                 } else {
-                    bl3 = this.D.L();
+                    bl3 = this.onVoid.L();
                 }
                 if (bl3 || bl4 || bl5) {
-                    if (!this.a.U(this) && !this.a.h(this, this.OT.L())) {
+                    if (!this.rotationClaim.U(this) && !this.rotationClaim.h(this, this.silentAim.L())) {
                         return;
                     }
-                    this.J = this.z(world, entityPlayerSP, itemStack);
+                    this.clutchPath = this.computeClutchPath(world, entityPlayerSP, itemStack);
                 }
             } else {
-                this.Oa = entityPlayerSP.N();
+                this.fallTargetY = entityPlayerSP.N();
             }
         }
     }
 
     public static VisibleModuleList q(BlockIn blockIn) {
-        return blockIn.O9;
+        return blockIn.placedBlocks;
     }
 
-    private void f(EntityPlayerSP entityPlayerSP) {
+    private void resetRotation(EntityPlayerSP entityPlayerSP) {
         boolean bl = true;
-        if (this.OV.L().booleanValue() && !this.OT.L().booleanValue() && !this.a.e(this) && this.OR != -999.0 && this.U != null) {
-            RotationManager.b.v(this.U);
-            this.U = null;
-            float f = MathUtil.wrapAngleTo180(entityPlayerSP.J() - (float)this.OR);
+        if (this.resetAngle.L().booleanValue() && !this.silentAim.L().booleanValue() && !this.rotationClaim.e(this) && this.savedYaw != -999.0 && this.rotationController != null) {
+            RotationManager.b.v(this.rotationController);
+            this.rotationController = null;
+            float f = MathUtil.wrapAngleTo180(entityPlayerSP.J() - (float)this.savedYaw);
             float f2 = f / 90.0f * 5.0f;
             f2 = Math.max(f2, 1.0f);
-            float f3 = entityPlayerSP.J() - (float)this.OR;
-            BlockInThresholdRotationController blockInThresholdRotationController = new BlockInThresholdRotationController(this, Minecraft.thePlayer(), f3, entityPlayerSP.V() - (float)this.OH);
+            float f3 = entityPlayerSP.J() - (float)this.savedYaw;
+            BlockInThresholdRotationController blockInThresholdRotationController = new BlockInThresholdRotationController(this, Minecraft.thePlayer(), f3, entityPlayerSP.V() - (float)this.savedPitch);
             blockInThresholdRotationController.D(true);
             blockInThresholdRotationController.U(true);
             blockInThresholdRotationController.s(true);
@@ -1338,17 +1338,17 @@ extends Mod {
             RotationManager.b.S(blockInThresholdRotationController);
             bl = false;
         }
-        if (bl && this.U != null) {
-            this.U.k(true);
-            this.U.z(true);
-            this.U.U(true);
-            this.U.t(0.0f);
-            this.U.Y(3.0f);
-            RotationManager.b.v(this.U);
+        if (bl && this.rotationController != null) {
+            this.rotationController.k(true);
+            this.rotationController.z(true);
+            this.rotationController.U(true);
+            this.rotationController.t(0.0f);
+            this.rotationController.Y(3.0f);
+            RotationManager.b.v(this.rotationController);
         }
     }
 
-    private boolean U(PlacementTarget placementTarget, BlockPathPlanner blockPathPlanner) {
+    private boolean canPlaceOnTarget(PlacementTarget placementTarget, BlockPathPlanner blockPathPlanner) {
         boolean bl = false;
         if (placementTarget != null) {
             EntityPlayer entityPlayer = blockPathPlanner.T();
@@ -1392,11 +1392,11 @@ extends Mod {
         EntityPlayerSP entityPlayerSP = eventRender2D.getThePlayer();
     }
 
-    private void E(EntityPlayerSP entityPlayerSP) {
+    private void noopFlyCheck(EntityPlayerSP entityPlayerSP) {
         boolean bl = entityPlayerSP.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying();
     }
 
-    private BlockPlacementPathSegment D(World world, BlockPathPlanner blockPathPlanner, ItemStack itemStack) {
+    private BlockPlacementPathSegment searchClutchPath(World world, BlockPathPlanner blockPathPlanner, ItemStack itemStack) {
         int n;
         int n2;
         int n3;
@@ -1407,7 +1407,7 @@ extends Mod {
         BlockData blockData;
         boolean bl;
         int n4 = JavassistMappingTask.U();
-        if (!this.Ou.isEmpty()) {
+        if (!this.pendingSegments.isEmpty()) {
             return null;
         }
         int n5 = ForgeVersion.MC_1_20_6.d() ? world.R() : 0;
@@ -1419,7 +1419,7 @@ extends Mod {
         int n6 = 0;
         double d = entityPlayer.N();
         double d2 = entityPlayer.q();
-        boolean bl2 = bl = this.OY && entityPlayer.q() > 0.0;
+        boolean bl2 = bl = this.staircaseQueued && entityPlayer.q() > 0.0;
         if (bl) {
             int blockPlacementPathSegment3;
             int n7;
@@ -1429,11 +1429,11 @@ extends Mod {
             Vec3 vec32;
             Object object4;
             BlockData blockData2;
-            this.Oa = entityPlayerSP.N() + entityPlayer.q();
-            boolean bl3 = Math.abs(this.Oa - entityPlayerSP.N()) > 1.0;
+            this.fallTargetY = entityPlayerSP.N() + entityPlayer.q();
+            boolean bl3 = Math.abs(this.fallTargetY - entityPlayerSP.N()) > 1.0;
             while (true) {
                 d += d2;
-                if (!bl3 && !(d >= this.Oa) || n6 >= 20) break;
+                if (!bl3 && !(d >= this.fallTargetY) || n6 >= 20) break;
                 d2 -= 0.08;
                 d2 *= (double)0.98f;
                 ++n6;
@@ -1471,25 +1471,25 @@ extends Mod {
             int n10 = (int)Math.round(d13);
             if (n10 >= 4) {
                 boolean bl5;
-                this.l("Clutch is not possible standing still. Forcing counter motion.");
-                this.A.A = bl5 = this.OJ && gg.vape.config.ClientSettings.B(Minecraft.gameSettings().O());
-                this.A.M = true;
-                this.A.D = false;
-                this.A.R = false;
-                this.A.Y = false;
-                this.OL = true;
-                this.V = true;
-                this.OI = MovementInputHelper.U(entityPlayerSP);
+                this.debugLog("Clutch is not possible standing still. Forcing counter motion.");
+                this.graph.A = bl5 = this.takingKnockback && gg.vape.config.ClientSettings.B(Minecraft.gameSettings().O());
+                this.graph.M = true;
+                this.graph.D = false;
+                this.graph.R = false;
+                this.graph.Y = false;
+                this.counterMotion = true;
+                this.forcingCounterMotion = true;
+                this.placeYaw = MovementInputHelper.U(entityPlayerSP);
             } else {
-                this.V = false;
-                this.OL = false;
+                this.forcingCounterMotion = false;
+                this.counterMotion = false;
             }
-            if (this.OL) {
+            if (this.counterMotion) {
                 blockPathPlanner.t();
             } else {
                 blockPathPlanner.l();
             }
-            this.l("Estimated ticks: " + n6 + " Blocks: " + n10);
+            this.debugLog("Estimated ticks: " + n6 + " Blocks: " + n10);
             double d14 = entityPlayer.t();
             double d15 = entityPlayer.T();
             boolean bl6 = false;
@@ -1507,16 +1507,16 @@ extends Mod {
             if (!BlockUtil.u(block)) {
                 bl6 = true;
             }
-            if (this.V) {
+            if (this.forcingCounterMotion) {
                 object4 = Vec3.create(entityPlayer.z(), entityPlayer.N() + (double)entityPlayer.X(), entityPlayer.h());
                 vec32 = ((Vec3)object4).addVector(-d14, 0.0, -d15);
-                fixedRotationController2 = this.b(entityPlayer, (Vec3)object4, vec32, null, 1, this.OI);
+                fixedRotationController2 = this.buildRotation(entityPlayer, (Vec3)object4, vec32, null, 1, this.placeYaw);
                 blockPathPlanner.y(fixedRotationController2);
             } else {
                 object4 = Vec3.create(entityPlayer.z(), entityPlayer.N() + (double)entityPlayer.X(), entityPlayer.h());
                 vec32 = entityPlayer.J(1.0f);
                 Vec3 vec33 = ((Vec3)object4).addVector(vec32.getX() * 5.0, vec32.getY() * 5.0, vec32.getZ() * 5.0);
-                fixedRotationController2 = this.b(entityPlayer, (Vec3)object4, vec33, null, 1, this.OI);
+                fixedRotationController2 = this.buildRotation(entityPlayer, (Vec3)object4, vec33, null, 1, this.placeYaw);
                 blockPathPlanner.y(fixedRotationController2);
             }
             HashMap<BlockData, Double> pathScores = new HashMap<BlockData, Double>();
@@ -1527,7 +1527,7 @@ extends Mod {
             int n17 = entityPlayerSP.b$src$Z$fqlxe4() ? -2 : (entityPlayerSP.q() > 0.0 ? -3 : -1);
             boolean bl7 = false;
             int n18 = 0;
-            int n19 = this.Oq;
+            int n19 = this.knockbackTicks;
             long l = System.nanoTime();
             for (int i = 0; i <= Math.max(n6, 15); ++i) {
                 int n20;
@@ -1556,16 +1556,16 @@ extends Mod {
                                     blockData3 = new BlockData(n20, n27, n28);
                                     hashMap.put(n29, blockData3);
                                 }
-                                if (this.O5.contains(blockData3)) continue;
+                                if (this.rejectedBlocks.contains(blockData3)) continue;
                                 Block block2 = world.getBlockByPos(blockData3.D(), blockData3.B(), blockData3.G());
-                                if (!this.o.contains(blockData3) && BlockUtil.p(block2) || BlockUtil.C(block2) || !BlockUtil.b(block2)) {
-                                    this.O5.add(blockData3);
+                                if (!this.placeableBlocks.contains(blockData3) && BlockUtil.p(block2) || BlockUtil.C(block2) || !BlockUtil.b(block2)) {
+                                    this.rejectedBlocks.add(blockData3);
                                     continue;
                                 }
                                 if ((double)(blockData3.B() + 1) > d16) continue;
-                                boolean bl5 = bl8 = this.o.contains(blockData3) || !BlockUtil.u(block2) && !ClutchPlacementPathUtils.e(block2);
+                                boolean bl5 = bl8 = this.placeableBlocks.contains(blockData3) || !BlockUtil.u(block2) && !ClutchPlacementPathUtils.e(block2);
                                 if (bl8) {
-                                    this.o.add(blockData3);
+                                    this.placeableBlocks.add(blockData3);
                                     object3 = Vec3.create((double)blockData3.D() + 0.5, (double)blockData3.B() + 0.5, (double)blockData3.G() + 0.5);
                                     Vec3 vec34 = vec3d.n().addVector(0.0, entityPlayer.X(), 0.0);
                                     RotationAngles rotationAngles = RotationVectorMath.d(vec34, (Vec3)object3, fixedRotationController2.k(), fixedRotationController2.d());
@@ -1573,31 +1573,31 @@ extends Mod {
                                     if (Math.abs(l5) > 120.0) {
                                         l5 = Math.abs(MathUtil.wrapAngleTo180(l5 + 180.0));
                                     }
-                                    this.k.putIfAbsent(blockData3, new HashSet());
+                                    this.blockGraphMap.putIfAbsent(blockData3, new HashSet());
                                     if (pathScores.get(blockData3) != null && !(l5 < pathScores.get(blockData3))) continue;
                                     pathScores.put(blockData3, l5);
                                     continue;
                                 }
-                                this.O5.add(blockData3);
+                                this.rejectedBlocks.add(blockData3);
                             }
                         }
                     }
                 }
                 BlockPlacementGraph blockPlacementGraph2 = blockPathPlanner.E().U();
                 BlockInBooleanState blockInBooleanState = null;
-                if (!this.OT.L().booleanValue()) {
-                    boolean graphMove = this.A.M;
-                    boolean graphDown = this.A.D;
-                    boolean graphRight = this.A.R;
-                    boolean bl10 = this.A.Y;
-                    float f = bl7 ? this.O4 : this.OI;
-                    blockInBooleanState = this.j(blockPathPlanner.T(), this.OI, graphMove, graphDown, graphRight, bl10);
+                if (!this.silentAim.L().booleanValue()) {
+                    boolean graphMove = this.graph.M;
+                    boolean graphDown = this.graph.D;
+                    boolean graphRight = this.graph.R;
+                    boolean bl10 = this.graph.Y;
+                    float f = bl7 ? this.originalYaw : this.placeYaw;
+                    blockInBooleanState = this.computeStrafeState(blockPathPlanner.T(), this.placeYaw, graphMove, graphDown, graphRight, bl10);
                     if (blockInBooleanState != null) {
                         blockPathPlanner.G(blockInBooleanState.L, blockInBooleanState.v, blockInBooleanState.h, blockInBooleanState.c);
                     }
                 }
                 if (bl7 && fixedRotationController2 instanceof AdaptiveRotationController) {
-                    ((AdaptiveRotationController)fixedRotationController2).C(Float.valueOf(this.O4));
+                    ((AdaptiveRotationController)fixedRotationController2).C(Float.valueOf(this.originalYaw));
                 }
                 blockPathPlanner.B();
                 if (blockInBooleanState != null) {
@@ -1610,7 +1610,7 @@ extends Mod {
                 blockPathPlanner.K();
                 vec3d = blockPathPlanner.f();
                 arrayList.add(vec3d);
-                if (this.OJ && n19 > 0 && --n19 == 0) {
+                if (this.takingKnockback && n19 > 0 && --n19 == 0) {
                     bl7 = true;
                 }
                 if (entityPlayer.q() <= 0.0) {
@@ -1620,13 +1620,13 @@ extends Mod {
                     double d20 = MathUtil.clamp(entityPlayer.t() * (d18 * d19), -1.0, 1.0);
                     double d21 = MathUtil.clamp(entityPlayer.T() * (d18 * d19), -1.0, 1.0);
                     object3 = new BlockData(MathUtil.floor(entityPlayer.z()), n22, MathUtil.floor(entityPlayer.h()));
-                    for (BlockData n32 : this.k.keySet()) {
+                    for (BlockData n32 : this.blockGraphMap.keySet()) {
                         boolean d37;
                         boolean bl8 = d37 = n22 >= n32.B() || n22 == n32.B();
                         n8 = Math.abs(n32.D() - ((BlockData)object3).D());
                         int n58 = n8 + (n7 = Math.abs(n32.G() - ((BlockData)object3).G())) + (blockPlacementPathSegment3 = Math.abs(n32.B() - ((BlockData)object3).B())) - 1;
                         if (n58 > n18 || !d37 || n32.L((BlockData)object3)) continue;
-                        this.k.get(n32).add((BlockData)object3);
+                        this.blockGraphMap.get(n32).add((BlockData)object3);
                     }
                 }
                 if (blockPathPlanner.T().N() <= (double)n5) break;
@@ -1641,7 +1641,7 @@ extends Mod {
                 HashSet<BlockData> hashSet;
                 ArrayList<BlockPlacementPathSegment> arrayList4 = new ArrayList<BlockPlacementPathSegment>();
                 BlockData blockData4 = (BlockData)entry.getKey();
-                if (blockData4 == null || (hashSet = this.k.get(blockData4)) == null || hashSet.isEmpty()) continue;
+                if (blockData4 == null || (hashSet = this.blockGraphMap.get(blockData4)) == null || hashSet.isEmpty()) continue;
                 block9: for (BlockData blockData5 : hashSet) {
                     int[] nArray;
                     BlockCoordinate blockCoordinate = new BlockCoordinate(blockData4.D(), blockData4.B(), blockData4.G());
@@ -1657,13 +1657,13 @@ extends Mod {
                         if (n21 == -1) continue;
                         EnumFacing enumFacing = EnumFacing.t()[n21];
                         BlockData blockData3 = blockCoordinate.O().R(enumFacing);
-                        if (this.O9.Y(blockData3) || !BlockUtil.u(block2 = world.getBlockByPos(blockData3.D(), blockData3.B(), blockData3.G()))) continue;
+                        if (this.placedBlocks.Y(blockData3) || !BlockUtil.u(block2 = world.getBlockByPos(blockData3.D(), blockData3.B(), blockData3.G()))) continue;
                         arrayList4.add(new BlockPlacementPathSegment(blockCoordinate, (BlockCoordinate)object3, new ArrayList<Vec3d>()));
                         continue block9;
                     }
                 }
                 if (arrayList4.isEmpty()) continue;
-                this.C(arrayList4, vec3d2, entityPlayerSP);
+                this.sortClutchPaths(arrayList4, vec3d2, entityPlayerSP);
                 for (int i = 0; i < Math.min(1, arrayList4.size()); ++i) {
                     arrayList3.add(arrayList4.get(i));
                 }
@@ -1671,8 +1671,8 @@ extends Mod {
             if (arrayList3.isEmpty()) {
                 return null;
             }
-            this.l("Temp paths: " + arrayList3.size());
-            this.C(arrayList3, vec3d2, entityPlayerSP);
+            this.debugLog("Temp paths: " + arrayList3.size());
+            this.sortClutchPaths(arrayList3, vec3d2, entityPlayerSP);
             l = System.nanoTime();
             long l2 = Long.MAX_VALUE;
             int n37 = Integer.MAX_VALUE;
@@ -1684,16 +1684,16 @@ extends Mod {
             while (pathIterator.hasNext()) {
                 BlockPlacementPathSegment object7 = pathIterator.next();
                 if (n38 > 3) {
-                    this.l("Checked 3 paths already");
+                    this.debugLog("Checked 3 paths already");
                     break;
                 }
-                this.v(object7, Math.max(n6, 2), entityPlayerSP, world, arrayList);
+                this.planPlacementSearch(object7, Math.max(n6, 2), entityPlayerSP, world, arrayList);
                 if (object7.g == null || object7.g.M.isEmpty()) continue;
                 ++n38;
                 long n61 = System.nanoTime();
                 object7.a = n6;
                 n7 = (double)object7.R.E() < entityPlayerSP.N() ? (int)Math.ceil((entityPlayerSP.N() - (double)object7.R.E()) / 0.08) : 7;
-                BlockPlacementPathSegment blockPlacementPathSegment = this.q(n6 + Math.min(n7, 25), object7, world, itemStack, null, entityPlayerSP, entityPlayerSP);
+                BlockPlacementPathSegment blockPlacementPathSegment = this.simulateClutchPath(n6 + Math.min(n7, 25), object7, world, itemStack, null, entityPlayerSP, entityPlayerSP);
                 long l11 = System.nanoTime() - n61;
                 if (l11 < l2) {
                     n37 = object7.w();
@@ -1714,10 +1714,10 @@ extends Mod {
             }
             return null;
         }
-        boolean bl13 = Math.abs(this.Oa - entityPlayerSP.N()) > 1.0;
+        boolean bl13 = Math.abs(this.fallTargetY - entityPlayerSP.N()) > 1.0;
         while (true) {
             d += d2;
-            if (!bl13 && !(d >= this.Oa) || n6 >= 20) break;
+            if (!bl13 && !(d >= this.fallTargetY) || n6 >= 20) break;
             d2 -= 0.08;
             d2 *= (double)0.98f;
             ++n6;
@@ -1755,25 +1755,25 @@ extends Mod {
         int n39 = (int)Math.round(d33);
         if (n39 >= 4) {
             boolean bl15;
-            this.l("Clutch is not possible standing still. Forcing counter motion.");
-            this.A.A = bl15 = this.OJ && gg.vape.config.ClientSettings.B(Minecraft.gameSettings().O());
-            this.A.M = true;
-            this.A.D = false;
-            this.A.R = false;
-            this.A.Y = false;
-            this.OL = true;
-            this.V = true;
-            this.OI = MovementInputHelper.U(entityPlayerSP);
+            this.debugLog("Clutch is not possible standing still. Forcing counter motion.");
+            this.graph.A = bl15 = this.takingKnockback && gg.vape.config.ClientSettings.B(Minecraft.gameSettings().O());
+            this.graph.M = true;
+            this.graph.D = false;
+            this.graph.R = false;
+            this.graph.Y = false;
+            this.counterMotion = true;
+            this.forcingCounterMotion = true;
+            this.placeYaw = MovementInputHelper.U(entityPlayerSP);
         } else {
-            this.V = false;
-            this.OL = false;
+            this.forcingCounterMotion = false;
+            this.counterMotion = false;
         }
-        if (this.OL) {
+        if (this.counterMotion) {
             blockPathPlanner.t();
         } else {
             blockPathPlanner.l();
         }
-        this.l("Estimated ticks: " + n6 + " Blocks: " + n39);
+        this.debugLog("Estimated ticks: " + n6 + " Blocks: " + n39);
         double d34 = entityPlayer.t();
         double d35 = entityPlayer.T();
         boolean bl16 = false;
@@ -1791,16 +1791,16 @@ extends Mod {
         if (!BlockUtil.u(block)) {
             bl16 = true;
         }
-        if (this.V) {
+        if (this.forcingCounterMotion) {
             object2 = Vec3.create(entityPlayer.z(), entityPlayer.N() + (double)entityPlayer.X(), entityPlayer.h());
             vec3 = ((Vec3)object2).addVector(-d34, 0.0, -d35);
-            fixedRotationController = this.b(entityPlayer, (Vec3)object2, vec3, null, 1, this.OI);
+            fixedRotationController = this.buildRotation(entityPlayer, (Vec3)object2, vec3, null, 1, this.placeYaw);
             blockPathPlanner.y(fixedRotationController);
         } else {
             object2 = Vec3.create(entityPlayer.z(), entityPlayer.N() + (double)entityPlayer.X(), entityPlayer.h());
             vec3 = entityPlayer.J(1.0f);
             Vec3 vec35 = ((Vec3)object2).addVector(vec3.getX() * 5.0, vec3.getY() * 5.0, vec3.getZ() * 5.0);
-            fixedRotationController = this.b(entityPlayer, (Vec3)object2, vec35, null, 1, this.OI);
+            fixedRotationController = this.buildRotation(entityPlayer, (Vec3)object2, vec35, null, 1, this.placeYaw);
             blockPathPlanner.y(fixedRotationController);
         }
         HashMap<BlockData, Double> pathScores = new HashMap<BlockData, Double>();
@@ -1811,7 +1811,7 @@ extends Mod {
         int n46 = entityPlayerSP.b$src$Z$fqlxe4() ? -2 : (entityPlayerSP.q() > 0.0 ? -3 : -1);
         boolean bl17 = false;
         int n47 = 0;
-        int n48 = this.Oq;
+        int n48 = this.knockbackTicks;
         long l = System.nanoTime();
         for (int i = 0; i <= Math.max(n6, 15); ++i) {
             int n49;
@@ -1839,16 +1839,16 @@ extends Mod {
                                 blockData7 = new BlockData(n49, n55, n56);
                                 hashMap.put(n57, blockData7);
                             }
-                            if (this.O5.contains(blockData7)) continue;
+                            if (this.rejectedBlocks.contains(blockData7)) continue;
                             Block block4 = world.getBlockByPos(blockData7.D(), blockData7.B(), blockData7.G());
-                            if (!this.o.contains(blockData7) && BlockUtil.p(block4) || BlockUtil.C(block4) || !BlockUtil.b(block4)) {
-                                this.O5.add(blockData7);
+                            if (!this.placeableBlocks.contains(blockData7) && BlockUtil.p(block4) || BlockUtil.C(block4) || !BlockUtil.b(block4)) {
+                                this.rejectedBlocks.add(blockData7);
                                 continue;
                             }
                             if ((double)(blockData7.B() + 1) > d36) continue;
-                            boolean bl9 = bl18 = this.o.contains(blockData7) || !BlockUtil.u(block4) && !ClutchPlacementPathUtils.e(block4);
+                            boolean bl9 = bl18 = this.placeableBlocks.contains(blockData7) || !BlockUtil.u(block4) && !ClutchPlacementPathUtils.e(block4);
                             if (bl18) {
-                                this.o.add(blockData7);
+                                this.placeableBlocks.add(blockData7);
                                 object = Vec3.create((double)blockData7.D() + 0.5, (double)blockData7.B() + 0.5, (double)blockData7.G() + 0.5);
                                 Vec3 vec36 = vec3d.n().addVector(0.0, entityPlayer.X(), 0.0);
                                 RotationAngles blockPlacementPathSegment = RotationVectorMath.d(vec36, (Vec3)object, fixedRotationController.k(), fixedRotationController.d());
@@ -1856,31 +1856,31 @@ extends Mod {
                                 if (Math.abs(l10) > 120.0) {
                                     l10 = Math.abs(MathUtil.wrapAngleTo180(l10 + 180.0));
                                 }
-                                this.k.putIfAbsent(blockData7, new HashSet());
+                                this.blockGraphMap.putIfAbsent(blockData7, new HashSet());
                                 if (pathScores.get(blockData7) != null && !(l10 < pathScores.get(blockData7))) continue;
                                 pathScores.put(blockData7, l10);
                                 continue;
                             }
-                            this.O5.add(blockData7);
+                            this.rejectedBlocks.add(blockData7);
                         }
                     }
                 }
             }
             BlockPlacementGraph blockPlacementGraph3 = blockPathPlanner.E().U();
             BlockInBooleanState blockInBooleanState = null;
-            if (!this.OT.L().booleanValue()) {
-                boolean graphMove = this.A.M;
-                boolean bl20 = this.A.D;
-                boolean graphRight = this.A.R;
-                boolean bl21 = this.A.Y;
-                float f = bl17 ? this.O4 : this.OI;
-                blockInBooleanState = this.j(blockPathPlanner.T(), this.OI, graphMove, bl20, graphRight, bl21);
+            if (!this.silentAim.L().booleanValue()) {
+                boolean graphMove = this.graph.M;
+                boolean bl20 = this.graph.D;
+                boolean graphRight = this.graph.R;
+                boolean bl21 = this.graph.Y;
+                float f = bl17 ? this.originalYaw : this.placeYaw;
+                blockInBooleanState = this.computeStrafeState(blockPathPlanner.T(), this.placeYaw, graphMove, bl20, graphRight, bl21);
                 if (blockInBooleanState != null) {
                     blockPathPlanner.G(blockInBooleanState.L, blockInBooleanState.v, blockInBooleanState.h, blockInBooleanState.c);
                 }
             }
             if (bl17 && fixedRotationController instanceof AdaptiveRotationController) {
-                ((AdaptiveRotationController)fixedRotationController).C(Float.valueOf(this.O4));
+                ((AdaptiveRotationController)fixedRotationController).C(Float.valueOf(this.originalYaw));
             }
             blockPathPlanner.B();
             if (blockInBooleanState != null) {
@@ -1893,7 +1893,7 @@ extends Mod {
             blockPathPlanner.K();
             vec3d = blockPathPlanner.f();
             arrayList.add(vec3d);
-            if (this.OJ && n48 > 0 && --n48 == 0) {
+            if (this.takingKnockback && n48 > 0 && --n48 == 0) {
                 bl17 = true;
             }
             if (entityPlayer.q() <= 0.0) {
@@ -1903,13 +1903,13 @@ extends Mod {
                 double d40 = MathUtil.clamp(entityPlayer.t() * (d38 * d39), -1.0, 1.0);
                 double d41 = MathUtil.clamp(entityPlayer.T() * (d38 * d39), -1.0, 1.0);
                 object = new BlockData(MathUtil.floor(entityPlayer.z()), n50, MathUtil.floor(entityPlayer.h()));
-                for (BlockData blockData4 : this.k.keySet()) {
+                for (BlockData blockData4 : this.blockGraphMap.keySet()) {
                     boolean bl10;
                     boolean bl11 = bl10 = n50 == blockData4.B();
                     n3 = Math.abs(blockData4.D() - ((BlockData)object).D());
                     int n22 = n3 + (n2 = Math.abs(blockData4.G() - ((BlockData)object).G())) + (n = Math.abs(blockData4.B() - ((BlockData)object).B())) - 1;
                     if (n22 > n47 || !bl10 || blockData4.L((BlockData)object)) continue;
-                    this.k.get(blockData4).add((BlockData)object);
+                    this.blockGraphMap.get(blockData4).add((BlockData)object);
                 }
             }
             if (blockPathPlanner.T().N() <= (double)n5) break;
@@ -1924,7 +1924,7 @@ extends Mod {
             HashSet<BlockData> hashSet;
             ArrayList<BlockPlacementPathSegment> arrayList7 = new ArrayList<BlockPlacementPathSegment>();
             BlockData blockData8 = (BlockData)entry.getKey();
-            if (blockData8 == null || (hashSet = this.k.get(blockData8)) == null || hashSet.isEmpty()) continue;
+            if (blockData8 == null || (hashSet = this.blockGraphMap.get(blockData8)) == null || hashSet.isEmpty()) continue;
             block22: for (BlockData blockData9 : hashSet) {
                 int[] nArray;
                 BlockCoordinate blockCoordinate = new BlockCoordinate(blockData8.D(), blockData8.B(), blockData8.G());
@@ -1940,13 +1940,13 @@ extends Mod {
                     if (n27 == -1) continue;
                     EnumFacing enumFacing = EnumFacing.t()[n27];
                     BlockData blockData5 = blockCoordinate.O().R(enumFacing);
-                    if (this.O9.Y(blockData5) || !BlockUtil.u(block3 = world.getBlockByPos(blockData5.D(), blockData5.B(), blockData5.G()))) continue;
+                    if (this.placedBlocks.Y(blockData5) || !BlockUtil.u(block3 = world.getBlockByPos(blockData5.D(), blockData5.B(), blockData5.G()))) continue;
                     arrayList7.add(new BlockPlacementPathSegment(blockCoordinate, (BlockCoordinate)object, new ArrayList<Vec3d>()));
                     continue block22;
                 }
             }
             if (arrayList7.isEmpty()) continue;
-            this.C(arrayList7, vec3d3, entityPlayerSP);
+            this.sortClutchPaths(arrayList7, vec3d3, entityPlayerSP);
             for (int i = 0; i < Math.min(1, arrayList7.size()); ++i) {
                 arrayList6.add(arrayList7.get(i));
             }
@@ -1954,8 +1954,8 @@ extends Mod {
         if (arrayList6.isEmpty()) {
             return null;
         }
-        this.l("Temp paths: " + arrayList6.size());
-        this.C(arrayList6, vec3d3, entityPlayerSP);
+        this.debugLog("Temp paths: " + arrayList6.size());
+        this.sortClutchPaths(arrayList6, vec3d3, entityPlayerSP);
         l = System.nanoTime();
         long l7 = Long.MAX_VALUE;
         int n65 = Integer.MAX_VALUE;
@@ -1967,16 +1967,16 @@ extends Mod {
         while (pathIterator.hasNext()) {
             BlockPlacementPathSegment blockPlacementPathSegment = pathIterator.next();
             if (n66 > 3) {
-                this.l("Checked 3 paths already");
+                this.debugLog("Checked 3 paths already");
                 break;
             }
-            this.v(blockPlacementPathSegment, Math.max(n6, 2), entityPlayerSP, world, arrayList);
+            this.planPlacementSearch(blockPlacementPathSegment, Math.max(n6, 2), entityPlayerSP, world, arrayList);
             if (blockPlacementPathSegment.g == null || blockPlacementPathSegment.g.M.isEmpty()) continue;
             ++n66;
             long l2 = System.nanoTime();
             blockPlacementPathSegment.a = n6;
             n2 = (double)blockPlacementPathSegment.R.E() < entityPlayerSP.N() ? (int)Math.ceil((entityPlayerSP.N() - (double)blockPlacementPathSegment.R.E()) / 0.08) : 7;
-            BlockPlacementPathSegment blockPlacementPathSegment2 = this.q(n6 + Math.min(n2, 25), blockPlacementPathSegment, world, itemStack, null, entityPlayerSP, entityPlayerSP);
+            BlockPlacementPathSegment blockPlacementPathSegment2 = this.simulateClutchPath(n6 + Math.min(n2, 25), blockPlacementPathSegment, world, itemStack, null, entityPlayerSP, entityPlayerSP);
             long l3 = System.nanoTime() - l2;
             if (l3 < l7) {
                 n65 = blockPlacementPathSegment.w();
@@ -2003,16 +2003,16 @@ extends Mod {
         ClientSettings.g(ActiveModuleStackFrame.class).c(this);
     }
 
-    private void J(EntityPlayerSP entityPlayerSP) {
-        this.J = null;
-        this.t = null;
-        this.OS = (int)Math.round(this.OW.B());
-        if (this.U != null) {
-            this.f(entityPlayerSP);
+    private void resetClutch(EntityPlayerSP entityPlayerSP) {
+        this.clutchPath = null;
+        this.placeTarget = null;
+        this.returnDelayTicks = (int)Math.round(this.returnDelay.B());
+        if (this.rotationController != null) {
+            this.resetRotation(entityPlayerSP);
         }
     }
 
-    private double lambda$sortClutchPaths$0(Vec3d vec3d, EntityPlayerSP entityPlayerSP, BlockPlacementPathSegment blockPlacementPathSegment) {
+    private double clutchPathSortCost(Vec3d vec3d, EntityPlayerSP entityPlayerSP, BlockPlacementPathSegment blockPlacementPathSegment) {
         BlockData blockData = blockPlacementPathSegment.R.O();
         BlockData blockData2 = blockPlacementPathSegment.t.O();
         double d = 0.0;
@@ -2024,29 +2024,29 @@ extends Mod {
         if (blockData.B() > blockData2.B()) {
             d -= (double)((blockData.B() - blockData2.B()) * 200);
         }
-        if (this.Y) {
+        if (this.recentlyClutched) {
             d += Math.sqrt(Math.pow((double)blockData2.D() + 0.5 - vec3d.Y(), 2.0) + Math.pow((double)blockData2.G() + 0.5 - vec3d.o(), 2.0)) * 1000.0;
         }
         EntityPlayerSP entityPlayerSP2 = Minecraft.thePlayer();
         double d2 = RotationUtil.N(entityPlayerSP.z(), entityPlayerSP.h(), entityPlayerSP.J(), (double)blockData2.D() + 0.5, (double)blockData2.G() + 0.5);
-        return d += Math.abs((double)(blockData2.B() + 1) - this.Oa) * 200.0;
+        return d += Math.abs((double)(blockData2.B() + 1) - this.fallTargetY) * 200.0;
     }
 
-    private void h$src$V$tw0q16() {
-        if (this.OL) {
-            this.K = true;
-            this.OP = false;
-            this.Oy = false;
-            this.v = false;
+    private void captureMovementInputs() {
+        if (this.counterMotion) {
+            this.inputForward = true;
+            this.inputBack = false;
+            this.inputLeft = false;
+            this.inputRight = false;
         } else {
-            this.K = this.A.M;
-            this.OP = this.A.D;
-            this.Oy = this.A.R;
-            this.v = this.A.Y;
+            this.inputForward = this.graph.M;
+            this.inputBack = this.graph.D;
+            this.inputLeft = this.graph.R;
+            this.inputRight = this.graph.Y;
         }
     }
 
-    private void Z(AxisAlignedBB axisAlignedBB) {
+    private void renderBoxOutline(AxisAlignedBB axisAlignedBB) {
         GL11.glPushMatrix();
         GL11.glEnable((int)3042);
         GL11.glBlendFunc((int)770, (int)771);
@@ -2080,7 +2080,7 @@ extends Mod {
         GL11.glPopMatrix();
     }
 
-    private PlacementTarget t(BlockPlacementPathSegment blockPlacementPathSegment, EntityPlayer entityPlayer, World world, @Nullable BlockState blockState) {
+    private PlacementTarget resolvePlaceTarget(BlockPlacementPathSegment blockPlacementPathSegment, EntityPlayer entityPlayer, World world, @Nullable BlockState blockState) {
         PlacementTarget placementTarget = null;
         BlockPlacementPathSegmentState blockPlacementPathSegmentState = blockPlacementPathSegment.g;
         Vector<PlacementTarget> vector = blockPlacementPathSegmentState.M;
@@ -2112,101 +2112,101 @@ extends Mod {
         return placementTarget;
     }
 
-    private void J$src$V$tfiw8c() {
+    private void resetState() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (this.F) {
-            this.N();
+        if (this.pendingInputApply) {
+            this.clearPendingInputs();
             if (Minecraft.currentScreen().isNull()) {
                 MovementInputHelper.D(false);
             }
-            this.F = false;
+            this.pendingInputApply = false;
         }
-        if (this.J != null) {
-            if (this.Oq <= 0) {
-                this.OJ = false;
-                this.V = false;
-                this.l("\nNO LONGER TAKING KNOCKBACK\n");
+        if (this.clutchPath != null) {
+            if (this.knockbackTicks <= 0) {
+                this.takingKnockback = false;
+                this.forcingCounterMotion = false;
+                this.debugLog("\nNO LONGER TAKING KNOCKBACK\n");
             }
-            if (this.V && !this.OJ && this.Or.y() > 0) {
-                this.v = false;
-                this.Oy = false;
-                this.OP = false;
-                this.K = false;
-                this.p();
-                this.V = false;
-                this.Op = (int)Math.round(this.Or.B());
+            if (this.forcingCounterMotion && !this.takingKnockback && this.clutchMoveDelay.y() > 0) {
+                this.inputRight = false;
+                this.inputLeft = false;
+                this.inputBack = false;
+                this.inputForward = false;
+                this.applyMovementInputs();
+                this.forcingCounterMotion = false;
+                this.moveDelayTicks = (int)Math.round(this.clutchMoveDelay.B());
             } else {
                 MovementInputHelper.D(false);
             }
-            this.OS = (int)Math.round(this.OW.B());
-            this.Oh = (int)Math.round(this.s.B());
+            this.returnDelayTicks = (int)Math.round(this.returnDelay.B());
+            this.resetAngleDelayTicks = (int)Math.round(this.resetAngleDelay.B());
         }
-        if (this.J != null) {
-            this.OB.reset();
+        if (this.clutchPath != null) {
+            this.landTimer.reset();
         }
-        this.J = null;
-        if (this.b) {
-            this.b = false;
+        this.clutchPath = null;
+        if (this.claimActive) {
+            this.claimActive = false;
             SharedModuleControlClaims.h.Q(this);
         }
-        this.t = null;
-        this.k.clear();
-        this.Ou.clear();
+        this.placeTarget = null;
+        this.blockGraphMap.clear();
+        this.pendingSegments.clear();
         O.clear();
-        this.C = null;
-        this.Of = null;
-        if (RotationManager.b.w() == null || RotationManager.b.w() != this.U || this.U != null && !this.U.v() && this.U.V$src$Z$lb4tvc()) {
-            this.U = null;
-            this.a.X(this);
+        this.rayTrace = null;
+        this.unusedRefOf = null;
+        if (RotationManager.b.w() == null || RotationManager.b.w() != this.rotationController || this.rotationController != null && !this.rotationController.v() && this.rotationController.V$src$Z$lb4tvc()) {
+            this.rotationController = null;
+            this.rotationClaim.X(this);
             if (this.O0) {
                 this.O0 = false;
                 super.s(false, true);
             }
         }
-        this.V = false;
-        this.OL = false;
-        this.OG.T(this);
+        this.forcingCounterMotion = false;
+        this.counterMotion = false;
+        this.movementLock.T(this);
     }
 
-    private BlockPlacementPathSegment z(World world, EntityPlayerSP entityPlayerSP, ItemStack itemStack) {
+    private BlockPlacementPathSegment computeClutchPath(World world, EntityPlayerSP entityPlayerSP, ItemStack itemStack) {
         int n;
         float f;
-        this.O5.clear();
-        this.o.clear();
-        this.k.clear();
-        this.Ou.clear();
+        this.rejectedBlocks.clear();
+        this.placeableBlocks.clear();
+        this.blockGraphMap.clear();
+        this.pendingSegments.clear();
         GameSettings gameSettings = Minecraft.gameSettings();
         boolean bl = gameSettings.Y().isKeyDown();
         boolean bl2 = gameSettings.s().isKeyDown();
         boolean bl3 = gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg().isKeyDown();
         boolean bl4 = gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3().isKeyDown();
-        this.OI = f = this.OR != -999.0 ? (float)this.OR : (FreeLookHudModule.z() ? FreeLookHudModule.L$src$F$1jnmc2m() : entityPlayerSP.J());
-        this.O4 = f;
-        this.OL = false;
-        this.V = false;
-        this.Y = !this.OB.hasTimeElapsed(250L);
-        this.L = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, world, this.A);
-        this.OO = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, world, this.A);
-        BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, world, this.A);
+        this.placeYaw = f = this.savedYaw != -999.0 ? (float)this.savedYaw : (FreeLookHudModule.z() ? FreeLookHudModule.L$src$F$1jnmc2m() : entityPlayerSP.J());
+        this.originalYaw = f;
+        this.counterMotion = false;
+        this.forcingCounterMotion = false;
+        this.recentlyClutched = !this.landTimer.hasTimeElapsed(250L);
+        this.pathPlanner = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, world, this.graph);
+        this.pathPlannerReturn = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, world, this.graph);
+        BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, world, this.graph);
         boolean bl5 = false;
         long l = System.nanoTime();
         ItemStack itemStack2 = itemStack;
         BlockPathPlanner blockPathPlanner2 = blockPathPlanner;
         World world2 = world;
         BlockIn blockIn = this;
-        BlockPlacementPathSegment blockPlacementPathSegment = blockIn.D(world2, blockPathPlanner2, itemStack2);
+        BlockPlacementPathSegment blockPlacementPathSegment = blockIn.searchClutchPath(world2, blockPathPlanner2, itemStack2);
         long l2 = System.nanoTime();
-        if (blockPlacementPathSegment != null && !blockPlacementPathSegment.u() && this.Oj.L().booleanValue() && (n = blockPlacementPathSegment.w()) > ((Double)this.Oi.K()).intValue()) {
-            blockPlacementPathSegment.I("Requires " + n + " blocks (max: " + ((Double)this.Oi.K()).intValue() + ")");
+        if (blockPlacementPathSegment != null && !blockPlacementPathSegment.u() && this.limitBlocks.L().booleanValue() && (n = blockPlacementPathSegment.w()) > ((Double)this.maxBlocks.K()).intValue()) {
+            blockPlacementPathSegment.I("Requires " + n + " blocks (max: " + ((Double)this.maxBlocks.K()).intValue() + ")");
         }
         return blockPlacementPathSegment;
     }
 
-    private boolean F$src$Z$tdbpyc() {
+    private boolean isLookingAtTarget() {
         boolean bl = false;
-        if (this.t != null) {
+        if (this.placeTarget != null) {
             EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            AxisAlignedBB axisAlignedBB = BlockUtil.F(entityPlayerSP.getWorld(), this.t.s());
+            AxisAlignedBB axisAlignedBB = BlockUtil.F(entityPlayerSP.getWorld(), this.placeTarget.s());
             AxisAlignedBB axisAlignedBB2 = entityPlayerSP.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu();
             if (axisAlignedBB2.intersects(axisAlignedBB)) {
                 return bl;
@@ -2215,13 +2215,13 @@ extends Mod {
             if (rayTraceResult.isBlockHit()) {
                 boolean bl2;
                 if (ForgeVersion.MC_1_7_10.Y()) {
-                    bl2 = rayTraceResult.getBlockPos().equals(BlockPos.d(this.t.k));
+                    bl2 = rayTraceResult.getBlockPos().equals(BlockPos.d(this.placeTarget.k));
                 } else {
-                    boolean bl3 = bl2 = rayTraceResult.g() == this.t.k.D() && rayTraceResult.T() == this.t.k.B() && rayTraceResult.a$src$I$8nuo9d() == this.t.k.G();
+                    boolean bl3 = bl2 = rayTraceResult.g() == this.placeTarget.k.D() && rayTraceResult.T() == this.placeTarget.k.B() && rayTraceResult.a$src$I$8nuo9d() == this.placeTarget.k.G();
                 }
                 if (bl2) {
                     boolean bl4;
-                    EnumFacing enumFacing = this.t.M ? this.t.G : null;
+                    EnumFacing enumFacing = this.placeTarget.M ? this.placeTarget.G : null;
                     boolean bl5 = bl4 = enumFacing == null;
                     if (enumFacing != null && enumFacing.equals(rayTraceResult.getSideHit())) {
                         bl4 = true;
@@ -2231,7 +2231,7 @@ extends Mod {
                     }
                 } else {
                     BlockPos blockPos = rayTraceResult.getBlockPos();
-                    BlockData blockData = this.t.s();
+                    BlockData blockData = this.placeTarget.s();
                     if (blockData.y(blockPos.offset(rayTraceResult.getSideHit()))) {
                         bl = true;
                     }
@@ -2241,10 +2241,10 @@ extends Mod {
         return bl;
     }
 
-    private void C$src$V$tboc2t() {
+    private void noopC() {
     }
 
-    private void l(AxisAlignedBB axisAlignedBB) {
+    private void renderFilledBox(AxisAlignedBB axisAlignedBB) {
         GL11.glPushMatrix();
         GL11.glEnable((int)3042);
         GL11.glBlendFunc((int)770, (int)771);
@@ -2278,14 +2278,14 @@ extends Mod {
         GL11.glPopMatrix();
     }
 
-    private void N() {
-        this.O_ = null;
-        this.Os = null;
-        this.O3 = null;
-        this.I = null;
+    private void clearPendingInputs() {
+        this.pendingInputForward = null;
+        this.pendingInputBack = null;
+        this.pendingInputLeft = null;
+        this.pendingInputRight = null;
     }
 
-    private void N(AxisAlignedBB axisAlignedBB, Color color, Color color2, int n) {
+    private void renderShadedBox(AxisAlignedBB axisAlignedBB, Color color, Color color2, int n) {
         GL11.glPushMatrix();
         GL11.glEnable((int)3042);
         GL11.glBlendFunc((int)770, (int)771);
@@ -2349,19 +2349,19 @@ extends Mod {
         GL11.glPopMatrix();
     }
 
-    private void l(String string) {
+    private void debugLog(String string) {
     }
 
-    private ItemStack p(EntityPlayerSP entityPlayerSP) {
+    private ItemStack findBlockItem(EntityPlayerSP entityPlayerSP) {
         InventoryPlayer inventoryPlayer = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
         if (inventoryPlayer.isNull() || entityPlayerSP.isNull()) {
             return null;
         }
-        if (this.Ox.L().booleanValue()) {
+        if (this.heldWhitelist.L().booleanValue()) {
             if (entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt().isNull() || entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt().getItem().isNull()) {
                 return null;
             }
-            if (!this.C(entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt())) {
+            if (!this.isWhitelistedBlock(entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt())) {
                 return null;
             }
             return entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt();
@@ -2369,10 +2369,10 @@ extends Mod {
         for (int i = 0; i < 9; ++i) {
             ItemStack itemStack = inventoryPlayer.c(i);
             if (itemStack.isNull() || !itemStack.getItem().isInstance(MappedClasses.Vw)) continue;
-            if (this.y(itemStack)) {
+            if (this.isValidBlockItem(itemStack)) {
                 return itemStack;
             }
-            for (String string : this.Z) {
+            for (String string : this.defaultBlockNames) {
                 if (!itemStack.x().contains(string)) continue;
                 return itemStack;
             }
@@ -2380,8 +2380,8 @@ extends Mod {
         return null;
     }
 
-    private BlockCoordinate U(int n, EntityPlayerSP entityPlayerSP) {
-        return this.B(n, entityPlayerSP, entityPlayerSP, null);
+    private BlockCoordinate findLandingBlockSimple(int n, EntityPlayerSP entityPlayerSP) {
+        return this.findLandingBlock(n, entityPlayerSP, entityPlayerSP, null);
     }
 
     @EventHandler
@@ -2391,137 +2391,137 @@ extends Mod {
         EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();
         WorldClient worldClient = eventPreTick.getWorld();
         if (entityPlayerSP.isNull() || worldClient.isNull()) {
-            this.J$src$V$tfiw8c();
+            this.resetState();
             return;
         }
-        if (this.Ok) {
-            this.Z("Server rejected block placement!", true);
-            this.J(entityPlayerSP);
-            this.Ok = false;
+        if (this.placementRejected) {
+            this.showFailNotification("Server rejected block placement!", true);
+            this.resetClutch(entityPlayerSP);
+            this.placementRejected = false;
         }
-        this.j(entityPlayerSP, gameSettings, guiScreen);
+        this.tickSlotAndReset(entityPlayerSP, gameSettings, guiScreen);
         double d = -0.0784000015258789;
         if (entityPlayerSP.b$src$Z$fqlxe4() && entityPlayerSP.q() == d) {
-            this.Oa = entityPlayerSP.N();
+            this.fallTargetY = entityPlayerSP.N();
         }
         if (Minecraft.currentScreen().getObject() == null) {
             KeyboardCodeUtil.v();
         }
         boolean bl = gg.vape.config.ClientSettings.B(Minecraft.gameSettings().Y());
-        this.A = new BlockPlacementGraph(entityPlayerSP);
-        if (this.F) {
-            this.A.M = this.O_;
-            this.A.D = this.Os;
-            this.A.R = this.O3;
-            this.A.Y = this.I;
-            this.N();
-            this.F = false;
+        this.graph = new BlockPlacementGraph(entityPlayerSP);
+        if (this.pendingInputApply) {
+            this.graph.M = this.pendingInputForward;
+            this.graph.D = this.pendingInputBack;
+            this.graph.R = this.pendingInputLeft;
+            this.graph.Y = this.pendingInputRight;
+            this.clearPendingInputs();
+            this.pendingInputApply = false;
             if (guiScreen.isNull()) {
                 MovementInputHelper.D(false);
             }
         }
-        this.A.M = bl;
+        this.graph.M = bl;
         boolean bl2 = entityPlayerSP.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying();
-        if (this.O0 || this.OG.s() || this.a.e(this) || Minecraft.currentScreen().isNotNull()) {
-            this.J$src$V$tfiw8c();
+        if (this.O0 || this.movementLock.s() || this.rotationClaim.e(this) || Minecraft.currentScreen().isNotNull()) {
+            this.resetState();
             return;
         }
-        ItemStack itemStack = this.p(entityPlayerSP);
+        ItemStack itemStack = this.findBlockItem(entityPlayerSP);
         if (bl2 || entityPlayerSP.S$src$Z$151gttj() || entityPlayerSP.f$src$Z$fst3rk() || itemStack == null) {
-            this.J$src$V$tfiw8c();
+            this.resetState();
             return;
         }
-        if (!(this.D.L().booleanValue() || this.Od.L().booleanValue() || this.Om.L().booleanValue())) {
-            this.J$src$V$tfiw8c();
+        if (!(this.onVoid.L().booleanValue() || this.onLethalFall.L().booleanValue() || this.onMoreThanXBlocks.L().booleanValue())) {
+            this.resetState();
             return;
         }
         boolean bl3 = gg.vape.config.ClientSettings.B(eventPreTick.getGameSettings().O());
         if (bl3) {
-            if (this.J != null) {
+            if (this.clutchPath != null) {
                 if (entityPlayerSP.b$src$Z$fqlxe4()) {
-                    BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, worldClient, this.A);
-                    boolean bl4 = this.q(entityPlayerSP, entityPlayerSP, worldClient, blockPathPlanner, this.J);
-                    if (++this.c >= 5 || !bl4) {
-                        this.J$src$V$tfiw8c();
+                    BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, worldClient, this.graph);
+                    boolean bl4 = this.simulateLandsOnTarget(entityPlayerSP, entityPlayerSP, worldClient, blockPathPlanner, this.clutchPath);
+                    if (++this.groundStuckTicks >= 5 || !bl4) {
+                        this.resetState();
                     }
                 } else {
-                    this.c = 0;
+                    this.groundStuckTicks = 0;
                 }
             }
-            if (this.Oz.L().booleanValue()) {
-                if (this.Oe != bl3) {
+            if (this.allowStaircaseUp.L().booleanValue()) {
+                if (this.prevRightClickHeld != bl3) {
                     // empty if block
                 }
-                if (!this.Oe && !this.OD.hasTimeElapsed(500L)) {
-                    this.OY = true;
+                if (!this.prevRightClickHeld && !this.staircaseTimer.hasTimeElapsed(500L)) {
+                    this.staircaseQueued = true;
                 }
-                this.Oe = bl3;
+                this.prevRightClickHeld = bl3;
             } else {
-                this.Oe = false;
-                this.OY = false;
+                this.prevRightClickHeld = false;
+                this.staircaseQueued = false;
             }
-            if (this.J != null) {
-                if (entityPlayerSP.N() < (double)this.J.t.E()) {
-                    this.J$src$V$tfiw8c();
+            if (this.clutchPath != null) {
+                if (entityPlayerSP.N() < (double)this.clutchPath.t.E()) {
+                    this.resetState();
                 } else {
                     double d2;
-                    double d3 = RotationUtil.V(entityPlayerSP.z(), entityPlayerSP.h(), (double)this.J.R.B() + 0.5, (double)this.J.R.A() + 0.5);
-                    if (d3 > (d2 = RotationUtil.V(entityPlayerSP.f(), entityPlayerSP.R(), (double)this.J.R.B() + 0.5, (double)this.J.R.A() + 0.5)) && d3 > 1.2 && !entityPlayerSP.b$src$Z$fqlxe4()) {
-                        this.J$src$V$tfiw8c();
+                    double d3 = RotationUtil.V(entityPlayerSP.z(), entityPlayerSP.h(), (double)this.clutchPath.R.B() + 0.5, (double)this.clutchPath.R.A() + 0.5);
+                    if (d3 > (d2 = RotationUtil.V(entityPlayerSP.f(), entityPlayerSP.R(), (double)this.clutchPath.R.B() + 0.5, (double)this.clutchPath.R.A() + 0.5)) && d3 > 1.2 && !entityPlayerSP.b$src$Z$fqlxe4()) {
+                        this.resetState();
                     }
                 }
             }
-            if (this.M$src$Z$th6a3v() && this.J == null) {
+            if (this.isPlayerMoving() && this.clutchPath == null) {
                 boolean bl5;
                 boolean bl6 = bl5 = !entityPlayerSP.b$src$Z$fqlxe4() || entityPlayerSP.q() >= 0.0;
-                if (bl5 && !entityPlayerSP.S$src$Z$151gttj() && !entityPlayerSP.f$src$Z$fst3rk() && !entityPlayerSP.h$src$Z$ftwoya() && this.OF.hasTimeElapsed(((Double)this.Oo.K()).longValue())) {
-                    BlockCoordinate blockCoordinate = this.U(50, entityPlayerSP);
+                if (bl5 && !entityPlayerSP.S$src$Z$151gttj() && !entityPlayerSP.f$src$Z$fst3rk() && !entityPlayerSP.h$src$Z$ftwoya() && this.failTimer.hasTimeElapsed(((Double)this.failDelay.K()).longValue())) {
+                    BlockCoordinate blockCoordinate = this.findLandingBlockSimple(50, entityPlayerSP);
                     boolean bl7 = false;
                     boolean bl8 = false;
                     boolean bl9 = false;
                     if (blockCoordinate != null) {
-                        if (this.Od.L().booleanValue() && entityPlayerSP.N() - (double)blockCoordinate.E() - 3.0 > (double)entityPlayerSP.w$src$F$15l9epb()) {
+                        if (this.onLethalFall.L().booleanValue() && entityPlayerSP.N() - (double)blockCoordinate.E() - 3.0 > (double)entityPlayerSP.w$src$F$15l9epb()) {
                             bl8 = true;
                         }
-                        if (this.Om.L().booleanValue() && entityPlayerSP.N() - (double)(blockCoordinate.E() + 1) >= (Double)this.On.K()) {
+                        if (this.onMoreThanXBlocks.L().booleanValue() && entityPlayerSP.N() - (double)(blockCoordinate.E() + 1) >= (Double)this.blocksThreshold.K()) {
                             bl9 = true;
                         }
                     } else {
-                        bl7 = this.D.L();
+                        bl7 = this.onVoid.L();
                     }
                     if (bl7 || bl8 || bl9) {
-                        if (!this.a.U(this) && !this.a.h(this, this.OT.L())) {
+                        if (!this.rotationClaim.U(this) && !this.rotationClaim.h(this, this.silentAim.L())) {
                             return;
                         }
                         long l = System.nanoTime();
-                        BlockPlacementPathSegment clutchPath = this.z(worldClient, entityPlayerSP, itemStack);
+                        BlockPlacementPathSegment clutchPath = this.computeClutchPath(worldClient, entityPlayerSP, itemStack);
                         long l2 = System.nanoTime();
                         if (clutchPath != null && !clutchPath.u()) {
-                            this.l("\n\n\nFound Clutch Path (" + (double)(l2 - l) / 1000000.0 + "ms)\n\n\n");
-                            this.h$src$V$tw0q16();
-                            this.n$src$V$tzbhlc();
-                            this.c = 0;
-                            this.O7 = 0;
-                            this.Oh = 0;
-                            this.Op = 0;
-                            this.OS = 0;
-                            this.J = clutchPath;
-                            this.Oe = bl3;
+                            this.debugLog("\n\n\nFound Clutch Path (" + (double)(l2 - l) / 1000000.0 + "ms)\n\n\n");
+                            this.captureMovementInputs();
+                            this.resetPendingFail();
+                            this.groundStuckTicks = 0;
+                            this.unusedCounterO7 = 0;
+                            this.resetAngleDelayTicks = 0;
+                            this.moveDelayTicks = 0;
+                            this.returnDelayTicks = 0;
+                            this.clutchPath = clutchPath;
+                            this.prevRightClickHeld = bl3;
                             gameSettings.F().e();
-                            if (!this.OT.L().booleanValue()) {
-                                if (this.OR == -999.0) {
-                                    this.OR = FreeLookHudModule.z() ? (double)FreeLookHudModule.L$src$F$1jnmc2m() : (double)entityPlayerSP.J();
-                                    this.OH = entityPlayerSP.V();
+                            if (!this.silentAim.L().booleanValue()) {
+                                if (this.savedYaw == -999.0) {
+                                    this.savedYaw = FreeLookHudModule.z() ? (double)FreeLookHudModule.L$src$F$1jnmc2m() : (double)entityPlayerSP.J();
+                                    this.savedPitch = entityPlayerSP.V();
                                 }
                             } else {
-                                this.OR = -999.0;
+                                this.savedYaw = -999.0;
                             }
-                            this.Ob.clear();
-                            this.X$src$V$tn80je();
+                            this.tempGraphs.clear();
+                            this.noopReset();
                         } else {
                             String string = null;
                             if (clutchPath == null) {
-                                if (this.k.size() > 0) {
+                                if (this.blockGraphMap.size() > 0) {
                                     string = "Could not find a clutch path!";
                                 }
                             } else {
@@ -2531,46 +2531,46 @@ extends Mod {
                                 }
                             }
                             if (string != null && !string.isEmpty()) {
-                                this.x(string);
+                                this.queueFailMessage(string);
                             }
-                            this.V$src$V$tm4fco();
-                            this.J = null;
-                            this.OF.reset();
+                            this.resetMovementInputs();
+                            this.clutchPath = null;
+                            this.failTimer.reset();
                         }
                     }
                 }
-            } else if (this.J != null) {
-                this.W();
+            } else if (this.clutchPath != null) {
+                this.noopW();
             }
-            this.G();
-            this.C = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
-            if (this.J != null) {
-                if (!this.b) {
-                    this.b = true;
+            this.tickFailDelay();
+            this.rayTrace = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
+            if (this.clutchPath != null) {
+                if (!this.claimActive) {
+                    this.claimActive = true;
                     SharedModuleControlClaims.h.S(this);
                 }
-                this.t = null;
-                if (this.J.g != null) {
-                    this.t = this.Q(this.J, entityPlayerSP, worldClient);
-                    if (this.t == null && this.J.g != null) {
-                        this.J.I("Failed to find a place target");
+                this.placeTarget = null;
+                if (this.clutchPath.g != null) {
+                    this.placeTarget = this.findPlaceTarget(this.clutchPath, entityPlayerSP, worldClient);
+                    if (this.placeTarget == null && this.clutchPath.g != null) {
+                        this.clutchPath.I("Failed to find a place target");
                     }
-                } else if (!this.V || this.OJ) {
-                    this.J$src$V$tfiw8c();
+                } else if (!this.forcingCounterMotion || this.takingKnockback) {
+                    this.resetState();
                     return;
                 }
             } else {
-                this.J$src$V$tfiw8c();
+                this.resetState();
                 return;
             }
-            if (this.t != null && this.W(entityPlayerSP)) {
+            if (this.placeTarget != null && this.selectBlockSlot(entityPlayerSP)) {
                 float f;
                 float f2;
-                this.OO = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, worldClient, this.A);
+                this.pathPlannerReturn = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, worldClient, this.graph);
                 if (RotationManager.b.w() == null) {
-                    this.U = null;
+                    this.rotationController = null;
                 }
-                if (this.U == null) {
+                if (this.rotationController == null) {
                     if (RotationManager.b.u()) {
                         AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)RotationManager.b.w();
                         f2 = adaptiveRotationController.J();
@@ -2579,14 +2579,14 @@ extends Mod {
                         f2 = entityPlayerSP.J();
                         f = entityPlayerSP.V();
                     }
-                } else if (this.U instanceof AdaptiveRotationController) {
-                    f2 = ((AdaptiveRotationController)this.U).J();
-                    f = ((AdaptiveRotationController)this.U).X();
+                } else if (this.rotationController instanceof AdaptiveRotationController) {
+                    f2 = ((AdaptiveRotationController)this.rotationController).J();
+                    f = ((AdaptiveRotationController)this.rotationController).X();
                 } else {
-                    f2 = this.U.k();
-                    f = this.U.d();
+                    f2 = this.rotationController.k();
+                    f = this.rotationController.d();
                 }
-                boolean bl10 = this.F$src$Z$tdbpyc();
+                boolean bl10 = this.isLookingAtTarget();
                 if (bl10) {
                     KeyBinding keyBinding = Minecraft.gameSettings().F();
                     if (keyBinding.u() || keyBinding.isPressed()) {
@@ -2596,9 +2596,9 @@ extends Mod {
                     KeyBinding.setKeyBindState(keyBinding2, true);
                     KeyBinding.onTick(keyBinding2);
                     KeyBinding.setKeyBindState(keyBinding2, false);
-                    if (this.J.g != null) {
-                        this.t = null;
-                        BlockPlacementPathSegmentState blockPlacementPathSegmentState = this.J.g;
+                    if (this.clutchPath.g != null) {
+                        this.placeTarget = null;
+                        BlockPlacementPathSegmentState blockPlacementPathSegmentState = this.clutchPath.g;
                         Vector<PlacementTarget> vector = blockPlacementPathSegmentState.M;
                         if (!vector.isEmpty()) {
                             vector.removeElementAt(0);
@@ -2610,116 +2610,116 @@ extends Mod {
                             Block block = worldClient.getBlockByPos(blockData.D(), blockData.B(), blockData.G());
                             if (BlockUtil.u(block)) {
                                 if (ClutchPlacementPathUtils.V(worldClient, entityPlayerSP, blockData)) {
-                                    this.t = placementTarget;
+                                    this.placeTarget = placementTarget;
                                     break;
                                 }
-                                this.J.I("Entity blocking placement");
+                                this.clutchPath.I("Entity blocking placement");
                                 break;
                             }
-                            this.J.V = null;
+                            this.clutchPath.V = null;
                             vector.removeElementAt(0);
                         }
-                        if (this.t == null && this.V && this.U != null) {
-                            float f3 = this.OJ ? this.O4 : this.OI;
+                        if (this.placeTarget == null && this.forcingCounterMotion && this.rotationController != null) {
+                            float f3 = this.takingKnockback ? this.originalYaw : this.placeYaw;
                             float f4 = Math.abs(MathUtil.wrapAngleTo180(f3 - f2));
                             float f5 = Math.abs(f4) / 1.8f / 3.0f;
-                            this.U.Y(f5);
-                            this.U.g(f3, this.U.s$src$F$15o72go());
+                            this.rotationController.Y(f5);
+                            this.rotationController.g(f3, this.rotationController.s$src$F$15o72go());
                         }
                     }
                 }
             }
             return;
         }
-        if (this.J != null) {
+        if (this.clutchPath != null) {
             if (entityPlayerSP.b$src$Z$fqlxe4()) {
-                BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, worldClient, this.A);
-                boolean bl11 = this.q(entityPlayerSP, entityPlayerSP, worldClient, blockPathPlanner, this.J);
-                if (++this.c >= 5 || !bl11) {
-                    this.J$src$V$tfiw8c();
+                BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, worldClient, this.graph);
+                boolean bl11 = this.simulateLandsOnTarget(entityPlayerSP, entityPlayerSP, worldClient, blockPathPlanner, this.clutchPath);
+                if (++this.groundStuckTicks >= 5 || !bl11) {
+                    this.resetState();
                 }
             } else {
-                this.c = 0;
+                this.groundStuckTicks = 0;
             }
         }
-        if (this.Oz.L().booleanValue()) {
-            if (this.Oe != bl3) {
-                if (this.OY) {
-                    this.OY = false;
+        if (this.allowStaircaseUp.L().booleanValue()) {
+            if (this.prevRightClickHeld != bl3) {
+                if (this.staircaseQueued) {
+                    this.staircaseQueued = false;
                 } else {
-                    this.OD.reset();
+                    this.staircaseTimer.reset();
                 }
             }
-            if (!this.Oe) {
+            if (!this.prevRightClickHeld) {
                 // empty if block
             }
-            this.Oe = bl3;
+            this.prevRightClickHeld = bl3;
         } else {
-            this.Oe = false;
-            this.OY = false;
+            this.prevRightClickHeld = false;
+            this.staircaseQueued = false;
         }
-        if (this.J != null) {
-            if (entityPlayerSP.N() < (double)this.J.t.E()) {
-                this.J$src$V$tfiw8c();
+        if (this.clutchPath != null) {
+            if (entityPlayerSP.N() < (double)this.clutchPath.t.E()) {
+                this.resetState();
             } else {
                 double d4;
-                double d5 = RotationUtil.V(entityPlayerSP.z(), entityPlayerSP.h(), (double)this.J.R.B() + 0.5, (double)this.J.R.A() + 0.5);
-                if (d5 > (d4 = RotationUtil.V(entityPlayerSP.f(), entityPlayerSP.R(), (double)this.J.R.B() + 0.5, (double)this.J.R.A() + 0.5)) && d5 > 1.2 && !entityPlayerSP.b$src$Z$fqlxe4()) {
-                    this.J$src$V$tfiw8c();
+                double d5 = RotationUtil.V(entityPlayerSP.z(), entityPlayerSP.h(), (double)this.clutchPath.R.B() + 0.5, (double)this.clutchPath.R.A() + 0.5);
+                if (d5 > (d4 = RotationUtil.V(entityPlayerSP.f(), entityPlayerSP.R(), (double)this.clutchPath.R.B() + 0.5, (double)this.clutchPath.R.A() + 0.5)) && d5 > 1.2 && !entityPlayerSP.b$src$Z$fqlxe4()) {
+                    this.resetState();
                 }
             }
         }
-        if (this.M$src$Z$th6a3v() && this.J == null) {
+        if (this.isPlayerMoving() && this.clutchPath == null) {
             boolean bl12;
             boolean bl13 = bl12 = !entityPlayerSP.b$src$Z$fqlxe4() || entityPlayerSP.q() >= 0.0;
-            if (bl12 && !entityPlayerSP.S$src$Z$151gttj() && !entityPlayerSP.f$src$Z$fst3rk() && !entityPlayerSP.h$src$Z$ftwoya() && this.OF.hasTimeElapsed(((Double)this.Oo.K()).longValue())) {
-                BlockCoordinate blockCoordinate = this.U(50, entityPlayerSP);
+            if (bl12 && !entityPlayerSP.S$src$Z$151gttj() && !entityPlayerSP.f$src$Z$fst3rk() && !entityPlayerSP.h$src$Z$ftwoya() && this.failTimer.hasTimeElapsed(((Double)this.failDelay.K()).longValue())) {
+                BlockCoordinate blockCoordinate = this.findLandingBlockSimple(50, entityPlayerSP);
                 boolean bl14 = false;
                 boolean bl15 = false;
                 boolean bl16 = false;
                 if (blockCoordinate != null) {
-                    if (this.Od.L().booleanValue() && entityPlayerSP.N() - (double)blockCoordinate.E() - 3.0 > (double)entityPlayerSP.w$src$F$15l9epb()) {
+                    if (this.onLethalFall.L().booleanValue() && entityPlayerSP.N() - (double)blockCoordinate.E() - 3.0 > (double)entityPlayerSP.w$src$F$15l9epb()) {
                         bl15 = true;
                     }
-                    if (this.Om.L().booleanValue() && entityPlayerSP.N() - (double)(blockCoordinate.E() + 1) >= (Double)this.On.K()) {
+                    if (this.onMoreThanXBlocks.L().booleanValue() && entityPlayerSP.N() - (double)(blockCoordinate.E() + 1) >= (Double)this.blocksThreshold.K()) {
                         bl16 = true;
                     }
                 } else {
-                    bl14 = this.D.L();
+                    bl14 = this.onVoid.L();
                 }
                 if (bl14 || bl15 || bl16) {
-                    if (!this.a.U(this) && !this.a.h(this, this.OT.L())) {
+                    if (!this.rotationClaim.U(this) && !this.rotationClaim.h(this, this.silentAim.L())) {
                         return;
                     }
                     long l = System.nanoTime();
-                    BlockPlacementPathSegment clutchPath = this.z(worldClient, entityPlayerSP, itemStack);
+                    BlockPlacementPathSegment clutchPath = this.computeClutchPath(worldClient, entityPlayerSP, itemStack);
                     long l3 = System.nanoTime();
                     if (clutchPath != null && !clutchPath.u()) {
-                        this.l("\n\n\nFound Clutch Path (" + (double)(l3 - l) / 1000000.0 + "ms)\n\n\n");
-                        this.h$src$V$tw0q16();
-                        this.n$src$V$tzbhlc();
-                        this.c = 0;
-                        this.O7 = 0;
-                        this.Oh = 0;
-                        this.Op = 0;
-                        this.OS = 0;
-                        this.J = clutchPath;
-                        this.Oe = bl3;
+                        this.debugLog("\n\n\nFound Clutch Path (" + (double)(l3 - l) / 1000000.0 + "ms)\n\n\n");
+                        this.captureMovementInputs();
+                        this.resetPendingFail();
+                        this.groundStuckTicks = 0;
+                        this.unusedCounterO7 = 0;
+                        this.resetAngleDelayTicks = 0;
+                        this.moveDelayTicks = 0;
+                        this.returnDelayTicks = 0;
+                        this.clutchPath = clutchPath;
+                        this.prevRightClickHeld = bl3;
                         gameSettings.F().e();
-                        if (!this.OT.L().booleanValue()) {
-                            if (this.OR == -999.0) {
-                                this.OR = FreeLookHudModule.z() ? (double)FreeLookHudModule.L$src$F$1jnmc2m() : (double)entityPlayerSP.J();
-                                this.OH = entityPlayerSP.V();
+                        if (!this.silentAim.L().booleanValue()) {
+                            if (this.savedYaw == -999.0) {
+                                this.savedYaw = FreeLookHudModule.z() ? (double)FreeLookHudModule.L$src$F$1jnmc2m() : (double)entityPlayerSP.J();
+                                this.savedPitch = entityPlayerSP.V();
                             }
                         } else {
-                            this.OR = -999.0;
+                            this.savedYaw = -999.0;
                         }
-                        this.Ob.clear();
-                        this.X$src$V$tn80je();
+                        this.tempGraphs.clear();
+                        this.noopReset();
                     } else {
                         String string = null;
                         if (clutchPath == null) {
-                            if (this.k.size() > 0) {
+                            if (this.blockGraphMap.size() > 0) {
                                 string = "Could not find a clutch path!";
                             }
                         } else {
@@ -2729,46 +2729,46 @@ extends Mod {
                             }
                         }
                         if (string != null && !string.isEmpty()) {
-                            this.x(string);
+                            this.queueFailMessage(string);
                         }
-                        this.V$src$V$tm4fco();
-                        this.J = null;
-                        this.OF.reset();
+                        this.resetMovementInputs();
+                        this.clutchPath = null;
+                        this.failTimer.reset();
                     }
                 }
             }
-        } else if (this.J != null) {
-            this.W();
+        } else if (this.clutchPath != null) {
+            this.noopW();
         }
-        this.G();
-        this.C = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
-        if (this.J != null) {
-            if (!this.b) {
-                this.b = true;
+        this.tickFailDelay();
+        this.rayTrace = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
+        if (this.clutchPath != null) {
+            if (!this.claimActive) {
+                this.claimActive = true;
                 SharedModuleControlClaims.h.S(this);
             }
-            this.t = null;
-            if (this.J.g != null) {
-                this.t = this.Q(this.J, entityPlayerSP, worldClient);
-                if (this.t == null && this.J.g != null) {
-                    this.J.I("Failed to find a place target");
+            this.placeTarget = null;
+            if (this.clutchPath.g != null) {
+                this.placeTarget = this.findPlaceTarget(this.clutchPath, entityPlayerSP, worldClient);
+                if (this.placeTarget == null && this.clutchPath.g != null) {
+                    this.clutchPath.I("Failed to find a place target");
                 }
-            } else if (!this.V || this.OJ) {
-                this.J$src$V$tfiw8c();
+            } else if (!this.forcingCounterMotion || this.takingKnockback) {
+                this.resetState();
                 return;
             }
         } else {
-            this.J$src$V$tfiw8c();
+            this.resetState();
             return;
         }
-        if (this.t != null && this.W(entityPlayerSP)) {
+        if (this.placeTarget != null && this.selectBlockSlot(entityPlayerSP)) {
             float f;
             float f6;
-            this.OO = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, worldClient, this.A);
+            this.pathPlannerReturn = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, worldClient, this.graph);
             if (RotationManager.b.w() == null) {
-                this.U = null;
+                this.rotationController = null;
             }
-            if (this.U == null) {
+            if (this.rotationController == null) {
                 if (RotationManager.b.u()) {
                     AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)RotationManager.b.w();
                     f6 = adaptiveRotationController.J();
@@ -2777,14 +2777,14 @@ extends Mod {
                     f6 = entityPlayerSP.J();
                     f = entityPlayerSP.V();
                 }
-            } else if (this.U instanceof AdaptiveRotationController) {
-                f6 = ((AdaptiveRotationController)this.U).J();
-                f = ((AdaptiveRotationController)this.U).X();
+            } else if (this.rotationController instanceof AdaptiveRotationController) {
+                f6 = ((AdaptiveRotationController)this.rotationController).J();
+                f = ((AdaptiveRotationController)this.rotationController).X();
             } else {
-                f6 = this.U.k();
-                f = this.U.d();
+                f6 = this.rotationController.k();
+                f = this.rotationController.d();
             }
-            boolean bl17 = this.F$src$Z$tdbpyc();
+            boolean bl17 = this.isLookingAtTarget();
             if (bl17) {
                 KeyBinding keyBinding = Minecraft.gameSettings().F();
                 if (keyBinding.u() || keyBinding.isPressed()) {
@@ -2794,9 +2794,9 @@ extends Mod {
                 KeyBinding.setKeyBindState(keyBinding3, true);
                 KeyBinding.onTick(keyBinding3);
                 KeyBinding.setKeyBindState(keyBinding3, false);
-                if (this.J.g != null) {
-                    this.t = null;
-                    BlockPlacementPathSegmentState blockPlacementPathSegmentState = this.J.g;
+                if (this.clutchPath.g != null) {
+                    this.placeTarget = null;
+                    BlockPlacementPathSegmentState blockPlacementPathSegmentState = this.clutchPath.g;
                     Vector<PlacementTarget> vector = blockPlacementPathSegmentState.M;
                     if (!vector.isEmpty()) {
                         vector.removeElementAt(0);
@@ -2808,31 +2808,31 @@ extends Mod {
                         Block block = worldClient.getBlockByPos(blockData.D(), blockData.B(), blockData.G());
                         if (BlockUtil.u(block)) {
                             if (ClutchPlacementPathUtils.V(worldClient, entityPlayerSP, blockData)) {
-                                this.t = placementTarget;
+                                this.placeTarget = placementTarget;
                                 break;
                             }
-                            this.J.I("Entity blocking placement");
+                            this.clutchPath.I("Entity blocking placement");
                             break;
                         }
-                        this.J.V = null;
+                        this.clutchPath.V = null;
                         vector.removeElementAt(0);
                     }
-                    if (this.t == null && this.V && this.U != null) {
-                        float f7 = this.OJ ? this.O4 : this.OI;
+                    if (this.placeTarget == null && this.forcingCounterMotion && this.rotationController != null) {
+                        float f7 = this.takingKnockback ? this.originalYaw : this.placeYaw;
                         float f8 = Math.abs(MathUtil.wrapAngleTo180(f7 - f6));
                         float f9 = Math.abs(f8) / 1.8f / 3.0f;
-                        this.U.Y(f9);
-                        this.U.g(f7, this.U.s$src$F$15o72go());
+                        this.rotationController.Y(f9);
+                        this.rotationController.g(f7, this.rotationController.s$src$F$15o72go());
                     }
                 }
             }
         }
     }
 
-    private void W() {
+    private void noopW() {
     }
 
-    private void k(String string, String string2) {
+    private void writeFile(String string, String string2) {
         try {
             File file = new File(string);
             FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -2846,31 +2846,31 @@ extends Mod {
 
     @Override
     public void s(boolean bl, boolean bl2) {
-        if (!bl && this.U instanceof AdaptiveRotationController) {
+        if (!bl && this.rotationController instanceof AdaptiveRotationController) {
             this.O0 = !this.O0;
         } else {
             super.s(bl, bl2);
             this.O0 = false;
             if (!bl) {
-                this.f(Minecraft.thePlayer());
-                this.OL = false;
-                this.V = false;
-                this.Oh = 0;
-                this.Op = 0;
-                this.OS = 0;
-                this.Ou.clear();
-                this.p.clear();
+                this.resetRotation(Minecraft.thePlayer());
+                this.counterMotion = false;
+                this.forcingCounterMotion = false;
+                this.resetAngleDelayTicks = 0;
+                this.moveDelayTicks = 0;
+                this.returnDelayTicks = 0;
+                this.pendingSegments.clear();
+                this.pendingSegmentsP.clear();
                 O.clear();
-                this.J$src$V$tfiw8c();
+                this.resetState();
             } else {
-                this.Ou.clear();
-                this.p.clear();
+                this.pendingSegments.clear();
+                this.pendingSegmentsP.clear();
                 O.clear();
             }
         }
     }
 
-    private void m(BlockCoordinate blockCoordinate, Color color) {
+    private void renderBlockHighlight(BlockCoordinate blockCoordinate, Color color) {
         GL11.glPushMatrix();
         GL11.glEnable((int)3042);
         GL11.glBlendFunc((int)770, (int)771);
@@ -2885,9 +2885,9 @@ extends Mod {
         AxisAlignedBB axisAlignedBB = AxisAlignedBB.create(blockCoordinate.B(), blockCoordinate.E(), blockCoordinate.A(), blockCoordinate.B() + 1, blockCoordinate.E() + 1, blockCoordinate.A() + 1).A(-d, -d2, -d3);
         Color color2 = Color.yellow;
         GL11.glColor4f((float)((float)color.getRed() / 255.0f), (float)((float)color.getGreen() / 255.0f), (float)((float)color.getBlue() / 255.0f), (float)0.45f);
-        this.l(axisAlignedBB);
+        this.renderFilledBox(axisAlignedBB);
         GL11.glColor4f((float)((float)color2.getRed() / 255.0f), (float)((float)color2.getGreen() / 255.0f), (float)((float)color2.getBlue() / 255.0f), (float)0.5f);
-        this.Z(axisAlignedBB);
+        this.renderBoxOutline(axisAlignedBB);
         GL11.glEnable((int)2929);
         GL11.glEnable((int)3553);
         GL11.glDisable((int)3042);
@@ -2895,7 +2895,7 @@ extends Mod {
         GL11.glPopMatrix();
     }
 
-    private FixedRotationController b(EntityPlayer entityPlayer, Vec3 vec3, Vec3 vec32, FixedRotationController fixedRotationController, int n, float f) {
+    private FixedRotationController buildRotation(EntityPlayer entityPlayer, Vec3 vec3, Vec3 vec32, FixedRotationController fixedRotationController, int n, float f) {
         float f2;
         float f3;
         boolean bl;
@@ -2916,7 +2916,7 @@ extends Mod {
         }
         object = RotationVectorMath.d(vec3, vec32, f5, f4);
         if (fixedRotationController == null) {
-            fixedRotationController2 = this.OT.L() != false ? new AdaptiveRotationController(entityPlayer) : new EntityFixedRotationController(this, (RotationAngles)object, entityPlayer);
+            fixedRotationController2 = this.silentAim.L() != false ? new AdaptiveRotationController(entityPlayer) : new EntityFixedRotationController(this, (RotationAngles)object, entityPlayer);
         }
         fixedRotationController2.b((RotationAngles)object);
         if (fixedRotationController2 instanceof AdaptiveRotationController) {
@@ -2935,7 +2935,7 @@ extends Mod {
         float f8 = Math.abs(((RotationAngles)object).N() - f2);
         float f9 = Math.abs(f7) + Math.abs(f8);
         float f10 = f9 / 1.8f / (float)Math.max(n, 1);
-        float f11 = 15.0f + 85.0f * (((Double)this.O6.K()).floatValue() / 10.0f);
+        float f11 = 15.0f + 85.0f * (((Double)this.speed.K()).floatValue() / 10.0f);
         f10 = Math.min(f11 + (float)((int)(entityPlayer.N() * 100.0) % 5), f10);
         fixedRotationController2.j(true);
         fixedRotationController2.Y(f10);
@@ -2949,28 +2949,28 @@ extends Mod {
         return fixedRotationController2;
     }
 
-    private void j(EntityPlayerSP entityPlayerSP, GameSettings gameSettings, GuiScreen guiScreen) {
-        if (this.J == null) {
-            if (this.Op-- >= 0) {
-                if (this.Op <= 0) {
+    private void tickSlotAndReset(EntityPlayerSP entityPlayerSP, GameSettings gameSettings, GuiScreen guiScreen) {
+        if (this.clutchPath == null) {
+            if (this.moveDelayTicks-- >= 0) {
+                if (this.moveDelayTicks <= 0) {
                     if (guiScreen.isNull()) {
                         MovementInputHelper.D(false);
                     }
-                    this.Op = -1;
+                    this.moveDelayTicks = -1;
                 } else {
                     MovementInputHelper.I(false);
                 }
             }
-            if (this.S.L().booleanValue() && this.j != -1 && this.OS-- <= 0) {
-                this.v(this.j);
-                this.j = -1;
+            if (this.returnToLastSlot.L().booleanValue() && this.previousSlot != -1 && this.returnDelayTicks-- <= 0) {
+                this.selectHotbarSlot(this.previousSlot);
+                this.previousSlot = -1;
             }
-            if (this.Oh >= 0) {
-                if (this.Oh-- <= 0) {
-                    this.f(entityPlayerSP);
-                } else if (this.U != null && !this.U.V$src$Z$lb4tvc()) {
-                    this.U.Y(((Double)this.O6.K()).floatValue() / (float)this.Oh);
-                    this.U.D(true);
+            if (this.resetAngleDelayTicks >= 0) {
+                if (this.resetAngleDelayTicks-- <= 0) {
+                    this.resetRotation(entityPlayerSP);
+                } else if (this.rotationController != null && !this.rotationController.V$src$Z$lb4tvc()) {
+                    this.rotationController.Y(((Double)this.speed.K()).floatValue() / (float)this.resetAngleDelayTicks);
+                    this.rotationController.D(true);
                 }
             }
         }
@@ -2979,20 +2979,20 @@ extends Mod {
     @EventHandler(A=EventPriority.LOWEST)
     public void s(EventPreLocalPlayerTick eventPreLocalPlayerTick) {
         EntityPlayerSP entityPlayerSP = eventPreLocalPlayerTick.getThePlayer();
-        if (this.J != null && Minecraft.currentScreen().isNull() && entityPlayerSP.isNotNull()) {
+        if (this.clutchPath != null && Minecraft.currentScreen().isNull() && entityPlayerSP.isNotNull()) {
             boolean bl;
             boolean bl2;
             boolean bl3;
             boolean bl4;
             BlockInBooleanState blockInBooleanState;
-            if (this.U != null && !(this.U instanceof AdaptiveRotationController) && (blockInBooleanState = this.j(entityPlayerSP, this.OI, bl4 = this.K, bl3 = this.OP, bl2 = this.Oy, bl = this.v)) != null) {
-                this.F = true;
-                this.O_ = blockInBooleanState.L;
-                this.I = blockInBooleanState.c;
-                this.O3 = blockInBooleanState.h;
-                this.Os = blockInBooleanState.v;
+            if (this.rotationController != null && !(this.rotationController instanceof AdaptiveRotationController) && (blockInBooleanState = this.computeStrafeState(entityPlayerSP, this.placeYaw, bl4 = this.inputForward, bl3 = this.inputBack, bl2 = this.inputLeft, bl = this.inputRight)) != null) {
+                this.pendingInputApply = true;
+                this.pendingInputForward = blockInBooleanState.L;
+                this.pendingInputRight = blockInBooleanState.c;
+                this.pendingInputLeft = blockInBooleanState.h;
+                this.pendingInputBack = blockInBooleanState.v;
             }
-            this.p();
+            this.applyMovementInputs();
         }
     }
 
@@ -3015,9 +3015,9 @@ extends Mod {
                         double d3 = Math.sqrt(d * d + d2 * d2);
                         double d4 = Math.sqrt(entityPlayerSP.t() * entityPlayerSP.t() + entityPlayerSP.T() * entityPlayerSP.T());
                         double d5 = d3 + d4;
-                        this.l("Total velocity: " + d3 + " Player velocity: " + d4 + " New velocity: " + d5);
-                        this.OJ = true;
-                        this.Oq = 4;
+                        this.debugLog("Total velocity: " + d3 + " Player velocity: " + d4 + " New velocity: " + d5);
+                        this.takingKnockback = true;
+                        this.knockbackTicks = 4;
                     }
                 } else {
                     PacketVelocityBridge packetVelocityBridge = new PacketVelocityBridge(packet.getObject());
@@ -3027,20 +3027,20 @@ extends Mod {
                     boolean bl3 = bl = Math.abs(d) >= 0.005 || Math.abs(d6) >= 0.005 || Math.abs(d7) >= 0.005;
                 }
                 if (bl) {
-                    this.J(entityPlayerSP);
+                    this.resetClutch(entityPlayerSP);
                 }
             } else if (packet.isInstance(MappedClasses.zw)) {
-                if (this.J != null && this.J.g != null) {
-                    this.Z("Server teleported you!", true);
-                    this.J(entityPlayerSP);
+                if (this.clutchPath != null && this.clutchPath.g != null) {
+                    this.showFailNotification("Server teleported you!", true);
+                    this.resetClutch(entityPlayerSP);
                 }
-            } else if (packet.isInstance(MappedClasses.DD) && this.J != null && this.J.g != null) {
+            } else if (packet.isInstance(MappedClasses.DD) && this.clutchPath != null && this.clutchPath.g != null) {
                 SPacketBlockChange sPacketBlockChange = new SPacketBlockChange(packet.getObject());
                 BlockState blockState = sPacketBlockChange.x();
                 BlockPos blockPos = sPacketBlockChange.B();
-                if (BlockUtil.p(blockState.getBlock()) && this.J.g.X(blockPos.P(), blockPos.o(), blockPos.d())) {
-                    this.Ok = true;
-                    this.O9.N(new BlockData(blockPos.P(), blockPos.o(), blockPos.d()));
+                if (BlockUtil.p(blockState.getBlock()) && this.clutchPath.g.X(blockPos.P(), blockPos.o(), blockPos.d())) {
+                    this.placementRejected = true;
+                    this.placedBlocks.N(new BlockData(blockPos.P(), blockPos.o(), blockPos.d()));
                 }
             }
         }

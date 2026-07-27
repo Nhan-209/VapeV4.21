@@ -104,6 +104,15 @@ extends Value<Double, NumberValue> {
         return this.J;
     }
 
+    @Override
+    public Double K() {
+        Double current = super.K();
+        // During profile-apply, the backing value can transiently be null;
+        // numeric consumers unbox K() directly, so fall back to the (non-null)
+        // default rather than NPE on unboxing.
+        return current != null ? current : this.P$src$Ljava_lang_Object_$qcpui1();
+    }
+
     public void P(Double d) {
         double d2 = (double)Math.round(d * 100.0) / 100.0;
         super.A(d2);

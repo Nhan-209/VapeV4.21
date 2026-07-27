@@ -12,20 +12,20 @@ extends InventoryFilterPreset {
         super(uUID, string);
     }
 
-    public SharedInventoryFilterPreset e() {
-        SharedInventoryFilterPreset pV = new SharedInventoryFilterPreset(this.j(), this.getName());
+    public SharedInventoryFilterPreset copy() {
+        SharedInventoryFilterPreset copy = new SharedInventoryFilterPreset(this.j(), this.getName());
         for (InventoryFilterConditionGroup inventoryFilterConditionGroup : this.z()) {
-            pV.x(inventoryFilterConditionGroup.A());
+            copy.x(inventoryFilterConditionGroup.A());
         }
-        return pV;
+        return copy;
     }
 
     public SharedInventoryFilterPreset(JsonObject jsonObject) {
         super(jsonObject);
     }
 
-    public SharedInventoryFilterPreset(InventoryFilterPreset pJ) {
-        super(pJ.K());
+    public SharedInventoryFilterPreset(InventoryFilterPreset preset) {
+        super(preset.K());
         this.h = UUID.randomUUID();
     }
 }

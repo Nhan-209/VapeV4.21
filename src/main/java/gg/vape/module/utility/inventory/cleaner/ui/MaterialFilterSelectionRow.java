@@ -11,19 +11,19 @@ import java.awt.Color;
 
 public class MaterialFilterSelectionRow
 extends GuiComponent {
-    private final ItemFilterSelection K;
-    private final MaterialFilterSelectionRowContent b;
-    private static final String o = "newclose";
-    private final ColorAnimation I;
-    private final ColorAnimation i;
+    private final ItemFilterSelection selection;
+    private final MaterialFilterSelectionRowContent content;
+    private static final String CLOSE_ICON = "newclose";
+    private final ColorAnimation lineColorAnimation;
+    private final ColorAnimation closeIconColorAnimation;
 
     @Override
     public void c() {
-        this.b.K(this.G$src$D$1b2f02a() + 3.0);
-        this.b.S(this.n() + 3.0);
+        this.content.K(this.G$src$D$1b2f02a() + 3.0);
+        this.content.S(this.n() + 3.0);
         super.c();
-        GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() - 4.0, this.n() + 3.0, 6.0, 1.0, this.I.getInterpolatedColor());
-        ImageRenderer.E(this.i.getInterpolatedColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 4.5), (float)(this.n() + 2.0), o, 7.0f, 7.0f, false);
+        GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() - 4.0, this.n() + 3.0, 6.0, 1.0, this.lineColorAnimation.getInterpolatedColor());
+        ImageRenderer.E(this.closeIconColorAnimation.getInterpolatedColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 4.5), (float)(this.n() + 2.0), CLOSE_ICON, 7.0f, 7.0f, false);
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -31,12 +31,12 @@ extends GuiComponent {
     }
 
     public MaterialFilterSelectionRow(ItemFilterSelection itemFilterSelection) {
-        this.I = new ColorAnimation(0.15, new Color(0, 0, 0, 0), MaterialFilterSelectionRow.J.d);
-        this.i = new ColorAnimation(0.15, new Color(0, 0, 0, 0), Color.WHITE);
-        this.K = itemFilterSelection;
-        this.b = new MaterialFilterSelectionRowContent(this, itemFilterSelection);
+        this.lineColorAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), MaterialFilterSelectionRow.J.d);
+        this.closeIconColorAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), Color.WHITE);
+        this.selection = itemFilterSelection;
+        this.content = new MaterialFilterSelectionRowContent(this, itemFilterSelection);
         this.o(true);
-        this.H(this.b);
+        this.H(this.content);
     }
 
     @Override
@@ -47,8 +47,8 @@ extends GuiComponent {
     @Override
     public void F() {
         if (!this.w$src$Z$e457mb()) {
-            this.I.J();
-            this.i.J();
+            this.lineColorAnimation.J();
+            this.closeIconColorAnimation.J();
         }
     }
 
@@ -59,12 +59,12 @@ extends GuiComponent {
 
     @Override
     public void onEnable() {
-        this.I.J();
-        this.i.J();
+        this.lineColorAnimation.J();
+        this.closeIconColorAnimation.J();
     }
 
     public ItemFilterSelection y$src$Lgg_vape_module_utility_inventory_cleaner_ItemFi$17dg1qx() {
-        return this.K;
+        return this.selection;
     }
 }
 

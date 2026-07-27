@@ -16,7 +16,7 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 public class InventoryItemMatcherPresetRegistry {
-    private static final Map<String, InventoryItemMatcherPreset> j;
+    private static final Map<String, InventoryItemMatcherPreset> presetsByName;
     public static InventoryItemMatcherPreset L;
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -24,26 +24,26 @@ public class InventoryItemMatcherPresetRegistry {
     }
 
     @Nullable
-    public static InventoryItemMatcherPreset R(String string) {
-        return j.get(string);
+    public static InventoryItemMatcherPreset getByName(String string) {
+        return presetsByName.get(string);
     }
 
-    public static List<InventoryFilterPresetData> h(InventoryFilterRule inventoryFilterRule) {
+    public static List<InventoryFilterPresetData> findMatchingPresets(InventoryFilterRule inventoryFilterRule) {
         ArrayList<InventoryFilterPresetData> arrayList = new ArrayList<InventoryFilterPresetData>();
         InventoryItemMatcher inventoryItemMatcher = inventoryFilterRule.q().c();
         ItemStack itemStack = inventoryFilterRule.q().E();
-        for (InventoryItemMatcherPreset inventoryItemMatcherPreset : j.values()) {
-            if (!inventoryItemMatcherPreset.U().isEmpty() && (inventoryItemMatcher != null && !inventoryItemMatcherPreset.U().contains(inventoryItemMatcher) || itemStack != null && inventoryItemMatcherPreset.U().stream().noneMatch(arg_0 -> InventoryItemMatcherPresetRegistry.lambda$getRulesForFilterHolder$0(itemStack, arg_0)))) continue;
+        for (InventoryItemMatcherPreset inventoryItemMatcherPreset : presetsByName.values()) {
+            if (!inventoryItemMatcherPreset.U().isEmpty() && (inventoryItemMatcher != null && !inventoryItemMatcherPreset.U().contains(inventoryItemMatcher) || itemStack != null && inventoryItemMatcherPreset.U().stream().noneMatch(arg_0 -> InventoryItemMatcherPresetRegistry.matcherAcceptsStack(itemStack, arg_0)))) continue;
             arrayList.add(inventoryItemMatcherPreset);
         }
         return arrayList;
     }
 
-    private static void d(InventoryItemMatcherPreset inventoryItemMatcherPreset) {
-        j.put(inventoryItemMatcherPreset.getName(), inventoryItemMatcherPreset);
+    private static void register(InventoryItemMatcherPreset inventoryItemMatcherPreset) {
+        presetsByName.put(inventoryItemMatcherPreset.getName(), inventoryItemMatcherPreset);
     }
 
-    private static String a(byte[] byArray) {
+    private static String decodeUtf8(byte[] byArray) {
         int n = 0;
         int n2 = byArray.length;
         char[] cArray = new char[n2];
@@ -72,20 +72,20 @@ public class InventoryItemMatcherPresetRegistry {
         return new String(cArray, 0, n);
     }
 
-    private static void y(InventoryItemMatcherPresetBuilder inventoryItemMatcherPresetBuilder) {
-        InventoryItemMatcherPresetRegistry.d(inventoryItemMatcherPresetBuilder.z());
+    private static void registerFromBuilder(InventoryItemMatcherPresetBuilder inventoryItemMatcherPresetBuilder) {
+        InventoryItemMatcherPresetRegistry.register(inventoryItemMatcherPresetBuilder.build());
     }
 
-    private static boolean lambda$getRulesForFilterHolder$0(ItemStack itemStack, InventoryItemMatcher inventoryItemMatcher) {
+    private static boolean matcherAcceptsStack(ItemStack itemStack, InventoryItemMatcher inventoryItemMatcher) {
         return inventoryItemMatcher.g(itemStack, itemStack.getItem());
     }
 
     static {
         long l = ZkmLongKeyState.a(-5115948449218827586L, -1244080179424378416L, MethodHandles.lookup().lookupClass()).a(5476051244694L) ^ 0x2F062EE4B2AL;
         String string = "No rule";
-        j = new LinkedHashMap<String, InventoryItemMatcherPreset>();
-        L = InventoryItemMatcherPreset.J().B(string).z();
-        InventoryItemMatcherPresetRegistry.d(L);
+        presetsByName = new LinkedHashMap<String, InventoryItemMatcherPreset>();
+        L = InventoryItemMatcherPreset.J().name(string).build();
+        InventoryItemMatcherPresetRegistry.register(L);
     }
 }
 

@@ -10,24 +10,24 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 public class StringInventoryItemMatcherBuilder
 extends InventoryItemMatcherBuilderBase<StringInventoryItemMatcherBuilder> {
-    private final Map<String, StringMatchOperator> K = new LinkedHashMap<String, StringMatchOperator>();
+    private final Map<String, StringMatchOperator> operatorsByPattern = new LinkedHashMap<String, StringMatchOperator>();
 
     private StringInventoryItemMatcherBuilder(InventoryItemMatcherBuilderBase<?> inventoryItemMatcherBuilderBase) {
         super(inventoryItemMatcherBuilderBase);
     }
 
     public @UnmodifiableView Map<String, StringMatchOperator> X() {
-        return this.K;
+        return this.operatorsByPattern;
     }
 
     public StringInventoryItemMatcherBuilder R(String string, StringMatchOperator stringMatchOperator) {
-        this.K.put(string, stringMatchOperator);
+        this.operatorsByPattern.put(string, stringMatchOperator);
         return this;
     }
 
-    public StringInventoryItemMatcherBuilder L(StringMatchOperator stringMatchOperator, String ... stringArray) {
+    public StringInventoryItemMatcherBuilder putPatterns(StringMatchOperator stringMatchOperator, String ... stringArray) {
         for (String string : stringArray) {
-            this.K.put(string, stringMatchOperator);
+            this.operatorsByPattern.put(string, stringMatchOperator);
         }
         return this;
     }

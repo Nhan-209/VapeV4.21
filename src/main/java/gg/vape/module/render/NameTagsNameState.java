@@ -31,17 +31,17 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
 public class NameTagsNameState {
-    private final double c;
-    private final long V;
-    private static final String d = "ench";
-    private final double b;
-    private final NameTagsFramebufferState P;
+    private final double width;
+    private final long fingerprint;
+    private static final String ENCH_TAG = "ench";
+    private final double height;
+    private final NameTagsFramebufferState framebufferState;
 
     public double n() {
-        return this.b;
+        return this.height;
     }
 
-    private static void t(FontRenderer fontRenderer, String string, int n, int n2, double d, double d2) {
+    private static void drawEnchantString(FontRenderer fontRenderer, String string, int n, int n2, double d, double d2) {
         int n3 = ((int)d2 & 0xFF) << 24 | 0xFFFFFF;
         OpenGlBackendHolder.d.m();
         OpenGlBackendHolder.d.G(d, d, d);
@@ -51,20 +51,20 @@ public class NameTagsNameState {
     }
 
     public NameTagsNameState(long l, NameTagsFramebufferState nameTagsFramebufferState, double d, double d2) {
-        this.V = l;
-        this.P = nameTagsFramebufferState;
-        this.c = d;
-        this.b = d2;
+        this.fingerprint = l;
+        this.framebufferState = nameTagsFramebufferState;
+        this.width = d;
+        this.height = d2;
     }
 
     public void M(double d, double d2, int n, double[] dArray, @Nullable MatrixStack matrixStack, RenderManager renderManager, boolean bl) {
         int n2;
-        if (this.P == null || !this.P.R()) {
+        if (this.framebufferState == null || !this.framebufferState.R()) {
             return;
         }
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
         GlStateManager.enableAlpha();
-        GuiRenderPrimitives.S(d, d2, this.c, this.b + 2.0, this.P.m(), bl);
+        GuiRenderPrimitives.S(d, d2, this.width, this.height + 2.0, this.framebufferState.m(), bl);
         if (n != 0) {
             int n3 = -1;
             if (ForgeVersion.MC_1_16_5.d()) {
@@ -111,7 +111,7 @@ public class NameTagsNameState {
         }
     }
 
-    private static void W(ItemStack itemStack, float f, float f2) {
+    private static void renderItemIcon(ItemStack itemStack, float f, float f2) {
         if (GuiRenderPrimitives.d()) {
             if (ForgeVersion.MC_1_21_10.d()) {
                 GuiRenderPrimitives.g(itemStack, 1.0, f, -2.0, true);
@@ -170,14 +170,14 @@ public class NameTagsNameState {
             if (itemStack == null) continue;
             ItemStack itemStack2 = itemStack.k();
             if (!ForgeVersion.MC_1_20_6.d() && (tagCompound = new TagCompound(itemStack2.l())).isNotNull()) {
-                tagCompound.getTagMap().remove(d);
+                tagCompound.getTagMap().remove(ENCH_TAG);
             }
-            NameTagsNameState.W(itemStack2, n2, n);
+            NameTagsNameState.renderItemIcon(itemStack2, n2, n);
             int tagCompound2 = 0;
             double d = 0.7;
             double d2 = 1.0 / d;
             for (String string : EnchantmentUtil.E(itemStack)) {
-                NameTagsNameState.t(fontRenderer, string, (int)((double)n2 * d2), (int)((double)tagCompound2 * d2) - 2, d, 1.0);
+                NameTagsNameState.drawEnchantString(fontRenderer, string, (int)((double)n2 * d2), (int)((double)tagCompound2 * d2) - 2, d, 1.0);
                 tagCompound2 += 6;
             }
             n2 += 18;
@@ -188,14 +188,14 @@ public class NameTagsNameState {
     }
 
     public double t() {
-        return this.c;
+        return this.width;
     }
 
     public NameTagsFramebufferState d() {
-        return this.P;
+        return this.framebufferState;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

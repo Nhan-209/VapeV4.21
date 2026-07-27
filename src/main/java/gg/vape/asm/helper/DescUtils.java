@@ -14,6 +14,9 @@ public class DescUtils {
     private static int s;
 
     public static String g(Class<?> clazz, boolean bl) {
+        if (clazz == null) {
+            return NativeBridge.gcs(null);
+        }
         String string = DescUtils.h(clazz);
         if (string != null) {
             return string;

@@ -8,8 +8,8 @@ public class BacktrackPacketQueueEntry
 extends Packet {
     public List<Packet> s() {
         ArrayList<Packet> arrayList = new ArrayList<Packet>();
-        for (Object t : this.a()) {
-            arrayList.add(new Packet(t));
+        for (Object packetHandle : this.a()) {
+            arrayList.add(new Packet(packetHandle));
         }
         return arrayList;
     }

@@ -16,7 +16,7 @@ import java.lang.invoke.MethodHandles;
 public class SilentAuraClicker
 extends ClickerMod {
     private static final String c;
-    private final SilentAura K;
+    private final SilentAura silentAura;
     private static final long a;
 
     static {
@@ -27,10 +27,10 @@ extends ClickerMod {
 
     @Override
     public boolean C() {
-        if (!this.K.r$src$Z$14eylz9()) {
+        if (!this.silentAura.r$src$Z$14eylz9()) {
             return true;
         }
-        return !this.K.P();
+        return !this.silentAura.P();
     }
 
     @Override
@@ -44,33 +44,33 @@ extends ClickerMod {
         return false;
     }
 
-    private static String a(byte[] byArray) {
-        int n = 0;
-        int n2 = byArray.length;
-        char[] cArray = new char[n2];
-        for (int i = 0; i < n2; ++i) {
-            char c;
-            int n3 = 0xFF & byArray[i];
-            if (n3 < 192) {
-                cArray[n++] = (char)n3;
+    private static String decodeUtf8(byte[] bytes) {
+        int outIndex = 0;
+        int length = bytes.length;
+        char[] chars = new char[length];
+        for (int i = 0; i < length; ++i) {
+            char decoded;
+            int b = 0xFF & bytes[i];
+            if (b < 192) {
+                chars[outIndex++] = (char)b;
                 continue;
             }
-            if (n3 < 224) {
-                c = (char)((char)(n3 & 0x1F) << 6);
-                n3 = byArray[++i];
-                c = (char)(c | (char)(n3 & 0x3F));
-                cArray[n++] = c;
+            if (b < 224) {
+                decoded = (char)((char)(b & 0x1F) << 6);
+                b = bytes[++i];
+                decoded = (char)(decoded | (char)(b & 0x3F));
+                chars[outIndex++] = decoded;
                 continue;
             }
-            if (i >= n2 - 2) continue;
-            c = (char)((char)(n3 & 0xF) << 12);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F) << 6);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F));
-            cArray[n++] = c;
+            if (i >= length - 2) continue;
+            decoded = (char)((char)(b & 0xF) << 12);
+            b = bytes[++i];
+            decoded = (char)(decoded | (char)(b & 0x3F) << 6);
+            b = bytes[++i];
+            decoded = (char)(decoded | (char)(b & 0x3F));
+            chars[outIndex++] = decoded;
         }
-        return new String(cArray, 0, n);
+        return new String(chars, 0, outIndex);
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -80,7 +80,7 @@ extends ClickerMod {
     public SilentAuraClicker(SilentAura silentAura) {
         super(c, 0, Category.b);
         long l = a ^ 0x61D5216458AFL;
-        this.K = silentAura;
+        this.silentAura = silentAura;
         ClickEngine clickEngine = new ClickEngine(ClickButton.LEFT, silentAura.Ze, silentAura.j, silentAura.ZP, silentAura.Z5, null, new BooleanValue((Object)null, "", false), this);
         this.F(clickEngine);
         this.Y(true);

@@ -12,31 +12,31 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class FastUseModule
 extends Mod {
-    private final SubModuleValue s;
-    private final ModeValue p;
-    private static final long o = -7445823933619103425L;
+    private final SubModuleValue repelMode;
+    private final ModeValue modeValue;
+    private static final long MOD_ID = -7445823933619103425L;
     public final NumberValue j;
-    private final SubModuleValue D;
-    private final SubModuleValue A = new FastUseDelayedPacketMode(this, "Latency").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+    private final SubModuleValue dynamicMode;
+    private final SubModuleValue latencyMode = new FastUseDelayedPacketMode(this, "Latency").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
 
     public FastUseModule() {
-        super("FakeLag", (int)o, Category.Y, "Simulates lag");
-        this.D = new FastUsePacketDelaySubModule(this, "Dynamic").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-        this.s = new LegacyFastUseCombatPacketQueueMode(this, "Repel").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+        super("FakeLag", (int)MOD_ID, Category.Y, "Simulates lag");
+        this.dynamicMode = new FastUsePacketDelaySubModule(this, "Dynamic").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+        this.repelMode = new LegacyFastUseCombatPacketQueueMode(this, "Repel").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
         this.j = NumberValue.create((Object)this, "Delay", "#", "ms", 1.0, 100.0, 1000.0, 10.0);
-        this.p = ForgeVersion.MC_1_7_10.Y() ? ModeValue.create((Object)this, "Mode", this.A, this.A, this.D, this.s) : ModeValue.create((Object)this, "Mode", this.A, this.A, this.s);
-        this.addValue(this.p, this.j);
+        this.modeValue = ForgeVersion.MC_1_7_10.Y() ? ModeValue.create((Object)this, "Mode", this.latencyMode, this.latencyMode, this.dynamicMode, this.repelMode) : ModeValue.create((Object)this, "Mode", this.latencyMode, this.latencyMode, this.repelMode);
+        this.addValue(this.modeValue, this.j);
         this.j.C(0);
     }
 
     @Override
     public String E() {
-        return this.p.c();
+        return this.modeValue.c();
     }
 
     @Override
     public String r() {
-        SubModuleValue subModuleValue = (SubModuleValue)this.p.K();
+        SubModuleValue subModuleValue = (SubModuleValue)this.modeValue.K();
         return ((Mod)subModuleValue.getInstance()).r();
     }
 }

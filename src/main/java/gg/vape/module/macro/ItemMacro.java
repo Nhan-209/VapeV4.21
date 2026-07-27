@@ -9,15 +9,15 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class ItemMacro
 extends Macro {
-    private static boolean H;
+    private static boolean initialized;
 
-    public static boolean s() {
-        boolean bl = ItemMacro.t();
+    public static boolean isReady() {
+        boolean ready = ItemMacro.isInitialized();
         return false;
     }
 
-    public static void r(boolean bl) {
-        H = bl;
+    public static void setInitialized(boolean value) {
+        initialized = value;
     }
 
     public ItemMacro(String string) {
@@ -25,33 +25,33 @@ extends Macro {
     }
 
     public static int k(ItemMacro itemMacro) {
-        return itemMacro.s$src$I$1uap48b();
+        return itemMacro.findSlot();
     }
 
     private static Exception b(Exception exception) {
         return exception;
     }
 
-    public static boolean t() {
-        return H;
+    public static boolean isInitialized() {
+        return initialized;
     }
 
     static {
-        if (!ItemMacro.t()) {
-            ItemMacro.r(true);
+        if (!ItemMacro.isInitialized()) {
+            ItemMacro.setInitialized(true);
         }
     }
 
     @Override
     public MacroAction N() {
-        int n = this.s$src$I$1uap48b();
-        if (n == -1) {
+        int slot = this.findSlot();
+        if (slot == -1) {
             return null;
         }
         return new ItemMacroAction(this);
     }
 
-    private int s$src$I$1uap48b() {
+    private int findSlot() {
         try {
             for (int i = 0; i < 9; ++i) {
                 ItemStack itemStack = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(i);

@@ -5,17 +5,17 @@ import gg.vape.rotation.AdaptiveRotationController;
 
 public class AutoPearlRotationController
 extends AdaptiveRotationController {
-    final Float _N;
-    final AutoPearl _U;
+    final Float pitch;
+    final AutoPearl module;
 
-    public AutoPearlRotationController(AutoPearl cu_02, Float f) {
-        this._U = cu_02;
-        this._N = f;
+    public AutoPearlRotationController(AutoPearl autoPearl, Float pitch) {
+        this.module = autoPearl;
+        this.pitch = pitch;
     }
 
     @Override
-    public void g(float f, float f2) {
-        super.g(f, this._N.floatValue());
+    public void g(float yaw, float pitch) {
+        super.g(yaw, this.pitch.floatValue());
     }
 }
 

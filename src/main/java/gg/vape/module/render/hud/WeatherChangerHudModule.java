@@ -16,16 +16,16 @@ extends HudModule {
     float c;
     public final ModeValue K;
     float J;
-    private final ModeOption S;
+    private final ModeOption rainingOption;
     float F;
     float t;
-    private final ModeOption s = new ModeOption("Clear");
+    private final ModeOption clearOption = new ModeOption("Clear");
 
     @EventHandler
     public void H(EventPreRenderTick eventPreRenderTick) {
         WorldClient worldClient = eventPreRenderTick.getWorld();
         if (worldClient.isNotNull()) {
-            if (((ModeSelection)this.K.K()).equals(this.s)) {
+            if (((ModeSelection)this.K.K()).equals(this.clearOption)) {
                 worldClient.T(0.0f);
                 worldClient.o(0.0f);
                 worldClient.f(0.0f);
@@ -50,8 +50,8 @@ extends HudModule {
 
     public WeatherChangerHudModule() {
         super("Weather", HudModuleGroup.T, "weather");
-        this.S = new ModeOption("Raining");
-        this.K = ModeValue.create((Object)this, "Weather", this.s, this.s, this.S);
+        this.rainingOption = new ModeOption("Raining");
+        this.K = ModeValue.create((Object)this, "Weather", this.clearOption, this.clearOption, this.rainingOption);
         this.addValue(this.K);
         this.setSuffix("Change the weather");
     }

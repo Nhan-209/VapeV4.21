@@ -9,7 +9,7 @@ import java.awt.Color;
 @Deprecated
 public class Phase
 extends Mod {
-    private final SubModuleValue P = new HypixelPhase(this, "AntiCheat").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+    private final SubModuleValue antiCheatSubModule = new HypixelPhase(this, "AntiCheat").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
 
     @Override
     public boolean isBlatantMod() {

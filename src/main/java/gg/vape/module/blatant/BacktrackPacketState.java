@@ -11,50 +11,50 @@ import gg.vape.wrapper.impl.SPacketEntity;
 import gg.vape.wrapper.impl.Vec3;
 
 public class BacktrackPacketState {
-    private long r;
-    private long z;
-    private long k;
+    private long encodedZ;
+    private long encodedX;
+    private long encodedY;
 
-    public void K(SPacketEntity jv_02) {
-        this.z = jv_02.H();
-        this.k = jv_02.M();
-        this.r = jv_02.B();
+    public void K(SPacketEntity spacketEntity) {
+        this.encodedX = spacketEntity.H();
+        this.encodedY = spacketEntity.M();
+        this.encodedZ = spacketEntity.B();
     }
 
-    public void W(NetworkPlayerInfo jl_02) {
-        Vec3 vec3 = jl_02.e().u();
-        this.z = MathUtil.floor(vec3.getX() * BacktrackPacketState.K());
-        this.k = MathUtil.floor(vec3.getY() * BacktrackPacketState.K());
-        this.r = MathUtil.floor(vec3.getZ() * BacktrackPacketState.K());
+    public void W(NetworkPlayerInfo networkPlayerInfo) {
+        Vec3 vec3 = networkPlayerInfo.e().u();
+        this.encodedX = MathUtil.floor(vec3.getX() * BacktrackPacketState.positionScale());
+        this.encodedY = MathUtil.floor(vec3.getY() * BacktrackPacketState.positionScale());
+        this.encodedZ = MathUtil.floor(vec3.getZ() * BacktrackPacketState.positionScale());
     }
 
     public static BacktrackPacketState J(Entity entity) {
-        return new BacktrackPacketState(MathUtil.floor(entity.double_z() * BacktrackPacketState.K()), MathUtil.floor(entity.double_N() * BacktrackPacketState.K()), MathUtil.floor(entity.double_h() * BacktrackPacketState.K()));
+        return new BacktrackPacketState(MathUtil.floor(entity.double_z() * BacktrackPacketState.positionScale()), MathUtil.floor(entity.double_N() * BacktrackPacketState.positionScale()), MathUtil.floor(entity.double_h() * BacktrackPacketState.positionScale()));
     }
 
-    private static double K() {
+    private static double positionScale() {
         double d = ForgeVersion.MC_1_21_4.d() ? 4096.0 : 32.0;
         return d;
     }
 
     public PlayerLocationSnapshot g() {
-        return new PlayerLocationSnapshot((double)this.z / BacktrackPacketState.K(), (double)this.k / BacktrackPacketState.K(), (double)this.r / BacktrackPacketState.K());
+        return new PlayerLocationSnapshot((double)this.encodedX / BacktrackPacketState.positionScale(), (double)this.encodedY / BacktrackPacketState.positionScale(), (double)this.encodedZ / BacktrackPacketState.positionScale());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+        return obfuscatedRuntimeException;
     }
 
-    public void Z(SEntityPacket jJ) {
-        this.z += (long)jJ.Y();
-        this.k += (long)jJ.x();
-        this.r += (long)jJ.E();
+    public void Z(SEntityPacket sentityPacket) {
+        this.encodedX += (long)sentityPacket.Y();
+        this.encodedY += (long)sentityPacket.x();
+        this.encodedZ += (long)sentityPacket.E();
     }
 
-    public BacktrackPacketState(int n, int n2, int n3) {
-        this.z = n;
-        this.k = n2;
-        this.r = n3;
+    public BacktrackPacketState(int x, int y, int z) {
+        this.encodedX = x;
+        this.encodedY = y;
+        this.encodedZ = z;
     }
 }
 

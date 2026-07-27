@@ -25,19 +25,19 @@ import org.lwjgl.opengl.GL11;
 
 public class ESPSkeleton
 extends SubModule<ESP> {
-    private final ESP o = (ESP)this.getParent();
+    private final ESP parent = (ESP)this.getParent();
 
     @EventHandler
     public void i(EventRenderPlayerPost eventRenderPlayerPost) {
         EntityPlayer entityPlayer = eventRenderPlayerPost.getEntityPlayer();
-        float f = 57.29578f;
+        float radToDeg = 57.29578f;
         GL11.glPushMatrix();
         OpenGlBackendHolder.d.u$src$V$hntn98(2929);
         eventRenderPlayerPost.getEntityRenderer().B(0.0);
-        double d = RenderManager.getInterpolatedRenderPosX();
-        double d2 = RenderManager.getInterpolatedRenderPosY();
-        double d3 = RenderManager.getInterpolatedRenderPosZ();
-        Color color = this.o.J(eventRenderPlayerPost.getThePlayer(), entityPlayer.getObject());
+        double camX = RenderManager.getInterpolatedRenderPosX();
+        double camY = RenderManager.getInterpolatedRenderPosY();
+        double camZ = RenderManager.getInterpolatedRenderPosZ();
+        Color color = this.parent.J(eventRenderPlayerPost.getThePlayer(), entityPlayer.getObject());
         if (color != null) {
             RenderPlayer renderPlayer;
             ModelBipedSkeletonBridge modelBipedSkeletonBridge;
@@ -45,17 +45,17 @@ extends SubModule<ESP> {
             if (renderEntityContext.R()) {
                 color = Color.BLUE;
             }
-            float f2 = Minecraft.getTimer().renderPartialTicks();
-            double d4 = entityPlayer.M();
-            double d5 = entityPlayer.W();
-            double d6 = entityPlayer.m$src$D$fwnne5();
-            double d7 = d4 + (entityPlayer.z() - d4) * (double)f2 - d;
-            double d8 = d5 + (entityPlayer.N() - d5) * (double)f2 - d2;
-            double d9 = d6 + (entityPlayer.h() - d6) * (double)f2 - d3;
-            boolean bl = GL11.glIsEnabled((int)3042);
+            float partialTicks = Minecraft.getTimer().renderPartialTicks();
+            double prevX = entityPlayer.M();
+            double prevY = entityPlayer.W();
+            double prevZ = entityPlayer.m$src$D$fwnne5();
+            double renderX = prevX + (entityPlayer.z() - prevX) * (double)partialTicks - camX;
+            double renderY = prevY + (entityPlayer.N() - prevY) * (double)partialTicks - camY;
+            double renderZ = prevZ + (entityPlayer.h() - prevZ) * (double)partialTicks - camZ;
+            boolean blendWasEnabled = GL11.glIsEnabled((int)3042);
             RenderUtil.d();
             GL11.glBlendFunc((int)770, (int)771);
-            if (!bl) {
+            if (!blendWasEnabled) {
                 OpenGlBackendHolder.d.l(3042);
             }
             GL11.glBlendFunc((int)770, (int)771);
@@ -63,54 +63,54 @@ extends SubModule<ESP> {
             OpenGlBackendHolder.d.u$src$V$hntn98(2896);
             OpenGlBackendHolder.d.l(2848);
             OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-            GL11.glTranslated((double)d7, (double)d8, (double)d9);
-            Render render = this.o.r.getEntityRenderObject(entityPlayer);
+            GL11.glTranslated((double)renderX, (double)renderY, (double)renderZ);
+            Render render = this.parent.r.getEntityRenderObject(entityPlayer);
             if (render.isInstance(MappedClasses.D0) && (modelBipedSkeletonBridge = (renderPlayer = new RenderPlayer(render.getObject())).getMainModel()).isNotNull() && modelBipedSkeletonBridge.isInstance(MappedClasses.zV)) {
-                float f3 = (float)renderEntityContext.e();
-                float f4 = Math.max(4.0f * ((100.0f - Math.min(f3, 100.0f)) / 100.0f), 0.1f);
-                GL11.glLineWidth((float)f4);
+                float distance = (float)renderEntityContext.e();
+                float lineWidth = Math.max(4.0f * ((100.0f - Math.min(distance, 100.0f)) / 100.0f), 0.1f);
+                GL11.glLineWidth((float)lineWidth);
                 ModelBiped modelBiped = new ModelBiped(modelBipedSkeletonBridge.getObject());
-                boolean bl2 = renderEntityContext.A();
-                float f5 = bl2 ? 0.6f : 0.75f;
-                float f6 = entityPlayer.W$src$F$153nzpr();
-                GL11.glRotatef((float)f6, (float)0.0f, (float)-999.0f, (float)0.0f);
-                double d10 = bl2 ? -0.2 : 0.0;
-                GL11.glTranslated((double)-0.15, (double)f5, (double)d10);
-                ModelRenderer modelRenderer = modelBiped.getBipedRightLeg();
-                float f7 = modelRenderer.getRotateAngleX() * f;
-                float f8 = modelRenderer.getRotateAngleY() * f;
-                float f9 = modelRenderer.getRotateAngleZ() * f;
-                GL11.glRotatef((float)f7, (float)1.0f, (float)0.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f8), (float)0.0f, (float)1.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f9), (float)0.0f, (float)0.0f, (float)1.0f);
+                boolean sneaking = renderEntityContext.A();
+                float legOffset = sneaking ? 0.6f : 0.75f;
+                float bodyRotation = entityPlayer.W$src$F$153nzpr();
+                GL11.glRotatef((float)bodyRotation, (float)0.0f, (float)-999.0f, (float)0.0f);
+                double sneakOffset = sneaking ? -0.2 : 0.0;
+                GL11.glTranslated((double)-0.15, (double)legOffset, (double)sneakOffset);
+                ModelRenderer rightLeg = modelBiped.getBipedRightLeg();
+                float angleX = rightLeg.getRotateAngleX() * radToDeg;
+                float angleY = rightLeg.getRotateAngleY() * radToDeg;
+                float angleZ = rightLeg.getRotateAngleZ() * radToDeg;
+                GL11.glRotatef((float)angleX, (float)1.0f, (float)0.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleY), (float)0.0f, (float)1.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleZ), (float)0.0f, (float)0.0f, (float)1.0f);
                 GL11.glBegin((int)1);
                 GL11.glVertex3d((double)0.0, (double)0.0, (double)0.0);
-                GL11.glVertex3d((double)0.0, (double)(-f5), (double)0.0);
+                GL11.glVertex3d((double)0.0, (double)(-legOffset), (double)0.0);
                 GL11.glEnd();
-                GL11.glRotatef((float)f9, (float)0.0f, (float)0.0f, (float)1.0f);
-                GL11.glRotatef((float)f8, (float)0.0f, (float)1.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f7), (float)1.0f, (float)0.0f, (float)0.0f);
+                GL11.glRotatef((float)angleZ, (float)0.0f, (float)0.0f, (float)1.0f);
+                GL11.glRotatef((float)angleY, (float)0.0f, (float)1.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleX), (float)1.0f, (float)0.0f, (float)0.0f);
                 GL11.glTranslated((double)0.3, (double)0.0, (double)0.0);
-                ModelRenderer modelRenderer2 = modelBiped.getBipedLeftLeg();
-                f7 = modelRenderer2.getRotateAngleX() * f;
-                f8 = modelRenderer2.getRotateAngleY() * f;
-                f9 = modelRenderer2.getRotateAngleZ() * f;
-                GL11.glRotatef((float)f7, (float)1.0f, (float)0.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f8), (float)0.0f, (float)1.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f9), (float)0.0f, (float)0.0f, (float)1.0f);
+                ModelRenderer leftLeg = modelBiped.getBipedLeftLeg();
+                angleX = leftLeg.getRotateAngleX() * radToDeg;
+                angleY = leftLeg.getRotateAngleY() * radToDeg;
+                angleZ = leftLeg.getRotateAngleZ() * radToDeg;
+                GL11.glRotatef((float)angleX, (float)1.0f, (float)0.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleY), (float)0.0f, (float)1.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleZ), (float)0.0f, (float)0.0f, (float)1.0f);
                 GL11.glBegin((int)1);
                 GL11.glVertex3d((double)0.0, (double)0.0, (double)0.0);
-                GL11.glVertex3d((double)0.0, (double)(-f5), (double)0.0);
+                GL11.glVertex3d((double)0.0, (double)(-legOffset), (double)0.0);
                 GL11.glEnd();
-                GL11.glRotatef((float)f9, (float)0.0f, (float)0.0f, (float)1.0f);
-                GL11.glRotatef((float)f8, (float)0.0f, (float)1.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f7), (float)1.0f, (float)0.0f, (float)0.0f);
+                GL11.glRotatef((float)angleZ, (float)0.0f, (float)0.0f, (float)1.0f);
+                GL11.glRotatef((float)angleY, (float)0.0f, (float)1.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleX), (float)1.0f, (float)0.0f, (float)0.0f);
                 GL11.glTranslated((double)-0.15, (double)0.0, (double)0.0);
                 GL11.glBegin((int)1);
                 GL11.glVertex3d((double)0.15, (double)0.0, (double)0.0);
                 GL11.glVertex3d((double)-0.15, (double)0.0, (double)0.0);
                 GL11.glEnd();
-                if (bl2) {
+                if (sneaking) {
                     GL11.glRotatef((float)20.0f, (float)1.0f, (float)0.0f, (float)0.0f);
                 }
                 GL11.glBegin((int)1);
@@ -123,54 +123,54 @@ extends SubModule<ESP> {
                 GL11.glVertex3d((double)-0.35, (double)0.0, (double)0.0);
                 GL11.glEnd();
                 GL11.glTranslated((double)-0.35, (double)0.0, (double)0.0);
-                ModelRenderer modelRenderer3 = modelBiped.getBipedRightArm();
-                f7 = modelRenderer3.getRotateAngleX() * f;
-                f8 = modelRenderer3.getRotateAngleY() * f;
-                f9 = modelRenderer3.getRotateAngleZ() * f;
-                GL11.glRotatef((float)f7, (float)1.0f, (float)0.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f8), (float)0.0f, (float)1.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f9), (float)0.0f, (float)0.0f, (float)1.0f);
+                ModelRenderer rightArm = modelBiped.getBipedRightArm();
+                angleX = rightArm.getRotateAngleX() * radToDeg;
+                angleY = rightArm.getRotateAngleY() * radToDeg;
+                angleZ = rightArm.getRotateAngleZ() * radToDeg;
+                GL11.glRotatef((float)angleX, (float)1.0f, (float)0.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleY), (float)0.0f, (float)1.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleZ), (float)0.0f, (float)0.0f, (float)1.0f);
                 GL11.glBegin((int)1);
                 GL11.glVertex3d((double)0.0, (double)0.0, (double)0.0);
                 GL11.glVertex3d((double)0.0, (double)-0.6, (double)0.0);
                 GL11.glEnd();
-                GL11.glRotatef((float)f9, (float)0.0f, (float)0.0f, (float)1.0f);
-                GL11.glRotatef((float)f8, (float)0.0f, (float)1.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f7), (float)1.0f, (float)0.0f, (float)0.0f);
+                GL11.glRotatef((float)angleZ, (float)0.0f, (float)0.0f, (float)1.0f);
+                GL11.glRotatef((float)angleY, (float)0.0f, (float)1.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleX), (float)1.0f, (float)0.0f, (float)0.0f);
                 GL11.glTranslated((double)0.7, (double)0.0, (double)0.0);
-                ModelRenderer modelRenderer4 = modelBiped.getBipedLeftArm();
-                f7 = modelRenderer4.getRotateAngleX() * f;
-                f8 = modelRenderer4.getRotateAngleY() * f;
-                f9 = modelRenderer4.getRotateAngleZ() * f;
-                GL11.glRotatef((float)f7, (float)1.0f, (float)0.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f8), (float)0.0f, (float)1.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f9), (float)0.0f, (float)0.0f, (float)1.0f);
+                ModelRenderer leftArm = modelBiped.getBipedLeftArm();
+                angleX = leftArm.getRotateAngleX() * radToDeg;
+                angleY = leftArm.getRotateAngleY() * radToDeg;
+                angleZ = leftArm.getRotateAngleZ() * radToDeg;
+                GL11.glRotatef((float)angleX, (float)1.0f, (float)0.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleY), (float)0.0f, (float)1.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleZ), (float)0.0f, (float)0.0f, (float)1.0f);
                 GL11.glBegin((int)1);
                 GL11.glVertex3d((double)0.0, (double)0.0, (double)0.0);
                 GL11.glVertex3d((double)0.0, (double)-0.6, (double)0.0);
                 GL11.glEnd();
-                GL11.glRotatef((float)f9, (float)0.0f, (float)0.0f, (float)1.0f);
-                GL11.glRotatef((float)f8, (float)0.0f, (float)1.0f, (float)0.0f);
-                GL11.glRotatef((float)(-f7), (float)1.0f, (float)0.0f, (float)0.0f);
+                GL11.glRotatef((float)angleZ, (float)0.0f, (float)0.0f, (float)1.0f);
+                GL11.glRotatef((float)angleY, (float)0.0f, (float)1.0f, (float)0.0f);
+                GL11.glRotatef((float)(-angleX), (float)1.0f, (float)0.0f, (float)0.0f);
                 GL11.glTranslated((double)-0.35, (double)0.0, (double)0.0);
-                GL11.glRotatef((float)(-f6), (float)0.0f, (float)-999.0f, (float)0.0f);
-                float f10 = entityPlayer.J();
-                float f11 = entityPlayer.V();
-                double d11 = 0.4;
-                GL11.glRotated((double)f10, (double)0.0, (double)-999.0, (double)0.0);
-                GL11.glRotated((double)f11, (double)999.0, (double)0.0, (double)0.0);
+                GL11.glRotatef((float)(-bodyRotation), (float)0.0f, (float)-999.0f, (float)0.0f);
+                float headYaw = entityPlayer.J();
+                float headPitch = entityPlayer.V();
+                double headLength = 0.4;
+                GL11.glRotated((double)headYaw, (double)0.0, (double)-999.0, (double)0.0);
+                GL11.glRotated((double)headPitch, (double)999.0, (double)0.0, (double)0.0);
                 GL11.glBegin((int)1);
                 GL11.glVertex3d((double)0.0, (double)0.0, (double)0.0);
-                GL11.glVertex3d((double)0.0, (double)d11, (double)0.0);
+                GL11.glVertex3d((double)0.0, (double)headLength, (double)0.0);
                 GL11.glEnd();
                 GL11.glBegin((int)1);
-                GL11.glVertex3d((double)0.0, (double)d11, (double)0.0);
-                GL11.glVertex3d((double)0.0, (double)d11, (double)0.25);
+                GL11.glVertex3d((double)0.0, (double)headLength, (double)0.0);
+                GL11.glVertex3d((double)0.0, (double)headLength, (double)0.25);
                 GL11.glEnd();
-                GL11.glRotated((double)f11, (double)999.0, (double)0.0, (double)0.0);
-                GL11.glRotated((double)(-f10), (double)0.0, (double)999.0, (double)0.0);
+                GL11.glRotated((double)headPitch, (double)999.0, (double)0.0, (double)0.0);
+                GL11.glRotated((double)(-headYaw), (double)0.0, (double)999.0, (double)0.0);
             }
-            if (!bl) {
+            if (!blendWasEnabled) {
                 OpenGlBackendHolder.d.u$src$V$hntn98(3042);
             }
             OpenGlBackendHolder.d.l(3553);

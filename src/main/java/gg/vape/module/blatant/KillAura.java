@@ -65,19 +65,19 @@ extends Mod {
     public final NumberValue K;
     public final ModeOption v;
     public TimerUtil p;
-    private final ColorValue P;
+    private final ColorValue attackColor;
     public final BooleanValue j;
     public final RandomClickDelayValue J;
     public final ModeOption I;
-    private static final long hb = 3138688411160482102L;
-    private boolean b = false;
+    private static final long moduleColor = 3138688411160482102L;
+    private boolean deathScreenHandled = false;
     public int r;
     public final EntityTargetFilterValue k = EntityTargetFilterValue.W(this);
     public ModeValue S;
     public final BooleanValue s;
     public final ModeOption U;
-    private final ColorValue C;
-    private final ModeOption c;
+    private final ColorValue targetColor;
+    private final ModeOption distanceMode;
     public final BooleanValue o;
     public List<EntityLivingBase> D;
 
@@ -107,7 +107,7 @@ extends Mod {
         return this.D.get(this.O);
     }
 
-    private boolean M(EntityLivingBase entityLivingBase) {
+    private boolean isValidTarget(EntityLivingBase entityLivingBase) {
         if (this.o.L().booleanValue()) {
             ItemStack itemStack = Minecraft.thePlayer().getHeldItemHand();
             if (itemStack.isNull()) {
@@ -147,24 +147,24 @@ extends Mod {
                 if (ForgeVersion.MC_1_16_5.d()) {
                     screen = Minecraft.currentScreen();
                     if (screen.isNotNull()) {
-                        if (!this.b && screen.isInstance(MappedClasses.D2)) {
-                            this.b = true;
+                        if (!this.deathScreenHandled && screen.isInstance(MappedClasses.D2)) {
+                            this.deathScreenHandled = true;
                             this.F();
                             return;
                         }
-                        this.b = false;
+                        this.deathScreenHandled = false;
                     }
                 } else {
                     screen = Minecraft.k();
                     if (screen.isNotNull()) {
                         String string = ((TitledScreen)screen).E();
-                        if (!this.b && string != null && (string.toLowerCase().contains("died") || string.toLowerCase().contains("dead"))) {
-                            this.b = true;
+                        if (!this.deathScreenHandled && string != null && (string.toLowerCase().contains("died") || string.toLowerCase().contains("dead"))) {
+                            this.deathScreenHandled = true;
                             this.F();
                             return;
                         }
                         if (string == null || string.equals("")) {
-                            this.b = false;
+                            this.deathScreenHandled = false;
                         }
                     }
                 }
@@ -221,24 +221,24 @@ extends Mod {
             if (ForgeVersion.MC_1_16_5.d()) {
                 screen = Minecraft.currentScreen();
                 if (screen.isNotNull()) {
-                    if (!this.b && screen.isInstance(MappedClasses.D2)) {
-                        this.b = true;
+                    if (!this.deathScreenHandled && screen.isInstance(MappedClasses.D2)) {
+                        this.deathScreenHandled = true;
                         this.F();
                         return;
                     }
-                    this.b = false;
+                    this.deathScreenHandled = false;
                 }
             } else {
                 screen = Minecraft.k();
                 if (screen.isNotNull()) {
                     String string = ((TitledScreen)screen).E();
-                    if (!this.b && string != null && (string.toLowerCase().contains("died") || string.toLowerCase().contains("dead"))) {
-                        this.b = true;
+                    if (!this.deathScreenHandled && string != null && (string.toLowerCase().contains("died") || string.toLowerCase().contains("dead"))) {
+                        this.deathScreenHandled = true;
                         this.F();
                         return;
                     }
                     if (string == null || string.equals("")) {
-                        this.b = false;
+                        this.deathScreenHandled = false;
                     }
                 }
             }
@@ -305,7 +305,7 @@ extends Mod {
         }
         if (this.S.K() == this.a) {
             this.D.sort(new EntityAngleComparator());
-        } else if (this.S.K() == this.c) {
+        } else if (this.S.K() == this.distanceMode) {
             this.D.sort(new EntityDistanceComparator());
         } else if (this.S.K() == this.U) {
             this.D.sort(new EntityArmorValueComparator());
@@ -334,7 +334,7 @@ extends Mod {
         GuiRenderPrimitives.u(d9, d10, d11, d12, 2.0f, Color.RED);
     }
 
-    private void w(Entity entity, double d, double d2, double d3) {
+    private void renderTracer(Entity entity, double d, double d2, double d3) {
         double d4 = entity.M() + (entity.z() - entity.M()) - RenderManager.getInterpolatedRenderPosX();
         double d5 = entity.W() + (entity.N() + (double)entity.Y() * 0.75 - entity.W()) - RenderManager.getInterpolatedRenderPosY();
         double d6 = entity.m$src$D$fwnne5() + (entity.h() - entity.m$src$D$fwnne5()) - RenderManager.getInterpolatedRenderPosZ();
@@ -395,10 +395,10 @@ extends Mod {
             EntityPlayerSP entityPlayerSP = eventRender3D.getThePlayer();
             for (EntityLivingBase entityLivingBase : this.D) {
                 if ((double)entityPlayerSP.getDistanceToEntity(entityLivingBase) <= (Double)this.Z.K()) {
-                    RenderUtil.k(entityLivingBase, 0.0, null, this.P.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), eventRender3D.getTicks());
+                    RenderUtil.k(entityLivingBase, 0.0, null, this.attackColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), eventRender3D.getTicks());
                     continue;
                 }
-                RenderUtil.k(entityLivingBase, 0.0, null, this.C.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), eventRender3D.getTicks());
+                RenderUtil.k(entityLivingBase, 0.0, null, this.targetColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), eventRender3D.getTicks());
             }
         }
         RenderUtils.f();
@@ -429,7 +429,7 @@ extends Mod {
         if (entityLivingBase.equals(entityPlayerSP)) {
             return false;
         }
-        if (!this.M(entityLivingBase)) {
+        if (!this.isValidTarget(entityLivingBase)) {
             return false;
         }
         if (entityLivingBase.w$src$F$15l9epb() <= 0.0f || entityLivingBase.M$src$Z$ff28xj()) {
@@ -448,7 +448,7 @@ extends Mod {
     }
 
     public KillAura() {
-        super("Killaura", (int)hb, Category.w, "Attack players around you\nwithout aiming at them.");
+        super("Killaura", (int)moduleColor, Category.w, "Attack players around you\nwithout aiming at them.");
         this.t = NumberValue.create(this, "Swing range", "#.#", "", 0.0, 4.0, 6.0);
         this.Z = NumberValue.create(this, "Attack range", "#.#", "", 0.0, 3.5, 6.0);
         this.s = BooleanValue.create(this, "Require mouse down", false);
@@ -460,9 +460,9 @@ extends Mod {
         this.J = RandomClickDelayValue.M(this, "Attacks per Second", "#.#", "", 1.0, 6.0, 13.0, 20.0);
         this.V = NumberValue.create((Object)this, "Max angle", "#", "", 1.0, 90.0, 360.0, 5.0);
         this.K = NumberValue.create((Object)this, "Max targets", "#", "", 1.0, 1.0, 6.0, 1.0);
-        this.C = ColorValue.b(this, "Target Color", new Color(255, 200, 112), 50);
-        this.P = ColorValue.L(this, "Attack Color", new Color(255, 0, 0, 100));
-        this.c = new ModeOption("Distance");
+        this.targetColor = ColorValue.b(this, "Target Color", new Color(255, 200, 112), 50);
+        this.attackColor = ColorValue.L(this, "Attack Color", new Color(255, 0, 0, 100));
+        this.distanceMode = new ModeOption("Distance");
         this.a = new ModeOption("Yaw");
         this.v = new ModeOption("Armor");
         this.U = new ModeOption("Threat");
@@ -470,11 +470,11 @@ extends Mod {
         this.H = LimitValue.n(this, "killaura-alloweditems", "Allowed Items", LimitValue.r, Collections.emptyList());
         this.p = new TimerUtil();
         this.D = new CopyOnWriteArrayList<EntityLivingBase>();
-        this.S = ModeValue.create((Object)this, "Target Mode", "How Killaura should prioritize targets.\nArmor/Threat will default to Distance for non player targets.", (ModeSelection)this.c, this.c, this.a, this.v, this.U, this.I);
+        this.S = ModeValue.create((Object)this, "Target Mode", "How Killaura should prioritize targets.\nArmor/Threat will default to Distance for non player targets.", (ModeSelection)this.distanceMode, this.distanceMode, this.a, this.v, this.U, this.I);
         this.addValue(this.k, this.J, this.t, this.Z, this.V, this.K, this.S);
         this.U(this.j, ForgeVersion.MC_1_8_9.N());
-        this.A.K(this.C, this.P);
-        this.addValue(new Value[]{this.F, this.s, this.Y, this.A, this.C, this.P, this.o.K(this.H), this.H});
+        this.A.K(this.targetColor, this.attackColor);
+        this.addValue(new Value[]{this.F, this.s, this.Y, this.A, this.targetColor, this.attackColor, this.o.K(this.H), this.H});
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         this.t.B(numberValue -> {
             if (!atomicBoolean.get() && (Double)numberValue.K() < (Double)this.Z.K()) {

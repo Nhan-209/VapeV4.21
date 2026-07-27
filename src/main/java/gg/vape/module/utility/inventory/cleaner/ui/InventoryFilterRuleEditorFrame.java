@@ -40,13 +40,13 @@ import java.util.Iterator;
 
 public class InventoryFilterRuleEditorFrame
 extends Frame {
-    private int j1 = -1;
-    private InventoryFilterRulePresetChange ju;
-    private ScrollableFrameComponent jN;
-    private final ScrollableFrameComponent jU = new ScrollableFrameComponent(400.0, 230.0);
-    private final PaddedComponent j7;
+    private int lastScreenWidth = -1;
+    private InventoryFilterRulePresetChange pendingChange;
+    private ScrollableFrameComponent conditionsScroll;
+    private final ScrollableFrameComponent contentScroll = new ScrollableFrameComponent(400.0, 230.0);
+    private final PaddedComponent rootComponent;
 
-    private void d$src$V$8crzp1() {
+    private void closePopup() {
         InventoryCleanerPopupFrame.Z$src$V$zty34m();
         InventoryCleanerPopupFrame inventoryCleanerPopupFrame = ClientSettings.g(InventoryCleanerPopupFrame.class);
         PopupFrame popupFrame = null;
@@ -71,24 +71,24 @@ extends Frame {
 
     @Override
     public double L() {
-        return this.j7.L();
+        return this.rootComponent.L();
     }
 
-    private void lambda$setRule$8(Runnable runnable) {
+    private void confirmCreatePreset(Runnable runnable) {
         ConfirmationDialogComponent.x(this, "Are you sure you want to convert this preset to a rule? This will allow you to apply this to other slots.", "Create Preset", "info", runnable, 95.0, "Cancel", null);
     }
 
     @Override
     public void c() {
         int n = Minecraft.h();
-        if (n != this.j1) {
-            this.j1 = n;
-            this.z(this.ju.R(), this.ju.L(), this.ju.W(), this.ju.q(), true);
+        if (n != this.lastScreenWidth) {
+            this.lastScreenWidth = n;
+            this.z(this.pendingChange.R(), this.pendingChange.L(), this.pendingChange.W(), this.pendingChange.q(), true);
         }
         super.c();
     }
 
-    private void lambda$setRule$9(boolean bl, Runnable runnable, boolean bl2, Runnable runnable2) {
+    private void confirmUpdate(boolean bl, Runnable runnable, boolean bl2, Runnable runnable2) {
         if (bl) {
             ConfirmationDialogComponent.x(this, "Are you sure you want to update this preset? This will apply to all other slots that are utilizing this preset.", "Update Preset", "info", runnable, 95.0, "Cancel", null);
         } else if (bl2) {
@@ -100,15 +100,15 @@ extends Frame {
 
     public void z(InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset, InventoryFilterPreset inventoryFilterPreset2, boolean bl, boolean bl2) {
         InteractiveComponent interactiveComponent;
-        this.ju = new InventoryFilterRulePresetChange(inventoryFilterRule, inventoryFilterPreset, inventoryFilterPreset2, bl);
-        Double d = bl2 && this.jN != null ? Double.valueOf(this.jN.J$src$D$hx1pag()) : null;
-        this.jU.C$src$V$nadrmg();
-        this.jU.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(null);
-        this.jU.d(true);
-        this.jU.t$src$V$zbu1jn();
-        PanelComponent panelComponent = new PanelComponent(this.jU.A(), 10.0);
+        this.pendingChange = new InventoryFilterRulePresetChange(inventoryFilterRule, inventoryFilterPreset, inventoryFilterPreset2, bl);
+        Double d = bl2 && this.conditionsScroll != null ? Double.valueOf(this.conditionsScroll.J$src$D$hx1pag()) : null;
+        this.contentScroll.C$src$V$nadrmg();
+        this.contentScroll.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(null);
+        this.contentScroll.d(true);
+        this.contentScroll.t$src$V$zbu1jn();
+        PanelComponent panelComponent = new PanelComponent(this.contentScroll.A(), 10.0);
         panelComponent.d(false);
-        this.jU.h(panelComponent, "wrap");
+        this.contentScroll.h(panelComponent, "wrap");
         FrameComponent frameComponent = new PanelComponent(10.0, 10.0);
         frameComponent.d(false);
         panelComponent.h(frameComponent, "alignright");
@@ -118,12 +118,12 @@ extends Frame {
         ((GlyphIconComponent)guiComponent).i(5.0f);
         ((GlyphIconComponent)guiComponent).R(true);
         ((GlyphIconComponent)guiComponent).q(true);
-        ((InteractiveComponent)guiComponent).r(this::d$src$V$8crzp1);
-        frameComponent = new ScrollableFrameComponent(this.jU.A() - 10.0, this.jU.L() - 25.0);
+        ((InteractiveComponent)guiComponent).r(this::closePopup);
+        frameComponent = new ScrollableFrameComponent(this.contentScroll.A() - 10.0, this.contentScroll.L() - 25.0);
         guiComponent = new PaddedComponent(5.0, frameComponent);
         guiComponent.d(false);
         ((PaddedComponent)guiComponent).C$src$V$nadrmg();
-        this.jU.h(guiComponent, new Object[0]);
+        this.contentScroll.h(guiComponent, new Object[0]);
         frameComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         frameComponent.d(false);
         frameComponent.C$src$V$nadrmg();
@@ -139,7 +139,7 @@ extends Frame {
         ((TextInputComponentBase)guiComponent2).A(InventoryFilterRuleEditorFrame.J.h);
         ((TextInputComponentBase)guiComponent2).k(inventoryFilterPreset2.getName());
         SmallTextInputComponent nameInput = (SmallTextInputComponent)guiComponent2;
-        guiComponent2.o((arg_0, arg_1) -> InventoryFilterRuleEditorFrame.lambda$setRule$0(inventoryFilterPreset2, nameInput, arg_0, arg_1));
+        guiComponent2.o((arg_0, arg_1) -> InventoryFilterRuleEditorFrame.updatePresetName(inventoryFilterPreset2, nameInput, arg_0, arg_1));
         panelComponent2.h(guiComponent2, new Object[0]);
         frameComponent.h(new FilledSpacerComponent(frameComponent.A(), 1.0, InventoryFilterRuleEditorFrame.J.y), new Object[0]);
         guiComponent2 = new ScrollableFrameComponent(frameComponent.A(), 167.0);
@@ -160,21 +160,21 @@ extends Frame {
         ((FrameComponent)guiComponent3).C$src$V$nadrmg();
         ((FrameComponent)guiComponent2).h(guiComponent3, new Object[0]);
         guiComponent3.d(false);
-        this.jN = new ScrollableFrameComponent(guiComponent3.A(), guiComponent3.L());
-        ((FrameComponent)guiComponent3).h(this.jN, new Object[0]);
-        this.jN.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.jN.t((double)Minecraft.h() / 2.0 - 85.0);
-        this.jN.d(false);
+        this.conditionsScroll = new ScrollableFrameComponent(guiComponent3.A(), guiComponent3.L());
+        ((FrameComponent)guiComponent3).h(this.conditionsScroll, new Object[0]);
+        this.conditionsScroll.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.conditionsScroll.t((double)Minecraft.h() / 2.0 - 85.0);
+        this.conditionsScroll.d(false);
         Object object2 = null;
         for (int i = 0; i < inventoryFilterPreset2.z().size(); ++i) {
             InventoryFilterConditionGroup conditionGroup = inventoryFilterPreset2.z().get(i);
-            InventoryFilterConditionGroupPanel inventoryFilterConditionGroupPanel = new InventoryFilterConditionGroupPanel(this.jN.A(), inventoryFilterRule, inventoryFilterPreset2, conditionGroup, (InventoryFilterConditionGroup)object2, () -> this.lambda$setRule$1(inventoryFilterRule, inventoryFilterPreset, inventoryFilterPreset2, bl));
+            InventoryFilterConditionGroupPanel inventoryFilterConditionGroupPanel = new InventoryFilterConditionGroupPanel(this.conditionsScroll.A(), inventoryFilterRule, inventoryFilterPreset2, conditionGroup, (InventoryFilterConditionGroup)object2, () -> this.refreshRule(inventoryFilterRule, inventoryFilterPreset, inventoryFilterPreset2, bl));
             object2 = conditionGroup;
-            this.jN.h(inventoryFilterConditionGroupPanel, new Object[0]);
+            this.conditionsScroll.h(inventoryFilterConditionGroupPanel, new Object[0]);
         }
-        this.jN.h(new SpacerComponent(0.0, 5.0), new Object[0]);
-        PanelComponent panelComponent4 = new PanelComponent(this.jN.A(), 11.0);
-        this.jN.h(panelComponent4, new Object[0]);
+        this.conditionsScroll.h(new SpacerComponent(0.0, 5.0), new Object[0]);
+        PanelComponent panelComponent4 = new PanelComponent(this.conditionsScroll.A(), 11.0);
+        this.conditionsScroll.h(panelComponent4, new Object[0]);
         panelComponent4.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         panelComponent4.d(false);
         panelComponent4.C$src$V$nadrmg();
@@ -186,7 +186,7 @@ extends Frame {
             ((TextButton)interactiveComponent).m(1.0f);
             ((TextLabel)interactiveComponent).c(true);
             interactiveComponent.q(((TextLabel)interactiveComponent).W() + 10.0);
-            interactiveComponent.s(() -> this.lambda$setRule$2(object3, inventoryFilterPreset2, inventoryFilterRule, inventoryFilterPreset, bl));
+            interactiveComponent.s(() -> this.addConditionGroup(object3, inventoryFilterPreset2, inventoryFilterRule, inventoryFilterPreset, bl));
             PaddedComponent paddedComponent = new PaddedComponent(1.0, 0.0, 0.0, 3.0, interactiveComponent);
             paddedComponent.C$src$V$nadrmg();
             panelComponent4.h(paddedComponent, new Object[0]);
@@ -204,7 +204,7 @@ extends Frame {
             ((TextLabel)guiComponent3).c(true);
             guiComponent3.o(((TextLabel)guiComponent3).W());
             guiComponent3.Y(16.0);
-            ((InteractiveComponent)guiComponent3).s(() -> this.lambda$setRule$4(inventoryFilterPreset, inventoryFilterRule));
+            ((InteractiveComponent)guiComponent3).s(() -> this.promptDeletePreset(inventoryFilterPreset, inventoryFilterRule));
             panelComponent3.h(guiComponent3, new Object[0]);
         }
         guiComponent3 = new PanelComponent(86.0, panelComponent3.L() - 6.0);
@@ -215,65 +215,65 @@ extends Frame {
         ((TextLabel)object2).c(true);
         ((GuiComponent)object2).o(((TextLabel)object2).W());
         ((GuiComponent)object2).Y(16.0);
-        ((InteractiveComponent)object2).s(this::d$src$V$8crzp1);
+        ((InteractiveComponent)object2).s(this::closePopup);
         ((FrameComponent)guiComponent3).h(new PaddedComponent(0.0, 0.0, 0.0, 5.0, (GuiComponent)object2), new Object[0]);
         boolean bl3 = inventoryFilterPreset2 instanceof SharedInventoryFilterPreset;
         boolean bl4 = !bl3;
-        Runnable runnable = () -> this.lambda$setRule$5(inventoryFilterPreset2, inventoryFilterRule);
-        Runnable runnable2 = () -> this.lambda$setRule$6(bl4, inventoryFilterPreset2, inventoryFilterRule, inventoryFilterPreset);
+        Runnable runnable = () -> this.detachPreset(inventoryFilterPreset2, inventoryFilterRule);
+        Runnable runnable2 = () -> this.applySharedPreset(bl4, inventoryFilterPreset2, inventoryFilterRule, inventoryFilterPreset);
         ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
         if (bl3) {
-            arrayList.add(new TextLabel("CREATE RULE", 0.75, false).B$src$Lgg_vape_ui_click_component_gui_TextLabel_$1bc29rb(true).l(Color.WHITE).c(true).r(() -> this.lambda$setRule$7(runnable)));
+            arrayList.add(new TextLabel("CREATE RULE", 0.75, false).B$src$Lgg_vape_ui_click_component_gui_TextLabel_$1bc29rb(true).l(Color.WHITE).c(true).r(() -> this.confirmCreateRule(runnable)));
         } else {
-            arrayList.add(new TextLabel("CREATE PRESET", 0.75, false).B$src$Lgg_vape_ui_click_component_gui_TextLabel_$1bc29rb(true).l(Color.WHITE).c(true).r(() -> this.lambda$setRule$8(runnable2)));
+            arrayList.add(new TextLabel("CREATE PRESET", 0.75, false).B$src$Lgg_vape_ui_click_component_gui_TextLabel_$1bc29rb(true).l(Color.WHITE).c(true).r(() -> this.confirmCreatePreset(runnable2)));
         }
         interactiveComponent = new PopupMenuButtonComponent(bl3 ? "UPDATE PRESET" : (bl ? "CREATE RULE" : "UPDATE RULE"), arrayList, InventoryFilterRuleEditorFrame.J.B, InventoryFilterRuleEditorFrame.J.O, null, 1.0f, 1.0f);
         ((PopupMenuButtonComponent)interactiveComponent).l(true);
         interactiveComponent.o(58.0);
         interactiveComponent.Y(16.0);
         interactiveComponent.Y(panelComponent3.L());
-        interactiveComponent.s(() -> this.lambda$setRule$9(bl3, runnable2, bl, runnable));
+        interactiveComponent.s(() -> this.confirmUpdate(bl3, runnable2, bl, runnable));
         ((FrameComponent)guiComponent3).h(new PaddedComponent(1.0, 0.0, interactiveComponent), new Object[0]);
         if (d != null) {
-            this.jN.W(d);
+            this.conditionsScroll.W(d);
         }
         this.H(true);
     }
 
     @Override
     public double A() {
-        return this.j7.A();
+        return this.rootComponent.A();
     }
 
-    private void lambda$setRule$7(Runnable runnable) {
+    private void confirmCreateRule(Runnable runnable) {
         ConfirmationDialogComponent.x(this, "Are you sure you want to convert to a rule? This will apply the presets ruless to this slot and allow for individual modification.", "Create Rule", "info", runnable, 100.0, "Cancel", null);
     }
 
-    private void lambda$setRule$5(InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule) {
+    private void detachPreset(InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule) {
         InventoryFilterPreset inventoryFilterPreset2 = inventoryFilterPreset instanceof SharedInventoryFilterPreset ? new InventoryFilterPreset((SharedInventoryFilterPreset)inventoryFilterPreset) : inventoryFilterPreset;
         inventoryFilterRule.p(inventoryFilterPreset2);
-        this.d$src$V$8crzp1();
+        this.closePopup();
     }
 
-    private static void lambda$setRule$0(InventoryFilterPreset inventoryFilterPreset, SmallTextInputComponent smallTextInputComponent, char c, int n) {
+    private static void updatePresetName(InventoryFilterPreset inventoryFilterPreset, SmallTextInputComponent smallTextInputComponent, char c, int n) {
         inventoryFilterPreset.J(smallTextInputComponent.i$src$Ljava_lang_String_$1n2xf3k().trim());
     }
 
-    private void lambda$null$3(InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule) {
+    private void deletePresetConfirmed(InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule) {
         Vape.INSTANCE.getInventoryFilterPresetRegistry().Z((SharedInventoryFilterPreset)inventoryFilterPreset);
         if (inventoryFilterRule instanceof SlotInventoryFilterRule) {
             Vape.INSTANCE.getInventoryFilterPresetRegistry().g().r((SharedInventoryFilterPreset)inventoryFilterPreset);
         } else {
             Vape.INSTANCE.getInventoryFilterPresetRegistry().r().r((SharedInventoryFilterPreset)inventoryFilterPreset);
         }
-        this.d$src$V$8crzp1();
+        this.closePopup();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
+    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException exception) {
+        return exception;
     }
 
-    private void lambda$setRule$1(InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset, InventoryFilterPreset inventoryFilterPreset2, boolean bl) {
+    private void refreshRule(InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset, InventoryFilterPreset inventoryFilterPreset2, boolean bl) {
         this.z(inventoryFilterRule, inventoryFilterPreset, inventoryFilterPreset2, bl, true);
     }
 
@@ -284,15 +284,15 @@ extends Frame {
         this.r(false);
         this.k(true);
         this.C$src$V$nadrmg();
-        this.j7 = new PaddedComponent(1.0, 3.0, 1.0, 1.0, this.jU);
-        this.j7.C$src$V$nadrmg();
-        this.j7.d(true);
-        this.j7.r(false);
-        this.j7.T(InventoryFilterRuleEditorFrame.J.y);
-        this.h(this.j7, new Object[0]);
+        this.rootComponent = new PaddedComponent(1.0, 3.0, 1.0, 1.0, this.contentScroll);
+        this.rootComponent.C$src$V$nadrmg();
+        this.rootComponent.d(true);
+        this.rootComponent.r(false);
+        this.rootComponent.T(InventoryFilterRuleEditorFrame.J.y);
+        this.h(this.rootComponent, new Object[0]);
     }
 
-    private void lambda$setRule$6(boolean bl, InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset2) {
+    private void applySharedPreset(boolean bl, InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset2) {
         SharedInventoryFilterPreset sharedInventoryFilterPreset;
         SharedInventoryFilterPreset sharedInventoryFilterPreset2 = bl ? new SharedInventoryFilterPreset(inventoryFilterPreset) : (SharedInventoryFilterPreset)inventoryFilterPreset;
         boolean bl2 = inventoryFilterRule instanceof SlotInventoryFilterRule;
@@ -303,11 +303,11 @@ extends Frame {
         } else {
             Vape.INSTANCE.getInventoryFilterPresetRegistry().r().u(sharedInventoryFilterPreset, sharedInventoryFilterPreset2);
         }
-        this.d$src$V$8crzp1();
+        this.closePopup();
     }
 
-    private void lambda$setRule$4(InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule) {
-        ConfirmationDialogComponent.x(this, "Are you sure you want to delete this preset? This will remove it from all existing slots.", "Delete Preset", "delete", () -> this.lambda$null$3(inventoryFilterPreset, inventoryFilterRule), 100.0, "Cancel", null);
+    private void promptDeletePreset(InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule) {
+        ConfirmationDialogComponent.x(this, "Are you sure you want to delete this preset? This will remove it from all existing slots.", "Delete Preset", "delete", () -> this.deletePresetConfirmed(inventoryFilterPreset, inventoryFilterRule), 100.0, "Cancel", null);
     }
 
     @Override
@@ -315,7 +315,7 @@ extends Frame {
         return "Rule Editor";
     }
 
-    private void lambda$setRule$2(InventoryFilterLogicalOperator inventoryFilterLogicalOperator, InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset2, boolean bl) {
+    private void addConditionGroup(InventoryFilterLogicalOperator inventoryFilterLogicalOperator, InventoryFilterPreset inventoryFilterPreset, InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset2, boolean bl) {
         EmptyInventoryFilterCondition emptyInventoryFilterCondition = new EmptyInventoryFilterCondition();
         if (inventoryFilterLogicalOperator == InventoryFilterLogicalOperator.OR || inventoryFilterPreset.z().isEmpty()) {
             inventoryFilterPreset.x(InventoryFilterConditionGroup.w().O(emptyInventoryFilterCondition).w());

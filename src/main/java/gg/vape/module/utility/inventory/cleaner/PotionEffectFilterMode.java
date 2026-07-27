@@ -15,17 +15,17 @@ DescribedOption {
     DURATION("Duration", "How long the potion effect lasts for.");
 
     public static final List<PotionEffectFilterMode> VALUES;
-    private static final PotionEffectFilterMode[] l;
-    private final String L;
-    private final String n;
+    private static final PotionEffectFilterMode[] valuesCache;
+    private final String description;
+    private final String name;
 
     @Override
     public String getName() {
-        return this.n;
+        return this.name;
     }
 
     @Nullable
-    public static PotionEffectFilterMode j(String string) {
+    public static PotionEffectFilterMode findByName(String string) {
         for (PotionEffectFilterMode potionEffectFilterMode : VALUES) {
             if (!potionEffectFilterMode.getName().equalsIgnoreCase(string)) continue;
             return potionEffectFilterMode;
@@ -39,12 +39,12 @@ DescribedOption {
 
     @Override
     public String E() {
-        return this.L;
+        return this.description;
     }
 
     private PotionEffectFilterMode(String string2, String string3) {
-        this.n = string2;
-        this.L = string3;
+        this.name = string2;
+        this.description = string3;
     }
 
     static {
@@ -52,17 +52,17 @@ DescribedOption {
 
 
 
-        l = new PotionEffectFilterMode[]{HAS, LEVEL, DURATION};
+        valuesCache = new PotionEffectFilterMode[]{HAS, LEVEL, DURATION};
         VALUES = Arrays.asList(PotionEffectFilterMode.values());
     }
 
-    public static PotionEffectFilterMode q(String string, PotionEffectFilterMode potionEffectFilterMode) {
-        PotionEffectFilterMode potionEffectFilterMode2 = PotionEffectFilterMode.j(string);
+    public static PotionEffectFilterMode fromNameOrDefault(String string, PotionEffectFilterMode potionEffectFilterMode) {
+        PotionEffectFilterMode potionEffectFilterMode2 = PotionEffectFilterMode.findByName(string);
         return potionEffectFilterMode2 == null ? potionEffectFilterMode : potionEffectFilterMode2;
     }
 
     public static PotionEffectFilterMode r(String string) {
-        return PotionEffectFilterMode.q(string, HAS);
+        return PotionEffectFilterMode.fromNameOrDefault(string, HAS);
     }
 }
 

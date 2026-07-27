@@ -19,40 +19,40 @@ import java.awt.Color;
 
 public class InvWalk
 extends Mod {
-    private boolean L;
-    private final BooleanValue a;
-    private final BooleanValue V;
-    private final BooleanValue t = BooleanValue.create(this, "Inventory Only", false, "Only moves you when in inventory/pause screen.\nIgnores any chests/containers.");
+    private boolean bindsHeld;
+    private final BooleanValue rotate;
+    private final BooleanValue sneak;
+    private final BooleanValue inventoryOnly = BooleanValue.create(this, "Inventory Only", false, "Only moves you when in inventory/pause screen.\nIgnores any chests/containers.");
 
     public InvWalk() {
         super("InvWalk", new Color(193, 113, 0).getRGB(), Category.w, "Walk and look around in UI's\nUse arrow keys to look around\nDoes not bypass some anti-cheats!");
-        this.V = BooleanValue.create(this, "Sneak", false, "Takes sneaking input");
-        this.a = BooleanValue.create(this, "Rotate", false, "Rotates your head with the arrow keys.");
+        this.sneak = BooleanValue.create(this, "Sneak", false, "Takes sneaking input");
+        this.rotate = BooleanValue.create(this, "Rotate", false, "Rotates your head with the arrow keys.");
         this.R(false);
-        this.addValue(this.t);
-        this.addValue(this.V);
-        this.addValue(this.a);
+        this.addValue(this.inventoryOnly);
+        this.addValue(this.sneak);
+        this.addValue(this.rotate);
     }
 
     @EventHandler
     public void X(EventPreEntityUpdate eventPreEntityUpdate) {
         if (eventPreEntityUpdate.getEntity().isInstance(MappedClasses.z5)) {
             if (this.g$src$Z$tdg77x()) {
-                this.L = true;
+                this.bindsHeld = true;
                 GameSettings gameSettings = Minecraft.gameSettings();
                 InvWalkSettingsState.C(gameSettings.Y());
                 InvWalkSettingsState.C(gameSettings.s());
                 InvWalkSettingsState.C(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
                 InvWalkSettingsState.C(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
                 InvWalkSettingsState.C(gameSettings.O());
-                if (this.V.L().booleanValue()) {
+                if (this.sneak.L().booleanValue()) {
                     InvWalkSettingsState.C(gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0());
                 }
             } else {
-                if (this.L) {
-                    this.J$src$V$sxi5x0();
+                if (this.bindsHeld) {
+                    this.resetBinds();
                 }
-                this.L = false;
+                this.bindsHeld = false;
             }
         }
     }
@@ -64,7 +64,7 @@ extends Mod {
         if (ClientSettings.fT != null) {
             return false;
         }
-        if (!(Minecraft.currentScreen().isInstance(MappedClasses.Ft) && Minecraft.currentScreen().isInstance(MappedClasses.YS) || !this.t.L().booleanValue())) {
+        if (!(Minecraft.currentScreen().isInstance(MappedClasses.Ft) && Minecraft.currentScreen().isInstance(MappedClasses.YS) || !this.inventoryOnly.L().booleanValue())) {
             return false;
         }
         return !Minecraft.currentScreen().isInstance(MappedClasses.qo);
@@ -75,7 +75,7 @@ extends Mod {
         return false;
     }
 
-    private void J$src$V$sxi5x0() {
+    private void resetBinds() {
         GameSettings gameSettings = Minecraft.gameSettings();
         InvWalkSettingsState.C(gameSettings.Y());
         InvWalkSettingsState.C(gameSettings.s());
@@ -96,13 +96,13 @@ extends Mod {
             InvWalkSettingsState.L(gameSettings.O(), false);
             InvWalkSettingsState.L(gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0(), false);
         } else {
-            this.J$src$V$sxi5x0();
+            this.resetBinds();
         }
     }
 
     @EventHandler
     public void onMotionUpdate(EventPreMotion eventPreMotion) {
-        if (this.a.L().booleanValue()) {
+        if (this.rotate.L().booleanValue()) {
             EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
             if (this.g$src$Z$tdg77x()) {
                 if (KeyboardInput.isKeyDown(38) && entityPlayerSP.V() - 3.0f > -90.0f) {
@@ -121,7 +121,7 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

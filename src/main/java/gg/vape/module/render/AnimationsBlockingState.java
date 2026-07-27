@@ -17,13 +17,13 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class AnimationsBlockingState
 extends AnimationsMode {
-    private boolean s = false;
-    private long I;
-    private final RandomValue o = RandomValue.G(this, "Chance", "#", "%", 0.0, 70.0, 90.0, 100.0, 1.0, "Chance that a click will blockhit\n(Blocks per second = Your CPS * Chance)");
+    private boolean blocking = false;
+    private long releaseTime;
+    private final RandomValue chance = RandomValue.G(this, "Chance", "#", "%", 0.0, 70.0, 90.0, 100.0, 1.0, "Chance that a click will blockhit\n(Blocks per second = Your CPS * Chance)");
 
     public AnimationsBlockingState(Mod mod, String string) {
         super(mod, string);
-        this.addValue(this.o);
+        this.addValue(this.chance);
     }
 
     @Override
@@ -34,45 +34,45 @@ extends AnimationsMode {
         if (((Animations)this.getParent()).n$src$Z$uk21qf() && !ClientSettings.V()) {
             return false;
         }
-        return this.o.B() >= Math.random() * 100.0;
+        return this.chance.B() >= Math.random() * 100.0;
     }
 
     public void u(boolean bl) {
-        if (this.s != bl) {
-            this.s = bl;
-            this.I = 0L;
+        if (this.blocking != bl) {
+            this.blocking = bl;
+            this.releaseTime = 0L;
             Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().setPressed(bl);
         }
     }
 
     @Override
     public String r() {
-        return this.o.c();
+        return this.chance.c();
     }
 
     @Override
     public boolean M() {
-        return this.s;
+        return this.blocking;
     }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
         boolean bl;
-        if (this.c()) {
+        if (this.isAutoClickerActive()) {
             return;
         }
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
         boolean bl2 = eventPreTick.getThePlayer().c$src$I$15a9iwo() > AttackPacketTimingTracker.a.Z() + 1;
-        boolean bl3 = bl = this.I > 0L && System.currentTimeMillis() >= this.I;
+        boolean bl3 = bl = this.releaseTime > 0L && System.currentTimeMillis() >= this.releaseTime;
         if (bl2 || bl) {
             this.u(false);
             return;
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -81,7 +81,7 @@ extends AnimationsMode {
         if (!eventMouseButton.getButtonState()) {
             return;
         }
-        if (this.c()) {
+        if (this.isAutoClickerActive()) {
             return;
         }
         int n = -100 + eventMouseButton.getButton();
@@ -89,14 +89,14 @@ extends AnimationsMode {
             if (!this.i()) {
                 return;
             }
-            if (!this.s && !eventMouseButton.getThePlayer().o$src$Z$1iprrmi()) {
+            if (!this.blocking && !eventMouseButton.getThePlayer().o$src$Z$1iprrmi()) {
                 this.u(true);
-                this.I = System.currentTimeMillis() + 50L;
+                this.releaseTime = System.currentTimeMillis() + 50L;
             }
         }
     }
 
-    private boolean c() {
+    private boolean isAutoClickerActive() {
         LeftClicker leftClicker = Vape.INSTANCE.getModManager().getMod(LeftClicker.class);
         if (leftClicker.r$src$Z$14eylz9()) {
             return true;

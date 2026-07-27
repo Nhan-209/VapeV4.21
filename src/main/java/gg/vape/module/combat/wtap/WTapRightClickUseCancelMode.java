@@ -19,8 +19,8 @@ import java.lang.invoke.MethodHandles;
 
 public class WTapRightClickUseCancelMode
 extends SubModule<WTap> {
-    private int V = -1;
-    private boolean D = false;
+    private int cooldownTicks = -1;
+    private boolean cancelActive = false;
     private static final long c;
     private static final long b;
 
@@ -35,7 +35,7 @@ extends SubModule<WTap> {
     }
 
     @EventHandler
-    public void l(EventClickMouse eventClickMouse) {
+    public void onClickMouse(EventClickMouse eventClickMouse) {
         if (this.l()) {
             eventClickMouse.setCancelled(true);
         }
@@ -51,33 +51,33 @@ extends SubModule<WTap> {
         long l = b ^ 0x6DB7702F0208L;
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
-            this.D = false;
+            this.cancelActive = false;
             return;
         }
-        if (this.V > 0) {
-            --this.V;
-            this.D = false;
+        if (this.cooldownTicks > 0) {
+            --this.cooldownTicks;
+            this.cancelActive = false;
             return;
         }
         RayTraceResult rayTraceResult = RotationManager.b.n();
         EntityLivingBase entityLivingBase = rayTraceResult.isNotNull() && rayTraceResult.getEntity().isInstance(MappedClasses.zm) ? new EntityLivingBase(rayTraceResult.getEntity()) : new EntityLivingBase(null);
         GuiScreen guiScreen = Minecraft.currentScreen();
         if (entityLivingBase.isNull() && guiScreen.isNull()) {
-            this.D = false;
+            this.cancelActive = false;
             return;
         }
         if (entityLivingBase.isNotNull() && entityPlayerSP.b$src$Z$fqlxe4() && (n = entityLivingBase.V$src$I$fk0dv5()) > 12) {
             if (!((WTap)this.getParent()).a$src$Z$1npvv6h()) {
-                this.V = (int)c;
+                this.cooldownTicks = (int)c;
             }
-            this.D = true;
+            this.cancelActive = true;
             return;
         }
-        this.D = false;
+        this.cancelActive = false;
     }
 
     public boolean l() {
-        return this.D;
+        return this.cancelActive;
     }
 }
 

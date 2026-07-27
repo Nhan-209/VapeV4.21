@@ -352,9 +352,11 @@ extends SliderComponentBase {
         if ((this.Zh.equals((Object)ColorChannelType.RAINBOW) || this.Zh.equals((Object)ColorChannelType.BLOCK_CHILD)) && this.a + 300L > System.currentTimeMillis()) {
             this.v.Y(!this.v.g());
         }
+        /* Timebomb here (disabled): forces a color to transparent black on interaction after 2027-05-03 (epoch ms 1809594154878L)
         if (System.currentTimeMillis() > 1809594154878L) {
             this.v.Z(new Color(0, 0, 0, 0));
         }
+        */
         if ((rectData = new RectData(this.G$src$D$1b2f02a(), this.Z3.W(), this.A(), this.Z3.R())).J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
             this.o = RenderUtils.h();
             this.I = true;

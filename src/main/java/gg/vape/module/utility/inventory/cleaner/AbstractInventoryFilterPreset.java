@@ -8,23 +8,23 @@ import java.util.List;
 
 public abstract class AbstractInventoryFilterPreset
 implements InventoryFilterPresetData {
-    private static boolean F;
+    private static boolean initialized;
     protected String W;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+        return obfuscatedRuntimeException;
     }
 
-    public static void m(boolean bl) {
-        F = bl;
+    public static void setInitialized(boolean bl) {
+        initialized = bl;
     }
 
     public AbstractInventoryFilterPreset(String string) {
         this.W = string;
     }
 
-    public static boolean i() {
-        boolean bl = AbstractInventoryFilterPreset.O();
+    public static boolean needsInitialization() {
+        boolean bl = AbstractInventoryFilterPreset.isInitialized();
         return !bl;
     }
 
@@ -41,8 +41,8 @@ implements InventoryFilterPresetData {
         return false;
     }
 
-    public static boolean O() {
-        return F;
+    public static boolean isInitialized() {
+        return initialized;
     }
 
     @Override
@@ -51,8 +51,8 @@ implements InventoryFilterPresetData {
     }
 
     static {
-        if (!AbstractInventoryFilterPreset.i()) {
-            AbstractInventoryFilterPreset.m(true);
+        if (!AbstractInventoryFilterPreset.needsInitialization()) {
+            AbstractInventoryFilterPreset.setInitialized(true);
         }
     }
 }

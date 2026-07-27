@@ -11,10 +11,10 @@ implements GuiClickListener {
     final HotbarSlotRuleItemPickerFrame F;
     final HotbarSlotRuleSlotSelectorComponent i;
 
-    HotbarSlotRuleSlotSelectClickHandler(HotbarSlotRuleSlotSelectorComponent hotbarSlotRuleSlotSelectorComponent, HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame, int n) {
+    HotbarSlotRuleSlotSelectClickHandler(HotbarSlotRuleSlotSelectorComponent hotbarSlotRuleSlotSelectorComponent, HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame, int slotIndex) {
         this.i = hotbarSlotRuleSlotSelectorComponent;
         this.F = hotbarSlotRuleItemPickerFrame;
-        this.d = n;
+        this.d = slotIndex;
     }
 
     @Override

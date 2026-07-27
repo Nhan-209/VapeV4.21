@@ -6,7 +6,7 @@ import gg.vape.module.utility.inventory.cleaner.InventoryFilterCondition;
 
 public interface NumericFilterCondition<T extends InventoryFilterCondition<T>>
 extends InventoryFilterCondition<T> {
-    public static final String i = "operator";
+    public static final String OPERATOR_KEY = "operator";
 
     public T J(ComparisonOperator var1);
 
@@ -19,7 +19,7 @@ extends InventoryFilterCondition<T> {
     @Override
     default public JsonObject L() {
         JsonObject jsonObject = InventoryFilterCondition.super.L();
-        jsonObject.addProperty(i, this.p().getName());
+        jsonObject.addProperty(OPERATOR_KEY, this.p().getName());
         return jsonObject;
     }
 }

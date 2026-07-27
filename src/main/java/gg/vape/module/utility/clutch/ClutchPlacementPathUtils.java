@@ -36,21 +36,21 @@ import java.util.Stack;
 import java.util.Vector;
 
 public class ClutchPlacementPathUtils {
-    private static EnumFacing[] c;
-    private static EnumFacing[] f;
-    private static final long a;
+    private static EnumFacing[] horizontalFacings;
+    private static EnumFacing[] allFacings;
+    private static final long KEY;
 
     public static Vector<PlacementTarget> l(BlockData blockData, Vec3 vec3, EntityPlayerSP entityPlayerSP, World world, BlockData blockData2, EnumFacing enumFacing, EnumFacing enumFacing2, BlockPathSearchStrategy<PlacementTarget> blockPathSearchStrategy, int n) {
         int n2;
-        long l = a ^ 0x481C8344B9L;
+        long l = KEY ^ 0x481C8344B9L;
         if (n > blockPathSearchStrategy.w() || !blockPathSearchStrategy.V(blockData2)) {
             return null;
         }
         Block block = world.getBlockByPos(blockData2.D(), blockData2.B(), blockData2.G());
-        boolean bl = BlockUtil.J(block);
-        boolean bl2 = BlockUtil.u(block);
-        if (!bl) {
-            if (bl2 && ClutchPlacementPathUtils.J(blockData, entityPlayerSP, world, blockData2, enumFacing2.getOpposite())) {
+        boolean isSolid = BlockUtil.J(block);
+        boolean isReplaceable = BlockUtil.u(block);
+        if (!isSolid) {
+            if (isReplaceable && ClutchPlacementPathUtils.J(blockData, entityPlayerSP, world, blockData2, enumFacing2.getOpposite())) {
                 Vector<PlacementTarget> vector = new Vector<PlacementTarget>();
                 PlacementTarget placementTarget = new PlacementTarget(blockData2, enumFacing2.getOpposite(), false);
                 placementTarget.Y = n;
@@ -59,17 +59,17 @@ public class ClutchPlacementPathUtils {
             }
             return null;
         }
-        if (f == null) {
-            f = EnumFacing.t();
-            c = EnumFacing.c$src$ALgg_vape_wrapper_impl_EnumFacing_$1i3g4ft();
+        if (allFacings == null) {
+            allFacings = EnumFacing.t();
+            horizontalFacings = EnumFacing.c$src$ALgg_vape_wrapper_impl_EnumFacing_$1i3g4ft();
         }
         if ((n2 = enumFacing.c()) == -1) {
             n2 = 0;
         }
-        int n3 = c[n2].Y();
-        int n4 = c[(n2 + 1) % 4].Y();
-        int n5 = c[(n2 + 3) % 4].Y();
-        int n6 = c[(n2 + 2) % 4].Y();
+        int n3 = horizontalFacings[n2].Y();
+        int n4 = horizontalFacings[(n2 + 1) % 4].Y();
+        int n5 = horizontalFacings[(n2 + 3) % 4].Y();
+        int n6 = horizontalFacings[(n2 + 2) % 4].Y();
         int[] nArray = new int[]{0, n3, n4, n5, n6, 1};
         int n7 = Integer.MAX_VALUE;
         Vector<PlacementTarget> vector = null;
@@ -77,7 +77,7 @@ public class ClutchPlacementPathUtils {
             PlacementTarget placementTarget;
             int n9;
             EnumFacing enumFacing3;
-            EnumFacing enumFacing4 = f[n8];
+            EnumFacing enumFacing4 = allFacings[n8];
             if (enumFacing4.Y() == enumFacing.getOpposite().Y()) continue;
             BlockData blockData3 = blockData2.R(enumFacing4);
             Block block2 = world.getBlockByPos(blockData3.D(), blockData3.B(), blockData3.G());
@@ -215,7 +215,7 @@ public class ClutchPlacementPathUtils {
         return vec3d != null ? vec3d.n() : null;
     }
 
-    private static void Y(ClutchPlacementCoordinate clutchPlacementCoordinate, int n, Vec3d vec3d, float f, float f2, PriorityQueue<ClutchPlacementCoordinate> priorityQueue, Set<ClutchPlacementCoordinate> set) {
+    private static void sampleNeighbors(ClutchPlacementCoordinate clutchPlacementCoordinate, int n, Vec3d vec3d, float f, float f2, PriorityQueue<ClutchPlacementCoordinate> priorityQueue, Set<ClutchPlacementCoordinate> set) {
         double d = 0.05;
         switch (n) {
             case 0: 
@@ -223,10 +223,10 @@ public class ClutchPlacementPathUtils {
                 for (double d2 = -d; d2 <= d; d2 += d) {
                     for (double d3 = -d; d3 <= d; d3 += d) {
                         if (d2 == 0.0 && d3 == 0.0) continue;
-                        double d4 = clutchPlacementCoordinate.J + d2;
-                        double d5 = clutchPlacementCoordinate.w + d3;
+                        double d4 = clutchPlacementCoordinate.x + d2;
+                        double d5 = clutchPlacementCoordinate.z + d3;
                         if (set.contains(priorityQueue)) continue;
-                        ClutchPlacementPathUtils.V(d4, clutchPlacementCoordinate.D, d5, vec3d, f, f2, priorityQueue);
+                        ClutchPlacementPathUtils.addCandidate(d4, clutchPlacementCoordinate.y, d5, vec3d, f, f2, priorityQueue);
                     }
                 }
                 break;
@@ -236,10 +236,10 @@ public class ClutchPlacementPathUtils {
                 for (double d6 = -d; d6 <= d; d6 += d) {
                     for (double d7 = -d; d7 <= d; d7 += d) {
                         if (d6 == 0.0 && d7 == 0.0) continue;
-                        double d8 = clutchPlacementCoordinate.J + d6;
-                        double d9 = clutchPlacementCoordinate.D + d7;
+                        double d8 = clutchPlacementCoordinate.x + d6;
+                        double d9 = clutchPlacementCoordinate.y + d7;
                         if (set.contains(priorityQueue)) continue;
-                        ClutchPlacementPathUtils.V(d8, d9, clutchPlacementCoordinate.w, vec3d, f, f2, priorityQueue);
+                        ClutchPlacementPathUtils.addCandidate(d8, d9, clutchPlacementCoordinate.z, vec3d, f, f2, priorityQueue);
                     }
                 }
                 break;
@@ -249,10 +249,10 @@ public class ClutchPlacementPathUtils {
                 for (double d10 = -d; d10 <= d; d10 += d) {
                     for (double d11 = -d; d11 <= d; d11 += d) {
                         if (d10 == 0.0 && d11 == 0.0) continue;
-                        double d12 = clutchPlacementCoordinate.D + d10;
-                        double d13 = clutchPlacementCoordinate.w + d11;
+                        double d12 = clutchPlacementCoordinate.y + d10;
+                        double d13 = clutchPlacementCoordinate.z + d11;
                         if (set.contains(priorityQueue)) continue;
-                        ClutchPlacementPathUtils.V(clutchPlacementCoordinate.J, d12, d13, vec3d, f, f2, priorityQueue);
+                        ClutchPlacementPathUtils.addCandidate(clutchPlacementCoordinate.x, d12, d13, vec3d, f, f2, priorityQueue);
                     }
                 }
                 break;
@@ -331,18 +331,18 @@ public class ClutchPlacementPathUtils {
     }
 
     public static Stack<BlockPlacementNode> o(BlockData blockData, EnumFacing enumFacing, EnumFacing enumFacing2, BlockPathSearchStrategy<BlockPlacementNode> blockPathSearchStrategy, int n) {
-        long l = a ^ 0x7990A3448E3AL;
+        long l = KEY ^ 0x7990A3448E3AL;
         if (n > blockPathSearchStrategy.w() || !blockPathSearchStrategy.V(blockData)) {
             return null;
         }
-        if (f == null) {
-            f = EnumFacing.t();
-            c = EnumFacing.c$src$ALgg_vape_wrapper_impl_EnumFacing_$1i3g4ft();
+        if (allFacings == null) {
+            allFacings = EnumFacing.t();
+            horizontalFacings = EnumFacing.c$src$ALgg_vape_wrapper_impl_EnumFacing_$1i3g4ft();
         }
         int n2 = enumFacing2.c();
-        int n3 = c[n2].Y();
-        int n4 = c[n2 == 0 ? 3 : n2 - 1].Y();
-        int n5 = c[(n2 + 1) % 4].Y();
+        int n3 = horizontalFacings[n2].Y();
+        int n4 = horizontalFacings[n2 == 0 ? 3 : n2 - 1].Y();
+        int n5 = horizontalFacings[(n2 + 1) % 4].Y();
         int n6 = 0;
         int[] nArray = new int[]{n3, n4, n5, n6};
         if (enumFacing != null && enumFacing.Y() != 0 && enumFacing.Y() != enumFacing2.Y()) {
@@ -352,7 +352,7 @@ public class ClutchPlacementPathUtils {
         int n7 = Integer.MAX_VALUE;
         Stack<BlockPlacementNode> stack = null;
         for (int n8 : nArray) {
-            EnumFacing enumFacing4 = f[n8];
+            EnumFacing enumFacing4 = allFacings[n8];
             if (enumFacing3 != null && enumFacing4.Y() == enumFacing3.Y() || enumFacing4.Y() == enumFacing2.getOpposite().Y()) continue;
             BlockData blockData2 = blockData.R(enumFacing4);
             boolean bl = enumFacing == null || enumFacing.Y() != 0;
@@ -382,7 +382,7 @@ public class ClutchPlacementPathUtils {
         return stack;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -532,33 +532,33 @@ public class ClutchPlacementPathUtils {
         return bl;
     }
 
-    private static void Q(AxisAlignedBB axisAlignedBB, int n, Vec3d vec3d, float f, float f2, PriorityQueue<ClutchPlacementCoordinate> priorityQueue) {
+    private static void addFaceCenter(AxisAlignedBB axisAlignedBB, int n, Vec3d vec3d, float f, float f2, PriorityQueue<ClutchPlacementCoordinate> priorityQueue) {
         double d = (axisAlignedBB.getMinX() + axisAlignedBB.getMaxX()) / 2.0;
         double d2 = (axisAlignedBB.getMinY() + axisAlignedBB.getMaxY()) / 2.0;
         double d3 = (axisAlignedBB.getMinZ() + axisAlignedBB.getMaxZ()) / 2.0;
         switch (n) {
             case 0: {
-                ClutchPlacementPathUtils.V(d, axisAlignedBB.getMinY(), d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, axisAlignedBB.getMinY(), d3, vec3d, f, f2, priorityQueue);
                 break;
             }
             case 1: {
-                ClutchPlacementPathUtils.V(d, axisAlignedBB.getMaxY(), d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, axisAlignedBB.getMaxY(), d3, vec3d, f, f2, priorityQueue);
                 break;
             }
             case 2: {
-                ClutchPlacementPathUtils.V(d, d2, axisAlignedBB.getMinZ(), vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d2, axisAlignedBB.getMinZ(), vec3d, f, f2, priorityQueue);
                 break;
             }
             case 3: {
-                ClutchPlacementPathUtils.V(d, d2, axisAlignedBB.getMaxZ(), vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d2, axisAlignedBB.getMaxZ(), vec3d, f, f2, priorityQueue);
                 break;
             }
             case 4: {
-                ClutchPlacementPathUtils.V(axisAlignedBB.getMinX(), d2, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(axisAlignedBB.getMinX(), d2, d3, vec3d, f, f2, priorityQueue);
                 break;
             }
             case 5: {
-                ClutchPlacementPathUtils.V(axisAlignedBB.getMaxX(), d2, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(axisAlignedBB.getMaxX(), d2, d3, vec3d, f, f2, priorityQueue);
             }
         }
     }
@@ -573,7 +573,7 @@ public class ClutchPlacementPathUtils {
         return bl;
     }
 
-    private static void V(double d, double d2, double d3, Vec3d vec3d, float f, float f2, PriorityQueue<ClutchPlacementCoordinate> priorityQueue) {
+    private static void addCandidate(double d, double d2, double d3, Vec3d vec3d, float f, float f2, PriorityQueue<ClutchPlacementCoordinate> priorityQueue) {
         double d4 = ClutchPlacementPathUtils.Z(vec3d, new Vec3d(d, d2, d3), f, f2);
         priorityQueue.add(new ClutchPlacementCoordinate(d, d2, d3, d4));
     }
@@ -581,13 +581,13 @@ public class ClutchPlacementPathUtils {
     public static Vector<PlacementTarget> o(BlockData blockData, BlockData blockData2, BlockPathSearchStrategy<PlacementTarget> blockPathSearchStrategy, int n) {
         int n2;
         int n3;
-        long l = a ^ 0x4016F2B4FC7AL;
+        long l = KEY ^ 0x4016F2B4FC7AL;
         if (n > blockPathSearchStrategy.w()) {
             return null;
         }
-        if (f == null) {
-            f = EnumFacing.t();
-            c = EnumFacing.c$src$ALgg_vape_wrapper_impl_EnumFacing_$1i3g4ft();
+        if (allFacings == null) {
+            allFacings = EnumFacing.t();
+            horizontalFacings = EnumFacing.c$src$ALgg_vape_wrapper_impl_EnumFacing_$1i3g4ft();
         }
         int n4 = blockData2.D() - blockData.D();
         int n5 = blockData2.B() - blockData.B();
@@ -600,7 +600,7 @@ public class ClutchPlacementPathUtils {
         Vector<PlacementTarget> vector = null;
         for (int n11 : nArray) {
             if (n11 == -1) continue;
-            EnumFacing enumFacing = f[n11];
+            EnumFacing enumFacing = allFacings[n11];
             BlockData blockData3 = blockData;
             BlockData blockData4 = blockData3.R(enumFacing);
             Vector<PlacementTarget> vector2 = new Vector<PlacementTarget>();
@@ -632,7 +632,7 @@ public class ClutchPlacementPathUtils {
     }
 
     static {
-        long l = a = ZkmLongKeyState.a(-769599283210447215L, -4955092915845506252L, MethodHandles.lookup().lookupClass()).a(204035390088142L);
+        long l = KEY = ZkmLongKeyState.a(-769599283210447215L, -4955092915845506252L, MethodHandles.lookup().lookupClass()).a(204035390088142L);
     }
 
     public static float y(Vec3 vec3, Vec3 vec32, float f, float f2) {
@@ -663,7 +663,7 @@ public class ClutchPlacementPathUtils {
         return bl;
     }
 
-    private static void B(AxisAlignedBB axisAlignedBB, int n, Vec3d vec3d, float f, float f2, PriorityQueue<ClutchPlacementCoordinate> priorityQueue) {
+    private static void addFaceCorners(AxisAlignedBB axisAlignedBB, int n, Vec3d vec3d, float f, float f2, PriorityQueue<ClutchPlacementCoordinate> priorityQueue) {
         double d = axisAlignedBB.getMinX();
         double d2 = axisAlignedBB.getMinY();
         double d3 = axisAlignedBB.getMinZ();
@@ -672,50 +672,50 @@ public class ClutchPlacementPathUtils {
         double d6 = axisAlignedBB.getMaxZ();
         switch (n) {
             case 0: {
-                ClutchPlacementPathUtils.V(d, d2, d3, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d, d2, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d2, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d2, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d2, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d2, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d2, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d2, d3, vec3d, f, f2, priorityQueue);
                 break;
             }
             case 1: {
-                ClutchPlacementPathUtils.V(d, d5, d3, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d5, d3, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d5, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d, d5, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d5, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d5, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d5, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d5, d6, vec3d, f, f2, priorityQueue);
                 break;
             }
             case 2: {
-                ClutchPlacementPathUtils.V(d, d2, d3, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d2, d3, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d5, d3, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d, d5, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d2, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d2, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d5, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d5, d3, vec3d, f, f2, priorityQueue);
                 break;
             }
             case 5: {
-                ClutchPlacementPathUtils.V(d4, d2, d3, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d2, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d5, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d5, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d2, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d2, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d5, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d5, d3, vec3d, f, f2, priorityQueue);
                 break;
             }
             case 3: {
-                ClutchPlacementPathUtils.V(d, d2, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d2, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d5, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d, d5, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d2, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d2, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d5, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d5, d6, vec3d, f, f2, priorityQueue);
                 break;
             }
             case 4: {
-                ClutchPlacementPathUtils.V(d, d2, d3, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d, d2, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d, d5, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d, d5, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d2, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d2, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d5, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d5, d3, vec3d, f, f2, priorityQueue);
             }
         }
     }
 
-    private static void W(AxisAlignedBB axisAlignedBB, int n, Vec3d vec3d, float f, float f2, PriorityQueue<ClutchPlacementCoordinate> priorityQueue) {
+    private static void addFaceEdges(AxisAlignedBB axisAlignedBB, int n, Vec3d vec3d, float f, float f2, PriorityQueue<ClutchPlacementCoordinate> priorityQueue) {
         double d = axisAlignedBB.getMinX();
         double d2 = axisAlignedBB.getMinY();
         double d3 = axisAlignedBB.getMinZ();
@@ -729,28 +729,28 @@ public class ClutchPlacementPathUtils {
             case 0: 
             case 1: {
                 double d10 = n == 0 ? d2 : d5;
-                ClutchPlacementPathUtils.V(d7, d10, d3, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d7, d10, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d, d10, d9, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d10, d9, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d7, d10, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d7, d10, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d10, d9, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d10, d9, vec3d, f, f2, priorityQueue);
                 break;
             }
             case 2: 
             case 3: {
                 double d11 = n == 2 ? d3 : d6;
-                ClutchPlacementPathUtils.V(d7, d2, d11, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d7, d5, d11, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d, d8, d11, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d4, d8, d11, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d7, d2, d11, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d7, d5, d11, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d, d8, d11, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d4, d8, d11, vec3d, f, f2, priorityQueue);
                 break;
             }
             case 4: 
             case 5: {
                 double d12 = n == 4 ? d : d4;
-                ClutchPlacementPathUtils.V(d12, d8, d3, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d12, d8, d6, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d12, d2, d9, vec3d, f, f2, priorityQueue);
-                ClutchPlacementPathUtils.V(d12, d5, d9, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d12, d8, d3, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d12, d8, d6, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d12, d2, d9, vec3d, f, f2, priorityQueue);
+                ClutchPlacementPathUtils.addCandidate(d12, d5, d9, vec3d, f, f2, priorityQueue);
             }
         }
     }

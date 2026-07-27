@@ -12,7 +12,7 @@ import java.util.Vector;
 public class BlockPlacementPathSegment {
     public final BlockCoordinate t;
     public final ArrayList<Vec3d> b;
-    private static final String d = " (Left: ";
+    private static final String LEFT_SUFFIX = " (Left: ";
     public BlockCoordinate R;
     public String p = null;
     public final Vector<BlockInTargetRotationState> P = new Vector();
@@ -38,13 +38,13 @@ public class BlockPlacementPathSegment {
         this.b = arrayList;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public void I(String string) {
         if (this.p == null) {
-            this.p = string + d + this.w() + ")";
+            this.p = string + LEFT_SUFFIX + this.w() + ")";
             this.V = null;
             this.g = null;
         }

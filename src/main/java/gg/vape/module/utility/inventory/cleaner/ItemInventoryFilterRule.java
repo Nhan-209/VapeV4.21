@@ -11,27 +11,27 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemInventoryFilterRule
 extends AbstractInventoryFilterRule {
-    private InventoryFilterAction h = InventoryFilterAction.REMOVE;
+    private InventoryFilterAction filterAction = InventoryFilterAction.REMOVE;
 
     public void S(InventoryFilterAction inventoryFilterAction) {
-        this.h = inventoryFilterAction;
+        this.filterAction = inventoryFilterAction;
     }
 
     public ItemInventoryFilterRule() {
     }
 
     public InventoryFilterAction K() {
-        return this.h;
+        return this.filterAction;
     }
 
     @Override
     public JsonObject M(boolean bl) {
         JsonObject jsonObject = super.M(bl);
-        jsonObject.addProperty("filterAction", this.h.getName());
+        jsonObject.addProperty("filterAction", this.filterAction.getName());
         return jsonObject;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -47,7 +47,7 @@ extends AbstractInventoryFilterRule {
 
     public ItemInventoryFilterRule(JsonObject jsonObject) {
         super(jsonObject);
-        this.h = InventoryFilterAction.c(jsonObject.get("filterAction").getAsString());
+        this.filterAction = InventoryFilterAction.c(jsonObject.get("filterAction").getAsString());
     }
 }
 

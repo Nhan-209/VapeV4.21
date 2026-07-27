@@ -19,21 +19,21 @@ import gg.vape.wrapper.impl.PotionRegistry;
 
 public class Speed
 extends Mod {
-    private final SubModuleValue H = new MineplexSpeed(this, "AntiCheat B").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+    private final SubModuleValue antiCheatBMode = new MineplexSpeed(this, "AntiCheat B").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
     public double L;
-    private final ModeValue C;
-    private final SubModuleValue K = new BhopSpeed(this, "Bhop").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+    private final ModeValue mode;
+    private final SubModuleValue bhopMode = new BhopSpeed(this, "Bhop").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
     public double O;
     public int U;
 
     public double defaultSpeed() {
-        double d = 0.28730000691562896;
+        double baseSpeed = 0.28730000691562896;
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.i(PotionRegistry.U) && entityPlayerSP.b(PotionRegistry.U).k() > 10) {
-            int n = entityPlayerSP.b(PotionRegistry.U).L();
-            d *= 1.0 + 0.15 * (double)(n + 1);
+            int amplifier = entityPlayerSP.b(PotionRegistry.U).L();
+            baseSpeed *= 1.0 + 0.15 * (double)(amplifier + 1);
         }
-        return d;
+        return baseSpeed;
     }
 
     @Override
@@ -43,9 +43,9 @@ extends Mod {
 
     public Speed() {
         super("Speed", 49630, Category.A, "Increases your movement with various methods.");
-        this.C = ModeValue.create((Object)this, "Mode", "Speed mode to use.\nAntiCheat B works on various servers\nBhop - Bypasses Old NCP", (ModeSelection)this.K, this.H, this.K);
+        this.mode = ModeValue.create((Object)this, "Mode", "Speed mode to use.\nAntiCheat B works on various servers\nBhop - Bypasses Old NCP", (ModeSelection)this.bhopMode, this.antiCheatBMode, this.bhopMode);
         this.R(false);
-        this.addValue(this.C);
+        this.addValue(this.mode);
     }
 
     public void strafe(EventMove eventMove, double d, EntityPlayerSP entityPlayerSP) {
@@ -83,7 +83,7 @@ extends Mod {
 
     @Override
     public String E() {
-        return this.C.c();
+        return this.mode.c();
     }
 
     @Override

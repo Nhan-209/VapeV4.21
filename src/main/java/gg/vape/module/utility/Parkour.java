@@ -18,67 +18,67 @@ import java.util.List;
 
 public class Parkour
 extends Mod {
-    private boolean v;
-    private boolean b;
-    private static final long o = -6495356621742786881L;
+    private boolean jumpPending;
+    private boolean jumpKeyWasPressed;
+    private static final long MODULE_ID = -6495356621742786881L;
 
     public Parkour() {
-        super("Parkour", (int)o, Category.m, "Jumps for you at the edge of blocks.");
+        super("Parkour", (int)MODULE_ID, Category.m, "Jumps for you at the edge of blocks.");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        boolean bl;
+        boolean movingForward;
         if (Vape.INSTANCE.getModManager().getState(Freecam.class)) {
             return;
         }
         KeyBinding keyBinding = Minecraft.gameSettings().O();
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (this.v) {
-            if (!this.b) {
+        if (this.jumpPending) {
+            if (!this.jumpKeyWasPressed) {
                 KeyBindingHelper.v(keyBinding, false, false);
             }
-            this.v = false;
-            this.b = false;
+            this.jumpPending = false;
+            this.jumpKeyWasPressed = false;
             return;
         }
         if (keyBinding.isKeyDown()) {
             return;
         }
         MovementInput movementInput = entityPlayerSP.movementInput();
-        boolean bl2 = bl = movementInput.D() > 0.0f;
-        if (bl && entityPlayerSP.b$src$Z$fqlxe4()) {
-            AxisAlignedBB axisAlignedBB;
+        boolean forwardInput = movingForward = movementInput.D() > 0.0f;
+        if (movingForward && entityPlayerSP.b$src$Z$fqlxe4()) {
+            AxisAlignedBB boundingBox;
             if (ForgeVersion.MC_1_8_9.d()) {
-                axisAlignedBB = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+                boundingBox = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
             } else {
-                AxisAlignedBB axisAlignedBB2 = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
-                axisAlignedBB = axisAlignedBB2.copy();
+                AxisAlignedBB currentBox = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+                boundingBox = currentBox.copy();
             }
-            double d = 0.0;
-            double d2 = entityPlayerSP.J();
-            double d3 = 90.0;
-            double d4 = Math.cos(Math.toRadians(d2 + d3)) * d;
-            double d5 = Math.sin(Math.toRadians(d2 + d3)) * d;
-            double d6 = -0.1;
-            AxisAlignedBB axisAlignedBB3 = axisAlignedBB.k(d4, d6, d5);
-            List list = Minecraft.theWorld().i(entityPlayerSP, axisAlignedBB3);
-            d = 1.0;
-            d4 = Math.cos(Math.toRadians(d2 + d3)) * d;
-            d5 = Math.sin(Math.toRadians(d2 + d3)) * d;
-            d6 = -0.1;
-            axisAlignedBB3 = axisAlignedBB.k(d4, d6, d5);
-            List list2 = Minecraft.theWorld().i(entityPlayerSP, axisAlignedBB3);
-            int n = list.size();
-            int n2 = list2.size();
-            if (n == 0 && n2 == 0) {
-                this.b = keyBinding.u();
+            double distance = 0.0;
+            double yaw = entityPlayerSP.J();
+            double yawOffset = 90.0;
+            double offsetX = Math.cos(Math.toRadians(yaw + yawOffset)) * distance;
+            double offsetZ = Math.sin(Math.toRadians(yaw + yawOffset)) * distance;
+            double offsetY = -0.1;
+            AxisAlignedBB offsetBox = boundingBox.k(offsetX, offsetY, offsetZ);
+            List nearCollisions = Minecraft.theWorld().i(entityPlayerSP, offsetBox);
+            distance = 1.0;
+            offsetX = Math.cos(Math.toRadians(yaw + yawOffset)) * distance;
+            offsetZ = Math.sin(Math.toRadians(yaw + yawOffset)) * distance;
+            offsetY = -0.1;
+            offsetBox = boundingBox.k(offsetX, offsetY, offsetZ);
+            List farCollisions = Minecraft.theWorld().i(entityPlayerSP, offsetBox);
+            int nearCount = nearCollisions.size();
+            int farCount = farCollisions.size();
+            if (nearCount == 0 && farCount == 0) {
+                this.jumpKeyWasPressed = keyBinding.u();
                 KeyBindingHelper.d(keyBinding, true);
-                this.v = true;
+                this.jumpPending = true;
             }
         }
     }

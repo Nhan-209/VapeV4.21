@@ -24,12 +24,12 @@ import java.util.Random;
 
 public class ClickerMod
 extends Mod {
-    private long o;
-    private boolean b;
-    private static final long bb = 7524649824893733649L;
+    private long attackStartTime;
+    private boolean clicking;
+    private static final long MODULE_ID = 7524649824893733649L;
     protected boolean S;
     public ClickEngine s;
-    private final ClickerWorker L = new ClickerWorker(this);
+    private final ClickerWorker clickerWorker = new ClickerWorker(this);
 
     public boolean h$src$Z$qo2e1d() {
         return false;
@@ -49,15 +49,15 @@ extends Mod {
 
     @Override
     public void onEnable() {
-        this.L.K();
+        this.clickerWorker.K();
     }
 
     @Override
     public void onDisable() {
-        this.L.W();
+        this.clickerWorker.W();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -66,7 +66,7 @@ extends Mod {
     }
 
     public ClickerMod(String string) {
-        super(string, (int)bb, Category.g, "");
+        super(string, (int)MODULE_ID, Category.g, "");
     }
 
     public void F(ClickEngine clickEngine) {
@@ -162,15 +162,15 @@ extends Mod {
             return;
         }
         if (!this.s.G()) {
-            this.b = false;
+            this.clicking = false;
             return;
         }
-        if (!this.b) {
-            this.b = true;
-            this.o = System.currentTimeMillis();
+        if (!this.clicking) {
+            this.clicking = true;
+            this.attackStartTime = System.currentTimeMillis();
         }
         long l = 50L + (long)this.U();
-        if (System.currentTimeMillis() - this.o < l) {
+        if (System.currentTimeMillis() - this.attackStartTime < l) {
             return;
         }
         if (!this.s.R(entityPlayerSP2) && guiScreen.isNull()) {
@@ -191,7 +191,7 @@ extends Mod {
             long l3 = (long)((double)l2 * (1.0 - d3));
             long l4 = (long)((double)l2 * d3);
             if (!this.s.G()) {
-                this.b = false;
+                this.clicking = false;
                 return;
             }
             if (this.s.s() == ClickButton.LEFT && (clickerMod2 = this).D(entityPlayerSP3 = entityPlayerSP2)) {
@@ -241,7 +241,7 @@ extends Mod {
         long l8 = (long)((double)l7 * (1.0 - d5));
         long l9 = (long)((double)l7 * d5);
         if (!this.s.G()) {
-            this.b = false;
+            this.clicking = false;
             return;
         }
         if (this.s.s() == ClickButton.LEFT && (clickerMod = this).D(entityPlayerSP = entityPlayerSP2)) {

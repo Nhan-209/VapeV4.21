@@ -34,41 +34,41 @@ import java.util.Arrays;
 
 public class AutoMace
 extends Mod {
-    public final BooleanValue O;
-    private boolean J = false;
-    public final BooleanValue S;
-    private int C;
-    public final BooleanValue o;
-    private boolean r = false;
-    private boolean c = false;
-    private boolean p = false;
-    public final LimitValue U;
-    private boolean L = false;
-    public final BooleanValue P = BooleanValue.create(this, "Limit to items", false);
-    private boolean j;
-    public final BooleanValue Z;
-    public final BooleanValue A;
-    private int t = -1;
+    public final BooleanValue breachMaces;
+    private boolean swingReleasePending = false;
+    public final BooleanValue stunSlam;
+    private int tickCounter;
+    public final BooleanValue axes;
+    private boolean stunSlamActive = false;
+    private boolean stunSlamSecondPhase = false;
+    private boolean breachSwapPending = false;
+    public final LimitValue allowedItems;
+    private boolean swapAttackPending = false;
+    public final BooleanValue limitToItems = BooleanValue.create(this, "Limit to items", false);
+    private boolean swapActive;
+    public final BooleanValue smashOnly;
+    public final BooleanValue densityMaces;
+    private int originalSlot = -1;
     private static final long v = -7666507152973844357L;
-    public final BooleanValue V = BooleanValue.create(this, "Maces", true);
-    public final BooleanValue H;
+    public final BooleanValue maces = BooleanValue.create(this, "Maces", true);
+    public final BooleanValue swords;
 
-    private boolean P() {
-        return (this.A.L() != false || this.O.L() != false) && this.z();
+    private boolean shouldFilterByEnchant() {
+        return (this.densityMaces.L() != false || this.breachMaces.L() != false) && this.hasMaceInHotbar();
     }
 
-    private boolean z() {
+    private boolean hasMaceInHotbar() {
         InventoryPlayer inventoryPlayer = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
         for (int i = 0; i < 9; ++i) {
             ItemStack itemStack = inventoryPlayer.c(i);
-            if (!this.n(itemStack, true)) continue;
+            if (!this.isValidMace(itemStack, true)) continue;
             return true;
         }
         return false;
     }
 
     @EventHandler(A=EventPriority.HIGH)
-    public void D(EventKeyPress eventKeyPress) {
+    public void onKeyPress(EventKeyPress eventKeyPress) {
         block4: {
             block3: {
                 boolean bl;
@@ -83,25 +83,25 @@ extends Mod {
             }
             return;
         }
-        this.p(new PhysicalAttackCancellationAdapter(eventKeyPress, null));
+        this.handleAttack(new PhysicalAttackCancellationAdapter(eventKeyPress, null));
     }
 
     @Override
     public void onDisable() {
-        this.L = false;
-        this.c = false;
-        if (this.J) {
+        this.swapAttackPending = false;
+        this.stunSlamSecondPhase = false;
+        if (this.swingReleasePending) {
             AttackKeyController.Q();
         }
-        this.J = false;
-        this.j = false;
-        this.t = -1;
-        this.C = 0;
-        this.p = false;
-        this.r = false;
+        this.swingReleasePending = false;
+        this.swapActive = false;
+        this.originalSlot = -1;
+        this.tickCounter = 0;
+        this.breachSwapPending = false;
+        this.stunSlamActive = false;
     }
 
-    private boolean g(EntityOtherPlayerMP entityOtherPlayerMP) {
+    private boolean isTargetSmashReady(EntityOtherPlayerMP entityOtherPlayerMP) {
         EnumHand enumHand = RotationUtil.q(entityOtherPlayerMP);
         if (enumHand == null) {
             return false;
@@ -117,14 +117,14 @@ extends Mod {
     }
 
     public boolean F$src$Z$1746r4n() {
-        if (this.o.L().booleanValue()) {
+        if (this.axes.L().booleanValue()) {
             InventoryPlayer inventoryPlayer = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
             int n = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
             for (int i = 0; i < 9; ++i) {
                 ItemStack itemStack;
                 if (i == n || (itemStack = inventoryPlayer.c(i)).isNull() || itemStack.getItem().isNull()) continue;
                 Item item = itemStack.getItem();
-                if (!this.o.L().booleanValue() || !item.isInstance(MappedClasses.YP)) continue;
+                if (!this.axes.L().booleanValue() || !item.isInstance(MappedClasses.YP)) continue;
                 return true;
             }
         }
@@ -142,22 +142,22 @@ extends Mod {
         if (Minecraft.currentScreen().isNotNull()) {
             return false;
         }
-        return this.P.L() == false || this.U.isValid(itemStack = Minecraft.thePlayer().getHeldItemHand(), false);
+        return this.limitToItems.L() == false || this.allowedItems.isValid(itemStack = Minecraft.thePlayer().getHeldItemHand(), false);
     }
 
     @EventHandler(A=EventPriority.HIGH)
-    public void q(SyntheticAttackRequestEvent syntheticAttackRequestEvent) {
+    public void onSyntheticAttack(SyntheticAttackRequestEvent syntheticAttackRequestEvent) {
         int n = JavassistMappingTask.U();
         if (n == 0) {
             if (syntheticAttackRequestEvent.getSource() == this) {
                 return;
             }
-            this.p(new SyntheticAttackCancellationAdapter(syntheticAttackRequestEvent, null));
+            this.handleAttack(new SyntheticAttackCancellationAdapter(syntheticAttackRequestEvent, null));
         }
     }
 
     @EventHandler(A=EventPriority.HIGH)
-    public void o(EventMouseButton eventMouseButton) {
+    public void onMouseButton(EventMouseButton eventMouseButton) {
         block4: {
             block3: {
                 boolean bl;
@@ -172,14 +172,14 @@ extends Mod {
             }
             return;
         }
-        this.p(new PhysicalAttackCancellationAdapter(eventMouseButton, null));
+        this.handleAttack(new PhysicalAttackCancellationAdapter(eventMouseButton, null));
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private boolean h(EntityOtherPlayerMP entityOtherPlayerMP) {
+    private boolean isTargetAttacking(EntityOtherPlayerMP entityOtherPlayerMP) {
         EnumHand enumHand = RotationUtil.q(entityOtherPlayerMP);
         if (enumHand != null) {
             float f = entityOtherPlayerMP.d(enumHand);
@@ -200,20 +200,20 @@ extends Mod {
     }
 
     public boolean a$src$Z$17j175e() {
-        int n = this.c();
+        int n = this.findWeaponSlot();
         if (n < 0) {
             return false;
         }
         InventoryPlayer inventoryPlayer = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
         ItemStack itemStack = inventoryPlayer.c(n);
-        return this.n(itemStack, this.P());
+        return this.isValidMace(itemStack, this.shouldFilterByEnchant());
     }
 
     private int f$src$I$17ls5pk() {
         InventoryPlayer inventoryPlayer = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
         for (int i = 0; i < 9; ++i) {
             ItemStack itemStack = inventoryPlayer.c(i);
-            if (!this.n(itemStack, this.P())) continue;
+            if (!this.isValidMace(itemStack, this.shouldFilterByEnchant())) continue;
             return i;
         }
         return -1;
@@ -225,64 +225,64 @@ extends Mod {
         if (eventPreTick.getThePlayer().isNull()) {
             return;
         }
-        if (this.J) {
+        if (this.swingReleasePending) {
             AttackKeyController.Q();
-            this.J = false;
+            this.swingReleasePending = false;
         }
-        if (this.p && this.j && this.C >= 1) {
+        if (this.breachSwapPending && this.swapActive && this.tickCounter >= 1) {
             int n2 = this.f$src$I$17ls5pk();
             if (n2 != -1) {
                 eventPreTick.getThePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n2);
                 AttackKeyController.Q();
                 AttackKeyController.u(this);
-                this.J = true;
+                this.swingReleasePending = true;
             }
-            this.p = false;
+            this.breachSwapPending = false;
             return;
         }
-        if (this.L && this.j) {
+        if (this.swapAttackPending && this.swapActive) {
             AttackKeyController.Q();
             AttackKeyController.u(this);
-            this.J = true;
-            this.L = false;
-            if (this.r) {
-                this.c = true;
+            this.swingReleasePending = true;
+            this.swapAttackPending = false;
+            if (this.stunSlamActive) {
+                this.stunSlamSecondPhase = true;
             }
         }
-        if (this.r && this.j && this.c && this.C >= 1) {
+        if (this.stunSlamActive && this.swapActive && this.stunSlamSecondPhase && this.tickCounter >= 1) {
             int n3 = this.f$src$I$17ls5pk();
             if (n3 != -1) {
                 eventPreTick.getThePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n3);
                 AttackKeyController.Q();
                 AttackKeyController.u(this);
-                this.J = true;
+                this.swingReleasePending = true;
             }
-            this.c = false;
-            this.r = false;
+            this.stunSlamSecondPhase = false;
+            this.stunSlamActive = false;
             return;
         }
-        if (this.j) {
+        if (this.swapActive) {
             int n4;
-            int n5 = n4 = this.r || this.c ? 2 : 1;
-            if (this.C++ > n4) {
-                if (this.t != -1) {
-                    eventPreTick.getThePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.t);
-                    this.t = -1;
+            int n5 = n4 = this.stunSlamActive || this.stunSlamSecondPhase ? 2 : 1;
+            if (this.tickCounter++ > n4) {
+                if (this.originalSlot != -1) {
+                    eventPreTick.getThePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.originalSlot);
+                    this.originalSlot = -1;
                 }
-                this.j = false;
-                this.C = 0;
-                this.r = false;
-                this.c = false;
+                this.swapActive = false;
+                this.tickCounter = 0;
+                this.stunSlamActive = false;
+                this.stunSlamSecondPhase = false;
             }
         }
     }
 
-    private void p(AttackCancellationAdapter attackCancellationAdapter) {
+    private void handleAttack(AttackCancellationAdapter attackCancellationAdapter) {
         int n;
         int n2;
         EntityOtherPlayerMP entityOtherPlayerMP;
         ItemStack itemStack;
-        if (this.j) {
+        if (this.swapActive) {
             return;
         }
         if (!this.y$src$Z$17w89e2()) {
@@ -299,38 +299,38 @@ extends Mod {
         if (rayTraceResult.getEntity().isNull()) {
             return;
         }
-        if (this.S.L().booleanValue() && this.V.L().booleanValue() && (itemStack = entityPlayerSP.getHeldItemHand()).isNotNull() && itemStack.getItem().isNotNull() && (entityOtherPlayerMP = this.g$src$Lgg_vape_wrapper_impl_EntityOtherPlayerMP_$16ze503()) != null && this.g(entityOtherPlayerMP) && (n2 = this.f$src$I$17ls5pk()) >= 0) {
+        if (this.stunSlam.L().booleanValue() && this.maces.L().booleanValue() && (itemStack = entityPlayerSP.getHeldItemHand()).isNotNull() && itemStack.getItem().isNotNull() && (entityOtherPlayerMP = this.g$src$Lgg_vape_wrapper_impl_EntityOtherPlayerMP_$16ze503()) != null && this.isTargetSmashReady(entityOtherPlayerMP) && (n2 = this.f$src$I$17ls5pk()) >= 0) {
             if (itemStack.getItem().isInstance(MappedClasses.YP)) {
-                this.t = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
-                this.p = true;
-                this.j = true;
-                this.C = 0;
+                this.originalSlot = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+                this.breachSwapPending = true;
+                this.swapActive = true;
+                this.tickCounter = 0;
                 return;
             }
             int n3 = this.S$src$I$17bc2fp();
             if (n3 >= 0) {
                 attackCancellationAdapter.u(true);
-                this.t = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+                this.originalSlot = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
                 entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n3);
-                this.r = true;
-                this.j = true;
-                this.C = 0;
-                this.L = true;
+                this.stunSlamActive = true;
+                this.swapActive = true;
+                this.tickCounter = 0;
+                this.swapAttackPending = true;
                 return;
             }
         }
-        if ((n = this.c()) >= 0) {
+        if ((n = this.findWeaponSlot()) >= 0) {
             attackCancellationAdapter.u(true);
-            this.t = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+            this.originalSlot = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
             entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n);
-            this.j = true;
-            this.C = 0;
-            this.L = true;
+            this.swapActive = true;
+            this.tickCounter = 0;
+            this.swapAttackPending = true;
         }
     }
 
-    private boolean n(ItemStack itemStack, boolean bl) {
-        if (this.Z.L().booleanValue() && !RotationUtil.u(Minecraft.thePlayer())) {
+    private boolean isValidMace(ItemStack itemStack, boolean bl) {
+        if (this.smashOnly.L().booleanValue() && !RotationUtil.u(Minecraft.thePlayer())) {
             return false;
         }
         if (itemStack.isNull()) {
@@ -345,32 +345,32 @@ extends Mod {
             if (!bl) {
                 return true;
             }
-            if (this.A.L().booleanValue() && (n = EnchantmentHelper.e("density", itemStack)) > 0) {
+            if (this.densityMaces.L().booleanValue() && (n = EnchantmentHelper.e("density", itemStack)) > 0) {
                 return true;
             }
-            if (this.O.L().booleanValue() && (n = EnchantmentHelper.e("breach", itemStack)) > 0) {
+            if (this.breachMaces.L().booleanValue() && (n = EnchantmentHelper.e("breach", itemStack)) > 0) {
                 return true;
             }
-            return this.A.L() == false && this.O.L() == false;
+            return this.densityMaces.L() == false && this.breachMaces.L() == false;
         }
         return false;
     }
 
     public AutoMace() {
         super("HitSwap", (int)v, Category.Y, "Swaps into another weapon on attack, copying its attributes\nAKA BreachSwap, ZeroTick");
-        this.Z = BooleanValue.create(this, "Smash only", true, "Only swap to mace if will smash");
-        this.O = BooleanValue.create(this, "Breach maces", false, "Will use Maces with Breach enchantment");
-        this.A = BooleanValue.create(this, "Density maces", true, "Will use Maces with Breach enchantment");
-        this.S = BooleanValue.create(this, "Stun slam", false, "When holding an axe and attacking a shielded player:\nHits with axe first (breaks shield), then swaps to mace for a follow-up slam");
-        this.o = BooleanValue.create(this, "Axes", true);
-        this.H = BooleanValue.create(this, "Swords", false);
-        this.U = LimitValue.n(this, "bs-alloweditems", "Allowed Items", LimitValue.r, Arrays.asList(new ItemLimitData("swords")));
-        this.addValue(this.V, this.Z, this.O, this.A, this.S, this.o, this.H, this.P, this.U);
-        this.P.K(this.U);
-        this.V.K(this.Z, this.O, this.A, this.S);
+        this.smashOnly = BooleanValue.create(this, "Smash only", true, "Only swap to mace if will smash");
+        this.breachMaces = BooleanValue.create(this, "Breach maces", false, "Will use Maces with Breach enchantment");
+        this.densityMaces = BooleanValue.create(this, "Density maces", true, "Will use Maces with Breach enchantment");
+        this.stunSlam = BooleanValue.create(this, "Stun slam", false, "When holding an axe and attacking a shielded player:\nHits with axe first (breaks shield), then swaps to mace for a follow-up slam");
+        this.axes = BooleanValue.create(this, "Axes", true);
+        this.swords = BooleanValue.create(this, "Swords", false);
+        this.allowedItems = LimitValue.n(this, "bs-alloweditems", "Allowed Items", LimitValue.r, Arrays.asList(new ItemLimitData("swords")));
+        this.addValue(this.maces, this.smashOnly, this.breachMaces, this.densityMaces, this.stunSlam, this.axes, this.swords, this.limitToItems, this.allowedItems);
+        this.limitToItems.K(this.allowedItems);
+        this.maces.K(this.smashOnly, this.breachMaces, this.densityMaces, this.stunSlam);
     }
 
-    private int c() {
+    private int findWeaponSlot() {
         InventoryPlayer inventoryPlayer = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
         int n = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
         for (int i = 0; i < 9; ++i) {
@@ -379,7 +379,7 @@ extends Mod {
             ItemStack itemStack;
             if (i == n || (itemStack = inventoryPlayer.c(i)).isNull() || itemStack.getItem().isNull()) continue;
             Item item = itemStack.getItem();
-            if (this.o.L().booleanValue() && item.isInstance(MappedClasses.YP) && (entityOtherPlayerMP = this.g$src$Lgg_vape_wrapper_impl_EntityOtherPlayerMP_$16ze503()) != null && (enumHand = RotationUtil.q(entityOtherPlayerMP)) != null) {
+            if (this.axes.L().booleanValue() && item.isInstance(MappedClasses.YP) && (entityOtherPlayerMP = this.g$src$Lgg_vape_wrapper_impl_EntityOtherPlayerMP_$16ze503()) != null && (enumHand = RotationUtil.q(entityOtherPlayerMP)) != null) {
                 ItemStack itemStack2 = entityOtherPlayerMP.i(enumHand);
                 float f = entityOtherPlayerMP.d(enumHand);
                 int n2 = itemStack2.getItem().I(itemStack2, entityOtherPlayerMP);
@@ -391,10 +391,10 @@ extends Mod {
                     return -2;
                 }
             }
-            if (this.V.L().booleanValue() && this.n(itemStack, this.P())) {
+            if (this.maces.L().booleanValue() && this.isValidMace(itemStack, this.shouldFilterByEnchant())) {
                 return i;
             }
-            if (!this.H.L().booleanValue() || !ItemStackScoreUtil.h(item)) continue;
+            if (!this.swords.L().booleanValue() || !ItemStackScoreUtil.h(item)) continue;
             return i;
         }
         return -1;

@@ -4,32 +4,32 @@ import gg.vape.module.utility.inventory.cleaner.InventoryFilterPreset;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterRule;
 
 public class InventoryFilterRulePresetChange {
-    private final InventoryFilterRule u;
-    private final boolean a;
-    private final InventoryFilterPreset j;
-    private final InventoryFilterPreset C;
+    private final InventoryFilterRule rule;
+    private final boolean added;
+    private final InventoryFilterPreset previousPreset;
+    private final InventoryFilterPreset newPreset;
 
     public InventoryFilterPreset L() {
-        return this.C;
+        return this.newPreset;
     }
 
     public boolean q() {
-        return this.a;
+        return this.added;
     }
 
     public InventoryFilterPreset W() {
-        return this.j;
+        return this.previousPreset;
     }
 
     public InventoryFilterRulePresetChange(InventoryFilterRule inventoryFilterRule, InventoryFilterPreset pJ, InventoryFilterPreset pJ2, boolean bl) {
-        this.u = inventoryFilterRule;
-        this.C = pJ;
-        this.j = pJ2;
-        this.a = bl;
+        this.rule = inventoryFilterRule;
+        this.newPreset = pJ;
+        this.previousPreset = pJ2;
+        this.added = bl;
     }
 
     public InventoryFilterRule R() {
-        return this.u;
+        return this.rule;
     }
 }
 

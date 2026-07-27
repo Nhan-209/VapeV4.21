@@ -31,72 +31,72 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class FreeLookHudModule
 extends HudModule {
-    private static float c;
-    private final ModeOption F = new ModeOption("Hold");
-    private final ModeOption os;
-    private static float H;
-    private static float oh;
-    private final ModeOption s;
-    private static float Y;
-    private final NumberValue O;
-    private static boolean o;
-    private double b;
-    private EntityLivingBase U;
-    private final ModeOption C = new ModeOption("Toggle");
-    private static float K;
-    private double v;
-    private final BooleanValue oN;
-    private static float oR;
-    private final ModeOption P;
-    private static float j;
-    private boolean L = false;
+    private static float savedPitch;
+    private final ModeOption holdMode = new ModeOption("Hold");
+    private final ModeOption forwardMode;
+    private static float renderPitch;
+    private static float originalYaw;
+    private final ModeOption thirdPersonMode;
+    private static float originalPrevYaw;
+    private final NumberValue sensitivity;
+    private static boolean active;
+    private double mouseDY;
+    private EntityLivingBase renderPlayer;
+    private final ModeOption toggleMode = new ModeOption("Toggle");
+    private static float savedYaw;
+    private double mouseLastY;
+    private final BooleanValue customSensitivity;
+    private static float originalPrevPitch;
+    private final ModeOption firstPersonMode;
+    private static float renderYaw;
+    private boolean enabled = false;
     public final ModeValue oO;
-    private static float o4;
-    private static float S;
-    private static float A;
-    private double r;
-    public final ModeValue t = ModeValue.create((Object)this, "Activate Freelook", this.F, this.F, this.C);
+    private static float originalPitch;
+    private static float pitchOffset;
+    private static float yawOffset;
+    private double mouseLastX;
+    public final ModeValue t = ModeValue.create((Object)this, "Activate Freelook", this.holdMode, this.holdMode, this.toggleMode);
     public final ModeValue p;
-    private final ModeOption oQ;
-    private int k = -1;
-    private double J;
+    private final ModeOption backwardMode;
+    private int savedPerspective = -1;
+    private double mouseDX;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public static float c() {
-        return j;
+        return renderYaw;
     }
 
     @EventHandler
     public void Q(EventPostRenderTick eventPostRenderTick) {
-        if (!this.L) {
+        if (!this.enabled) {
             return;
         }
-        this.w$src$V$1kb9hyx();
+        this.restorePlayerView();
     }
 
     @EventHandler(A=EventPriority.LOWEST)
     public void m(EventPreRenderWorldPass eventPreRenderWorldPass) {
-        this.u$src$V$1ka5ws7();
+        this.applyWorldRotation();
     }
 
-    private double c$src$D$1k09lo7() {
-        if (!this.oN.L().booleanValue()) {
+    private double getSensitivity() {
+        if (!this.customSensitivity.L().booleanValue()) {
             return (double)Minecraft.gameSettings().y() * 0.6 * 0.2 * 8.0;
         }
-        return (Double)this.O.K();
+        return (Double)this.sensitivity.K();
     }
 
-    private void M$src$V$1jo651r() {
-        if (!this.L) {
+    private void applyRenderRotation() {
+        if (!this.enabled) {
             return;
         }
         if (RotationManager.b.u() && Vape.INSTANCE.getClientSettings().c.L().booleanValue()) {
             return;
         }
-        this.i();
+        this.applyCameraRotation();
     }
 
     @Override
@@ -105,36 +105,36 @@ extends HudModule {
             return;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            this.r = Minecraft.s().R();
-            this.v = Minecraft.s().b();
+            this.mouseLastX = Minecraft.s().R();
+            this.mouseLastY = Minecraft.s().b();
         }
-        if (this.t.K() == this.C) {
-            EventTickBase.p.execute(this::lambda$executeBind$0);
+        if (this.t.K() == this.toggleMode) {
+            EventTickBase.p.execute(this::toggleFreelook);
         }
     }
 
     @EventHandler(A=EventPriority.LOWEST)
     public void L(EventRenderPlayerPost eventRenderPlayerPost) {
-        this.M$src$V$1jo651r();
+        this.applyRenderRotation();
     }
 
     @EventHandler
     public void G(EventPreEntityRendererMouseUpdate eventPreEntityRendererMouseUpdate) {
-        if (!o) {
+        if (!active) {
             return;
         }
-        if (!this.L) {
+        if (!this.enabled) {
             return;
         }
         if (Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        this.i();
+        this.applyCameraRotation();
     }
 
     @EventHandler
     public void o(EventPostTick eventPostTick) {
-        if (this.t.K() != this.F) {
+        if (this.t.K() != this.holdMode) {
             return;
         }
         if (Minecraft.currentScreen().isNotNull()) {
@@ -143,177 +143,177 @@ extends HudModule {
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        this.L = this.a().K();
-        if (!this.L) {
-            o = false;
-            if (this.k == -1) {
+        this.enabled = this.a().K();
+        if (!this.enabled) {
+            active = false;
+            if (this.savedPerspective == -1) {
                 return;
             }
-            Minecraft.gameSettings().I(this.k);
-            this.k = -1;
-            this.w$src$V$1kb9hyx();
+            Minecraft.gameSettings().I(this.savedPerspective);
+            this.savedPerspective = -1;
+            this.restorePlayerView();
         }
     }
 
     @EventHandler
     public void h(EventPostEntityRendererMouseUpdate eventPostEntityRendererMouseUpdate) {
-        if (!this.L) {
+        if (!this.enabled) {
             return;
         }
-        this.w$src$V$1kb9hyx();
+        this.restorePlayerView();
     }
 
     public static boolean z() {
-        return o;
+        return active;
     }
 
-    private void lambda$executeBind$0() {
-        boolean bl = this.L = !this.L;
-        if (!this.L) {
-            o = false;
-            if (this.k == -1) {
+    private void toggleFreelook() {
+        boolean bl = this.enabled = !this.enabled;
+        if (!this.enabled) {
+            active = false;
+            if (this.savedPerspective == -1) {
                 return;
             }
-            Minecraft.gameSettings().I(this.k);
-            this.k = -1;
-            this.w$src$V$1kb9hyx();
+            Minecraft.gameSettings().I(this.savedPerspective);
+            this.savedPerspective = -1;
+            this.restorePlayerView();
         }
     }
 
     static {
-        o = false;
+        active = false;
     }
 
-    private void w$src$V$1kb9hyx() {
+    private void restorePlayerView() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull() || Minecraft.theWorld().isNull()) {
             return;
         }
-        entityPlayerSP.H(c);
-        entityPlayerSP.D(c);
-        entityPlayerSP.z(c);
-        entityPlayerSP.o(c);
-        entityPlayerSP.C(K);
-        entityPlayerSP.l(K);
+        entityPlayerSP.H(savedPitch);
+        entityPlayerSP.D(savedPitch);
+        entityPlayerSP.z(savedPitch);
+        entityPlayerSP.o(savedPitch);
+        entityPlayerSP.C(savedYaw);
+        entityPlayerSP.l(savedYaw);
     }
 
     public void G(float f, float f2, float f3, float f4) {
-        c = f;
-        K = f2;
+        savedPitch = f;
+        savedYaw = f2;
     }
 
     public static float w$src$F$1kb9hl5() {
-        return H;
+        return renderPitch;
     }
 
-    private void u$src$V$1ka5ws7() {
-        if (!this.L) {
+    private void applyWorldRotation() {
+        if (!this.enabled) {
             return;
         }
         if (RotationManager.b.u() && Vape.INSTANCE.getClientSettings().c.L().booleanValue()) {
             return;
         }
-        this.w$src$V$1kb9hyx();
+        this.restorePlayerView();
     }
 
     @EventHandler(A=EventPriority.LOWEST)
     public void w(EventRenderPlayerPre eventRenderPlayerPre) {
-        this.u$src$V$1ka5ws7();
+        this.applyWorldRotation();
     }
 
-    private void i() {
+    private void applyCameraRotation() {
         if (SharedModuleControlClaims.p.I()) {
             return;
         }
-        this.U.H(H);
-        this.U.D(H);
-        this.U.C(j);
-        this.U.l(j);
+        this.renderPlayer.H(renderPitch);
+        this.renderPlayer.D(renderPitch);
+        this.renderPlayer.C(renderYaw);
+        this.renderPlayer.l(renderYaw);
     }
 
     public static float L$src$F$1jnmc2m() {
-        return c;
+        return savedPitch;
     }
 
     @EventHandler(A=EventPriority.LOWEST)
     public void d(EventPostRenderWorldPass eventPostRenderWorldPass) {
-        this.M$src$V$1jo651r();
+        this.applyRenderRotation();
     }
 
     public FreeLookHudModule() {
         super("Freelook", HudModuleGroup.T, "freelook2");
-        this.oN = BooleanValue.create(this, "Use Custom Sensitivity", false, "Enable to set a separate sensitivity from Minecraft using a slider");
-        this.O = NumberValue.create(this, "Sensitivity", "#.#", "", 0.001, 0.5, 1.0);
-        this.s = new ModeOption("3rd Person");
-        this.P = new ModeOption("1st Person");
-        this.p = ModeValue.create((Object)this, "Perspective", this.s, this.s, this.P);
-        this.os = new ModeOption("Forward");
-        this.oQ = new ModeOption("Backward");
-        this.oO = ModeValue.create((Object)this, "Starting Position", this.os, this.os, this.oQ);
+        this.customSensitivity = BooleanValue.create(this, "Use Custom Sensitivity", false, "Enable to set a separate sensitivity from Minecraft using a slider");
+        this.sensitivity = NumberValue.create(this, "Sensitivity", "#.#", "", 0.001, 0.5, 1.0);
+        this.thirdPersonMode = new ModeOption("3rd Person");
+        this.firstPersonMode = new ModeOption("1st Person");
+        this.p = ModeValue.create((Object)this, "Perspective", this.thirdPersonMode, this.thirdPersonMode, this.firstPersonMode);
+        this.forwardMode = new ModeOption("Forward");
+        this.backwardMode = new ModeOption("Backward");
+        this.oO = ModeValue.create((Object)this, "Starting Position", this.forwardMode, this.forwardMode, this.backwardMode);
         this.setSuffix("Freely rotates your perspective");
         this.q$src$V$1apmftw(true);
-        this.addValue(this.t, this.oO, this.oN, this.O);
-        this.oN.K(this.O);
+        this.addValue(this.t, this.oO, this.customSensitivity, this.sensitivity);
+        this.customSensitivity.K(this.sensitivity);
     }
 
     public static float U() {
-        return K;
+        return savedYaw;
     }
 
-    private void J$src$V$1jmir9o() {
+    private void updateMouseDelta() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            this.J = this.r - Minecraft.s().R();
-            this.b = this.v - Minecraft.s().b();
-            this.r = Minecraft.s().R();
-            this.v = Minecraft.s().b();
+            this.mouseDX = this.mouseLastX - Minecraft.s().R();
+            this.mouseDY = this.mouseLastY - Minecraft.s().b();
+            this.mouseLastX = Minecraft.s().R();
+            this.mouseLastY = Minecraft.s().b();
             return;
         }
-        this.J = -Minecraft.s().d();
-        this.b = Minecraft.s().z();
+        this.mouseDX = -Minecraft.s().d();
+        this.mouseDY = Minecraft.s().z();
     }
 
     @EventHandler
     public void u(EventPreRenderTick eventPreRenderTick) {
         int n;
-        this.U = eventPreRenderTick.getThePlayer();
-        if (!this.L) {
+        this.renderPlayer = eventPreRenderTick.getThePlayer();
+        if (!this.enabled) {
             return;
         }
-        if (!o) {
-            oh = this.U.V();
-            o4 = this.U.J();
-            Y = this.U.D();
-            oR = this.U.j();
-            this.k = Minecraft.gameSettings().x();
-            A = ((ModeSelection)this.oO.K()).equals(this.os) ? 0.0f : 180.0f;
-            S = 0.0f;
-            this.J = 0.0;
-            this.b = 0.0;
-            H = o4;
-            j = oh;
-            K = oh;
-            c = o4;
-            o = true;
+        if (!active) {
+            originalYaw = this.renderPlayer.V();
+            originalPitch = this.renderPlayer.J();
+            originalPrevYaw = this.renderPlayer.D();
+            originalPrevPitch = this.renderPlayer.j();
+            this.savedPerspective = Minecraft.gameSettings().x();
+            yawOffset = ((ModeSelection)this.oO.K()).equals(this.forwardMode) ? 0.0f : 180.0f;
+            pitchOffset = 0.0f;
+            this.mouseDX = 0.0;
+            this.mouseDY = 0.0;
+            renderPitch = originalPitch;
+            renderYaw = originalYaw;
+            savedYaw = originalYaw;
+            savedPitch = originalPitch;
+            active = true;
             return;
         }
-        int n2 = n = ((ModeSelection)this.p.K()).equals(this.P) ? 0 : 1;
+        int n2 = n = ((ModeSelection)this.p.K()).equals(this.firstPersonMode) ? 0 : 1;
         if (Minecraft.gameSettings().x() != n) {
             Minecraft.gameSettings().I(n);
         }
         if (Minecraft.currentScreen().isNotNull()) {
-            A = 0.0f;
-            S = 0.0f;
-            this.J = this.b = (double)0.0f;
+            yawOffset = 0.0f;
+            pitchOffset = 0.0f;
+            this.mouseDX = this.mouseDY = (double)0.0f;
         }
-        this.J$src$V$1jmir9o();
-        double d = this.J * this.c$src$D$1k09lo7() * 0.15;
-        double d2 = this.b * this.c$src$D$1k09lo7() * 0.15;
-        H = (float)(d - (double)A + (double)o4);
-        j = (float)(d2 - (double)S + (double)oh);
-        j = MathUtil.clamp(j, -90.0f, 90.0f);
-        A = (float)(d + (double)A);
-        S = (float)(d2 + (double)S);
-        S = MathUtil.clamp(S, -(90.0f - oh), 90.0f + oh);
+        this.updateMouseDelta();
+        double d = this.mouseDX * this.getSensitivity() * 0.15;
+        double d2 = this.mouseDY * this.getSensitivity() * 0.15;
+        renderPitch = (float)(d - (double)yawOffset + (double)originalPitch);
+        renderYaw = (float)(d2 - (double)pitchOffset + (double)originalYaw);
+        renderYaw = MathUtil.clamp(renderYaw, -90.0f, 90.0f);
+        yawOffset = (float)(d + (double)yawOffset);
+        pitchOffset = (float)(d2 + (double)pitchOffset);
+        pitchOffset = MathUtil.clamp(pitchOffset, -(90.0f - originalYaw), 90.0f + originalYaw);
     }
 }
 

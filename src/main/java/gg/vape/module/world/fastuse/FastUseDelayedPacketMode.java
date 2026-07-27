@@ -16,19 +16,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class FastUseDelayedPacketMode
 extends SubModule<FastUseModule> {
-    private final Queue<TimedPacketDispatchTask> C = new ConcurrentLinkedQueue<TimedPacketDispatchTask>();
-    private boolean c = false;
+    private final Queue<TimedPacketDispatchTask> pendingPackets = new ConcurrentLinkedQueue<TimedPacketDispatchTask>();
+    private boolean flushing = false;
 
     @Override
     public void g() {
-        this.c = true;
-        this.f(true);
+        this.flushing = true;
+        this.flush(true);
     }
 
-    private void f(boolean bl) {
+    private void flush(boolean force) {
         TimedPacketDispatchTask timedPacketDispatchTask;
-        while (this.C.peek() != null && (timedPacketDispatchTask = this.C.peek()) != null && (timedPacketDispatchTask.j(((Double)((FastUseModule)this.getParent()).j.K()).longValue()) || bl)) {
-            timedPacketDispatchTask = this.C.poll();
+        while (this.pendingPackets.peek() != null && (timedPacketDispatchTask = this.pendingPackets.peek()) != null && (timedPacketDispatchTask.j(((Double)((FastUseModule)this.getParent()).j.K()).longValue()) || force)) {
+            timedPacketDispatchTask = this.pendingPackets.poll();
             timedPacketDispatchTask.z().t();
         }
     }
@@ -49,27 +49,27 @@ extends SubModule<FastUseModule> {
 
     @Override
     public void onDisable() {
-        this.c = false;
+        this.flushing = false;
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
     public void onPacketSend(EventPacketSend eventPacketSend) {
         if (Minecraft.thePlayer().isNull() || Minecraft.theWorld().isNull()) {
-            this.f(false);
+            this.flush(false);
             return;
         }
         if (eventPacketSend.isCanceled()) {
-            this.f(true);
+            this.flush(true);
             return;
         }
-        if (this.c) {
-            while (this.c) {
+        if (this.flushing) {
+            while (this.flushing) {
                 SleepUtil.sleep(50L);
             }
             return;
         }
-        this.f(false);
-        this.C.add(new TimedPacketDispatchTask(new PacketDispatchTask(eventPacketSend.getPacket(), true, eventPacketSend.getNetworkManager()), null));
+        this.flush(false);
+        this.pendingPackets.add(new TimedPacketDispatchTask(new PacketDispatchTask(eventPacketSend.getPacket(), true, eventPacketSend.getNetworkManager()), null));
         eventPacketSend.setCancelled(true);
     }
 }

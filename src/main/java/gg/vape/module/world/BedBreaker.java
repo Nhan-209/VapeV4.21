@@ -38,55 +38,55 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BedBreaker
 extends Mod {
-    private World K;
-    private BedTargetRenderState t;
-    private static final long k = -5914606721811702784L;
-    private List<BedTargetRenderPosition> C = new CopyOnWriteArrayList<BedTargetRenderPosition>();
-    private HashMap<BedTargetRenderPosition, BedTargetRenderState> D = new HashMap();
+    private World lastWorld;
+    private BedTargetRenderState selectedTarget;
+    private static final long MODULE_ID = -5914606721811702784L;
+    private List<BedTargetRenderPosition> targets = new CopyOnWriteArrayList<BedTargetRenderPosition>();
+    private HashMap<BedTargetRenderPosition, BedTargetRenderState> renderStates = new HashMap();
 
     @Override
     public void q() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         WorldClient worldClient = Minecraft.theWorld();
-        if (worldClient.isNull() || !worldClient.equals(this.K)) {
-            this.C.clear();
+        if (worldClient.isNull() || !worldClient.equals(this.lastWorld)) {
+            this.targets.clear();
         }
-        int n = 100;
-        for (int i = -n; i < n; ++i) {
-            for (int j = -n; j < n; ++j) {
-                int n2 = 0;
-                while (n2 != -1) {
-                    n2 = n2 == 0 ? 1 : -1;
-                    for (int k = 0; k < 20; ++k) {
-                        for (BedTargetRenderPosition bedTargetRenderPosition : this.C) {
-                            if (!this.D.containsKey(bedTargetRenderPosition)) continue;
-                            BedTargetRenderState.H(this.D.get(bedTargetRenderPosition));
+        int radius = 100;
+        for (int dx = -radius; dx < radius; ++dx) {
+            for (int dz = -radius; dz < radius; ++dz) {
+                int direction = 0;
+                while (direction != -1) {
+                    direction = direction == 0 ? 1 : -1;
+                    for (int step = 0; step < 20; ++step) {
+                        for (BedTargetRenderPosition bedTargetRenderPosition : this.targets) {
+                            if (!this.renderStates.containsKey(bedTargetRenderPosition)) continue;
+                            BedTargetRenderState.H(this.renderStates.get(bedTargetRenderPosition));
                         }
                         if (entityPlayerSP.isNull() || worldClient.isNull()) {
                             return;
                         }
-                        int n3 = k * n2;
-                        int n4 = (int)entityPlayerSP.z() + i;
-                        int n5 = (int)entityPlayerSP.N() + n3;
-                        int n6 = (int)entityPlayerSP.h() + j;
-                        Block block = worldClient.getBlockByPos(n4, n5, n6);
-                        int n7 = Block.R(block);
-                        String string = block.U();
-                        if (n7 != 26 && (string == null || !string.matches("block.minecraft.(.+_bed)"))) continue;
-                        BedTargetRenderPosition bedTargetRenderPosition = new BedTargetRenderPosition(n4, n5, n6);
+                        int dy = step * direction;
+                        int blockX = (int)entityPlayerSP.z() + dx;
+                        int blockY = (int)entityPlayerSP.N() + dy;
+                        int blockZ = (int)entityPlayerSP.h() + dz;
+                        Block block = worldClient.getBlockByPos(blockX, blockY, blockZ);
+                        int blockId = Block.R(block);
+                        String blockName = block.U();
+                        if (blockId != 26 && (blockName == null || !blockName.matches("block.minecraft.(.+_bed)"))) continue;
+                        BedTargetRenderPosition bedTargetRenderPosition = new BedTargetRenderPosition(blockX, blockY, blockZ);
                         BlockBed blockBed = new BlockBed(block);
-                        boolean bl = blockBed.f(worldClient, n4, n5, n6);
-                        if (this.C.contains(bedTargetRenderPosition) || bl) continue;
-                        this.C.add(bedTargetRenderPosition);
+                        boolean isHead = blockBed.f(worldClient, blockX, blockY, blockZ);
+                        if (this.targets.contains(bedTargetRenderPosition) || isHead) continue;
+                        this.targets.add(bedTargetRenderPosition);
                     }
                 }
             }
         }
-        this.K = worldClient;
+        this.lastWorld = worldClient;
     }
 
     public BedBreaker() {
-        super("BedBreaker", (int)k, Category.m, "Allows you to break beds through walls\n\u00a7cWarning: This behavior is normally impossible and may be detected on servers");
+        super("BedBreaker", (int)MODULE_ID, Category.m, "Allows you to break beds through walls\n\u00a7cWarning: This behavior is normally impossible and may be detected on servers");
     }
 
     @EventHandler
@@ -94,21 +94,21 @@ extends Mod {
         WorldClient worldClient = Minecraft.theWorld();
         ArrayList<BedTargetRenderState> arrayList = new ArrayList<BedTargetRenderState>();
         Vec3 vec3 = Minecraft.F().O(1.0f);
-        for (BedTargetRenderPosition bedTargetRenderPosition : this.C) {
-            boolean bl;
-            int n;
-            int n2;
-            int n3 = bedTargetRenderPosition.N();
-            Block block = worldClient.getBlockByPos(n3, n2 = bedTargetRenderPosition.h(), n = bedTargetRenderPosition.D$src$I$nuyd86());
-            int n4 = Block.R(block);
+        for (BedTargetRenderPosition bedTargetRenderPosition : this.targets) {
+            boolean isHead;
+            int blockZ;
+            int blockY;
+            int blockX = bedTargetRenderPosition.N();
+            Block block = worldClient.getBlockByPos(blockX, blockY = bedTargetRenderPosition.h(), blockZ = bedTargetRenderPosition.D$src$I$nuyd86());
+            int blockId = Block.R(block);
             BlockBed blockBed = new BlockBed(block);
-            if (n4 != 26 && !block.U().matches("block.minecraft.(.+_bed)") || (bl = blockBed.f(worldClient, n3, n2, n))) continue;
+            if (blockId != 26 && !block.U().matches("block.minecraft.(.+_bed)") || (isHead = blockBed.f(worldClient, blockX, blockY, blockZ))) continue;
             BedTargetRenderState renderState;
-            if (this.D.containsKey(bedTargetRenderPosition)) {
-                renderState = this.D.get(bedTargetRenderPosition);
+            if (this.renderStates.containsKey(bedTargetRenderPosition)) {
+                renderState = this.renderStates.get(bedTargetRenderPosition);
             } else {
                 renderState = new BedTargetRenderState(bedTargetRenderPosition);
-                this.D.put(bedTargetRenderPosition, renderState);
+                this.renderStates.put(bedTargetRenderPosition, renderState);
             }
             renderState.h();
             arrayList.add(renderState);
@@ -118,17 +118,17 @@ extends Mod {
         RenderUtils.g();
         OpenGlBackendHolder.d.m();
         OpenGlBackendHolder.d.H(0.5f, 0.5f, 0.5f);
-        double d = 20.0;
-        RectData rectData = new RectData((double)(Minecraft.J() / 2) - d / 2.0, (double)(Minecraft.h() / 2) - d / 2.0, d, d);
+        double reticleSize = 20.0;
+        RectData rectData = new RectData((double)(Minecraft.J() / 2) - reticleSize / 2.0, (double)(Minecraft.h() / 2) - reticleSize / 2.0, reticleSize, reticleSize);
         for (BedTargetRenderState bedTargetRenderState : arrayList) {
-            bedTargetRenderState.j(rectData, this.t == bedTargetRenderState, Minecraft.playerController().c());
+            bedTargetRenderState.j(rectData, this.selectedTarget == bedTargetRenderState, Minecraft.playerController().c());
         }
         BedTargetRenderState selectedState = null;
         for (BedTargetRenderState candidateState : arrayList) {
             if (!BedTargetRenderState.f(candidateState)) continue;
             selectedState = candidateState;
         }
-        this.u(selectedState);
+        this.setSelectedTarget(selectedState);
         OpenGlBackendHolder.d.F();
         RenderUtils.f();
         GuiRenderPrimitives.D();
@@ -136,41 +136,41 @@ extends Mod {
     }
 
     @EventHandler
-    public void s(EventBedBreakerUpdate eventBedBreakerUpdate) {
-        if (this.t == null) {
+    public void onBedBreakerUpdate(EventBedBreakerUpdate eventBedBreakerUpdate) {
+        if (this.selectedTarget == null) {
             SharedModuleControlClaims.a.Q();
             return;
         }
-        int n = this.t.q().N();
-        int n2 = this.t.q().h();
-        int n3 = this.t.q().D$src$I$nuyd86();
-        BlockPos blockPos = BlockPos.create(n, n2, n3);
-        AxisAlignedBB axisAlignedBB = AxisAlignedBB.create(n, n2, n3, n + 1, n2 + 1, n3 + 1);
+        int blockX = this.selectedTarget.q().N();
+        int blockY = this.selectedTarget.q().h();
+        int blockZ = this.selectedTarget.q().D$src$I$nuyd86();
+        BlockPos blockPos = BlockPos.create(blockX, blockY, blockZ);
+        AxisAlignedBB axisAlignedBB = AxisAlignedBB.create(blockX, blockY, blockZ, blockX + 1, blockY + 1, blockZ + 1);
         EnumFacing enumFacing = null;
         EntityOtherPlayerMP entityOtherPlayerMP = PlayerSimulationUtil.y();
-        if (entityOtherPlayerMP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY() > (double)n2) {
+        if (entityOtherPlayerMP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY() > (double)blockY) {
             enumFacing = EnumFacing.T(1);
         } else {
-            entityOtherPlayerMP.u((double)n2 + 0.5 + MathUtil.randomRange(new Random(), -0.2, 0.2));
+            entityOtherPlayerMP.u((double)blockY + 0.5 + MathUtil.randomRange(new Random(), -0.2, 0.2));
         }
         Vec3d vec3d = RotationUtil.T(entityOtherPlayerMP, axisAlignedBB, 0.0, 0.0, 0.0);
         if (enumFacing == null) {
-            double d = 10.0;
+            double bestDist = 10.0;
             for (EnumFacing enumFacing2 : EnumFacing.t()) {
                 BlockPos blockPos2 = blockPos.offset(enumFacing2);
                 if (enumFacing2.Y() <= 1) continue;
-                double d2 = (double)blockPos2.P() + 0.5 - vec3d.Y();
-                double d3 = (double)blockPos2.d() + 0.5 - vec3d.o();
-                double d4 = Math.abs(d2) + Math.abs(d3);
-                if (!(d4 < d)) continue;
-                d = d4;
+                double diffX = (double)blockPos2.P() + 0.5 - vec3d.Y();
+                double diffZ = (double)blockPos2.d() + 0.5 - vec3d.o();
+                double dist = Math.abs(diffX) + Math.abs(diffZ);
+                if (!(dist < bestDist)) continue;
+                bestDist = dist;
                 enumFacing = enumFacing2;
             }
         }
-        this.t.D(vec3d);
+        this.selectedTarget.D(vec3d);
         Vec3 vec3 = Minecraft.F().O(1.0f);
-        double d = vec3.distanceTo(vec3d.n());
-        if (d < 4.5) {
+        double eyeDist = vec3.distanceTo(vec3d.n());
+        if (eyeDist < 4.5) {
             RayTraceResult rayTraceResult = RayTraceResult.create(RayTraceResult_type.block(), vec3d.n(), enumFacing, blockPos);
             Minecraft.O(rayTraceResult);
             SharedModuleControlClaims.a.M(true);
@@ -183,8 +183,8 @@ extends Mod {
         return obfuscatedRuntimeException;
     }
 
-    public void u(BedTargetRenderState bedTargetRenderState) {
-        this.t = bedTargetRenderState;
+    public void setSelectedTarget(BedTargetRenderState bedTargetRenderState) {
+        this.selectedTarget = bedTargetRenderState;
     }
 
     @Override

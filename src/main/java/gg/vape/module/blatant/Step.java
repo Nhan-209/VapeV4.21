@@ -16,9 +16,9 @@ import java.awt.Color;
 
 public class Step
 extends Mod {
-    private static final String b = "Step";
+    private static final String NAME = "Step";
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -41,7 +41,7 @@ extends Mod {
     }
 
     public Step() {
-        super(b, new Color(42, 175, 224).getRGB(), Category.w);
+        super(NAME, new Color(42, 175, 224).getRGB(), Category.w);
     }
 
     @Override

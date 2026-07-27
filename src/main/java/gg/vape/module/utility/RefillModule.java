@@ -16,18 +16,18 @@ import org.jetbrains.annotations.Nullable;
 public class RefillModule
 extends Mod
 implements RefillInventoryState {
-    private static final String k = "Test Module";
+    private static final String MODULE_NAME = "Test Module";
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public RefillModule() {
-        super(k, -1, Category.Y);
+        super(MODULE_NAME, -1, Category.Y);
     }
 
     @Nullable

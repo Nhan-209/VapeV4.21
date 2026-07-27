@@ -31,23 +31,23 @@ import java.util.Arrays;
 
 public class LeftClicker
 extends ClickerMod {
-    private boolean C = false;
-    private final BooleanValue k;
-    private final ModeOption D;
-    private final ModeOption j;
-    private final LimitValue P;
-    private final ModeOption v;
-    private final RandomValue V;
-    private final BooleanValue a;
-    private final BooleanValue t;
-    private final LimitValue Y;
-    private final BooleanValue A;
-    private final BooleanValue H;
-    private final BooleanValue r = BooleanValue.create(this, "Hold to click", true);
-    private final TimerUtil p;
-    private boolean K = false;
-    private final RandomValue c;
-    private final ModeValue U;
+    private boolean wasClicking = false;
+    private final BooleanValue jitter;
+    private final ModeOption normalMode;
+    private final ModeOption extraPlusMode;
+    private final LimitValue blockBreakItems;
+    private final ModeOption extraMode;
+    private final RandomValue cps;
+    private final BooleanValue breakBlocks;
+    private final BooleanValue triggerMode;
+    private final LimitValue itemWhitelist;
+    private final BooleanValue breakBlocksWhitelist;
+    private final BooleanValue limitItems;
+    private final BooleanValue holdToClick = BooleanValue.create(this, "Hold to click", true);
+    private final TimerUtil breakBlockTimer;
+    private boolean blocked = false;
+    private final RandomValue breakBlocksDelay;
+    private final ModeValue randomization;
 
     @Override
     public boolean K(ClickEngine clickEngine, EntityPlayerSP entityPlayerSP) {
@@ -68,10 +68,10 @@ extends ClickerMod {
 
     @Override
     public boolean z() {
-        return this.t.L();
+        return this.triggerMode.L();
     }
 
-    private boolean v() {
+    private boolean computeBlocked() {
         if (!ClientSettings.fW.v()) {
             return true;
         }
@@ -85,7 +85,7 @@ extends ClickerMod {
         if (entityPlayerSP.isNull()) {
             return true;
         }
-        if (!this.u(entityPlayerSP)) {
+        if (!this.shouldAllowClick(entityPlayerSP)) {
             if (gg.vape.config.ClientSettings.M()) {
                 if (!Minecraft.gameSettings().F().isKeyDown()) {
                     // empty if block
@@ -106,22 +106,22 @@ extends ClickerMod {
         return wTap.r$src$Z$14eylz9() && wTap.o$src$Z$1nxkzhj();
     }
 
-    public boolean u(EntityPlayerSP entityPlayerSP) {
+    public boolean shouldAllowClick(EntityPlayerSP entityPlayerSP) {
         if (!gg.vape.config.ClientSettings.M()) {
-            this.p.reset();
+            this.breakBlockTimer.reset();
         }
-        if (this.a.L().booleanValue() && this.p.hasTimeElapsed((long)this.c.B())) {
+        if (this.breakBlocks.L().booleanValue() && this.breakBlockTimer.hasTimeElapsed((long)this.breakBlocksDelay.B())) {
             if (Minecraft.currentScreen().isInstance(MappedClasses.Ft)) {
                 return true;
             }
-            if (this.A.L().booleanValue() && !this.P.A(entityPlayerSP.getHeldItemHand())) {
+            if (this.breakBlocksWhitelist.L().booleanValue() && !this.blockBreakItems.A(entityPlayerSP.getHeldItemHand())) {
                 return true;
             }
             RayTraceResult rayTraceResult = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
             if (rayTraceResult.isNotNull() && rayTraceResult.getTypeOfHit().equals(RayTraceResult_type.block())) {
                 return false;
             }
-            this.p.reset();
+            this.breakBlockTimer.reset();
         }
         return true;
     }
@@ -132,50 +132,50 @@ extends ClickerMod {
 
     @Override
     public boolean C() {
-        return this.K;
+        return this.blocked;
     }
 
     @EventHandler
     public void onTick$src$V$5jszx7(EventPreTick eventPreTick) {
-        this.K = this.v();
-        if (this.K && InputEventDispatcher.getInstance().getFocusState().isFocused() && ClientSettings.fW.P && Minecraft.currentScreen().isNull() && this.s.G() && !Minecraft.gameSettings().F().isKeyDown() && !this.C) {
-            this.C = true;
+        this.blocked = this.computeBlocked();
+        if (this.blocked && InputEventDispatcher.getInstance().getFocusState().isFocused() && ClientSettings.fW.P && Minecraft.currentScreen().isNull() && this.s.G() && !Minecraft.gameSettings().F().isKeyDown() && !this.wasClicking) {
+            this.wasClicking = true;
             this.s.g();
         } else {
-            this.C = false;
+            this.wasClicking = false;
         }
     }
 
     @Override
     public String r() {
-        return this.V.c() + "cps";
+        return this.cps.c() + "cps";
     }
 
     public LeftClicker() {
         super("AutoClicker");
-        this.D = new ModeOption("Normal");
-        this.v = new ModeOption("Extra");
-        this.j = new ModeOption("Extra+");
-        this.U = ModeValue.create((Object)this, "Randomization", this.v, this.D, this.v, this.j);
-        this.k = BooleanValue.create(this, "Jitter", false);
-        this.V = RandomValue.create(this, "CPS", "#.#", "", 1.0, 6.0, 13.0, 20.0);
-        this.H = BooleanValue.create(this, "Limit items", false);
-        this.Y = LimitValue.N(this, "autoclicker-allowed-items", "Item whitelist", LimitValue.r, new ItemLimitData("swords"));
-        this.t = BooleanValue.create(this, "Trigger mode", false, "Only clicks while hovering an entity");
-        this.a = BooleanValue.create(this, "Break blocks", false);
-        this.c = RandomValue.create(this, "Break blocks delay", "#", "", 0.0, 0.0, 10.0, 2000.0);
-        this.A = BooleanValue.create(this, "Break blocks whitelist", false);
-        this.P = LimitValue.n(this, "autoclicker-blockbreak-items", "Items", LimitValue.r, Arrays.asList(new ItemLimitData("pickaxes"), new ItemLimitData("shovels")));
-        this.p = new TimerUtil();
-        this.H.K(this.Y);
-        this.H.l(this.Y);
-        this.a.K(this.c, this.A);
-        this.A.l(this.P);
-        this.A.K(this.P);
-        this.addValue(this.r, this.t, this.a, this.c, this.A, this.P, this.V, this.U, this.k, this.H, this.Y);
-        ClickEngine clickEngine = new ClickEngine(ClickButton.LEFT, this.V, this.H, this.Y, this.r, this.U, this.k);
+        this.normalMode = new ModeOption("Normal");
+        this.extraMode = new ModeOption("Extra");
+        this.extraPlusMode = new ModeOption("Extra+");
+        this.randomization = ModeValue.create((Object)this, "Randomization", this.extraMode, this.normalMode, this.extraMode, this.extraPlusMode);
+        this.jitter = BooleanValue.create(this, "Jitter", false);
+        this.cps = RandomValue.create(this, "CPS", "#.#", "", 1.0, 6.0, 13.0, 20.0);
+        this.limitItems = BooleanValue.create(this, "Limit items", false);
+        this.itemWhitelist = LimitValue.N(this, "autoclicker-allowed-items", "Item whitelist", LimitValue.r, new ItemLimitData("swords"));
+        this.triggerMode = BooleanValue.create(this, "Trigger mode", false, "Only clicks while hovering an entity");
+        this.breakBlocks = BooleanValue.create(this, "Break blocks", false);
+        this.breakBlocksDelay = RandomValue.create(this, "Break blocks delay", "#", "", 0.0, 0.0, 10.0, 2000.0);
+        this.breakBlocksWhitelist = BooleanValue.create(this, "Break blocks whitelist", false);
+        this.blockBreakItems = LimitValue.n(this, "autoclicker-blockbreak-items", "Items", LimitValue.r, Arrays.asList(new ItemLimitData("pickaxes"), new ItemLimitData("shovels")));
+        this.breakBlockTimer = new TimerUtil();
+        this.limitItems.K(this.itemWhitelist);
+        this.limitItems.l(this.itemWhitelist);
+        this.breakBlocks.K(this.breakBlocksDelay, this.breakBlocksWhitelist);
+        this.breakBlocksWhitelist.l(this.blockBreakItems);
+        this.breakBlocksWhitelist.K(this.blockBreakItems);
+        this.addValue(this.holdToClick, this.triggerMode, this.breakBlocks, this.breakBlocksDelay, this.breakBlocksWhitelist, this.blockBreakItems, this.cps, this.randomization, this.jitter, this.limitItems, this.itemWhitelist);
+        ClickEngine clickEngine = new ClickEngine(ClickButton.LEFT, this.cps, this.limitItems, this.itemWhitelist, this.holdToClick, this.randomization, this.jitter);
         this.F(clickEngine);
-        this.V.V(0);
+        this.cps.V(0);
     }
 }
 

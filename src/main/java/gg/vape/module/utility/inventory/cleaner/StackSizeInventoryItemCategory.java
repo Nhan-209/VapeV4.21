@@ -9,8 +9,8 @@ import gg.vape.wrapper.impl.ItemStack;
 
 public class StackSizeInventoryItemCategory
 extends AbstractInventoryItemCategory {
-    private final ComparisonOperator H;
-    private final int M;
+    private final ComparisonOperator operator;
+    private final int stackSize;
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
         return o8_02;
@@ -22,13 +22,13 @@ extends AbstractInventoryItemCategory {
         if (itemStack == null) {
             return false;
         }
-        return this.H.p(itemStack.P(), this.M);
+        return this.operator.p(itemStack.P(), this.stackSize);
     }
 
     StackSizeInventoryItemCategory(StackSizeInventoryItemCategoryBuilder stackSizeInventoryItemCategoryBuilder) {
         super(stackSizeInventoryItemCategoryBuilder);
-        this.M = stackSizeInventoryItemCategoryBuilder.U();
-        this.H = stackSizeInventoryItemCategoryBuilder.f();
+        this.stackSize = stackSizeInventoryItemCategoryBuilder.U();
+        this.operator = stackSizeInventoryItemCategoryBuilder.f();
     }
 }
 

@@ -25,14 +25,14 @@ implements BlockPathSearchStrategy<PlacementTarget> {
     final int W;
     final int M;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
+    private static ObfuscatedRuntimeException unwrapException(ObfuscatedRuntimeException exception) {
+        return exception;
     }
 
     @Override
     public boolean B(BlockData blockData) {
-        Block px_12 = this.V.getBlockByPos(blockData.D(), blockData.B(), blockData.G());
-        return BlockUtil.u(px_12);
+        Block block = this.V.getBlockByPos(blockData.D(), blockData.B(), blockData.G());
+        return BlockUtil.u(block);
     }
 
     @Override
@@ -47,18 +47,18 @@ implements BlockPathSearchStrategy<PlacementTarget> {
 
     @Override
     public boolean V(BlockData blockData) {
-        boolean bl = ClutchPlacementPathUtils.V(this.V, this.i, blockData) && !BlockIn.q(this.h).Y(blockData);
-        return bl;
+        boolean canPlace = ClutchPlacementPathUtils.V(this.V, this.i, blockData) && !BlockIn.q(this.h).Y(blockData);
+        return canPlace;
     }
 
-    public BlockInPlacementSearchStrategy(BlockIn cB, int n, int n2, int n3, World world, EntityPlayerSP xH2, BlockPlacementPathSegment qo_22, ArrayList arrayList) {
-        this.h = cB;
+    public BlockInPlacementSearchStrategy(BlockIn blockIn, int n, int n2, int n3, World world, EntityPlayerSP player, BlockPlacementPathSegment pathSegment, ArrayList arrayList) {
+        this.h = blockIn;
         this.M = n;
         this.W = n2;
         this.S = n3;
         this.V = world;
-        this.i = xH2;
-        this.L = qo_22;
+        this.i = player;
+        this.L = pathSegment;
         this.u = arrayList;
     }
 }

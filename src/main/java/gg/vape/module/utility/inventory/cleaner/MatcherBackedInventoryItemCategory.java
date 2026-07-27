@@ -20,52 +20,52 @@ extends AbstractInventoryItemCategory {
             if (itemStack != null) {
                 Item item;
                 Item item2 = item = itemStack.getItem();
-                boolean bl = false;
+                boolean matches = false;
                 if (!this.i().isEmpty()) {
-                    if (this.i().contains(inventoryItemMatcher2) && !this.i().stream().noneMatch(inventoryItemMatcher -> MatcherBackedInventoryItemCategory.lambda$isAvailableToItem$0(itemStack, item2, inventoryItemMatcher))) {
-                        bl = true;
+                    if (this.i().contains(inventoryItemMatcher2) && !this.i().stream().noneMatch(inventoryItemMatcher -> MatcherBackedInventoryItemCategory.matchesItem(itemStack, item2, inventoryItemMatcher))) {
+                        matches = true;
                     }
                 } else {
-                    bl = true;
+                    matches = true;
                 }
-                return bl;
+                return matches;
             }
             Object var3_10 = var5_6 = null;
-            boolean bl = false;
+            boolean matches = false;
             if (!this.i().isEmpty()) {
                 if (this.i().contains(inventoryItemMatcher2)) {
-                    bl = true;
+                    matches = true;
                 }
             } else {
-                bl = true;
+                matches = true;
             }
-            return bl;
+            return matches;
         }
         ItemStack itemStack = itemFilterSelection.E();
         if (itemStack != null) {
             Item item;
             Item item3 = item = itemStack.getItem();
-            boolean bl = false;
+            boolean matches = false;
             if (!this.i().isEmpty()) {
-                if (!this.i().stream().noneMatch(inventoryItemMatcher -> MatcherBackedInventoryItemCategory.lambda$isAvailableToItem$0(itemStack, item3, inventoryItemMatcher))) {
-                    bl = true;
+                if (!this.i().stream().noneMatch(inventoryItemMatcher -> MatcherBackedInventoryItemCategory.matchesItem(itemStack, item3, inventoryItemMatcher))) {
+                    matches = true;
                 }
             } else {
-                bl = true;
+                matches = true;
             }
-            return bl;
+            return matches;
         }
         Object var3_12 = var5_8 = null;
-        boolean bl = false;
-        bl = !this.i().isEmpty() ? true : true;
-        return bl;
+        boolean matches = false;
+        matches = !this.i().isEmpty() ? true : true;
+        return matches;
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private static boolean lambda$isAvailableToItem$0(ItemStack itemStack, Item item, InventoryItemMatcher inventoryItemMatcher) {
+    private static boolean matchesItem(ItemStack itemStack, Item item, InventoryItemMatcher inventoryItemMatcher) {
         return inventoryItemMatcher.g(itemStack, item);
     }
 

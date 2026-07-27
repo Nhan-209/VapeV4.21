@@ -23,48 +23,48 @@ public class ProjectedEntityBounds {
         return obfuscatedRuntimeException;
     }
 
-    public ProjectedEntityBounds(double d, double d2, double d3, AxisAlignedBB axisAlignedBB, Entity entity, RenderEntityContext renderEntityContext, Color color) {
+    public ProjectedEntityBounds(double offsetX, double offsetY, double offsetZ, AxisAlignedBB axisAlignedBB, Entity entity, RenderEntityContext renderEntityContext, Color color) {
         this.y = entity;
         this.c = renderEntityContext;
         this.U = color;
-        double[] dArray = RenderUtil.W(d + axisAlignedBB.getMinX(), d2 + axisAlignedBB.getMinY(), d3 + axisAlignedBB.getMinZ());
-        double[] dArray2 = RenderUtil.W(d + axisAlignedBB.getMaxX(), d2 + axisAlignedBB.getMinY(), d3 + axisAlignedBB.getMinZ());
-        double[] dArray3 = RenderUtil.W(d + axisAlignedBB.getMaxX(), d2 + axisAlignedBB.getMinY(), d3 + axisAlignedBB.getMaxZ());
-        double[] dArray4 = RenderUtil.W(d + axisAlignedBB.getMinX(), d2 + axisAlignedBB.getMinY(), d3 + axisAlignedBB.getMaxZ());
-        double[] dArray5 = RenderUtil.W(d + axisAlignedBB.getMinX(), d2 + axisAlignedBB.getMaxY(), d3 + axisAlignedBB.getMinZ());
-        double[] dArray6 = RenderUtil.W(d + axisAlignedBB.getMaxX(), d2 + axisAlignedBB.getMaxY(), d3 + axisAlignedBB.getMinZ());
-        double[] dArray7 = RenderUtil.W(d + axisAlignedBB.getMaxX(), d2 + axisAlignedBB.getMaxY(), d3 + axisAlignedBB.getMaxZ());
-        double[] dArray8 = RenderUtil.W(d + axisAlignedBB.getMinX(), d2 + axisAlignedBB.getMaxY(), d3 + axisAlignedBB.getMaxZ());
-        boolean bl = this.L = dArray != null && dArray[2] >= 0.0 && dArray[2] < 1.0 && dArray2[2] >= 0.0 && dArray2[2] < 1.0 && dArray3[2] >= 0.0 && dArray3[2] < 1.0 && dArray4[2] >= 0.0 && dArray4[2] < 1.0 && dArray5[2] >= 0.0 && dArray5[2] < 1.0 && dArray6[2] >= 0.0 && dArray6[2] < 1.0 && dArray7[2] >= 0.0 && dArray7[2] < 1.0 && dArray8[2] >= 0.0 && dArray8[2] < 1.0;
+        double[] corner0 = RenderUtil.W(offsetX + axisAlignedBB.getMinX(), offsetY + axisAlignedBB.getMinY(), offsetZ + axisAlignedBB.getMinZ());
+        double[] corner1 = RenderUtil.W(offsetX + axisAlignedBB.getMaxX(), offsetY + axisAlignedBB.getMinY(), offsetZ + axisAlignedBB.getMinZ());
+        double[] corner2 = RenderUtil.W(offsetX + axisAlignedBB.getMaxX(), offsetY + axisAlignedBB.getMinY(), offsetZ + axisAlignedBB.getMaxZ());
+        double[] corner3 = RenderUtil.W(offsetX + axisAlignedBB.getMinX(), offsetY + axisAlignedBB.getMinY(), offsetZ + axisAlignedBB.getMaxZ());
+        double[] corner4 = RenderUtil.W(offsetX + axisAlignedBB.getMinX(), offsetY + axisAlignedBB.getMaxY(), offsetZ + axisAlignedBB.getMinZ());
+        double[] corner5 = RenderUtil.W(offsetX + axisAlignedBB.getMaxX(), offsetY + axisAlignedBB.getMaxY(), offsetZ + axisAlignedBB.getMinZ());
+        double[] corner6 = RenderUtil.W(offsetX + axisAlignedBB.getMaxX(), offsetY + axisAlignedBB.getMaxY(), offsetZ + axisAlignedBB.getMaxZ());
+        double[] corner7 = RenderUtil.W(offsetX + axisAlignedBB.getMinX(), offsetY + axisAlignedBB.getMaxY(), offsetZ + axisAlignedBB.getMaxZ());
+        boolean onScreen = this.L = corner0 != null && corner0[2] >= 0.0 && corner0[2] < 1.0 && corner1[2] >= 0.0 && corner1[2] < 1.0 && corner2[2] >= 0.0 && corner2[2] < 1.0 && corner3[2] >= 0.0 && corner3[2] < 1.0 && corner4[2] >= 0.0 && corner4[2] < 1.0 && corner5[2] >= 0.0 && corner5[2] < 1.0 && corner6[2] >= 0.0 && corner6[2] < 1.0 && corner7[2] >= 0.0 && corner7[2] < 1.0;
         if (!this.L) {
             return;
         }
-        double d4 = dArray[0];
-        double d5 = dArray[1];
-        double d6 = dArray8[0];
-        double d7 = dArray8[1];
-        double[] dArray9 = new double[]{dArray[0], dArray2[0], dArray3[0], dArray4[0], dArray5[0], dArray6[0], dArray7[0], dArray8[0]};
-        double[] dArray10 = new double[]{dArray[1], dArray2[1], dArray3[1], dArray4[1], dArray5[1], dArray6[1], dArray7[1], dArray8[1]};
-        for (double d8 : dArray9) {
-            if (!(d8 < d4)) continue;
-            d4 = d8;
+        double minX = corner0[0];
+        double minY = corner0[1];
+        double maxX = corner7[0];
+        double maxY = corner7[1];
+        double[] screenXs = new double[]{corner0[0], corner1[0], corner2[0], corner3[0], corner4[0], corner5[0], corner6[0], corner7[0]};
+        double[] screenYs = new double[]{corner0[1], corner1[1], corner2[1], corner3[1], corner4[1], corner5[1], corner6[1], corner7[1]};
+        for (double x : screenXs) {
+            if (!(x < minX)) continue;
+            minX = x;
         }
-        for (double d8 : dArray9) {
-            if (!(d8 > d6)) continue;
-            d6 = d8;
+        for (double x : screenXs) {
+            if (!(x > maxX)) continue;
+            maxX = x;
         }
-        for (double d8 : dArray10) {
-            if (!(d8 < d5)) continue;
-            d5 = d8;
+        for (double y : screenYs) {
+            if (!(y < minY)) continue;
+            minY = y;
         }
-        for (double d8 : dArray10) {
-            if (!(d8 > d7)) continue;
-            d7 = d8;
+        for (double y : screenYs) {
+            if (!(y > maxY)) continue;
+            maxY = y;
         }
-        this.r = d4;
-        this.I = d5;
-        this.V = d6;
-        this.g = d7;
+        this.r = minX;
+        this.I = minY;
+        this.V = maxX;
+        this.g = maxY;
     }
 }
 

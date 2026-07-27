@@ -6,17 +6,17 @@ import gg.vape.wrapper.impl.Vec3;
 
 public class AutoPearlPointRotationController
 extends PointRotationController {
-    final Float E;
-    final AutoPearl u;
+    final Float pitch;
+    final AutoPearl module;
 
-    public AutoPearlPointRotationController(AutoPearl autoPearl, Vec3 vec3, Float f) {
+    public AutoPearlPointRotationController(AutoPearl autoPearl, Vec3 vec3, Float pitch) {
         super(vec3);
-        this.u = autoPearl;
-        this.E = f;
+        this.module = autoPearl;
+        this.pitch = pitch;
     }
 
     @Override
-    public void g(float f, float f2) {
-        super.g(f, this.E.floatValue());
+    public void g(float yaw, float pitch) {
+        super.g(yaw, this.pitch.floatValue());
     }
 }

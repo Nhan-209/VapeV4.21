@@ -5,14 +5,14 @@ public enum HotbarSlotResolutionStatus {
     SUCCESS,
     FAIL;
 
-    private static final HotbarSlotResolutionStatus[] j;
+    private static final HotbarSlotResolutionStatus[] VALUES;
 
     static {
-        String[] stringArray = new String[]{"SUCCESS", "FAIL", "PENDING"};
+        String[] names = new String[]{"SUCCESS", "FAIL", "PENDING"};
 
 
 
-        j = new HotbarSlotResolutionStatus[]{PENDING, SUCCESS, FAIL};
+        VALUES = new HotbarSlotResolutionStatus[]{PENDING, SUCCESS, FAIL};
     }
 
 }

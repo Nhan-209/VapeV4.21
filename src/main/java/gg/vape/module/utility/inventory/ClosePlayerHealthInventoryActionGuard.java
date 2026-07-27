@@ -19,19 +19,19 @@ extends InventoryActionGuard {
 
     @Override
     public void i(EntityLivingBase entityLivingBase) {
-        boolean bl;
+        boolean lookingAtEntity;
         World world = entityLivingBase.getWorld();
         if (world.isNull() || this.o != null && this.o.isNotNull() && !world.equals(this.o)) {
             this.L();
             return;
         }
-        for (Object e : Minecraft.theWorld().X()) {
-            if (!MappedClasses.lG.isInstance(e)) continue;
-            EntityOtherPlayerMP entityOtherPlayerMP = new EntityOtherPlayerMP(e);
+        for (Object entityObject : Minecraft.theWorld().X()) {
+            if (!MappedClasses.lG.isInstance(entityObject)) continue;
+            EntityOtherPlayerMP entityOtherPlayerMP = new EntityOtherPlayerMP(entityObject);
             EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            double d = RotationUtil.y(entityPlayerSP.z(), entityPlayerSP.N(), entityPlayerSP.h(), entityOtherPlayerMP.z(), entityOtherPlayerMP.N(), entityOtherPlayerMP.h());
-            if (!(d <= 2.0) || !(d < this.s)) continue;
-            this.s = d;
+            double distance = RotationUtil.y(entityPlayerSP.z(), entityPlayerSP.N(), entityPlayerSP.h(), entityOtherPlayerMP.z(), entityOtherPlayerMP.N(), entityOtherPlayerMP.h());
+            if (!(distance <= 2.0) || !(distance < this.s)) continue;
+            this.s = distance;
             this.W = entityOtherPlayerMP;
         }
         if (this.s != 99.0) {
@@ -57,13 +57,13 @@ extends InventoryActionGuard {
             }
         }
         RayTraceResult rayTraceResult = Minecraft.p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0();
-        double d = entityLivingBase.w$src$F$15l9epb();
-        boolean bl2 = d < this.K || entityLivingBase.V$src$I$fk0dv5() == 20;
-        boolean bl3 = bl = rayTraceResult.isNotNull() && rayTraceResult.getEntity().isNotNull() && entityLivingBase.Y$src$Z$154rldp();
-        if (bl || bl2) {
+        double health = entityLivingBase.w$src$F$15l9epb();
+        boolean lowHealthOrHurt = health < this.K || entityLivingBase.V$src$I$fk0dv5() == 20;
+        boolean hasEntityRayTrace = lookingAtEntity = rayTraceResult.isNotNull() && rayTraceResult.getEntity().isNotNull() && entityLivingBase.Y$src$Z$154rldp();
+        if (lookingAtEntity || lowHealthOrHurt) {
             this.g();
         }
-        this.K = d;
+        this.K = health;
         this.o = world;
     }
 

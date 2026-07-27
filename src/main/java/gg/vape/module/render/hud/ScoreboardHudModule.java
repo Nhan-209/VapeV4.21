@@ -58,11 +58,11 @@ extends HudModule {
         this.setSuffix("Allows you to edit the Minecraft scoreboard");
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private String P(String string, String string2, String string3) {
+    private String replaceScoreText(String string, String string2, String string3) {
         String string4 = string2;
         char[] cArray = string2.toCharArray();
         String string5 = "";
@@ -161,7 +161,7 @@ extends HudModule {
             String string = ScorePlayerTeam.o(scorePlayerTeam, score.P());
             for (String string2 : map.keySet()) {
                 String string3 = map.get(string2);
-                string = this.P(string2, string, string3);
+                string = this.replaceScoreText(string2, string, string3);
             }
             String string4 = "\u00a7c" + score.j();
             int n7 = n3 - n6 * fontRenderer.getFontHeight();
@@ -188,7 +188,7 @@ extends HudModule {
                 String string5 = this.H.h();
                 for (String string6 : map.keySet()) {
                     String string7 = map.get(string6);
-                    string5 = this.P(string6, string5, string7);
+                    string5 = this.replaceScoreText(string6, string5, string7);
                 }
                 if (bl) {
                     GuiRenderPrimitives.C(n5 - 2, n7 - fontRenderer.getFontHeight() - 1, d3 + 2.0, fontRenderer.getFontHeight(), new Color(0x60000000, true));

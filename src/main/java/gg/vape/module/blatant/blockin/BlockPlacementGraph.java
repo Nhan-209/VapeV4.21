@@ -38,7 +38,7 @@ public class BlockPlacementGraph {
     public final float B;
     public final boolean V;
     public final float E;
-    private static Sprint o;
+    private static Sprint sprintMod;
     public final float g;
     public boolean D;
     public final float s;
@@ -55,11 +55,11 @@ public class BlockPlacementGraph {
     public final double I;
     public boolean y;
     public final double x;
-    private static int[] w;
+    private static int[] packedData;
     public final boolean l;
 
     public static void o(int[] nArray) {
-        w = nArray;
+        packedData = nArray;
     }
 
     public String K() {
@@ -160,7 +160,7 @@ public class BlockPlacementGraph {
         this.n = entityPlayer.V();
         this.g = entityPlayer.j();
         this.L = entityPlayer.D();
-        this.u = this.s(blockPathPlanner.H());
+        this.u = this.buildAimNode(blockPathPlanner.H());
         this.J = blockPathPlanner.D();
         this.S = blockPathPlanner.g();
         this.U = entityPlayer.b$src$Z$fqlxe4();
@@ -182,10 +182,10 @@ public class BlockPlacementGraph {
         this.Y = blockPathPlanner.d$src$Z$181w0d9();
         this.y = blockPathPlanner.R();
         this.A = blockPathPlanner.g$src$Z$183je5c();
-        if (o == null) {
-            o = Vape.INSTANCE.getModManager().getMod(Sprint.class);
+        if (sprintMod == null) {
+            sprintMod = Vape.INSTANCE.getModManager().getMod(Sprint.class);
         }
-        this.N = blockPathPlanner.i() || o.r$src$Z$14eylz9();
+        this.N = blockPathPlanner.i() || sprintMod.r$src$Z$14eylz9();
     }
 
     private BlockPlacementGraph(double d, double d2, double d3, double d4, double d5, double d6, double d7, double d8, double d9, float f, float f2, float f3, float f4, int n, int n2, boolean bl, boolean bl2, boolean bl3, int n3, float f5, float f6, boolean bl4, float f7, float f8, boolean bl5, boolean bl6, boolean bl7, boolean bl8, boolean bl9, boolean bl10, boolean bl11, boolean bl12, boolean bl13) {
@@ -226,7 +226,7 @@ public class BlockPlacementGraph {
         this.u = null;
     }
 
-    private static IllegalArgumentException a(IllegalArgumentException illegalArgumentException) {
+    private static IllegalArgumentException rethrow(IllegalArgumentException illegalArgumentException) {
         return illegalArgumentException;
     }
 
@@ -335,7 +335,7 @@ public class BlockPlacementGraph {
         BlockPlacementGraph.o(null);
     }
 
-    private BlockPlacementGraphNode s(MouseRotationController mouseRotationController) {
+    private BlockPlacementGraphNode buildAimNode(MouseRotationController mouseRotationController) {
         BlockPlacementGraphNode blockPlacementGraphNode = null;
         if (mouseRotationController != null) {
             blockPlacementGraphNode = mouseRotationController instanceof AdaptiveRotationController ? new BlockPlacementGraphNode((AdaptiveRotationController)mouseRotationController) : new BlockPlacementGraphNode(mouseRotationController, this.Q, this.n);
@@ -371,7 +371,7 @@ public class BlockPlacementGraph {
         this.n = entityPlayerSP.V();
         this.g = entityPlayerSP.j();
         this.L = entityPlayerSP.D();
-        this.u = this.s(RotationManager.b.w());
+        this.u = this.buildAimNode(RotationManager.b.w());
         this.J = entityPlayerSP.z$src$I$1uboxyr();
         this.S = entityPlayerSP.L$src$I$1tmeeo5();
         this.U = entityPlayerSP.b$src$Z$fqlxe4();
@@ -395,10 +395,10 @@ public class BlockPlacementGraph {
         this.Y = gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3().isKeyDown();
         this.y = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0().isKeyDown();
         this.A = gameSettings.O().isKeyDown();
-        if (o == null) {
-            o = Vape.INSTANCE.getModManager().getMod(Sprint.class);
+        if (sprintMod == null) {
+            sprintMod = Vape.INSTANCE.getModManager().getMod(Sprint.class);
         }
-        this.N = gameSettings.r().isKeyDown() || o.r$src$Z$14eylz9();
+        this.N = gameSettings.r().isKeyDown() || sprintMod.r$src$Z$14eylz9();
     }
 
     public boolean h(BlockPlacementGraph blockPlacementGraph) {
@@ -406,7 +406,7 @@ public class BlockPlacementGraph {
     }
 
     public static int[] Q() {
-        return w;
+        return packedData;
     }
 }
 

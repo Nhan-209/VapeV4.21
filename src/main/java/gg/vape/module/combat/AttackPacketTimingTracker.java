@@ -20,12 +20,12 @@ import java.util.List;
 
 public class AttackPacketTimingTracker
 implements EventListener {
-    private final List<Long> x = new ArrayList<Long>();
+    private final List<Long> hitDelays = new ArrayList<Long>();
     public static final AttackPacketTimingTracker a = new AttackPacketTimingTracker();
-    private long g;
-    private static boolean C;
-    private int Y;
-    private long r;
+    private long lastHitTime;
+    private static boolean initialized;
+    private int targetId;
+    private long lastAttackTime;
 
     public static Entity U(SPacketEntityStatus sPacketEntityStatus) {
         if (sPacketEntityStatus.o() == 2) {
@@ -35,25 +35,25 @@ implements EventListener {
     }
 
     @EventHandler
-    public void d(EventPreAttack eventPreAttack) {
-        this.Y = eventPreAttack.getTarget().S();
+    public void onPreAttack(EventPreAttack eventPreAttack) {
+        this.targetId = eventPreAttack.getTarget().S();
     }
 
-    private void onEnable() {
+    private void recordHitDelay() {
         block5: {
             long l;
             block4: {
-                long l2 = System.currentTimeMillis() - this.g;
+                long delay = System.currentTimeMillis() - this.lastHitTime;
                 boolean bl = AttackPacketTimingTracker.v();
-                long l3 = l2 - 500L;
-                l = l3 == 0L ? 0 : (l3 < 0L ? -1 : 1);
+                long diff = delay - 500L;
+                l = diff == 0L ? 0 : (diff < 0L ? -1 : 1);
                 if (!bl) break block4;
                 if (l >= 0) break block5;
-                this.x.add(l2);
-                l = this.x.size();
+                this.hitDelays.add(delay);
+                l = this.hitDelays.size();
             }
             if (l == 20) {
-                this.x.remove(0);
+                this.hitDelays.remove(0);
             }
         }
     }
@@ -64,7 +64,7 @@ implements EventListener {
     }
 
     public List<Long> n() {
-        return this.x;
+        return this.hitDelays;
     }
 
     public static Entity F(Packet packet) {
@@ -88,11 +88,11 @@ implements EventListener {
     }
 
     public static boolean d() {
-        return C;
+        return initialized;
     }
 
     public long h() {
-        return this.g;
+        return this.lastHitTime;
     }
 
     @EventHandler
@@ -102,16 +102,16 @@ implements EventListener {
             UseEntityPacketBridge useEntityPacketBridge;
             UseEntityPacketBridge useEntityPacketBridge2 = useEntityPacketBridge = new UseEntityPacketBridge(packet);
             AttackPacketTimingTracker attackPacketTimingTracker = this;
-            attackPacketTimingTracker.C(useEntityPacketBridge2);
+            attackPacketTimingTracker.recordAttack(useEntityPacketBridge2);
         }
     }
 
     @EventHandler
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
         Entity entity = AttackPacketTimingTracker.V(eventPacketReceive.getPacket());
-        if (entity != null && entity.isNotNull() && entity.S() == this.Y) {
+        if (entity != null && entity.isNotNull() && entity.S() == this.targetId) {
             AttackPacketTimingTracker attackPacketTimingTracker = this;
-            attackPacketTimingTracker.onEnable();
+            attackPacketTimingTracker.recordHitDelay();
         }
     }
 
@@ -121,11 +121,11 @@ implements EventListener {
     }
 
     public long a() {
-        return this.r;
+        return this.lastAttackTime;
     }
 
     public static void L(boolean bl) {
-        C = bl;
+        initialized = bl;
     }
 
     public static Entity f(SPacketAnimation sPacketAnimation) {
@@ -138,27 +138,27 @@ implements EventListener {
     public long Y() {
         long l = 0L;
         boolean bl = AttackPacketTimingTracker.d();
-        if (!this.x.isEmpty()) {
-            for (long l2 : this.x) {
+        if (!this.hitDelays.isEmpty()) {
+            for (long l2 : this.hitDelays) {
                 l += l2;
             }
-            l /= (long)this.x.size();
+            l /= (long)this.hitDelays.size();
         }
         return l;
     }
 
-    private void C(UseEntityPacketBridge useEntityPacketBridge) {
+    private void recordAttack(UseEntityPacketBridge useEntityPacketBridge) {
         Entity entity;
         boolean bl = AttackPacketTimingTracker.d();
         if (useEntityPacketBridge.S() && (entity = Minecraft.theWorld().V(useEntityPacketBridge.w())).isInstance(MappedClasses.zm)) {
             EntityLivingBase entityLivingBase = new EntityLivingBase(entity);
-            if (entityLivingBase.c$src$I$15a9iwo() == 0 && System.currentTimeMillis() - this.g > 400L) {
+            if (entityLivingBase.c$src$I$15a9iwo() == 0 && System.currentTimeMillis() - this.lastHitTime > 400L) {
                 AttackPacketTimingTracker attackPacketTimingTracker = this;
-                if (System.currentTimeMillis() - this.r > attackPacketTimingTracker.Y() * 2L) {
-                    this.g = System.currentTimeMillis();
+                if (System.currentTimeMillis() - this.lastAttackTime > attackPacketTimingTracker.Y() * 2L) {
+                    this.lastHitTime = System.currentTimeMillis();
                 }
             }
-            this.r = System.currentTimeMillis();
+            this.lastAttackTime = System.currentTimeMillis();
         }
     }
 
@@ -167,7 +167,7 @@ implements EventListener {
     }
 
     public int r() {
-        return this.Y;
+        return this.targetId;
     }
 
     static {

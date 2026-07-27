@@ -5,7 +5,7 @@ import gg.vape.module.utility.inventory.cleaner.MatcherBackedInventoryItemCatego
 
 public class MatcherBackedInventoryItemCategoryBuilder
 extends InventoryItemCategoryBuilder<MatcherBackedInventoryItemCategoryBuilder> {
-    private static String[] w;
+    private static String[] emptyNames;
 
     static {
         if (MatcherBackedInventoryItemCategoryBuilder.l$src$ALjava_lang_String_$r4e615() == null) {
@@ -14,11 +14,11 @@ extends InventoryItemCategoryBuilder<MatcherBackedInventoryItemCategoryBuilder> 
     }
 
     public static String[] l$src$ALjava_lang_String_$r4e615() {
-        return w;
+        return emptyNames;
     }
 
     public static void c(String[] stringArray) {
-        w = stringArray;
+        emptyNames = stringArray;
     }
 
     public MatcherBackedInventoryItemCategory G() {

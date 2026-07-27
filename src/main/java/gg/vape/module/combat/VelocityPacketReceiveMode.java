@@ -27,39 +27,39 @@ import java.util.Random;
 
 public class VelocityPacketReceiveMode
 extends Mod {
-    private final RandomValue F;
-    public final NumberValue A;
-    private static final long r = 4814624859532464040L;
-    private boolean Z;
-    private boolean s;
-    private final BooleanValue O;
-    private double p;
-    private double S;
-    private boolean J;
-    private double a;
-    public final BooleanValue P;
-    private final Random b = new Random();
+    private final RandomValue accuracy;
+    public final NumberValue chance;
+    private static final long MODULE_ID = 4814624859532464040L;
+    private boolean jumping;
+    private boolean shouldJump;
+    private final BooleanValue waterCheck;
+    private double motionZ;
+    private double motionX;
+    private boolean waitingForReset;
+    private double motionY;
+    public final BooleanValue onlyWhenTargeting;
+    private final Random random = new Random();
 
-    private boolean a$src$Z$a6pr1a() {
-        int n;
-        if (this.Z) {
+    private boolean shouldReduce() {
+        int roll;
+        if (this.jumping) {
             return false;
         }
         if (Minecraft.thePlayer().i(PotionRegistry.Z)) {
             return false;
         }
-        if (this.H()) {
+        if (this.isInWater()) {
             return false;
         }
-        if (this.P.L().booleanValue()) {
+        if (this.onlyWhenTargeting.L().booleanValue()) {
             EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            boolean bl = RotationUtil.H(entityPlayerSP);
-            boolean bl2 = RotationUtil.F(entityPlayerSP);
-            if (!bl || !bl2) {
+            boolean facingYaw = RotationUtil.H(entityPlayerSP);
+            boolean facingPitch = RotationUtil.F(entityPlayerSP);
+            if (!facingYaw || !facingPitch) {
                 return false;
             }
         }
-        return (double)(n = MathUtil.randomExclusiveUpper(this.b, 0, 100)) >= 100.0 - (Double)this.A.K();
+        return (double)(roll = MathUtil.randomExclusiveUpper(this.random, 0, 100)) >= 100.0 - (Double)this.chance.K();
     }
 
     @EventHandler
@@ -68,19 +68,19 @@ extends Mod {
             return;
         }
         Packet packet = eventPacketReceive.getPacket();
-        Packet.n(packet, this::lambda$onPacketReceived$0);
+        Packet.n(packet, this::handleVelocityPacket);
     }
 
     @EventHandler
     public void onPlayerTick(EventPostPlayerTick eventPostPlayerTick) {
-        if (this.Z) {
+        if (this.jumping) {
             KeyBinding keyBinding = Minecraft.gameSettings().O();
             ClientSettings.b(keyBinding, false);
             Minecraft.gameSettings().O().setPressed(false);
             if (ForgeVersion.MC_1_21_4.v()) {
                 Minecraft.thePlayer().movementInput().V(false);
             }
-            this.Z = false;
+            this.jumping = false;
         }
     }
 
@@ -91,40 +91,40 @@ extends Mod {
         if (entityPlayerSP.isNull()) {
             return;
         }
-        if (!this.J) {
+        if (!this.waitingForReset) {
             return;
         }
-        double d = MathUtil.roundToScale(entityPlayerSP.t(), 3);
-        double d2 = MathUtil.roundToScale(entityPlayerSP.q(), 3);
-        double d3 = MathUtil.roundToScale(entityPlayerSP.T(), 3);
-        double d4 = MathUtil.roundToScale(this.S, 3);
-        double d5 = MathUtil.roundToScale(this.a, 3);
-        double d6 = MathUtil.roundToScale(this.p, 3);
-        if (d == d4 && d2 == d5 && d3 == d6) {
-            this.p = 0.0;
-            this.a = 0.0;
-            this.S = 0.0;
-            this.J = false;
+        double posX = MathUtil.roundToScale(entityPlayerSP.t(), 3);
+        double posY = MathUtil.roundToScale(entityPlayerSP.q(), 3);
+        double posZ = MathUtil.roundToScale(entityPlayerSP.T(), 3);
+        double expectedX = MathUtil.roundToScale(this.motionX, 3);
+        double expectedY = MathUtil.roundToScale(this.motionY, 3);
+        double expectedZ = MathUtil.roundToScale(this.motionZ, 3);
+        if (posX == expectedX && posY == expectedY && posZ == expectedZ) {
+            this.motionZ = 0.0;
+            this.motionY = 0.0;
+            this.motionX = 0.0;
+            this.waitingForReset = false;
             if (!Minecraft.gameSettings().O().isKeyDown()) {
-                this.s = true;
+                this.shouldJump = true;
             }
         }
     }
 
-    public boolean H() {
+    public boolean isInWater() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
             return true;
         }
-        return this.O.L() != false && entityPlayerSP.h$src$Z$ftwoya();
+        return this.waterCheck.L() != false && entityPlayerSP.h$src$Z$ftwoya();
     }
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        if (this.s) {
-            double d;
-            float f = MathUtil.randomExclusiveUpper(this.b, 0, 100);
-            if ((double)f < 100.0 - (d = this.F.B())) {
+        if (this.shouldJump) {
+            double accuracyChance;
+            float roll = MathUtil.randomExclusiveUpper(this.random, 0, 100);
+            if ((double)roll < 100.0 - (accuracyChance = this.accuracy.B())) {
                 return;
             }
             KeyBinding keyBinding = Minecraft.gameSettings().O();
@@ -133,38 +133,38 @@ extends Mod {
             if (ForgeVersion.MC_1_21_4.v()) {
                 Minecraft.thePlayer().movementInput().V(true);
             }
-            this.Z = true;
-            this.s = false;
+            this.jumping = true;
+            this.shouldJump = false;
         }
     }
 
-    private void lambda$onPacketReceived$0(Packet packet) {
+    private void handleVelocityPacket(Packet packet) {
         SPacketEntityVelocity sPacketEntityVelocity;
         if (packet.isInstance(MappedClasses.YX) && (sPacketEntityVelocity = new SPacketEntityVelocity(packet)).getEntityId() == Minecraft.thePlayer().S()) {
-            boolean bl;
-            boolean bl2 = bl = sPacketEntityVelocity.getMotionX() == 0 && sPacketEntityVelocity.getMotionZ() == 0 || sPacketEntityVelocity.getMotionY() < 0;
-            if (!bl && this.a$src$Z$a6pr1a()) {
-                this.S = (double)sPacketEntityVelocity.getMotionX() / 8000.0;
-                this.a = (double)sPacketEntityVelocity.getMotionY() / 8000.0;
-                this.p = (double)sPacketEntityVelocity.getMotionZ() / 8000.0;
-                this.J = true;
+            boolean upward;
+            boolean upwardFlag = upward = sPacketEntityVelocity.getMotionX() == 0 && sPacketEntityVelocity.getMotionZ() == 0 || sPacketEntityVelocity.getMotionY() < 0;
+            if (!upward && this.shouldReduce()) {
+                this.motionX = (double)sPacketEntityVelocity.getMotionX() / 8000.0;
+                this.motionY = (double)sPacketEntityVelocity.getMotionY() / 8000.0;
+                this.motionZ = (double)sPacketEntityVelocity.getMotionZ() / 8000.0;
+                this.waitingForReset = true;
             }
         }
     }
 
     @Override
     public String r() {
-        return this.A.c() + "%";
+        return this.chance.c() + "%";
     }
 
     public VelocityPacketReceiveMode() {
-        super("JumpReset", (int)r, Category.g, "Reduces knockback taken by jumping when hit");
-        this.P = BooleanValue.create(this, "Only when targeting", false, "Only reduce knockback while being face to face with opponent");
-        this.F = RandomValue.G(this, "Accuracy", "#", "%", 0.0, 40.0, 60.0, 100.0, 1.0, "If you will jump, this is the chance that you will actually land a perfect jump reset on time");
-        this.A = NumberValue.E(this, "Chance", "#", "%", 0.0, 40.0, 100.0, "Chance of reducing knockback");
-        this.O = BooleanValue.create(this, "Water check", false, "Won't reduce knockback if in water");
-        this.addValue(this.A, this.F, this.P, this.O);
-        this.A.C(0);
+        super("JumpReset", (int)MODULE_ID, Category.g, "Reduces knockback taken by jumping when hit");
+        this.onlyWhenTargeting = BooleanValue.create(this, "Only when targeting", false, "Only reduce knockback while being face to face with opponent");
+        this.accuracy = RandomValue.G(this, "Accuracy", "#", "%", 0.0, 40.0, 60.0, 100.0, 1.0, "If you will jump, this is the chance that you will actually land a perfect jump reset on time");
+        this.chance = NumberValue.E(this, "Chance", "#", "%", 0.0, 40.0, 100.0, "Chance of reducing knockback");
+        this.waterCheck = BooleanValue.create(this, "Water check", false, "Won't reduce knockback if in water");
+        this.addValue(this.chance, this.accuracy, this.onlyWhenTargeting, this.waterCheck);
+        this.chance.C(0);
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {

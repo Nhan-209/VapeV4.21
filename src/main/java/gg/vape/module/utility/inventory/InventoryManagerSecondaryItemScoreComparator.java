@@ -9,15 +9,15 @@ public class InventoryManagerSecondaryItemScoreComparator
 implements Comparator<Slot> {
     @Override
     public int compare(Slot first, Slot second) {
-        return this.V(first, second);
+        return this.compareSecondaryScore(first, second);
     }
-    final InventoryManager q;
+    final InventoryManager inventoryManager;
 
     public InventoryManagerSecondaryItemScoreComparator(InventoryManager inventoryManager) {
-        this.q = inventoryManager;
+        this.inventoryManager = inventoryManager;
     }
 
-    public int V(Slot slot, Slot slot2) {
-        return Double.compare(ClientSettings.c(slot.I()), ClientSettings.c(slot2.I()));
+    public int compareSecondaryScore(Slot first, Slot second) {
+        return Double.compare(ClientSettings.c(first.I()), ClientSettings.c(second.I()));
     }
 }

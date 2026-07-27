@@ -77,40 +77,40 @@ import org.lwjgl.opengl.GL11;
 
 public class NameTags
 extends Mod {
-    private final BooleanValue S;
-    private final BooleanValue p;
-    private final NumberFormat D;
-    private final BooleanValue b;
-    private static final String P = ClientSettings.F + "r";
-    private final BooleanValue s;
-    private static final String L;
-    private final BooleanValue a;
-    private final NumberValue U;
-    private final BooleanValue Kw;
-    private final Color Z = new Color(20, 20, 20, 128);
-    private final BooleanValue t;
-    private final ConcurrentHashMap<Integer, String> K0;
-    private final BooleanValue Y;
-    private static final String K;
-    private static final String C;
-    private final BooleanValue F;
-    private final Enchantment[] V;
-    private final NumberValue c;
-    private final NumberValue J;
-    private final BooleanValue H;
-    private final BooleanValue o;
-    private final Color Kj = new Color(115, 0, 4, 128);
-    private final BooleanValue j;
-    private final BooleanValue O;
-    private final BooleanValue k;
-    private final BooleanValue r;
-    private final BooleanValue I;
-    private final BooleanValue A;
-    private final BooleanValue Kl;
-    private final NumberValue Km;
-    private final NumberValue v;
+    private final BooleanValue strengthIndicator;
+    private final BooleanValue ignoreInvisibles;
+    private final NumberFormat numberFormat;
+    private final BooleanValue renderAnimals;
+    private static final String RESET_COLOR = ClientSettings.F + "r";
+    private final BooleanValue animalsEffects;
+    private static final String LESS_DAMAGE_LABEL;
+    private final BooleanValue mobsDistance;
+    private final NumberValue playersMaxDistance;
+    private final BooleanValue renderMobs;
+    private final Color backgroundColor = new Color(20, 20, 20, 128);
+    private final BooleanValue playersDistance;
+    private final ConcurrentHashMap<Integer, String> nameCache;
+    private final BooleanValue playersEffects;
+    private static final String EQUAL_DAMAGE_LABEL;
+    private static final String MORE_DAMAGE_LABEL;
+    private final BooleanValue calculateEffects;
+    private final Enchantment[] displayedEnchantments;
+    private final NumberValue scale;
+    private final NumberValue animalsMaxDistance;
+    private final BooleanValue animalsHealth;
+    private final BooleanValue mobsEffects;
+    private final Color enemyBackgroundColor = new Color(115, 0, 4, 128);
+    private final BooleanValue equipment;
+    private final BooleanValue hideBots;
+    private final BooleanValue renderPlayers;
+    private final BooleanValue playersHealth;
+    private final BooleanValue autoScale;
+    private final BooleanValue mobsHealth;
+    private final BooleanValue animalsDistance;
+    private final NumberValue mobsMaxDistance;
+    private final NumberValue opacity;
 
-    private void A(FontRenderer fontRenderer, String string, int n, int n2, double d, double d2) {
+    private void drawScaledString(FontRenderer fontRenderer, String string, int n, int n2, double d, double d2) {
         int n3 = ((int)d2 & 0xFF) << 24 | 0xFFFFFF;
         double d3 = 1.0 / d;
         boolean bl = GL11.glIsEnabled((int)2896);
@@ -127,7 +127,7 @@ extends Mod {
         OpenGlBackendHolder.d.G(d3, d3, d3);
     }
 
-    private void k(RenderManager renderManager, EntityRenderer entityRenderer, FontRenderer fontRenderer, EntityLivingBase entityLivingBase, float f, float f2, RenderEntityContext renderEntityContext, double d, MatrixStack matrixStack, @Nullable ItemStack itemStack, @Nullable ItemStack itemStack2, @Nullable ArrayList<ItemStack> arrayList) {
+    private void renderEquipment(RenderManager renderManager, EntityRenderer entityRenderer, FontRenderer fontRenderer, EntityLivingBase entityLivingBase, float f, float f2, RenderEntityContext renderEntityContext, double d, MatrixStack matrixStack, @Nullable ItemStack itemStack, @Nullable ItemStack itemStack2, @Nullable ArrayList<ItemStack> arrayList) {
         double d2 = 1.1;
         double d3 = 1.0 / d2;
         if (ForgeVersion.MC_1_16_5.d()) {
@@ -181,7 +181,7 @@ extends Mod {
                 }
                 if (((Wrapper)(object = itemStack.getItem())).isNotNull()) {
                     ItemIconRenderer.j(itemStack, (Item)object, n, n2, 16, 16, (float)d, 1.0f, true);
-                    this.u(fontRenderer, itemStack, (Item)object, n, n2, d);
+                    this.drawItemOverlay(fontRenderer, itemStack, (Item)object, n, n2, d);
                     if (itemStack.P() > 1) {
                         fontRenderer.drawStringWithShadow(String.valueOf(itemStack.t()), (double)(n + 8), (double)(n2 + 8), -1);
                     }
@@ -194,7 +194,7 @@ extends Mod {
                     ItemStack itemStack4 = ItemStack.S(itemStack3.getItem());
                     Item item = itemStack4.getItem();
                     ItemIconRenderer.j(itemStack4, item, n += 16, n2, 16, 16, (float)d, 1.0f, true);
-                    this.u(fontRenderer, itemStack3, item, n, n2, d);
+                    this.drawItemOverlay(fontRenderer, itemStack3, item, n, n2, d);
                 }
             }
             if (itemStack2 != null) {
@@ -202,7 +202,7 @@ extends Mod {
                 Item item = itemStack2.getItem();
                 if (item.isNotNull()) {
                     ItemIconRenderer.j(itemStack2, item, n, n2, 16, 16, (float)d, 1.0f, true);
-                    this.u(fontRenderer, itemStack2, item, n, n2, d);
+                    this.drawItemOverlay(fontRenderer, itemStack2, item, n, n2, d);
                     if (itemStack2.P() > 1) {
                         fontRenderer.drawStringWithShadow(String.valueOf(itemStack2.t()), (double)(n + 8), (double)(n2 + 8), -1);
                     }
@@ -223,19 +223,19 @@ extends Mod {
         }
         EntityPlayerSP entityPlayerSP = eventPreRenderLiving.getThePlayer();
         Entity entity = eventPreRenderLiving.getEntity();
-        if (!this.c(entity, eventPreRenderLiving.getWorld(), entityPlayerSP)) {
+        if (!this.shouldRender(entity, eventPreRenderLiving.getWorld(), entityPlayerSP)) {
             return;
         }
         eventPreRenderLiving.setCancelled(true);
     }
 
     static {
-        K = ClientSettings.F + "e=";
-        L = ClientSettings.F + "c-";
-        C = ClientSettings.F + "a+";
+        EQUAL_DAMAGE_LABEL = ClientSettings.F + "e=";
+        LESS_DAMAGE_LABEL = ClientSettings.F + "c-";
+        MORE_DAMAGE_LABEL = ClientSettings.F + "a+";
     }
 
-    private void B(RenderManager renderManager, EntityRenderer entityRenderer, FontRenderer fontRenderer, EntityPlayerSP entityPlayerSP, float f, float f2, GameSettings gameSettings, EntityLivingBase entityLivingBase, RenderEntityContext renderEntityContext, double d, double d2, double d3, float f3, boolean bl, boolean bl2, boolean bl3, boolean bl4, boolean bl5, MatrixStack matrixStack) {
+    private void renderNameTag(RenderManager renderManager, EntityRenderer entityRenderer, FontRenderer fontRenderer, EntityPlayerSP entityPlayerSP, float f, float f2, GameSettings gameSettings, EntityLivingBase entityLivingBase, RenderEntityContext renderEntityContext, double d, double d2, double d3, float f3, boolean bl, boolean bl2, boolean bl3, boolean bl4, boolean bl5, MatrixStack matrixStack) {
         RenderItemFontBridge renderItemFontBridge;
         Object object;
         Object object2;
@@ -246,7 +246,7 @@ extends Mod {
         boolean bl7;
         double d4;
         block32: {
-            d4 = (Double)this.v.K();
+            d4 = (Double)this.opacity.K();
             if (renderEntityContext.Y()) {
                 d4 = 1.0;
             }
@@ -274,7 +274,7 @@ extends Mod {
                         }
                     }
                     try {
-                        arrayList = this.u(entityLivingBase);
+                        arrayList = this.collectEquipment(entityLivingBase);
                     }
                     catch (Exception exception) {
                         arrayList = new ArrayList();
@@ -289,23 +289,23 @@ extends Mod {
                 }
             }
         }
-        if (!this.K0.containsKey(entityLivingBase.S())) {
-            this.K0.put(entityLivingBase.S(), this.S(entityLivingBase, renderEntityContext, bl2, bl, bl4, bl5));
+        if (!this.nameCache.containsKey(entityLivingBase.S())) {
+            this.nameCache.put(entityLivingBase.S(), this.buildNameString(entityLivingBase, renderEntityContext, bl2, bl, bl4, bl5));
         }
-        object2 = this.K0.get(entityLivingBase.S());
-        MutableColor mutableColor = new MutableColor(renderEntityContext.A() ? this.Kj : this.Z);
+        object2 = this.nameCache.get(entityLivingBase.S());
+        MutableColor mutableColor = new MutableColor(renderEntityContext.A() ? this.enemyBackgroundColor : this.backgroundColor);
         MutableColor mutableColor2 = new MutableColor(mutableColor);
-        int n = this.e(entityLivingBase, renderEntityContext, mutableColor, mutableColor2, d4);
+        int n = this.computeNameColor(entityLivingBase, renderEntityContext, mutableColor, mutableColor2, d4);
         mutableColor.withAlpha((int)((double)mutableColor.getAlpha() * d4));
         mutableColor2.withAlpha((int)((double)mutableColor2.getAlpha() * d4));
         MutableColor mutableColor3 = new MutableColor(n);
         mutableColor3.withAlpha((int)((double)mutableColor3.getAlpha() * d4));
         n = mutableColor3.l();
-        float f4 = (float)(0.03333335 * (Double)this.c.K());
-        if (this.I.L().booleanValue()) {
+        float f4 = (float)(0.03333335 * (Double)this.scale.K());
+        if (this.autoScale.L().booleanValue()) {
             float f5 = f3;
             float f6 = (double)f5 / 5.0 <= 2.0 ? 2.0f : (float)((double)f5 / 5.0);
-            f4 = (float)(0.01666666753590107 * ((double)f6 * (Double)this.c.K()));
+            f4 = (float)(0.01666666753590107 * ((double)f6 * (Double)this.scale.K()));
         }
         int n2 = fontRenderer.getStringWidth((String)object2) / 2;
         int n3 = -(fontRenderer.FONT_HEIGHT((String)object2) - 1);
@@ -406,7 +406,7 @@ extends Mod {
             if (bl8) {
                 OpenGlBackendHolder.d.I(0.0, -8.0, 0.0);
             }
-            this.k(renderManager, entityRenderer, fontRenderer, entityLivingBase, f, f2, renderEntityContext, d4, matrixStack, itemStack, (ItemStack)object3, arrayList);
+            this.renderEquipment(renderManager, entityRenderer, fontRenderer, entityLivingBase, f, f2, renderEntityContext, d4, matrixStack, itemStack, (ItemStack)object3, arrayList);
         }
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
@@ -416,40 +416,40 @@ extends Mod {
 
     public NameTags() {
         super("NameTags", -16711936, Category.k, "Renders nametags on entities through walls.");
-        this.p = BooleanValue.create(this, "Ignore Invisibles", false, "Determines if we draw a nametag\nfor invisible entities");
-        this.I = BooleanValue.create(this, "Auto Scale", true, "Automatically scales up nametags\nthe further the distance.");
-        this.O = BooleanValue.create(this, "Hide bots", true, "Hides bots if you're using antibot");
-        this.k = BooleanValue.create(this, "Render Players", true);
-        this.r = BooleanValue.create(this, "Health", false);
-        this.t = BooleanValue.create(this, "Distance", false);
-        this.j = BooleanValue.create(this, "Equipment", false);
-        this.Y = BooleanValue.create(this, "Effects", false);
-        this.U = NumberValue.create(this, "Max Distance", "#", "m", 0.0, 0.0, 250.0, 1.0, "Maximum distance allowed to render.\nUse 0 to render at any distance.");
-        this.S = BooleanValue.create(this, "Strength Indicator", false, "Gives you an indicator of your enemies\npossible damage relative to yours.\n    " + ClientSettings.F + "a+ " + P + "Enemy deals less damage than you\n    " + ClientSettings.F + "e= " + P + "Enemy deals equal damage to you\n    " + ClientSettings.F + "c- " + P + "Enemy deals more damage than you");
-        this.F = BooleanValue.create(this, "Calculate Effects", false, "Calculates potion effects to determine\ntotal possible damage. (Strength)");
-        this.b = BooleanValue.create(this, "Render Animals", false);
-        this.H = BooleanValue.create(this, "Health", false);
-        this.Kl = BooleanValue.create(this, "Distance", false);
-        this.s = BooleanValue.create(this, "Effects", false);
-        this.J = NumberValue.create(this, "Max Distance", "#", "m", 0.0, 0.0, 250.0, 1.0, "Maximum distance allowed to render.\nUse 0 to render at any distance.");
-        this.Kw = BooleanValue.create(this, "Render Mobs", false);
-        this.A = BooleanValue.create(this, "Health", false);
-        this.a = BooleanValue.create(this, "Distance", false);
-        this.o = BooleanValue.create(this, "Effects", false);
-        this.Km = NumberValue.create(this, "Max Distance", "#", "m", 0.0, 0.0, 250.0, 1.0, "Maximum distance allowed to render.\nUse 0 to render at any distance.");
-        this.c = NumberValue.create((Object)this, "Scale", "#.#", "", 0.1, 1.0, 1.5, 0.1);
-        this.v = NumberValue.create(this, "Opacity", "#.#", "", 0.0, 1.0, 1.0);
-        this.D = new NumberFormat(1);
-        this.V = new Enchantment[]{Enchantment.protection(), Enchantment.unbreaking(), Enchantment.sharpness(), Enchantment.fireAspect(), Enchantment.efficiency(), Enchantment.featherFalling(), Enchantment.power(), Enchantment.flame(), Enchantment.punch(), Enchantment.fortune(), Enchantment.infinity(), Enchantment.thorns(), Enchantment.knockback()};
-        this.K0 = new ConcurrentHashMap();
-        this.k.K(this.r, this.t, this.Y, this.U, this.j, this.S);
-        this.b.K(this.H, this.Kl, this.s, this.J);
-        this.Kw.K(this.A, this.a, this.o, this.Km);
-        this.S.K(this.F);
-        this.addValue(this.p, this.I, this.c, this.O, this.k, this.r, this.t, this.Y, this.U, this.j, this.S, this.F, this.b, this.H, this.Kl, this.s, this.J, this.Kw, this.A, this.a, this.o, this.Km);
+        this.ignoreInvisibles = BooleanValue.create(this, "Ignore Invisibles", false, "Determines if we draw a nametag\nfor invisible entities");
+        this.autoScale = BooleanValue.create(this, "Auto Scale", true, "Automatically scales up nametags\nthe further the distance.");
+        this.hideBots = BooleanValue.create(this, "Hide bots", true, "Hides bots if you're using antibot");
+        this.renderPlayers = BooleanValue.create(this, "Render Players", true);
+        this.playersHealth = BooleanValue.create(this, "Health", false);
+        this.playersDistance = BooleanValue.create(this, "Distance", false);
+        this.equipment = BooleanValue.create(this, "Equipment", false);
+        this.playersEffects = BooleanValue.create(this, "Effects", false);
+        this.playersMaxDistance = NumberValue.create(this, "Max Distance", "#", "m", 0.0, 0.0, 250.0, 1.0, "Maximum distance allowed to render.\nUse 0 to render at any distance.");
+        this.strengthIndicator = BooleanValue.create(this, "Strength Indicator", false, "Gives you an indicator of your enemies\npossible damage relative to yours.\n    " + ClientSettings.F + "a+ " + RESET_COLOR + "Enemy deals less damage than you\n    " + ClientSettings.F + "e= " + RESET_COLOR + "Enemy deals equal damage to you\n    " + ClientSettings.F + "c- " + RESET_COLOR + "Enemy deals more damage than you");
+        this.calculateEffects = BooleanValue.create(this, "Calculate Effects", false, "Calculates potion effects to determine\ntotal possible damage. (Strength)");
+        this.renderAnimals = BooleanValue.create(this, "Render Animals", false);
+        this.animalsHealth = BooleanValue.create(this, "Health", false);
+        this.animalsDistance = BooleanValue.create(this, "Distance", false);
+        this.animalsEffects = BooleanValue.create(this, "Effects", false);
+        this.animalsMaxDistance = NumberValue.create(this, "Max Distance", "#", "m", 0.0, 0.0, 250.0, 1.0, "Maximum distance allowed to render.\nUse 0 to render at any distance.");
+        this.renderMobs = BooleanValue.create(this, "Render Mobs", false);
+        this.mobsHealth = BooleanValue.create(this, "Health", false);
+        this.mobsDistance = BooleanValue.create(this, "Distance", false);
+        this.mobsEffects = BooleanValue.create(this, "Effects", false);
+        this.mobsMaxDistance = NumberValue.create(this, "Max Distance", "#", "m", 0.0, 0.0, 250.0, 1.0, "Maximum distance allowed to render.\nUse 0 to render at any distance.");
+        this.scale = NumberValue.create((Object)this, "Scale", "#.#", "", 0.1, 1.0, 1.5, 0.1);
+        this.opacity = NumberValue.create(this, "Opacity", "#.#", "", 0.0, 1.0, 1.0);
+        this.numberFormat = new NumberFormat(1);
+        this.displayedEnchantments = new Enchantment[]{Enchantment.protection(), Enchantment.unbreaking(), Enchantment.sharpness(), Enchantment.fireAspect(), Enchantment.efficiency(), Enchantment.featherFalling(), Enchantment.power(), Enchantment.flame(), Enchantment.punch(), Enchantment.fortune(), Enchantment.infinity(), Enchantment.thorns(), Enchantment.knockback()};
+        this.nameCache = new ConcurrentHashMap();
+        this.renderPlayers.K(this.playersHealth, this.playersDistance, this.playersEffects, this.playersMaxDistance, this.equipment, this.strengthIndicator);
+        this.renderAnimals.K(this.animalsHealth, this.animalsDistance, this.animalsEffects, this.animalsMaxDistance);
+        this.renderMobs.K(this.mobsHealth, this.mobsDistance, this.mobsEffects, this.mobsMaxDistance);
+        this.strengthIndicator.K(this.calculateEffects);
+        this.addValue(this.ignoreInvisibles, this.autoScale, this.scale, this.hideBots, this.renderPlayers, this.playersHealth, this.playersDistance, this.playersEffects, this.playersMaxDistance, this.equipment, this.strengthIndicator, this.calculateEffects, this.renderAnimals, this.animalsHealth, this.animalsDistance, this.animalsEffects, this.animalsMaxDistance, this.renderMobs, this.mobsHealth, this.mobsDistance, this.mobsEffects, this.mobsMaxDistance);
     }
 
-    private String S(EntityLivingBase entityLivingBase, RenderEntityContext renderEntityContext, boolean bl, boolean bl2, boolean bl3, boolean bl4) {
+    private String buildNameString(EntityLivingBase entityLivingBase, RenderEntityContext renderEntityContext, boolean bl, boolean bl2, boolean bl3, boolean bl4) {
         float f;
         double d;
         float f2;
@@ -487,12 +487,12 @@ extends Mod {
                 string2 = ClientSettings.F + "a[C] " + ClientSettings.F + "r" + string2;
             }
             String string4 = (d6 = 100.0 * ((d5 = (double)((f4 = entityLivingBase.w$src$F$15l9epb()) / 2.0f)) / (d4 = (double)(entityLivingBase.I$src$F$14vyvep() / 2.0f)))) > 75.0 ? "2" : (d6 > 50.0 ? "e" : (d6 > 25.0 ? "6" : "4"));
-            String string5 = this.D.format(Math.floor((d5 + 0.25) / 0.5) * 0.5);
+            String string5 = this.numberFormat.format(Math.floor((d5 + 0.25) / 0.5) * 0.5);
             if (bl2) {
                 string2 = String.format("%s %s%s%s", string2, ClientSettings.F, string4, string5);
             }
             if (bl4 && (f3 = renderEntityContext.I()) > 0.0f) {
-                String string6 = this.D.format(Math.floor(((double)f3 + 0.25) / 0.5) * 0.5);
+                String string6 = this.numberFormat.format(Math.floor(((double)f3 + 0.25) / 0.5) * 0.5);
                 string2 = String.format("%s %s%s%s", string2, ClientSettings.F, "6", string6);
             }
             if (bl3) {
@@ -504,12 +504,12 @@ extends Mod {
             string2 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)renderEntityContext.e() + ClientSettings.F + "a]" + ClientSettings.F + "r " + string2;
         }
         String string7 = (d3 = 100.0 * ((d2 = (double)((f2 = entityLivingBase.w$src$F$15l9epb()) / 2.0f)) / (d = (double)(entityLivingBase.I$src$F$14vyvep() / 2.0f)))) > 75.0 ? "2" : (d3 > 50.0 ? "e" : (d3 > 25.0 ? "6" : "4"));
-        String string8 = this.D.format(Math.floor((d2 + 0.25) / 0.5) * 0.5);
+        String string8 = this.numberFormat.format(Math.floor((d2 + 0.25) / 0.5) * 0.5);
         if (bl2) {
             string2 = String.format("%s %s%s%s", string2, ClientSettings.F, string7, string8);
         }
         if (bl4 && (f = renderEntityContext.I()) > 0.0f) {
-            String string9 = this.D.format(Math.floor(((double)f + 0.25) / 0.5) * 0.5);
+            String string9 = this.numberFormat.format(Math.floor(((double)f + 0.25) / 0.5) * 0.5);
             string2 = String.format("%s %s%s%s", string2, ClientSettings.F, "6", string9);
         }
         if (bl3) {
@@ -535,7 +535,7 @@ extends Mod {
         ArrayList<OnlineRadarPreviewState<Object, RenderEntityContext>> arrayList = new ArrayList<OnlineRadarPreviewState<Object, RenderEntityContext>>();
         for (Object e : worldClient.z()) {
             Entity entity = new Entity(e);
-            if (!this.c(entity, worldClient, entityPlayerSP)) continue;
+            if (!this.shouldRender(entity, worldClient, entityPlayerSP)) continue;
             EntityLivingBase entityLivingBase = new EntityLivingBase(entity);
             RenderEntityContext object = RenderEntityContextCache.V(entityLivingBase, entityPlayerSP);
             arrayList.add(OnlineRadarPreviewState.l(entityLivingBase, object));
@@ -557,12 +557,12 @@ extends Mod {
             float f3 = (float)RotationUtil.y(d10, d11, d12, d4, d5, d6);
             OpenGlBackendHolder.d.m();
             try {
-                if (entityLivingBase.isInstance(MappedClasses.Yl) && this.k.L().booleanValue()) {
-                    this.B(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.r.L(), this.t.L(), this.j.L(), this.S.L(), this.Y.L(), eventRender3D.getMatrixStack());
-                } else if (RotationUtil.m(entityLivingBase) && this.b.L().booleanValue()) {
-                    this.B(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.H.L(), this.Kl.L(), false, false, this.s.L(), eventRender3D.getMatrixStack());
-                } else if (RotationUtil.W(entityLivingBase) && this.Kw.L().booleanValue()) {
-                    this.B(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.A.L(), this.a.L(), false, false, this.o.L(), eventRender3D.getMatrixStack());
+                if (entityLivingBase.isInstance(MappedClasses.Yl) && this.renderPlayers.L().booleanValue()) {
+                    this.renderNameTag(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.playersHealth.L(), this.playersDistance.L(), this.equipment.L(), this.strengthIndicator.L(), this.playersEffects.L(), eventRender3D.getMatrixStack());
+                } else if (RotationUtil.m(entityLivingBase) && this.renderAnimals.L().booleanValue()) {
+                    this.renderNameTag(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.animalsHealth.L(), this.animalsDistance.L(), false, false, this.animalsEffects.L(), eventRender3D.getMatrixStack());
+                } else if (RotationUtil.W(entityLivingBase) && this.renderMobs.L().booleanValue()) {
+                    this.renderNameTag(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.mobsHealth.L(), this.mobsDistance.L(), false, false, this.mobsEffects.L(), eventRender3D.getMatrixStack());
                 }
             }
             catch (Exception exception) {
@@ -576,7 +576,7 @@ extends Mod {
         GuiRenderPrimitives.U = false;
     }
 
-    private int e(EntityLivingBase entityLivingBase, RenderEntityContext renderEntityContext, MutableColor mutableColor, MutableColor mutableColor2, double d) {
+    private int computeNameColor(EntityLivingBase entityLivingBase, RenderEntityContext renderEntityContext, MutableColor mutableColor, MutableColor mutableColor2, double d) {
         int n = 0xFFFFFF;
         if (Vape.INSTANCE.getFriendManager().q.L().booleanValue()) {
             boolean bl = renderEntityContext.K$src$Z$1xmao67();
@@ -608,7 +608,7 @@ extends Mod {
         return n;
     }
 
-    private void u(FontRenderer fontRenderer, ItemStack itemStack, Item item, int n, int n2, double d) {
+    private void drawItemOverlay(FontRenderer fontRenderer, ItemStack itemStack, Item item, int n, int n2, double d) {
         double d2;
         double d3;
         int n3;
@@ -619,13 +619,13 @@ extends Mod {
             block2: for (Map.Entry<Enchantment, Short> entry : map.entrySet()) {
                 Enchantment enchantment = entry.getKey();
                 n4 = entry.getValue().shortValue();
-                for (Enchantment enchantment2 : this.V) {
+                for (Enchantment enchantment2 : this.displayedEnchantments) {
                     if (!enchantment.equals(enchantment2)) continue;
                     String string = enchantment.getTranslatedName(n4).substring(0, 1).toLowerCase();
                     string = n4 > 99 ? string + "99+" : string + n4;
                     double d4 = 0.7;
                     double d5 = 1.0 / d4;
-                    this.A(fontRenderer, string, (int)((double)n * d5), (int)((double)(-2 + (n2 + n5)) * d5), d4, d);
+                    this.drawScaledString(fontRenderer, string, (int)((double)n * d5), (int)((double)(-2 + (n2 + n5)) * d5), d4, d);
                     n5 += 6;
                     continue block2;
                 }
@@ -662,7 +662,7 @@ extends Mod {
         return 0.0;
     }
 
-    private ArrayList<ItemStack> u(EntityLivingBase entityLivingBase) {
+    private ArrayList<ItemStack> collectEquipment(EntityLivingBase entityLivingBase) {
         ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
         if (entityLivingBase == null || entityLivingBase.isNull()) {
             return arrayList;
@@ -688,10 +688,10 @@ extends Mod {
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        this.K0.clear();
+        this.nameCache.clear();
     }
 
-    private boolean c(Entity entity, World world, EntityPlayerSP entityPlayerSP) {
+    private boolean shouldRender(Entity entity, World world, EntityPlayerSP entityPlayerSP) {
         if (entity.isNull() || entityPlayerSP.isNull() || world.isNull()) {
             return false;
         }
@@ -712,33 +712,33 @@ extends Mod {
         if (renderEntityContext.P()) {
             return false;
         }
-        if (this.O.L().booleanValue() && renderEntityContext.D()) {
+        if (this.hideBots.L().booleanValue() && renderEntityContext.D()) {
             return false;
         }
-        if (this.p.L().booleanValue() && renderEntityContext.g()) {
+        if (this.ignoreInvisibles.L().booleanValue() && renderEntityContext.g()) {
             return false;
         }
         if (entity.isInstance(MappedClasses.Yl)) {
-            if (!this.k.L().booleanValue()) {
+            if (!this.renderPlayers.L().booleanValue()) {
                 return false;
             }
-            if ((Double)this.U.K() != 0.0 && renderEntityContext.e() > (Double)this.U.K()) {
+            if ((Double)this.playersMaxDistance.K() != 0.0 && renderEntityContext.e() > (Double)this.playersMaxDistance.K()) {
                 return false;
             }
         }
         if (RotationUtil.m(entity)) {
-            if (!this.b.L().booleanValue()) {
+            if (!this.renderAnimals.L().booleanValue()) {
                 return false;
             }
-            if ((Double)this.J.K() != 0.0 && renderEntityContext.e() > (Double)this.J.K()) {
+            if ((Double)this.animalsMaxDistance.K() != 0.0 && renderEntityContext.e() > (Double)this.animalsMaxDistance.K()) {
                 return false;
             }
         }
         if (RotationUtil.W(entity)) {
-            if (!this.Kw.L().booleanValue()) {
+            if (!this.renderMobs.L().booleanValue()) {
                 return false;
             }
-            return (Double)this.Km.K() == 0.0 || !(renderEntityContext.e() > (Double)this.Km.K());
+            return (Double)this.mobsMaxDistance.K() == 0.0 || !(renderEntityContext.e() > (Double)this.mobsMaxDistance.K());
         }
         return true;
     }
@@ -750,7 +750,7 @@ extends Mod {
         }
         EntityPlayerSP entityPlayerSP = eventEntityRenderState.getThePlayer();
         Entity entity = eventEntityRenderState.getEntity();
-        if (!this.c(entity, eventEntityRenderState.getWorld(), entityPlayerSP)) {
+        if (!this.shouldRender(entity, eventEntityRenderState.getWorld(), entityPlayerSP)) {
             return;
         }
         eventEntityRenderState.getEntityRenderState().Z(new ITextComponent(null));
@@ -758,7 +758,7 @@ extends Mod {
 
     public String Q(EntityPlayerSP entityPlayerSP, RenderEntityContext renderEntityContext, EntityPlayer entityPlayer) {
         PotionEffect potionEffect;
-        String string = K;
+        String string = EQUAL_DAMAGE_LABEL;
         ItemStack itemStack = renderEntityContext.e$src$Lgg_vape_wrapper_impl_ItemStack_$hhijkm();
         float f = 0.0f;
         if (itemStack != null && itemStack.isNotNull()) {
@@ -768,25 +768,25 @@ extends Mod {
                 f = (float)((double)f * (1.375 * (double)((PotionEffect)object2).L()));
             }
         }
-        for (ItemStack object3 : this.u(entityPlayer)) {
+        for (ItemStack object3 : this.collectEquipment(entityPlayer)) {
             f = (float)((double)f + ItemStackScoreUtil.L(object3));
         }
         float f2 = ItemStackScoreUtil.O(entityPlayerSP);
-        if (this.F.L().booleanValue() && entityPlayerSP.i(PotionRegistry.t) && (potionEffect = entityPlayerSP.b(PotionRegistry.t)).k() > 0) {
+        if (this.calculateEffects.L().booleanValue() && entityPlayerSP.i(PotionRegistry.t) && (potionEffect = entityPlayerSP.b(PotionRegistry.t)).k() > 0) {
             f2 = (float)((double)f2 * (1.375 * (double)potionEffect.L()));
         }
-        for (ItemStack itemStack2 : this.u(entityPlayerSP)) {
+        for (ItemStack itemStack2 : this.collectEquipment(entityPlayerSP)) {
             f2 = (float)((double)f2 + ItemStackScoreUtil.L(itemStack2));
         }
         if (f2 > f) {
-            string = C;
+            string = MORE_DAMAGE_LABEL;
         } else if (f2 < f) {
-            string = L;
+            string = LESS_DAMAGE_LABEL;
         }
         return string;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception passthroughException(Exception exception) {
         return exception;
     }
 }

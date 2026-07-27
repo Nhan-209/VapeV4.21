@@ -10,20 +10,20 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class Timer
 extends Mod {
-    private static final long p = 853958073918623760L;
-    private final NumberValue k = NumberValue.create((Object)this, "Speed", "#.##", "", 0.1, 1.07, 2.0, 0.01);
-    private boolean c;
+    private static final long MODULE_ID = 853958073918623760L;
+    private final NumberValue speedValue = NumberValue.create((Object)this, "Speed", "#.##", "", 0.1, 1.07, 2.0, 0.01);
+    private boolean tickParity;
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        this.c = !this.c;
-        Minecraft.getTimer().setTimerSpeed(((Double)this.k.K()).floatValue());
+        this.tickParity = !this.tickParity;
+        Minecraft.getTimer().setTimerSpeed(((Double)this.speedValue.K()).floatValue());
     }
 
     public Timer() {
-        super("Timer", (int)p, Category.w, "Modifies game timer");
+        super("Timer", (int)MODULE_ID, Category.w, "Modifies game timer");
         this.R(false);
-        this.addValue(this.k);
+        this.addValue(this.speedValue);
     }
 
     @Override
@@ -31,7 +31,7 @@ extends Mod {
         Minecraft.getTimer().setTimerSpeed(1.0f);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException guard(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

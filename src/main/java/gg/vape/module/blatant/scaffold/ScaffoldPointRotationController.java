@@ -12,10 +12,10 @@ import gg.vape.wrapper.impl.GuiScreen;
 
 public class ScaffoldPointRotationController
 extends PointRotationController {
-    final int M;
-    boolean j;
-    final double[] D;
-    final Scaffold u;
+    final int direction;
+    boolean rotationApplied;
+    final double[] placePos;
+    final Scaffold scaffold;
 
     private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
@@ -23,10 +23,10 @@ extends PointRotationController {
 
     public ScaffoldPointRotationController(Scaffold scaffold, double d, double d2, double d3, int n, double[] dArray) {
         super(d, d2, d3);
-        this.u = scaffold;
-        this.M = n;
-        this.D = dArray;
-        this.j = false;
+        this.scaffold = scaffold;
+        this.direction = n;
+        this.placePos = dArray;
+        this.rotationApplied = false;
     }
 
     @Override
@@ -36,11 +36,11 @@ extends PointRotationController {
         }
         this.V$src$V$1law04n();
         this.m();
-        EnumFacing enumFacing = Scaffold.B(this.u, this.M);
-        if (RotationUtil.p(enumFacing, new BlockCoordinate(MathUtil.floor(this.D[0]), MathUtil.floor(this.D[1]), MathUtil.floor(this.D[2])))) {
-            if (!this.j) {
-                this.Y(Scaffold.Access.W(this.u, this.M));
-                this.j = true;
+        EnumFacing enumFacing = Scaffold.B(this.scaffold, this.direction);
+        if (RotationUtil.p(enumFacing, new BlockCoordinate(MathUtil.floor(this.placePos[0]), MathUtil.floor(this.placePos[1]), MathUtil.floor(this.placePos[2])))) {
+            if (!this.rotationApplied) {
+                this.Y(Scaffold.Access.W(this.scaffold, this.direction));
+                this.rotationApplied = true;
             }
             this.A();
         }

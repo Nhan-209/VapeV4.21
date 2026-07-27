@@ -10,17 +10,17 @@ import java.util.function.BiPredicate;
 
 public class CompositeInventoryItemMatcher
 extends AbstractInventoryItemMatcher {
-    private InventoryItemCategory L;
-    private final BiPredicate<ItemStack, Item> h;
-    private static String W;
+    private InventoryItemCategory category;
+    private final BiPredicate<ItemStack, Item> matchPredicate;
+    private static String label;
 
     public static void t(String string) {
-        W = string;
+        label = string;
     }
 
     @Override
     public void S(InventoryItemCategory inventoryItemCategory) {
-        this.L = inventoryItemCategory;
+        this.category = inventoryItemCategory;
     }
 
     public static InventoryItemMatcherBuilderFoundation p(InventoryItemMatcherBuilderBase<?> inventoryItemMatcherBuilderBase) {
@@ -29,21 +29,21 @@ extends AbstractInventoryItemMatcher {
 
     @Override
     public InventoryItemCategory G() {
-        return this.L;
+        return this.category;
     }
 
     public static String t() {
-        return W;
+        return label;
     }
 
     public CompositeInventoryItemMatcher(InventoryItemMatcherBuilderFoundation inventoryItemMatcherBuilderFoundation) {
         super(inventoryItemMatcherBuilderFoundation);
-        this.h = inventoryItemMatcherBuilderFoundation.R();
+        this.matchPredicate = inventoryItemMatcherBuilderFoundation.R();
     }
 
     @Override
     public boolean g(ItemStack itemStack, Item item) {
-        return this.h.test(itemStack, item);
+        return this.matchPredicate.test(itemStack, item);
     }
 
     static {

@@ -26,16 +26,16 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MurderMystery
 extends Mod {
-    private final OptionalLimitValue o;
-    private final TimerUtil v;
-    private Object a;
-    private final Queue<String> Z = new ConcurrentLinkedQueue<String>();
-    private final BooleanValue j;
-    private final NumberValue U;
-    private final LimitValue O;
-    private final List<Integer> H = new ArrayList<Integer>();
+    private final OptionalLimitValue messages;
+    private final TimerUtil calloutTimer;
+    private Object trackedWorld;
+    private final Queue<String> pendingMessages = new ConcurrentLinkedQueue<String>();
+    private final BooleanValue callout;
+    private final NumberValue delay;
+    private final LimitValue murdererItems;
+    private final List<Integer> murdererIds = new ArrayList<Integer>();
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -46,19 +46,19 @@ extends Mod {
         if (!entityLivingBase.isInstance(MappedClasses.Yl)) {
             return false;
         }
-        return this.H.contains(entityLivingBase.S());
+        return this.murdererIds.contains(entityLivingBase.S());
     }
 
     @EventHandler
     public void onRender2D(EventRender2D eventRender2D) {
-        if (!this.H.isEmpty()) {
+        if (!this.murdererIds.isEmpty()) {
             ScaledResolution scaledResolution = new ScaledResolution();
             int n = 25;
             FontRenderer fontRenderer = eventRender2D.getFontRenderer();
             fontRenderer.drawStringWithShadow("\u00a7nMurderer List", (double)(scaledResolution.T() / 2 - 20), 15.0, -1);
             for (Object e : Minecraft.theWorld().z()) {
                 EntityPlayer entityPlayer;
-                if (!MappedClasses.Yl.isAssignableFrom(e.getClass()) || MappedClasses.z5.isAssignableFrom(e.getClass()) || !this.H.contains((entityPlayer = new EntityPlayer(e)).S())) continue;
+                if (!MappedClasses.Yl.isAssignableFrom(e.getClass()) || MappedClasses.z5.isAssignableFrom(e.getClass()) || !this.murdererIds.contains((entityPlayer = new EntityPlayer(e)).S())) continue;
                 fontRenderer.drawStringWithShadow(entityPlayer.getName(), (double)(scaledResolution.T() / 2 - 20), (double)n, -1);
                 n += 10;
             }
@@ -67,39 +67,39 @@ extends Mod {
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        if (this.a == null || !Minecraft.theWorld().getObject().equals(this.a)) {
-            this.H.clear();
-            this.Z.clear();
-            this.a = Minecraft.theWorld().getObject();
+        if (this.trackedWorld == null || !Minecraft.theWorld().getObject().equals(this.trackedWorld)) {
+            this.murdererIds.clear();
+            this.pendingMessages.clear();
+            this.trackedWorld = Minecraft.theWorld().getObject();
         }
-        if (this.Z.size() > 0 && this.v.hasTimeElapsed(((Double)this.U.K()).longValue())) {
-            Minecraft.thePlayer().sendChatMessage(this.Z.poll());
-            this.v.reset();
+        if (this.pendingMessages.size() > 0 && this.calloutTimer.hasTimeElapsed(((Double)this.delay.K()).longValue())) {
+            Minecraft.thePlayer().sendChatMessage(this.pendingMessages.poll());
+            this.calloutTimer.reset();
         }
         for (Object e : Minecraft.theWorld().z()) {
             EntityPlayer entityPlayer;
-            if (!MappedClasses.Yl.isAssignableFrom(e.getClass()) || MappedClasses.z5.isAssignableFrom(e.getClass()) || this.H.contains((entityPlayer = new EntityPlayer(e)).S()) || !entityPlayer.getHeldItemHand().isNotNull() || !this.O.A(entityPlayer.getHeldItemHand())) continue;
-            this.H.add(entityPlayer.S());
-            if (!this.j.L().booleanValue()) continue;
-            List<String> list = this.o.D();
+            if (!MappedClasses.Yl.isAssignableFrom(e.getClass()) || MappedClasses.z5.isAssignableFrom(e.getClass()) || this.murdererIds.contains((entityPlayer = new EntityPlayer(e)).S()) || !entityPlayer.getHeldItemHand().isNotNull() || !this.murdererItems.A(entityPlayer.getHeldItemHand())) continue;
+            this.murdererIds.add(entityPlayer.S());
+            if (!this.callout.L().booleanValue()) continue;
+            List<String> list = this.messages.D();
             int n = (int)Math.round((double)list.size() * Math.random());
             if (n >= list.size()) {
                 n = list.size() - 1;
             }
             String string = list.get(n).replace("%s", entityPlayer.getName());
-            this.Z.add(string);
+            this.pendingMessages.add(string);
         }
     }
 
     public MurderMystery() {
         super("MurdererFinder", -11859, Category.m, "Shows a list of suspected Murderers.");
-        this.j = BooleanValue.create(this, "Callout", false, "Calls out who the suspected murderer is in chat.");
-        this.o = OptionalLimitValue.Q(this, "murder-messages", "Messages", "Use %s to use the murderer's name", OptionalLimitValue.O, Arrays.asList("%s is the murderer!", "i saw that %s!"));
-        this.U = NumberValue.E(this, "Delay", "#", "ms", 0.0, 3100.0, 5000.0, "Delay between murderer callouts.");
-        this.O = LimitValue.n(this, "murderer-items", "Murderer Items", LimitValue.G, Arrays.asList(new ItemLimitData("swords"), new ItemLimitData("shovels"), new ItemLimitData("axes"), new ItemLimitData("pickaxes"), new ItemLimitData(288), new ItemLimitData(396), new ItemLimitData(421), new ItemLimitData(398), new ItemLimitData(369), new ItemLimitData(75), new ItemLimitData(50), new ItemLimitData(352)));
-        this.v = new TimerUtil();
-        this.j.K(this.U, this.o);
-        this.addValue(this.j, this.U, this.o, this.O);
+        this.callout = BooleanValue.create(this, "Callout", false, "Calls out who the suspected murderer is in chat.");
+        this.messages = OptionalLimitValue.Q(this, "murder-messages", "Messages", "Use %s to use the murderer's name", OptionalLimitValue.O, Arrays.asList("%s is the murderer!", "i saw that %s!"));
+        this.delay = NumberValue.E(this, "Delay", "#", "ms", 0.0, 3100.0, 5000.0, "Delay between murderer callouts.");
+        this.murdererItems = LimitValue.n(this, "murderer-items", "Murderer Items", LimitValue.G, Arrays.asList(new ItemLimitData("swords"), new ItemLimitData("shovels"), new ItemLimitData("axes"), new ItemLimitData("pickaxes"), new ItemLimitData(288), new ItemLimitData(396), new ItemLimitData(421), new ItemLimitData(398), new ItemLimitData(369), new ItemLimitData(75), new ItemLimitData(50), new ItemLimitData(352)));
+        this.calloutTimer = new TimerUtil();
+        this.callout.K(this.delay, this.messages);
+        this.addValue(this.callout, this.delay, this.messages, this.murdererItems);
     }
 }
 

@@ -28,33 +28,33 @@ implements NumericFilterCondition<EnchantmentFilterCondition> {
     public EnchantmentFilterCondition w() {
         return this.h();
     }
-    private EnchantmentFilterMode W = EnchantmentFilterMode.HAS;
-    private int b = 1;
-    private String G;
-    private ComparisonOperator C = ComparisonOperator.EQUALS;
+    private EnchantmentFilterMode mode = EnchantmentFilterMode.HAS;
+    private int level = 1;
+    private String enchantment;
+    private ComparisonOperator operator = ComparisonOperator.EQUALS;
 
     public EnchantmentFilterMode v() {
-        return this.W;
+        return this.mode;
     }
 
     public EnchantmentFilterCondition l(String string) {
-        this.G = string;
+        this.enchantment = string;
         return this;
     }
 
     @Override
     public String k() {
-        return String.valueOf(this.b);
+        return String.valueOf(this.level);
     }
 
     public EnchantmentFilterCondition y(int n) {
-        this.b = n;
+        this.level = n;
         return this;
     }
 
     @Override
     public boolean g(ItemStack itemStack) {
-        if (this.G == null) {
+        if (this.enchantment == null) {
             return false;
         }
         if (itemStack.isNull()) {
@@ -66,12 +66,12 @@ implements NumericFilterCondition<EnchantmentFilterCondition> {
         }
         for (Map.Entry<Enchantment, Short> entry : map.entrySet()) {
             Enchantment enchantment = entry.getKey();
-            if (!StringUtils.Q(enchantment.getTranslatedName(1)).equalsIgnoreCase(this.G)) continue;
-            if (this.W == EnchantmentFilterMode.HAS) {
+            if (!StringUtils.Q(enchantment.getTranslatedName(1)).equalsIgnoreCase(this.enchantment)) continue;
+            if (this.mode == EnchantmentFilterMode.HAS) {
                 return true;
             }
-            if (this.W != EnchantmentFilterMode.LEVEL) continue;
-            return this.C.p(entry.getValue().shortValue(), this.b);
+            if (this.mode != EnchantmentFilterMode.LEVEL) continue;
+            return this.operator.p(entry.getValue().shortValue(), this.level);
         }
         return false;
     }
@@ -87,60 +87,60 @@ implements NumericFilterCondition<EnchantmentFilterCondition> {
     @Override
     public JsonObject L() {
         JsonObject jsonObject = NumericFilterCondition.super.L();
-        jsonObject.addProperty("mode", this.W.getName());
-        jsonObject.addProperty("enchantment", this.G);
-        jsonObject.addProperty("level", (Number)this.b);
+        jsonObject.addProperty("mode", this.mode.getName());
+        jsonObject.addProperty("enchantment", this.enchantment);
+        jsonObject.addProperty("level", (Number)this.level);
         return jsonObject;
     }
 
     public String A() {
-        return this.G;
+        return this.enchantment;
     }
 
     @Override
     public ComparisonOperator p() {
-        return this.C;
+        return this.operator;
     }
 
-    private static NumberFormatException a(NumberFormatException numberFormatException) {
+    private static NumberFormatException rethrow(NumberFormatException numberFormatException) {
         return numberFormatException;
     }
 
     public EnchantmentFilterCondition j(String string) throws NumberFormatException {
-        this.b = Integer.parseInt(string);
+        this.level = Integer.parseInt(string);
         return this;
     }
 
     public EnchantmentFilterCondition(JsonObject jsonObject) {
-        this.W = EnchantmentFilterMode.V(ConfigJsonUtils.P(jsonObject, "mode"));
-        this.G = ConfigJsonUtils.P(jsonObject, "enchantment");
+        this.mode = EnchantmentFilterMode.V(ConfigJsonUtils.P(jsonObject, "mode"));
+        this.enchantment = ConfigJsonUtils.P(jsonObject, "enchantment");
         Integer n = ConfigJsonUtils.r(jsonObject, "level");
-        this.b = n != null ? n : 1;
-        this.C = ComparisonOperator.a(jsonObject.get("operator").getAsString());
+        this.level = n != null ? n : 1;
+        this.operator = ComparisonOperator.a(jsonObject.get("operator").getAsString());
     }
 
     public EnchantmentFilterCondition M(EnchantmentFilterMode enchantmentFilterMode) {
-        this.W = enchantmentFilterMode;
+        this.mode = enchantmentFilterMode;
         return this;
     }
 
     public int z() {
-        return this.b;
+        return this.level;
     }
 
     public EnchantmentFilterCondition h() {
-        return new EnchantmentFilterCondition(this.W, this.G, this.b, this.C);
+        return new EnchantmentFilterCondition(this.mode, this.enchantment, this.level, this.operator);
     }
 
     public EnchantmentFilterCondition(EnchantmentFilterMode enchantmentFilterMode, String string, int n, ComparisonOperator comparisonOperator) {
-        this.W = enchantmentFilterMode;
-        this.G = string;
-        this.b = n;
-        this.C = comparisonOperator;
+        this.mode = enchantmentFilterMode;
+        this.enchantment = string;
+        this.level = n;
+        this.operator = comparisonOperator;
     }
 
     public EnchantmentFilterCondition D(ComparisonOperator comparisonOperator) {
-        this.C = comparisonOperator;
+        this.operator = comparisonOperator;
         return this;
     }
 }

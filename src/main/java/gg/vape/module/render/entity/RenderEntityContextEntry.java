@@ -5,46 +5,46 @@ import gg.vape.module.render.entity.RenderEntityContextEntrySyntheticConstructor
 import java.awt.Color;
 
 public class RenderEntityContextEntry {
-    private Color L;
-    private final RenderEntityContext A;
-    private double Q = 1.0;
-    private boolean q;
+    private Color color;
+    private final RenderEntityContext context;
+    private double scale = 1.0;
+    private boolean flag;
 
-    private RenderEntityContextEntry(RenderEntityContext i_02, Color color) {
-        this.A = i_02;
-        this.L = color;
+    private RenderEntityContextEntry(RenderEntityContext renderContext, Color color) {
+        this.context = renderContext;
+        this.color = color;
     }
 
     public double b() {
-        return this.Q;
+        return this.scale;
     }
 
     public boolean F() {
-        return this.q;
+        return this.flag;
     }
 
-    public RenderEntityContextEntry(RenderEntityContext i_02, Color color, RenderEntityContextEntrySyntheticConstructorMarker uY) {
-        this(i_02, color);
+    public RenderEntityContextEntry(RenderEntityContext renderContext, Color color, RenderEntityContextEntrySyntheticConstructorMarker uY) {
+        this(renderContext, color);
     }
 
     public RenderEntityContext Y() {
-        return this.A;
+        return this.context;
     }
 
     public void Q(Color color) {
-        this.L = color;
+        this.color = color;
     }
 
     public void S(double d) {
-        this.Q = d;
+        this.scale = d;
     }
 
     public void I(boolean bl) {
-        this.q = bl;
+        this.flag = bl;
     }
 
     public Color y() {
-        return this.L;
+        return this.color;
     }
 }
 

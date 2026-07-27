@@ -12,9 +12,9 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class SafeWalk
 extends Mod {
-    private boolean L;
+    private boolean sneakCancelled;
     private static final long k = -5388886013077358019L;
-    private final BooleanValue p = BooleanValue.create(this, "Direction Check", true, "Checks if you're walking forwards and it'll allow you to walk off the edge");
+    private final BooleanValue directionCheck = BooleanValue.create(this, "Direction Check", true, "Checks if you're walking forwards and it'll allow you to walk off the edge");
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
@@ -26,27 +26,27 @@ extends Mod {
     }
 
     @EventHandler
-    public void m(EventPostMove eventPostMove) {
+    public void onPostMove(EventPostMove eventPostMove) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        entityPlayerSP.movementInput().setCancelled(this.L);
+        entityPlayerSP.movementInput().setCancelled(this.sneakCancelled);
     }
 
     @EventHandler
-    public void C(EventPreMove eventPreMove) {
+    public void onPreMove(EventPreMove eventPreMove) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        this.L = entityPlayerSP.movementInput().D$src$Z$v5d6e8();
-        boolean bl = true;
-        if (this.p.L().booleanValue() && !entityPlayerSP.P() && entityPlayerSP.F() > 0.0f && entityPlayerSP.N$src$F$14ypudi() == 0.0f) {
-            bl = false;
+        this.sneakCancelled = entityPlayerSP.movementInput().D$src$Z$v5d6e8();
+        boolean shouldSafeWalk = true;
+        if (this.directionCheck.L().booleanValue() && !entityPlayerSP.P() && entityPlayerSP.F() > 0.0f && entityPlayerSP.N$src$F$14ypudi() == 0.0f) {
+            shouldSafeWalk = false;
         }
-        if (bl) {
+        if (shouldSafeWalk) {
             entityPlayerSP.movementInput().setCancelled(true);
         }
     }
 
     public SafeWalk() {
         super("SafeWalk", (int)k, Category.m, "Helps you from falling off the edge.");
-        this.addValue(this.p);
+        this.addValue(this.directionCheck);
     }
 }
 

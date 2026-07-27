@@ -22,24 +22,24 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class ScaffoldEdgeSneakHelper
 extends SubModule<Scaffold> {
-    private final TimerUtil K;
-    private long O;
-    private final Scaffold D;
-    private final RandomValue Z = RandomValue.G(this, "Sneak delay", "#", "", 0.0, 100.0, 200.0, 500.0, 1.0, "Delay until standing after sneaking");
-    private boolean b;
+    private final TimerUtil sneakTimer;
+    private long sneakDelayMs;
+    private final Scaffold scaffold;
+    private final RandomValue sneakDelay = RandomValue.G(this, "Sneak delay", "#", "", 0.0, 100.0, 200.0, 500.0, 1.0, "Delay until standing after sneaking");
+    private boolean sneakKeyWasDown;
 
     @Override
     public void onEnable() {
-        this.K.reset();
-        this.O = (long)this.Z.B();
+        this.sneakTimer.reset();
+        this.sneakDelayMs = (long)this.sneakDelay.B();
     }
 
     @EventHandler
     public void onRender2D(EventRender2D eventRender2D) {
-        Scaffold.Access.V$src$V$dhg0vg(this.D);
+        Scaffold.Access.V$src$V$dhg0vg(this.scaffold);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -55,72 +55,73 @@ extends SubModule<Scaffold> {
         if (!eventPreEntityUpdate.getEntity().equals(Minecraft.thePlayer())) {
             return;
         }
-        String string = "Client thread";
+        String threadName = "Client thread";
         if (ForgeVersion.MC_1_16_5.d()) {
-            string = "Render thread";
+            threadName = "Render thread";
         }
-        if (!Thread.currentThread().getName().equals(string)) {
+        if (!Thread.currentThread().getName().equals(threadName)) {
             return;
         }
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         GameSettings gameSettings = Minecraft.gameSettings();
-        KeyBinding keyBinding = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
+        KeyBinding sneakKey = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
         if (entityPlayerSP.S$src$Z$151gttj()) {
-            SharedModuleControlClaims.I.X(this.D);
+            SharedModuleControlClaims.I.X(this.scaffold);
             return;
         }
-        if (Scaffold.Access.J$src$Z$dauhuk(this.D) && (double)entityPlayerSP.V() < Scaffold.Access.V$src$D$dhg0fy(this.D)) {
-            SharedModuleControlClaims.I.X(this.D);
+        if (Scaffold.Access.J$src$Z$dauhuk(this.scaffold) && (double)entityPlayerSP.V() < Scaffold.Access.V$src$D$dhg0fy(this.scaffold)) {
+            SharedModuleControlClaims.I.X(this.scaffold);
             return;
         }
-        this.b = keyBinding.isKeyDown();
-        boolean bl2 = false;
-        float f = 0.0f;
-        KeyBinding keyBinding2 = gameSettings.s();
-        KeyBinding keyBinding3 = gameSettings.Y();
-        if (ClientSettings.B(keyBinding2)) {
-            f += -1.0f;
+        this.sneakKeyWasDown = sneakKey.isKeyDown();
+        boolean shouldSneak = false;
+        float forwardInput = 0.0f;
+        KeyBinding forwardKey = gameSettings.s();
+        KeyBinding backKey = gameSettings.Y();
+        if (ClientSettings.B(forwardKey)) {
+            forwardInput += -1.0f;
         }
-        if (ClientSettings.B(keyBinding3)) {
-            f += 1.0f;
+        if (ClientSettings.B(backKey)) {
+            forwardInput += 1.0f;
         }
-        boolean bl3 = bl = f <= 0.0f;
-        if (bl && entityPlayerSP.b$src$Z$fqlxe4()) {
-            AxisAlignedBB axisAlignedBB;
+        boolean notMovingForward;
+        boolean atEdge = notMovingForward = forwardInput <= 0.0f;
+        if (notMovingForward && entityPlayerSP.b$src$Z$fqlxe4()) {
+            AxisAlignedBB boundingBox;
             if (ForgeVersion.MC_1_8_9.d()) {
-                axisAlignedBB = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+                boundingBox = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
             } else {
-                AxisAlignedBB axisAlignedBB2 = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
-                axisAlignedBB = axisAlignedBB2.copy();
+                AxisAlignedBB currentBox = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+                boundingBox = currentBox.copy();
             }
-            double d = entityPlayerSP.t();
-            double d2 = ForgeVersion.MC_1_20_6.d() ? 1.0 : -1.0;
-            double d3 = entityPlayerSP.T();
-            AxisAlignedBB axisAlignedBB3 = axisAlignedBB.expand(-0.2, 0.0, -0.2).k(d, d2, d3);
-            int n = Minecraft.theWorld().i(entityPlayerSP, axisAlignedBB3).size();
-            if (n == 0) {
-                bl2 = true;
-                SharedModuleControlClaims.I.d(this.D);
+            double motionX = entityPlayerSP.t();
+            double offsetY = ForgeVersion.MC_1_20_6.d() ? 1.0 : -1.0;
+            double motionZ = entityPlayerSP.T();
+            AxisAlignedBB checkBox = boundingBox.expand(-0.2, 0.0, -0.2).k(motionX, offsetY, motionZ);
+            int collisionCount = Minecraft.theWorld().i(entityPlayerSP, checkBox).size();
+            if (collisionCount == 0) {
+                shouldSneak = true;
+                SharedModuleControlClaims.I.d(this.scaffold);
             }
         }
-        boolean bl4 = false;
-        if (SharedModuleControlClaims.I.U(this.D) && (f > 0.0f || !bl2 && this.K.hasTimeElapsed(500L))) {
-            SharedModuleControlClaims.I.X(this.D);
+        boolean skipTimerReset = false;
+        if (SharedModuleControlClaims.I.U(this.scaffold) && (forwardInput > 0.0f || !shouldSneak && this.sneakTimer.hasTimeElapsed(500L))) {
+            SharedModuleControlClaims.I.X(this.scaffold);
         }
-        if (!bl2 && !this.K.hasTimeElapsed(this.O) && this.O > 30L) {
-            bl2 = true;
-            bl4 = true;
+        if (!shouldSneak && !this.sneakTimer.hasTimeElapsed(this.sneakDelayMs) && this.sneakDelayMs > 30L) {
+            shouldSneak = true;
+            skipTimerReset = true;
         }
-        if (bl2 && entityPlayerSP.b$src$Z$fqlxe4()) {
+        if (shouldSneak && entityPlayerSP.b$src$Z$fqlxe4()) {
             if (!entityPlayerSP.P()) {
-                this.O = (long)this.Z.B();
+                this.sneakDelayMs = (long)this.sneakDelay.B();
             }
-            KeyBindingHelper.d(keyBinding, true);
-            if (!bl4) {
-                this.K.reset();
+            KeyBindingHelper.d(sneakKey, true);
+            if (!skipTimerReset) {
+                this.sneakTimer.reset();
             }
-        } else if (!this.b) {
-            KeyBindingHelper.d(keyBinding, false);
+        } else if (!this.sneakKeyWasDown) {
+            KeyBindingHelper.d(sneakKey, false);
         }
     }
 
@@ -136,18 +137,18 @@ extends SubModule<Scaffold> {
         if (entityPlayerSP.S$src$Z$151gttj()) {
             return;
         }
-        if (Scaffold.Access.J$src$Z$dauhuk(this.D) && (double)entityPlayerSP.V() < Scaffold.Access.V$src$D$dhg0fy(this.D)) {
+        if (Scaffold.Access.J$src$Z$dauhuk(this.scaffold) && (double)entityPlayerSP.V() < Scaffold.Access.V$src$D$dhg0fy(this.scaffold)) {
             return;
         }
         GameSettings gameSettings = Minecraft.gameSettings();
-        KeyBinding keyBinding = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
-        KeyBindingHelper.d(keyBinding, this.b);
+        KeyBinding sneakKey = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
+        KeyBindingHelper.d(sneakKey, this.sneakKeyWasDown);
     }
 
     public ScaffoldEdgeSneakHelper(Mod mod, String string) {
         super(mod, string);
-        this.D = (Scaffold)this.getParent();
-        this.K = new TimerUtil();
-        this.addValue(this.Z);
+        this.scaffold = (Scaffold)this.getParent();
+        this.sneakTimer = new TimerUtil();
+        this.addValue(this.sneakDelay);
     }
 }

@@ -22,25 +22,25 @@ import java.util.Map;
 
 public class Fly
 extends Mod {
-    private final NumberValue H;
-    private static final Map j;
-    private static final long k;
-    private static final String[] b;
-    private final NumberValue D = NumberValue.create(this, "Speed", "#.#", "", 0.1, 0.5, 5.0, 0.1, "Speed for Normal fly mode.");
-    private static final String[] c;
-    private static final long a;
+    private final NumberValue verticalSpeed;
+    private static final Map stringMap;
+    private static final long longKeyB;
+    private static final String[] stringTableA;
+    private final NumberValue speed = NumberValue.create(this, "Speed", "#.#", "", 0.1, 0.5, 5.0, 0.1, "Speed for Normal fly mode.");
+    private static final String[] stringTableB;
+    private static final long longKeyA;
 
-    private static CallSite a(MethodHandles.Lookup lookup, String string, MethodType methodType) {
+    private static CallSite bootstrap(MethodHandles.Lookup lookup, String string, MethodType methodType) {
         return new MutableCallSite(methodType);
     }
 
-    private double u(double d, double d2) {
+    private double randomInRange(double d, double d2) {
         return Math.random() * (d - d2) + d2;
     }
 
-    private static Object a(MethodHandles.Lookup lookup, MutableCallSite mutableCallSite, String string, Object[] objectArray) {
+    private static Object invokeDynamicTarget(MethodHandles.Lookup lookup, MutableCallSite mutableCallSite, String string, Object[] objectArray) {
         if (objectArray != null && objectArray.length >= 2 && objectArray[0] instanceof Integer && objectArray[1] instanceof Long) {
-            return Fly.a((Integer)objectArray[0], (Long)objectArray[1]);
+            return Fly.decodeStringPair((Integer)objectArray[0], (Long)objectArray[1]);
         }
         return "";
     }
@@ -57,7 +57,7 @@ extends Mod {
         Vape.INSTANCE.getClientSettings().k(this);
     }
 
-    private void F(EventMove eventMove, double d) {
+    private void applyHorizontalMove(EventMove eventMove, double d) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         double d2 = entityPlayerSP.movementInput().D();
         double d3 = entityPlayerSP.movementInput().T();
@@ -83,11 +83,11 @@ extends Mod {
         eventMove.setZ(d2 * d * Math.sin(Math.toRadians(f + 90.0f)) - d3 * d * Math.cos(Math.toRadians(f + 90.0f)));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private static String a(byte[] byArray) {
+    private static String decodeUtf8(byte[] byArray) {
         int n = byArray.length;
         char[] cArray = new char[n];
         int n2 = 0;
@@ -129,9 +129,9 @@ extends Mod {
 
     public Fly() {
         super("Fly", 49630, Category.w, "Makes you go zoom.");
-        this.H = NumberValue.create(this, "Vertical Speed", "#.#", "", 0.1, 0.2, 5.0, 0.1, "Speed for Normal vertical fly mode.");
+        this.verticalSpeed = NumberValue.create(this, "Vertical Speed", "#.#", "", 0.1, 0.2, 5.0, 0.1, "Speed for Normal vertical fly mode.");
         this.R(false);
-        this.addValue(this.D, this.H);
+        this.addValue(this.speed, this.verticalSpeed);
     }
 
     @Override
@@ -142,22 +142,22 @@ extends Mod {
     @EventHandler
     public void M(EventPreMove eventPreMove) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        double d = Minecraft.gameSettings().O().u() ? (Double)this.H.java_lang_Object_K() : (Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0().u() ? -((Double)this.H.java_lang_Object_K()).doubleValue() : 0.0);
+        double d = Minecraft.gameSettings().O().u() ? (Double)this.verticalSpeed.java_lang_Object_K() : (Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0().u() ? -((Double)this.verticalSpeed.java_lang_Object_K()).doubleValue() : 0.0);
         eventPreMove.setY(d);
         entityPlayerSP.k(d);
-        this.F(eventPreMove, Math.max((Double)this.D.java_lang_Object_K(), this.G()));
+        this.applyHorizontalMove(eventPreMove, Math.max((Double)this.speed.java_lang_Object_K(), this.G()));
     }
 
-    private static String a(int n, long l) {
+    private static String decodeStringPair(int n, long l) {
         return "";
     }
 
     static {
-        a = 0L;
-        k = 0L;
-        j = new HashMap(13);
-        b = new String[8];
-        c = new String[8];
+        longKeyA = 0L;
+        longKeyB = 0L;
+        stringMap = new HashMap(13);
+        stringTableA = new String[8];
+        stringTableB = new String[8];
     }
 }
 

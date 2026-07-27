@@ -29,69 +29,69 @@ import java.util.Random;
 
 public class VelocityPacketMode
 extends Mod {
-    private static final long A = 6243151782707490976L;
-    private long p;
-    private long S;
-    private final RandomValue j;
-    private final Queue<EventPacketReceive> v;
-    private final NumberValue F;
-    private final RandomValue C;
-    private long k;
-    private double s;
-    private Entity r;
-    private final PacketDispatchGuard L = PacketDispatchGuard.b;
-    private final BooleanValue D;
-    private int a = 0;
-    private SharedModuleControlClaimSecondary V;
+    private static final long MODULE_ID = 6243151782707490976L;
+    private long delayMillis;
+    private long releaseTime;
+    private final RandomValue airDelay;
+    private final Queue<EventPacketReceive> heldPackets;
+    private final NumberValue chance;
+    private final RandomValue groundDelay;
+    private long lastHitTime;
+    private double distanceToTarget;
+    private Entity target;
+    private final PacketDispatchGuard dispatchGuard = PacketDispatchGuard.b;
+    private final BooleanValue waterCheck;
+    private int hitCount = 0;
+    private SharedModuleControlClaimSecondary controlClaim;
 
-    private boolean C$src$Z$14l94gn() {
-        int n = MathUtil.randomExclusiveUpper(new Random(), 0, 100);
-        return (double)n >= 100.0 - (Double)this.F.K();
+    private boolean rollChance() {
+        int roll = MathUtil.randomExclusiveUpper(new Random(), 0, 100);
+        return (double)roll >= 100.0 - (Double)this.chance.K();
     }
 
     public VelocityPacketMode() {
-        super("KnockbackDelay", (int)A, Category.Y, "Delays incoming knockback packets");
-        this.v = new LinkedList<EventPacketReceive>();
-        this.F = NumberValue.E(this, "Chance", "#", "%", 0.0, 40.0, 100.0, "Chance of delaying knockback");
-        this.j = RandomValue.create(this, "Air delay", "#", "", 0.0, 50.0, 100.0, 500.0);
-        this.C = RandomValue.create(this, "Ground delay", "#", "", 0.0, 200.0, 250.0, 500.0);
-        this.D = BooleanValue.create(this, "Water check", false, "Won't delay knockback if in water");
-        this.V = SharedModuleControlClaims.d;
-        this.addValue(this.F, this.j, this.C, this.D);
-        this.F.C(0);
-        this.V.l(this, 5);
+        super("KnockbackDelay", (int)MODULE_ID, Category.Y, "Delays incoming knockback packets");
+        this.heldPackets = new LinkedList<EventPacketReceive>();
+        this.chance = NumberValue.E(this, "Chance", "#", "%", 0.0, 40.0, 100.0, "Chance of delaying knockback");
+        this.airDelay = RandomValue.create(this, "Air delay", "#", "", 0.0, 50.0, 100.0, 500.0);
+        this.groundDelay = RandomValue.create(this, "Ground delay", "#", "", 0.0, 200.0, 250.0, 500.0);
+        this.waterCheck = BooleanValue.create(this, "Water check", false, "Won't delay knockback if in water");
+        this.controlClaim = SharedModuleControlClaims.d;
+        this.addValue(this.chance, this.airDelay, this.groundDelay, this.waterCheck);
+        this.chance.C(0);
+        this.controlClaim.l(this, 5);
     }
 
     @Override
     public String r() {
-        if (!this.v.isEmpty()) {
+        if (!this.heldPackets.isEmpty()) {
             return "\u00a7cHolding";
         }
-        return this.C.c() + "ms";
+        return this.groundDelay.c() + "ms";
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private boolean e() {
+    private boolean isInWater() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
             return true;
         }
-        return this.D.L() != false && entityPlayerSP.h$src$Z$ftwoya();
+        return this.waterCheck.L() != false && entityPlayerSP.h$src$Z$ftwoya();
     }
 
-    private boolean M$src$Z$14qr2e9() {
-        return !this.e() && this.C$src$Z$14l94gn();
+    private boolean shouldDelay() {
+        return !this.isInWater() && this.rollChance();
     }
 
-    public EntityLivingBase A(double d, double d2) {
-        EntityLivingBase entityLivingBase = RotationUtil.u(d2, d / 2.0);
+    public EntityLivingBase findTargetInRange(double fov, double range) {
+        EntityLivingBase entityLivingBase = RotationUtil.u(range, fov / 2.0);
         if (entityLivingBase == null) {
             return null;
         }
-        if (RotationUtil.o(Minecraft.thePlayer(), entityLivingBase, d2, 90.0, true)) {
+        if (RotationUtil.o(Minecraft.thePlayer(), entityLivingBase, range, 90.0, true)) {
             return entityLivingBase;
         }
         return null;
@@ -101,58 +101,58 @@ extends Mod {
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
         Packet packet;
         int n = ClientSettings.C();
-        if (eventPacketReceive.getWorld().isNotNull() && eventPacketReceive.getThePlayer().isNotNull() && !this.L.R(packet = eventPacketReceive.getPacket())) {
-            boolean bl = this.c(packet, eventPacketReceive.getThePlayer());
-            if (bl) {
-                if (this.r == null || !this.M$src$Z$14qr2e9()) {
-                    bl = false;
+        if (eventPacketReceive.getWorld().isNotNull() && eventPacketReceive.getThePlayer().isNotNull() && !this.dispatchGuard.R(packet = eventPacketReceive.getPacket())) {
+            boolean isVelocity = this.containsPlayerVelocity(packet, eventPacketReceive.getThePlayer());
+            if (isVelocity) {
+                if (this.target == null || !this.shouldDelay()) {
+                    isVelocity = false;
                 } else {
-                    this.k = System.currentTimeMillis();
+                    this.lastHitTime = System.currentTimeMillis();
                 }
             }
-            if (bl && this.v.isEmpty()) {
-                this.p = this.a < 3 ? (long)this.j.B() : (long)this.C.B();
-                if (this.p > 0L) {
-                    this.s = eventPacketReceive.getThePlayer().getDistanceToEntity(this.r);
-                    this.S = System.currentTimeMillis() + this.p;
-                    this.v.add(eventPacketReceive);
+            if (isVelocity && this.heldPackets.isEmpty()) {
+                this.delayMillis = this.hitCount < 3 ? (long)this.airDelay.B() : (long)this.groundDelay.B();
+                if (this.delayMillis > 0L) {
+                    this.distanceToTarget = eventPacketReceive.getThePlayer().getDistanceToEntity(this.target);
+                    this.releaseTime = System.currentTimeMillis() + this.delayMillis;
+                    this.heldPackets.add(eventPacketReceive);
                     eventPacketReceive.setCancelled(true);
-                    this.V.c();
+                    this.controlClaim.c();
                 }
-            } else if (!this.v.isEmpty()) {
-                this.v.add(eventPacketReceive);
+            } else if (!this.heldPackets.isEmpty()) {
+                this.heldPackets.add(eventPacketReceive);
                 eventPacketReceive.setCancelled(true);
-                this.V.c();
+                this.controlClaim.c();
             }
-            if (this.v.isEmpty()) {
-                long l = System.currentTimeMillis() - this.S;
-                this.L.J(packet);
-                this.V.Q();
+            if (this.heldPackets.isEmpty()) {
+                long l = System.currentTimeMillis() - this.releaseTime;
+                this.dispatchGuard.J(packet);
+                this.controlClaim.Q();
             }
         }
     }
 
-    private void U() {
-        if (this.v.isEmpty()) {
+    private void flushHeldPackets() {
+        if (this.heldPackets.isEmpty()) {
             return;
         }
-        if (System.currentTimeMillis() >= this.S) {
+        if (System.currentTimeMillis() >= this.releaseTime) {
             NetHandlerPlayClientImpl netHandlerPlayClientImpl = Minecraft.thePlayer().sendQueue();
-            for (EventPacketReceive eventPacketReceive : this.v) {
-                this.L.l(eventPacketReceive.getPacket(), netHandlerPlayClientImpl);
+            for (EventPacketReceive eventPacketReceive : this.heldPackets) {
+                this.dispatchGuard.l(eventPacketReceive.getPacket(), netHandlerPlayClientImpl);
             }
-            this.v.clear();
+            this.heldPackets.clear();
         }
     }
 
-    private boolean c(Packet packet, EntityPlayerSP entityPlayerSP) {
-        boolean[] blArray = new boolean[]{false};
-        Packet.n(packet, arg_0 -> this.lambda$containsPlayerVelocity$1(blArray, entityPlayerSP, arg_0));
-        return blArray[0];
+    private boolean containsPlayerVelocity(Packet packet, EntityPlayerSP entityPlayerSP) {
+        boolean[] found = new boolean[]{false};
+        Packet.n(packet, arg_0 -> this.checkVelocityPacket(found, entityPlayerSP, arg_0));
+        return found[0];
     }
 
-    private void lambda$onClientTick$0() {
-        this.U();
+    private void flushOnTick() {
+        this.flushHeldPackets();
     }
 
     @EventHandler
@@ -161,17 +161,17 @@ extends Mod {
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        PacketDispatchGuard.B(this::lambda$onClientTick$0);
+        PacketDispatchGuard.B(this::flushOnTick);
         if (eventPreTick.getWorld().isNotNull() && eventPreTick.getThePlayer().isNotNull()) {
-            this.r = this.A(90.0, 5.0);
-            this.a = eventPreTick.getThePlayer().b$src$Z$fqlxe4() ? ++this.a : 0;
+            this.target = this.findTargetInRange(90.0, 5.0);
+            this.hitCount = eventPreTick.getThePlayer().b$src$Z$fqlxe4() ? ++this.hitCount : 0;
         }
     }
 
-    private void lambda$containsPlayerVelocity$1(boolean[] blArray, EntityPlayerSP entityPlayerSP, Packet packet) {
+    private void checkVelocityPacket(boolean[] found, EntityPlayerSP entityPlayerSP, Packet packet) {
         Entity entity;
-        if (!blArray[0] && (entity = AttackPacketTimingTracker.F(packet)) != null && entity.equals(entityPlayerSP) && System.currentTimeMillis() - this.k > 475L) {
-            blArray[0] = true;
+        if (!found[0] && (entity = AttackPacketTimingTracker.F(packet)) != null && entity.equals(entityPlayerSP) && System.currentTimeMillis() - this.lastHitTime > 475L) {
+            found[0] = true;
         }
     }
 }

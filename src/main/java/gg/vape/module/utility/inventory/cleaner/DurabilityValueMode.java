@@ -14,16 +14,16 @@ DescribedOption {
     PERCENTAGE("Percentage", "The durability of the item as a percentage"),
     VALUE("Value", "The durability of the item as the direct value");
 
-    private static final DurabilityValueMode[] L;
-    private final String Q;
+    private static final DurabilityValueMode[] valuesCache;
+    private final String description;
     public static final @UnmodifiableView List<DurabilityValueMode> VALUES;
-    private final String K;
+    private final String name;
 
     static {
         String[] stringArray = new String[]{"Value", "The durability of the item as a percentage", "VALUE", "The durability of the item as the direct value", "Percentage", "PERCENTAGE"};
 
 
-        L = new DurabilityValueMode[]{PERCENTAGE, VALUE};
+        valuesCache = new DurabilityValueMode[]{PERCENTAGE, VALUE};
         VALUES = Arrays.asList(DurabilityValueMode.values());
     }
 
@@ -33,17 +33,17 @@ DescribedOption {
 
     @Override
     public String getName() {
-        return this.K;
+        return this.name;
     }
 
     private DurabilityValueMode(String string2, String string3) {
-        this.K = string2;
-        this.Q = string3;
+        this.name = string2;
+        this.description = string3;
     }
 
     @Override
     public String E() {
-        return this.Q;
+        return this.description;
     }
 
     public static DurabilityValueMode B(String string, DurabilityValueMode durabilityValueMode) {

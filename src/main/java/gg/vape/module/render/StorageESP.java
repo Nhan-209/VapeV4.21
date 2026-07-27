@@ -24,25 +24,25 @@ import org.lwjgl.opengl.GL11;
 
 public class StorageESP
 extends Mod {
-    private final ColorValue C;
-    private final BooleanValue S;
-    private final ColorValue k;
-    private final BooleanValue A;
-    private final BooleanValue L;
-    private final BooleanValue I;
-    private final ColorValue K;
-    private static final long D = -6638498230915768526L;
-    private final BooleanValue O;
-    private final ColorValue a;
-    private final ColorValue o;
-    private final BooleanValue Y;
-    private final ColorValue J;
-    private final BooleanValue Z;
-    private final BooleanValue b;
-    private final ColorValue c;
-    private final RenderManager p;
-    private final ColorValue U;
-    private final BooleanValue j = BooleanValue.create(this, "Outline open", true, "Outlines open chests by contrasting color");
+    private final ColorValue chestColor;
+    private final BooleanValue renderDropper;
+    private final ColorValue hopperColor;
+    private final BooleanValue renderHopper;
+    private final BooleanValue renderEnderchests;
+    private final BooleanValue renderTrappedChests;
+    private final ColorValue enderChestColor;
+    private static final long MODULE_ID = -6638498230915768526L;
+    private final BooleanValue renderChests;
+    private final ColorValue dispenserColor;
+    private final ColorValue trappedChestColor;
+    private final BooleanValue renderFurnace;
+    private final ColorValue shulkerColor;
+    private final BooleanValue renderDispenser;
+    private final BooleanValue renderShulker;
+    private final ColorValue furnaceColor;
+    private final RenderManager renderManager;
+    private final ColorValue dropperColor;
+    private final BooleanValue outlineOpen = BooleanValue.create(this, "Outline open", true, "Outlines open chests by contrasting color");
 
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {
@@ -63,30 +63,30 @@ extends Mod {
             for (Object e : Minecraft.theWorld().R$src$Ljava_util_List_$1ycbpra()) {
                 Color color = null;
                 TileEntity tileEntity = null;
-                if ((this.O.L().booleanValue() || this.I.L().booleanValue()) && MappedClasses.DZ.isInstance(e)) {
+                if ((this.renderChests.L().booleanValue() || this.renderTrappedChests.L().booleanValue()) && MappedClasses.DZ.isInstance(e)) {
                     TileEntityOpenedChest openedChest = new TileEntityOpenedChest(e);
                     int n = openedChest.getNumPlayersUsing();
-                    if (this.O.L().booleanValue() && n == 0) {
-                        color = this.C.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                    if (this.renderChests.L().booleanValue() && n == 0) {
+                        color = this.chestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
                         tileEntity = openedChest;
                     }
-                    if (this.I.L().booleanValue() && n == 1) {
-                        color = this.o.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                    if (this.renderTrappedChests.L().booleanValue() && n == 1) {
+                        color = this.trappedChestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
                         tileEntity = openedChest;
                     }
-                } else if (this.L.L().booleanValue() && MappedClasses.u0.isInstance(e)) {
-                    color = this.K.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                } else if (this.renderEnderchests.L().booleanValue() && MappedClasses.u0.isInstance(e)) {
+                    color = this.enderChestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
                     tileEntity = new TileEntityChest(e);
-                } else if (this.A.L().booleanValue() && MappedClasses.Dx.isInstance(e)) {
-                    color = this.k.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-                } else if (this.Y.L().booleanValue() && MappedClasses.li.isInstance(e)) {
-                    color = this.c.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-                } else if (this.S.L().booleanValue() && MappedClasses.YI.equals(e.getClass())) {
-                    color = this.U.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-                } else if (this.Z.L().booleanValue() && MappedClasses.lI.equals(e.getClass())) {
-                    color = this.a.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-                } else if (ForgeVersion.MC_1_12_2.d() && this.b.L().booleanValue() && MappedClasses.Dh.isInstance(e)) {
-                    color = this.J.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                } else if (this.renderHopper.L().booleanValue() && MappedClasses.Dx.isInstance(e)) {
+                    color = this.hopperColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                } else if (this.renderFurnace.L().booleanValue() && MappedClasses.li.isInstance(e)) {
+                    color = this.furnaceColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                } else if (this.renderDropper.L().booleanValue() && MappedClasses.YI.equals(e.getClass())) {
+                    color = this.dropperColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                } else if (this.renderDispenser.L().booleanValue() && MappedClasses.lI.equals(e.getClass())) {
+                    color = this.dispenserColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                } else if (ForgeVersion.MC_1_12_2.d() && this.renderShulker.L().booleanValue() && MappedClasses.Dh.isInstance(e)) {
+                    color = this.shulkerColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
                 }
                 if (color == null) continue;
                 if (tileEntity == null) {
@@ -96,7 +96,7 @@ extends Mod {
                 HSBData renderData;
                 if (tileEntity instanceof TileEntityOpenedChest) {
                     TileEntityOpenedChest tileEntityOpenedChest = (TileEntityOpenedChest)tileEntity;
-                    renderData = this.j.L().booleanValue() ? new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, tileEntityOpenedChest.Y()) : new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
+                    renderData = this.outlineOpen.L().booleanValue() ? new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, tileEntityOpenedChest.Y()) : new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
                 } else if (tileEntity instanceof TileEntityChest) {
                     TileEntity tileEntity2 = tileEntity;
                     renderData = new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, ((TileEntityChest)tileEntity2).D());
@@ -127,30 +127,30 @@ extends Mod {
         for (Object e : Minecraft.theWorld().R$src$Ljava_util_List_$1ycbpra()) {
             Color color = null;
             TileEntity tileEntity = null;
-            if ((this.O.L().booleanValue() || this.I.L().booleanValue()) && MappedClasses.DZ.isInstance(e)) {
+            if ((this.renderChests.L().booleanValue() || this.renderTrappedChests.L().booleanValue()) && MappedClasses.DZ.isInstance(e)) {
                 TileEntityOpenedChest openedChest = new TileEntityOpenedChest(e);
                 int n = openedChest.getNumPlayersUsing();
-                if (this.O.L().booleanValue() && n == 0) {
-                    color = this.C.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                if (this.renderChests.L().booleanValue() && n == 0) {
+                    color = this.chestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
                     tileEntity = openedChest;
                 }
-                if (this.I.L().booleanValue() && n == 1) {
-                    color = this.o.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                if (this.renderTrappedChests.L().booleanValue() && n == 1) {
+                    color = this.trappedChestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
                     tileEntity = openedChest;
                 }
-            } else if (this.L.L().booleanValue() && MappedClasses.u0.isInstance(e)) {
-                color = this.K.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+            } else if (this.renderEnderchests.L().booleanValue() && MappedClasses.u0.isInstance(e)) {
+                color = this.enderChestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
                 tileEntity = new TileEntityChest(e);
-            } else if (this.A.L().booleanValue() && MappedClasses.Dx.isInstance(e)) {
-                color = this.k.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-            } else if (this.Y.L().booleanValue() && MappedClasses.li.isInstance(e)) {
-                color = this.c.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-            } else if (this.S.L().booleanValue() && MappedClasses.YI.equals(e.getClass())) {
-                color = this.U.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-            } else if (this.Z.L().booleanValue() && MappedClasses.lI.equals(e.getClass())) {
-                color = this.a.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-            } else if (ForgeVersion.MC_1_12_2.d() && this.b.L().booleanValue() && MappedClasses.Dh.isInstance(e)) {
-                color = this.J.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+            } else if (this.renderHopper.L().booleanValue() && MappedClasses.Dx.isInstance(e)) {
+                color = this.hopperColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+            } else if (this.renderFurnace.L().booleanValue() && MappedClasses.li.isInstance(e)) {
+                color = this.furnaceColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+            } else if (this.renderDropper.L().booleanValue() && MappedClasses.YI.equals(e.getClass())) {
+                color = this.dropperColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+            } else if (this.renderDispenser.L().booleanValue() && MappedClasses.lI.equals(e.getClass())) {
+                color = this.dispenserColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+            } else if (ForgeVersion.MC_1_12_2.d() && this.renderShulker.L().booleanValue() && MappedClasses.Dh.isInstance(e)) {
+                color = this.shulkerColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
             }
             if (color == null) continue;
             if (tileEntity == null) {
@@ -160,7 +160,7 @@ extends Mod {
             HSBData renderData;
             if (tileEntity instanceof TileEntityOpenedChest) {
                 TileEntityOpenedChest tileEntityOpenedChest = (TileEntityOpenedChest)tileEntity;
-                renderData = this.j.L().booleanValue() ? new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, tileEntityOpenedChest.Y()) : new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
+                renderData = this.outlineOpen.L().booleanValue() ? new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, tileEntityOpenedChest.Y()) : new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
             } else if (tileEntity instanceof TileEntityChest) {
                 TileEntity tileEntity3 = tileEntity;
                 renderData = new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, ((TileEntityChest)tileEntity3).D());
@@ -180,38 +180,38 @@ extends Mod {
     }
 
     public StorageESP() {
-        super("StorageESP", (int)D, Category.k);
-        this.O = BooleanValue.create(this, "Render Chests", true);
-        this.I = BooleanValue.create(this, "Render Trapped Chests", true);
-        this.L = BooleanValue.create(this, "Render Enderchests", false);
-        this.A = BooleanValue.create(this, "Render Hopper", false);
-        this.Y = BooleanValue.create(this, "Render Furnace", false);
-        this.Z = BooleanValue.create(this, "Render Dispenser", false);
-        this.S = BooleanValue.create(this, "Render Dropper", false);
-        this.b = BooleanValue.create(this, "Render Shulker", false);
-        this.C = ColorValue.L(this, "Chest Color", new Color(1, 255, 146, 100));
-        this.o = ColorValue.L(this, "Chest Color", new Color(255, 0, 0, 100));
-        this.K = ColorValue.L(this, "Ender Chest Color", new Color(126, 21, 156, 100));
-        this.k = ColorValue.L(this, "Hopper Color", new Color(138, 138, 138, 255));
-        this.c = ColorValue.L(this, "Furnace Color", new Color(90, 90, 90, 255));
-        this.a = ColorValue.L(this, "Dispenser Color", new Color(1, 20, 200, 100));
-        this.U = ColorValue.L(this, "Dropper Color", new Color(70, 200, 200, 100));
-        this.J = ColorValue.L(this, "Shulker Color", new Color(255, 255, 255, 100));
-        this.O.K(this.C);
-        this.I.K(this.o);
-        this.L.K(this.K);
-        this.A.K(this.k);
-        this.Y.K(this.c);
-        this.Z.K(this.a);
-        this.S.K(this.U);
-        this.b.K(this.J);
-        this.addValue(this.j, this.O, this.C, this.I, this.o, this.L, this.K, this.A, this.k, this.Y, this.c, this.Z, this.a, this.S, this.U);
-        this.U(this.b, ForgeVersion.MC_1_12_2.n());
-        this.U(this.J, ForgeVersion.MC_1_12_2.n());
-        this.p = Minecraft.D();
+        super("StorageESP", (int)MODULE_ID, Category.k);
+        this.renderChests = BooleanValue.create(this, "Render Chests", true);
+        this.renderTrappedChests = BooleanValue.create(this, "Render Trapped Chests", true);
+        this.renderEnderchests = BooleanValue.create(this, "Render Enderchests", false);
+        this.renderHopper = BooleanValue.create(this, "Render Hopper", false);
+        this.renderFurnace = BooleanValue.create(this, "Render Furnace", false);
+        this.renderDispenser = BooleanValue.create(this, "Render Dispenser", false);
+        this.renderDropper = BooleanValue.create(this, "Render Dropper", false);
+        this.renderShulker = BooleanValue.create(this, "Render Shulker", false);
+        this.chestColor = ColorValue.L(this, "Chest Color", new Color(1, 255, 146, 100));
+        this.trappedChestColor = ColorValue.L(this, "Chest Color", new Color(255, 0, 0, 100));
+        this.enderChestColor = ColorValue.L(this, "Ender Chest Color", new Color(126, 21, 156, 100));
+        this.hopperColor = ColorValue.L(this, "Hopper Color", new Color(138, 138, 138, 255));
+        this.furnaceColor = ColorValue.L(this, "Furnace Color", new Color(90, 90, 90, 255));
+        this.dispenserColor = ColorValue.L(this, "Dispenser Color", new Color(1, 20, 200, 100));
+        this.dropperColor = ColorValue.L(this, "Dropper Color", new Color(70, 200, 200, 100));
+        this.shulkerColor = ColorValue.L(this, "Shulker Color", new Color(255, 255, 255, 100));
+        this.renderChests.K(this.chestColor);
+        this.renderTrappedChests.K(this.trappedChestColor);
+        this.renderEnderchests.K(this.enderChestColor);
+        this.renderHopper.K(this.hopperColor);
+        this.renderFurnace.K(this.furnaceColor);
+        this.renderDispenser.K(this.dispenserColor);
+        this.renderDropper.K(this.dropperColor);
+        this.renderShulker.K(this.shulkerColor);
+        this.addValue(this.outlineOpen, this.renderChests, this.chestColor, this.renderTrappedChests, this.trappedChestColor, this.renderEnderchests, this.enderChestColor, this.renderHopper, this.hopperColor, this.renderFurnace, this.furnaceColor, this.renderDispenser, this.dispenserColor, this.renderDropper, this.dropperColor);
+        this.U(this.renderShulker, ForgeVersion.MC_1_12_2.n());
+        this.U(this.shulkerColor, ForgeVersion.MC_1_12_2.n());
+        this.renderManager = Minecraft.D();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

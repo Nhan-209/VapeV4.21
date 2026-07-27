@@ -9,15 +9,15 @@ public class InventoryManagerPrimaryItemScoreComparator
 implements Comparator<Slot> {
     @Override
     public int compare(Slot first, Slot second) {
-        return this.B(first, second);
+        return this.comparePrimaryScore(first, second);
     }
-    final InventoryManager e;
+    final InventoryManager inventoryManager;
 
-    public int B(Slot slot, Slot slot2) {
-        return Double.compare(ClientSettings.U(slot.I()), ClientSettings.U(slot2.I()));
+    public int comparePrimaryScore(Slot first, Slot second) {
+        return Double.compare(ClientSettings.U(first.I()), ClientSettings.U(second.I()));
     }
 
     public InventoryManagerPrimaryItemScoreComparator(InventoryManager inventoryManager) {
-        this.e = inventoryManager;
+        this.inventoryManager = inventoryManager;
     }
 }

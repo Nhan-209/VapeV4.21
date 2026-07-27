@@ -6,31 +6,31 @@ import org.jetbrains.annotations.Nullable;
 
 public class HotbarSlotResolution<T extends HotbarSlotResolution<T>> {
     @Nullable
-    private String R;
-    private HotbarSlotResolutionStatus Q;
-    private boolean l = false;
+    private String message;
+    private HotbarSlotResolutionStatus status;
+    private boolean forced = false;
 
     public static HotbarSlotResolution J(@Nullable String string) {
         return new HotbarSlotResolution(HotbarSlotResolutionStatus.PENDING, string);
     }
 
     public T i(boolean bl) {
-        this.l = bl;
+        this.forced = bl;
         return (T)this;
     }
 
     HotbarSlotResolution(HotbarSlotResolutionStatus hotbarSlotResolutionStatus, @Nullable String string) {
-        this.Q = hotbarSlotResolutionStatus;
-        this.R = string;
+        this.status = hotbarSlotResolutionStatus;
+        this.message = string;
     }
 
     public T A() {
-        this.l = true;
+        this.forced = true;
         return (T)this;
     }
 
     public boolean B() {
-        return this.Q == HotbarSlotResolutionStatus.PENDING || this.Q == HotbarSlotResolutionStatus.SUCCESS || this.Q == HotbarSlotResolutionStatus.FAIL && this.l;
+        return this.status == HotbarSlotResolutionStatus.PENDING || this.status == HotbarSlotResolutionStatus.SUCCESS || this.status == HotbarSlotResolutionStatus.FAIL && this.forced;
     }
 
     public T m(@Nullable String string) {
@@ -46,20 +46,20 @@ public class HotbarSlotResolution<T extends HotbarSlotResolution<T>> {
     }
 
     public boolean h() {
-        return this.Q == HotbarSlotResolutionStatus.FAIL;
+        return this.status == HotbarSlotResolutionStatus.FAIL;
     }
 
     public String b() {
-        return this.R == null ? "" : this.R;
+        return this.message == null ? "" : this.message;
     }
 
     T P(@Nullable String string) {
-        this.R = string;
+        this.message = string;
         return (T)this;
     }
 
     public boolean Q() {
-        return this.Q == HotbarSlotResolutionStatus.PENDING;
+        return this.status == HotbarSlotResolutionStatus.PENDING;
     }
 
     public T Q(@Nullable String string) {
@@ -67,7 +67,7 @@ public class HotbarSlotResolution<T extends HotbarSlotResolution<T>> {
     }
 
     HotbarSlotResolutionStatus q() {
-        return this.Q;
+        return this.status;
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -75,7 +75,7 @@ public class HotbarSlotResolution<T extends HotbarSlotResolution<T>> {
     }
 
     public boolean v() {
-        return this.Q == HotbarSlotResolutionStatus.SUCCESS;
+        return this.status == HotbarSlotResolutionStatus.SUCCESS;
     }
 
     public T f(@Nullable String string) {
@@ -83,7 +83,7 @@ public class HotbarSlotResolution<T extends HotbarSlotResolution<T>> {
     }
 
     T H(HotbarSlotResolutionStatus hotbarSlotResolutionStatus) {
-        this.Q = hotbarSlotResolutionStatus;
+        this.status = hotbarSlotResolutionStatus;
         return (T)this;
     }
 }

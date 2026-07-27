@@ -5,14 +5,14 @@ public enum CrystalAuraAction {
     PLACING_CRYSTAL,
     ATTACKING_CRYSTAL;
 
-    private static final CrystalAuraAction[] c;
+    private static final CrystalAuraAction[] VALUES;
 
     static {
-        String[] stringArray = new String[]{"PLACING_CRYSTAL", "PLACING_OBSIDIAN", "ATTACKING_CRYSTAL"};
+        String[] names = new String[]{"PLACING_CRYSTAL", "PLACING_OBSIDIAN", "ATTACKING_CRYSTAL"};
 
 
 
-        c = new CrystalAuraAction[]{PLACING_OBSIDIAN, PLACING_CRYSTAL, ATTACKING_CRYSTAL};
+        VALUES = new CrystalAuraAction[]{PLACING_OBSIDIAN, PLACING_CRYSTAL, ATTACKING_CRYSTAL};
     }
 
 }

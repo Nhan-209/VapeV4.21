@@ -30,9 +30,9 @@ extends Mod {
     public final BooleanValue r;
     public double J;
     public double s;
-    private final FreecamController<Freecam> k;
+    private final FreecamController<Freecam> controller;
     public final BooleanValue U;
-    private static final long t = -3715766461932661926L;
+    private static final long MODULE_ID = -3715766461932661926L;
     public int I;
     public float O;
     public NetworkManager K;
@@ -98,12 +98,12 @@ extends Mod {
 
     @Override
     public void onDisable() {
-        this.k.I();
-        EventBus.getInstance().unregisterListener(this.k);
+        this.controller.I();
+        EventBus.getInstance().unregisterListener(this.controller);
     }
 
     public Freecam() {
-        super("Freecam", (int)t, Category.m, "Lets you fly and clip through walls freely\nwithout moving your player server-sided.");
+        super("Freecam", (int)MODULE_ID, Category.m, "Lets you fly and clip through walls freely\nwithout moving your player server-sided.");
         this.U = BooleanValue.create(this, "Allow Interacting", true, "Allows you to interact with blocks and entities while in freecam.");
         this.Y = NumberValue.create(this, "Speed", "#.#", "", 1.0, 3.0, 5.0, 0.1, "Horizontal speed multiplier");
         this.r = BooleanValue.create(this, "Move Fake", false, "Move your fake entity with your arrow keys.");
@@ -114,7 +114,7 @@ extends Mod {
         this.U(this.U, ForgeVersion.MC_1_21_11.b());
         this.addValue(this.A, this.r);
         this.c.l(this, 100);
-        this.k = ForgeVersion.MC_1_21_11.d() ? new FreecamModernController(this) : new FreecamLegacyController(this);
+        this.controller = ForgeVersion.MC_1_21_11.d() ? new FreecamModernController(this) : new FreecamLegacyController(this);
     }
 
     public void M$src$V$nre1v6() {
@@ -131,8 +131,8 @@ extends Mod {
     public void onEnable() {
         this.S = true;
         this.c.d(this);
-        EventBus.getInstance().registerListener(this.k, new Predicate[0]);
-        this.k.B();
+        EventBus.getInstance().registerListener(this.controller, new Predicate[0]);
+        this.controller.B();
     }
 
     public void p() {
@@ -194,7 +194,7 @@ extends Mod {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

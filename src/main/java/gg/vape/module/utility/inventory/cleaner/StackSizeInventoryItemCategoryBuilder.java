@@ -6,11 +6,11 @@ import gg.vape.module.utility.inventory.cleaner.StackSizeInventoryItemCategory;
 
 public class StackSizeInventoryItemCategoryBuilder
 extends InventoryItemCategoryBuilder<StackSizeInventoryItemCategoryBuilder> {
-    private ComparisonOperator I;
-    private int X;
+    private ComparisonOperator comparisonOperator;
+    private int stackSize;
 
-    public StackSizeInventoryItemCategoryBuilder D(int n) {
-        this.X = n;
+    public StackSizeInventoryItemCategoryBuilder D(int size) {
+        this.stackSize = size;
         return this;
     }
 
@@ -18,17 +18,17 @@ extends InventoryItemCategoryBuilder<StackSizeInventoryItemCategoryBuilder> {
         return new StackSizeInventoryItemCategory(this);
     }
 
-    public StackSizeInventoryItemCategoryBuilder h(ComparisonOperator cj_22) {
-        this.I = cj_22;
+    public StackSizeInventoryItemCategoryBuilder h(ComparisonOperator operator) {
+        this.comparisonOperator = operator;
         return this;
     }
 
     public ComparisonOperator f() {
-        return this.I;
+        return this.comparisonOperator;
     }
 
     public int U() {
-        return this.X;
+        return this.stackSize;
     }
 }
 

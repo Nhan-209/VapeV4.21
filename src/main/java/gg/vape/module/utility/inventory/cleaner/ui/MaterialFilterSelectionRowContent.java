@@ -10,31 +10,31 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 class MaterialFilterSelectionRowContent
 extends GuiComponent {
-    private final ColorAnimation G;
-    private final ItemFilterSelectionComponent b;
+    private final ColorAnimation backgroundColorAnimation;
+    private final ItemFilterSelectionComponent selectionComponent;
     final MaterialFilterSelectionRow o;
 
     @Override
     public void c() {
-        this.b.K(this.G$src$D$1b2f02a());
-        this.b.S(this.n());
-        this.b.W(0.5f);
-        this.b.D(8.0f);
-        this.b.s(8.0f);
-        this.b.o(this.A());
-        this.b.Y(this.L());
+        this.selectionComponent.K(this.G$src$D$1b2f02a());
+        this.selectionComponent.S(this.n());
+        this.selectionComponent.W(0.5f);
+        this.selectionComponent.D(8.0f);
+        this.selectionComponent.s(8.0f);
+        this.selectionComponent.o(this.A());
+        this.selectionComponent.Y(this.L());
         super.c();
     }
 
     @Override
     public void H() {
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.G.getInterpolatedColor());
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.backgroundColorAnimation.getInterpolatedColor());
     }
 
     @Override
     public void F() {
         if (this.w$src$Z$e457mb()) {
-            this.G.J();
+            this.backgroundColorAnimation.J();
         }
     }
 
@@ -45,10 +45,10 @@ extends GuiComponent {
 
     MaterialFilterSelectionRowContent(MaterialFilterSelectionRow materialFilterSelectionRow, ItemFilterSelection itemFilterSelection) {
         this.o = materialFilterSelectionRow;
-        this.G = new ColorAnimation(0.15, MaterialFilterSelectionRowContent.J.z, MaterialFilterSelectionRowContent.J.M);
-        this.b = new ItemFilterSelectionComponent(itemFilterSelection);
+        this.backgroundColorAnimation = new ColorAnimation(0.15, MaterialFilterSelectionRowContent.J.z, MaterialFilterSelectionRowContent.J.M);
+        this.selectionComponent = new ItemFilterSelectionComponent(itemFilterSelection);
         this.o(true);
-        this.H(this.b);
+        this.H(this.selectionComponent);
     }
 
     @Override
@@ -58,7 +58,7 @@ extends GuiComponent {
 
     @Override
     public void onEnable() {
-        this.G.J();
+        this.backgroundColorAnimation.J();
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {

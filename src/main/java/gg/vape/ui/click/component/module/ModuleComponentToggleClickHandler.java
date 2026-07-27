@@ -1,5 +1,6 @@
 package gg.vape.ui.click.component.module;
 
+import func.skidline.RectData;
 import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.runtime.ObfuscatedRuntimeException;
@@ -32,7 +33,8 @@ implements GuiClickListener {
     @Override
     public void P() {
         if (ClientSettings.Y) {
-            if (!ModuleComponent.P(this.L) && ModuleComponent.F(this.L).Z(RenderUtils.h())) {
+            RectData toggleBounds = ModuleComponent.F(this.L);
+            if (!ModuleComponent.P(this.L) && toggleBounds != null && toggleBounds.Z(RenderUtils.h())) {
                 this.E.C(!this.E.O());
                 if (this.E.r$src$Z$14eylz9() && !this.E.O()) {
                     this.E.Y(false);
@@ -61,4 +63,3 @@ implements GuiClickListener {
         }
     }
 }
-

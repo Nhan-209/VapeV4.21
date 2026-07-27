@@ -15,17 +15,17 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 public class RenderEntityContextCache {
-    private static final HashMap<Integer, ITextComponent> o;
-    private static final Object W;
-    private static final Map<Integer, RenderEntityContext> F;
-    private static final HashMap<Integer, ITextComponent> y;
-    private static final boolean T = false;
+    private static final HashMap<Integer, ITextComponent> customNames;
+    private static final Object lock;
+    private static final Map<Integer, RenderEntityContext> contexts;
+    private static final HashMap<Integer, ITextComponent> displayNameCache;
+    private static final boolean UNUSED = false;
 
     static {
-        W = new Object();
-        F = new LinkedHashMap<Integer, RenderEntityContext>();
-        y = new HashMap();
-        o = new HashMap();
+        lock = new Object();
+        contexts = new LinkedHashMap<Integer, RenderEntityContext>();
+        displayNameCache = new HashMap();
+        customNames = new HashMap();
     }
 
     @Nullable
@@ -34,12 +34,12 @@ public class RenderEntityContextCache {
     }
 
     public static void G(EntityPlayer entityPlayer, ITextComponent iTextComponent) {
-        o.put(entityPlayer.S(), iTextComponent);
+        customNames.put(entityPlayer.S(), iTextComponent);
     }
 
     public static ITextComponent I(EntityPlayer entityPlayer) {
-        if (o.containsKey(entityPlayer.S())) {
-            return o.get(entityPlayer.S());
+        if (customNames.containsKey(entityPlayer.S())) {
+            return customNames.get(entityPlayer.S());
         }
         return null;
     }
@@ -48,9 +48,9 @@ public class RenderEntityContextCache {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     public static void i(RenderEntityContext renderEntityContext) {
-        Object object = W;
+        Object object = lock;
         synchronized (object) {
-            F.put(renderEntityContext.U$src$I$1xrslp6(), renderEntityContext);
+            contexts.put(renderEntityContext.U$src$I$1xrslp6(), renderEntityContext);
         }
     }
 
@@ -58,12 +58,12 @@ public class RenderEntityContextCache {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     public static void u() {
-        if (F.isEmpty()) {
+        if (contexts.isEmpty()) {
             return;
         }
-        Object object = W;
+        Object object = lock;
         synchronized (object) {
-            F.clear();
+            contexts.clear();
         }
     }
 
@@ -71,15 +71,15 @@ public class RenderEntityContextCache {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     public static void E(int ... nArray) {
-        Object object = W;
+        Object object = lock;
         synchronized (object) {
             for (int n : nArray) {
-                F.remove(n);
+                contexts.remove(n);
             }
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -87,18 +87,18 @@ public class RenderEntityContextCache {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     public static Collection<RenderEntityContext> E() {
-        Object object = W;
+        Object object = lock;
         synchronized (object) {
-            return F.values();
+            return contexts.values();
         }
     }
 
     public static void J() {
-        y.clear();
-        o.clear();
+        displayNameCache.clear();
+        customNames.clear();
     }
 
-    private static RenderEntityContext lambda$getEntityDataOrCreate$0(EntityLivingBase entityLivingBase, EntityPlayerSP entityPlayerSP, Integer n) {
+    private static RenderEntityContext createContext(EntityLivingBase entityLivingBase, EntityPlayerSP entityPlayerSP, Integer n) {
         RenderEntityContext renderEntityContext = new RenderEntityContext(n, entityLivingBase, entityPlayerSP);
         renderEntityContext.v(entityLivingBase, entityPlayerSP);
         return renderEntityContext;
@@ -113,18 +113,18 @@ public class RenderEntityContextCache {
      */
     @Nullable
     public static RenderEntityContext r(int n) {
-        Object object = W;
+        Object object = lock;
         synchronized (object) {
-            return F.get(n);
+            return contexts.get(n);
         }
     }
 
     public static ITextComponent g(EntityPlayer entityPlayer) {
-        if (y.containsKey(entityPlayer.S())) {
-            return y.get(entityPlayer.S());
+        if (displayNameCache.containsKey(entityPlayer.S())) {
+            return displayNameCache.get(entityPlayer.S());
         }
         ITextComponent iTextComponent = entityPlayer.Q();
-        y.put(entityPlayer.S(), iTextComponent);
+        displayNameCache.put(entityPlayer.S(), iTextComponent);
         return iTextComponent;
     }
 
@@ -132,9 +132,9 @@ public class RenderEntityContextCache {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     public static RenderEntityContext V(EntityLivingBase entityLivingBase, EntityPlayerSP entityPlayerSP) {
-        Object object = W;
+        Object object = lock;
         synchronized (object) {
-            return F.computeIfAbsent(entityLivingBase.S(), arg_0 -> RenderEntityContextCache.lambda$getEntityDataOrCreate$0(entityLivingBase, entityPlayerSP, arg_0));
+            return contexts.computeIfAbsent(entityLivingBase.S(), arg_0 -> RenderEntityContextCache.createContext(entityLivingBase, entityPlayerSP, arg_0));
         }
     }
 

@@ -46,50 +46,50 @@ import java.util.Map;
 
 public class BowAimbot
 extends Mod {
-    private int O;
-    private EntityArrowBridge A;
-    private final HashMap<Integer, Entity> p;
-    private TimerUtil r;
-    private NumberValue k = NumberValue.create((Object)this, "Angle limit", "#", "", 1.0, 45.0, 180.0, 5.0);
-    private boolean V;
-    private FixedRotationController o;
-    public BooleanValue F;
-    private final RotationControlClaim D;
-    private final MovementInputLock C;
-    public NumberValue c = NumberValue.create((Object)this, "Aim speed", "#.#", "", 1.0, 9.0, 10.0, 0.1);
-    private BooleanValue J;
+    private int swingTicks;
+    private EntityArrowBridge targetArrow;
+    private final HashMap<Integer, Entity> arrowOwners;
+    private TimerUtil attackTimer;
+    private NumberValue angleLimit = NumberValue.create((Object)this, "Angle limit", "#", "", 1.0, 45.0, 180.0, 5.0);
+    private boolean attackKeyPending;
+    private FixedRotationController rotationController;
+    public BooleanValue stopMovement;
+    private final RotationControlClaim rotationClaim;
+    private final MovementInputLock movementLock;
+    public NumberValue aimSpeed = NumberValue.create((Object)this, "Aim speed", "#.#", "", 1.0, 9.0, 10.0, 0.1);
+    private BooleanValue silentAim;
     private static final long v = -321105662139610036L;
-    private final MouseButtonInputLock t;
-    private boolean Z;
-    public BooleanValue S;
-    private boolean U;
+    private final MouseButtonInputLock mouseButtonLock;
+    private boolean attackTriggered;
+    public BooleanValue moveOnFinish;
+    private boolean toggledOff;
 
-    private void c() {
-        if (this.o != null && RotationManager.b.w() == this.o) {
-            this.o.Y(Math.min(((Double)this.c.K()).floatValue() * 0.6f, 6.0f));
-            this.o.D(false);
-            this.o.z(false);
-            this.o.A(true);
-            RotationManager.b.v(this.o);
+    private void releaseRotation() {
+        if (this.rotationController != null && RotationManager.b.w() == this.rotationController) {
+            this.rotationController.Y(Math.min(((Double)this.aimSpeed.K()).floatValue() * 0.6f, 6.0f));
+            this.rotationController.D(false);
+            this.rotationController.z(false);
+            this.rotationController.A(true);
+            RotationManager.b.v(this.rotationController);
         }
     }
 
     public BowAimbot() {
         super("AntiFireball", (int)v, Category.Y, "Aims and swings at a fireball to reflect it.\nBy default will only attack fireballs heading towards you.");
-        this.F = BooleanValue.create(this, "Stop movement", false, "Forces you to stand when attacking fireball");
-        this.S = BooleanValue.create(this, "Move on finish", false, "Will repress your movement keys after attacking");
-        this.J = BooleanValue.create(this, "Silent aim", false, "Uses Silent Aim system");
-        this.p = new HashMap();
-        this.r = new TimerUtil();
-        this.D = SharedModuleControlClaims.I;
-        this.t = SharedModuleControlClaims.h;
-        this.C = SharedModuleControlClaims.l;
-        this.F.K(this.S);
-        this.addValue(this.k, this.c, this.F, this.S, this.J);
-        this.D.l(this, 7);
+        this.stopMovement = BooleanValue.create(this, "Stop movement", false, "Forces you to stand when attacking fireball");
+        this.moveOnFinish = BooleanValue.create(this, "Move on finish", false, "Will repress your movement keys after attacking");
+        this.silentAim = BooleanValue.create(this, "Silent aim", false, "Uses Silent Aim system");
+        this.arrowOwners = new HashMap();
+        this.attackTimer = new TimerUtil();
+        this.rotationClaim = SharedModuleControlClaims.I;
+        this.mouseButtonLock = SharedModuleControlClaims.h;
+        this.movementLock = SharedModuleControlClaims.l;
+        this.stopMovement.K(this.moveOnFinish);
+        this.addValue(this.angleLimit, this.aimSpeed, this.stopMovement, this.moveOnFinish, this.silentAim);
+        this.rotationClaim.l(this, 7);
     }
 
-    private boolean s(EntityPlayerSP entityPlayerSP, Entity entity) {
+    private boolean isValidArrowOwner(EntityPlayerSP entityPlayerSP, Entity entity) {
         boolean bl = true;
         if (entity != null && entity.isNotNull() && entity.isInstance(MappedClasses.Yl)) {
             EntityPlayer entityPlayer = new EntityPlayer(entity);
@@ -107,8 +107,8 @@ extends Mod {
     }
 
     private void S$src$V$1lxzzlr() {
-        if (this.F.L().booleanValue()) {
-            this.C.K(this);
+        if (this.stopMovement.L().booleanValue()) {
+            this.movementLock.K(this);
             GameSettings gameSettings = Minecraft.gameSettings();
             gameSettings.Y().setPressed(false);
             gameSettings.s().setPressed(false);
@@ -117,7 +117,7 @@ extends Mod {
         }
     }
 
-    private double r(EntityPlayerSP entityPlayerSP, WorldClient worldClient, EntityArrow entityArrow) {
+    private double predictArrowDistance(EntityPlayerSP entityPlayerSP, WorldClient worldClient, EntityArrow entityArrow) {
         double d = 999.0;
         double d2 = entityArrow.z();
         double d3 = entityArrow.N();
@@ -187,22 +187,22 @@ extends Mod {
         if (!InputEventDispatcher.getInstance().getFocusState().isFocused()) {
             return false;
         }
-        if (this.e()) {
+        if (this.isBlockedByScreen()) {
             return false;
         }
-        if (this.D.e(this)) {
+        if (this.rotationClaim.e(this)) {
             return false;
         }
-        return !this.U;
+        return !this.toggledOff;
     }
 
     private void O$src$V$1lvst8b() {
-        if (this.F.L().booleanValue()) {
-            this.C.T(this);
-            if (this.S.L().booleanValue()) {
+        if (this.stopMovement.L().booleanValue()) {
+            this.movementLock.T(this);
+            if (this.moveOnFinish.L().booleanValue()) {
                 GameSettings gameSettings = Minecraft.gameSettings();
                 KeyBinding[] keyBindingArray = new KeyBinding[]{gameSettings.Y(), gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), gameSettings.s()};
-                boolean bl = this.e();
+                boolean bl = this.isBlockedByScreen();
                 for (KeyBinding keyBinding : keyBindingArray) {
                     if (bl) {
                         keyBinding.setPressed(false);
@@ -215,7 +215,7 @@ extends Mod {
     }
 
     @EventHandler
-    public void c(EventEntityJoinWorld eventEntityJoinWorld) {
+    public void onEntityJoinWorld(EventEntityJoinWorld eventEntityJoinWorld) {
         if (eventEntityJoinWorld.getEntity().isInstance(MappedClasses.uf)) {
             EntityArrowBridge entityArrowBridge = new EntityArrowBridge(eventEntityJoinWorld.getEntity());
             Entity entity = null;
@@ -231,27 +231,27 @@ extends Mod {
                     d = d2;
                 }
             }
-            if (this.s(Minecraft.thePlayer(), entity)) {
-                this.p.put(entityArrowBridge.S(), entity);
+            if (this.isValidArrowOwner(Minecraft.thePlayer(), entity)) {
+                this.arrowOwners.put(entityArrowBridge.S(), entity);
             }
         }
     }
 
     private void Q$src$V$1lwwef1() {
-        if (this.o != null && !this.o.v() && this.o.V$src$Z$lb4tvc()) {
-            this.o = null;
+        if (this.rotationController != null && !this.rotationController.v() && this.rotationController.V$src$Z$lb4tvc()) {
+            this.rotationController = null;
         }
-        if (this.o == null) {
-            this.D.X(this);
+        if (this.rotationController == null) {
+            this.rotationClaim.X(this);
         }
     }
 
     @Override
     public void s(boolean bl, boolean bl2) {
-        if (!bl && this.o instanceof AdaptiveRotationController) {
-            this.U = !this.U;
+        if (!bl && this.rotationController instanceof AdaptiveRotationController) {
+            this.toggledOff = !this.toggledOff;
         } else {
-            this.U = false;
+            this.toggledOff = false;
             super.s(bl, bl2);
         }
     }
@@ -260,16 +260,16 @@ extends Mod {
         return obfuscatedRuntimeException;
     }
 
-    private void f(World world) {
-        this.p.entrySet().removeIf(arg_0 -> BowAimbot.lambda$checkOwnerMap$0(world, arg_0));
+    private void cleanOwnerMap(World world) {
+        this.arrowOwners.entrySet().removeIf(arg_0 -> BowAimbot.lambda$checkOwnerMap$0(world, arg_0));
     }
 
-    public boolean N(EntityArrowBridge entityArrowBridge, EntityPlayerSP entityPlayerSP) {
+    public boolean isArrowIncoming(EntityArrowBridge entityArrowBridge, EntityPlayerSP entityPlayerSP) {
         boolean bl;
         double d = entityArrowBridge.z() - entityArrowBridge.f();
         double d2 = entityArrowBridge.N() - entityArrowBridge.H();
         double d3 = entityArrowBridge.h() - entityArrowBridge.R();
-        Vec3d vec3d = this.u(entityArrowBridge);
+        Vec3d vec3d = this.predictArrowPosition(entityArrowBridge);
         float f = entityPlayerSP.getDistanceToEntity(entityArrowBridge);
         double d4 = entityPlayerSP.i(vec3d.H, vec3d.B, vec3d.i);
         double d5 = entityPlayerSP.i(entityArrowBridge.z() + d, entityArrowBridge.N() + d2, entityArrowBridge.h() + d3);
@@ -283,39 +283,39 @@ extends Mod {
         return bl;
     }
 
-    public float[] b(double d, double d2, double d3) {
+    public float[] computeRotationTo(double d, double d2, double d3) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         float f = RotationUtil.k(entityPlayerSP.z(), entityPlayerSP.h(), d, d3);
         float f2 = (float)RotationUtil.h(entityPlayerSP, d, d2, d3);
         return new float[]{f, f2};
     }
 
-    private void A(EntityPlayerSP entityPlayerSP, WorldClient worldClient) {
-        if (this.A == null || this.O > 0) {
-            EntityArrowBridge targetArrow = null;
+    private void selectTargetArrow(EntityPlayerSP entityPlayerSP, WorldClient worldClient) {
+        if (this.targetArrow == null || this.swingTicks > 0) {
+            EntityArrowBridge closestArrow = null;
             double d = Double.MAX_VALUE;
-            for (Map.Entry<Integer, Entity> entry : this.p.entrySet()) {
+            for (Map.Entry<Integer, Entity> entry : this.arrowOwners.entrySet()) {
                 EntityArrowBridge entityArrowBridge = new EntityArrowBridge(worldClient.V(entry.getKey()));
                 if (entityArrowBridge.isNull()) continue;
-                double d2 = this.r(entityPlayerSP, worldClient, entityArrowBridge);
-                if (!this.N(entityArrowBridge, entityPlayerSP) || !(d2 <= 6.0) || !(d2 < d)) continue;
-                float[] fArray = this.b(entityArrowBridge.z(), entityArrowBridge.N(), entityArrowBridge.h());
+                double d2 = this.predictArrowDistance(entityPlayerSP, worldClient, entityArrowBridge);
+                if (!this.isArrowIncoming(entityArrowBridge, entityPlayerSP) || !(d2 <= 6.0) || !(d2 < d)) continue;
+                float[] fArray = this.computeRotationTo(entityArrowBridge.z(), entityArrowBridge.N(), entityArrowBridge.h());
                 float f = Math.abs(MathUtil.wrapAngleTo180(-(entityPlayerSP.J() - fArray[0])));
                 float f2 = entityPlayerSP.V() - fArray[1];
-                if (!((double)f <= (Double)this.k.K()) || !((double)f2 <= (Double)this.k.K() / 2.0)) continue;
+                if (!((double)f <= (Double)this.angleLimit.K()) || !((double)f2 <= (Double)this.angleLimit.K() / 2.0)) continue;
                 d = d2;
-                targetArrow = entityArrowBridge;
+                closestArrow = entityArrowBridge;
             }
-            if (targetArrow != null && !targetArrow.equals(this.A) && (this.D.U(this) || this.D.h(this, this.J.L()))) {
-                this.O = 0;
-                this.Z = false;
-                this.A = targetArrow;
-                this.r.reset();
+            if (closestArrow != null && !closestArrow.equals(this.targetArrow) && (this.rotationClaim.U(this) || this.rotationClaim.h(this, this.silentAim.L()))) {
+                this.swingTicks = 0;
+                this.attackTriggered = false;
+                this.targetArrow = closestArrow;
+                this.attackTimer.reset();
             }
         }
     }
 
-    private boolean e() {
+    private boolean isBlockedByScreen() {
         if (Minecraft.currentScreen().isNull()) {
             return false;
         }
@@ -323,7 +323,7 @@ extends Mod {
         return invWalk == null || !invWalk.r$src$Z$14eylz9() || !invWalk.g$src$Z$tdg77x();
     }
 
-    private Vec3d u(EntityArrowBridge entityArrowBridge) {
+    private Vec3d predictArrowPosition(EntityArrowBridge entityArrowBridge) {
         double d = 0.95f;
         double d2 = entityArrowBridge.z() + (entityArrowBridge.t() + entityArrowBridge.L()) * d;
         double d3 = entityArrowBridge.N() + (entityArrowBridge.q() + entityArrowBridge.X$src$D$xt9pjp()) * d;
@@ -335,107 +335,107 @@ extends Mod {
     public void onTick(EventPreTick eventPreTick) {
         WorldClient worldClient = eventPreTick.getWorld();
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        this.f(worldClient);
-        if (this.V) {
-            this.t.Q(this);
+        this.cleanOwnerMap(worldClient);
+        if (this.attackKeyPending) {
+            this.mouseButtonLock.Q(this);
             KeyBindingInputState.r();
-            this.V = false;
+            this.attackKeyPending = false;
         }
-        boolean bl = RotationManager.b.u() && RotationManager.b.w() == this.o;
+        boolean bl = RotationManager.b.u() && RotationManager.b.w() == this.rotationController;
         this.Q$src$V$1lwwef1();
         if (this.c$src$Z$1m6sp6z()) {
-            this.A(entityPlayerSP, worldClient);
+            this.selectTargetArrow(entityPlayerSP, worldClient);
         }
-        if (this.J.L().booleanValue() && bl && this.F.L().booleanValue() && !this.S.L().booleanValue()) {
+        if (this.silentAim.L().booleanValue() && bl && this.stopMovement.L().booleanValue() && !this.moveOnFinish.L().booleanValue()) {
             this.S$src$V$1lxzzlr();
         }
-        if (this.A != null) {
+        if (this.targetArrow != null) {
             boolean bl2;
-            double d = this.A.b();
-            float f = this.A.Y();
-            float f2 = this.A.f$src$F$fst3ac();
-            double d2 = this.A.z();
-            double d3 = this.A.N();
-            double d4 = this.A.h();
+            double d = this.targetArrow.b();
+            float f = this.targetArrow.Y();
+            float f2 = this.targetArrow.f$src$F$fst3ac();
+            double d2 = this.targetArrow.z();
+            double d3 = this.targetArrow.N();
+            double d4 = this.targetArrow.h();
             AxisAlignedBB axisAlignedBB = AxisAlignedBB.create(d2 - (double)f, d3, d4 - (double)f, d2 + (double)f, d3 + (double)f2, d4 + (double)f);
             axisAlignedBB = axisAlignedBB.expand(d, d, d);
-            double d5 = this.A.t();
-            double d6 = this.A.q();
-            double d7 = this.A.T();
+            double d5 = this.targetArrow.t();
+            double d6 = this.targetArrow.q();
+            double d7 = this.targetArrow.T();
             Vec3d vec3d = RotationUtil.T(entityPlayerSP, axisAlignedBB.expand(-1.0, -1.0, -1.0), 0.0, 0.0, 0.0);
-            float[] fArray = this.b(vec3d.H, vec3d.B, vec3d.i);
-            if (this.o == null) {
-                this.o = this.J.L() != false ? new AdaptiveRotationController() : new FixedRotationController(fArray[0], fArray[1]);
-                this.o.k(true);
-                this.o.t(0.5f);
-                this.o.U(true);
-                RotationManager.b.S(this.o);
+            float[] fArray = this.computeRotationTo(vec3d.H, vec3d.B, vec3d.i);
+            if (this.rotationController == null) {
+                this.rotationController = this.silentAim.L() != false ? new AdaptiveRotationController() : new FixedRotationController(fArray[0], fArray[1]);
+                this.rotationController.k(true);
+                this.rotationController.t(0.5f);
+                this.rotationController.U(true);
+                RotationManager.b.S(this.rotationController);
             }
-            if (this.o instanceof AdaptiveRotationController) {
-                ((AdaptiveRotationController)this.o).b(false);
+            if (this.rotationController instanceof AdaptiveRotationController) {
+                ((AdaptiveRotationController)this.rotationController).b(false);
             }
-            this.o.w(true);
-            this.o.z(true);
-            this.o.Y(((Double)this.c.K()).floatValue() * 1.5f);
-            this.o.g(fArray[0], fArray[1]);
-            this.o.D(true);
-            boolean bl3 = bl2 = !(this.N(this.A, entityPlayerSP) && this.r(entityPlayerSP, worldClient, this.A) <= 6.0 || this.Z);
-            if (this.A.M$src$Z$ff28xj() || !this.D.U(this) || !this.c$src$Z$1m6sp6z() || bl2) {
-                if (this.A != null && this.t.v$src$Z$1r7ksy2()) {
-                    this.t.Q(this);
+            this.rotationController.w(true);
+            this.rotationController.z(true);
+            this.rotationController.Y(((Double)this.aimSpeed.K()).floatValue() * 1.5f);
+            this.rotationController.g(fArray[0], fArray[1]);
+            this.rotationController.D(true);
+            boolean bl3 = bl2 = !(this.isArrowIncoming(this.targetArrow, entityPlayerSP) && this.predictArrowDistance(entityPlayerSP, worldClient, this.targetArrow) <= 6.0 || this.attackTriggered);
+            if (this.targetArrow.M$src$Z$ff28xj() || !this.rotationClaim.U(this) || !this.c$src$Z$1m6sp6z() || bl2) {
+                if (this.targetArrow != null && this.mouseButtonLock.v$src$Z$1r7ksy2()) {
+                    this.mouseButtonLock.Q(this);
                 }
-                this.r.reset();
-                this.A = null;
-                this.O = 0;
-                this.Z = false;
+                this.attackTimer.reset();
+                this.targetArrow = null;
+                this.swingTicks = 0;
+                this.attackTriggered = false;
                 this.O$src$V$1lvst8b();
-                this.c();
+                this.releaseRotation();
                 return;
             }
-            if (this.F.L().booleanValue()) {
+            if (this.stopMovement.L().booleanValue()) {
                 this.S$src$V$1lxzzlr();
             }
-            AxisAlignedBB axisAlignedBB2 = this.A.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+            AxisAlignedBB axisAlignedBB2 = this.targetArrow.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
             AxisAlignedBB axisAlignedBB3 = ForgeVersion.MC_1_16_5.d() ? axisAlignedBB2 : axisAlignedBB2.A(d5, d6, d7);
             Vec3d vec3d2 = RotationUtil.T(entityPlayerSP, axisAlignedBB3.expand(d - 0.5, d - 0.5, d - 0.5), 0.0, 0.0, 0.0);
-            float[] fArray2 = this.b(vec3d2.H, vec3d2.B, vec3d2.i);
+            float[] fArray2 = this.computeRotationTo(vec3d2.H, vec3d2.B, vec3d2.i);
             float f3 = entityPlayerSP.J();
             float f4 = entityPlayerSP.V();
             if (ForgeVersion.MC_1_16_5.v()) {
                 entityPlayerSP.H(fArray2[0]);
                 entityPlayerSP.C(fArray2[1]);
-                this.A.D(axisAlignedBB3);
+                this.targetArrow.D(axisAlignedBB3);
             }
             RayTraceResult rayTraceResult = RotationManager.b.n();
             if (ForgeVersion.MC_1_16_5.v()) {
-                this.A.D(axisAlignedBB2);
+                this.targetArrow.D(axisAlignedBB2);
                 entityPlayerSP.H(f3);
                 entityPlayerSP.C(f4);
             }
-            if (!this.Z && rayTraceResult.isEntityHit() && this.A.equals(rayTraceResult.getEntity())) {
-                this.t.S(this);
+            if (!this.attackTriggered && rayTraceResult.isEntityHit() && this.targetArrow.equals(rayTraceResult.getEntity())) {
+                this.mouseButtonLock.S(this);
                 GameSettings gameSettings = Minecraft.gameSettings();
                 if (gameSettings.F().isKeyDown()) {
                     KeyBindingInputState.r();
                     return;
                 }
                 KeyBindingInputState.k();
-                this.V = true;
-                this.Z = true;
-                this.O = 0;
+                this.attackKeyPending = true;
+                this.attackTriggered = true;
+                this.swingTicks = 0;
             }
-            if (this.Z) {
-                this.o.Y(2.0f);
-                if (this.O++ > 5) {
-                    this.O = 0;
-                    this.Z = false;
-                    this.A = null;
+            if (this.attackTriggered) {
+                this.rotationController.Y(2.0f);
+                if (this.swingTicks++ > 5) {
+                    this.swingTicks = 0;
+                    this.attackTriggered = false;
+                    this.targetArrow = null;
                     this.O$src$V$1lvst8b();
-                    this.c();
+                    this.releaseRotation();
                 }
             }
         } else {
-            this.c();
+            this.releaseRotation();
         }
     }
 }

@@ -46,20 +46,20 @@ import java.util.List;
 
 public class Scaffold
 extends Mod {
-    private static final long C = 5194648552353087966L;
-    private final RotationControlClaim r;
-    private BlatantScaffoldMode Y;
-    private TellyBridgeScaffoldMode k;
-    private final NumberValue v;
+    private static final long MODULE_ID = 5194648552353087966L;
+    private final RotationControlClaim rotationClaim;
+    private BlatantScaffoldMode godBridgeMode;
+    private TellyBridgeScaffoldMode tellyBridgeMode;
+    private final NumberValue pitchValue;
     protected final BooleanValue a;
     protected final ModeValue s;
-    private final LimitValue t;
-    private final List<ItemLimitData> V;
-    private final LimitValue L;
-    private LegitScaffoldMode H = new LegitScaffoldMode(this, "Legit");
-    private final BooleanValue I;
-    private final BooleanValue j;
-    private final BooleanValue O;
+    private final LimitValue whitelistLimit;
+    private final List<ItemLimitData> blacklistItems;
+    private final LimitValue blacklistLimit;
+    private LegitScaffoldMode legitMode = new LegitScaffoldMode(this, "Legit");
+    private final BooleanValue whitelistToggle;
+    private final BooleanValue blacklistToggle;
+    private final BooleanValue pitchCheckToggle;
     public FixedRotationController A = null;
 
     protected double[] e(double[] dArray, double d, int n) {
@@ -85,10 +85,10 @@ extends Mod {
     }
 
     protected boolean p(ItemStack itemStack) {
-        if (!this.j.L().booleanValue()) {
+        if (!this.blacklistToggle.L().booleanValue()) {
             return false;
         }
-        return !this.L.k(itemStack);
+        return !this.blacklistLimit.k(itemStack);
     }
 
     protected boolean U(double[] dArray) {
@@ -324,25 +324,25 @@ extends Mod {
     }
 
     public Scaffold() {
-        super("Scaffold", (int)C, Category.Y, "Helps you make bridges/scaffold walk.");
-        this.Y = new BlatantScaffoldMode(this, "GodBridge");
-        this.k = new TellyBridgeScaffoldMode(this, "TellyBridge");
+        super("Scaffold", (int)MODULE_ID, Category.Y, "Helps you make bridges/scaffold walk.");
+        this.godBridgeMode = new BlatantScaffoldMode(this, "GodBridge");
+        this.tellyBridgeMode = new TellyBridgeScaffoldMode(this, "TellyBridge");
         this.a = BooleanValue.create(this, "Block count", false, "Renders your block count on the center of your screen");
-        this.O = BooleanValue.create(this, "Pitch check", false, "Scaffold will not activate unless you are aiming lower than this angle");
-        this.v = NumberValue.create(this, "Pitch", "#", " ", 0.0, 45.0, 90.0);
-        this.j = BooleanValue.create(this, "Blacklist", true, "Scaffold will not use these blocks for scaffolding");
-        this.V = Arrays.asList(new ItemLimitData("Dispenser"), new ItemLimitData("Note Block"), new ItemLimitData("Cobweb"), new ItemLimitData("TNT"), new ItemLimitData("Monster Spawner"), new ItemLimitData("Enchantment Table"), new ItemLimitData("Oak Fence"), new ItemLimitData("Jukebox"), new ItemLimitData("Melon"), new ItemLimitData("Command Block"), new ItemLimitData("Anvil"), new ItemLimitData("Glass Pane"), new ItemLimitData("White Stained Glass Pane"), new ItemLimitData("Iron Bars"), new ItemLimitData("Ice"), new ItemLimitData("Packed Ice"), new ItemLimitData("Anvil"), new ItemLimitData("Block of Redstone"), new ItemLimitData("Gold Ore"), new ItemLimitData("Iron Ore"), new ItemLimitData("Coal Ore"), new ItemLimitData("Lapis Lazuli Ore"), new ItemLimitData("Redstone Ore"), new ItemLimitData("Acacia Wood Stairs"), new ItemLimitData("Wooden Pressure Plate"), new ItemLimitData("Stone Pressure Plate"), new ItemLimitData("Beacon"), new ItemLimitData("Oak Sapling"), new ItemLimitData("Powered Rail"), new ItemLimitData("Detector Rail"), new ItemLimitData("Shrub"), new ItemLimitData("Dead Bush"), new ItemLimitData("Dandelion"), new ItemLimitData("Poppy"), new ItemLimitData("Mushroom"), new ItemLimitData("Ladder"), new ItemLimitData("Rail"), new ItemLimitData("Wooden Trapdoor"), new ItemLimitData("Lily Pad"), new ItemLimitData("Tripwire Hook"), new ItemLimitData("Carpet"), new ItemLimitData("Snow"), new ItemLimitData("Trapped Chest"), new ItemLimitData("Daylight Sensor"), new ItemLimitData("Hopper"), new ItemLimitData("Chest"), new ItemLimitData("Torch"), new ItemLimitData("Lever"), new ItemLimitData("Redstone Torch"), new ItemLimitData("Button"), new ItemLimitData("Cactus"));
-        this.L = LimitValue.n(this, "scaffold-blacklist", "Block Blacklist", LimitValue.G, this.V);
-        this.I = BooleanValue.create(this, "Whitelist", false, "Only activates scaffold when\nwhitelisted blocks are held.");
-        this.t = (LimitValue)LimitValue.N(this, "scaffold-allowedblocks", "Block Whitelist", LimitValue.r, new ItemLimitData("blocks")).Z$src$Lgg_vape_value_Value_$16i62fx("Scaffold will not function unless you are currently holding an item whitelisted here");
-        this.r = SharedModuleControlClaims.I;
-        this.s = ForgeVersion.MC_1_16_5.d() || ForgeVersion.MC_1_7_10.L() ? ModeValue.create((Object)this, "Mode", "Legit - Automatically shifts at edge of block when backwards (fastbridge/ninja/eagle)\nGodBridge - Places while walking at full speed diagonally without needing to shift\n", (ModeSelection)this.H.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.H.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.Y.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) : ModeValue.create((Object)this, "Mode", "Legit - Automatically shifts at edge of block when backwards (fastbridge/ninja/eagle)\nGodBridge - Places while walking at full speed diagonally without needing to shift\nTellyBridge - Places blocks behind you while jumping (tellybridging may be prevented on some servers, even if done legitimately)\n", (ModeSelection)this.H.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.H.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.Y.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.k.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx());
-        this.O.K(this.v);
-        this.j.K(this.L);
-        this.I.K(this.t);
-        this.addValue(this.s, this.a, this.O, this.v, this.j, this.L, this.I, this.t);
-        this.i(ValueDisplayDescriptor.o(this.a, "BC"), ValueDisplayDescriptor.X(this.s), ValueDisplayDescriptor.p(this.j), ValueDisplayDescriptor.p(this.v), ValueDisplayDescriptor.p(this.I));
-        this.r.l(this, 6);
+        this.pitchCheckToggle = BooleanValue.create(this, "Pitch check", false, "Scaffold will not activate unless you are aiming lower than this angle");
+        this.pitchValue = NumberValue.create(this, "Pitch", "#", " ", 0.0, 45.0, 90.0);
+        this.blacklistToggle = BooleanValue.create(this, "Blacklist", true, "Scaffold will not use these blocks for scaffolding");
+        this.blacklistItems = Arrays.asList(new ItemLimitData("Dispenser"), new ItemLimitData("Note Block"), new ItemLimitData("Cobweb"), new ItemLimitData("TNT"), new ItemLimitData("Monster Spawner"), new ItemLimitData("Enchantment Table"), new ItemLimitData("Oak Fence"), new ItemLimitData("Jukebox"), new ItemLimitData("Melon"), new ItemLimitData("Command Block"), new ItemLimitData("Anvil"), new ItemLimitData("Glass Pane"), new ItemLimitData("White Stained Glass Pane"), new ItemLimitData("Iron Bars"), new ItemLimitData("Ice"), new ItemLimitData("Packed Ice"), new ItemLimitData("Anvil"), new ItemLimitData("Block of Redstone"), new ItemLimitData("Gold Ore"), new ItemLimitData("Iron Ore"), new ItemLimitData("Coal Ore"), new ItemLimitData("Lapis Lazuli Ore"), new ItemLimitData("Redstone Ore"), new ItemLimitData("Acacia Wood Stairs"), new ItemLimitData("Wooden Pressure Plate"), new ItemLimitData("Stone Pressure Plate"), new ItemLimitData("Beacon"), new ItemLimitData("Oak Sapling"), new ItemLimitData("Powered Rail"), new ItemLimitData("Detector Rail"), new ItemLimitData("Shrub"), new ItemLimitData("Dead Bush"), new ItemLimitData("Dandelion"), new ItemLimitData("Poppy"), new ItemLimitData("Mushroom"), new ItemLimitData("Ladder"), new ItemLimitData("Rail"), new ItemLimitData("Wooden Trapdoor"), new ItemLimitData("Lily Pad"), new ItemLimitData("Tripwire Hook"), new ItemLimitData("Carpet"), new ItemLimitData("Snow"), new ItemLimitData("Trapped Chest"), new ItemLimitData("Daylight Sensor"), new ItemLimitData("Hopper"), new ItemLimitData("Chest"), new ItemLimitData("Torch"), new ItemLimitData("Lever"), new ItemLimitData("Redstone Torch"), new ItemLimitData("Button"), new ItemLimitData("Cactus"));
+        this.blacklistLimit = LimitValue.n(this, "scaffold-blacklist", "Block Blacklist", LimitValue.G, this.blacklistItems);
+        this.whitelistToggle = BooleanValue.create(this, "Whitelist", false, "Only activates scaffold when\nwhitelisted blocks are held.");
+        this.whitelistLimit = (LimitValue)LimitValue.N(this, "scaffold-allowedblocks", "Block Whitelist", LimitValue.r, new ItemLimitData("blocks")).Z$src$Lgg_vape_value_Value_$16i62fx("Scaffold will not function unless you are currently holding an item whitelisted here");
+        this.rotationClaim = SharedModuleControlClaims.I;
+        this.s = ForgeVersion.MC_1_16_5.d() || ForgeVersion.MC_1_7_10.L() ? ModeValue.create((Object)this, "Mode", "Legit - Automatically shifts at edge of block when backwards (fastbridge/ninja/eagle)\nGodBridge - Places while walking at full speed diagonally without needing to shift\n", (ModeSelection)this.legitMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.legitMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.godBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) : ModeValue.create((Object)this, "Mode", "Legit - Automatically shifts at edge of block when backwards (fastbridge/ninja/eagle)\nGodBridge - Places while walking at full speed diagonally without needing to shift\nTellyBridge - Places blocks behind you while jumping (tellybridging may be prevented on some servers, even if done legitimately)\n", (ModeSelection)this.legitMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.legitMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.godBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.tellyBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx());
+        this.pitchCheckToggle.K(this.pitchValue);
+        this.blacklistToggle.K(this.blacklistLimit);
+        this.whitelistToggle.K(this.whitelistLimit);
+        this.addValue(this.s, this.a, this.pitchCheckToggle, this.pitchValue, this.blacklistToggle, this.blacklistLimit, this.whitelistToggle, this.whitelistLimit);
+        this.i(ValueDisplayDescriptor.o(this.a, "BC"), ValueDisplayDescriptor.X(this.s), ValueDisplayDescriptor.p(this.blacklistToggle), ValueDisplayDescriptor.p(this.pitchValue), ValueDisplayDescriptor.p(this.whitelistToggle));
+        this.rotationClaim.l(this, 6);
     }
 
     protected float L(float[] fArray) {
@@ -381,7 +381,7 @@ extends Mod {
     }
 
     public static EnumFacing B(Scaffold scaffold, int n) {
-        return scaffold.u(n);
+        return scaffold.facingForDirection(n);
     }
 
     protected int l() {
@@ -487,15 +487,15 @@ extends Mod {
 
     @Override
     public void onDisable() {
-        this.r.X(this);
+        this.rotationClaim.X(this);
         ClientSettings.g(ActiveModuleStackFrame.class).w(this);
     }
 
     protected boolean G() {
-        return ((ModeSelection)this.s.K()).equals(this.k.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) || ((ModeSelection)this.s.K()).equals(this.Y.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) || this.I.L() == false || this.t.z(Minecraft.thePlayer().B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt());
+        return ((ModeSelection)this.s.K()).equals(this.tellyBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) || ((ModeSelection)this.s.K()).equals(this.godBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) || this.whitelistToggle.L() == false || this.whitelistLimit.z(Minecraft.thePlayer().B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt());
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException guard(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -526,14 +526,14 @@ extends Mod {
     }
 
     protected double V$src$D$dhg0fy() {
-        return (Double)this.v.K();
+        return (Double)this.pitchValue.K();
     }
 
     public boolean o$src$Z$dv6vsx() {
         return false;
     }
 
-    private EnumFacing u(int n) {
+    private EnumFacing facingForDirection(int n) {
         switch (n) {
             case 5: {
                 return EnumFacing.T(3);
@@ -557,9 +557,9 @@ extends Mod {
             return null;
         }
         int n = 2;
-        if (((ModeSelection)this.s.K()).equals(this.H.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx())) {
+        if (((ModeSelection)this.s.K()).equals(this.legitMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx())) {
             n = 0;
-        } else if (((ModeSelection)this.s.K()).equals(this.Y.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) || ((ModeSelection)this.s.K()).equals(this.k.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx())) {
+        } else if (((ModeSelection)this.s.K()).equals(this.godBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx()) || ((ModeSelection)this.s.K()).equals(this.tellyBridgeMode.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx())) {
             n = 1;
         }
         int n2 = this.n(n, true);
@@ -582,14 +582,14 @@ extends Mod {
     }
 
     protected boolean c(ItemStack itemStack) {
-        if (!this.I.L().booleanValue()) {
+        if (!this.whitelistToggle.L().booleanValue()) {
             return true;
         }
-        return this.t.z(itemStack);
+        return this.whitelistLimit.z(itemStack);
     }
 
     protected boolean J$src$Z$dauhuk() {
-        return this.O.L();
+        return this.pitchCheckToggle.L();
     }
 
     public static final class Access {

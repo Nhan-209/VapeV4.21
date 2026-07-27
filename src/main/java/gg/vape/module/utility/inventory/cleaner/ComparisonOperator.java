@@ -20,14 +20,14 @@ DescribedOption {
     LESS_THAN_OR_EQUAL("less or equal to", "<=");
 
     public static final @UnmodifiableView List<ComparisonOperator> VALUES;
-    private static final ComparisonOperator[] C;
-    private final String q;
-    private static GuiComponent[] o;
-    private final String T;
+    private static final ComparisonOperator[] valuesArray;
+    private final String symbol;
+    private static GuiComponent[] components;
+    private final String displayName;
 
     @Override
     public String E() {
-        return this.q;
+        return this.symbol;
     }
 
     public boolean q(short s, short s2) {
@@ -84,7 +84,7 @@ DescribedOption {
     }
 
     public static GuiComponent[] v() {
-        return o;
+        return components;
     }
 
     @Nullable
@@ -107,25 +107,25 @@ DescribedOption {
 
 
 
-        C = new ComparisonOperator[]{EQUALS, NOT_EQUAL, GREATER_THAN, GREATHER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL};
+        valuesArray = new ComparisonOperator[]{EQUALS, NOT_EQUAL, GREATER_THAN, GREATHER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL};
         VALUES = Arrays.asList(ComparisonOperator.values());
     }
 
     @Override
     public String getName() {
-        return this.T;
+        return this.displayName;
     }
 
     public static void k(GuiComponent[] guiComponentArray) {
-        o = guiComponentArray;
+        components = guiComponentArray;
     }
 
     private ComparisonOperator(String string2, String string3) {
-        this.T = string2;
-        this.q = string3;
+        this.displayName = string2;
+        this.symbol = string3;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 

@@ -32,7 +32,7 @@ implements EventListener {
         ClientSettings.g(ClientSettingsSearchFrame.class).N$src$V$1ncxuwi();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

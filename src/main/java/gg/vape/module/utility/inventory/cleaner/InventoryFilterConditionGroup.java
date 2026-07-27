@@ -13,31 +13,31 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 public class InventoryFilterConditionGroup
 implements Cloneable {
-    private final List<InventoryFilterCondition<?>> J = new ArrayList();
+    private final List<InventoryFilterCondition<?>> conditions = new ArrayList();
 
     public void L(InventoryFilterCondition<?> inventoryFilterCondition, InventoryFilterCondition<?> inventoryFilterCondition2) {
-        int n = this.J.indexOf(inventoryFilterCondition);
+        int n = this.conditions.indexOf(inventoryFilterCondition);
         if (n != -1) {
-            this.J.add(n, inventoryFilterCondition2);
+            this.conditions.add(n, inventoryFilterCondition2);
         } else {
-            this.J.add(inventoryFilterCondition2);
+            this.conditions.add(inventoryFilterCondition2);
         }
-        this.J.remove(inventoryFilterCondition);
+        this.conditions.remove(inventoryFilterCondition);
     }
 
     public @UnmodifiableView List<InventoryFilterCondition<?>> c() {
-        return this.J;
+        return this.conditions;
     }
 
     public void j(InventoryFilterCondition<?> inventoryFilterCondition) {
-        this.J.remove(inventoryFilterCondition);
+        this.conditions.remove(inventoryFilterCondition);
     }
 
     public InventoryFilterConditionGroup(JsonObject jsonObject) {
         JsonArray jsonArray = jsonObject.getAsJsonArray("conditions");
         for (int i = 0; i < jsonArray.size(); ++i) {
             JsonObject jsonObject2 = jsonArray.get(i).getAsJsonObject();
-            this.J.add(InventoryFilterCondition.h(jsonObject2));
+            this.conditions.add(InventoryFilterCondition.h(jsonObject2));
         }
     }
 
@@ -45,7 +45,7 @@ implements Cloneable {
     }
 
     static List i(InventoryFilterConditionGroup inventoryFilterConditionGroup) {
-        return inventoryFilterConditionGroup.J;
+        return inventoryFilterConditionGroup.conditions;
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -56,7 +56,7 @@ implements Cloneable {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         jsonObject.add("conditions", (JsonElement)jsonArray);
-        for (InventoryFilterCondition<?> inventoryFilterCondition : this.J) {
+        for (InventoryFilterCondition<?> inventoryFilterCondition : this.conditions) {
             JsonObject jsonObject2 = inventoryFilterCondition.L();
             if (jsonObject2 == null) continue;
             jsonArray.add((JsonElement)jsonObject2);
@@ -69,19 +69,19 @@ implements Cloneable {
     }
 
     public void O(InventoryFilterCondition<?> inventoryFilterCondition) {
-        this.J.add(inventoryFilterCondition);
+        this.conditions.add(inventoryFilterCondition);
     }
 
     public InventoryFilterConditionGroup A() {
         InventoryFilterConditionGroupBuilder inventoryFilterConditionGroupBuilder = InventoryFilterConditionGroup.w();
-        for (InventoryFilterCondition<?> inventoryFilterCondition : this.J) {
+        for (InventoryFilterCondition<?> inventoryFilterCondition : this.conditions) {
             inventoryFilterConditionGroupBuilder.O((InventoryFilterCondition<?>)inventoryFilterCondition.w());
         }
         return inventoryFilterConditionGroupBuilder.w();
     }
 
     public boolean u(ItemStack itemStack) {
-        for (InventoryFilterCondition<?> inventoryFilterCondition : this.J) {
+        for (InventoryFilterCondition<?> inventoryFilterCondition : this.conditions) {
             if (inventoryFilterCondition.g(itemStack)) continue;
             return false;
         }

@@ -4,9 +4,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemPickerSelection<L, R> {
     @Nullable
-    private final L z;
+    private final L left;
     @Nullable
-    private final R K;
+    private final R right;
 
     public static <L, R> ItemPickerSelection<L, R> B() {
         return new ItemPickerSelection<L, R>(null, null);
@@ -21,21 +21,21 @@ public class ItemPickerSelection<L, R> {
     }
 
     public String toString() {
-        return "Either{left=" + this.z + ", right=" + this.K + '}';
+        return "Either{left=" + this.left + ", right=" + this.right + '}';
     }
 
     ItemPickerSelection(@Nullable L l, @Nullable R r) {
-        this.z = l;
-        this.K = r;
+        this.left = l;
+        this.right = r;
     }
 
     @Nullable
     public L N() {
-        return this.z;
+        return this.left;
     }
 
     @Nullable
     public R X() {
-        return this.K;
+        return this.right;
     }
 }

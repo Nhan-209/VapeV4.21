@@ -10,34 +10,34 @@ public enum ArmorMaterialType {
     NETHERITE("netherite"),
     CHAINMAIL("chainmail");
 
-    private static final /* synthetic */ ArmorMaterialType[] r;
-    private static boolean Z;
-    private final String u;
+    private static final /* synthetic */ ArmorMaterialType[] VALUES;
+    private static boolean initialized;
+    private final String materialName;
 
-    public static boolean V() {
-        return Z;
+    public static boolean isInitialized() {
+        return initialized;
     }
 
-    public static boolean w() {
-        boolean bl = ArmorMaterialType.V();
+    public static boolean checkReady() {
+        boolean initializedState = ArmorMaterialType.isInitialized();
         return false;
     }
 
-    private ArmorMaterialType(String string2) {
-        this.u = string2;
+    private ArmorMaterialType(String value) {
+        this.materialName = value;
     }
 
     public boolean G(String string) {
-        return string.toLowerCase().contains(this.u);
+        return string.toLowerCase().contains(this.materialName);
     }
 
-    public String H() {
-        return this.u;
+    public String getMaterialName() {
+        return this.materialName;
     }
 
     static {
-        if (!ArmorMaterialType.V()) {
-            ArmorMaterialType.z(true);
+        if (!ArmorMaterialType.isInitialized()) {
+            ArmorMaterialType.setInitialized(true);
         }
         String[] stringArray = new String[]{"NETHERITE", "CHAINMAIL", "GOLD", "iron", "LEATHER", "chainmail", "IRON", "diamond", "DIAMOND", "netherite", "gold", "leather"};
 
@@ -46,14 +46,14 @@ public enum ArmorMaterialType {
 
 
 
-        r = new ArmorMaterialType[]{LEATHER, IRON, DIAMOND, GOLD, NETHERITE, CHAINMAIL};
+        VALUES = new ArmorMaterialType[]{LEATHER, IRON, DIAMOND, GOLD, NETHERITE, CHAINMAIL};
     }
 
-    public static void z(boolean bl) {
-        Z = bl;
+    public static void setInitialized(boolean value) {
+        initialized = value;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

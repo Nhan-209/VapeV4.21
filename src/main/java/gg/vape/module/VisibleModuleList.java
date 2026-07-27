@@ -5,49 +5,49 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class VisibleModuleList<T> {
-    private final HashMap<T, Long> i = new HashMap();
-    private final long e;
+    private final HashMap<T, Long> lastSeenTimestamps = new HashMap();
+    private final long expiryMillis;
 
-    private void l() {
-        long l = System.currentTimeMillis();
-        this.i.entrySet().removeIf(entry -> this.lambda$cleanUp$0(l, (Map.Entry)entry));
+    private void cleanUp() {
+        long now = System.currentTimeMillis();
+        this.lastSeenTimestamps.entrySet().removeIf(entry -> this.isExpired(now, (Map.Entry)entry));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public void N(T t) {
-        this.l();
-        this.i.put(t, System.currentTimeMillis());
+        this.cleanUp();
+        this.lastSeenTimestamps.put(t, System.currentTimeMillis());
     }
 
-    public VisibleModuleList(long l) {
-        this.e = l;
+    public VisibleModuleList(long expiry) {
+        this.expiryMillis = expiry;
     }
 
     public void m(T t) {
-        this.l();
-        this.i.remove(t);
+        this.cleanUp();
+        this.lastSeenTimestamps.remove(t);
     }
 
     public boolean Y(T t) {
-        this.l();
-        return this.i.containsKey(t);
+        this.cleanUp();
+        return this.lastSeenTimestamps.containsKey(t);
     }
 
     public void R() {
-        this.i.clear();
+        this.lastSeenTimestamps.clear();
     }
 
     public int w() {
-        this.l();
-        return this.i.size();
+        this.cleanUp();
+        return this.lastSeenTimestamps.size();
     }
 
-    private boolean lambda$cleanUp$0(long l, Map.Entry entry) {
-        boolean bl = l - (Long)entry.getValue() > this.e;
-        return bl;
+    private boolean isExpired(long now, Map.Entry entry) {
+        boolean expired = now - (Long)entry.getValue() > this.expiryMillis;
+        return expired;
     }
 }
 

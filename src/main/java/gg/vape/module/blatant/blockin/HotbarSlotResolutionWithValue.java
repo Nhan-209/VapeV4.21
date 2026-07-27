@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 public class HotbarSlotResolutionWithValue<T>
 extends HotbarSlotResolution<HotbarSlotResolutionWithValue<T>> {
     @Nullable
-    private T J = null;
+    private T value = null;
 
     HotbarSlotResolutionWithValue(HotbarSlotResolutionStatus zD, @Nullable String string, @Nullable T t) {
         super(zD, string);
@@ -20,16 +20,16 @@ extends HotbarSlotResolution<HotbarSlotResolutionWithValue<T>> {
 
     @Nullable
     public T w() {
-        return this.J;
+        return this.value;
     }
 
-    private HotbarSlotResolutionWithValue<T> s() {
+    private HotbarSlotResolutionWithValue<T> self() {
         return this;
     }
 
     public HotbarSlotResolutionWithValue<T> q(@Nullable T t) {
-        this.J = t;
-        return this.s();
+        this.value = t;
+        return this.self();
     }
 }
 

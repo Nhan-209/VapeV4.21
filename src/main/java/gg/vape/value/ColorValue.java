@@ -334,6 +334,9 @@ extends Value<Object[], ColorValue> {
     }
 
     public void a() {
+        if (this.l == null) {
+            return;
+        }
         super.o(this.z());
     }
 

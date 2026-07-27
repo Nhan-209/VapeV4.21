@@ -15,20 +15,20 @@ import org.jetbrains.annotations.Nullable;
 public class ItemFilterSelection
 implements Cloneable {
     @Nullable
-    private String y;
+    private String itemName;
     @Nullable
-    private transient InventoryItemMatcher n;
-    private transient boolean G = true;
-    private static final String b = "items";
+    private transient InventoryItemMatcher matcher;
+    private transient boolean dirty = true;
+    private static final String ITEMS_KEY = "items";
     @Nullable
-    private transient ItemStack f;
+    private transient ItemStack resolvedStack;
 
     public boolean h(ItemStack itemStack) {
-        String string = this.y;
-        if (string == null) {
+        String name = this.itemName;
+        if (name == null) {
             return false;
         }
-        InventoryItemMatcher inventoryItemMatcher = this.A();
+        InventoryItemMatcher inventoryItemMatcher = this.getMatcher();
         if (inventoryItemMatcher != null && inventoryItemMatcher.g(itemStack, itemStack.getItem())) {
             return true;
         }
@@ -36,54 +36,54 @@ implements Cloneable {
             return false;
         }
         ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack);
-        return itemMappingEntry != null && string.equals(itemMappingEntry.M());
+        return itemMappingEntry != null && name.equals(itemMappingEntry.M());
     }
 
     @Nullable
     public ItemStack E() {
-        this.r();
-        return this.f;
+        this.ensureResolved();
+        return this.resolvedStack;
     }
 
-    private void I() {
-        String string;
-        this.n = null;
-        this.f = null;
-        String string2 = string = this.y != null ? this.y.trim().toLowerCase() : null;
-        if (string == null || string.isEmpty()) {
+    private void resolve() {
+        String normalized;
+        this.matcher = null;
+        this.resolvedStack = null;
+        String normalized2 = normalized = this.itemName != null ? this.itemName.trim().toLowerCase() : null;
+        if (normalized == null || normalized.isEmpty()) {
             return;
         }
-        this.n = InventoryItemMatcherRegistry.z(string);
-        if (this.n != null) {
-            this.f = null;
+        this.matcher = InventoryItemMatcherRegistry.z(normalized);
+        if (this.matcher != null) {
+            this.resolvedStack = null;
             return;
         }
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().b(string);
+        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().b(normalized);
         if (itemMappingEntry != null) {
-            this.f = itemMappingEntry.Q();
-            if (this.f == null || this.f.isNull()) {
+            this.resolvedStack = itemMappingEntry.Q();
+            if (this.resolvedStack == null || this.resolvedStack.isNull()) {
                 // empty if block
             }
         }
     }
 
     public JsonElement Q() {
-        return this.y != null ? new JsonPrimitive(this.y) : null;
+        return this.itemName != null ? new JsonPrimitive(this.itemName) : null;
     }
 
     public boolean j() {
-        return this.y == null;
+        return this.itemName == null;
     }
 
     @Nullable
     public String V() {
-        this.r();
-        return this.n != null ? this.n.Z() : null;
+        this.ensureResolved();
+        return this.matcher != null ? this.matcher.Z() : null;
     }
 
     public ItemFilterSelection y() {
         ItemFilterSelection itemFilterSelection = new ItemFilterSelection();
-        itemFilterSelection.I(this.y);
+        itemFilterSelection.setItemName(this.itemName);
         return itemFilterSelection;
     }
 
@@ -92,36 +92,36 @@ implements Cloneable {
             return false;
         }
         ItemStack itemStack = this.E();
-        return (itemStack == null || itemStack.isNull()) && this.y != null;
+        return (itemStack == null || itemStack.isNull()) && this.itemName != null;
     }
 
-    private void I(@Nullable String string) {
-        this.U(string, true);
+    private void setItemName(@Nullable String string) {
+        this.assign(string, true);
     }
 
     @Nullable
     public InventoryItemMatcher c() {
-        this.r();
-        return this.n;
+        this.ensureResolved();
+        return this.matcher;
     }
 
     public void G(@Nullable ItemPickerSelection<String, ItemMappingEntry> itemPickerSelection) {
         if (itemPickerSelection == null || itemPickerSelection.N() == null && itemPickerSelection.X() == null) {
-            this.I(null);
+            this.setItemName(null);
         } else if (itemPickerSelection.N() != null) {
-            this.I(itemPickerSelection.N());
+            this.setItemName(itemPickerSelection.N());
         } else if (itemPickerSelection.X() != null) {
-            this.I(itemPickerSelection.X().M());
+            this.setItemName(itemPickerSelection.X().M());
         }
     }
 
-    private void U(@Nullable String string, boolean bl) {
-        this.y = string;
-        this.n = null;
-        this.f = null;
-        this.G = true;
-        if (bl) {
-            this.r();
+    private void assign(@Nullable String string, boolean resolveNow) {
+        this.itemName = string;
+        this.matcher = null;
+        this.resolvedStack = null;
+        this.dirty = true;
+        if (resolveNow) {
+            this.ensureResolved();
         }
     }
 
@@ -129,17 +129,17 @@ implements Cloneable {
         return throwable;
     }
 
-    private void r() {
-        if (!this.G) {
+    private void ensureResolved() {
+        if (!this.dirty) {
             return;
         }
-        this.G = false;
+        this.dirty = false;
         try {
-            this.I();
+            this.resolve();
         }
         catch (Throwable throwable) {
-            this.n = null;
-            this.f = null;
+            this.matcher = null;
+            this.resolvedStack = null;
         }
     }
 
@@ -148,25 +148,25 @@ implements Cloneable {
 
     @Nullable
     public String J() {
-        return this.y;
+        return this.itemName;
     }
 
     public ItemFilterSelection(JsonElement jsonElement) {
         if (jsonElement instanceof JsonObject) {
-            int n = 0;
-            JsonArray jsonArray = ((JsonObject)jsonElement).getAsJsonArray(b);
-            if (n < jsonArray.size()) {
-                this.U(jsonArray.get(n).getAsString(), false);
+            int index = 0;
+            JsonArray jsonArray = ((JsonObject)jsonElement).getAsJsonArray(ITEMS_KEY);
+            if (index < jsonArray.size()) {
+                this.assign(jsonArray.get(index).getAsString(), false);
             }
         } else if (jsonElement instanceof JsonPrimitive) {
-            this.U(jsonElement.getAsString(), false);
+            this.assign(jsonElement.getAsString(), false);
         }
     }
 
     @Nullable
-    private InventoryItemMatcher A() {
-        this.r();
-        return this.n;
+    private InventoryItemMatcher getMatcher() {
+        this.ensureResolved();
+        return this.matcher;
     }
 }
 

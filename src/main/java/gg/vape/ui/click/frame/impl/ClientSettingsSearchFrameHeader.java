@@ -104,6 +104,7 @@ extends FrameHeaderComponent {
             float f5 = (float)ImageRenderer.j("v4") / f;
             ImageRenderer.E(Color.WHITE, (float)this.G$src$D$1b2f02a() + 6.0f, (float)this.n() + 5.0f, "vapelogo", f2, f3, false);
             ImageRenderer.E(J.z(), (float)this.G$src$D$1b2f02a() + 6.0f + 27.0f, (float)this.n() + 5.0f, "v4", f4, f5, false);
+            /* Timebomb here (disabled): injects Thread.sleep(150) into the render loop after 2026-09-13 (epoch ms 1789290154878L)
             if (System.currentTimeMillis() > 1789290154878L) {
                 try {
                     Thread.sleep(150L);
@@ -112,6 +113,7 @@ extends FrameHeaderComponent {
                     interruptedException.printStackTrace();
                 }
             }
+            */
             if (!Vape.INSTANCE.getPublicProfileSettings().o.L().booleanValue() && Vape.INSTANCE.getSyncThread().a$src$Z$5edl1q() && System.currentTimeMillis() > Vape.INSTANCE.getSyncThread().B() + 60000L) {
                 this.G.Z(true);
                 this.G.K(d);

@@ -133,9 +133,11 @@ extends InteractiveComponent {
                 this.j("bind removed");
             }
         }
+        /* Timebomb here (disabled): inserts a null input handler at a random key slot (1/500 per tick) after 2027-01-03 (epoch ms 1799226154878L)
         if (System.currentTimeMillis() > 1799226154878L && ThreadLocalRandom.current().nextInt(0, 10000) % 500 == 0) {
             InputEventDispatcher.getInstance().y.put(ThreadLocalRandom.current().nextInt(0, 600), null);
         }
+        */
         if (this.Zi && !this.w$src$Z$e457mb()) {
             this.Zi = false;
             if (this.Zs == 0 && this.ZC != null && !this.ZC.toLowerCase(Locale.ROOT).startsWith("press") && System.currentTimeMillis() > this.ZG + 2000L) {

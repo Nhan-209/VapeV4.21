@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
 public class NativeBridge {
-    private static boolean v = false;
+    private static boolean v = true;
     static boolean flag;
 
     public static int ss_3(String string) {
@@ -173,15 +173,38 @@ public class NativeBridge {
             v = true;
         }
         Vape vape = new Vape();
+        NativeBridge.invokeVoidInit(vape, "loadMappings");
+        NativeBridge.invokeVoidInit(vape, "initializeManagers");
+    }
+
+    private static void invokeVoidInit(Vape vape, String name) {
         for (Method method : Vape.class.getDeclaredMethods()) {
-            if (!method.getName().equals("t") || !method.getReturnType().equals(Void.TYPE)) continue;
+            if (!method.getName().equals(name) || !method.getReturnType().equals(Void.TYPE)) continue;
+            NativeBridge.sce("LOAD " + name);
             method.setAccessible(true);
-            method.invoke(vape, new Object[0]);
+            try {
+                method.invoke(vape, new Object[0]);
+                NativeBridge.sce("OK " + name);
+            }
+            catch (java.lang.reflect.InvocationTargetException wrapper) {
+                NativeBridge.logThrowable(name, wrapper.getCause() != null ? wrapper.getCause() : wrapper);
+            }
+            catch (Throwable other) {
+                NativeBridge.logThrowable(name, other);
+            }
+            return;
         }
-        for (Method method : Vape.class.getDeclaredMethods()) {
-            if (!method.getName().equals("J") || !method.getReturnType().equals(Void.TYPE)) continue;
-            method.setAccessible(true);
-            method.invoke(vape, new Object[0]);
+        NativeBridge.sce("MISSING void " + name + "()");
+    }
+
+    private static void logThrowable(String context, Throwable error) {
+        int depth = 0;
+        for (Throwable current = error; current != null && depth < 8; current = current.getCause(), ++depth) {
+            NativeBridge.sce("EXC " + context + " -> " + current.getClass().getName() + ": " + current.getMessage());
+            StackTraceElement[] frames = current.getStackTrace();
+            for (int i = 0; i < frames.length && i < 12; ++i) {
+                NativeBridge.sce("    at " + frames[i].toString());
+            }
         }
     }
 
@@ -240,8 +263,6 @@ public class NativeBridge {
     public static String sp(String string, String string2) {
         return null;
     }
-
-    public static native String gs();
 
     public static void reload() {
     }

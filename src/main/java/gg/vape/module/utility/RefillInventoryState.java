@@ -53,7 +53,7 @@ public interface RefillInventoryState {
         this.a$src$V$1hjaphc(String.format(string, objectArray));
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

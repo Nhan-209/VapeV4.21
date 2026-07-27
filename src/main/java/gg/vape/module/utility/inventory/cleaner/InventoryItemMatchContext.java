@@ -8,16 +8,16 @@ import gg.vape.wrapper.impl.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class InventoryItemMatchContext {
-    private final ItemMappingEntry M;
-    private final Item o;
-    private final ItemStack z;
+    private final ItemMappingEntry mappingEntry;
+    private final Item item;
+    private final ItemStack itemStack;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public Item M() {
-        return this.o;
+        return this.item;
     }
 
     @Nullable
@@ -34,17 +34,17 @@ public class InventoryItemMatchContext {
     }
 
     public ItemMappingEntry f() {
-        return this.M;
+        return this.mappingEntry;
     }
 
-    public InventoryItemMatchContext(ItemMappingEntry itemMappingEntry, ItemStack itemStack, Item item) {
-        this.M = itemMappingEntry;
-        this.z = itemStack;
-        this.o = item;
+    public InventoryItemMatchContext(ItemMappingEntry itemMappingEntry, ItemStack stack, Item resolvedItem) {
+        this.mappingEntry = itemMappingEntry;
+        this.itemStack = stack;
+        this.item = resolvedItem;
     }
 
     public ItemStack v() {
-        return this.z;
+        return this.itemStack;
     }
 }
 

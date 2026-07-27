@@ -12,8 +12,8 @@ extends ArrowProjectile {
         return 0.5f;
     }
 
-    public TrajectoriesArrowProjectilePrimary(Trajectories cC) {
-        this.o = cC;
+    public TrajectoriesArrowProjectilePrimary(Trajectories trajectories) {
+        this.o = trajectories;
     }
 }
 

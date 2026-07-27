@@ -12,24 +12,24 @@ public class ItemDurabilityFilterCondition
 implements NumericFilterCondition<ItemDurabilityFilterCondition> {
     @Override
     public ItemDurabilityFilterCondition Q(String string) throws NumberFormatException {
-        return this.g(string);
+        return this.parseDamage(string);
     }
 
     @Override
     public ItemDurabilityFilterCondition J(ComparisonOperator operator) {
-        return this.N(operator);
+        return this.withOperator(operator);
     }
 
     @Override
     public ItemDurabilityFilterCondition w() {
-        return this.B();
+        return this.copy();
     }
-    private int T;
-    private DurabilityValueMode C;
-    private ComparisonOperator n = ComparisonOperator.EQUALS;
+    private int damage;
+    private DurabilityValueMode valueMode;
+    private ComparisonOperator operator = ComparisonOperator.EQUALS;
 
-    public int Y() {
-        return this.T;
+    public int getDamage() {
+        return this.damage;
     }
 
     @Override
@@ -37,43 +37,43 @@ implements NumericFilterCondition<ItemDurabilityFilterCondition> {
         if (itemStack.isNull()) {
             return false;
         }
-        int n = itemStack.getItem().a();
-        int n2 = 0;
-        switch (DurabilityValueModeSwitchMap.o[this.C.ordinal()]) {
+        int maxDurability = itemStack.getItem().a();
+        int durabilityValue = 0;
+        switch (DurabilityValueModeSwitchMap.o[this.valueMode.ordinal()]) {
             case 1: {
-                n2 = (int)((double)(n - itemStack.L()) / (double)n * 100.0);
+                durabilityValue = (int)((double)(maxDurability - itemStack.L()) / (double)maxDurability * 100.0);
                 break;
             }
             case 2: {
-                n2 = n - itemStack.L();
+                durabilityValue = maxDurability - itemStack.L();
             }
         }
-        return this.n.p(n2, this.T);
+        return this.operator.p(durabilityValue, this.damage);
     }
 
     @Override
     public ComparisonOperator p() {
-        return this.n;
+        return this.operator;
     }
 
-    public ItemDurabilityFilterCondition B() {
-        return new ItemDurabilityFilterCondition(this.T, this.n, this.C);
+    public ItemDurabilityFilterCondition copy() {
+        return new ItemDurabilityFilterCondition(this.damage, this.operator, this.valueMode);
     }
 
     public DurabilityValueMode W() {
-        return this.C;
+        return this.valueMode;
     }
 
-    public ItemDurabilityFilterCondition N(ComparisonOperator comparisonOperator) {
-        this.n = comparisonOperator;
+    public ItemDurabilityFilterCondition withOperator(ComparisonOperator comparisonOperator) {
+        this.operator = comparisonOperator;
         return this;
     }
 
     @Override
     public JsonObject L() {
         JsonObject jsonObject = NumericFilterCondition.super.L();
-        jsonObject.addProperty("durabilityMode", this.C.getName());
-        jsonObject.addProperty("damage", (Number)this.T);
+        jsonObject.addProperty("durabilityMode", this.valueMode.getName());
+        jsonObject.addProperty("damage", (Number)this.damage);
         return jsonObject;
     }
 
@@ -81,40 +81,40 @@ implements NumericFilterCondition<ItemDurabilityFilterCondition> {
         return numberFormatException;
     }
 
-    public ItemDurabilityFilterCondition g(String string) throws NumberFormatException {
-        this.T = Integer.parseInt(string);
+    public ItemDurabilityFilterCondition parseDamage(String string) throws NumberFormatException {
+        this.damage = Integer.parseInt(string);
         return this;
     }
 
     public ItemDurabilityFilterCondition(JsonObject jsonObject) {
-        this.C = DurabilityValueMode.PERCENTAGE;
-        this.T = jsonObject.get("damage").getAsInt();
-        this.n = ComparisonOperator.a(jsonObject.get("operator").getAsString());
+        this.valueMode = DurabilityValueMode.PERCENTAGE;
+        this.damage = jsonObject.get("damage").getAsInt();
+        this.operator = ComparisonOperator.a(jsonObject.get("operator").getAsString());
     }
 
-    public ItemDurabilityFilterCondition(int n, ComparisonOperator comparisonOperator, DurabilityValueMode durabilityValueMode) {
-        this.C = DurabilityValueMode.PERCENTAGE;
-        this.T = n;
-        this.n = comparisonOperator;
-        this.C = durabilityValueMode;
+    public ItemDurabilityFilterCondition(int damage, ComparisonOperator comparisonOperator, DurabilityValueMode durabilityValueMode) {
+        this.valueMode = DurabilityValueMode.PERCENTAGE;
+        this.damage = damage;
+        this.operator = comparisonOperator;
+        this.valueMode = durabilityValueMode;
     }
 
     public ItemDurabilityFilterCondition() {
-        this.C = DurabilityValueMode.PERCENTAGE;
+        this.valueMode = DurabilityValueMode.PERCENTAGE;
     }
 
-    public ItemDurabilityFilterCondition y(int n) {
-        this.T = n;
+    public ItemDurabilityFilterCondition withDamage(int damage) {
+        this.damage = damage;
         return this;
     }
 
     @Override
     public String k() {
-        return String.valueOf(this.T);
+        return String.valueOf(this.damage);
     }
 
     public ItemDurabilityFilterCondition m(DurabilityValueMode durabilityValueMode) {
-        this.C = durabilityValueMode;
+        this.valueMode = durabilityValueMode;
         return this;
     }
 

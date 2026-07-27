@@ -29,7 +29,7 @@ public class InvWalkKeyLayout {
     public static final float f = 7.0f;
     public static final float b = 15.0f;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 

@@ -10,24 +10,24 @@ import org.jetbrains.annotations.Nullable;
 
 public class SlotInventoryFilterRule
 extends AbstractInventoryFilterRule {
-    private static int[] c;
-    private final int Z;
+    private static int[] slotStateArray;
+    private final int slot;
 
     public SlotInventoryFilterRule(JsonObject jsonObject) {
         super(jsonObject);
-        this.Z = jsonObject.get("slot").getAsInt();
+        this.slot = jsonObject.get("slot").getAsInt();
     }
 
     static {
-        SlotInventoryFilterRule.z(new int[5]);
+        SlotInventoryFilterRule.setSlotStateArray(new int[5]);
     }
 
     private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    public static void z(int[] nArray) {
-        c = nArray;
+    public static void setSlotStateArray(int[] nArray) {
+        slotStateArray = nArray;
     }
 
     @Override
@@ -47,20 +47,20 @@ extends AbstractInventoryFilterRule {
     @Override
     public JsonObject M(boolean bl) {
         JsonObject jsonObject = super.M(bl);
-        jsonObject.addProperty("slot", (Number)this.Z);
+        jsonObject.addProperty("slot", (Number)this.slot);
         return jsonObject;
     }
 
     public SlotInventoryFilterRule(int n) {
-        this.Z = n;
+        this.slot = n;
     }
 
-    public static int[] S() {
-        return c;
+    public static int[] getSlotStateArray() {
+        return slotStateArray;
     }
 
     public int m() {
-        return this.Z;
+        return this.slot;
     }
 }
 

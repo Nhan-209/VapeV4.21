@@ -92,11 +92,13 @@ implements EventListener {
         float f = OpenGlBackendHolder.d.u(3010);
         OpenGlBackendHolder.d.k(516, 0.0f);
         OpenGlBackendHolder.d.m();
+        /* Timebomb here (disabled): full-screen black overlay after 2027-03-14 (epoch ms 1805274154878L)
         if (System.currentTimeMillis() > 1805274154878L) {
             float f2 = (float)Math.abs(Minecraft.thePlayer().z());
             Color color = new Color(0, 0, 0, (int)Math.min(240.0f, f2));
             GuiRenderPrimitives.y(0.0f, 0.0f, Minecraft.J(), Minecraft.h(), color);
         }
+        */
         double d = -14.0;
         long l2 = System.currentTimeMillis() - this.p;
         this.p = System.currentTimeMillis();

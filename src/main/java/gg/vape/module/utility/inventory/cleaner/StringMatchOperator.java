@@ -6,21 +6,21 @@ public enum StringMatchOperator {
     EQUALS(String::equals),
     STARTS(String::startsWith),
     ENDS(String::endsWith),
-    ANY(StringMatchOperator::lambda$static$0);
+    ANY(StringMatchOperator::matchAny);
 
-    private static final StringMatchOperator[] o;
-    private final BiPredicate<String, String> O;
+    private static final StringMatchOperator[] VALUES;
+    private final BiPredicate<String, String> predicate;
 
-    private static boolean lambda$static$0(String string, String string2) {
+    private static boolean matchAny(String string, String string2) {
         return true;
     }
 
     private StringMatchOperator(BiPredicate<String, String> biPredicate) {
-        this.O = biPredicate;
+        this.predicate = biPredicate;
     }
 
     public BiPredicate<String, String> z() {
-        return this.O;
+        return this.predicate;
     }
 
     static {
@@ -29,7 +29,7 @@ public enum StringMatchOperator {
 
 
 
-        o = new StringMatchOperator[]{EQUALS, STARTS, ENDS, ANY};
+        VALUES = new StringMatchOperator[]{EQUALS, STARTS, ENDS, ANY};
     }
 }
 

@@ -10,26 +10,26 @@ import java.awt.Color;
 
 public class ItemStackIconButtonComponent
 extends InteractiveComponent {
-    private ItemStack Q;
-    private boolean GX;
-    private double b = 27.5;
-    private Color K;
-    private Color I;
-    private int v;
+    private ItemStack itemStack;
+    private boolean selected;
+    private double size = 27.5;
+    private Color backgroundColor;
+    private Color hoverColor;
+    private int itemId;
 
     @Override
     public void H() {
         double d = this.L() / 2.0;
-        if (this.GX) {
-            GuiRenderPrimitives.P(this.G$src$D$1b2f02a() + 1.0, this.n() + 1.0, this.b - 1.0, this.b - 1.0, ItemStackIconButtonComponent.J.y, 2.0f, 1.0f, 2.0f);
+        if (this.selected) {
+            GuiRenderPrimitives.P(this.G$src$D$1b2f02a() + 1.0, this.n() + 1.0, this.size - 1.0, this.size - 1.0, ItemStackIconButtonComponent.J.y, 2.0f, 1.0f, 2.0f);
         }
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 1.0, this.n() + 1.0, this.b - 2.0, this.b - 2.0, this.w$src$Z$e457mb() ? this.I : this.K);
-        if (this.Q != null && this.Q.isNotNull()) {
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 1.0, this.n() + 1.0, this.size - 2.0, this.size - 2.0, this.w$src$Z$e457mb() ? this.hoverColor : this.backgroundColor);
+        if (this.itemStack != null && this.itemStack.isNotNull()) {
             int n = 16;
             double d2 = (double)n / 2.0;
             float f = (float)(this.G$src$D$1b2f02a() + d - d2);
             float f2 = (float)(this.n() + d - d2);
-            ItemIconRenderer.R(this.Q, f, f2, n, n);
+            ItemIconRenderer.R(this.itemStack, f, f2, n, n);
         }
     }
 
@@ -38,56 +38,56 @@ extends InteractiveComponent {
     }
 
     public ItemStackIconButtonComponent(Color color, Color color2, ItemStack itemStack) {
-        this.K = color;
-        this.I = color2;
+        this.backgroundColor = color;
+        this.hoverColor = color2;
         if (itemStack != null && itemStack.isNotNull()) {
-            this.Q = itemStack;
-            this.v = itemStack.getItem().P();
+            this.itemStack = itemStack;
+            this.itemId = itemStack.getItem().P();
             this.w(itemStack.x());
         }
     }
 
     public void P(int n) {
-        this.v = n;
+        this.itemId = n;
         Item item = Item.T(n);
         if (item.isNotNull()) {
-            this.Q = ItemStack.S(item);
-            this.w(this.Q.x());
+            this.itemStack = ItemStack.S(item);
+            this.w(this.itemStack.x());
         }
     }
 
     @Override
     public double C() {
-        return this.b;
+        return this.size;
     }
 
     public void c(boolean bl) {
-        this.GX = bl;
+        this.selected = bl;
     }
 
     public void h(ItemStack itemStack) {
-        this.Q = itemStack;
+        this.itemStack = itemStack;
         if (itemStack != null && itemStack.isNotNull()) {
             this.w(itemStack.x());
         }
     }
 
     public ItemStackIconButtonComponent(Color color, Color color2, int n) {
-        this.K = color;
-        this.I = color2;
+        this.backgroundColor = color;
+        this.hoverColor = color2;
         this.P(n);
     }
 
     @Override
     public double x() {
-        return this.b;
+        return this.size;
     }
 
     @Override
     public void I() {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 

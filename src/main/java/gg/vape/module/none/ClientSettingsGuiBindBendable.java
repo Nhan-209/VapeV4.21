@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ClientSettingsGuiBindBendable
 extends ModBendable {
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 

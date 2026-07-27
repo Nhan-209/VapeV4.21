@@ -15,20 +15,20 @@ import gg.vape.wrapper.impl.WorldClient;
 import org.jetbrains.annotations.Nullable;
 
 public class AutoPearlTrackedPearl {
-    private final EntityPlayer E;
-    private final EntityEnderPearl W;
+    private final EntityPlayer owner;
+    private final EntityEnderPearl pearl;
 
     private AutoPearlTrackedPearl(EntityEnderPearl entityEnderPearl, EntityPlayer entityPlayer) {
-        this.W = entityEnderPearl;
-        this.E = entityPlayer;
+        this.pearl = entityEnderPearl;
+        this.owner = entityPlayer;
     }
 
     public EntityPlayer A() {
-        return this.E;
+        return this.owner;
     }
 
     public EntityEnderPearl P() {
-        return this.W;
+        return this.pearl;
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -45,70 +45,70 @@ public class AutoPearlTrackedPearl {
         if (worldClient.isNull()) {
             return null;
         }
-        double d = this.W.z();
-        double d2 = this.W.N();
-        double d3 = this.W.h();
-        double d4 = this.W.t();
-        double d5 = this.W.q();
-        double d6 = this.W.T();
+        double posX = this.pearl.z();
+        double posY = this.pearl.N();
+        double posZ = this.pearl.h();
+        double motionX = this.pearl.t();
+        double motionY = this.pearl.q();
+        double motionZ = this.pearl.T();
         RayTraceResult rayTraceResult = null;
         while (true) {
-            double d7;
-            double d8;
-            double d9;
-            double d10;
-            double d11;
-            double d12;
-            boolean bl;
-            Vec3 vec3 = Vec3.create(d, d2, d3);
-            Vec3 vec32 = Vec3.create(d + d4, d2 + d5, d3 + d6);
-            rayTraceResult = worldClient.K(vec3, vec32, false, this.W.isInstance(MappedClasses.F), false, this.W);
-            d += d4;
-            d2 += d5;
-            d3 += d6;
+            double dragZ;
+            double motionZDrag;
+            double dragY;
+            double motionYDrag;
+            double dragX;
+            double motionXDrag;
+            boolean inWater;
+            Vec3 vec3 = Vec3.create(posX, posY, posZ);
+            Vec3 vec32 = Vec3.create(posX + motionX, posY + motionY, posZ + motionZ);
+            rayTraceResult = worldClient.K(vec3, vec32, false, this.pearl.isInstance(MappedClasses.F), false, this.pearl);
+            posX += motionX;
+            posY += motionY;
+            posZ += motionZ;
             if (rayTraceResult.isNotNull() && !rayTraceResult.getTypeOfHit().equals(RayTraceResult_type.miss())) {
-                bl = false;
+                inWater = false;
                 Block block = rayTraceResult.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a();
                 if (block.isNotNull() && BlockUtil.p(block)) {
-                    bl = true;
+                    inWater = true;
                 }
-                if (!bl) {
-                    d = rayTraceResult.getHitVec().getX();
-                    d2 = rayTraceResult.getHitVec().getY();
-                    d3 = rayTraceResult.getHitVec().getZ();
-                    return Vec3.create(d, d2, d3);
+                if (!inWater) {
+                    posX = rayTraceResult.getHitVec().getX();
+                    posY = rayTraceResult.getHitVec().getY();
+                    posZ = rayTraceResult.getHitVec().getZ();
+                    return Vec3.create(posX, posY, posZ);
                 }
             }
-            if (d2 < -128.0) break;
-            bl = this.W.h$src$Z$ftwoya();
-            double d13 = d4;
-            if (bl) {
-                d12 = d13;
-                d11 = 0.8;
+            if (posY < -128.0) break;
+            inWater = this.pearl.h$src$Z$ftwoya();
+            double curMotionX = motionX;
+            if (inWater) {
+                motionXDrag = curMotionX;
+                dragX = 0.8;
             } else {
-                d12 = d13;
-                d11 = 0.99;
+                motionXDrag = curMotionX;
+                dragX = 0.99;
             }
-            d4 = d12 * d11;
-            double d14 = d5;
-            if (bl) {
-                d10 = d14;
-                d9 = 0.8;
+            motionX = motionXDrag * dragX;
+            double curMotionY = motionY;
+            if (inWater) {
+                motionYDrag = curMotionY;
+                dragY = 0.8;
             } else {
-                d10 = d14;
-                d9 = 0.99;
+                motionYDrag = curMotionY;
+                dragY = 0.99;
             }
-            d5 = d10 * d9;
-            double d15 = d6;
-            if (bl) {
-                d8 = d15;
-                d7 = 0.8;
+            motionY = motionYDrag * dragY;
+            double curMotionZ = motionZ;
+            if (inWater) {
+                motionZDrag = curMotionZ;
+                dragZ = 0.8;
             } else {
-                d8 = d15;
-                d7 = 0.99;
+                motionZDrag = curMotionZ;
+                dragZ = 0.99;
             }
-            d6 = d8 * d7;
-            d5 -= 0.03;
+            motionZ = motionZDrag * dragZ;
+            motionY -= 0.03;
         }
         return null;
     }

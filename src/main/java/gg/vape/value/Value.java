@@ -383,7 +383,7 @@ implements INamed {
     }
 
     public void S() {
-        if (this.k) {
+        if (this.k && this.P$src$Ljava_lang_Object_$qcpui1() != null) {
             this.o(this.P$src$Ljava_lang_Object_$qcpui1());
         }
     }

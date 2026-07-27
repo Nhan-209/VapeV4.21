@@ -22,23 +22,23 @@ import gg.vape.wrapper.impl.Slot;
 
 public class AutoClickerInputModule
 extends Mod {
-    private final AutoClickerTimingState c;
-    private int V = -1;
-    private final TimerUtil F = new TimerUtil();
-    private final NumberValue p = NumberValue.create(this, "CPS", "#.#", "", 1.0, 15.0, 20.0);
+    private final AutoClickerTimingState timingState;
+    private int lastClickedSlot = -1;
+    private final TimerUtil clickTimer = new TimerUtil();
+    private final NumberValue cpsValue = NumberValue.create(this, "CPS", "#.#", "", 1.0, 15.0, 20.0);
 
-    private boolean g(double d) {
-        double d2 = Math.max(Math.min(d, 1.0), 0.0);
-        return Math.random() <= d2;
+    private boolean rollChance(double chance) {
+        double clampedChance = Math.max(Math.min(chance, 1.0), 0.0);
+        return Math.random() <= clampedChance;
     }
 
     @EventHandler
-    public final void H(EventPreRenderTick eventPreRenderTick) {
+    public final void onPreRenderTick(EventPreRenderTick eventPreRenderTick) {
         if (!KeyBindingInputState.l()) {
             return;
         }
-        this.c.Z((int)((Double)this.p.K() - 1.0), (int)((Double)this.p.K() + 1.0));
-        if (!this.F.hasTimeElapsed(this.c.Y()) && (Double)this.p.K() < 20.0) {
+        this.timingState.Z((int)((Double)this.cpsValue.K() - 1.0), (int)((Double)this.cpsValue.K() + 1.0));
+        if (!this.clickTimer.hasTimeElapsed(this.timingState.Y()) && (Double)this.cpsValue.K() < 20.0) {
             return;
         }
         GuiScreen guiScreen = Minecraft.currentScreen();
@@ -49,7 +49,7 @@ extends Mod {
             boolean bl4 = bl3 = KeyboardInput.isKeyDown(160) || KeyboardInput.isKeyDown(161);
             if (bl3 && guiScreen.isNotNull()) {
                 GuiContainer guiContainer = new GuiContainer(guiScreen);
-                this.R(guiContainer);
+                this.clickHoveredSlot(guiContainer);
             }
         }
     }
@@ -60,33 +60,33 @@ extends Mod {
 
     public AutoClickerInputModule() {
         super("InventoryFill", -12288, Category.M, "Clicks items in inventory while holding shift");
-        this.c = new AutoClickerTimingState(Vape.INSTANCE.getAccountTier());
-        this.addValue(this.p);
+        this.timingState = new AutoClickerTimingState(Vape.INSTANCE.getAccountTier());
+        this.addValue(this.cpsValue);
     }
 
-    public void R(GuiContainer guiContainer) {
-        ItemStack itemStack;
-        boolean bl;
-        int n = -1;
-        int n2 = MouseInput.N() * guiContainer.g() / Minecraft.J();
-        int n3 = guiContainer.k() - MouseInput.u() * guiContainer.k() / Minecraft.h() - 1;
-        Slot slot = guiContainer.getSlotAtPosition(n2, n3);
-        int n4 = guiContainer.p();
-        int n5 = guiContainer.v();
-        boolean bl2 = bl = n2 < n4 || n3 < n5 || n2 >= n4 + guiContainer.x() || n3 >= n5 + guiContainer.b();
+    public void clickHoveredSlot(GuiContainer guiContainer) {
+        ItemStack heldItem;
+        boolean outsideBounds;
+        int hoveredSlotIndex = -1;
+        int mouseX = MouseInput.N() * guiContainer.g() / Minecraft.J();
+        int mouseY = guiContainer.k() - MouseInput.u() * guiContainer.k() / Minecraft.h() - 1;
+        Slot slot = guiContainer.getSlotAtPosition(mouseX, mouseY);
+        int guiLeft = guiContainer.p();
+        int guiTop = guiContainer.v();
+        boolean outside = outsideBounds = mouseX < guiLeft || mouseY < guiTop || mouseX >= guiLeft + guiContainer.x() || mouseY >= guiTop + guiContainer.b();
         if (slot.isNotNull()) {
-            n = slot.g();
+            hoveredSlotIndex = slot.g();
         }
-        if (bl) {
-            n = -1;
+        if (outsideBounds) {
+            hoveredSlotIndex = -1;
         }
-        if (n >= 0 && (itemStack = RotationUtil.Z()).isNull() && this.V != n) {
+        if (hoveredSlotIndex >= 0 && (heldItem = RotationUtil.Z()).isNull() && this.lastClickedSlot != hoveredSlotIndex) {
             KeyBindingInputState.k();
             KeyBindingInputState.r();
-            if (this.g(0.8)) {
-                this.V = n;
+            if (this.rollChance(0.8)) {
+                this.lastClickedSlot = hoveredSlotIndex;
             }
-            this.F.reset();
+            this.clickTimer.reset();
         }
     }
 }

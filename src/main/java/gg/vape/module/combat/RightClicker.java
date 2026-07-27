@@ -19,16 +19,16 @@ import gg.vape.wrapper.impl.ItemStack;
 
 public class RightClicker
 extends ClickerMod {
-    private final NumberValue Y;
-    private final ModeOption j;
-    private final LimitValue p;
-    private final BooleanValue U;
-    private final BooleanValue H;
-    private final ModeOption K;
-    private final BooleanValue D;
-    private final ModeOption a;
-    private final ModeValue C;
-    private final RandomValue I = RandomValue.create(this, "CPS", "#.#", "", 1.0, 7.0, 13.0, 20.0);
+    private final NumberValue startDelay;
+    private final ModeOption modeExtraPlus;
+    private final LimitValue itemWhitelist;
+    private final BooleanValue useItemWhitelist;
+    private final BooleanValue jitter;
+    private final ModeOption modeNormal;
+    private final BooleanValue holdToClick;
+    private final ModeOption modeExtra;
+    private final ModeValue randomization;
+    private final RandomValue cps = RandomValue.create(this, "CPS", "#.#", "", 1.0, 7.0, 13.0, 20.0);
 
     @Override
     public boolean d(EntityPlayerSP entityPlayerSP) {
@@ -38,47 +38,47 @@ extends ClickerMod {
         if (ForgeVersion.MC_1_12_2.d()) {
             ItemStack itemStack = entityPlayerSP.i(EnumHand.M());
             ItemStack itemStack2 = entityPlayerSP.i(EnumHand.p());
-            if (!this.p.A(itemStack) && this.p.A(itemStack2) && this.O(itemStack, entityPlayerSP)) {
+            if (!this.itemWhitelist.A(itemStack) && this.itemWhitelist.A(itemStack2) && this.isUsableItem(itemStack, entityPlayerSP)) {
                 return true;
             }
         }
         return false;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     @Override
     public double U() {
-        return (Double)this.Y.K();
+        return (Double)this.startDelay.K();
     }
 
-    private boolean O(ItemStack itemStack, EntityPlayerSP entityPlayerSP) {
+    private boolean isUsableItem(ItemStack itemStack, EntityPlayerSP entityPlayerSP) {
         return itemStack.isNotNull() && itemStack.getItem().isNotNull() && itemStack.getItem().I(itemStack, entityPlayerSP) > 0;
     }
 
     @Override
     public String r() {
-        return this.I.c() + "cps";
+        return this.cps.c() + "cps";
     }
 
     public RightClicker() {
         super("RightClicker");
-        this.D = BooleanValue.create(this, "Hold to Click", true);
-        this.p = LimitValue.N(this, "autoclicker-allowed-items", "Item whitelist", LimitValue.r, new ItemLimitData("blocks")).F(true);
-        this.H = BooleanValue.create(this, "Jitter", false);
-        this.U = BooleanValue.create(this, "Use item whitelist", false);
-        this.a = new ModeOption("Extra");
-        this.j = new ModeOption("Extra+");
-        this.K = new ModeOption("Normal");
-        this.C = ModeValue.create((Object)this, "Randomization", this.j, this.K, this.a, this.j);
-        this.Y = NumberValue.create(this, "Start Delay", "#.#", "", 0.0, 0.0, 1000.0);
-        this.U.K(this.p);
-        this.addValue(this.I, this.Y, this.C, this.H, this.U, this.p);
-        ClickEngine clickEngine = new ClickEngine(ClickButton.RIGHT, this.I, this.U, this.p, this.D, this.C, this.H);
+        this.holdToClick = BooleanValue.create(this, "Hold to Click", true);
+        this.itemWhitelist = LimitValue.N(this, "autoclicker-allowed-items", "Item whitelist", LimitValue.r, new ItemLimitData("blocks")).F(true);
+        this.jitter = BooleanValue.create(this, "Jitter", false);
+        this.useItemWhitelist = BooleanValue.create(this, "Use item whitelist", false);
+        this.modeExtra = new ModeOption("Extra");
+        this.modeExtraPlus = new ModeOption("Extra+");
+        this.modeNormal = new ModeOption("Normal");
+        this.randomization = ModeValue.create((Object)this, "Randomization", this.modeExtraPlus, this.modeNormal, this.modeExtra, this.modeExtraPlus);
+        this.startDelay = NumberValue.create(this, "Start Delay", "#.#", "", 0.0, 0.0, 1000.0);
+        this.useItemWhitelist.K(this.itemWhitelist);
+        this.addValue(this.cps, this.startDelay, this.randomization, this.jitter, this.useItemWhitelist, this.itemWhitelist);
+        ClickEngine clickEngine = new ClickEngine(ClickButton.RIGHT, this.cps, this.useItemWhitelist, this.itemWhitelist, this.holdToClick, this.randomization, this.jitter);
         this.F(clickEngine);
-        this.I.V(0);
+        this.cps.V(0);
     }
 }
 

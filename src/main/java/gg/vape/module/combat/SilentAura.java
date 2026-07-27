@@ -69,96 +69,96 @@ import java.util.Random;
 
 public class SilentAura
 extends Mod {
-    private final ModeOption S;
-    private final SilentAuraAimJitter s;
-    private long V = 0L;
-    private final SilentAuraAimJitter Z1;
-    public final ModeOption U;
-    public final BooleanValue ZZ;
-    private boolean p = false;
+    private final ModeOption distanceMode;
+    private final SilentAuraAimJitter xJitter;
+    private long nextBreakBlockTime = 0L;
+    private final SilentAuraAimJitter pitchJitter;
+    public final ModeOption armorMode;
+    public final BooleanValue showTarget;
+    private boolean perfectSwingAttackPending = false;
     public final RandomClickDelayValue Ze;
-    private float c = 1.0f;
-    public final ModeOption Z_;
-    public final NumberValue P;
-    private AdaptiveRotationController Z8;
-    public final EntityTargetFilterValue ZU = EntityTargetFilterValue.W(this);
-    public final ModeOption A;
-    private final BooleanValue o;
+    private float pitchGainFactor = 1.0f;
+    public final ModeOption threatMode;
+    public final NumberValue maxAngle;
+    private AdaptiveRotationController rotationController;
+    public final EntityTargetFilterValue targetFilter = EntityTargetFilterValue.W(this);
+    public final ModeOption closestMode;
+    private final BooleanValue switchTargets;
     public final BooleanValue j;
-    public final ModeOption ZE;
-    private final RotationControlClaim ZO;
-    private EntityLivingBase H = null;
-    private static SilentAuraClicker Zv;
-    private final RandomValue a;
-    private boolean ZK;
-    public final ModeOption O;
+    public final ModeOption yawMode;
+    private final RotationControlClaim rotationClaim;
+    private EntityLivingBase target = null;
+    private static SilentAuraClicker clicker;
+    private final RandomValue breakBlocksDelay;
+    private boolean readyToAttack;
+    public final ModeOption ringMode;
     public final BooleanValue Z5;
     public final LimitValue ZP;
-    private float Za = 0.0f;
-    private float I = 0.0f;
-    private final BooleanValue Zn;
-    public final ModeOption L;
-    private float Y = 1.0f;
-    private final ColorValue Z;
+    private float pitchAccel = 0.0f;
+    private float yawAccel = 0.0f;
+    private final BooleanValue perfectSwing;
+    public final ModeOption centerMode;
+    private float yawGainFactor = 1.0f;
+    private final ColorValue attackColor;
     public final NumberValue Zt = NumberValue.E(this, "Aim speed", "#.#", "", 1.0, 7.0, 10.0, "How fast aiming will be done silently");
-    public final ModeOption r;
-    private boolean Zh = false;
-    private final BooleanValue Zp;
-    public final BooleanValue Z7;
-    private final SilentAuraAimJitter Zy;
-    private boolean v;
-    private boolean Zr = false;
-    public final ModeOption K;
-    public final NumberValue Zi = NumberValue.E(this, "Extra swing distance", "#.#", "", 0.0, 1.0, 3.0, "Extra distance past attack range at which aura will begin to engage, before attacking");
-    private final BooleanValue Z2;
-    private static Freecam D;
-    private final LimitValue F;
-    private final ColorValue t;
-    private final Random b;
-    private final TimerUtil k;
-    public ModeValue C;
-    private float Zs = 1.0f;
-    private float Zx = 1.0f;
-    private static final long ib;
-    public ModeValue J;
-    public ModeValue ZA;
-    private boolean Zf = false;
+    public final ModeOption healthMode;
+    private boolean onTarget = false;
+    private final BooleanValue breakBlocksWhitelist;
+    public final BooleanValue disableOnDeath;
+    private final SilentAuraAimJitter zJitter;
+    private boolean breakingBlocks;
+    private boolean toggledOff = false;
+    public final ModeOption boxMode;
+    public final NumberValue extraSwingDistance = NumberValue.E(this, "Extra swing distance", "#.#", "", 0.0, 1.0, 3.0, "Extra distance past attack range at which aura will begin to engage, before attacking");
+    private final BooleanValue breakBlocks;
+    private static Freecam freecam;
+    private final LimitValue blockBreakItems;
+    private final ColorValue targetColor;
+    private final Random random;
+    private final TimerUtil breakBlocksTimer;
+    public ModeValue renderType;
+    private float smoothGainFactor = 1.0f;
+    private float yawSmoothFactor = 1.0f;
+    private static final long MODULE_ID;
+    public ModeValue targetArea;
+    public ModeValue targetMode;
+    private boolean deathHandled = false;
 
     public EntityLivingBase j$src$Lgg_vape_wrapper_impl_EntityLivingBase_$si0dgx() {
-        return this.H;
+        return this.target;
     }
 
     public static EntityLivingBase B(SilentAura silentAura) {
-        return silentAura.H;
+        return silentAura.target;
     }
 
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {
-        if (this.ZZ.L().booleanValue() && this.H != null && Minecraft.currentScreen().isNull()) {
+        if (this.showTarget.L().booleanValue() && this.target != null && Minecraft.currentScreen().isNull()) {
             float f;
-            float f2 = f = this.H.isInstance(MappedClasses.Yl) || this.H.isInstance(MappedClasses.lG) ? 0.7f : this.H.f$src$F$fst3ac();
-            if (this.O.o()) {
-                GuiRenderPrimitives.R(this.H.c(), this.H.A(), this.H.Z(), 50.0f, f, this.H.Y(), this.l() ? this.Z.q$src$Lgg_vape_utils_MutableColor_$1dowyd3() : this.t.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
+            float f2 = f = this.target.isInstance(MappedClasses.Yl) || this.target.isInstance(MappedClasses.lG) ? 0.7f : this.target.f$src$F$fst3ac();
+            if (this.ringMode.o()) {
+                GuiRenderPrimitives.R(this.target.c(), this.target.A(), this.target.Z(), 50.0f, f, this.target.Y(), this.isLookingAtTarget() ? this.attackColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3() : this.targetColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
             } else {
-                RenderUtil.k(this.H, 1.0, null, this.l() ? this.Z.q$src$Lgg_vape_utils_MutableColor_$1dowyd3() : this.t.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), eventRender3D.getTicks());
+                RenderUtil.k(this.target, 1.0, null, this.isLookingAtTarget() ? this.attackColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3() : this.targetColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), eventRender3D.getTicks());
             }
         }
     }
 
-    private boolean Y(EntityLivingBase entityLivingBase) {
+    private boolean passesItemFilter(EntityLivingBase entityLivingBase) {
         if (this.j.L().booleanValue()) {
             ItemStack itemStack = Minecraft.thePlayer().getHeldItemHand();
             if (!this.ZP.isValid(itemStack, false)) {
                 return false;
             }
-            return this.ZU.c(entityLivingBase);
+            return this.targetFilter.c(entityLivingBase);
         }
-        return this.ZU.c(entityLivingBase);
+        return this.targetFilter.c(entityLivingBase);
     }
 
     @Override
     public String r() {
-        if (ForgeVersion.MC_1_12_2.d() && this.Zn.L().booleanValue()) {
+        if (ForgeVersion.MC_1_12_2.d() && this.perfectSwing.L().booleanValue()) {
             float f = Minecraft.thePlayer().getCooledAttackStrength(0.0f);
             if (f == 1.0f) {
                 return "\u00a76Ready";
@@ -178,10 +178,10 @@ extends Mod {
         if (entityLivingBase.w$src$F$15l9epb() <= 0.0f || entityLivingBase.M$src$Z$ff28xj()) {
             return false;
         }
-        if (!this.y(entityLivingBase)) {
+        if (!this.isInRange(entityLivingBase)) {
             return false;
         }
-        if (RotationUtil.a(Minecraft.thePlayer(), entityLivingBase) > ((Double)this.P.K()).intValue() / 2) {
+        if (RotationUtil.a(Minecraft.thePlayer(), entityLivingBase) > ((Double)this.maxAngle.K()).intValue() / 2) {
             return false;
         }
         if (Vape.INSTANCE.getFriendManager().isFriend(entityLivingBase)) {
@@ -190,40 +190,40 @@ extends Mod {
         if (entityLivingBase.equals(Minecraft.thePlayer().S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12())) {
             return false;
         }
-        return this.Y(entityLivingBase);
+        return this.passesItemFilter(entityLivingBase);
     }
 
-    private boolean y(EntityLivingBase entityLivingBase) {
-        double[] dArray = this.m(entityLivingBase);
+    private boolean isInRange(EntityLivingBase entityLivingBase) {
+        double[] dArray = this.computeAimCoords(entityLivingBase);
         double d = dArray[0];
         double d2 = dArray[1];
         double d3 = dArray[2];
         double d4 = Minecraft.thePlayer().i(d, d2, d3);
-        return d4 <= this.b$src$D$1dhke8s();
+        return d4 <= this.getAttackRange();
     }
 
-    private void U$src$V$1daf2yl() {
-        this.Y = 0.85f + this.b.nextFloat() * 0.3f;
-        this.Zx = 0.85f + this.b.nextFloat() * 0.3f;
-        this.Zs = 0.8f + this.b.nextFloat() * 0.4f;
-        this.c = 0.85f + this.b.nextFloat() * 0.3f;
+    private void randomizeGainFactors() {
+        this.yawGainFactor = 0.85f + this.random.nextFloat() * 0.3f;
+        this.yawSmoothFactor = 0.85f + this.random.nextFloat() * 0.3f;
+        this.smoothGainFactor = 0.8f + this.random.nextFloat() * 0.4f;
+        this.pitchGainFactor = 0.85f + this.random.nextFloat() * 0.3f;
     }
 
     public boolean U() {
-        if (ForgeVersion.MC_1_12_2.d() && this.Zn.L().booleanValue()) {
+        if (ForgeVersion.MC_1_12_2.d() && this.perfectSwing.L().booleanValue()) {
             float f = Minecraft.thePlayer().getCooledAttackStrength(0.0f);
             return f == 1.0f;
         }
         return this.Ze.R();
     }
 
-    private boolean w$src$Z$1dt438b() {
+    private boolean handleBreakBlocks() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
             return false;
         }
-        if (this.Z2.L().booleanValue() && this.k.hasTimeElapsed(this.V)) {
-            if (this.Zp.L().booleanValue() && !this.F.A(entityPlayerSP.getHeldItemHand())) {
+        if (this.breakBlocks.L().booleanValue() && this.breakBlocksTimer.hasTimeElapsed(this.nextBreakBlockTime)) {
+            if (this.breakBlocksWhitelist.L().booleanValue() && !this.blockBreakItems.A(entityPlayerSP.getHeldItemHand())) {
                 return false;
             }
             if (Minecraft.currentScreen().isInstance(MappedClasses.Ft)) {
@@ -235,62 +235,62 @@ extends Mod {
                 KeyBindingHelper.v(keyBinding, true, false);
                 return true;
             }
-            this.V = (long)this.a.B();
-            this.k.reset();
+            this.nextBreakBlockTime = (long)this.breakBlocksDelay.B();
+            this.breakBlocksTimer.reset();
         }
         return false;
     }
 
     public SilentAura() {
-        super("SilentAura", (int)ib, Category.g, "Simulates feel of Killaura\nAttacks and aims safely using built in AutoClicker to click, and Silent Aim system to aim");
+        super("SilentAura", (int)MODULE_ID, Category.g, "Simulates feel of Killaura\nAttacks and aims safely using built in AutoClicker to click, and Silent Aim system to aim");
         this.Z5 = BooleanValue.create(this, "Require mouse down", false);
-        this.Z7 = BooleanValue.create(this, "Disable on death", false);
-        this.ZZ = BooleanValue.create(this, "Show target", false);
-        this.o = BooleanValue.create(this, "Switch", false, "Attacks other targets while current target is in hit cooldown");
+        this.disableOnDeath = BooleanValue.create(this, "Disable on death", false);
+        this.showTarget = BooleanValue.create(this, "Show target", false);
+        this.switchTargets = BooleanValue.create(this, "Switch", false, "Attacks other targets while current target is in hit cooldown");
         this.j = BooleanValue.create(this, "Limit to items", false, "Aura functions only while holding selected items");
-        this.Z2 = BooleanValue.create(this, "Break blocks", false, "Prevents from aiming while attempting to break blocks");
-        this.a = RandomValue.G(this, "Break blocks delay", "#", "", 0.0, 0.0, 10.0, 2000.0, 1.0, "Delay in milliseconds before breaking blocks");
-        this.Zp = BooleanValue.create(this, "Break blocks whitelist", false);
-        this.F = LimitValue.n(this, "SilentBlockBreakingItems", "Block breaking items", LimitValue.r, Arrays.asList(new ItemLimitData("pickaxes"), new ItemLimitData("shovels")));
+        this.breakBlocks = BooleanValue.create(this, "Break blocks", false, "Prevents from aiming while attempting to break blocks");
+        this.breakBlocksDelay = RandomValue.G(this, "Break blocks delay", "#", "", 0.0, 0.0, 10.0, 2000.0, 1.0, "Delay in milliseconds before breaking blocks");
+        this.breakBlocksWhitelist = BooleanValue.create(this, "Break blocks whitelist", false);
+        this.blockBreakItems = LimitValue.n(this, "SilentBlockBreakingItems", "Block breaking items", LimitValue.r, Arrays.asList(new ItemLimitData("pickaxes"), new ItemLimitData("shovels")));
         this.Ze = RandomClickDelayValue.M(this, "Attacks per Second", "#.#", "", 1.0, 6.0, 13.0, 20.0);
-        this.P = NumberValue.create(this, "Max angle", "#", "", 1.0, 120.0, 360.0, 5.0, "Angle at which targets will be acquired and aimed at\n(From your cursor)");
-        this.t = ColorValue.b(this, "Target color", new Color(255, 200, 112), 50);
-        this.Z = ColorValue.L(this, "Attack color", new Color(255, 0, 0, 100));
-        this.S = new ModeOption("Distance");
-        this.ZE = new ModeOption("Yaw");
-        this.U = new ModeOption("Armor");
-        this.Z_ = new ModeOption("Threat");
-        this.r = new ModeOption("Health");
-        this.ZA = ModeValue.create((Object)this, "Target mode", "How Aura should prioritize targets\nArmor/Threat will default to Distance for non player targets", (ModeSelection)this.S, this.S, this.ZE, this.U, this.Z_, this.r);
+        this.maxAngle = NumberValue.create(this, "Max angle", "#", "", 1.0, 120.0, 360.0, 5.0, "Angle at which targets will be acquired and aimed at\n(From your cursor)");
+        this.targetColor = ColorValue.b(this, "Target color", new Color(255, 200, 112), 50);
+        this.attackColor = ColorValue.L(this, "Attack color", new Color(255, 0, 0, 100));
+        this.distanceMode = new ModeOption("Distance");
+        this.yawMode = new ModeOption("Yaw");
+        this.armorMode = new ModeOption("Armor");
+        this.threatMode = new ModeOption("Threat");
+        this.healthMode = new ModeOption("Health");
+        this.targetMode = ModeValue.create((Object)this, "Target mode", "How Aura should prioritize targets\nArmor/Threat will default to Distance for non player targets", (ModeSelection)this.distanceMode, this.distanceMode, this.yawMode, this.armorMode, this.threatMode, this.healthMode);
         this.ZP = LimitValue.n(this, "silentaura-alloweditems", "Allowed Items", LimitValue.r, Collections.emptyList());
-        this.L = new ModeOption("Center");
-        this.A = new ModeOption("Closest");
-        this.J = ModeValue.create((Object)this, "Target area", "Where Aura will aim towards\nCenter: Center of entity\nClosest: Closest position on entity hitbox", (ModeSelection)this.L, this.L, this.A);
-        this.O = new ModeOption("Ring");
-        this.K = new ModeOption("Box");
-        this.C = ModeValue.create((Object)this, "Render type", this.O, this.O, this.K);
-        this.Zn = BooleanValue.create(this, "Perfect swing", false, "Only attacks when there is no attack cooldown\nAdditionally, only swings when hovering(trigger)");
-        this.k = new TimerUtil();
-        this.ZO = SharedModuleControlClaims.I;
-        this.b = new Random();
-        this.Z1 = new SilentAuraAimJitter(-0.3, 0.25);
-        this.s = new SilentAuraAimJitter(-0.15, 0.15);
-        this.Zy = new SilentAuraAimJitter(-0.15, 0.15);
-        this.Zn.U(false).z(this.Ze);
-        this.addValue(this.ZU, this.Zt, this.Ze, this.Zi, this.P, this.ZA, this.J);
-        this.ZZ.K(this.t, this.Z, this.C);
-        this.Z2.K(this.a, this.Zp);
-        this.Zp.K(this.F);
-        this.U(this.Zn, ForgeVersion.MC_1_8_9.N());
-        this.U(this.o, ForgeVersion.MC_1_8_9.H());
-        this.addValue(new Value[]{this.Z7, this.Z2, this.a, this.Zp, this.F, this.Z5, this.ZZ, this.t, this.Z, this.C, this.j.K(this.ZP), this.ZP});
+        this.centerMode = new ModeOption("Center");
+        this.closestMode = new ModeOption("Closest");
+        this.targetArea = ModeValue.create((Object)this, "Target area", "Where Aura will aim towards\nCenter: Center of entity\nClosest: Closest position on entity hitbox", (ModeSelection)this.centerMode, this.centerMode, this.closestMode);
+        this.ringMode = new ModeOption("Ring");
+        this.boxMode = new ModeOption("Box");
+        this.renderType = ModeValue.create((Object)this, "Render type", this.ringMode, this.ringMode, this.boxMode);
+        this.perfectSwing = BooleanValue.create(this, "Perfect swing", false, "Only attacks when there is no attack cooldown\nAdditionally, only swings when hovering(trigger)");
+        this.breakBlocksTimer = new TimerUtil();
+        this.rotationClaim = SharedModuleControlClaims.I;
+        this.random = new Random();
+        this.pitchJitter = new SilentAuraAimJitter(-0.3, 0.25);
+        this.xJitter = new SilentAuraAimJitter(-0.15, 0.15);
+        this.zJitter = new SilentAuraAimJitter(-0.15, 0.15);
+        this.perfectSwing.U(false).z(this.Ze);
+        this.addValue(this.targetFilter, this.Zt, this.Ze, this.extraSwingDistance, this.maxAngle, this.targetMode, this.targetArea);
+        this.showTarget.K(this.targetColor, this.attackColor, this.renderType);
+        this.breakBlocks.K(this.breakBlocksDelay, this.breakBlocksWhitelist);
+        this.breakBlocksWhitelist.K(this.blockBreakItems);
+        this.U(this.perfectSwing, ForgeVersion.MC_1_8_9.N());
+        this.U(this.switchTargets, ForgeVersion.MC_1_8_9.H());
+        this.addValue(new Value[]{this.disableOnDeath, this.breakBlocks, this.breakBlocksDelay, this.breakBlocksWhitelist, this.blockBreakItems, this.Z5, this.showTarget, this.targetColor, this.attackColor, this.renderType, this.j.K(this.ZP), this.ZP});
         this.j.l(this.ZP);
-        this.ZO.l(this, 5);
+        this.rotationClaim.l(this, 5);
         this.Ze.V(0);
     }
 
     static {
-        ib = 267655872188715318L;
+        MODULE_ID = 267655872188715318L;
     }
 
     public boolean H() {
@@ -300,66 +300,66 @@ extends Mod {
         if (!this.U()) {
             return false;
         }
-        if (!this.ZK) {
+        if (!this.readyToAttack) {
             return false;
         }
         if (Minecraft.currentScreen().isNotNull()) {
             return false;
         }
-        return !this.v;
+        return !this.breakingBlocks;
     }
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public boolean P() {
-        if (ForgeVersion.MC_1_12_2.d() && this.Zn.L().booleanValue()) {
+        if (ForgeVersion.MC_1_12_2.d() && this.perfectSwing.L().booleanValue()) {
             return false;
         }
         return this.H();
     }
 
     public static RotationControlClaim A(SilentAura silentAura) {
-        return silentAura.ZO;
+        return silentAura.rotationClaim;
     }
 
-    private void K() {
-        if (this.H != null && this.N$src$Z$1d6kiwi()) {
-            this.Zh = this.l();
-            this.Z8.T(this.Z.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
-            this.Z8.z(this.t.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
-            this.Z8.L(this.Zh);
+    private void updateRotationColors() {
+        if (this.target != null && this.isControllingRotation()) {
+            this.onTarget = this.isLookingAtTarget();
+            this.rotationController.T(this.attackColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
+            this.rotationController.z(this.targetColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
+            this.rotationController.L(this.onTarget);
         }
     }
 
     @EventHandler(A=EventPriority.LOWEST)
     public void onTick(EventPreTick eventPreTick) {
-        this.v = this.w$src$Z$1dt438b();
-        if (this.p) {
-            this.p = false;
+        this.breakingBlocks = this.handleBreakBlocks();
+        if (this.perfectSwingAttackPending) {
+            this.perfectSwingAttackPending = false;
             AttackKeyController.Q();
         }
         if (Minecraft.thePlayer().isNull()) {
             this.N();
             return;
         }
-        if (this.Zr || !this.r$src$Z$14eylz9() || this.v) {
+        if (this.toggledOff || !this.r$src$Z$14eylz9() || this.breakingBlocks) {
             this.N();
             return;
         }
-        if (Zv == null) {
-            Zv = Vape.INSTANCE.getModManager().getMod(SilentAuraClicker.class);
+        if (clicker == null) {
+            clicker = Vape.INSTANCE.getModManager().getMod(SilentAuraClicker.class);
         }
-        if (!Zv.r$src$Z$14eylz9()) {
-            Zv.Y(true);
+        if (!clicker.r$src$Z$14eylz9()) {
+            clicker.Y(true);
         }
-        this.K();
-        if (this.Z7.L().booleanValue()) {
+        this.updateRotationColors();
+        if (this.disableOnDeath.L().booleanValue()) {
             if (Minecraft.thePlayer().M$src$Z$ff28xj() || Minecraft.thePlayer().w$src$F$15l9epb() <= 0.0f) {
                 this.F();
                 return;
@@ -367,24 +367,24 @@ extends Mod {
             if (ForgeVersion.MC_1_16_5.d()) {
                 GuiScreen guiScreen = Minecraft.currentScreen();
                 if (guiScreen.isNotNull()) {
-                    if (!this.Zf && guiScreen.isInstance(MappedClasses.D2)) {
-                        this.Zf = true;
+                    if (!this.deathHandled && guiScreen.isInstance(MappedClasses.D2)) {
+                        this.deathHandled = true;
                         this.F();
                         return;
                     }
-                    this.Zf = false;
+                    this.deathHandled = false;
                 }
             } else {
                 TitledScreen titledScreen = Minecraft.k();
                 if (titledScreen.isNotNull()) {
                     String string = titledScreen.E();
-                    if (!this.Zf && string != null && (string.toLowerCase().contains("died") || string.toLowerCase().contains("dead"))) {
-                        this.Zf = true;
+                    if (!this.deathHandled && string != null && (string.toLowerCase().contains("died") || string.toLowerCase().contains("dead"))) {
+                        this.deathHandled = true;
                         this.F();
                         return;
                     }
                     if (string == null || string.equals("")) {
-                        this.Zf = false;
+                        this.deathHandled = false;
                     }
                 }
             }
@@ -393,23 +393,23 @@ extends Mod {
             this.N();
             return;
         }
-        this.x();
-        this.L$src$V$1d5gxmc();
-        if (ForgeVersion.MC_1_12_2.d() && this.Zn.L().booleanValue() && this.H()) {
+        this.updateTarget();
+        this.updateAim();
+        if (ForgeVersion.MC_1_12_2.d() && this.perfectSwing.L().booleanValue() && this.H()) {
             AttackKeyController.Q();
-            this.p = AttackKeyController.u(this);
+            this.perfectSwingAttackPending = AttackKeyController.u(this);
         }
     }
 
-    private boolean N$src$Z$1d6kiwi() {
+    private boolean isControllingRotation() {
         MouseRotationController mouseRotationController = RotationManager.b.w();
-        return mouseRotationController != null && mouseRotationController.equals(this.Z8);
+        return mouseRotationController != null && mouseRotationController.equals(this.rotationController);
     }
 
-    private void x() {
+    private void updateTarget() {
         Wrapper wrapper;
         ArrayList<Entity> arrayList = new ArrayList<Entity>();
-        if (this.z()) {
+        if (this.shouldSkip()) {
             return;
         }
         ArrayList arrayList2 = new ArrayList(Minecraft.theWorld().z());
@@ -419,45 +419,45 @@ extends Mod {
             if (ClientSettings.H && wrapper.isInstance(MappedClasses.FT) || !wrapper.isInstance(MappedClasses.zm) || !this.k(entityLivingBase = new EntityLivingBase(e))) continue;
             arrayList.add(entityLivingBase);
         }
-        if (this.ZA.K() == this.ZE) {
+        if (this.targetMode.K() == this.yawMode) {
             arrayList.sort(new EntityAngleComparator());
-        } else if (this.ZA.K() == this.S) {
+        } else if (this.targetMode.K() == this.distanceMode) {
             arrayList.sort(new EntityDistanceComparator());
-        } else if (this.ZA.K() == this.Z_) {
+        } else if (this.targetMode.K() == this.threatMode) {
             arrayList.sort(new EntityArmorValueComparator());
-        } else if (this.ZA.K() == this.U) {
+        } else if (this.targetMode.K() == this.armorMode) {
             arrayList.sort(new EntityEquipmentValueComparator());
-        } else if (this.ZA.K() == this.r) {
+        } else if (this.targetMode.K() == this.healthMode) {
             arrayList.sort(new EntityHealthComparator());
         }
-        if (this.o.L().booleanValue()) {
+        if (this.switchTargets.L().booleanValue()) {
             arrayList.sort(new SilentAuraEntityIdComparator(this));
         }
         if (!arrayList.isEmpty()) {
             EntityLivingBase entityLivingBase = (EntityLivingBase)arrayList.get(0);
             boolean bl = false;
-            if (this.H != null && !this.H.equals(entityLivingBase)) {
+            if (this.target != null && !this.target.equals(entityLivingBase)) {
                 bl = true;
             }
-            if (this.H == null || bl) {
+            if (this.target == null || bl) {
                 AttackKeyController.Q();
-                this.U$src$V$1daf2yl();
+                this.randomizeGainFactors();
             }
-            this.H = entityLivingBase;
-            if (!this.ZO.U(this)) {
-                this.ZO.h(this, true);
+            this.target = entityLivingBase;
+            if (!this.rotationClaim.U(this)) {
+                this.rotationClaim.h(this, true);
             }
-            this.ZK = false;
-            if (this.Z8 != null) {
-                if (ForgeVersion.MC_1_12_2.d() && this.Zn.L().booleanValue()) {
+            this.readyToAttack = false;
+            if (this.rotationController != null) {
+                if (ForgeVersion.MC_1_12_2.d() && this.perfectSwing.L().booleanValue()) {
                     wrapper = RotationManager.b.n();
-                    if (wrapper.isNotNull() && ((RayTraceResult)wrapper).getEntity().isNotNull() && ((RayTraceResult)wrapper).getEntity().equals(this.H)) {
-                        this.ZK = true;
+                    if (wrapper.isNotNull() && ((RayTraceResult)wrapper).getEntity().isNotNull() && ((RayTraceResult)wrapper).getEntity().equals(this.target)) {
+                        this.readyToAttack = true;
                     }
                 } else {
-                    double d = RotationUtil.L(this.H);
-                    if (d < 3.0 && this.y(this.H)) {
-                        this.ZK = true;
+                    double d = RotationUtil.L(this.target);
+                    if (d < 3.0 && this.isInRange(this.target)) {
+                        this.readyToAttack = true;
                     }
                 }
             }
@@ -466,8 +466,8 @@ extends Mod {
         }
     }
 
-    private double[] m(EntityLivingBase entityLivingBase) {
-        if (this.J.K() == this.A) {
+    private double[] computeAimCoords(EntityLivingBase entityLivingBase) {
+        if (this.targetArea.K() == this.closestMode) {
             Vec3d vec3d = RotationUtil.T(Minecraft.thePlayer(), entityLivingBase.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
             double d = entityLivingBase.z() - entityLivingBase.f();
             double d2 = entityLivingBase.N() - entityLivingBase.H();
@@ -483,17 +483,17 @@ extends Mod {
         return new double[]{entityLivingBase.z(), entityLivingBase.N(), entityLivingBase.h(), entityLivingBase.f(), entityLivingBase.H(), entityLivingBase.R()};
     }
 
-    private void L$src$V$1d5gxmc() {
+    private void updateAim() {
         if (Minecraft.theWorld().isNull()) {
             this.N();
             return;
         }
-        boolean bl = this.H != null && this.k(this.H);
-        boolean bl2 = this.ZO.U(this);
+        boolean bl = this.target != null && this.k(this.target);
+        boolean bl2 = this.rotationClaim.U(this);
         if (bl && bl2) {
-            this.s();
+            this.resetJitter();
             EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            double[] dArray = this.m(this.H);
+            double[] dArray = this.computeAimCoords(this.target);
             double d = dArray[0];
             double d2 = dArray[1];
             double d3 = dArray[2];
@@ -504,26 +504,26 @@ extends Mod {
             double d8 = d - d4;
             double d9 = d3 - d6;
             double d10 = Math.sqrt(d8 * d8 + d9 * d9);
-            double d11 = d + this.s.b() * (1.0 + d10);
-            double d12 = d3 + this.Zy.b() * (1.0 + d10);
+            double d11 = d + this.xJitter.b() * (1.0 + d10);
+            double d12 = d3 + this.zJitter.b() * (1.0 + d10);
             double d13 = d2;
-            double d14 = this.H.Y();
+            double d14 = this.target.Y();
             double d15 = entityPlayerSP.N() + 1.62;
-            double d16 = d15 < d13 ? d13 + this.Z1.b() * 0.5 : Math.min(d15, d13 + d14) - 0.275 + this.Z1.b();
-            if (this.Z8 == null) {
-                this.Z8 = new SilentAuraRotationController(this);
-                this.Z8.b(false);
-                this.Z8.w(true);
-                this.Z8.k(true);
-                this.Z8.t(0.0f);
-                this.Z8.U(false);
-                this.Z8.s(false);
-                RotationManager.b.S(this.Z8);
+            double d16 = d15 < d13 ? d13 + this.pitchJitter.b() * 0.5 : Math.min(d15, d13 + d14) - 0.275 + this.pitchJitter.b();
+            if (this.rotationController == null) {
+                this.rotationController = new SilentAuraRotationController(this);
+                this.rotationController.b(false);
+                this.rotationController.w(true);
+                this.rotationController.k(true);
+                this.rotationController.t(0.0f);
+                this.rotationController.U(false);
+                this.rotationController.s(false);
+                RotationManager.b.S(this.rotationController);
             } else {
-                this.Z8.b(false);
-                this.Z8.U(false);
-                this.Z8.s(false);
-                RotationAngles rotationAngles = this.Z8.j(Vec3.create(d11, d16, d12));
+                this.rotationController.b(false);
+                this.rotationController.U(false);
+                this.rotationController.s(false);
+                RotationAngles rotationAngles = this.rotationController.j(Vec3.create(d11, d16, d12));
                 float f = (float)RotationUtil.h(entityPlayerSP, d, d16, d3);
                 float f2 = RotationManager.b.V();
                 float f3 = RotationManager.b.x();
@@ -534,10 +534,10 @@ extends Mod {
                 float f8 = 0.05f;
                 boolean bl3 = Math.signum(f4) == Math.signum(f7);
                 double d17 = Math.sqrt(entityPlayerSP.t() * entityPlayerSP.t() + entityPlayerSP.T() * entityPlayerSP.T());
-                float f9 = 0.45f * this.Y;
-                float f10 = 0.91f * this.Zx;
-                float f11 = (this.Zh ? 0.05f : 0.1f) * this.Zs;
-                float f12 = 0.33f * this.c;
+                float f9 = 0.45f * this.yawGainFactor;
+                float f10 = 0.91f * this.yawSmoothFactor;
+                float f11 = (this.onTarget ? 0.05f : 0.1f) * this.smoothGainFactor;
+                float f12 = 0.33f * this.pitchGainFactor;
                 double d18 = entityPlayerSP.q();
                 if (Math.abs(d18) > 0.1) {
                     f5 *= (float)(1.0 + Math.random() * 0.32);
@@ -553,22 +553,22 @@ extends Mod {
                 }
                 float f13 = f5 - f6 + f7 * f8 * (float)(Math.random() >= 0.5 ? -1 : 1);
                 float f14 = f4 - f7;
-                this.I += f13 * f8;
-                this.Za += f14 * f8;
-                float f15 = f9 * f13 + f10 * this.I + 0.0f;
-                float f16 = f11 * f14 + f12 * this.Za + 0.0f;
+                this.yawAccel += f13 * f8;
+                this.pitchAccel += f14 * f8;
+                float f15 = f9 * f13 + f10 * this.yawAccel + 0.0f;
+                float f16 = f11 * f14 + f12 * this.pitchAccel + 0.0f;
                 if (Math.abs(f4) > 120.0f) {
-                    this.Za = 0.0f;
+                    this.pitchAccel = 0.0f;
                     f16 = 0.0f;
                 }
                 if (Minecraft.currentScreen().isNotNull()) {
-                    this.Za = 0.0f;
-                    this.I = 0.0f;
+                    this.pitchAccel = 0.0f;
+                    this.yawAccel = 0.0f;
                 }
-                this.Z8.g(f2 + f4 + f16 / 3.0f, f3 + f15);
+                this.rotationController.g(f2 + f4 + f16 / 3.0f, f3 + f15);
             }
-            if (RotationManager.b.w() == null || !this.N$src$Z$1d6kiwi() && RotationManager.b.u()) {
-                RotationManager.b.S(this.Z8);
+            if (RotationManager.b.w() == null || !this.isControllingRotation() && RotationManager.b.u()) {
+                RotationManager.b.S(this.rotationController);
             }
         } else {
             this.N();
@@ -577,72 +577,72 @@ extends Mod {
 
     @Override
     public void s(boolean bl, boolean bl2) {
-        this.I = 0.0f;
-        this.Za = 0.0f;
-        if (!bl && this.N$src$Z$1d6kiwi()) {
-            this.Zr = !this.Zr;
+        this.yawAccel = 0.0f;
+        this.pitchAccel = 0.0f;
+        if (!bl && this.isControllingRotation()) {
+            this.toggledOff = !this.toggledOff;
         } else {
-            this.Zr = false;
+            this.toggledOff = false;
             super.s(bl, bl2);
         }
     }
 
-    private boolean l() {
+    private boolean isLookingAtTarget() {
         RayTraceResult rayTraceResult;
         boolean bl = false;
-        if (this.H != null && this.N$src$Z$1d6kiwi() && this.y(this.H) && (rayTraceResult = RotationManager.b.n()) != null && rayTraceResult.isNotNull() && this.H.equals(rayTraceResult.getEntity())) {
+        if (this.target != null && this.isControllingRotation() && this.isInRange(this.target) && (rayTraceResult = RotationManager.b.n()) != null && rayTraceResult.isNotNull() && this.target.equals(rayTraceResult.getEntity())) {
             bl = true;
         }
         return bl;
     }
 
     public void N() {
-        this.I = 0.0f;
-        this.Za = 0.0f;
-        this.H = null;
-        this.ZK = false;
-        if (this.Z8 != null && this.N$src$Z$1d6kiwi()) {
-            this.Z8.U(true);
-            this.Z8.s(true);
-            RotationManager.b.v(this.Z8);
+        this.yawAccel = 0.0f;
+        this.pitchAccel = 0.0f;
+        this.target = null;
+        this.readyToAttack = false;
+        if (this.rotationController != null && this.isControllingRotation()) {
+            this.rotationController.U(true);
+            this.rotationController.s(true);
+            RotationManager.b.v(this.rotationController);
         }
-        if (RotationManager.b.w() == null || RotationManager.b.w() != this.Z8 || this.Z8 != null && this.Z8.O$src$Z$1lvi05g() && this.Z8.V$src$Z$lb4tvc()) {
-            this.Z8 = null;
-            this.ZO.X(this);
-            if (this.Zr) {
-                this.Zr = false;
+        if (RotationManager.b.w() == null || RotationManager.b.w() != this.rotationController || this.rotationController != null && this.rotationController.O$src$Z$1lvi05g() && this.rotationController.V$src$Z$lb4tvc()) {
+            this.rotationController = null;
+            this.rotationClaim.X(this);
+            if (this.toggledOff) {
+                this.toggledOff = false;
                 super.s(false, true);
             }
         }
     }
 
-    private double b$src$D$1dhke8s() {
-        return 3.0 + (Double)this.Zi.K();
+    private double getAttackRange() {
+        return 3.0 + (Double)this.extraSwingDistance.K();
     }
 
-    private void s() {
-        this.Z1.v();
-        this.s.v();
-        this.Zy.v();
+    private void resetJitter() {
+        this.pitchJitter.v();
+        this.xJitter.v();
+        this.zJitter.v();
     }
 
-    private boolean z() {
-        if (D == null) {
-            D = Vape.INSTANCE.getModManager().getMod(Freecam.class);
+    private boolean shouldSkip() {
+        if (freecam == null) {
+            freecam = Vape.INSTANCE.getModManager().getMod(Freecam.class);
         }
-        return this.Zr || D != null && D.r$src$Z$14eylz9() || this.v || this.ZO.e(this) && !this.ZO.h(this, true);
+        return this.toggledOff || freecam != null && freecam.r$src$Z$14eylz9() || this.breakingBlocks || this.rotationClaim.e(this) && !this.rotationClaim.h(this, true);
     }
 
     @Override
     public void onDisable() {
-        if (this.Z8 != null) {
-            this.Z8 = null;
+        if (this.rotationController != null) {
+            this.rotationController = null;
         }
-        if (this.p) {
+        if (this.perfectSwingAttackPending) {
             AttackKeyController.Q();
-            this.p = false;
+            this.perfectSwingAttackPending = false;
         }
-        this.ZO.X(this);
+        this.rotationClaim.X(this);
     }
 }
 

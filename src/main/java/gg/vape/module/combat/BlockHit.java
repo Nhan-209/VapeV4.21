@@ -15,32 +15,32 @@ import gg.vape.wrapper.impl.Packet;
 
 public class BlockHit
 extends Mod {
-    public final LimitValue L = LimitValue.N(this, "noitemrelease-alloweditems", "Allowed items", LimitValue.r, new ItemLimitData("swords"), new ItemLimitData("food"), new ItemLimitData("potions"));
-    private static final long k = -2073545794591715018L;
+    public final LimitValue allowedItems = LimitValue.N(this, "noitemrelease-alloweditems", "Allowed items", LimitValue.r, new ItemLimitData("swords"), new ItemLimitData("food"), new ItemLimitData("potions"));
+    private static final long MODULE_ID = -2073545794591715018L;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public BlockHit() {
-        super("NoItemRelease", (int)k, Category.w);
-        this.addValue(this.L);
+        super("NoItemRelease", (int)MODULE_ID, Category.w);
+        this.addValue(this.allowedItems);
     }
 
     @EventHandler
     public void onPacketSend(EventPacketSend eventPacketSend) {
-        CPacketPlayerDigging cPacketPlayerDigging;
+        CPacketPlayerDigging digging;
         Packet packet = eventPacketSend.getPacket();
-        boolean bl = Minecraft.l$src$Z$b9uwii();
-        if (bl) {
-            CPacketPlayerDigging cPacketPlayerDigging2;
-            if (packet.isInstance(MappedClasses.DN) && (cPacketPlayerDigging2 = new CPacketPlayerDigging(packet)).f()) {
+        boolean inGui = Minecraft.l$src$Z$b9uwii();
+        if (inGui) {
+            CPacketPlayerDigging guiDigging;
+            if (packet.isInstance(MappedClasses.DN) && (guiDigging = new CPacketPlayerDigging(packet)).f()) {
                 eventPacketSend.setCancelled(true);
             }
             GuiComponent.D(new GuiComponent[4]);
             return;
         }
-        if (packet.isInstance(MappedClasses.DN) && (cPacketPlayerDigging = new CPacketPlayerDigging(packet)).f() && this.L.A(Minecraft.thePlayer().B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt())) {
+        if (packet.isInstance(MappedClasses.DN) && (digging = new CPacketPlayerDigging(packet)).f() && this.allowedItems.A(Minecraft.thePlayer().B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt())) {
             eventPacketSend.setCancelled(true);
         }
     }

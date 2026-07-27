@@ -5,12 +5,12 @@ import gg.vape.module.Mod;
 
 public class UtilityMod
 extends Mod {
-    public UtilityMod(String string) {
-        super(string, 0, 0, Category.Y, "");
+    public UtilityMod(String name) {
+        super(name, 0, 0, Category.Y, "");
     }
 
-    public UtilityMod(String string, String string2) {
-        super(string, 0, 0, Category.Y, string2);
+    public UtilityMod(String name, String description) {
+        super(name, 0, 0, Category.Y, description);
     }
 
     @Override
@@ -18,8 +18,8 @@ extends Mod {
         return true;
     }
 
-    public UtilityMod(String string, Category category, String string2) {
-        super(string, 0, 0, category, string2);
+    public UtilityMod(String name, Category category, String description) {
+        super(name, 0, 0, category, description);
     }
 }
 

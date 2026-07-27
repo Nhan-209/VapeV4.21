@@ -713,7 +713,7 @@ public class SyncThread {
                     Vape.INSTANCE.loadConfigData(jsonObject, true);
                 }
             } else {
-                String encodedSettings = NativeBridge.gs();
+                String encodedSettings = NativeBridge.gat();
                 String string = encodedSettings == null ? "" : new String(Base64Util.decodeBase64(encodedSettings)).trim();
                 JsonReader jsonReader = new JsonReader((Reader)new StringReader(string));
                 jsonReader.setLenient(true);

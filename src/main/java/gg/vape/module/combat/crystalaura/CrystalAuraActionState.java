@@ -6,7 +6,7 @@ public enum CrystalAuraActionState {
     PLACING_CRYSTAL,
     PLACING_OBSIDIAN;
 
-    private static final CrystalAuraActionState[] Z;
+    private static final CrystalAuraActionState[] VALUES;
 
     static {
         String[] stringArray = new String[]{"PLACING_OBSIDIAN", "PLACING_CRYSTAL", "IDLE", "BREAKING_CRYSTAL"};
@@ -14,7 +14,7 @@ public enum CrystalAuraActionState {
 
 
 
-        Z = new CrystalAuraActionState[]{IDLE, BREAKING_CRYSTAL, PLACING_CRYSTAL, PLACING_OBSIDIAN};
+        VALUES = new CrystalAuraActionState[]{IDLE, BREAKING_CRYSTAL, PLACING_CRYSTAL, PLACING_OBSIDIAN};
     }
 
 }

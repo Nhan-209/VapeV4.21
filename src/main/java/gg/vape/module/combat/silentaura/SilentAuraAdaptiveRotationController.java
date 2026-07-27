@@ -7,24 +7,24 @@ import gg.vape.runtime.ObfuscatedRuntimeException;
 
 public class SilentAuraAdaptiveRotationController
 extends AdaptiveRotationController {
-    final SilentAuraTargetingModule d2;
+    final SilentAuraTargetingModule targetingModule;
 
-    private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public SilentAuraAdaptiveRotationController(SilentAuraTargetingModule silentAuraTargetingModule) {
-        this.d2 = silentAuraTargetingModule;
+        this.targetingModule = silentAuraTargetingModule;
     }
 
     @Override
     public float O() {
-        switch (SilentAuraAdaptiveRotationEntry.O[SilentAuraTargetingModule.p(this.d2).ordinal()]) {
+        switch (SilentAuraAdaptiveRotationEntry.O[SilentAuraTargetingModule.p(this.targetingModule).ordinal()]) {
             case 1: {
-                return SilentAuraTargetingModule.f(this.d2);
+                return SilentAuraTargetingModule.f(this.targetingModule);
             }
             case 2: {
-                return SilentAuraTargetingModule.H(this.d2);
+                return SilentAuraTargetingModule.H(this.targetingModule);
             }
         }
         return 48.0f;

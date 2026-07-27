@@ -24,21 +24,21 @@ import org.lwjgl.opengl.GL11;
 
 public class SpawnerFinder
 extends Mod {
-    private final OptionalLimitValue S;
-    private final Color c = new Color(20, 20, 20, 128);
-    private final BooleanValue U;
-    private final NumberValue j = NumberValue.create((Object)this, "Scale", "#.#", "", 0.1, 1.0, 1.5, 0.1);
-    private static final long p = -5031384321297466627L;
+    private final OptionalLimitValue spawnerWhitelist;
+    private final Color backgroundColor = new Color(20, 20, 20, 128);
+    private final BooleanValue showDistance;
+    private final NumberValue scale = NumberValue.create((Object)this, "Scale", "#.#", "", 0.1, 1.0, 1.5, 0.1);
+    private static final long moduleId = -5031384321297466627L;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     public SpawnerFinder() {
-        super("SpawnerFinder", (int)p, Category.k);
-        this.U = BooleanValue.create(this, "Show distance", true);
-        this.S = OptionalLimitValue.l(this, "Spawner names-whitelist", "Spawners", OptionalLimitValue.r, "Zombie", "Skeleton", "Creeper", "Spider");
-        this.addValue(this.j, this.U, this.S);
+        super("SpawnerFinder", (int)moduleId, Category.k);
+        this.showDistance = BooleanValue.create(this, "Show distance", true);
+        this.spawnerWhitelist = OptionalLimitValue.l(this, "Spawner names-whitelist", "Spawners", OptionalLimitValue.r, "Zombie", "Skeleton", "Creeper", "Spider");
+        this.addValue(this.scale, this.showDistance, this.spawnerWhitelist);
     }
 
     @EventHandler
@@ -60,14 +60,14 @@ extends Mod {
             for (Object e : Minecraft.theWorld().R$src$Ljava_util_List_$1ycbpra()) {
                 TileEntityMobSpawner tileEntityMobSpawner;
                 String string;
-                if (!MappedClasses.uO.isInstance(e) || !this.S.w(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
+                if (!MappedClasses.uO.isInstance(e) || !this.spawnerWhitelist.w(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
                 String string2 = "";
-                if (this.U.L().booleanValue()) {
+                if (this.showDistance.L().booleanValue()) {
                     String string3 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)entityPlayerSP.i((double)tileEntityMobSpawner.getX(), (double)tileEntityMobSpawner.getY(), (double)tileEntityMobSpawner.getZ()) + ClientSettings.F + "a]" + ClientSettings.F + "r";
                     string2 = string2 + string3 + " ";
                 }
                 string2 = string2 + string + " spawner";
-                RenderUtil.U(string2, (double)tileEntityMobSpawner.getX() - d + 0.5, (double)tileEntityMobSpawner.getY() - d2 - 1.0, (double)tileEntityMobSpawner.getZ() - d3 + 0.5, (Double)this.j.K(), RotationUtil.p(entityPlayerSP, tileEntityMobSpawner.getX(), tileEntityMobSpawner.getY(), tileEntityMobSpawner.getZ()), -1, this.c, 1.4, matrixStack);
+                RenderUtil.U(string2, (double)tileEntityMobSpawner.getX() - d + 0.5, (double)tileEntityMobSpawner.getY() - d2 - 1.0, (double)tileEntityMobSpawner.getZ() - d3 + 0.5, (Double)this.scale.K(), RotationUtil.p(entityPlayerSP, tileEntityMobSpawner.getX(), tileEntityMobSpawner.getY(), tileEntityMobSpawner.getZ()), -1, this.backgroundColor, 1.4, matrixStack);
             }
             GL11.glDepthMask((boolean)true);
             OpenGlBackendHolder.d.l(2929);
@@ -93,14 +93,14 @@ extends Mod {
         for (Object e : Minecraft.theWorld().R$src$Ljava_util_List_$1ycbpra()) {
             TileEntityMobSpawner tileEntityMobSpawner;
             String string;
-            if (!MappedClasses.uO.isInstance(e) || !this.S.w(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
+            if (!MappedClasses.uO.isInstance(e) || !this.spawnerWhitelist.w(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
             String string4 = "";
-            if (this.U.L().booleanValue()) {
+            if (this.showDistance.L().booleanValue()) {
                 String string5 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)entityPlayerSP.i((double)tileEntityMobSpawner.getX(), (double)tileEntityMobSpawner.getY(), (double)tileEntityMobSpawner.getZ()) + ClientSettings.F + "a]" + ClientSettings.F + "r";
                 string4 = string4 + string5 + " ";
             }
             string4 = string4 + string + " spawner";
-            RenderUtil.U(string4, (double)tileEntityMobSpawner.getX() - d + 0.5, (double)tileEntityMobSpawner.getY() - d4 - 1.0, (double)tileEntityMobSpawner.getZ() - d5 + 0.5, (Double)this.j.K(), RotationUtil.p(entityPlayerSP, tileEntityMobSpawner.getX(), tileEntityMobSpawner.getY(), tileEntityMobSpawner.getZ()), -1, this.c, 1.4, matrixStack);
+            RenderUtil.U(string4, (double)tileEntityMobSpawner.getX() - d + 0.5, (double)tileEntityMobSpawner.getY() - d4 - 1.0, (double)tileEntityMobSpawner.getZ() - d5 + 0.5, (Double)this.scale.K(), RotationUtil.p(entityPlayerSP, tileEntityMobSpawner.getX(), tileEntityMobSpawner.getY(), tileEntityMobSpawner.getZ()), -1, this.backgroundColor, 1.4, matrixStack);
         }
         GL11.glDepthMask((boolean)true);
         OpenGlBackendHolder.d.l(2929);

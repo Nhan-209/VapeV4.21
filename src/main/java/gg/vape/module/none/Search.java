@@ -38,37 +38,37 @@ import org.lwjgl.opengl.GL11;
 
 public class Search
 extends Mod {
-    private SearchProcessor s;
-    private static final long o = -323757894669395457L;
+    private SearchProcessor primaryProcessor;
+    private static final long MODULE_HASH = -323757894669395457L;
     TimerUtil I;
-    private final NumberValue p;
+    private final NumberValue range;
     TimerUtil P;
-    private final NumberValue L;
+    private final NumberValue dummyRange;
     ArrayList<SearchBlockRenderEntry> Z;
-    private final List<SearchBlock> C = new ArrayList<SearchBlock>();
-    private final BooleanValue a;
-    private final List<SearchResultData> V;
-    private final BooleanValue K;
-    private SearchProcessor U;
+    private final List<SearchBlock> searchBlocks = new ArrayList<SearchBlock>();
+    private final BooleanValue onlyCaves;
+    private final List<SearchResultData> searchResults;
+    private final BooleanValue useTracers;
+    private SearchProcessor secondaryProcessor;
 
     @Override
     public void onEnable() {
         if (ForgeVersion.MC_1_8_9.A()) {
-            this.s = new SearchProcessor(this.V, this.C, this.p);
-            this.U = new SearchProcessor(this.V, this.C, this.L);
-            this.s.X(this.a.L());
-            this.U.X(this.a.L());
-            this.s.n();
-            this.U.n();
+            this.primaryProcessor = new SearchProcessor(this.searchResults, this.searchBlocks, this.range);
+            this.secondaryProcessor = new SearchProcessor(this.searchResults, this.searchBlocks, this.dummyRange);
+            this.primaryProcessor.X(this.onlyCaves.L());
+            this.secondaryProcessor.X(this.onlyCaves.L());
+            this.primaryProcessor.n();
+            this.secondaryProcessor.n();
         }
     }
 
-    private void h$src$V$f54un0() {
+    private void updateSearchResults() {
         if (ForgeVersion.MC_1_8_9.L() && this.Z != null) {
             if (Minecraft.theWorld().isNull()) {
                 return;
             }
-            this.V.clear();
+            this.searchResults.clear();
             EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
             for (SearchBlockRenderEntry object : this.Z) {
                 SearchBlock searchBlock = this.j(object.R(), object.k());
@@ -78,15 +78,15 @@ extends Mod {
                     int n3 = object.N();
                     int n4 = (int)RotationUtil.p(entityPlayerSP, n, n2, n3);
                     SearchResultData searchResultData = SearchResultDataPool.n(n, n2, n3, object.R(), searchBlock, searchBlock.I$src$Ljava_util_concurrent_atomic_AtomicBoolean_$10pq3bz(), n4);
-                    if ((double)n4 < (Double)this.p.K() + 10.0) {
-                        this.V.add(searchResultData);
+                    if ((double)n4 < (Double)this.range.K() + 10.0) {
+                        this.searchResults.add(searchResultData);
                     } else {
                         SearchResultDataPool.h(searchResultData);
                     }
                 }
                 SearchBlockChunkScanner.q(object);
             }
-            for (SearchResultData searchResultData : this.V) {
+            for (SearchResultData searchResultData : this.searchResults) {
                 SearchResultDataPool.h(searchResultData);
             }
             this.Z = null;
@@ -94,7 +94,7 @@ extends Mod {
     }
 
     public void T(SearchBlock searchBlock) {
-        this.C.add(searchBlock);
+        this.searchBlocks.add(searchBlock);
     }
 
     @Override
@@ -105,8 +105,8 @@ extends Mod {
                 return;
             }
             if (this.Z == null) {
-                ArrayList<SearchBlock> arrayList = new ArrayList<SearchBlock>(this.C);
-                this.Z = SearchBlockChunkScanner.f(arrayList, ((Double)this.p.K()).intValue(), this.a.L());
+                ArrayList<SearchBlock> arrayList = new ArrayList<SearchBlock>(this.searchBlocks);
+                this.Z = SearchBlockChunkScanner.f(arrayList, ((Double)this.range.K()).intValue(), this.onlyCaves.L());
             }
         }
     }
@@ -114,15 +114,15 @@ extends Mod {
     @Override
     public void onDisable() {
         if (ForgeVersion.MC_1_8_9.A()) {
-            this.s.w();
-            this.U.w();
+            this.primaryProcessor.w();
+            this.secondaryProcessor.w();
         }
-        this.V.clear();
+        this.searchResults.clear();
         RenderBatchState.r();
     }
 
     public SearchBlock j(int n, int n2) {
-        for (SearchBlock searchBlock : this.C) {
+        for (SearchBlock searchBlock : this.searchBlocks) {
             if (!searchBlock.b(n, n2)) continue;
             return searchBlock;
         }
@@ -130,34 +130,34 @@ extends Mod {
     }
 
     public Search() {
-        super("Search", (int)o, Category.k, "Draws outline around selected blocks\nAdd blocks in Search frame");
-        this.p = NumberValue.create((Object)this, "Range", "#", "", 1.0, 50.0, 100.0, 1.0);
-        this.L = NumberValue.create((Object)this, "-", "-", "-", 5.0, 5.0, 5.0, 1.0);
-        this.a = BooleanValue.create(this, "Only caves", false, "Only looks for ores exposed to air");
-        this.K = BooleanValue.create(this, "Use tracers", false, "Add tracers to search blocks");
+        super("Search", (int)MODULE_HASH, Category.k, "Draws outline around selected blocks\nAdd blocks in Search frame");
+        this.range = NumberValue.create((Object)this, "Range", "#", "", 1.0, 50.0, 100.0, 1.0);
+        this.dummyRange = NumberValue.create((Object)this, "-", "-", "-", 5.0, 5.0, 5.0, 1.0);
+        this.onlyCaves = BooleanValue.create(this, "Only caves", false, "Only looks for ores exposed to air");
+        this.useTracers = BooleanValue.create(this, "Use tracers", false, "Add tracers to search blocks");
         this.I = new TimerUtil();
         this.P = new TimerUtil();
-        this.V = ForgeVersion.MC_1_8_9.L() ? new ArrayList<SearchResultData>() : new CopyOnWriteArrayList<SearchResultData>();
-        this.addValue(this.p, this.a, this.K);
+        this.searchResults = ForgeVersion.MC_1_8_9.L() ? new ArrayList<SearchResultData>() : new CopyOnWriteArrayList<SearchResultData>();
+        this.addValue(this.range, this.onlyCaves, this.useTracers);
         this.v(50L, true);
-        this.a.B(this::lambda$new$0);
+        this.onlyCaves.B(this::onOnlyCavesChanged);
     }
 
-    private void lambda$new$0(BooleanValue booleanValue) {
-        if (this.s != null) {
-            this.s.X(this.a.L());
-            this.U.X(this.a.L());
+    private void onOnlyCavesChanged(BooleanValue booleanValue) {
+        if (this.primaryProcessor != null) {
+            this.primaryProcessor.X(this.onlyCaves.L());
+            this.secondaryProcessor.X(this.onlyCaves.L());
         }
     }
 
     public void u(SearchBlock searchBlock) {
-        this.C.remove(searchBlock);
-        this.V.clear();
+        this.searchBlocks.remove(searchBlock);
+        this.searchResults.clear();
     }
 
     @EventHandler
     public void onRender(EventRenderTracers3D eventRenderTracers3D) {
-        if (!this.K.L().booleanValue()) {
+        if (!this.useTracers.L().booleanValue()) {
             return;
         }
         EntityPlayerSP entityPlayerSP = eventRenderTracers3D.getThePlayer();
@@ -169,9 +169,9 @@ extends Mod {
         double d2 = RenderManager.getInterpolatedRenderPosY();
         double d3 = RenderManager.getInterpolatedRenderPosZ();
         double d4 = ForgeVersion.MC_1_7_10.Y() ? (double)entityPlayerSP.X() : 0.0;
-        for (SearchResultData searchResultData : this.V) {
+        for (SearchResultData searchResultData : this.searchResults) {
             if (!searchResultData.q() || searchResultData.N == 0 || !searchResultData.n()) continue;
-            this.P(entityPlayerSP, searchResultData, searchResultData.O(), 2.0f, eventRenderTracers3D.getTicks(), d, d2, d3, d4, false);
+            this.renderTracerLine(entityPlayerSP, searchResultData, searchResultData.O(), 2.0f, eventRenderTracers3D.getTicks(), d, d2, d3, d4, false);
         }
         OpenGlBackendHolder.d.b(1.0, 1.0f, 1.0f);
         eventRenderTracers3D.getEntityRenderer().O(0.0);
@@ -180,14 +180,14 @@ extends Mod {
         OpenGlBackendHolder.d.F();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {
         if (this.P.hasTimeElapsed(50L)) {
-            this.h$src$V$f54un0();
+            this.updateSearchResults();
             this.P.reset();
         }
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().B(1.0);
@@ -211,7 +211,7 @@ extends Mod {
                 RenderBatchState renderBatchState = RenderBatchState.E();
                 renderBatchState.f();
                 double d5 = d2 + d4;
-                for (SearchResultData searchResultData : this.V) {
+                for (SearchResultData searchResultData : this.searchResults) {
                     if (!searchResultData.q() || searchResultData.N == 0) continue;
                     Color color = searchResultData.O();
                     renderBatchState.D((float)((double)searchResultData.F - d), (float)((double)searchResultData.O - d5), (float)((double)searchResultData.D - d3), (float)color.getRed() / 255.0f, (float)color.getGreen() / 255.0f, (float)color.getBlue() / 255.0f, (float)color.getAlpha() / 255.0f);
@@ -219,7 +219,7 @@ extends Mod {
                 LocalPlayerRotationUtil.Q(eventRender3D.getTicks());
                 renderBatchState.K(BufferedGuiRenderPrimitives.k, BufferedGuiRenderPrimitives.l, BufferedGuiRenderPrimitives.X.c());
             } else {
-                for (SearchResultData searchResultData : this.V) {
+                for (SearchResultData searchResultData : this.searchResults) {
                     if (!searchResultData.q() || searchResultData.N == 0) continue;
                     RenderUtil.m(searchResultData, d, d2 + d4, d3);
                 }
@@ -250,7 +250,7 @@ extends Mod {
             RenderBatchState renderBatchState = RenderBatchState.E();
             renderBatchState.f();
             double d9 = d6 + d8;
-            for (SearchResultData searchResultData : this.V) {
+            for (SearchResultData searchResultData : this.searchResults) {
                 if (!searchResultData.q() || searchResultData.N == 0) continue;
                 Color color = searchResultData.O();
                 renderBatchState.D((float)((double)searchResultData.F - d), (float)((double)searchResultData.O - d9), (float)((double)searchResultData.D - d7), (float)color.getRed() / 255.0f, (float)color.getGreen() / 255.0f, (float)color.getBlue() / 255.0f, (float)color.getAlpha() / 255.0f);
@@ -258,7 +258,7 @@ extends Mod {
             LocalPlayerRotationUtil.Q(eventRender3D.getTicks());
             renderBatchState.K(BufferedGuiRenderPrimitives.k, BufferedGuiRenderPrimitives.l, BufferedGuiRenderPrimitives.X.c());
         } else {
-            for (SearchResultData searchResultData : this.V) {
+            for (SearchResultData searchResultData : this.searchResults) {
                 if (!searchResultData.q() || searchResultData.N == 0) continue;
                 RenderUtil.m(searchResultData, d, d6 + d8, d7);
             }
@@ -272,7 +272,7 @@ extends Mod {
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
     }
 
-    private void P(EntityPlayerSP entityPlayerSP, SearchResultData searchResultData, Color color, float f, float f2, double d, double d2, double d3, double d4, boolean bl) {
+    private void renderTracerLine(EntityPlayerSP entityPlayerSP, SearchResultData searchResultData, Color color, float f, float f2, double d, double d2, double d3, double d4, boolean bl) {
         double d5 = (double)searchResultData.U() + 0.5 - d;
         double d6 = (double)searchResultData.D() + 0.5 - d2;
         double d7 = (double)searchResultData.Y() + 0.5 - d3;

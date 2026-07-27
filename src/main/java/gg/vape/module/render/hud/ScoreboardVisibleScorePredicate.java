@@ -14,8 +14,8 @@ implements Predicate<Score> {
         return this.I(score);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException exception) {
+        return exception;
     }
 
     public boolean I(Score score) {

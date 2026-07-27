@@ -24,31 +24,31 @@ import gg.vape.wrapper.impl.MovementInput;
 
 public class LegitScaffoldMode
 extends SubModule<Scaffold> {
-    private long L;
-    private boolean o;
-    private Scaffold F;
-    private final TimerUtil I;
-    protected final BooleanValue V;
-    private final RandomValue Z = RandomValue.G(this, "Sneak delay", "#", "", 0.0, 100.0, 200.0, 500.0, 1.0, "Delay until standing after sneaking");
-    private boolean v = false;
-    private final TimerUtil s;
+    private long sneakDelayMs;
+    private boolean sneakKeyWasDown;
+    private Scaffold scaffold;
+    private final TimerUtil standDelayTimer;
+    protected final BooleanValue requireSneak;
+    private final RandomValue sneakDelay = RandomValue.G(this, "Sneak delay", "#", "", 0.0, 100.0, 200.0, 500.0, 1.0, "Delay until standing after sneaking");
+    private boolean standingFlag = false;
+    private final TimerUtil edgeSneakTimer;
 
     @EventHandler
     public void onRender2D(EventRender2D eventRender2D) {
-        Scaffold.Access.V$src$V$dhg0vg(this.F);
+        Scaffold.Access.V$src$V$dhg0vg(this.scaffold);
     }
 
-    public boolean W(EntityPlayerSP entityPlayerSP) {
+    public boolean shouldScaffold(EntityPlayerSP entityPlayerSP) {
         if (Minecraft.currentScreen().isNotNull()) {
             return false;
         }
-        if (this.V.L().booleanValue() && !ClientSettings.B(Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0())) {
+        if (this.requireSneak.L().booleanValue() && !ClientSettings.B(Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0())) {
             return false;
         }
         if (entityPlayerSP.S$src$Z$151gttj()) {
             return false;
         }
-        if (Scaffold.Access.J$src$Z$dauhuk(this.F) && (double)entityPlayerSP.V() < Scaffold.Access.V$src$D$dhg0fy(this.F)) {
+        if (Scaffold.Access.J$src$Z$dauhuk(this.scaffold) && (double)entityPlayerSP.V() < Scaffold.Access.V$src$D$dhg0fy(this.scaffold)) {
             return false;
         }
         return Scaffold.Access.G((Scaffold)this.getParent());
@@ -60,105 +60,105 @@ extends SubModule<Scaffold> {
 
     public LegitScaffoldMode(Mod mod, String string) {
         super(mod, string);
-        this.V = BooleanValue.create(this, "Require sneak", false, "Must be holding sneak to scaffold");
-        this.F = (Scaffold)this.getParent();
-        this.s = new TimerUtil();
-        this.I = new TimerUtil();
-        this.addValue(this.Z, this.V);
+        this.requireSneak = BooleanValue.create(this, "Require sneak", false, "Must be holding sneak to scaffold");
+        this.scaffold = (Scaffold)this.getParent();
+        this.edgeSneakTimer = new TimerUtil();
+        this.standDelayTimer = new TimerUtil();
+        this.addValue(this.sneakDelay, this.requireSneak);
     }
 
     @Override
     public void onEnable() {
-        this.L = (long)this.Z.B();
+        this.sneakDelayMs = (long)this.sneakDelay.B();
     }
 
     @EventHandler
-    public void e(EventPreEntityUpdate eventPreEntityUpdate) {
-        boolean bl;
+    public void onPreEntityUpdate(EventPreEntityUpdate eventPreEntityUpdate) {
+        boolean atEdge;
         if (!eventPreEntityUpdate.getEntity().equals(Minecraft.thePlayer())) {
             return;
         }
-        String string = "Client thread";
+        String threadName = "Client thread";
         if (ForgeVersion.MC_1_16_5.d()) {
-            string = "Render thread";
+            threadName = "Render thread";
         }
-        if (!Thread.currentThread().getName().equals(string)) {
+        if (!Thread.currentThread().getName().equals(threadName)) {
             return;
         }
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (!this.W(entityPlayerSP)) {
+        if (!this.shouldScaffold(entityPlayerSP)) {
             return;
         }
         MovementInput movementInput = entityPlayerSP.movementInput();
         GameSettings gameSettings = Minecraft.gameSettings();
-        KeyBinding keyBinding = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
-        this.o = ClientSettings.B(keyBinding);
-        boolean bl2 = false;
-        float f = movementInput.D();
+        KeyBinding sneakKey = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
+        this.sneakKeyWasDown = ClientSettings.B(sneakKey);
+        boolean shouldSneak = false;
+        float forwardInput = movementInput.D();
         if (RotationManager.b.u()) {
-            f = 0.0f;
+            forwardInput = 0.0f;
             if (ClientSettings.B(gameSettings.Y())) {
-                f += 1.0f;
+                forwardInput += 1.0f;
             }
             if (ClientSettings.B(gameSettings.s())) {
-                f -= 1.0f;
+                forwardInput -= 1.0f;
             }
         }
-        boolean bl3 = bl = f <= 0.0f;
-        if (f > 0.0f) {
-            bl = false;
+        boolean notMovingForward = atEdge = forwardInput <= 0.0f;
+        if (forwardInput > 0.0f) {
+            atEdge = false;
         }
-        if (bl && entityPlayerSP.b$src$Z$fqlxe4()) {
-            AxisAlignedBB axisAlignedBB;
+        if (atEdge && entityPlayerSP.b$src$Z$fqlxe4()) {
+            AxisAlignedBB boundingBox;
             if (ForgeVersion.MC_1_8_9.d()) {
-                axisAlignedBB = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+                boundingBox = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
             } else {
-                AxisAlignedBB axisAlignedBB2 = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
-                axisAlignedBB = axisAlignedBB2.copy();
+                AxisAlignedBB currentBox = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+                boundingBox = currentBox.copy();
             }
-            double d = entityPlayerSP.t();
-            double d2 = -1.0;
-            double d3 = entityPlayerSP.T();
-            AxisAlignedBB axisAlignedBB3 = axisAlignedBB.expand(-0.2, 0.0, -0.2).k(d, d2, d3);
-            int n = Minecraft.theWorld().i(entityPlayerSP, axisAlignedBB3).size();
-            if (n == 0) {
-                bl2 = true;
+            double motionX = entityPlayerSP.t();
+            double offsetY = -1.0;
+            double motionZ = entityPlayerSP.T();
+            AxisAlignedBB checkBox = boundingBox.expand(-0.2, 0.0, -0.2).k(motionX, offsetY, motionZ);
+            int collisionCount = Minecraft.theWorld().i(entityPlayerSP, checkBox).size();
+            if (collisionCount == 0) {
+                shouldSneak = true;
             }
         }
-        boolean bl4 = false;
-        if (!bl2 && !this.s.hasTimeElapsed(this.L) && this.L > 30L) {
-            bl2 = true;
-            bl4 = true;
+        boolean skipTimerReset = false;
+        if (!shouldSneak && !this.edgeSneakTimer.hasTimeElapsed(this.sneakDelayMs) && this.sneakDelayMs > 30L) {
+            shouldSneak = true;
+            skipTimerReset = true;
         }
         if (entityPlayerSP.b$src$Z$fqlxe4()) {
-            if (bl2) {
+            if (shouldSneak) {
                 if (!entityPlayerSP.P()) {
-                    this.L = (long)this.Z.B();
+                    this.sneakDelayMs = (long)this.sneakDelay.B();
                 }
-                KeyBindingHelper.d(keyBinding, true);
-                this.I.reset();
-                if (!bl4) {
-                    this.s.reset();
+                KeyBindingHelper.d(sneakKey, true);
+                this.standDelayTimer.reset();
+                if (!skipTimerReset) {
+                    this.edgeSneakTimer.reset();
                 }
-            } else if (this.V.L().booleanValue()) {
-                if (!this.I.hasTimeElapsed(1000L) && f < 0.0f) {
-                    KeyBindingHelper.d(keyBinding, false);
+            } else if (this.requireSneak.L().booleanValue()) {
+                if (!this.standDelayTimer.hasTimeElapsed(1000L) && forwardInput < 0.0f) {
+                    KeyBindingHelper.d(sneakKey, false);
                 }
-            } else if (!this.o) {
-                KeyBindingHelper.d(keyBinding, false);
+            } else if (!this.sneakKeyWasDown) {
+                KeyBindingHelper.d(sneakKey, false);
             }
         }
     }
 
     @EventHandler
-    public void k(EventPostTick eventPostTick) {
+    public void onPostTick(EventPostTick eventPostTick) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (!this.W(entityPlayerSP)) {
+        if (!this.shouldScaffold(entityPlayerSP)) {
             return;
         }
         GameSettings gameSettings = Minecraft.gameSettings();
-        KeyBinding keyBinding = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
-        KeyBindingHelper.d(keyBinding, this.o);
-        this.v = false;
+        KeyBinding sneakKey = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
+        KeyBindingHelper.d(sneakKey, this.sneakKeyWasDown);
+        this.standingFlag = false;
     }
 }

@@ -6,7 +6,7 @@ import gg.vape.module.control.AttackCancellationMarker;
 
 public class SyntheticAttackCancellationAdapter
 implements AttackCancellationAdapter {
-    private final SyntheticAttackRequestEvent a;
+    private final SyntheticAttackRequestEvent attackRequestEvent;
 
     public SyntheticAttackCancellationAdapter(SyntheticAttackRequestEvent eu_22, AttackCancellationMarker om_12) {
         this(eu_22);
@@ -14,11 +14,11 @@ implements AttackCancellationAdapter {
 
     @Override
     public void u(boolean bl) {
-        this.a.setCancelled(bl);
+        this.attackRequestEvent.setCancelled(bl);
     }
 
     private SyntheticAttackCancellationAdapter(SyntheticAttackRequestEvent eu_22) {
-        this.a = eu_22;
+        this.attackRequestEvent = eu_22;
     }
 }
 

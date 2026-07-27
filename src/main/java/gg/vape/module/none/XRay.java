@@ -28,14 +28,14 @@ import java.util.List;
 
 public class XRay
 extends Mod {
-    private final NumberValue U;
-    private static final long p = -2807609302372515841L;
-    private boolean b;
-    private double L = 0.0;
-    private float t = 1.0f;
-    private final List<Integer> S;
-    private final OptionalLimitValue c = OptionalLimitValue.l(this, "xray-blocks", "Xray Blocks", OptionalLimitValue.r, "Gold Ore", "Iron Ore", "Diamond Ore", "Emerald Ore", "Lapis Lazuli Ore", "Gold Block", "Iron Block", "Diamond Block", "Emerald Block");
-    private final BooleanValue J;
+    private final NumberValue opacityValue;
+    private static final long MODULE_ID_KEY = -2807609302372515841L;
+    private boolean needsReload;
+    private double lastOpacity = 0.0;
+    private float savedGamma = 1.0f;
+    private final List<Integer> blockIds;
+    private final OptionalLimitValue blocksValue = OptionalLimitValue.l(this, "xray-blocks", "Xray Blocks", OptionalLimitValue.r, "Gold Ore", "Iron Ore", "Diamond Ore", "Emerald Ore", "Lapis Lazuli Ore", "Gold Block", "Iron Block", "Diamond Block", "Emerald Block");
+    private final BooleanValue caveModeValue;
 
     public void i(EventChunkRenderRebuild eventChunkRenderRebuild) {
         if (!this.r$src$Z$14eylz9()) {
@@ -44,7 +44,7 @@ extends Mod {
         eventChunkRenderRebuild.setCancelled(true);
     }
 
-    private void lambda$new$0(NumberValue numberValue) {
+    private void onOpacityChanged(NumberValue numberValue) {
         if (this.r$src$Z$14eylz9()) {
             this.refreshWorldForOpacity();
         }
@@ -80,15 +80,15 @@ extends Mod {
     }
 
     private void refreshWorldForOpacity() {
-        if (Minecraft.thePlayer().isNull() || (Double)this.U.K() == this.L) {
+        if (Minecraft.thePlayer().isNull() || (Double)this.opacityValue.K() == this.lastOpacity) {
             return;
         }
-        int n = 4000;
+        int radius = 4000;
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        int n2 = (int)entityPlayerSP.z();
-        int n3 = (int)entityPlayerSP.h();
-        Minecraft.theWorld().Z(n2 - n, 0, n3 - n, n2 + n, 300, n3 + n);
-        this.L = (Double)this.U.K();
+        int playerX = (int)entityPlayerSP.z();
+        int playerZ = (int)entityPlayerSP.h();
+        Minecraft.theWorld().Z(playerX - radius, 0, playerZ - radius, playerX + radius, 300, playerZ + radius);
+        this.lastOpacity = (Double)this.opacityValue.K();
     }
 
     private void reloadRenderers() {
@@ -106,8 +106,8 @@ extends Mod {
         if (!Vape.INSTANCE.getPrimaryMappingTaskSet().Q()) {
             Vape.INSTANCE.getPrimaryMappingTaskSet().Y();
         }
-        this.b = true;
-        this.t = Minecraft.gameSettings().b();
+        this.needsReload = true;
+        this.savedGamma = Minecraft.gameSettings().b();
         Minecraft.gameSettings().y(10.0f);
         this.refreshWorldForOpacity();
     }
@@ -115,7 +115,7 @@ extends Mod {
     @Override
     public void onDisable() {
         EventRenderWorldPassExecutorDrain.E.execute(this::reloadRenderers);
-        Minecraft.gameSettings().y(this.t);
+        Minecraft.gameSettings().y(this.savedGamma);
     }
 
     public void onBlockSideRender(EventBlockShouldRender eventBlockShouldRender) {
@@ -123,7 +123,7 @@ extends Mod {
             return;
         }
         if (this.isTargetBlock(eventBlockShouldRender.getBlock())) {
-            eventBlockShouldRender.setCancelled(this.J.L() == false);
+            eventBlockShouldRender.setCancelled(this.caveModeValue.L() == false);
         }
     }
 
@@ -136,38 +136,38 @@ extends Mod {
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        this.S.clear();
-        for (String string : this.c.D()) {
+        this.blockIds.clear();
+        for (String string : this.blocksValue.D()) {
             Block block = Block.t(string.replace(" ", "_").toLowerCase());
-            if (block == null || this.S.contains(Block.R(block))) continue;
-            this.S.add(Block.R(block));
+            if (block == null || this.blockIds.contains(Block.R(block))) continue;
+            this.blockIds.add(Block.R(block));
         }
     }
 
     @EventHandler
     public void onRenderWorldPassComplete(EventPreRenderTick eventPreRenderTick) {
-        if (!this.b) {
+        if (!this.needsReload) {
             return;
         }
-        this.b = false;
+        this.needsReload = false;
         this.reloadRenderers();
     }
 
     public void onBlockRenderColorOpacity(EventBlockRenderColorOpacity eventBlockRenderColorOpacity) {
-        eventBlockRenderColorOpacity.setOpacity(((Double)this.U.K()).intValue());
+        eventBlockRenderColorOpacity.setOpacity(((Double)this.opacityValue.K()).intValue());
     }
 
     public XRay() {
-        super("Xray", (int)p, Category.m, "Renders whitelisted blocks through walls.");
-        this.U = NumberValue.create((Object)this, "Opacity", "#", "", 0.0, 60.0, 255.0, 1.0);
-        this.J = BooleanValue.create(this, "Cave Mode", false, "Only shows ores that are exposed to air.");
-        this.S = new ArrayList<Integer>();
-        this.addValue(this.U, this.J, this.c);
-        this.U.B(this::lambda$new$0);
+        super("Xray", (int)MODULE_ID_KEY, Category.m, "Renders whitelisted blocks through walls.");
+        this.opacityValue = NumberValue.create((Object)this, "Opacity", "#", "", 0.0, 60.0, 255.0, 1.0);
+        this.caveModeValue = BooleanValue.create(this, "Cave Mode", false, "Only shows ores that are exposed to air.");
+        this.blockIds = new ArrayList<Integer>();
+        this.addValue(this.opacityValue, this.caveModeValue, this.blocksValue);
+        this.opacityValue.B(this::onOpacityChanged);
     }
 
     public int getOpacity() {
-        return ((Double)this.U.K()).intValue();
+        return ((Double)this.opacityValue.K()).intValue();
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -175,7 +175,7 @@ extends Mod {
     }
 
     public boolean isTargetBlock(Block block) {
-        return this.S.contains(Block.R(block));
+        return this.blockIds.contains(Block.R(block));
     }
 
     public void onBlockRenderLayer(EventBlockLayerRender eventBlockLayerRender) {

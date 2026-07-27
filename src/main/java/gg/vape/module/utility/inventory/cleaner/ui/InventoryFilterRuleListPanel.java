@@ -23,150 +23,150 @@ import java.util.ArrayList;
 
 public class InventoryFilterRuleListPanel
 extends ScrollableFrameComponent {
-    private final SimpleTextLabelComponent lH;
-    private final InventoryCleanerProfile lt;
-    private final InventoryCleanerPopupFrame l_;
-    private final SimpleTextLabelComponent l1 = new SimpleTextLabelComponent("", 0.7);
-    private final ScrollableFrameComponent lO;
-    private final PanelComponent lz;
-    private final TextLabel lQ;
-    private final GlyphIconComponent lb;
+    private final SimpleTextLabelComponent titleLabel;
+    private final InventoryCleanerProfile profile;
+    private final InventoryCleanerPopupFrame popupFrame;
+    private final SimpleTextLabelComponent countLabel = new SimpleTextLabelComponent("", 0.7);
+    private final ScrollableFrameComponent ruleList;
+    private final PanelComponent clearAllPanel;
+    private final TextLabel clearAllLabel;
+    private final GlyphIconComponent addIcon;
 
     public void C(ItemInventoryFilterRule itemInventoryFilterRule) {
-        this.lO.h(this.n(itemInventoryFilterRule), new Object[0]);
-        this.n$src$V$b9ayit();
+        this.ruleList.h(this.createFilterRow(itemInventoryFilterRule), new Object[0]);
+        this.updateClearAllVisibility();
     }
 
     public InventoryFilterRuleListPanel(InventoryCleanerPopupFrame inventoryCleanerPopupFrame, FrameComponent frameComponent, InventoryCleanerProfile inventoryCleanerProfile) {
         super(frameComponent.A() - 5.0, 20.0);
-        this.lH = new SimpleTextLabelComponent("", 0.7);
-        this.lb = new GlyphIconComponent("newadd", 8.0, 8.0, 32.0, 32.0, InventoryFilterRuleListPanel.J.B, InventoryFilterRuleListPanel.J.O, InventoryFilterRuleListPanel.J.l);
-        this.lQ = new TextLabel("Clear all", 0.8);
-        this.l_ = inventoryCleanerPopupFrame;
-        this.lt = inventoryCleanerProfile;
-        this.lO = new ScrollableFrameComponent(this.A() - 8.0, 20.0);
+        this.titleLabel = new SimpleTextLabelComponent("", 0.7);
+        this.addIcon = new GlyphIconComponent("newadd", 8.0, 8.0, 32.0, 32.0, InventoryFilterRuleListPanel.J.B, InventoryFilterRuleListPanel.J.O, InventoryFilterRuleListPanel.J.l);
+        this.clearAllLabel = new TextLabel("Clear all", 0.8);
+        this.popupFrame = inventoryCleanerPopupFrame;
+        this.profile = inventoryCleanerProfile;
+        this.ruleList = new ScrollableFrameComponent(this.A() - 8.0, 20.0);
         this.t(90.0);
         this.C$src$V$nadrmg();
         this.d(false);
         this.T(Color.MAGENTA);
-        this.l1.f(() -> String.valueOf(inventoryCleanerProfile.Q().size()));
-        this.l1.l(true);
-        this.l1.T$src$V$1orl066(InventoryFilterRuleListPanel.J.A);
-        this.l1.o(this.l1.h());
-        this.l1.Y(8.0);
-        this.h(this.l1, "widthwrap");
-        this.lH.f(() -> "  INVENTORY FILTER" + (inventoryCleanerProfile.Q().size() == 1 ? "" : "S"));
-        this.lH.l(true);
-        this.lH.o(58.0);
-        this.lH.Y(8.0);
-        this.h(this.lH, "widthwrap");
-        this.lz = new PanelComponent(50.0, 4.0);
-        this.lz.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
-        this.lz.d(false);
-        this.lz.h(new SpacerComponent(3.0, 0.0), new Object[0]);
-        this.lz.h(new FilledSpacerComponent(1.0, 8.0, InventoryFilterRuleListPanel.J.y), new Object[0]);
-        this.lz.h(new SpacerComponent(3.0, 0.0), new Object[0]);
-        this.lQ.a(false);
-        this.lQ.s(true);
-        this.lQ.o(this.lQ.W() * 0.75);
-        this.lQ.Y(8.0);
-        this.lQ.r(() -> this.lambda$new$4(inventoryCleanerProfile));
-        this.lz.h(this.lQ, new Object[0]);
-        this.h(this.lz, "wrap");
+        this.countLabel.f(() -> String.valueOf(inventoryCleanerProfile.Q().size()));
+        this.countLabel.l(true);
+        this.countLabel.T$src$V$1orl066(InventoryFilterRuleListPanel.J.A);
+        this.countLabel.o(this.countLabel.h());
+        this.countLabel.Y(8.0);
+        this.h(this.countLabel, "widthwrap");
+        this.titleLabel.f(() -> "  INVENTORY FILTER" + (inventoryCleanerProfile.Q().size() == 1 ? "" : "S"));
+        this.titleLabel.l(true);
+        this.titleLabel.o(58.0);
+        this.titleLabel.Y(8.0);
+        this.h(this.titleLabel, "widthwrap");
+        this.clearAllPanel = new PanelComponent(50.0, 4.0);
+        this.clearAllPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
+        this.clearAllPanel.d(false);
+        this.clearAllPanel.h(new SpacerComponent(3.0, 0.0), new Object[0]);
+        this.clearAllPanel.h(new FilledSpacerComponent(1.0, 8.0, InventoryFilterRuleListPanel.J.y), new Object[0]);
+        this.clearAllPanel.h(new SpacerComponent(3.0, 0.0), new Object[0]);
+        this.clearAllLabel.a(false);
+        this.clearAllLabel.s(true);
+        this.clearAllLabel.o(this.clearAllLabel.W() * 0.75);
+        this.clearAllLabel.Y(8.0);
+        this.clearAllLabel.r(() -> this.onClearAll(inventoryCleanerProfile));
+        this.clearAllPanel.h(this.clearAllLabel, new Object[0]);
+        this.h(this.clearAllPanel, "wrap");
         this.h(new SpacerComponent(0.0, 0.0), "wrap");
         this.h(new SpacerComponent(0.0, 5.0), "widthwrap");
-        this.lO.d(false);
-        this.lO.T(Color.BLUE);
-        this.lO.t(81.0);
-        this.h(this.lO, new Object[0]);
-        this.lb.E(InventoryFilterRuleListPanel.J.r, InventoryFilterRuleListPanel.J.R);
-        this.lb.i((float)(this.lb.A() / 2.0));
-        this.lb.Z(1.0f);
-        this.lb.q(true);
-        this.lb.R(true);
-        this.lb.Q(false);
-        this.lb.k$src$V$qmpccm();
-        this.lb.r(() -> this.lambda$new$6(inventoryCleanerProfile));
-        PaddedComponent paddedComponent = new PaddedComponent(2.0, 1.0, 3.0, 2.0, this.lb);
+        this.ruleList.d(false);
+        this.ruleList.T(Color.BLUE);
+        this.ruleList.t(81.0);
+        this.h(this.ruleList, new Object[0]);
+        this.addIcon.E(InventoryFilterRuleListPanel.J.r, InventoryFilterRuleListPanel.J.R);
+        this.addIcon.i((float)(this.addIcon.A() / 2.0));
+        this.addIcon.Z(1.0f);
+        this.addIcon.q(true);
+        this.addIcon.R(true);
+        this.addIcon.Q(false);
+        this.addIcon.k$src$V$qmpccm();
+        this.addIcon.r(() -> this.onAddRule(inventoryCleanerProfile));
+        PaddedComponent paddedComponent = new PaddedComponent(2.0, 1.0, 3.0, 2.0, this.addIcon);
         paddedComponent.Q(false);
-        this.lO.h(paddedComponent, new Object[0]);
+        this.ruleList.h(paddedComponent, new Object[0]);
         for (ItemInventoryFilterRule itemInventoryFilterRule : inventoryCleanerProfile.Q()) {
             this.C(itemInventoryFilterRule);
         }
-        this.n$src$V$b9ayit();
+        this.updateClearAllVisibility();
     }
 
-    private void lambda$new$6(InventoryCleanerProfile inventoryCleanerProfile) {
+    private void onAddRule(InventoryCleanerProfile inventoryCleanerProfile) {
         ItemInventoryFilterRule itemInventoryFilterRule = new ItemInventoryFilterRule();
-        this.l_.M(this.lb, inventoryCleanerProfile, itemInventoryFilterRule, () -> this.lambda$null$5(inventoryCleanerProfile, itemInventoryFilterRule));
+        this.popupFrame.M(this.addIcon, inventoryCleanerProfile, itemInventoryFilterRule, () -> this.onRuleCreated(inventoryCleanerProfile, itemInventoryFilterRule));
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private void n$src$V$b9ayit() {
-        this.lz.Z(!this.lt.Q().isEmpty());
+    private void updateClearAllVisibility() {
+        this.clearAllPanel.Z(!this.profile.Q().isEmpty());
     }
 
-    private void lambda$null$2(InventoryCleanerProfile inventoryCleanerProfile, AnchoredPopupFrame anchoredPopupFrame) {
+    private void onClearAllConfirmed(InventoryCleanerProfile inventoryCleanerProfile, AnchoredPopupFrame anchoredPopupFrame) {
         inventoryCleanerProfile.b();
-        this.lO.S();
+        this.ruleList.S();
         ClientSettings.K(anchoredPopupFrame);
-        this.n$src$V$b9ayit();
+        this.updateClearAllVisibility();
     }
 
-    private void lambda$null$5(InventoryCleanerProfile inventoryCleanerProfile, ItemInventoryFilterRule itemInventoryFilterRule) {
+    private void onRuleCreated(InventoryCleanerProfile inventoryCleanerProfile, ItemInventoryFilterRule itemInventoryFilterRule) {
         inventoryCleanerProfile.f(itemInventoryFilterRule);
         this.C(itemInventoryFilterRule);
     }
 
-    private void lambda$createInventoryFilterNode$8(ItemInventoryFilterRule itemInventoryFilterRule) {
-        this.lt.U(itemInventoryFilterRule);
+    private void onRuleDeleted(ItemInventoryFilterRule itemInventoryFilterRule) {
+        this.profile.U(itemInventoryFilterRule);
         this.J(itemInventoryFilterRule);
     }
 
-    private GuiComponent n(ItemInventoryFilterRule itemInventoryFilterRule) {
-        ItemInventoryFilterRuleRow itemInventoryFilterRuleRow = new ItemInventoryFilterRuleRow(this.lt, itemInventoryFilterRule);
-        itemInventoryFilterRuleRow.z(() -> this.lambda$createInventoryFilterNode$7(itemInventoryFilterRule, itemInventoryFilterRuleRow));
+    private GuiComponent createFilterRow(ItemInventoryFilterRule itemInventoryFilterRule) {
+        ItemInventoryFilterRuleRow itemInventoryFilterRuleRow = new ItemInventoryFilterRuleRow(this.profile, itemInventoryFilterRule);
+        itemInventoryFilterRuleRow.z(() -> this.onRuleEdit(itemInventoryFilterRule, itemInventoryFilterRuleRow));
         PaddedComponent paddedComponent = new PaddedComponent(0.0, 4.0, 1.0, 0.0, itemInventoryFilterRuleRow);
-        itemInventoryFilterRuleRow.v(() -> this.lambda$createInventoryFilterNode$8(itemInventoryFilterRule));
+        itemInventoryFilterRuleRow.v(() -> this.onRuleDeleted(itemInventoryFilterRule));
         return paddedComponent;
     }
 
-    private void lambda$createInventoryFilterNode$7(ItemInventoryFilterRule itemInventoryFilterRule, ItemInventoryFilterRuleRow itemInventoryFilterRuleRow) {
+    private void onRuleEdit(ItemInventoryFilterRule itemInventoryFilterRule, ItemInventoryFilterRuleRow itemInventoryFilterRuleRow) {
         if (itemInventoryFilterRule.q().j()) {
-            this.l_.M(itemInventoryFilterRuleRow, this.lt, itemInventoryFilterRule, null);
+            this.popupFrame.M(itemInventoryFilterRuleRow, this.profile, itemInventoryFilterRule, null);
         } else {
-            this.l_.Z(itemInventoryFilterRuleRow, this.lt, itemInventoryFilterRule, false);
+            this.popupFrame.Z(itemInventoryFilterRuleRow, this.profile, itemInventoryFilterRule, false);
         }
     }
 
-    private void lambda$new$4(InventoryCleanerProfile inventoryCleanerProfile) {
+    private void onClearAll(InventoryCleanerProfile inventoryCleanerProfile) {
         TwoButtonConfirmationPopupComponent twoButtonConfirmationPopupComponent = new TwoButtonConfirmationPopupComponent("Confirm clear all?", "YES");
-        AnchoredPopupFrame anchoredPopupFrame = ClientSettings.g(this.lQ, twoButtonConfirmationPopupComponent, AnchoredPopupFrame.class);
+        AnchoredPopupFrame anchoredPopupFrame = ClientSettings.g(this.clearAllLabel, twoButtonConfirmationPopupComponent, AnchoredPopupFrame.class);
         anchoredPopupFrame.m(4.0);
         anchoredPopupFrame.r(false);
         anchoredPopupFrame.q(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), anchoredPopupFrame);
-        twoButtonConfirmationPopupComponent.N().r(() -> this.lambda$null$2(inventoryCleanerProfile, anchoredPopupFrame));
-        twoButtonConfirmationPopupComponent.O$src$Lgg_vape_ui_click_component_gui_TextButton_$1fvjbh().r(() -> InventoryFilterRuleListPanel.lambda$null$3(anchoredPopupFrame));
+        twoButtonConfirmationPopupComponent.N().r(() -> this.onClearAllConfirmed(inventoryCleanerProfile, anchoredPopupFrame));
+        twoButtonConfirmationPopupComponent.O$src$Lgg_vape_ui_click_component_gui_TextButton_$1fvjbh().r(() -> InventoryFilterRuleListPanel.onClearAllCancelled(anchoredPopupFrame));
     }
 
     public void J(ItemInventoryFilterRule itemInventoryFilterRule) {
         ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
-        for (GuiComponent guiComponent : this.lO.f()) {
+        for (GuiComponent guiComponent : this.ruleList.f()) {
             PaddedComponent paddedComponent;
             ItemInventoryFilterRuleRow itemInventoryFilterRuleRow;
             if (!(guiComponent instanceof PaddedComponent) || (itemInventoryFilterRuleRow = (paddedComponent = (PaddedComponent)guiComponent).t(ItemInventoryFilterRuleRow.class)) == null || itemInventoryFilterRuleRow.R() != itemInventoryFilterRule) continue;
             arrayList.add(guiComponent);
         }
         for (GuiComponent guiComponent : arrayList) {
-            this.lO.I(guiComponent);
+            this.ruleList.I(guiComponent);
         }
-        this.n$src$V$b9ayit();
+        this.updateClearAllVisibility();
     }
 
-    private static void lambda$null$3(AnchoredPopupFrame anchoredPopupFrame) {
+    private static void onClearAllCancelled(AnchoredPopupFrame anchoredPopupFrame) {
         ClientSettings.K(anchoredPopupFrame);
     }
 }

@@ -37,52 +37,52 @@ import java.util.Random;
 
 public class Reach
 extends Mod {
-    private int L = 0;
-    private final Random A;
-    private final BooleanValue I;
-    private final BooleanValue c;
-    private final NumberValue t;
-    private final Map<Integer, AutoClickerEntityPositionState> p;
-    private final RandomValue D = RandomValue.G(this, "Range", "#.##", "", 3.0, 3.0, 3.1, 4.0, 0.01, "The range in which your reach will be increased to.");
-    private final BooleanValue J;
-    private final ModeValue k;
-    private final BooleanValue a;
-    private boolean Z = false;
-    private final BooleanValue C;
-    private final ModeOption v;
-    private Entity U;
-    private long S;
-    private final ModeOption o;
-    private boolean j;
+    private int hitCooldown = 0;
+    private final Random random;
+    private final BooleanValue misplace;
+    private final BooleanValue disableInWater;
+    private final NumberValue chance;
+    private final Map<Integer, AutoClickerEntityPositionState> entityStates;
+    private final RandomValue range = RandomValue.G(this, "Range", "#.##", "", 3.0, 3.0, 3.1, 4.0, 0.01, "The range in which your reach will be increased to.");
+    private final BooleanValue verticalCheck;
+    private final ModeValue chanceMode;
+    private final BooleanValue disadvantage;
+    private boolean reachActive = false;
+    private final BooleanValue onlyWhileSprinting;
+    private final ModeOption normalMode;
+    private Entity lastTarget;
+    private long startTime;
+    private final ModeOption advancedMode;
+    private boolean justStarted;
 
     @EventHandler
-    public void d(EventPostAttack eventPostAttack) {
-        if (Packet.h() && !this.o.o()) {
+    public void onPostAttack(EventPostAttack eventPostAttack) {
+        if (Packet.h() && !this.advancedMode.o()) {
             return;
         }
-        this.Z = false;
+        this.reachActive = false;
     }
 
     @EventHandler
-    public void R(EventPreRenderTick eventPreRenderTick) {
-        if (!this.I.L().booleanValue()) {
+    public void onPreRenderTick(EventPreRenderTick eventPreRenderTick) {
+        if (!this.misplace.L().booleanValue()) {
             return;
         }
-        this.y(true);
+        this.applyMisplace(true);
     }
 
-    private boolean c() {
+    private boolean shouldExtendReach() {
         boolean bl = Packet.A();
         if (bl) {
             boolean bl2;
-            boolean bl3 = bl2 = this.o.o();
+            boolean bl3 = bl2 = this.advancedMode.o();
             return bl3;
         }
-        boolean bl4 = this.o.o();
+        boolean bl4 = this.advancedMode.o();
         if (bl4) {
-            return this.Z;
+            return this.reachActive;
         }
-        double d = (Double)this.t.K() - (double)this.A.nextInt(100);
+        double d = (Double)this.chance.K() - (double)this.random.nextInt(100);
         double d2 = d == 0.0 ? 0 : (d > 0.0 ? 1 : -1);
         return d2 > 0;
     }
@@ -95,9 +95,9 @@ extends Mod {
         }
     }
 
-    private void x() {
-        float f = this.a.L() != false ? -90.0f : 90.0f;
-        double d = this.D.q$src$D$vgz097() - 3.0;
+    private void misplaceParticles() {
+        float f = this.disadvantage.L() != false ? -90.0f : 90.0f;
+        double d = this.range.q$src$D$vgz097() - 3.0;
         EffectRenderer effectRenderer = Minecraft.z();
         if (effectRenderer.isNull()) {
             return;
@@ -111,8 +111,8 @@ extends Mod {
                 for (List<EntityFX> list : listArray3 = listArray2[i]) {
                     for (EntityFX entityFX : list) {
                         EntityPlayerSP entityPlayerSP;
-                        if (entityFX.isNull() || !entityFX.isInstance(MappedClasses.Fy) && !entityFX.isInstance(MappedClasses.Vc) || (entityPlayerSP = Minecraft.thePlayer()).isNull() || !((double)entityPlayerSP.getDistanceToEntity(entityFX) < this.D.M() + 2.0) || !(entityFX.N() < entityPlayerSP.N() + 2.5) || RotationUtil.S(entityPlayerSP, entityFX)) continue;
-                        float f2 = this.x(entityPlayerSP.z(), entityPlayerSP.h(), entityFX.z(), entityFX.h());
+                        if (entityFX.isNull() || !entityFX.isInstance(MappedClasses.Fy) && !entityFX.isInstance(MappedClasses.Vc) || (entityPlayerSP = Minecraft.thePlayer()).isNull() || !((double)entityPlayerSP.getDistanceToEntity(entityFX) < this.range.M() + 2.0) || !(entityFX.N() < entityPlayerSP.N() + 2.5) || RotationUtil.S(entityPlayerSP, entityFX)) continue;
+                        float f2 = this.computeAngle(entityPlayerSP.z(), entityPlayerSP.h(), entityFX.z(), entityFX.h());
                         double d2 = Math.cos(Math.toRadians(f2 + f)) * d;
                         double d3 = Math.sin(Math.toRadians(f2 + f)) * d;
                         entityFX.H(entityFX.z() - d2);
@@ -129,22 +129,22 @@ extends Mod {
     }
 
     public BooleanValue S$src$Lgg_vape_value_BooleanValue_$ifrxg2() {
-        return this.I;
+        return this.misplace;
     }
 
     @EventHandler
-    public void W(EventPreTick eventPreTick) {
-        if (this.o.o()) {
+    public void onPreTick(EventPreTick eventPreTick) {
+        if (this.advancedMode.o()) {
             Reach reach = this;
-            reach.R();
-            if (this.j) {
-                this.S = System.currentTimeMillis();
-                this.j = false;
+            reach.updateTarget();
+            if (this.justStarted) {
+                this.startTime = System.currentTimeMillis();
+                this.justStarted = false;
             }
         }
     }
 
-    private float x(double d, double d2, double d3, double d4) {
+    private float computeAngle(double d, double d2, double d3, double d4) {
         double d5 = d3 - d;
         double d6 = d4 - d2;
         float f = (float)Math.toDegrees(-Math.atan(d5 / d6));
@@ -157,18 +157,18 @@ extends Mod {
     }
 
     @EventHandler
-    public void G(EventPostRenderTick eventPostRenderTick) {
-        if (!this.I.L().booleanValue()) {
+    public void onPostRenderTick(EventPostRenderTick eventPostRenderTick) {
+        if (!this.misplace.L().booleanValue()) {
             return;
         }
-        this.h(true);
+        this.restorePositions(true);
     }
 
     private static Exception a(Exception exception) {
         return exception;
     }
 
-    private void y(boolean bl) {
+    private void applyMisplace(boolean bl) {
         WorldClient worldClient = Minecraft.theWorld();
         if (worldClient.isNull()) {
             return;
@@ -181,13 +181,13 @@ extends Mod {
             double d = entity.z();
             double d2 = entity.h();
             AutoClickerEntityPositionState autoClickerEntityPositionState = null;
-            if (this.p.containsKey(n)) {
-                autoClickerEntityPositionState = this.p.get(n);
+            if (this.entityStates.containsKey(n)) {
+                autoClickerEntityPositionState = this.entityStates.get(n);
             } else {
                 autoClickerEntityPositionState = new AutoClickerEntityPositionState();
                 autoClickerEntityPositionState.O = n;
             }
-            this.p.put(n, autoClickerEntityPositionState);
+            this.entityStates.put(n, autoClickerEntityPositionState);
             autoClickerEntityPositionState.L = d;
             autoClickerEntityPositionState.w = d2;
             autoClickerEntityPositionState.T = entity.M();
@@ -214,7 +214,7 @@ extends Mod {
         }
     }
 
-    private boolean Y() {
+    private boolean isReachAllowed() {
         boolean bl;
         boolean bl2;
         boolean bl3;
@@ -222,9 +222,9 @@ extends Mod {
         if (bl4) {
             boolean bl5;
             boolean bl6 = this.r$src$Z$14eylz9();
-            boolean bl7 = !bl6 || this.I.L() != false || this.c.L() != false && (Minecraft.thePlayer().h$src$Z$ftwoya() || Minecraft.thePlayer().Q$src$Z$fh9faz());
+            boolean bl7 = !bl6 || this.misplace.L() != false || this.disableInWater.L() != false && (Minecraft.thePlayer().h$src$Z$ftwoya() || Minecraft.thePlayer().Q$src$Z$fh9faz());
             boolean bl8 = bl7;
-            if (!bl8 && this.C.L().booleanValue()) {
+            if (!bl8 && this.onlyWhileSprinting.L().booleanValue()) {
                 bl7 = !Minecraft.thePlayer().B$src$Z$f90iek();
             }
             return !(bl5 = bl7);
@@ -234,32 +234,32 @@ extends Mod {
     }
 
     @EventHandler
-    public void c(EventPostTick eventPostTick) {
-        if (!this.I.L().booleanValue()) {
+    public void onPostTick(EventPostTick eventPostTick) {
+        if (!this.misplace.L().booleanValue()) {
             return;
         }
-        this.m();
-        this.h(false);
+        this.updateMisplacedPositions();
+        this.restorePositions(false);
         if (ForgeVersion.MC_1_8_9.B()) {
-            this.x();
+            this.misplaceParticles();
         }
     }
 
-    private void m() {
+    private void updateMisplacedPositions() {
         WorldClient worldClient = Minecraft.theWorld();
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (worldClient.isNull()) {
             return;
         }
-        float f = this.a.L() != false ? -90.0f : 90.0f;
+        float f = this.disadvantage.L() != false ? -90.0f : 90.0f;
         for (Object e : worldClient.z()) {
             double d;
             Entity entity = new Entity(e);
             if (!entity.isInstance(MappedClasses.lG) || entity.isInstance(MappedClasses.z5)) continue;
             EntityOtherPlayerMP entityOtherPlayerMP = new EntityOtherPlayerMP(e);
-            double d2 = this.D.q$src$D$vgz097() - 3.0;
+            double d2 = this.range.q$src$D$vgz097() - 3.0;
             double d3 = Math.hypot(entityPlayerSP.z() - entity.z(), entityPlayerSP.h() - entity.h());
-            float f2 = this.x(entityPlayerSP.z(), entityPlayerSP.h(), entity.z(), entity.h());
+            float f2 = this.computeAngle(entityPlayerSP.z(), entityPlayerSP.h(), entity.z(), entity.h());
             double d4 = d3 - d2;
             if (d4 < 0.5 && (d2 += (d = d4 - 0.5)) < 0.0) {
                 d2 = 0.0;
@@ -271,14 +271,14 @@ extends Mod {
             double d7 = entity.h();
             AutoClickerEntityPositionState autoClickerEntityPositionState = null;
             boolean bl = false;
-            if (this.p.containsKey(n)) {
-                autoClickerEntityPositionState = this.p.get(n);
+            if (this.entityStates.containsKey(n)) {
+                autoClickerEntityPositionState = this.entityStates.get(n);
                 bl = true;
             } else {
                 autoClickerEntityPositionState = new AutoClickerEntityPositionState();
                 autoClickerEntityPositionState.O = n;
             }
-            this.p.put(n, autoClickerEntityPositionState);
+            this.entityStates.put(n, autoClickerEntityPositionState);
             autoClickerEntityPositionState.L = d6;
             autoClickerEntityPositionState.w = d7;
             autoClickerEntityPositionState.T = entity.M();
@@ -299,7 +299,7 @@ extends Mod {
         }
     }
 
-    private void R() {
+    private void updateTarget() {
         Entity entity;
         block10: {
             block9: {
@@ -311,106 +311,106 @@ extends Mod {
                         Entity entity2;
                         Entity entity3;
                         boolean bl3;
-                        RayTraceResult rayTraceResult = RayTraceUtil.F(this.D.M(), 0.0f, true);
+                        RayTraceResult rayTraceResult = RayTraceUtil.F(this.range.M(), 0.0f, true);
                         RayTraceResult rayTraceResult2 = rayTraceResult;
                         if (rayTraceResult2 != null && (bl3 = rayTraceResult.isNotNull()) && rayTraceResult.getEntity().isNotNull()) {
                             entity = rayTraceResult.getEntity();
                         }
                         Reach reach2 = this;
-                        if (reach2.L > 0) {
-                            --this.L;
+                        if (reach2.hitCooldown > 0) {
+                            --this.hitCooldown;
                         }
-                        if ((entity3 = entity) == null || (entity2 = entity).isNull() || this.U != null && !(bl2 = entity.equals(this.U))) {
-                            this.U = null;
+                        if ((entity3 = entity) == null || (entity2 = entity).isNull() || this.lastTarget != null && !(bl2 = entity.equals(this.lastTarget))) {
+                            this.lastTarget = null;
                             return;
                         }
                         Reach reach3 = this;
                         Reach reach4 = reach3;
-                        if (reach4.Y()) {
+                        if (reach4.isReachAllowed()) {
                             Reach reach5 = this;
-                            if (reach5.L == 0) {
-                                boolean bl4 = this.Z = (Double)this.t.K() > (double)this.A.nextInt(100);
-                                if (this.Z) {
-                                    this.L = 10;
+                            if (reach5.hitCooldown == 0) {
+                                boolean bl4 = this.reachActive = (Double)this.chance.K() > (double)this.random.nextInt(100);
+                                if (this.reachActive) {
+                                    this.hitCooldown = 10;
                                 }
                             }
                         }
-                        this.U = entity;
+                        this.lastTarget = entity;
                         return;
                     }
-                    RayTraceResult rayTraceResult = RayTraceUtil.F(this.D.M(), 0.0f, true);
+                    RayTraceResult rayTraceResult = RayTraceUtil.F(this.range.M(), 0.0f, true);
                     RayTraceResult rayTraceResult3 = rayTraceResult;
                     boolean bl5 = rayTraceResult3.isNotNull();
                     if (bl5) {
                         entity = rayTraceResult.getEntity();
                     }
                     Reach reach6 = this;
-                    --reach6.L;
+                    --reach6.hitCooldown;
                     Entity entity4 = entity;
                     Entity entity5 = entity4;
                     if (entity5 == null) break block8;
-                    boolean bl6 = entity.equals(this.U);
+                    boolean bl6 = entity.equals(this.lastTarget);
                     if (bl6) break block9;
                     break block10;
                 }
                 break block10;
             }
         }
-        this.U = entity;
+        this.lastTarget = entity;
     }
 
     @Override
     public String r() {
-        return this.D.c();
+        return this.range.c();
     }
 
     @Override
     public void onDisable() {
-        this.p.clear();
+        this.entityStates.clear();
     }
 
     public double e() {
         Reach reach;
         Reach reach2 = this;
-        if (!reach2.Y() || !(reach = this).c()) {
+        if (!reach2.isReachAllowed() || !(reach = this).shouldExtendReach()) {
             return 3.0;
         }
-        return this.D.B();
+        return this.range.B();
     }
 
     @EventHandler
-    public void e(EventPreTick eventPreTick) {
-        if (!this.I.L().booleanValue()) {
+    public void onPreTickMisplace(EventPreTick eventPreTick) {
+        if (!this.misplace.L().booleanValue()) {
             return;
         }
-        this.m();
-        this.y(false);
+        this.updateMisplacedPositions();
+        this.applyMisplace(false);
     }
 
     public Reach() {
         super("Reach", -16711936, Category.g, "Extends attack reach");
-        this.t = NumberValue.E(this, "Chance", "#", "%", 0.0, 50.0, 100.0, "The chance of reach taking affect when hitting an opponent");
-        this.o = new ModeOption("Advanced");
-        this.v = new ModeOption("Normal");
-        this.k = ModeValue.create((Object)this, "Chance mode", this.o, this.o, this.v);
-        this.I = BooleanValue.create(this, "Misplace", false, "Pulls players towards you rather than giving you extra reach distance. Uses the minimum slider value.");
-        this.a = BooleanValue.create(this, "Disadvantage", false, "Moves misplaced players in opposite direction. Useful for framing other players");
-        this.J = BooleanValue.create(this, "Vertical check", false, "Prevents hitting players which are y0.2 above or below you\nfor more legitimate use");
-        this.C = BooleanValue.create(this, "Only while sprinting", false, "Only give extra reach while sprinting");
-        this.c = BooleanValue.create(this, "Disable in water", false, "Won't give any extra reach while standing in water");
-        this.p = new HashMap<Integer, AutoClickerEntityPositionState>();
-        this.A = new Random();
-        this.I.K(this.a);
-        this.D.c(100.0);
-        this.addValue(this.D, this.t, this.k, this.I, this.a, this.J, this.C, this.c);
+        this.chance = NumberValue.E(this, "Chance", "#", "%", 0.0, 50.0, 100.0, "The chance of reach taking affect when hitting an opponent");
+        this.advancedMode = new ModeOption("Advanced");
+        this.normalMode = new ModeOption("Normal");
+        this.chanceMode = ModeValue.create((Object)this, "Chance mode", this.advancedMode, this.advancedMode, this.normalMode);
+        this.misplace = BooleanValue.create(this, "Misplace", false, "Pulls players towards you rather than giving you extra reach distance. Uses the minimum slider value.");
+        this.disadvantage = BooleanValue.create(this, "Disadvantage", false, "Moves misplaced players in opposite direction. Useful for framing other players");
+        this.verticalCheck = BooleanValue.create(this, "Vertical check", false, "Prevents hitting players which are y0.2 above or below you\nfor more legitimate use");
+        this.onlyWhileSprinting = BooleanValue.create(this, "Only while sprinting", false, "Only give extra reach while sprinting");
+        this.disableInWater = BooleanValue.create(this, "Disable in water", false, "Won't give any extra reach while standing in water");
+        this.entityStates = new HashMap<Integer, AutoClickerEntityPositionState>();
+        this.random = new Random();
+        this.misplace.K(this.disadvantage);
+        this.range.c(100.0);
+        this.addValue(this.range, this.chance, this.chanceMode, this.misplace, this.disadvantage, this.verticalCheck, this.onlyWhileSprinting, this.disableInWater);
     }
 
-    private void h(boolean bl) {
+    private void restorePositions(boolean bl) {
         WorldClient worldClient = Minecraft.theWorld();
         if (worldClient.isNull()) {
             return;
         }
-        for (Map.Entry<Integer, AutoClickerEntityPositionState> entry : this.p.entrySet()) {
+        for (Map.Entry<Integer, AutoClickerEntityPositionState> entry : this.entityStates.entrySet()) {
             AutoClickerEntityPositionState autoClickerEntityPositionState = entry.getValue();
             Entity entity = new Entity(((World)worldClient).V(autoClickerEntityPositionState.O));
             if (!entity.isNotNull() || !entity.isInstance(MappedClasses.lG)) continue;

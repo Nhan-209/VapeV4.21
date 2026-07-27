@@ -10,28 +10,28 @@ public class QuantityFilterCondition
 implements NumericFilterCondition<QuantityFilterCondition> {
     @Override
     public QuantityFilterCondition Q(String string) throws NumberFormatException {
-        return this.s(string);
+        return this.parseAmount(string);
     }
 
     @Override
     public QuantityFilterCondition J(ComparisonOperator operator) {
-        return this.Y(operator);
+        return this.withOperator(operator);
     }
 
     @Override
     public QuantityFilterCondition w() {
-        return this.G();
+        return this.copy();
     }
-    private int W = 1;
-    private ComparisonOperator M = ComparisonOperator.EQUALS;
+    private int amount = 1;
+    private ComparisonOperator operator = ComparisonOperator.EQUALS;
 
-    public QuantityFilterCondition s(String string) {
-        this.W = Integer.parseInt(string);
+    public QuantityFilterCondition parseAmount(String string) {
+        this.amount = Integer.parseInt(string);
         return this;
     }
 
-    public int A() {
-        return this.W;
+    public int getAmount() {
+        return this.amount;
     }
 
     @Override
@@ -39,25 +39,25 @@ implements NumericFilterCondition<QuantityFilterCondition> {
         if (itemStack.isNull()) {
             return false;
         }
-        return this.M.p(itemStack.t(), this.W);
+        return this.operator.p(itemStack.t(), this.amount);
     }
 
     public QuantityFilterCondition() {
     }
 
-    public QuantityFilterCondition Y(ComparisonOperator comparisonOperator) {
-        this.M = comparisonOperator;
+    public QuantityFilterCondition withOperator(ComparisonOperator comparisonOperator) {
+        this.operator = comparisonOperator;
         return this;
     }
 
-    public QuantityFilterCondition C(int n) {
-        this.W = n;
+    public QuantityFilterCondition withAmount(int n) {
+        this.amount = n;
         return this;
     }
 
     @Override
     public ComparisonOperator p() {
-        return this.M;
+        return this.operator;
     }
 
     @Override
@@ -65,33 +65,33 @@ implements NumericFilterCondition<QuantityFilterCondition> {
         return InventoryFilterConditionType.QUANTITY;
     }
 
-    private static NumberFormatException a(NumberFormatException numberFormatException) {
+    private static NumberFormatException passthrough(NumberFormatException numberFormatException) {
         return numberFormatException;
     }
 
     @Override
     public JsonObject L() {
         JsonObject jsonObject = NumericFilterCondition.super.L();
-        jsonObject.addProperty("amount", (Number)this.W);
+        jsonObject.addProperty("amount", (Number)this.amount);
         return jsonObject;
     }
 
     public QuantityFilterCondition(int n, ComparisonOperator comparisonOperator) {
-        this.W = n;
-        this.M = comparisonOperator;
+        this.amount = n;
+        this.operator = comparisonOperator;
     }
 
     public QuantityFilterCondition(JsonObject jsonObject) {
-        this.W = jsonObject.get("amount").getAsInt();
-        this.M = ComparisonOperator.a(jsonObject.get("operator").getAsString());
+        this.amount = jsonObject.get("amount").getAsInt();
+        this.operator = ComparisonOperator.a(jsonObject.get("operator").getAsString());
     }
 
-    public QuantityFilterCondition G() {
-        return new QuantityFilterCondition(this.W, this.M);
+    public QuantityFilterCondition copy() {
+        return new QuantityFilterCondition(this.amount, this.operator);
     }
 
     @Override
     public String k() {
-        return String.valueOf(this.W);
+        return String.valueOf(this.amount);
     }
 }

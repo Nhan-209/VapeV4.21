@@ -10,11 +10,11 @@ public class PacketLatencySample {
         return (long)this.R / this.S;
     }
 
-    public PacketLatencySample(long l, int n, int n2, int n3) {
-        this.R = n;
-        this.S = l;
-        this.G = n2;
-        this.N = n3;
+    public PacketLatencySample(long timestamp, int size, int sequence, int id) {
+        this.R = size;
+        this.S = timestamp;
+        this.G = sequence;
+        this.N = id;
     }
 }
 

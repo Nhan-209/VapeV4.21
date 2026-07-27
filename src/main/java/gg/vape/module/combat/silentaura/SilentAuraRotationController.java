@@ -8,28 +8,28 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class SilentAuraRotationController
 extends AdaptiveRotationController {
-    final SilentAura gF;
+    final SilentAura silentAura;
 
     @Override
     public float O() {
-        double d;
+        double distance;
         EntityPlayerSP entityPlayerSP;
-        double d2 = 0.65;
-        double d3 = 0.25;
-        double d4 = Math.random();
-        double d5 = Math.random();
-        if (d4 < 1.0E-4) {
-            d4 = 1.0E-4;
+        double meanLog = 0.65;
+        double stdDevLog = 0.25;
+        double uniform1 = Math.random();
+        double uniform2 = Math.random();
+        if (uniform1 < 1.0E-4) {
+            uniform1 = 1.0E-4;
         }
-        double d6 = Math.sqrt(-2.0 * Math.log(d4)) * Math.cos(Math.PI * 2 * d5);
-        double d7 = Math.exp(d2 + d3 * d6);
-        d7 = Math.max(1.4, Math.min(3.0, d7));
-        double d8 = (double)((Double)this.gF.Zt.K()).floatValue() * d7;
-        if (SilentAura.A(this.gF).U(this.gF) && (entityPlayerSP = Minecraft.thePlayer()).isNotNull() && SilentAura.B(this.gF) != null && (d = entityPlayerSP.i(SilentAura.B(this.gF).z(), SilentAura.B(this.gF).N(), SilentAura.B(this.gF).h())) < 0.8) {
-            double d9 = d / 0.8;
-            d8 *= d9;
+        double gaussian = Math.sqrt(-2.0 * Math.log(uniform1)) * Math.cos(Math.PI * 2 * uniform2);
+        double multiplier = Math.exp(meanLog + stdDevLog * gaussian);
+        multiplier = Math.max(1.4, Math.min(3.0, multiplier));
+        double reach = (double)((Double)this.silentAura.Zt.K()).floatValue() * multiplier;
+        if (SilentAura.A(this.silentAura).U(this.silentAura) && (entityPlayerSP = Minecraft.thePlayer()).isNotNull() && SilentAura.B(this.silentAura) != null && (distance = entityPlayerSP.i(SilentAura.B(this.silentAura).z(), SilentAura.B(this.silentAura).N(), SilentAura.B(this.silentAura).h())) < 0.8) {
+            double distanceFactor = distance / 0.8;
+            reach *= distanceFactor;
         }
-        return (float)d8;
+        return (float)reach;
     }
 
     private static ObfuscatedRuntimeException d(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -37,7 +37,7 @@ extends AdaptiveRotationController {
     }
 
     public SilentAuraRotationController(SilentAura silentAura) {
-        this.gF = silentAura;
+        this.silentAura = silentAura;
     }
 }
 

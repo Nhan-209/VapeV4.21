@@ -17,24 +17,24 @@ import gg.vape.wrapper.impl.Packet;
 
 public class SprintReset
 extends Mod {
-    private final NumberValue H = NumberValue.E(this, "Chance", "#", "%", 0.0, 90.0, 100.0, "Chance of WTapping when hitting a target");
-    private final TimerUtil Y;
-    private final NumberValue V = NumberValue.create(this, "Release delay", "#", "", 0.0, 0.0, 500.0, 50.0, "Delay before releasing W key after hitting a target");
-    private boolean U;
-    private final TimerUtil F;
-    private final NumberValue s = NumberValue.create(this, "Re-press delay", "#", "", 0.0, 0.0, 500.0, 50.0, "Delay before re-pressing W key after releasing it");
-    private final BooleanValue L = BooleanValue.create(this, "Select hits", true, "Only WTap when the target is vulnerable");
-    private boolean o;
-    private static final long k = -5147998889622254014L;
+    private final NumberValue chance = NumberValue.E(this, "Chance", "#", "%", 0.0, 90.0, 100.0, "Chance of WTapping when hitting a target");
+    private final TimerUtil rePressTimer;
+    private final NumberValue releaseDelay = NumberValue.create(this, "Release delay", "#", "", 0.0, 0.0, 500.0, 50.0, "Delay before releasing W key after hitting a target");
+    private boolean releasePending;
+    private final TimerUtil releaseTimer;
+    private final NumberValue rePressDelay = NumberValue.create(this, "Re-press delay", "#", "", 0.0, 0.0, 500.0, 50.0, "Delay before re-pressing W key after releasing it");
+    private final BooleanValue selectHits = BooleanValue.create(this, "Select hits", true, "Only WTap when the target is vulnerable");
+    private boolean rePressPending;
+    private static final long MODULE_ID = -5147998889622254014L;
 
-    private void c() {
-        if (this.Y.hasTimeElapsed(((Double)this.s.K()).longValue())) {
+    private void handleRePress() {
+        if (this.rePressTimer.hasTimeElapsed(((Double)this.rePressDelay.K()).longValue())) {
             KeyBinding keyBinding = Minecraft.gameSettings().Y();
             boolean bl = ClientSettings.B(keyBinding);
             if (bl) {
                 keyBinding.setPressed(true);
             }
-            this.o = false;
+            this.rePressPending = false;
         }
     }
 
@@ -43,7 +43,7 @@ extends Mod {
     }
 
     @EventHandler
-    public void F(EventPreAttack eventPreAttack) {
+    public void onPreAttack(EventPreAttack eventPreAttack) {
         boolean bl = Packet.h();
         if (bl) {
             int n;
@@ -52,18 +52,18 @@ extends Mod {
             if (!bl3) {
                 return;
             }
-            boolean bl4 = this.U;
-            if (bl4 || (bl2 = this.o)) {
+            boolean bl4 = this.releasePending;
+            if (bl4 || (bl2 = this.rePressPending)) {
                 return;
             }
-            boolean bl5 = this.L.L();
+            boolean bl5 = this.selectHits.L();
             if (bl5 && (n = eventPreAttack.getTarget().V$src$I$fk0dv5()) > 14) {
                 return;
             }
             if (this.F$src$Z$oodzg7()) {
-                this.U = true;
-                this.F.reset();
-                this.G();
+                this.releasePending = true;
+                this.releaseTimer.reset();
+                this.handleRelease();
             }
             return;
         }
@@ -72,18 +72,18 @@ extends Mod {
         boolean bl8 = bl7;
         boolean bl9 = bl8;
         if (bl9) {
-            this.U = true;
-            this.F.reset();
-            this.G();
+            this.releasePending = true;
+            this.releaseTimer.reset();
+            this.handleRelease();
         }
     }
 
     public SprintReset() {
-        super("WTap", (int)k, Category.g);
-        this.F = new TimerUtil();
-        this.Y = new TimerUtil();
-        this.addValue(this.H, this.V, this.s, this.L);
-        this.V.C(0);
+        super("WTap", (int)MODULE_ID, Category.g);
+        this.releaseTimer = new TimerUtil();
+        this.rePressTimer = new TimerUtil();
+        this.addValue(this.chance, this.releaseDelay, this.rePressDelay, this.selectHits);
+        this.releaseDelay.C(0);
     }
 
     @EventHandler
@@ -93,7 +93,7 @@ extends Mod {
             boolean bl2 = Minecraft.currentScreen().isNull();
             boolean bl3 = bl2;
             if (bl3) {
-                this.c();
+                this.handleRePress();
                 return;
             }
             return;
@@ -102,34 +102,33 @@ extends Mod {
         if (!bl4) {
             return;
         }
-        boolean bl5 = this.U;
+        boolean bl5 = this.releasePending;
         if (bl5) {
-            this.G();
+            this.handleRelease();
             return;
         }
-        if (this.o) {
-            this.c();
+        if (this.rePressPending) {
+            this.handleRePress();
             return;
         }
     }
 
-    private void G() {
-        if (this.F.hasTimeElapsed(((Double)this.V.K()).longValue())) {
+    private void handleRelease() {
+        if (this.releaseTimer.hasTimeElapsed(((Double)this.releaseDelay.K()).longValue())) {
             KeyBinding keyBinding = Minecraft.gameSettings().Y();
             keyBinding.setPressed(false);
-            this.U = false;
-            this.Y.reset();
-            this.o = true;
+            this.releasePending = false;
+            this.rePressTimer.reset();
+            this.rePressPending = true;
         }
     }
 
     @Override
     public String r() {
-        return this.V.c();
+        return this.releaseDelay.c();
     }
 
     public boolean F$src$Z$oodzg7() {
-        return (Double)this.H.K() >= Math.random() * 100.0;
+        return (Double)this.chance.K() >= Math.random() * 100.0;
     }
 }
-

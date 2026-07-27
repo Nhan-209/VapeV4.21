@@ -12,10 +12,10 @@ implements GuiClickListener {
     final List T;
     final int V;
 
-    HotbarSlotRuleItemSelectClickHandler(HotbarSlotRuleItemListFrame hotbarSlotRuleItemListFrame, List list, int n) {
+    HotbarSlotRuleItemSelectClickHandler(HotbarSlotRuleItemListFrame hotbarSlotRuleItemListFrame, List list, int itemIndex) {
         this.p = hotbarSlotRuleItemListFrame;
         this.T = list;
-        this.V = n;
+        this.V = itemIndex;
     }
 
     @Override

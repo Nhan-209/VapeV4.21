@@ -7,12 +7,12 @@ public class ClientSettingsBooleanValue
 extends BooleanValue {
     final ClientSettings Z;
 
-    public ClientSettingsBooleanValue(ClientSettings clientSettings, Object object, String string, boolean bl) {
-        super(object, string, bl);
+    public ClientSettingsBooleanValue(ClientSettings clientSettings, Object owner, String name, boolean defaultValue) {
+        super(owner, name, defaultValue);
         this.Z = clientSettings;
     }
 
-    public void G(Boolean bl) {
-        super.o(bl);
+    public void G(Boolean value) {
+        super.o(value);
     }
 }

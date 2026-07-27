@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ChestStealInventoryState
 extends TextComponentBase {
-    private static final String e = "This method is available on 1.20.6 and later.";
+    private static final String UNSUPPORTED_MESSAGE = "This method is available on 1.20.6 and later.";
 
     public static ChestStealInventoryState v(String string, Object ... objectArray) {
         return new ChestStealInventoryState(MTextComponentTranslation.B(ChestStealInventoryState.c.getMappings().D_, string, objectArray));
@@ -33,7 +33,7 @@ extends TextComponentBase {
     public static ChestStealInventoryState A(String string, @Nullable String string2, Object[] objectArray) {
         if (ForgeVersion.MC_1_20_6.v()) {
             Vape.notifyNativeStackTrace();
-            throw new UnsupportedOperationException(e);
+            throw new UnsupportedOperationException(UNSUPPORTED_MESSAGE);
         }
         return new ChestStealInventoryState(MTextComponentTranslation.k(ChestStealInventoryState.c.getMappings().D_, string, string2, objectArray));
     }

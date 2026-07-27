@@ -8,74 +8,74 @@ import org.jetbrains.annotations.Nullable;
 
 public class InventoryItemMatcherBuilderBase<T extends InventoryItemMatcherBuilderBase<T>> {
     @Nullable
-    private Comparator<InventoryItemMatchContext> j;
-    private String F;
-    private InventoryItemMatcherGroup I;
-    private static boolean T;
-    private String L;
-    private String a;
+    private Comparator<InventoryItemMatchContext> comparator;
+    private String labelF;
+    private InventoryItemMatcherGroup group;
+    private static boolean flagT;
+    private String labelL;
+    private String labelA;
     @Nullable
-    private String J;
+    private String labelJ;
 
     public T A(InventoryItemMatcherGroup wn_02) {
-        this.I = wn_02;
+        this.group = wn_02;
         return (T)this;
     }
 
     public T m(String string) {
-        this.F = string;
+        this.labelF = string;
         return (T)this;
     }
 
     public static boolean y$src$Z$1hilr0k() {
-        return T;
+        return flagT;
     }
 
     @Nullable
     public Comparator<InventoryItemMatchContext> L() {
-        return this.j;
+        return this.comparator;
     }
 
     public InventoryItemMatcherGroup W() {
-        return this.I;
+        return this.group;
     }
 
     public String S() {
-        return this.F;
+        return this.labelF;
     }
 
     public String A() {
-        return this.a;
+        return this.labelA;
     }
 
     public String w() {
-        return this.J;
+        return this.labelJ;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException o8_02) {
         return o8_02;
     }
 
     protected InventoryItemMatcherBuilderBase(InventoryItemMatcherBuilderBase<?> qq_12) {
-        this.L = qq_12.h();
-        this.F = qq_12.S();
-        this.a = qq_12.A();
-        this.I = qq_12.W();
-        this.j = qq_12.L();
+        this.labelL = qq_12.h();
+        this.labelF = qq_12.S();
+        this.labelA = qq_12.A();
+        this.group = qq_12.W();
+        this.comparator = qq_12.L();
     }
 
     public T n(String string) {
-        this.L = string;
+        this.labelL = string;
         return (T)this;
     }
 
-    public T N(@Nullable Comparator<InventoryItemMatchContext> comparator) {
-        this.j = comparator;
+    public T N(@Nullable Comparator<InventoryItemMatchContext> comparatorArg) {
+        this.comparator = comparatorArg;
         return (T)this;
     }
 
     public T H(String string) {
-        this.a = string;
+        this.labelA = string;
         return (T)this;
     }
 
@@ -88,16 +88,16 @@ public class InventoryItemMatcherBuilderBase<T extends InventoryItemMatcherBuild
     }
 
     public String h() {
-        return this.L;
+        return this.labelL;
     }
 
     public T M(String string) {
-        this.J = string;
+        this.labelJ = string;
         return (T)this;
     }
 
     public static void S(boolean bl) {
-        T = bl;
+        flagT = bl;
     }
 
     static {

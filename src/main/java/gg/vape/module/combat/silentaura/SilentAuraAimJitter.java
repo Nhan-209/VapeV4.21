@@ -6,31 +6,31 @@ import gg.vape.utils.TimerUtil;
 import java.util.Random;
 
 public class SilentAuraAimJitter {
-    private Random d = new Random();
-    private double n;
-    private double Z;
-    private TimerUtil Y = new TimerUtil();
-    private double r;
-    private double c;
+    private Random random = new Random();
+    private double minValue;
+    private double current;
+    private TimerUtil retargetTimer = new TimerUtil();
+    private double target;
+    private double maxValue;
 
     public double b() {
-        return this.Z;
+        return this.current;
     }
 
     public void v() {
-        if (this.Y.hasTimeElapsed(MathUtil.randomExclusiveUpper(this.d, 100, 1000))) {
-            this.Y.reset();
-            this.r = MathUtil.randomRange(this.d, this.n, this.c);
+        if (this.retargetTimer.hasTimeElapsed(MathUtil.randomExclusiveUpper(this.random, 100, 1000))) {
+            this.retargetTimer.reset();
+            this.target = MathUtil.randomRange(this.random, this.minValue, this.maxValue);
         }
-        if (this.r > this.Z) {
-            this.Z += 0.01 + MathUtil.randomRange(this.d, 0.0, 0.05);
-            if (this.Z > this.r) {
-                this.Z = this.r;
+        if (this.target > this.current) {
+            this.current += 0.01 + MathUtil.randomRange(this.random, 0.0, 0.05);
+            if (this.current > this.target) {
+                this.current = this.target;
             }
-        } else if (this.r < this.Z) {
-            this.Z -= 0.01 + MathUtil.randomRange(this.d, 0.0, 0.05);
-            if (this.Z < this.r) {
-                this.Z = this.r;
+        } else if (this.target < this.current) {
+            this.current -= 0.01 + MathUtil.randomRange(this.random, 0.0, 0.05);
+            if (this.current < this.target) {
+                this.current = this.target;
             }
         }
     }
@@ -39,9 +39,8 @@ public class SilentAuraAimJitter {
         return o8_02;
     }
 
-    public SilentAuraAimJitter(double d, double d2) {
-        this.n = d;
-        this.c = d2;
+    public SilentAuraAimJitter(double min, double max) {
+        this.minValue = min;
+        this.maxValue = max;
     }
 }
-

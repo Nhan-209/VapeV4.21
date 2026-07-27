@@ -11,8 +11,8 @@ extends Macro {
         return new CommandMacroAction(this);
     }
 
-    public CommandMacro(String string) {
-        super(string);
+    public CommandMacro(String name) {
+        super(name);
     }
 }
 

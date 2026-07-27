@@ -57,44 +57,44 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class SilentAuraTargetingModule
 extends Mod {
-    private final BooleanValue s;
-    private final NumberValue k;
-    private final NumberValue Eb;
-    private boolean V;
+    private final BooleanValue randomizeOffset;
+    private final NumberValue chance;
+    private final NumberValue angle;
+    private boolean attackQueued;
     private static final float E1 = 6.0f;
-    private boolean Es;
-    private boolean b;
-    private int E8;
-    private final Queue<EventPacketSend> EK;
-    private final NumberValue o;
-    private final PacketDispatchGuard F;
+    private boolean cancelSprint;
+    private boolean attackKeyHeld;
+    private int stateTicks;
+    private final Queue<EventPacketSend> heldPackets;
+    private final NumberValue flickDelay;
+    private final PacketDispatchGuard dispatchGuard;
     private static final float U = 2.0f;
-    private boolean L;
-    private final EntityTargetFilterValue t = EntityTargetFilterValue.W(this);
-    private SilentAuraRotationMode C;
+    private boolean blinking;
+    private final EntityTargetFilterValue targetFilter = EntityTargetFilterValue.W(this);
+    private SilentAuraRotationMode rotationMode;
     private static final int A = 5;
-    private final RotationControlClaim J;
-    private final SharedModuleControlClaimPrimary E4;
-    private int Ex;
-    private boolean I;
-    private AdaptiveRotationController K;
-    private final TimerUtil EW;
-    private float S;
-    private SilentAura Ee;
-    private final BooleanValue Et;
-    private boolean Y;
-    private EntityLivingBase P;
-    private boolean v;
-    private boolean c;
+    private final RotationControlClaim rotationClaim;
+    private final SharedModuleControlClaimPrimary primaryClaim;
+    private int blinkTicks;
+    private boolean forwardKeyForced;
+    private AdaptiveRotationController rotationController;
+    private final TimerUtil flickDelayTimer;
+    private float flickAngle;
+    private SilentAura silentAura;
+    private final BooleanValue selectHits;
+    private boolean sprintCancelPending;
+    private EntityLivingBase currentTarget;
+    private boolean backKeyForced;
+    private boolean attacked;
     private static final float D = 1.875f;
-    private final BooleanValue O;
-    private final NumberValue a;
-    private boolean H;
+    private final BooleanValue strafeInvert;
+    private final NumberValue randomizeOffsetRange;
+    private boolean claimHeld;
     private static final int Ec = 7;
     private static final float p = 48.0f;
-    private final BooleanValue j = BooleanValue.create(this, "Blink", false, "Chokes outgoing packets during the flick and flushes once the attack is sent");
-    private final LimitValue r;
-    private final BooleanValue Z;
+    private final BooleanValue blink = BooleanValue.create(this, "Blink", false, "Chokes outgoing packets during the flick and flushes once the attack is sent");
+    private final LimitValue allowedItems;
+    private final BooleanValue limitToItems;
 
     private double[] q(EntityLivingBase entityLivingBase) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
@@ -112,7 +112,7 @@ extends Mod {
         if (entityLivingBase.w$src$F$15l9epb() <= 0.0f || entityLivingBase.M$src$Z$ff28xj()) {
             return false;
         }
-        if (!this.t.c(entityLivingBase)) {
+        if (!this.targetFilter.c(entityLivingBase)) {
             return false;
         }
         double d = Minecraft.thePlayer().i(entityLivingBase.z(), entityLivingBase.N(), entityLivingBase.h());
@@ -120,28 +120,28 @@ extends Mod {
     }
 
     private boolean f(EntityLivingBase entityLivingBase) {
-        if (this.C != SilentAuraRotationMode.IDLE || !this.R$src$Z$1unci2b()) {
+        if (this.rotationMode != SilentAuraRotationMode.IDLE || !this.R$src$Z$1unci2b()) {
             return false;
         }
         if (!this.N(entityLivingBase)) {
             return false;
         }
-        if (this.Et.L().booleanValue() && !this.F(entityLivingBase)) {
+        if (this.selectHits.L().booleanValue() && !this.F(entityLivingBase)) {
             return false;
         }
         if (!this.n$src$Z$1v2qqof()) {
             return false;
         }
-        if (!this.J.U(this) && !this.J.h(this, true)) {
+        if (!this.rotationClaim.U(this) && !this.rotationClaim.h(this, true)) {
             return false;
         }
-        this.P = entityLivingBase;
-        this.V = true;
-        this.S = this.Q$src$F$1umsozq();
-        this.C = SilentAuraRotationMode.FLICKING_AWAY;
-        this.E8 = 0;
-        this.Es = true;
-        this.EW.reset();
+        this.currentTarget = entityLivingBase;
+        this.attackQueued = true;
+        this.flickAngle = this.Q$src$F$1umsozq();
+        this.rotationMode = SilentAuraRotationMode.FLICKING_AWAY;
+        this.stateTicks = 0;
+        this.cancelSprint = true;
+        this.flickDelayTimer.reset();
         this.K$src$V$1ujhxtc();
         this.e();
         this.S$src$V$1unwak8();
@@ -149,47 +149,47 @@ extends Mod {
     }
 
     private boolean Z() {
-        return this.P != null && this.N(this.P);
+        return this.currentTarget != null && this.N(this.currentTarget);
     }
 
     @EventHandler
-    public void w(EventPostAttack eventPostAttack) {
+    public void onPostAttack(EventPostAttack eventPostAttack) {
     }
 
     public static SilentAuraRotationMode p(SilentAuraTargetingModule silentAuraTargetingModule) {
-        return silentAuraTargetingModule.C;
+        return silentAuraTargetingModule.rotationMode;
     }
 
     private void P$src$V$1um8ws5() {
-        if (this.b) {
+        if (this.attackKeyHeld) {
             this.X$src$V$1uqn9j1();
         }
-        if (this.L || !this.EK.isEmpty()) {
+        if (this.blinking || !this.heldPackets.isEmpty()) {
             this.G();
         }
-        this.V = false;
-        this.c = false;
-        this.b = false;
-        this.Es = false;
-        this.Y = false;
-        this.C = SilentAuraRotationMode.IDLE;
-        this.E8 = 0;
-        this.S = 0.0f;
-        this.P = null;
+        this.attackQueued = false;
+        this.attacked = false;
+        this.attackKeyHeld = false;
+        this.cancelSprint = false;
+        this.sprintCancelPending = false;
+        this.rotationMode = SilentAuraRotationMode.IDLE;
+        this.stateTicks = 0;
+        this.flickAngle = 0.0f;
+        this.currentTarget = null;
         RotationManager.b.B(false);
         this.N();
         this.T();
-        this.J.X(this);
-        if (this.K != null && RotationManager.b.w() == this.K) {
-            this.K.U(true);
-            this.K.s(true);
-            RotationManager.b.v(this.K);
+        this.rotationClaim.X(this);
+        if (this.rotationController != null && RotationManager.b.w() == this.rotationController) {
+            this.rotationController.U(true);
+            this.rotationController.s(true);
+            RotationManager.b.v(this.rotationController);
         }
-        this.K = null;
+        this.rotationController = null;
     }
 
     @EventHandler(A=EventPriority.HIGH)
-    public void a(EventKeyPress eventKeyPress) {
+    public void onKeyPress(EventKeyPress eventKeyPress) {
         block5: {
             boolean bl;
             block4: {
@@ -206,32 +206,32 @@ extends Mod {
     }
 
     @EventHandler
-    public void h(EventPreAttack eventPreAttack) {
+    public void onPreAttack(EventPreAttack eventPreAttack) {
     }
 
     private void b$src$V$1uw57gn() {
-        if (!this.V || this.c) {
+        if (!this.attackQueued || this.attacked) {
             return;
         }
         boolean bl = AttackKeyController.u(this);
         if (bl) {
             AttackKeyController.Q();
         }
-        this.c = true;
-        this.b = bl;
-        this.V = false;
+        this.attacked = true;
+        this.attackKeyHeld = bl;
+        this.attackQueued = false;
     }
 
     private float V$src$F$1upjnyj() {
-        return this.S;
+        return this.flickAngle;
     }
 
     private void k$src$V$1v13csw() {
-        this.L = false;
-        this.Ex = 0;
-        if (this.H) {
-            this.E4.Q();
-            this.H = false;
+        this.blinking = false;
+        this.blinkTicks = 0;
+        if (this.claimHeld) {
+            this.primaryClaim.Q();
+            this.claimHeld = false;
         }
     }
 
@@ -240,15 +240,15 @@ extends Mod {
     }
 
     private RotationAngles K() {
-        if (this.P == null || this.K == null) {
+        if (this.currentTarget == null || this.rotationController == null) {
             return null;
         }
-        double[] dArray = this.q(this.P);
-        return this.K.j(Vec3.create(dArray[0], dArray[1], dArray[2]));
+        double[] dArray = this.q(this.currentTarget);
+        return this.rotationController.j(Vec3.create(dArray[0], dArray[1], dArray[2]));
     }
 
     private boolean F$src$Z$1ugqyxz() {
-        if (this.C != SilentAuraRotationMode.IDLE) {
+        if (this.rotationMode != SilentAuraRotationMode.IDLE) {
             return true;
         }
         if (!this.R$src$Z$1unci2b()) {
@@ -265,9 +265,9 @@ extends Mod {
         KeyBinding keyBinding = Minecraft.gameSettings().r();
         if (!ClientSettings.B(keyBinding)) {
             keyBinding.setPressed(true);
-            this.I = true;
+            this.forwardKeyForced = true;
         } else {
-            this.I = false;
+            this.forwardKeyForced = false;
         }
     }
 
@@ -275,9 +275,9 @@ extends Mod {
         KeyBinding keyBinding = Minecraft.gameSettings().Y();
         if (!ClientSettings.B(keyBinding)) {
             keyBinding.setPressed(true);
-            this.v = true;
+            this.backKeyForced = true;
         } else {
-            this.v = false;
+            this.backKeyForced = false;
         }
     }
 
@@ -294,7 +294,7 @@ extends Mod {
     }
 
     @EventHandler(A=EventPriority.HIGH)
-    public void G(SyntheticAttackRequestEvent syntheticAttackRequestEvent) {
+    public void onSyntheticAttackRequest(SyntheticAttackRequestEvent syntheticAttackRequestEvent) {
         if (syntheticAttackRequestEvent.getSource() == this) {
             return;
         }
@@ -304,7 +304,7 @@ extends Mod {
     }
 
     @EventHandler(A=EventPriority.HIGH)
-    public void G(EventMouseButton eventMouseButton) {
+    public void onMouseButton(EventMouseButton eventMouseButton) {
         block5: {
             boolean bl;
             block4: {
@@ -328,11 +328,11 @@ extends Mod {
     }
 
     private boolean l$src$Z$1v1n5hp() {
-        if (!this.Z.L().booleanValue()) {
+        if (!this.limitToItems.L().booleanValue()) {
             return true;
         }
         ItemStack itemStack = Minecraft.thePlayer().getHeldItemHand();
-        return this.r.isValid(itemStack, false);
+        return this.allowedItems.isValid(itemStack, false);
     }
 
     @Override
@@ -349,27 +349,27 @@ extends Mod {
 
     @Override
     public String r() {
-        String string = this.Eb.c();
-        if (this.C != SilentAuraRotationMode.IDLE) {
+        String string = this.angle.c();
+        if (this.rotationMode != SilentAuraRotationMode.IDLE) {
             string = "\u00a7c" + string;
         }
         return string + "deg";
     }
 
     private void N() {
-        if (this.v) {
+        if (this.backKeyForced) {
             KeyBinding keyBinding = Minecraft.gameSettings().Y();
             keyBinding.setPressed(ClientSettings.B(keyBinding));
-            this.v = false;
+            this.backKeyForced = false;
         }
     }
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        if (this.Es) {
+        if (this.cancelSprint) {
             eventPrePlayerTick.getThePlayer().R(false);
-            this.Y = true;
-            this.Es = false;
+            this.sprintCancelPending = true;
+            this.cancelSprint = false;
         }
     }
 
@@ -377,23 +377,23 @@ extends Mod {
     public void onSetSprinting(EventSetSprinting eventSetSprinting) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
-            this.Y = false;
+            this.sprintCancelPending = false;
             return;
         }
-        if (this.Y && eventSetSprinting.isNewStateSprinting() && eventSetSprinting.getEntity().isNotNull() && eventSetSprinting.getEntity().S() == entityPlayerSP.S()) {
+        if (this.sprintCancelPending && eventSetSprinting.isNewStateSprinting() && eventSetSprinting.getEntity().isNotNull() && eventSetSprinting.getEntity().S() == entityPlayerSP.S()) {
             eventSetSprinting.setCancelled(true);
-            this.Y = false;
+            this.sprintCancelPending = false;
         }
     }
 
     private EntityLivingBase C$src$Lgg_vape_wrapper_impl_EntityLivingBase_$1gt079j() {
-        if (this.Ee == null) {
-            this.Ee = Vape.INSTANCE.getModManager().getMod(SilentAura.class);
+        if (this.silentAura == null) {
+            this.silentAura = Vape.INSTANCE.getModManager().getMod(SilentAura.class);
         }
-        if (this.Ee == null || !this.Ee.r$src$Z$14eylz9() || !this.Ee.P()) {
+        if (this.silentAura == null || !this.silentAura.r$src$Z$14eylz9() || !this.silentAura.P()) {
             return new EntityLivingBase(null);
         }
-        EntityLivingBase entityLivingBase = this.Ee.j$src$Lgg_vape_wrapper_impl_EntityLivingBase_$si0dgx();
+        EntityLivingBase entityLivingBase = this.silentAura.j$src$Lgg_vape_wrapper_impl_EntityLivingBase_$si0dgx();
         if (entityLivingBase.isNull()) {
             return entityLivingBase;
         }
@@ -405,7 +405,7 @@ extends Mod {
     }
 
     private void e() {
-        if (this.C != SilentAuraRotationMode.ATTACKING) {
+        if (this.rotationMode != SilentAuraRotationMode.ATTACKING) {
             RotationManager.b.B(false);
             this.N();
             this.T();
@@ -429,13 +429,13 @@ extends Mod {
     }
 
     private void K$src$V$1ujhxtc() {
-        if (!this.j.L().booleanValue() || this.E4.v$src$Z$1r7ksy2()) {
+        if (!this.blink.L().booleanValue() || this.primaryClaim.v$src$Z$1r7ksy2()) {
             return;
         }
-        this.L = true;
-        this.H = true;
-        this.Ex = 0;
-        this.E4.c();
+        this.blinking = true;
+        this.claimHeld = true;
+        this.blinkTicks = 0;
+        this.primaryClaim.c();
     }
 
     public static float f(SilentAuraTargetingModule silentAuraTargetingModule) {
@@ -447,21 +447,21 @@ extends Mod {
             this.P$src$V$1um8ws5();
             return;
         }
-        if (this.K == null) {
-            this.K = new SilentAuraAdaptiveRotationController(this);
-            this.K.b(false);
-            this.K.w(true);
-            this.K.k(true);
-            this.K.t(0.0f);
-            this.K.U(false);
-            this.K.s(false);
+        if (this.rotationController == null) {
+            this.rotationController = new SilentAuraAdaptiveRotationController(this);
+            this.rotationController.b(false);
+            this.rotationController.w(true);
+            this.rotationController.k(true);
+            this.rotationController.t(0.0f);
+            this.rotationController.U(false);
+            this.rotationController.s(false);
         }
-        double[] dArray = this.q(this.P);
-        this.K.z(dArray[0], dArray[1], dArray[2]);
-        this.K.x(this.C == SilentAuraRotationMode.FLICKING_AWAY ? this.V$src$F$1upjnyj() : 0.0f);
-        this.K.b(false);
-        if (RotationManager.b.w() == null || RotationManager.b.w() != this.K) {
-            RotationManager.b.S(this.K);
+        double[] dArray = this.q(this.currentTarget);
+        this.rotationController.z(dArray[0], dArray[1], dArray[2]);
+        this.rotationController.x(this.rotationMode == SilentAuraRotationMode.FLICKING_AWAY ? this.V$src$F$1upjnyj() : 0.0f);
+        this.rotationController.b(false);
+        if (RotationManager.b.w() == null || RotationManager.b.w() != this.rotationController) {
+            RotationManager.b.S(this.rotationController);
         }
     }
 
@@ -476,20 +476,20 @@ extends Mod {
     }
 
     private void G() {
-        if (this.EK.isEmpty()) {
+        if (this.heldPackets.isEmpty()) {
             this.k$src$V$1v13csw();
             return;
         }
-        this.EK.forEach(this.F::o);
-        this.EK.clear();
+        this.heldPackets.forEach(this.dispatchGuard::o);
+        this.heldPackets.clear();
         this.k$src$V$1v13csw();
     }
 
     private void T() {
-        if (this.I) {
+        if (this.forwardKeyForced) {
             KeyBinding keyBinding = Minecraft.gameSettings().r();
             keyBinding.setPressed(ClientSettings.B(keyBinding));
-            this.I = false;
+            this.forwardKeyForced = false;
         }
     }
 
@@ -499,13 +499,13 @@ extends Mod {
             return;
         }
         Packet packet = eventPacketSend.getPacket();
-        if (packet.isNull() || this.F.R(packet)) {
+        if (packet.isNull() || this.dispatchGuard.R(packet)) {
             return;
         }
-        if (!this.L) {
+        if (!this.blinking) {
             return;
         }
-        this.EK.add(eventPacketSend);
+        this.heldPackets.add(eventPacketSend);
         eventPacketSend.setCancelled(true);
         if (this.Z(packet)) {
             this.G();
@@ -514,32 +514,32 @@ extends Mod {
 
     public SilentAuraTargetingModule() {
         super("HitFlick", -3580417, Category.g, "Flicks off and on target to displace knockback angle");
-        this.Eb = NumberValue.create(this, "Angle", "#", "deg", 0.0, 90.0, 360.0, 1.0, "0 = none, 90 = right, 180 = pull toward, 270 = left");
-        this.k = NumberValue.create(this, "Chance", "#", "%", 0.0, 100.0, 100.0, 1.0, "Chance of starting a hit flick for a given attack");
-        this.o = NumberValue.create(this, "Flick delay", "#", "ms", 0.0, 250.0, 2000.0, 25.0, "Minimum delay between hit flick attempts");
-        this.s = BooleanValue.create(this, "Randomize offset", false, "Randomizes the configured angle by a per-flick range");
-        this.a = NumberValue.create(this, "Randomize offset", "#", "deg", 0.0, 0.0, 180.0, 1.0, "Applies a random offset range around Angle\nExample: 10 means Angle +/- 5 degrees per flick");
-        this.O = BooleanValue.create(this, "Strafe invert", false, "Flips the flick side when you strafe toward the current push direction");
-        this.Et = BooleanValue.create(this, "Select hits", true, "Only start a hit flick when the target is vulnerable");
-        this.Z = BooleanValue.create(this, "Limit to items", false, "HitFlick functions only while holding selected items");
-        this.r = LimitValue.n(this, "hitflick-alloweditems", "Allowed Items", LimitValue.r, Arrays.asList(new ItemLimitData("swords")));
-        this.J = SharedModuleControlClaims.I;
-        this.E4 = SharedModuleControlClaims.L;
-        this.F = PacketDispatchGuard.b;
-        this.EK = new LinkedList<EventPacketSend>();
-        this.EW = new TimerUtil();
-        this.C = SilentAuraRotationMode.IDLE;
-        this.s.K(this.a);
-        this.Z.K(this.r);
-        this.Z.l(this.r);
-        this.addValue(this.t, this.Eb, this.k, this.o, this.s, this.a, this.O, this.Et, this.j, this.Z, this.r);
-        this.k.C(0);
-        this.EW.x(-10000L);
-        this.J.l(this, 6);
+        this.angle = NumberValue.create(this, "Angle", "#", "deg", 0.0, 90.0, 360.0, 1.0, "0 = none, 90 = right, 180 = pull toward, 270 = left");
+        this.chance = NumberValue.create(this, "Chance", "#", "%", 0.0, 100.0, 100.0, 1.0, "Chance of starting a hit flick for a given attack");
+        this.flickDelay = NumberValue.create(this, "Flick delay", "#", "ms", 0.0, 250.0, 2000.0, 25.0, "Minimum delay between hit flick attempts");
+        this.randomizeOffset = BooleanValue.create(this, "Randomize offset", false, "Randomizes the configured angle by a per-flick range");
+        this.randomizeOffsetRange = NumberValue.create(this, "Randomize offset", "#", "deg", 0.0, 0.0, 180.0, 1.0, "Applies a random offset range around Angle\nExample: 10 means Angle +/- 5 degrees per flick");
+        this.strafeInvert = BooleanValue.create(this, "Strafe invert", false, "Flips the flick side when you strafe toward the current push direction");
+        this.selectHits = BooleanValue.create(this, "Select hits", true, "Only start a hit flick when the target is vulnerable");
+        this.limitToItems = BooleanValue.create(this, "Limit to items", false, "HitFlick functions only while holding selected items");
+        this.allowedItems = LimitValue.n(this, "hitflick-alloweditems", "Allowed Items", LimitValue.r, Arrays.asList(new ItemLimitData("swords")));
+        this.rotationClaim = SharedModuleControlClaims.I;
+        this.primaryClaim = SharedModuleControlClaims.L;
+        this.dispatchGuard = PacketDispatchGuard.b;
+        this.heldPackets = new LinkedList<EventPacketSend>();
+        this.flickDelayTimer = new TimerUtil();
+        this.rotationMode = SilentAuraRotationMode.IDLE;
+        this.randomizeOffset.K(this.randomizeOffsetRange);
+        this.limitToItems.K(this.allowedItems);
+        this.limitToItems.l(this.allowedItems);
+        this.addValue(this.targetFilter, this.angle, this.chance, this.flickDelay, this.randomizeOffset, this.randomizeOffsetRange, this.strafeInvert, this.selectHits, this.blink, this.limitToItems, this.allowedItems);
+        this.chance.C(0);
+        this.flickDelayTimer.x(-10000L);
+        this.rotationClaim.l(this, 6);
     }
 
     private void U(EventKeyInputBase eventKeyInputBase) {
-        if (this.C != SilentAuraRotationMode.IDLE) {
+        if (this.rotationMode != SilentAuraRotationMode.IDLE) {
             eventKeyInputBase.setCancelled(true);
             return;
         }
@@ -556,7 +556,7 @@ extends Mod {
     }
 
     private boolean n$src$Z$1v2qqof() {
-        return (Double)this.k.K() >= Math.random() * 100.0;
+        return (Double)this.chance.K() >= Math.random() * 100.0;
     }
 
     private boolean g$src$Z$1uyw6iw() {
@@ -571,15 +571,15 @@ extends Mod {
     }
 
     private float L$src$F$1uk1q0x() {
-        if (!this.s.L().booleanValue()) {
+        if (!this.randomizeOffset.L().booleanValue()) {
             return this.P();
         }
-        float f = ((Double)this.a.K()).floatValue();
+        float f = ((Double)this.randomizeOffsetRange.K()).floatValue();
         if (f <= 0.0f) {
             return this.P();
         }
         float f2 = (ThreadLocalRandom.current().nextFloat() - 0.5f) * f;
-        return this.J(((Double)this.Eb.K()).floatValue() + f2);
+        return this.J(((Double)this.angle.K()).floatValue() + f2);
     }
 
     private float J(float f) {
@@ -592,13 +592,13 @@ extends Mod {
 
     private void X$src$V$1uqn9j1() {
         AttackKeyController.Q();
-        this.b = false;
+        this.attackKeyHeld = false;
     }
 
     private float Q$src$F$1umsozq() {
         boolean bl;
         float f = this.L$src$F$1uk1q0x();
-        if (!this.O.L().booleanValue()) {
+        if (!this.strafeInvert.L().booleanValue()) {
             return f;
         }
         boolean bl2 = ClientSettings.B(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
@@ -632,15 +632,15 @@ extends Mod {
         if (!this.l$src$Z$1v1n5hp()) {
             return false;
         }
-        return this.EW.hasTimeElapsed(((Double)this.o.K()).longValue());
+        return this.flickDelayTimer.hasTimeElapsed(((Double)this.flickDelay.K()).longValue());
     }
 
     private float P() {
-        return this.J(((Double)this.Eb.K()).floatValue());
+        return this.J(((Double)this.angle.K()).floatValue());
     }
 
     private boolean o$src$Z$1v3aj9s() {
-        return Math.abs(MathUtil.wrapAngleTo180(this.P())) > 0.001f || this.s.L() != false && ((Double)this.a.K()).floatValue() > 0.001f;
+        return Math.abs(MathUtil.wrapAngleTo180(this.P())) > 0.001f || this.randomizeOffset.L() != false && ((Double)this.randomizeOffsetRange.K()).floatValue() > 0.001f;
     }
 
     @EventHandler(A=EventPriority.LOWEREST)
@@ -649,33 +649,33 @@ extends Mod {
             this.P$src$V$1um8ws5();
             return;
         }
-        if (this.C == SilentAuraRotationMode.IDLE) {
+        if (this.rotationMode == SilentAuraRotationMode.IDLE) {
             return;
         }
         if (!this.Z()) {
             this.P$src$V$1um8ws5();
             return;
         }
-        if (!this.J.U(this) && !this.J.h(this, true)) {
+        if (!this.rotationClaim.U(this) && !this.rotationClaim.h(this, true)) {
             this.P$src$V$1um8ws5();
             return;
         }
-        if (this.L && ++this.Ex >= 7) {
+        if (this.blinking && ++this.blinkTicks >= 7) {
             this.G();
         }
-        ++this.E8;
-        switch (SilentAuraAdaptiveRotationEntry.O[this.C.ordinal()]) {
+        ++this.stateTicks;
+        switch (SilentAuraAdaptiveRotationEntry.O[this.rotationMode.ordinal()]) {
             case 1: {
-                if (this.E8 < 5 && !this.g$src$Z$1uyw6iw()) break;
-                this.C = SilentAuraRotationMode.ATTACKING;
-                this.E8 = 0;
+                if (this.stateTicks < 5 && !this.g$src$Z$1uyw6iw()) break;
+                this.rotationMode = SilentAuraRotationMode.ATTACKING;
+                this.stateTicks = 0;
                 break;
             }
             case 2: {
-                if (!this.c) {
+                if (!this.attacked) {
                     this.b$src$V$1uw57gn();
                 }
-                if (this.E8 < 2) break;
+                if (this.stateTicks < 2) break;
                 this.P$src$V$1um8ws5();
             }
         }
@@ -684,8 +684,8 @@ extends Mod {
     }
 
     @EventHandler(A=EventPriority.HIGH)
-    public void E(EventClickMouse eventClickMouse) {
-        if (this.C != SilentAuraRotationMode.IDLE) {
+    public void onClickMouse(EventClickMouse eventClickMouse) {
+        if (this.rotationMode != SilentAuraRotationMode.IDLE) {
             return;
         }
         EntityLivingBase entityLivingBase = this.C$src$Lgg_vape_wrapper_impl_EntityLivingBase_$1gt079j();

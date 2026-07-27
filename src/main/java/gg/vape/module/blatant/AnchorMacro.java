@@ -54,48 +54,48 @@ import java.util.List;
 
 public class AnchorMacro
 extends Mod {
-    private final BooleanValue O;
-    private final BooleanValue F;
-    private BlockPos ra;
-    private boolean A;
-    private final NumberValue S;
-    private int r;
-    private AnchorMacroState rR;
-    private final BooleanValue U;
-    private EnumFacing r3;
-    private final RotationControlClaim K = SharedModuleControlClaims.I;
-    private BlockData a;
-    private int c = -1;
-    private static final int J;
-    private static final int D;
-    private final ModeOption o = new ModeOption("On bind");
-    private final BooleanValue rP;
-    private final TimerUtil b;
-    private int rQ = -1;
-    private static final int H;
-    private int rK;
-    private int j;
-    private final RandomValue P;
-    private BlockPos k;
-    private final ModeValue I;
-    private boolean rO;
-    private int s;
-    private static final int r0;
-    private final ModeOption rV = new ModeOption("On place");
-    private int rr;
-    private EnumFacing rL;
-    private boolean v;
-    private boolean ru;
-    private final BooleanValue rC;
-    private FixedRotationController t;
-    private BlockPos Z;
-    private int L = -1;
-    private int V = -1;
-    private final LimitValue C;
-    private long p;
-    private static final int Y;
+    private final BooleanValue explosionItemWhitelist;
+    private final BooleanValue safeAnchor;
+    private BlockPos anchorPos;
+    private boolean anchorPlaced;
+    private final NumberValue aimSpeed;
+    private int chargeRetries;
+    private AnchorMacroState state;
+    private final BooleanValue aimAssist;
+    private EnumFacing hitFacing;
+    private final RotationControlClaim rotationClaim = SharedModuleControlClaims.I;
+    private BlockData shieldBlock;
+    private int glowstoneSlot = -1;
+    private static final int MAX_ANCHOR_FACE_RETRIES;
+    private static final int SHIELD_MAX_TICKS;
+    private final ModeOption onBindMode = new ModeOption("On bind");
+    private final BooleanValue silentAim;
+    private final TimerUtil timer;
+    private int anchorSlot = -1;
+    private static final int MAX_CHARGE_RETRIES;
+    private int shieldChargeRetries;
+    private int retries;
+    private final RandomValue delay;
+    private BlockPos baseBlockPos;
+    private final ModeValue mode;
+    private boolean doubleAnchorDone;
+    private int shieldStep;
+    private static final int MAX_PLACE_RETRIES;
+    private final ModeOption onPlaceMode = new ModeOption("On place");
+    private int waitRetries;
+    private EnumFacing shieldFacing;
+    private boolean shieldStarted;
+    private boolean shieldPlaced;
+    private final BooleanValue doubleAnchor;
+    private FixedRotationController rotationController;
+    private BlockPos shieldSupportPos;
+    private int explosionSlot = -1;
+    private int prevSlot = -1;
+    private final LimitValue explosionItem;
+    private long actionDelay;
+    private static final int MAX_DETONATE_RETRIES;
 
-    private float y(Vec3 vec3, BlockData blockData, EntityPlayerSP entityPlayerSP) {
+    private float computeVisibilityRatio(Vec3 vec3, BlockData blockData, EntityPlayerSP entityPlayerSP) {
         AxisAlignedBB axisAlignedBB = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
         AxisAlignedBB axisAlignedBB2 = AxisAlignedBB.create(blockData.D(), blockData.B(), blockData.G(), (double)blockData.D() + 1.0, (double)blockData.B() + 1.0, (double)blockData.G() + 1.0);
         double d = axisAlignedBB.getMinX();
@@ -132,77 +132,77 @@ extends Mod {
         return n2 > 0 ? (float)n / (float)n2 : 0.0f;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private Vec3 w(BlockPos blockPos) {
+    private Vec3 centerOf(BlockPos blockPos) {
         return Vec3.create((double)blockPos.P() + 0.5, (double)blockPos.o() + 0.5, (double)blockPos.d() + 0.5);
     }
 
     public AnchorMacro() {
         super("AutoAnchor", -8109323, Category.Y, "Places, charges, and detonates a respawn anchor");
-        this.I = ModeValue.create((Object)this, "Mode", "On bind - places, charges, and detonates on keybind press\nOn place - automatically charges and detonates after you place an anchor", (ModeSelection)this.o, this.o, this.rV);
-        this.rC = BooleanValue.create(this, "Double anchor", false, "Places a second anchor on detonation, then charges it\nWill require lower delay to work reliably");
-        this.F = BooleanValue.create(this, "Safe anchor", false, "Places a glowstone block between you and the anchor before charging\nto reduce explosion damage by providing block cover");
-        this.O = BooleanValue.create(this, "Explosion item whitelist", false, "Swaps to the first whitelisted hotbar item before exploding\ninstead of swapping back to the anchor");
-        this.C = LimitValue.N(this, "autoanchor-explosionitemwhitelist", "Explosion item", LimitValue.r, new ItemLimitData("totem of undying"));
-        this.U = BooleanValue.create(this, "Aim assist", true, "Holds center of the anchor target");
-        this.rP = BooleanValue.create(this, "Silent aim", true, "Uses Silent Aim system");
-        this.S = NumberValue.create(this, "Aim speed", "#.#", "", 1.0, 12.0, 15.0, 0.1, "Speed of aim when placing/charging anchors");
-        this.P = RandomValue.G(this, "Delay", "#", "ms", 0.0, 50.0, 100.0, 500.0, 1.0, "Delay between each action");
-        this.b = new TimerUtil();
-        this.rR = AnchorMacroState.FINDING_ITEMS;
-        this.addValue(this.I, this.rC, this.F, this.O, this.C, this.U, this.rP, this.S, this.P);
-        this.O.K(this.C);
-        this.U.K(this.rP, this.S);
-        this.K.l(this, 8);
+        this.mode = ModeValue.create((Object)this, "Mode", "On bind - places, charges, and detonates on keybind press\nOn place - automatically charges and detonates after you place an anchor", (ModeSelection)this.onBindMode, this.onBindMode, this.onPlaceMode);
+        this.doubleAnchor = BooleanValue.create(this, "Double anchor", false, "Places a second anchor on detonation, then charges it\nWill require lower delay to work reliably");
+        this.safeAnchor = BooleanValue.create(this, "Safe anchor", false, "Places a glowstone block between you and the anchor before charging\nto reduce explosion damage by providing block cover");
+        this.explosionItemWhitelist = BooleanValue.create(this, "Explosion item whitelist", false, "Swaps to the first whitelisted hotbar item before exploding\ninstead of swapping back to the anchor");
+        this.explosionItem = LimitValue.N(this, "autoanchor-explosionitemwhitelist", "Explosion item", LimitValue.r, new ItemLimitData("totem of undying"));
+        this.aimAssist = BooleanValue.create(this, "Aim assist", true, "Holds center of the anchor target");
+        this.silentAim = BooleanValue.create(this, "Silent aim", true, "Uses Silent Aim system");
+        this.aimSpeed = NumberValue.create(this, "Aim speed", "#.#", "", 1.0, 12.0, 15.0, 0.1, "Speed of aim when placing/charging anchors");
+        this.delay = RandomValue.G(this, "Delay", "#", "ms", 0.0, 50.0, 100.0, 500.0, 1.0, "Delay between each action");
+        this.timer = new TimerUtil();
+        this.state = AnchorMacroState.FINDING_ITEMS;
+        this.addValue(this.mode, this.doubleAnchor, this.safeAnchor, this.explosionItemWhitelist, this.explosionItem, this.aimAssist, this.silentAim, this.aimSpeed, this.delay);
+        this.explosionItemWhitelist.K(this.explosionItem);
+        this.aimAssist.K(this.silentAim, this.aimSpeed);
+        this.rotationClaim.l(this, 8);
     }
 
     static {
-        D = 20;
-        H = 4;
-        J = 4;
-        r0 = 4;
-        Y = 4;
+        SHIELD_MAX_TICKS = 20;
+        MAX_CHARGE_RETRIES = 4;
+        MAX_ANCHOR_FACE_RETRIES = 4;
+        MAX_PLACE_RETRIES = 4;
+        MAX_DETONATE_RETRIES = 4;
     }
 
-    private boolean s() {
-        return this.K.U(this) || this.K.h(this, this.rP.L());
+    private boolean hasRotationClaim() {
+        return this.rotationClaim.U(this) || this.rotationClaim.h(this, this.silentAim.L());
     }
 
-    private boolean i() {
-        if (this.a == null) {
+    private boolean isShieldBlockClear() {
+        if (this.shieldBlock == null) {
             return false;
         }
-        Block block = Minecraft.thePlayer().getWorld().getBlockByPos(this.a.D(), this.a.B(), this.a.G());
+        Block block = Minecraft.thePlayer().getWorld().getBlockByPos(this.shieldBlock.D(), this.shieldBlock.B(), this.shieldBlock.G());
         return block.isNotNull() && !BlockUtil.u(block);
     }
 
-    private Vec3 Y(EntityPlayerSP entityPlayerSP) {
-        if (this.ra == null || this.ra.isNull()) {
-            return this.y$src$Lgg_vape_wrapper_impl_Vec3_$l9vcn5();
+    private Vec3 computeAnchorAimPoint(EntityPlayerSP entityPlayerSP) {
+        if (this.anchorPos == null || this.anchorPos.isNull()) {
+            return this.computeBaseAimPoint();
         }
-        BlockData blockData = this.a;
-        Vec3 vec3 = this.J(entityPlayerSP, blockData);
+        BlockData blockData = this.shieldBlock;
+        Vec3 vec3 = this.findBestAnchorFace(entityPlayerSP, blockData);
         if (vec3 != null) {
             return vec3;
         }
-        return this.w(this.ra);
+        return this.centerOf(this.anchorPos);
     }
 
-    private void V$src$V$rmlri5() {
-        this.k$src$V$ry5fyq();
-        this.P();
-        if (this.rV.o()) {
-            this.U();
-            this.rR = AnchorMacroState.IDLE;
+    private void finishSequence() {
+        this.releaseRotation();
+        this.restorePrevSlot();
+        if (this.onPlaceMode.o()) {
+            this.resetState();
+            this.state = AnchorMacroState.IDLE;
         } else {
             this.s(false, true);
         }
     }
 
-    private BlockPos Z() {
+    private BlockPos findRespawnAnchor() {
         RayTraceResult rayTraceResult = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
         if (rayTraceResult.isNull() || !rayTraceResult.isBlockHit()) {
             return null;
@@ -222,57 +222,57 @@ extends Mod {
         return blockPos;
     }
 
-    private boolean m() {
+    private boolean isLookingAtAnchor() {
         RayTraceResult rayTraceResult = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
-        if (rayTraceResult.isNull() || !rayTraceResult.isBlockHit() || this.k == null || this.r3 == null) {
+        if (rayTraceResult.isNull() || !rayTraceResult.isBlockHit() || this.baseBlockPos == null || this.hitFacing == null) {
             return false;
         }
         BlockPos blockPos = rayTraceResult.getBlockPos();
         if (blockPos == null || blockPos.isNull()) {
             return false;
         }
-        if (blockPos.equals(this.k)) {
+        if (blockPos.equals(this.baseBlockPos)) {
             return true;
         }
-        return this.ra != null && blockPos.equals(this.ra);
+        return this.anchorPos != null && blockPos.equals(this.anchorPos);
     }
 
-    private Vec3 y$src$Lgg_vape_wrapper_impl_Vec3_$l9vcn5() {
-        return this.E(this.k);
+    private Vec3 computeBaseAimPoint() {
+        return this.topCenterOf(this.baseBlockPos);
     }
 
-    private void P() {
-        if (this.V == -1) {
+    private void restorePrevSlot() {
+        if (this.prevSlot == -1) {
             return;
         }
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNotNull() && entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().isNotNull()) {
-            entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.V);
+            entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.prevSlot);
         }
-        this.V = -1;
+        this.prevSlot = -1;
     }
 
-    private void k$src$V$ry5fyq() {
-        if (this.t != null) {
-            RotationManager.b.v(this.t);
-            this.t = null;
+    private void releaseRotation() {
+        if (this.rotationController != null) {
+            RotationManager.b.v(this.rotationController);
+            this.rotationController = null;
         }
-        this.K.X(this);
+        this.rotationClaim.X(this);
     }
 
     @Override
     public void onEnable() {
-        this.U();
-        if (this.rV.o()) {
-            this.rR = AnchorMacroState.IDLE;
+        this.resetState();
+        if (this.onPlaceMode.o()) {
+            this.state = AnchorMacroState.IDLE;
         }
     }
 
-    private boolean H() {
-        return this.t == null || this.t.V$src$Z$lb4tvc();
+    private boolean isRotationDone() {
+        return this.rotationController == null || this.rotationController.V$src$Z$lb4tvc();
     }
 
-    private AnchorBlockHitTarget V$src$Lgg_vape_module_blatant_anchormacro_AnchorBlockH$cxsgzc() {
+    private AnchorBlockHitTarget findAnchorBlockHit() {
         RayTraceResult rayTraceResult = RayTraceUtil.p(Minecraft.thePlayer().getWorld(), Minecraft.thePlayer(), false);
         if (rayTraceResult.isNull() || !rayTraceResult.isBlockHit()) {
             return null;
@@ -285,16 +285,16 @@ extends Mod {
         return new AnchorBlockHitTarget(blockPos, enumFacing, null);
     }
 
-    private void b(String string) {
+    private void notifyMissingItem(String string) {
         Vape.INSTANCE.getNotificationManager().t("AutoAnchor", string + " not in hotbar", NotificationType.WARNING, 3000L);
     }
 
-    private boolean a(Vec3 vec3, BlockData blockData) {
+    private boolean isAnchorFullyVisible(Vec3 vec3, BlockData blockData) {
         Vec3[] vec3Array;
         AxisAlignedBB axisAlignedBB = AxisAlignedBB.create(blockData.D(), blockData.B(), blockData.G(), (double)blockData.D() + 1.0, (double)blockData.B() + 1.0, (double)blockData.G() + 1.0);
-        int n = this.ra.P();
-        int n2 = this.ra.o();
-        int n3 = this.ra.d();
+        int n = this.anchorPos.P();
+        int n2 = this.anchorPos.o();
+        int n3 = this.anchorPos.d();
         for (Vec3 vec32 : vec3Array = new Vec3[]{Vec3.create((double)n + 0.5, (double)n2 + 0.5, (double)n3 + 0.5), Vec3.create((double)n + 0.5, (double)n2 + 1.0, (double)n3 + 0.5), Vec3.create((double)n + 0.5, n2, (double)n3 + 0.5), Vec3.create(n, (double)n2 + 0.5, (double)n3 + 0.5), Vec3.create((double)n + 1.0, (double)n2 + 0.5, (double)n3 + 0.5), Vec3.create((double)n + 0.5, (double)n2 + 0.5, n3), Vec3.create((double)n + 0.5, (double)n2 + 0.5, (double)n3 + 1.0)}) {
             RayTraceResult rayTraceResult = axisAlignedBB.calculateIntercept(vec3, vec32);
             if (rayTraceResult != null && !rayTraceResult.isNull()) continue;
@@ -303,39 +303,39 @@ extends Mod {
         return true;
     }
 
-    private void W(Vec3 vec3) {
-        if (!this.U.L().booleanValue() || vec3 == null || vec3.isNull()) {
+    private void aimAt(Vec3 vec3) {
+        if (!this.aimAssist.L().booleanValue() || vec3 == null || vec3.isNull()) {
             return;
         }
-        if (this.t == null) {
-            if (this.rP.L().booleanValue()) {
+        if (this.rotationController == null) {
+            if (this.silentAim.L().booleanValue()) {
                 AdaptiveRotationController adaptiveRotationController = new AdaptiveRotationController();
                 adaptiveRotationController.d(false);
-                this.t = adaptiveRotationController;
+                this.rotationController = adaptiveRotationController;
             } else {
                 PointRotationController pointRotationController = new PointRotationController(vec3);
                 pointRotationController.E(false);
-                this.t = pointRotationController;
+                this.rotationController = pointRotationController;
             }
-            this.t.w(true);
-            this.t.k(true);
-            this.t.t(0.0f);
-            this.t.Y(((Double)this.S.K()).floatValue());
-            this.t.A(true);
-            this.t.U(false);
-            this.t.s(true);
-            this.t.z(true);
+            this.rotationController.w(true);
+            this.rotationController.k(true);
+            this.rotationController.t(0.0f);
+            this.rotationController.Y(((Double)this.aimSpeed.K()).floatValue());
+            this.rotationController.A(true);
+            this.rotationController.U(false);
+            this.rotationController.s(true);
+            this.rotationController.z(true);
         }
-        this.t.Y(((Double)this.S.K()).floatValue());
-        if (this.t instanceof PointRotationController) {
-            ((PointRotationController)this.t).J(vec3);
-        } else if (this.t instanceof AdaptiveRotationController) {
-            ((AdaptiveRotationController)this.t).J(vec3);
+        this.rotationController.Y(((Double)this.aimSpeed.K()).floatValue());
+        if (this.rotationController instanceof PointRotationController) {
+            ((PointRotationController)this.rotationController).J(vec3);
+        } else if (this.rotationController instanceof AdaptiveRotationController) {
+            ((AdaptiveRotationController)this.rotationController).J(vec3);
         }
-        RotationManager.b.S(this.t);
+        RotationManager.b.S(this.rotationController);
     }
 
-    private int s(String string) {
+    private int findHotbarSlot(String string) {
         InventoryPlayer inventoryPlayer = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
         for (int i = 0; i < 9; ++i) {
             String string2;
@@ -349,82 +349,82 @@ extends Mod {
 
     @Override
     public void onDisable() {
-        this.k$src$V$ry5fyq();
-        this.P();
-        this.U();
+        this.releaseRotation();
+        this.restorePrevSlot();
+        this.resetState();
     }
 
-    private void s(EntityPlayerSP entityPlayerSP, InventoryPlayer inventoryPlayer) {
+    private void placeShield(EntityPlayerSP entityPlayerSP, InventoryPlayer inventoryPlayer) {
         Object object;
         ItemStack heldStack;
-        if (!this.v) {
-            this.v = true;
-            heldStack = inventoryPlayer.c(this.c);
+        if (!this.shieldStarted) {
+            this.shieldStarted = true;
+            heldStack = inventoryPlayer.c(this.glowstoneSlot);
             if (heldStack.isNull() || heldStack.t() < 2) {
-                this.rR = AnchorMacroState.CHARGING_ANCHOR;
-                this.X$src$V$rnpcov();
-                this.j = 0;
+                this.state = AnchorMacroState.CHARGING_ANCHOR;
+                this.resetActionTimer();
+                this.retries = 0;
                 return;
             }
-            object = this.V(entityPlayerSP);
+            object = this.findShieldCandidate(entityPlayerSP);
             if (object == null) {
-                this.rR = AnchorMacroState.CHARGING_ANCHOR;
-                this.X$src$V$rnpcov();
-                this.j = 0;
+                this.state = AnchorMacroState.CHARGING_ANCHOR;
+                this.resetActionTimer();
+                this.retries = 0;
                 return;
             }
-            this.a = AnchorObstructionPlacementCandidate.b((AnchorObstructionPlacementCandidate)object);
-            this.Z = BlockPos.d(AnchorObstructionPlacementCandidate.k((AnchorObstructionPlacementCandidate)object));
-            this.rL = AnchorObstructionPlacementCandidate.O((AnchorObstructionPlacementCandidate)object);
-            this.ru = false;
-            this.rK = 0;
-            this.s = 0;
+            this.shieldBlock = AnchorObstructionPlacementCandidate.b((AnchorObstructionPlacementCandidate)object);
+            this.shieldSupportPos = BlockPos.d(AnchorObstructionPlacementCandidate.k((AnchorObstructionPlacementCandidate)object));
+            this.shieldFacing = AnchorObstructionPlacementCandidate.O((AnchorObstructionPlacementCandidate)object);
+            this.shieldPlaced = false;
+            this.shieldChargeRetries = 0;
+            this.shieldStep = 0;
         }
-        if (this.a == null || this.Z == null || this.rL == null) {
-            this.rR = AnchorMacroState.CHARGING_ANCHOR;
-            this.X$src$V$rnpcov();
-            this.j = 0;
+        if (this.shieldBlock == null || this.shieldSupportPos == null || this.shieldFacing == null) {
+            this.state = AnchorMacroState.CHARGING_ANCHOR;
+            this.resetActionTimer();
+            this.retries = 0;
             return;
         }
-        Vec3 aimPoint = this.n(this.Z, this.rL);
-        this.W(aimPoint);
-        if (!this.b.hasTimeElapsed(this.p)) {
+        Vec3 aimPoint = this.faceCenter(this.shieldSupportPos, this.shieldFacing);
+        this.aimAt(aimPoint);
+        if (!this.timer.hasTimeElapsed(this.actionDelay)) {
             return;
         }
-        if (this.s < 1) {
-            ++this.s;
+        if (this.shieldStep < 1) {
+            ++this.shieldStep;
             return;
         }
-        if (!this.ru) {
+        if (!this.shieldPlaced) {
             object = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
             if (((Wrapper)object).isNull() || !((RayTraceResult)object).isBlockHit()) {
-                if (++this.j > 4) {
-                    this.rR = AnchorMacroState.CHARGING_ANCHOR;
-                    this.X$src$V$rnpcov();
-                    this.j = 0;
+                if (++this.retries > 4) {
+                    this.state = AnchorMacroState.CHARGING_ANCHOR;
+                    this.resetActionTimer();
+                    this.retries = 0;
                 }
                 return;
             }
-            inventoryPlayer.g(this.c);
-            this.G();
-            this.ru = true;
-            this.rK = 0;
+            inventoryPlayer.g(this.glowstoneSlot);
+            this.rightClick();
+            this.shieldPlaced = true;
+            this.shieldChargeRetries = 0;
             return;
         }
-        if (!this.i()) {
-            if (++this.rK > 4) {
-                this.rR = AnchorMacroState.CHARGING_ANCHOR;
-                this.X$src$V$rnpcov();
-                this.j = 0;
+        if (!this.isShieldBlockClear()) {
+            if (++this.shieldChargeRetries > 4) {
+                this.state = AnchorMacroState.CHARGING_ANCHOR;
+                this.resetActionTimer();
+                this.retries = 0;
             }
             return;
         }
-        this.rR = AnchorMacroState.CHARGING_ANCHOR;
-        this.X$src$V$rnpcov();
-        this.j = 0;
+        this.state = AnchorMacroState.CHARGING_ANCHOR;
+        this.resetActionTimer();
+        this.retries = 0;
     }
 
-    private boolean f(InventoryPlayer inventoryPlayer) {
+    private boolean isHoldingAnchor(InventoryPlayer inventoryPlayer) {
         ItemStack itemStack = inventoryPlayer.c(inventoryPlayer.v());
         if (itemStack.isNull()) {
             return false;
@@ -437,17 +437,17 @@ extends Mod {
         return string != null && string.toLowerCase().contains("respawn_anchor");
     }
 
-    private Vec3 J(EntityPlayerSP entityPlayerSP, BlockData blockData) {
-        if (this.ra == null || this.ra.isNull()) {
+    private Vec3 findBestAnchorFace(EntityPlayerSP entityPlayerSP, BlockData blockData) {
+        if (this.anchorPos == null || this.anchorPos.isNull()) {
             return null;
         }
         World world = entityPlayerSP.getWorld();
         if (world.isNull()) {
             return null;
         }
-        int n = this.ra.P();
-        int n2 = this.ra.o();
-        int n3 = this.ra.d();
+        int n = this.anchorPos.P();
+        int n2 = this.anchorPos.o();
+        int n3 = this.anchorPos.d();
         Vec3 vec3 = Vec3.create(entityPlayerSP.z(), entityPlayerSP.N() + (double)entityPlayerSP.X(), entityPlayerSP.h());
         Vec3[] vec3Array = new Vec3[]{Vec3.create((double)n + 0.5, (double)n2 + 1.0, (double)n3 + 0.5), Vec3.create((double)n + 0.5, n2, (double)n3 + 0.5), Vec3.create(n, (double)n2 + 0.5, (double)n3 + 0.5), Vec3.create((double)n + 1.0, (double)n2 + 0.5, (double)n3 + 0.5), Vec3.create((double)n + 0.5, (double)n2 + 0.5, n3), Vec3.create((double)n + 0.5, (double)n2 + 0.5, (double)n3 + 1.0), Vec3.create((double)n + 0.25, (double)n2 + 1.0, (double)n3 + 0.5), Vec3.create((double)n + 0.75, (double)n2 + 1.0, (double)n3 + 0.5), Vec3.create(n, (double)n2 + 0.25, (double)n3 + 0.5), Vec3.create((double)n + 1.0, (double)n2 + 0.75, (double)n3 + 0.5), Vec3.create((double)n + 0.5, (double)n2 + 0.25, n3), Vec3.create((double)n + 0.5, (double)n2 + 0.75, (double)n3 + 1.0), Vec3.create((double)n + 0.25, n2, (double)n3 + 0.5), Vec3.create((double)n + 0.75, n2, (double)n3 + 0.5)};
         AxisAlignedBB axisAlignedBB = null;
@@ -479,38 +479,38 @@ extends Mod {
         return vec32;
     }
 
-    private Vec3 E(BlockPos blockPos) {
+    private Vec3 topCenterOf(BlockPos blockPos) {
         return Vec3.create((double)blockPos.P() + 0.5, (double)blockPos.o() + 1.0, (double)blockPos.d() + 0.5);
     }
 
-    private int s(InventoryPlayer inventoryPlayer) {
+    private int findExplosionSlot(InventoryPlayer inventoryPlayer) {
         int n;
-        if (this.O.L().booleanValue() && (n = this.o(this.C, inventoryPlayer)) != -1) {
+        if (this.explosionItemWhitelist.L().booleanValue() && (n = this.findLimitSlot(this.explosionItem, inventoryPlayer)) != -1) {
             return n;
         }
-        return this.rQ;
+        return this.anchorSlot;
     }
 
-    private Vec3 n(BlockPos blockPos, EnumFacing enumFacing) {
+    private Vec3 faceCenter(BlockPos blockPos, EnumFacing enumFacing) {
         Vec3i vec3i = enumFacing.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr();
         return Vec3.create((double)blockPos.P() + 0.5 + (double)vec3i.P() * 0.5, (double)blockPos.o() + 0.5 + (double)vec3i.o() * 0.5, (double)blockPos.d() + 0.5 + (double)vec3i.d() * 0.5);
     }
 
-    private AnchorMacroState x() {
-        if (this.F.L().booleanValue()) {
+    private AnchorMacroState nextChargeState() {
+        if (this.safeAnchor.L().booleanValue()) {
             return AnchorMacroState.PLACING_SHIELD;
         }
         return AnchorMacroState.CHARGING_ANCHOR;
     }
 
-    private void X$src$V$rnpcov() {
-        this.b.reset();
-        this.p = (long)this.P.B();
+    private void resetActionTimer() {
+        this.timer.reset();
+        this.actionDelay = (long)this.delay.B();
     }
 
-    private boolean B$src$Z$rblvqd() {
+    private boolean isLookingAtBaseFace() {
         RayTraceResult rayTraceResult = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
-        if (rayTraceResult.isNull() || !rayTraceResult.isBlockHit() || this.k == null || this.r3 == null) {
+        if (rayTraceResult.isNull() || !rayTraceResult.isBlockHit() || this.baseBlockPos == null || this.hitFacing == null) {
             return false;
         }
         BlockPos blockPos = rayTraceResult.getBlockPos();
@@ -518,7 +518,7 @@ extends Mod {
         if (blockPos == null || blockPos.isNull() || enumFacing == null || enumFacing.isNull()) {
             return false;
         }
-        return blockPos.equals(this.k) && enumFacing.equals(this.r3);
+        return blockPos.equals(this.baseBlockPos) && enumFacing.equals(this.hitFacing);
     }
 
     @EventHandler
@@ -531,170 +531,170 @@ extends Mod {
         if (inventoryPlayer.isNull()) {
             return;
         }
-        if (this.rR == AnchorMacroState.IDLE) {
-            if (this.o.o()) {
+        if (this.state == AnchorMacroState.IDLE) {
+            if (this.onBindMode.o()) {
                 this.s(false, true);
             }
             return;
         }
-        if (!this.U.L().booleanValue() && this.t != null) {
-            this.k$src$V$ry5fyq();
+        if (!this.aimAssist.L().booleanValue() && this.rotationController != null) {
+            this.releaseRotation();
         }
-        if (this.U.L().booleanValue() && !this.s()) {
+        if (this.aimAssist.L().booleanValue() && !this.hasRotationClaim()) {
             return;
         }
-        switch (this.rR) {
+        switch (this.state) {
             case FINDING_ITEMS: {
-                this.rQ = this.s("respawn_anchor");
-                this.c = this.s("glowstone");
-                if (this.rQ == -1 || this.c == -1) {
-                    if (this.rQ == -1) {
-                        this.b("Respawn anchor");
+                this.anchorSlot = this.findHotbarSlot("respawn_anchor");
+                this.glowstoneSlot = this.findHotbarSlot("glowstone");
+                if (this.anchorSlot == -1 || this.glowstoneSlot == -1) {
+                    if (this.anchorSlot == -1) {
+                        this.notifyMissingItem("Respawn anchor");
                     }
-                    if (this.c == -1) {
-                        this.b("Glowstone");
+                    if (this.glowstoneSlot == -1) {
+                        this.notifyMissingItem("Glowstone");
                     }
                     this.s(false, true);
                     return;
                 }
-                this.V = inventoryPlayer.v();
-                this.rR = AnchorMacroState.PLACING_ANCHOR;
+                this.prevSlot = inventoryPlayer.v();
+                this.state = AnchorMacroState.PLACING_ANCHOR;
                 break;
             }
             case PLACING_ANCHOR: {
-                if (this.ra == null || this.k == null || this.r3 == null) {
-                    if (this.j$src$Z$rxlngt()) {
+                if (this.anchorPos == null || this.baseBlockPos == null || this.hitFacing == null) {
+                    if (this.isLookingAtRespawnAnchor()) {
                         RayTraceResult rayTraceResult = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
-                        this.k = this.ra = rayTraceResult.getBlockPos();
-                        this.rR = this.x();
-                        this.X$src$V$rnpcov();
-                        this.j = 0;
+                        this.baseBlockPos = this.anchorPos = rayTraceResult.getBlockPos();
+                        this.state = this.nextChargeState();
+                        this.resetActionTimer();
+                        this.retries = 0;
                         break;
                     }
-                    AnchorBlockHitTarget anchorBlockHitTarget = this.V$src$Lgg_vape_module_blatant_anchormacro_AnchorBlockH$cxsgzc();
+                    AnchorBlockHitTarget anchorBlockHitTarget = this.findAnchorBlockHit();
                     if (anchorBlockHitTarget == null) {
-                        if (++this.j <= 20) break;
-                        this.rR = AnchorMacroState.FINISH;
+                        if (++this.retries <= 20) break;
+                        this.state = AnchorMacroState.FINISH;
                         break;
                     }
-                    this.k = AnchorBlockHitTarget.q(anchorBlockHitTarget);
-                    this.r3 = AnchorBlockHitTarget.O(anchorBlockHitTarget);
-                    this.ra = this.k.offset(this.r3);
-                    this.j = 0;
+                    this.baseBlockPos = AnchorBlockHitTarget.q(anchorBlockHitTarget);
+                    this.hitFacing = AnchorBlockHitTarget.O(anchorBlockHitTarget);
+                    this.anchorPos = this.baseBlockPos.offset(this.hitFacing);
+                    this.retries = 0;
                 }
-                this.W(this.y$src$Lgg_vape_wrapper_impl_Vec3_$l9vcn5());
-                if (!this.A && !this.m()) {
-                    if (++this.j <= 20) break;
-                    this.rR = AnchorMacroState.FINISH;
+                this.aimAt(this.computeBaseAimPoint());
+                if (!this.anchorPlaced && !this.isLookingAtAnchor()) {
+                    if (++this.retries <= 20) break;
+                    this.state = AnchorMacroState.FINISH;
                     break;
                 }
-                if (!this.A) {
-                    inventoryPlayer.g(this.rQ);
-                    this.G();
-                    this.A = true;
-                    this.rr = 0;
+                if (!this.anchorPlaced) {
+                    inventoryPlayer.g(this.anchorSlot);
+                    this.rightClick();
+                    this.anchorPlaced = true;
+                    this.waitRetries = 0;
                     break;
                 }
-                if (!this.c()) {
-                    if (++this.rr <= 4) break;
-                    this.A = false;
-                    this.rr = 0;
-                    if (++this.r <= 4) break;
-                    this.rR = AnchorMacroState.FINISH;
+                if (!this.isAnchorPresent()) {
+                    if (++this.waitRetries <= 4) break;
+                    this.anchorPlaced = false;
+                    this.waitRetries = 0;
+                    if (++this.chargeRetries <= 4) break;
+                    this.state = AnchorMacroState.FINISH;
                     break;
                 }
-                this.A = false;
-                this.rr = 0;
-                this.r = 0;
-                this.rR = this.x();
-                this.X$src$V$rnpcov();
-                this.j = 0;
+                this.anchorPlaced = false;
+                this.waitRetries = 0;
+                this.chargeRetries = 0;
+                this.state = this.nextChargeState();
+                this.resetActionTimer();
+                this.retries = 0;
                 break;
             }
             case WAITING_FOR_ANCHOR: {
-                if (this.c()) {
-                    this.rR = this.x();
-                    this.X$src$V$rnpcov();
-                    this.j = 0;
+                if (this.isAnchorPresent()) {
+                    this.state = this.nextChargeState();
+                    this.resetActionTimer();
+                    this.retries = 0;
                     break;
                 }
-                BlockPos blockPos = this.Z();
+                BlockPos blockPos = this.findRespawnAnchor();
                 if (blockPos != null && blockPos.isNotNull()) {
-                    this.ra = blockPos;
-                    this.rR = this.x();
-                    this.X$src$V$rnpcov();
-                    this.j = 0;
+                    this.anchorPos = blockPos;
+                    this.state = this.nextChargeState();
+                    this.resetActionTimer();
+                    this.retries = 0;
                     break;
                 }
-                if (++this.rr <= 4) break;
-                this.V$src$V$rmlri5();
+                if (++this.waitRetries <= 4) break;
+                this.finishSequence();
                 break;
             }
             case PLACING_SHIELD: {
-                this.s(entityPlayerSP, inventoryPlayer);
+                this.placeShield(entityPlayerSP, inventoryPlayer);
                 break;
             }
             case CHARGING_ANCHOR: {
-                this.W(this.Y(entityPlayerSP));
-                if (!this.b.hasTimeElapsed(this.p)) break;
-                if (!this.j$src$Z$rxlngt()) {
-                    ++this.j;
-                    if (this.j <= 4) break;
-                    this.rR = AnchorMacroState.FINISH;
+                this.aimAt(this.computeAnchorAimPoint(entityPlayerSP));
+                if (!this.timer.hasTimeElapsed(this.actionDelay)) break;
+                if (!this.isLookingAtRespawnAnchor()) {
+                    ++this.retries;
+                    if (this.retries <= 4) break;
+                    this.state = AnchorMacroState.FINISH;
                     break;
                 }
-                inventoryPlayer.g(this.c);
-                this.G();
-                this.rR = AnchorMacroState.SWAPPING_TO_EXPLOSION_ITEM;
-                this.X$src$V$rnpcov();
-                this.j = 0;
+                inventoryPlayer.g(this.glowstoneSlot);
+                this.rightClick();
+                this.state = AnchorMacroState.SWAPPING_TO_EXPLOSION_ITEM;
+                this.resetActionTimer();
+                this.retries = 0;
                 break;
             }
             case SWAPPING_TO_EXPLOSION_ITEM: {
-                this.W(this.Y(entityPlayerSP));
-                if (!this.b.hasTimeElapsed(this.p)) break;
-                if (!this.j$src$Z$rxlngt()) {
-                    ++this.j;
-                    if (this.j <= 4) break;
-                    this.rR = AnchorMacroState.FINISH;
+                this.aimAt(this.computeAnchorAimPoint(entityPlayerSP));
+                if (!this.timer.hasTimeElapsed(this.actionDelay)) break;
+                if (!this.isLookingAtRespawnAnchor()) {
+                    ++this.retries;
+                    if (this.retries <= 4) break;
+                    this.state = AnchorMacroState.FINISH;
                     break;
                 }
-                this.L = this.s(inventoryPlayer);
-                inventoryPlayer.g(this.L);
-                this.rR = AnchorMacroState.DETONATING_ANCHOR;
-                this.X$src$V$rnpcov();
-                this.j = 0;
+                this.explosionSlot = this.findExplosionSlot(inventoryPlayer);
+                inventoryPlayer.g(this.explosionSlot);
+                this.state = AnchorMacroState.DETONATING_ANCHOR;
+                this.resetActionTimer();
+                this.retries = 0;
                 break;
             }
             case DETONATING_ANCHOR: {
-                this.W(this.Y(entityPlayerSP));
-                if (!this.b.hasTimeElapsed(this.p)) break;
-                if (!this.j$src$Z$rxlngt()) {
-                    ++this.j;
-                    if (this.j <= 4) break;
-                    this.rR = AnchorMacroState.FINISH;
+                this.aimAt(this.computeAnchorAimPoint(entityPlayerSP));
+                if (!this.timer.hasTimeElapsed(this.actionDelay)) break;
+                if (!this.isLookingAtRespawnAnchor()) {
+                    ++this.retries;
+                    if (this.retries <= 4) break;
+                    this.state = AnchorMacroState.FINISH;
                     break;
                 }
-                this.G();
-                if (this.rC.L().booleanValue() && !this.rO) {
-                    this.W(this.Y(entityPlayerSP));
-                    this.G();
-                    this.rO = true;
-                    this.rR = AnchorMacroState.CHARGING_ANCHOR;
-                    this.X$src$V$rnpcov();
-                    this.j = 0;
+                this.rightClick();
+                if (this.doubleAnchor.L().booleanValue() && !this.doubleAnchorDone) {
+                    this.aimAt(this.computeAnchorAimPoint(entityPlayerSP));
+                    this.rightClick();
+                    this.doubleAnchorDone = true;
+                    this.state = AnchorMacroState.CHARGING_ANCHOR;
+                    this.resetActionTimer();
+                    this.retries = 0;
                     break;
                 }
-                this.rR = AnchorMacroState.FINISH;
+                this.state = AnchorMacroState.FINISH;
                 break;
             }
             case FINISH: {
-                this.V$src$V$rmlri5();
+                this.finishSequence();
             }
         }
     }
 
-    private int o(LimitValue limitValue, InventoryPlayer inventoryPlayer) {
+    private int findLimitSlot(LimitValue limitValue, InventoryPlayer inventoryPlayer) {
         for (int i = 0; i < 9; ++i) {
             ItemStack itemStack = inventoryPlayer.c(i);
             if (itemStack.isNull()) continue;
@@ -709,12 +709,12 @@ extends Mod {
 
     @Override
     public boolean X() {
-        return this.o.o();
+        return this.onBindMode.o();
     }
 
     @EventHandler
     public void J(EventRightClickMouse eventRightClickMouse) {
-        if (!this.rV.o() || this.rR != AnchorMacroState.IDLE) {
+        if (!this.onPlaceMode.o() || this.state != AnchorMacroState.IDLE) {
             return;
         }
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
@@ -725,7 +725,7 @@ extends Mod {
         if (inventoryPlayer.isNull()) {
             return;
         }
-        if (!this.f(inventoryPlayer)) {
+        if (!this.isHoldingAnchor(inventoryPlayer)) {
             return;
         }
         RayTraceResult rayTraceResult = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
@@ -737,29 +737,29 @@ extends Mod {
         if (blockPos == null || blockPos.isNull() || enumFacing == null || enumFacing.isNull()) {
             return;
         }
-        this.c = this.s("glowstone");
-        if (this.c == -1) {
-            this.b("Glowstone");
+        this.glowstoneSlot = this.findHotbarSlot("glowstone");
+        if (this.glowstoneSlot == -1) {
+            this.notifyMissingItem("Glowstone");
             return;
         }
-        this.rQ = inventoryPlayer.v();
-        this.k = blockPos;
-        this.r3 = enumFacing;
-        this.ra = blockPos.offset(enumFacing);
-        this.V = inventoryPlayer.v();
-        this.rR = AnchorMacroState.WAITING_FOR_ANCHOR;
-        this.j = 0;
-        this.rr = 0;
+        this.anchorSlot = inventoryPlayer.v();
+        this.baseBlockPos = blockPos;
+        this.hitFacing = enumFacing;
+        this.anchorPos = blockPos.offset(enumFacing);
+        this.prevSlot = inventoryPlayer.v();
+        this.state = AnchorMacroState.WAITING_FOR_ANCHOR;
+        this.retries = 0;
+        this.waitRetries = 0;
     }
 
-    private void G() {
+    private void rightClick() {
         KeyBinding keyBinding = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
         KeyBinding.setKeyBindState(keyBinding, true);
         KeyBinding.onTick(keyBinding);
         KeyBinding.setKeyBindState(keyBinding, false);
     }
 
-    private boolean j$src$Z$rxlngt() {
+    private boolean isLookingAtRespawnAnchor() {
         RayTraceResult rayTraceResult = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
         if (rayTraceResult.isNull() || !rayTraceResult.isBlockHit()) {
             return false;
@@ -768,32 +768,32 @@ extends Mod {
         return string != null && string.toLowerCase().contains("respawn_anchor");
     }
 
-    private void U() {
-        this.rR = AnchorMacroState.FINDING_ITEMS;
-        this.rQ = -1;
-        this.c = -1;
-        this.L = -1;
-        this.j = 0;
-        this.rO = false;
-        this.A = false;
-        this.rr = 0;
-        this.r = 0;
-        this.k = null;
-        this.r3 = null;
-        this.ra = null;
-        this.a = null;
-        this.Z = null;
-        this.rL = null;
-        this.ru = false;
-        this.rK = 0;
-        this.v = false;
-        this.s = 0;
+    private void resetState() {
+        this.state = AnchorMacroState.FINDING_ITEMS;
+        this.anchorSlot = -1;
+        this.glowstoneSlot = -1;
+        this.explosionSlot = -1;
+        this.retries = 0;
+        this.doubleAnchorDone = false;
+        this.anchorPlaced = false;
+        this.waitRetries = 0;
+        this.chargeRetries = 0;
+        this.baseBlockPos = null;
+        this.hitFacing = null;
+        this.anchorPos = null;
+        this.shieldBlock = null;
+        this.shieldSupportPos = null;
+        this.shieldFacing = null;
+        this.shieldPlaced = false;
+        this.shieldChargeRetries = 0;
+        this.shieldStarted = false;
+        this.shieldStep = 0;
     }
 
-    private AnchorObstructionPlacementCandidate V(EntityPlayerSP entityPlayerSP) {
+    private AnchorObstructionPlacementCandidate findShieldCandidate(EntityPlayerSP entityPlayerSP) {
         double d;
         double d2;
-        if (this.ra == null) {
+        if (this.anchorPos == null) {
             return null;
         }
         World world = entityPlayerSP.getWorld();
@@ -804,7 +804,7 @@ extends Mod {
         double d4 = entityPlayerSP.N();
         double d5 = entityPlayerSP.h();
         Vec3 vec3 = Vec3.create(d3, d4 + (double)entityPlayerSP.X(), d5);
-        Vec3 vec32 = this.J(entityPlayerSP, null);
+        Vec3 vec32 = this.findBestAnchorFace(entityPlayerSP, null);
         if (vec32 == null) {
             return null;
         }
@@ -823,7 +823,7 @@ extends Mod {
             int n2;
             int n3 = (int)Math.floor(d3 + d8 * d11);
             long l = ((long)n3 & 0x3FFFFFFL) << 38 | ((long)(n2 = (int)Math.floor(d4 + d9 * d11)) & 0xFFFL) << 26 | (long)(n = (int)Math.floor(d5 + d10 * d11)) & 0x3FFFFFFL;
-            if (!hashSet.add(l) || n3 == this.ra.P() && n2 == this.ra.o() && n == this.ra.d()) continue;
+            if (!hashSet.add(l) || n3 == this.anchorPos.P() && n2 == this.anchorPos.o() && n == this.anchorPos.d()) continue;
             arrayList.add(new BlockData(n3, n2, n));
         }
         float f = 0.15f;
@@ -837,8 +837,8 @@ extends Mod {
             Block block = world.getBlockByPos(blockData.D(), blockData.B(), blockData.G());
             if (block.isNull() || !BlockUtil.u(block) || !ClutchPlacementPathUtils.V(world, entityPlayerSP, blockData)) continue;
             AxisAlignedBB axisAlignedBB2 = AxisAlignedBB.create(blockData.D(), blockData.B(), blockData.G(), (double)blockData.D() + 1.0, (double)blockData.B() + 1.0, (double)blockData.G() + 1.0);
-            if (axisAlignedBB.isNotNull() && axisAlignedBB2.isNotNull() && axisAlignedBB.intersects(axisAlignedBB2) || !this.F(world, blockData, enumFacingArray = new EnumFacing[1], blockDataArray = new BlockData[1]) || this.a(vec3, blockData) || (vec33 = this.J(entityPlayerSP, blockData)) == null) continue;
-            float f3 = this.y(vec33, blockData, entityPlayerSP);
+            if (axisAlignedBB.isNotNull() && axisAlignedBB2.isNotNull() && axisAlignedBB.intersects(axisAlignedBB2) || !this.findAdjacentSupport(world, blockData, enumFacingArray = new EnumFacing[1], blockDataArray = new BlockData[1]) || this.isAnchorFullyVisible(vec3, blockData) || (vec33 = this.findBestAnchorFace(entityPlayerSP, blockData)) == null) continue;
+            float f3 = this.computeVisibilityRatio(vec33, blockData, entityPlayerSP);
             if (f3 >= 0.15f) {
                 return new AnchorObstructionPlacementCandidate(blockData, blockDataArray[0], enumFacingArray[0], f3, vec33, null);
             }
@@ -849,15 +849,15 @@ extends Mod {
         return anchorObstructionPlacementCandidate;
     }
 
-    private boolean c() {
-        if (this.ra == null || this.ra.isNull()) {
+    private boolean isAnchorPresent() {
+        if (this.anchorPos == null || this.anchorPos.isNull()) {
             return false;
         }
-        String string = Minecraft.thePlayer().getWorld().getBlockByPos(this.ra.P(), this.ra.o(), this.ra.d()).U();
+        String string = Minecraft.thePlayer().getWorld().getBlockByPos(this.anchorPos.P(), this.anchorPos.o(), this.anchorPos.d()).U();
         return string != null && string.toLowerCase().contains("respawn_anchor");
     }
 
-    private boolean F(World world, BlockData blockData, EnumFacing[] enumFacingArray, BlockData[] blockDataArray) {
+    private boolean findAdjacentSupport(World world, BlockData blockData, EnumFacing[] enumFacingArray, BlockData[] blockDataArray) {
         int[][] nArrayArray = new int[][]{{0, -1, 0}, {0, 1, 0}, {-1, 0, 0}, {1, 0, 0}, {0, 0, -1}, {0, 0, 1}};
         EnumFacing[] enumFacingArray2 = new EnumFacing[]{EnumFacing.F$src$Lgg_vape_wrapper_impl_EnumFacing_$glfxl5(), EnumFacing.B(), EnumFacing.g$src$Lgg_vape_wrapper_impl_EnumFacing_$1ii8mzu(), EnumFacing.X(), EnumFacing.M(), EnumFacing.w()};
         for (int i = 0; i < nArrayArray.length; ++i) {

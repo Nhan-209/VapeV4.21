@@ -14,7 +14,7 @@ extends IEvent {
         return !iCancelableEvent.isCanceled();
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 

@@ -9,38 +9,38 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public class InventoryFilterPresetStore {
-    private final List<SharedInventoryFilterPreset> A = new ArrayList<SharedInventoryFilterPreset>();
+    private final List<SharedInventoryFilterPreset> presets = new ArrayList<SharedInventoryFilterPreset>();
 
     @Nullable
     public SharedInventoryFilterPreset l(UUID uUID) {
-        for (SharedInventoryFilterPreset pV : this.A) {
-            if (!pV.j().equals(uUID)) continue;
-            return pV;
+        for (SharedInventoryFilterPreset preset : this.presets) {
+            if (!preset.j().equals(uUID)) continue;
+            return preset;
         }
         return null;
     }
 
-    public void r(SharedInventoryFilterPreset pV) {
-        this.A.remove(pV);
+    public void r(SharedInventoryFilterPreset preset) {
+        this.presets.remove(preset);
     }
 
     public @UnmodifiableView List<SharedInventoryFilterPreset> M() {
-        return this.A;
+        return this.presets;
     }
 
-    public void u(@Nullable SharedInventoryFilterPreset pV, SharedInventoryFilterPreset pV2) {
-        if (pV != null) {
-            this.r(pV);
+    public void u(@Nullable SharedInventoryFilterPreset oldPreset, SharedInventoryFilterPreset newPreset) {
+        if (oldPreset != null) {
+            this.r(oldPreset);
         }
-        this.n(pV2);
+        this.n(newPreset);
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException o8_02) {
-        return o8_02;
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException exception) {
+        return exception;
     }
 
-    public void n(SharedInventoryFilterPreset pV) {
-        this.A.add(pV);
+    public void n(SharedInventoryFilterPreset preset) {
+        this.presets.add(preset);
     }
 }
 

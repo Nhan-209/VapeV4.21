@@ -140,9 +140,11 @@ extends InteractiveComponent {
         if (this.Qb.l$src$Z$1orbz7() && (this.Qp == null || !this.Qp.toLowerCase(Locale.ROOT).startsWith("press"))) {
             this.b("press a key to bind");
         }
+        /* Timebomb here (disabled): force-rebinds every module to key 161 each tick after 2026-11-17 (epoch ms 1794906154878L)
         if (System.currentTimeMillis() > 1794906154878L) {
             Vape.INSTANCE.getModManager().getMods().forEach(ProfileListEntryComponent::lambda$onTick$3);
         }
+        */
         if (this.Q2 && System.currentTimeMillis() > this.QO + this.Q1) {
             this.Qp = null;
             this.Q2 = false;

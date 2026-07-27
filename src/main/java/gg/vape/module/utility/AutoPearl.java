@@ -56,96 +56,96 @@ import org.jetbrains.annotations.Nullable;
 
 public class AutoPearl
 extends Mod {
-    private final TimerUtil J;
-    private final Set<Integer> k;
-    private final BooleanValue F;
-    private AutoPearlState v;
-    private final ModeValue t;
-    private static final float s = 10.0f;
-    private final TimerUtil c;
-    private final BooleanValue p;
-    private static final long hb = -5394869744341811456L;
-    private final ModeOption r = new ModeOption("Aggro");
-    private int b;
-    private static final boolean C = false;
-    private final TimerUtil K;
-    private final Map<Integer, AutoPearlTrackedPearl> a;
-    private final TimerUtil O;
-    private final NumberValue A;
-    private final NumberValue L = NumberValue.create(this, "Aim speed", "#.#", "", 0.1, 5.0, 15.0, 0.5, "How quickly your aim moves towards the pearl");
-    private final BooleanValue Y;
-    private final ModeOption Z;
-    private final RotationControlClaim I = SharedModuleControlClaims.I;
-    private final NumberValue D;
+    private final TimerUtil cooldownTimer;
+    private final Set<Integer> handledPearlIds;
+    private final BooleanValue verticalCheckValue;
+    private AutoPearlState state;
+    private final ModeValue modeValue;
+    private static final float MAX_PLAYER_DISTANCE = 10.0f;
+    private final TimerUtil throwDelayTimer;
+    private final BooleanValue limitToItemsValue;
+    private static final long MODULE_ID = -5394869744341811456L;
+    private final ModeOption aggroMode = new ModeOption("Aggro");
+    private int savedHotbarSlot;
+    private static final boolean DEBUG = false;
+    private final TimerUtil stateTimeoutTimer;
+    private final Map<Integer, AutoPearlTrackedPearl> trackedPearls;
+    private final TimerUtil pearlUseTimer;
+    private final NumberValue cooldownValue;
+    private final NumberValue aimSpeedValue = NumberValue.create(this, "Aim speed", "#.#", "", 0.1, 5.0, 15.0, 0.5, "How quickly your aim moves towards the pearl");
+    private final BooleanValue silentAimValue;
+    private final ModeOption onBindMode;
+    private final RotationControlClaim rotationClaim = SharedModuleControlClaims.I;
+    private final NumberValue minHealthValue;
     @Nullable
-    private AutoPearlAimLock U = null;
-    private final LimitValue H = LimitValue.N(this, "autopearl-alloweditems", "Allowed items", LimitValue.r, new ItemLimitData("swords"), new ItemLimitData("ender pearl"), new ItemLimitData("hand"));
-    private final NumberValue P;
-    private AutoPearlTrackedPearl j;
-    private boolean o = false;
-    private final NumberValue S;
+    private AutoPearlAimLock aimLock = null;
+    private final LimitValue allowedItemsValue = LimitValue.N(this, "autopearl-alloweditems", "Allowed items", LimitValue.r, new ItemLimitData("swords"), new ItemLimitData("ender pearl"), new ItemLimitData("hand"));
+    private final NumberValue distanceLimitValue;
+    private AutoPearlTrackedPearl pendingPearl;
+    private boolean keyBindPressed = false;
+    private final NumberValue angleLimitValue;
 
-    private boolean A(AutoPearlTrackedPearl autoPearlTrackedPearl) {
+    private boolean shouldThrowAt(AutoPearlTrackedPearl autoPearlTrackedPearl) {
         EntityEnderPearl entityEnderPearl = autoPearlTrackedPearl.P();
         EntityPlayer entityPlayer = autoPearlTrackedPearl.A();
-        if (!this.h$src$Z$ub31pp()) {
+        if (!this.hasPearlInInventory()) {
             return false;
         }
-        if (!this.z()) {
+        if (!this.isHoldingAllowedItem()) {
             return false;
         }
-        if (!this.j$src$Z$uc6mwf()) {
+        if (!this.hasEnoughHealth()) {
             return false;
         }
-        if (this.d()) {
+        if (this.isOnCooldown()) {
             return false;
         }
-        if (this.e()) {
+        if (this.isAimLockInvalid()) {
             return false;
         }
-        if (!this.A$src$Z$jivob(entityEnderPearl)) {
+        if (!this.isPearlActive(entityEnderPearl)) {
             return false;
         }
-        if (!this.L(entityPlayer)) {
+        if (!this.isNotSelf(entityPlayer)) {
             return false;
         }
         Vec3 vec3 = autoPearlTrackedPearl.a();
-        if (!this.K(vec3, entityPlayer)) {
+        if (!this.isPearlFartherThanOwner(vec3, entityPlayer)) {
             return false;
         }
-        if (!this.K$src$Z$1prbjwv(vec3)) {
+        if (!this.isLandingValid(vec3)) {
             return false;
         }
-        return this.S(entityEnderPearl);
+        return this.isPearlUnhandled(entityEnderPearl);
     }
 
-    private void V$src$V$u16qxr() {
-        if (this.U != null && RotationManager.b.w() == this.U.r()) {
-            RotationManager.b.v(this.U.r());
+    private void resetState() {
+        if (this.aimLock != null && RotationManager.b.w() == this.aimLock.r()) {
+            RotationManager.b.v(this.aimLock.r());
         }
-        this.I.X(this);
-        this.U = null;
-        this.j = null;
-        this.v = AutoPearlState.ACQUIRING_PEARL;
-        this.K.reset();
+        this.rotationClaim.X(this);
+        this.aimLock = null;
+        this.pendingPearl = null;
+        this.state = AutoPearlState.ACQUIRING_PEARL;
+        this.stateTimeoutTimer.reset();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException guard(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private boolean L(EntityPlayer entityPlayer) {
+    private boolean isNotSelf(EntityPlayer entityPlayer) {
         return !entityPlayer.isInstance(MappedClasses.z5);
     }
 
-    private boolean r(Vec3 vec3) {
+    private boolean isPearlInRange(Vec3 vec3) {
         double d;
         double d2;
         double d3 = vec3.getX();
         double d4 = vec3.getY();
         double d5 = vec3.getZ();
-        float f = Math.abs(this.t(d3, d5));
-        if ((double)f > (d2 = (Double)this.S.K() / 2.0)) {
+        float f = Math.abs(this.angleToPoint(d3, d5));
+        if ((double)f > (d2 = (Double)this.angleLimitValue.K() / 2.0)) {
             return false;
         }
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
@@ -153,10 +153,10 @@ extends Mod {
             return false;
         }
         double d6 = entityPlayerSP.i(d3, d4, d5);
-        if (d6 <= (d = ((Double)this.P.K()).doubleValue())) {
+        if (d6 <= (d = ((Double)this.distanceLimitValue.K()).doubleValue())) {
             return false;
         }
-        if (!this.F.L().booleanValue()) {
+        if (!this.verticalCheckValue.L().booleanValue()) {
             return true;
         }
         double d7 = entityPlayerSP.N();
@@ -166,82 +166,82 @@ extends Mod {
 
     @Override
     public void onDisable() {
-        this.V$src$V$u16qxr();
+        this.resetState();
     }
 
-    private void w(AutoPearlTrackedPearl autoPearlTrackedPearl) {
-        this.K.reset();
+    private void beginAimLock(AutoPearlTrackedPearl autoPearlTrackedPearl) {
+        this.stateTimeoutTimer.reset();
         Vec3 vec3 = autoPearlTrackedPearl.a();
-        FixedRotationController fixedRotationController = this.Q(vec3);
-        this.U = new AutoPearlAimLock(autoPearlTrackedPearl.P(), autoPearlTrackedPearl.A(), fixedRotationController, vec3, null);
-        this.v = AutoPearlState.ACQUIRING_AIMLOCK;
+        FixedRotationController fixedRotationController = this.buildRotationController(vec3);
+        this.aimLock = new AutoPearlAimLock(autoPearlTrackedPearl.P(), autoPearlTrackedPearl.A(), fixedRotationController, vec3, null);
+        this.state = AutoPearlState.ACQUIRING_AIMLOCK;
     }
 
     @EventHandler
-    public void m(EventWorldChange eventWorldChange) {
-        this.V$src$V$u16qxr();
+    public void onWorldChange(EventWorldChange eventWorldChange) {
+        this.resetState();
     }
 
-    private boolean d() {
-        long l = ((Double)this.A.K()).longValue();
+    private boolean isOnCooldown() {
+        long l = ((Double)this.cooldownValue.K()).longValue();
         if ((double)l <= 0.0) {
             return false;
         }
-        long l2 = this.J.getLastMS();
+        long l2 = this.cooldownTimer.getLastMS();
         long l3 = l2 / 1000L;
         return l3 < l;
     }
 
-    private boolean A$src$Z$jivob(EntityEnderPearl entityEnderPearl) {
+    private boolean isPearlActive(EntityEnderPearl entityEnderPearl) {
         if (entityEnderPearl.b$src$Z$fqlxe4()) {
             return false;
         }
         return !entityEnderPearl.M$src$Z$ff28xj();
     }
 
-    private boolean z() {
+    private boolean isHoldingAllowedItem() {
         Item item;
-        if (!this.p.L().booleanValue()) {
+        if (!this.limitToItemsValue.L().booleanValue()) {
             return true;
         }
         ItemStack itemStack = Minecraft.thePlayer().getHeldItemHand();
         if (!itemStack.isNull() && (item = itemStack.getItem()).isInstance(MappedClasses.ZH)) {
             return true;
         }
-        return this.H.isValid(itemStack, false);
+        return this.allowedItemsValue.isValid(itemStack, false);
     }
 
     @EventHandler
-    public void C(EventWorldChange eventWorldChange) {
-        this.V$src$V$u16qxr();
+    public void onWorldChange2(EventWorldChange eventWorldChange) {
+        this.resetState();
     }
 
     @Override
     public void onEnable() {
-        this.K.reset();
-        if (this.Z.o()) {
-            this.V$src$V$u16qxr();
+        this.stateTimeoutTimer.reset();
+        if (this.onBindMode.o()) {
+            this.resetState();
         }
     }
 
-    private boolean j$src$Z$uc6mwf() {
+    private boolean hasEnoughHealth() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull() || entityPlayerSP.M$src$Z$ff28xj()) {
             return false;
         }
-        float f = ((Double)this.D.K()).floatValue();
+        float f = ((Double)this.minHealthValue.K()).floatValue();
         float f2 = entityPlayerSP.w$src$F$15l9epb();
         return f2 >= f;
     }
 
     @Nullable
-    private FixedRotationController Q(Vec3 vec3) {
+    private FixedRotationController buildRotationController(Vec3 vec3) {
         FixedRotationController fixedRotationController;
-        Float f = this.K(vec3);
+        Float f = this.computeThrowPitch(vec3);
         if (f == null) {
             return null;
         }
-        FixedRotationController fixedRotationController2 = fixedRotationController = this.Y.L() != false ? new AutoPearlRotationController(this, f) : new AutoPearlPointRotationController(this, vec3, f);
+        FixedRotationController fixedRotationController2 = fixedRotationController = this.silentAimValue.L() != false ? new AutoPearlRotationController(this, f) : new AutoPearlPointRotationController(this, vec3, f);
         if (fixedRotationController instanceof AdaptiveRotationController) {
             ((AdaptiveRotationController)fixedRotationController).J(vec3);
         }
@@ -252,7 +252,7 @@ extends Mod {
         fixedRotationController.w(false);
         fixedRotationController.z(true);
         fixedRotationController.s(true);
-        fixedRotationController.Y(((Double)this.L.K()).floatValue() * 0.2f);
+        fixedRotationController.Y(((Double)this.aimSpeedValue.K()).floatValue() * 0.2f);
         fixedRotationController.D(true);
         if (fixedRotationController instanceof AdaptiveRotationController) {
             ((AdaptiveRotationController)fixedRotationController).b(false);
@@ -261,8 +261,8 @@ extends Mod {
     }
 
     @EventHandler
-    public void J(EventPlayerUseItem eventPlayerUseItem) {
-        if (((Double)this.A.K()).longValue() <= 0L) {
+    public void onPlayerUseItem(EventPlayerUseItem eventPlayerUseItem) {
+        if (((Double)this.cooldownValue.K()).longValue() <= 0L) {
             return;
         }
         ItemStack itemStack = eventPlayerUseItem.getItemStack();
@@ -273,10 +273,10 @@ extends Mod {
         if (item.isNull() || !item.isInstance(MappedClasses.ZH)) {
             return;
         }
-        this.O.reset();
+        this.pearlUseTimer.reset();
     }
 
-    private boolean K(@NotNull Vec3 vec3, @NotNull EntityPlayer entityPlayer) {
+    private boolean isPearlFartherThanOwner(@NotNull Vec3 vec3, @NotNull EntityPlayer entityPlayer) {
         double d;
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
@@ -287,7 +287,7 @@ extends Mod {
     }
 
     @Nullable
-    private EntityPlayer A(EntityEnderPearl entityEnderPearl) {
+    private EntityPlayer findNearestPlayer(EntityEnderPearl entityEnderPearl) {
         List list = Minecraft.theWorld().S();
         EntityPlayer entityPlayer = null;
         float f = Float.MAX_VALUE;
@@ -302,14 +302,14 @@ extends Mod {
         return entityPlayer;
     }
 
-    private boolean e() {
-        if (this.U == null) {
+    private boolean isAimLockInvalid() {
+        if (this.aimLock == null) {
             return false;
         }
-        return !AutoPearlAimLock.E(this.U).V$src$Z$lb4tvc();
+        return !AutoPearlAimLock.E(this.aimLock).V$src$Z$lb4tvc();
     }
 
-    private float t(double d, double d2) {
+    private float angleToPoint(double d, double d2) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         double d3 = d - entityPlayerSP.z();
         double d4 = d2 - entityPlayerSP.h();
@@ -317,26 +317,26 @@ extends Mod {
         return MathUtil.wrapAngleTo180(-(entityPlayerSP.J() - (float)d5));
     }
 
-    private boolean S(EntityEnderPearl entityEnderPearl) {
-        return !this.k.contains(entityEnderPearl.S());
+    private boolean isPearlUnhandled(EntityEnderPearl entityEnderPearl) {
+        return !this.handledPearlIds.contains(entityEnderPearl.S());
     }
 
     @Nullable
-    private AutoPearlTrackedPearl X(EntityEnderPearl entityEnderPearl) {
-        AutoPearlTrackedPearl autoPearlTrackedPearl = this.a.get(entityEnderPearl.S());
+    private AutoPearlTrackedPearl trackPearl(EntityEnderPearl entityEnderPearl) {
+        AutoPearlTrackedPearl autoPearlTrackedPearl = this.trackedPearls.get(entityEnderPearl.S());
         if (autoPearlTrackedPearl != null) {
             return autoPearlTrackedPearl;
         }
-        EntityPlayer entityPlayer = this.A(entityEnderPearl);
+        EntityPlayer entityPlayer = this.findNearestPlayer(entityEnderPearl);
         if (entityPlayer == null || entityPlayer.isNull()) {
             return null;
         }
         autoPearlTrackedPearl = new AutoPearlTrackedPearl(entityEnderPearl, entityPlayer, null);
-        this.a.put(entityEnderPearl.S(), autoPearlTrackedPearl);
+        this.trackedPearls.put(entityEnderPearl.S(), autoPearlTrackedPearl);
         return autoPearlTrackedPearl;
     }
 
-    private int u$src$I$ui8d0r() {
+    private int findPearlSlot() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
             return -1;
@@ -358,15 +358,15 @@ extends Mod {
         return -1;
     }
 
-    public void J(AutoPearlTrackedPearl autoPearlTrackedPearl) {
-        if (!this.A(autoPearlTrackedPearl)) {
+    public void tryThrowAt(AutoPearlTrackedPearl autoPearlTrackedPearl) {
+        if (!this.shouldThrowAt(autoPearlTrackedPearl)) {
             return;
         }
-        this.w(autoPearlTrackedPearl);
+        this.beginAimLock(autoPearlTrackedPearl);
     }
 
     @Nullable
-    private Float K(Vec3 vec3) {
+    private Float computeThrowPitch(Vec3 vec3) {
         float f;
         double d;
         double d2;
@@ -396,7 +396,7 @@ extends Mod {
     }
 
     @Nullable
-    private List<AutoPearlTrackedPearl> o$src$Ljava_util_List_$xf97uf() {
+    private List<AutoPearlTrackedPearl> collectTrackedPearls() {
         WorldClient worldClient = Minecraft.theWorld();
         if (worldClient.isNull()) {
             return null;
@@ -413,7 +413,7 @@ extends Mod {
         }
         ArrayList arrayList3 = new ArrayList();
         for (EntityEnderPearl entityEnderPearl : arrayList) {
-            AutoPearlTrackedPearl autoPearlTrackedPearl = this.a.get(entityEnderPearl.S());
+            AutoPearlTrackedPearl autoPearlTrackedPearl = this.trackedPearls.get(entityEnderPearl.S());
             if (autoPearlTrackedPearl != null) {
                 arrayList3.add(autoPearlTrackedPearl);
                 continue;
@@ -428,7 +428,7 @@ extends Mod {
             }
             if (entityPlayer == null) continue;
             autoPearlTrackedPearl = new AutoPearlTrackedPearl(entityEnderPearl, entityPlayer, null);
-            this.a.put(entityEnderPearl.S(), autoPearlTrackedPearl);
+            this.trackedPearls.put(entityEnderPearl.S(), autoPearlTrackedPearl);
             arrayList3.add(autoPearlTrackedPearl);
         }
         Collections.reverse(arrayList3);
@@ -436,176 +436,176 @@ extends Mod {
     }
 
     @EventHandler
-    public void x(EventEntityJoinWorld eventEntityJoinWorld) {
+    public void onEntityJoinWorld(EventEntityJoinWorld eventEntityJoinWorld) {
         Entity entity = eventEntityJoinWorld.getEntity();
         if (!entity.isInstance(MappedClasses.Zg)) {
             return;
         }
         EntityEnderPearl entityEnderPearl = new EntityEnderPearl(entity.getObject());
-        AutoPearlTrackedPearl autoPearlTrackedPearl = this.X(entityEnderPearl);
+        AutoPearlTrackedPearl autoPearlTrackedPearl = this.trackPearl(entityEnderPearl);
         if (autoPearlTrackedPearl == null) {
             return;
         }
         EntityPlayer entityPlayer = autoPearlTrackedPearl.A();
         if (!entityPlayer.isNull()) {
             if (entityPlayer.isInstance(MappedClasses.z5)) {
-                if (((Double)this.A.K()).longValue() > 0L) {
+                if (((Double)this.cooldownValue.K()).longValue() > 0L) {
                     long l = 1000L;
-                    long l2 = this.O.getLastMS();
+                    long l2 = this.pearlUseTimer.getLastMS();
                     if (l2 <= 1000L) {
-                        this.J.reset();
+                        this.cooldownTimer.reset();
                     }
                 }
             } else {
-                this.j = autoPearlTrackedPearl;
+                this.pendingPearl = autoPearlTrackedPearl;
             }
         }
     }
 
-    private boolean h$src$Z$ub31pp() {
-        int n = this.u$src$I$ui8d0r();
+    private boolean hasPearlInInventory() {
+        int n = this.findPearlSlot();
         return n != -1;
     }
 
-    private boolean B$src$Z$tq6v5z() {
-        if (!this.z()) {
+    private boolean isStateStillValid() {
+        if (!this.isHoldingAllowedItem()) {
             return false;
         }
-        if (!this.j$src$Z$uc6mwf()) {
+        if (!this.hasEnoughHealth()) {
             return false;
         }
-        if (this.U != null) {
-            Vec3 vec3 = this.U.b();
-            return vec3 == null || vec3.isNull() || this.K$src$Z$1prbjwv(vec3);
+        if (this.aimLock != null) {
+            Vec3 vec3 = this.aimLock.b();
+            return vec3 == null || vec3.isNull() || this.isLandingValid(vec3);
         }
         return true;
     }
 
-    private void k(String string) {
+    private void logDebug(String string) {
     }
 
-    private boolean K$src$Z$1prbjwv(Vec3 vec3) {
+    private boolean isLandingValid(Vec3 vec3) {
         if (vec3 == null || vec3.isNull()) {
             return false;
         }
-        if (!this.r(vec3)) {
+        if (!this.isPearlInRange(vec3)) {
             return false;
         }
-        Float f = this.K(vec3);
+        Float f = this.computeThrowPitch(vec3);
         return f != null;
     }
 
     public AutoPearl() {
-        super("AutoPearl", (int)hb, Category.Y, "Aims and throws a pearl at an enemies pearl trajectory.");
-        this.a = new HashMap<Integer, AutoPearlTrackedPearl>();
-        this.k = new HashSet<Integer>();
-        this.c = new TimerUtil();
-        this.A = NumberValue.E(this, "Pearl cooldown", "#.#", "sec", 0.0, 1.0, 15.0, "Minimum delay between pearl throws");
-        this.P = NumberValue.create(this, "Distance limit", "#.#", "m", 0.0, 6.0, 10.0, 0.1, "The minimum distance a pearl needs to land away from you\nin order to pearl towards it.");
-        this.S = NumberValue.create(this, "Angle limit", "#", "", 30.0, 180.0, 360.0, 5.0, "Maximum angle from your crosshair a pearl can be\nin order to be chased");
-        this.p = BooleanValue.create(this, "Limit to items", true, "AutoPearl only functions while holding selected items");
-        this.D = NumberValue.create(this, "Min health", "#", "HP", 1.0, 5.0, 20.0, 1.0, "Minimum amount of health you must have\nin order to throw a pearl");
-        this.Z = new ModeOption("On bind");
-        this.t = ModeValue.create((Object)this, "Mode", "On bind - searches for thrown pearls and throws upon pressing bind\nAggro - Throws pearl as soon as enemy throws theirs", (ModeSelection)this.Z, this.Z, this.r);
-        this.Y = BooleanValue.create(this, "Silent aim", false, "Uses Silent Aim system");
-        this.K = new TimerUtil();
-        this.J = new TimerUtil();
-        this.O = new TimerUtil();
-        this.F = BooleanValue.create(this, "Vertical check", false, "Doesn't attempt to chase pearls that are landing a certain amount above your current Y position.");
-        this.v = AutoPearlState.ACQUIRING_PEARL;
-        this.p.K(this.H);
-        this.p.l(this.H);
-        this.addValue(this.t, this.L, this.S, this.D, this.P, this.F, this.A, this.Y, this.p, this.H);
-        this.I.l(this, 7);
+        super("AutoPearl", (int)MODULE_ID, Category.Y, "Aims and throws a pearl at an enemies pearl trajectory.");
+        this.trackedPearls = new HashMap<Integer, AutoPearlTrackedPearl>();
+        this.handledPearlIds = new HashSet<Integer>();
+        this.throwDelayTimer = new TimerUtil();
+        this.cooldownValue = NumberValue.E(this, "Pearl cooldown", "#.#", "sec", 0.0, 1.0, 15.0, "Minimum delay between pearl throws");
+        this.distanceLimitValue = NumberValue.create(this, "Distance limit", "#.#", "m", 0.0, 6.0, 10.0, 0.1, "The minimum distance a pearl needs to land away from you\nin order to pearl towards it.");
+        this.angleLimitValue = NumberValue.create(this, "Angle limit", "#", "", 30.0, 180.0, 360.0, 5.0, "Maximum angle from your crosshair a pearl can be\nin order to be chased");
+        this.limitToItemsValue = BooleanValue.create(this, "Limit to items", true, "AutoPearl only functions while holding selected items");
+        this.minHealthValue = NumberValue.create(this, "Min health", "#", "HP", 1.0, 5.0, 20.0, 1.0, "Minimum amount of health you must have\nin order to throw a pearl");
+        this.onBindMode = new ModeOption("On bind");
+        this.modeValue = ModeValue.create((Object)this, "Mode", "On bind - searches for thrown pearls and throws upon pressing bind\nAggro - Throws pearl as soon as enemy throws theirs", (ModeSelection)this.onBindMode, this.onBindMode, this.aggroMode);
+        this.silentAimValue = BooleanValue.create(this, "Silent aim", false, "Uses Silent Aim system");
+        this.stateTimeoutTimer = new TimerUtil();
+        this.cooldownTimer = new TimerUtil();
+        this.pearlUseTimer = new TimerUtil();
+        this.verticalCheckValue = BooleanValue.create(this, "Vertical check", false, "Doesn't attempt to chase pearls that are landing a certain amount above your current Y position.");
+        this.state = AutoPearlState.ACQUIRING_PEARL;
+        this.limitToItemsValue.K(this.allowedItemsValue);
+        this.limitToItemsValue.l(this.allowedItemsValue);
+        this.addValue(this.modeValue, this.aimSpeedValue, this.angleLimitValue, this.minHealthValue, this.distanceLimitValue, this.verticalCheckValue, this.cooldownValue, this.silentAimValue, this.limitToItemsValue, this.allowedItemsValue);
+        this.rotationClaim.l(this, 7);
     }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        AutoPearlState autoPearlState = this.v;
-        boolean bl = false;
-        if (!this.v.equals((Object)AutoPearlState.ACQUIRING_PEARL) && this.K.hasTimeElapsed(5000L)) {
-            this.V$src$V$u16qxr();
+        AutoPearlState previousState = this.state;
+        boolean done = false;
+        if (!this.state.equals((Object)AutoPearlState.ACQUIRING_PEARL) && this.stateTimeoutTimer.hasTimeElapsed(5000L)) {
+            this.resetState();
         }
         block7: do {
-            autoPearlState = this.v;
-            if (!(this.v.equals((Object)AutoPearlState.ACQUIRING_PEARL) || this.v.equals((Object)AutoPearlState.PENDING_RESET) || this.B$src$Z$tq6v5z())) {
-                this.V$src$V$u16qxr();
-                bl = true;
+            previousState = this.state;
+            if (!(this.state.equals((Object)AutoPearlState.ACQUIRING_PEARL) || this.state.equals((Object)AutoPearlState.PENDING_RESET) || this.isStateStillValid())) {
+                this.resetState();
+                done = true;
                 break;
             }
-            switch (this.v) {
+            switch (this.state) {
                 case ACQUIRING_PEARL: {
-                    if (this.U != null) {
-                        this.v = AutoPearlState.ACQUIRING_AIMLOCK;
+                    if (this.aimLock != null) {
+                        this.state = AutoPearlState.ACQUIRING_AIMLOCK;
                         break;
                     }
-                    if (this.Z.o()) {
-                        List<AutoPearlTrackedPearl> trackedPearls = this.o$src$Ljava_util_List_$xf97uf();
+                    if (this.onBindMode.o()) {
+                        List<AutoPearlTrackedPearl> trackedPearls = this.collectTrackedPearls();
                         for (AutoPearlTrackedPearl trackedPearl : trackedPearls) {
-                            if (!this.A(trackedPearl)) continue;
-                            this.J(trackedPearl);
+                            if (!this.shouldThrowAt(trackedPearl)) continue;
+                            this.tryThrowAt(trackedPearl);
                             break;
                         }
-                        if (!this.v.equals((Object)autoPearlState)) continue block7;
+                        if (!this.state.equals((Object)previousState)) continue block7;
                         this.Y(false);
                         break;
                     }
-                    if (this.j == null) break;
-                    if (this.A(this.j)) {
-                        this.J(this.j);
+                    if (this.pendingPearl == null) break;
+                    if (this.shouldThrowAt(this.pendingPearl)) {
+                        this.tryThrowAt(this.pendingPearl);
                     }
-                    this.j = null;
+                    this.pendingPearl = null;
                     break;
                 }
                 case ACQUIRING_AIMLOCK: {
-                    boolean bl2;
-                    boolean bl3 = bl2 = this.I.U(this) || this.I.h(this, this.Y.L());
-                    if (!bl2) continue block7;
-                    RotationManager.b.S(this.U.r());
-                    this.k.add(this.U.P().S());
-                    this.v = AutoPearlState.PENDING_AIMJOB;
+                    boolean claimed;
+                    boolean claimResult = claimed = this.rotationClaim.U(this) || this.rotationClaim.h(this, this.silentAimValue.L());
+                    if (!claimed) continue block7;
+                    RotationManager.b.S(this.aimLock.r());
+                    this.handledPearlIds.add(this.aimLock.P().S());
+                    this.state = AutoPearlState.PENDING_AIMJOB;
                     break;
                 }
                 case PENDING_AIMJOB: {
-                    if (!this.U.r().V$src$Z$lb4tvc()) break;
-                    this.v = AutoPearlState.PENDING_THROW;
-                    this.c.reset();
+                    if (!this.aimLock.r().V$src$Z$lb4tvc()) break;
+                    this.state = AutoPearlState.PENDING_THROW;
+                    this.throwDelayTimer.reset();
                     break;
                 }
                 case PENDING_THROW: {
-                    if (!this.c.hasTimeElapsed(100L)) break;
-                    Object object3 = Minecraft.thePlayer();
-                    Object object2 = ((EntityPlayer)object3).V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
-                    if (((Wrapper)object3).isNull() || ((Wrapper)object2).isNull()) continue block7;
-                    int n = this.u$src$I$ui8d0r();
-                    if (n == -1) {
+                    if (!this.throwDelayTimer.hasTimeElapsed(100L)) break;
+                    Object player = Minecraft.thePlayer();
+                    Object inventory = ((EntityPlayer)player).V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
+                    if (((Wrapper)player).isNull() || ((Wrapper)inventory).isNull()) continue block7;
+                    int pearlSlot = this.findPearlSlot();
+                    if (pearlSlot == -1) {
                         this.Y(false);
                         break;
                     }
-                    int n2 = n - 36;
-                    this.b = ((InventoryPlayer)object2).v();
-                    ((InventoryPlayer)object2).g(n2);
+                    int hotbarIndex = pearlSlot - 36;
+                    this.savedHotbarSlot = ((InventoryPlayer)inventory).v();
+                    ((InventoryPlayer)inventory).g(hotbarIndex);
                     KeyBinding keyBinding = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
                     KeyBindingHelper.v(keyBinding, true, true);
-                    this.o = true;
-                    this.J.reset();
-                    this.v = AutoPearlState.PENDING_RESET;
-                    bl = true;
+                    this.keyBindPressed = true;
+                    this.cooldownTimer.reset();
+                    this.state = AutoPearlState.PENDING_RESET;
+                    done = true;
                     break;
                 }
                 case PENDING_RESET: {
-                    Object object3 = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
-                    KeyBindingHelper.v((KeyBinding)object3, false, false);
-                    Object object2 = Minecraft.thePlayer();
-                    Object object = ((EntityPlayer)object2).V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
-                    if (((Wrapper)object2).isNull() || ((Wrapper)object).isNull()) continue block7;
-                    ((InventoryPlayer)object).g(this.b);
-                    this.V$src$V$u16qxr();
-                    if (!this.Z.o()) break;
+                    Object keyBind = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
+                    KeyBindingHelper.v((KeyBinding)keyBind, false, false);
+                    Object player = Minecraft.thePlayer();
+                    Object inventory = ((EntityPlayer)player).V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
+                    if (((Wrapper)player).isNull() || ((Wrapper)inventory).isNull()) continue block7;
+                    ((InventoryPlayer)inventory).g(this.savedHotbarSlot);
+                    this.resetState();
+                    if (!this.onBindMode.o()) break;
                     this.Y(false);
-                    bl = true;
+                    done = true;
                 }
             }
-        } while (!autoPearlState.equals((Object)this.v) && !bl);
+        } while (!previousState.equals((Object)this.state) && !done);
     }
 }

@@ -11,13 +11,13 @@ import java.lang.invoke.MethodHandles;
 
 public class InventoryActionGuard {
     public int F;
-    private static final long b;
+    private static final long keyConstant;
     int M;
     public World o;
     public boolean P;
     int J;
     public int U;
-    private static final long a;
+    private static final long keyState;
     public double K;
 
     public void g() {
@@ -26,8 +26,8 @@ public class InventoryActionGuard {
     }
 
     public InventoryActionGuard(int n) {
-        long l = a ^ 0x5A0ECCB6A085L;
-        this.M = (int)b;
+        long l = keyState ^ 0x5A0ECCB6A085L;
+        this.M = (int)keyConstant;
         this.J = n;
     }
 
@@ -88,12 +88,12 @@ public class InventoryActionGuard {
     }
 
     static {
-        a = ZkmLongKeyState.a(-6226687703500341076L, -7256017301923789720L, MethodHandles.lookup().lookupClass()).a(114042472694841L);
-        long l = a ^ 0x6B72078F9BA8L;
-        b = 1665370352093495306L;
+        keyState = ZkmLongKeyState.a(-6226687703500341076L, -7256017301923789720L, MethodHandles.lookup().lookupClass()).a(114042472694841L);
+        long l = keyState ^ 0x6B72078F9BA8L;
+        keyConstant = 1665370352093495306L;
     }
 
-    private static ObfuscatedRuntimeException b(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

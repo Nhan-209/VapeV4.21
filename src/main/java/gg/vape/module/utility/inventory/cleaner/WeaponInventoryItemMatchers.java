@@ -26,35 +26,35 @@ public class WeaponInventoryItemMatchers {
         InventoryItemMatcherRegistry.R(j);
     }
 
-    private static boolean lambda$static$0(ItemStack itemStack, Item item) {
+    private static boolean matchesAnyWeapon(ItemStack itemStack, Item item) {
         return ItemStackScoreUtil.h(item) || ItemStackScoreUtil.T(item);
     }
 
-    private static double lambda$static$5(InventoryItemMatchContext inventoryItemMatchContext) {
+    private static double axeSortScore(InventoryItemMatchContext inventoryItemMatchContext) {
         return ClientSettings.U(inventoryItemMatchContext.v());
     }
 
-    private static boolean lambda$static$4(ItemStack itemStack, Item item) {
+    private static boolean matchesAxe(ItemStack itemStack, Item item) {
         return ItemStackScoreUtil.T(item);
     }
 
-    private static double lambda$static$3(InventoryItemMatchContext inventoryItemMatchContext) {
+    private static double swordSortScore(InventoryItemMatchContext inventoryItemMatchContext) {
         return ClientSettings.U(inventoryItemMatchContext.v());
     }
 
     static {
         long l = ZkmLongKeyState.a(296928274367331282L, 3060412332488315907L, MethodHandles.lookup().lookupClass()).a(51501192726028L) ^ 0x4264D45BEA17L;
         String[] stringArray = new String[]{"weapons", "axe-weapon", "swords", "weapons", "Axe", "axe-weapon", "sword-hover@2x", "Any Weapon", "Any type of axe", "Sword", "Any type of weapon (sword or axe)", "Any type of sword"};
-        m = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(stringArray[3])).m(stringArray[7])).M(stringArray[10])).H(stringArray[0])).A(InventoryItemMatcherGroup.WEAPONS)).t(WeaponInventoryItemMatchers::lambda$static$0).N(Comparator.comparingDouble(WeaponInventoryItemMatchers::lambda$static$1))).q();
-        z = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(stringArray[2])).m(stringArray[9])).M(stringArray[11])).H(stringArray[6])).A(InventoryItemMatcherGroup.WEAPONS)).t(WeaponInventoryItemMatchers::lambda$static$2).N(Comparator.comparingDouble(WeaponInventoryItemMatchers::lambda$static$3))).q();
-        j = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(stringArray[1])).m(stringArray[4])).M(stringArray[8])).H(stringArray[5])).A(InventoryItemMatcherGroup.WEAPONS)).t(WeaponInventoryItemMatchers::lambda$static$4).N(Comparator.comparingDouble(WeaponInventoryItemMatchers::lambda$static$5))).q();
+        m = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(stringArray[3])).m(stringArray[7])).M(stringArray[10])).H(stringArray[0])).A(InventoryItemMatcherGroup.WEAPONS)).t(WeaponInventoryItemMatchers::matchesAnyWeapon).N(Comparator.comparingDouble(WeaponInventoryItemMatchers::anyWeaponSortScore))).q();
+        z = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(stringArray[2])).m(stringArray[9])).M(stringArray[11])).H(stringArray[6])).A(InventoryItemMatcherGroup.WEAPONS)).t(WeaponInventoryItemMatchers::matchesSword).N(Comparator.comparingDouble(WeaponInventoryItemMatchers::swordSortScore))).q();
+        j = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(stringArray[1])).m(stringArray[4])).M(stringArray[8])).H(stringArray[5])).A(InventoryItemMatcherGroup.WEAPONS)).t(WeaponInventoryItemMatchers::matchesAxe).N(Comparator.comparingDouble(WeaponInventoryItemMatchers::axeSortScore))).q();
     }
 
-    private static boolean lambda$static$2(ItemStack itemStack, Item item) {
+    private static boolean matchesSword(ItemStack itemStack, Item item) {
         return ItemStackScoreUtil.h(item);
     }
 
-    private static double lambda$static$1(InventoryItemMatchContext inventoryItemMatchContext) {
+    private static double anyWeaponSortScore(InventoryItemMatchContext inventoryItemMatchContext) {
         return ClientSettings.U(inventoryItemMatchContext.v());
     }
 

@@ -10,9 +10,9 @@ import org.jetbrains.annotations.Nullable;
 public class InventoryCleanerClickableRowComponentBase
 extends GuiComponent {
     @Nullable
-    private GuiClickListener O;
+    private GuiClickListener clickListener;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
@@ -27,21 +27,21 @@ extends GuiComponent {
     }
 
     public InventoryCleanerClickableRowComponentBase(@Nullable GuiClickListener guiClickListener) {
-        this.O = guiClickListener;
+        this.clickListener = guiClickListener;
     }
 
     public void K(@Nullable GuiClickListener guiClickListener) {
-        this.O = guiClickListener;
+        this.clickListener = guiClickListener;
     }
 
     @Nullable
     public GuiClickListener O$src$Lgg_vape_ui_click_component_GuiClickListener_$729v32() {
-        return this.O;
+        return this.clickListener;
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        GuiClickListener guiClickListener = this.O;
+        GuiClickListener guiClickListener = this.clickListener;
         if (guiClickListener != null) {
             guiClickListener.P();
         }

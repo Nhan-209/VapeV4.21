@@ -12,7 +12,7 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class PotionSaver
 extends Mod {
-    private boolean k;
+    private boolean savingPotion;
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
@@ -26,22 +26,22 @@ extends Mod {
     @EventHandler
     public void onPacketSend(EventPacketSend eventPacketSend) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNotNull() && !entityPlayerSP.B$src$Ljava_util_Collection_$1uxz2f9().isEmpty() && !this.F(entityPlayerSP) && (entityPlayerSP.b$src$Z$fqlxe4() || entityPlayerSP.u$src$Z$g120nz())) {
+        if (entityPlayerSP.isNotNull() && !entityPlayerSP.B$src$Ljava_util_Collection_$1uxz2f9().isEmpty() && !this.isMoving(entityPlayerSP) && (entityPlayerSP.b$src$Z$fqlxe4() || entityPlayerSP.u$src$Z$g120nz())) {
             if (eventPacketSend.getPacket().isInstance(MappedClasses.qD)) {
-                this.k = true;
+                this.savingPotion = true;
                 eventPacketSend.setCancelled(true);
             }
         } else {
-            this.k = false;
+            this.savingPotion = false;
         }
     }
 
     @Override
     public int h() {
-        return this.k ? -256 : ColorUtil.U(160);
+        return this.savingPotion ? -256 : ColorUtil.U(160);
     }
 
-    private boolean F(EntityPlayerSP entityPlayerSP) {
+    private boolean isMoving(EntityPlayerSP entityPlayerSP) {
         return entityPlayerSP.t() != 0.0 || entityPlayerSP.T() != 0.0;
     }
 

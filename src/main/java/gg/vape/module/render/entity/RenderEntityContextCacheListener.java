@@ -27,8 +27,8 @@ import java.util.function.BiConsumer;
 
 public class RenderEntityContextCacheListener
 implements EventListener {
-    private long v;
-    private int Q;
+    private long tickCounter;
+    private int worldChangeCounter;
 
     @EventHandler
     public void n(EventWorldChange eventWorldChange) {
@@ -38,7 +38,7 @@ implements EventListener {
         String[] stringArray2 = stringArray;
         int n2 = 143640;
         int n3 = 280430;
-        if (this.Q > n / 56 && MappedClasses.x()[n2 / 7980] != MappedClasses.x()[n3 / 9670]) {
+        if (this.worldChangeCounter > n / 56 && MappedClasses.x()[n2 / 7980] != MappedClasses.x()[n3 / 9670]) {
             AtomicReference atomicReference = new AtomicReference();
             EventBus eventBus = EventBus.getInstance();
             Map<Class<? extends IEvent>, ArrayList<EventListenerRegistration>> map = eventBus.getRegistrationsByEventType();
@@ -47,21 +47,21 @@ implements EventListener {
             int n5 = threadLocalRandom.nextInt(n4);
             AtomicInteger atomicInteger = new AtomicInteger();
             EventBus eventBus2 = EventBus.getInstance();
-            BiConsumer<Class, ArrayList> biConsumer = (arg_0, arg_1) -> RenderEntityContextCacheListener.lambda$onEventWorldChanged$0(atomicInteger, n5, atomicReference, arg_0, arg_1);
+            BiConsumer<Class, ArrayList> biConsumer = (arg_0, arg_1) -> RenderEntityContextCacheListener.selectListenerAtIndex(atomicInteger, n5, atomicReference, arg_0, arg_1);
             Map<Class<? extends IEvent>, ArrayList<EventListenerRegistration>> map2 = eventBus2.getRegistrationsByEventType();
             map2.forEach(biConsumer);
             AtomicReference atomicReference2 = atomicReference;
             if (atomicReference2.get() != null) {
                 EventBus eventBus3 = EventBus.getInstance();
                 AtomicReference atomicReference3 = atomicReference;
-                Object v = atomicReference3.get();
+                Object selectedEventType = atomicReference3.get();
                 Map<Class<? extends IEvent>, ArrayList<EventListenerRegistration>> map3 = eventBus3.getRegistrationsByEventType();
-                map3.remove(v);
+                map3.remove(selectedEventType);
             }
         }
     }
 
-    private static void lambda$onEventWorldChanged$0(AtomicInteger atomicInteger, int n, AtomicReference atomicReference, Class clazz, ArrayList arrayList) {
+    private static void selectListenerAtIndex(AtomicInteger atomicInteger, int n, AtomicReference atomicReference, Class clazz, ArrayList arrayList) {
         if (atomicInteger.getAndIncrement() == n) {
             atomicReference.set(clazz);
         }
@@ -70,9 +70,9 @@ implements EventListener {
     @EventHandler(A=EventPriority.LOWEST)
     public void onTick(EventPreTick eventPreTick) {
         EntityPlayerSP entityPlayerSP;
-        ++this.v;
-        ++this.Q;
-        if (this.v % 10L == 0L) {
+        ++this.tickCounter;
+        ++this.worldChangeCounter;
+        if (this.tickCounter % 10L == 0L) {
             RenderEntityContextCache.J();
         }
         if ((entityPlayerSP = eventPreTick.getThePlayer()).isNull()) {
@@ -97,7 +97,7 @@ implements EventListener {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passthrough(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

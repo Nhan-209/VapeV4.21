@@ -5,14 +5,14 @@ public enum SilentAuraRotationMode {
     FLICKING_AWAY,
     ATTACKING;
 
-    private static final SilentAuraRotationMode[] a;
+    private static final SilentAuraRotationMode[] VALUES;
 
     static {
-        String[] stringArray = new String[]{"IDLE", "FLICKING_AWAY", "ATTACKING"};
+        String[] enumNames = new String[]{"IDLE", "FLICKING_AWAY", "ATTACKING"};
 
 
 
-        a = new SilentAuraRotationMode[]{IDLE, FLICKING_AWAY, ATTACKING};
+        VALUES = new SilentAuraRotationMode[]{IDLE, FLICKING_AWAY, ATTACKING};
     }
 }
 

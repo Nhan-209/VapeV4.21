@@ -24,10 +24,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AutoMLGPlacementController {
-    private final AutoMLG k;
+    private final AutoMLG autoMLG;
 
     @Nullable
-    private FixedRotationController Y(@Nullable BlockCoordinate blockCoordinate, @Nullable FixedRotationController fixedRotationController, ItemMappingEntry itemMappingEntry) {
+    private FixedRotationController prepareRotation(@Nullable BlockCoordinate blockCoordinate, @Nullable FixedRotationController fixedRotationController, ItemMappingEntry itemMappingEntry) {
         FixedRotationController fixedRotationController2 = fixedRotationController;
         if (blockCoordinate == null) {
             return fixedRotationController2;
@@ -39,7 +39,7 @@ public class AutoMLGPlacementController {
         if (fixedRotationController2 instanceof PointRotationController || fixedRotationController2 instanceof AdaptiveRotationController) {
             BlockPlacementUtility.y((WorldPointRotationTarget)((Object)fixedRotationController2), blockCoordinate, itemMappingEntry);
         }
-        if (this.k.A() && fixedRotationController2 != null && !fixedRotationController2.equals(RotationManager.b.w())) {
+        if (this.autoMLG.A() && fixedRotationController2 != null && !fixedRotationController2.equals(RotationManager.b.w())) {
             RotationManager.b.S(fixedRotationController2);
         }
         return fixedRotationController2;
@@ -47,13 +47,13 @@ public class AutoMLGPlacementController {
 
     @NotNull
     public HotbarSlotResolution t(@NotNull ItemMappingEntry itemMappingEntry, @Nullable BlockCoordinate blockCoordinate, @Nullable FixedRotationController fixedRotationController, boolean bl) {
-        FixedRotationController fixedRotationController2 = this.Y(blockCoordinate, fixedRotationController, itemMappingEntry);
+        FixedRotationController fixedRotationController2 = this.prepareRotation(blockCoordinate, fixedRotationController, itemMappingEntry);
         if (fixedRotationController2 != null) {
             if (!fixedRotationController2.equals(fixedRotationController)) {
                 if (bl) {
-                    this.k.V = fixedRotationController2;
+                    this.autoMLG.V = fixedRotationController2;
                 } else {
-                    this.k.C = fixedRotationController2;
+                    this.autoMLG.C = fixedRotationController2;
                 }
             }
             if (BlockPlacementUtility.R(blockCoordinate, itemMappingEntry)) {
@@ -63,7 +63,7 @@ public class AutoMLGPlacementController {
                 return HotbarSlotResolution.j("AimJob was already completed");
             }
             if (!fixedRotationController2.equals(RotationManager.b.w())) {
-                if (this.k.A()) {
+                if (this.autoMLG.A()) {
                     RotationManager.b.S(fixedRotationController2);
                     return HotbarSlotResolution.J("AimJob set as current job");
                 }
@@ -78,10 +78,10 @@ public class AutoMLGPlacementController {
     }
 
     public AutoMLGPlacementController(AutoMLG autoMLG) {
-        this.k = autoMLG;
+        this.autoMLG = autoMLG;
     }
 
-    private <T extends FixedRotationController> T b(T t) {
+    private <T extends FixedRotationController> T configureController(T t) {
         t.k(true);
         t.t(0.1f);
         t.A(true);
@@ -89,7 +89,7 @@ public class AutoMLGPlacementController {
         t.w(true);
         t.z(true);
         t.s(true);
-        t.Y(((Double)this.k.c.K()).floatValue());
+        t.Y(((Double)this.autoMLG.c.K()).floatValue());
         t.D(true);
         if (t instanceof AdaptiveRotationController) {
             ((AdaptiveRotationController)t).b(false);
@@ -114,7 +114,7 @@ public class AutoMLGPlacementController {
         if (blockCoordinate != null) {
             // empty if block
         }
-        if ((hotbarSlotResolution = this.k.f$src$Lgg_vape_module_blatant_blockin_HotbarSlotResolu$1985fcl()).h()) {
+        if ((hotbarSlotResolution = this.autoMLG.f$src$Lgg_vape_module_blatant_blockin_HotbarSlotResolu$1985fcl()).h()) {
             return (HotbarSlotResolutionWithValue)((HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.Q("Failed to close GUI due to: " + hotbarSlotResolution.b())).i(hotbarSlotResolution.B());
         }
         if (hotbarSlotResolution.Q()) {
@@ -144,12 +144,12 @@ public class AutoMLGPlacementController {
     public FixedRotationController V(@Nullable BlockCoordinate blockCoordinate, @Nullable ItemMappingEntry itemMappingEntry) {
         FixedRotationController fixedRotationController;
         if (blockCoordinate == null) {
-            fixedRotationController = this.k.F.L() != false ? new AdaptiveRotationController(-999.0f, 90.0f) : new FixedRotationController(-999.0f, 90.0f);
+            fixedRotationController = this.autoMLG.F.L() != false ? new AdaptiveRotationController(-999.0f, 90.0f) : new FixedRotationController(-999.0f, 90.0f);
         } else {
             Vec3 vec3 = BlockPlacementUtility.D(blockCoordinate, itemMappingEntry);
-            fixedRotationController = this.k.F.L() != false ? new AdaptiveRotationController(vec3) : new PointRotationController(vec3);
+            fixedRotationController = this.autoMLG.F.L() != false ? new AdaptiveRotationController(vec3) : new PointRotationController(vec3);
         }
-        return this.b(fixedRotationController);
+        return this.configureController(fixedRotationController);
     }
 }
 

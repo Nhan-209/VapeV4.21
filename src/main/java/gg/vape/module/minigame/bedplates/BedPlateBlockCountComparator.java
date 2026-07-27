@@ -6,10 +6,10 @@ import java.util.Map;
 
 public class BedPlateBlockCountComparator
 implements Comparator {
-    final BedPlateCountState D;
+    final BedPlateCountState state;
 
     public BedPlateBlockCountComparator(BedPlateCountState bedPlateCountState) {
-        this.D = bedPlateCountState;
+        this.state = bedPlateCountState;
     }
 
     public int compare(Object object, Object object2) {

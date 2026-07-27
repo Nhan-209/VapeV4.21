@@ -43,68 +43,68 @@ import org.jetbrains.annotations.Nullable;
 
 public class MLG
 extends Mod {
-    private final BooleanValue c;
-    private final BooleanValue F;
-    private final TimerUtil V;
-    private static final int v;
-    private static final boolean L = false;
-    private boolean Z = false;
-    private static final double r = 0.05;
-    private final Queue<InventoryClick> D;
-    private boolean U = false;
-    private boolean O = false;
-    private final ArrayDeque<KeyBinding> t;
-    private final TimerUtil j;
-    private double H = 0.0;
-    private final TimerUtil Y;
-    private static final int a;
-    private final RandomValue o = RandomValue.G(this, "Click delay", "#", "ms", 50.0, 75.0, 125.0, 200.0, 5.0, "How long to wait between clicks in the inventory");
-    private boolean A = false;
-    private static final boolean p = false;
-    private static final boolean P = true;
-    private static final boolean S = false;
-    private final ArrayDeque<KeyBinding> s;
-    private final BooleanValue I;
-    private final TimerUtil k;
+    private final BooleanValue refillRods;
+    private final BooleanValue recastGround;
+    private final TimerUtil stationaryTimer;
+    private static final int RECAST_GROUND_DELAY_MS;
+    private static final boolean DEBUG = false;
+    private boolean biteDetected = false;
+    private static final double VELOCITY_THRESHOLD = 0.05;
+    private final Queue<InventoryClick> clickQueue;
+    private boolean velocityBite = false;
+    private boolean hasCast = false;
+    private final ArrayDeque<KeyBinding> pressedKeys;
+    private final TimerUtil castTimer;
+    private double accumulatedMotionY = 0.0;
+    private final TimerUtil clickTimer;
+    private static final int STATIONARY_DELAY_MS;
+    private final RandomValue clickDelay = RandomValue.G(this, "Click delay", "#", "ms", 50.0, 75.0, 125.0, 200.0, 5.0, "How long to wait between clicks in the inventory");
+    private boolean refillPending = false;
+    private static final boolean UNUSED_FLAG_A = false;
+    private static final boolean UNUSED_FLAG_B = true;
+    private static final boolean UNUSED_FLAG_C = false;
+    private final ArrayDeque<KeyBinding> queuedKeys;
+    private final BooleanValue recastCaught;
+    private final TimerUtil groundTimer;
 
-    private boolean E$src$Z$172jn17() {
-        if (this.A) {
-            this.D.clear();
-            this.A = false;
+    private boolean cancelRefill() {
+        if (this.refillPending) {
+            this.clickQueue.clear();
+            this.refillPending = false;
             return ItemStackActionPredicate.f();
         }
         return false;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private boolean U() {
+    private boolean pumpKeyPresses() {
         KeyBinding keyBinding;
         boolean bl = false;
-        KeyBinding keyBinding2 = this.t.poll();
+        KeyBinding keyBinding2 = this.pressedKeys.poll();
         if (keyBinding2 != null && keyBinding2.isNotNull()) {
             KeyBindingHelper.v(keyBinding2, false, false);
             bl = true;
         }
-        if ((keyBinding = this.s.poll()) != null && keyBinding.isNotNull()) {
+        if ((keyBinding = this.queuedKeys.poll()) != null && keyBinding.isNotNull()) {
             KeyBindingHelper.v(keyBinding, true, true);
             bl = true;
-            this.t.add(keyBinding);
+            this.pressedKeys.add(keyBinding);
         }
         return bl;
     }
 
     static {
-        a = 1000;
-        v = 3000;
+        STATIONARY_DELAY_MS = 1000;
+        RECAST_GROUND_DELAY_MS = 3000;
     }
 
-    private void r(String string, Object ... objectArray) {
+    private void logDebug(String string, Object ... objectArray) {
     }
 
-    private boolean P(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
+    private boolean hasWaterBelow(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
         double d = entityPlayerMacroBridge.z();
         double d2 = entityPlayerMacroBridge.N();
         double d3 = entityPlayerMacroBridge.h();
@@ -120,11 +120,11 @@ extends Mod {
         return false;
     }
 
-    private void i(String string) {
+    private void log(String string) {
     }
 
-    private boolean R() {
-        this.A = true;
+    private boolean beginRefill() {
+        this.refillPending = true;
         return ItemStackActionPredicate.V();
     }
 
@@ -132,14 +132,14 @@ extends Mod {
     public void onTick(EventPreTick eventPreTick) {
         EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();
         WorldClient worldClient = eventPreTick.getWorld();
-        if (!this.A()) {
+        if (!this.isHoldingRod()) {
             InventoryClick inventoryClick;
             Slot slot = ItemStackActionPredicate.K(MappedClasses.Yi, MLGImpactState.D);
             if (slot != null && slot.isNotNull()) {
                 int n;
                 if (ItemStackActionPredicate.L()) {
-                    if (this.A) {
-                        this.E$src$Z$172jn17();
+                    if (this.refillPending) {
+                        this.cancelRefill();
                     }
                     return;
                 }
@@ -154,7 +154,7 @@ extends Mod {
                 inventoryPlayer.g(n);
                 return;
             }
-            if (!this.c.L().booleanValue()) {
+            if (!this.refillRods.L().booleanValue()) {
                 this.Y(false);
                 return;
             }
@@ -166,87 +166,87 @@ extends Mod {
             int n = slot2.g();
             if (!ItemStackActionPredicate.o()) {
                 if (ItemStackActionPredicate.L()) {
-                    if (this.A) {
-                        this.E$src$Z$172jn17();
+                    if (this.refillPending) {
+                        this.cancelRefill();
                     }
                     return;
                 }
-                this.R();
+                this.beginRefill();
                 return;
             }
             GuiContainer guiContainer = new GuiContainer(Minecraft.currentScreen().getObject());
             int n3 = guiContainer.getInventorySlots().getWindowId();
-            if (this.D.isEmpty()) {
-                this.D.add(new InventoryClick(n3, n, 0, 2));
+            if (this.clickQueue.isEmpty()) {
+                this.clickQueue.add(new InventoryClick(n3, n, 0, 2));
                 return;
             }
-            if (this.Y.hasTimeElapsed((long)this.o.B()) && (inventoryClick = this.D.poll()) != null) {
-                this.H(inventoryClick, n3);
+            if (this.clickTimer.hasTimeElapsed((long)this.clickDelay.B()) && (inventoryClick = this.clickQueue.poll()) != null) {
+                this.performClick(inventoryClick, n3);
             }
             return;
         }
         if (ItemStackActionPredicate.L()) {
-            if (this.A) {
-                this.E$src$Z$172jn17();
+            if (this.refillPending) {
+                this.cancelRefill();
             }
             return;
         }
-        if (this.U()) {
+        if (this.pumpKeyPresses()) {
             return;
         }
-        EntityPlayerMacroBridge entityPlayerMacroBridge = this.o$src$Lgg_vape_wrapper_impl_EntityPlayerMacroBridge_$1opz9om();
+        EntityPlayerMacroBridge entityPlayerMacroBridge = this.getFishHook();
         if (entityPlayerMacroBridge == null || entityPlayerMacroBridge.isNull()) {
-            this.N();
+            this.recast();
             return;
         }
         Entity entity = entityPlayerMacroBridge.r$src$Lgg_vape_wrapper_impl_Entity_$18p7x3h();
         if (entity != null && entity.isNotNull()) {
-            if (this.I.L().booleanValue()) {
-                this.N();
+            if (this.recastCaught.L().booleanValue()) {
+                this.recast();
             } else {
                 this.Y(false);
             }
             return;
         }
-        if (!this.E(entityPlayerMacroBridge, worldClient)) {
-            if (this.F.L().booleanValue() && this.k.hasTimeElapsed(3000L)) {
-                this.N();
+        if (!this.isHookInLiquid(entityPlayerMacroBridge, worldClient)) {
+            if (this.recastGround.L().booleanValue() && this.groundTimer.hasTimeElapsed(3000L)) {
+                this.recast();
             }
             return;
         }
-        this.k.reset();
+        this.groundTimer.reset();
         double d = entityPlayerMacroBridge.q();
-        if (!this.Z) {
+        if (!this.biteDetected) {
             double d2 = entityPlayerMacroBridge.t();
             double d3 = entityPlayerMacroBridge.T();
             double d4 = Math.abs(d2) + Math.abs(d) + Math.abs(d3);
             if (d4 <= 0.05) {
-                if (this.V.hasTimeElapsed(1000L)) {
-                    this.Z = true;
+                if (this.stationaryTimer.hasTimeElapsed(1000L)) {
+                    this.biteDetected = true;
                 }
             } else {
-                this.V.reset();
+                this.stationaryTimer.reset();
             }
             return;
         }
-        this.H = d <= -0.1 ? (this.H += d) : 0.0;
-        if (this.H <= -0.05 || this.U) {
-            if (this.H <= -0.05) {
+        this.accumulatedMotionY = d <= -0.1 ? (this.accumulatedMotionY += d) : 0.0;
+        if (this.accumulatedMotionY <= -0.05 || this.velocityBite) {
+            if (this.accumulatedMotionY <= -0.05) {
                 // empty if block
             }
-            this.N();
-            this.j.reset();
-            this.V.reset();
-            this.k.reset();
-            this.Z = false;
-            this.U = false;
+            this.recast();
+            this.castTimer.reset();
+            this.stationaryTimer.reset();
+            this.groundTimer.reset();
+            this.biteDetected = false;
+            this.velocityBite = false;
         } else if (Math.abs(d) > 0.001) {
             // empty if block
         }
     }
 
     @Nullable
-    private EntityPlayerMacroBridge o$src$Lgg_vape_wrapper_impl_EntityPlayerMacroBridge_$1opz9om() {
+    private EntityPlayerMacroBridge getFishHook() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
             return null;
@@ -277,7 +277,7 @@ extends Mod {
         return null;
     }
 
-    private boolean W(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
+    private boolean isHookInBlock(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
         BlockPos blockPos = entityPlayerMacroBridge.J$src$Lgg_vape_wrapper_impl_BlockPos_$kv8a0x();
         BlockStateWorldBridge blockStateWorldBridge = worldClient.o(blockPos);
         float f = 0.0f;
@@ -287,7 +287,7 @@ extends Mod {
         return f > 0.0f;
     }
 
-    private boolean O(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
+    private boolean isHookInWater(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
         int n = 5;
         double d = 0.0;
         for (int i = 0; i < n; ++i) {
@@ -302,56 +302,56 @@ extends Mod {
         return d > 0.0;
     }
 
-    private void N() {
+    private void recast() {
         boolean bl;
-        EntityPlayerMacroBridge entityPlayerMacroBridge = this.o$src$Lgg_vape_wrapper_impl_EntityPlayerMacroBridge_$1opz9om();
+        EntityPlayerMacroBridge entityPlayerMacroBridge = this.getFishHook();
         boolean bl2 = bl = entityPlayerMacroBridge != null && entityPlayerMacroBridge.isNotNull();
-        if (bl || !this.O || this.j.hasTimeElapsed(1000L)) {
-            this.g(Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362());
-            this.j.reset();
-            this.k.reset();
-            this.V.reset();
-            this.O = true;
-            this.H = 0.0;
+        if (bl || !this.hasCast || this.castTimer.hasTimeElapsed(1000L)) {
+            this.pressUseKey(Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362());
+            this.castTimer.reset();
+            this.groundTimer.reset();
+            this.stationaryTimer.reset();
+            this.hasCast = true;
+            this.accumulatedMotionY = 0.0;
         }
     }
 
-    private void g(KeyBinding keyBinding) {
+    private void pressUseKey(KeyBinding keyBinding) {
         KeyBindingHelper.v(keyBinding, true, true);
-        this.t.add(keyBinding);
+        this.pressedKeys.add(keyBinding);
     }
 
     public MLG() {
         super("AutoFish", 12452021, Category.m, "Automatically fishes for you.");
-        this.D = new ConcurrentLinkedQueue<InventoryClick>();
-        this.s = new ArrayDeque();
-        this.t = new ArrayDeque();
-        this.I = BooleanValue.create(this, "Recast caught", false, "Automatically recasts if the hook catches onto an entity");
-        this.F = BooleanValue.create(this, "Recast ground", false, "Automatically recasts if the hook hits the ground");
-        this.Y = new TimerUtil();
-        this.j = new TimerUtil();
-        this.V = new TimerUtil();
-        this.k = new TimerUtil();
-        this.c = BooleanValue.create(this, "Refill rods", true, "Automatically replaces broken rods with rods from your inventory.");
-        this.c.K(this.o);
-        this.addValue(this.F, this.I, this.c, this.o);
+        this.clickQueue = new ConcurrentLinkedQueue<InventoryClick>();
+        this.queuedKeys = new ArrayDeque();
+        this.pressedKeys = new ArrayDeque();
+        this.recastCaught = BooleanValue.create(this, "Recast caught", false, "Automatically recasts if the hook catches onto an entity");
+        this.recastGround = BooleanValue.create(this, "Recast ground", false, "Automatically recasts if the hook hits the ground");
+        this.clickTimer = new TimerUtil();
+        this.castTimer = new TimerUtil();
+        this.stationaryTimer = new TimerUtil();
+        this.groundTimer = new TimerUtil();
+        this.refillRods = BooleanValue.create(this, "Refill rods", true, "Automatically replaces broken rods with rods from your inventory.");
+        this.refillRods.K(this.clickDelay);
+        this.addValue(this.recastGround, this.recastCaught, this.refillRods, this.clickDelay);
     }
 
-    private boolean E(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
+    private boolean isHookInLiquid(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
         if (entityPlayerMacroBridge.h$src$Z$ftwoya()) {
             return true;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.W(entityPlayerMacroBridge, worldClient);
+            return this.isHookInBlock(entityPlayerMacroBridge, worldClient);
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return this.X(entityPlayerMacroBridge, worldClient);
+            return this.hasWaterBelow1122(entityPlayerMacroBridge, worldClient);
         }
-        return this.O(entityPlayerMacroBridge, worldClient) || this.P(entityPlayerMacroBridge, worldClient);
+        return this.isHookInWater(entityPlayerMacroBridge, worldClient) || this.hasWaterBelow(entityPlayerMacroBridge, worldClient);
     }
 
-    private void H(InventoryClick inventoryClick, int n) {
-        this.Y.reset();
+    private void performClick(InventoryClick inventoryClick, int n) {
+        this.clickTimer.reset();
         int n2 = inventoryClick.t();
         if (n == n2) {
             inventoryClick.k();
@@ -361,30 +361,30 @@ extends Mod {
     @Override
     public void onDisable() {
         super.onDisable();
-        this.p();
+        this.resetState();
     }
 
-    private void p() {
-        this.Y.reset();
-        this.j.reset();
-        this.V.reset();
-        this.k.reset();
-        this.D.clear();
-        this.s.clear();
-        this.t.clear();
-        this.O = false;
-        this.Z = false;
-        this.U = false;
-        this.A = false;
-        this.H = 0.0;
+    private void resetState() {
+        this.clickTimer.reset();
+        this.castTimer.reset();
+        this.stationaryTimer.reset();
+        this.groundTimer.reset();
+        this.clickQueue.clear();
+        this.queuedKeys.clear();
+        this.pressedKeys.clear();
+        this.hasCast = false;
+        this.biteDetected = false;
+        this.velocityBite = false;
+        this.refillPending = false;
+        this.accumulatedMotionY = 0.0;
     }
 
     @EventHandler
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
-        if (!this.Z) {
+        if (!this.biteDetected) {
             return;
         }
-        EntityPlayerMacroBridge entityPlayerMacroBridge = this.o$src$Lgg_vape_wrapper_impl_EntityPlayerMacroBridge_$1opz9om();
+        EntityPlayerMacroBridge entityPlayerMacroBridge = this.getFishHook();
         if (entityPlayerMacroBridge == null || entityPlayerMacroBridge.isNull()) {
             return;
         }
@@ -400,7 +400,7 @@ extends Mod {
             int n2 = sPacketEntityVelocity.getMotionZ();
             double d = (double)sPacketEntityVelocity.getMotionY() / 8000.0;
             if (n == 0 && n2 == 0 && d <= -0.05) {
-                this.U = true;
+                this.velocityBite = true;
             }
             return;
         }
@@ -412,11 +412,11 @@ extends Mod {
         }
     }
 
-    private boolean X(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
-        return this.P(entityPlayerMacroBridge, worldClient);
+    private boolean hasWaterBelow1122(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
+        return this.hasWaterBelow(entityPlayerMacroBridge, worldClient);
     }
 
-    private boolean A() {
+    private boolean isHoldingRod() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
             return false;

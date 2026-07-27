@@ -10,7 +10,7 @@ implements GuiClickListener {
     final HotbarSlotRuleGroupComponent n;
     final HotbarSlotRuleEditorComponent l;
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 

@@ -15,19 +15,19 @@ import org.jetbrains.annotations.Nullable;
 class InventoryFilterConditionGroupPanel
 extends PanelComponent {
     @Nullable
-    private final InventoryFilterConditionGroup MJ;
-    private final InventoryFilterPreset MR;
-    private final InventoryFilterRule MH;
-    private final Runnable ML;
-    private final InventoryFilterConditionGroup Mb;
+    private final InventoryFilterConditionGroup previousGroup;
+    private final InventoryFilterPreset preset;
+    private final InventoryFilterRule rule;
+    private final Runnable onChanged;
+    private final InventoryFilterConditionGroup group;
 
     public InventoryFilterConditionGroupPanel(double d, InventoryFilterRule inventoryFilterRule, InventoryFilterPreset inventoryFilterPreset, InventoryFilterConditionGroup inventoryFilterConditionGroup, @Nullable InventoryFilterConditionGroup inventoryFilterConditionGroup2, Runnable runnable) {
         super(d, 0.0);
-        this.MH = inventoryFilterRule;
-        this.MR = inventoryFilterPreset;
-        this.Mb = inventoryFilterConditionGroup;
-        this.MJ = inventoryFilterConditionGroup2;
-        this.ML = runnable;
+        this.rule = inventoryFilterRule;
+        this.preset = inventoryFilterPreset;
+        this.group = inventoryFilterConditionGroup;
+        this.previousGroup = inventoryFilterConditionGroup2;
+        this.onChanged = runnable;
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.d(false);
         this.N(false);
@@ -35,10 +35,10 @@ extends PanelComponent {
         this.p();
     }
 
-    private void lambda$update$0() {
-        if (this.Mb.c().isEmpty()) {
-            this.MR.F(this.Mb);
-            this.ML.run();
+    private void onConditionRemoved() {
+        if (this.group.c().isEmpty()) {
+            this.preset.F(this.group);
+            this.onChanged.run();
         } else {
             this.p();
         }
@@ -55,15 +55,15 @@ extends PanelComponent {
 
     public void p() {
         this.t$src$V$zbu1jn();
-        if (this.MJ != null) {
+        if (this.previousGroup != null) {
             this.h(new SpacerComponent(8.0, 0.0), "widthwrap");
             this.h(new InventoryFilterLogicalOperatorDividerComponent(InventoryFilterLogicalOperator.OR), new Object[0]);
         }
-        for (int i = 0; i < this.Mb.c().size(); ++i) {
-            InventoryFilterCondition<?> inventoryFilterCondition = this.Mb.c().get(i);
-            InventoryFilterConditionEditor inventoryFilterConditionEditor = new InventoryFilterConditionEditor(this.A() - 5.0, this.MH, this.Mb, inventoryFilterCondition, this::lambda$update$0);
+        for (int i = 0; i < this.group.c().size(); ++i) {
+            InventoryFilterCondition<?> inventoryFilterCondition = this.group.c().get(i);
+            InventoryFilterConditionEditor inventoryFilterConditionEditor = new InventoryFilterConditionEditor(this.A() - 5.0, this.rule, this.group, inventoryFilterCondition, this::onConditionRemoved);
             this.h(inventoryFilterConditionEditor, new Object[0]);
-            if (i == this.Mb.c().size() - 1) continue;
+            if (i == this.group.c().size() - 1) continue;
             this.h(new SpacerComponent(8.0, 0.0), "widthwrap");
             this.h(new InventoryFilterLogicalOperatorDividerComponent(InventoryFilterLogicalOperator.AND), new Object[0]);
         }

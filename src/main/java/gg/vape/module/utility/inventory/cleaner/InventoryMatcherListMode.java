@@ -4,13 +4,13 @@ public enum InventoryMatcherListMode {
     WHITELIST,
     BLACKLIST;
 
-    private static final InventoryMatcherListMode[] H;
+    private static final InventoryMatcherListMode[] VALUES;
 
     static {
-        String[] stringArray = new String[]{"WHITELIST", "BLACKLIST"};
+        String[] enumNames = new String[]{"WHITELIST", "BLACKLIST"};
 
 
-        H = new InventoryMatcherListMode[]{WHITELIST, BLACKLIST};
+        VALUES = new InventoryMatcherListMode[]{WHITELIST, BLACKLIST};
     }
 
 }

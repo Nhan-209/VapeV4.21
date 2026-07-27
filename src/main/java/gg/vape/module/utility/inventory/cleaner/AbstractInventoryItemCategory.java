@@ -11,53 +11,53 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 public abstract class AbstractInventoryItemCategory
 implements InventoryItemCategory {
-    private final String k;
+    private final String name;
     @Nullable
-    private final Comparator<ItemStack> d;
-    private final String L;
-    private final List<InventoryItemMatcher> v;
-    private final String j;
-    private static String Q;
+    private final Comparator<ItemStack> comparator;
+    private final String displayName;
+    private final List<InventoryItemMatcher> matchers;
+    private final String id;
+    private static String secretKey;
 
     public static String X() {
-        return Q;
+        return secretKey;
     }
 
     @Override
     public @UnmodifiableView List<InventoryItemMatcher> i() {
-        return this.v;
+        return this.matchers;
     }
 
     @Override
     public String r() {
-        return this.L;
+        return this.displayName;
     }
 
-    protected AbstractInventoryItemCategory(InventoryItemCategoryBuilder<?> oq_12) {
-        this.j = oq_12.J();
-        this.k = oq_12.F();
-        this.L = oq_12.X();
-        this.d = oq_12.e();
-        this.v = oq_12.K();
+    protected AbstractInventoryItemCategory(InventoryItemCategoryBuilder<?> builder) {
+        this.id = builder.J();
+        this.name = builder.F();
+        this.displayName = builder.X();
+        this.comparator = builder.e();
+        this.matchers = builder.K();
     }
 
     @Override
     public String F() {
-        return this.j;
+        return this.id;
     }
 
     @Override
     public Comparator<ItemStack> j() {
-        return this.d;
+        return this.comparator;
     }
 
     @Override
     public String getName() {
-        return this.k;
+        return this.name;
     }
 
     public static void K(String string) {
-        Q = string;
+        secretKey = string;
     }
 
     static {

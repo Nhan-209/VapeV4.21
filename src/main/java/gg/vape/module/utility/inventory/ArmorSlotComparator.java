@@ -10,10 +10,10 @@ import java.util.List;
 
 public class ArmorSlotComparator
 implements Comparator<Slot> {
-    final InventoryManager F;
+    final InventoryManager inventoryManager;
 
     public ArmorSlotComparator(InventoryManager inventoryManager) {
-        this.F = inventoryManager;
+        this.inventoryManager = inventoryManager;
     }
 
     @Override
@@ -22,16 +22,16 @@ implements Comparator<Slot> {
         ItemStack itemStack2 = slot2.I();
         List<PotionEffect> list = new ItemSplashPotion(itemStack.getItem()).getPotionEffects(itemStack);
         List<PotionEffect> list2 = new ItemSplashPotion(itemStack2.getItem()).getPotionEffects(itemStack2);
-        int n = 0;
+        int result = 0;
         for (PotionEffect potionEffect : list) {
-            int n2 = potionEffect.C();
+            int effectId = potionEffect.C();
             for (PotionEffect potionEffect2 : list2) {
-                int n3 = potionEffect2.C();
-                if (n2 != n3) continue;
-                n += Integer.compare(potionEffect.L(), potionEffect2.L());
+                int otherEffectId = potionEffect2.C();
+                if (effectId != otherEffectId) continue;
+                result += Integer.compare(potionEffect.L(), potionEffect2.L());
             }
         }
-        return n;
+        return result;
     }
 }
 

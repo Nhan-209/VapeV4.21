@@ -24,11 +24,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class NameTagsRenderStateTracker
 implements EventListener {
-    private final HashSet<Integer> P;
-    private final TimerUtil x;
-    private final HashMap<Long, NameTagsNameState> C = new HashMap();
+    private final HashSet<Integer> pendingEntityIds;
+    private final TimerUtil cleanupTimer;
+    private final HashMap<Long, NameTagsNameState> stateByKey = new HashMap();
     public static final NameTagsRenderStateTracker u = new NameTagsRenderStateTracker();
-    private final HashMap<Long, Long> N;
+    private final HashMap<Long, Long> lastSeenByKey;
 
     @EventHandler
     public void R(EventWorldChange eventWorldChange) {
@@ -43,7 +43,7 @@ implements EventListener {
         if (eventPostRenderTick.getWorld().isNull()) {
             return;
         }
-        this.s(eventPostRenderTick);
+        this.tick(eventPostRenderTick);
     }
 
     @EventHandler
@@ -54,14 +54,14 @@ implements EventListener {
         if (eventPreRenderTick.getWorld().isNull()) {
             return;
         }
-        this.s(eventPreRenderTick);
+        this.tick(eventPreRenderTick);
     }
 
     @Nullable
     public NameTagsNameState B(EntityPlayer entityPlayer) {
-        long l = ItemStackFingerprint.T(entityPlayer);
-        this.N.put(l, System.currentTimeMillis());
-        NameTagsNameState nameTagsNameState = this.C.get(l);
+        long key = ItemStackFingerprint.T(entityPlayer);
+        this.lastSeenByKey.put(key, System.currentTimeMillis());
+        NameTagsNameState nameTagsNameState = this.stateByKey.get(key);
         if (nameTagsNameState != null) {
             if (nameTagsNameState.d() == null || !nameTagsNameState.d().R()) {
                 try {
@@ -72,69 +72,69 @@ implements EventListener {
                 catch (Exception exception) {
                     // empty catch block
                 }
-                this.C.remove(l);
-                this.P.add(entityPlayer.S());
+                this.stateByKey.remove(key);
+                this.pendingEntityIds.add(entityPlayer.S());
                 return null;
             }
             return nameTagsNameState;
         }
-        this.P.add(entityPlayer.S());
+        this.pendingEntityIds.add(entityPlayer.S());
         return null;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception rethrow(Exception exception) {
         return exception;
     }
 
-    private void s(EventRenderTickBase eventRenderTickBase) {
+    private void tick(EventRenderTickBase eventRenderTickBase) {
         Object object;
-        if (this.x.hasTimeElapsed(1000L)) {
-            ArrayList arrayList = new ArrayList();
-            for (Long l : this.N.keySet()) {
-                if (System.currentTimeMillis() - this.N.get(l) <= 10000L || (object = this.C.get(l)) == null) continue;
-                arrayList.add(l);
+        if (this.cleanupTimer.hasTimeElapsed(1000L)) {
+            ArrayList staleKeys = new ArrayList();
+            for (Long key : this.lastSeenByKey.keySet()) {
+                if (System.currentTimeMillis() - this.lastSeenByKey.get(key) <= 10000L || (object = this.stateByKey.get(key)) == null) continue;
+                staleKeys.add(key);
             }
-            Iterator iterator = arrayList.iterator();
+            Iterator iterator = staleKeys.iterator();
             while (iterator.hasNext()) {
-                Long l = (Long)iterator.next();
-                object = this.C.get(l);
+                Long key = (Long)iterator.next();
+                object = this.stateByKey.get(key);
                 if (object != null) {
                     ((NameTagsNameState)object).d().n();
                 }
-                this.C.remove(l);
-                this.N.remove(l);
+                this.stateByKey.remove(key);
+                this.lastSeenByKey.remove(key);
             }
         }
-        for (Integer n : this.P) {
+        for (Integer entityId : this.pendingEntityIds) {
             try {
                 WorldClient worldClient = eventRenderTickBase.getWorld();
-                if (worldClient.isNull() || ((Wrapper)(object = worldClient.V(n))).isNull() || !((Wrapper)object).isNotNull() || !((Wrapper)object).isInstance(MappedClasses.Yl) || !worldClient.z().contains(((Wrapper)object).getObject())) continue;
+                if (worldClient.isNull() || ((Wrapper)(object = worldClient.V(entityId))).isNull() || !((Wrapper)object).isNotNull() || !((Wrapper)object).isInstance(MappedClasses.Yl) || !worldClient.z().contains(((Wrapper)object).getObject())) continue;
                 EntityPlayer entityPlayer = new EntityPlayer(object);
-                long l = ItemStackFingerprint.T(entityPlayer);
-                this.C.put(l, NameTagsNameState.T(entityPlayer));
+                long key = ItemStackFingerprint.T(entityPlayer);
+                this.stateByKey.put(key, NameTagsNameState.T(entityPlayer));
             }
             catch (Exception exception) {}
         }
-        this.P.clear();
+        this.pendingEntityIds.clear();
     }
 
     public void k() {
-        if (!this.C.isEmpty()) {
-            ArrayList<NameTagsNameState> arrayList = new ArrayList<NameTagsNameState>(this.C.values());
-            RenderThreadTaskQueue.M(() -> NameTagsRenderStateTracker.lambda$reset$0(arrayList));
+        if (!this.stateByKey.isEmpty()) {
+            ArrayList<NameTagsNameState> states = new ArrayList<NameTagsNameState>(this.stateByKey.values());
+            RenderThreadTaskQueue.M(() -> NameTagsRenderStateTracker.disposeStates(states));
         }
-        this.C.clear();
-        this.P.clear();
-        this.N.clear();
+        this.stateByKey.clear();
+        this.pendingEntityIds.clear();
+        this.lastSeenByKey.clear();
     }
 
     public NameTagsRenderStateTracker() {
-        this.P = new HashSet();
-        this.N = new HashMap();
-        this.x = new TimerUtil();
+        this.pendingEntityIds = new HashSet();
+        this.lastSeenByKey = new HashMap();
+        this.cleanupTimer = new TimerUtil();
     }
 
-    private static void lambda$reset$0(List<NameTagsNameState> list) {
+    private static void disposeStates(List<NameTagsNameState> list) {
         for (NameTagsNameState nameTagsNameState : list) {
             if (nameTagsNameState == null || nameTagsNameState.d() == null) continue;
             try {

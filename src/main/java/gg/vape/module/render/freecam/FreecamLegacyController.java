@@ -44,11 +44,11 @@ extends FreecamController<Freecam> {
         ((Freecam)this.n).X$src$V$nxfse5();
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    private CPacketPlayerPosition n() {
+    private CPacketPlayerPosition buildPositionPacket() {
         if (ForgeVersion.MC_1_7_10.L()) {
             return CPacketPlayerPosition.newInstance(((Freecam)this.n).Z.z(), ((Freecam)this.n).Z.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY(), ((Freecam)this.n).Z.N(), ((Freecam)this.n).Z.h(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
         }
@@ -74,29 +74,29 @@ extends FreecamController<Freecam> {
         if (!eventPacketSend.getPacket().isInstance(MappedClasses.qD)) {
             return;
         }
-        eventPacketSend.setPacket(this.r());
+        eventPacketSend.setPacket(this.buildMovementPacket());
         Minecraft.thePlayer().E(((Freecam)this.n).I);
     }
 
-    private C06PacketPlayerPositionLook z() {
+    private C06PacketPlayerPositionLook buildPositionLookPacket() {
         if (ForgeVersion.MC_1_7_10.L()) {
             return C06PacketPlayerPositionLook.create(((Freecam)this.n).Z.z(), ((Freecam)this.n).Z.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY(), ((Freecam)this.n).Z.N(), ((Freecam)this.n).Z.h(), ((Freecam)this.n).Z.J(), ((Freecam)this.n).Z.V(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
         }
         return C06PacketPlayerPositionLook.create(((Freecam)this.n).Z.z(), ((Freecam)this.n).Z.N(), ((Freecam)this.n).Z.h(), ((Freecam)this.n).Z.J(), ((Freecam)this.n).Z.V(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
     }
 
-    private void lambda$onPacketReceived$0(PlayerPositionLookPacketModern playerPositionLookPacketModern) {
-        this.G(playerPositionLookPacketModern);
+    private void applyGhostPositionLookLater(PlayerPositionLookPacketModern playerPositionLookPacketModern) {
+        this.applyGhostPositionLook(playerPositionLookPacketModern);
     }
 
-    private C06PacketPlayerPositionLook H() {
+    private C06PacketPlayerPositionLook buildLookOnlyPacket() {
         if (ForgeVersion.MC_1_7_10.L()) {
             return C06PacketPlayerPositionLook.create(((Freecam)this.n).Z.t(), -999.0, -999.0, ((Freecam)this.n).Z.T(), ((Freecam)this.n).Z.J(), ((Freecam)this.n).Z.V(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
         }
         return C06PacketPlayerPositionLook.create(((Freecam)this.n).Z.t(), -999.0, ((Freecam)this.n).Z.T(), ((Freecam)this.n).Z.J(), ((Freecam)this.n).Z.V(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
     }
 
-    private void G(PlayerPositionLookPacketModern playerPositionLookPacketModern) {
+    private void applyGhostPositionLook(PlayerPositionLookPacketModern playerPositionLookPacketModern) {
         if (playerPositionLookPacketModern == null || playerPositionLookPacketModern.isNull()) {
             return;
         }
@@ -147,9 +147,9 @@ extends FreecamController<Freecam> {
             PlayerPositionLookPacketModern playerPositionLookPacketModern = new PlayerPositionLookPacketModern(packet.getObject());
             eventPacketReceive.setCancelled(true);
             if (ForgeVersion.MC_1_8_9.d()) {
-                Minecraft.v(() -> this.lambda$onPacketReceived$0(playerPositionLookPacketModern));
+                Minecraft.v(() -> this.applyGhostPositionLookLater(playerPositionLookPacketModern));
             } else {
-                this.G(playerPositionLookPacketModern);
+                this.applyGhostPositionLook(playerPositionLookPacketModern);
             }
             return;
         }
@@ -202,7 +202,7 @@ extends FreecamController<Freecam> {
         super(freecam);
     }
 
-    private C03PacketPlayer r() {
+    private C03PacketPlayer buildMovementPacket() {
         boolean bl;
         double d = ((Freecam)this.n).Z.z() - ((Freecam)this.n).J;
         double d2 = (ClientSettings.H ? ((Freecam)this.n).Z.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinY() : ((Freecam)this.n).Z.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY()) - ((Freecam)this.n).s;
@@ -214,9 +214,9 @@ extends FreecamController<Freecam> {
         if (bl) {
             C03PacketPlayer c03PacketPlayer = null;
             if (((Freecam)this.n).Z.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12().isNull()) {
-                c03PacketPlayer = bl2 ? this.z() : CPacketPlayer_Rotation.create(((Freecam)this.n).Z.J(), ((Freecam)this.n).Z.V(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
+                c03PacketPlayer = bl2 ? this.buildPositionLookPacket() : CPacketPlayer_Rotation.create(((Freecam)this.n).Z.J(), ((Freecam)this.n).Z.V(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
             } else {
-                c03PacketPlayer = this.H();
+                c03PacketPlayer = this.buildLookOnlyPacket();
                 bl2 = false;
             }
             ++((Freecam)this.n).I;
@@ -235,9 +235,9 @@ extends FreecamController<Freecam> {
             if (bl2) {
                 // empty if block
             }
-            c03PacketPlayer = bl2 ? this.n() : C03PacketPlayer.newInstance(((Freecam)this.n).Z.b$src$Z$fqlxe4());
+            c03PacketPlayer = bl2 ? this.buildPositionPacket() : C03PacketPlayer.newInstance(((Freecam)this.n).Z.b$src$Z$fqlxe4());
         } else {
-            c03PacketPlayer = this.H();
+            c03PacketPlayer = this.buildLookOnlyPacket();
             bl2 = false;
         }
         ++((Freecam)this.n).I;

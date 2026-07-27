@@ -23,218 +23,218 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 public class RenderEntityContext {
-    private final CachedBoolean F;
+    private final CachedBoolean friendCache;
     @Nullable
-    private ModelPlayer B;
-    private final CachedBoolean N;
+    private ModelPlayer modelPlayer;
+    private final CachedBoolean enemyCache;
     @Nullable
-    private final EntityPlayer A;
-    private static int[] e;
+    private final EntityPlayer entityPlayer;
+    private static int[] sharedColorArray;
     @Nullable
-    private String z;
-    private final CachedBoolean G;
-    private final int s;
-    private final CachedFloat O;
+    private String cachedName;
+    private final CachedBoolean facingCache;
+    private final int settingsId;
+    private final CachedFloat attackStrengthCache;
     @Nullable
-    private MutableColor C;
-    private final CachedFloat n;
+    private MutableColor fillColor;
+    private final CachedFloat healthCache;
     @Nullable
-    private String R;
+    private String cachedTypeName;
     @Nullable
-    private String Q;
-    private final CachedBoolean o;
-    private final CachedBoolean J;
-    private List<PotionEffect> k;
+    private String cachedNameTag;
+    private final CachedBoolean onGroundCache;
+    private final CachedBoolean visibleCache;
+    private List<PotionEffect> potionEffects;
     @Nullable
-    private ItemStack p;
-    private final CachedFloat P;
-    private final CachedFloat t;
-    private final CachedBoolean L;
-    private final CachedBoolean c = new CachedBoolean();
-    private EntityLivingBase K;
+    private ItemStack heldItem;
+    private final CachedFloat distanceCache;
+    private final CachedFloat progressCache;
+    private final CachedBoolean glowingCache;
+    private final CachedBoolean enabledCache = new CachedBoolean();
+    private EntityLivingBase entity;
     @Nullable
-    private ItemStack X;
-    private EntityPlayerSP r;
-    private final CachedBoolean u;
+    private ItemStack bestWeapon;
+    private EntityPlayerSP viewer;
+    private final CachedBoolean visibilityCache;
     @Nullable
-    private MutableColor v;
-    private final CachedFloat j;
-    private final CachedBoolean D;
+    private MutableColor outlineColor;
+    private final CachedFloat maxHealthCache;
+    private final CachedBoolean attackableCache;
 
     public String k() {
-        if (this.z == null) {
-            this.z = this.K.getName();
+        if (this.cachedName == null) {
+            this.cachedName = this.entity.getName();
         }
-        return this.z;
+        return this.cachedName;
     }
 
     public boolean Y() {
-        if (!this.u.r()) {
-            this.u.I(this.r.canEntityBeSeen(this.K));
+        if (!this.visibilityCache.r()) {
+            this.visibilityCache.I(this.viewer.canEntityBeSeen(this.entity));
         }
-        return (Boolean)this.u.F();
+        return (Boolean)this.visibilityCache.F();
     }
 
     @Nullable
     public EntityPlayer T() {
-        return this.A;
+        return this.entityPlayer;
     }
 
     public boolean R() {
-        if (!this.D.r()) {
-            if (this.A != null) {
-                this.D.I(Vape.INSTANCE.getClientSettings().e(this.r, this.K));
+        if (!this.attackableCache.r()) {
+            if (this.entityPlayer != null) {
+                this.attackableCache.I(Vape.INSTANCE.getClientSettings().e(this.viewer, this.entity));
             } else {
-                this.D.I(false);
+                this.attackableCache.I(false);
             }
         }
-        return (Boolean)this.D.F();
+        return (Boolean)this.attackableCache.F();
     }
 
     public float I() {
-        if (!this.n.r()) {
-            this.n.I(Float.valueOf(this.K.p()));
+        if (!this.healthCache.r()) {
+            this.healthCache.I(Float.valueOf(this.entity.p()));
         }
-        return ((Float)this.n.F()).floatValue();
+        return ((Float)this.healthCache.F()).floatValue();
     }
 
     public boolean g() {
-        if (!this.o.r()) {
-            this.o.I(this.K.J$src$Z$fdev5g());
+        if (!this.onGroundCache.r()) {
+            this.onGroundCache.I(this.entity.J$src$Z$fdev5g());
         }
-        return (Boolean)this.o.F();
+        return (Boolean)this.onGroundCache.F();
     }
 
     public float U() {
-        if (!this.t.r()) {
-            this.t.I(Float.valueOf(this.K.Y()));
+        if (!this.progressCache.r()) {
+            this.progressCache.I(Float.valueOf(this.entity.Y()));
         }
-        return ((Float)this.t.F()).floatValue();
+        return ((Float)this.progressCache.F()).floatValue();
     }
 
     public static void c(int[] nArray) {
-        e = nArray;
+        sharedColorArray = nArray;
     }
 
     public int U$src$I$1xrslp6() {
-        return this.s;
+        return this.settingsId;
     }
 
     public boolean o$src$Z$1y639j7() {
-        if (!this.G.r()) {
-            this.G.I(RotationUtil.k(this.K));
+        if (!this.facingCache.r()) {
+            this.facingCache.I(RotationUtil.k(this.entity));
         }
-        return (Boolean)this.G.F();
+        return (Boolean)this.facingCache.F();
     }
 
     public void v(EntityLivingBase entityLivingBase, EntityPlayerSP entityPlayerSP) {
-        this.K = entityLivingBase;
-        this.r = entityPlayerSP;
-        this.c.S();
-        this.J.S();
-        this.u.S();
-        this.o.S();
-        this.G.S();
-        this.L.S();
-        this.D.S();
-        this.F.S();
-        this.N.S();
-        this.O.S();
-        this.j.S();
-        this.n.S();
-        this.P.S();
-        this.t.S();
-        this.z = null;
-        this.R = null;
-        this.p = null;
-        this.X = null;
-        this.Q = null;
-        this.C = null;
-        this.v = null;
-        this.B = null;
-        this.k = null;
+        this.entity = entityLivingBase;
+        this.viewer = entityPlayerSP;
+        this.enabledCache.S();
+        this.visibleCache.S();
+        this.visibilityCache.S();
+        this.onGroundCache.S();
+        this.facingCache.S();
+        this.glowingCache.S();
+        this.attackableCache.S();
+        this.friendCache.S();
+        this.enemyCache.S();
+        this.attackStrengthCache.S();
+        this.maxHealthCache.S();
+        this.healthCache.S();
+        this.distanceCache.S();
+        this.progressCache.S();
+        this.cachedName = null;
+        this.cachedTypeName = null;
+        this.heldItem = null;
+        this.bestWeapon = null;
+        this.cachedNameTag = null;
+        this.fillColor = null;
+        this.outlineColor = null;
+        this.modelPlayer = null;
+        this.potionEffects = null;
     }
 
     public String K() {
-        if (this.Q == null && this.A != null) {
-            this.Q = Vape.INSTANCE.getModManager().getMod(NameTags.class).Q(this.r, this, this.A);
+        if (this.cachedNameTag == null && this.entityPlayer != null) {
+            this.cachedNameTag = Vape.INSTANCE.getModManager().getMod(NameTags.class).Q(this.viewer, this, this.entityPlayer);
         }
-        return this.Q;
+        return this.cachedNameTag;
     }
 
     public static int[] y$src$AI$1d1vtc1() {
-        return e;
+        return sharedColorArray;
     }
 
     @Nullable
     public ItemStack c() {
-        if (this.p == null) {
-            ItemStack itemStack = this.K.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt();
-            this.p = itemStack.isNotNull() ? itemStack : null;
+        if (this.heldItem == null) {
+            ItemStack itemStack = this.entity.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt();
+            this.heldItem = itemStack.isNotNull() ? itemStack : null;
         }
-        return this.p;
+        return this.heldItem;
     }
 
     public List<PotionEffect> A(EntityLivingBase entityLivingBase) {
-        if (this.k == null) {
-            this.k = new ArrayList<PotionEffect>();
+        if (this.potionEffects == null) {
+            this.potionEffects = new ArrayList<PotionEffect>();
             for (Object e : entityLivingBase.B$src$Ljava_util_Collection_$1uxz2f9()) {
                 PotionEffect potionEffect = new PotionEffect(e);
                 if (potionEffect.k() <= 0) continue;
-                this.k.add(potionEffect);
+                this.potionEffects.add(potionEffect);
             }
         }
-        return this.k;
+        return this.potionEffects;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
-        return obfuscatedRuntimeException;
+    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException exception) {
+        return exception;
     }
 
     @Nullable
     public MutableColor E(boolean bl) {
         if (bl) {
-            if (this.v == null) {
-                this.v = Vape.INSTANCE.getClientSettings().B(this, true, true);
+            if (this.outlineColor == null) {
+                this.outlineColor = Vape.INSTANCE.getClientSettings().B(this, true, true);
             }
-            return this.v;
+            return this.outlineColor;
         }
-        if (this.C == null) {
-            this.C = Vape.INSTANCE.getClientSettings().y(this, false);
+        if (this.fillColor == null) {
+            this.fillColor = Vape.INSTANCE.getClientSettings().y(this, false);
         }
-        return this.C;
+        return this.fillColor;
     }
 
     public RenderEntityContext(int n, EntityLivingBase entityLivingBase, EntityPlayerSP entityPlayerSP) {
-        this.J = new CachedBoolean();
-        this.u = new CachedBoolean();
-        this.o = new CachedBoolean();
-        this.G = new CachedBoolean();
-        this.L = new CachedBoolean();
-        this.D = new CachedBoolean();
-        this.F = new CachedBoolean();
-        this.N = new CachedBoolean();
-        this.O = new CachedFloat();
-        this.j = new CachedFloat();
-        this.n = new CachedFloat();
-        this.P = new CachedFloat();
-        this.t = new CachedFloat();
-        this.s = n;
-        this.K = entityLivingBase;
-        this.r = entityPlayerSP;
+        this.visibleCache = new CachedBoolean();
+        this.visibilityCache = new CachedBoolean();
+        this.onGroundCache = new CachedBoolean();
+        this.facingCache = new CachedBoolean();
+        this.glowingCache = new CachedBoolean();
+        this.attackableCache = new CachedBoolean();
+        this.friendCache = new CachedBoolean();
+        this.enemyCache = new CachedBoolean();
+        this.attackStrengthCache = new CachedFloat();
+        this.maxHealthCache = new CachedFloat();
+        this.healthCache = new CachedFloat();
+        this.distanceCache = new CachedFloat();
+        this.progressCache = new CachedFloat();
+        this.settingsId = n;
+        this.entity = entityLivingBase;
+        this.viewer = entityPlayerSP;
         boolean bl = entityLivingBase.isInstance(MappedClasses.Yl);
-        this.A = bl ? new EntityPlayer(entityLivingBase) : null;
+        this.entityPlayer = bl ? new EntityPlayer(entityLivingBase) : null;
     }
 
     public boolean K$src$Z$1xmao67() {
-        if (!this.F.r()) {
-            if (this.A != null) {
-                this.F.I(Vape.INSTANCE.getFriendManager().E(this.k()));
+        if (!this.friendCache.r()) {
+            if (this.entityPlayer != null) {
+                this.friendCache.I(Vape.INSTANCE.getFriendManager().E(this.k()));
             } else {
-                this.F.I(false);
+                this.friendCache.I(false);
             }
         }
-        return (Boolean)this.F.F();
+        return (Boolean)this.friendCache.F();
     }
 
     @Nullable
@@ -242,32 +242,32 @@ public class RenderEntityContext {
         ItemStack itemStack;
         Item item;
         ItemStack itemStack2;
-        if (this.X == null && this.A != null && (itemStack2 = this.c()) != null && itemStack2.isNotNull() && (ItemStackScoreUtil.h(item = this.c().getItem()) || ItemStackScoreUtil.I(item)) && ((itemStack = this.X) == null || ItemStackScoreUtil.I$src$F$dh3k81(itemStack2) > ItemStackScoreUtil.I$src$F$dh3k81(itemStack))) {
-            this.X = itemStack2;
+        if (this.bestWeapon == null && this.entityPlayer != null && (itemStack2 = this.c()) != null && itemStack2.isNotNull() && (ItemStackScoreUtil.h(item = this.c().getItem()) || ItemStackScoreUtil.I(item)) && ((itemStack = this.bestWeapon) == null || ItemStackScoreUtil.I$src$F$dh3k81(itemStack2) > ItemStackScoreUtil.I$src$F$dh3k81(itemStack))) {
+            this.bestWeapon = itemStack2;
         }
-        return this.X;
+        return this.bestWeapon;
     }
 
     public float t() {
-        if (!this.O.r()) {
-            if (this.A != null) {
-                this.O.I(Float.valueOf(AttackStrengthTracker.B.S(this.A)));
+        if (!this.attackStrengthCache.r()) {
+            if (this.entityPlayer != null) {
+                this.attackStrengthCache.I(Float.valueOf(AttackStrengthTracker.B.S(this.entityPlayer)));
             } else {
-                this.O.I(Float.valueOf(this.K.w$src$F$15l9epb()));
+                this.attackStrengthCache.I(Float.valueOf(this.entity.w$src$F$15l9epb()));
             }
         }
-        return ((Float)this.O.F()).floatValue();
+        return ((Float)this.attackStrengthCache.F()).floatValue();
     }
 
     public boolean f() {
-        if (!this.N.r()) {
-            if (this.A != null) {
-                this.N.I(Vape.INSTANCE.getEnemyManager().q(this.k()));
+        if (!this.enemyCache.r()) {
+            if (this.entityPlayer != null) {
+                this.enemyCache.I(Vape.INSTANCE.getEnemyManager().q(this.k()));
             } else {
-                this.N.I(false);
+                this.enemyCache.I(false);
             }
         }
-        return (Boolean)this.N.F();
+        return (Boolean)this.enemyCache.F();
     }
 
     static {
@@ -277,52 +277,51 @@ public class RenderEntityContext {
     }
 
     public float y() {
-        if (!this.j.r()) {
-            this.j.I(Float.valueOf(this.K.I$src$F$14vyvep()));
+        if (!this.maxHealthCache.r()) {
+            this.maxHealthCache.I(Float.valueOf(this.entity.I$src$F$14vyvep()));
         }
-        return ((Float)this.j.F()).floatValue();
+        return ((Float)this.maxHealthCache.F()).floatValue();
     }
 
     public boolean A() {
-        if (!this.L.r()) {
-            this.L.I(this.K.P());
+        if (!this.glowingCache.r()) {
+            this.glowingCache.I(this.entity.P());
         }
-        return (Boolean)this.L.F();
+        return (Boolean)this.glowingCache.F();
     }
 
     public ModelPlayer z() {
-        if (this.B == null && this.A != null) {
-            this.B = this.A.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86();
+        if (this.modelPlayer == null && this.entityPlayer != null) {
+            this.modelPlayer = this.entityPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86();
         }
-        return this.B;
+        return this.modelPlayer;
     }
 
     public double e() {
-        if (!this.P.r()) {
-            this.P.I(Float.valueOf(this.r.getDistanceToEntity(this.K)));
+        if (!this.distanceCache.r()) {
+            this.distanceCache.I(Float.valueOf(this.viewer.getDistanceToEntity(this.entity)));
         }
-        return ((Float)this.P.F()).floatValue();
+        return ((Float)this.distanceCache.F()).floatValue();
     }
 
     public String o() {
-        if (this.R == null) {
-            this.R = this.K.Q().C();
+        if (this.cachedTypeName == null) {
+            this.cachedTypeName = this.entity.Q().C();
         }
-        return this.R;
+        return this.cachedTypeName;
     }
 
     public boolean P() {
-        if (!this.c.r()) {
-            this.c.I(ClientSettings.B(this.s));
+        if (!this.enabledCache.r()) {
+            this.enabledCache.I(ClientSettings.B(this.settingsId));
         }
-        return (Boolean)this.c.F();
+        return (Boolean)this.enabledCache.F();
     }
 
     public boolean D() {
-        if (!this.J.r()) {
-            this.J.I(Vape.INSTANCE.getClientSettings().J(this.K));
+        if (!this.visibleCache.r()) {
+            this.visibleCache.I(Vape.INSTANCE.getClientSettings().J(this.entity));
         }
-        return (Boolean)this.J.F();
+        return (Boolean)this.visibleCache.F();
     }
 }
-

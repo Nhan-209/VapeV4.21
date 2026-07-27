@@ -12,46 +12,46 @@ import java.util.List;
 import java.util.Map;
 
 public class BedPlateCountState {
-    BedTargetRenderPosition j;
-    HashMap<Integer, HashMap<BedPlateBlockStateKey, Integer>> a = new HashMap();
-    HashMap<Integer, List<BedPlateBlockStateKey>> b = new HashMap();
+    BedTargetRenderPosition position;
+    HashMap<Integer, HashMap<BedPlateBlockStateKey, Integer>> layerCounts = new HashMap();
+    HashMap<Integer, List<BedPlateBlockStateKey>> sortedLayers = new HashMap();
 
     public String toString() {
-        return "BedData{position=" + this.j + ", layers=" + this.a + '}';
+        return "BedData{position=" + this.position + ", layers=" + this.layerCounts + '}';
     }
 
     public void r() {
-        for (int n : this.a.keySet()) {
+        for (int layer : this.layerCounts.keySet()) {
             ArrayList arrayList = new ArrayList();
-            if (!this.a.containsKey(n)) continue;
-            Object[] objectArray = this.a.get(n).entrySet().toArray();
+            if (!this.layerCounts.containsKey(layer)) continue;
+            Object[] objectArray = this.layerCounts.get(layer).entrySet().toArray();
             Arrays.sort(objectArray, new BedPlateBlockCountComparator(this));
             for (Object object : objectArray) {
                 arrayList.add(((Map.Entry)object).getKey());
             }
             Collections.reverse(arrayList);
-            this.b.put(n, arrayList);
+            this.sortedLayers.put(layer, arrayList);
         }
     }
 
-    private void W(int n, int n2, int n3) {
+    private void incrementBlock(int layer, int id, int meta) {
         BedPlateBlockStateKey bedPlateBlockStateKey;
         HashMap<BedPlateBlockStateKey, Integer> hashMap;
-        if (!this.a.containsKey(n)) {
-            this.a.put(n, new HashMap());
+        if (!this.layerCounts.containsKey(layer)) {
+            this.layerCounts.put(layer, new HashMap());
         }
-        if (!(hashMap = this.a.get(n)).containsKey(bedPlateBlockStateKey = new BedPlateBlockStateKey(n2, n3, null))) {
+        if (!(hashMap = this.layerCounts.get(layer)).containsKey(bedPlateBlockStateKey = new BedPlateBlockStateKey(id, meta, null))) {
             hashMap.put(bedPlateBlockStateKey, 0);
         }
         hashMap.merge(bedPlateBlockStateKey, 1, Integer::sum);
     }
 
     public void y() {
-        this.a.clear();
+        this.layerCounts.clear();
     }
 
     public List<BedPlateBlockStateKey> c(int n) {
-        return this.b.getOrDefault(n, new ArrayList());
+        return this.sortedLayers.getOrDefault(n, new ArrayList());
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
@@ -59,36 +59,36 @@ public class BedPlateCountState {
     }
 
     public BedPlateCountState(BedTargetRenderPosition bedTargetRenderPosition) {
-        this.j = bedTargetRenderPosition;
+        this.position = bedTargetRenderPosition;
     }
 
-    public int n() {
-        int n = 0;
-        for (int n2 : this.a.keySet()) {
-            n += this.a.get(n2).size();
+    public int totalDistinctBlockCount() {
+        int total = 0;
+        for (int layer : this.layerCounts.keySet()) {
+            total += this.layerCounts.get(layer).size();
         }
-        return n;
+        return total;
     }
 
     public static void j(BedPlateCountState bedPlateCountState, int n, int n2, int n3) {
-        bedPlateCountState.W(n, n2, n3);
+        bedPlateCountState.incrementBlock(n, n2, n3);
     }
 
-    public int H(int n, BedPlateBlockStateKey bedPlateBlockStateKey) {
-        return this.a.get(n).get(bedPlateBlockStateKey);
+    public int getBlockCount(int layer, BedPlateBlockStateKey bedPlateBlockStateKey) {
+        return this.layerCounts.get(layer).get(bedPlateBlockStateKey);
     }
 
     public BedTargetRenderPosition l() {
-        return this.j;
+        return this.position;
     }
 
-    public int x(int n) {
-        HashMap<BedPlateBlockStateKey, Integer> hashMap = this.a.get(n);
-        int n2 = 0;
+    public int getLayerTotalCount(int layer) {
+        HashMap<BedPlateBlockStateKey, Integer> hashMap = this.layerCounts.get(layer);
+        int total = 0;
         for (BedPlateBlockStateKey bedPlateBlockStateKey : hashMap.keySet()) {
-            n2 += hashMap.get(bedPlateBlockStateKey).intValue();
+            total += hashMap.get(bedPlateBlockStateKey).intValue();
         }
-        return n2;
+        return total;
     }
 }
 

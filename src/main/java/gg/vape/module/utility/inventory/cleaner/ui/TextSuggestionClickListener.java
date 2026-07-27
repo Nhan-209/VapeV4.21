@@ -24,7 +24,7 @@ implements GuiMouseListener {
                 return;
             }
             this.B.set(true);
-            ClientSettings.f6.execute(() -> this.lambda$onClick$0(textSuggestionRow, this.Z, this.B));
+            ClientSettings.f6.execute(() -> this.handleRowClick(textSuggestionRow, this.Z, this.B));
             return;
         }
     }
@@ -38,7 +38,7 @@ implements GuiMouseListener {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    private void lambda$onClick$0(TextSuggestionRow textSuggestionRow, Consumer consumer, AtomicBoolean atomicBoolean) {
+    private void handleRowClick(TextSuggestionRow textSuggestionRow, Consumer consumer, AtomicBoolean atomicBoolean) {
         try {
             this.n.Q(textSuggestionRow);
             consumer.accept(textSuggestionRow);
@@ -48,7 +48,7 @@ implements GuiMouseListener {
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException passThroughException(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

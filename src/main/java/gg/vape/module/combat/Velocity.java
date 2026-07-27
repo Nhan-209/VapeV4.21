@@ -29,24 +29,24 @@ import java.util.Random;
 
 public class Velocity
 extends Mod {
-    private final BooleanValue P;
-    private Vec3d H = null;
-    private final BooleanValue o;
-    private static final long r = 2393379545127256196L;
-    private final NumberValue L;
-    private final NumberValue Z;
-    private final BooleanValue Y = BooleanValue.create(this, "Only when targeting", false, "Only reduce knockback while being face to face with opponent");
-    private final NumberValue C;
-    private final NumberValue I;
-    private int F = 0;
-    private final NumberValue c;
-    private final NumberValue U;
-    private final BooleanValue k;
+    private final BooleanValue kiteMode;
+    private Vec3d pendingVelocity = null;
+    private final BooleanValue waterCheck;
+    private static final long COLOR_ID = 2393379545127256196L;
+    private final NumberValue kiteVertical;
+    private final NumberValue vertical;
+    private final BooleanValue onlyWhenTargeting = BooleanValue.create(this, "Only when targeting", false, "Only reduce knockback while being face to face with opponent");
+    private final NumberValue chance;
+    private final NumberValue ticks;
+    private int ticksRemaining = 0;
+    private final NumberValue horizontal;
+    private final NumberValue kiteHorizontal;
+    private final BooleanValue alwaysKite;
 
-    private double[] o$src$AD$k28v7f() {
+    private double[] computeReducedPercents() {
         double d;
-        double d2 = (Double)this.c.K();
-        double d3 = (Double)this.Z.K();
+        double d2 = (Double)this.horizontal.K();
+        double d3 = (Double)this.vertical.K();
         Random random = new Random();
         double d4 = random.nextDouble();
         if (d2 > 0.0) {
@@ -66,48 +66,48 @@ extends Mod {
         return new double[]{d2, d3};
     }
 
-    private boolean N() {
+    private boolean shouldSkip() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
             return true;
         }
-        return this.o.L() != false && entityPlayerSP.h$src$Z$ftwoya();
+        return this.waterCheck.L() != false && entityPlayerSP.h$src$Z$ftwoya();
     }
 
     @Override
     public String r() {
-        return this.c.c() + "h " + this.Z.c() + "v";
+        return this.horizontal.c() + "h " + this.vertical.c() + "v";
     }
 
     public Velocity() {
-        super("Velocity", (int)r, Category.Y, "Reduces knockback taken");
-        this.o = BooleanValue.create(this, "Water check", false, "Won't reduce knockback if in water");
-        this.C = NumberValue.E(this, "Chance", "#", "%", 0.0, 40.0, 100.0, "Chance of reducing knockback");
-        this.P = BooleanValue.create(this, "Kite mode", false, "Increases knockback while not facing opponent");
-        this.k = BooleanValue.create(this, "Always Kite", false, "Increase knockback regardless if not facing opponent");
-        this.c = NumberValue.create(this, "Horizontal", "#", "%", 0.0, 90.0, 100.0);
-        this.Z = NumberValue.create(this, "Vertical", "#", "%", 0.0, 100.0, 100.0);
-        this.I = NumberValue.create(this, "Ticks", "#", "", 0.0, 1.0, 10.0, 1.0, "How many ticks to wait before activating\nDoes not delay Kite");
-        this.U = NumberValue.create(this, "Kite horizontal", "#", "%", 100.0, 120.0, 300.0);
-        this.L = NumberValue.create(this, "Kite vertical", "#", "%", 100.0, 120.0, 300.0);
-        this.P.K(this.U, this.L, this.k);
-        this.addValue(this.C, this.c, this.Z, this.I, this.P, this.U, this.L, this.k, this.Y, this.o);
-        this.C.C(0);
-        this.Z.C(0);
-        this.c.C(0);
+        super("Velocity", (int)COLOR_ID, Category.Y, "Reduces knockback taken");
+        this.waterCheck = BooleanValue.create(this, "Water check", false, "Won't reduce knockback if in water");
+        this.chance = NumberValue.E(this, "Chance", "#", "%", 0.0, 40.0, 100.0, "Chance of reducing knockback");
+        this.kiteMode = BooleanValue.create(this, "Kite mode", false, "Increases knockback while not facing opponent");
+        this.alwaysKite = BooleanValue.create(this, "Always Kite", false, "Increase knockback regardless if not facing opponent");
+        this.horizontal = NumberValue.create(this, "Horizontal", "#", "%", 0.0, 90.0, 100.0);
+        this.vertical = NumberValue.create(this, "Vertical", "#", "%", 0.0, 100.0, 100.0);
+        this.ticks = NumberValue.create(this, "Ticks", "#", "", 0.0, 1.0, 10.0, 1.0, "How many ticks to wait before activating\nDoes not delay Kite");
+        this.kiteHorizontal = NumberValue.create(this, "Kite horizontal", "#", "%", 100.0, 120.0, 300.0);
+        this.kiteVertical = NumberValue.create(this, "Kite vertical", "#", "%", 100.0, 120.0, 300.0);
+        this.kiteMode.K(this.kiteHorizontal, this.kiteVertical, this.alwaysKite);
+        this.addValue(this.chance, this.horizontal, this.vertical, this.ticks, this.kiteMode, this.kiteHorizontal, this.kiteVertical, this.alwaysKite, this.onlyWhenTargeting, this.waterCheck);
+        this.chance.C(0);
+        this.vertical.C(0);
+        this.horizontal.C(0);
     }
 
-    private SPacketEntityVelocity N(SPacketEntityVelocity sPacketEntityVelocity, double d, double d2, double d3) {
+    private SPacketEntityVelocity buildVelocityPacket(SPacketEntityVelocity sPacketEntityVelocity, double d, double d2, double d3) {
         Object object = Vape.INSTANCE.getMappings().s.Y(sPacketEntityVelocity.getEntityId(), d, d2, d3);
         return new SPacketEntityVelocity(object);
     }
 
-    private boolean o$src$Z$1ah1qmw() {
+    private boolean rollChance() {
         int n = MathUtil.randomExclusiveUpper(new Random(), 0, 100);
-        return (double)n >= 100.0 - (Double)this.C.K();
+        return (double)n >= 100.0 - (Double)this.chance.K();
     }
 
-    private void z(Packet packet, EventPacketReceive eventPacketReceive) {
+    private void applyVelocity(Packet packet, EventPacketReceive eventPacketReceive) {
         double d;
         double d2;
         double d3;
@@ -127,43 +127,43 @@ extends Mod {
             entityPlayerSP = Minecraft.thePlayer();
             bl3 = RotationUtil.H(entityPlayerSP);
             bl2 = RotationUtil.F(entityPlayerSP);
-            if (this.P.L().booleanValue() && this.k.L().booleanValue()) {
+            if (this.kiteMode.L().booleanValue() && this.alwaysKite.L().booleanValue()) {
                 bl2 = false;
             }
-            if (bl3 && !bl2 && !this.P.L().booleanValue() && this.Y.L().booleanValue()) {
+            if (bl3 && !bl2 && !this.kiteMode.L().booleanValue() && this.onlyWhenTargeting.L().booleanValue()) {
                 return;
             }
-            bl = this.o$src$Z$1ah1qmw();
+            bl = this.rollChance();
             if (bl) {
                 d8 = ((PacketVelocityBridge)packet2).getMotionX();
                 d7 = ((PacketVelocityBridge)packet2).getMotionY();
                 d6 = ((PacketVelocityBridge)packet2).getMotionZ();
-                if (bl3 && !bl2 && this.P.L().booleanValue()) {
-                    double d9 = (Double)this.U.K() / 100.0;
-                    double d10 = (Double)this.L.K() / 100.0;
-                    double d11 = this.y(d8, d9);
-                    double d12 = this.y(d7, d10);
-                    double d13 = this.y(d6, d9);
+                if (bl3 && !bl2 && this.kiteMode.L().booleanValue()) {
+                    double d9 = (Double)this.kiteHorizontal.K() / 100.0;
+                    double d10 = (Double)this.kiteVertical.K() / 100.0;
+                    double d11 = this.scaleMotion(d8, d9);
+                    double d12 = this.scaleMotion(d7, d10);
+                    double d13 = this.scaleMotion(d6, d9);
                     ((PacketVelocityBridge)packet2).setMotionX((float)d11);
                     ((PacketVelocityBridge)packet2).setMotionY((float)d12);
                     ((PacketVelocityBridge)packet2).setMotionZ((float)d13);
                     return;
                 }
-                if ((Double)this.I.K() > 0.0) {
+                if ((Double)this.ticks.K() > 0.0) {
                     boolean bl4;
                     boolean bl5 = bl4 = (double)Math.abs(((PacketVelocityBridge)packet2).getMotionX()) >= 0.005 || (double)Math.abs(((PacketVelocityBridge)packet2).getMotionY()) >= 0.005 || (double)Math.abs(((PacketVelocityBridge)packet2).getMotionZ()) >= 0.005;
                     if (bl4) {
-                        this.F = ((Double)this.I.K()).intValue();
-                        this.H = new Vec3d(((PacketVelocityBridge)packet2).getMotionX(), ((PacketVelocityBridge)packet2).getMotionY(), ((PacketVelocityBridge)packet2).getMotionZ());
+                        this.ticksRemaining = ((Double)this.ticks.K()).intValue();
+                        this.pendingVelocity = new Vec3d(((PacketVelocityBridge)packet2).getMotionX(), ((PacketVelocityBridge)packet2).getMotionY(), ((PacketVelocityBridge)packet2).getMotionZ());
                     }
                     return;
                 }
-                dArray = this.o$src$AD$k28v7f();
+                dArray = this.computeReducedPercents();
                 d5 = dArray[0] / 100.0;
                 d4 = dArray[1] / 100.0;
-                d3 = this.y(d8, d5);
-                d2 = this.y(d7, d4);
-                d = this.y(d6, d5);
+                d3 = this.scaleMotion(d8, d5);
+                d2 = this.scaleMotion(d7, d4);
+                d = this.scaleMotion(d6, d5);
                 ((PacketVelocityBridge)packet2).setMotionX((float)d3);
                 ((PacketVelocityBridge)packet2).setMotionY((float)d2);
                 ((PacketVelocityBridge)packet2).setMotionZ((float)d);
@@ -183,13 +183,13 @@ extends Mod {
             if (((SPacketEntityVelocity)packet2).getEntityId() == entityPlayerSP.S()) {
                 bl3 = RotationUtil.H(entityPlayerSP);
                 bl2 = RotationUtil.F(entityPlayerSP);
-                if (this.P.L().booleanValue() && this.k.L().booleanValue()) {
+                if (this.kiteMode.L().booleanValue() && this.alwaysKite.L().booleanValue()) {
                     bl2 = false;
                 }
-                if (!bl3 && !bl2 && !this.P.L().booleanValue() && this.Y.L().booleanValue()) {
+                if (!bl3 && !bl2 && !this.kiteMode.L().booleanValue() && this.onlyWhenTargeting.L().booleanValue()) {
                     return;
                 }
-                bl = this.o$src$Z$1ah1qmw();
+                bl = this.rollChance();
                 if (bl) {
                     d8 = ((SPacketEntityVelocity)packet2).getMotionX();
                     d7 = ((SPacketEntityVelocity)packet2).getMotionY();
@@ -199,15 +199,15 @@ extends Mod {
                         d7 /= 8000.0;
                         d6 /= 8000.0;
                     }
-                    if (bl3 && !bl2 && this.P.L().booleanValue()) {
-                        double d14 = (Double)this.U.K() / 100.0;
-                        double d15 = (Double)this.L.K() / 100.0;
+                    if (bl3 && !bl2 && this.kiteMode.L().booleanValue()) {
+                        double d14 = (Double)this.kiteHorizontal.K() / 100.0;
+                        double d15 = (Double)this.kiteVertical.K() / 100.0;
                         double d16 = d8 * d14;
                         double d17 = d7 * d15;
                         double d18 = d6 * d14;
                         if (ForgeVersion.MC_26_1.d()) {
-                            packet2 = this.N((SPacketEntityVelocity)packet2, d16, d17, d18);
-                            this.D(eventPacketReceive, (SPacketEntityVelocity)packet2);
+                            packet2 = this.buildVelocityPacket((SPacketEntityVelocity)packet2, d16, d17, d18);
+                            this.replacePacket(eventPacketReceive, (SPacketEntityVelocity)packet2);
                         } else {
                             ((SPacketEntityVelocity)packet2).setMotionX(d16);
                             ((SPacketEntityVelocity)packet2).setMotionY(d17);
@@ -215,20 +215,20 @@ extends Mod {
                         }
                         return;
                     }
-                    if ((Double)this.I.K() > 0.0) {
-                        this.F = ((Double)this.I.K()).intValue();
-                        this.H = new Vec3d((double)((SPacketEntityVelocity)packet2).getMotionX() / 8000.0, (double)((SPacketEntityVelocity)packet2).getMotionY() / 8000.0, (double)((SPacketEntityVelocity)packet2).getMotionZ() / 8000.0);
+                    if ((Double)this.ticks.K() > 0.0) {
+                        this.ticksRemaining = ((Double)this.ticks.K()).intValue();
+                        this.pendingVelocity = new Vec3d((double)((SPacketEntityVelocity)packet2).getMotionX() / 8000.0, (double)((SPacketEntityVelocity)packet2).getMotionY() / 8000.0, (double)((SPacketEntityVelocity)packet2).getMotionZ() / 8000.0);
                         return;
                     }
-                    dArray = this.o$src$AD$k28v7f();
+                    dArray = this.computeReducedPercents();
                     d5 = dArray[0] / 100.0;
                     d4 = dArray[1] / 100.0;
                     d3 = d8 * d5;
                     d2 = d7 * d4;
                     d = d6 * d5;
                     if (ForgeVersion.MC_26_1.d()) {
-                        packet2 = this.N((SPacketEntityVelocity)packet2, d3, d2, d);
-                        this.D(eventPacketReceive, (SPacketEntityVelocity)packet2);
+                        packet2 = this.buildVelocityPacket((SPacketEntityVelocity)packet2, d3, d2, d);
+                        this.replacePacket(eventPacketReceive, (SPacketEntityVelocity)packet2);
                     } else {
                         ((SPacketEntityVelocity)packet2).setMotionX(d3);
                         ((SPacketEntityVelocity)packet2).setMotionY(d2);
@@ -236,8 +236,8 @@ extends Mod {
                     }
                     if (d5 == 0.0 && d4 == 0.0) {
                         if (ForgeVersion.MC_26_1.d()) {
-                            packet2 = this.N((SPacketEntityVelocity)packet2, 0.0, 0.0, 0.0);
-                            this.D(eventPacketReceive, (SPacketEntityVelocity)packet2);
+                            packet2 = this.buildVelocityPacket((SPacketEntityVelocity)packet2, 0.0, 0.0, 0.0);
+                            this.replacePacket(eventPacketReceive, (SPacketEntityVelocity)packet2);
                         } else {
                             ((SPacketEntityVelocity)packet2).setMotionX(0.0);
                             ((SPacketEntityVelocity)packet2).setMotionY(0.0);
@@ -253,7 +253,7 @@ extends Mod {
         return exception;
     }
 
-    private double y(double d, double d2) {
+    private double scaleMotion(double d, double d2) {
         String string = Double.toString(Math.abs(d));
         String string2 = string.contains(",") ? "," : ".";
         int n = string.indexOf(string2);
@@ -302,7 +302,7 @@ extends Mod {
 
     @EventHandler
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
-        if (this.N()) {
+        if (this.shouldSkip()) {
             return;
         }
         try {
@@ -310,43 +310,43 @@ extends Mod {
                 return;
             }
             Packet packet = eventPacketReceive.getPacket();
-            Packet.n(packet, arg_0 -> this.lambda$onPacketReceived$0(eventPacketReceive, arg_0));
+            Packet.n(packet, arg_0 -> this.handlePacket(eventPacketReceive, arg_0));
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
         }
     }
 
-    private void lambda$onPacketReceived$0(EventPacketReceive eventPacketReceive, Packet packet) {
-        this.z(packet, eventPacketReceive);
+    private void handlePacket(EventPacketReceive eventPacketReceive, Packet packet) {
+        this.applyVelocity(packet, eventPacketReceive);
     }
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        if (this.N()) {
-            this.H = null;
-            this.F = 0;
+        if (this.shouldSkip()) {
+            this.pendingVelocity = null;
+            this.ticksRemaining = 0;
             return;
         }
-        if (this.H != null) {
-            if (this.F <= 0) {
+        if (this.pendingVelocity != null) {
+            if (this.ticksRemaining <= 0) {
                 EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-                double[] dArray = this.o$src$AD$k28v7f();
+                double[] dArray = this.computeReducedPercents();
                 double d = dArray[0] / 100.0;
                 double d2 = dArray[1] / 100.0;
                 double d3 = entityPlayerSP.q();
-                if (this.H.B != 0.0 && d3 > 0.0) {
-                    entityPlayerSP.k(this.y(entityPlayerSP.q(), d2));
+                if (this.pendingVelocity.B != 0.0 && d3 > 0.0) {
+                    entityPlayerSP.k(this.scaleMotion(entityPlayerSP.q(), d2));
                 }
-                entityPlayerSP.r(this.y(entityPlayerSP.t(), d));
-                entityPlayerSP.i(this.y(entityPlayerSP.T(), d));
-                this.H = null;
+                entityPlayerSP.r(this.scaleMotion(entityPlayerSP.t(), d));
+                entityPlayerSP.i(this.scaleMotion(entityPlayerSP.T(), d));
+                this.pendingVelocity = null;
             }
-            --this.F;
+            --this.ticksRemaining;
         }
     }
 
-    private Packet D(EventPacketReceive eventPacketReceive, SPacketEntityVelocity sPacketEntityVelocity) {
+    private Packet replacePacket(EventPacketReceive eventPacketReceive, SPacketEntityVelocity sPacketEntityVelocity) {
         Packet packet = new Packet(sPacketEntityVelocity.getObject());
         eventPacketReceive.setPacket(packet);
         return packet;

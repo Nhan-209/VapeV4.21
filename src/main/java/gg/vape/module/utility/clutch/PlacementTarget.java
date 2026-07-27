@@ -6,12 +6,12 @@ import gg.vape.wrapper.impl.EnumFacing;
 import gg.vape.wrapper.impl.Vec3;
 
 public class PlacementTarget {
-    private BlockData Q;
+    private BlockData cachedBlockData;
     public int Y;
     public Vec3 v;
     public final BlockData k;
     public final EnumFacing G;
-    private static String p;
+    private static String token;
     public final boolean M;
 
     public PlacementTarget(BlockData blockData, EnumFacing enumFacing) {
@@ -19,14 +19,14 @@ public class PlacementTarget {
     }
 
     public static String F() {
-        return p;
+        return token;
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    public EnumFacing c() {
+    public EnumFacing getFacing() {
         return this.G;
     }
 
@@ -37,14 +37,14 @@ public class PlacementTarget {
     }
 
     public static void C(String string) {
-        p = string;
+        token = string;
     }
 
     public BlockData s() {
-        if (this.Q == null) {
-            this.Q = this.M && this.G != null ? this.k.R(this.G) : this.k;
+        if (this.cachedBlockData == null) {
+            this.cachedBlockData = this.M && this.G != null ? this.k.R(this.G) : this.k;
         }
-        return this.Q;
+        return this.cachedBlockData;
     }
 
     public PlacementTarget(BlockData blockData, EnumFacing enumFacing, boolean bl) {
@@ -53,7 +53,7 @@ public class PlacementTarget {
         this.M = bl;
     }
 
-    public BlockData q() {
+    public BlockData getBlockData() {
         return this.k;
     }
 }

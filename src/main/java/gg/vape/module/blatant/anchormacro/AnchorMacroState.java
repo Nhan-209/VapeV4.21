@@ -11,7 +11,7 @@ public enum AnchorMacroState {
     DETONATING_ANCHOR,
     FINISH;
 
-    private static final AnchorMacroState[] Z;
+    private static final AnchorMacroState[] VALUES;
 
     static {
         String[] stringArray = new String[]{"PLACING_SHIELD", "CHARGING_ANCHOR", "SWAPPING_TO_EXPLOSION_ITEM", "FINDING_ITEMS", "WAITING_FOR_ANCHOR", "DETONATING_ANCHOR", "FINISH", "PLACING_ANCHOR", "IDLE"};
@@ -24,7 +24,7 @@ public enum AnchorMacroState {
 
 
 
-        Z = new AnchorMacroState[]{IDLE, FINDING_ITEMS, PLACING_ANCHOR, WAITING_FOR_ANCHOR, PLACING_SHIELD, CHARGING_ANCHOR, SWAPPING_TO_EXPLOSION_ITEM, DETONATING_ANCHOR, FINISH};
+        VALUES = new AnchorMacroState[]{IDLE, FINDING_ITEMS, PLACING_ANCHOR, WAITING_FOR_ANCHOR, PLACING_SHIELD, CHARGING_ANCHOR, SWAPPING_TO_EXPLOSION_ITEM, DETONATING_ANCHOR, FINISH};
     }
 
 }

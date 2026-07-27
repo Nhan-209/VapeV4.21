@@ -13,15 +13,15 @@ import gg.vape.wrapper.impl.WorldClient;
 
 public class TimeChangerHudModule
 extends HudModule {
-    private long A = 0L;
-    private NumberValue t = NumberValue.create((Object)this, "Time", "#", "hours", 0.0, 12.0, 24.0, 1.0);
+    private long worldTime = 0L;
+    private NumberValue timeValue = NumberValue.create((Object)this, "Time", "#", "hours", 0.0, 12.0, 24.0, 1.0);
 
-    private void m(WorldClient worldClient, long l) {
+    private void applyWorldTime(WorldClient worldClient, long time) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            worldClient.F().z(l);
-            worldClient.F().R(l);
+            worldClient.F().z(time);
+            worldClient.F().R(time);
         } else {
-            worldClient.i(l);
+            worldClient.i(time);
         }
     }
 
@@ -37,22 +37,22 @@ extends HudModule {
         if (eventPreRenderTick.getWorld().isNull()) {
             return;
         }
-        double d = (Double)this.t.K();
-        if ((d -= 6.0) < 0.0) {
-            d = 24.0 + d;
+        double hours = (Double)this.timeValue.K();
+        if ((hours -= 6.0) < 0.0) {
+            hours = 24.0 + hours;
         }
-        this.m(eventPreRenderTick.getWorld(), Math.round(d * 1000.0));
+        this.applyWorldTime(eventPreRenderTick.getWorld(), Math.round(hours * 1000.0));
     }
 
     public TimeChangerHudModule() {
         super("Time Changer", HudModuleGroup.T, "time_changer");
         this.setSuffix("Sets the in-game world time");
-        this.addValue(this.t);
+        this.addValue(this.timeValue);
     }
 
     @EventHandler
     public void V(EventWorldTime eventWorldTime) {
-        eventWorldTime.setWorldTime(this.A);
+        eventWorldTime.setWorldTime(this.worldTime);
     }
 
     @EventHandler
@@ -60,11 +60,11 @@ extends HudModule {
         if (ForgeVersion.MC_1_8_9.A()) {
             return;
         }
-        double d = (Double)this.t.K();
-        if ((d -= 6.0) < 0.0) {
-            d = 24.0 + d;
+        double hours = (Double)this.timeValue.K();
+        if ((hours -= 6.0) < 0.0) {
+            hours = 24.0 + hours;
         }
-        this.A = Math.round(d * 1000.0);
+        this.worldTime = Math.round(hours * 1000.0);
     }
 }
 

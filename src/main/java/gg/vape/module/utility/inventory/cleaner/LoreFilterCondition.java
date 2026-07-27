@@ -12,7 +12,7 @@ public class LoreFilterCondition
 extends AbstractTextFilterCondition<LoreFilterCondition> {
     @Override
     public LoreFilterCondition H() {
-        return this.x();
+        return this.copy();
     }
     @Override
     public boolean g(ItemStack itemStack) {
@@ -47,7 +47,7 @@ extends AbstractTextFilterCondition<LoreFilterCondition> {
         super(list, textMatchMode);
     }
 
-    public LoreFilterCondition x() {
+    public LoreFilterCondition copy() {
         return new LoreFilterCondition(this.M$src$Ljava_util_List_$bgq9xa(), this.M());
     }
 }

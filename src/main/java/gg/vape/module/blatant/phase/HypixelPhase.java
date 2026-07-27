@@ -22,23 +22,23 @@ extends SubModule {
         if (entityPlayerSP.isNull()) {
             return;
         }
-        double d = 0.163;
-        double d2 = Math.cos(Math.toRadians(entityPlayerSP.J() + 90.0f));
-        double d3 = Math.sin(Math.toRadians(entityPlayerSP.J() + 90.0f));
-        double d4 = (double)entityPlayerSP.movementInput().D() * d * d2 + (double)entityPlayerSP.movementInput().T() * d * d3;
-        double d5 = (double)entityPlayerSP.movementInput().D() * d * d3 - (double)entityPlayerSP.movementInput().T() * d * d2;
+        double speed = 0.163;
+        double cosYaw = Math.cos(Math.toRadians(entityPlayerSP.J() + 90.0f));
+        double sinYaw = Math.sin(Math.toRadians(entityPlayerSP.J() + 90.0f));
+        double offsetX = (double)entityPlayerSP.movementInput().D() * speed * cosYaw + (double)entityPlayerSP.movementInput().T() * speed * sinYaw;
+        double offsetZ = (double)entityPlayerSP.movementInput().D() * speed * sinYaw - (double)entityPlayerSP.movementInput().T() * speed * cosYaw;
         if (entityPlayerSP.r() && !entityPlayerSP.S$src$Z$151gttj()) {
             if (ForgeVersion.MC_1_7_10.Y()) {
-                entityPlayerSP.sendQueue().addToSendQueue(CPacketPlayerPosition.newInstance(entityPlayerSP.z() + d4, entityPlayerSP.N(), entityPlayerSP.h() + d5, false));
+                entityPlayerSP.sendQueue().addToSendQueue(CPacketPlayerPosition.newInstance(entityPlayerSP.z() + offsetX, entityPlayerSP.N(), entityPlayerSP.h() + offsetZ, false));
                 entityPlayerSP.sendQueue().addToSendQueue(CPacketPlayerPosition.newInstance(entityPlayerSP.z(), entityPlayerSP.N() - 0.4982374987, entityPlayerSP.h(), false));
             } else {
-                entityPlayerSP.sendQueue().addToSendQueue(CPacketPlayerPosition.newInstance(entityPlayerSP.z() + d4, entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY(), entityPlayerSP.N(), entityPlayerSP.h() + d5, false));
+                entityPlayerSP.sendQueue().addToSendQueue(CPacketPlayerPosition.newInstance(entityPlayerSP.z() + offsetX, entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY(), entityPlayerSP.N(), entityPlayerSP.h() + offsetZ, false));
                 entityPlayerSP.sendQueue().addToSendQueue(CPacketPlayerPosition.newInstance(entityPlayerSP.z(), entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY() - 0.4982374987, entityPlayerSP.N() - 0.4982374987, entityPlayerSP.h(), false));
             }
         }
     }
 
-    private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
+    private static ObfuscatedRuntimeException rethrow(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 }

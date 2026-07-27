@@ -12,36 +12,36 @@ implements INamed {
     IS_IN("is in"),
     IS_NOT_IN("is not in");
 
-    private final String A;
+    private final String label;
     private static final MembershipMode[] k;
     public static final @UnmodifiableView List<MembershipMode> VALUES;
 
-    public boolean H(String string, List<String> list) {
+    public boolean matchesAny(String string, List<String> list) {
         for (String string2 : list) {
-            if (!this.Q(string, string2)) continue;
+            if (!this.matches(string, string2)) continue;
             return true;
         }
         return false;
     }
 
     public static MembershipMode N(String string) {
-        return MembershipMode.t(string, IS_IN);
+        return MembershipMode.fromNameOrDefault(string, IS_IN);
     }
 
     @Override
     public String getName() {
-        return this.A;
+        return this.label;
     }
 
     private MembershipMode(String string2) {
-        this.A = string2;
+        this.label = string2;
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    public boolean Q(String string, String string2) {
+    public boolean matches(String string, String string2) {
         string = string.toLowerCase();
         string2 = string2.toLowerCase();
         switch (this) {
@@ -55,8 +55,8 @@ implements INamed {
         return false;
     }
 
-    public static MembershipMode t(String string, MembershipMode membershipMode) {
-        MembershipMode membershipMode2 = MembershipMode.C(string);
+    public static MembershipMode fromNameOrDefault(String string, MembershipMode membershipMode) {
+        MembershipMode membershipMode2 = MembershipMode.fromName(string);
         return membershipMode2 == null ? membershipMode : membershipMode2;
     }
 
@@ -69,7 +69,7 @@ implements INamed {
     }
 
     @Nullable
-    public static MembershipMode C(String string) {
+    public static MembershipMode fromName(String string) {
         for (MembershipMode membershipMode : VALUES) {
             if (!membershipMode.getName().equalsIgnoreCase(string)) continue;
             return membershipMode;

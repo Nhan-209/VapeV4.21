@@ -15,12 +15,12 @@ import gg.vape.wrapper.impl.Vec3;
 
 public class HitBoxes
 extends Mod {
-    private final NumberValue Z = NumberValue.create((Object)this, "Expand amount", "#.##", "", 0.0, 0.35, 1.0, 0.01);
+    private final NumberValue expandAmount = NumberValue.create((Object)this, "Expand amount", "#.##", "", 0.0, 0.35, 1.0, 0.01);
     private static final long k = -170962805321564187L;
 
     public HitBoxes() {
         super("HitBoxes", (int)k, Category.w, "Expands entities hitboxes");
-        this.addValue(this.Z);
+        this.addValue(this.expandAmount);
     }
 
     @EventHandler
@@ -37,7 +37,7 @@ extends Mod {
             double d5;
             Vec3 vec3 = useEntityPacketBridge.O();
             Entity entity = useEntityPacketBridge.C(Minecraft.theWorld());
-            double d6 = (Double)this.Z.K();
+            double d6 = (Double)this.expandAmount.K();
             double d7 = entity.b();
             AxisAlignedBB axisAlignedBB = entity.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().expand(d7, d7, d7);
             AxisAlignedBB axisAlignedBB2 = entity.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().expand(d7 + d6, d7 + d6, d7 + d6);
@@ -95,7 +95,7 @@ extends Mod {
         if (!this.r$src$Z$14eylz9()) {
             return 0.0f;
         }
-        return ((Double)this.Z.K()).floatValue();
+        return ((Double)this.expandAmount.K()).floatValue();
     }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
