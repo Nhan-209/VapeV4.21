@@ -1,110 +1,130 @@
 package gg.vape.module.combat;
 
+import gg.vape.config.ClientSettings;
+import gg.vape.event.EventHandler;
+import gg.vape.event.impl.EventPreAttack;
+import gg.vape.event.impl.EventPreTick;
+import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.combat.wtap.WTapRightClickUseCancelMode;
-import gg.vape.module.combat.wtap.WTapSprintResetMode;
-import gg.vape.unmap.ModeSelection;
-import gg.vape.value.ModeValue;
+import gg.vape.utils.TimerUtil;
+import gg.vape.value.BooleanValue;
 import gg.vape.value.NumberValue;
-import gg.vape.value.SubModuleValue;
-import java.lang.invoke.CallSite;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.invoke.MutableCallSite;
-import java.util.HashMap;
-import java.util.Map;
+import gg.vape.wrapper.impl.KeyBinding;
+import gg.vape.wrapper.impl.Minecraft;
+import gg.vape.wrapper.impl.Packet;
 
-public class WTap
+public class HitSelect1
 extends Mod {
-    private final SubModuleValue<WTapRightClickUseCancelMode> rightClickUseCancel = new WTapRightClickUseCancelMode(this, "Right-click use cancel").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-    private static final String[] stringPoolA;
-    private static final Map callSiteCache;
-    private final NumberValue chance;
-    private final SubModuleValue<WTapSprintResetMode> sprintReset = new WTapSprintResetMode(this, "Normal").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-    private static final long constB;
-    private static final long moduleId;
-    private static final String[] stringPoolB;
-    private final ModeValue mode = ModeValue.create((Object)this, "Mode", this.rightClickUseCancel, this.rightClickUseCancel, this.sprintReset);
+    private final NumberValue chance = NumberValue.E(this, "Chance", "#", "%", 0.0, 90.0, 100.0, "Chance of WTapping when hitting a target");
+    private final TimerUtil rePressTimer;
+    private final NumberValue releaseDelay = NumberValue.create(this, "Release delay", "#", "", 0.0, 0.0, 500.0, 50.0, "Delay before releasing W key after hitting a target");
+    private boolean releasePending;
+    private final TimerUtil releaseTimer;
+    private final NumberValue rePressDelay = NumberValue.create(this, "Re-press delay", "#", "", 0.0, 0.0, 500.0, 50.0, "Delay before re-pressing W key after releasing it");
+    private final BooleanValue selectHits = BooleanValue.create(this, "Select hits", true, "Only WTap when the target is vulnerable");
+    private boolean rePressPending;
+    private static final long MODULE_ID = -5147998889622254014L;
 
-    private static Object bootstrapInvoke(MethodHandles.Lookup lookup, MutableCallSite mutableCallSite, String string, Object[] objectArray) {
-        if (objectArray != null && objectArray.length >= 2 && objectArray[0] instanceof Integer && objectArray[1] instanceof Long) {
-            return WTap.decodeConstant((Integer)objectArray[0], (Long)objectArray[1]);
+    private void handleRePress() {
+        if (this.rePressTimer.hasTimeElapsed(((Double)this.rePressDelay.K()).longValue())) {
+            KeyBinding keyBinding = Minecraft.gameSettings().Y();
+            boolean bl = ClientSettings.B(keyBinding);
+            if (bl) {
+                keyBinding.setPressed(true);
+            }
+            this.rePressPending = false;
         }
-        return "";
     }
 
-    private static String decodeUtf8(byte[] byArray) {
-        int n = byArray.length;
-        char[] cArray = new char[n];
-        int n2 = 0;
-        for (int i = 0; i < n; ++i) {
-            char c;
-            int n3 = byArray[i] & 0xFF;
-            if (n3 < 192) {
-                cArray[n2++] = (char)n3;
-                continue;
+
+    @EventHandler
+    public void onPreAttack(EventPreAttack eventPreAttack) {
+        boolean bl = Packet.h();
+        if (bl) {
+            int n;
+            boolean bl2;
+            boolean bl3 = eventPreAttack.getTarget().isInstance(MappedClasses.lG);
+            if (!bl3) {
+                return;
             }
-            if (n3 < 224) {
-                c = (char)((n3 & 0x1F) << 6);
-                n3 = byArray[++i];
-                cArray[n2++] = (char)(c | n3 & 0x3F);
-                continue;
+            boolean bl4 = this.releasePending;
+            if (bl4 || (bl2 = this.rePressPending)) {
+                return;
             }
-            if (i >= n - 2) continue;
-            c = (char)((n3 & 0xF) << 12);
-            n3 = byArray[++i];
-            c = (char)(c | (n3 & 0x3F) << 6);
-            n3 = byArray[++i];
-            cArray[n2++] = (char)(c | n3 & 0x3F);
+            boolean bl5 = this.selectHits.L();
+            if (bl5 && (n = eventPreAttack.getTarget().V$src$I$fk0dv5()) > 14) {
+                return;
+            }
+            if (this.F$src$Z$oodzg7()) {
+                this.releasePending = true;
+                this.releaseTimer.reset();
+                this.handleRelease();
+            }
+            return;
         }
-        return new String(cArray, 0, n2);
+        boolean bl6 = eventPreAttack.getTarget().isInstance(MappedClasses.lG);
+        boolean bl7 = bl6;
+        boolean bl8 = bl7;
+        boolean bl9 = bl8;
+        if (bl9) {
+            this.releasePending = true;
+            this.releaseTimer.reset();
+            this.handleRelease();
+        }
     }
 
-    private static String decodeConstant(int n, long l) {
-        return "";
+    public HitSelect1() {
+        super("WTap", (int)MODULE_ID, Category.g);
+        this.releaseTimer = new TimerUtil();
+        this.rePressTimer = new TimerUtil();
+        this.addValue(this.chance, this.releaseDelay, this.rePressDelay, this.selectHits);
+        this.releaseDelay.C(0);
+    }
+
+    @EventHandler
+    public void onTick(EventPreTick eventPreTick) {
+        boolean bl = Packet.A();
+        if (bl) {
+            boolean bl2 = Minecraft.currentScreen().isNull();
+            boolean bl3 = bl2;
+            if (bl3) {
+                this.handleRePress();
+                return;
+            }
+            return;
+        }
+        boolean bl4 = Minecraft.currentScreen().isNull();
+        if (!bl4) {
+            return;
+        }
+        boolean bl5 = this.releasePending;
+        if (bl5) {
+            this.handleRelease();
+            return;
+        }
+        if (this.rePressPending) {
+            this.handleRePress();
+            return;
+        }
+    }
+
+    private void handleRelease() {
+        if (this.releaseTimer.hasTimeElapsed(((Double)this.releaseDelay.K()).longValue())) {
+            KeyBinding keyBinding = Minecraft.gameSettings().Y();
+            keyBinding.setPressed(false);
+            this.releasePending = false;
+            this.rePressTimer.reset();
+            this.rePressPending = true;
+        }
     }
 
     @Override
     public String r() {
-        return this.E() + " " + this.chance.c() + "%";
+        return this.releaseDelay.c();
     }
 
-
-    public WTap() {
-        super("WTap", 0, (int)moduleId, Category.g, "");
-        this.chance = NumberValue.create(this, "Chance", "#", "%", 0.0, 90.0, 100.0);
-        this.addValue(this.mode, this.chance);
-        this.mode.Z$src$Lgg_vape_value_Value_$16i62fx("Mode");
-        this.chance.C(0);
-    }
-
-    private static CallSite bootstrapCallSite(MethodHandles.Lookup lookup, String string, MethodType methodType) {
-        return new MutableCallSite(methodType);
-    }
-
-    public boolean a$src$Z$1npvv6h() {
-        return (Double)this.chance.java_lang_Object_K() >= Math.random() * 100.0;
-    }
-
-    public boolean o$src$Z$1nxkzhj() {
-        if (!this.rightClickUseCancel.o()) {
-            return false;
-        }
-        return this.rightClickUseCancel.getInstance().l();
-    }
-
-    @Override
-    public String E() {
-        return ((ModeSelection)this.mode.java_lang_Object_K()).getName();
-    }
-
-    static {
-        constB = 0L;
-        moduleId = 0L;
-        callSiteCache = new HashMap(13);
-        stringPoolA = new String[7];
-        stringPoolB = new String[7];
+    public boolean F$src$Z$oodzg7() {
+        return (Double)this.chance.K() >= Math.random() * 100.0;
     }
 }
-
