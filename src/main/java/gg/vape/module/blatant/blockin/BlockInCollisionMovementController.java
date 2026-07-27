@@ -5,7 +5,6 @@ import gg.vape.module.blatant.blockin.AbstractBlockInMovementController;
 import gg.vape.module.blatant.blockin.BlockPlacementGraph;
 import gg.vape.module.utility.MLGBlockWrapper;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.impl.AttributeInstance;
 import gg.vape.wrapper.impl.AttributeModifier;
@@ -27,12 +26,10 @@ import gg.vape.wrapper.impl.MoverType;
 import gg.vape.wrapper.impl.PotionRegistry;
 import gg.vape.wrapper.impl.Vec3;
 import gg.vape.wrapper.impl.World;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 public class BlockInCollisionMovementController
 extends AbstractBlockInMovementController {
-    private static final long a;
 
     private void W() {
         this.p.h(this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().addVector(0.0, -0.04f, 0.0));
@@ -123,7 +120,6 @@ extends AbstractBlockInMovementController {
     }
 
     private void Q() {
-        long l = a ^ 0x7E1753DC4857L;
         this.p.i$src$Z$1imh02c();
         this.K();
         int n = 29999999;
@@ -190,9 +186,6 @@ extends AbstractBlockInMovementController {
         this.p.I((float)this.p.z(MonsterAttributesBridge.B()));
     }
 
-    static {
-        long l = a = ZkmLongKeyState.a(-7653622228977836893L, -3345714754478271165L, MethodHandles.lookup().lookupClass()).a(128550825976072L);
-    }
 
     public double R() {
         return (double)this.p.X() < 0.4 ? 0.0 : 0.4;
@@ -201,7 +194,6 @@ extends AbstractBlockInMovementController {
     public void f() {
         boolean bl;
         boolean bl2;
-        long l = a ^ 0x2CDC9AA79BD9L;
         ++this.B;
         if (this.U > 0) {
             --this.U;

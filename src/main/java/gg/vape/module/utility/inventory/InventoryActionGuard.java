@@ -1,13 +1,11 @@
 package gg.vape.module.utility.inventory;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.RotationUtil;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.RayTraceResult;
 import gg.vape.wrapper.impl.World;
-import java.lang.invoke.MethodHandles;
 
 public class InventoryActionGuard {
     public int F;
@@ -17,7 +15,6 @@ public class InventoryActionGuard {
     public boolean P;
     int J;
     public int U;
-    private static final long keyState;
     public double K;
 
     public void g() {
@@ -26,7 +23,6 @@ public class InventoryActionGuard {
     }
 
     public InventoryActionGuard(int n) {
-        long l = keyState ^ 0x5A0ECCB6A085L;
         this.M = (int)keyConstant;
         this.J = n;
     }
@@ -88,8 +84,6 @@ public class InventoryActionGuard {
     }
 
     static {
-        keyState = ZkmLongKeyState.a(-6226687703500341076L, -7256017301923789720L, MethodHandles.lookup().lookupClass()).a(114042472694841L);
-        long l = keyState ^ 0x6B72078F9BA8L;
         keyConstant = 1665370352093495306L;
     }
 

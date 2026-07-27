@@ -6,7 +6,6 @@ import gg.vape.module.utility.clutch.BlockPlacementNode;
 import gg.vape.module.utility.clutch.ClutchPlacementCoordinate;
 import gg.vape.module.utility.clutch.PlacementTarget;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.unmap.ItemLimitData;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.FastAtanMath;
@@ -28,7 +27,6 @@ import gg.vape.wrapper.impl.RayTraceResult_type;
 import gg.vape.wrapper.impl.Vec3;
 import gg.vape.wrapper.impl.Vec3i;
 import gg.vape.wrapper.impl.World;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -38,11 +36,9 @@ import java.util.Vector;
 public class ClutchPlacementPathUtils {
     private static EnumFacing[] horizontalFacings;
     private static EnumFacing[] allFacings;
-    private static final long KEY;
 
     public static Vector<PlacementTarget> l(BlockData blockData, Vec3 vec3, EntityPlayerSP entityPlayerSP, World world, BlockData blockData2, EnumFacing enumFacing, EnumFacing enumFacing2, BlockPathSearchStrategy<PlacementTarget> blockPathSearchStrategy, int n) {
         int n2;
-        long l = KEY ^ 0x481C8344B9L;
         if (n > blockPathSearchStrategy.w() || !blockPathSearchStrategy.V(blockData2)) {
             return null;
         }
@@ -331,7 +327,6 @@ public class ClutchPlacementPathUtils {
     }
 
     public static Stack<BlockPlacementNode> o(BlockData blockData, EnumFacing enumFacing, EnumFacing enumFacing2, BlockPathSearchStrategy<BlockPlacementNode> blockPathSearchStrategy, int n) {
-        long l = KEY ^ 0x7990A3448E3AL;
         if (n > blockPathSearchStrategy.w() || !blockPathSearchStrategy.V(blockData)) {
             return null;
         }
@@ -581,7 +576,6 @@ public class ClutchPlacementPathUtils {
     public static Vector<PlacementTarget> o(BlockData blockData, BlockData blockData2, BlockPathSearchStrategy<PlacementTarget> blockPathSearchStrategy, int n) {
         int n2;
         int n3;
-        long l = KEY ^ 0x4016F2B4FC7AL;
         if (n > blockPathSearchStrategy.w()) {
             return null;
         }
@@ -631,9 +625,6 @@ public class ClutchPlacementPathUtils {
         return vector;
     }
 
-    static {
-        long l = KEY = ZkmLongKeyState.a(-769599283210447215L, -4955092915845506252L, MethodHandles.lookup().lookupClass()).a(204035390088142L);
-    }
 
     public static float y(Vec3 vec3, Vec3 vec32, float f, float f2) {
         double d = vec3.getX() - vec32.getX();

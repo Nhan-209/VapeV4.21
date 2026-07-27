@@ -1,8 +1,6 @@
 package gg.vape.utils;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 
 public class FastAtanMath {
     private static final float[] w;
@@ -20,7 +18,6 @@ public class FastAtanMath {
     private static final float[] M;
 
     static {
-        long l = ZkmLongKeyState.a(7256486859358660544L, -1858946232421587601L, MethodHandles.lookup().lookupClass()).a(123760459224504L) ^ 0x42561B1C77DBL;
         long[] lArray = new long[]{-4778158233560709471L, -4211190230859807071L, 3095591377875076769L, -5764595647449561440L, 8562453793512457888L};
         a = (int)lArray[3];
         U = (int)lArray[2];

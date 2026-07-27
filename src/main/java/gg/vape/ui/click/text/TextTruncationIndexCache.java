@@ -2,11 +2,9 @@ package gg.vape.ui.click.text;
 
 import gg.vape.Vape;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.text.TextTruncationIndexLruCache;
 import gg.vape.ui.click.text.TruncatedTextSpec;
 import gg.vape.ui.font.SmoothFontRenderer;
-import java.lang.invoke.MethodHandles;
 import java.util.LinkedHashMap;
 
 public class TextTruncationIndexCache {
@@ -23,7 +21,6 @@ public class TextTruncationIndexCache {
     }
 
     static {
-        long l = ZkmLongKeyState.a(-3459048365626913539L, -7150995780154406557L, MethodHandles.lookup().lookupClass()).a(255620945587324L) ^ 0x6FAAD355DE3CL;
         long l2 = -8931204442707983872L;
         F = (int)l2;
         J = new TextTruncationIndexCache();

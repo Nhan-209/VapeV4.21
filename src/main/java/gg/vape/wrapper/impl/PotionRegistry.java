@@ -1,11 +1,9 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.PotionEffect;
 import gg.vape.wrapper.impl.PotionEntry;
 import gg.vape.wrapper.impl.PotionEntryResolveException;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -122,7 +120,6 @@ public class PotionRegistry {
     }
 
     static {
-        long obfuscationKey = ZkmLongKeyState.a(8623487671835989574L, -3792940149398042944L, MethodHandles.lookup().lookupClass()).a(120033080550299L) ^ 0x111651689408L;
         if (PotionRegistry.g()) {
             PotionRegistry.x(true);
         }

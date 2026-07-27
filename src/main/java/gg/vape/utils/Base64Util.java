@@ -1,8 +1,6 @@
 package gg.vape.utils;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -107,7 +105,6 @@ public class Base64Util {
 
     static {
         try {
-            long l = ZkmLongKeyState.a(5229949440871493755L, -3520943145378102996L, MethodHandles.lookup().lookupClass()).a(162226105230902L) ^ 0x7C13482A6B13L;
             String string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
             p = string.toCharArray();
         }

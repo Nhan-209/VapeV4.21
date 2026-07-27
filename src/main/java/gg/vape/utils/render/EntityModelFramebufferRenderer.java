@@ -2,7 +2,6 @@ package gg.vape.utils.render;
 
 import gg.vape.mapping.MappedClasses;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.render.EntityModelRenderBackend;
 import gg.vape.utils.render.EntityModelRenderCache;
 import gg.vape.utils.render.GlFramebuffer;
@@ -18,7 +17,6 @@ import gg.vape.wrapper.impl.Render;
 import gg.vape.wrapper.impl.RenderHelper;
 import gg.vape.wrapper.impl.ResourceLocation;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -27,7 +25,6 @@ import org.lwjgl.opengl.GL30;
 
 public class EntityModelFramebufferRenderer
 implements EntityModelRenderBackend {
-    private static final long a;
     GlFramebuffer b;
 
     @Override
@@ -37,7 +34,6 @@ implements EntityModelRenderBackend {
     }
 
     private void E(ResourceLocation resourceLocation) {
-        long l = a ^ 0x5075DCF48357L;
         int n = 32;
         int n2 = 32;
         int n3 = ForgeVersion.MC_1_7_10.L() ? 32 : 0;
@@ -113,7 +109,6 @@ implements EntityModelRenderBackend {
 
     @Override
     public void g(float f, float f2, int n, int n2, Color color, float f3) {
-        long l = a ^ 0x77DE43D73630L;
         GL11.glEnable((int)2903);
         boolean bl = GL11.glIsEnabled((int)3553);
         boolean bl2 = GL11.glIsEnabled((int)2896);
@@ -169,9 +164,6 @@ implements EntityModelRenderBackend {
         this.E(resourceLocation);
     }
 
-    static {
-        long l = a = ZkmLongKeyState.a(-3299161649916191848L, -7083752019901308553L, MethodHandles.lookup().lookupClass()).a(131746295237392L);
-    }
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;

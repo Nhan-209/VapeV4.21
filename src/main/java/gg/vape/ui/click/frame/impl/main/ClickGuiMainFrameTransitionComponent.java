@@ -1,13 +1,11 @@
 package gg.vape.ui.click.frame.impl.main;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.impl.main.ClickGuiMainFrame;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 
 public class ClickGuiMainFrameTransitionComponent
 extends GuiComponent {
@@ -30,11 +28,9 @@ extends GuiComponent {
     }
 
     static {
-        long l = ZkmLongKeyState.a(-8855750056418110153L, 6257482076485576117L, MethodHandles.lookup().lookupClass()).a(76024814092178L);
         if (ClickGuiMainFrameTransitionComponent.L$src$Ljava_lang_String_$yxjgps() == null) {
             ClickGuiMainFrameTransitionComponent.l("xzrYmc");
         }
-        long l2 = l ^ 0x158F851BA5C8L;
         long l3 = -1000193941785175962L;
         I = (int)l3;
     }

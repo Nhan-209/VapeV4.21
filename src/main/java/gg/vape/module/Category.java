@@ -1,9 +1,7 @@
 package gg.vape.module;
 
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.unmap.INamed;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +40,6 @@ implements INamed {
     }
 
     static {
-        long l = ZkmLongKeyState.a(-3573214478707175568L, 2523039242100043595L, MethodHandles.lookup().lookupClass()).a(29575479490111L) ^ 0x26F2D550465FL;
         if (Category.N$src$ALgg_vape_ui_click_component_GuiComponent_$lect5v() == null) {
             Category.q(new GuiComponent[4]);
         }

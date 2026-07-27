@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.GlFramebuffer;
 import gg.vape.utils.render.GlImageTexture;
@@ -28,7 +27,6 @@ import gg.vape.wrapper.impl.RenderItem;
 import gg.vape.wrapper.impl.RenderItemTextBridge;
 import gg.vape.wrapper.impl.StringTextComponent;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -38,12 +36,10 @@ import org.lwjgl.opengl.GL30;
 
 public class Post117ItemIconFramebufferRenderer
 implements ItemIconRenderBackend {
-    private static final long a;
     GlFramebuffer T;
 
     @Override
     public void N(ItemStack itemStack, float f) {
-        long l = a ^ 0x7C348847DFA1L;
         RenderBatchManager.M().G(0.0f);
         int n = 32;
         int n2 = 32;
@@ -264,9 +260,6 @@ implements ItemIconRenderBackend {
         this.s(f, f2, n, n2, f3, false);
     }
 
-    static {
-        long l = a = ZkmLongKeyState.a(7097361812473510189L, -7792505871681037769L, MethodHandles.lookup().lookupClass()).a(110703290539284L);
-    }
 
     @Override
     public void e() {

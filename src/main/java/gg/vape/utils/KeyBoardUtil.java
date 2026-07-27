@@ -3,8 +3,6 @@ package gg.vape.utils;
 import gg.vape.input.InputEventDispatcher;
 import gg.vape.runtime.NativeBridge;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 
 public class KeyBoardUtil {
     public static final int Q;
@@ -28,7 +26,6 @@ public class KeyBoardUtil {
     }
 
     static {
-        long l = ZkmLongKeyState.a(8829161073084604285L, 202540234728940416L, MethodHandles.lookup().lookupClass()).a(9886929620216L) ^ 0x661F72DC6D52L;
         long[] lArray = new long[]{8077820790617145376L, 297696900683923521L, 7634409973295874135L, -1542298918925107117L, -3486869839207726942L, -6499915239893499644L, -477195949194608480L, -4462240591253602043L, -3345871758006681532L, 350199465673490688L, 2390434692210884865L};
         h = (int)lArray[10];
         g = (int)lArray[7];

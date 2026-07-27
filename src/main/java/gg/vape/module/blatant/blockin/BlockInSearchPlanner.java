@@ -4,10 +4,8 @@ import gg.vape.module.blatant.BlockIn;
 import gg.vape.module.utility.clutch.BlockPathSearchStrategy;
 import gg.vape.module.utility.clutch.PlacementTarget;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.datas.BlockData;
 import gg.vape.wrapper.impl.EnumFacing;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -18,7 +16,6 @@ public class BlockInSearchPlanner {
     private static EnumFacing[] w;
     private final BlockPathSearchStrategy<PlacementTarget> d;
     private int b;
-    private static final long a;
     private static EnumFacing[] q;
     private final Map<BlockData, Vector<PlacementTarget>> M;
     private static final long c;
@@ -54,8 +51,6 @@ public class BlockInSearchPlanner {
     }
 
     static {
-        a = ZkmLongKeyState.a(6753659793262653093L, -7467193493958934863L, MethodHandles.lookup().lookupClass()).a(18769592477966L);
-        long l = a ^ 0x180035C71979L;
         c = -1361127528260960257L;
     }
 
@@ -64,7 +59,6 @@ public class BlockInSearchPlanner {
     }
 
     public Vector<PlacementTarget> F(BlockData blockData, BlockData blockData2, int n, Vector<PlacementTarget> vector) {
-        long l = a ^ 0x672624528AA8L;
         ++this.b;
         if (this.M.containsKey(blockData)) {
             return this.M.get(blockData);

@@ -13,7 +13,6 @@ import gg.vape.notification.NotificationType;
 import gg.vape.notification.SoundClip;
 import gg.vape.notification.TextNotificationContent;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.utils.MathUtil;
@@ -22,7 +21,6 @@ import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.value.BooleanValue;
 import gg.vape.wrapper.impl.Minecraft;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +30,6 @@ public class NotificationManager
 implements EventListener {
     private final Map<NotificationGroup, BooleanValue> v;
     private final ArrayBlockingQueue<INotification> e = new ArrayBlockingQueue(20);
-    private static final long a = ZkmLongKeyState.a(-6236732698269716720L, 7787865171980094945L, MethodHandles.lookup().lookupClass()).a(213280198486620L);
     private long p;
     private static int l;
     private final Map<NotificationType, SoundClip> C = new HashMap<NotificationType, SoundClip>();
@@ -83,7 +80,6 @@ implements EventListener {
     }
 
     public void J() {
-        long l = a ^ 0xC2365663BB5L;
         int n = NotificationManager.i();
         if (Minecraft.theWorld().isNull() || Minecraft.thePlayer().isNull()) {
             return;

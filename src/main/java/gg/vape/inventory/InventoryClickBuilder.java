@@ -6,8 +6,6 @@ import gg.vape.inventory.InventoryClickOptionsStage;
 import gg.vape.inventory.InventoryClickSlotStage;
 import gg.vape.inventory.InventoryClickWindowStage;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 
 public class InventoryClickBuilder
 implements InventoryClickWindowStage,
@@ -17,12 +15,10 @@ InventoryClickBuildStage {
     private int e;
     private int u;
     private int m;
-    private static final long a;
     private int W;
 
     @Override
     public InventoryClickBuildStage D(int n) {
-        long l = a ^ 0x613895C2792AL;
         this.e = 2;
         this.m = n;
         return this;
@@ -34,7 +30,6 @@ InventoryClickBuildStage {
 
     @Override
     public InventoryClickBuildStage E(int n) {
-        long l = a ^ 0x47625B486066L;
         this.e = 5;
         this.m = n;
         return this;
@@ -52,9 +47,6 @@ InventoryClickBuildStage {
         return this;
     }
 
-    static {
-        long l = a = ZkmLongKeyState.a(-7166944455035180926L, 8509409652536648132L, MethodHandles.lookup().lookupClass()).a(145861546482329L);
-    }
 
     @Override
     public InventoryClickBuildStage b() {
@@ -63,7 +55,6 @@ InventoryClickBuildStage {
 
     @Override
     public InventoryClickBuildStage I(boolean bl) {
-        long l = a ^ 0x67385A91E181L;
         this.e = 4;
         this.m = bl ? 1 : 0;
         return this;
@@ -77,7 +68,6 @@ InventoryClickBuildStage {
 
     @Override
     public InventoryClickBuildStage O() {
-        long l = a ^ 0x6EE44CFC6D2BL;
         this.e = 3;
         return this;
     }
@@ -95,7 +85,6 @@ InventoryClickBuildStage {
 
     @Override
     public InventoryClickBuildStage O(boolean bl) {
-        long l = a ^ 0x2D1C364D868CL;
         this.e = 6;
         this.m = bl ? 1 : 0;
         return this;

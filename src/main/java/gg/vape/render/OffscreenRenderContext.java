@@ -1,6 +1,5 @@
 package gg.vape.render;
 
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.TimerUtil;
 import gg.vape.utils.render.GlFramebuffer;
 import gg.vape.utils.render.GlImageTexture;
@@ -17,7 +16,6 @@ import gg.vape.wrapper.impl.GameSettings;
 import gg.vape.wrapper.impl.GlStateManager;
 import gg.vape.wrapper.impl.Minecraft;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -25,7 +23,6 @@ import org.lwjgl.opengl.GL30;
 
 public class OffscreenRenderContext {
     private GlFramebuffer t;
-    private static final long a = ZkmLongKeyState.a(-8859360445857927563L, 5957914099028421359L, MethodHandles.lookup().lookupClass()).a(183697058671874L);
     private Framebuffer E;
     public float K;
     public double H;
@@ -60,7 +57,6 @@ public class OffscreenRenderContext {
     }
 
     static {
-        long l = a ^ 0x3D96D3D7BDDCL;
         OffscreenRenderContext.U(null);
     }
 
@@ -159,7 +155,6 @@ public class OffscreenRenderContext {
         GameSettings gameSettings;
         EntityRenderer entityRenderer;
         Entity entity;
-        long l = a ^ 0x3E1747E3C2D5L;
         entity = null;
         entityRenderer = null;
         gameSettings = null;
@@ -367,7 +362,6 @@ public class OffscreenRenderContext {
     }
 
     public OffscreenRenderContext(boolean bl, int n, int n2) {
-        long l = a ^ 0x4E368F6E2AB8L;
         this.I = new TimerUtil();
         this.Q = 30;
         this.C = bl;

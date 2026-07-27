@@ -4,7 +4,6 @@ import func.skidline.RectData;
 import gg.vape.Vape;
 import gg.vape.input.MouseInput;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.animation.DoubleAnimation;
@@ -15,7 +14,6 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.RenderUtils;
 import gg.vape.value.NumberValue;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -33,7 +31,6 @@ extends SliderComponentBase {
     private double O;
     private double jw;
     private NumberSliderInputHandle jp;
-    private static final long ab;
     private double v;
     private RectData jm;
     private int jv;
@@ -57,14 +54,11 @@ extends SliderComponentBase {
     }
 
     static {
-        ab = ZkmLongKeyState.a(-7416898314097674143L, -3845444827873714241L, MethodHandles.lookup().lookupClass()).a(93933529335533L);
-        long l = ab ^ 0x51E6FEC68D2BL;
         cb = 2501393815093379082L;
     }
 
     public NumberSliderComponent(String string, double d, double d2, double d3) {
         super(string);
-        long l = ab ^ 0x2915B385D40EL;
         this.a = "";
         this.jf = 0.75;
         this.jv = 1;

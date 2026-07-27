@@ -2,9 +2,7 @@ package gg.vape.friend;
 
 import gg.vape.protocol.PresenceState;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +36,6 @@ public enum OnlineStatus {
     }
 
     static {
-        long l = ZkmLongKeyState.a(6320747935386971457L, 2591768852517169992L, MethodHandles.lookup().lookupClass()).a(270098238059700L) ^ 0x2F21C1F64914L;
         String[] stringArray = new String[]{"AWAY", "Online", "Offline", "Away", "ONLINE", "OFFLINE"};
 
 

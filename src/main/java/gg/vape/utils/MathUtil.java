@@ -1,9 +1,7 @@
 package gg.vape.utils;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.wrapper.impl.Vec3i;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -17,7 +15,6 @@ public class MathUtil {
     private static int s;
     private static final double[] Y;
     private static final long[] b;
-    private static final long a;
     private static final float[] A;
     private static final double Z;
     private static final Integer[] c;
@@ -62,7 +59,6 @@ public class MathUtil {
     }
 
     public static long S(int n, int n2, int n3) {
-        long l = a ^ 0x6027AE152517L;
         long l2 = (long)(n * 3129871) ^ (long)n3 * 116129781L ^ (long)n2;
         l2 = l2 * l2 * 42317861L + l2 * 11L;
         return l2;
@@ -162,8 +158,6 @@ public class MathUtil {
     }
 
     static {
-        a = ZkmLongKeyState.a(-6353328471489758168L, -5037433861543756320L, MethodHandles.lookup().lookupClass()).a(246429716887710L);
-        long l = a ^ 0x10C13D000E50L;
         d = new HashMap(13);
         MathUtil.g(91);
         long[] lArray = new long[]{-5058601735682614043L, -6095211415617468827L, -3400524149349193330L, -334337254439352656L, -3133572606271077933L};
@@ -193,7 +187,6 @@ public class MathUtil {
     }
 
     public static final float sin(float f) {
-        long l = a ^ 0x6426BB42360L;
         return A[(int)(f * 10430.378f) & 0xFFFF];
     }
 
@@ -305,7 +298,6 @@ public class MathUtil {
     }
 
     public static final float cos(float f) {
-        long l = a ^ 0x7A04625BAA2BL;
         return A[(int)(f * 10430.378f + 16384.0f) & 0xFFFF];
     }
 

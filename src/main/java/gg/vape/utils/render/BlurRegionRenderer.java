@@ -2,7 +2,6 @@ package gg.vape.utils.render;
 
 import gg.vape.Vape;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.render.GlImageTexture;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.OpenGlBackendHolder;
@@ -10,14 +9,12 @@ import gg.vape.utils.render.RenderBatchBuilder;
 import gg.vape.utils.render.RenderBatchManager;
 import gg.vape.wrapper.impl.GlStateManager;
 import gg.vape.wrapper.impl.Minecraft;
-import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 import java.util.function.Supplier;
 import org.lwjgl.opengl.GL11;
 
 public class BlurRegionRenderer {
     private int Z = -1;
-    private static final long a = ZkmLongKeyState.a(-2872469218236996901L, -3211630272103781112L, MethodHandles.lookup().lookupClass()).a(109364196820520L);
     private int P;
     private boolean h = false;
     private static boolean e;
@@ -122,7 +119,6 @@ public class BlurRegionRenderer {
     }
 
     private void B() {
-        long l = a ^ 0x48BCEDB25080L;
         this.Z = GL11.glGenTextures();
         GL11.glBindTexture((int)3553, (int)this.Z);
         GL11.glTexParameteri((int)3553, (int)10241, (int)9729);
@@ -134,7 +130,6 @@ public class BlurRegionRenderer {
     }
 
     static {
-        long l = a ^ 0x650B55E23470L;
         BlurRegionRenderer.k(false);
     }
 }

@@ -1,7 +1,6 @@
 package gg.vape.ui.click.frame.impl.main;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.component.GuiComponent;
@@ -9,7 +8,6 @@ import gg.vape.ui.click.frame.impl.main.ClickGuiMainFrame;
 import gg.vape.ui.click.frame.impl.main.ClickGuiOverlayPlacement;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -84,7 +82,6 @@ extends GuiComponent {
     }
 
     static {
-        long l = ZkmLongKeyState.a(308283174018154567L, -1647764670322056144L, MethodHandles.lookup().lookupClass()).a(138982598455660L) ^ 0x3AE3B42B1E07L;
         long l2 = -2320619047542800124L;
         a = (int)l2;
     }

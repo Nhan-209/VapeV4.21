@@ -12,7 +12,6 @@ import gg.vape.friend.activity.ActivitySnapshotPayloadBuilder;
 import gg.vape.friend.activity.ActivityTargetData;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.animation.DoubleAnimation;
 import gg.vape.utils.EnchantmentUtil;
 import gg.vape.wrapper.impl.Enchantment;
@@ -25,7 +24,6 @@ import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.PotionEffect;
 import gg.vape.wrapper.impl.PotionEntry;
 import gg.vape.wrapper.impl.PotionRegistry;
-import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,7 +38,6 @@ public class OnlineFriendActivityState {
     private float a;
     private final ActivityItemStack[] o;
     private double F;
-    private static final long c;
     private int f;
     private boolean R;
     HashMap<Integer, Integer> D;
@@ -95,9 +92,6 @@ public class OnlineFriendActivityState {
         return this.y;
     }
 
-    static {
-        long l = c = ZkmLongKeyState.a(-1953053434810928886L, 2142196726388423058L, MethodHandles.lookup().lookupClass()).a(150621316233070L);
-    }
 
     @Nullable
     public String O() {
@@ -268,7 +262,6 @@ public class OnlineFriendActivityState {
     }
 
     public OnlineFriendActivityState(OnlineFriend onlineFriend) {
-        long l = c ^ 0x56298B2A72E2L;
         this.v = new HashSet<OnlineFriendActivityType>(Arrays.asList(new OnlineFriendActivityType[0]));
         this.O = 0;
         this.S = 1000000;

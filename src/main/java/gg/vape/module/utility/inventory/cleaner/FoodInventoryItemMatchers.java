@@ -11,7 +11,6 @@ import gg.vape.module.utility.inventory.cleaner.StringInventoryItemMatcher;
 import gg.vape.module.utility.inventory.cleaner.StringInventoryItemMatcherBuilder;
 import gg.vape.module.utility.inventory.cleaner.StringMatchOperator;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.wrapper.impl.DataComponentMap;
 import gg.vape.wrapper.impl.DataComponents;
 import gg.vape.wrapper.impl.FoodProperties;
@@ -19,7 +18,6 @@ import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemStack;
 import gg.vape.wrapper.impl.TileEntityEnderChest;
-import java.lang.invoke.MethodHandles;
 
 public class FoodInventoryItemMatchers {
     public static final CompositeInventoryItemMatcher a;
@@ -34,7 +32,6 @@ public class FoodInventoryItemMatchers {
     }
 
     static {
-        long l = ZkmLongKeyState.a(2786964799863358521L, 7483758666246314709L, MethodHandles.lookup().lookupClass()).a(247062353089996L) ^ 0x23BF6F382913L;
         String[] stringArray = new String[]{"baked_", "cooked_", "cooked-food-hover@2x", "Cooked food", "Any type of cooked food", "food-hover@2x", "Any food", "Any type of food", "cooked-food", "any-food"};
         a = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(stringArray[9])).m(stringArray[6])).M(stringArray[7])).H(stringArray[5])).A(InventoryItemMatcherGroup.FOOD)).t(FoodInventoryItemMatchers::isFoodItem).N(FoodInventoryItemMatchers::compareByNutrition)).q();
         O = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.c().y().n(stringArray[8])).m(stringArray[3])).M(stringArray[4])).H(stringArray[2])).A(InventoryItemMatcherGroup.FOOD)).R(stringArray[1], StringMatchOperator.STARTS).R(stringArray[0], StringMatchOperator.STARTS).N(a.v())).g();

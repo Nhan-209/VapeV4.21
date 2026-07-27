@@ -1,9 +1,7 @@
 package gg.vape.module.render;
 
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.GuiRenderPrimitives;
-import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
@@ -20,11 +18,7 @@ public class NameTagsFramebufferState {
     private final int O;
     private int p;
     private int R;
-    private static final long a;
 
-    static {
-        long l = a = ZkmLongKeyState.a(2676890115449465497L, 7584017144292170L, MethodHandles.lookup().lookupClass()).a(274000219470436L);
-    }
 
     public NameTagsFramebufferState(int n, int n2, int n3, int n4) {
         this.E = n;
@@ -35,7 +29,6 @@ public class NameTagsFramebufferState {
     }
 
     public void V() {
-        long l = a ^ 0x5B275D057D79L;
         if (GuiRenderPrimitives.d()) {
             BufferedGuiRenderPrimitives.k.b();
             BufferedGuiRenderPrimitives.X.z();
@@ -63,7 +56,6 @@ public class NameTagsFramebufferState {
     }
 
     public void N() {
-        long l = a ^ 0x6A54BF1BC8DDL;
         this.Y.clear();
         gg.vape.wrapper.impl.GL11.X(2978, this.Y);
         IntBuffer intBuffer = BufferUtils.createIntBuffer((int)16);
@@ -96,7 +88,6 @@ public class NameTagsFramebufferState {
     }
 
     private void o() {
-        long l = a ^ 0x5530FBEEC827L;
         IntBuffer intBuffer = BufferUtils.createIntBuffer((int)16);
         gg.vape.wrapper.impl.GL11.X(36006, intBuffer);
         int n = intBuffer.get(0);

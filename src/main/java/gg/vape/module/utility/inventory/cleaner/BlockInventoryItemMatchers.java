@@ -12,8 +12,6 @@ import gg.vape.module.utility.inventory.cleaner.StringInventoryItemMatcher;
 import gg.vape.module.utility.inventory.cleaner.StringInventoryItemMatcherBuilder;
 import gg.vape.module.utility.inventory.cleaner.StringMatchOperator;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 import java.util.Map;
 
 public class BlockInventoryItemMatchers {
@@ -21,7 +19,6 @@ public class BlockInventoryItemMatchers {
     public static final StringInventoryItemMatcher f;
 
     static {
-        long l = ZkmLongKeyState.a(475504922505559631L, 6400724473693546478L, MethodHandles.lookup().lookupClass()).a(65256027543423L) ^ 0x6DD6C1FBCB29L;
         String[] stringArray = new String[]{"building-block-hover@2x", "_planks", "building-blocks", "any-block", "obsidian", "blocks-hover@2x", "stone", "_wool", "Any block", "Any type of building block", "Building blocks", "red_sandstone", "terracotta", "end_stone"};
         x = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.c().Y().n(stringArray[3])).m(stringArray[8])).H(stringArray[5])).A(InventoryItemMatcherGroup.BLOCKS)).Q(MappedClasses.Vw).p(InventoryMatcherListMode.WHITELIST).o();
         StringInventoryItemMatcherBuilder stringInventoryItemMatcherBuilder = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.c().y().n(stringArray[2])).m(stringArray[10])).M(stringArray[9])).H(stringArray[0])).A(InventoryItemMatcherGroup.BLOCKS)).R(stringArray[7], StringMatchOperator.ENDS).R(stringArray[6], StringMatchOperator.EQUALS).R(stringArray[1], StringMatchOperator.ENDS).R(stringArray[11], StringMatchOperator.EQUALS).R(stringArray[12], StringMatchOperator.ENDS).R(stringArray[13], StringMatchOperator.EQUALS).R(stringArray[4], StringMatchOperator.EQUALS);

@@ -9,7 +9,6 @@ import gg.vape.rotation.RotationAngles;
 import gg.vape.rotation.RotationManager;
 import gg.vape.rotation.WorldPointRotationTarget;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.RotationVectorMath;
@@ -20,7 +19,6 @@ import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GuiScreen;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.Vec3;
-import java.lang.invoke.MethodHandles;
 import java.util.Random;
 
 public class AdaptiveRotationController
@@ -34,7 +32,6 @@ implements WorldPointRotationTarget {
     private float u;
     private float q;
     private float M;
-    private static final long ab;
     private MutableColor i;
     private boolean C;
     private MutableColor d;
@@ -130,7 +127,6 @@ implements WorldPointRotationTarget {
 
     public AdaptiveRotationController(EntityPlayer entityPlayer) {
         super(entityPlayer.J(), entityPlayer.V());
-        long l = ab ^ 0x19DB70686F23L;
         this.T = false;
         this.Yw = true;
         this.X = null;
@@ -187,7 +183,6 @@ implements WorldPointRotationTarget {
 
     public AdaptiveRotationController() {
         super(RotationManager.b.V(), RotationManager.b.x());
-        long l = ab ^ 0x2A4A2FC7396CL;
         this.T = false;
         this.Yw = true;
         this.X = null;
@@ -272,7 +267,6 @@ implements WorldPointRotationTarget {
 
     public AdaptiveRotationController(float f, float f2) {
         super(f, f2);
-        long l = ab ^ 0x744B39BBC488L;
         this.T = false;
         this.Yw = true;
         this.X = null;
@@ -312,7 +306,6 @@ implements WorldPointRotationTarget {
     }
 
     static {
-        long l = ab = ZkmLongKeyState.a(-915302726099468086L, 4832910824752226030L, MethodHandles.lookup().lookupClass()).a(88426775899320L);
         H = new RotationAngles(0.0f, 0.0f);
     }
 

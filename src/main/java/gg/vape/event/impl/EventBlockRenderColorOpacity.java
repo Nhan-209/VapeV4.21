@@ -5,9 +5,7 @@ import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
 import gg.vape.module.none.XRay;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.wrapper.impl.WorldRenderer;
-import java.lang.invoke.MethodHandles;
 import java.nio.ByteOrder;
 
 public class EventBlockRenderColorOpacity
@@ -19,12 +17,9 @@ extends Event {
     private static final EventListeners W;
     private final float i;
     private final float Z;
-    private static final long a;
     private final float T;
 
     static {
-        a = ZkmLongKeyState.a(2448036420751323018L, 1666187598548538221L, MethodHandles.lookup().lookupClass()).a(182774053238129L);
-        long l = a ^ 0x65BC65C0E6DBL;
         b = 22123904822673663L;
         W = new EventListeners();
     }
@@ -75,7 +70,6 @@ extends Event {
     }
 
     public EventBlockRenderColorOpacity(Object object, float f, float f2, float f3, int n) {
-        long l = a ^ 0x31FD4AA3F25BL;
         this.K = new WorldRenderer(object);
         this.i = f;
         this.Z = f2;

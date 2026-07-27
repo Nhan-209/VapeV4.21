@@ -1,7 +1,6 @@
 package gg.vape.ui.font;
 
 import gg.vape.Vape;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.font.SmoothFontGlyph;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.ui.font.stb.StbGlyphCache;
@@ -33,7 +32,6 @@ import org.lwjgl.opengl.GL11;
 
 public class StbSmoothFontRenderer
 extends SmoothFontRenderer {
-    private static final long b = ZkmLongKeyState.a(-2223279065317353909L, -8000413667790170960L, MethodHandles.lookup().lookupClass()).a(155865678572753L);
     private boolean R;
     private static final float S = 1.0f;
     private static final Map i;
@@ -58,7 +56,6 @@ extends SmoothFontRenderer {
     }
 
     public StbSmoothFontRenderer(int n) {
-        long l = b ^ 0x21C1F9B45260L;
         this.P = null;
         this.V = -1;
         this.A = 0L;
@@ -69,7 +66,6 @@ extends SmoothFontRenderer {
     }
 
     private void H() {
-        long l = b ^ 0x4D80C99E4020L;
         int fontIdentity = -1;
         try {
             EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
@@ -160,7 +156,6 @@ extends SmoothFontRenderer {
     }
 
     private void A() {
-        long l = b ^ 0x501E4F9ED9C4L;
         if (this.R) {
             return;
         }
@@ -273,7 +268,6 @@ extends SmoothFontRenderer {
     }
 
     private void L(int n) {
-        long l = b ^ 0x17D1015711CCL;
         if (n == this.L) {
             return;
         }
@@ -300,7 +294,6 @@ extends SmoothFontRenderer {
     }
 
     static {
-        long l = b ^ 0x547A122178DAL;
         c = "[MCFontRenderer] Using legacy Minecraft font renderer fallback";
         i = new HashMap(13);
         long[] lArray = new long[]{-5498596787052345311L, 2953177498732805952L, 8091771335247660952L};

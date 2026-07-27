@@ -35,7 +35,6 @@ import gg.vape.movement.PlayerMovementTaskManager;
 import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.MouseButtonActionState;
 import gg.vape.rotation.MouseRotationController;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.MouseOverRayTraceUpdater;
@@ -65,7 +64,6 @@ import gg.vape.wrapper.impl.S08PacketPlayerPosLook;
 import gg.vape.wrapper.impl.ScaledResolution;
 import gg.vape.wrapper.impl.World;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.jetbrains.annotations.NotNull;
@@ -78,7 +76,6 @@ implements EventListener {
     private MouseRotationController E;
     private float p;
     private float N;
-    private static final long h;
     private static final RayTraceResult T;
     private float J;
     private float w;
@@ -287,7 +284,6 @@ implements EventListener {
     @EventHandler
     public void onRender2D(EventRender2D eventRender2D) {
         boolean bl;
-        long l = h ^ 0x2EC8F32A5A78L;
         EntityPlayerSP entityPlayerSP = eventRender2D.getThePlayer();
         if (!Vape.INSTANCE.getClientSettings().e.L().booleanValue() || entityPlayerSP.isNull() || Minecraft.currentScreen().isNotNull()) {
             return;
@@ -565,7 +561,6 @@ implements EventListener {
     }
 
     static {
-        long l = h = ZkmLongKeyState.a(-2476118316639125427L, 5609428254542020227L, MethodHandles.lookup().lookupClass()).a(245981429658525L);
         T = new RayTraceResult(null);
         b = new RotationManager();
     }

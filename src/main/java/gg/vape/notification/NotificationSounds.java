@@ -1,8 +1,6 @@
 package gg.vape.notification;
 
 import gg.vape.notification.SoundClip;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 
 public class NotificationSounds {
     public static final SoundClip P;
@@ -40,7 +38,6 @@ public class NotificationSounds {
 
     static {
         try {
-            long l = ZkmLongKeyState.a(7613601523163251817L, -6827259627466016642L, MethodHandles.lookup().lookupClass()).a(233770857830877L) ^ 0x18A84F8A3F2FL;
             String[] stringArray = new String[]{"party_invite", "ping", "message_rec"};
             N = new SoundClip(stringArray[1]);
             P = new SoundClip(stringArray[0]);

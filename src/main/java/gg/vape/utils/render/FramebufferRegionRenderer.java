@@ -1,14 +1,12 @@
 package gg.vape.utils.render;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.TimerUtil;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.utils.render.RenderUtils;
 import gg.vape.wrapper.impl.Framebuffer;
 import gg.vape.wrapper.impl.GlStateManager;
 import gg.vape.wrapper.impl.Minecraft;
-import java.lang.invoke.MethodHandles;
 import org.lwjgl.opengl.GL11;
 
 public class FramebufferRegionRenderer {
@@ -21,7 +19,6 @@ public class FramebufferRegionRenderer {
     private boolean V;
     public double g;
     private final TimerUtil H;
-    private static final long a;
     public float s;
     private int A;
     private boolean o;
@@ -64,7 +61,6 @@ public class FramebufferRegionRenderer {
     }
 
     public FramebufferRegionRenderer(int n, int n2) {
-        long l = a ^ 0x7E785DC26B82L;
         this.H = new TimerUtil();
         this.b = (int)c;
         this.o = this.o;
@@ -114,8 +110,6 @@ public class FramebufferRegionRenderer {
     }
 
     static {
-        a = ZkmLongKeyState.a(3593452480986081569L, -8681356790907125934L, MethodHandles.lookup().lookupClass()).a(218058567516763L);
-        long l = a ^ 0x4656C80C674EL;
         c = 3773695550600249374L;
     }
 

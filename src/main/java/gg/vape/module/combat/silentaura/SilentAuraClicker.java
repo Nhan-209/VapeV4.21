@@ -8,20 +8,15 @@ import gg.vape.module.combat.ClickerMod;
 import gg.vape.module.combat.SilentAura;
 import gg.vape.module.render.Animations;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.value.BooleanValue;
 import gg.vape.wrapper.impl.EntityPlayerSP;
-import java.lang.invoke.MethodHandles;
 
 public class SilentAuraClicker
 extends ClickerMod {
     private static final String c;
     private final SilentAura silentAura;
-    private static final long a;
 
     static {
-        a = ZkmLongKeyState.a(-648163879241163200L, -4399461328383509529L, MethodHandles.lookup().lookupClass()).a(173939022230375L);
-        long l = a ^ 0x6FD3D3438238L;
         c = "auraClicker";
     }
 
@@ -79,7 +74,6 @@ extends ClickerMod {
 
     public SilentAuraClicker(SilentAura silentAura) {
         super(c, 0, Category.b);
-        long l = a ^ 0x61D5216458AFL;
         this.silentAura = silentAura;
         ClickEngine clickEngine = new ClickEngine(ClickButton.LEFT, silentAura.Ze, silentAura.j, silentAura.ZP, silentAura.Z5, null, new BooleanValue((Object)null, "", false), this);
         this.F(clickEngine);

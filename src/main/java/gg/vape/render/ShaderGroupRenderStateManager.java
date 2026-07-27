@@ -3,14 +3,12 @@ package gg.vape.render;
 import gg.vape.Vape;
 import gg.vape.runtime.NativeBridge;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.wrapper.impl.EntityRenderer;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GameSettings;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.ResourceLocation;
 import gg.vape.wrapper.impl.ShaderGroup;
-import java.lang.invoke.MethodHandles;
 
 public class ShaderGroupRenderStateManager {
     private boolean m;
@@ -97,7 +95,6 @@ public class ShaderGroupRenderStateManager {
     }
 
     static {
-        long l = ZkmLongKeyState.a(-500134687794064834L, 652000920920823449L, MethodHandles.lookup().lookupClass()).a(138421015430970L) ^ 0x34269E86A622L;
         long l2 = 6018231015514832914L;
         X = (int)l2;
         e = new ShaderGroupRenderStateManager();

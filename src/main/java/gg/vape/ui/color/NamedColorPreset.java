@@ -1,9 +1,7 @@
 package gg.vape.ui.color;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,7 +58,6 @@ public enum NamedColorPreset {
     }
 
     static {
-        long l = ZkmLongKeyState.a(6292796914969353545L, -2250171624926582871L, MethodHandles.lookup().lookupClass()).a(142820548095054L) ^ 0x56ECCDBF9DF2L;
         if (NamedColorPreset.V() != null) {
             NamedColorPreset.S(new String[4]);
         }

@@ -1,8 +1,6 @@
 package gg.vape.click;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 import java.util.SplittableRandom;
 
 public class AutoClickerTimingState {
@@ -218,7 +216,6 @@ public class AutoClickerTimingState {
     }
 
     static {
-        long l = ZkmLongKeyState.a(-1942281053898075949L, -211652369097831418L, MethodHandles.lookup().lookupClass()).a(156166795305051L) ^ 0x45CADB14F363L;
         long[] lArray = new long[]{5312392413598187522L, -7076370236940746717L, -5481962850635218844L, 2643463619483795461L, -4122436621473677262L};
         T = (int)lArray[0];
         v = (int)lArray[1];

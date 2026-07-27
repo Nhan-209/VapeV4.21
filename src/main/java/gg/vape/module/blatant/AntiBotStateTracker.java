@@ -2,7 +2,6 @@ package gg.vape.module.blatant;
 
 import gg.vape.config.ClientSettings;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.unmap.ModeOption;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -10,7 +9,6 @@ import gg.vape.wrapper.impl.GameProfile;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.PlayerInfo;
 import gg.vape.wrapper.impl.ScorePlayerTeam;
-import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.UUID;
 
@@ -35,7 +33,6 @@ public class AntiBotStateTracker {
     }
 
     static {
-        long l = ZkmLongKeyState.a(-7375381742493683848L, 3774037022871011756L, MethodHandles.lookup().lookupClass()).a(186948238376750L) ^ 0x1A312167D68BL;
         long l2 = 4935014296091361535L;
         f = (char)l2;
     }

@@ -372,11 +372,9 @@ import gg.vape.mapping.mappings.MWorldInfo;
 import gg.vape.mapping.mappings.MWorldRenderer;
 import gg.vape.mapping.mappings.MWorldRendererBuilder;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.wrapper.impl.ForgeVersion;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -684,7 +682,6 @@ public class Mapper {
     public MTextureManager DW;
     public MPotionEffect C8;
     public MSPacketExplosion hQ;
-    private static final long ab;
     public MEnumActionResult RD;
     public MCPacketAnimation Q3;
     public MITooltipFlag hO;
@@ -754,7 +751,6 @@ public class Mapper {
     public MArmorMaterial e;
 
     public void loadMappings() {
-        long l = ab ^ 0x14E8AAD97F9FL;
         GuiComponent[] guiComponentArray = ForgeVersion.o();
         if (!Vape.INSTANCE.isNativeAvailable()) {
             this.C4 = new MLaunchClassLoader();
@@ -1219,7 +1215,6 @@ public class Mapper {
     }
 
     static {
-        ab = ZkmLongKeyState.a(1271617648792359494L, 929516721581660778L, MethodHandles.lookup().lookupClass()).a(211688109599109L);
         RF = new ArrayList<Mapping>();
         Mapper.j(34);
     }

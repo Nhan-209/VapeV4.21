@@ -1,8 +1,6 @@
 package gg.vape.utils;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 import java.util.TreeMap;
 
 public class RomanNumeralUtil {
@@ -97,7 +95,6 @@ public class RomanNumeralUtil {
 
     static {
         try {
-            long l = ZkmLongKeyState.a(4400003880949886732L, -7112870386424133101L, MethodHandles.lookup().lookupClass()).a(238291796328729L) ^ 0x5D6BDF35DFEL;
             String[] stringArray = new String[]{"IV", "CM", "XC", "XL", "IX", "CD"};
             p = new TreeMap();
             p.put(1000, "M");

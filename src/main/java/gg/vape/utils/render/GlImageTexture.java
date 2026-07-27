@@ -1,14 +1,12 @@
 package gg.vape.utils.render;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.unmap.ImageParser;
 import gg.vape.unmap.ImageParser$Format;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.wrapper.impl.GlStateManager;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.ContextCapabilities;
@@ -28,7 +26,6 @@ public class GlImageTexture {
     public float w;
     public int F;
     public int r;
-    private static final long a;
     public int D;
     public float p;
     private static int L;
@@ -39,7 +36,6 @@ public class GlImageTexture {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     public GlImageTexture(InputStream inputStream, int n, int n2, ImageParser$Format imageParser$Format) throws IOException {
-        long l = a ^ 0x2F4843B0D691L;
         this.v = 10497;
         this.n = 3553;
         this.C = 0.0f;
@@ -118,7 +114,6 @@ public class GlImageTexture {
     }
 
     public GlImageTexture(int n) {
-        long l = a ^ 0x55C6E9E55603L;
         this.v = 10497;
         this.n = 3553;
         this.C = 0.0f;
@@ -138,7 +133,6 @@ public class GlImageTexture {
 
     public static GlImageTexture J(int n, int n2, ByteBuffer byteBuffer, int n3, int n4, int n5) {
         boolean bl;
-        long l = a ^ 0x49462E3BEECDL;
         int n6 = GlStateManager.p();
         GlImageTexture glImageTexture = new GlImageTexture();
         glImageTexture.N = n2;
@@ -179,7 +173,6 @@ public class GlImageTexture {
     }
 
     public GlImageTexture(int n, int n2, int n3, float f, float f2, float f3, float f4) {
-        long l = a ^ 0x213B6F78746L;
         this.v = 10497;
         this.n = 3553;
         this.C = 0.0f;
@@ -200,7 +193,6 @@ public class GlImageTexture {
     }
 
     public void n(int n) {
-        long l = a ^ 0x46F9925E43E8L;
         if (!GuiRenderPrimitives.d()) {
             this.F();
             return;
@@ -235,12 +227,10 @@ public class GlImageTexture {
     }
 
     static {
-        long l = a = ZkmLongKeyState.a(842252555918399920L, -5543020354335729035L, MethodHandles.lookup().lookupClass()).a(30980163640429L);
         L = 0;
     }
 
     public GlImageTexture() {
-        long l = a ^ 0x47CF30962C68L;
         this.v = 10497;
         this.n = 3553;
         this.C = 0.0f;

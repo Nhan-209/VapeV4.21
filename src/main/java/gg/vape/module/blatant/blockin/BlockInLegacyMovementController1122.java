@@ -4,7 +4,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.blatant.blockin.AbstractBlockInMovementController;
 import gg.vape.module.blatant.blockin.BlockPlacementGraph;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.PlayerSimulationUtil;
 import gg.vape.wrapper.impl.AttributeInstance;
@@ -19,16 +18,13 @@ import gg.vape.wrapper.impl.MonsterAttributesBridge;
 import gg.vape.wrapper.impl.MoverType;
 import gg.vape.wrapper.impl.PotionRegistry;
 import gg.vape.wrapper.impl.World;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 public class BlockInLegacyMovementController1122
 extends AbstractBlockInMovementController {
-    private static final long a = ZkmLongKeyState.a(-255201125873829439L, 7162464027634338605L, MethodHandles.lookup().lookupClass()).a(201192532245173L);
     private static final long c;
 
     static {
-        long l = a ^ 0x5578E3F4C9EAL;
         c = -428257519865954297L;
     }
 
@@ -168,7 +164,6 @@ extends AbstractBlockInMovementController {
 
     @Override
     public void N() {
-        long l = a ^ 0x6B3F53A0F32EL;
         this.p.l$src$V$fw3v8a();
         ++this.B;
         if (this.U > 0) {

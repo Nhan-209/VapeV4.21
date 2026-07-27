@@ -16,12 +16,10 @@ import gg.vape.input.MouseInputState;
 import gg.vape.input.MouseMoveInputHandler;
 import gg.vape.input.MouseWheelInputHandler;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.RenderTypeBuffer;
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 
 public class InputEventDispatcher {
@@ -29,7 +27,6 @@ public class InputEventDispatcher {
     private InputFocusState M;
     private static InputEventDispatcher U;
     private MouseInputState S;
-    private static final long a;
     private KeyboardInputState K = new KeyboardInputState();
     private long N;
     private static int[] o;
@@ -86,7 +83,6 @@ public class InputEventDispatcher {
     }
 
     public void registerHandlers() {
-        long l = a ^ 0x10693719AC0DL;
         int[] nArray = InputEventDispatcher.c();
         this.y.put(258, new CharacterInputHandler());
         this.y.put(256, new KeyboardPressInputHandler());
@@ -129,7 +125,6 @@ public class InputEventDispatcher {
     }
 
     static {
-        a = ZkmLongKeyState.a(6224341716493192374L, -8737006317819562L, MethodHandles.lookup().lookupClass()).a(146197291856964L);
         if (InputEventDispatcher.c() != null) {
             InputEventDispatcher.M(new int[1]);
         }

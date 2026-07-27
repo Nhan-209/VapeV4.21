@@ -1,9 +1,7 @@
 package gg.vape.protocol;
 
 import gg.vape.protocol.ZeusProtocolState;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import io.netty.util.AttributeKey;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.regex.Pattern;
@@ -19,7 +17,6 @@ public class ZeusProtocolConstants {
     public static final int a;
 
     static {
-        long l = ZkmLongKeyState.a(-3569577212263168452L, 8250903570314983912L, MethodHandles.lookup().lookupClass()).a(154681301651387L) ^ 0x4CDE4151169DL;
         String[] stringArray = new String[]{"^[a-zA-Z\\d_.-]*$", "connection_state"};
         long[] lArray = new long[]{-1775853824527826689L, 5551149997770145808L, 5142080514882011146L, -1319690179857874936L, -694266774610247552L};
         C = (int)lArray[3];

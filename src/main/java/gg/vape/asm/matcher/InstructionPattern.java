@@ -1,8 +1,6 @@
 package gg.vape.asm.matcher;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 
 public abstract class InstructionPattern {
     public static final int K;
@@ -61,11 +59,9 @@ public abstract class InstructionPattern {
     }
 
     static {
-        long l = ZkmLongKeyState.a(7378283037773810616L, 894839147243541758L, MethodHandles.lookup().lookupClass()).a(181679908391079L);
         if (InstructionPattern.G() != null) {
             InstructionPattern.K("jHaNE");
         }
-        long l2 = l ^ 0x3FE9FFB93CDDL;
         long[] lArray = new long[]{-2327468895398526791L, -1358600573514940234L, -8503526305340325708L, -3693968536541069129L, 7643330736333783224L, -1797710973226712907L, 6908187125879931058L, -9093027909794266957L};
         k = (int)lArray[6];
         K = (int)lArray[5];

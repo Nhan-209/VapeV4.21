@@ -1,30 +1,23 @@
 package gg.vape.utils.render;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.render.GlFramebuffer;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.wrapper.impl.GlStateManager;
 import gg.vape.wrapper.impl.Minecraft;
-import java.lang.invoke.MethodHandles;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 class CachedTextTexture {
-    private static final long a;
     GlFramebuffer m;
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    static {
-        long l = a = ZkmLongKeyState.a(5347618236913570848L, -112249138873008230L, MethodHandles.lookup().lookupClass()).a(251031882435218L);
-    }
 
     void O(float f, float f2, int n, int n2) {
-        long l = a ^ 0x543C9C72DDF3L;
         OpenGlBackendHolder.d.l(2903);
         boolean bl = GL11.glIsEnabled((int)3553);
         boolean bl2 = GL11.glIsEnabled((int)2896);
@@ -85,7 +78,6 @@ class CachedTextTexture {
     }
 
     void D(String string, int n) {
-        long l = a ^ 0x25098B0C6B1DL;
         int n2 = Minecraft.getFontRenderer().getStringWidth(string);
         int n3 = Minecraft.getFontRenderer().FONT_HEIGHT(string);
         FloatBuffer floatBuffer = BufferUtils.createFloatBuffer((int)16);

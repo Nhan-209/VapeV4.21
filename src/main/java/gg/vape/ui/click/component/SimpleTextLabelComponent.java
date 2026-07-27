@@ -1,12 +1,10 @@
 package gg.vape.ui.click.component;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +16,6 @@ extends GuiComponent {
     private float i;
     private Color Q;
     private boolean v;
-    private static final long ab;
     protected String O;
     private static String[] K;
     protected double G;
@@ -115,13 +112,10 @@ extends GuiComponent {
     }
 
     static {
-        ab = ZkmLongKeyState.a(-8502842971929419728L, -9098647339533184222L, MethodHandles.lookup().lookupClass()).a(43695728038406L);
-        long l = ab ^ 0x3D5C045C7EC5L;
         SimpleTextLabelComponent.G((String[])null);
     }
 
     public SimpleTextLabelComponent(String string, double d) {
-        long l = ab ^ 0x56B7F6FE11EAL;
         this.Q = SimpleTextLabelComponent.J.h;
         this.I = 5.0f;
         this.i = 0.0f;

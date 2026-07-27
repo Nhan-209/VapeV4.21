@@ -1,9 +1,7 @@
 package gg.vape.module.render.hud;
 
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.unmap.INamed;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +38,6 @@ implements INamed {
     }
 
     static {
-        long l = ZkmLongKeyState.a(-8838303008983543313L, 3094688805978973295L, MethodHandles.lookup().lookupClass()).a(199117041565494L) ^ 0x7F52C098113FL;
         if (HudModuleGroup.l() != null) {
             HudModuleGroup.C(new GuiComponent[1]);
         }

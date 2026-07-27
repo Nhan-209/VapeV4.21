@@ -5,7 +5,6 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.render.hud.FreeLookHudModule;
 import gg.vape.runtime.NativeBridge;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.unmap.GLUtils;
 import gg.vape.utils.datas.HSBAData;
 import gg.vape.utils.datas.HSBData;
@@ -32,13 +31,11 @@ import gg.vape.wrapper.impl.ScorePlayerTeamTextComponent;
 import gg.vape.wrapper.impl.SharedMonsterAttributes;
 import gg.vape.wrapper.impl.Tessellator;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import org.lwjgl.opengl.GL11;
 
 public class RenderUtil {
     private static final GLUtils x;
     private static final GLUtils K;
-    private static final long a;
     private static final GLUtils y;
     private static final GLUtils p;
 
@@ -47,7 +44,6 @@ public class RenderUtil {
     }
 
     static {
-        long l = a = ZkmLongKeyState.a(6292540316681502535L, -7493871292502627190L, MethodHandles.lookup().lookupClass()).a(197878076146852L);
         p = Vape.INSTANCE.getGlUtils();
         K = new GLUtils();
         K.initializeVertexBuffer(48, 7);
@@ -256,7 +252,6 @@ public class RenderUtil {
     }
 
     public static Color N(Color color) {
-        long l = a ^ 0x615F387CD666L;
         int n = color.getRGB();
         n = 0xFFFFFF - n;
         return new Color(n);
@@ -265,7 +260,6 @@ public class RenderUtil {
     public static void U(String string, double d, double d2, double d3, double d4, double d5, int n, Color color, double d6, MatrixStack matrixStack) {
         float f;
         float f2;
-        long l = a ^ 0x1F04EE1C5E66L;
         GuiRenderPrimitives.U = true;
         FontRenderer fontRenderer = Minecraft.getFontRenderer();
         int n2 = n;

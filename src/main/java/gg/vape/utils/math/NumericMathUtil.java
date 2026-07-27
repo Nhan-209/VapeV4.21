@@ -1,14 +1,11 @@
 package gg.vape.utils.math;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.wrapper.impl.Vec3;
-import java.lang.invoke.MethodHandles;
 import java.util.function.Consumer;
 
 public class NumericMathUtil {
     private static final double g;
-    private static final long a;
     private static final double[] P;
     private static final double[] x;
     private static final float[] E;
@@ -161,7 +158,6 @@ public class NumericMathUtil {
     }
 
     public static float y(float f) {
-        long l = a ^ 0x193C4105DAB3L;
         return E[(int)(f * 10430.378f + 16384.0f) & 0xFFFF];
     }
 
@@ -171,7 +167,6 @@ public class NumericMathUtil {
     }
 
     static {
-        long l = a = ZkmLongKeyState.a(8424831522669036547L, 1107840836664613920L, MethodHandles.lookup().lookupClass()).a(259390716306152L);
         E = NumericMathUtil.S(new float[65536], NumericMathUtil::lambda$static$0);
         g = Double.longBitsToDouble(4805340802404319232L);
         P = new double[257];
@@ -195,7 +190,6 @@ public class NumericMathUtil {
     }
 
     public static float X(float f) {
-        long l = a ^ 0x462724DE8C6BL;
         return E[(int)(f * 10430.378f) & 0xFFFF];
     }
 

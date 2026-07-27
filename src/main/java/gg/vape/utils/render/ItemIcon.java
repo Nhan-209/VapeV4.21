@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.unmap.GLUtils;
 import gg.vape.utils.render.GlFramebuffer;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -9,7 +8,6 @@ import gg.vape.utils.render.ItemIconRenderBackend;
 import gg.vape.wrapper.impl.GlStateManager;
 import gg.vape.wrapper.impl.ItemStack;
 import gg.vape.wrapper.impl.Minecraft;
-import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -20,12 +18,10 @@ import org.lwjgl.opengl.GL11;
 public class ItemIcon
 implements ItemIconRenderBackend {
     GlFramebuffer I;
-    private static final long a;
     private GLUtils O = new GLUtils();
 
     @Override
     public void N(ItemStack itemStack, float f) {
-        long l = a ^ 0x4425ADDD3E0L;
         int n = 32;
         int n2 = 32;
         boolean bl = GL11.glIsEnabled((int)3089);
@@ -90,9 +86,6 @@ implements ItemIconRenderBackend {
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
     }
 
-    static {
-        long l = a = ZkmLongKeyState.a(2504101573194017989L, -6455608136057261555L, MethodHandles.lookup().lookupClass()).a(39144605691681L);
-    }
 
     public ItemIcon() {
         this.O.b(8, 7, 2);

@@ -12,7 +12,6 @@ import gg.vape.input.KeyBindingInputState;
 import gg.vape.module.Mod;
 import gg.vape.rotation.PlayerMouseRotationApplier;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.MathUtil;
 import gg.vape.value.BooleanValue;
@@ -24,7 +23,6 @@ import gg.vape.wrapper.impl.ItemStack;
 import gg.vape.wrapper.impl.KeyBinding;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.WorldClient;
-import java.lang.invoke.MethodHandles;
 import java.util.Random;
 
 public class ClickEngine {
@@ -38,7 +36,6 @@ public class ClickEngine {
     private final BooleanValue v;
     int R;
     int i;
-    private static final long b;
     int o;
     int a;
     double L;
@@ -62,7 +59,6 @@ public class ClickEngine {
     private final BooleanValue A;
 
     public ClickEngine(ClickButton clickButton, RandomValue randomValue, BooleanValue booleanValue, LimitValue limitValue, BooleanValue booleanValue2, ModeValue modeValue, BooleanValue booleanValue3, Mod mod) {
-        long l = b ^ 0x31F267BA84AL;
         this.J = 0;
         this.h = false;
         this.z = 0;
@@ -234,9 +230,7 @@ public class ClickEngine {
     }
 
     static {
-        b = ZkmLongKeyState.a(-3190216757213098391L, 2237199105462331670L, MethodHandles.lookup().lookupClass()).a(47205693224379L);
         ClickEngine.B(null);
-        long l = b;
     }
 
     public void d() {

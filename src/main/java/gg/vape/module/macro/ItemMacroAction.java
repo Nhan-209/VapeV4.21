@@ -11,7 +11,6 @@ import gg.vape.module.macro.ItemMacroActionState;
 import gg.vape.module.macro.MacroAction;
 import gg.vape.module.render.Animations;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.RandomUtil;
 import gg.vape.utils.TimerUtil;
 import gg.vape.wrapper.Wrapper;
@@ -19,7 +18,6 @@ import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.EntityPlayerMacroBridge;
 import gg.vape.wrapper.impl.Minecraft;
-import java.lang.invoke.MethodHandles;
 
 public class ItemMacroAction
 implements MacroAction {
@@ -29,15 +27,11 @@ implements MacroAction {
     private int step = 0;
     private boolean doubleClickArmed = false;
     private int savedSlot = -1;
-    private static final long key;
 
     public int K() {
         return this.savedSlot;
     }
 
-    static {
-        long l = key = ZkmLongKeyState.a(2612327236907924835L, 6591889970205458087L, MethodHandles.lookup().lookupClass()).a(138057076883091L);
-    }
 
     @Override
     public Macro g() {
@@ -77,7 +71,6 @@ implements MacroAction {
     public void Z() {
         Object object;
         int n;
-        long l = key ^ 0x1A6992AA6D1FL;
         if (this.savedSlot == -1) {
             n = ItemMacro.k(this.macro);
             if (n == -1) {

@@ -1,14 +1,11 @@
 package gg.vape.unmap;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 public class GLUtils {
-    private static final long a;
     private FloatBuffer D;
     private FloatBuffer U;
     private int C;
@@ -29,7 +26,6 @@ public class GLUtils {
     }
 
     public void draw() {
-        long l = a ^ 0x2A220A29807CL;
         GL11.glEnableClientState((int)32884);
         if (this.o != null) {
             GL11.glEnableClientState((int)32888);
@@ -47,9 +43,6 @@ public class GLUtils {
         this.P = 0;
     }
 
-    static {
-        long l = a = ZkmLongKeyState.a(-4598658973754943704L, 6812043998121544523L, MethodHandles.lookup().lookupClass()).a(86114679980381L);
-    }
 
     public void addVertex(double d, double d2, double d3) {
         this.g[this.N++] = (float)d;
@@ -88,7 +81,6 @@ public class GLUtils {
     }
 
     public GLUtils() {
-        long l = a ^ 0x644418FF3667L;
         this.b = 2;
         this.C = 7;
         this.N = -1;

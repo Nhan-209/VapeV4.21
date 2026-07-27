@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MRenderItem;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.Channel;
@@ -39,7 +38,6 @@ extends Wrapper {
     private static final Integer[] d;
     private static final Map e;
     private static Object h;
-    private static final long a;
     private static final long[] b;
 
     public static RenderItem d() {
@@ -72,7 +70,6 @@ extends Wrapper {
 
     public void a(ItemStack itemStack, int n, int n2, MatrixStack matrixStack) {
         boolean bl;
-        long l = a ^ 0x67BE7D33ECE3L;
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         Channel channel = this.f(itemStack, null, entityPlayerSP.getObject(), 0);
         this.e(this.T() + 50.0f);
@@ -116,9 +113,7 @@ extends Wrapper {
     }
 
     static {
-        a = ZkmLongKeyState.a(4090367329133739760L, -2825650224133352460L, MethodHandles.lookup().lookupClass()).a(48882885660434L);
         e = new HashMap(13);
-        long l = a ^ 0x1D4FDADADC94L;
         long[] lArray = new long[]{6381959226204642166L, 4564068455244414596L};
         b = lArray;
         d = new Integer[2];

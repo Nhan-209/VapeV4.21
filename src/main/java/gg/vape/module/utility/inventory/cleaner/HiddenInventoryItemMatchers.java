@@ -11,11 +11,9 @@ import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherRegistry;
 import gg.vape.module.utility.inventory.cleaner.InventoryMatcherListMode;
 import gg.vape.module.utility.inventory.cleaner.StringInventoryItemMatcherBuilder;
 import gg.vape.module.utility.inventory.cleaner.StringMatchOperator;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.wrapper.impl.ItemSplashPotion;
 import gg.vape.wrapper.impl.ItemStack;
 import gg.vape.wrapper.impl.PotionEffect;
-import java.lang.invoke.MethodHandles;
 import java.util.Comparator;
 import java.util.List;
 
@@ -36,7 +34,6 @@ public class HiddenInventoryItemMatchers {
     }
 
     static {
-        long l = ZkmLongKeyState.a(690085326167056579L, 2964139095904894394L, MethodHandles.lookup().lookupClass()).a(261407506857418L) ^ 0x4D66EE48C924L;
         String[] stringArray = new String[]{"Any bow", "Any type of potion", "any-bow", "other@2x", "any-potion", "Any Item", "Any type of bow", "any-item", "Any type of item", "Any potion"};
         R = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.c().y().n(stringArray[7])).m(stringArray[5])).M(stringArray[8])).H(stringArray[3])).A(InventoryItemMatcherGroup.HIDDEN)).R("", StringMatchOperator.ANY).g();
         J = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.c().Y().n(stringArray[2])).m(stringArray[0])).M(stringArray[6])).A(InventoryItemMatcherGroup.HIDDEN)).Q(MappedClasses.Vl).p(InventoryMatcherListMode.WHITELIST).N(Comparator.comparingDouble(HiddenInventoryItemMatchers::lambda$static$0))).o();

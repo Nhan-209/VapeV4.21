@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.mappings.MFontRenderer;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.GlScissorRect;
 import gg.vape.utils.render.OpenGlBackendHolder;
@@ -42,11 +41,9 @@ extends Wrapper {
     private static final long[] b;
     private static final Map e;
     private static final Integer[] d;
-    private static final long a;
     private HashMap<String, Integer> H = new HashMap();
 
     public int B(String string, double d, double d2, int n, boolean bl, RenderMatrix4f renderMatrix4f, SharedMonsterAttributes sharedMonsterAttributes, GlScissorRect glScissorRect) {
-        long l = a ^ 0x6F14D313CC65L;
         if (renderMatrix4f == null) {
             renderMatrix4f = new RenderMatrix4f().b();
             renderMatrix4f.u(BufferedGuiRenderPrimitives.l);
@@ -189,7 +186,6 @@ extends Wrapper {
     }
 
     private Void lambda$drawString3D$0(String string, double d, double d2, int n, boolean bl, RenderMatrix4f renderMatrix4f, SharedMonsterAttributes sharedMonsterAttributes) {
-        long l = a ^ 0x66E60586E816L;
         RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
         GlStateManager.disableDepth();
         this.p(string, (float)d, (float)d2, n, bl, renderMatrix4f.u(), renderItemFontBridge, sharedMonsterAttributes, 0, 15728880);
@@ -233,9 +229,7 @@ extends Wrapper {
     }
 
     static {
-        a = ZkmLongKeyState.a(667477054948976063L, -6833909000567153833L, MethodHandles.lookup().lookupClass()).a(198727480530257L);
         e = new HashMap(13);
-        long l = a ^ 0xE1F7DB518E3L;
         long[] lArray = new long[]{-3835351116449554658L, -5182186393326454707L};
         b = lArray;
         d = new Integer[2];

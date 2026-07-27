@@ -5,7 +5,6 @@ import gg.vape.module.blatant.blockin.AbstractBlockInMovementController;
 import gg.vape.module.blatant.blockin.BlockPlacementGraph;
 import gg.vape.module.utility.MLGBlockWrapper;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.math.NumericMathUtil;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.AttributeInstance;
@@ -35,13 +34,11 @@ import gg.vape.wrapper.impl.RayTraceContextFactory;
 import gg.vape.wrapper.impl.RayTraceResult_type;
 import gg.vape.wrapper.impl.Vec3;
 import gg.vape.wrapper.impl.World;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 public class BlockInEntityMovementController
 extends AbstractBlockInMovementController {
     private boolean h;
-    private static final long a;
 
     private void l$src$V$muqk5b() {
         this.W = this.E;
@@ -50,9 +47,6 @@ extends AbstractBlockInMovementController {
         this.Z = BlockInEntityMovementController.M(this.r, this.R);
     }
 
-    static {
-        long l = a = ZkmLongKeyState.a(6398869136590396384L, 6290548654227756087L, MethodHandles.lookup().lookupClass()).a(108831250848264L);
-    }
 
     private void J() {
         if (this.D.s$src$Z$1iryxzy()) {
@@ -108,7 +102,6 @@ extends AbstractBlockInMovementController {
     private void L() {
         boolean bl;
         boolean bl2;
-        long l = a ^ 0x4B2168C54DA6L;
         if (this.U > 0) {
             --this.U;
         }
@@ -405,7 +398,6 @@ extends AbstractBlockInMovementController {
     }
 
     private void Q() {
-        long l = a ^ 0x62A362164E6BL;
         this.p.z(false);
         if (this.p.O$src$Z$fg5u49() || this.p.f$src$Z$fst3rk()) {
             this.p.U(false);

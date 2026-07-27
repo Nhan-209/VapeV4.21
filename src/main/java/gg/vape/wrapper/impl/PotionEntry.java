@@ -2,7 +2,6 @@ package gg.vape.wrapper.impl;
 
 import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.StringUtils;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.EntityLiving;
@@ -13,7 +12,6 @@ import gg.vape.wrapper.impl.Potion;
 import gg.vape.wrapper.impl.PotionEntryBuilder;
 import gg.vape.wrapper.impl.PotionEntryResolveException;
 import gg.vape.wrapper.impl.StatusEffect;
-import java.lang.invoke.MethodHandles;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +24,6 @@ public class PotionEntry {
     private static final long b;
     private final Map<ForgeVersion, Integer> T;
     private final short M;
-    private static final long a;
     @Nullable
     private StatusEffect o;
 
@@ -40,8 +37,6 @@ public class PotionEntry {
     }
 
     static {
-        a = ZkmLongKeyState.a(-8936105033957281546L, 3117451763444770599L, MethodHandles.lookup().lookupClass()).a(223103126945105L);
-        long l = a ^ 0x7AEA175B43FL;
         b = 3010331125236105215L;
     }
 
@@ -58,7 +53,6 @@ public class PotionEntry {
     }
 
     void S() throws PotionEntryResolveException {
-        long l = a ^ 0x2FA57A08E3B0L;
         if (!this.H()) {
             return;
         }

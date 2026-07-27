@@ -1,8 +1,6 @@
 package gg.vape.protocol.packet;
 
 import gg.vape.protocol.ZeusPacketBuffer;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -16,7 +14,6 @@ public enum GroupOption {
     private final Object r;
 
     static {
-        long l = ZkmLongKeyState.a(4717177968474791541L, -8388064241494297822L, MethodHandles.lookup().lookupClass()).a(155041192211443L) ^ 0x43BFD16D2459L;
         String string = "OPEN_INVITES";
 
         h = new GroupOption[]{OPEN_INVITES};

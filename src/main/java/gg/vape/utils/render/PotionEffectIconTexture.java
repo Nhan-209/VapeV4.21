@@ -1,7 +1,6 @@
 package gg.vape.utils.render;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.GlFramebuffer;
 import gg.vape.utils.render.GlImageTexture;
@@ -26,7 +25,6 @@ import gg.vape.wrapper.impl.TextureAtlasSprite;
 import gg.vape.wrapper.impl.TextureManager;
 import gg.vape.wrapper.impl.TextureObject;
 import java.awt.Color;
-import java.lang.invoke.MethodHandles;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -36,15 +34,11 @@ import org.lwjgl.opengl.GL30;
 public class PotionEffectIconTexture
 implements PotionEffectIconRenderBackend {
     private GlFramebuffer v;
-    private static final long a;
 
     private static ObfuscatedRuntimeException a(ObfuscatedRuntimeException obfuscatedRuntimeException) {
         return obfuscatedRuntimeException;
     }
 
-    static {
-        long l = a = ZkmLongKeyState.a(-1713294923301791965L, -2557150658887031296L, MethodHandles.lookup().lookupClass()).a(107964190330282L);
-    }
 
     @Override
     public void l(float f, float f2, int n, int n2, float f3, boolean bl) {
@@ -97,7 +91,6 @@ implements PotionEffectIconRenderBackend {
 
     @Override
     public void a(PotionEffect potionEffect) {
-        long l = a ^ 0x6DC4BEC04C76L;
         RenderBatchManager.M().G(0.0f);
         int n = 18;
         int n2 = 18;

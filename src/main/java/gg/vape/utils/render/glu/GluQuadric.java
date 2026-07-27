@@ -1,14 +1,11 @@
 package gg.vape.utils.render.glu;
 
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
-import java.lang.invoke.MethodHandles;
 import org.lwjgl.opengl.GL11;
 
 public class GluQuadric {
     protected boolean O;
     protected int g;
-    private static final long a;
     protected int x;
     protected int P;
 
@@ -31,7 +28,6 @@ public class GluQuadric {
     }
 
     public GluQuadric() {
-        long l = a ^ 0xD552BF4A217L;
         this.g = 100012;
         this.P = 100020;
         this.O = false;
@@ -50,9 +46,6 @@ public class GluQuadric {
         this.O = bl;
     }
 
-    static {
-        long l = a = ZkmLongKeyState.a(-655184151920579710L, 4078561286628065379L, MethodHandles.lookup().lookupClass()).a(173643840157946L);
-    }
 
     protected float q(float f) {
         return (float)Math.cos(f);

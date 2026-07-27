@@ -6,9 +6,7 @@ import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcher;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherPreset;
 import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherPresetBuilder;
 import gg.vape.runtime.ObfuscatedRuntimeException;
-import gg.vape.runtime.obfuscation.ZkmLongKeyState;
 import gg.vape.wrapper.impl.ItemStack;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -81,7 +79,6 @@ public class InventoryItemMatcherPresetRegistry {
     }
 
     static {
-        long l = ZkmLongKeyState.a(-5115948449218827586L, -1244080179424378416L, MethodHandles.lookup().lookupClass()).a(5476051244694L) ^ 0x2F062EE4B2AL;
         String string = "No rule";
         presetsByName = new LinkedHashMap<String, InventoryItemMatcherPreset>();
         L = InventoryItemMatcherPreset.J().name(string).build();
