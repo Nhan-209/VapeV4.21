@@ -25,7 +25,6 @@ import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.RotationControlClaim;
 import gg.vape.rotation.RotationManager;
 import gg.vape.ui.click.frame.impl.hud.ActiveModuleStackFrame;
-import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.TimerUtil;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.RandomValue;
@@ -66,21 +65,18 @@ implements InventoryActionModule {
     private final BooleanValue closeInventory;
     private final BooleanValue inventoryOnly;
     private boolean suppressInput;
-    private static final int UNUSED_CONST_A;
     private final BooleanValue silentOpen;
     private boolean silentActive;
     private final RotationManager rotationManager;
     private final BooleanValue openInventory;
-    private static final int INVENTORY_SLOT_COUNT;
     private final BooleanValue randomSlot;
 
     private double computeDelay() {
-        int[] nArray = ModeSelection.q();
-        if (!this.extraRandomization.L().booleanValue()) {
-            return this.delay.B();
+        if (!this.extraRandomization.getEffectiveValue().booleanValue()) {
+            return this.delay.getRandomValue();
         }
-        double min = this.delay.q$src$D$vgz097();
-        double max = this.delay.M();
+        double min = this.delay.getMinimumValue();
+        double max = this.delay.getMaximumValue();
         double range = Math.max(1.0, max - min);
         double center = min + range * 0.5;
         double stdDev = Math.max(1.0, range / 4.0);
@@ -94,41 +90,41 @@ implements InventoryActionModule {
         return result;
     }
 
-    private int X(EntityPlayerSP entityPlayerSP) {
+    private int countTotems(EntityPlayerSP localPlayer) {
         int count = 0;
-        for (int i = 9; i <= 45; ++i) {
+        for (int slot = 9; slot <= 45; ++slot) {
             ItemMappingEntry itemMappingEntry;
-            ItemStack itemStack = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).I();
-            if (itemStack.isNull() || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack)) == null || !itemMappingEntry.M().toLowerCase().contains("totem_of_undying")) continue;
+            ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I();
+            if (itemStack.isNull() || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack)) == null || !itemMappingEntry.M().toLowerCase().contains("totem_of_undying")) continue;
             count += itemStack.t();
         }
         return count;
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void onSendClickBlock(EventSendClickBlockToController eventSendClickBlockToController) {
+    public void onSendClickBlock(EventSendClickBlockToController event) {
         if (this.suppressInput) {
-            eventSendClickBlockToController.setCancelled(true);
+            event.setCancelled(true);
         }
     }
 
     private void closeInventory() {
         GuiScreen guiScreen = Minecraft.currentScreen();
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
         if (this.inventoryOpen) {
             if (this.silentActive) {
                 this.silentActive = false;
                 if (this.rotationController != null) {
-                    this.rotationController.Y(3.0f);
-                    this.rotationController.D(true);
-                    this.rotationController.s(true);
-                    this.rotationManager.v(this.rotationController);
+                    this.rotationController.setSpeed(3.0f);
+                    this.rotationController.setRandomizeMovement(true);
+                    this.rotationController.setLinearAcceleration(true);
+                    this.rotationManager.releaseController(this.rotationController);
                     this.rotationController = null;
                 }
-                this.rotationClaim.X(this);
-                entityPlayerSP.Z$src$V$1ie832h();
-            } else if (this.closeInventory.L().booleanValue() && guiScreen.isNotNull()) {
-                entityPlayerSP.Z$src$V$1ie832h();
+                this.rotationClaim.release(this);
+                localPlayer.Z$src$V$1ie832h();
+            } else if (this.closeInventory.getEffectiveValue().booleanValue() && guiScreen.isNotNull()) {
+                localPlayer.Z$src$V$1ie832h();
             }
         }
         this.inventoryOpen = false;
@@ -136,7 +132,7 @@ implements InventoryActionModule {
     }
 
     @Override
-    public boolean x() {
+    public boolean isPerformingInventoryAction() {
         return this.r$src$Z$14eylz9() && !this.clickQueue.isEmpty();
     }
 
@@ -148,28 +144,28 @@ implements InventoryActionModule {
         return this.delayTimer.hasTimeElapsed(this.delayDuration);
     }
 
-    private void queueClick(int n, int n2, int n3, int n4) {
-        this.clickQueue.add(new InventoryClick(n, n2, n3, n4));
+    private void queueClick(int windowId, int slot, int mouseButton, int clickType) {
+        this.clickQueue.add(new InventoryClick(windowId, slot, mouseButton, clickType));
     }
 
-    private void M$src$V$g0nukx() {
-        if (this.silentOpen.L().booleanValue()) {
-            if (this.M$src$Z$g0nuod()) {
+    private void openInventory() {
+        if (this.silentOpen.getEffectiveValue().booleanValue()) {
+            if (this.isSilentOpenBlocked()) {
                 return;
             }
             this.silentActive = true;
             this.suppressInput = true;
             this.actionTimer.reset();
             this.rotationController = new AdaptiveRotationController();
-            this.rotationController.Y(0.0f);
-            this.rotationManager.S(this.rotationController);
+            this.rotationController.setSpeed(0.0f);
+            this.rotationManager.setController(this.rotationController);
         } else {
             KeyBinding keyBinding = Minecraft.gameSettings().j();
             if (ForgeVersion.MC_1_16_5.d()) {
-                KeyBindingHelper.a(keyBinding);
+                KeyBindingHelper.incrementPressTime(keyBinding);
             } else {
-                KeyBindingHelper.d(keyBinding, true);
-                KeyBindingHelper.v(keyBinding, false, false);
+                KeyBindingHelper.setPressedAndTick(keyBinding, true);
+                KeyBindingHelper.updateKeyBinding(keyBinding, false, false);
             }
         }
         this.inventoryOpen = true;
@@ -177,41 +173,41 @@ implements InventoryActionModule {
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void onClickMouse(EventClickMouse eventClickMouse) {
+    public void onClickMouse(EventClickMouse event) {
         if (this.suppressInput) {
-            eventClickMouse.setCancelled(true);
+            event.setCancelled(true);
         }
     }
 
-    private void b$src$V$gc7j1i() {
-        Object object = Minecraft.currentScreen().getObject();
-        if (object != this.lastScreen) {
+    private void trackScreenChange() {
+        Object currentScreen = Minecraft.currentScreen().getObject();
+        if (currentScreen != this.lastScreen) {
             this.resetDelayTimer();
         }
-        this.lastScreen = object;
+        this.lastScreen = currentScreen;
     }
 
     private void releaseMovementKeys(GameSettings gameSettings) {
         if (this.suppressInput) {
-            KeyBindingHelper.v(gameSettings.Y(), gg.vape.config.ClientSettings.B(gameSettings.Y()), true);
-            KeyBindingHelper.v(gameSettings.s(), gg.vape.config.ClientSettings.B(gameSettings.s()), true);
-            KeyBindingHelper.v(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), gg.vape.config.ClientSettings.B(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()), true);
-            KeyBindingHelper.v(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), gg.vape.config.ClientSettings.B(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3()), true);
-            KeyBindingHelper.v(gameSettings.O(), gg.vape.config.ClientSettings.B(gameSettings.O()), true);
-            KeyBindingHelper.v(gameSettings.r(), gg.vape.config.ClientSettings.B(gameSettings.r()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.Y(), gg.vape.config.ClientSettings.B(gameSettings.Y()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.s(), gg.vape.config.ClientSettings.B(gameSettings.s()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), gg.vape.config.ClientSettings.B(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), gg.vape.config.ClientSettings.B(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.O(), gg.vape.config.ClientSettings.B(gameSettings.O()), true);
+            KeyBindingHelper.updateKeyBinding(gameSettings.r(), gg.vape.config.ClientSettings.B(gameSettings.r()), true);
         }
     }
 
     @Override
     public ModDisplayInfo J() {
-        if (!this.showTotemCount.L().booleanValue()) {
+        if (!this.showTotemCount.getEffectiveValue().booleanValue()) {
             return null;
         }
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (localPlayer.isNull()) {
             return null;
         }
-        int totemCount = this.X(entityPlayerSP);
+        int totemCount = this.countTotems(localPlayer);
         Color color = new Color(255, 20, 20);
         if (totemCount >= 4) {
             color = new Color(2, 190, 58);
@@ -223,7 +219,7 @@ implements InventoryActionModule {
 
     @Override
     public void onDisable() {
-        ClientSettings.g(ActiveModuleStackFrame.class).w(this);
+        ClientSettings.getFrame(ActiveModuleStackFrame.class).removeModule(this);
         if (this.inventoryOpen && this.silentActive) {
             this.closeInventory();
         }
@@ -244,17 +240,12 @@ implements InventoryActionModule {
     }
 
 
-    static {
-        UNUSED_CONST_A = 1215;
-        INVENTORY_SLOT_COUNT = 45;
-    }
-
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
         boolean inInventoryScreen;
         boolean silentEquipping;
         if (this.suppressInput) {
-            if (this.actionTimer.hasTimeElapsed((long)this.silentMoveDelay.B())) {
+            if (this.actionTimer.hasTimeElapsed((long)this.silentMoveDelay.getRandomValue())) {
                 this.releaseMovementKeys(eventPrePlayerTick.getGameSettings());
                 this.suppressInput = false;
             } else {
@@ -265,28 +256,28 @@ implements InventoryActionModule {
             this.clickQueue.clear();
             return;
         }
-        this.b$src$V$gc7j1i();
-        EntityPlayerSP entityPlayerSP = eventPrePlayerTick.getThePlayer();
-        if (entityPlayerSP.isNull() || entityPlayerSP.M$src$Z$ff28xj()) {
+        this.trackScreenChange();
+        EntityPlayerSP localPlayer = eventPrePlayerTick.getThePlayer();
+        if (localPlayer.isNull() || localPlayer.M$src$Z$ff28xj()) {
             if (this.inventoryOpen && this.silentActive) {
                 this.closeInventory();
             }
             this.clickingSlot = false;
             return;
         }
-        if (!entityPlayerSP.p$src$Lgg_vape_wrapper_impl_Container_$1a6go00().isNull() && entityPlayerSP.p$src$Lgg_vape_wrapper_impl_Container_$1a6go00().getWindowId() != 0) {
+        if (!localPlayer.p$src$Lgg_vape_wrapper_impl_Container_$1a6go00().isNull() && localPlayer.p$src$Lgg_vape_wrapper_impl_Container_$1a6go00().getWindowId() != 0) {
             return;
         }
         GuiScreen guiScreen = Minecraft.currentScreen();
-        boolean silentOpenActive = silentEquipping = this.inventoryOpen && this.silentActive;
+        silentEquipping = this.inventoryOpen && this.silentActive;
         if (silentEquipping) {
             this.actionTimer.reset();
         }
-        boolean inventoryAccessible = inInventoryScreen = silentEquipping || guiScreen.isInstance(MappedClasses.YS) || guiScreen.isInstance(MappedClasses.n);
-        if (this.openInventory.L().booleanValue() && !inInventoryScreen) {
+        inInventoryScreen = silentEquipping || guiScreen.isInstance(MappedClasses.YS) || guiScreen.isInstance(MappedClasses.n);
+        if (this.openInventory.getEffectiveValue().booleanValue() && !inInventoryScreen) {
             this.clickQueue.clear();
         }
-        if (this.inventoryOnly.L().booleanValue() && !inInventoryScreen) {
+        if (this.inventoryOnly.getEffectiveValue().booleanValue() && !inInventoryScreen) {
             this.clickQueue.clear();
             return;
         }
@@ -294,11 +285,11 @@ implements InventoryActionModule {
             return;
         }
         if (!this.clickQueue.isEmpty()) {
-            if (this.I$src$Z$fygoax()) {
+            if (this.isClickDelayElapsed()) {
                 InventoryClick inventoryClick = this.clickQueue.poll();
                 if (inventoryClick != null) {
                     this.clickingSlot = true;
-                    inventoryClick.k();
+                    inventoryClick.execute();
                     this.clickingSlot = false;
                 }
                 this.actionTimer.reset();
@@ -310,8 +301,8 @@ implements InventoryActionModule {
             this.closeInventory();
             return;
         }
-        ItemStack itemStack = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(45).I();
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack);
+        ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(45).I();
+        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         if (itemMappingEntry != null && itemMappingEntry.M().toLowerCase().contains("totem_of_undying")) {
             if (this.inventoryOpen && this.clickQueue.isEmpty()) {
                 this.closePending = true;
@@ -319,18 +310,18 @@ implements InventoryActionModule {
             }
             return;
         }
-        int totemSlot = this.s$src$I$glk0tg();
+        int totemSlot = this.findTotemSlot();
         if (totemSlot != -1) {
-            if (this.openInventory.L().booleanValue() && !guiScreen.isInstance(MappedClasses.YS) && !silentEquipping) {
+            if (this.openInventory.getEffectiveValue().booleanValue() && !guiScreen.isInstance(MappedClasses.YS) && !silentEquipping) {
                 if (this.isDelayElapsed()) {
-                    this.M$src$V$g0nukx();
+                    this.openInventory();
                 }
                 return;
             }
             if (inInventoryScreen && !this.inventoryOpen) {
                 this.inventoryOpen = true;
             }
-            this.queueClick(entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), totemSlot, 40, 2);
+            this.queueClick(localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), totemSlot, 40, 2);
             this.resetClickTimer();
         }
         if (this.inventoryOpen && this.clickQueue.isEmpty()) {
@@ -352,21 +343,21 @@ implements InventoryActionModule {
         this.clickQueue = new ConcurrentLinkedQueue<InventoryClick>();
         this.openInventory = BooleanValue.create(this, "Open inventory", true, "Opens your inventory to equip a totem");
         this.silentOpen = BooleanValue.create(this, "Silent open", false, "Silently opens your inventory to equip a totem");
-        this.silentMoveDelay = RandomValue.G(this, "Silent move delay", "#", "ms", 50.0, 100.0, 120.0, 200.0, 1.0, "Delay before preventing movement keys after silently opening the inventory");
+        this.silentMoveDelay = RandomValue.createWithDescription(this, "Silent move delay", "#", "ms", 50.0, 100.0, 120.0, 200.0, 1.0, "Delay before preventing movement keys after silently opening the inventory");
         this.closeInventory = BooleanValue.create(this, "Close inventory", true, "Closes your inventory after equipping a totem");
         this.inventoryOnly = BooleanValue.create(this, "Inventory only", false, "Only equips a totem when in your inventory");
         this.randomSlot = BooleanValue.create(this, "Random slot", true, "Chooses a random totem slot from your inventory");
-        this.delay = RandomValue.G(this, "Delay", "#", "ms", 50.0, 100.0, 120.0, 200.0, 1.0, "How long to wait before equipping a totem");
+        this.delay = RandomValue.createWithDescription(this, "Delay", "#", "ms", 50.0, 100.0, 120.0, 200.0, 1.0, "How long to wait before equipping a totem");
         this.extraRandomization = BooleanValue.create(this, "Extra randomization", true, "Adds human-like timing variance while equipping totems");
         this.showTotemCount = BooleanValue.create(this, "Show totem count", false, "Renders your totem count on the center of your screen");
         this.random = new Random();
-        this.rotationManager = RotationManager.b;
-        this.rotationClaim = SharedModuleControlClaims.I;
-        this.openInventory.K(this.silentOpen, this.silentMoveDelay, this.closeInventory);
-        this.silentOpen.K(this.silentMoveDelay);
-        this.silentOpen.C().z(this.closeInventory);
+        this.rotationManager = RotationManager.INSTANCE;
+        this.rotationClaim = SharedModuleControlClaims.rotation;
+        this.openInventory.addDependentValues(this.silentOpen, this.silentMoveDelay, this.closeInventory);
+        this.silentOpen.addDependentValues(this.silentMoveDelay);
+        this.silentOpen.getDisabledCondition().applyTo(this.closeInventory);
         this.addValue(this.openInventory, this.silentOpen, this.silentMoveDelay, this.closeInventory, this.inventoryOnly, this.randomSlot, this.delay, this.extraRandomization, this.showTotemCount);
-        this.rotationClaim.l(this, 99);
+        this.rotationClaim.setPriority(this, 99);
     }
 
     private void resetClickTimer() {
@@ -375,17 +366,17 @@ implements InventoryActionModule {
         this.clickDelay = Math.max(1L, (long)autoTotem.computeDelay());
     }
 
-    private int s$src$I$glk0tg() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
+    private int findTotemSlot() {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
         ArrayList<Integer> totemSlots = new ArrayList<Integer>();
-        for (int i = 9; i < 45; ++i) {
+        for (int slot = 9; slot < 45; ++slot) {
             ItemMappingEntry itemMappingEntry;
-            ItemStack itemStack = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).I();
-            if (itemStack.isNull() || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack)) == null || !itemMappingEntry.M().toLowerCase().contains("totem_of_undying")) continue;
-            if (!this.randomSlot.L().booleanValue()) {
-                return i;
+            ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I();
+            if (itemStack.isNull() || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack)) == null || !itemMappingEntry.M().toLowerCase().contains("totem_of_undying")) continue;
+            if (!this.randomSlot.getEffectiveValue().booleanValue()) {
+                return slot;
             }
-            totemSlots.add(i);
+            totemSlots.add(slot);
         }
         if (totemSlots.isEmpty()) {
             return -1;
@@ -395,13 +386,13 @@ implements InventoryActionModule {
 
     private int findEmptySlot() {
         int slot;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
         for (slot = 36; slot < 45; ++slot) {
-            if (entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I().isNotNull()) continue;
+            if (localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I().isNotNull()) continue;
             return slot;
         }
         for (slot = 9; slot < 36; ++slot) {
-            if (entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I().isNotNull()) continue;
+            if (localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I().isNotNull()) continue;
             return slot;
         }
         return -1;
@@ -414,7 +405,7 @@ implements InventoryActionModule {
         }
     }
 
-    private boolean I$src$Z$fygoax() {
+    private boolean isClickDelayElapsed() {
         if (this.clickDelay <= 0L) {
             AutoTotem autoTotem = this;
             this.clickDelay = Math.max(1L, (long)autoTotem.computeDelay());
@@ -422,11 +413,11 @@ implements InventoryActionModule {
         return this.clickTimer.hasTimeElapsed(this.clickDelay);
     }
 
-    private boolean M$src$Z$g0nuod() {
+    private boolean isSilentOpenBlocked() {
         if (freecam == null) {
             freecam = Vape.INSTANCE.getModManager().getMod(Freecam.class);
         }
-        return freecam != null && freecam.r$src$Z$14eylz9() || this.rotationClaim.e(this) && !this.rotationClaim.h(this, true);
+        return freecam != null && freecam.r$src$Z$14eylz9() || this.rotationClaim.isBlockedFor(this) && !this.rotationClaim.acquire(this, true);
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
@@ -438,7 +429,7 @@ implements InventoryActionModule {
 
     @Override
     public void onEnable() {
-        ClientSettings.g(ActiveModuleStackFrame.class).c(this);
+        ClientSettings.getFrame(ActiveModuleStackFrame.class).addModule(this);
         this.resetDelayTimer();
         this.resetClickTimer();
     }
@@ -451,12 +442,12 @@ implements InventoryActionModule {
 
     private void blockMovementKeys(GameSettings gameSettings) {
         if (this.suppressInput) {
-            KeyBindingHelper.d(gameSettings.Y(), false);
-            KeyBindingHelper.d(gameSettings.s(), false);
-            KeyBindingHelper.d(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), false);
-            KeyBindingHelper.d(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), false);
-            KeyBindingHelper.d(gameSettings.O(), false);
-            KeyBindingHelper.d(gameSettings.r(), false);
+            KeyBindingHelper.setPressedAndTick(gameSettings.Y(), false);
+            KeyBindingHelper.setPressedAndTick(gameSettings.s(), false);
+            KeyBindingHelper.setPressedAndTick(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), false);
+            KeyBindingHelper.setPressedAndTick(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), false);
+            KeyBindingHelper.setPressedAndTick(gameSettings.O(), false);
+            KeyBindingHelper.setPressedAndTick(gameSettings.r(), false);
         }
     }
 }

@@ -10,14 +10,14 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 
 public class ClipboardUtil {
-    private static int T = 0;
+    private static int clipboardBackend = 0;
 
     public static void setText(String string) {
         try {
-            if (T == 0) {
-                ClipboardUtil.F();
+            if (clipboardBackend == 0) {
+                ClipboardUtil.detectClipboardBackend();
             }
-            switch (T) {
+            switch (clipboardBackend) {
                 case 1: {
                     StringSelection stringSelection = new StringSelection(string);
                     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -35,10 +35,10 @@ public class ClipboardUtil {
 
     public static String getText() {
         try {
-            if (T == 0) {
-                ClipboardUtil.F();
+            if (clipboardBackend == 0) {
+                ClipboardUtil.detectClipboardBackend();
             }
-            switch (T) {
+            switch (clipboardBackend) {
                 case 1: {
                     Transferable transferable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
                     if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
@@ -57,14 +57,13 @@ public class ClipboardUtil {
         }
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 
-    private static void F() {
-        int n;
-        boolean bl = GraphicsEnvironment.isHeadless();
-        T = n = bl ? 2 : 1;
+    private static void detectClipboardBackend() {
+        int selectedBackend;
+        boolean headless = GraphicsEnvironment.isHeadless();
+        clipboardBackend = selectedBackend = headless ? 2 : 1;
     }
 }
-

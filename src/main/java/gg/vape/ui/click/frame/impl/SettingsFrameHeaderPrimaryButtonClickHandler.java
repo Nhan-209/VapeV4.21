@@ -11,11 +11,11 @@ implements GuiClickListener {
     final Frame p;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         if (SettingsFrameHeaderComponent.D(this.D) != null) {
-            SettingsFrameHeaderComponent.D(this.D).P();
+            SettingsFrameHeaderComponent.D(this.D).onPrimaryClick();
         }
-        ClientSettings.f(this.p.getClass(), false);
+        ClientSettings.setFrameVisibility(this.p.getClass(), false);
     }
 
     SettingsFrameHeaderPrimaryButtonClickHandler(SettingsFrameHeaderComponent settingsFrameHeaderComponent, Frame frame) {

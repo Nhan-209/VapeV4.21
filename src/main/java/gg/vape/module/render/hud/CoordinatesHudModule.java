@@ -8,14 +8,13 @@ import gg.vape.value.ModeValue;
 
 public class CoordinatesHudModule
 extends HudModule {
-    public final ModeOption U = new ModeOption("Vertical");
-    public final ModeOption b = new ModeOption("Horizontal");
-    public final ModeValue p = ModeValue.create((Object)this, "Display Type", this.b, this.b, this.U);
+    public final ModeOption verticalMode = new ModeOption("Vertical");
+    public final ModeOption horizontalMode = new ModeOption("Horizontal");
+    public final ModeValue displayMode = ModeValue.create((Object)this, "Display Type", this.horizontalMode, this.horizontalMode, this.verticalMode);
 
     public CoordinatesHudModule() {
-        super("Coords", HudModuleGroup.f, "coords", CoordinatesHudFrame.class);
+        super("Coords", HudModuleGroup.HUD, "coords", CoordinatesHudFrame.class);
         this.setSuffix("Shows your current XYZ coordinates");
-        this.addValue(this.p);
+        this.addValue(this.displayMode);
     }
 }
-

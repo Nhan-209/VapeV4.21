@@ -60,7 +60,9 @@ public class ApiHttpClient {
             httpURLConnection.setReadTimeout(15000);
             httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             if (httpURLConnection instanceof HttpsURLConnection) {
-                ((HttpsURLConnection)httpURLConnection).setSSLSocketFactory(sSLContext.getSocketFactory());
+                HttpsURLConnection httpsConnection = (HttpsURLConnection)httpURLConnection;
+                httpsConnection.setSSLSocketFactory(sSLContext.getSocketFactory());
+                httpsConnection.setHostnameVerifier((hostname, session) -> true);
             }
             return function.apply(httpURLConnection);
         }
@@ -178,4 +180,3 @@ public class ApiHttpClient {
         return ApiHttpClient.w(string, "DELETE", clazz, object);
     }
 }
-

@@ -7,8 +7,7 @@ import gg.vape.ui.click.frame.impl.hud.CompassHudFrame;
 public class CompassHudModule
 extends HudModule {
     public CompassHudModule() {
-        super("Compass", HudModuleGroup.f, "compass_active", CompassHudFrame.class);
+        super("Compass", HudModuleGroup.HUD, "compass_active", CompassHudFrame.class);
         this.setSuffix("Shows a compass indicating your direction");
     }
 }
-

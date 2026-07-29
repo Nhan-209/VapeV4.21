@@ -106,7 +106,7 @@ extends Wrapper {
     }
 
     public void s(float f, int n) {
-        SharedModuleControlClaims.p.E();
+        SharedModuleControlClaims.renderPass.blockRender();
         if (ForgeVersion.MC_1_16_5.d()) {
             EntityPlayerSP entityPlayerSP;
             float f2;
@@ -131,11 +131,11 @@ extends Wrapper {
             }
             Matrix4f matrix4f2 = matrixStack.F().u();
             this.setShaderGroup(matrix4f2);
-            SharedModuleControlClaims.p.Q();
+            SharedModuleControlClaims.renderPass.clearClaimed();
             return;
         }
         MEntityRenderer.D(EntityRenderer.c.getMappings().RY, this.I, f, n);
-        SharedModuleControlClaims.p.Q();
+        SharedModuleControlClaims.renderPass.clearClaimed();
     }
 
     public LightTexture l$src$Lgg_vape_wrapper_impl_LightTexture_$to78f8() {

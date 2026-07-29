@@ -39,7 +39,7 @@ extends Frame {
 
     @Override
     public void z(boolean bl) {
-        GuiRenderPrimitives.P(this.G$src$D$1b2f02a() - 0.5, this.n() - 0.5, this.A() + 1.0, bl ? this.K + 2.0 : this.U$src$D$muzvq3() + 2.0, OutlinedFrameBase.J.l, 2.1f, 1.0f, 1.0f);
+        GuiRenderPrimitives.P(this.G$src$D$1b2f02a() - 0.5, this.n() - 0.5, this.A() + 1.0, bl ? this.K + 2.0 : this.getComponentHeight() + 2.0, OutlinedFrameBase.J.l, 2.1f, 1.0f, 1.0f);
         super.z(bl);
     }
 }

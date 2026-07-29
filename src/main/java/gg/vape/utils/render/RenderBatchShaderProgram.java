@@ -5,77 +5,75 @@ import java.nio.charset.StandardCharsets;
 import org.lwjgl.opengl.GL20;
 
 public class RenderBatchShaderProgram {
-    public int S;
-    public final int m;
-    private static int[] g;
-    public final int T;
-    public final int B;
+    public int programId;
+    public final int projectionUniformLocation;
+    private static int[] legacyState;
+    public final int modelUniformLocation;
+    public final int viewUniformLocation;
 
-    private int b(String string) {
-        int n;
-        if (string.endsWith(".frag")) {
-            n = 35632;
-        } else if (string.endsWith(".vert")) {
-            n = 35633;
+    private int compileShader(String resourcePath) {
+        int shaderType;
+        if (resourcePath.endsWith(".frag")) {
+            shaderType = 35632;
+        } else if (resourcePath.endsWith(".vert")) {
+            shaderType = 35633;
         } else {
             throw new RuntimeException("Unable to set type");
         }
-        String string2 = string;
-        byte[] byArray = Vape.readResource(string2);
-        int n2 = GL20.glCreateShader((int)n);
-        String string3 = new String(byArray, StandardCharsets.UTF_8);
-        GL20.glShaderSource((int)n2, (CharSequence)string3);
-        GL20.glCompileShader((int)n2);
-        String string4 = null;
-        if (GL20.glGetShaderi((int)n2, (int)35713) == 0) {
-            string4 = GL20.glGetShaderInfoLog((int)n2, (int)512);
+        byte[] shaderBytes = Vape.readResource(resourcePath);
+        int shaderId = GL20.glCreateShader((int)shaderType);
+        String shaderSource = new String(shaderBytes, StandardCharsets.UTF_8);
+        GL20.glShaderSource((int)shaderId, (CharSequence)shaderSource);
+        GL20.glCompileShader((int)shaderId);
+        String compileError = null;
+        if (GL20.glGetShaderi((int)shaderId, (int)35713) == 0) {
+            compileError = GL20.glGetShaderInfoLog((int)shaderId, (int)512);
         }
-        if (string4 != null) {
-            throw new RuntimeException("Unable to compile shader: " + n + " - " + string4);
+        if (compileError != null) {
+            throw new RuntimeException("Unable to compile shader: " + shaderType + " - " + compileError);
         }
-        return n2;
+        return shaderId;
     }
 
-    public static int[] s() {
-        return g;
+    public static int[] getLegacyState() {
+        return legacyState;
     }
 
-    private static RuntimeException a(RuntimeException runtimeException) {
+    private static RuntimeException propagateRuntimeException(RuntimeException runtimeException) {
         return runtimeException;
     }
 
-    public static void Z(int[] nArray) {
-        g = nArray;
+    public static void setLegacyState(int[] legacyState) {
+        RenderBatchShaderProgram.legacyState = legacyState;
     }
 
     static {
-        RenderBatchShaderProgram.Z(new int[3]);
+        RenderBatchShaderProgram.setLegacyState(new int[3]);
     }
 
-    private void d(int n, int n2) {
-        this.S = GL20.glCreateProgram();
-        GL20.glAttachShader((int)this.S, (int)n);
-        GL20.glAttachShader((int)this.S, (int)n2);
-        GL20.glLinkProgram((int)this.S);
-        if (GL20.glGetProgrami((int)this.S, (int)35714) == 0) {
-            String string = GL20.glGetProgramInfoLog((int)this.S, (int)8224);
-            throw new RuntimeException("Unable to link shader: " + string);
+    private void linkProgram(int firstShaderId, int secondShaderId) {
+        this.programId = GL20.glCreateProgram();
+        GL20.glAttachShader((int)this.programId, (int)firstShaderId);
+        GL20.glAttachShader((int)this.programId, (int)secondShaderId);
+        GL20.glLinkProgram((int)this.programId);
+        if (GL20.glGetProgrami((int)this.programId, (int)35714) == 0) {
+            String linkError = GL20.glGetProgramInfoLog((int)this.programId, (int)8224);
+            throw new RuntimeException("Unable to link shader: " + linkError);
         }
-        GL20.glDeleteShader((int)n);
-        GL20.glDeleteShader((int)n2);
+        GL20.glDeleteShader((int)firstShaderId);
+        GL20.glDeleteShader((int)secondShaderId);
     }
 
-    public RenderBatchShaderProgram(String string, String string2) {
-        int n = this.b(string);
-        int n2 = this.b(string2);
-        this.d(n, n2);
-        this.m = GL20.glGetUniformLocation((int)this.S, (CharSequence)"u_Projection");
-        this.T = GL20.glGetUniformLocation((int)this.S, (CharSequence)"u_Model");
-        this.B = GL20.glGetUniformLocation((int)this.S, (CharSequence)"u_View");
+    public RenderBatchShaderProgram(String firstShaderPath, String secondShaderPath) {
+        int firstShaderId = this.compileShader(firstShaderPath);
+        int secondShaderId = this.compileShader(secondShaderPath);
+        this.linkProgram(firstShaderId, secondShaderId);
+        this.projectionUniformLocation = GL20.glGetUniformLocation((int)this.programId, (CharSequence)"u_Projection");
+        this.modelUniformLocation = GL20.glGetUniformLocation((int)this.programId, (CharSequence)"u_Model");
+        this.viewUniformLocation = GL20.glGetUniformLocation((int)this.programId, (CharSequence)"u_View");
     }
 
-    public void P() {
-        GL20.glUseProgram((int)this.S);
+    public void bind() {
+        GL20.glUseProgram((int)this.programId);
     }
 }
-

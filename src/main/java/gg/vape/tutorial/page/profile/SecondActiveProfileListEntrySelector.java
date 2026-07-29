@@ -9,7 +9,7 @@ extends TutorialTargetSelector<ProfileListEntryComponent> {
     final ProfilesTutorialPage m;
 
     public boolean p(ProfileListEntryComponent profileListEntryComponent) {
-        return profileListEntryComponent.m$src$Z$knv3du();
+        return profileListEntryComponent.isActiveProfile();
     }
 
     @Override

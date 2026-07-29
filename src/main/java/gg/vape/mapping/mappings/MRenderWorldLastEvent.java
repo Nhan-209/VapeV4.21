@@ -21,7 +21,7 @@ extends Mapping {
         if (MRenderWorldLastEvent.g()) {
             return;
         }
-        GuiComponent.D(new GuiComponent[5]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 
     private float U() {

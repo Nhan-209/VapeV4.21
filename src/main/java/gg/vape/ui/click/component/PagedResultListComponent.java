@@ -17,347 +17,347 @@ import org.jetbrains.annotations.Nullable;
 
 public class PagedResultListComponent
 extends PanelComponent {
-    private GlyphIconComponent pB;
+    private final GlyphIconComponent scrollToTopButton;
     @Nullable
-    private PagedResult<?> p0;
-    private boolean p3;
-    private int pv;
-    private CompletableFuture<List<GuiComponent>> px;
+    private PagedResult<?> pageMetadata;
+    private boolean contentUpdated;
+    private int componentCount;
+    private CompletableFuture<List<GuiComponent>> pendingLoad;
     @Nullable
-    private Supplier<CompletableFuture<List<GuiComponent>>> pc;
+    private Supplier<CompletableFuture<List<GuiComponent>>> pageLoader;
     @Nullable
-    private Supplier<GuiComponent> pO;
-    private int pS = 1;
-    private int pK = 1;
-    private int ps;
-    private List<GuiComponent> pC = new ArrayList<GuiComponent>();
-    private long py;
-    private static final long gb = 4641203030845292568L;
-    private boolean pD = false;
-    private long p9;
+    private Supplier<GuiComponent> placeholderSupplier;
+    private int componentsPerRow = 1;
+    private int loadThreshold = 1;
+    private int placeholderCount;
+    private List<GuiComponent> loadingPlaceholders = new ArrayList<GuiComponent>();
+    private long nextPageIndex;
+    private static final int DEFAULT_PLACEHOLDER_COUNT = (int)4641203030845292568L;
+    private boolean lastPageReached = false;
+    private long initialPageIndex;
     @Nullable
-    private PanelComponent pJ;
+    private PanelComponent scrollContainer;
 
     @Override
     public void c() {
         super.c();
-        PanelComponent panelComponent = this.c$src$Lgg_vape_ui_click_component_PanelComponent_$ntzwqg();
-        this.pB.K(this.G$src$D$1b2f02a() + (this.A() - 18.0));
-        this.pB.S(panelComponent.n() + 4.0);
-        this.pB.Z(panelComponent.J$src$D$hx1pag() < -panelComponent.L());
-        if (this.pB.V$src$Z$1xhop3l()) {
-            this.pB.c();
+        PanelComponent effectiveScrollContainer = this.getEffectiveScrollContainer();
+        this.scrollToTopButton.K(this.G$src$D$1b2f02a() + (this.A() - 18.0));
+        this.scrollToTopButton.S(effectiveScrollContainer.n() + 4.0);
+        this.scrollToTopButton.setVisible(effectiveScrollContainer.J$src$D$hx1pag() < -effectiveScrollContainer.L());
+        if (this.scrollToTopButton.V$src$Z$1xhop3l()) {
+            this.scrollToTopButton.c();
         }
     }
 
-    public PagedResultListComponent(double d, double d2) {
-        this(d, d2, 1);
+    public PagedResultListComponent(double width, double height) {
+        this(width, height, 1);
     }
 
     @Nullable
-    public Supplier<GuiComponent> f$src$Ljava_util_function_Supplier_$1cbdavl() {
-        return this.pO;
+    public Supplier<GuiComponent> getPlaceholderSupplier() {
+        return this.placeholderSupplier;
     }
 
     @Override
     public double x() {
-        if (this.pJ != null) {
+        if (this.scrollContainer != null) {
             return this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().C();
         }
         return super.x();
     }
 
     @Override
-    public void S() {
-        super.S();
-        this.c(true);
+    public void removeMarkedChildren() {
+        super.removeMarkedChildren();
+        this.resetPagination(true);
     }
 
     @Nullable
-    public PagedResult<?> y$src$Lgg_vape_api_PagedResult_$rip6se() {
-        return this.p0;
+    public PagedResult<?> getPageMetadata() {
+        return this.pageMetadata;
     }
 
-    public int p() {
-        return this.pS;
+    public int getComponentsPerRow() {
+        return this.componentsPerRow;
     }
 
     @Override
-    public void h(GuiComponent guiComponent, Object ... objectArray) {
-        boolean bl = this.pS == 1 || this.pv > 0 && (this.pv + 1) % this.pS == 0;
-        super.h(guiComponent, bl ? "wrap" : "");
-        ++this.pv;
-        if (this.pJ != null) {
-            this.u(this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y());
-            this.t(this.H$src$D$1wlsgtk());
+    public void h(GuiComponent component, Object ... constraints) {
+        boolean wrapAfterComponent = this.componentsPerRow == 1 || this.componentCount > 0 && (this.componentCount + 1) % this.componentsPerRow == 0;
+        super.h(component, wrapAfterComponent ? "wrap" : "");
+        ++this.componentCount;
+        if (this.scrollContainer != null) {
+            this.setExplicitHeight(this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y());
+            this.t(this.getExplicitHeight());
         }
     }
 
-    public void f(List<GuiComponent> list) {
-        this.pC = list;
+    private void setLoadingPlaceholders(List<GuiComponent> placeholders) {
+        this.loadingPlaceholders = placeholders;
     }
 
-    public int h() {
-        return this.ps;
+    public int getPlaceholderCount() {
+        return this.placeholderCount;
     }
 
     @Nullable
-    public Supplier<CompletableFuture<List<GuiComponent>>> r$src$Ljava_util_function_Supplier_$154sbx9() {
-        return this.pc;
+    public Supplier<CompletableFuture<List<GuiComponent>>> getPageLoader() {
+        return this.pageLoader;
     }
 
-    public void N(@Nullable Supplier<CompletableFuture<List<GuiComponent>>> supplier) {
-        this.pc = supplier;
+    public void setPageLoader(@Nullable Supplier<CompletableFuture<List<GuiComponent>>> pageLoader) {
+        this.pageLoader = pageLoader;
     }
 
-    public long A$src$J$1vju51i() {
-        return this.py;
+    public long getNextPageIndex() {
+        return this.nextPageIndex;
     }
 
-    public void W() {
-        this.c(false);
-        this.K$src$V$1vpc39g();
+    public void reload() {
+        this.resetPagination(false);
+        this.loadNextPage();
     }
 
 
-    private void e$src$V$1w3mqou() {
-        CompletableFuture<List<GuiComponent>> completableFuture = this.px;
-        if (completableFuture != null) {
-            completableFuture.cancel(true);
-            this.px = null;
-            this.b(this.pC, new ArrayList<GuiComponent>());
-            this.pC.clear();
+    private void cancelPendingLoad() {
+        CompletableFuture<List<GuiComponent>> load = this.pendingLoad;
+        if (load != null) {
+            load.cancel(true);
+            this.pendingLoad = null;
+            this.replaceComponents(this.loadingPlaceholders, new ArrayList<GuiComponent>());
+            this.loadingPlaceholders.clear();
         }
     }
 
     @Override
     public void F() {
-        if (this.pB.V$src$Z$1xhop3l() && this.pB.t()) {
-            this.pB.F();
+        if (this.scrollToTopButton.V$src$Z$1xhop3l() && this.scrollToTopButton.t()) {
+            this.scrollToTopButton.F();
         }
     }
 
-    public void H(int n) {
-        this.pK = n;
+    public void setLoadThreshold(int loadThreshold) {
+        this.loadThreshold = loadThreshold;
     }
 
     @Override
     public double C() {
-        if (this.pJ != null) {
+        if (this.scrollContainer != null) {
             return this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y();
         }
         return super.C();
     }
 
-    public void A(int n) {
-        this.pS = n;
+    public void setComponentsPerRow(int componentsPerRow) {
+        this.componentsPerRow = componentsPerRow;
     }
 
     @Nullable
-    public PanelComponent Y$src$Lgg_vape_ui_click_component_PanelComponent_$1h13gfi() {
-        return this.pJ;
+    public PanelComponent getScrollContainer() {
+        return this.scrollContainer;
     }
 
-    private void lambda$loadNewContent$1(AtomicReference atomicReference, List list, Throwable throwable) {
-        if (throwable != null) {
-            this.px = null;
+    private void handleLoadCompleted(AtomicReference<CompletableFuture<List<GuiComponent>>> expectedLoad, List<GuiComponent> loadedComponents, Throwable error) {
+        if (error != null) {
+            this.pendingLoad = null;
             return;
         }
-        if (list == null) {
-            this.px = null;
+        if (loadedComponents == null) {
+            this.pendingLoad = null;
             return;
         }
-        if (atomicReference.get() != this.px) {
+        if (expectedLoad.get() != this.pendingLoad) {
             return;
         }
-        this.b(this.pC, list);
-        this.pC.clear();
-        if (list.isEmpty()) {
-            this.pD = true;
+        this.replaceComponents(this.loadingPlaceholders, loadedComponents);
+        this.loadingPlaceholders.clear();
+        if (loadedComponents.isEmpty()) {
+            this.lastPageReached = true;
         } else {
-            ++this.py;
+            ++this.nextPageIndex;
         }
-        this.p3 = true;
-        this.px = null;
+        this.contentUpdated = true;
+        this.pendingLoad = null;
     }
 
-    public int K$src$I$1vpc2y9() {
-        return this.pK;
+    public int getLoadThreshold() {
+        return this.loadThreshold;
     }
 
-    private List lambda$loadNewContent$2(Throwable throwable) {
-        this.px = null;
+    private List<GuiComponent> handleLoadFailure(Throwable error) {
+        this.pendingLoad = null;
         return null;
     }
 
     @Override
     public void t$src$V$zbu1jn() {
         super.t$src$V$zbu1jn();
-        this.c(true);
+        this.resetPagination(true);
     }
 
-    public void j(long l) {
-        this.p9 = l;
+    public void setInitialPageIndex(long initialPageIndex) {
+        this.initialPageIndex = initialPageIndex;
     }
 
     @Override
-    public void D(GuiMouseEvent guiMouseEvent) {
-        if (this.pB.V$src$Z$1xhop3l() && this.pB.t()) {
-            this.pB.D(guiMouseEvent);
+    public void dispatchMouseEvent(GuiMouseEvent guiMouseEvent) {
+        if (this.scrollToTopButton.V$src$Z$1xhop3l() && this.scrollToTopButton.t()) {
+            this.scrollToTopButton.dispatchMouseEvent(guiMouseEvent);
             return;
         }
-        super.D(guiMouseEvent);
+        super.dispatchMouseEvent(guiMouseEvent);
     }
 
-    public void s$src$V$1wbbuzw() {
-        List<GuiComponent> list = this.f();
-        double d = this.J$src$D$hx1pag();
-        super.S();
-        this.pv = 0;
-        for (GuiComponent guiComponent : list) {
-            this.h(guiComponent, new Object[0]);
+    public void rebuildLayoutPreservingScroll() {
+        List<GuiComponent> children = this.f();
+        double scrollOffset = this.J$src$D$hx1pag();
+        super.removeMarkedChildren();
+        this.componentCount = 0;
+        for (GuiComponent child : children) {
+            this.h(child, new Object[0]);
         }
-        this.W(d);
+        this.W(scrollOffset);
     }
 
-    public long N$src$J$1vqzgr7() {
-        return this.p9;
+    public long getInitialPageIndex() {
+        return this.initialPageIndex;
     }
 
-    public void b(List<GuiComponent> list, List<GuiComponent> list2) {
-        double d = this.J$src$D$hx1pag();
-        for (GuiComponent guiComponent : list) {
-            this.I(guiComponent);
+    public void replaceComponents(List<GuiComponent> componentsToRemove, List<GuiComponent> componentsToAdd) {
+        double scrollOffset = this.J$src$D$hx1pag();
+        for (GuiComponent component : componentsToRemove) {
+            this.removeChild(component);
         }
-        for (GuiComponent guiComponent : list2) {
-            this.h(guiComponent, new Object[0]);
+        for (GuiComponent component : componentsToAdd) {
+            this.h(component, new Object[0]);
         }
-        this.s$src$V$1wbbuzw();
-        this.W(d);
+        this.rebuildLayoutPreservingScroll();
+        this.W(scrollOffset);
     }
 
-    public PagedResultListComponent(double d, double d2, int n) {
-        super(d, d2);
-        this.ps = (int)gb;
-        this.pB = new GlyphIconComponent("up_arrow", 8.0, 8.0, 15.0, 15.0, Color.WHITE, PagedResultListComponent.J.f, new Color(255, 255, 255, 64));
-        this.p9 = n;
-        this.py = n;
-        this.pB.d(6.0);
-        this.pB.U(6.0);
-        this.pB.o(PagedResultListComponent.J.W);
-        this.pB.E(PagedResultListComponent.J.m, PagedResultListComponent.J.m.brighter());
-        this.pB.j(PagedResultListComponent.J.l);
-        this.pB.Z(0.75f);
-        this.pB.d(true);
-        this.pB.o(14.0);
-        this.pB.Y(10.0);
-        this.pB.i(5.0f);
-        this.pB.q(true);
-        this.pB.R(true);
-        this.pB.r(this::lambda$new$0);
+    public PagedResultListComponent(double width, double height, int initialPageIndex) {
+        super(width, height);
+        this.placeholderCount = DEFAULT_PLACEHOLDER_COUNT;
+        this.scrollToTopButton = new GlyphIconComponent("up_arrow", 8.0, 8.0, 15.0, 15.0, Color.WHITE, PagedResultListComponent.J.f, new Color(255, 255, 255, 64));
+        this.initialPageIndex = initialPageIndex;
+        this.nextPageIndex = initialPageIndex;
+        this.scrollToTopButton.setIconWidth(6.0);
+        this.scrollToTopButton.setIconHeight(6.0);
+        this.scrollToTopButton.setNormalColor(PagedResultListComponent.J.W);
+        this.scrollToTopButton.setBackgroundAnimationColors(PagedResultListComponent.J.m, PagedResultListComponent.J.m.brighter());
+        this.scrollToTopButton.setOutlineColor(PagedResultListComponent.J.l);
+        this.scrollToTopButton.setOutlineAlpha(0.75f);
+        this.scrollToTopButton.setShowDisabledOverlay(true);
+        this.scrollToTopButton.o(14.0);
+        this.scrollToTopButton.Y(10.0);
+        this.scrollToTopButton.setCornerRadius(5.0f);
+        this.scrollToTopButton.setCenterHorizontally(true);
+        this.scrollToTopButton.setCenterVertically(true);
+        this.scrollToTopButton.addClickListener(this::scrollToTop);
     }
 
-    private PanelComponent c$src$Lgg_vape_ui_click_component_PanelComponent_$ntzwqg() {
-        return this.pJ != null ? this.pJ : this;
+    private PanelComponent getEffectiveScrollContainer() {
+        return this.scrollContainer != null ? this.scrollContainer : this;
     }
 
-    public void T(@Nullable PanelComponent panelComponent) {
-        this.pJ = panelComponent;
+    public void setScrollContainer(@Nullable PanelComponent scrollContainer) {
+        this.scrollContainer = scrollContainer;
     }
 
-    public void e(@Nullable Supplier<GuiComponent> supplier) {
-        this.pO = supplier;
+    public void setPlaceholderSupplier(@Nullable Supplier<GuiComponent> placeholderSupplier) {
+        this.placeholderSupplier = placeholderSupplier;
     }
 
-    private void c(boolean bl) {
-        this.py = this.p9;
-        this.pD = this.p0 != null && this.p0.F();
-        this.p3 = false;
-        this.pv = 0;
-        if (!bl) {
-            this.S();
+    private void resetPagination(boolean keepExistingChildren) {
+        this.nextPageIndex = this.initialPageIndex;
+        this.lastPageReached = this.pageMetadata != null && this.pageMetadata.F();
+        this.contentUpdated = false;
+        this.componentCount = 0;
+        if (!keepExistingChildren) {
+            this.removeMarkedChildren();
         }
-        this.e$src$V$1w3mqou();
+        this.cancelPendingLoad();
     }
 
-    public void X(int n) {
-        this.ps = n;
+    public void setPlaceholderCount(int placeholderCount) {
+        this.placeholderCount = placeholderCount;
     }
 
-    private void lambda$new$0() {
-        PanelComponent panelComponent = this.c$src$Lgg_vape_ui_click_component_PanelComponent_$ntzwqg();
-        panelComponent.b(0.0);
+    private void scrollToTop() {
+        PanelComponent effectiveScrollContainer = this.getEffectiveScrollContainer();
+        effectiveScrollContainer.b(0.0);
     }
 
     @Override
-    public void I(GuiComponent guiComponent) {
-        super.I(guiComponent);
-        --this.pv;
+    public void removeChild(GuiComponent guiComponent) {
+        super.removeChild(guiComponent);
+        --this.componentCount;
     }
 
     @Override
     public void u() {
         super.u();
-        if (this.pB.V$src$Z$1xhop3l()) {
-            this.pB.u();
+        if (this.scrollToTopButton.V$src$Z$1xhop3l()) {
+            this.scrollToTopButton.u();
         }
     }
 
-    private void K$src$V$1vpc39g() {
-        this.e$src$V$1w3mqou();
-        Supplier<CompletableFuture<List<GuiComponent>>> supplier = this.pc;
-        if (supplier == null) {
+    private void loadNextPage() {
+        this.cancelPendingLoad();
+        Supplier<CompletableFuture<List<GuiComponent>>> loader = this.pageLoader;
+        if (loader == null) {
             return;
         }
-        Supplier<GuiComponent> supplier2 = this.pO;
-        if (supplier2 != null) {
-            int n = this.ps;
-            PagedResult<?> pagedResult = this.p0;
-            if (pagedResult != null && this.py > pagedResult.A()) {
-                n = (int)pagedResult.L() % this.ps;
+        Supplier<GuiComponent> loadingPlaceholderSupplier = this.placeholderSupplier;
+        if (loadingPlaceholderSupplier != null) {
+            int placeholdersToAdd = this.placeholderCount;
+            PagedResult<?> metadata = this.pageMetadata;
+            if (metadata != null && this.nextPageIndex > metadata.A()) {
+                placeholdersToAdd = (int)metadata.L() % this.placeholderCount;
             }
-            ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
-            for (int i = 0; i < n; ++i) {
-                arrayList.add(supplier2.get());
+            ArrayList<GuiComponent> placeholders = new ArrayList<GuiComponent>();
+            for (int index = 0; index < placeholdersToAdd; ++index) {
+                placeholders.add(loadingPlaceholderSupplier.get());
             }
-            this.H(arrayList.toArray(new GuiComponent[0]));
-            this.f(arrayList);
+            this.addChildren(placeholders.toArray(new GuiComponent[0]));
+            this.setLoadingPlaceholders(placeholders);
         }
-        AtomicReference<CompletableFuture<List<GuiComponent>>> atomicReference = new AtomicReference<CompletableFuture<List<GuiComponent>>>();
-        this.px = supplier.get().whenCompleteAsync((arg_0, arg_1) -> this.lambda$loadNewContent$1(atomicReference, arg_0, arg_1), (Executor)ClientSettings.f6).exceptionally(this::lambda$loadNewContent$2);
-        atomicReference.set(this.px);
+        AtomicReference<CompletableFuture<List<GuiComponent>>> expectedLoad = new AtomicReference<CompletableFuture<List<GuiComponent>>>();
+        this.pendingLoad = loader.get().whenCompleteAsync((components, error) -> this.handleLoadCompleted(expectedLoad, components, error), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(this::handleLoadFailure);
+        expectedLoad.set(this.pendingLoad);
     }
 
     @Override
     public void Y() {
-        if (this.px != null) {
+        if (this.pendingLoad != null) {
             return;
         }
-        PanelComponent panelComponent = this.c$src$Lgg_vape_ui_click_component_PanelComponent_$ntzwqg();
-        if (this.p3) {
-            this.p3 = false;
+        PanelComponent effectiveScrollContainer = this.getEffectiveScrollContainer();
+        if (this.contentUpdated) {
+            this.contentUpdated = false;
             return;
         }
-        if (panelComponent.J$src$D$hx1pag() == 0.0) {
+        if (effectiveScrollContainer.J$src$D$hx1pag() == 0.0) {
             return;
         }
-        int n = this.f().size();
-        int n2 = 0;
-        double d = panelComponent.n() + panelComponent.L();
-        for (GuiComponent guiComponent : this.f()) {
-            if (!(guiComponent.n() + guiComponent.L() / 2.0 <= d)) break;
-            ++n2;
+        int childCount = this.f().size();
+        int visibleChildCount = 0;
+        double viewportBottom = effectiveScrollContainer.n() + effectiveScrollContainer.L();
+        for (GuiComponent child : this.f()) {
+            if (!(child.n() + child.L() / 2.0 <= viewportBottom)) break;
+            ++visibleChildCount;
         }
-        int n3 = n - n2;
-        if (n3 <= this.pK && !this.pD) {
-            this.K$src$V$1vpc39g();
+        int remainingChildCount = childCount - visibleChildCount;
+        if (remainingChildCount <= this.loadThreshold && !this.lastPageReached) {
+            this.loadNextPage();
         }
     }
 
-    public void t(@Nullable PagedResult<?> pagedResult) {
-        this.p0 = pagedResult;
-        if (pagedResult != null && pagedResult.F()) {
-            this.pD = true;
+    public void setPageMetadata(@Nullable PagedResult<?> pageMetadata) {
+        this.pageMetadata = pageMetadata;
+        if (pageMetadata != null && pageMetadata.F()) {
+            this.lastPageReached = true;
         }
     }
 }

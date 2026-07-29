@@ -4,14 +4,13 @@ public enum IconShape {
     CIRCLE,
     ROUNDED_RECT;
 
-    private static final IconShape[] R;
+    private static final IconShape[] LEGACY_VALUES;
 
     static {
-        String[] stringArray = new String[]{"ROUNDED_RECT", "CIRCLE"};
+        String[] legacyNames = new String[]{"ROUNDED_RECT", "CIRCLE"};
 
 
-        R = new IconShape[]{CIRCLE, ROUNDED_RECT};
+        LEGACY_VALUES = new IconShape[]{CIRCLE, ROUNDED_RECT};
     }
 
 }
-

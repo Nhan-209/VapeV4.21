@@ -19,135 +19,116 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractInventoryFilterRule
 implements InventoryFilterRule {
     @Nullable
-    private InventoryFilterPreset m;
+    private InventoryFilterPreset inlinePreset;
     @Nullable
-    private InventoryItemCategory n;
-    private final ItemFilterSelection H;
+    private InventoryItemCategory priorityOverride;
+    private final ItemFilterSelection itemSelection;
     @Nullable
-    private UUID v;
-    private static int[] f;
+    private UUID sharedPresetId;
 
     @Override
-    public ItemFilterSelection q() {
-        return this.H;
+    public ItemFilterSelection getItemSelection() {
+        return this.itemSelection;
     }
 
     @Override
     @Nullable
-    public UUID t() {
-        return this.v;
-    }
-
-    public static int[] o$src$AI$fei8tr() {
-        return f;
+    public UUID getSharedPresetId() {
+        return this.sharedPresetId;
     }
 
     @Override
-    public InventoryItemCategory L() {
-        InventoryItemCategory inventoryItemCategory;
-        InventoryItemMatcher inventoryItemMatcher = this.q().c();
-        if (inventoryItemMatcher == null && this.H.E() != null) {
-            inventoryItemMatcher = InventoryItemMatcherRegistry.S(this.H.E());
+    public InventoryItemCategory getDefaultPriority() {
+        InventoryItemCategory category;
+        InventoryItemMatcher matcher = this.getItemSelection().getMatcher();
+        if (matcher == null && this.itemSelection.getItemStack() != null) {
+            matcher = InventoryItemMatcherRegistry.findBestMatch(this.itemSelection.getItemStack());
         }
-        if (inventoryItemMatcher != null && (inventoryItemCategory = inventoryItemMatcher.G()) != null) {
-            return inventoryItemCategory;
+        if (matcher != null && (category = matcher.getCategory()) != null) {
+            return category;
         }
-        return InventoryItemCategoryRegistry.m;
+        return InventoryItemCategoryRegistry.FIRST_AVAILABLE;
     }
 
     @Override
     @NotNull
-    public InventoryItemCategory o() {
-        return this.n != null ? this.n : this.L();
+    public InventoryItemCategory getPriority() {
+        return this.priorityOverride != null ? this.priorityOverride : this.getDefaultPriority();
     }
 
     @Override
-    public void U() {
-        this.m = null;
-        this.v = null;
+    public void clearPresetReference() {
+        this.inlinePreset = null;
+        this.sharedPresetId = null;
     }
 
     @Override
-    public void p(@Nullable InventoryFilterPreset inventoryFilterPreset) {
-        this.N();
-        if (inventoryFilterPreset == null) {
+    public void setPreset(@Nullable InventoryFilterPreset preset) {
+        this.clearPresetReference();
+        if (preset == null) {
             return;
         }
-        if (inventoryFilterPreset instanceof SharedInventoryFilterPreset) {
-            this.v = inventoryFilterPreset.j();
+        if (preset instanceof SharedInventoryFilterPreset) {
+            this.sharedPresetId = preset.getId();
         } else {
-            this.m = inventoryFilterPreset;
+            this.inlinePreset = preset;
         }
     }
 
     @Override
-    public void i(@Nullable InventoryItemCategory inventoryItemCategory) {
-        this.n = inventoryItemCategory;
-    }
-
-    static {
-        AbstractInventoryFilterRule.u(new int[1]);
+    public void setPriorityOverride(@Nullable InventoryItemCategory priority) {
+        this.priorityOverride = priority;
     }
 
     public AbstractInventoryFilterRule(JsonObject jsonObject) {
-        this.H = new ItemFilterSelection(jsonObject.get("itemFilter"));
+        this.itemSelection = new ItemFilterSelection(jsonObject.get("itemFilter"));
         if (jsonObject.has("customRule")) {
             JsonElement jsonElement = jsonObject.get("customRule");
             if (jsonElement.isJsonPrimitive()) {
-                this.v = ConfigJsonUtils.u(jsonObject, "customRule");
+                this.sharedPresetId = ConfigJsonUtils.u(jsonObject, "customRule");
             } else {
-                this.m = new InventoryFilterPreset(jsonObject.getAsJsonObject("customRule"));
+                this.inlinePreset = new InventoryFilterPreset(jsonObject.getAsJsonObject("customRule"));
             }
         }
         if (jsonObject.has("priority")) {
-            this.n = InventoryItemCategoryRegistry.n(jsonObject.get("priority").getAsString());
+            this.priorityOverride = InventoryItemCategoryRegistry.getById(jsonObject.get("priority").getAsString());
         }
-    }
-
-    private void N() {
-        this.m = null;
-        this.v = null;
     }
 
     public AbstractInventoryFilterRule() {
-        this.H = new ItemFilterSelection();
+        this.itemSelection = new ItemFilterSelection();
     }
 
-    public static void u(int[] nArray) {
-        f = nArray;
-    }
-
-    public JsonObject M(boolean bl) {
-        InventoryItemCategory inventoryItemCategory;
+    public JsonObject toJson(boolean embedSharedPreset) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.add("itemFilter", this.H.Q());
-        InventoryFilterPreset inventoryFilterPreset = this.m;
-        if (bl || inventoryFilterPreset != null) {
-            if (inventoryFilterPreset == null) {
-                inventoryFilterPreset = this.W();
+        jsonObject.add("itemFilter", this.itemSelection.toJson());
+        InventoryFilterPreset preset = this.inlinePreset;
+        if (embedSharedPreset || preset != null) {
+            if (preset == null) {
+                preset = this.resolvePreset();
             }
-            if (inventoryFilterPreset != null) {
-                jsonObject.add("customRule", (JsonElement)inventoryFilterPreset.K());
+            if (preset != null) {
+                jsonObject.add("customRule", (JsonElement)preset.toJson());
             }
-        } else if (this.v != null) {
-            jsonObject.addProperty("customRule", this.v.toString());
+        } else if (this.sharedPresetId != null) {
+            jsonObject.addProperty("customRule", this.sharedPresetId.toString());
         }
-        if ((inventoryItemCategory = this.n) != null) {
-            jsonObject.addProperty("priority", inventoryItemCategory.F());
+        if (this.priorityOverride != null) {
+            jsonObject.addProperty("priority", this.priorityOverride.getId());
         }
         return jsonObject;
     }
 
 
     @Nullable
-    protected InventoryFilterPreset J() {
-        return this.m;
+    protected InventoryFilterPreset getInlinePreset() {
+        return this.inlinePreset;
     }
 
     @Override
-    public void y() {
-        this.H.G(ItemPickerSelection.B());
-        this.U();
+    public void reset() {
+        this.itemSelection.setSelection(ItemPickerSelection.empty());
+        this.clearPresetReference();
     }
 }
 

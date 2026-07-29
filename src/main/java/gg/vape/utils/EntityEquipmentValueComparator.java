@@ -12,25 +12,25 @@ import java.util.Comparator;
 public class EntityEquipmentValueComparator
 implements Comparator<Entity> {
     @Override
-    public int compare(Entity entity, Entity entity2) {
-        return this.q(entity, entity2);
+    public int compare(Entity firstEntity, Entity secondEntity) {
+        return this.compareByEquipmentValue(firstEntity, secondEntity);
     }
 
 
-    public int q(Entity entity, Entity entity2) {
-        if (entity.isInstance(MappedClasses.Yl) && entity2.isInstance(MappedClasses.Yl)) {
-            return Double.compare(this.O(entity), this.O(entity2));
+    public int compareByEquipmentValue(Entity firstEntity, Entity secondEntity) {
+        if (firstEntity.isInstance(MappedClasses.Yl) && secondEntity.isInstance(MappedClasses.Yl)) {
+            return Double.compare(this.calculateEquipmentValue(firstEntity), this.calculateEquipmentValue(secondEntity));
         }
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        return Float.compare(entityPlayerSP.getDistanceToEntity(entity), entityPlayerSP.getDistanceToEntity(entity2));
+        EntityPlayerSP player = Minecraft.thePlayer();
+        return Float.compare(player.getDistanceToEntity(firstEntity), player.getDistanceToEntity(secondEntity));
     }
 
-    private double O(Entity entity) {
-        double d = 0.0;
-        for (Object object : new EntityPlayer(entity.getObject()).V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().i()) {
-            ItemStack itemStack = new ItemStack(object);
-            d += ItemStackScoreUtil.L(itemStack);
+    private double calculateEquipmentValue(Entity entity) {
+        double equipmentValue = 0.0;
+        for (Object itemStackHandle : new EntityPlayer(entity.getObject()).V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().i()) {
+            ItemStack itemStack = new ItemStack(itemStackHandle);
+            equipmentValue += ItemStackScoreUtil.L(itemStack);
         }
-        return d;
+        return equipmentValue;
     }
 }

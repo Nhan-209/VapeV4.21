@@ -4,12 +4,11 @@ import gg.vape.module.Mod;
 import gg.vape.module.ModDisplayInfo;
 
 public class ActiveModuleStackEntry {
-    public final Mod G;
-    public final ModDisplayInfo E;
+    public final Mod module;
+    public final ModDisplayInfo displayInfo;
 
     public ActiveModuleStackEntry(Mod mod, ModDisplayInfo modDisplayInfo) {
-        this.G = mod;
-        this.E = modDisplayInfo;
+        this.module = mod;
+        this.displayInfo = modDisplayInfo;
     }
 }
-

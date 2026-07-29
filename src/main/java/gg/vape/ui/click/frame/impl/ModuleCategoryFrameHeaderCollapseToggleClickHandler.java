@@ -10,7 +10,7 @@ implements GuiClickListener {
     final ModuleCategoryFrameHeader u;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         this.o.w();
     }
 
@@ -19,4 +19,3 @@ implements GuiClickListener {
         this.o = moduleCategoryFrame;
     }
 }
-

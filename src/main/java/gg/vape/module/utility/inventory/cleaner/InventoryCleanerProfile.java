@@ -20,24 +20,23 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public class InventoryCleanerProfile {
-    private String N = "";
-    public final ModeOption P;
-    private static int u;
-    public ModeValue n;
-    private final Set<ItemInventoryFilterRule> m;
-    private final Map<Integer, SlotInventoryFilterRule> Q = new LinkedHashMap<Integer, SlotInventoryFilterRule>();
-    public final ModeOption U;
+    private String name = "";
+    public final ModeOption noArmorManagement;
+    public ModeValue armorMode;
+    private final Set<ItemInventoryFilterRule> itemRules;
+    private final Map<Integer, SlotInventoryFilterRule> slotRules = new LinkedHashMap<Integer, SlotInventoryFilterRule>();
+    public final ModeOption bestArmor;
 
-    public void b() {
-        this.m.clear();
+    public void clearItemRules() {
+        this.itemRules.clear();
     }
 
-    public JsonObject S(boolean bl) {
+    public JsonObject toJson(boolean embedSharedPresets) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("name", this.N);
+        jsonObject.addProperty("name", this.name);
         JsonArray jsonArray = new JsonArray();
-        for (SlotInventoryFilterRule object : this.Q.values()) {
-            JsonObject jsonObject2 = object.M(bl);
+        for (SlotInventoryFilterRule rule : this.slotRules.values()) {
+            JsonObject jsonObject2 = rule.toJson(embedSharedPresets);
             if (jsonObject2.entrySet().size() <= 1) continue;
             jsonArray.add((JsonElement)jsonObject2);
         }
@@ -45,118 +44,101 @@ public class InventoryCleanerProfile {
             jsonObject.add("slots", (JsonElement)jsonArray);
         }
         JsonArray jsonArray2 = new JsonArray();
-        for (ItemInventoryFilterRule itemInventoryFilterRule : this.m) {
-            jsonArray2.add((JsonElement)itemInventoryFilterRule.M(bl));
+        for (ItemInventoryFilterRule itemRule : this.itemRules) {
+            jsonArray2.add((JsonElement)itemRule.toJson(embedSharedPresets));
         }
         if (jsonArray2.size() > 0) {
             jsonObject.add("inventoryFilters", (JsonElement)jsonArray2);
         }
-        jsonObject.addProperty("armor_mode", ((ModeSelection)this.n.K()).getName());
+        jsonObject.addProperty("armor_mode", ((ModeSelection)this.armorMode.getValue()).getName());
         return jsonObject;
     }
 
-    public void b(String string) {
-        this.N = string;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void f(ItemInventoryFilterRule itemInventoryFilterRule) {
-        this.m.add(itemInventoryFilterRule);
+    public void addItemRule(ItemInventoryFilterRule itemRule) {
+        this.itemRules.add(itemRule);
     }
 
-    public void U(ItemInventoryFilterRule itemInventoryFilterRule) {
-        this.m.remove(itemInventoryFilterRule);
+    public void removeItemRule(ItemInventoryFilterRule itemRule) {
+        this.itemRules.remove(itemRule);
     }
 
 
-    public String Y() {
-        return this.N;
+    public String getName() {
+        return this.name;
     }
 
-    public void q() {
-        int n = 1;
-        for (InventoryCleanerProfile inventoryCleanerProfile : Vape.INSTANCE.getModManager().getMod(InvCleaner.class).E$src$Lgg_vape_module_utility_inventory_cleaner_Invent$199cpgr().w()) {
-            if (!inventoryCleanerProfile.Y().equalsIgnoreCase("Inventory #" + n)) continue;
-            ++n;
+    public void assignDefaultName() {
+        int suffix = 1;
+        for (InventoryCleanerProfile profile : Vape.INSTANCE.getModManager().getMod(InvCleaner.class).getProfileValue().getProfiles()) {
+            if (!profile.getName().equalsIgnoreCase("Inventory #" + suffix)) continue;
+            ++suffix;
         }
-        this.N = "Inventory #" + n;
+        this.name = "Inventory #" + suffix;
     }
 
-    static {
-        InventoryCleanerProfile.T(0);
-    }
-
-    public static int O() {
-        int n = InventoryCleanerProfile.D();
-        return 122;
-    }
-
-    public @UnmodifiableView Collection<SlotInventoryFilterRule> P() {
-        return this.Q.values();
-    }
-
-    public static void T(int n) {
-        u = n;
+    public @UnmodifiableView Collection<SlotInventoryFilterRule> getSlotRules() {
+        return this.slotRules.values();
     }
 
     public InventoryCleanerProfile(JsonObject jsonObject) {
         JsonElement jsonElement;
         SlotInventoryFilterRule slotInventoryFilterRule;
-        this.m = new LinkedHashSet<ItemInventoryFilterRule>();
-        this.P = new ModeOption("No armor management");
-        this.U = new ModeOption("Best armor");
-        this.n = ModeValue.create((Object)this, "armor_mode", "", "Armor Mode", (ModeSelection)this.P, this.P, this.U);
-        this.N = jsonObject.get("name").getAsString();
-        if (this.N.trim().isEmpty()) {
-            this.q();
+        this.itemRules = new LinkedHashSet<ItemInventoryFilterRule>();
+        this.noArmorManagement = new ModeOption("No armor management");
+        this.bestArmor = new ModeOption("Best armor");
+        this.armorMode = ModeValue.create((Object)this, "armor_mode", "", "Armor Mode", (ModeSelection)this.noArmorManagement, this.noArmorManagement, this.bestArmor);
+        this.name = jsonObject.get("name").getAsString();
+        if (this.name.trim().isEmpty()) {
+            this.assignDefaultName();
         }
         JsonArray jsonArray = jsonObject.getAsJsonArray("slots");
         for (int i = 0; i < jsonArray.size(); ++i) {
             JsonObject jsonObject2 = jsonArray.get(i).getAsJsonObject();
             slotInventoryFilterRule = new SlotInventoryFilterRule(jsonObject2);
-            this.Q.put(slotInventoryFilterRule.m(), slotInventoryFilterRule);
+            this.slotRules.put(slotInventoryFilterRule.getSlot(), slotInventoryFilterRule);
         }
         JsonArray jsonArray2 = jsonObject.getAsJsonArray("inventoryFilters");
         if (jsonArray2 != null) {
             for (int i = 0; i < jsonArray2.size(); ++i) {
                 JsonObject filterJson = jsonArray2.get(i).getAsJsonObject();
                 ItemInventoryFilterRule itemInventoryFilterRule = new ItemInventoryFilterRule(filterJson);
-                this.m.add(itemInventoryFilterRule);
+                this.itemRules.add(itemInventoryFilterRule);
             }
         }
         if ((jsonElement = jsonObject.get("armor_mode")) != null) {
-            this.n.parse(jsonElement.getAsString());
+            this.armorMode.parse(jsonElement.getAsString());
         }
     }
 
-    public SlotInventoryFilterRule I(int n) {
-        return this.Q.computeIfAbsent(n, SlotInventoryFilterRule::new);
+    public SlotInventoryFilterRule getOrCreateSlotRule(int slot) {
+        return this.slotRules.computeIfAbsent(slot, SlotInventoryFilterRule::new);
     }
 
     public InventoryCleanerProfile() {
-        this.m = new LinkedHashSet<ItemInventoryFilterRule>();
-        this.P = new ModeOption("No armor management");
-        this.U = new ModeOption("Best armor");
-        this.n = ModeValue.create((Object)this, "armor_mode", "", "Armor Mode", (ModeSelection)this.P, this.P, this.U);
-        this.q();
+        this.itemRules = new LinkedHashSet<ItemInventoryFilterRule>();
+        this.noArmorManagement = new ModeOption("No armor management");
+        this.bestArmor = new ModeOption("Best armor");
+        this.armorMode = ModeValue.create((Object)this, "armor_mode", "", "Armor Mode", (ModeSelection)this.noArmorManagement, this.noArmorManagement, this.bestArmor);
+        this.assignDefaultName();
         for (int i = 0; i < 9; ++i) {
-            this.Q.put(i, new SlotInventoryFilterRule(i));
+            this.slotRules.put(i, new SlotInventoryFilterRule(i));
         }
     }
 
     @Nullable
-    public ItemInventoryFilterRule e(ItemStack itemStack) {
-        for (ItemInventoryFilterRule itemInventoryFilterRule : this.m) {
-            if (!itemInventoryFilterRule.q().h(itemStack) || !itemInventoryFilterRule.q(itemStack)) continue;
-            return itemInventoryFilterRule;
+    public ItemInventoryFilterRule findMatchingItemRule(ItemStack itemStack) {
+        for (ItemInventoryFilterRule itemRule : this.itemRules) {
+            if (!itemRule.getItemSelection().matches(itemStack) || !itemRule.matches(itemStack)) continue;
+            return itemRule;
         }
         return null;
     }
 
-    public @UnmodifiableView Collection<ItemInventoryFilterRule> Q() {
-        return this.m;
-    }
-
-    public static int D() {
-        return u;
+    public @UnmodifiableView Collection<ItemInventoryFilterRule> getItemRules() {
+        return this.itemRules;
     }
 }

@@ -10,15 +10,15 @@ import gg.vape.wrapper.impl.ResourceLocation;
 import gg.vape.wrapper.impl.ShaderGroup;
 
 public class ShaderGroupRenderStateManager {
-    private boolean m;
-    private ShaderGroup N;
-    private static final ShaderGroupRenderStateManager e;
-    public ShaderGroup P;
-    public boolean I;
-    private static final int X;
+    private boolean active;
+    private ShaderGroup previousShaderGroup;
+    private static final ShaderGroupRenderStateManager INSTANCE;
+    public ShaderGroup activeShaderGroup;
+    public boolean shadersPreviouslyEnabled;
+    private static final int CONTROL_FLOW_SEED;
 
-    public void K() {
-        if (this.m) {
+    public void enable() {
+        if (this.active) {
             return;
         }
         if (ForgeVersion.MC_1_16_5.d() && ForgeVersion.MC_1_16_5_ACTUAL.B() && Vape.INSTANCE.isNativeAvailable() && !Vape.INSTANCE.isVanillaMinecraftPresent()) {
@@ -28,39 +28,39 @@ public class ShaderGroupRenderStateManager {
         if (gameSettings.d() > 0 || !gameSettings.Y$src$Z$1rxemad()) {
             return;
         }
-        boolean bl = gameSettings.M();
-        if (bl && NativeBridge.iv() && !Vape.INSTANCE.isVanillaMinecraftPresent()) {
+        boolean shadersEnabled = gameSettings.M();
+        if (shadersEnabled && NativeBridge.isForgeAbsent() && !Vape.INSTANCE.isVanillaMinecraftPresent()) {
             return;
         }
         EntityRenderer entityRenderer = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf();
         if (entityRenderer.isNull()) {
             return;
         }
-        this.N = entityRenderer.L();
-        this.I = bl;
-        int n = Minecraft.J();
-        int n2 = Minecraft.h();
-        if (this.I) {
+        this.previousShaderGroup = entityRenderer.L();
+        this.shadersPreviouslyEnabled = shadersEnabled;
+        int displayWidth = Minecraft.J();
+        int displayHeight = Minecraft.h();
+        if (this.shadersPreviouslyEnabled) {
             gameSettings.m(false);
-            Minecraft.getFrameBuffer().createBindFramebuffer(n, n2);
-            entityRenderer.updateShaderGroupSize(n, n2);
+            Minecraft.getFrameBuffer().createBindFramebuffer(displayWidth, displayHeight);
+            entityRenderer.updateShaderGroupSize(displayWidth, displayHeight);
             Minecraft.O().loadRenderers();
         }
-        this.n(n, n2);
-        this.m = true;
+        this.createShaderGroup(displayWidth, displayHeight);
+        this.active = true;
     }
 
 
-    public boolean M() {
-        return this.m;
+    public boolean isActive() {
+        return this.active;
     }
 
-    public void f() {
-        this.e();
+    public void disable() {
+        this.disableInternal();
     }
 
-    public void e() {
-        if (!this.m) {
+    private void disableInternal() {
+        if (!this.active) {
             return;
         }
         GameSettings gameSettings = Minecraft.gameSettings();
@@ -71,35 +71,35 @@ public class ShaderGroupRenderStateManager {
         if (entityRenderer.isNull()) {
             return;
         }
-        if (this.I) {
-            int n = Minecraft.J();
-            int n2 = Minecraft.h();
-            Minecraft.getFrameBuffer().createBindFramebuffer(n, n2);
-            entityRenderer.updateShaderGroupSize(n, n2);
+        if (this.shadersPreviouslyEnabled) {
+            int displayWidth = Minecraft.J();
+            int displayHeight = Minecraft.h();
+            Minecraft.getFrameBuffer().createBindFramebuffer(displayWidth, displayHeight);
+            entityRenderer.updateShaderGroupSize(displayWidth, displayHeight);
             Minecraft.O().loadRenderers();
             gameSettings.m(true);
         }
         entityRenderer.setUseShader(false);
         entityRenderer.J(new ShaderGroup(null));
-        this.P = null;
-        this.N = null;
-        this.m = false;
+        this.activeShaderGroup = null;
+        this.previousShaderGroup = null;
+        this.active = false;
     }
 
-    public static ShaderGroupRenderStateManager Q() {
-        return e;
+    public static ShaderGroupRenderStateManager getInstance() {
+        return INSTANCE;
     }
 
     static {
-        long l2 = 6018231015514832914L;
-        X = (int)l2;
-        e = new ShaderGroupRenderStateManager();
+        long seed = 6018231015514832914L;
+        CONTROL_FLOW_SEED = (int)seed;
+        INSTANCE = new ShaderGroupRenderStateManager();
     }
 
-    private void n(int n, int n2) {
-        this.P = ShaderGroup.create(Minecraft.Z(), Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().K(), Minecraft.getFrameBuffer(), new ResourceLocation(EntityRenderer.getShaderResourceLocations()[18]));
-        Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().J(this.P);
-        this.P.resize(n, n2);
+    private void createShaderGroup(int displayWidth, int displayHeight) {
+        this.activeShaderGroup = ShaderGroup.create(Minecraft.Z(), Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().K(), Minecraft.getFrameBuffer(), new ResourceLocation(EntityRenderer.getShaderResourceLocations()[18]));
+        Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().J(this.activeShaderGroup);
+        this.activeShaderGroup.resize(displayWidth, displayHeight);
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().setUseShader(true);
     }
 }

@@ -15,7 +15,7 @@ extends InsertedCallbackMarker {
     }
 
     public static void call(String string) {
-        if (string.equals(b) && !OffscreenRenderContext.W()) {
+        if (string.equals(b) && !OffscreenRenderContext.isRenderingOffscreen()) {
             float f = Minecraft.getTimer().renderPartialTicks();
             EventRender3DCallback eventRender3DCallback = new EventRender3DCallback(f);
             try {
@@ -27,4 +27,3 @@ extends InsertedCallbackMarker {
         }
     }
 }
-

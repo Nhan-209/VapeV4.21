@@ -73,16 +73,16 @@ extends GuiComponent {
         Color color = new Color(100, 100, 100, 70);
         GuiRenderPrimitives.g(this.G$src$D$1b2f02a(), this.n() + 1.0, this.A(), this.L(), 12.0f, 1.0f, color);
         if (this.I != null && this.I.isNotNull()) {
-            EntityModelRenderCache.d(this.I, (float)this.G$src$D$1b2f02a(), (float)this.n(), (int)this.A(), (int)this.L(), Color.WHITE, 0.0f);
+            EntityModelRenderCache.renderEntity(this.I, (float)this.G$src$D$1b2f02a(), (float)this.n(), (int)this.A(), (int)this.L(), Color.WHITE, 0.0f);
             return;
         }
         if (this.Q != null && this.Q.isNotNull()) {
             String string = this.O != null && !this.O.isEmpty() ? this.O : "unknown";
-            EntityModelRenderCache.N(this.Q, string, (float)this.G$src$D$1b2f02a(), (float)this.n(), (int)this.A(), (int)this.L(), Color.WHITE, 0.0f);
+            EntityModelRenderCache.renderTexture(this.Q, string, (float)this.G$src$D$1b2f02a(), (float)this.n(), (int)this.A(), (int)this.L(), Color.WHITE, 0.0f);
             return;
         }
-        ResourceLocation resourceLocation = EntityModelRenderCache.M();
-        EntityModelRenderCache.N(resourceLocation, "steve", (float)this.G$src$D$1b2f02a(), (float)this.n(), (int)this.A(), (int)this.L(), Color.WHITE, 0.0f);
+        ResourceLocation resourceLocation = EntityModelRenderCache.getDefaultSkinTexture();
+        EntityModelRenderCache.renderTexture(resourceLocation, "steve", (float)this.G$src$D$1b2f02a(), (float)this.n(), (int)this.A(), (int)this.L(), Color.WHITE, 0.0f);
     }
 
     public static PlayerAvatarComponent H(GameProfile gameProfile, double d, double d2) {

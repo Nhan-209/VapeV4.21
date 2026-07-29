@@ -10,21 +10,19 @@ import gg.vape.ui.click.frame.impl.hud.HudModuleSelectorFrame;
 
 class HudModuleConfigFrameToggleSelectedModuleClickHandler
 implements GuiClickListener {
-    final HudModuleConfigFrameHeaderComponent I;
-    final HudModuleConfigFrame m;
+    private final HudModuleConfigFrame configFrame;
 
     @Override
-    public void P() {
-        HudModule hudModule = this.m.F$src$Lgg_vape_module_render_hud_HudModule_$vjtm3x();
+    public void onPrimaryClick() {
+        HudModule hudModule = this.configFrame.getSelectedModule();
         hudModule.M(!hudModule.f$src$Z$148d2ux());
-        if (ClientSettings.g(HudModuleSelectorFrame.class).S$src$Lgg_vape_module_render_hud_HudModuleGroup_$8wvu6a() == HudModuleGroup.r) {
-            ClientSettings.g(HudModuleSelectorFrame.class).a$src$Lgg_vape_ui_click_frame_impl_hud_HudModuleListPa$qfwoz4().N$src$V$wrn2a4();
+        if (ClientSettings.getFrame(HudModuleSelectorFrame.class).getSelectedGroup() == HudModuleGroup.FAVORITE) {
+            ClientSettings.getFrame(HudModuleSelectorFrame.class).getModuleListPanel().refreshModules();
         }
     }
 
-    HudModuleConfigFrameToggleSelectedModuleClickHandler(HudModuleConfigFrameHeaderComponent hudModuleConfigFrameHeaderComponent, HudModuleConfigFrame hudModuleConfigFrame) {
-        this.I = hudModuleConfigFrameHeaderComponent;
-        this.m = hudModuleConfigFrame;
+    HudModuleConfigFrameToggleSelectedModuleClickHandler(HudModuleConfigFrame hudModuleConfigFrame) {
+        this.configFrame = hudModuleConfigFrame;
     }
 
 }

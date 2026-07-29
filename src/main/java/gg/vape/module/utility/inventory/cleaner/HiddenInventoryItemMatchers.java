@@ -23,26 +23,26 @@ public class HiddenInventoryItemMatchers {
     public static final InventoryItemMatcher R;
 
     private static double lambda$static$0(InventoryItemMatchContext inventoryItemMatchContext) {
-        return ClientSettings.c(inventoryItemMatchContext.v());
+        return ClientSettings.c(inventoryItemMatchContext.getItemStack());
     }
 
-    public static void D() {
-        InventoryItemMatcherRegistry.R(EmptySlotInventoryItemMatcher.a);
-        InventoryItemMatcherRegistry.R(R);
-        InventoryItemMatcherRegistry.R(J);
-        InventoryItemMatcherRegistry.R(d);
+    public static void initialize() {
+        InventoryItemMatcherRegistry.register(EmptySlotInventoryItemMatcher.a);
+        InventoryItemMatcherRegistry.register(R);
+        InventoryItemMatcherRegistry.register(J);
+        InventoryItemMatcherRegistry.register(d);
     }
 
     static {
         String[] stringArray = new String[]{"Any bow", "Any type of potion", "any-bow", "other@2x", "any-potion", "Any Item", "Any type of bow", "any-item", "Any type of item", "Any potion"};
-        R = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.c().y().n(stringArray[7])).m(stringArray[5])).M(stringArray[8])).H(stringArray[3])).A(InventoryItemMatcherGroup.HIDDEN)).R("", StringMatchOperator.ANY).g();
-        J = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.c().Y().n(stringArray[2])).m(stringArray[0])).M(stringArray[6])).A(InventoryItemMatcherGroup.HIDDEN)).Q(MappedClasses.Vl).p(InventoryMatcherListMode.WHITELIST).N(Comparator.comparingDouble(HiddenInventoryItemMatchers::lambda$static$0))).o();
-        d = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.c().Y().n(stringArray[4])).m(stringArray[9])).M(stringArray[1])).A(InventoryItemMatcherGroup.HIDDEN)).Q(MappedClasses.Di).p(InventoryMatcherListMode.WHITELIST).N(HiddenInventoryItemMatchers::lambda$static$1)).o();
+        R = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.builder().stringMatcher().withId(stringArray[7])).withName(stringArray[5])).withDescription(stringArray[8])).withIconName(stringArray[3])).withGroup(InventoryItemMatcherGroup.HIDDEN)).addPattern("", StringMatchOperator.ANY).build();
+        J = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.builder().classMatcher().withId(stringArray[2])).withName(stringArray[0])).withDescription(stringArray[6])).withGroup(InventoryItemMatcherGroup.HIDDEN)).addClass(MappedClasses.Vl).withListMode(InventoryMatcherListMode.WHITELIST).withComparator(Comparator.comparingDouble(HiddenInventoryItemMatchers::lambda$static$0))).build();
+        d = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.builder().classMatcher().withId(stringArray[4])).withName(stringArray[9])).withDescription(stringArray[1])).withGroup(InventoryItemMatcherGroup.HIDDEN)).addClass(MappedClasses.Di).withListMode(InventoryMatcherListMode.WHITELIST).withComparator(HiddenInventoryItemMatchers::lambda$static$1)).build();
     }
 
     private static int lambda$static$1(InventoryItemMatchContext inventoryItemMatchContext, InventoryItemMatchContext inventoryItemMatchContext2) {
-        ItemStack itemStack = inventoryItemMatchContext.v();
-        ItemStack itemStack2 = inventoryItemMatchContext2.v();
+        ItemStack itemStack = inventoryItemMatchContext.getItemStack();
+        ItemStack itemStack2 = inventoryItemMatchContext2.getItemStack();
         List<PotionEffect> list = new ItemSplashPotion(itemStack.getItem()).getPotionEffects(itemStack);
         List<PotionEffect> list2 = new ItemSplashPotion(itemStack2.getItem()).getPotionEffects(itemStack2);
         int n = 0;
@@ -57,4 +57,3 @@ public class HiddenInventoryItemMatchers {
         return n;
     }
 }
-

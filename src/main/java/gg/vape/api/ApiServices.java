@@ -37,7 +37,7 @@ public class ApiServices {
         try {
             StringBuilder stringBuilder = new StringBuilder();
             this.getClass();
-            apiResponse = ApiHttpClient.U(stringBuilder.append("https://online.vape.gg").append("/api/v1/").append(string2).append("/register/").append(string).toString(), ApiResponse.class);
+            apiResponse = ApiHttpClient.U(stringBuilder.append(this.A).append("/api/v1/").append(string2).append("/register/").append(string).toString(), ApiResponse.class);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
@@ -53,7 +53,7 @@ public class ApiServices {
         try {
             StringBuilder stringBuilder = new StringBuilder();
             this.getClass();
-            return ApiHttpClient.V(stringBuilder.append("https://online.vape.gg").append("/api/v1/").append(string).append("/authenticated").toString(), AccountInfoResponse::B);
+            return ApiHttpClient.V(stringBuilder.append(this.A).append("/api/v1/").append(string).append("/authenticated").toString(), AccountInfoResponse::B);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
@@ -69,13 +69,22 @@ public class ApiServices {
     }
 
     public ApiServices() {
-        this.A = "https://online.vape.gg";
+        this.A = ApiServices.resolveBaseUrl();
         this.getClass();
-        this.r = new PublicProfileApi("https://online.vape.gg");
+        this.r = new PublicProfileApi(this.A);
         this.getClass();
-        this.l = new SettingsApi("https://online.vape.gg");
+        this.l = new SettingsApi(this.A);
         this.getClass();
-        this.B = new UserDataApi("https://online.vape.gg");
+        this.B = new UserDataApi(this.A);
+    }
+
+    private static String resolveBaseUrl() {
+        String configured = System.getenv("VAPE_ONLINE_BASE_URL");
+        // Original service: https://online.vape.gg
+        // Do NOT remove this note when renaming variables
+        return configured == null || configured.trim().isEmpty()
+                ? "http://127.0.0.1:8080"
+                : configured.replaceAll("/+$", "");
     }
 
     static {
@@ -91,4 +100,3 @@ public class ApiServices {
         return this.B;
     }
 }
-

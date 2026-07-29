@@ -33,7 +33,7 @@ extends Event {
     public boolean fire() {
         boolean bl = super.fire();
         if (GuiRenderPrimitives.d()) {
-            RenderBatchManager.M().C(this.V);
+            RenderBatchManager.getInstance().flushWorldBatches(this.V);
         }
         return bl;
     }

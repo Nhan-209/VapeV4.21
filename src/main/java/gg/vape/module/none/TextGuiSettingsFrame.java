@@ -21,33 +21,33 @@ public class TextGuiSettingsFrame
 extends HudSettingsFrameBase {
     private boolean wasPinned;
     private final TextGuiOverlayComponent overlay;
-    private StringValueTextInputComponent textInput;
-    private BooleanToggleComponent toggle7;
-    private SliderComponentBase expandSlider;
-    private BooleanToggleComponent toggleM;
-    private BooleanToggleComponent toggleN;
-    private DropdownSelectComponent<ModeSelection> dropdown8;
-    private DropdownSelectComponent<ModeSelection> dropdownP;
-    private TextGuiSettings settings = Vape.INSTANCE.getModManager().getMod(TextGuiSettings.class);
-    private BooleanToggleComponent toggleQ;
+    private final StringValueTextInputComponent customTextInput;
+    private final BooleanToggleComponent backgroundToggle;
+    private final SliderComponentBase scaleSlider;
+    private final BooleanToggleComponent watermarkToggle;
+    private final BooleanToggleComponent smoothFontToggle;
+    private final DropdownSelectComponent<ModeSelection> sortModeDropdown;
+    private final DropdownSelectComponent<ModeSelection> colorModeDropdown;
+    private final TextGuiSettings settings = Vape.INSTANCE.getModManager().getMod(TextGuiSettings.class);
+    private final BooleanToggleComponent shadowToggle;
     private double targetX;
     private double savedHeight;
-    private BooleanToggleComponent toggleU;
-    private BooleanToggleComponent toggleZ;
-    private DropdownSelectComponent<ModeSelection> dropdownJ;
-    private ListValueComponent listComponent;
-    private BooleanToggleComponent toggleY;
-    private ColorValueEditorComponent colorEditorG;
-    private ColorValueEditorComponent colorEditorL;
+    private final BooleanToggleComponent animationsToggle;
+    private final BooleanToggleComponent customTextColorToggle;
+    private final DropdownSelectComponent<ModeSelection> suffixModeDropdown;
+    private final ListValueComponent hiddenModulesList;
+    private final BooleanToggleComponent hideModulesToggle;
+    private final ColorValueEditorComponent textGuiColorEditor;
+    private final ColorValueEditorComponent customTextColorEditor;
     private boolean rightAnchored;
     private boolean expanded;
-    private BooleanToggleComponent toggleF;
-    private BooleanToggleComponent toggleQ2;
+    private final BooleanToggleComponent addCustomTextToggle;
+    private final BooleanToggleComponent clickDisableToggle;
     private double savedWidth;
 
     @Override
     public double x() {
-        if (this.L$src$Z$1v7qi9z()) {
+        if (this.isPublicProfilePreview()) {
             return this.expanded ? this.savedWidth : this.overlay.x();
         }
         return super.x();
@@ -63,7 +63,7 @@ extends HudSettingsFrameBase {
     @Override
     public void Y() {
         this.updateAnchor();
-        if (this.expandSlider.W$src$Z$38isfa()) {
+        if (this.scaleSlider.isDragging()) {
             if (!this.expanded) {
                 this.expanded = true;
                 this.savedWidth = this.overlay.x();
@@ -77,7 +77,7 @@ extends HudSettingsFrameBase {
     }
 
     private void updateAnchor() {
-        if (!this.L$src$Z$1v7qi9z()) {
+        if (!this.isPublicProfilePreview()) {
             this.wasPinned = this.IU;
             this.rightAnchored = false;
             this.targetX = Double.NaN;
@@ -108,25 +108,30 @@ extends HudSettingsFrameBase {
 
     public TextGuiSettingsFrame() {
         super("newtextgui", "Text GUI");
-        this.dropdown8 = new DropdownSelectComponent(this.settings.s);
-        this.dropdownP = new DropdownSelectComponent(this.settings.v);
-        this.colorEditorG = new ColorValueEditorComponent(this.settings.k);
-        this.dropdownJ = new DropdownSelectComponent(this.settings.V);
-        this.toggleQ2 = new BooleanToggleComponent(this.settings.J);
-        this.toggleQ = new BooleanToggleComponent(this.settings.j);
-        this.toggleU = new BooleanToggleComponent(this.settings.I);
-        this.toggleM = new BooleanToggleComponent(this.settings.Z);
-        this.toggle7 = new BooleanToggleComponent(this.settings.a);
-        this.toggleY = new BooleanToggleComponent(this.settings.c);
-        this.listComponent = new ListValueComponent(this.settings.O);
-        this.expandSlider = new NumberSliderComponent(this.settings.A);
-        this.toggleF = new BooleanToggleComponent(this.settings.C);
-        this.textInput = new StringValueTextInputComponent(this.settings.t);
-        this.toggleZ = new BooleanToggleComponent(this.settings.o);
-        this.colorEditorL = new ColorValueEditorComponent(this.settings.Y);
-        this.toggleN = new BooleanToggleComponent(this.settings.S);
+        this.sortModeDropdown = new DropdownSelectComponent(this.settings.sortMode);
+        this.colorModeDropdown = new DropdownSelectComponent(this.settings.colorMode);
+        this.textGuiColorEditor = new ColorValueEditorComponent(this.settings.textGuiColor);
+        this.suffixModeDropdown = new DropdownSelectComponent(this.settings.suffixMode);
+        this.clickDisableToggle = new BooleanToggleComponent(this.settings.clickDisable);
+        this.shadowToggle = new BooleanToggleComponent(this.settings.shadow);
+        this.animationsToggle = new BooleanToggleComponent(this.settings.animations);
+        this.watermarkToggle = new BooleanToggleComponent(this.settings.watermark);
+        this.backgroundToggle = new BooleanToggleComponent(this.settings.renderBackground);
+        this.hideModulesToggle = new BooleanToggleComponent(this.settings.hideModules);
+        this.hiddenModulesList = new ListValueComponent(this.settings.hiddenModules);
+        this.scaleSlider = new NumberSliderComponent(this.settings.scale);
+        this.addCustomTextToggle = new BooleanToggleComponent(this.settings.addCustomText);
+        this.customTextInput = new StringValueTextInputComponent(this.settings.customText);
+        this.customTextColorToggle = new BooleanToggleComponent(this.settings.customTextColorEnabled);
+        this.customTextColorEditor = new ColorValueEditorComponent(this.settings.customTextColor);
+        this.smoothFontToggle = new BooleanToggleComponent(this.settings.smoothFont);
         this.targetX = Double.NaN;
-        this.M(this.dropdown8, this.dropdownJ, this.dropdownP, this.colorEditorG, this.expandSlider, this.toggleQ2, this.toggleQ, this.toggleU, this.toggleN, this.toggleM, this.toggle7, this.toggleY, this.listComponent, this.toggleF, this.textInput, this.toggleZ, this.colorEditorL);
+        this.addSettings(this.sortModeDropdown, this.suffixModeDropdown,
+                this.colorModeDropdown, this.textGuiColorEditor, this.scaleSlider,
+                this.clickDisableToggle, this.shadowToggle, this.animationsToggle,
+                this.smoothFontToggle, this.watermarkToggle, this.backgroundToggle,
+                this.hideModulesToggle, this.hiddenModulesList, this.addCustomTextToggle,
+                this.customTextInput, this.customTextColorToggle, this.customTextColorEditor);
         this.overlay = new TextGuiOverlayComponent(this);
         this.h(this.overlay, new Object[0]);
     }
@@ -135,11 +140,11 @@ extends HudSettingsFrameBase {
     public void t(JsonObject jsonObject) {
         super.t(jsonObject);
         this.recomputeAnchor();
-        ClientSettings.g(QuickActionsFrame.class).m$src$Lgg_vape_ui_click_frame_impl_quickactions_QuickA$1kmfigl().h(this.V$src$Z$1xhop3l());
+        ClientSettings.getFrame(QuickActionsFrame.class).m$src$Lgg_vape_ui_click_frame_impl_quickactions_QuickA$1kmfigl().setValue(this.V$src$Z$1xhop3l());
     }
 
     @Override
-    protected void o$src$V$7f79jo() {
+    protected void renderHudModeBorder() {
     }
 
     @Override
@@ -152,7 +157,7 @@ extends HudSettingsFrameBase {
 
     private void recomputeAnchor() {
         double threshold;
-        if (!this.L$src$Z$1v7qi9z()) {
+        if (!this.isPublicProfilePreview()) {
             this.rightAnchored = false;
             this.targetX = Double.NaN;
             return;
@@ -175,7 +180,7 @@ extends HudSettingsFrameBase {
 
     @Override
     public double L() {
-        if (this.L$src$Z$1v7qi9z()) {
+        if (this.isPublicProfilePreview()) {
             return this.expanded ? this.savedHeight : Math.max(26.0, this.overlay.C());
         }
         return super.L();
@@ -183,7 +188,7 @@ extends HudSettingsFrameBase {
 
     @Override
     public double A() {
-        if (this.L$src$Z$1v7qi9z()) {
+        if (this.isPublicProfilePreview()) {
             return this.expanded ? this.savedWidth : this.overlay.x();
         }
         return this.x();

@@ -12,10 +12,10 @@ import java.awt.Color;
 
 public class ColorValueDropdownComponent
 extends GuiComponent {
-    private final ColorPaletteSliderComponent v;
-    private final ModeValue I;
-    private ModeSelection Q;
-    private final ColorValue G;
+    private final ColorPaletteSliderComponent colorSlider;
+    private final ModeValue modeValue;
+    private ModeSelection previousSelection;
+    private final ColorValue teamColorValue;
 
     @Override
     public double C() {
@@ -27,15 +27,15 @@ extends GuiComponent {
     }
 
     public ColorValueDropdownComponent(ModeValue modeValue) {
-        this.I = modeValue;
-        this.G = ColorValue.L(null, "Team Color", new Color(189, 0, 1));
-        this.C(modeValue);
-        Color[] colorArray = new Color[]{new Color(189, 0, 1), new Color(253, 63, 63), new Color(215, 162, 50), new Color(254, 254, 62), new Color(0, 191, 4), new Color(64, 253, 62), new Color(65, 255, 254), new Color(0, 190, 189), new Color(1, 1, 187), new Color(61, 64, 255), new Color(254, 63, 255), new Color(190, 0, 190), new Color(255, 255, 255), new Color(190, 190, 190), new Color(63, 63, 63), new Color(17, 17, 17)};
-        this.v = new ColorValueDropdownHueSliderComponent(this, "Team color", this.G, colorArray);
-        this.v.T(this.d());
-        this.v.Y(true);
-        this.v.M(null);
-        this.H(this.v);
+        this.modeValue = modeValue;
+        this.teamColorValue = ColorValue.create(null, "Team Color", new Color(189, 0, 1));
+        this.bindValue(modeValue);
+        Color[] palette = new Color[]{new Color(189, 0, 1), new Color(253, 63, 63), new Color(215, 162, 50), new Color(254, 254, 62), new Color(0, 191, 4), new Color(64, 253, 62), new Color(65, 255, 254), new Color(0, 190, 189), new Color(1, 1, 187), new Color(61, 64, 255), new Color(254, 63, 255), new Color(190, 0, 190), new Color(255, 255, 255), new Color(190, 190, 190), new Color(63, 63, 63), new Color(17, 17, 17)};
+        this.colorSlider = new ColorValueDropdownHueSliderComponent(this, "Team color", this.teamColorValue, palette);
+        this.colorSlider.setDisabledOverlayColor(this.getDisabledOverlayColor());
+        this.colorSlider.setSeparatedSegments(true);
+        this.colorSlider.setToolTips(null);
+        this.addChildren(this.colorSlider);
     }
 
     @Override
@@ -45,11 +45,11 @@ extends GuiComponent {
     @Override
     public void H() {
         this.onDisable();
-        this.v.K(this.G$src$D$1b2f02a());
-        this.v.S(this.n());
-        SmoothFontRenderer smoothFontRenderer = this.O(0.7);
-        String string = ((ModeSelection)this.I.K()).getName().substring(2);
-        smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + this.A() - 5.0 - smoothFontRenderer.N(string), this.n() + 5.0, ColorValueDropdownComponent.J.Z);
+        this.colorSlider.K(this.G$src$D$1b2f02a());
+        this.colorSlider.S(this.n());
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.7);
+        String selectionName = ((ModeSelection)this.modeValue.getValue()).getName().substring(2);
+        smoothFontRenderer.d(selectionName, this.G$src$D$1b2f02a() + this.A() - 5.0 - smoothFontRenderer.N(selectionName), this.n() + 5.0, ColorValueDropdownComponent.J.Z);
     }
 
     @Override
@@ -57,30 +57,30 @@ extends GuiComponent {
         return 110.0;
     }
 
-    private void e() {
-        if (this.Q == null) {
-            this.Q = (ModeSelection)this.I.K();
+    private void synchronizeSliderSelection() {
+        if (this.previousSelection == null) {
+            this.previousSelection = (ModeSelection)this.modeValue.getValue();
             return;
         }
-        ModeSelection modeSelection = (ModeSelection)this.I.K();
-        if (!this.Q.equals(modeSelection)) {
-            this.v.Y(this.I.w$src$I$15qcf2k());
+        ModeSelection currentSelection = (ModeSelection)this.modeValue.getValue();
+        if (!this.previousSelection.equals(currentSelection)) {
+            this.colorSlider.selectPaletteIndex(this.modeValue.getSelectedIndex());
         }
     }
 
     @Override
     public void u() {
-        this.I.f(true);
-        this.v.Z$src$Lgg_vape_value_ColorValue_$1er4i1l().f(true);
-        this.G.f(true);
-        this.e();
-        if (this.I.w$src$I$15qcf2k() != this.v.y$src$I$1f1aefk()) {
-            this.I.M(this.v.y$src$I$1f1aefk());
+        this.modeValue.setPersistenceSuppressed(true);
+        this.colorSlider.getColorValue().setPersistenceSuppressed(true);
+        this.teamColorValue.setPersistenceSuppressed(true);
+        this.synchronizeSliderSelection();
+        if (this.modeValue.getSelectedIndex() != this.colorSlider.getSelectedIndex()) {
+            this.modeValue.setSelectedIndex(this.colorSlider.getSelectedIndex());
         }
-        this.Q = (ModeSelection)this.I.K();
-        this.G.f(false);
-        this.v.Z$src$Lgg_vape_value_ColorValue_$1er4i1l().f(false);
-        this.I.f(false);
+        this.previousSelection = (ModeSelection)this.modeValue.getValue();
+        this.teamColorValue.setPersistenceSuppressed(false);
+        this.colorSlider.getColorValue().setPersistenceSuppressed(false);
+        this.modeValue.setPersistenceSuppressed(false);
     }
 
 

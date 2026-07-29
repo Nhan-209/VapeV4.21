@@ -22,17 +22,17 @@ extends SliderComponentBase {
         double d3;
         String string2;
         StringBuilder stringBuilder;
-        SmoothFontRenderer smoothFontRenderer2 = this.O(0.85);
+        SmoothFontRenderer smoothFontRenderer2 = this.getFontRenderer(0.85);
         int n = this.a - this.R;
         int n2 = Math.abs(n);
         boolean bl = n < 0;
         boolean bl2 = n > 0;
-        boolean bl3 = this.O.N$src$Z$1ad1ggw();
-        Color color2 = bl3 ? this.O.l(OnlineCombatStatComparisonComponent.J.Z) : OnlineCombatStatComparisonComponent.J.Z;
-        Color color3 = bl3 ? this.O.l(OnlineCombatStatComparisonComponent.J.h) : OnlineCombatStatComparisonComponent.J.h;
-        Color color4 = bl3 ? this.O.l(OnlineCombatStatComparisonComponent.J.l) : OnlineCombatStatComparisonComponent.J.l;
-        Color color5 = bl3 ? this.O.l(OnlineCombatStatComparisonComponent.J.B) : OnlineCombatStatComparisonComponent.J.B;
-        Color color6 = bl3 ? this.O.l(OnlineCombatStatComparisonComponent.J.d) : OnlineCombatStatComparisonComponent.J.d;
+        boolean bl3 = this.O.isManagedByClickGui();
+        Color color2 = bl3 ? this.O.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.Z) : OnlineCombatStatComparisonComponent.J.Z;
+        Color color3 = bl3 ? this.O.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.h) : OnlineCombatStatComparisonComponent.J.h;
+        Color color4 = bl3 ? this.O.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.l) : OnlineCombatStatComparisonComponent.J.l;
+        Color color5 = bl3 ? this.O.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.B) : OnlineCombatStatComparisonComponent.J.B;
+        Color color6 = bl3 ? this.O.applyDefaultEditorAlpha(OnlineCombatStatComparisonComponent.J.d) : OnlineCombatStatComparisonComponent.J.d;
         StringBuilder stringBuilder2 = new StringBuilder();
         if (bl2) {
             stringBuilder = stringBuilder2;
@@ -83,7 +83,7 @@ extends SliderComponentBase {
             }
         }
         smoothFontRenderer.W(string, d2, d, color);
-        smoothFontRenderer2.d(this.W$src$Ljava_lang_String_$24bvf0(), this.G$src$D$1b2f02a() + 10.0 + d4, d3, color2);
+        smoothFontRenderer2.d(this.getLabel(), this.G$src$D$1b2f02a() + 10.0 + d4, d3, color2);
         String string6 = this.a > 9 ? "" + this.a : "0" + this.a;
         String string7 = this.R > 9 ? "" + this.R : "0" + this.R;
         double d9 = smoothFontRenderer2.N(string6);

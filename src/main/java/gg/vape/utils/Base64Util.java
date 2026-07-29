@@ -4,9 +4,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class Base64Util {
-    private static boolean N;
-    private static int[] s;
-    private static final char[] p;
+    private static boolean decodeTableInitialized;
+    private static int[] decodeTable;
+    private static final char[] BASE64_ALPHABET;
 
     public static String encodeBase64(byte[] byArray) {
         int n = byArray.length;
@@ -18,12 +18,12 @@ public class Base64Util {
             n2 = (n2 << 8) + byArray[i];
             n3 += 8;
             while (n3 >= 0) {
-                byArray2[n4++] = (byte)p[n2 >> n3 & 0x3F];
+                byArray2[n4++] = (byte)BASE64_ALPHABET[n2 >> n3 & 0x3F];
                 n3 -= 6;
             }
         }
         if (n3 > -6) {
-            byArray2[n4++] = (byte)p[n2 << 8 >> n3 + 8 & 0x3F];
+            byArray2[n4++] = (byte)BASE64_ALPHABET[n2 << 8 >> n3 + 8 & 0x3F];
         }
         while (n4 % 4 != 0) {
             byArray2[n4++] = 61;
@@ -40,20 +40,20 @@ public class Base64Util {
         int n;
         byte[] byArray = new byte[string.length() + 1];
         int n2 = 0;
-        if (!N) {
-            s = new int[256];
+        if (!decodeTableInitialized) {
+            decodeTable = new int[256];
             for (n = 0; n < 256; ++n) {
-                Base64Util.s[n] = -1;
+                Base64Util.decodeTable[n] = -1;
             }
             for (n = 0; n < 64; ++n) {
-                Base64Util.s[Base64Util.p[n]] = n;
+                Base64Util.decodeTable[Base64Util.BASE64_ALPHABET[n]] = n;
             }
-            N = true;
+            decodeTableInitialized = true;
         }
         n = 0;
         int n3 = -8;
-        for (int i = 0; i < string.length() && s[c = string.charAt(i)] != -1; ++i) {
-            n = (n << 6) + s[c];
+        for (int i = 0; i < string.length() && decodeTable[c = string.charAt(i)] != -1; ++i) {
+            n = (n << 6) + decodeTable[c];
             if ((n3 += 6) < 0) continue;
             byArray[n2++] = (byte)(n >> n3 & 0xFF);
             n3 -= 8;
@@ -70,39 +70,39 @@ public class Base64Util {
         return new String(Base64.getDecoder().decode(string.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
     }
 
-    private static String a(byte[] byArray) {
-        int n = 0;
-        int n2 = byArray.length;
-        char[] cArray = new char[n2];
-        for (int i = 0; i < n2; ++i) {
-            char c;
-            int n3 = 0xFF & byArray[i];
-            if (n3 < 192) {
-                cArray[n++] = (char)n3;
+    private static String decodeUtf8Bytes(byte[] bytes) {
+        int outputLength = 0;
+        int inputLength = bytes.length;
+        char[] characters = new char[inputLength];
+        for (int index = 0; index < inputLength; ++index) {
+            char character;
+            int currentByte = 0xFF & bytes[index];
+            if (currentByte < 192) {
+                characters[outputLength++] = (char)currentByte;
                 continue;
             }
-            if (n3 < 224) {
-                c = (char)((char)(n3 & 0x1F) << 6);
-                n3 = byArray[++i];
-                c = (char)(c | (char)(n3 & 0x3F));
-                cArray[n++] = c;
+            if (currentByte < 224) {
+                character = (char)((char)(currentByte & 0x1F) << 6);
+                currentByte = bytes[++index];
+                character = (char)(character | (char)(currentByte & 0x3F));
+                characters[outputLength++] = character;
                 continue;
             }
-            if (i >= n2 - 2) continue;
-            c = (char)((char)(n3 & 0xF) << 12);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F) << 6);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F));
-            cArray[n++] = c;
+            if (index >= inputLength - 2) continue;
+            character = (char)((char)(currentByte & 0xF) << 12);
+            currentByte = bytes[++index];
+            character = (char)(character | (char)(currentByte & 0x3F) << 6);
+            currentByte = bytes[++index];
+            character = (char)(character | (char)(currentByte & 0x3F));
+            characters[outputLength++] = character;
         }
-        return new String(cArray, 0, n);
+        return new String(characters, 0, outputLength);
     }
 
     static {
         try {
             String string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-            p = string.toCharArray();
+            BASE64_ALPHABET = string.toCharArray();
         }
         catch (Exception exception) {
             throw new ExceptionInInitializerError(exception);

@@ -44,129 +44,124 @@ import org.jetbrains.annotations.Nullable;
 
 public class InventoryItemPickerPanel
 extends PanelComponent {
-    private final PanelComponent VF;
-    private final InventoryFilterRule Vj;
-    private boolean VX = true;
-    private final PanelComponent V2;
-    private static final List<String> Vl;
-    private final List<String> V9;
+    private final PanelComponent allItemsPanel;
+    private final InventoryFilterRule filterRule;
+    private boolean addSelectionAfterChoose = true;
+    private final PanelComponent categoryPanel;
+    private static final List<String> COMMON_ITEM_IDS;
+    private final List<String> selectedItemIds;
     @Nullable
-    private Consumer<ItemPickerSelection<String, ItemMappingEntry>> V7;
+    private Consumer<ItemPickerSelection<String, ItemMappingEntry>> onExistingSelection;
     @Nullable
-    private final InventoryItemMatcher Vt;
+    private final InventoryItemMatcher filterMatcher;
     @NotNull
-    private Consumer<ItemPickerSelection<String, ItemMappingEntry>> V5;
-    private static GuiComponent[] VL;
-    private final boolean Vv;
-    private final PanelComponent Vw;
-    private final LabeledTextInputComponent VI = new LabeledTextInputComponent("Search items...", false, true);
+    private Consumer<ItemPickerSelection<String, ItemMappingEntry>> onSelect;
+    private final boolean searchOnly;
+    private final PanelComponent searchPanel;
+    private final LabeledTextInputComponent searchInput = new LabeledTextInputComponent("Search items...", false, true);
 
-    public static List a(InventoryItemPickerPanel inventoryItemPickerPanel) {
-        return inventoryItemPickerPanel.V9;
+    public static List<String> getSelectedItemIds(InventoryItemPickerPanel panel) {
+        return panel.selectedItemIds;
     }
 
     @Nullable
-    public Consumer<ItemPickerSelection<String, ItemMappingEntry>> a$src$Ljava_util_function_Consumer_$1pgzxj9() {
-        return this.V7;
+    public Consumer<ItemPickerSelection<String, ItemMappingEntry>> getOnExistingSelection() {
+        return this.onExistingSelection;
     }
 
-    public void T(@Nullable Consumer<ItemPickerSelection<String, ItemMappingEntry>> consumer) {
-        this.V5 = consumer;
+    public void setOnSelect(@Nullable Consumer<ItemPickerSelection<String, ItemMappingEntry>> onSelect) {
+        this.onSelect = onSelect;
     }
 
-    private void c(ItemPickerSelection<String, ItemMappingEntry> itemPickerSelection) {
-        if (this.V9.contains(itemPickerSelection.N() != null ? itemPickerSelection.N() : itemPickerSelection.X().M())) {
-            Consumer<ItemPickerSelection<String, ItemMappingEntry>> consumer = this.V7;
+    private void dispatchSelection(ItemPickerSelection<String, ItemMappingEntry> itemPickerSelection) {
+        if (this.selectedItemIds.contains(itemPickerSelection.getLeft() != null ? itemPickerSelection.getLeft() : itemPickerSelection.getRight().M())) {
+            Consumer<ItemPickerSelection<String, ItemMappingEntry>> consumer = this.onExistingSelection;
             if (consumer != null) {
                 consumer.accept(itemPickerSelection);
             }
         } else {
-            this.V5.accept(itemPickerSelection);
+            this.onSelect.accept(itemPickerSelection);
         }
     }
 
-    private List<OnlineRadarPreviewState<ItemStack, ItemMappingEntry>> T$src$Ljava_util_List_$1nsj6c3() {
-        ItemStack itemStack;
-        LinkedHashMap<ItemMappingEntry, ItemStack> linkedHashMap = new LinkedHashMap<ItemMappingEntry, ItemStack>();
-        String string = this.VI.i$src$Ljava_lang_String_$1n2xf3k().toLowerCase();
-        if (string.trim().isEmpty()) {
-            for (ItemStack object2 : HotbarSlotRuleItemListFrame.Oq) {
-                ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(object2);
-                if (itemMappingEntry == null || this.V9.contains(itemMappingEntry.M()) || (itemStack = itemMappingEntry.Q()) == null || itemStack.isNull()) continue;
-                linkedHashMap.put(itemMappingEntry, itemStack);
+    private List<OnlineRadarPreviewState<ItemStack, ItemMappingEntry>> getSearchResults() {
+        ItemStack resolvedStack;
+        LinkedHashMap<ItemMappingEntry, ItemStack> matchingItems = new LinkedHashMap<ItemMappingEntry, ItemStack>();
+        String query = this.searchInput.getText().toLowerCase();
+        if (query.trim().isEmpty()) {
+            for (ItemStack commonStack : HotbarSlotRuleItemListFrame.Oq) {
+                ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(commonStack);
+                if (itemMappingEntry == null || this.selectedItemIds.contains(itemMappingEntry.M()) || (resolvedStack = itemMappingEntry.Q()) == null || resolvedStack.isNull()) continue;
+                matchingItems.put(itemMappingEntry, resolvedStack);
             }
         }
-        for (ItemStack itemStack2 : ItemStackScoreUtil.S()) {
+        for (ItemStack candidateStack : ItemStackScoreUtil.S()) {
             ItemMappingEntry itemMappingEntry;
-            if (this.Vt != null && !this.Vt.R(itemStack2) || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack2)) == null || (itemStack = itemMappingEntry.Q()) == null || itemStack.isNull() || !itemMappingEntry.q().contains(string) && !itemMappingEntry.q().replace("_", " ").contains(string) && !itemStack.x().toLowerCase().contains(string) || this.V9.contains(itemMappingEntry.M())) continue;
-            linkedHashMap.put(itemMappingEntry, itemStack);
+            if (this.filterMatcher != null && !this.filterMatcher.matches(candidateStack) || (itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(candidateStack)) == null || (resolvedStack = itemMappingEntry.Q()) == null || resolvedStack.isNull() || !itemMappingEntry.q().contains(query) && !itemMappingEntry.q().replace("_", " ").contains(query) && !resolvedStack.x().toLowerCase().contains(query) || this.selectedItemIds.contains(itemMappingEntry.M())) continue;
+            matchingItems.put(itemMappingEntry, resolvedStack);
         }
-        ArrayList<OnlineRadarPreviewState<ItemStack, ItemMappingEntry>> arrayList = new ArrayList<>();
-        for (Map.Entry<ItemMappingEntry, ItemStack> entry : linkedHashMap.entrySet()) {
-            arrayList.add(OnlineRadarPreviewState.l(entry.getValue(), entry.getKey()));
+        ArrayList<OnlineRadarPreviewState<ItemStack, ItemMappingEntry>> results = new ArrayList<>();
+        for (Map.Entry<ItemMappingEntry, ItemStack> entry : matchingItems.entrySet()) {
+            results.add(OnlineRadarPreviewState.l(entry.getValue(), entry.getKey()));
         }
-        arrayList.sort((arg_0, arg_1) -> InventoryItemPickerPanel.lambda$getSearchedItems$8(string, arg_0, arg_1));
-        return arrayList;
+        results.sort((first, second) -> InventoryItemPickerPanel.compareSearchResults(query, first, second));
+        return results;
     }
 
-    public boolean C$src$Z$ayi6fb() {
-        return this.VX;
+    public boolean shouldAddSelectionAfterChoose() {
+        return this.addSelectionAfterChoose;
     }
 
-    private void lambda$null$9(InventoryItemMatcher inventoryItemMatcher) {
-        this.c(ItemPickerSelection.k(inventoryItemMatcher.k()));
+    private void selectMatcher(InventoryItemMatcher inventoryItemMatcher) {
+        this.dispatchSelection(ItemPickerSelection.ofLeft(inventoryItemMatcher.getId()));
     }
 
-    public static void a(GuiComponent[] guiComponentArray) {
-        VL = guiComponentArray;
+    private void openMatcherGroup(InventoryItemMatcherGroup inventoryItemMatcherGroup) {
+        this.showCategoryView(inventoryItemMatcherGroup);
     }
 
-    private void lambda$new$2(InventoryItemMatcherGroup inventoryItemMatcherGroup) {
-        this.e(inventoryItemMatcherGroup);
-    }
-
-    public void a$src$V$bf004p() {
-        this.VF.Z(false);
-        this.Vw.Z(true);
-        this.V2.Z(false);
-        this.Vw.t$src$V$zbu1jn();
-        this.Vw.h(this.u(this.A(), "Search", false, !this.Vv), new Object[0]);
-        this.Vw.h(new SpacerComponent(9.0, 0.0), "widthwrap");
-        this.Vw.h(this.VI, new Object[0]);
-        this.Vw.h(new SpacerComponent(0.0, 5.0), new Object[0]);
-        ScrollableFrameComponent scrollableFrameComponent = new ScrollableFrameComponent(this.Vw.A() - 5.0, 0.0);
+    public void showSearchView() {
+        this.allItemsPanel.setVisible(false);
+        this.searchPanel.setVisible(true);
+        this.categoryPanel.setVisible(false);
+        this.searchPanel.t$src$V$zbu1jn();
+        this.searchPanel.h(this.createHeader(this.A(), "Search", false, !this.searchOnly), new Object[0]);
+        this.searchPanel.h(new SpacerComponent(9.0, 0.0), "widthwrap");
+        this.searchPanel.h(this.searchInput, new Object[0]);
+        this.searchPanel.h(new SpacerComponent(0.0, 5.0), new Object[0]);
+        ScrollableFrameComponent scrollableFrameComponent = new ScrollableFrameComponent(this.searchPanel.A() - 5.0, 0.0);
         scrollableFrameComponent.t(36.0);
-        scrollableFrameComponent.d(false);
-        ArrayList<String> arrayList = new ArrayList<String>(this.V9);
-        SimpleTextLabelComponent simpleTextLabelComponent = null;
-        if (!arrayList.isEmpty()) {
-            simpleTextLabelComponent = new SimpleTextLabelComponent("SELECTED", 0.8, InventoryItemPickerPanel.J.h, true);
-            simpleTextLabelComponent.o(this.VF.A() - 10.0);
-            simpleTextLabelComponent.Y(8.0);
-            simpleTextLabelComponent.c(0);
-            this.Vw.h(new PaddedComponent(0.0, 2.0, 5.0, 0.0, simpleTextLabelComponent), new Object[0]);
+        scrollableFrameComponent.setShowDisabledOverlay(false);
+        ArrayList<String> selectedIds = new ArrayList<String>(this.selectedItemIds);
+        SimpleTextLabelComponent selectedLabel = null;
+        if (!selectedIds.isEmpty()) {
+            selectedLabel = new SimpleTextLabelComponent("SELECTED", 0.8, InventoryItemPickerPanel.J.h, true);
+            selectedLabel.o(this.allItemsPanel.A() - 10.0);
+            selectedLabel.Y(8.0);
+            selectedLabel.setExtraHeight(0);
+            this.searchPanel.h(new PaddedComponent(0.0, 2.0, 5.0, 0.0, selectedLabel), new Object[0]);
         }
-        BiFunction<ItemStack, ItemMappingEntry, GuiComponent> biFunction = this::lambda$setSearchView$5;
-        for (String object2 : arrayList) {
-            ItemStack n2;
-            ItemMappingEntry n = Vape.INSTANCE.getItemStackResolver().b(object2);
-            if (n == null || (n2 = n.Q()) == null) continue;
-            scrollableFrameComponent.h(biFunction.apply(n2, n), scrollableFrameComponent.f().size() % 6 == 5 ? "wrap" : "widthwrap");
+        BiFunction<ItemStack, ItemMappingEntry, GuiComponent> previewFactory = this::createSelectedItemPreview;
+        for (String selectedId : selectedIds) {
+            ItemStack selectedStack;
+            ItemMappingEntry selectedEntry = Vape.INSTANCE.getItemStackResolver().findByName(selectedId);
+            if (selectedEntry == null || (selectedStack = selectedEntry.Q()) == null) continue;
+            scrollableFrameComponent.h(previewFactory.apply(selectedStack, selectedEntry), scrollableFrameComponent.f().size() % 6 == 5 ? "wrap" : "widthwrap");
         }
-        this.Vw.h(new PaddedComponent(5.0, 0.0, scrollableFrameComponent), new Object[0]);
+        this.searchPanel.h(new PaddedComponent(5.0, 0.0, scrollableFrameComponent), new Object[0]);
         scrollableFrameComponent.H(true);
         SimpleTextLabelComponent simpleTextLabelComponent2 = new SimpleTextLabelComponent("SEARCH RESULTS...", 0.8, InventoryItemPickerPanel.J.h, true);
-        simpleTextLabelComponent2.o(this.VF.A() - 10.0);
+        simpleTextLabelComponent2.o(this.allItemsPanel.A() - 10.0);
         simpleTextLabelComponent2.Y(8.0);
-        this.Vw.h(new PaddedComponent(5.0, 0.0, 5.0, 0.0, simpleTextLabelComponent2), new Object[0]);
-        PanelComponent panelComponent = new PanelComponent(this.Vw.A(), 135.0 - scrollableFrameComponent.C() - (simpleTextLabelComponent != null ? simpleTextLabelComponent.L() + 2.0 : 0.0));
+        this.searchPanel.h(new PaddedComponent(5.0, 0.0, 5.0, 0.0, simpleTextLabelComponent2), new Object[0]);
+        PanelComponent panelComponent = new PanelComponent(this.searchPanel.A(), 135.0 - scrollableFrameComponent.C() - (selectedLabel != null ? selectedLabel.L() + 2.0 : 0.0));
         panelComponent.t(panelComponent.L());
         panelComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        panelComponent.d(false);
-        this.Vw.h(panelComponent, new Object[0]);
-        int n = 0;
-        int n2 = 300;
-        for (OnlineRadarPreviewState<ItemStack, ItemMappingEntry> onlineRadarPreviewState : this.T$src$Ljava_util_List_$1nsj6c3()) {
+        panelComponent.setShowDisabledOverlay(false);
+        this.searchPanel.h(panelComponent, new Object[0]);
+        int resultCount = 0;
+        int maxResults = 300;
+        for (OnlineRadarPreviewState<ItemStack, ItemMappingEntry> onlineRadarPreviewState : this.getSearchResults()) {
             ItemStack itemStack = onlineRadarPreviewState.n();
             ItemMappingEntry itemMappingEntry = onlineRadarPreviewState.h();
             InventoryItemStackSelectionRowComponent inventoryItemStackSelectionRowComponent = new InventoryItemStackSelectionRowComponent(itemStack);
@@ -174,256 +169,241 @@ extends PanelComponent {
             inventoryItemStackSelectionRowComponent.Y(16.0);
             PaddedComponent paddedComponent = new PaddedComponent(1.0, 0.0, 0.0, 0.0, inventoryItemStackSelectionRowComponent);
             panelComponent.h(paddedComponent, new Object[0]);
-            inventoryItemStackSelectionRowComponent.K(() -> this.lambda$setSearchView$7(itemMappingEntry));
-            if (++n < n2) continue;
+            inventoryItemStackSelectionRowComponent.K(() -> this.scheduleItemSelection(itemMappingEntry));
+            if (++resultCount < maxResults) continue;
             break;
         }
     }
 
-    private GuiComponent lambda$setSearchView$5(ItemStack itemStack, ItemMappingEntry itemMappingEntry) {
+    private GuiComponent createSelectedItemPreview(ItemStack itemStack, ItemMappingEntry itemMappingEntry) {
         InventoryItemPreviewComponent inventoryItemPreviewComponent = new InventoryItemPreviewComponent(itemStack, true);
         PaddedComponent paddedComponent = new PaddedComponent(1.0, 1.0, 2.0, 0.0, inventoryItemPreviewComponent);
-        inventoryItemPreviewComponent.j(new InventoryItemPickerSearchResultClickListener(this, itemMappingEntry));
+        inventoryItemPreviewComponent.addMouseListener(new InventoryItemPickerSearchResultClickListener(this, itemMappingEntry));
         return paddedComponent;
     }
 
-    public void M(String string) {
-        this.V9.remove(string);
+    public void removeSelectedItemId(String string) {
+        this.selectedItemIds.remove(string);
     }
 
-    public void R(@Nullable Consumer<ItemPickerSelection<String, ItemMappingEntry>> consumer) {
-        this.V7 = consumer;
+    public void setOnExistingSelection(@Nullable Consumer<ItemPickerSelection<String, ItemMappingEntry>> onExistingSelection) {
+        this.onExistingSelection = onExistingSelection;
     }
 
-    public void j(String string) {
-        this.V9.add(string);
+    public void addSelectedItemId(String string) {
+        this.selectedItemIds.add(string);
     }
 
-    private void lambda$setSearchView$7(ItemMappingEntry itemMappingEntry) {
-        ClientSettings.f6.execute(() -> this.lambda$null$6(itemMappingEntry));
+    private void scheduleItemSelection(ItemMappingEntry itemMappingEntry) {
+        ClientSettings.UI_EXECUTOR.execute(() -> this.selectMappingEntry(itemMappingEntry));
     }
 
-    private static int lambda$getSearchedItems$8(String string, OnlineRadarPreviewState onlineRadarPreviewState, OnlineRadarPreviewState onlineRadarPreviewState2) {
-        String string2 = ((ItemStack)onlineRadarPreviewState.n()).x().toLowerCase();
-        String string3 = ((ItemStack)onlineRadarPreviewState2.n()).x().toLowerCase();
-        if (string2.equals(string) && !string3.equals(string)) {
+    private static int compareSearchResults(String query, OnlineRadarPreviewState first, OnlineRadarPreviewState second) {
+        String firstName = ((ItemStack)first.n()).x().toLowerCase();
+        String secondName = ((ItemStack)second.n()).x().toLowerCase();
+        if (firstName.equals(query) && !secondName.equals(query)) {
             return -1;
         }
-        if (string2.startsWith(string) && !string3.startsWith(string)) {
+        if (firstName.startsWith(query) && !secondName.startsWith(query)) {
             return -1;
         }
         return 0;
     }
 
-    private void lambda$setCategoryView$10(InventoryItemMatcher inventoryItemMatcher) {
-        ClientSettings.f6.execute(() -> this.lambda$null$9(inventoryItemMatcher));
+    private void scheduleMatcherSelection(InventoryItemMatcher inventoryItemMatcher) {
+        ClientSettings.UI_EXECUTOR.execute(() -> this.selectMatcher(inventoryItemMatcher));
     }
 
     static {
-        InventoryItemPickerPanel.a(new GuiComponent[2]);
-        Vl = Arrays.asList("minecraft:diamond_sword", "minecraft:diamond_pickaxe", "minecraft:diamond_axe", "minecraft:bow", "minecraft:cooked_beef", "minecraft:ender_pearl", "minecraft:snowball", "minecraft:egg", "minecraft:fishing_rod", "minecraft:enchanted_golden_apple", "minecraft:golden_apple", "minecraft:water_bucket");
+        COMMON_ITEM_IDS = Arrays.asList("minecraft:diamond_sword", "minecraft:diamond_pickaxe", "minecraft:diamond_axe", "minecraft:bow", "minecraft:cooked_beef", "minecraft:ender_pearl", "minecraft:snowball", "minecraft:egg", "minecraft:fishing_rod", "minecraft:enchanted_golden_apple", "minecraft:golden_apple", "minecraft:water_bucket");
     }
 
-    private void lambda$new$4(InventoryItemMatcher inventoryItemMatcher) {
-        ClientSettings.f6.execute(() -> this.lambda$null$3(inventoryItemMatcher));
-    }
-
-    public InventoryItemPickerPanel(InventoryFilterRule inventoryFilterRule, boolean bl, @Nullable InventoryItemMatcher inventoryItemMatcher, List<String> list, Consumer<ItemPickerSelection<String, ItemMappingEntry>> consumer) {
+    public InventoryItemPickerPanel(InventoryFilterRule inventoryFilterRule, boolean searchOnly, @Nullable InventoryItemMatcher inventoryItemMatcher, List<String> selectedItemIds, Consumer<ItemPickerSelection<String, ItemMappingEntry>> onSelect) {
         super(108.0, 215.0);
-        Object object;
-        Object object2;
-        this.V9 = new ArrayList<String>();
-        this.Vj = inventoryFilterRule;
-        this.Vv = bl;
-        this.Vt = inventoryItemMatcher;
-        this.V9.addAll(list);
-        this.V5 = consumer;
+        this.selectedItemIds = new ArrayList<String>();
+        this.filterRule = inventoryFilterRule;
+        this.searchOnly = searchOnly;
+        this.filterMatcher = inventoryItemMatcher;
+        this.selectedItemIds.addAll(selectedItemIds);
+        this.onSelect = onSelect;
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.T(InventoryItemPickerPanel.J.H);
-        double d = this.L();
-        this.VF = new PanelComponent(this.A(), d);
-        this.Vw = new PanelComponent(this.A(), d);
-        this.V2 = new PanelComponent(this.A(), d);
-        this.VF.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.Vw.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.V2.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.VF.d(false);
-        this.Vw.d(false);
-        this.V2.d(false);
-        this.VF.h(this.u(this.A(), "All items", true, false), new Object[0]);
-        this.VF.h(new SpacerComponent(this.A(), 0.0), new Object[0]);
-        this.VF.h(new SpacerComponent(9.0, 0.0), "widthwrap");
-        this.VI.d(false);
-        this.VI.e(false);
-        this.VI.C(0.0);
-        this.VI.H(0.0f);
-        this.VI.O(0.0f);
-        this.VI.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().Z(false);
-        this.VI.A(InventoryItemPickerPanel.J.h);
-        this.VI.Y(14.0);
-        this.VI.o(this.VF.A() - 16.0);
-        this.VI.o(this::lambda$new$1);
-        this.VF.h(this.VI, new Object[0]);
-        this.VF.h(new SpacerComponent(0.0, 5.0), new Object[0]);
+        this.setDisabledOverlayColor(InventoryItemPickerPanel.J.H);
+        double panelHeight = this.L();
+        this.allItemsPanel = new PanelComponent(this.A(), panelHeight);
+        this.searchPanel = new PanelComponent(this.A(), panelHeight);
+        this.categoryPanel = new PanelComponent(this.A(), panelHeight);
+        this.allItemsPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.searchPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.categoryPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.allItemsPanel.setShowDisabledOverlay(false);
+        this.searchPanel.setShowDisabledOverlay(false);
+        this.categoryPanel.setShowDisabledOverlay(false);
+        this.allItemsPanel.h(this.createHeader(this.A(), "All items", true, false), new Object[0]);
+        this.allItemsPanel.h(new SpacerComponent(this.A(), 0.0), new Object[0]);
+        this.allItemsPanel.h(new SpacerComponent(9.0, 0.0), "widthwrap");
+        this.searchInput.setShowDisabledOverlay(false);
+        this.searchInput.setBackgroundVisible(false);
+        this.searchInput.setHorizontalInset(0.0);
+        this.searchInput.setLeftInset(0.0f);
+        this.searchInput.setVerticalInset(0.0f);
+        this.searchInput.getActionButton().setVisible(false);
+        this.searchInput.setPlaceholderColor(InventoryItemPickerPanel.J.h);
+        this.searchInput.Y(14.0);
+        this.searchInput.o(this.allItemsPanel.A() - 16.0);
+        this.searchInput.addKeyTypedListener(this::handleSearchInput);
+        this.allItemsPanel.h(this.searchInput, new Object[0]);
+        this.allItemsPanel.h(new SpacerComponent(0.0, 5.0), new Object[0]);
         SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent("COMMON ITEMS", 0.7, InventoryItemPickerPanel.J.h, true);
-        simpleTextLabelComponent.c(0);
-        simpleTextLabelComponent.o(this.VF.A() - 10.0);
-        this.VF.h(new SpacerComponent(5.0, 0.0), "widthwrap");
-        this.VF.h(simpleTextLabelComponent, new Object[0]);
-        PanelComponent panelComponent = new PanelComponent(this.VF.A() - 10.0, 30.0);
-        panelComponent.d(false);
+        simpleTextLabelComponent.setExtraHeight(0);
+        simpleTextLabelComponent.o(this.allItemsPanel.A() - 10.0);
+        this.allItemsPanel.h(new SpacerComponent(5.0, 0.0), "widthwrap");
+        this.allItemsPanel.h(simpleTextLabelComponent, new Object[0]);
+        PanelComponent panelComponent = new PanelComponent(this.allItemsPanel.A() - 10.0, 30.0);
+        panelComponent.setShowDisabledOverlay(false);
         PaddedComponent paddedComponent = new PaddedComponent(5.0, panelComponent);
-        paddedComponent.d(false);
-        this.VF.h(paddedComponent, new Object[0]);
-        int n = 0;
-        for (String object42 : Vl) {
-            object2 = Vape.INSTANCE.getItemStackResolver().b(object42);
-            if (object2 == null || (object = ((ItemMappingEntry)object2).Q()) == null || ((ItemStack)object).isNull()) continue;
-            InventoryItemPreviewComponent inventoryItemPreviewComponent = new InventoryItemPreviewComponent((ItemStack)object, false);
-            inventoryItemPreviewComponent.j(new InventoryItemPickerCategoryItemClickListener(this, (ItemMappingEntry)object2));
-            panelComponent.h(new PaddedComponent(0.0, 2.0, 2.0, 0.0, inventoryItemPreviewComponent), n == 5 ? "wrap" : "widthwrap");
-            ++n;
+        paddedComponent.setShowDisabledOverlay(false);
+        this.allItemsPanel.h(paddedComponent, new Object[0]);
+        int commonItemCount = 0;
+        for (String commonItemId : COMMON_ITEM_IDS) {
+            ItemMappingEntry itemEntry = Vape.INSTANCE.getItemStackResolver().findByName(commonItemId);
+            ItemStack itemStack;
+            if (itemEntry == null || (itemStack = itemEntry.Q()) == null || itemStack.isNull()) continue;
+            InventoryItemPreviewComponent inventoryItemPreviewComponent = new InventoryItemPreviewComponent(itemStack, false);
+            inventoryItemPreviewComponent.addMouseListener(new InventoryItemPickerCategoryItemClickListener(this, itemEntry));
+            panelComponent.h(new PaddedComponent(0.0, 2.0, 2.0, 0.0, inventoryItemPreviewComponent), commonItemCount == 5 ? "wrap" : "widthwrap");
+            ++commonItemCount;
         }
         SimpleTextLabelComponent simpleTextLabelComponent2 = new SimpleTextLabelComponent("GENERIC ITEMS", 0.7, InventoryItemPickerPanel.J.h, true);
-        simpleTextLabelComponent2.c(4);
-        simpleTextLabelComponent2.o(simpleTextLabelComponent2.h() * 1.2);
-        this.VF.h(new SpacerComponent(5.0, 0.0), "widthwrap");
-        this.VF.h(simpleTextLabelComponent2, "widthwrap");
+        simpleTextLabelComponent2.setExtraHeight(4);
+        simpleTextLabelComponent2.o(simpleTextLabelComponent2.getTextWidth() * 1.2);
+        this.allItemsPanel.h(new SpacerComponent(5.0, 0.0), "widthwrap");
+        this.allItemsPanel.h(simpleTextLabelComponent2, "widthwrap");
         IconGlyphComponent iconGlyphComponent = new IconGlyphComponent("newinfo", 5.0f, 5.0f);
-        iconGlyphComponent.r(true);
+        iconGlyphComponent.setSnapToPixels(true);
         iconGlyphComponent.w("Generic Items are groups of items that share a common theme.");
-        this.VF.h(new PaddedComponent(1.5, iconGlyphComponent), new Object[0]);
-        object2 = new PanelComponent(this.VF.A(), 115.0);
-        ((FrameComponent)object2).l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        ((GuiComponent)object2).d(false);
-        ((FrameComponent)object2).t(((GuiComponent)object2).L());
-        this.VF.h((GuiComponent)object2, new Object[0]);
+        this.allItemsPanel.h(new PaddedComponent(1.5, iconGlyphComponent), new Object[0]);
+        PanelComponent matcherGroupsPanel = new PanelComponent(this.allItemsPanel.A(), 115.0);
+        matcherGroupsPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        matcherGroupsPanel.setShowDisabledOverlay(false);
+        matcherGroupsPanel.t(matcherGroupsPanel.L());
+        this.allItemsPanel.h(matcherGroupsPanel, new Object[0]);
         for (InventoryItemMatcherGroup inventoryItemMatcherGroup : InventoryItemMatcherGroup.VALUES) {
-            if (inventoryItemMatcherGroup.u() == null) continue;
-            InventoryCleanerIconTextActionRow inventoryCleanerIconTextActionRow = new InventoryCleanerIconTextActionRow(inventoryItemMatcherGroup.getName(), inventoryItemMatcherGroup.u(), () -> this.lambda$new$2(inventoryItemMatcherGroup));
-            inventoryCleanerIconTextActionRow.w(inventoryItemMatcherGroup.E());
-            inventoryCleanerIconTextActionRow.o(this.VF.A());
+            if (inventoryItemMatcherGroup.getIconName() == null) continue;
+            InventoryCleanerIconTextActionRow inventoryCleanerIconTextActionRow = new InventoryCleanerIconTextActionRow(inventoryItemMatcherGroup.getName(), inventoryItemMatcherGroup.getIconName(), () -> this.openMatcherGroup(inventoryItemMatcherGroup));
+            inventoryCleanerIconTextActionRow.w(inventoryItemMatcherGroup.getDescription());
+            inventoryCleanerIconTextActionRow.o(this.allItemsPanel.A());
             inventoryCleanerIconTextActionRow.Y(18.0);
-            ((FrameComponent)object2).h(new PaddedComponent(1.0, 0.0, 0.0, 0.0, inventoryCleanerIconTextActionRow), new Object[0]);
+            matcherGroupsPanel.h(new PaddedComponent(1.0, 0.0, 0.0, 0.0, inventoryCleanerIconTextActionRow), new Object[0]);
         }
         InventoryItemMatcher hiddenMatcher = HiddenInventoryItemMatchers.R;
-        InventoryCleanerIconTextActionRow inventoryCleanerIconTextActionRow = new InventoryCleanerIconTextActionRow(hiddenMatcher.getName(), hiddenMatcher.Z(), () -> this.lambda$new$4(hiddenMatcher));
-        inventoryCleanerIconTextActionRow.o(this.VF.A());
+        InventoryCleanerIconTextActionRow inventoryCleanerIconTextActionRow = new InventoryCleanerIconTextActionRow(hiddenMatcher.getName(), hiddenMatcher.getIconName(), () -> this.scheduleMatcherSelection(hiddenMatcher));
+        inventoryCleanerIconTextActionRow.o(this.allItemsPanel.A());
         inventoryCleanerIconTextActionRow.Y(18.0);
-        inventoryCleanerIconTextActionRow.w(hiddenMatcher.E());
-        ((FrameComponent)object2).h(new PaddedComponent(1.0, 0.0, 0.0, 0.0, inventoryCleanerIconTextActionRow), new Object[0]);
-        this.VF.o(108.0);
-        this.h(this.VF, new Object[0]);
-        this.h(this.Vw, new Object[0]);
-        this.h(this.V2, new Object[0]);
-        if (this.Vv) {
-            this.a$src$V$bf004p();
+        inventoryCleanerIconTextActionRow.w(hiddenMatcher.getDescription());
+        matcherGroupsPanel.h(new PaddedComponent(1.0, 0.0, 0.0, 0.0, inventoryCleanerIconTextActionRow), new Object[0]);
+        this.allItemsPanel.o(108.0);
+        this.h(this.allItemsPanel, new Object[0]);
+        this.h(this.searchPanel, new Object[0]);
+        this.h(this.categoryPanel, new Object[0]);
+        if (this.searchOnly) {
+            this.showSearchView();
         } else {
-            this.L$src$V$b3gbo4();
+            this.showAllItemsView();
         }
     }
 
-    private void lambda$new$1(char c, int n) {
-        ClientSettings.f6.execute(this::lambda$null$0);
+    private void handleSearchInput(char character, int keyCode) {
+        ClientSettings.UI_EXECUTOR.execute(this::updateViewFromSearch);
     }
 
-    public void e(InventoryItemMatcherGroup inventoryItemMatcherGroup) {
-        this.VF.Z(false);
-        this.Vw.Z(false);
-        this.V2.Z(true);
-        this.V2.t$src$V$zbu1jn();
-        PanelComponent panelComponent = this.u(this.A(), inventoryItemMatcherGroup.getName(), false, true);
-        this.V2.h(panelComponent, new Object[0]);
-        PanelComponent panelComponent2 = new PanelComponent(this.Vw.A(), this.Vw.L() - panelComponent.L());
+    public void showCategoryView(InventoryItemMatcherGroup inventoryItemMatcherGroup) {
+        this.allItemsPanel.setVisible(false);
+        this.searchPanel.setVisible(false);
+        this.categoryPanel.setVisible(true);
+        this.categoryPanel.t$src$V$zbu1jn();
+        PanelComponent panelComponent = this.createHeader(this.A(), inventoryItemMatcherGroup.getName(), false, true);
+        this.categoryPanel.h(panelComponent, new Object[0]);
+        PanelComponent panelComponent2 = new PanelComponent(this.searchPanel.A(), this.searchPanel.L() - panelComponent.L());
         panelComponent2.t(panelComponent2.L());
         panelComponent2.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        panelComponent2.d(false);
-        this.V2.h(panelComponent2, new Object[0]);
-        for (InventoryItemMatcher inventoryItemMatcher : InventoryItemMatcherRegistry.N(inventoryItemMatcherGroup)) {
-            InventoryItemMatcherRowComponent inventoryItemMatcherRowComponent = new InventoryItemMatcherRowComponent(inventoryItemMatcher, () -> this.lambda$setCategoryView$10(inventoryItemMatcher));
+        panelComponent2.setShowDisabledOverlay(false);
+        this.categoryPanel.h(panelComponent2, new Object[0]);
+        for (InventoryItemMatcher inventoryItemMatcher : InventoryItemMatcherRegistry.getByGroup(inventoryItemMatcherGroup)) {
+            InventoryItemMatcherRowComponent inventoryItemMatcherRowComponent = new InventoryItemMatcherRowComponent(inventoryItemMatcher, () -> this.scheduleMatcherSelection(inventoryItemMatcher));
             inventoryItemMatcherRowComponent.o(panelComponent2.A());
             inventoryItemMatcherRowComponent.Y(18.0);
-            inventoryItemMatcherRowComponent.w(inventoryItemMatcher.E());
+        inventoryItemMatcherRowComponent.w(inventoryItemMatcher.getDescription());
             panelComponent2.h(new PaddedComponent(1.0, 0.0, 0.0, 0.0, inventoryItemMatcherRowComponent), new Object[0]);
         }
     }
 
-    public void J(boolean bl) {
-        this.VX = bl;
+    public void setAddSelectionAfterChoose(boolean addSelectionAfterChoose) {
+        this.addSelectionAfterChoose = addSelectionAfterChoose;
     }
 
-
-    private void lambda$null$3(InventoryItemMatcher inventoryItemMatcher) {
-        this.c(ItemPickerSelection.k(inventoryItemMatcher.k()));
-    }
 
     @Nullable
-    public Consumer<ItemPickerSelection<String, ItemMappingEntry>> p() {
-        return this.V5;
+    public Consumer<ItemPickerSelection<String, ItemMappingEntry>> getOnSelect() {
+        return this.onSelect;
     }
 
-    public static GuiComponent[] I$src$ALgg_vape_ui_click_component_GuiComponent_$fej6jd() {
-        return VL;
+    public static void select(InventoryItemPickerPanel panel, ItemPickerSelection itemPickerSelection) {
+        panel.dispatchSelection(itemPickerSelection);
     }
 
-    public static void U(InventoryItemPickerPanel inventoryItemPickerPanel, ItemPickerSelection itemPickerSelection) {
-        inventoryItemPickerPanel.c(itemPickerSelection);
-    }
-
-    private void lambda$null$6(ItemMappingEntry itemMappingEntry) {
-        this.c(ItemPickerSelection.D(itemMappingEntry));
-        if (this.VX) {
-            this.V9.add(itemMappingEntry.M());
+    private void selectMappingEntry(ItemMappingEntry itemMappingEntry) {
+        this.dispatchSelection(ItemPickerSelection.ofRight(itemMappingEntry));
+        if (this.addSelectionAfterChoose) {
+            this.selectedItemIds.add(itemMappingEntry.M());
         }
-        this.a$src$V$bf004p();
+        this.showSearchView();
     }
 
-    private PanelComponent u(double d, String string, boolean bl, boolean bl2) {
-        Object object;
-        PanelComponent panelComponent = new PanelComponent(d, 28.0);
+    private PanelComponent createHeader(double width, String title, boolean showSlot, boolean showBackButton) {
+        PanelComponent panelComponent = new PanelComponent(width, 28.0);
         panelComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        panelComponent.d(false);
-        if (bl && this.Vj instanceof SlotInventoryFilterRule) {
-            object = (SlotInventoryFilterRule)this.Vj;
+        panelComponent.setShowDisabledOverlay(false);
+        if (showSlot && this.filterRule instanceof SlotInventoryFilterRule) {
+            SlotInventoryFilterRule slotRule = (SlotInventoryFilterRule)this.filterRule;
             PanelComponent panelComponent2 = new PanelComponent(10.0, 10.0);
-            panelComponent2.d(true);
-            panelComponent2.T(InventoryItemPickerPanel.J.y);
+            panelComponent2.setShowDisabledOverlay(true);
+            panelComponent2.setDisabledOverlayColor(InventoryItemPickerPanel.J.y);
             panelComponent2.S(5);
             panelComponent.h(panelComponent2, new Object[0]);
-            SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent(String.valueOf(((SlotInventoryFilterRule)object).m() + 1), 0.8, InventoryItemPickerPanel.J.A, true);
-            simpleTextLabelComponent.g(3.0f);
+            SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent(String.valueOf(slotRule.getSlot() + 1), 0.8, InventoryItemPickerPanel.J.A, true);
+            simpleTextLabelComponent.setOffsetX(3.0f);
             panelComponent2.h(simpleTextLabelComponent, new Object[0]);
             panelComponent.h(panelComponent2, new Object[0]);
         } else {
             panelComponent.h(new SpacerComponent(0.0, 10.0), new Object[0]);
         }
-        if (bl2) {
-            object = new GlyphIconComponent("back-hover@2x", 6.0, 6.0, 10.0, 10.0, InventoryItemPickerPanel.J.W, InventoryItemPickerPanel.J.f, null);
-            ((GlyphIconComponent)object).R(true);
-            ((GlyphIconComponent)object).q(true);
-            ((InteractiveComponent)object).r(this::L$src$V$b3gbo4);
+        if (showBackButton) {
+            GlyphIconComponent backButton = new GlyphIconComponent("back-hover@2x", 6.0, 6.0, 10.0, 10.0, InventoryItemPickerPanel.J.W, InventoryItemPickerPanel.J.f, null);
+            backButton.setCenterVertically(true);
+            backButton.setCenterHorizontally(true);
+            backButton.addClickListener(this::showAllItemsView);
             panelComponent.h(new SpacerComponent(8.0, 0.0), "widthwrap");
-            panelComponent.h((GuiComponent)object, "widthwrap");
+            panelComponent.h(backButton, "widthwrap");
         }
-        object = new WrappingTextLabelComponent(string, 1.0, InventoryItemPickerPanel.J.A);
-        ((GuiComponent)object).o(panelComponent.A() - (double)(bl2 ? 36 : 0));
-        ((SimpleTextLabelComponent)object).l(true);
-        ((GuiComponent)object).S(false);
-        panelComponent.h((GuiComponent)object, new Object[0]);
+        WrappingTextLabelComponent titleLabel = new WrappingTextLabelComponent(title, 1.0, InventoryItemPickerPanel.J.A);
+        titleLabel.o(panelComponent.A() - (double)(showBackButton ? 36 : 0));
+        titleLabel.setBold(true);
+        titleLabel.setAcceptsMouseInput(false);
+        panelComponent.h(titleLabel, new Object[0]);
         return panelComponent;
     }
 
-    private void lambda$null$0() {
-        if (this.VI.i$src$Ljava_lang_String_$1n2xf3k().trim().isEmpty() && !this.Vv) {
-            this.L$src$V$b3gbo4();
+    private void updateViewFromSearch() {
+        if (this.searchInput.getText().trim().isEmpty() && !this.searchOnly) {
+            this.showAllItemsView();
         } else {
-            this.a$src$V$bf004p();
+            this.showSearchView();
         }
     }
 
-    public void L$src$V$b3gbo4() {
-        this.VF.Z(true);
-        this.Vw.Z(false);
-        this.V2.Z(false);
+    public void showAllItemsView() {
+        this.allItemsPanel.setVisible(true);
+        this.searchPanel.setVisible(false);
+        this.categoryPanel.setVisible(false);
     }
 }

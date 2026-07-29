@@ -1,46 +1,42 @@
 package gg.vape.module.none.search;
 
 public class SearchBlockRenderEntry {
-    private int posX;
-    private int posY;
-    private int posZ;
-    private int extra;
-    private int color;
+    private int blockId;
+    private int metadata;
+    private int worldX;
+    private int worldY;
+    private int worldZ;
 
-    public int f() {
-        return this.color;
+    public int getWorldY() {
+        return this.worldY;
     }
 
-    public int k() {
-        return this.posY;
+    public int getMetadata() {
+        return this.metadata;
     }
 
-    public int i() {
-        return this.posZ;
+    public int getWorldX() {
+        return this.worldX;
     }
 
-    public SearchBlockRenderEntry(int x, int y, int z, int colorValue, int extraValue) {
-        this.posX = x;
-        this.posY = y;
-        this.posZ = z;
-        this.color = colorValue;
-        this.extra = extraValue;
+    public SearchBlockRenderEntry(int blockId, int metadata, int worldX, int worldY, int worldZ) {
+        this.reset(blockId, metadata, worldX, worldY, worldZ);
     }
 
-    public void L(int x, int y, int z, int colorValue, int extraValue) {
-        this.posX = x;
-        this.posY = y;
-        this.posZ = z;
-        this.color = colorValue;
-        this.extra = extraValue;
+    public void reset(int blockId, int metadata, int worldX, int worldY, int worldZ) {
+        this.blockId = blockId;
+        this.metadata = metadata;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.worldZ = worldZ;
     }
 
-    public int R() {
-        return this.posX;
+    public int getBlockId() {
+        return this.blockId;
     }
 
-    public int N() {
-        return this.extra;
+    public int getWorldZ() {
+        return this.worldZ;
     }
 }
 

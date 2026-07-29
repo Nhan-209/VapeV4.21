@@ -8,32 +8,32 @@ import gg.vape.unmap.ColorUtil;
 
 public class SearchBlockListAddInputComponent
 extends TextInputComponentBase {
-    private Runnable vF;
-    private boolean vA = false;
+    private Runnable afterAdd;
+    private boolean resetFocusAnimation = false;
 
     @Override
     public void F() {
-        if (this.vA) {
-            this.xR.J();
-            this.vA = false;
+        if (this.resetFocusAnimation) {
+            this.borderAnimation.J();
+            this.resetFocusAnimation = false;
         }
         super.F();
     }
 
-    public SearchBlockListAddInputComponent(String string, Runnable runnable) {
-        super(string);
-        this.d(false);
-        this.vF = runnable;
+    public SearchBlockListAddInputComponent(String placeholder, Runnable afterAdd) {
+        super(placeholder);
+        this.setShowDisabledOverlay(false);
+        this.afterAdd = afterAdd;
     }
 
-    public SearchBlockListAddInputComponent(String string) {
-        super(string);
-        this.d(false);
+    public SearchBlockListAddInputComponent(String placeholder) {
+        super(placeholder);
+        this.setShowDisabledOverlay(false);
     }
 
     @Override
-    public double p$src$D$187zcry() {
-        if (this.vF != null) {
+    public double getComponentWidth() {
+        if (this.afterAdd != null) {
             return this.A();
         }
         return 110.0;
@@ -51,19 +51,18 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public void p() {
-        if (!this.u$src$Z$wt77ym()) {
-            this.k("");
+    public void submit() {
+        if (!this.hasNonBlankText()) {
+            this.setText("");
             return;
         }
-        SearchBlock searchBlock = new SearchBlock(this.i$src$Ljava_lang_String_$1n2xf3k(), ColorUtil.f().getRGB());
-        Vape.INSTANCE.getSearch().H(searchBlock);
-        if (this.vF != null) {
-            this.vF.run();
+        SearchBlock searchBlock = new SearchBlock(this.getText(), ColorUtil.createRandomReadableColor().getRGB());
+        Vape.INSTANCE.getSearch().addSearchBlock(searchBlock);
+        if (this.afterAdd != null) {
+            this.afterAdd.run();
         } else {
-            ((SearchBlockListDropdownLayer)this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb()).e();
+            ((SearchBlockListDropdownLayer)this.getParentFrameComponent()).refreshContents();
         }
-        this.k("");
+        this.setText("");
     }
 }
-

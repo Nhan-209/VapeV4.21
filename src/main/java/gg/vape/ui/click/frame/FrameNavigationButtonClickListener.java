@@ -16,12 +16,12 @@ implements GuiClickListener {
 
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         FrameNavigationButtonComponent frameNavigationButtonComponent = this.D;
         boolean bl = !FrameNavigationButtonComponent.K(this.D);
         FrameNavigationButtonComponent.u(frameNavigationButtonComponent, bl);
         FrameNavigationButtonComponent.d(this.D).J();
-        ClientSettings.y(this.d);
+        ClientSettings.toggleCategoryFrame(this.d);
     }
 }
 

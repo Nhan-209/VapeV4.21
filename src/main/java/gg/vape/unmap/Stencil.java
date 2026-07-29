@@ -4,25 +4,25 @@ import gg.vape.utils.render.StencilUtil;
 import org.lwjgl.opengl.GL11;
 
 public class Stencil {
-    public static int e;
-    public static int u;
-    public static int n;
-    public static int a;
-    public static int Y;
-    public static int W;
+    public static int depthFailOperation;
+    public static int referenceValue;
+    public static int stencilFailOperation;
+    public static int depthPassOperation;
+    public static int function;
+    public static int mask;
 
-    public Stencil(StencilUtil stencilUtil, int n, int n2, int n3, int n4, int n5, int n6) {
-        Y = n;
-        u = n2;
-        W = n3;
-        Stencil.n = n4;
-        e = n5;
-        a = n6;
+    public Stencil(StencilUtil stencilUtil, int function, int referenceValue, int mask,
+                   int stencilFailOperation, int depthFailOperation, int depthPassOperation) {
+        Stencil.function = function;
+        Stencil.referenceValue = referenceValue;
+        Stencil.mask = mask;
+        Stencil.stencilFailOperation = stencilFailOperation;
+        Stencil.depthFailOperation = depthFailOperation;
+        Stencil.depthPassOperation = depthPassOperation;
     }
 
     public void apply() {
-        GL11.glStencilFunc((int)Y, (int)u, (int)W);
-        GL11.glStencilOp((int)n, (int)e, (int)a);
+        GL11.glStencilFunc((int)function, (int)referenceValue, (int)mask);
+        GL11.glStencilOp((int)stencilFailOperation, (int)depthFailOperation, (int)depthPassOperation);
     }
 }
-

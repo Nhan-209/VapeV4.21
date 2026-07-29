@@ -7,23 +7,23 @@ import gg.vape.wrapper.impl.KeyBinding;
 import gg.vape.wrapper.impl.Minecraft;
 
 public class AttackKeyController {
-    public static void Q() {
-        KeyBinding keyBinding = Minecraft.a_w3_0_S().F();
-        KeyBindingHelper.v(keyBinding, false, false);
+    public static void releaseAttackKey() {
+        KeyBinding attackKey = Minecraft.a_w3_0_S().F();
+        KeyBindingHelper.updateKeyBinding(attackKey, false, false);
     }
 
 
-    public static boolean u(Mod mod) {
-        SyntheticAttackRequestEvent syntheticAttackRequestEvent = new SyntheticAttackRequestEvent(mod);
-        if (syntheticAttackRequestEvent.fire()) {
+    public static boolean requestSyntheticAttack(Mod module) {
+        SyntheticAttackRequestEvent event = new SyntheticAttackRequestEvent(module);
+        if (event.fire()) {
             return false;
         }
-        AttackKeyController.o();
+        AttackKeyController.pressAttackKey();
         return true;
     }
 
-    public static void o() {
-        KeyBindingHelper.v(Minecraft.a_w3_0_S().F(), true, true);
+    public static void pressAttackKey() {
+        KeyBindingHelper.updateKeyBinding(Minecraft.a_w3_0_S().F(), true, true);
     }
 }
 

@@ -183,10 +183,6 @@ public class PublicProfileApi {
         }
     }
 
-    private static RuntimeException a(RuntimeException runtimeException) {
-        return runtimeException;
-    }
-
     public CompletableFuture<ApiResponse<PagedResult<PublicProfileReview>>> F(PublicProfile publicProfile, long l) {
         return this.r(publicProfile.w(), l);
     }
@@ -277,7 +273,7 @@ public class PublicProfileApi {
 
     private ApiResponse lambda$downloadPublicProfile$14(String string, long l) {
         try {
-            return ApiHttpClient.V(this.q + "/api/v1/" + string + "/profile/public/" + l + "/download", RemoteProfileData::q);
+            return ApiHttpClient.V(this.q + "/api/v1/" + string + "/profile/public/" + l + "/download", RemoteProfileData::fromJson);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
@@ -371,7 +367,7 @@ public class PublicProfileApi {
 
     private ApiResponse lambda$updatePublicProfile$15(String string, long l) {
         try {
-            return ApiHttpClient.V(this.q + "/api/v1/" + string + "/profile/public/" + l + "/update", RemoteProfileData::q);
+            return ApiHttpClient.V(this.q + "/api/v1/" + string + "/profile/public/" + l + "/update", RemoteProfileData::fromJson);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);

@@ -9,10 +9,7 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 class InventoryCleanerSlotRulePreview
 extends GuiComponent {
-    private final InventoryCleanerProfile v;
-    private final InventoryCleanerProfileValue i;
-    private final SlotInventoryFilterRule b;
-    private final ItemFilterSelectionComponent o;
+    private final ItemFilterSelectionComponent selectionComponent;
 
     @Override
     public double C() {
@@ -20,13 +17,10 @@ extends GuiComponent {
     }
 
     public InventoryCleanerSlotRulePreview(InventoryCleanerProfileValue inventoryCleanerProfileValue, InventoryCleanerProfile inventoryCleanerProfile, SlotInventoryFilterRule slotInventoryFilterRule) {
-        this.i = inventoryCleanerProfileValue;
-        this.C(inventoryCleanerProfileValue);
-        this.v = inventoryCleanerProfile;
-        this.b = slotInventoryFilterRule;
-        this.o = new ItemFilterSelectionComponent(slotInventoryFilterRule.q());
-        this.o(true);
-        this.H(this.o);
+        this.bindValue(inventoryCleanerProfileValue);
+        this.selectionComponent = new ItemFilterSelectionComponent(slotInventoryFilterRule.getItemSelection());
+        this.setPropagateMouseEvents(true);
+        this.addChildren(this.selectionComponent);
     }
 
     @Override
@@ -37,13 +31,12 @@ extends GuiComponent {
     @Override
     public void H() {
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A() + 1.0, this.L() + 1.0, InventoryCleanerSlotRulePreview.J.r);
-        this.o.K(this.G$src$D$1b2f02a() + 0.5);
-        this.o.S(this.n() + 0.5);
-        this.o.o(this.A());
-        this.o.Y(this.L());
-        this.o.D(6.0f);
-        this.o.s(6.0f);
-        this.o.W(0.5f);
+        this.selectionComponent.K(this.G$src$D$1b2f02a() + 0.5);
+        this.selectionComponent.S(this.n() + 0.5);
+        this.selectionComponent.o(this.A());
+        this.selectionComponent.Y(this.L());
+        this.selectionComponent.setIconWidth(6.0f);
+        this.selectionComponent.setIconHeight(6.0f);
+        this.selectionComponent.setScale(0.5f);
     }
 }
-

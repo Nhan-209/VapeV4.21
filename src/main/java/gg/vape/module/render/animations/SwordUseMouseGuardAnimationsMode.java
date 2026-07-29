@@ -16,59 +16,58 @@ import gg.vape.wrapper.impl.RayTraceResult_type;
 
 public class SwordUseMouseGuardAnimationsMode
 extends AnimationsMode {
-    private int V = 1;
+    private int targetStreak = 1;
 
-    public SwordUseMouseGuardAnimationsMode(Mod mod, String string) {
-        super(mod, string);
+    public SwordUseMouseGuardAnimationsMode(Mod parent, String name) {
+        super(parent, name);
     }
 
     @Override
-    public boolean M() {
-        return this.i();
+    public boolean isBlocking() {
+        return this.shouldBlock();
     }
 
     @EventHandler
-    public void w(EventMouseButton eventMouseButton) {
-        if (!((Animations)this.getParent()).a$src$Z$ucwq0q()) {
+    public void onMouseButton(EventMouseButton event) {
+        if (!((Animations)this.getParent()).isHoldingSword()) {
             return;
         }
-        int n = -100 + eventMouseButton.getButton();
-        if (eventMouseButton.getButtonState() && n == Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().getKeyCode() && ((Animations)this.getParent()).n$src$Z$uk21qf() && ClientSettings.M()) {
-            eventMouseButton.setCancelled(true);
+        int buttonBinding = -100 + event.getButton();
+        if (event.getButtonState() && buttonBinding == Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().getKeyCode() && ((Animations)this.getParent()).requiresMouseDown() && ClientSettings.M()) {
+            event.setCancelled(true);
             return;
         }
     }
 
 
-    private boolean l() {
-        if (((Animations)this.getParent()).n$src$Z$uk21qf() && !ClientSettings.V()) {
+    private boolean shouldBlockSwordUse() {
+        if (((Animations)this.getParent()).requiresMouseDown() && !ClientSettings.V()) {
             return false;
         }
-        boolean bl = true;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        ItemStack itemStack = entityPlayerSP.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt();
+        boolean shouldBlock = true;
+        EntityPlayerSP player = Minecraft.thePlayer();
+        ItemStack itemStack = player.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt();
         if (itemStack.isNull() || itemStack.getItem().isNull() || !ItemStackScoreUtil.h(itemStack.getItem())) {
             return false;
         }
-        boolean bl2 = false;
-        RayTraceResult rayTraceResult = RotationManager.b.n();
+        boolean targetingEntity = false;
+        RayTraceResult rayTraceResult = RotationManager.INSTANCE.getExtendedReachRayTrace();
         if (rayTraceResult.isNotNull() && rayTraceResult.getTypeOfHit().equals(RayTraceResult_type.entity())) {
-            bl2 = true;
+            targetingEntity = true;
         }
-        if (this.V != 1 || !bl2) {
-            bl = false;
-            int n = 3;
-            if (this.V >= n) {
-                this.V = 0;
+        if (this.targetStreak != 1 || !targetingEntity) {
+            shouldBlock = false;
+            int maxTargetStreak = 3;
+            if (this.targetStreak >= maxTargetStreak) {
+                this.targetStreak = 0;
             }
         }
-        this.V = bl2 ? ++this.V : 1;
-        return bl;
+        this.targetStreak = targetingEntity ? ++this.targetStreak : 1;
+        return shouldBlock;
     }
 
     @Override
-    public boolean i() {
-        return this.l();
+    public boolean shouldBlock() {
+        return this.shouldBlockSwordUse();
     }
 }
-

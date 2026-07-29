@@ -27,9 +27,9 @@ extends FrameComponent {
 
     @Override
     public void Y() {
-        if (this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb() instanceof Frame) {
-            this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().K((double)(Minecraft.J() / 4) - this.x() / 2.0);
-            this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().S((double)(Minecraft.h() / 4) - this.C() / 2.0);
+        if (this.getParentFrameComponent() instanceof Frame) {
+            this.getParentFrameComponent().K((double)(Minecraft.J() / 4) - this.x() / 2.0);
+            this.getParentFrameComponent().S((double)(Minecraft.h() / 4) - this.C() / 2.0);
         }
     }
 

@@ -48,7 +48,7 @@ extends GuiComponent {
             ItemStackIconButtonComponent itemStackIconButtonComponent = this.K.get(i);
             itemStackIconButtonComponent.K(d2);
             itemStackIconButtonComponent.S(d);
-            itemStackIconButtonComponent.h(this.v.N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f().u$src$Ljava_util_List_$1u5n2i3().get(i).c());
+            itemStackIconButtonComponent.h(this.v.N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f().u$src$Ljava_util_List_$1u5n2i3().get(i).createItemStack());
             d2 += itemStackIconButtonComponent.A();
             itemStackIconButtonComponent.c(this.v.X$src$I$7rbe5s() == i);
         }
@@ -61,9 +61,9 @@ extends GuiComponent {
         while (n < 9) {
             ItemStackIconButtonComponent itemStackIconButtonComponent = new ItemStackIconButtonComponent(HotbarSlotRuleSlotSelectorComponent.J.r, HotbarSlotRuleSlotSelectorComponent.J.m, 0);
             int n2 = n++;
-            itemStackIconButtonComponent.r(new HotbarSlotRuleSlotSelectClickHandler(this, hotbarSlotRuleItemPickerFrame, n2));
+            itemStackIconButtonComponent.addClickListener(new HotbarSlotRuleSlotSelectClickHandler(this, hotbarSlotRuleItemPickerFrame, n2));
             this.K.add(itemStackIconButtonComponent);
-            this.H(itemStackIconButtonComponent);
+            this.addChildren(itemStackIconButtonComponent);
         }
     }
 

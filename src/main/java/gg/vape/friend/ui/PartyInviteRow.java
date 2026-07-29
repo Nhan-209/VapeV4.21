@@ -71,19 +71,19 @@ extends PanelComponent {
         this.v5 = false;
         this.vQ = partyInvite;
         this.vN = new TruncatedTextComponent(partyInvite.x().C(), "...", 46.0, 0.8, PartyInviteRow.J.A, true);
-        this.d(false);
-        this.vq.d(false);
-        this.vh.d(false);
+        this.setShowDisabledOverlay(false);
+        this.vq.setShowDisabledOverlay(false);
+        this.vh.setShowDisabledOverlay(false);
         this.vq.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
         this.vh.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
         this.vB.w("Decline Invite");
-        this.vL.r(this::lambda$new$0);
-        this.vB.r(() -> this.lambda$new$3(partyInvite));
-        this.vL.F(false);
-        this.vL.h(Color.WHITE);
-        this.vq.H(this.vL);
-        this.vh.H(this.ve, this.vB);
-        this.H(this.vp, this.vN, this.vq, this.vh);
+        this.vL.addClickListener(this::lambda$new$0);
+        this.vB.addClickListener(() -> this.lambda$new$3(partyInvite));
+        this.vL.setDeriveTextColorFromBackground(false);
+        this.vL.setNormalTextColor(Color.WHITE);
+        this.vq.addChildren(this.vL);
+        this.vh.addChildren(this.ve, this.vB);
+        this.addChildren(this.vp, this.vN, this.vq, this.vh);
     }
 
     public PartyInvite T() {
@@ -103,15 +103,15 @@ extends PanelComponent {
 
     @Override
     public void H() {
-        this.vL.F(false);
+        this.vL.setDeriveTextColorFromBackground(false);
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L() - 2.0, PartyInviteRow.J.m.brighter());
         float f = (float)(this.G$src$D$1b2f02a() + 6.0);
         float f2 = (float)(this.n() + 4.0);
-        ImageRenderer.E(PartyInviteRow.J.B, f, f2, "party1@2x", 7.0f, 6.3f, false);
-        ImageRenderer.E(PartyInviteRow.J.B, (float)(this.G$src$D$1b2f02a() + this.A() - 22.0), (float)this.n() - 0.5f, "join party texture@2x", 14.5f, 14.5f, false);
+        ImageRenderer.drawImage(PartyInviteRow.J.B, f, f2, "party1@2x", 7.0f, 6.3f, false);
+        ImageRenderer.drawImage(PartyInviteRow.J.B, (float)(this.G$src$D$1b2f02a() + this.A() - 22.0), (float)this.n() - 0.5f, "join party texture@2x", 14.5f, 14.5f, false);
         this.vN.S(this.n() + 5.0);
-        this.vN.q(this.A() - 18.0 - this.vB.A() - this.vL.A() - 4.0);
-        this.vN.D(this.A() - 18.0 - this.vB.A() - this.vL.A() - 6.0);
+        this.vN.setExplicitWidth(this.A() - 18.0 - this.vB.A() - this.vL.A() - 4.0);
+        this.vN.setMaxWidth(this.A() - 18.0 - this.vB.A() - this.vL.A() - 6.0);
     }
 
     private void a$src$V$1msuozy() {
@@ -123,12 +123,12 @@ extends PanelComponent {
     }
 
     private void lambda$handleLeaveConfirmation$7(PopupFrame popupFrame) {
-        ClientSettings.K(popupFrame);
+        ClientSettings.removePopup(popupFrame);
         this.v5 = false;
     }
 
     private void lambda$handleLeaveConfirmation$6(PopupFrame popupFrame) {
-        ClientSettings.K(popupFrame);
+        ClientSettings.removePopup(popupFrame);
         ZeusConnectionManager.T().u().l(PartyInviteRow::lambda$null$4, this::lambda$null$5);
     }
 
@@ -142,9 +142,9 @@ extends PanelComponent {
 
     private void D(String string) {
         ConfirmationDialogComponent confirmationDialogComponent = new ConfirmationDialogComponent(string, "DISBAND", "disband confirm@2x");
-        DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.g(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialogComponent, DimmedCenteredPopupFrame.class);
-        confirmationDialogComponent.T$src$Lgg_vape_ui_click_component_gui_TextButton_$17m2d4e().r(() -> this.lambda$handleLeaveConfirmation$6(dimmedCenteredPopupFrame));
-        confirmationDialogComponent.E().r(() -> this.lambda$handleLeaveConfirmation$7(dimmedCenteredPopupFrame));
+        DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.createPopup(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialogComponent, DimmedCenteredPopupFrame.class);
+        confirmationDialogComponent.getConfirmButton().addClickListener(() -> this.lambda$handleLeaveConfirmation$6(dimmedCenteredPopupFrame));
+        confirmationDialogComponent.getCloseButton().addClickListener(() -> this.lambda$handleLeaveConfirmation$7(dimmedCenteredPopupFrame));
         dimmedCenteredPopupFrame.q(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), dimmedCenteredPopupFrame);
     }
 

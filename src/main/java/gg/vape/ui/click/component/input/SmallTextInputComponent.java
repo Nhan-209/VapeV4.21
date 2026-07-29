@@ -11,7 +11,7 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public void p() {
+    public void submit() {
     }
 
     @Override
@@ -31,19 +31,18 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public float p$src$F$1qfoyd() {
+    public float getTextVerticalOffset() {
         return -2.0f;
     }
 
     public SmallTextInputComponent(String string) {
         super(string);
-        this.e(false);
-        this.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().Z(false);
-        this.A(SmallTextInputComponent.J.h);
+        this.setBackgroundVisible(false);
+        this.getActionButton().setVisible(false);
+        this.setPlaceholderColor(SmallTextInputComponent.J.h);
     }
 
     public static int[] r$src$AI$f3mb4q() {
         return cu;
     }
 }
-

@@ -33,7 +33,7 @@ extends Mapping {
         MItems mItems2 = this;
         this.g = this.u(string2, bl2, clazz2);
         if (MTickEventPhase.P() != null) {
-            GuiComponent.D(new GuiComponent[5]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[5]);
             return;
         }
     }

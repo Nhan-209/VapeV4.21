@@ -125,7 +125,7 @@ extends Wrapper {
     public String h(ItemStack itemStack) {
         if (ForgeVersion.MC_1_16_5.d()) {
             ITextComponent iTextComponent = new ITextComponent(MItem.h(Item.c.getMappings().CF, this.getObject(), itemStack.getObject()));
-            return iTextComponent.C();
+            return iTextComponent.getFormattedText();
         }
         return MItem.h(Item.c.getMappings().CF, this.getObject(), itemStack.getObject()).toString();
     }
@@ -136,10 +136,10 @@ extends Wrapper {
 
     public String Y$src$Ljava_lang_String_$uel3xb() {
         if (ForgeVersion.MC_1_21_0.d()) {
-            return ITextComponent.P(this.A()).C();
+            return ITextComponent.P(this.A()).getFormattedText();
         }
         ITextComponent iTextComponent = new ITextComponent(MItem.i(Item.c.getMappings().CF, this.I));
-        return iTextComponent.C();
+        return iTextComponent.getFormattedText();
     }
 
     public ItemStack b() {
@@ -164,4 +164,3 @@ extends Wrapper {
         return MItem.o(Item.c.getMappings().CF, this.getObject(), itemStack.getObject());
     }
 }
-

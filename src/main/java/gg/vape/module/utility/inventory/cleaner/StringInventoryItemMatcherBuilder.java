@@ -16,11 +16,11 @@ extends InventoryItemMatcherBuilderBase<StringInventoryItemMatcherBuilder> {
         super(inventoryItemMatcherBuilderBase);
     }
 
-    public @UnmodifiableView Map<String, StringMatchOperator> X() {
+    public @UnmodifiableView Map<String, StringMatchOperator> getOperatorsByPattern() {
         return this.operatorsByPattern;
     }
 
-    public StringInventoryItemMatcherBuilder R(String string, StringMatchOperator stringMatchOperator) {
+    public StringInventoryItemMatcherBuilder addPattern(String string, StringMatchOperator stringMatchOperator) {
         this.operatorsByPattern.put(string, stringMatchOperator);
         return this;
     }
@@ -36,7 +36,7 @@ extends InventoryItemMatcherBuilderBase<StringInventoryItemMatcherBuilder> {
         this(inventoryItemMatcherBuilderBase);
     }
 
-    public StringInventoryItemMatcher g() {
+    public StringInventoryItemMatcher build() {
         return new StringInventoryItemMatcher(this);
     }
 }

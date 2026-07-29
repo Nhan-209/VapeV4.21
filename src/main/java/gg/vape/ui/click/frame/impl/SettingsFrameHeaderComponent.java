@@ -40,10 +40,10 @@ extends FrameHeaderComponent {
         super(frame);
         this.i = string;
         this.o = f;
-        this.K.r(new SettingsFrameHeaderSecondaryButtonClickHandler(this));
-        this.H(this.K);
-        this.R.r(new SettingsFrameHeaderPrimaryButtonClickHandler(this, frame));
-        this.H(this.R);
+        this.K.addClickListener(new SettingsFrameHeaderSecondaryButtonClickHandler(this));
+        this.addChildren(this.K);
+        this.R.addClickListener(new SettingsFrameHeaderPrimaryButtonClickHandler(this, frame));
+        this.addChildren(this.R);
     }
 
     public SettingsFrameHeaderComponent n(GuiClickListener guiClickListener) {
@@ -61,7 +61,7 @@ extends FrameHeaderComponent {
 
     @Override
     public void H() {
-        SmoothFontRenderer smoothFontRenderer = this.O(0.9);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.9);
         Color color = SettingsFrameHeaderComponent.J.A;
         double d = smoothFontRenderer.d(this.i);
         double d2 = this.n() + this.L() / 2.0 - d / 2.0 + 1.0;
@@ -69,12 +69,12 @@ extends FrameHeaderComponent {
         this.K.K(this.G$src$D$1b2f02a() + 5.0 - 2.0);
         this.K.S(this.n() + 1.0);
         this.K.Y(this.L());
-        this.K.E(3.5);
+        this.K.setImageDivisor(3.5);
         this.R.K(this.G$src$D$1b2f02a() + this.A() - 13.0);
         this.R.S(this.n() + 1.0);
         this.R.Y(this.L());
-        this.R.A(1.2f);
-        this.R.E(3.5);
+        this.R.setIconScale(1.2f);
+        this.R.setImageDivisor(3.5);
     }
 
     public SettingsFrameHeaderComponent f(GuiClickListener guiClickListener) {
@@ -86,4 +86,3 @@ extends FrameHeaderComponent {
     public void F() {
     }
 }
-

@@ -104,7 +104,7 @@ implements Runnable {
                     if (Minecraft.theWorld().isNull() || Minecraft.thePlayer().isNull()) continue;
                     EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
                     WorldClient worldClient = Minecraft.theWorld();
-                    int n = ((Double)this.j.K()).intValue();
+                    int n = ((Double)this.j.getValue()).intValue();
                     this.h(0, 0, 0);
                     for (int i = -n; i < n; ++i) {
                         for (int j = -n; j < n; ++j) {

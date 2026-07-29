@@ -140,9 +140,9 @@ extends SmoothFontRenderer {
     private void E(float f, float f2, SmoothFontGlyph smoothFontGlyph, int n, boolean bl, Color color, float f3) {
         this.L(n);
         if (bl) {
-            BufferedGuiRenderPrimitives.W(f, f2, smoothFontGlyph, n, color, f3);
+            BufferedGuiRenderPrimitives.drawMinecraftColorFontGlyph(f, f2, smoothFontGlyph, n, color, f3);
         } else {
-            BufferedGuiRenderPrimitives.d(f, f2, smoothFontGlyph, n, color, f3);
+            BufferedGuiRenderPrimitives.drawMinecraftIntensityFontGlyph(f, f2, smoothFontGlyph, n, color, f3);
         }
     }
 

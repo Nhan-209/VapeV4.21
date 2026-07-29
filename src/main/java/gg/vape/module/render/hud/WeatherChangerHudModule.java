@@ -12,19 +12,19 @@ import gg.vape.wrapper.impl.WorldClient;
 
 public class WeatherChangerHudModule
 extends HudModule {
-    float c;
-    public final ModeValue K;
-    float J;
+    private float savedPreviousRainStrength;
+    public final ModeValue weatherMode;
+    private float savedThunderStrength;
     private final ModeOption rainingOption;
-    float F;
-    float t;
+    private float savedPreviousThunderStrength;
+    private float savedRainStrength;
     private final ModeOption clearOption = new ModeOption("Clear");
 
     @EventHandler
-    public void H(EventPreRenderTick eventPreRenderTick) {
-        WorldClient worldClient = eventPreRenderTick.getWorld();
+    public void onPreRenderTick(EventPreRenderTick event) {
+        WorldClient worldClient = event.getWorld();
         if (worldClient.isNotNull()) {
-            if (((ModeSelection)this.K.K()).equals(this.clearOption)) {
+            if (((ModeSelection)this.weatherMode.getValue()).equals(this.clearOption)) {
                 worldClient.T(0.0f);
                 worldClient.o(0.0f);
                 worldClient.f(0.0f);
@@ -40,18 +40,18 @@ extends HudModule {
     public void onEnable() {
         if (Minecraft.theWorld().isNotNull()) {
             WorldClient worldClient = Minecraft.theWorld();
-            this.t = worldClient.n();
-            this.c = worldClient.N();
-            this.J = worldClient.y();
-            this.F = worldClient.V();
+            this.savedRainStrength = worldClient.n();
+            this.savedPreviousRainStrength = worldClient.N();
+            this.savedThunderStrength = worldClient.y();
+            this.savedPreviousThunderStrength = worldClient.V();
         }
     }
 
     public WeatherChangerHudModule() {
-        super("Weather", HudModuleGroup.T, "weather");
+        super("Weather", HudModuleGroup.GAME, "weather");
         this.rainingOption = new ModeOption("Raining");
-        this.K = ModeValue.create((Object)this, "Weather", this.clearOption, this.clearOption, this.rainingOption);
-        this.addValue(this.K);
+        this.weatherMode = ModeValue.create((Object)this, "Weather", this.clearOption, this.clearOption, this.rainingOption);
+        this.addValue(this.weatherMode);
         this.setSuffix("Change the weather");
     }
 
@@ -59,10 +59,10 @@ extends HudModule {
     public void onDisable() {
         if (Minecraft.theWorld().isNotNull()) {
             WorldClient worldClient = Minecraft.theWorld();
-            worldClient.T(this.t);
-            worldClient.o(this.c);
-            worldClient.f(this.J);
-            worldClient.g(this.F);
+            worldClient.T(this.savedRainStrength);
+            worldClient.o(this.savedPreviousRainStrength);
+            worldClient.f(this.savedThunderStrength);
+            worldClient.g(this.savedPreviousThunderStrength);
         }
     }
 

@@ -18,21 +18,21 @@ import java.util.Map;
 
 public class StringMapValueComponent
 extends GuiComponent {
-    private boolean Q;
-    private boolean G;
-    private final Frame b;
-    private final TextInputComponentBase R;
-    private final StringMapValue a;
-    private final SimpleTextLabelComponent O;
-    private final TextButton o;
-    private final TextInputComponentBase i;
+    private boolean legacyFlag;
+    private boolean refreshPending;
+    private final Frame entriesFrame;
+    private final TextInputComponentBase keyInput;
+    private final StringMapValue stringMapValue;
+    private final SimpleTextLabelComponent titleLabel;
+    private final TextButton addButton;
+    private final TextInputComponentBase valueInput;
 
     @Override
     public void F() {
     }
 
-    static TextInputComponentBase r(StringMapValueComponent stringMapValueComponent) {
-        return stringMapValueComponent.i;
+    static TextInputComponentBase getValueInputCompat(StringMapValueComponent component) {
+        return component.valueInput;
     }
 
     @Override
@@ -40,8 +40,8 @@ extends GuiComponent {
         super.J();
     }
 
-    static void P(StringMapValueComponent stringMapValueComponent) {
-        stringMapValueComponent.e();
+    static void refreshEntriesCompat(StringMapValueComponent component) {
+        component.refreshEntries();
     }
 
     @Override
@@ -49,20 +49,20 @@ extends GuiComponent {
         return 50.0;
     }
 
-    private void e() {
-        Map<String, String> map = this.a.K();
-        this.b.t$src$V$zbu1jn();
-        for (String string : map.keySet()) {
-            String string2 = map.get(string);
-            StringMapEntryComponent stringMapEntryComponent = new StringMapEntryComponent(string, string2);
-            stringMapEntryComponent.N(new StringMapEntryRemoveHandler(this, stringMapEntryComponent));
-            this.b.H(stringMapEntryComponent);
+    private void refreshEntries() {
+        Map<String, String> entries = this.stringMapValue.getValue();
+        this.entriesFrame.t$src$V$zbu1jn();
+        for (String key : entries.keySet()) {
+            String value = entries.get(key);
+            StringMapEntryComponent stringMapEntryComponent = new StringMapEntryComponent(key, value);
+            stringMapEntryComponent.setRemoveClickListener(new StringMapEntryRemoveHandler(this, stringMapEntryComponent));
+            this.entriesFrame.addChildren(stringMapEntryComponent);
         }
     }
 
     @Override
     public double C() {
-        return 62 + Math.min(this.b.f().size(), 4) * 19;
+        return 62 + Math.min(this.entriesFrame.f().size(), 4) * 19;
     }
 
     @Override
@@ -73,63 +73,63 @@ extends GuiComponent {
     public void I() {
     }
 
-    static StringMapValue L(StringMapValueComponent stringMapValueComponent) {
-        return stringMapValueComponent.a;
+    static StringMapValue getStringMapValueCompat(StringMapValueComponent component) {
+        return component.stringMapValue;
     }
 
     @Override
     public void H() {
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 2.0, this.n() + 2.0, this.A() - 4.0, this.L() - 4.0, StringMapValueComponent.J.r);
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + 28.0, 5.0, 1.0f, StringMapValueComponent.J.l);
-        this.O.K(this.G$src$D$1b2f02a() + 2.0);
-        this.O.S(this.n() + 2.0);
-        this.R.d(false);
-        this.R.r(false);
-        this.R.K(this.G$src$D$1b2f02a());
-        this.R.S(this.n() + 13.0);
-        this.i.d(false);
-        this.i.r(false);
-        this.i.K(this.G$src$D$1b2f02a());
-        this.i.S(this.n() + 28.0);
-        this.o.T(StringMapValueComponent.J.r);
-        this.o.o(28.0);
-        this.o.Y(12.0);
-        this.o.K(this.G$src$D$1b2f02a() + this.A() - 33.0);
-        this.o.S(this.n() + 46.0);
-        this.b.K(this.G$src$D$1b2f02a() + 3.0);
-        this.b.S(this.n() + 60.0);
-        this.b.o(this.A() - 5.0);
-        this.b.Y(68.0);
-        this.b.t(68.0);
-        this.b.d(false);
-        this.b.T(new Color(255, 255, 255, 0));
-        this.b.P(true);
-        this.b.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.b.N(true);
-        this.b.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
-        this.b.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().I(false);
-        this.b.l$src$V$1mibm4x();
-        if (this.G) {
-            this.e();
-            this.G = false;
+        this.titleLabel.K(this.G$src$D$1b2f02a() + 2.0);
+        this.titleLabel.S(this.n() + 2.0);
+        this.keyInput.setShowDisabledOverlay(false);
+        this.keyInput.setActionButtonVisible(false);
+        this.keyInput.K(this.G$src$D$1b2f02a());
+        this.keyInput.S(this.n() + 13.0);
+        this.valueInput.setShowDisabledOverlay(false);
+        this.valueInput.setActionButtonVisible(false);
+        this.valueInput.K(this.G$src$D$1b2f02a());
+        this.valueInput.S(this.n() + 28.0);
+        this.addButton.setDisabledOverlayColor(StringMapValueComponent.J.r);
+        this.addButton.o(28.0);
+        this.addButton.Y(12.0);
+        this.addButton.K(this.G$src$D$1b2f02a() + this.A() - 33.0);
+        this.addButton.S(this.n() + 46.0);
+        this.entriesFrame.K(this.G$src$D$1b2f02a() + 3.0);
+        this.entriesFrame.S(this.n() + 60.0);
+        this.entriesFrame.o(this.A() - 5.0);
+        this.entriesFrame.Y(68.0);
+        this.entriesFrame.t(68.0);
+        this.entriesFrame.setShowDisabledOverlay(false);
+        this.entriesFrame.setDisabledOverlayColor(new Color(255, 255, 255, 0));
+        this.entriesFrame.setUseExplicitWidth(true);
+        this.entriesFrame.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.entriesFrame.N(true);
+        this.entriesFrame.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
+        this.entriesFrame.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().I(false);
+        this.entriesFrame.l$src$V$1mibm4x();
+        if (this.refreshPending) {
+            this.refreshEntries();
+            this.refreshPending = false;
         }
     }
 
     public StringMapValueComponent(StringMapValue stringMapValue) {
-        this.a = stringMapValue;
-        this.O = new SimpleTextLabelComponent(stringMapValue.getName());
-        this.R = new StringMapKeyInputComponent(this, stringMapValue.A());
-        this.i = new StringMapValueInputComponent(this, stringMapValue.x());
-        this.o = new TextButton("ADD", StringMapValueComponent.J.l);
-        this.o.s(() -> {
-            stringMapValue.E(this.R.i$src$Ljava_lang_String_$1n2xf3k(), this.i.i$src$Ljava_lang_String_$1n2xf3k());
-            this.e();
-            this.R.k("");
-            this.i.k("");
+        this.stringMapValue = stringMapValue;
+        this.titleLabel = new SimpleTextLabelComponent(stringMapValue.getName());
+        this.keyInput = new StringMapKeyInputComponent(this, stringMapValue.getKeyPlaceholder());
+        this.valueInput = new StringMapValueInputComponent(this, stringMapValue.getValuePlaceholder());
+        this.addButton = new TextButton("ADD", StringMapValueComponent.J.l);
+        this.addButton.setClickListener(() -> {
+            stringMapValue.putEntry(this.keyInput.getText(), this.valueInput.getText());
+            this.refreshEntries();
+            this.keyInput.setText("");
+            this.valueInput.setText("");
         });
-        this.b = new StringMapEntryListFrame(this);
-        this.H(this.O, this.R, this.i, this.o, this.b);
-        this.G = true;
+        this.entriesFrame = new StringMapEntryListFrame(this);
+        this.addChildren(this.titleLabel, this.keyInput, this.valueInput, this.addButton, this.entriesFrame);
+        this.refreshPending = true;
     }
 
     @Override

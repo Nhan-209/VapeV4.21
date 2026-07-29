@@ -21,354 +21,336 @@ import java.util.List;
 
 public class BlockInLegacyMovementController1122
 extends AbstractBlockInMovementController {
-    private static final long c;
-
-    static {
-        c = -428257519865954297L;
-    }
-
-
     @Override
-    public void B() {
-        this.U = this.D.L$src$I$1tmeeo5();
-        this.B = this.D.z$src$I$1uboxyr();
-        AttributeInstance attributeInstance = this.O.h(MonsterAttributesBridge.B());
-        AttributeInstance attributeInstance2 = this.p.h(MonsterAttributesBridge.B());
-        attributeInstance2.J();
-        for (Object e : attributeInstance.I()) {
-            attributeInstance2.applyModifier(new AttributeModifier(e));
+    public void initialize() {
+        this.sprintToggleTimer = this.localPlayer.L$src$I$1tmeeo5();
+        this.sprintingTicksLeft = this.localPlayer.z$src$I$1uboxyr();
+        AttributeInstance sourceMovementSpeed = this.sourcePlayer.h(MonsterAttributesBridge.B());
+        AttributeInstance simulatedMovementSpeed = this.simulatedPlayer.h(MonsterAttributesBridge.B());
+        simulatedMovementSpeed.J();
+        for (Object modifier : sourceMovementSpeed.I()) {
+            simulatedMovementSpeed.applyModifier(new AttributeModifier(modifier));
         }
-        this.p.M(this.O.F());
-        this.p.k$src$V$5315b7(this.O.N$src$F$14ypudi());
+        this.simulatedPlayer.M(this.sourcePlayer.F());
+        this.simulatedPlayer.k$src$V$5315b7(this.sourcePlayer.N$src$F$14ypudi());
     }
 
-    private void l$src$V$6ly98l() {
-        List list = this.P.i(this.p, this.p.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu(), EntitySelectors.x(this.D));
-        if (!list.isEmpty()) {
-            for (Object e : list) {
-                if (MappedClasses.z5.isInstance(e) || e == this.p.getObject() || e == this.O.getObject()) continue;
-                this.p.z(new Entity(e));
+    private void pushNearbyEntities() {
+        List nearbyEntities = this.world.i(this.simulatedPlayer,
+                this.simulatedPlayer.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu(),
+                EntitySelectors.x(this.localPlayer));
+        if (!nearbyEntities.isEmpty()) {
+            for (Object entityObject : nearbyEntities) {
+                if (MappedClasses.z5.isInstance(entityObject)
+                        || entityObject == this.simulatedPlayer.getObject()
+                        || entityObject == this.sourcePlayer.getObject()) {
+                    continue;
+                }
+                this.simulatedPlayer.z(new Entity(entityObject));
             }
         }
     }
 
-    private void x$src$V$6sjscx() {
-        this.p.k$src$V$5315b7(this.Z);
-        this.p.M(this.d);
-        this.p.b(this.W);
+    private void applyMovementInputToPlayer() {
+        this.simulatedPlayer.k$src$V$5315b7(this.moveStrafe);
+        this.simulatedPlayer.M(this.moveForward);
+        this.simulatedPlayer.b(this.jumpInput);
     }
 
     @Override
-    public void b(boolean bl, boolean bl2, boolean bl3, boolean bl4, boolean bl5, boolean bl6) {
-        this.g = bl;
-        this.M = bl2;
-        this.r = bl3;
-        this.R = bl4;
-        this.E = bl5;
-        this.A = bl6;
+    public void setInput(boolean forward, boolean backward, boolean left, boolean right, boolean jump, boolean sneak) {
+        this.forwardKeyDown = forward;
+        this.backwardKeyDown = backward;
+        this.leftKeyDown = left;
+        this.rightKeyDown = right;
+        this.jumpKeyDown = jump;
+        this.sneakKeyDown = sneak;
     }
 
-    private void x(float f, float f2, float f3) {
-        this.p.z(false);
+    private void travel(float strafe, float vertical, float forward) {
+        this.simulatedPlayer.z(false);
         MoverType moverType = MoverType.X();
-        if (!this.p.h$src$Z$ftwoya() || this.p.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying()) {
-            if (!this.p.Q$src$Z$fh9faz() || this.p.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying()) {
-                boolean bl;
-                float f4 = 0.91f;
-                if (this.p.b$src$Z$fqlxe4()) {
-                    f4 = this.P.getBlockState(BlockPos.create(MathUtil.floor(this.p.z()), MathUtil.floor(this.p.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinY()) - 1, MathUtil.floor(this.p.h()))).getBlock().c() * 0.91f;
+        if (!this.simulatedPlayer.h$src$Z$ftwoya() || this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying()) {
+            if (!this.simulatedPlayer.Q$src$Z$fh9faz() || this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying()) {
+                float groundFriction = 0.91f;
+                if (this.simulatedPlayer.b$src$Z$fqlxe4()) {
+                    BlockPos groundPos = BlockPos.create(MathUtil.floor(this.simulatedPlayer.z()),
+                            MathUtil.floor(this.simulatedPlayer.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinY()) - 1,
+                            MathUtil.floor(this.simulatedPlayer.h()));
+                    groundFriction = this.world.getBlockState(groundPos).getBlock().c() * 0.91f;
                 }
-                float f5 = 0.16277136f / (f4 * f4 * f4);
-                float f6 = this.p.b$src$Z$fqlxe4() ? this.p.C$src$F$1i1kt1e() * f5 : this.p.y$src$F$15mczw1();
-                this.p.x(f, f2, f3, f6);
-                f4 = 0.91f;
-                if (this.p.b$src$Z$fqlxe4()) {
-                    f4 = this.P.getBlockState(BlockPos.create(MathUtil.floor(this.p.z()), MathUtil.floor(this.p.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinY()) - 1, MathUtil.floor(this.p.h()))).getBlock().c() * 0.91f;
+                float frictionAcceleration = 0.16277136f
+                        / (groundFriction * groundFriction * groundFriction);
+                float movementFactor = this.simulatedPlayer.b$src$Z$fqlxe4()
+                        ? this.simulatedPlayer.C$src$F$1i1kt1e() * frictionAcceleration
+                        : this.simulatedPlayer.y$src$F$15mczw1();
+                this.simulatedPlayer.x(strafe, vertical, forward, movementFactor);
+                groundFriction = 0.91f;
+                if (this.simulatedPlayer.b$src$Z$fqlxe4()) {
+                    BlockPos groundPos = BlockPos.create(MathUtil.floor(this.simulatedPlayer.z()),
+                            MathUtil.floor(this.simulatedPlayer.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinY()) - 1,
+                            MathUtil.floor(this.simulatedPlayer.h()));
+                    groundFriction = this.world.getBlockState(groundPos).getBlock().c() * 0.91f;
                 }
-                if (this.p.S$src$Z$151gttj()) {
-                    boolean bl2;
-                    float f7 = 0.15f;
-                    this.p.r(MathUtil.clamp(this.p.t(), (double)(-f7), (double)f7));
-                    this.p.i(MathUtil.clamp(this.p.T(), (double)(-f7), (double)f7));
-                    this.p.U(0.0f);
-                    if (this.p.q() < -0.15) {
-                        this.p.k(-0.15);
+                if (this.simulatedPlayer.S$src$Z$151gttj()) {
+                    float ladderSpeedLimit = 0.15f;
+                    this.simulatedPlayer.r(MathUtil.clamp(this.simulatedPlayer.t(),
+                            -ladderSpeedLimit, ladderSpeedLimit));
+                    this.simulatedPlayer.i(MathUtil.clamp(this.simulatedPlayer.T(),
+                            -ladderSpeedLimit, ladderSpeedLimit));
+                    this.simulatedPlayer.U(0.0f);
+                    if (this.simulatedPlayer.q() < -0.15) {
+                        this.simulatedPlayer.k(-0.15);
                     }
-                    if ((bl2 = this.p.P()) && this.p.q() < 0.0) {
-                        this.p.k(0.0);
+                    if (this.simulatedPlayer.P() && this.simulatedPlayer.q() < 0.0) {
+                        this.simulatedPlayer.k(0.0);
                     }
                 }
-                this.p.r(moverType, this.p.t(), this.p.q(), this.p.T());
-                if (this.p.r() && this.p.S$src$Z$151gttj()) {
-                    this.p.k(0.2);
+                this.simulatedPlayer.r(moverType, this.simulatedPlayer.t(), this.simulatedPlayer.q(), this.simulatedPlayer.T());
+                if (this.simulatedPlayer.r() && this.simulatedPlayer.S$src$Z$151gttj()) {
+                    this.simulatedPlayer.k(0.2);
                 }
-                boolean bl3 = bl = this.P.j$src$Z$11aji0a(BlockPos.create((int)this.p.z(), 0, (int)this.p.h())) && this.P.j(BlockPos.create((int)this.p.z(), 0, (int)this.p.h())).F();
-                if (!this.P.I() || bl) {
-                    if (!this.p.v$src$Z$g1lt9c()) {
-                        this.p.k(this.p.q() - 0.08);
+                BlockPos columnPos = BlockPos.create((int)this.simulatedPlayer.z(), 0,
+                        (int)this.simulatedPlayer.h());
+                boolean isLoadedColumn = this.world.j$src$Z$11aji0a(columnPos)
+                        && this.world.j(columnPos).F();
+                if (!this.world.I() || isLoadedColumn) {
+                    if (!this.simulatedPlayer.v$src$Z$g1lt9c()) {
+                        this.simulatedPlayer.k(this.simulatedPlayer.q() - 0.08);
                     }
-                } else if (this.p.N() > 0.0) {
-                    this.p.k(-0.1);
+                } else if (this.simulatedPlayer.N() > 0.0) {
+                    this.simulatedPlayer.k(-0.1);
                 } else {
-                    this.p.k(0.0);
+                    this.simulatedPlayer.k(0.0);
                 }
-                this.p.k(this.p.q() * (double)0.98f);
-                this.p.r(this.p.t() * (double)f4);
-                this.p.i(this.p.T() * (double)f4);
+                this.simulatedPlayer.k(this.simulatedPlayer.q() * (double)0.98f);
+                this.simulatedPlayer.r(this.simulatedPlayer.t() * groundFriction);
+                this.simulatedPlayer.i(this.simulatedPlayer.T() * groundFriction);
             } else {
-                double d = this.p.N();
-                this.p.x(f, f2, f3, 0.02f);
-                this.p.b(this.p.t(), this.p.q(), this.p.T());
-                this.p.r(this.p.t() * 0.5);
-                this.p.k(this.p.q() * 0.5);
-                this.p.i(this.p.T() * 0.5);
-                if (!this.p.v$src$Z$g1lt9c()) {
-                    this.p.k(this.p.q() - 0.02);
+                double previousY = this.simulatedPlayer.N();
+                this.simulatedPlayer.x(strafe, vertical, forward, 0.02f);
+                this.simulatedPlayer.b(this.simulatedPlayer.t(), this.simulatedPlayer.q(), this.simulatedPlayer.T());
+                this.simulatedPlayer.r(this.simulatedPlayer.t() * 0.5);
+                this.simulatedPlayer.k(this.simulatedPlayer.q() * 0.5);
+                this.simulatedPlayer.i(this.simulatedPlayer.T() * 0.5);
+                if (!this.simulatedPlayer.v$src$Z$g1lt9c()) {
+                    this.simulatedPlayer.k(this.simulatedPlayer.q() - 0.02);
                 }
-                if (this.p.r() && this.p.i$src$Z$avhpwd(this.p.t(), this.p.q() + (double)0.6f - this.p.N() + d, this.p.T())) {
-                    this.p.k((double)0.3f);
+                if (this.simulatedPlayer.r() && this.simulatedPlayer.i$src$Z$avhpwd(
+                        this.simulatedPlayer.t(),
+                        this.simulatedPlayer.q() + 0.6f - this.simulatedPlayer.N() + previousY,
+                        this.simulatedPlayer.T())) {
+                    this.simulatedPlayer.k((double)0.3f);
                 }
             }
         } else {
-            double d = this.p.N();
-            float f8 = 0.8f;
-            float f9 = 0.02f;
-            float f10 = EnchantmentHelper.y(this.p);
-            if (f10 > 3.0f) {
-                f10 = 3.0f;
+            double previousY = this.simulatedPlayer.N();
+            float waterDrag = 0.8f;
+            float waterAcceleration = 0.02f;
+            float depthStriderLevel = EnchantmentHelper.y(this.simulatedPlayer);
+            if (depthStriderLevel > 3.0f) {
+                depthStriderLevel = 3.0f;
             }
-            if (!this.p.b$src$Z$fqlxe4()) {
-                f10 *= 0.5f;
+            if (!this.simulatedPlayer.b$src$Z$fqlxe4()) {
+                depthStriderLevel *= 0.5f;
             }
-            if (f10 > 0.0f) {
-                f8 += (0.54600006f - f8) * f10 / 3.0f;
-                f9 += (this.p.C$src$F$1i1kt1e() * 1.0f - f9) * f10 / 3.0f;
+            if (depthStriderLevel > 0.0f) {
+                waterDrag += (0.54600006f - waterDrag) * depthStriderLevel / 3.0f;
+                waterAcceleration += (this.simulatedPlayer.C$src$F$1i1kt1e()
+                        - waterAcceleration) * depthStriderLevel / 3.0f;
             }
-            this.p.x(f, f2, f3, f9);
-            this.p.r(moverType, this.p.t(), this.p.q(), this.p.T());
-            this.p.r(this.p.t() * (double)f8);
-            this.p.k(this.p.q() * (double)0.8f);
-            this.p.i(this.p.T() * (double)f8);
-            if (!this.p.v$src$Z$g1lt9c()) {
-                this.p.k(this.p.q() - 0.02);
+            this.simulatedPlayer.x(strafe, vertical, forward, waterAcceleration);
+            this.simulatedPlayer.r(moverType, this.simulatedPlayer.t(), this.simulatedPlayer.q(), this.simulatedPlayer.T());
+            this.simulatedPlayer.r(this.simulatedPlayer.t() * waterDrag);
+            this.simulatedPlayer.k(this.simulatedPlayer.q() * (double)0.8f);
+            this.simulatedPlayer.i(this.simulatedPlayer.T() * waterDrag);
+            if (!this.simulatedPlayer.v$src$Z$g1lt9c()) {
+                this.simulatedPlayer.k(this.simulatedPlayer.q() - 0.02);
             }
-            if (this.p.r() && this.p.i$src$Z$avhpwd(this.p.t(), this.p.q() + (double)0.6f - this.p.N() + d, this.p.T())) {
-                this.p.k((double)0.3f);
+            if (this.simulatedPlayer.r() && this.simulatedPlayer.i$src$Z$avhpwd(
+                    this.simulatedPlayer.t(),
+                    this.simulatedPlayer.q() + 0.6f - this.simulatedPlayer.N() + previousY,
+                    this.simulatedPlayer.T())) {
+                this.simulatedPlayer.k((double)0.3f);
             }
         }
     }
 
     @Override
-    public void N() {
-        this.p.l$src$V$fw3v8a();
-        ++this.B;
-        if (this.U > 0) {
-            --this.U;
+    public void tick() {
+        this.simulatedPlayer.l$src$V$fw3v8a();
+        ++this.sprintingTicksLeft;
+        if (this.sprintToggleTimer > 0) {
+            --this.sprintToggleTimer;
         }
-        boolean bl = this.W;
-        boolean bl2 = this.b;
-        float f = 0.8f;
-        boolean bl3 = this.d >= 0.8f;
-        this.F();
-        boolean bl4 = false;
-        boolean bl5 = false;
-        float f2 = this.p.f$src$F$fst3ac();
-        double d = this.p.z();
-        double d2 = this.p.h();
-        double d3 = this.p.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinY();
-        PlayerSimulationUtil.p(this.p, d - (double)f2 * 0.35, d3 + 0.5, d2 + (double)f2 * 0.35);
-        PlayerSimulationUtil.p(this.p, d - (double)f2 * 0.35, d3 + 0.5, d2 - (double)f2 * 0.35);
-        PlayerSimulationUtil.p(this.p, d + (double)f2 * 0.35, d3 + 0.5, d2 - (double)f2 * 0.35);
-        PlayerSimulationUtil.p(this.p, d + (double)f2 * 0.35, d3 + 0.5, d2 + (double)f2 * 0.35);
-        if ((float)this.p.Y$src$Lgg_vape_wrapper_impl_FoodStats_$fakh1z().getFoodLevel() > 6.0f || this.p.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().H()) {
-            if (this.p.b$src$Z$fqlxe4() && !bl2 && !bl3 && this.d >= f && !this.p.B$src$Z$f90iek() && !this.p.i(PotionRegistry.K)) {
-                if (this.U <= 0 && !this.f) {
-                    this.U = (int)c;
+
+        boolean wasSneaking = this.sneakInput;
+        float sprintThreshold = 0.8f;
+        boolean wasMovingForward = this.moveForward >= sprintThreshold;
+        this.updateMovementInput();
+
+        float playerWidth = this.simulatedPlayer.f$src$F$fst3ac();
+        double collisionOffset = playerWidth * 0.35;
+        double positionX = this.simulatedPlayer.z();
+        double positionZ = this.simulatedPlayer.h();
+        double collisionY = this.simulatedPlayer
+                .u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinY() + 0.5;
+        PlayerSimulationUtil.p(this.simulatedPlayer, positionX - collisionOffset, collisionY,
+                positionZ + collisionOffset);
+        PlayerSimulationUtil.p(this.simulatedPlayer, positionX - collisionOffset, collisionY,
+                positionZ - collisionOffset);
+        PlayerSimulationUtil.p(this.simulatedPlayer, positionX + collisionOffset, collisionY,
+                positionZ - collisionOffset);
+        PlayerSimulationUtil.p(this.simulatedPlayer, positionX + collisionOffset, collisionY,
+                positionZ + collisionOffset);
+
+        boolean canSprint = this.simulatedPlayer
+                .Y$src$Lgg_vape_wrapper_impl_FoodStats_$fakh1z().getFoodLevel() > 6
+                || this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().H();
+        if (canSprint) {
+            if (this.simulatedPlayer.b$src$Z$fqlxe4() && !wasSneaking && !wasMovingForward
+                    && this.moveForward >= sprintThreshold
+                    && !this.simulatedPlayer.B$src$Z$f90iek()
+                    && !this.simulatedPlayer.i(PotionRegistry.K)) {
+                if (this.sprintToggleTimer <= 0 && !this.sprintKeyDown) {
+                    this.sprintToggleTimer = 7;
                 } else {
-                    this.p.R(true);
-                    this.B = 0;
+                    this.simulatedPlayer.R(true);
+                    this.sprintingTicksLeft = 0;
                 }
             }
-            if (!this.p.B$src$Z$f90iek() && this.d >= f && !this.p.i(PotionRegistry.K) && this.f) {
-                this.p.R(true);
-                this.B = 0;
+            if (!this.simulatedPlayer.B$src$Z$f90iek()
+                    && this.moveForward >= sprintThreshold
+                    && !this.simulatedPlayer.i(PotionRegistry.K)
+                    && this.sprintKeyDown) {
+                this.simulatedPlayer.R(true);
+                this.sprintingTicksLeft = 0;
             }
-            if (this.p.B$src$Z$f90iek() && (this.d < f || this.p.r())) {
-                this.p.R(false);
-                this.B = 0;
+            if (this.simulatedPlayer.B$src$Z$f90iek()
+                    && (this.moveForward < sprintThreshold || this.simulatedPlayer.r())) {
+                this.simulatedPlayer.R(false);
+                this.sprintingTicksLeft = 0;
             }
-            if (this.p.B$src$I$14s4bbr() > 0) {
-                this.p.L(this.p.B$src$I$14s4bbr() - 1);
-            }
-            if (Math.abs(this.p.t()) < 0.003) {
-                this.p.r(0.0);
-            }
-            if (Math.abs(this.p.q()) < 0.003) {
-                this.p.k(0.0);
-            }
-            if (Math.abs(this.p.T()) < 0.003) {
-                this.p.i(0.0);
-            }
-            this.x$src$V$6sjscx();
-            if (this.p.e$src$Z$15bd4i1()) {
-                if (this.p.h$src$Z$ftwoya()) {
-                    this.p.k(this.p.q() + (double)0.04f);
-                } else if (this.p.Q$src$Z$fh9faz()) {
-                    this.p.k(this.p.q() + (double)0.04f);
-                } else if (this.p.b$src$Z$fqlxe4() && this.p.B$src$I$14s4bbr() == 0) {
-                    this.p.t$src$V$15jm1b0();
-                    if (this.D.i(PotionRegistry.Z)) {
-                        double d4 = (float)(this.D.b(PotionRegistry.Z).L() + 1) * 0.1f;
-                        this.p.k(this.p.q() + d4);
-                    }
-                    this.p.L(10);
+        } else if (this.simulatedPlayer.B$src$Z$f90iek()) {
+            this.simulatedPlayer.R(false);
+            this.sprintingTicksLeft = 0;
+        }
+
+        if (this.simulatedPlayer.B$src$I$14s4bbr() > 0) {
+            this.simulatedPlayer.L(this.simulatedPlayer.B$src$I$14s4bbr() - 1);
+        }
+        if (Math.abs(this.simulatedPlayer.t()) < 0.003) {
+            this.simulatedPlayer.r(0.0);
+        }
+        if (Math.abs(this.simulatedPlayer.q()) < 0.003) {
+            this.simulatedPlayer.k(0.0);
+        }
+        if (Math.abs(this.simulatedPlayer.T()) < 0.003) {
+            this.simulatedPlayer.i(0.0);
+        }
+
+        this.applyMovementInputToPlayer();
+        if (this.simulatedPlayer.e$src$Z$15bd4i1()) {
+            if (this.simulatedPlayer.h$src$Z$ftwoya()
+                    || this.simulatedPlayer.Q$src$Z$fh9faz()) {
+                this.simulatedPlayer.k(this.simulatedPlayer.q() + 0.04f);
+            } else if (this.simulatedPlayer.b$src$Z$fqlxe4()
+                    && this.simulatedPlayer.B$src$I$14s4bbr() == 0) {
+                this.simulatedPlayer.t$src$V$15jm1b0();
+                if (this.localPlayer.i(PotionRegistry.Z)) {
+                    double jumpBoost = (this.localPlayer.b(PotionRegistry.Z).L() + 1) * 0.1f;
+                    this.simulatedPlayer.k(this.simulatedPlayer.q() + jumpBoost);
                 }
-            } else {
-                this.p.L(0);
-            }
-            this.p.k$src$V$5315b7(this.p.N$src$F$14ypudi() * 0.98f);
-            this.p.M(this.p.F() * 0.98f);
-            this.x(this.p.N$src$F$14ypudi(), 0.0f, this.p.F());
-            this.l$src$V$6ly98l();
-            AttributeInstance attributeInstance = this.p.h(MonsterAttributesBridge.B());
-            if (!this.P.I()) {
-                attributeInstance.I(this.p.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().l());
-            }
-            float f3 = 0.02f;
-            this.p.t(0.02f);
-            if (this.p.B$src$Z$f90iek()) {
-                this.p.t((float)((double)this.p.y$src$F$15mczw1() + 0.005999999865889549));
-            }
-            this.p.I((float)attributeInstance.W());
-            return;
-        }
-        if (!this.p.b$src$Z$fqlxe4() || bl2 || bl3 || !(this.d >= f) || !this.p.B$src$Z$f90iek()) {
-            // empty if block
-        }
-        if (this.p.B$src$Z$f90iek() || this.d >= f) {
-            // empty if block
-        }
-        if (this.p.B$src$Z$f90iek()) {
-            if (this.d < f || !this.p.r()) {
-                // empty if block
-            }
-            this.p.R(false);
-            this.B = 0;
-        }
-        if (this.p.B$src$I$14s4bbr() > 0) {
-            this.p.L(this.p.B$src$I$14s4bbr() - 1);
-        }
-        if (Math.abs(this.p.t()) < 0.003) {
-            this.p.r(0.0);
-        }
-        if (Math.abs(this.p.q()) < 0.003) {
-            this.p.k(0.0);
-        }
-        if (Math.abs(this.p.T()) < 0.003) {
-            this.p.i(0.0);
-        }
-        this.x$src$V$6sjscx();
-        if (this.p.e$src$Z$15bd4i1()) {
-            if (this.p.h$src$Z$ftwoya()) {
-                this.p.k(this.p.q() + (double)0.04f);
-            } else if (this.p.Q$src$Z$fh9faz()) {
-                this.p.k(this.p.q() + (double)0.04f);
-            } else if (this.p.b$src$Z$fqlxe4() && this.p.B$src$I$14s4bbr() == 0) {
-                this.p.t$src$V$15jm1b0();
-                if (this.D.i(PotionRegistry.Z)) {
-                    double d5 = (float)(this.D.b(PotionRegistry.Z).L() + 1) * 0.1f;
-                    this.p.k(this.p.q() + d5);
-                }
-                this.p.L(10);
+                this.simulatedPlayer.L(10);
             }
         } else {
-            this.p.L(0);
+            this.simulatedPlayer.L(0);
         }
-        this.p.k$src$V$5315b7(this.p.N$src$F$14ypudi() * 0.98f);
-        this.p.M(this.p.F() * 0.98f);
-        this.x(this.p.N$src$F$14ypudi(), 0.0f, this.p.F());
-        this.l$src$V$6ly98l();
-        AttributeInstance attributeInstance = this.p.h(MonsterAttributesBridge.B());
-        if (!this.P.I()) {
-            attributeInstance.I(this.p.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().l());
-        }
-        float f4 = 0.02f;
-        this.p.t(0.02f);
-        if (this.p.B$src$Z$f90iek()) {
-            this.p.t((float)((double)this.p.y$src$F$15mczw1() + 0.005999999865889549));
-        }
-        this.p.I((float)attributeInstance.W());
-    }
 
+        this.simulatedPlayer.k$src$V$5315b7(
+                this.simulatedPlayer.N$src$F$14ypudi() * 0.98f);
+        this.simulatedPlayer.M(this.simulatedPlayer.F() * 0.98f);
+        this.travel(this.simulatedPlayer.N$src$F$14ypudi(), 0.0f, this.simulatedPlayer.F());
+        this.pushNearbyEntities();
+
+        AttributeInstance movementSpeed = this.simulatedPlayer.h(MonsterAttributesBridge.B());
+        if (!this.world.I()) {
+            movementSpeed.I(this.simulatedPlayer
+                    .C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().l());
+        }
+        this.simulatedPlayer.t(0.02f);
+        if (this.simulatedPlayer.B$src$Z$f90iek()) {
+            this.simulatedPlayer.t(
+                    this.simulatedPlayer.y$src$F$15mczw1() + 0.005999999865889549f);
+        }
+        this.simulatedPlayer.I((float)movementSpeed.W());
+    }
     @Override
-    public void X(BlockPlacementGraph blockPlacementGraph) {
-        this.B = blockPlacementGraph.J;
-        this.U = blockPlacementGraph.S;
-        this.d = blockPlacementGraph.p;
-        this.Z = blockPlacementGraph.s;
-        this.W = blockPlacementGraph.l;
-        this.b = blockPlacementGraph.c;
-        this.p.H(blockPlacementGraph.k);
-        this.p.u(blockPlacementGraph.v);
-        this.p.l(blockPlacementGraph.P);
-        this.p.n(blockPlacementGraph.Z);
-        this.p.w(blockPlacementGraph.j);
-        this.p.A(blockPlacementGraph.x);
-        this.p.r(blockPlacementGraph.I);
-        this.p.k(blockPlacementGraph.H);
-        this.p.i(blockPlacementGraph.t);
-        this.p.H(blockPlacementGraph.Q);
-        this.p.C(blockPlacementGraph.n);
-        this.p.D(blockPlacementGraph.g);
-        this.p.l(blockPlacementGraph.L);
-        this.p.U(blockPlacementGraph.U);
-        this.p.F(blockPlacementGraph.V);
-        this.p.R(blockPlacementGraph.K);
-        this.p.L(blockPlacementGraph.G);
-        this.p.t(blockPlacementGraph.E);
-        this.p.I(blockPlacementGraph.B);
-        AttributeInstance attributeInstance = this.p.h(MonsterAttributesBridge.B());
-        attributeInstance.J();
-        for (Object e : blockPlacementGraph.f) {
-            attributeInstance.applyModifier(new AttributeModifier(e));
+    public void applySnapshot(BlockPlacementGraph blockPlacementGraph) {
+        this.sprintingTicksLeft = blockPlacementGraph.sprintingTicksLeft;
+        this.sprintToggleTimer = blockPlacementGraph.sprintToggleTimer;
+        this.moveForward = blockPlacementGraph.moveForward;
+        this.moveStrafe = blockPlacementGraph.moveStrafe;
+        this.jumpInput = blockPlacementGraph.jumpInput;
+        this.sneakInput = blockPlacementGraph.sneakInput;
+        this.simulatedPlayer.H(blockPlacementGraph.positionX);
+        this.simulatedPlayer.u(blockPlacementGraph.positionY);
+        this.simulatedPlayer.l(blockPlacementGraph.positionZ);
+        this.simulatedPlayer.n(blockPlacementGraph.previousPositionX);
+        this.simulatedPlayer.w(blockPlacementGraph.previousPositionY);
+        this.simulatedPlayer.A(blockPlacementGraph.previousPositionZ);
+        this.simulatedPlayer.r(blockPlacementGraph.motionX);
+        this.simulatedPlayer.k(blockPlacementGraph.motionY);
+        this.simulatedPlayer.i(blockPlacementGraph.motionZ);
+        this.simulatedPlayer.H(blockPlacementGraph.yaw);
+        this.simulatedPlayer.C(blockPlacementGraph.pitch);
+        this.simulatedPlayer.D(blockPlacementGraph.previousYaw);
+        this.simulatedPlayer.l(blockPlacementGraph.previousPitch);
+        this.simulatedPlayer.U(blockPlacementGraph.onGround);
+        this.simulatedPlayer.F(blockPlacementGraph.sneaking);
+        this.simulatedPlayer.R(blockPlacementGraph.sprinting);
+        this.simulatedPlayer.L(blockPlacementGraph.jumpTicks);
+        this.simulatedPlayer.t(blockPlacementGraph.jumpMovementFactor);
+        this.simulatedPlayer.I(blockPlacementGraph.aiMoveSpeed);
+        AttributeInstance movementSpeed = this.simulatedPlayer.h(MonsterAttributesBridge.B());
+        movementSpeed.J();
+        for (Object modifier : blockPlacementGraph.movementSpeedModifiers) {
+            movementSpeed.applyModifier(new AttributeModifier(modifier));
         }
-        this.g = blockPlacementGraph.M;
-        this.M = blockPlacementGraph.D;
-        this.r = blockPlacementGraph.R;
-        this.R = blockPlacementGraph.Y;
-        this.A = blockPlacementGraph.y;
-        this.E = blockPlacementGraph.A;
-        this.f = blockPlacementGraph.N;
+        this.forwardKeyDown = blockPlacementGraph.forwardKeyDown;
+        this.backwardKeyDown = blockPlacementGraph.backwardKeyDown;
+        this.leftKeyDown = blockPlacementGraph.leftKeyDown;
+        this.rightKeyDown = blockPlacementGraph.rightKeyDown;
+        this.sneakKeyDown = blockPlacementGraph.sneakKeyDown;
+        this.jumpKeyDown = blockPlacementGraph.jumpKeyDown;
+        this.sprintKeyDown = blockPlacementGraph.sprintKeyDown;
     }
 
-    public BlockInLegacyMovementController1122(EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP, EntityPlayer entityPlayer2, World world) {
-        super(entityPlayer, entityPlayerSP, entityPlayer2, world);
+    public BlockInLegacyMovementController1122(EntityPlayer simulatedPlayer, EntityPlayerSP localPlayer,
+                                               EntityPlayer sourcePlayer, World world) {
+        super(simulatedPlayer, localPlayer, sourcePlayer, world);
     }
 
-    public boolean E() {
-        return !this.P.I();
-    }
-
-    public void F() {
-        this.d = 0.0f;
-        this.Z = 0.0f;
-        if (this.g) {
-            this.d += 1.0f;
+    private void updateMovementInput() {
+        this.moveForward = 0.0f;
+        this.moveStrafe = 0.0f;
+        if (this.forwardKeyDown) {
+            this.moveForward += 1.0f;
         }
-        if (this.M) {
-            this.d -= 1.0f;
+        if (this.backwardKeyDown) {
+            this.moveForward -= 1.0f;
         }
-        if (this.r) {
-            this.Z += 1.0f;
+        if (this.leftKeyDown) {
+            this.moveStrafe += 1.0f;
         }
-        if (this.R) {
-            this.Z -= 1.0f;
+        if (this.rightKeyDown) {
+            this.moveStrafe -= 1.0f;
         }
-        this.W = this.E;
-        this.b = this.A;
-        if (this.b) {
-            this.Z = (float)((double)this.Z * 0.3);
-            this.d = (float)((double)this.d * 0.3);
+        this.jumpInput = this.jumpKeyDown;
+        this.sneakInput = this.sneakKeyDown;
+        if (this.sneakInput) {
+            this.moveStrafe = (float)((double)this.moveStrafe * 0.3);
+            this.moveForward = (float)((double)this.moveForward * 0.3);
         }
     }
 }

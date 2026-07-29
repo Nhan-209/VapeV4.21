@@ -116,7 +116,7 @@ extends SmoothFontRenderer {
         if (this.j) {
             string = Vape.INSTANCE.getFontSelector().W().s(string);
         }
-        if (ClientSettings.p$src$Z$1h1jsli() && !bl) {
+        if (!bl) {
             if (string == null || string.length() == 0) {
                 return;
             }
@@ -177,8 +177,8 @@ extends SmoothFontRenderer {
                 GlStateManager.Y();
             }
             GL11.glBlendFunc((int)770, (int)771);
-            GlStateManager.bindTexture(this.C.F);
-            GuiRenderPrimitives.i.f();
+            GlStateManager.bindTexture(this.C.textureId);
+            GuiRenderPrimitives.i.bind();
             d2 += (double)(this.F * this.w * f);
             Color color2 = color;
             GL11.glBegin((int)7);
@@ -218,7 +218,7 @@ extends SmoothFontRenderer {
                 d += (double)(smoothFontGlyph.S * f);
             }
             GL11.glEnd();
-            GuiRenderPrimitives.i.L();
+            GuiRenderPrimitives.i.restorePreviousProgram();
             GlStateManager.bindTexture(n7);
             if (!bl5) {
                 GlStateManager.disableAlpha();
@@ -270,7 +270,7 @@ extends SmoothFontRenderer {
         if (color2 instanceof MutableColor) {
             n2 = ((MutableColor)color2).l();
         }
-        if (ClientSettings.p$src$Z$1h1jsli() && !bl) {
+        if (!bl) {
             this.v(string, d + 0.5, d2 + 0.5, n2);
             this.d(string, d, d2, color);
         } else {
@@ -390,15 +390,15 @@ extends SmoothFontRenderer {
         byteBuffer.flip();
         int n6 = GlStateManager.p();
         this.C = new GlImageTexture();
-        GlStateManager.bindTexture(this.C.F);
+        GlStateManager.bindTexture(this.C.textureId);
         GL11.glPixelStorei((int)3317, (int)1);
         GL11.glTexParameteri((int)3553, (int)10241, (int)9729);
         GL11.glTexParameteri((int)3553, (int)10240, (int)9729);
         GL11.glTexParameteri((int)3553, (int)10242, (int)10497);
         GL11.glTexParameteri((int)3553, (int)10243, (int)10497);
         GL11.glTexImage2D((int)3553, (int)0, (int)6403, (int)n3, (int)n3, (int)0, (int)6403, (int)5121, byteBuffer);
-        this.C.l = n3;
-        this.C.N = n3;
+        this.C.width = n3;
+        this.C.height = n3;
         GlStateManager.bindTexture(n6);
     }
 
@@ -423,7 +423,7 @@ extends SmoothFontRenderer {
             string3 = string2;
         }
         string = string3;
-        if (ClientSettings.p$src$Z$1h1jsli() && !bl) {
+        if (!bl) {
             string2 = string;
             Double cachedWidth = (Double)this.T.get(string2);
             if (cachedWidth != null) {
@@ -453,17 +453,13 @@ extends SmoothFontRenderer {
 
     @Override
     public void g(String string, double d, double d2, int n) {
-        if (ClientSettings.p$src$Z$1h1jsli()) {
-            this.v(string, d + 0.5, d2 + 0.5, Integer.MIN_VALUE);
-            this.F(string, d, d2, n);
-        } else {
-            Minecraft.getFontRenderer().drawStringWithShadow(string, d, d2, n);
-        }
+        this.v(string, d + 0.5, d2 + 0.5, Integer.MIN_VALUE);
+        this.F(string, d, d2, n);
     }
 
     @Override
     public void V(String string, double d, double d2, Color color, boolean bl) {
-        if (ClientSettings.p$src$Z$1h1jsli() && !bl) {
+        if (!bl) {
             this.v(string, d + 0.5, d2 + 0.5, Integer.MIN_VALUE);
             this.d(string, d, d2, color);
         } else {
@@ -480,7 +476,7 @@ extends SmoothFontRenderer {
 
     @Override
     public double R(String string, boolean bl) {
-        if (ClientSettings.p$src$Z$1h1jsli() && !bl) {
+        if (!bl) {
             float f = 0.6f;
             double d = Vape.INSTANCE.getClientSettings().s();
             if (d != 1.0) {

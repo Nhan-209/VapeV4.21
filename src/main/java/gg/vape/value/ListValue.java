@@ -11,28 +11,28 @@ import org.jetbrains.annotations.Nullable;
 public abstract class ListValue<C, T extends ListValue<C, T>>
 extends Value<List<C>, T> {
     @Nullable
-    private ListValueSuggestionProvider V;
-    private final String K;
+    private ListValueSuggestionProvider suggestionProvider;
+    private final String displayName;
 
 
-    public ListValue(Object object, String string, String string2) {
-        this(object, string, string2, new ArrayList<C>());
+    public ListValue(Object owner, String id, String displayName) {
+        this(owner, id, displayName, new ArrayList<C>());
     }
 
-    public T i(ListValueSuggestionProvider listValueSuggestionProvider) {
-        this.V = listValueSuggestionProvider;
+    public T setSuggestionProvider(ListValueSuggestionProvider suggestionProvider) {
+        this.suggestionProvider = suggestionProvider;
         return (T)this;
     }
 
-    public abstract C j(String var1, int var2);
+    public abstract C createEntry(String value, int legacyIndex);
 
-    public List<C> h() {
-        return new ArrayList<C>(this.K());
+    public List<C> snapshotEntries() {
+        return new ArrayList<C>(this.getValue());
     }
 
     @Override
-    public String c() {
-        List<C> list = this.K();
+    public String getDisplayValue() {
+        List<C> list = this.getValue();
         if (list.isEmpty()) {
             return "None";
         }
@@ -43,23 +43,23 @@ extends Value<List<C>, T> {
     }
 
     @Override
-    public List<C> l() {
-        return this.h();
+    public List<C> copyValue() {
+        return this.snapshotEntries();
     }
 
     @Nullable
-    public ListValueSuggestionProvider o() {
-        return this.V;
+    public ListValueSuggestionProvider getSuggestionProvider() {
+        return this.suggestionProvider;
     }
 
-    public ListValue(Object object, String string, String string2, List<C> list) {
-        super(object, string, ImmutableList.copyOf(list));
-        this.F(new ListValueMutableBackingList<C>(this, list));
-        this.K = string2;
+    public ListValue(Object owner, String id, String displayName, List<C> entries) {
+        super(owner, id, ImmutableList.copyOf(entries));
+        this.setDirectValue(new ListValueMutableBackingList<C>(this, entries));
+        this.displayName = displayName;
     }
 
     @Override
     public String getName() {
-        return this.K;
+        return this.displayName;
     }
 }

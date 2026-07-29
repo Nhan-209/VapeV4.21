@@ -1,18 +1,17 @@
 package gg.vape.util;
 
 public class NoopLogger {
-    private static final boolean W = false;
+    private static final boolean ENABLED = false;
 
-    public static void w(String string) {
+    public static void debug(String message) {
     }
 
-    public static void Q(String string) {
+    public static void info(String message) {
     }
 
-    public static void K(Throwable throwable) {
+    public static void error(Throwable error) {
     }
 
-    public static void F(String string, Throwable throwable) {
+    public static void error(String message, Throwable error) {
     }
 }
-

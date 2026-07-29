@@ -16,7 +16,7 @@ extends BindValue {
     }
 
     @Override
-    public boolean k() {
+    public boolean isDefault() {
         return false;
     }
 

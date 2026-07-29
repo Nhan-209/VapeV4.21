@@ -7,29 +7,29 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 public class TextSuggestionRow
 extends GuiComponent {
-    private final WrappingTextLabelComponent O;
+    private final WrappingTextLabelComponent label;
 
     public TextSuggestionRow(String string) {
-        this.o(true);
-        this.O = new WrappingTextLabelComponent(string, 0.7);
-        this.O.T$src$V$1orl066(TextSuggestionRow.J.Z);
-        this.H(this.O);
+        this.setPropagateMouseEvents(true);
+        this.label = new WrappingTextLabelComponent(string, 0.7);
+        this.label.setTextColor(TextSuggestionRow.J.Z);
+        this.addChildren(this.label);
     }
 
     @Override
     public void I() {
     }
 
-    public void M(String string) {
-        this.O.G(string);
+    public void setText(String text) {
+        this.label.setText(text);
     }
 
     @Override
     public void H() {
-        this.O.K(this.G$src$D$1b2f02a());
-        this.O.S(this.n() + this.L() / 2.0 - this.O.L() / 2.0);
-        this.O.o(this.A());
-        this.O.Y(this.L());
+        this.label.K(this.G$src$D$1b2f02a());
+        this.label.S(this.n() + this.L() / 2.0 - this.label.L() / 2.0);
+        this.label.o(this.A());
+        this.label.Y(this.L());
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), TextSuggestionRow.J.z);
     }
 
@@ -39,13 +39,13 @@ extends GuiComponent {
 
     @Override
     public double x() {
-        double d = this.O.h();
+        double d = this.label.getTextWidth();
         this.getClass();
         return d + 5.0 + 4.0;
     }
 
-    public String x$src$Ljava_lang_String_$1m64ofa() {
-        return this.O.c$src$Ljava_lang_String_$1q00otb();
+    public String getText() {
+        return this.label.getText();
     }
 
     @Override
@@ -61,4 +61,3 @@ extends GuiComponent {
     public void u() {
     }
 }
-

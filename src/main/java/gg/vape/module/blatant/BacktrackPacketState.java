@@ -14,37 +14,36 @@ public class BacktrackPacketState {
     private long encodedX;
     private long encodedY;
 
-    public void K(SPacketEntity spacketEntity) {
-        this.encodedX = spacketEntity.H();
-        this.encodedY = spacketEntity.M();
-        this.encodedZ = spacketEntity.B();
+    public void applyAbsolutePacket(SPacketEntity entityPacket) {
+        this.encodedX = entityPacket.H();
+        this.encodedY = entityPacket.M();
+        this.encodedZ = entityPacket.B();
     }
 
-    public void W(NetworkPlayerInfo networkPlayerInfo) {
-        Vec3 vec3 = networkPlayerInfo.e().u();
-        this.encodedX = MathUtil.floor(vec3.getX() * BacktrackPacketState.positionScale());
-        this.encodedY = MathUtil.floor(vec3.getY() * BacktrackPacketState.positionScale());
-        this.encodedZ = MathUtil.floor(vec3.getZ() * BacktrackPacketState.positionScale());
+    public void applyNetworkPlayerInfo(NetworkPlayerInfo playerInfo) {
+        Vec3 position = playerInfo.e().u();
+        this.encodedX = MathUtil.floor(position.getX() * BacktrackPacketState.positionScale());
+        this.encodedY = MathUtil.floor(position.getY() * BacktrackPacketState.positionScale());
+        this.encodedZ = MathUtil.floor(position.getZ() * BacktrackPacketState.positionScale());
     }
 
-    public static BacktrackPacketState J(Entity entity) {
+    public static BacktrackPacketState fromEntity(Entity entity) {
         return new BacktrackPacketState(MathUtil.floor(entity.double_z() * BacktrackPacketState.positionScale()), MathUtil.floor(entity.double_N() * BacktrackPacketState.positionScale()), MathUtil.floor(entity.double_h() * BacktrackPacketState.positionScale()));
     }
 
     private static double positionScale() {
-        double d = ForgeVersion.MC_1_21_4.d() ? 4096.0 : 32.0;
-        return d;
+        return ForgeVersion.MC_1_21_4.d() ? 4096.0 : 32.0;
     }
 
-    public PlayerLocationSnapshot g() {
+    public PlayerLocationSnapshot toSnapshot() {
         return new PlayerLocationSnapshot((double)this.encodedX / BacktrackPacketState.positionScale(), (double)this.encodedY / BacktrackPacketState.positionScale(), (double)this.encodedZ / BacktrackPacketState.positionScale());
     }
 
 
-    public void Z(SEntityPacket sentityPacket) {
-        this.encodedX += (long)sentityPacket.Y();
-        this.encodedY += (long)sentityPacket.x();
-        this.encodedZ += (long)sentityPacket.E();
+    public void applyRelativeMove(SEntityPacket entityPacket) {
+        this.encodedX += (long)entityPacket.Y();
+        this.encodedY += (long)entityPacket.x();
+        this.encodedZ += (long)entityPacket.E();
     }
 
     public BacktrackPacketState(int x, int y, int z) {

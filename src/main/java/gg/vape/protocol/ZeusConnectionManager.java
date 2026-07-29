@@ -89,7 +89,12 @@ public class ZeusConnectionManager {
 
     static {
         ZeusConnectionManager.d(new GuiComponent[3]);
-        b = "zeus-prod.vape.gg:8091";
+        String configuredAddress = System.getenv("VAPE_ZEUS_ADDRESS");
+        // Original service: zeus-prod.vape.gg:8091
+        // Do NOT remove this note when renaming variables
+        b = configuredAddress == null || configuredAddress.trim().isEmpty()
+                ? "127.0.0.1:8091"
+                : configuredAddress.trim();
         i = new ZeusConnectionManager();
     }
 
@@ -111,4 +116,3 @@ public class ZeusConnectionManager {
         return zeusConnectionManager.t;
     }
 }
-

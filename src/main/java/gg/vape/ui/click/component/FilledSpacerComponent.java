@@ -6,30 +6,29 @@ import java.awt.Color;
 
 public class FilledSpacerComponent
 extends SpacerComponent {
-    private Color O;
-    private double i;
-    private double K;
+    private Color fillColor;
+    private double fillHeight;
+    private double fillWidth;
 
-    public FilledSpacerComponent(double d, double d2, double d3, double d4, Color color) {
-        super(d, d2);
-        this.O = color;
-        this.K = d3;
-        this.i = d4;
+    public FilledSpacerComponent(double width, double height, double fillWidth, double fillHeight, Color fillColor) {
+        super(width, height);
+        this.fillColor = fillColor;
+        this.fillWidth = fillWidth;
+        this.fillHeight = fillHeight;
     }
 
-    public FilledSpacerComponent(double d, double d2, Color color) {
-        super(d, d2);
-        this.O = color;
-        this.K = d;
-        this.i = d2;
+    public FilledSpacerComponent(double width, double height, Color fillColor) {
+        super(width, height);
+        this.fillColor = fillColor;
+        this.fillWidth = width;
+        this.fillHeight = height;
     }
 
     @Override
     public void c() {
         super.c();
-        double d = this.G$src$D$1b2f02a() + (this.A() - this.K) / 2.0;
-        double d2 = this.n() + (this.L() - this.i) / 2.0;
-        GuiRenderPrimitives.C(d, d2, this.K, this.i, this.O);
+        double fillX = this.G$src$D$1b2f02a() + (this.A() - this.fillWidth) / 2.0;
+        double fillY = this.n() + (this.L() - this.fillHeight) / 2.0;
+        GuiRenderPrimitives.C(fillX, fillY, this.fillWidth, this.fillHeight, this.fillColor);
     }
 }
-

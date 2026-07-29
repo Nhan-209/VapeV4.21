@@ -10,77 +10,77 @@ import org.jetbrains.annotations.Nullable;
 public class ProfilesPageOverlayController
 extends ClickGuiSidecarPanelBase {
     @Nullable
-    private Runnable DZ;
-    private final BindableInputComponent DL;
-    private final ProfileGlyphIconPanel DT;
+    private Runnable savedCloseAction;
+    private final BindableInputComponent bindInput;
+    private final ProfileGlyphIconPanel glyphPanel;
 
-    public ProfileGlyphIconPanel S$src$Lgg_vape_ui_click_frame_impl_profile_ProfileGlyp$1mj4u6r() {
-        return this.DT;
+    public ProfileGlyphIconPanel getGlyphPanel() {
+        return this.glyphPanel;
     }
 
-    public void E(boolean bl) {
-        this.DL.w(bl);
-    }
-
-    @Override
-    public void B(@Nullable String string) {
-    }
-
-    public void H(boolean bl) {
-        this.DT.Z(bl);
+    public void setBindInputEnabled(boolean enabled) {
+        this.bindInput.setHighlighted(enabled);
     }
 
     @Override
-    public void N(@Nullable Runnable runnable) {
-        Runnable runnable2 = runnable != null ? runnable : this.DZ;
-        super.C(runnable2);
-        this.v().W("moduleback");
-        this.v().Z(true);
-        this.v().k$src$V$qmpccm();
-        this.v().r$src$V$1x8vu68();
-        this.k().Z(false);
+    public void setLeadingIconKey(@Nullable String string) {
     }
 
-    public void u(boolean bl) {
-        this.DL.Z(bl);
+    public void setGlyphVisible(boolean visible) {
+        this.glyphPanel.setVisible(visible);
     }
 
     @Override
-    public void y(@Nullable Runnable runnable) {
-        this.DZ = runnable;
-        super.y(runnable);
+    public void setBackAction(@Nullable Runnable runnable) {
+        Runnable runnable2 = runnable != null ? runnable : this.savedCloseAction;
+        super.setLeadingAction(runnable2);
+        this.getLeadingIcon().setIconResource("moduleback");
+        this.getLeadingIcon().setVisible(true);
+        this.getLeadingIcon().clearClickListeners();
+        this.getLeadingIcon().clearMouseListeners();
+        this.getCloseButton().setVisible(false);
     }
 
-    public void o(@Nullable Bendable bendable) {
+    public void setBindInputVisible(boolean visible) {
+        this.bindInput.setVisible(visible);
+    }
+
+    @Override
+    public void setCloseAction(@Nullable Runnable runnable) {
+        this.savedCloseAction = runnable;
+        super.setCloseAction(runnable);
+    }
+
+    public void setBinding(@Nullable Bendable bendable) {
         if (bendable != null) {
-            this.DL.r(bendable);
+            this.bindInput.setBendable(bendable);
         }
     }
 
-    public ProfilesPageOverlayController(@Nullable Runnable runnable, @Nullable Profile profile) {
-        this.DZ = runnable;
-        this.k().Z(false);
-        this.v().W("moduleback");
-        this.v().Z(true);
-        this.C(runnable);
-        this.DT = new ProfileGlyphIconPanel(profile);
-        this.DT.o(6.0);
-        this.DT.Y(6.0);
-        this.DL = new BindableInputComponent(profile, ProfilesPageOverlayController.J.A);
-        this.DL.f(false);
-        this.DL.Z(true);
-        this.DL.o(10.0);
-        this.DL.Y(10.0);
-        this.H(this.DT, this.DL);
-        this.e(this.DL);
-        this.e(this.DT);
-        this.X(4.0);
-        super.y(runnable);
+    public ProfilesPageOverlayController(@Nullable Runnable closeAction, @Nullable Profile profile) {
+        this.savedCloseAction = closeAction;
+        this.getCloseButton().setVisible(false);
+        this.getLeadingIcon().setIconResource("moduleback");
+        this.getLeadingIcon().setVisible(true);
+        this.setLeadingAction(closeAction);
+        this.glyphPanel = new ProfileGlyphIconPanel(profile);
+        this.glyphPanel.o(6.0);
+        this.glyphPanel.Y(6.0);
+        this.bindInput = new BindableInputComponent(profile, ProfilesPageOverlayController.J.A);
+        this.bindInput.setActiveOverride(false);
+        this.bindInput.setVisible(true);
+        this.bindInput.o(10.0);
+        this.bindInput.Y(10.0);
+        this.addChildren(this.glyphPanel, this.bindInput);
+        this.addTrailingComponent(this.bindInput);
+        this.addTrailingComponent(this.glyphPanel);
+        this.setTrailingComponentSpacing(4.0);
+        super.setCloseAction(closeAction);
     }
 
 
-    public BindableInputComponent W() {
-        return this.DL;
+    public BindableInputComponent getBindInput() {
+        return this.bindInput;
     }
 }
 

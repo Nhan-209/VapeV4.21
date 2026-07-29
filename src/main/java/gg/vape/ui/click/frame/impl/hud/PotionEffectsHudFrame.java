@@ -25,175 +25,189 @@ import java.util.Map;
 
 public class PotionEffectsHudFrame
 extends HudModuleConfigFrameBase {
-    private static final String tb = "PotionStatusFrame";
-    int Ww;
-    private PotionEffectsHudModule Wo = (PotionEffectsHudModule)this.l$src$Lgg_vape_module_render_hud_HudModule_$v08nt0();
-    private static Map<Integer, Integer> Wa = new HashMap<Integer, Integer>();
+    private static final String FRAME_NAME = "PotionStatusFrame";
+    private int maximumTextWidth;
+    private final PotionEffectsHudModule module = (PotionEffectsHudModule)this.getModule();
+    private static final Map<Integer, Integer> maximumDurationsByEffectId = new HashMap<Integer, Integer>();
 
     public PotionEffectsHudFrame() {
         super(PotionEffectsHudModule.class);
     }
 
-    private void g(float f, float f2, PotionEffect potionEffect) {
-        float f3 = this.X(potionEffect.k(), (float)Wa.get(potionEffect.C()).intValue());
+    private void drawDurationRing(float x, float y, PotionEffect effect) {
+        float remainingPercent = this.getRemainingPercent(effect.k(),
+                maximumDurationsByEffectId.get(effect.C()).floatValue());
         Color color = PotionEffectsHudFrame.J.B;
-        if (f3 > 25.0f && f3 <= 50.0f) {
+        if (remainingPercent > 25.0f && remainingPercent <= 50.0f) {
             color = PotionEffectsHudFrame.J.I;
-        } else if (f3 <= 25.0f) {
+        } else if (remainingPercent <= 25.0f) {
             color = PotionEffectsHudFrame.J.d;
         }
-        float f4 = 360.0f * (f3 / 100.0f);
-        GuiRenderPrimitives.m(f - 0.5f, f2 - 0.5f, 21.25f, 1.8f, 1.0f, this.l(new Color(0, 0, 0, 200)));
-        if (f4 == 360.0f) {
-            GuiRenderPrimitives.m(f - 1.0f, f2 - 1.0f, 22.0f, 2.5f, 1.0f, this.l(color));
+        float arcDegrees = 360.0f * (remainingPercent / 100.0f);
+        GuiRenderPrimitives.m(x - 0.5f, y - 0.5f, 21.25f, 1.8f, 1.0f,
+                this.applyDefaultEditorAlpha(new Color(0, 0, 0, 200)));
+        if (arcDegrees == 360.0f) {
+            GuiRenderPrimitives.m(x - 1.0f, y - 1.0f, 22.0f, 2.5f, 1.0f,
+                    this.applyDefaultEditorAlpha(color));
         } else {
-            GuiRenderPrimitives.p(f - 1.0f, f2 - 1.0f, 22.0f, 2.0f, 0.5f, 270.0f, -f4, this.l(color));
+            GuiRenderPrimitives.p(x - 1.0f, y - 1.0f, 22.0f, 2.0f, 0.5f,
+                    270.0f, -arcDegrees, this.applyDefaultEditorAlpha(color));
         }
     }
 
     @Override
     public double A() {
-        return 40 + this.Ww;
+        return 40 + this.maximumTextWidth;
     }
 
-    private String j(int n) {
-        int n2 = n / 20;
-        int n3 = n2 / 60;
-        String string = String.valueOf(n3);
-        String string2 = String.valueOf(n2 -= n3 * 60);
-        if (n3 < 10) {
-            string = "0" + string;
+    private String formatDuration(int durationTicks) {
+        int totalSeconds = durationTicks / 20;
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds - minutes * 60;
+        String minuteText = String.valueOf(minutes);
+        String secondText = String.valueOf(seconds);
+        if (minutes < 10) {
+            minuteText = "0" + minuteText;
         }
-        if (n2 < 10) {
-            string2 = "0" + string2;
+        if (seconds < 10) {
+            secondText = "0" + secondText;
         }
-        return string + ":" + string2;
+        return minuteText + ":" + secondText;
     }
 
     @Override
-    public void o() {
+    public void renderHudContent() {
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        ArrayList<PotionEffect> arrayList = this.T$src$Ljava_util_ArrayList_$1jq8y6s();
-        if (arrayList.isEmpty()) {
-            if (!Wa.isEmpty()) {
-                Wa.clear();
+        ArrayList<PotionEffect> effects = this.getActiveEffects();
+        if (effects.isEmpty()) {
+            if (!maximumDurationsByEffectId.isEmpty()) {
+                maximumDurationsByEffectId.clear();
             }
             return;
         }
-        double d = this.n();
-        double d2 = 30.0;
-        this.Ww = 0;
+        double effectY = this.n();
+        double rowHeight = 30.0;
+        this.maximumTextWidth = 0;
         SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().K(0.85, true);
         if (I18n.w().N()) {
             smoothFontRenderer = Vape.INSTANCE.getFontManager().b(FontFamily.NOTO, 0.85f, false);
         }
-        for (PotionEffect potionEffect : arrayList) {
-            int n;
-            Object object;
-            boolean bl = false;
-            LinkedList<Integer> linkedList = new LinkedList<Integer>();
-            if (!this.o(potionEffect) && !this.Wo.Y.L().booleanValue()) {
-                linkedList.add(this.I(potionEffect));
-                bl = true;
+        for (PotionEffect effect : effects) {
+            boolean hidden = false;
+            LinkedList<Integer> effectIdsToRemove = new LinkedList<Integer>();
+            if (!this.isNegative(effect) && !this.module.showPositiveEffects.getEffectiveValue().booleanValue()) {
+                effectIdsToRemove.add(this.getEffectId(effect));
+                hidden = true;
             }
-            if (this.o(potionEffect) && !this.Wo.v.L().booleanValue()) {
-                linkedList.add(this.I(potionEffect));
-                bl = true;
+            if (this.isNegative(effect) && !this.module.showNegativeEffects.getEffectiveValue().booleanValue()) {
+                effectIdsToRemove.add(this.getEffectId(effect));
+                hidden = true;
             }
-            if (!Wa.containsKey(potionEffect.C()) || Wa.get(potionEffect.C()) < potionEffect.k()) {
-                Wa.put(potionEffect.C(), potionEffect.k());
+            if (!maximumDurationsByEffectId.containsKey(effect.C())
+                    || maximumDurationsByEffectId.get(effect.C()) < effect.k()) {
+                maximumDurationsByEffectId.put(effect.C(), effect.k());
             }
-            ArrayList<Integer> arrayList2 = new ArrayList<Integer>();
-            for (PotionEffect potionEffect2 : arrayList) {
-                object = new PotionEffect(potionEffect2);
-                arrayList2.add(((PotionEffect)object).C());
+            ArrayList<Integer> activeEffectIds = new ArrayList<Integer>();
+            for (PotionEffect activeEffect : effects) {
+                activeEffectIds.add(new PotionEffect(activeEffect).C());
             }
-            for (Integer n2 : Wa.keySet()) {
-                if (arrayList2.contains(n2)) continue;
-                linkedList.add(n2);
+            for (Integer trackedEffectId : maximumDurationsByEffectId.keySet()) {
+                if (activeEffectIds.contains(trackedEffectId)) continue;
+                effectIdsToRemove.add(trackedEffectId);
             }
-            for (Integer n3 : linkedList) {
-                Wa.remove(n3);
+            for (Integer effectId : effectIdsToRemove) {
+                maximumDurationsByEffectId.remove(effectId);
             }
-            if (bl) continue;
-            float f = this.X(potionEffect.k(), (float)Wa.get(potionEffect.C()).intValue());
+            if (hidden) continue;
+            float remainingPercent = this.getRemainingPercent(effect.k(),
+                    maximumDurationsByEffectId.get(effect.C()).floatValue());
             Color color = PotionEffectsHudFrame.J.A;
-            if (f > 50.0f && f <= 100.0f) {
+            if (remainingPercent > 50.0f && remainingPercent <= 100.0f) {
                 color = PotionEffectsHudFrame.J.B;
-            } else if (f > 25.0f && f <= 50.0f) {
+            } else if (remainingPercent > 25.0f && remainingPercent <= 50.0f) {
                 color = PotionEffectsHudFrame.J.I;
-            } else if (f <= 25.0f) {
+            } else if (remainingPercent <= 25.0f) {
                 color = PotionEffectsHudFrame.J.d;
             }
-            this.g((float)(this.G$src$D$1b2f02a() + 6.0), (float)(d + 6.0), potionEffect);
-            object = ColorUtil.W(Color.WHITE, 51);
-            GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 30.0, d + 10.0, 11.5, 2.0f, (Color)object);
-            String string = ForgeVersion.MC_1_16_5.d() ? potionEffect.i().d() : I18n.f(Potion.getPotionById(potionEffect.C()).y$src$Ljava_lang_String_$yl6pfj(), new Object[0]);
-            String string2 = this.j(potionEffect.k());
-            int n4 = (int)smoothFontRenderer.N(string);
-            if (n4 > this.Ww) {
-                this.Ww = n4;
+            this.drawDurationRing((float)(this.G$src$D$1b2f02a() + 6.0),
+                    (float)(effectY + 6.0), effect);
+            Color dividerColor = ColorUtil.withAlpha(Color.WHITE, 51);
+            GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 30.0, effectY + 10.0,
+                    11.5, 2.0f, dividerColor);
+            String effectName = ForgeVersion.MC_1_16_5.d()
+                    ? effect.i().d()
+                    : I18n.f(Potion.getPotionById(effect.C())
+                            .y$src$Ljava_lang_String_$yl6pfj(), new Object[0]);
+            String durationText = this.formatDuration(effect.k());
+            int effectNameWidth = (int)smoothFontRenderer.N(effectName);
+            if (effectNameWidth > this.maximumTextWidth) {
+                this.maximumTextWidth = effectNameWidth;
             }
-            if ((n = (int)smoothFontRenderer.N(string2)) > this.Ww) {
-                this.Ww = n;
+            int durationWidth = (int)smoothFontRenderer.N(durationText);
+            if (durationWidth > this.maximumTextWidth) {
+                this.maximumTextWidth = durationWidth;
             }
-            smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + 35.0, d + 9.0, this.m$src$Ljava_awt_Color_$ppsp8z());
-            smoothFontRenderer.T(string2, this.G$src$D$1b2f02a() + 35.0, d + 17.0, this.l(color), this.l(new Color(50, 50, 50, 150)));
-            PotionEffectIconRenderer.V(potionEffect, (int)(this.G$src$D$1b2f02a() + 9.0), (int)(d + 10.0), 14, 14, this.r$src$F$35g3yx());
-            d += d2;
+            smoothFontRenderer.d(effectName, this.G$src$D$1b2f02a() + 35.0,
+                    effectY + 9.0, this.getEditorForegroundColor());
+            smoothFontRenderer.T(durationText, this.G$src$D$1b2f02a() + 35.0,
+                    effectY + 17.0, this.applyDefaultEditorAlpha(color), this.applyDefaultEditorAlpha(new Color(50, 50, 50, 150)));
+            PotionEffectIconRenderer.render(effect, (int)(this.G$src$D$1b2f02a() + 9.0),
+                    (int)(effectY + 10.0), 14, 14, this.getEditorOpacity());
+            effectY += rowHeight;
         }
     }
 
-    private int I(PotionEffect potionEffect) {
+    private int getEffectId(PotionEffect potionEffect) {
         if (ForgeVersion.MC_1_16_5.d()) {
             return StatusEffect.v(potionEffect.i());
         }
         return Potion.getPotionById(potionEffect.C()).getId();
     }
 
-    private ArrayList<PotionEffect> T$src$Ljava_util_ArrayList_$1jq8y6s() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        Collection collection = entityPlayerSP.B$src$Ljava_util_Collection_$1uxz2f9();
-        ArrayList<PotionEffect> arrayList = new ArrayList<PotionEffect>();
-        for (Object e : collection) {
-            PotionEffect potionEffect = new PotionEffect(e);
-            arrayList.add(potionEffect);
+    private ArrayList<PotionEffect> getActiveEffects() {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        Collection collection = player.B$src$Ljava_util_Collection_$1uxz2f9();
+        ArrayList<PotionEffect> effects = new ArrayList<PotionEffect>();
+        for (Object effectObject : collection) {
+            effects.add(new PotionEffect(effectObject));
         }
-        if (arrayList.isEmpty() && !ClientSettings.fW.P) {
-            arrayList.add(PotionEffect.o(1, 6500, 0));
-            arrayList.add(PotionEffect.o(2, 5000, 0));
-            arrayList.add(PotionEffect.o(12, 1000, 0));
-            if (!(Wa.containsKey(1) && Wa.containsKey(2) && Wa.containsKey(12))) {
-                Wa.put(1, 10000);
-                Wa.put(2, 10000);
-                Wa.put(12, 10000);
+        if (effects.isEmpty() && !ClientSettings.INSTANCE.inputEnabled) {
+            effects.add(PotionEffect.o(1, 6500, 0));
+            effects.add(PotionEffect.o(2, 5000, 0));
+            effects.add(PotionEffect.o(12, 1000, 0));
+            if (!(maximumDurationsByEffectId.containsKey(1)
+                    && maximumDurationsByEffectId.containsKey(2)
+                    && maximumDurationsByEffectId.containsKey(12))) {
+                maximumDurationsByEffectId.put(1, 10000);
+                maximumDurationsByEffectId.put(2, 10000);
+                maximumDurationsByEffectId.put(12, 10000);
             }
         }
-        return arrayList;
+        return effects;
     }
 
 
     @Override
     public double L() {
-        int n = Wa.size();
-        if (n == 0) {
-            return ClientSettings.fW.P ? 0.0 : 20.0;
+        int effectCount = maximumDurationsByEffectId.size();
+        if (effectCount == 0) {
+            return ClientSettings.INSTANCE.inputEnabled ? 0.0 : 20.0;
         }
-        return 2 + n * 30;
+        return 2 + effectCount * 30;
     }
 
     @Override
     public String getName() {
-        return tb;
+        return FRAME_NAME;
     }
 
-    private float X(float f, float f2) {
-        return f / f2 * 100.0f;
+    private float getRemainingPercent(float remainingDuration, float maximumDuration) {
+        return remainingDuration / maximumDuration * 100.0f;
     }
 
-    private boolean o(PotionEffect potionEffect) {
+    private boolean isNegative(PotionEffect potionEffect) {
         if (ForgeVersion.MC_1_16_5.d()) {
             return !potionEffect.i().p();
         }

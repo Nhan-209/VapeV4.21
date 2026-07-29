@@ -45,7 +45,7 @@ extends PanelComponent {
     private IconButtonComponent uL;
     private IconButtonComponent uC;
     private FlowLayoutComponent ul;
-    private MarqueeTextRendererComponent uo = new MarqueeTextRendererComponent(this);
+    private MarqueeTextRendererComponent marqueeTextRenderer = new MarqueeTextRendererComponent(this);
 
     @Override
     public void u() {
@@ -70,26 +70,26 @@ extends PanelComponent {
         this.um = onlineFriend;
         this.uk = new OnlineFriendDetailsPanel(this, this.um);
         this.uI = new TruncatedTextComponent(onlineFriend.C(), "...", "Right click to copy username to clipboard", 75.0, 0.8, OnlineFriendCard.J.A, false, false);
-        this.ue.j(new OnlineFriendCardToggleDetailsMouseListener(this));
-        this.ue.d(false);
-        this.ug.d(false);
+        this.ue.addMouseListener(new OnlineFriendCardToggleDetailsMouseListener(this));
+        this.ue.setShowDisabledOverlay(false);
+        this.ug.setShowDisabledOverlay(false);
         this.ug.h(this.uH, new Object[0]);
         this.ug.h(this.ul, new Object[0]);
         this.ug.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-        this.uH.H(this.uG, this.uW);
-        this.ul.H(this.uQ, this.uC, this.uT, this.uL);
+        this.uH.addChildren(this.uG, this.uW);
+        this.ul.addChildren(this.uQ, this.uC, this.uT, this.uL);
         this.uC.w("Invite to party");
         this.uL.w("Open chat");
-        this.uH.Z(false);
-        this.ue.H(new SpacerComponent(18.0, 0.0), this.uI);
+        this.uH.setVisible(false);
+        this.ue.addChildren(new SpacerComponent(18.0, 0.0), this.uI);
         this.ue.h(this.ug, "alignright");
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.d(false);
-        this.uk.Z(false);
-        this.H(this.ue, this.uk);
-        this.uH.d(false);
-        this.ul.d(false);
-        this.ul.Z(false);
+        this.setShowDisabledOverlay(false);
+        this.uk.setVisible(false);
+        this.addChildren(this.ue, this.uk);
+        this.uH.setShowDisabledOverlay(false);
+        this.ul.setShowDisabledOverlay(false);
+        this.ul.setVisible(false);
     }
 
     @Override
@@ -138,11 +138,11 @@ extends PanelComponent {
             return;
         }
         this.u2 = !this.u2;
-        this.uk.Z(this.u2);
+        this.uk.setVisible(this.u2);
         if (this.u2) {
-            this.u(this.ue.L() + this.uk.L());
+            this.setExplicitHeight(this.ue.L() + this.uk.L());
         } else {
-            this.u(24.0);
+            this.setExplicitHeight(24.0);
         }
     }
 
@@ -168,7 +168,7 @@ extends PanelComponent {
             double d4 = this.G$src$D$1b2f02a();
             GuiRenderPrimitives.d(d4, d3, d2, d, OnlineFriendCard.J.m);
             GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L() - 2.5, new Color(40, 40, 40, n), 3.0f, 1.0f, 1.0f);
-            GlImageTexture glImageTexture = RemoteImageTextureManager.e().r(this.um.u() && !this.um.F().equals((Object)OnlineStatus.OFFLINE) ? this.um.I() : "Steve", 32);
+            GlImageTexture glImageTexture = RemoteImageTextureManager.getInstance().getTexture(this.um.u() && !this.um.F().equals((Object)OnlineStatus.OFFLINE) ? this.um.I() : "Steve", 32);
             if (glImageTexture != null) {
                 GuiRenderPrimitives.m((float)this.G$src$D$1b2f02a() + 4.0f, (float)this.n() + 5.0f, 11.0f, 1.5f, 1.0f, this.um.F().P());
                 float f = 1.0f;
@@ -177,18 +177,18 @@ extends PanelComponent {
                 float f4 = (float)this.G$src$D$1b2f02a() + 5.0f;
                 GuiRenderPrimitives.u(f4, f3, f2, f, Color.WHITE, glImageTexture);
             }
-            this.uI.O(this.um.C());
-            this.uI.D(79.0 - this.ul.i() - (this.uH.V$src$Z$1xhop3l() ? this.uH.i() - this.uG.A() + 3.0 : 0.0));
+            this.uI.setText(this.um.C());
+            this.uI.setMaxWidth(79.0 - this.ul.getVisibleChildrenWidth() - (this.uH.V$src$Z$1xhop3l() ? this.uH.getVisibleChildrenWidth() - this.uG.A() + 3.0 : 0.0));
             TruncatedTextComponent truncatedTextComponent = this.uI;
-            truncatedTextComponent.R(OnlineFriendCard.J.A);
+            truncatedTextComponent.setTextColor(OnlineFriendCard.J.A);
             this.uI.S(this.n() + 4.0);
             double d5 = 0.7;
             double d6 = this.A() - 18.0 - 4.0;
             double d7 = this.n() + 12.0;
             double d8 = this.G$src$D$1b2f02a() + 18.0;
             String string = this.W();
-            MarqueeTextRendererComponent marqueeTextRendererComponent = this.uo;
-            marqueeTextRendererComponent.h(string, d8, d7, d6, d5, OnlineFriendCard.J.h);
+            MarqueeTextRendererComponent renderer = this.marqueeTextRenderer;
+            renderer.render(string, d8, d7, d6, d5, OnlineFriendCard.J.h);
             super.c();
             this.d$src$V$ttzgw7();
             if (this.um.r()) {
@@ -203,7 +203,7 @@ extends PanelComponent {
         double d11 = this.G$src$D$1b2f02a();
         GuiRenderPrimitives.d(d11, d10, d9, d, new Color(27, 27, 27));
         GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L() - 2.5, new Color(40, 40, 40, n), 3.0f, 1.0f, 1.0f);
-        GlImageTexture glImageTexture = RemoteImageTextureManager.e().r(this.um.u() && !this.um.F().equals((Object)OnlineStatus.OFFLINE) ? this.um.I() : "Steve", 32);
+        GlImageTexture glImageTexture = RemoteImageTextureManager.getInstance().getTexture(this.um.u() && !this.um.F().equals((Object)OnlineStatus.OFFLINE) ? this.um.I() : "Steve", 32);
         if (glImageTexture != null) {
             GuiRenderPrimitives.m((float)this.G$src$D$1b2f02a() + 4.0f, (float)this.n() + 5.0f, 11.0f, 1.5f, 1.0f, this.um.F().P());
             float f = 1.0f;
@@ -212,18 +212,18 @@ extends PanelComponent {
             float f7 = (float)this.G$src$D$1b2f02a() + 5.0f;
             GuiRenderPrimitives.u(f7, f6, f5, f, new Color(255, 255, 255, 150), glImageTexture);
         }
-        this.uI.O(this.um.C());
-        this.uI.D(79.0 - this.ul.i() - (this.uH.V$src$Z$1xhop3l() ? this.uH.i() - this.uG.A() + 3.0 : 0.0));
+        this.uI.setText(this.um.C());
+        this.uI.setMaxWidth(79.0 - this.ul.getVisibleChildrenWidth() - (this.uH.V$src$Z$1xhop3l() ? this.uH.getVisibleChildrenWidth() - this.uG.A() + 3.0 : 0.0));
         TruncatedTextComponent truncatedTextComponent = this.uI;
-        truncatedTextComponent.R(new Color(110, 110, 110));
+        truncatedTextComponent.setTextColor(new Color(110, 110, 110));
         this.uI.S(this.n() + 4.0);
         double d12 = 0.7;
         double d13 = this.A() - 18.0 - 4.0;
         double d14 = this.n() + 12.0;
         double d15 = this.G$src$D$1b2f02a() + 18.0;
         String string = this.W();
-        MarqueeTextRendererComponent marqueeTextRendererComponent = this.uo;
-        marqueeTextRendererComponent.h(string, d15, d14, d13, d12, new Color(68, 68, 68));
+        MarqueeTextRendererComponent renderer = this.marqueeTextRenderer;
+        renderer.render(string, d15, d14, d13, d12, new Color(68, 68, 68));
         super.c();
         this.d$src$V$ttzgw7();
         if (this.um.r()) {
@@ -252,15 +252,15 @@ extends PanelComponent {
     public void d$src$V$ttzgw7() {
         if (this.uF) {
             this.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().N$src$V$16a20lf();
-            this.uH.Z(true);
-            this.ul.Z(false);
-            this.uk.Z(true);
+            this.uH.setVisible(true);
+            this.ul.setVisible(false);
+            this.uk.setVisible(true);
         } else {
             PartyState partyState;
             boolean bl;
             this.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().K$src$V$168emtc();
-            this.uH.Z(false);
-            this.ul.Z(true);
+            this.uH.setVisible(false);
+            this.ul.setVisible(true);
             boolean bl2 = Vape.INSTANCE.getOnlineManager().y().j() != null;
             boolean bl3 = bl2 && Vape.INSTANCE.getOnlineManager().y().j().c().contains(this.um);
             boolean bl4 = bl = bl2 && !bl3 && this.um.F().equals((Object)OnlineStatus.ONLINE);
@@ -268,12 +268,12 @@ extends PanelComponent {
                 bl = false;
             }
             boolean bl5 = this.um.B();
-            this.uL.Z(bl5);
-            this.uC.Z(bl);
+            this.uL.setVisible(bl5);
+            this.uC.setVisible(bl);
             boolean bl6 = bl5 ^ bl;
-            this.uQ.Z(bl6);
-            this.uT.Z(!bl6);
-            this.uk.Z(this.u2);
+            this.uQ.setVisible(bl6);
+            this.uT.setVisible(!bl6);
+            this.uk.setVisible(this.u2);
         }
     }
 

@@ -6,36 +6,36 @@ import gg.vape.ui.click.component.SelectableTextRowComponent;
 
 public class EnemySettingsEntryRow
 extends SelectableTextRowComponent {
-    private Enemy oi;
+    private final Enemy enemy;
 
     @Override
-    public boolean l() {
-        return !this.oi.t();
+    public boolean isSelected() {
+        return !this.enemy.t();
     }
 
-    public Enemy H$src$Lgg_vape_friend_Enemy_$swsf8f() {
-        return this.oi;
+    public Enemy getEnemy() {
+        return this.enemy;
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        this.oi.k(!this.oi.t());
+        this.enemy.k(!this.enemy.t());
     }
 
 
     @Override
     public void H() {
-        String string = this.oi.y();
-        if (!this.oi.R().equals(this.oi.y()) && !this.u$src$Z$1dafklf()) {
-            string = "*" + this.oi.x();
+        String text = this.enemy.y();
+        if (!this.enemy.R().equals(this.enemy.y()) && !this.isHovered()) {
+            text = "*" + this.enemy.x();
         }
-        this.n(string);
+        this.setText(text);
         super.H();
     }
 
     public EnemySettingsEntryRow(Enemy enemy) {
         super(EnemySettingsEntryRow.J.d, enemy.y());
-        this.oi = enemy;
+        this.enemy = enemy;
     }
 }
 

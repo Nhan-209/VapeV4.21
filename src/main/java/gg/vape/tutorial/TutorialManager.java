@@ -24,7 +24,7 @@ public class TutorialManager {
 
     public void V() {
         this.L.t$src$V$zbu1jn();
-        this.L.H(new TutorialWelcomePanel());
+        this.L.addChildren(new TutorialWelcomePanel());
         this.L.l$src$V$1mibm4x();
     }
 
@@ -64,7 +64,7 @@ public class TutorialManager {
 
     public void l() {
         this.L.t$src$V$zbu1jn();
-        this.L.H(new TutorialNextPromptPanel(this.l.Y(), this.G().Y()));
+        this.L.addChildren(new TutorialNextPromptPanel(this.l.Y(), this.G().Y()));
         this.L.l$src$V$1mibm4x();
     }
 
@@ -92,7 +92,7 @@ public class TutorialManager {
     public void g() {
         boolean bl = this.x();
         if (bl != this.L.V$src$Z$1xhop3l()) {
-            this.L.Z(bl);
+            this.L.setVisible(bl);
         }
     }
 
@@ -118,7 +118,7 @@ public class TutorialManager {
 
     public void t() {
         this.L.t$src$V$zbu1jn();
-        this.L.H(new TutorialFinishedPanel());
+        this.L.addChildren(new TutorialFinishedPanel());
         this.L.l$src$V$1mibm4x();
     }
 
@@ -129,7 +129,7 @@ public class TutorialManager {
     }
 
     public TutorialManager() {
-        this.L = ClientSettings.g(TutorialFrame.class);
+        this.L = ClientSettings.getFrame(TutorialFrame.class);
         this.v(new ModulesTutorialPage());
         this.v(new ProfilesTutorialPage());
         this.v(new TextGuiTutorialPage());

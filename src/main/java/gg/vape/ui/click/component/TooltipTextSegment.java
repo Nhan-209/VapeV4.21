@@ -5,36 +5,33 @@ import gg.vape.ui.font.SmoothFontRenderer;
 import java.awt.Color;
 
 class TooltipTextSegment {
-    public boolean P;
-    public String T;
-    public double k;
-    public Color A;
-    final ToolTips E;
+    public boolean useAlternateFont;
+    public String text;
+    public double fontScale;
+    public Color color;
+    final ToolTips owner;
 
-    public double Y() {
-        SmoothFontRenderer smoothFontRenderer;
-        SmoothFontRenderer smoothFontRenderer2 = smoothFontRenderer = this.P ? this.E.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.k) : this.E.O(this.k);
-        return smoothFontRenderer2.d(this.T);
+    public double getHeight() {
+        SmoothFontRenderer fontRenderer = this.useAlternateFont ? this.owner.getAlternateFontRenderer(this.fontScale) : this.owner.getFontRenderer(this.fontScale);
+        return fontRenderer.d(this.text);
     }
 
-    public TooltipTextSegment(ToolTips toolTips, String string, double d, Color color, boolean bl) {
-        this.E = toolTips;
-        this.T = string;
-        this.k = d;
-        this.A = color;
-        this.P = bl;
+    public TooltipTextSegment(ToolTips owner, String text, double fontScale, Color color, boolean useAlternateFont) {
+        this.owner = owner;
+        this.text = text;
+        this.fontScale = fontScale;
+        this.color = color;
+        this.useAlternateFont = useAlternateFont;
     }
 
-    public double B() {
-        SmoothFontRenderer smoothFontRenderer;
-        SmoothFontRenderer smoothFontRenderer2 = smoothFontRenderer = this.P ? this.E.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.k) : this.E.O(this.k);
-        return smoothFontRenderer2.N(this.T);
+    public double getWidth() {
+        SmoothFontRenderer fontRenderer = this.useAlternateFont ? this.owner.getAlternateFontRenderer(this.fontScale) : this.owner.getFontRenderer(this.fontScale);
+        return fontRenderer.N(this.text);
     }
 
-    public void o(double d, double d2) {
-        SmoothFontRenderer smoothFontRenderer;
-        SmoothFontRenderer smoothFontRenderer2 = smoothFontRenderer = this.P ? this.E.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.k) : this.E.O(this.k);
-        smoothFontRenderer2.v(this.T, d, d2, this.A);
+    public void renderAt(double x, double y) {
+        SmoothFontRenderer fontRenderer = this.useAlternateFont ? this.owner.getAlternateFontRenderer(this.fontScale) : this.owner.getFontRenderer(this.fontScale);
+        fontRenderer.v(this.text, x, y, this.color);
     }
 
 }

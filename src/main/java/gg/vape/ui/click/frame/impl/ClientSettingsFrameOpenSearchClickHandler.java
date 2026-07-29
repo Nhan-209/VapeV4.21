@@ -10,8 +10,8 @@ implements GuiClickListener {
     final ClientSettingsFrame f;
 
     @Override
-    public void P() {
-        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.g(ClientSettingsSearchFrame.class);
+    public void onPrimaryClick() {
+        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.getFrame(ClientSettingsSearchFrame.class);
         clientSettingsSearchFrame.M(this.f.double_G(), this.f.double_n());
         clientSettingsSearchFrame.t(true, false);
     }
@@ -20,4 +20,3 @@ implements GuiClickListener {
         this.f = clientSettingsFrame;
     }
 }
-

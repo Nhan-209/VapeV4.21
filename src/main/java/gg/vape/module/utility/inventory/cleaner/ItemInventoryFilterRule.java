@@ -12,20 +12,20 @@ public class ItemInventoryFilterRule
 extends AbstractInventoryFilterRule {
     private InventoryFilterAction filterAction = InventoryFilterAction.REMOVE;
 
-    public void S(InventoryFilterAction inventoryFilterAction) {
-        this.filterAction = inventoryFilterAction;
+    public void setAction(InventoryFilterAction action) {
+        this.filterAction = action;
     }
 
     public ItemInventoryFilterRule() {
     }
 
-    public InventoryFilterAction K() {
+    public InventoryFilterAction getAction() {
         return this.filterAction;
     }
 
     @Override
-    public JsonObject M(boolean bl) {
-        JsonObject jsonObject = super.M(bl);
+    public JsonObject toJson(boolean embedSharedPreset) {
+        JsonObject jsonObject = super.toJson(embedSharedPreset);
         jsonObject.addProperty("filterAction", this.filterAction.getName());
         return jsonObject;
     }
@@ -33,17 +33,17 @@ extends AbstractInventoryFilterRule {
 
     @Override
     @Nullable
-    public InventoryFilterPreset W() {
-        UUID uUID = this.t();
-        if (uUID != null) {
-            return Vape.INSTANCE.getInventoryFilterPresetRegistry().r().l(uUID);
+    public InventoryFilterPreset resolvePreset() {
+        UUID sharedPresetId = this.getSharedPresetId();
+        if (sharedPresetId != null) {
+            return Vape.INSTANCE.getInventoryFilterPresetRegistry().getItemRulePresets().getById(sharedPresetId);
         }
-        return this.J();
+        return this.getInlinePreset();
     }
 
     public ItemInventoryFilterRule(JsonObject jsonObject) {
         super(jsonObject);
-        this.filterAction = InventoryFilterAction.c(jsonObject.get("filterAction").getAsString());
+        this.filterAction = InventoryFilterAction.fromName(jsonObject.get("filterAction").getAsString());
     }
 }
 

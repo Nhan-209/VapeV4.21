@@ -8,12 +8,12 @@ import org.jetbrains.annotations.Nullable;
 
 final class HudOverlayEntryInteractiveContainer
 extends InteractiveComponent {
-    private final IconGlyphComponent b;
+    private final IconGlyphComponent backIcon;
     @Nullable
-    private Runnable I;
-    private final SimpleTextLabelComponent K;
-    private static final float v = 5.0f;
-    private static final double Q = 3.0;
+    private Runnable action;
+    private final SimpleTextLabelComponent label;
+    private static final float ICON_SIZE = 5.0f;
+    private static final double LABEL_GAP = 3.0;
 
     @Override
     public void H() {
@@ -21,47 +21,47 @@ extends InteractiveComponent {
         double d2 = this.G$src$D$1b2f02a();
         double d3 = this.n();
         Color color = this.w$src$Z$e457mb() ? HudOverlayEntryInteractiveContainer.J.A : HudOverlayEntryInteractiveContainer.J.Z;
-        this.b.S(color);
-        this.b.K(d2);
-        this.b.S(d3 + (d - 5.0) / 2.0);
-        this.K.T$src$V$1orl066(color);
-        this.K.K(this.b.G$src$D$1b2f02a() + 5.0 + 3.0);
-        this.K.S(d3 - 0.5);
-        this.K.o(this.K.h());
-        this.K.Y(d);
-        this.o(this.E());
+        this.backIcon.setColor(color);
+        this.backIcon.K(d2);
+        this.backIcon.S(d3 + (d - ICON_SIZE) / 2.0);
+        this.label.setTextColor(color);
+        this.label.K(this.backIcon.G$src$D$1b2f02a() + ICON_SIZE + LABEL_GAP);
+        this.label.S(d3 - 0.5);
+        this.label.o(this.label.getTextWidth());
+        this.label.Y(d);
+        this.o(this.getPreferredWidth());
     }
 
-    double E() {
-        return 8.0 + this.K.h();
+    double getPreferredWidth() {
+        return ICON_SIZE + LABEL_GAP + this.label.getTextWidth();
     }
 
 
-    private void lambda$new$0() {
-        if (this.I != null) {
-            this.I.run();
+    private void runAction() {
+        if (this.action != null) {
+            this.action.run();
         }
     }
 
     HudOverlayEntryInteractiveContainer(@Nullable Runnable runnable) {
-        this.b = new IconGlyphComponent("back_arrow", 5.0f, 5.0f, HudOverlayEntryInteractiveContainer.J.W);
-        this.K = new SimpleTextLabelComponent("Back", 0.75, HudOverlayEntryInteractiveContainer.J.A);
-        this.I = runnable;
-        this.d(false);
-        this.o(true);
+        this.backIcon = new IconGlyphComponent("back_arrow", ICON_SIZE, ICON_SIZE, HudOverlayEntryInteractiveContainer.J.W);
+        this.label = new SimpleTextLabelComponent("Back", 0.75, HudOverlayEntryInteractiveContainer.J.A);
+        this.action = runnable;
+        this.setShowDisabledOverlay(false);
+        this.setPropagateMouseEvents(true);
         this.w("Back");
-        this.b.r(true);
-        this.b.o(5.0);
-        this.b.Y(5.0);
-        this.K.g(0.0f);
-        this.K.c(0);
-        this.K.z(0.0f);
-        this.H(this.b, this.K);
-        this.r(this::lambda$new$0);
+        this.backIcon.setSnapToPixels(true);
+        this.backIcon.o(ICON_SIZE);
+        this.backIcon.Y(ICON_SIZE);
+        this.label.setOffsetX(0.0f);
+        this.label.setExtraHeight(0);
+        this.label.setOffsetY(0.0f);
+        this.addChildren(this.backIcon, this.label);
+        this.addClickListener(this::runAction);
     }
 
-    public void G(@Nullable Runnable runnable) {
-        this.I = runnable;
+    public void setAction(@Nullable Runnable action) {
+        this.action = action;
     }
 }
 

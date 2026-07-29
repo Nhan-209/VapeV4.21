@@ -28,7 +28,7 @@ extends Wrapper {
     public static void n(Packet packet, Consumer<Packet> consumer) {
         if (ForgeVersion.MC_1_21_4.d() && packet.isInstance(MappedClasses.ue)) {
             BacktrackPacketQueueEntry backtrackPacketQueueEntry = new BacktrackPacketQueueEntry(packet);
-            for (Packet packet2 : backtrackPacketQueueEntry.s()) {
+            for (Packet packet2 : backtrackPacketQueueEntry.getPackets()) {
                 consumer.accept(packet2);
             }
         } else {

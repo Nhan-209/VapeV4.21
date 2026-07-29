@@ -57,7 +57,7 @@ extends Wrapper {
             }
             Matrix4fHandle matrix4fHandle = Matrix4fHandle.b(16);
             matrix4fHandle.o();
-            float[] fArray = matrixStack.F().u().m$src$Lgg_vape_utils_render_RenderMatrix4f_$1hodrum().e;
+            float[] fArray = matrixStack.F().u().m$src$Lgg_vape_utils_render_RenderMatrix4f_$1hodrum().elements;
             matrix4fHandle.K(fArray[0]);
             matrix4fHandle.m(fArray[1]);
             matrix4fHandle.z(fArray[4]);

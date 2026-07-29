@@ -9,48 +9,48 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SearchManager {
-    private final Set<SearchBlock> n = new HashSet<SearchBlock>();
+    private final Set<SearchBlock> searchBlocks = new HashSet<SearchBlock>();
 
     public JsonArray toJson() {
         JsonArray jsonArray = new JsonArray();
-        for (SearchBlock searchBlock : this.n) {
+        for (SearchBlock searchBlock : this.searchBlocks) {
             jsonArray.add((JsonElement)searchBlock.com_google_gson_JsonObject_I());
         }
         return jsonArray;
     }
 
-    public void y(SearchBlock searchBlock) {
+    public void removeSearchBlock(SearchBlock searchBlock) {
         if (searchBlock != null) {
             Search search = Vape.INSTANCE.getModManager().getMod(Search.class);
-            this.n.remove(searchBlock);
-            search.u(searchBlock);
+            this.searchBlocks.remove(searchBlock);
+            search.removeSearchBlock(searchBlock);
         }
     }
 
-    public void r() {
-        for (SearchBlock searchBlock : new HashSet<SearchBlock>(this.n)) {
-            this.y(searchBlock);
+    public void clearSearchBlocks() {
+        for (SearchBlock searchBlock : new HashSet<SearchBlock>(this.searchBlocks)) {
+            this.removeSearchBlock(searchBlock);
         }
     }
 
 
-    public Set<SearchBlock> O() {
-        return this.n;
+    public Set<SearchBlock> getSearchBlocks() {
+        return this.searchBlocks;
     }
 
-    public void H(SearchBlock searchBlock) {
-        this.n.add(searchBlock);
+    public void addSearchBlock(SearchBlock searchBlock) {
+        this.searchBlocks.add(searchBlock);
         Search search = Vape.INSTANCE.getModManager().getMod(Search.class);
-        search.T(searchBlock);
+        search.addSearchBlock(searchBlock);
     }
 
     public void loadJson(JsonArray jsonArray) {
-        this.r();
+        this.clearSearchBlocks();
         for (int i = 0; i < jsonArray.size(); ++i) {
             JsonElement jsonElement = jsonArray.get(i);
             if (!jsonElement.isJsonObject() || jsonElement.isJsonNull()) continue;
             SearchBlock searchBlock = new SearchBlock(jsonElement.getAsJsonObject());
-            this.H(searchBlock);
+            this.addSearchBlock(searchBlock);
         }
     }
 }

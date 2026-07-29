@@ -8,17 +8,16 @@ import java.awt.Point;
 
 class MaterialFilterSelectionRemoveClickHandler
 implements GuiMouseListener {
-    final MaterialFilterSelectionList b;
-    final MaterialFilterSelectionRow j;
+    final MaterialFilterSelectionList list;
+    final MaterialFilterSelectionRow row;
 
     MaterialFilterSelectionRemoveClickHandler(MaterialFilterSelectionList materialFilterSelectionList, MaterialFilterSelectionRow materialFilterSelectionRow) {
-        this.b = materialFilterSelectionList;
-        this.j = materialFilterSelectionRow;
+        this.list = materialFilterSelectionList;
+        this.row = materialFilterSelectionRow;
     }
 
     @Override
-    public void g(Point point, MouseClickButton uA) {
-        this.b.Y(this.j);
+    public void g(Point point, MouseClickButton mouseClickButton) {
+        this.list.removeSelectionRow(this.row);
     }
 }
-

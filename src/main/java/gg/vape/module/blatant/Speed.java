@@ -19,17 +19,17 @@ import gg.vape.wrapper.impl.PotionRegistry;
 public class Speed
 extends Mod {
     private final SubModuleValue antiCheatBMode = new MineplexSpeed(this, "AntiCheat B").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-    public double L;
+    public double lastHorizontalDistance;
     private final ModeValue mode;
     private final SubModuleValue bhopMode = new BhopSpeed(this, "Bhop").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-    public double O;
-    public int U;
+    public double moveSpeed;
+    public int stage;
 
     public double defaultSpeed() {
         double baseSpeed = 0.28730000691562896;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.i(PotionRegistry.U) && entityPlayerSP.b(PotionRegistry.U).k() > 10) {
-            int amplifier = entityPlayerSP.b(PotionRegistry.U).L();
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.i(PotionRegistry.U) && player.b(PotionRegistry.U).k() > 10) {
+            int amplifier = player.b(PotionRegistry.U).L();
             baseSpeed *= 1.0 + 0.15 * (double)(amplifier + 1);
         }
         return baseSpeed;
@@ -47,54 +47,54 @@ extends Mod {
         this.addValue(this.mode);
     }
 
-    public void strafe(EventMove eventMove, double d, EntityPlayerSP entityPlayerSP) {
-        double d2 = entityPlayerSP.movementInput().D();
-        double d3 = entityPlayerSP.movementInput().T();
-        float f = entityPlayerSP.J();
-        if (d2 == 0.0 && d3 == 0.0) {
+    public void strafe(EventMove eventMove, double speed, EntityPlayerSP player) {
+        double forwardInput = player.movementInput().D();
+        double strafeInput = player.movementInput().T();
+        float yaw = player.J();
+        if (forwardInput == 0.0 && strafeInput == 0.0) {
             eventMove.setX(0.0);
             eventMove.setZ(0.0);
-        } else if (d2 != 0.0) {
-            if (d3 != 0.0) {
-                if (d3 > 0.0) {
-                    f += d2 > 0.0 ? -45.0f : 45.0f;
-                    d3 = 0.0;
+        } else if (forwardInput != 0.0) {
+            if (strafeInput != 0.0) {
+                if (strafeInput > 0.0) {
+                    yaw += forwardInput > 0.0 ? -45.0f : 45.0f;
+                    strafeInput = 0.0;
                 } else {
-                    f += d2 > 0.0 ? 45.0f : -45.0f;
-                    d3 = 0.0;
+                    yaw += forwardInput > 0.0 ? 45.0f : -45.0f;
+                    strafeInput = 0.0;
                 }
             }
-            d2 = d2 > 0.0 ? 1.0 : -1.0;
+            forwardInput = forwardInput > 0.0 ? 1.0 : -1.0;
         }
-        double d4 = Math.cos(Math.toRadians(f + 90.0f));
-        double d5 = Math.sin(Math.toRadians(f + 90.0f));
-        eventMove.setX(d2 * d * d4 + d3 * d * d5);
-        eventMove.setZ(d2 * d * d5 - d3 * d * d4);
+        double cosine = Math.cos(Math.toRadians(yaw + 90.0f));
+        double sine = Math.sin(Math.toRadians(yaw + 90.0f));
+        eventMove.setX(forwardInput * speed * cosine + strafeInput * speed * sine);
+        eventMove.setZ(forwardInput * speed * sine - strafeInput * speed * cosine);
     }
 
     @EventHandler(A=EventPriority.HIGH)
     public void onMotionUpdate(EventPreMotion eventPreMotion) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        double d = entityPlayerSP.z() - entityPlayerSP.f();
-        double d2 = entityPlayerSP.h() - entityPlayerSP.R();
-        this.L = Math.sqrt(d * d + d2 * d2);
+        EntityPlayerSP player = Minecraft.thePlayer();
+        double deltaX = player.z() - player.f();
+        double deltaZ = player.h() - player.R();
+        this.lastHorizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
     }
 
     @Override
-    public String E() {
-        return this.mode.c();
+    public String getSimpleSuffix() {
+        return this.mode.getDisplayValue();
     }
 
     @Override
     public void onEnable() {
         Vape.INSTANCE.getClientSettings().k(this);
-        this.O = this.defaultSpeed();
-        this.L = 0.0;
-        this.U = 2;
+        this.moveSpeed = this.defaultSpeed();
+        this.lastHorizontalDistance = 0.0;
+        this.stage = 2;
     }
 
-    public void setStep(int n) {
-        this.U = n;
+    public void setStage(int stage) {
+        this.stage = stage;
     }
 
 }

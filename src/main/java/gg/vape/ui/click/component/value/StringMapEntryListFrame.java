@@ -5,10 +5,10 @@ import gg.vape.ui.click.frame.Frame;
 
 class StringMapEntryListFrame
 extends Frame {
-    final StringMapValueComponent kz;
+    final StringMapValueComponent owner;
 
     StringMapEntryListFrame(StringMapValueComponent stringMapValueComponent) {
-        this.kz = stringMapValueComponent;
+        this.owner = stringMapValueComponent;
     }
 
     @Override
@@ -24,4 +24,3 @@ extends Frame {
     public void Y() {
     }
 }
-

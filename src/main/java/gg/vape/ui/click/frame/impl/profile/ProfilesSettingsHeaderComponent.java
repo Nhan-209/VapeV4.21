@@ -10,70 +10,70 @@ import gg.vape.ui.click.frame.impl.profile.ProfilesHeaderShowActiveRowsClickHand
 import gg.vape.ui.click.frame.impl.profile.ProfilesHeaderShowAllRowsClickHandler;
 import gg.vape.ui.click.frame.impl.profile.ProfilesSettingsFrame;
 import gg.vape.ui.font.SmoothFontRenderer;
+import java.awt.Color;
 
 public class ProfilesSettingsHeaderComponent
 extends ToggleableFrameHeaderComponent {
-    private IconButtonComponent Vr = new IconButtonComponent("newhide", 0.7);
-    private IconButtonComponent Vn;
-    private TextLabel Vu = new TextLabel("Edit");
-    private ProfilesSettingsFrame Vl;
+    private final IconButtonComponent editHiddenProfilesButton = new IconButtonComponent("newhide", 0.7);
+    private final IconButtonComponent backButton;
+    private final TextLabel doneButton = new TextLabel("Edit");
+    private final ProfilesSettingsFrame profilesFrame;
 
-    public ProfilesSettingsHeaderComponent(ProfilesSettingsFrame profilesSettingsFrame, String string, String string2, double d) {
-        super(profilesSettingsFrame, string, string2, d);
-        this.Vn = new IconButtonComponent("moduleback");
-        this.Vl = profilesSettingsFrame;
-        this.Vr.w("Edit hidden profiles");
-        this.Vr.r(new ProfilesHeaderShowAllRowsClickHandler(this, profilesSettingsFrame));
-        this.Vn.r(new ProfilesHeaderApplyPendingProfileClickHandler(this, profilesSettingsFrame));
-        this.Vu.r(new ProfilesHeaderShowActiveRowsClickHandler(this, profilesSettingsFrame));
-        this.H(this.Vr, this.Vu, this.Vn);
+    public ProfilesSettingsHeaderComponent(ProfilesSettingsFrame profilesFrame, String title, String iconKey, double width) {
+        super(profilesFrame, title, iconKey, width);
+        this.backButton = new IconButtonComponent("moduleback");
+        this.profilesFrame = profilesFrame;
+        this.editHiddenProfilesButton.w("Edit hidden profiles");
+        this.editHiddenProfilesButton.addClickListener(new ProfilesHeaderShowAllRowsClickHandler(profilesFrame));
+        this.backButton.addClickListener(new ProfilesHeaderApplyPendingProfileClickHandler(profilesFrame));
+        this.doneButton.addClickListener(new ProfilesHeaderShowActiveRowsClickHandler(profilesFrame));
+        this.addChildren(this.editHiddenProfilesButton, this.doneButton, this.backButton);
     }
 
 
-    private static boolean lambda$onRender$0(Profile profile) {
+    private static boolean isHiddenProfile(Profile profile) {
         return !profile.U();
     }
 
     @Override
     public void H() {
         super.H();
-        SmoothFontRenderer smoothFontRenderer = this.O(0.9);
-        if (this.Vl.l$src$Lgg_vape_ui_click_frame_PopupFrame_$vsvtwn() != null) {
+        SmoothFontRenderer font = this.getFontRenderer(0.9);
+        if (this.profilesFrame.getActivePopup() != null) {
             this.Y(false);
-            this.L$src$Lgg_vape_ui_click_component_IconButtonComponent_$1i7gwfq().Z(false);
-            this.Vr.Z(false);
-            this.Vu.Z(false);
-            this.Vn.G(ProfilesSettingsHeaderComponent.J.A);
-            this.Vn.Z(true);
-            this.Vn.K(this.G$src$D$1b2f02a() + 5.0 - 1.0);
-            this.Vn.S(this.n());
-            this.Vn.Y(this.L());
+            this.L$src$Lgg_vape_ui_click_component_IconButtonComponent_$1i7gwfq().setVisible(false);
+            this.editHiddenProfilesButton.setVisible(false);
+            this.doneButton.setVisible(false);
+            this.backButton.setOverrideColor(ProfilesSettingsHeaderComponent.J.A);
+            this.backButton.setVisible(true);
+            this.backButton.K(this.G$src$D$1b2f02a() + 4.0);
+            this.backButton.S(this.n());
+            this.backButton.Y(this.L());
             return;
         }
         this.Y(true);
-        this.Vn.Z(false);
-        if (this.Vl.u$src$Z$6rsek8()) {
-            this.L$src$Lgg_vape_ui_click_component_IconButtonComponent_$1i7gwfq().Z(false);
-            this.Vl.N$src$V$66cfbp();
-            this.Vr.Z(false);
-            this.Vu.Z(true);
-            this.Vu.Z(true);
-            this.Vu.d("Done");
-            this.Vu.K(this.G$src$D$1b2f02a() + this.A() - 10.0 - 16.0 - smoothFontRenderer.N(this.Vu.L$src$Ljava_lang_String_$1ncdwqb()) / 2.0);
-            this.Vu.S(this.n());
-            this.Vu.Y(this.L());
+        this.backButton.setVisible(false);
+        if (this.profilesFrame.isShowingAllProfiles()) {
+            this.L$src$Lgg_vape_ui_click_component_IconButtonComponent_$1i7gwfq().setVisible(false);
+            this.profilesFrame.closePopupAndDiscardDraft();
+            this.editHiddenProfilesButton.setVisible(false);
+            this.doneButton.setVisible(true);
+            this.doneButton.setLabelText("Done");
+            this.doneButton.K(this.G$src$D$1b2f02a() + this.A() - 26.0 - font.N(this.doneButton.getText()) / 2.0);
+            this.doneButton.S(this.n());
+            this.doneButton.Y(this.L());
         } else {
-            this.L$src$Lgg_vape_ui_click_component_IconButtonComponent_$1i7gwfq().Z(true);
-            this.Vu.Z(false);
-            this.Vr.Z(true);
-            this.Vr.G(this.Vl.u$src$Z$6rsek8() ? ProfilesSettingsHeaderComponent.J.f : null);
-            this.Vr.K(this.G$src$D$1b2f02a() + this.A() - 15.0 - 13.0 - 16.0);
-            this.Vr.S(this.n());
-            this.Vr.Y(this.L());
-            int n = (int)Vape.INSTANCE.getProfilesManager().b().stream().filter(ProfilesSettingsHeaderComponent::lambda$onRender$0).count();
-            if (n != 0) {
-                String string = Integer.toString(n);
-                smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + this.A() - 16.25 - 13.0 - 16.0 - smoothFontRenderer.N(string) / 2.0, this.n() + this.L() / 2.0 - smoothFontRenderer.d(string) / 2.0, ProfilesSettingsHeaderComponent.J.W);
+            this.L$src$Lgg_vape_ui_click_component_IconButtonComponent_$1i7gwfq().setVisible(true);
+            this.doneButton.setVisible(false);
+            this.editHiddenProfilesButton.setVisible(true);
+            this.editHiddenProfilesButton.setOverrideColor((Color)null);
+            this.editHiddenProfilesButton.K(this.G$src$D$1b2f02a() + this.A() - 44.0);
+            this.editHiddenProfilesButton.S(this.n());
+            this.editHiddenProfilesButton.Y(this.L());
+            int hiddenProfileCount = (int)Vape.INSTANCE.getProfilesManager().b().stream().filter(ProfilesSettingsHeaderComponent::isHiddenProfile).count();
+            if (hiddenProfileCount != 0) {
+                String countText = Integer.toString(hiddenProfileCount);
+                font.d(countText, this.G$src$D$1b2f02a() + this.A() - 45.25 - font.N(countText) / 2.0, this.n() + this.L() / 2.0 - font.d(countText) / 2.0, ProfilesSettingsHeaderComponent.J.W);
             }
         }
     }

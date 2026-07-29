@@ -13,14 +13,12 @@ import gg.vape.module.Mod;
 import gg.vape.module.blatant.BacktrackPacketQueueEntry;
 import gg.vape.module.blatant.BacktrackPacketReplayState;
 import gg.vape.module.blatant.BacktrackPacketState;
-import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.datas.PlayerLocationSnapshot;
 import gg.vape.utils.network.PacketDispatchGuard;
 import gg.vape.utils.render.RenderUtil;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.ColorValue;
 import gg.vape.value.RandomValue;
-import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.EntityPlayerSP;
@@ -47,38 +45,38 @@ import org.lwjgl.opengl.GL11;
 
 public class Backtrack
 extends Mod {
-    private double F;
-    private final Map<Integer, BacktrackPacketState> A;
-    private double O;
-    private double k;
-    private double Z;
-    private int Y = -1;
-    private final BooleanValue o;
-    public final RandomValue v = RandomValue.create(this, "Latency", "#", "ms", 0.0, 50.0, 100.0, 500.0);
-    private boolean D;
-    private double r;
-    private double b;
-    private int s;
-    private final PacketDispatchGuard H;
-    private final Map<Packet, Long> t;
-    private PlayerLocationSnapshot I;
-    private double U;
-    private double K;
-    private final ColorValue V;
-    private int a = -1;
-    private double S;
+    private double currentRenderY;
+    private final Map<Integer, BacktrackPacketState> entityPacketStates;
+    private double previousRenderZ;
+    private double previousRenderY;
+    private double targetRenderZ;
+    private int activeTargetId = -1;
+    private final BooleanValue renderServerPosition;
+    public final RandomValue latency = RandomValue.create(this, "Latency", "#", "ms", 0.0, 50.0, 100.0, 500.0);
+    private boolean delayingPackets;
+    private double previousRenderX;
+    private double targetRenderY;
+    private int interpolationSteps;
+    private final PacketDispatchGuard dispatchGuard;
+    private final Map<Packet, Long> queuedPackets;
+    private PlayerLocationSnapshot lastTargetSnapshot;
+    private double targetRenderX;
+    private double currentRenderZ;
+    private final ColorValue renderColor;
+    private int pendingTargetId = -1;
+    private double currentRenderX;
 
     @Override
-    public String r() {
-        return this.v.c();
+    public String getDetailedSuffix() {
+        return this.latency.getDisplayValue();
     }
 
     @EventHandler
-    public void d(EventPreAttack eventPreAttack) {
-        this.J(eventPreAttack.getTarget());
+    public void onPreAttack(EventPreAttack event) {
+        this.queueTarget(event.getTarget());
     }
 
-    private boolean A(Packet packet) {
+    private boolean shouldFlushForPacket(Packet packet) {
         if (packet.isInstance(MappedClasses.zw)) {
             return true;
         }
@@ -95,48 +93,50 @@ extends Mod {
 
     public Backtrack() {
         super("BackTrack", -57312, Category.Y);
-        this.o = BooleanValue.create(this, "Render server pos", true);
-        this.V = ColorValue.b(this, "Color", new Color(5, 134, 105), 100);
-        this.H = PacketDispatchGuard.b;
-        this.t = new LinkedHashMap<Packet, Long>();
-        this.A = new HashMap<Integer, BacktrackPacketState>();
-        this.o.K(this.V);
-        this.addValue(this.v, this.o, this.V);
+        this.renderServerPosition = BooleanValue.create(this, "Render server pos", true);
+        this.renderColor = ColorValue.createWithAlpha(this, "Color", new Color(5, 134, 105), 100);
+        this.dispatchGuard = PacketDispatchGuard.b;
+        this.queuedPackets = new LinkedHashMap<Packet, Long>();
+        this.entityPacketStates = new HashMap<Integer, BacktrackPacketState>();
+        this.renderServerPosition.addDependentValues(this.renderColor);
+        this.addValue(this.latency, this.renderServerPosition, this.renderColor);
     }
 
-    private void lambda$reset$0() {
-        Backtrack backtrack = this;
-        backtrack.z();
-        this.A.clear();
-        this.Y = -1;
-        this.a = -1;
-        this.I = null;
-        this.t(0.0, 0.0, 0.0);
+    private void resetState() {
+        this.flushQueuedPackets();
+        this.entityPacketStates.clear();
+        this.activeTargetId = -1;
+        this.pendingTargetId = -1;
+        this.lastTargetSnapshot = null;
+        this.resetRenderPosition(0.0, 0.0, 0.0);
     }
 
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {
-        if (!this.o.L().booleanValue()) {
+        if (!this.renderServerPosition.getEffectiveValue()) {
             return;
         }
-        if (this.Y == -1) {
+        if (this.activeTargetId == -1) {
             return;
         }
         if (Minecraft.theWorld().isNull()) {
             return;
         }
-        Entity entity = Minecraft.theWorld().V(this.Y);
+        Entity entity = Minecraft.theWorld().V(this.activeTargetId);
         if (entity == null || !entity.isInstance(MappedClasses.zm)) {
             return;
         }
-        EntityLivingBase entityLivingBase = new EntityLivingBase(entity);
-        double d = RenderManager.getInterpolatedRenderPosX();
-        double d2 = RenderManager.getInterpolatedRenderPosY();
-        double d3 = RenderManager.getInterpolatedRenderPosZ();
-        float f = Minecraft.getTimer().renderPartialTicks();
-        double d4 = this.r + (this.S - this.r) * (double)f;
-        double d5 = this.k + (this.F - this.k) * (double)f;
-        double d6 = this.O + (this.K - this.O) * (double)f;
+        EntityLivingBase target = new EntityLivingBase(entity);
+        double renderX = RenderManager.getInterpolatedRenderPosX();
+        double renderY = RenderManager.getInterpolatedRenderPosY();
+        double renderZ = RenderManager.getInterpolatedRenderPosZ();
+        float partialTicks = Minecraft.getTimer().renderPartialTicks();
+        double interpolatedX = this.previousRenderX
+                + (this.currentRenderX - this.previousRenderX) * partialTicks;
+        double interpolatedY = this.previousRenderY
+                + (this.currentRenderY - this.previousRenderY) * partialTicks;
+        double interpolatedZ = this.previousRenderZ
+                + (this.currentRenderZ - this.previousRenderZ) * partialTicks;
         eventRender3D.getEntityRenderer().B(1.0);
         GL11.glBlendFunc((int)770, (int)771);
         GlStateManager.enableBlend();
@@ -146,10 +146,15 @@ extends Mod {
         if (ForgeVersion.MC_1_21_4.v()) {
             GL11.glLineWidth((float)1.5f);
         }
-        double d7 = entityLivingBase.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMaxX() - entityLivingBase.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinX() + (double)entityLivingBase.b();
-        double d8 = d7 / 2.0;
+        double boxWidth = target.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMaxX()
+                - target.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinX()
+                + target.b();
+        double halfWidth = boxWidth / 2.0;
         RenderUtil.d();
-        RenderUtil.u(d4 - d8, d5 + 0.01, d6 - d8, d7, entityLivingBase.Y(), d7, 1.0, this.V.q$src$Lgg_vape_utils_MutableColor_$1dowyd3().darker().darker(), this.V.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), d, d2, d3);
+        RenderUtil.u(interpolatedX - halfWidth, interpolatedY + 0.01, interpolatedZ - halfWidth,
+                boxWidth, target.Y(), boxWidth, 1.0,
+                this.renderColor.getMutableColor().darker().darker(),
+                this.renderColor.getMutableColor(), renderX, renderY, renderZ);
         RenderUtil.Y();
         GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();
@@ -157,278 +162,265 @@ extends Mod {
         eventRender3D.getEntityRenderer().O(1.0);
     }
 
-    private void Q$src$V$1grknad() {
-        if (this.a != -1) {
+    private void promotePendingTarget() {
+        if (this.pendingTargetId != -1) {
             Entity entity;
-            this.Y = this.a;
-            this.a = -1;
-            this.I = null;
-            BacktrackPacketState backtrackPacketState = this.A.get(this.Y);
+            this.activeTargetId = this.pendingTargetId;
+            this.pendingTargetId = -1;
+            this.lastTargetSnapshot = null;
+            BacktrackPacketState backtrackPacketState = this.entityPacketStates.get(this.activeTargetId);
             if (backtrackPacketState != null) {
-                PlayerLocationSnapshot playerLocationSnapshot = backtrackPacketState.g();
-                this.t(playerLocationSnapshot.getX(), playerLocationSnapshot.getY(), playerLocationSnapshot.getZ());
-            } else if (Minecraft.theWorld().isNotNull() && (entity = Minecraft.theWorld().V(this.Y)) != null && entity.isNotNull()) {
-                this.t(entity.z(), entity.N(), entity.h());
+                PlayerLocationSnapshot playerLocationSnapshot = backtrackPacketState.toSnapshot();
+                this.resetRenderPosition(playerLocationSnapshot.getX(), playerLocationSnapshot.getY(), playerLocationSnapshot.getZ());
+            } else if (Minecraft.theWorld().isNotNull() && (entity = Minecraft.theWorld().V(this.activeTargetId)) != null && entity.isNotNull()) {
+                this.resetRenderPosition(entity.z(), entity.N(), entity.h());
             }
-            Backtrack backtrack = this;
-            backtrack.z();
+            this.flushQueuedPackets();
         }
     }
 
-    private void z() {
+    private void flushQueuedPackets() {
         String string = WorldClient.b();
-        if (this.t.isEmpty()) {
+        if (this.queuedPackets.isEmpty()) {
             return;
         }
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (string != null) {
             NetHandlerPlayClientImpl netHandlerPlayClientImpl;
             if (entityPlayerSP.isNotNull() && (netHandlerPlayClientImpl = entityPlayerSP.sendQueue()).isNotNull()) {
-                for (Packet packet : this.t.keySet()) {
-                    this.H.l(packet, netHandlerPlayClientImpl);
+                for (Packet packet : this.queuedPackets.keySet()) {
+                    this.dispatchGuard.l(packet, netHandlerPlayClientImpl);
                 }
             }
-            this.t.clear();
+            this.queuedPackets.clear();
         }
     }
 
-    private void J(Entity entity) {
+    private void queueTarget(Entity entity) {
         if (entity == null) {
             return;
         }
-        int n = entity.S();
-        if (n != this.Y && n != this.a) {
-            this.a = n;
+        int entityId = entity.S();
+        if (entityId != this.activeTargetId && entityId != this.pendingTargetId) {
+            this.pendingTargetId = entityId;
         }
     }
 
-    private boolean G(PlayerLocationSnapshot playerLocationSnapshot) {
-        if (this.I == null) {
+    private boolean shouldDelaySnapshot(PlayerLocationSnapshot snapshot) {
+        if (this.lastTargetSnapshot == null) {
             return false;
         }
-        PlayerLocationSnapshot playerLocationSnapshot2 = this.P();
-        if (playerLocationSnapshot2 == null) {
+        PlayerLocationSnapshot playerPosition = this.getPlayerSnapshot();
+        if (playerPosition == null) {
             return false;
         }
-        double d = PlayerLocationSnapshot.rayIntersectionDistance(playerLocationSnapshot2, this.I);
-        double d2 = PlayerLocationSnapshot.rayIntersectionDistance(playerLocationSnapshot2, playerLocationSnapshot);
-        return d2 > d + 0.001;
+        double previousDistance = PlayerLocationSnapshot.rayIntersectionDistance(playerPosition, this.lastTargetSnapshot);
+        double newDistance = PlayerLocationSnapshot.rayIntersectionDistance(playerPosition, snapshot);
+        return newDistance > previousDistance + 0.001;
     }
 
-    private PlayerLocationSnapshot C(Packet packet, EventPacketReceive eventPacketReceive) {
-        BacktrackPacketState backtrackPacketState = null;
-        int n = -1;
+    private PlayerLocationSnapshot processTrackedPacket(Packet packet, EventPacketReceive event) {
+        BacktrackPacketState packetState = null;
+        int entityId = -1;
         if (packet.isInstance(MappedClasses.qz)) {
-            SEntityPacket sEntityPacket = new SEntityPacket(packet);
-            Entity entity = sEntityPacket.V(eventPacketReceive.getWorld());
+            SEntityPacket relativeMovePacket = new SEntityPacket(packet);
+            Entity entity = relativeMovePacket.V(event.getWorld());
             if (entity.isNotNull()) {
-                n = entity.S();
-                backtrackPacketState = this.A.get(n);
-                if (backtrackPacketState != null) {
-                    backtrackPacketState.Z(sEntityPacket);
+                entityId = entity.S();
+                packetState = this.entityPacketStates.get(entityId);
+                if (packetState != null) {
+                    packetState.applyRelativeMove(relativeMovePacket);
                 } else {
-                    BacktrackPacketState backtrackPacketState2 = BacktrackPacketState.J(entity);
-                    backtrackPacketState2.Z(sEntityPacket);
-                    this.A.put(n, backtrackPacketState2);
-                    backtrackPacketState = backtrackPacketState2;
+                    packetState = BacktrackPacketState.fromEntity(entity);
+                    packetState.applyRelativeMove(relativeMovePacket);
+                    this.entityPacketStates.put(entityId, packetState);
                 }
             }
         } else if (packet.isInstance(MappedClasses.s)) {
-            SPacketEntity sPacketEntity = new SPacketEntity(packet);
-            n = sPacketEntity.k();
-            backtrackPacketState = this.A.get(n);
-            if (backtrackPacketState != null) {
-                backtrackPacketState.K(sPacketEntity);
+            SPacketEntity entityPacket = new SPacketEntity(packet);
+            entityId = entityPacket.k();
+            packetState = this.entityPacketStates.get(entityId);
+            if (packetState != null) {
+                packetState.applyAbsolutePacket(entityPacket);
             } else {
-                backtrackPacketState = new BacktrackPacketState(sPacketEntity.H(), sPacketEntity.M(), sPacketEntity.B());
-                this.A.put(n, backtrackPacketState);
+                packetState = new BacktrackPacketState(
+                        entityPacket.H(), entityPacket.M(), entityPacket.B());
+                this.entityPacketStates.put(entityId, packetState);
             }
         } else {
             if (packet.isInstance(MappedClasses.uW)) {
-                SPacketEntityTeleport sPacketEntityTeleport = new SPacketEntityTeleport(packet);
-                this.A.put(sPacketEntityTeleport.u(), new BacktrackPacketState(sPacketEntityTeleport.m$src$I$1g30xfs(), sPacketEntityTeleport.I(), sPacketEntityTeleport.d()));
+                SPacketEntityTeleport teleportPacket = new SPacketEntityTeleport(packet);
+                this.entityPacketStates.put(teleportPacket.u(), new BacktrackPacketState(
+                        teleportPacket.m$src$I$1g30xfs(), teleportPacket.I(), teleportPacket.d()));
                 return null;
             }
             if (packet.isInstance(MappedClasses.Yv)) {
-                BacktrackPacketReplayState backtrackPacketReplayState = new BacktrackPacketReplayState(packet);
-                for (int n2 : backtrackPacketReplayState.n()) {
-                    this.A.remove(n2);
-                    if (n2 != this.Y) continue;
-                    this.Y = -1;
-                    this.I = null;
-                    Backtrack backtrack = this;
-                    backtrack.z();
+                BacktrackPacketReplayState removalPacket = new BacktrackPacketReplayState(packet);
+                for (int removedEntityId : removalPacket.getDestroyedEntityIds()) {
+                    this.entityPacketStates.remove(removedEntityId);
+                    if (removedEntityId != this.activeTargetId) {
+                        continue;
+                    }
+                    this.activeTargetId = -1;
+                    this.lastTargetSnapshot = null;
+                    this.flushQueuedPackets();
                 }
                 return null;
             }
             if (packet.isInstance(MappedClasses.FE)) {
-                Backtrack backtrack = this;
-                backtrack.w$src$V$1hcgtu3();
+                this.scheduleReset();
                 return null;
             }
         }
         if (ForgeVersion.MC_1_21_4.d() && packet.isInstance(MappedClasses.ly)) {
             NetworkPlayerInfo networkPlayerInfo = new NetworkPlayerInfo(packet);
-            if ((backtrackPacketState = this.A.get(n = networkPlayerInfo.C())) != null) {
-                backtrackPacketState.W(networkPlayerInfo);
+            entityId = networkPlayerInfo.C();
+            packetState = this.entityPacketStates.get(entityId);
+            if (packetState != null) {
+                packetState.applyNetworkPlayerInfo(networkPlayerInfo);
             }
         }
-        if (n == this.Y && backtrackPacketState != null) {
-            PlayerLocationSnapshot playerLocationSnapshot = backtrackPacketState.g();
-            this.U(playerLocationSnapshot.getX(), playerLocationSnapshot.getY(), playerLocationSnapshot.getZ());
-            return playerLocationSnapshot;
+        if (entityId == this.activeTargetId && packetState != null) {
+            PlayerLocationSnapshot snapshot = packetState.toSnapshot();
+            this.setTargetRenderPosition(snapshot.getX(), snapshot.getY(), snapshot.getZ());
+            return snapshot;
         }
         return null;
     }
 
-    private void N(Packet packet) {
-        long l = (long)this.v.B();
-        long l2 = System.currentTimeMillis() + l;
-        String string = WorldClient.b();
-        Map<Packet, Long> queuedPackets = this.t;
-        if (string != null) {
-            long l3;
-            if (!queuedPackets.isEmpty() && l2 < (l3 = ((Long)((Map.Entry)this.t.entrySet().toArray()[this.t.size() - 1]).getValue()).longValue())) {
-                l2 = l3 + 1L;
+    private void queuePacket(Packet packet) {
+        long latencyMillis = (long)this.latency.getRandomValue();
+        long releaseAt = System.currentTimeMillis() + latencyMillis;
+        String controlFlowMarker = WorldClient.b();
+        Map<Packet, Long> queuedPackets = this.queuedPackets;
+        if (controlFlowMarker != null) {
+            if (!queuedPackets.isEmpty()) {
+                long lastReleaseAt = this.queuedPackets.entrySet().stream()
+                        .reduce((first, second) -> second).get().getValue();
+                if (releaseAt < lastReleaseAt) {
+                    releaseAt = lastReleaseAt + 1L;
+                }
             }
-            queuedPackets.put(packet, l2);
+            queuedPackets.put(packet, releaseAt);
         }
     }
 
-    private void w$src$V$1hcgtu3() {
-        PacketDispatchGuard.B(this::lambda$reset$0);
+    private void scheduleReset() {
+        PacketDispatchGuard.B(this::resetState);
     }
 
-    private void U(double d, double d2, double d3) {
-        this.U = d;
-        this.b = d2;
-        this.Z = d3;
-        this.s = 3;
+    private void setTargetRenderPosition(double x, double y, double z) {
+        this.targetRenderX = x;
+        this.targetRenderY = y;
+        this.targetRenderZ = z;
+        this.interpolationSteps = 3;
     }
 
     @Override
     public void onDisable() {
-        Backtrack backtrack = this;
-        backtrack.w$src$V$1hcgtu3();
+        this.scheduleReset();
     }
 
     @EventHandler
-    public void N(EventWorldChange eventWorldChange) {
-        Backtrack backtrack = this;
-        backtrack.w$src$V$1hcgtu3();
+    public void onWorldChange(EventWorldChange event) {
+        this.scheduleReset();
     }
 
 
     @EventHandler(A=EventPriority.LOW)
-    public void onPacketReceive(EventPacketReceive eventPacketReceive) {
-        List<Packet> list;
-        Wrapper wrapper;
-        String string = WorldClient.b();
-        if (!this.t.isEmpty()) {
-            wrapper = Minecraft.N();
-            if (wrapper.isNotNull()) {
-                Map.Entry<Packet, Long> object2;
-                long l = System.currentTimeMillis();
-                Iterator<Map.Entry<Packet, Long>> iterator = this.t.entrySet().iterator();
-                while (iterator.hasNext() && l >= (object2 = iterator.next()).getValue()) {
-                    this.H.l(object2.getKey(), (NetHandlerPlayClientImpl)wrapper);
+    public void onPacketReceive(EventPacketReceive event) {
+        if (!this.queuedPackets.isEmpty()) {
+            NetHandlerPlayClientImpl networkHandler = Minecraft.N();
+            if (networkHandler.isNotNull()) {
+                long now = System.currentTimeMillis();
+                Iterator<Map.Entry<Packet, Long>> iterator = this.queuedPackets.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<Packet, Long> queuedPacket = iterator.next();
+                    if (now < queuedPacket.getValue()) {
+                        break;
+                    }
+                    this.dispatchGuard.l(queuedPacket.getKey(), networkHandler);
                     iterator.remove();
                 }
             } else {
-                this.t.clear();
+                this.queuedPackets.clear();
             }
         }
-        this.Q$src$V$1grknad();
-        if (eventPacketReceive.getWorld().isNull() || eventPacketReceive.getThePlayer().isNull()) {
-            Backtrack backtrack = this;
-            backtrack.z();
-            this.Y = -1;
+        this.promotePendingTarget();
+        if (event.getWorld().isNull() || event.getThePlayer().isNull()) {
+            this.flushQueuedPackets();
+            this.activeTargetId = -1;
             return;
         }
-        wrapper = eventPacketReceive.getPacket();
-        if (this.H.R((Packet)wrapper)) {
+        Packet receivedPacket = event.getPacket();
+        if (this.dispatchGuard.R(receivedPacket)) {
             return;
         }
-        if (ForgeVersion.MC_1_21_4.d() && wrapper.isInstance(MappedClasses.ue)) {
-            BacktrackPacketQueueEntry backtrackPacketQueueEntry = new BacktrackPacketQueueEntry(wrapper);
-            list = backtrackPacketQueueEntry.s();
+        List<Packet> packets;
+        if (ForgeVersion.MC_1_21_4.d() && receivedPacket.isInstance(MappedClasses.ue)) {
+            BacktrackPacketQueueEntry bundledPacket = new BacktrackPacketQueueEntry(receivedPacket);
+            packets = bundledPacket.getPackets();
         } else {
-            list = Collections.singletonList((Packet)wrapper);
+            packets = Collections.singletonList(receivedPacket);
         }
         PlayerLocationSnapshot latestSnapshot = null;
-        for (Packet packet : list) {
-            PlayerLocationSnapshot playerLocationSnapshot = this.C(packet, eventPacketReceive);
-            if (playerLocationSnapshot != null) {
-                latestSnapshot = playerLocationSnapshot;
+        for (Packet packet : packets) {
+            PlayerLocationSnapshot snapshot = this.processTrackedPacket(packet, event);
+            if (snapshot != null) {
+                latestSnapshot = snapshot;
             }
-            if (!this.A(packet)) continue;
-            Backtrack backtrack = this;
-            backtrack.z();
-            return;
+            if (this.shouldFlushForPacket(packet)) {
+                this.flushQueuedPackets();
+                return;
+            }
         }
-        if (this.Y == -1) {
-            if (!this.t.isEmpty()) {
-                Backtrack backtrack = this;
-                backtrack.z();
+        if (this.activeTargetId == -1) {
+            if (!this.queuedPackets.isEmpty()) {
+                this.flushQueuedPackets();
             }
             return;
         }
         if (latestSnapshot != null) {
-            this.D = this.G(latestSnapshot);
-            this.I = latestSnapshot;
+            this.delayingPackets = this.shouldDelaySnapshot(latestSnapshot);
+            this.lastTargetSnapshot = latestSnapshot;
         }
-        if (this.D) {
-            eventPacketReceive.setCancelled(true);
-            Wrapper wrapper2 = wrapper;
-            Backtrack backtrack = this;
-            backtrack.N((Packet)wrapper2);
-        } else if (!this.t.isEmpty()) {
-            Backtrack backtrack = this;
-            backtrack.z();
+        if (this.delayingPackets) {
+            event.setCancelled(true);
+            this.queuePacket(receivedPacket);
+        } else if (!this.queuedPackets.isEmpty()) {
+            this.flushQueuedPackets();
         }
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
-        block6: {
-            int n;
-            block5: {
-                this.r = this.S;
-                this.k = this.F;
-                this.O = this.K;
-                String string = WorldClient.b();
-                n = this.Y;
-                if (string == null) break block5;
-                if (n == -1) break block6;
-                n = this.s;
-            }
-            if (n > 0) {
-                this.S += (this.U - this.S) / (double)this.s;
-                this.F += (this.b - this.F) / (double)this.s;
-                this.K += (this.Z - this.K) / (double)this.s;
-                --this.s;
-            }
-        }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
-            WorldClient.J("R8ThM");
+    public void onTick(EventPreTick event) {
+        this.previousRenderX = this.currentRenderX;
+        this.previousRenderY = this.currentRenderY;
+        this.previousRenderZ = this.currentRenderZ;
+        String controlFlowMarker = WorldClient.b();
+        if ((controlFlowMarker == null || this.activeTargetId != -1) && this.interpolationSteps > 0) {
+            this.currentRenderX += (this.targetRenderX - this.currentRenderX) / this.interpolationSteps;
+            this.currentRenderY += (this.targetRenderY - this.currentRenderY) / this.interpolationSteps;
+            this.currentRenderZ += (this.targetRenderZ - this.currentRenderZ) / this.interpolationSteps;
+            --this.interpolationSteps;
         }
     }
 
-    private PlayerLocationSnapshot P() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+    private PlayerLocationSnapshot getPlayerSnapshot() {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return null;
         }
-        return new PlayerLocationSnapshot(entityPlayerSP.z(), entityPlayerSP.N(), entityPlayerSP.h());
+        return new PlayerLocationSnapshot(player.z(), player.N(), player.h());
     }
 
-    private void t(double d, double d2, double d3) {
-        this.S = this.r = d;
-        this.U = this.r;
-        this.F = this.k = d2;
-        this.b = this.k;
-        this.K = this.O = d3;
-        this.Z = this.O;
-        this.s = 0;
+    private void resetRenderPosition(double x, double y, double z) {
+        this.currentRenderX = this.previousRenderX = x;
+        this.targetRenderX = x;
+        this.currentRenderY = this.previousRenderY = y;
+        this.targetRenderY = y;
+        this.currentRenderZ = this.previousRenderZ = z;
+        this.targetRenderZ = z;
+        this.interpolationSteps = 0;
     }
 }

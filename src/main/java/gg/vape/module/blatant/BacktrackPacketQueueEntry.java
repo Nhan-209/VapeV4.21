@@ -6,20 +6,20 @@ import java.util.List;
 
 public class BacktrackPacketQueueEntry
 extends Packet {
-    public List<Packet> s() {
-        ArrayList<Packet> arrayList = new ArrayList<Packet>();
-        for (Object packetHandle : this.a()) {
-            arrayList.add(new Packet(packetHandle));
+    public List<Packet> getPackets() {
+        ArrayList<Packet> packets = new ArrayList<Packet>();
+        for (Object packetHandle : this.getPacketHandles()) {
+            packets.add(new Packet(packetHandle));
         }
-        return arrayList;
+        return packets;
     }
 
-    public Iterable a() {
+    public Iterable getPacketHandles() {
         return BacktrackPacketQueueEntry.c.getMappingsMapperCompat().CS.A(this.I);
     }
 
-    public BacktrackPacketQueueEntry(Object object) {
-        super(object);
+    public BacktrackPacketQueueEntry(Object handle) {
+        super(handle);
     }
 }
 

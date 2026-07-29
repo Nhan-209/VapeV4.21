@@ -68,12 +68,12 @@ extends Mapping {
             String string5 = "getFontSetRaw";
             MFontManager mFontManager4 = this;
             this.U = this.Y(string5, bl4, clazz4, classArray);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MFontSet.c("qmD2Ub");
             }
             return;
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MFontSet.c("qmD2Ub");
         }
     }

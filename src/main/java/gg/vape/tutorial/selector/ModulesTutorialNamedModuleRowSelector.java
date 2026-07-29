@@ -10,7 +10,7 @@ extends TutorialTargetSelector<ModuleComponent> {
     private static final String b = "AutoClicker";
 
     public boolean J(ModuleComponent moduleComponent) {
-        return moduleComponent.N$src$Lgg_vape_module_Mod_$rb0ew8().getName().equals(b);
+        return moduleComponent.getModule().getName().equals(b);
     }
 
     @Override

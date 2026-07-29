@@ -15,169 +15,169 @@ import java.util.Map;
 
 public class ModeValue
 extends ConditionalValue<ModeSelection, ModeValue> {
-    private static GuiComponent[] b;
-    private static final String f;
-    private final Map<Value<?, ?>, ArrayList<ModeSelection>> s = new HashMap();
-    private final String o;
-    private final ModeSelection[] u;
+    private static GuiComponent[] legacyGuiState;
+    private static final String JSON_VALUE_PROPERTY;
+    private final Map<Value<?, ?>, ArrayList<ModeSelection>> activeModesByDependentValue = new HashMap();
+    private final String displayName;
+    private final ModeSelection[] modes;
 
-    public static void k(GuiComponent[] guiComponentArray) {
-        b = guiComponentArray;
+    public static void setLegacyGuiState(GuiComponent[] state) {
+        legacyGuiState = state;
     }
 
-    public static ModeValue create(Object object, String string, ModeSelection modeSelection, ModeSelection ... modeSelectionArray) {
-        return ModeValue.create(object, string, string, modeSelection, modeSelectionArray);
+    public static ModeValue create(Object owner, String name, ModeSelection defaultMode, ModeSelection ... modes) {
+        return ModeValue.create(owner, name, name, defaultMode, modes);
     }
 
-    public static ModeValue e(Object object, String string, String string2, String string3, ModeSelection modeSelection, int n, ModeSelection[] modeSelectionArray) {
-        ModeValue modeValue = new ModeValue(object, string, string2, modeSelection, modeSelectionArray);
-        modeValue.Z$src$Lgg_vape_value_Value_$16i62fx(string3);
-        for (ModeSelection modeSelection2 : modeSelectionArray) {
-            modeSelection2.S(modeValue);
+    public static ModeValue createConfigured(Object owner, String name, String displayName, String description, ModeSelection defaultMode, int legacyIndex, ModeSelection[] modes) {
+        ModeValue modeValue = new ModeValue(owner, name, displayName, defaultMode, modes);
+        modeValue.setDescription(description);
+        for (ModeSelection mode : modes) {
+            mode.attachToMode(modeValue);
         }
         return modeValue;
     }
 
     @Override
-    public String c() {
-        return ((ModeSelection)this.K()).toString();
+    public String getDisplayValue() {
+        return ((ModeSelection)this.getValue()).toString();
     }
 
-    public int w$src$I$15qcf2k() {
-        for (int i = 0; i < this.getModes().length; ++i) {
-            if (!((ModeSelection)this.K()).equals(this.getModes()[i])) continue;
-            return i;
+    public int getSelectedIndex() {
+        for (int index = 0; index < this.getModes().length; ++index) {
+            if (!((ModeSelection)this.getValue()).equals(this.getModes()[index])) continue;
+            return index;
         }
         return 0;
     }
 
-    public static GuiComponent[] h() {
-        return b;
+    public static GuiComponent[] getLegacyGuiState() {
+        return legacyGuiState;
     }
 
     @Override
-    public boolean P() {
+    public boolean hasActiveDependentBranch() {
         return true;
     }
 
-    public static ModeValue j(Object object, String string, String string2, ModeSelection modeSelection, int n, ModeSelection ... modeSelectionArray) {
-        return ModeValue.e(object, string, string, string2, modeSelection, n, modeSelectionArray);
+    public static ModeValue createWithDescriptionAndLegacyIndex(Object owner, String name, String description, ModeSelection defaultMode, int legacyIndex, ModeSelection ... modes) {
+        return ModeValue.createConfigured(owner, name, name, description, defaultMode, legacyIndex, modes);
     }
 
-    public void L(Value value, ModeOption modeOption) {
-        this.K(value);
-        if (!this.s.containsKey(value)) {
-            this.s.put(value, new ArrayList());
+    public void addActiveMode(Value dependentValue, ModeOption modeOption) {
+        this.addDependentValues(dependentValue);
+        if (!this.activeModesByDependentValue.containsKey(dependentValue)) {
+            this.activeModesByDependentValue.put(dependentValue, new ArrayList());
         }
-        ArrayList<ModeSelection> arrayList = this.s.get(value);
-        arrayList.add(modeOption);
+        ArrayList<ModeSelection> activeModes = this.activeModesByDependentValue.get(dependentValue);
+        activeModes.add(modeOption);
     }
 
     static {
-        ModeValue.k(null);
-        f = "value";
+        ModeValue.setLegacyGuiState(null);
+        JSON_VALUE_PROPERTY = "value";
     }
 
-    public ModeValue V() {
-        return new ModeValue(null, this.P$src$Ljava_lang_String_$1ijjhmj(), this.getName(), (ModeSelection)this.K(), this.getModes());
+    public ModeValue copyDefinition() {
+        return new ModeValue(null, this.getId(), this.getName(), (ModeSelection)this.getValue(), this.getModes());
     }
 
     @Override
-    public ModeValue getALimit() {
-        return this.V();
+    public ModeValue copyValueDefinition() {
+        return this.copyDefinition();
     }
 
     @Override
     public String getName() {
-        return this.o;
+        return this.displayName;
     }
 
-    public void setValue(ModeSelection modeSelection) {
-        if (((ModeSelection)this.K()).equals(modeSelection)) {
+    public void setValue(ModeSelection newMode) {
+        if (((ModeSelection)this.getValue()).equals(newMode)) {
             return;
         }
-        if (this.k$src$Ljava_lang_Object_$13p7u5q() != null && modeSelection instanceof SubModuleValue && this.K() instanceof SubModuleValue) {
-            this.h((SubModuleValue)this.K(), (SubModuleValue)modeSelection);
+        if (this.getOwner() != null && newMode instanceof SubModuleValue && this.getValue() instanceof SubModuleValue) {
+            this.switchSubModule((SubModuleValue)this.getValue(), (SubModuleValue)newMode);
         }
-        super.o(modeSelection);
+        super.setValue(newMode);
     }
 
     public ModeSelection[] getModes() {
-        return this.u;
+        return this.modes;
     }
 
     @Override
-    public JsonObject H(boolean bl) {
+    public JsonObject toJson(boolean includeValue) {
         JsonObject jsonObject = this.toJson();
-        if (this.K() != null) {
-            jsonObject.addProperty(f, ((ModeSelection)this.K()).z());
+        if (this.getValue() != null) {
+            jsonObject.addProperty(JSON_VALUE_PROPERTY, ((ModeSelection)this.getValue()).getSerializedName());
         }
         return jsonObject;
     }
 
     @Override
-    public boolean q(Value value) {
-        if (this.s.containsKey(value)) {
-            ArrayList<ModeSelection> arrayList = this.s.get(value);
-            return arrayList.contains(this.K());
+    public boolean isDependentValueActive(Value dependentValue) {
+        if (this.activeModesByDependentValue.containsKey(dependentValue)) {
+            ArrayList<ModeSelection> activeModes = this.activeModesByDependentValue.get(dependentValue);
+            return activeModes.contains(this.getValue());
         }
         return false;
     }
 
-    private void h(SubModuleValue subModuleValue, SubModuleValue subModuleValue2) {
-        if (this.L$src$Z$1a65ikz()) {
+    private void switchSubModule(SubModuleValue previousMode, SubModuleValue nextMode) {
+        if (this.isPersistenceSuppressed()) {
             return;
         }
-        Object t = ((SubModule)subModuleValue.getInstance()).getParent();
-        ((Mod)t).p(subModuleValue, subModuleValue2);
+        Object parent = ((SubModule)previousMode.getInstance()).getParent();
+        ((Mod)parent).p(previousMode, nextMode);
     }
 
-    public static ModeValue create(Object object, String string, String string2, ModeSelection modeSelection, ModeSelection ... modeSelectionArray) {
-        return ModeValue.e(object, string, string, string2, modeSelection, 1, modeSelectionArray);
+    public static ModeValue create(Object owner, String name, String description, ModeSelection defaultMode, ModeSelection ... modes) {
+        return ModeValue.createConfigured(owner, name, name, description, defaultMode, 1, modes);
     }
 
-    public static ModeValue create(Object object, String string, String string2, String string3, ModeSelection modeSelection, ModeSelection ... modeSelectionArray) {
-        return ModeValue.e(object, string, string2, string3, modeSelection, 1, modeSelectionArray);
+    public static ModeValue create(Object owner, String name, String displayName, String description, ModeSelection defaultMode, ModeSelection ... modes) {
+        return ModeValue.createConfigured(owner, name, displayName, description, defaultMode, 1, modes);
     }
 
-    public void M(int n) {
-        this.setValue(this.getModes()[n]);
+    public void setSelectedIndex(int index) {
+        this.setValue(this.getModes()[index]);
     }
 
-    public ModeValue(Object object, String string, String string2, ModeSelection modeSelection, ModeSelection[] modeSelectionArray) {
-        super(object, string, modeSelection);
-        this.o = string2;
-        this.u = modeSelectionArray;
-        if (object instanceof Mod) {
-            Mod mod = (Mod)object;
-            for (ModeSelection modeSelection2 : modeSelectionArray) {
-                if (!(modeSelection2 instanceof SubModuleValue)) continue;
-                SubModuleValue subModuleValue = (SubModuleValue)modeSelection2;
-                for (Value<?, ?> value : ((Mod)subModuleValue.getInstance()).V()) {
-                    mod.addValue(value);
-                    this.L(value, subModuleValue);
+    public ModeValue(Object owner, String name, String displayName, ModeSelection defaultMode, ModeSelection[] modes) {
+        super(owner, name, defaultMode);
+        this.displayName = displayName;
+        this.modes = modes;
+        if (owner instanceof Mod) {
+            Mod mod = (Mod)owner;
+            for (ModeSelection mode : modes) {
+                if (!(mode instanceof SubModuleValue)) continue;
+                SubModuleValue subModuleMode = (SubModuleValue)mode;
+                for (Value<?, ?> dependentValue : ((Mod)subModuleMode.getInstance()).V()) {
+                    mod.addValue(dependentValue);
+                    this.addActiveMode(dependentValue, subModuleMode);
                 }
             }
         }
     }
 
     @Override
-    public void parse(String string) {
-        ModeValue modeValue = ((ModeSelection)this.K()).getMode();
-        if (modeValue == null) {
+    public void parse(String serializedMode) {
+        ModeValue owningModeValue = ((ModeSelection)this.getValue()).getMode();
+        if (owningModeValue == null) {
             return;
         }
-        ModeSelection modeSelection = ModeSelection.x(modeValue, string);
-        if (modeSelection == null) {
+        ModeSelection parsedMode = ModeSelection.findBySerializedName(owningModeValue, serializedMode);
+        if (parsedMode == null) {
             return;
         }
-        this.setValue(modeSelection);
+        this.setValue(parsedMode);
     }
 
-    public void f(ModeOption modeOption, Value ... valueArray) {
-        this.K(valueArray);
-        for (Value value : valueArray) {
-            this.L(value, modeOption);
+    public void addModeDependentValues(ModeOption modeOption, Value ... values) {
+        this.addDependentValues(values);
+        for (Value dependentValue : values) {
+            this.addActiveMode(dependentValue, modeOption);
         }
     }
 

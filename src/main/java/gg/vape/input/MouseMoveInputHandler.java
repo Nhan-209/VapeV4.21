@@ -7,10 +7,9 @@ import gg.vape.input.Win32InputConstants;
 public class MouseMoveInputHandler
 implements InputEventHandler {
     @Override
-    public boolean handle(long l, long l2) {
-        short s = Win32InputConstants.d(l2);
-        short s9 = Win32InputConstants.c(l2);
-        return InputEventDispatcher.getInstance().getMouseState().updateCursorPosition(s, s9);
+    public boolean handle(long firstArgument, long packedCoordinates) {
+        short mouseX = Win32InputConstants.extractLowWord(packedCoordinates);
+        short mouseY = Win32InputConstants.extractHighWord(packedCoordinates);
+        return InputEventDispatcher.getInstance().getMouseState().updateCursorPosition(mouseX, mouseY);
     }
 }
-

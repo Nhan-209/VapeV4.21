@@ -15,31 +15,31 @@ extends AbstractInventoryItemMatcher {
     private final Map<String, StringMatchOperator> matchOperators;
 
     @Override
-    public boolean g(ItemStack itemStack, Item item) {
+    public boolean matches(ItemStack itemStack, Item item) {
         if (this.matchOperators.isEmpty()) {
             return false;
         }
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack);
+        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         if (itemMappingEntry == null) {
             return false;
         }
         for (Map.Entry<String, StringMatchOperator> entry : this.matchOperators.entrySet()) {
             String string = entry.getKey();
             StringMatchOperator stringMatchOperator = entry.getValue();
-            if (!stringMatchOperator.z().test(itemMappingEntry.q(), string)) continue;
+            if (!stringMatchOperator.getPredicate().test(itemMappingEntry.q(), string)) continue;
             return true;
         }
         return false;
     }
 
-    public static StringInventoryItemMatcherBuilder n(InventoryItemMatcherBuilderBase<?> inventoryItemMatcherBuilderBase) {
+    public static StringInventoryItemMatcherBuilder builderFrom(InventoryItemMatcherBuilderBase<?> inventoryItemMatcherBuilderBase) {
         return new StringInventoryItemMatcherBuilder(inventoryItemMatcherBuilderBase, null);
     }
 
 
     public StringInventoryItemMatcher(StringInventoryItemMatcherBuilder stringInventoryItemMatcherBuilder) {
         super(stringInventoryItemMatcherBuilder);
-        this.matchOperators = stringInventoryItemMatcherBuilder.X();
+        this.matchOperators = stringInventoryItemMatcherBuilder.getOperatorsByPattern();
     }
 }
 

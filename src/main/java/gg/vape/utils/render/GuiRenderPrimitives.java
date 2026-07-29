@@ -58,7 +58,7 @@ public class GuiRenderPrimitives {
     private static TexturedCircleShaderProgram a;
     private static CircleShaderProgram V;
     private static RingShaderProgram B;
-    private static GLUtils Z;
+    private static GLUtils borderVertexBuffer;
     private static TexturedRoundedRectShaderProgram h;
     public static CompositeRoundedRectShaderProgram G;
     private static ArcShaderProgram p;
@@ -70,7 +70,7 @@ public class GuiRenderPrimitives {
     private static RoundedRectBorderShaderProgram c;
     public static LegacyFontShaderProgram i;
     private static RoundedRectShaderProgram g;
-    private static GLUtils J;
+    private static GLUtils quadVertexBuffer;
     private static boolean T;
     private static boolean S;
     private static RoundedCornerMaskShaderProgram y;
@@ -87,11 +87,11 @@ public class GuiRenderPrimitives {
         double d7 = 1.0;
         double d8 = 1.0;
         if (GuiRenderPrimitives.d()) {
-            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(VertexCoordinateMode.DEFAULT, bl).o(new GlImageTexture(n)).e((float)d, (float)d2, (float)d3, (float)d4, (float)d3, (float)d4, (float)d5, (float)d6, (float)d7, (float)d8, Color.WHITE);
+            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(VertexCoordinateMode.DEFAULT, bl).setTexture(new GlImageTexture(n)).addTexturedRect((float)d, (float)d2, (float)d3, (float)d4, (float)d3, (float)d4, (float)d5, (float)d6, (float)d7, (float)d8, Color.WHITE);
             if (bl) {
-                RenderBatchManager.M().c(renderBatchBuilder);
+                RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
             } else {
-                RenderBatchManager.M().O(renderBatchBuilder);
+                RenderBatchManager.getInstance().queueGuiBatch(renderBatchBuilder);
             }
             return;
         }
@@ -127,9 +127,9 @@ public class GuiRenderPrimitives {
             return;
         }
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.j((float)d, (float)d2, (float)d3, (float)d4, color);
+            BufferedGuiRenderPrimitives.fillCapsule((float)d, (float)d2, (float)d3, (float)d4, color);
         } else {
-            if (!t.R()) {
+            if (!t.isLinked()) {
                 return;
             }
             float f = Math.max((float)d4 / 2.0f - 0.5f, 0.25f);
@@ -141,21 +141,21 @@ public class GuiRenderPrimitives {
             float f7 = (float)d2 - f5;
             float f8 = (float)d + (float)d3 + f5;
             float f9 = (float)d2 + (float)d4 + f5;
-            t.f();
+            t.bind();
             GuiRenderPrimitives.L();
-            t.Q(f3, f2);
-            t.F(f4, f2);
-            t.n(f);
+            t.setStart(f3, f2);
+            t.setEnd(f4, f2);
+            t.setRadius(f);
             GuiRenderPrimitives.Z(color);
-            J.reset();
-            J.addVertex2D(f6, f7);
-            J.addVertex2D(f8, f7);
-            J.addVertex2D(f8, f9);
-            J.addVertex2D(f6, f9);
-            J.uploadAndDraw();
+            quadVertexBuffer.reset();
+            quadVertexBuffer.addVertex2D(f6, f7);
+            quadVertexBuffer.addVertex2D(f8, f7);
+            quadVertexBuffer.addVertex2D(f8, f9);
+            quadVertexBuffer.addVertex2D(f6, f9);
+            quadVertexBuffer.uploadAndDraw();
             GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
             GuiRenderPrimitives.T();
-            t.L();
+            t.restorePreviousProgram();
         }
     }
 
@@ -169,11 +169,11 @@ public class GuiRenderPrimitives {
         double d7 = 1.0;
         double d8 = 0.0;
         if (GuiRenderPrimitives.d()) {
-            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(VertexCoordinateMode.DEFAULT, bl).o(new GlImageTexture(n)).k((float)d, (float)d2, (float)d3, (float)d4, (float)d3, (float)d4, (float)d5, (float)d6, (float)d7, (float)d8, Color.WHITE);
+            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(VertexCoordinateMode.DEFAULT, bl).setTexture(new GlImageTexture(n)).addItemTextureRect((float)d, (float)d2, (float)d3, (float)d4, (float)d3, (float)d4, (float)d5, (float)d6, (float)d7, (float)d8, Color.WHITE);
             if (bl) {
-                RenderBatchManager.M().c(renderBatchBuilder);
+                RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
             } else {
-                RenderBatchManager.M().O(renderBatchBuilder);
+                RenderBatchManager.getInstance().queueGuiBatch(renderBatchBuilder);
             }
             return;
         }
@@ -197,9 +197,9 @@ public class GuiRenderPrimitives {
             return;
         }
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.T((float)d, (float)d2, (float)d3, (float)d4, fArray, fArray2);
+            BufferedGuiRenderPrimitives.drawGradientPill((float)d, (float)d2, (float)d3, (float)d4, fArray, fArray2);
         } else {
-            if (!b.R()) {
+            if (!b.isLinked()) {
                 return;
             }
             float f = Math.max((float)d4 / 2.0f - 0.5f, 0.25f);
@@ -211,21 +211,21 @@ public class GuiRenderPrimitives {
             float f7 = (float)d2 - f5;
             float f8 = (float)d + (float)d3 + f5;
             float f9 = (float)d2 + (float)d4 + f5;
-            b.f();
+            b.bind();
             GuiRenderPrimitives.L();
-            b.T(f3, f2);
-            b.q(f4, f2);
-            b.t(f);
-            b.n(fArray[0], fArray[1], fArray[2], fArray[3]);
-            b.I(fArray2[0], fArray2[1], fArray2[2], fArray2[3]);
-            J.reset();
-            J.addVertex2D(f6, f7);
-            J.addVertex2D(f8, f7);
-            J.addVertex2D(f8, f9);
-            J.addVertex2D(f6, f9);
-            J.uploadAndDraw();
+            b.setStart(f3, f2);
+            b.setEnd(f4, f2);
+            b.setRadius(f);
+            b.setStartHsba(fArray[0], fArray[1], fArray[2], fArray[3]);
+            b.setEndHsba(fArray2[0], fArray2[1], fArray2[2], fArray2[3]);
+            quadVertexBuffer.reset();
+            quadVertexBuffer.addVertex2D(f6, f7);
+            quadVertexBuffer.addVertex2D(f8, f7);
+            quadVertexBuffer.addVertex2D(f8, f9);
+            quadVertexBuffer.addVertex2D(f6, f9);
+            quadVertexBuffer.uploadAndDraw();
             GuiRenderPrimitives.T();
-            b.L();
+            b.restorePreviousProgram();
         }
     }
 
@@ -247,13 +247,13 @@ public class GuiRenderPrimitives {
         if (!GuiRenderPrimitives.d()) {
             NativeBridge.rs(0, n, n2);
         }
-        OpenGlBackendHolder.d.H(2.0f, 2.0f, 2.0f);
+        OpenGlBackendHolder.backend.scale(2.0f, 2.0f, 2.0f);
     }
 
     static {
-        J = new GLUtils();
+        quadVertexBuffer = new GLUtils();
         GuiRenderPrimitives.E(false);
-        Z = new GLUtils();
+        borderVertexBuffer = new GLUtils();
         U = false;
     }
 
@@ -314,7 +314,7 @@ public class GuiRenderPrimitives {
     }
 
     public static void h(String string, float f, float f2, float f3, float f4, Color color) {
-        ImageRenderer.E(color, f - f3 / 2.0f, f2 - f4 / 2.0f, string, f3, f4, false);
+        ImageRenderer.drawImage(color, f - f3 / 2.0f, f2 - f4 / 2.0f, string, f3, f4, false);
     }
 
     public static void a(double d, double d2, double d3, double d4, float f, float f2) {
@@ -336,10 +336,10 @@ public class GuiRenderPrimitives {
             d4 += (double)f4 * 1.5;
             d3 += (double)(f4 * 1.0f);
         }
-        h.f();
-        h.h(f5);
-        h.H((float)d + f, (float)d2 + f, (float)(d + d3) - f, (float)(d2 + d4) - f);
-        h.y(f4);
+        h.bind();
+        h.setRadius(f5);
+        h.setInnerRect((float)d + f, (float)d2 + f, (float)(d + d3) - f, (float)(d2 + d4) - f);
+        h.setSpread(f4);
         GuiRenderPrimitives.L();
         GlStateManager.enableTexture2D();
         float f6 = 0.0f;
@@ -357,7 +357,7 @@ public class GuiRenderPrimitives {
         GL11.glVertex2d((double)(d + d3), (double)(d2 + d4));
         GL11.glEnd();
         GuiRenderPrimitives.T();
-        h.L();
+        h.restorePreviousProgram();
     }
 
     public static void A(double d, double d2, double d3, double d4, Color color, float f, float f2, int n) {
@@ -365,10 +365,10 @@ public class GuiRenderPrimitives {
             return;
         }
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.I(d, d2, d3, d4, f, f2, n, color);
+            BufferedGuiRenderPrimitives.drawInvertedRoundedRectCorners(d, d2, d3, d4, f, f2, n, color);
             return;
         }
-        if (!y.R()) {
+        if (!y.isLinked()) {
             return;
         }
         float f3 = 0.5f;
@@ -383,30 +383,30 @@ public class GuiRenderPrimitives {
             d4 += (double)f4 * 1.5;
             d3 += (double)(f4 * 1.0f);
         }
-        y.f();
-        y.o(f5);
-        y.Y((float)d + f, (float)d2 + f, (float)(d + d3) - f, (float)(d2 + d4) - f);
-        y.W(f4);
-        y.r(n);
+        y.bind();
+        y.setRadius(f5);
+        y.setInnerRect((float)d + f, (float)d2 + f, (float)(d + d3) - f, (float)(d2 + d4) - f);
+        y.setSpread(f4);
+        y.setCornerMask(n);
         GuiRenderPrimitives.L();
         GuiRenderPrimitives.Z(color);
-        J.reset();
-        J.addVertex2D((float)d + f3, (float)d2 + f3);
-        J.addVertex2D((float)(d + d3 - (double)f3), (float)d2 + f3);
-        J.addVertex2D((float)(d + d3 - (double)f3), (float)(d2 + d4 - (double)f3));
-        J.addVertex2D((float)d + f3, (float)(d2 + d4 - (double)f3));
-        J.uploadAndDraw();
+        quadVertexBuffer.reset();
+        quadVertexBuffer.addVertex2D((float)d + f3, (float)d2 + f3);
+        quadVertexBuffer.addVertex2D((float)(d + d3 - (double)f3), (float)d2 + f3);
+        quadVertexBuffer.addVertex2D((float)(d + d3 - (double)f3), (float)(d2 + d4 - (double)f3));
+        quadVertexBuffer.addVertex2D((float)d + f3, (float)(d2 + d4 - (double)f3));
+        quadVertexBuffer.uploadAndDraw();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GuiRenderPrimitives.T();
-        y.L();
+        y.restorePreviousProgram();
     }
 
     public static void a(float f, float f2, float f3, float f4, float f5, float f6, Color color) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.T(f, f2, f3, f4, f5, f6, color);
+            BufferedGuiRenderPrimitives.drawDottedLine(f, f2, f3, f4, f5, f6, color);
             return;
         }
-        if (!r.R()) {
+        if (!r.isLinked()) {
             return;
         }
         float f7 = f5 + f6;
@@ -414,22 +414,22 @@ public class GuiRenderPrimitives {
         float f9 = Math.max(f, f3) + f7;
         float f10 = Math.min(f2, f4) - f7;
         float f11 = Math.max(f2, f4) + f7;
-        r.f();
+        r.bind();
         GuiRenderPrimitives.L();
-        r.o(f, f2);
-        r.P(f3, f4);
-        r.B(f5);
-        r.M(f6);
+        r.setStart(f, f2);
+        r.setEnd(f3, f4);
+        r.setThickness(f5);
+        r.setSpacing(f6);
         GuiRenderPrimitives.Z(color);
-        J.reset();
-        J.addVertex2D(f8, f10);
-        J.addVertex2D(f9, f10);
-        J.addVertex2D(f9, f11);
-        J.addVertex2D(f8, f11);
-        J.uploadAndDraw();
+        quadVertexBuffer.reset();
+        quadVertexBuffer.addVertex2D(f8, f10);
+        quadVertexBuffer.addVertex2D(f9, f10);
+        quadVertexBuffer.addVertex2D(f9, f11);
+        quadVertexBuffer.addVertex2D(f8, f11);
+        quadVertexBuffer.uploadAndDraw();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GuiRenderPrimitives.T();
-        r.L();
+        r.restorePreviousProgram();
     }
 
     public static void B(double d, double d2, double d3, double d4, Color color, float f) {
@@ -438,7 +438,7 @@ public class GuiRenderPrimitives {
 
     public static void q(double d, double d2, double d3, double d4, double d5, Color color, Color color2) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.t(d, d2, d3, d4, d5, color, color2);
+            BufferedGuiRenderPrimitives.fillBorderAdjustedRect(d, d2, d3, d4, d5, color, color2);
             return;
         }
         if (color.equals(color2)) {
@@ -448,25 +448,25 @@ public class GuiRenderPrimitives {
         }
         GuiRenderPrimitives.C(d -= d5, d2, (d3 += d5) - d5, (d4 += d5) - d5, color);
         GuiRenderPrimitives.L();
-        Z.reset();
+        borderVertexBuffer.reset();
         GuiRenderPrimitives.Z(color2);
-        Z.addVertex2D((float)(d - d5), (float)(d2 - d5));
-        Z.addVertex2D((float)(d + d3), (float)(d2 - d5));
-        Z.addVertex2D((float)(d + d3), (float)d2);
-        Z.addVertex2D((float)(d - d5), (float)d2);
-        Z.addVertex2D((float)(d - d5), (float)(d2 + d4 - d5));
-        Z.addVertex2D((float)(d + d3), (float)(d2 + d4 - d5));
-        Z.addVertex2D((float)(d + d3), (float)(d2 + d4));
-        Z.addVertex2D((float)(d - d5), (float)(d2 + d4));
-        Z.addVertex2D((float)(d - d5), (float)d2);
-        Z.addVertex2D((float)d, (float)d2);
-        Z.addVertex2D((float)d, (float)(d2 + d4 - d5));
-        Z.addVertex2D((float)(d - d5), (float)(d2 + d4 - d5));
-        Z.addVertex2D((float)(d + d3 - d5), (float)d2);
-        Z.addVertex2D((float)(d + d3), (float)d2);
-        Z.addVertex2D((float)(d + d3), (float)(d2 + d4 - d5));
-        Z.addVertex2D((float)(d + d3 - d5), (float)(d2 + d4 - d5));
-        Z.uploadAndDraw();
+        borderVertexBuffer.addVertex2D((float)(d - d5), (float)(d2 - d5));
+        borderVertexBuffer.addVertex2D((float)(d + d3), (float)(d2 - d5));
+        borderVertexBuffer.addVertex2D((float)(d + d3), (float)d2);
+        borderVertexBuffer.addVertex2D((float)(d - d5), (float)d2);
+        borderVertexBuffer.addVertex2D((float)(d - d5), (float)(d2 + d4 - d5));
+        borderVertexBuffer.addVertex2D((float)(d + d3), (float)(d2 + d4 - d5));
+        borderVertexBuffer.addVertex2D((float)(d + d3), (float)(d2 + d4));
+        borderVertexBuffer.addVertex2D((float)(d - d5), (float)(d2 + d4));
+        borderVertexBuffer.addVertex2D((float)(d - d5), (float)d2);
+        borderVertexBuffer.addVertex2D((float)d, (float)d2);
+        borderVertexBuffer.addVertex2D((float)d, (float)(d2 + d4 - d5));
+        borderVertexBuffer.addVertex2D((float)(d - d5), (float)(d2 + d4 - d5));
+        borderVertexBuffer.addVertex2D((float)(d + d3 - d5), (float)d2);
+        borderVertexBuffer.addVertex2D((float)(d + d3), (float)d2);
+        borderVertexBuffer.addVertex2D((float)(d + d3), (float)(d2 + d4 - d5));
+        borderVertexBuffer.addVertex2D((float)(d + d3 - d5), (float)(d2 + d4 - d5));
+        borderVertexBuffer.uploadAndDraw();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GuiRenderPrimitives.T();
     }
@@ -475,65 +475,65 @@ public class GuiRenderPrimitives {
         if (GuiRenderPrimitives.d()) {
             return;
         }
-        k.f();
-        k.h((float)d);
-        k.A((float)d2);
-        k.f((float)d3);
-        k.N((float)Minecraft.J() / 2.0f, (float)Minecraft.h() / 2.0f);
+        k.bind();
+        k.setOuterRadius((float)d);
+        k.setInnerRadius((float)d2);
+        k.setIntensity((float)d3);
+        k.setResolution((float)Minecraft.J() / 2.0f, (float)Minecraft.h() / 2.0f);
         GuiRenderPrimitives.L();
         GuiRenderPrimitives.T();
-        k.L();
+        k.restorePreviousProgram();
     }
 
     public static void p(float f, float f2, float f3, float f4, float f5, float f6, float f7, Color color) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.Q(f, f2, f3, f4, f5, f6, f7, color);
+            BufferedGuiRenderPrimitives.drawArcStroke(f, f2, f3, f4, f5, f6, f7, color);
             return;
         }
         float f8 = (f3 += f5 * 4.0f) / 2.0f;
-        p.f();
-        p.X(f8 - f4 / 2.0f, f4 / 2.0f);
-        p.B((f -= f5 * 2.0f) + f8, (f2 -= f5 * 2.0f) + f8);
-        p.g(f5);
-        p.H(f6, f7);
+        p.bind();
+        p.setRadiusAndThickness(f8 - f4 / 2.0f, f4 / 2.0f);
+        p.setCenter((f -= f5 * 2.0f) + f8, (f2 -= f5 * 2.0f) + f8);
+        p.setFeather(f5);
+        p.setAngleRange(f6, f7);
         GuiRenderPrimitives.L();
         GuiRenderPrimitives.Z(color);
-        J.reset();
-        J.addVertex2D(f, f2);
-        J.addVertex2D(f + f3, f2);
-        J.addVertex2D(f + f3, f2 + f3);
-        J.addVertex2D(f, f2 + f3);
-        J.uploadAndDraw();
+        quadVertexBuffer.reset();
+        quadVertexBuffer.addVertex2D(f, f2);
+        quadVertexBuffer.addVertex2D(f + f3, f2);
+        quadVertexBuffer.addVertex2D(f + f3, f2 + f3);
+        quadVertexBuffer.addVertex2D(f, f2 + f3);
+        quadVertexBuffer.uploadAndDraw();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GuiRenderPrimitives.T();
-        p.L();
+        p.restorePreviousProgram();
     }
 
     public static void g(double d, double d2, double d3, double d4, float f, float f2, Color color) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.O((float)d, (float)d2, (float)d3, (float)d4, f, f2, color);
+            BufferedGuiRenderPrimitives.drawRoundedRectShadow((float)d, (float)d2, (float)d3, (float)d4, f, f2, color);
             return;
         }
         if (d3 == 0.0 || d4 == 0.0) {
             return;
         }
-        if (!l.f()) {
+        if (!l.bind()) {
             return;
         }
-        l.E((float)d, (float)(d2 -= 1.0), (float)d3, (float)(d4 += 1.0));
-        l.N(f);
-        l.U(color);
-        l.o(f2);
+        l.setInnerRect((float)d, (float)(d2 -= 1.0), (float)d3, (float)(d4 += 1.0));
+        l.setSpread(f);
+        l.setShadowColor(color);
+        l.setCornerRadius(f2);
         GuiRenderPrimitives.L();
-        J.reset();
-        J.addVertex2D((float)d - f, (float)d2 - f);
-        J.addVertex2D((float)(d + d3 + (double)f), (float)d2 - f);
-        J.addVertex2D((float)(d + d3 + (double)f), (float)(d2 + d4 + (double)f));
-        J.addVertex2D((float)d - f, (float)(d2 + d4 + (double)f));
-        J.uploadAndDraw();
+        quadVertexBuffer.reset();
+        quadVertexBuffer.addVertex2D((float)d - f, (float)d2 - f);
+        quadVertexBuffer.addVertex2D((float)(d + d3 + (double)f), (float)d2 - f);
+        quadVertexBuffer.addVertex2D((float)(d + d3 + (double)f), (float)(d2 + d4 + (double)f));
+        quadVertexBuffer.addVertex2D((float)d - f, (float)(d2 + d4 + (double)f));
+        quadVertexBuffer.uploadAndDraw();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GuiRenderPrimitives.T();
-        l.L();
+        l.restorePreviousProgram();
     }
 
     private static void T() {
@@ -582,7 +582,7 @@ public class GuiRenderPrimitives {
             renderItemTextBridge = RenderItemTextBridge.t(matrixStack);
         }
         if (ForgeVersion.MC_1_20_6.d()) {
-            ItemStackRenderUtils.O(renderItemTextBridge, itemStack, (int)(d2 / d5 * d4), (int)(d3 / d5 * d4));
+            ItemStackRenderUtils.renderItemOverlay(renderItemTextBridge, itemStack, (int)(d2 / d5 * d4), (int)(d3 / d5 * d4));
         } else {
             wrapper = Minecraft.v();
             ((RenderItem)wrapper).a(itemStack, (int)(d2 * (double)f2), (int)(d3 * (double)f2), matrixStack);
@@ -599,8 +599,8 @@ public class GuiRenderPrimitives {
 
     public static void B() {
         if (!GuiRenderPrimitives.d()) {
-            J.b(8, 7, 2);
-            Z.b(40, 7, 2);
+            quadVertexBuffer.configureVertexBuffer(8, 7, 2);
+            borderVertexBuffer.configureVertexBuffer(40, 7, 2);
             g = new RoundedRectShaderProgram();
             l = new RoundedRectShadowShaderProgram();
             V = new CircleShaderProgram();
@@ -636,8 +636,8 @@ public class GuiRenderPrimitives {
     public static void g(ItemStack itemStack, double d, double d2, double d3, boolean bl) {
         if (GuiRenderPrimitives.d()) {
             Supplier<Void> supplier = () -> GuiRenderPrimitives.lambda$drawItemSprite$0(d, itemStack, d2, d3);
-            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(VertexCoordinateMode.MINECRAFT, false).b(supplier);
-            RenderBatchManager.M().O(renderBatchBuilder);
+            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(VertexCoordinateMode.MINECRAFT, false).setStandaloneRenderCallback(supplier);
+            RenderBatchManager.getInstance().queueGuiBatch(renderBatchBuilder);
             return;
         }
         GL11.glPushMatrix();
@@ -683,17 +683,17 @@ public class GuiRenderPrimitives {
 
     public static void y(float f, float f2, float f3, float f4, Color color) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.U(f, f2, f3, f4, color);
+            BufferedGuiRenderPrimitives.fillRect(f, f2, f3, f4, color);
             return;
         }
         GuiRenderPrimitives.L();
         GuiRenderPrimitives.Z(color);
-        J.reset();
-        J.addVertex2D(f, f2);
-        J.addVertex2D(f + f3, f2);
-        J.addVertex2D(f + f3, f2 + f4);
-        J.addVertex2D(f, f2 + f4);
-        J.uploadAndDraw();
+        quadVertexBuffer.reset();
+        quadVertexBuffer.addVertex2D(f, f2);
+        quadVertexBuffer.addVertex2D(f + f3, f2);
+        quadVertexBuffer.addVertex2D(f + f3, f2 + f4);
+        quadVertexBuffer.addVertex2D(f, f2 + f4);
+        quadVertexBuffer.uploadAndDraw();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GuiRenderPrimitives.T();
     }
@@ -702,13 +702,13 @@ public class GuiRenderPrimitives {
         if (d3 == 0.0 || d4 == 0.0) {
             return;
         }
-        if (!Y.R()) {
+        if (!Y.isLinked()) {
             return;
         }
-        Y.f();
-        Y.g(f);
-        Y.M((float)d3, (float)d4);
-        Y.k(n);
+        Y.bind();
+        Y.setBlurRadius(f);
+        Y.configureTexture((float)d3, (float)d4);
+        Y.setBlurDirection(n);
         GuiRenderPrimitives.L();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
@@ -727,12 +727,12 @@ public class GuiRenderPrimitives {
         GL11.glVertex2d((double)(d + d3), (double)(d2 + d4));
         GL11.glEnd();
         GuiRenderPrimitives.T();
-        Y.L();
+        Y.restorePreviousProgram();
     }
 
     public static void u(double d, double d2, double d3, double d4, double d5, double d6, double d7, double d8, Color color) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.r(d, d2, d3, d4, d5, d6, d7, d8, color);
+            BufferedGuiRenderPrimitives.fillQuad(d, d2, d3, d4, d5, d6, d7, d8, color);
             return;
         }
         boolean bl = GL11.glIsEnabled((int)3042);
@@ -744,7 +744,7 @@ public class GuiRenderPrimitives {
             GlStateManager.disableTexture2D();
         }
         GL11.glBlendFunc((int)770, (int)771);
-        OpenGlBackendHolder.d.l(2881);
+        OpenGlBackendHolder.backend.enableCapability(2881);
         GL11.glPushMatrix();
         GL11.glColor4d((double)((double)color.getRed() / 255.0), (double)((double)color.getGreen() / 255.0), (double)((double)color.getBlue() / 255.0), (double)((double)color.getAlpha() / 255.0));
         GL11.glBegin((int)7);
@@ -754,7 +754,7 @@ public class GuiRenderPrimitives {
         GL11.glVertex2d((double)d5, (double)d6);
         GL11.glEnd();
         GL11.glPopMatrix();
-        OpenGlBackendHolder.d.u$src$V$hntn98(2881);
+        OpenGlBackendHolder.backend.disableCapability(2881);
         if (bl2) {
             GlStateManager.enableTexture2D();
         }
@@ -772,18 +772,18 @@ public class GuiRenderPrimitives {
             float f2 = (float)d2 - 1.0f;
             float f3 = (float)d3;
             float f4 = (float)d4 + 1.0f;
-            BufferedGuiRenderPrimitives.Y(f, f2, f3, f4, 12.0f, 6.0f, new Color(0, 0, 0, 150), 0.0f, 0.0f, 1.0f, new Color(45, 45, 45, 255), new Color(0, 0, 0, 170), 0.0f, 0.0f, new Color(51, 51, 51, 255), false);
+            BufferedGuiRenderPrimitives.drawCompositeRoundedRect(f, f2, f3, f4, 12.0f, 6.0f, new Color(0, 0, 0, 150), 0.0f, 0.0f, 1.0f, new Color(45, 45, 45, 255), new Color(0, 0, 0, 170), 0.0f, 0.0f, new Color(51, 51, 51, 255), false);
             return;
         }
         float f = 12.0f;
-        G.z((float)d, (float)(d2 -= 1.0), (float)d3, (float)(d4 += 1.0));
+        G.setInnerRect((float)d, (float)(d2 -= 1.0), (float)d3, (float)(d4 += 1.0));
         GuiRenderPrimitives.L();
-        J.reset();
-        J.addVertex2D((float)d - f, (float)d2 - f);
-        J.addVertex2D((float)(d + d3 + (double)f), (float)d2 - f);
-        J.addVertex2D((float)(d + d3 + (double)f), (float)(d2 + d4 + (double)f));
-        J.addVertex2D((float)d - f, (float)(d2 + d4 + (double)f));
-        J.uploadAndDraw();
+        quadVertexBuffer.reset();
+        quadVertexBuffer.addVertex2D((float)d - f, (float)d2 - f);
+        quadVertexBuffer.addVertex2D((float)(d + d3 + (double)f), (float)d2 - f);
+        quadVertexBuffer.addVertex2D((float)(d + d3 + (double)f), (float)(d2 + d4 + (double)f));
+        quadVertexBuffer.addVertex2D((float)d - f, (float)(d2 + d4 + (double)f));
+        quadVertexBuffer.uploadAndDraw();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GuiRenderPrimitives.T();
     }
@@ -794,12 +794,12 @@ public class GuiRenderPrimitives {
 
     public static void U(double d, double d2, double d3, double d4, double d5, double d6, Color color) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.p(d, d2, d3, d4, d5, d6, color);
+            BufferedGuiRenderPrimitives.fillTriangle(d, d2, d3, d4, d5, d6, color);
             return;
         }
         GuiRenderPrimitives.L();
         GL11.glBlendFunc((int)770, (int)771);
-        OpenGlBackendHolder.d.l(2881);
+        OpenGlBackendHolder.backend.enableCapability(2881);
         GL11.glPushMatrix();
         GL11.glColor4d((double)((double)color.getRed() / 255.0), (double)((double)color.getGreen() / 255.0), (double)((double)color.getBlue() / 255.0), (double)((double)color.getAlpha() / 255.0));
         GL11.glBegin((int)6);
@@ -808,7 +808,7 @@ public class GuiRenderPrimitives {
         GL11.glVertex2d((double)d5, (double)d6);
         GL11.glEnd();
         GL11.glPopMatrix();
-        OpenGlBackendHolder.d.u$src$V$hntn98(2881);
+        OpenGlBackendHolder.backend.disableCapability(2881);
         GuiRenderPrimitives.T();
     }
 
@@ -818,7 +818,7 @@ public class GuiRenderPrimitives {
 
     public static void u(double d, double d2, double d3, double d4, float f, Color color) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.T((float)d, (float)d2, (float)d3, (float)d4, f, color);
+            BufferedGuiRenderPrimitives.drawLine((float)d, (float)d2, (float)d3, (float)d4, f, color);
             return;
         }
         boolean bl = GL11.glIsEnabled((int)3042);
@@ -831,7 +831,7 @@ public class GuiRenderPrimitives {
         }
         GL11.glColor4d((double)((double)color.getRed() / 255.0), (double)((double)color.getGreen() / 255.0), (double)((double)color.getBlue() / 255.0), (double)((double)color.getAlpha() / 255.0));
         GL11.glLineWidth((float)f);
-        OpenGlBackendHolder.d.l(2848);
+        OpenGlBackendHolder.backend.enableCapability(2848);
         GL11.glBegin((int)3);
         GL11.glVertex2d((double)d, (double)d2);
         GL11.glVertex2d((double)d3, (double)d4);
@@ -848,7 +848,7 @@ public class GuiRenderPrimitives {
     public static void R(double d, double d2, double d3, float f, float f2, float f3, Color color) {
         float f4;
         if (GuiRenderPrimitives.d()) {
-            BufferedRenderPrimitives.X(d, d2, d3, f, f2, f3, color);
+            BufferedRenderPrimitives.drawCylinderSides(d, d2, d3, f, f2, f3, color);
             return;
         }
         double d4 = RenderManager.getInterpolatedRenderPosX();
@@ -857,15 +857,15 @@ public class GuiRenderPrimitives {
         d -= d4;
         d2 -= d5;
         d3 -= d6;
-        float f5 = f4 = FreeLookHudModule.z() ? FreeLookHudModule.w$src$F$1kb9hl5() - Minecraft.thePlayer().J() : 0.0f;
+        float f5 = f4 = FreeLookHudModule.isActive() ? FreeLookHudModule.getRenderPitch() - Minecraft.thePlayer().J() : 0.0f;
         if (!ForgeVersion.MC_1_16_5.d()) {
-            OpenGlBackendHolder.d.I(d, d2, d3);
-            OpenGlBackendHolder.d.X(-f4, 0.0f, 1.0f, 0.0f);
+            OpenGlBackendHolder.backend.translate(d, d2, d3);
+            OpenGlBackendHolder.backend.rotate(-f4, 0.0f, 1.0f, 0.0f);
         }
         RenderUtil.d();
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().B(1.0);
         RenderUtils.g();
-        OpenGlBackendHolder.d.l(3042);
+        OpenGlBackendHolder.backend.enableCapability(3042);
         GL11.glBlendFunc((int)770, (int)771);
         GlStateManager.disableTexture2D();
         GL11.glDepthMask((boolean)false);
@@ -887,7 +887,7 @@ public class GuiRenderPrimitives {
         GL11.glShadeModel((int)7424);
         GL11.glDepthMask((boolean)true);
         GlStateManager.enableTexture2D();
-        OpenGlBackendHolder.d.u$src$V$hntn98(3042);
+        OpenGlBackendHolder.backend.disableCapability(3042);
         RenderUtils.f();
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
         RenderUtil.Y();
@@ -907,10 +907,10 @@ public class GuiRenderPrimitives {
             return;
         }
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.Y((float)d, (float)d2, (float)d3, (float)d4, color, bl, f, f2, f3, color2, n);
+            BufferedGuiRenderPrimitives.drawCornerMaskedRoundedRect((float)d, (float)d2, (float)d3, (float)d4, color, bl, f, f2, f3, color2, n);
             return;
         }
-        if (!g.R() || f == 0.0f) {
+        if (!g.isLinked() || f == 0.0f) {
             GuiRenderPrimitives.C(d, d2, d3, d4, color);
             return;
         }
@@ -929,22 +929,22 @@ public class GuiRenderPrimitives {
             d4 += (double)(f5 * 1.0f);
             d3 += (double)(f5 * 1.0f);
         }
-        g.f();
-        g.h(f6);
-        g.H((float)d + f, (float)d2 + f, (float)(d + d3) - f, (float)(d2 + d4) - f);
-        g.y(f5);
-        g.G(n);
+        g.bind();
+        g.setRadius(f6);
+        g.setInnerRect((float)d + f, (float)d2 + f, (float)(d + d3) - f, (float)(d2 + d4) - f);
+        g.setSpread(f5);
+        g.setCornerMask(n);
         GuiRenderPrimitives.L();
         GuiRenderPrimitives.Z(color);
-        J.reset();
-        J.addVertex2D((float)d + f4, (float)d2 + f4);
-        J.addVertex2D((float)(d + d3 - (double)f4), (float)d2 + f4);
-        J.addVertex2D((float)(d + d3 - (double)f4), (float)(d2 + d4 - (double)f4));
-        J.addVertex2D((float)d + f4, (float)(d2 + d4 - (double)f4));
-        J.uploadAndDraw();
+        quadVertexBuffer.reset();
+        quadVertexBuffer.addVertex2D((float)d + f4, (float)d2 + f4);
+        quadVertexBuffer.addVertex2D((float)(d + d3 - (double)f4), (float)d2 + f4);
+        quadVertexBuffer.addVertex2D((float)(d + d3 - (double)f4), (float)(d2 + d4 - (double)f4));
+        quadVertexBuffer.addVertex2D((float)d + f4, (float)(d2 + d4 - (double)f4));
+        quadVertexBuffer.uploadAndDraw();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GuiRenderPrimitives.T();
-        g.L();
+        g.restorePreviousProgram();
     }
 
     public static void d(double d, double d2, double d3, float f, Color color) {
@@ -957,7 +957,7 @@ public class GuiRenderPrimitives {
 
     public static void Y(float f, float f2, float f3, float f4, Color color, double d, Color color2) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.y(f, f2, f3, f4, color, (float)d, color2);
+            BufferedGuiRenderPrimitives.drawCircleWithCenterRect(f, f2, f3, f4, color, (float)d, color2);
             return;
         }
         f -= f4 / 2.0f;
@@ -969,21 +969,21 @@ public class GuiRenderPrimitives {
             double d2 = (double)(f + f5 / 2.0f) - d / 2.0;
             GuiRenderPrimitives.d(d2, (double)f2, d, (double)f3, color2);
         }
-        V.f();
+        V.bind();
         GuiRenderPrimitives.L();
-        V.b(f3 / 2.0f);
-        V.p(f4);
-        V.e(f + f5 / 2.0f, f2 + f6 / 2.0f);
+        V.setRadius(f3 / 2.0f);
+        V.setFeather(f4);
+        V.setCenter(f + f5 / 2.0f, f2 + f6 / 2.0f);
         GuiRenderPrimitives.Z(color);
-        J.reset();
-        J.addVertex2D(f, f2);
-        J.addVertex2D(f + f5, f2);
-        J.addVertex2D(f + f5, f2 + f6);
-        J.addVertex2D(f, f2 + f6);
-        J.uploadAndDraw();
+        quadVertexBuffer.reset();
+        quadVertexBuffer.addVertex2D(f, f2);
+        quadVertexBuffer.addVertex2D(f + f5, f2);
+        quadVertexBuffer.addVertex2D(f + f5, f2 + f6);
+        quadVertexBuffer.addVertex2D(f, f2 + f6);
+        quadVertexBuffer.uploadAndDraw();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GuiRenderPrimitives.T();
-        V.L();
+        V.restorePreviousProgram();
     }
 
     public static void n(ItemStack itemStack, double d, double d2, double d3) {
@@ -999,36 +999,36 @@ public class GuiRenderPrimitives {
 
     public static void m(float f, float f2, float f3, float f4, float f5, Color color) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.X(f, f2, f3, f4, f5, color);
+            BufferedGuiRenderPrimitives.drawCircleStroke(f, f2, f3, f4, f5, color);
             return;
         }
         f -= f5 / 2.0f;
         f2 -= f5 / 2.0f;
         float f6 = f3 += f5;
         float f7 = f3;
-        B.f();
-        B.I(f3 / 2.0f, f4);
-        B.A(f5);
-        B.x(f + f6 / 2.0f, f2 + f7 / 2.0f);
+        B.bind();
+        B.setRadiusAndThickness(f3 / 2.0f, f4);
+        B.setFeather(f5);
+        B.setCenter(f + f6 / 2.0f, f2 + f7 / 2.0f);
         GuiRenderPrimitives.L();
         GuiRenderPrimitives.Z(color);
-        J.reset();
-        J.addVertex2D(f, f2);
-        J.addVertex2D(f + f6, f2);
-        J.addVertex2D(f + f6, f2 + f7);
-        J.addVertex2D(f, f2 + f7);
-        J.uploadAndDraw();
+        quadVertexBuffer.reset();
+        quadVertexBuffer.addVertex2D(f, f2);
+        quadVertexBuffer.addVertex2D(f + f6, f2);
+        quadVertexBuffer.addVertex2D(f + f6, f2 + f7);
+        quadVertexBuffer.addVertex2D(f, f2 + f7);
+        quadVertexBuffer.uploadAndDraw();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GuiRenderPrimitives.T();
-        B.L();
+        B.restorePreviousProgram();
     }
 
     public static void u(float f, float f2, float f3, float f4, Color color, GlImageTexture glImageTexture) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.X(f, f2, f3, f4, color, glImageTexture);
+            BufferedGuiRenderPrimitives.drawTexturedCircle(f, f2, f3, f4, color, glImageTexture);
             return;
         }
-        glImageTexture.F();
+        glImageTexture.bind();
         f -= f4 / 2.0f;
         f2 -= f4 / 2.0f;
         float f5 = f3 += f4;
@@ -1036,11 +1036,11 @@ public class GuiRenderPrimitives {
         if (color != null) {
             GuiRenderPrimitives.Z(color);
         }
-        a.f();
+        a.bind();
         GuiRenderPrimitives.L();
-        a.b(f3 / 2.0f);
-        a.p(f4);
-        a.e(f + f5 / 2.0f, f2 + f6 / 2.0f);
+        a.setRadius(f3 / 2.0f);
+        a.setFeather(f4);
+        a.setCenter(f + f5 / 2.0f, f2 + f6 / 2.0f);
         GlStateManager.enableTexture2D();
         float f7 = 0.0f;
         float f8 = 0.0f;
@@ -1057,30 +1057,30 @@ public class GuiRenderPrimitives {
         GL11.glVertex2f((float)(f + f5), (float)(f2 + f6));
         GL11.glEnd();
         GuiRenderPrimitives.T();
-        a.L();
+        a.restorePreviousProgram();
     }
 
     public static void P(double d, double d2, double d3, double d4, Color color, float f, float f2, float f3) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.c((float)d, (float)d2, (float)d3, (float)d4, color, f, f2, f3);
+            BufferedGuiRenderPrimitives.drawRoundedRect((float)d, (float)d2, (float)d3, (float)d4, color, f, f2, f3);
             return;
         }
         float f4 = 0.5f;
         float f5 = f3;
-        c.f();
-        c.A((float)d + f + f2, (float)(d2 -= (double)f5) + f + f2, (float)((d -= (double)f5 - 0.5) + (d3 += (double)(f5 * 1.0f))) - (f + f2), (float)(d2 + (d4 += (double)f5 * 1.5)) - (f + f2));
-        c.F(f, f3, f2);
+        c.bind();
+        c.setInnerRect((float)d + f + f2, (float)(d2 -= (double)f5) + f + f2, (float)((d -= (double)f5 - 0.5) + (d3 += (double)(f5 * 1.0f))) - (f + f2), (float)(d2 + (d4 += (double)f5 * 1.5)) - (f + f2));
+        c.setRadiusParameters(f, f3, f2);
         GuiRenderPrimitives.L();
         GuiRenderPrimitives.Z(color);
-        J.reset();
-        J.addVertex2D((float)d + f4, (float)d2 + f4);
-        J.addVertex2D((float)(d + d3 - (double)f4), (float)d2 + f4);
-        J.addVertex2D((float)(d + d3 - (double)f4), (float)(d2 + d4 - (double)f4));
-        J.addVertex2D((float)d + f4, (float)(d2 + d4 - (double)f4));
-        J.uploadAndDraw();
+        quadVertexBuffer.reset();
+        quadVertexBuffer.addVertex2D((float)d + f4, (float)d2 + f4);
+        quadVertexBuffer.addVertex2D((float)(d + d3 - (double)f4), (float)d2 + f4);
+        quadVertexBuffer.addVertex2D((float)(d + d3 - (double)f4), (float)(d2 + d4 - (double)f4));
+        quadVertexBuffer.addVertex2D((float)d + f4, (float)(d2 + d4 - (double)f4));
+        quadVertexBuffer.uploadAndDraw();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GuiRenderPrimitives.T();
-        c.L();
+        c.restorePreviousProgram();
     }
 
     public static void L(int n, int n2) {
@@ -1114,7 +1114,7 @@ public class GuiRenderPrimitives {
     }
 
     public static void Z(Color color) {
-        OpenGlBackendHolder.d.q((float)color.getRed() / 255.0f, (float)color.getGreen() / 255.0f, (float)color.getBlue() / 255.0f, (float)color.getAlpha() / 255.0f);
+        OpenGlBackendHolder.backend.setColor((float)color.getRed() / 255.0f, (float)color.getGreen() / 255.0f, (float)color.getBlue() / 255.0f, (float)color.getAlpha() / 255.0f);
     }
 }
 

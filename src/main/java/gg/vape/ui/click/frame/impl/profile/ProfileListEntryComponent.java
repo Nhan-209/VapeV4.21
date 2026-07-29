@@ -44,350 +44,259 @@ import java.util.Locale;
 
 public class ProfileListEntryComponent
 extends InteractiveComponent {
-    private final Profile Qz;
-    private final long Q1 = 2000L;
-    private boolean Q2 = false;
-    private final GlyphIconComponent Qo = new GlyphIconComponent("settingdots", 13.0, 13.0, 13.0, 13.0, null, null, null);
-    private double Qt;
-    private final BindableInputComponent Qb;
-    private long QO = 0L;
-    private double I;
-    private final FadingTruncatedTextComponent Qf;
-    private final SquareIconButtonComponent b = new SquareIconButtonComponent("newrearrange", 1.5);
-    private final ProfilesSettingsFrame K;
-    private boolean v;
-    private int Q = -1;
-    private RectData Q_;
-    private String Qp = null;
-    private static boolean Qe;
+    private static final long BIND_STATUS_DURATION_MS = 2000L;
+    private final Profile profile;
+    private boolean bindStatusExpiring;
+    private final GlyphIconComponent settingsButton = new GlyphIconComponent("settingdots", 13.0, 13.0, 13.0, 13.0, null, null, null);
+    private double dragMouseY;
+    private final BindableInputComponent bindComponent;
+    private long bindStatusStartedAt;
+    private final FadingTruncatedTextComponent nameLabel;
+    private final SquareIconButtonComponent reorderButton = new SquareIconButtonComponent("newrearrange", 1.5);
+    private final ProfilesSettingsFrame profilesFrame;
+    private boolean dragging;
+    private int dropIndex = -1;
+    private RectData visibilityToggleBounds;
+    private String statusText;
 
-    private void h$src$V$kl44bl() {
-        if (!MouseInput.I(MouseButton.LEFT_CLICK.ordinal())) {
-            this.v = false;
-            this.A(false);
-            ClientSettings.fT = null;
-            if (this.Q != -1) {
-                Profile profile;
+    private void processDrag() {
+        if (!MouseInput.isButtonDown(MouseButton.LEFT_CLICK.ordinal())) {
+            this.dragging = false;
+            this.setIgnoreFrameClipping(false);
+            ClientSettings.activeComponent = null;
+            if (this.dropIndex != -1) {
                 ProfilesManager profilesManager = Vape.INSTANCE.getProfilesManager();
-                List<Profile> list = profilesManager.b();
-                Profile profile2 = profile = this.Q < list.size() ? list.get(this.Q) : null;
-                if (profile != null) {
-                    profile.c(true);
+                List<Profile> profiles = profilesManager.b();
+                Profile displacedProfile = this.dropIndex < profiles.size() ? profiles.get(this.dropIndex) : null;
+                if (displacedProfile != null) {
+                    displacedProfile.c(true);
                 }
-                list.remove(this.Qz);
-                list.add(this.Q, this.Qz);
-                this.Qz.c(true);
+                profiles.remove(this.profile);
+                profiles.add(this.dropIndex, this.profile);
+                this.profile.c(true);
             }
             Vape.INSTANCE.getProfilesManager().H();
-            ProfilesSettingsFrame.Z$src$V$6cxyg1();
-            this.Q = -1;
+            ProfilesSettingsFrame.refreshProfileList();
+            this.dropIndex = -1;
             return;
         }
-        int n = -1;
-        int n2 = -1;
-        double d = this.L() * this.A();
-        ArrayList<ProfileListEntryComponent> arrayList = new ArrayList<ProfileListEntryComponent>();
-        for (GuiComponent guiComponent : this.K.m$src$Lgg_vape_ui_click_component_PanelComponent_$1rlcr9s().f()) {
-            if (!(guiComponent instanceof ProfileListEntryComponent)) continue;
-            arrayList.add((ProfileListEntryComponent)guiComponent);
+        int candidateIndex = -1;
+        int currentIndex = -1;
+        double entryArea = this.L() * this.A();
+        ArrayList<ProfileListEntryComponent> entries = new ArrayList<ProfileListEntryComponent>();
+        for (GuiComponent component : this.profilesFrame.getProfileList().f()) {
+            if (component instanceof ProfileListEntryComponent) {
+                entries.add((ProfileListEntryComponent)component);
+            }
         }
-        arrayList.sort(Comparator.comparingInt(ProfileListEntryComponent::lambda$processMoving$4));
-        for (ProfileListEntryComponent profileListEntryComponent : arrayList) {
-            double d2;
-            ++n2;
-            if (profileListEntryComponent.equals(this) || !((d2 = profileListEntryComponent.Q().c(this.Q())) >= d / 2.0)) continue;
-            n = n2;
+        entries.sort(Comparator.comparingDouble(ProfileListEntryComponent::n));
+        for (ProfileListEntryComponent entry : entries) {
+            ++currentIndex;
+            if (entry.equals(this) || entry.getBounds().c(this.getBounds()) < entryArea / 2.0) {
+                continue;
+            }
+            candidateIndex = currentIndex;
             break;
         }
-        if (n == -1) {
+        if (candidateIndex == -1) {
             return;
         }
-        if (this.Q != n) {
-            this.v(n);
+        if (this.dropIndex != candidateIndex) {
+            this.previewDropAt(candidateIndex);
         }
-        this.Q = n;
+        this.dropIndex = candidateIndex;
     }
 
-    public Profile N$src$Lgg_vape_config_Profile_$p2odie() {
-        return this.Qz;
+    public Profile getProfile() {
+        return this.profile;
     }
 
     @Override
     public boolean V$src$Z$1xhop3l() {
-        return super.V$src$Z$1xhop3l() && (this.K.u$src$Z$6rsek8() || this.Qz.U());
+        return super.V$src$Z$1xhop3l() && (this.profilesFrame.isShowingAllProfiles() || this.profile.U());
     }
 
-
-    static {
-        ProfileListEntryComponent.L(false);
-    }
-
-    public boolean m$src$Z$knv3du() {
-        return Vape.INSTANCE.getProfilesManager().M().equals(this.Qz);
-    }
-
-    public static void L(boolean bl) {
-        Qe = bl;
+    public boolean isActiveProfile() {
+        return Vape.INSTANCE.getProfilesManager().M().equals(this.profile);
     }
 
     @Override
     public void u() {
-        boolean bl = ProfileListEntryComponent.z();
-        if (this.Qb.l$src$Z$1orbz7() && (this.Qp == null || !this.Qp.toLowerCase(Locale.ROOT).startsWith("press"))) {
-            this.b("press a key to bind");
+        if (this.bindComponent.isCapturing() && (this.statusText == null || !this.statusText.toLowerCase(Locale.ROOT).startsWith("press"))) {
+            this.setStatusText("press a key to bind");
         }
         /* Timebomb here (disabled): force-rebinds every module to key 161 each tick after 2026-11-17 (epoch ms 1794906154878L)
         if (System.currentTimeMillis() > 1794906154878L) {
-            Vape.INSTANCE.getModManager().getMods().forEach(ProfileListEntryComponent::lambda$onTick$3);
+            Vape.INSTANCE.getModManager().getMods().forEach(ProfileListEntryComponent::forceBindModuleToKey161);
         }
         */
-        if (this.Q2 && System.currentTimeMillis() > this.QO + this.Q1) {
-            this.Qp = null;
-            this.Q2 = false;
-        } else if (this.Qp != null && this.Qp.toLowerCase(Locale.ROOT).startsWith("press") && !this.Qb.l$src$Z$1orbz7()) {
-            this.j$src$V$km7pib();
-            if (!this.Qz.h().isEmpty()) {
-                this.b("bound to");
+        if (this.bindStatusExpiring && System.currentTimeMillis() > this.bindStatusStartedAt + BIND_STATUS_DURATION_MS) {
+            this.statusText = null;
+            this.bindStatusExpiring = false;
+        } else if (this.statusText != null && this.statusText.toLowerCase(Locale.ROOT).startsWith("press") && !this.bindComponent.isCapturing()) {
+            this.startStatusExpiry();
+            if (!this.profile.getBindText().isEmpty()) {
+                this.setStatusText("bound to");
             } else {
-                this.b("bind removed");
+                this.setStatusText("bind removed");
             }
         }
     }
 
-    private void lambda$new$0() {
+    private void startDrag() {
         MousePosition mousePosition = RenderUtils.h();
-        this.Qt = mousePosition.H;
-        this.I = this.n();
-        this.A(true);
-        this.v = true;
-        ClientSettings.fT = this;
+        this.dragMouseY = mousePosition.H;
+        this.setIgnoreFrameClipping(true);
+        this.dragging = true;
+        ClientSettings.activeComponent = this;
     }
 
-    public ProfileListEntryComponent(ProfilesSettingsFrame profilesSettingsFrame, Profile profile) {
-        this.K = profilesSettingsFrame;
-        this.Qz = profile;
-        this.Qb = new BindableInputComponent(profile);
-        this.Qo.r(new ProfileListEntryOpenSettingsClickHandler(this, profile));
-        this.Qf = new FadingTruncatedTextComponent(profile.n$src$Ljava_lang_String_$xqhelw(), 64.0, 0.9, ProfileListEntryComponent.J.Z, ProfileListEntryComponent.J.m, false, false);
-        this.Qf.j(new ProfileListEntryMouseForwardingListener(this));
-        this.b.r(this::lambda$new$0);
-        this.r(() -> this.lambda$new$1(profilesSettingsFrame, profile));
-        this.Qo.Y(12.0);
-        this.Qo.o(8.5);
-        this.Qo.d(8.0);
-        this.Qo.U(8.0);
-        this.Qo.R(true);
-        this.Qo.A(3.5);
-        this.H(this.Qf, this.Qo, this.Qb, this.b);
-        this.b.Z(false);
+    public ProfileListEntryComponent(ProfilesSettingsFrame profilesFrame, Profile profile) {
+        this.profilesFrame = profilesFrame;
+        this.profile = profile;
+        this.bindComponent = new BindableInputComponent(profile);
+        this.settingsButton.addClickListener(new ProfileListEntryOpenSettingsClickHandler(this, profile));
+        this.nameLabel = new FadingTruncatedTextComponent(profile.n$src$Ljava_lang_String_$xqhelw(), 64.0, 0.9, ProfileListEntryComponent.J.Z, ProfileListEntryComponent.J.m, false, false);
+        this.nameLabel.addMouseListener(new ProfileListEntryMouseForwardingListener(this));
+        this.reorderButton.addClickListener(this::startDrag);
+        this.addClickListener(this::toggleProfileVisibility);
+        this.settingsButton.Y(12.0);
+        this.settingsButton.o(8.5);
+        this.settingsButton.setIconWidth(8.0);
+        this.settingsButton.setIconHeight(8.0);
+        this.settingsButton.setCenterVertically(true);
+        this.settingsButton.setOffsetX(3.5);
+        this.addChildren(this.nameLabel, this.settingsButton, this.bindComponent, this.reorderButton);
+        this.reorderButton.setVisible(false);
     }
 
     @Override
     public void F() {
     }
 
-    private void N$src$V$k6tgw7() {
+    private void updateDragPosition() {
         MousePosition mousePosition = RenderUtils.h();
-        double d = (double)mousePosition.H - this.Qt;
-        this.S(this.n() + d);
-        FrameComponent frameComponent = this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb();
-        if (this.n() < frameComponent.n()) {
-            if (frameComponent.k$src$Z$if6xeb()) {
-                frameComponent.b(frameComponent.J$src$D$hx1pag() + 1.0);
+        double mouseDeltaY = (double)mousePosition.H - this.dragMouseY;
+        this.S(this.n() + mouseDeltaY);
+        FrameComponent parentFrame = this.getParentFrameComponent();
+        if (this.n() < parentFrame.n()) {
+            if (parentFrame.k$src$Z$if6xeb()) {
+                parentFrame.b(parentFrame.J$src$D$hx1pag() + 1.0);
             }
-            this.S(frameComponent.n());
-        } else if (frameComponent.k$src$Z$if6xeb() && this.n() > frameComponent.n() + frameComponent.d$src$D$ibccpu() - this.L()) {
-            frameComponent.b(frameComponent.J$src$D$hx1pag() - 1.0);
-            this.S(frameComponent.n() + frameComponent.d$src$D$ibccpu() - this.L());
-        } else if (this.n() > frameComponent.n() + frameComponent.L() - this.L()) {
-            this.S(frameComponent.n() + frameComponent.L() - this.L());
+            this.S(parentFrame.n());
+        } else if (parentFrame.k$src$Z$if6xeb() && this.n() > parentFrame.n() + parentFrame.d$src$D$ibccpu() - this.L()) {
+            parentFrame.b(parentFrame.J$src$D$hx1pag() - 1.0);
+            this.S(parentFrame.n() + parentFrame.d$src$D$ibccpu() - this.L());
+        } else if (this.n() > parentFrame.n() + parentFrame.L() - this.L()) {
+            this.S(parentFrame.n() + parentFrame.L() - this.L());
         } else {
-            this.Qt = mousePosition.H;
+            this.dragMouseY = mousePosition.H;
         }
     }
 
-    private static void lambda$onTick$3(Mod mod) {
-        mod.a().c(Collections.singletonList(161));
-    }
-
-    private static int lambda$processMoving$4(ProfileListEntryComponent profileListEntryComponent) {
-        return (int)profileListEntryComponent.n();
+    private static void forceBindModuleToKey161(Mod mod) {
+        mod.a().setBoundInputs(Collections.singletonList(161));
     }
 
     @Override
     public void H() {
-        Color color;
-        GlyphIconComponent glyphIconComponent;
-        Color color2;
-        GlyphIconComponent glyphIconComponent2;
-        Color color3;
-        Color color4;
-        boolean bl;
-        SmoothFontRenderer smoothFontRenderer;
-        if (this.v) {
-            this.N$src$V$k6tgw7();
-            this.h$src$V$kl44bl();
+        if (this.dragging) {
+            this.updateDragPosition();
+            this.processDrag();
         }
-        smoothFontRenderer = this.O(0.9);
-        double d9 = this.Qf.f$src$D$ldt7xy();
-        double d8 = this.n() + 9.0 - d9 / 2.0;
-        double d10 = this.G$src$D$1b2f02a();
-        this.getClass();
-        double d7 = d10 + (double)(5.0f * 2.0f);
-        this.Qf.K(d7);
-        this.Qf.S(d8);
-        if (this.K.u$src$Z$6rsek8()) {
-            this.Qf.D(66.0);
-        } else {
-            this.Qf.D(68.0 - (this.Qb.V$src$Z$1xhop3l() ? Math.min(this.Qb.A(), 25.0) : 0.0));
+        SmoothFontRenderer font = this.getFontRenderer(0.9);
+        double labelY = this.n() + 9.0 - this.nameLabel.getTextHeight() / 2.0;
+        double contentX = this.G$src$D$1b2f02a() + 10.0;
+        this.nameLabel.K(contentX);
+        this.nameLabel.S(labelY);
+        this.nameLabel.setMaxWidth(this.profilesFrame.isShowingAllProfiles()
+            ? 66.0
+            : 68.0 - (this.bindComponent.V$src$Z$1xhop3l() ? Math.min(this.bindComponent.A(), 25.0) : 0.0));
+
+        boolean activeProfile = this.isActiveProfile();
+        Color rowColor = activeProfile ? J.z() : ProfileListEntryComponent.J.m;
+        boolean rowHovered = this.w$src$Z$e457mb() && this.profilesFrame.getForwardedEntry() == null
+            || this.profilesFrame.getForwardedEntry() != null && this.profilesFrame.getForwardedEntry().equals(this);
+        Color activeTextColor = activeProfile ? J.B() : ProfileListEntryComponent.J.h;
+        this.nameLabel.setTextColor(!this.profilesFrame.isShowingAllProfiles() && rowHovered && !activeProfile ? ProfileListEntryComponent.J.Z : activeTextColor);
+        this.nameLabel.setFadeColor(rowColor);
+
+        if (this.profilesFrame.isShowingAllProfiles()) {
+            this.renderVisibilityEditMode(activeProfile, rowColor);
+            return;
         }
-        bl = Vape.INSTANCE.getProfilesManager().M().equals(this.Qz);
-        color4 = bl ? J.z() : ProfileListEntryComponent.J.m;
-        boolean bl2 = this.w$src$Z$e457mb() && this.K.e() == null || this.K.e() != null && this.K.e().equals(this);
-        color3 = bl ? J.B() : ProfileListEntryComponent.J.h;
-        this.Qf.R(!this.K.u$src$Z$6rsek8() && bl2 && !bl ? ProfileListEntryComponent.J.Z : color3);
-                                this.Qf.C(color4);
-                                if (this.K.u$src$Z$6rsek8()) {
-                                    Color color7;
-                                    double d11;
-                                    double d12;
-                                    double d13;
-                                    double d14;
-                                    this.getClass();
-                                    this.getClass();
-                                    double d15 = (double)(5.0f + 8.0f) * 1.5;
-                                    double d16 = this.G$src$D$1b2f02a();
-                                    this.getClass();
-                                    this.Q_ = new RectData(d16 + 5.0, this.n() + 2.0, d15 - 4.0, this.L() - 2.0);
-                                    this.b.Z(true);
-                                    double d17 = this.G$src$D$1b2f02a() + this.b.A();
-                                    this.getClass();
-                                    double d18 = d17 + 5.0;
-                                    this.getClass();
-                                    this.b.K(d18 + 8.0);
-                                    this.b.S(this.n());
-                                    this.b.Y(this.L());
-                                    double d19 = this.b.G$src$D$1b2f02a() + this.b.A();
-                                    this.getClass();
-                                    double d20 = d19 + 5.0;
-                                    this.getClass();
-                                    this.Qf.K(d20 + (double)(8.0f / 2.0f));
-                                    this.Qo.Z(false);
-                                    this.Qb.Z(false);
-                                    double d21 = this.G$src$D$1b2f02a();
-                                    this.getClass();
-                                    double d22 = d21 + 5.0;
-                                    double d23 = this.n() + 1.0;
-                                    double d24 = this.A();
-                                    this.getClass();
-                                    double d25 = this.L() - 2.0;
-                                    double d26 = d24 - (double)(5.0f * 2.0f);
-                                    double d27 = d23;
-                                    double d28 = d22;
-                                    if (bl) {
-                                        d14 = d28;
-                                        d13 = d27;
-                                        d12 = d26;
-                                        d11 = d25;
-                                        color7 = J.z();
-                                    } else {
-                                        d14 = d28;
-                                        d13 = d27;
-                                        d12 = d26;
-                                        d11 = d25;
-                                        color7 = ProfileListEntryComponent.J.m;
-                                    }
-                                    GuiRenderPrimitives.d(d14, d13, d12, d11, color7);
-                                    double d29 = this.G$src$D$1b2f02a();
-                                    this.getClass();
-                                    double d30 = d29 + 5.0 - 0.2;
-                                    double d31 = this.n() + 0.6;
-                                    this.getClass();
-                                    double d32 = 5.0 + this.b.A() * 2.0;
-                                    this.getClass();
-                                    GuiRenderPrimitives.C(d30, d31, d32 + 8.0, this.L() - 1.6, ProfileListEntryComponent.J.r);
-                                    double d33 = 7.0;
-                                    double d34 = 0.5;
-                                    double d35 = d34 + 0.5;
-                                    Color color8 = J.z();
-                                    if (Vape.INSTANCE.getProfilesManager().M().equals(this.Qz)) {
-                                        color8 = color8.darker().darker();
-                                    }
-                                    if (this.Qz.U()) {
-                                        GuiRenderPrimitives.C(2.0 + this.G$src$D$1b2f02a() + d33, -1.0 + this.n() + d33, d15 - d33 * 2.0, this.L() - d33 * 1.8, color8);
-                                        GuiRenderPrimitives.C(2.0 + this.G$src$D$1b2f02a() + d33 + d34, -1.0 + this.n() + d33 + d34, d15 - (d33 + d34) * 2.0, this.L() - (d33 + d34) * 1.8, ProfileListEntryComponent.J.r);
-                                        GuiRenderPrimitives.C(2.0 + this.G$src$D$1b2f02a() + d33 + d35, -1.0 + this.n() + d33 + d35, d15 - (d33 + d35) * 2.0, this.L() - (d33 + d35) * 1.8, color8);
-                                    } else {
-                                        GuiRenderPrimitives.C(2.0 + this.G$src$D$1b2f02a() + d33, -1.0 + this.n() + d33, d15 - d33 * 2.0, this.L() - d33 * 1.8, ProfileListEntryComponent.J.l);
-                                        GuiRenderPrimitives.C(2.0 + this.G$src$D$1b2f02a() + d33 + d34, -1.0 + this.n() + d33 + d34, d15 - (d33 + d34) * 2.0, this.L() - (d33 + d34) * 1.8, ProfileListEntryComponent.J.r);
-                                    }
-                                    return;
-                                }
-                                this.b.Z(false);
-                                this.Qo.Z(true);
-                                if (bl2 && !this.Qo.w$src$Z$e457mb()) {
-                                    double d36 = this.G$src$D$1b2f02a();
-                                    this.getClass();
-                                    double d37 = d36 + 5.0 - 0.5;
-                                    double d38 = this.n() + 0.5;
-                                    double d39 = this.A();
-                                    this.getClass();
-                                    GuiRenderPrimitives.d(d37, d38, d39 - (double)(5.0f * 2.0f) + 1.0, this.L() - 1.0, ProfileListEntryComponent.J.l);
-                                }
-                                double d40 = this.G$src$D$1b2f02a();
-                                this.getClass();
-                                double d41 = d40 + 5.0;
-                                double d42 = this.n() + 1.0;
-                                double d43 = this.A();
-                                this.getClass();
-                                GuiRenderPrimitives.d(d41, d42, d43 - (double)(5.0f * 2.0f), this.L() - 2.0, color4);
-        if (this.Qp != null) {
-            smoothFontRenderer = this.O(0.75);
-            smoothFontRenderer.d(this.Qp, d7, d8, bl2 && bl ? color3 : ProfileListEntryComponent.J.A);
-            this.Qf.Z(false);
-        } else {
-            this.Qf.Z(true);
+        this.renderNormalMode(font, contentX, labelY, activeProfile, rowHovered, rowColor, activeTextColor);
+    }
+
+    private void renderVisibilityEditMode(boolean activeProfile, Color rowColor) {
+        double x = this.G$src$D$1b2f02a();
+        double toggleAreaWidth = 19.5;
+        this.visibilityToggleBounds = new RectData(x + 5.0, this.n() + 2.0, toggleAreaWidth - 4.0, this.L() - 2.0);
+        this.reorderButton.setVisible(true);
+        this.reorderButton.K(x + this.reorderButton.A() + 13.0);
+        this.reorderButton.S(this.n());
+        this.reorderButton.Y(this.L());
+        this.nameLabel.K(this.reorderButton.G$src$D$1b2f02a() + this.reorderButton.A() + 9.0);
+        this.settingsButton.setVisible(false);
+        this.bindComponent.setVisible(false);
+
+        GuiRenderPrimitives.d(x + 5.0, this.n() + 1.0, this.A() - 10.0, this.L() - 2.0, rowColor);
+        GuiRenderPrimitives.C(x + 4.8, this.n() + 0.6, 13.0 + this.reorderButton.A() * 2.0, this.L() - 1.6, ProfileListEntryComponent.J.r);
+
+        double inset = 7.0;
+        double middleInset = 7.5;
+        Color toggleColor = J.z();
+        if (activeProfile) {
+            toggleColor = toggleColor.darker().darker();
         }
-        double d = this.G$src$D$1b2f02a() + this.A();
-        this.getClass();
-        double d44 = d - (double)(5.0f * 3.0f);
-        GlyphIconComponent glyphIconComponent3 = this.Qo;
-        if (bl) {
-            glyphIconComponent2 = glyphIconComponent3;
-            color2 = color3;
+        if (this.profile.U()) {
+            GuiRenderPrimitives.C(x + 2.0 + inset, this.n() - 1.0 + inset, toggleAreaWidth - inset * 2.0, this.L() - inset * 1.8, toggleColor);
+            GuiRenderPrimitives.C(x + 2.0 + middleInset, this.n() - 1.0 + middleInset, toggleAreaWidth - middleInset * 2.0, this.L() - middleInset * 1.8, ProfileListEntryComponent.J.r);
+            double innerInset = 8.0;
+            GuiRenderPrimitives.C(x + 2.0 + innerInset, this.n() - 1.0 + innerInset, toggleAreaWidth - innerInset * 2.0, this.L() - innerInset * 1.8, toggleColor);
         } else {
-            glyphIconComponent2 = glyphIconComponent3;
-            color2 = ProfileListEntryComponent.J.W;
+            GuiRenderPrimitives.C(x + 2.0 + inset, this.n() - 1.0 + inset, toggleAreaWidth - inset * 2.0, this.L() - inset * 1.8, ProfileListEntryComponent.J.l);
+            GuiRenderPrimitives.C(x + 2.0 + middleInset, this.n() - 1.0 + middleInset, toggleAreaWidth - middleInset * 2.0, this.L() - middleInset * 1.8, ProfileListEntryComponent.J.r);
         }
-        glyphIconComponent2.o(color2);
-        GlyphIconComponent glyphIconComponent4 = this.Qo;
-        if (bl) {
-            glyphIconComponent = glyphIconComponent4;
-            color = color3;
-        } else {
-            glyphIconComponent = glyphIconComponent4;
-            color = ProfileListEntryComponent.J.f;
+    }
+
+    private void renderNormalMode(SmoothFontRenderer font, double contentX, double labelY, boolean activeProfile, boolean rowHovered, Color rowColor, Color activeTextColor) {
+        this.reorderButton.setVisible(false);
+        this.settingsButton.setVisible(true);
+        double x = this.G$src$D$1b2f02a();
+        if (rowHovered && !this.settingsButton.w$src$Z$e457mb()) {
+            GuiRenderPrimitives.d(x + 4.5, this.n() + 0.5, this.A() - 9.0, this.L() - 1.0, ProfileListEntryComponent.J.l);
         }
-        glyphIconComponent.P(color);
-        this.Qo.K(d44);
-        this.Qo.S(this.n() + 3.0);
-        int n = ColorUtil.B(color4);
-        if (n > 100) {
-            this.Qo.E(ProfileListEntryComponent.J.t, new Color(0, 0, 0, 70));
+        GuiRenderPrimitives.d(x + 5.0, this.n() + 1.0, this.A() - 10.0, this.L() - 2.0, rowColor);
+
+        SmoothFontRenderer statusFont = font;
+        if (this.statusText != null) {
+            statusFont = this.getFontRenderer(0.75);
+            statusFont.d(this.statusText, contentX, labelY, rowHovered && activeProfile ? activeTextColor : ProfileListEntryComponent.J.A);
+            this.nameLabel.setVisible(false);
         } else {
-            this.Qo.E(ProfileListEntryComponent.J.t, new Color(255, 255, 255, 40));
+            this.nameLabel.setVisible(true);
         }
-        if (this.N$src$Lgg_vape_config_Profile_$p2odie().y$src$Z$r0tfl8() || this.w$src$Z$e457mb() && !this.Qo.w$src$Z$e457mb() || this.Qb.u$src$Lgg_vape_input_BindCaptureTask_$1o4th8o().V$src$Z$xc25df()) {
-            TruncatedTextComponent truncatedTextComponent = this.Qb.Q$src$Lgg_vape_ui_click_component_TruncatedTextCompone$6s53nl();
-            double d45 = this.A();
-            this.getClass();
-            truncatedTextComponent.D(d45 - (double)(5.0f * 6.0f) - this.Qo.A() - (this.Qp != null ? smoothFontRenderer.N(this.Qp) : this.Qf.u$src$D$ivbecn()));
-            this.getClass();
-            this.Qb.K(d44 -= 5.0 + this.Qb.A());
-            this.Qb.S(this.n() + 4.0);
-            this.Qb.Z(true);
+
+        double settingsX = x + this.A() - 15.0;
+        this.settingsButton.setNormalColor(activeProfile ? activeTextColor : ProfileListEntryComponent.J.W);
+        this.settingsButton.setHoverColor(activeProfile ? activeTextColor : ProfileListEntryComponent.J.f);
+        this.settingsButton.K(settingsX);
+        this.settingsButton.S(this.n() + 3.0);
+        this.settingsButton.setBackgroundAnimationColors(ProfileListEntryComponent.J.t, ColorUtil.calculatePerceivedBrightness(rowColor) > 100 ? new Color(0, 0, 0, 70) : new Color(255, 255, 255, 40));
+
+        boolean showBind = this.profile.hasValidBinding()
+            || this.w$src$Z$e457mb() && !this.settingsButton.w$src$Z$e457mb()
+            || this.bindComponent.getCaptureTask().isCapturing();
+        if (showBind) {
+            TruncatedTextComponent bindLabel = this.bindComponent.getBindLabel();
+            double occupiedTextWidth = this.statusText != null ? statusFont.N(this.statusText) : this.nameLabel.getRenderedWidth();
+            bindLabel.setMaxWidth(this.A() - 30.0 - this.settingsButton.A() - occupiedTextWidth);
+            this.bindComponent.K(settingsX - 5.0 - this.bindComponent.A());
+            this.bindComponent.S(this.n() + 4.0);
+            this.bindComponent.setVisible(true);
         } else {
-            this.Qb.Z(false);
+            this.bindComponent.setVisible(false);
         }
     }
 
@@ -396,45 +305,44 @@ extends InteractiveComponent {
         return 110.0;
     }
 
-    public void j$src$V$km7pib() {
-        this.Q2 = true;
-        this.QO = System.currentTimeMillis();
+    public void startStatusExpiry() {
+        this.bindStatusExpiring = true;
+        this.bindStatusStartedAt = System.currentTimeMillis();
     }
 
-    private void v(int n) {
-        double d = this.K.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().n() + this.K.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().L() * 2.0;
-        ArrayList<ProfileListEntryComponent> arrayList = new ArrayList<ProfileListEntryComponent>();
-        for (GuiComponent guiComponent : this.K.m$src$Lgg_vape_ui_click_component_PanelComponent_$1rlcr9s().f()) {
-            if (!(guiComponent instanceof ProfileListEntryComponent)) continue;
-            arrayList.add((ProfileListEntryComponent)guiComponent);
+    private void previewDropAt(int index) {
+        double listStartY = this.profilesFrame.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().n()
+            + this.profilesFrame.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().L() * 2.0;
+        ArrayList<ProfileListEntryComponent> entries = new ArrayList<ProfileListEntryComponent>();
+        for (GuiComponent component : this.profilesFrame.getProfileList().f()) {
+            if (component instanceof ProfileListEntryComponent) {
+                entries.add((ProfileListEntryComponent)component);
+            }
         }
-        arrayList.remove(this);
-        arrayList.add(n, this);
-        double d2 = 0.0;
-        for (ProfileListEntryComponent profileListEntryComponent : arrayList) {
-            if (profileListEntryComponent.n() < d) continue;
-            if (profileListEntryComponent.N$src$Lgg_vape_config_Profile_$p2odie().equals(this.N$src$Lgg_vape_config_Profile_$p2odie())) {
-                d2 += profileListEntryComponent.L();
+        entries.remove(this);
+        entries.add(index, this);
+        double offsetY = 0.0;
+        for (ProfileListEntryComponent entry : entries) {
+            if (entry.n() < listStartY) {
                 continue;
             }
-            profileListEntryComponent.S(d + d2);
-            d2 += profileListEntryComponent.L();
+            if (entry.getProfile().equals(this.profile)) {
+                offsetY += entry.L();
+                continue;
+            }
+            entry.S(listStartY + offsetY);
+            offsetY += entry.L();
         }
     }
 
-    public static boolean E() {
-        boolean bl = ProfileListEntryComponent.z();
-        return true;
-    }
-
-    private void lambda$new$1(ProfilesSettingsFrame profilesSettingsFrame, Profile profile) {
-        if (!profilesSettingsFrame.u$src$Z$6rsek8()) {
+    private void toggleProfileVisibility() {
+        if (!this.profilesFrame.isShowingAllProfiles()) {
             return;
         }
-        if (this.Q_.Z(RenderUtils.h()) && !Vape.INSTANCE.getProfilesManager().M().equals(profile)) {
-            profile.Y(!profile.U());
-            profile.c(true);
-            ClientSettings.M$src$V$1giazqf();
+        if (this.visibilityToggleBounds.Z(RenderUtils.h()) && !Vape.INSTANCE.getProfilesManager().M().equals(this.profile)) {
+            this.profile.Y(!this.profile.U());
+            this.profile.c(true);
+            ClientSettings.refreshModuleCategoryHeaders();
         }
     }
 
@@ -443,90 +351,76 @@ extends InteractiveComponent {
         return 18.0;
     }
 
-    static Profile f(ProfileListEntryComponent profileListEntryComponent) {
-        return profileListEntryComponent.Qz;
-    }
-
-    private void lambda$openSettings$2(TextInputComponentBase textInputComponentBase) {
-        textInputComponentBase.Z(!textInputComponentBase.V$src$Z$1xhop3l());
-        textInputComponentBase.k(this.Qz.n$src$Ljava_lang_String_$xqhelw());
+    private void toggleRenameInput(TextInputComponentBase textInputComponentBase) {
+        textInputComponentBase.setVisible(!textInputComponentBase.V$src$Z$1xhop3l());
+        textInputComponentBase.setText(this.profile.n$src$Ljava_lang_String_$xqhelw());
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        if (this.K.u$src$Z$6rsek8()) {
+        if (this.profilesFrame.isShowingAllProfiles()) {
             super.g(guiMouseEvent);
             return;
         }
-        if (this.K.e() != null && this.K.e().equals(this) && !this.Q().J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
-            this.Qo.P$src$V$q7uwbv();
+        if (this.profilesFrame.getForwardedEntry() != null && this.profilesFrame.getForwardedEntry().equals(this) && !this.getBounds().J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
+            this.settingsButton.dispatchPrimaryClick();
             return;
         }
         if (guiMouseEvent.getAction().equals((Object)MouseButton.LEFT_CLICK)) {
-            Vape.INSTANCE.getProfilesManager().U(this.Qz);
+            Vape.INSTANCE.getProfilesManager().U(this.profile);
         } else if (guiMouseEvent.getAction().equals((Object)MouseButton.RIGHT_CLICK)) {
-            this.Qz.r$src$V$1goqkjq();
+            this.profile.r$src$V$1goqkjq();
         }
     }
 
-    public static boolean z() {
-        return Qe;
-    }
-
-    public void e$src$V$kjgqji() {
-        String string = this.Qz.n$src$Ljava_lang_String_$xqhelw();
-        double d = this.K.A();
-        this.getClass();
-        TruncatedTextComponent truncatedTextComponent = new TruncatedTextComponent(string, "...", d - 5.0 - 20.0, 0.9, ProfileListEntryComponent.J.A, true);
-        ProfileRenameInputComponent profileRenameInputComponent = new ProfileRenameInputComponent(this, this.Qz.n$src$Ljava_lang_String_$xqhelw(), truncatedTextComponent);
-        profileRenameInputComponent.n(48);
-        profileRenameInputComponent.Z(false);
-        profileRenameInputComponent.e(false);
-        profileRenameInputComponent.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().W("newnext");
+    public void openSettings() {
+        String profileName = this.profile.n$src$Ljava_lang_String_$xqhelw();
+        TruncatedTextComponent nameDisplay = new TruncatedTextComponent(profileName, "...", this.profilesFrame.A() - 25.0, 0.9, ProfileListEntryComponent.J.A, true);
+        ProfileRenameInputComponent profileRenameInputComponent = new ProfileRenameInputComponent(this, profileName, nameDisplay);
+        profileRenameInputComponent.setMaxLength(48);
+        profileRenameInputComponent.setVisible(false);
+        profileRenameInputComponent.setBackgroundVisible(false);
+        profileRenameInputComponent.getActionButton().setIconResource("newnext");
         GlyphIconComponent glyphIconComponent = new GlyphIconComponent("newedit", 5.0, 5.0, 5.0, 5.0, null, null, null);
-        glyphIconComponent.r(() -> this.lambda$openSettings$2(profileRenameInputComponent));
-        glyphIconComponent.P(ProfileListEntryComponent.J.W);
-        PanelComponent panelComponent = new PanelComponent(this.K.A(), this.K.Q$src$Lgg_vape_ui_click_component_FlowLayoutComponent_$s9lre().L());
+        glyphIconComponent.addClickListener(() -> this.toggleRenameInput(profileRenameInputComponent));
+        glyphIconComponent.setHoverColor(ProfileListEntryComponent.J.W);
+        PanelComponent panelComponent = new PanelComponent(this.profilesFrame.A(), this.profilesFrame.getContentLayout().L());
         panelComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         ProfileGlyphIconPanel profileGlyphIconPanel = null;
-        if (this.Qz.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() != null) {
-            profileGlyphIconPanel = new ProfileGlyphIconPanel(this.Qz, 5.0, 5.0);
+        if (this.profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() != null) {
+            profileGlyphIconPanel = new ProfileGlyphIconPanel(this.profile, 5.0, 5.0);
         }
         ProfileGlyphIconPanel profileGlyphIconPanel2 = profileGlyphIconPanel;
-        ProfileListEntrySettingsPopupPanel profileListEntrySettingsPopupPanel = new ProfileListEntrySettingsPopupPanel(this, this.K.A(), 26.0, truncatedTextComponent, glyphIconComponent, profileRenameInputComponent, profileGlyphIconPanel2);
+        ProfileListEntrySettingsPopupPanel profileListEntrySettingsPopupPanel = new ProfileListEntrySettingsPopupPanel(this.profilesFrame.A(), 26.0, nameDisplay, glyphIconComponent, profileRenameInputComponent, profileGlyphIconPanel2);
         profileListEntrySettingsPopupPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         ProfileListEntryBackgroundComponent profileListEntryBackgroundComponent = new ProfileListEntryBackgroundComponent();
         profileListEntryBackgroundComponent.o(panelComponent.A());
         profileListEntryBackgroundComponent.Y(18.0);
         profileListEntrySettingsPopupPanel.h(profileListEntryBackgroundComponent, new Object[0]);
-        profileListEntrySettingsPopupPanel.h(truncatedTextComponent, new Object[0]);
+        profileListEntrySettingsPopupPanel.h(nameDisplay, new Object[0]);
         if (profileGlyphIconPanel2 != null) {
             profileListEntrySettingsPopupPanel.h(profileGlyphIconPanel2, new Object[0]);
         }
         profileListEntrySettingsPopupPanel.h(profileRenameInputComponent, new Object[0]);
         profileListEntrySettingsPopupPanel.h(glyphIconComponent, new Object[0]);
-        ProfileListEntryContainer profileListEntryContainer = new ProfileListEntryContainer(this.K, this.Qz);
-        profileListEntryContainer.W(true);
+        ProfileListEntryContainer profileListEntryContainer = new ProfileListEntryContainer(this.profilesFrame, this.profile);
+        profileListEntryContainer.setUseExplicitHeight(true);
         profileListEntryContainer.Y(20.0);
         panelComponent.h(profileListEntrySettingsPopupPanel, new Object[0]);
         panelComponent.h(profileListEntryContainer, new Object[0]);
         panelComponent.h(new SpacerComponent(0.0, 2.0), new Object[0]);
-        panelComponent.h(new ProfileModuleSnapshotListComponent(this.Qz, 105.0, 86.0), new Object[0]);
+        panelComponent.h(new ProfileModuleSnapshotListComponent(this.profile, 105.0, 86.0), new Object[0]);
         panelComponent.l$src$V$1mibm4x();
-        if (this.Qz.z()) {
-            // empty if block
-        }
-        boolean bl = false;
-        CenteredPopupFrame centeredPopupFrame = ClientSettings.g(this.K.Q$src$Lgg_vape_ui_click_component_FlowLayoutComponent_$s9lre(), panelComponent, CenteredPopupFrame.class);
-        this.K.w(centeredPopupFrame);
-        this.K.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().I("Profiles", false);
+        CenteredPopupFrame centeredPopupFrame = ClientSettings.createPopup(this.profilesFrame.getContentLayout(), panelComponent, CenteredPopupFrame.class);
+        this.profilesFrame.setActivePopup(centeredPopupFrame);
+        this.profilesFrame.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().showBackNavigation("Profiles", false);
     }
 
-    public void b(String string) {
-        if (string == null) {
-            this.j$src$V$km7pib();
+    public void setStatusText(String text) {
+        if (text == null) {
+            this.startStatusExpiry();
             return;
         }
-        this.Qp = string.toUpperCase();
+        this.statusText = text.toUpperCase();
     }
 }

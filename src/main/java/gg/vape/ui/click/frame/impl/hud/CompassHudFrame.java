@@ -6,10 +6,10 @@ import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
 
 public class CompassHudFrame
 extends HudModuleConfigFrameBase {
-    private static final String tb = "CompassFrame";
+    private static final String FRAME_NAME = "CompassFrame";
 
     @Override
-    public void o() {
+    public void renderHudContent() {
     }
 
     public CompassHudFrame() {
@@ -29,7 +29,6 @@ extends HudModuleConfigFrameBase {
 
     @Override
     public String getName() {
-        return tb;
+        return FRAME_NAME;
     }
 }
-

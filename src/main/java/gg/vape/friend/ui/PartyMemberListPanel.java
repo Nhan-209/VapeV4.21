@@ -23,8 +23,8 @@ extends PanelComponent {
     public void c() {
         super.c();
         if (this.f().isEmpty()) {
-            this.AI.d(false);
-            this.AI.i(0.75);
+            this.AI.setShowDisabledOverlay(false);
+            this.AI.setFontScale(0.75);
             this.AI.K(this.G$src$D$1b2f02a() + 5.0);
             this.AI.S(this.n() + (this.L() - 40.0) / 2.0);
             this.AI.c();
@@ -51,10 +51,10 @@ extends PanelComponent {
     public PartyMemberListPanel(double d, double d2) {
         super(d, d2);
         this.AI = new WrappingTextLabelComponent("No messages yet\nMessages do not save and will clear when your game closes", 0.75, PartyMemberListPanel.J.Z);
-        this.AI.q(d - 10.0);
+        this.AI.setExplicitWidth(d - 10.0);
         this.t(this.L());
         this.N(true);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.N(new BottomUpFlowLayout(this));
         ComponentLayout componentLayout = this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij();
         componentLayout.t(false);

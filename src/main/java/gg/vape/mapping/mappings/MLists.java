@@ -41,7 +41,7 @@ extends Mapping {
         String string4 = "newArrayList";
         MLists mLists2 = this;
         this.v = this.x(string4, bl2, clazz2, classArray2);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MOrdering.u("Ze85D");
         }
     }

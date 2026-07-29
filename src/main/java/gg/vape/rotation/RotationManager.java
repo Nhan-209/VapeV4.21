@@ -72,871 +72,866 @@ import org.lwjgl.opengl.GL11;
 
 public class RotationManager
 implements EventListener {
-    private boolean c;
-    private MouseRotationController E;
-    private float p;
-    private float N;
-    private static final RayTraceResult T;
-    private float J;
-    private float w;
-    public static RotationManager b;
-    private float G;
-    private float r;
-    private float u;
-    private boolean s;
-    private float v;
-    private float g;
-    private int S;
-    private float P;
-    private MouseButtonActionState U;
-    private float e;
-    private float L = 0.0f;
-    private boolean t;
-    private boolean M;
-    private RayTraceResult o;
-    private RayTraceResult z;
-    private boolean K;
-    private float W;
-    private boolean a;
-    private RayTraceResult V;
-    private double C;
-    private boolean Q;
-    private float f;
-    private boolean X;
-    private final NanoTimerUtil d = new NanoTimerUtil();
-    private static final float x = 0.4f;
-    private boolean j;
-    private float A;
-    private float l;
+    private boolean playerYawRestorePending;
+    private MouseRotationController activeController;
+    private float renderBodyYaw;
+    private float savedPlayerYaw;
+    private static final RayTraceResult EMPTY_RAY_TRACE;
+    private float managedPitch;
+    private float temporarilySavedPitch;
+    public static final RotationManager INSTANCE;
+    private float temporarilySavedYaw;
+    private float motionYaw;
+    private float savedPreviousYaw;
+    private boolean rayTraceRefreshPending;
+    private float managedYaw;
+    private float previousRenderBodyYaw;
+    private int controllerUpdatesThisTick;
+    private float previousMotionYaw;
+    private MouseButtonActionState forwardMovementOverride;
+    private float previousMotionPitch;
+    private float mouseSensitivity = 0.0f;
+    private boolean movementKeysRemapped;
+    private boolean savedLeftKeyState;
+    private RayTraceResult normalReachRayTrace;
+    private RayTraceResult extendedReachRayTrace;
+    private boolean savedRightKeyState;
+    private float savedPreviousPitch;
+    private boolean savedForwardKeyState;
+    private RayTraceResult cachedMouseOverRayTrace;
+    private double controllerUpdateAccumulator;
+    private boolean controllerHooksPending;
+    private float savedPlayerPitch;
+    private boolean savedBackKeyState;
+    private final NanoTimerUtil controllerUpdateTimer = new NanoTimerUtil();
+    private static final float DEFAULT_MOVEMENT_THRESHOLD = 0.4f;
+    private boolean renderRotationActive;
+    private float motionPitch;
+    private float savedRenderYawOffset;
 
-    public float Y(float f, boolean bl) {
-        GameSettings gameSettings = Minecraft.gameSettings();
-        KeyBinding keyBinding = gameSettings.Y();
-        KeyBinding keyBinding2 = gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3();
-        KeyBinding keyBinding3 = gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg();
-        KeyBinding keyBinding4 = gameSettings.s();
-        boolean bl2 = bl ? keyBinding.isKeyDown() : ClientSettings.B(keyBinding);
-        boolean bl3 = bl ? keyBinding2.isKeyDown() : ClientSettings.B(keyBinding2);
-        boolean bl4 = bl ? keyBinding3.isKeyDown() : ClientSettings.B(keyBinding3);
-        boolean bl5 = bl ? keyBinding4.isKeyDown() : ClientSettings.B(keyBinding4);
-        return this.G(f, bl2, bl3, bl4, bl5);
+    public float adjustMovementYawFromBindings(float yaw, boolean useCurrentKeyState) {
+        GameSettings settings = Minecraft.gameSettings();
+        KeyBinding forwardKey = settings.Y();
+        KeyBinding leftKey = settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3();
+        KeyBinding rightKey = settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg();
+        KeyBinding backKey = settings.s();
+        boolean forward = useCurrentKeyState ? forwardKey.isKeyDown() : ClientSettings.B(forwardKey);
+        boolean left = useCurrentKeyState ? leftKey.isKeyDown() : ClientSettings.B(leftKey);
+        boolean right = useCurrentKeyState ? rightKey.isKeyDown() : ClientSettings.B(rightKey);
+        boolean back = useCurrentKeyState ? backKey.isKeyDown() : ClientSettings.B(backKey);
+        return this.adjustMovementYaw(yaw, forward, left, right, back);
     }
 
-    private void m(EntityPlayerSP entityPlayerSP, float f, float f2) {
-        boolean bl;
-        float f3 = MathUtil.wrapAngleTo180(f - this.p);
-        this.p += f3 * 0.3f;
-        float f4 = MathUtil.wrapAngleTo180(this.r - this.p);
-        boolean bl2 = bl = f4 < -90.0f || f4 >= 90.0f;
-        if (f4 < -75.0f) {
-            f4 = -75.0f;
+    private void updateBodyYaw(float targetYaw) {
+        float targetDelta = MathUtil.wrapAngleTo180(targetYaw - this.renderBodyYaw);
+        this.renderBodyYaw += targetDelta * 0.3f;
+        float headDelta = MathUtil.wrapAngleTo180(this.motionYaw - this.renderBodyYaw);
+        if (headDelta < -75.0f) {
+            headDelta = -75.0f;
         }
-        if (f4 >= 75.0f) {
-            f4 = 75.0f;
+        if (headDelta >= 75.0f) {
+            headDelta = 75.0f;
         }
-        this.p = this.r - f4;
-        if (f4 * f4 > 2500.0f) {
-            this.p += f4 * 0.2f;
-        }
-        if (bl) {
-            f2 *= -1.0f;
+        this.renderBodyYaw = this.motionYaw - headDelta;
+        if (headDelta * headDelta > 2500.0f) {
+            this.renderBodyYaw += headDelta * 0.2f;
         }
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void U(EventPostLocalPlayerTick eventPostLocalPlayerTick) {
-        EntityPlayerSP entityPlayerSP = eventPostLocalPlayerTick.getPlayer();
-        if (this.c) {
-            entityPlayerSP.H(this.N);
-            entityPlayerSP.z(this.N);
-            entityPlayerSP.F((float)((double)this.l + (double)(this.N - this.l) * 0.5));
-            this.c = false;
+    public void onPostLocalPlayerTick(EventPostLocalPlayerTick event) {
+        EntityPlayerSP player = event.getPlayer();
+        if (this.playerYawRestorePending) {
+            player.H(this.savedPlayerYaw);
+            player.z(this.savedPlayerYaw);
+            player.F((float)((double)this.savedRenderYawOffset + (double)(this.savedPlayerYaw - this.savedRenderYawOffset) * 0.5));
+            this.playerYawRestorePending = false;
         }
-        if (this.t) {
-            this.R();
-            this.t = false;
+        if (this.movementKeysRemapped) {
+            this.restoreMovementKeyStates();
+            this.movementKeysRemapped = false;
         }
-        if (this.j) {
-            this.J(entityPlayerSP);
-        }
-    }
-
-    public void k() {
-        this.v(this.E);
-    }
-
-    public static float s(EntityPlayerSP entityPlayerSP) {
-        return FreeLookHudModule.z() ? FreeLookHudModule.L$src$F$1jnmc2m() : entityPlayerSP.J();
-    }
-
-    private void B(EntityPlayerSP entityPlayerSP) {
-        if (this.j) {
-            this.N = entityPlayerSP.J();
-            this.u = entityPlayerSP.j();
-            this.f = entityPlayerSP.V();
-            this.W = entityPlayerSP.D();
-            entityPlayerSP.z(this.r);
-            entityPlayerSP.o(this.P);
-            entityPlayerSP.X(this.p);
-            entityPlayerSP.Y(this.g);
-            entityPlayerSP.C(this.A);
-            entityPlayerSP.l(this.e);
+        if (this.renderRotationActive) {
+            this.updatePlayerBodyYaw(player);
         }
     }
 
-    private void a() {
-        this.C = 0.0;
-        this.S = 0;
-        this.d.reset();
+    public void releaseActiveController() {
+        this.releaseController(this.activeController);
     }
 
-    public MouseRotationController w() {
-        return this.E;
+    public static float getViewYaw(EntityPlayerSP player) {
+        return FreeLookHudModule.isActive() ? FreeLookHudModule.getSavedPitch() : player.J();
     }
 
-    private void Q(boolean bl) {
-        EntityLivingBase entityLivingBase = Minecraft.F();
-        if (bl) {
-            this.G = entityLivingBase.J();
-            this.w = entityLivingBase.V();
-            entityLivingBase.H(this.v);
-            entityLivingBase.z(this.v);
-            entityLivingBase.C(this.J);
+    private void applyRenderRotation(EntityPlayerSP player) {
+        if (this.renderRotationActive) {
+            this.savedPlayerYaw = player.J();
+            this.savedPreviousYaw = player.j();
+            this.savedPlayerPitch = player.V();
+            this.savedPreviousPitch = player.D();
+            player.z(this.motionYaw);
+            player.o(this.previousMotionYaw);
+            player.X(this.renderBodyYaw);
+            player.Y(this.previousRenderBodyYaw);
+            player.C(this.motionPitch);
+            player.l(this.previousMotionPitch);
+        }
+    }
+
+    private void resetControllerUpdateState() {
+        this.controllerUpdateAccumulator = 0.0;
+        this.controllerUpdatesThisTick = 0;
+        this.controllerUpdateTimer.reset();
+    }
+
+    public MouseRotationController getActiveController() {
+        return this.activeController;
+    }
+
+    private void applyManagedRotation(boolean apply) {
+        EntityLivingBase player = Minecraft.F();
+        if (apply) {
+            this.temporarilySavedYaw = player.J();
+            this.temporarilySavedPitch = player.V();
+            player.H(this.managedYaw);
+            player.z(this.managedYaw);
+            player.C(this.managedPitch);
         } else {
-            entityLivingBase.H(this.G);
-            entityLivingBase.z(this.G);
-            entityLivingBase.C(this.w);
+            player.H(this.temporarilySavedYaw);
+            player.z(this.temporarilySavedYaw);
+            player.C(this.temporarilySavedPitch);
         }
     }
 
-    public void v(MouseRotationController mouseRotationController) {
-        if (this.E != null && this.E.equals(mouseRotationController)) {
-            if (this.E instanceof AdaptiveRotationController) {
-                AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)this.E;
-                adaptiveRotationController.b(true);
+    public void releaseController(MouseRotationController controller) {
+        if (this.activeController != null && this.activeController.equals(controller)) {
+            if (this.activeController instanceof AdaptiveRotationController) {
+                AdaptiveRotationController adaptiveController = (AdaptiveRotationController)this.activeController;
+                adaptiveController.setRelativeMode(true);
             } else {
-                this.E.w(false);
-                this.E.u(true);
+                this.activeController.setRetainAfterCompletion(false);
+                this.activeController.setComplete(true);
             }
         }
     }
 
-    public float V() {
-        return this.u() ? this.v : Minecraft.F().J();
+    public float getManagedYaw() {
+        return this.hasAdaptiveController() ? this.managedYaw : Minecraft.F().J();
     }
 
     @EventHandler(A=EventPriority.LOWEST)
     public void onPacketSend(EventPacketSend eventPacketSend) {
-        if (ForgeVersion.MC_1_21_4.d() && this.u() && eventPacketSend.getPacket().isInstance(MappedClasses.Dg)) {
+        if (ForgeVersion.MC_1_21_4.d() && this.hasAdaptiveController() && eventPacketSend.getPacket().isInstance(MappedClasses.Dg)) {
             S08PacketPlayerPosLook s08PacketPlayerPosLook = new S08PacketPlayerPosLook(eventPacketSend.getPacket());
-            s08PacketPlayerPosLook.setPitch(this.J);
-            s08PacketPlayerPosLook.setYaw(this.v);
+            s08PacketPlayerPosLook.setPitch(this.managedPitch);
+            s08PacketPlayerPosLook.setYaw(this.managedYaw);
         }
     }
 
-    public boolean u() {
-        return this.E != null && this.E instanceof AdaptiveRotationController;
+    public boolean hasAdaptiveController() {
+        return this.activeController != null && this.activeController instanceof AdaptiveRotationController;
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void f(EventMouseOverUpdate eventMouseOverUpdate) {
-        if (this.u()) {
-            this.b(false);
+    public void onMouseOverUpdateHighest(EventMouseOverUpdate eventMouseOverUpdate) {
+        if (this.hasAdaptiveController()) {
+            this.applyManagedMouseOver();
         }
     }
 
-    private void p(double d, EntityPlayerSP entityPlayerSP, GuiScreen guiScreen) {
-        this.C += d;
-        int n = (int)Math.round(this.C);
-        for (int i = 0; i < n; ++i) {
+    private void advanceControllerUpdates(double updateCount, EntityPlayerSP player, GuiScreen screen) {
+        this.controllerUpdateAccumulator += updateCount;
+        int wholeUpdates = (int)Math.round(this.controllerUpdateAccumulator);
+        for (int updateIndex = 0; updateIndex < wholeUpdates; ++updateIndex) {
             try {
-                this.E.J(entityPlayerSP, guiScreen);
-                this.E.o(guiScreen);
+                this.activeController.update(player, screen);
+                this.activeController.applyPendingMovement(screen);
             }
             catch (Exception exception) {
                 // empty catch block
             }
-            ++this.S;
+            ++this.controllerUpdatesThisTick;
         }
-        this.C -= (double)n;
+        this.controllerUpdateAccumulator -= (double)wholeUpdates;
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void H(EventPreEntityRendererMouseUpdate eventPreEntityRendererMouseUpdate) {
-        if (this.Q && this.E != null) {
-            this.E.B(eventPreEntityRendererMouseUpdate);
+    public void onPreEntityRendererMouseUpdate(EventPreEntityRendererMouseUpdate eventPreEntityRendererMouseUpdate) {
+        if (this.controllerHooksPending && this.activeController != null) {
+            this.activeController.onPreMouseUpdate(eventPreEntityRendererMouseUpdate);
         }
     }
 
-    public void A() {
-        this.U = MouseButtonActionState.RELEASE;
+    public void suppressForwardMovement() {
+        this.forwardMovementOverride = MouseButtonActionState.RELEASE;
     }
 
-    private void N(EntityPlayerSP entityPlayerSP) {
-        if (this.j) {
-            entityPlayerSP.H(this.N);
-            entityPlayerSP.D(this.u);
-            entityPlayerSP.C(this.f);
-            entityPlayerSP.l(this.W);
+    private void restoreRenderRotation(EntityPlayerSP player) {
+        if (this.renderRotationActive) {
+            player.H(this.savedPlayerYaw);
+            player.D(this.savedPreviousYaw);
+            player.C(this.savedPlayerPitch);
+            player.l(this.savedPreviousPitch);
         }
     }
 
     @EventHandler
-    public void onRender2D(EventRender2D eventRender2D) {
-        boolean bl;
-        EntityPlayerSP entityPlayerSP = eventRender2D.getThePlayer();
-        if (!Vape.INSTANCE.getClientSettings().e.L().booleanValue() || entityPlayerSP.isNull() || Minecraft.currentScreen().isNotNull()) {
+    public void onRender2D(EventRender2D event) {
+        EntityPlayerSP player = event.getThePlayer();
+        if (!Vape.INSTANCE.getClientSettings().e.getEffectiveValue().booleanValue()
+                || player.isNull() || Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        boolean bl2 = bl = Minecraft.gameSettings().x() > 0;
-        if (this.u() && !bl) {
-            AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)this.E;
-            double d = 0.0;
-            float f = 15.0f;
-            float f2 = 2.0f;
-            OpenGlBackendHolder.d.m();
+        boolean thirdPersonView = Minecraft.gameSettings().x() > 0;
+        if (this.hasAdaptiveController() && !thirdPersonView) {
+            AdaptiveRotationController controller = (AdaptiveRotationController)this.activeController;
+            double centerZ = 0.0;
+            float directionLineLength = 15.0f;
+            float directionLineWidth = 2.0f;
+            OpenGlBackendHolder.backend.pushMatrix();
             RenderUtils.g();
-            ScaledResolution scaledResolution = new ScaledResolution();
-            float f3 = 2.0f / (float)Minecraft.G().e();
-            OpenGlBackendHolder.d.I(scaledResolution.U() / 2.0 / (double)f3, scaledResolution.X() / 2.0 / (double)f3, d);
-            EntityLivingBase entityLivingBase = Minecraft.F();
-            float f4 = Minecraft.getTimer().renderPartialTicks();
-            float f5 = entityLivingBase.J() + (entityLivingBase.J() - entityLivingBase.j()) * f4;
-            float f6 = entityLivingBase.V() + (entityLivingBase.V() - entityLivingBase.D()) * f4;
-            float f7 = this.P + (this.r - this.P) * f4 + 90.0f;
-            OpenGlBackendHolder.d.X(f6, -1.0f, 0.0f, 0.0f);
-            OpenGlBackendHolder.d.X(90.0f, 0.0f, -1.0f, 0.0f);
-            OpenGlBackendHolder.d.H(-1.0f, -1.0f, -1.0f);
-            OpenGlBackendHolder.d.I(0.0, 5.0, 0.5);
-            OpenGlBackendHolder.d.X(20.0f, 0.0f, 0.0f, 1.0f);
-            this.m(new Color(-1442840576, true), 3.0f, 0.0, -5.0, 0.0, 0.0, 5.0, 0.0);
-            float f8 = f7 - f5 - 90.0f;
-            OpenGlBackendHolder.d.X(f8, 0.0f, -1.0f, 0.0f);
-            this.m(new Color(-1441787888), f2 + 1.0f, 0.0, 0.0, 0.0, f, 0.0, 0.0);
-            this.m(new MutableColor(adaptiveRotationController.M() ? adaptiveRotationController.C() : adaptiveRotationController.y()).withAlpha(255), f2, 0.0, 0.0, 0.0, f, 0.0, 0.0);
-            OpenGlBackendHolder.d.X(f8, 0.0f, 1.0f, 0.0f);
-            OpenGlBackendHolder.d.X(f5, 0.0f, 1.0f, 0.0f);
-            boolean bl3 = OpenGlBackendHolder.d.L(3042);
-            boolean bl4 = OpenGlBackendHolder.d.L(2896);
-            if (!bl3) {
-                OpenGlBackendHolder.d.l(3042);
+            ScaledResolution resolution = new ScaledResolution();
+            float guiScale = 2.0f / (float)Minecraft.G().e();
+            OpenGlBackendHolder.backend.translate(
+                    resolution.U() / 2.0 / (double)guiScale,
+                    resolution.X() / 2.0 / (double)guiScale,
+                    centerZ);
+            EntityLivingBase renderedPlayer = Minecraft.F();
+            float partialTicks = Minecraft.getTimer().renderPartialTicks();
+            float interpolatedPlayerYaw = renderedPlayer.J()
+                    + (renderedPlayer.J() - renderedPlayer.j()) * partialTicks;
+            float interpolatedPlayerPitch = renderedPlayer.V()
+                    + (renderedPlayer.V() - renderedPlayer.D()) * partialTicks;
+            float interpolatedManagedYaw = this.previousMotionYaw
+                    + (this.motionYaw - this.previousMotionYaw) * partialTicks + 90.0f;
+            OpenGlBackendHolder.backend.rotate(interpolatedPlayerPitch, -1.0f, 0.0f, 0.0f);
+            OpenGlBackendHolder.backend.rotate(90.0f, 0.0f, -1.0f, 0.0f);
+            OpenGlBackendHolder.backend.scale(-1.0f, -1.0f, -1.0f);
+            OpenGlBackendHolder.backend.translate(0.0, 5.0, 0.5);
+            OpenGlBackendHolder.backend.rotate(20.0f, 0.0f, 0.0f, 1.0f);
+            this.drawLine(new Color(-1442840576, true), 3.0f, 0.0, -5.0, 0.0, 0.0, 5.0, 0.0);
+            float relativeManagedYaw = interpolatedManagedYaw - interpolatedPlayerYaw - 90.0f;
+            OpenGlBackendHolder.backend.rotate(relativeManagedYaw, 0.0f, -1.0f, 0.0f);
+            this.drawLine(new Color(-1441787888), directionLineWidth + 1.0f,
+                    0.0, 0.0, 0.0, directionLineLength, 0.0, 0.0);
+            MutableColor lineColor = controller.usesSecondaryColor()
+                    ? controller.getSecondaryColor() : controller.getPrimaryColor();
+            this.drawLine(new MutableColor(lineColor).withAlpha(255), directionLineWidth,
+                    0.0, 0.0, 0.0, directionLineLength, 0.0, 0.0);
+            OpenGlBackendHolder.backend.rotate(relativeManagedYaw, 0.0f, 1.0f, 0.0f);
+            OpenGlBackendHolder.backend.rotate(interpolatedPlayerYaw, 0.0f, 1.0f, 0.0f);
+            boolean blendEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(3042);
+            boolean lightingEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(2896);
+            if (!blendEnabled) {
+                OpenGlBackendHolder.backend.enableCapability(3042);
             }
-            if (bl4) {
-                OpenGlBackendHolder.d.u$src$V$hntn98(2896);
+            if (lightingEnabled) {
+                OpenGlBackendHolder.backend.disableCapability(2896);
             }
             GL11.glBlendFunc((int)770, (int)771);
-            OpenGlBackendHolder.d.l(2848);
-            OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-            double d2 = 5.0;
-            Color color = new Color(-1728053248, true);
-            Color color2 = new Color(-1719631744, true);
+            OpenGlBackendHolder.backend.enableCapability(2848);
+            OpenGlBackendHolder.backend.disableCapability(3553);
+            double markerHalfSize = 5.0;
+            Color markerOutlineColor = new Color(-1728053248, true);
+            Color markerFillColor = new Color(-1719631744, true);
             if (GuiRenderPrimitives.d()) {
-                BufferedGuiRenderPrimitives.Z(-d2, -5.0, -d2, d2, -5.0, -d2, f2, color);
-                BufferedGuiRenderPrimitives.Z(d2, -5.0, -d2, d2, -5.0, d2, f2, color);
-                BufferedGuiRenderPrimitives.Z(d2, -5.0, d2, -d2, -5.0, d2, f2, color);
-                BufferedGuiRenderPrimitives.Z(-d2, -5.0, d2, -d2, -5.0, -d2, f2, color);
-                BufferedGuiRenderPrimitives.H(-d2, -5.0, -d2, d2, -5.0, -d2, d2, -5.0, d2, -d2, -5.0, d2, color2);
+                BufferedGuiRenderPrimitives.drawLine3D(-markerHalfSize, -5.0, -markerHalfSize, markerHalfSize, -5.0, -markerHalfSize, directionLineWidth, markerOutlineColor);
+                BufferedGuiRenderPrimitives.drawLine3D(markerHalfSize, -5.0, -markerHalfSize, markerHalfSize, -5.0, markerHalfSize, directionLineWidth, markerOutlineColor);
+                BufferedGuiRenderPrimitives.drawLine3D(markerHalfSize, -5.0, markerHalfSize, -markerHalfSize, -5.0, markerHalfSize, directionLineWidth, markerOutlineColor);
+                BufferedGuiRenderPrimitives.drawLine3D(-markerHalfSize, -5.0, markerHalfSize, -markerHalfSize, -5.0, -markerHalfSize, directionLineWidth, markerOutlineColor);
+                BufferedGuiRenderPrimitives.fillQuad(-markerHalfSize, -5.0, -markerHalfSize, markerHalfSize, -5.0, -markerHalfSize, markerHalfSize, -5.0, markerHalfSize, -markerHalfSize, -5.0, markerHalfSize, markerFillColor);
             } else {
                 GL11.glLineWidth((float)1.0f);
                 GL11.glBegin((int)2);
-                RenderUtils.w(color);
-                GL11.glVertex3d((double)(-d2), (double)-5.0, (double)(-d2));
-                GL11.glVertex3d((double)d2, (double)-5.0, (double)(-d2));
-                GL11.glVertex3d((double)d2, (double)-5.0, (double)d2);
-                GL11.glVertex3d((double)(-d2), (double)-5.0, (double)d2);
+                RenderUtils.w(markerOutlineColor);
+                GL11.glVertex3d(-markerHalfSize, -5.0, -markerHalfSize);
+                GL11.glVertex3d(markerHalfSize, -5.0, -markerHalfSize);
+                GL11.glVertex3d(markerHalfSize, -5.0, markerHalfSize);
+                GL11.glVertex3d(-markerHalfSize, -5.0, markerHalfSize);
                 GL11.glEnd();
                 GlStateManager.Y();
                 GL11.glBegin((int)7);
-                RenderUtils.w(color2);
-                GL11.glVertex3d((double)(-d2), (double)-5.0, (double)(-d2));
-                GL11.glVertex3d((double)d2, (double)-5.0, (double)(-d2));
-                GL11.glVertex3d((double)d2, (double)-5.0, (double)d2);
-                GL11.glVertex3d((double)(-d2), (double)-5.0, (double)d2);
+                RenderUtils.w(markerFillColor);
+                GL11.glVertex3d(-markerHalfSize, -5.0, -markerHalfSize);
+                GL11.glVertex3d(markerHalfSize, -5.0, -markerHalfSize);
+                GL11.glVertex3d(markerHalfSize, -5.0, markerHalfSize);
+                GL11.glVertex3d(-markerHalfSize, -5.0, markerHalfSize);
                 GL11.glEnd();
                 GlStateManager.L();
             }
-            if (bl4) {
-                OpenGlBackendHolder.d.l(2896);
+            if (lightingEnabled) {
+                OpenGlBackendHolder.backend.enableCapability(2896);
             }
-            if (!bl3) {
-                OpenGlBackendHolder.d.u$src$V$hntn98(3042);
+            if (!blendEnabled) {
+                OpenGlBackendHolder.backend.disableCapability(3042);
             }
-            OpenGlBackendHolder.d.l(3553);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2848);
+            OpenGlBackendHolder.backend.enableCapability(3553);
+            OpenGlBackendHolder.backend.disableCapability(2848);
             RenderUtils.f();
-            OpenGlBackendHolder.d.F();
+            OpenGlBackendHolder.backend.popMatrix();
         }
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void onMotionUpdate(EventPreMotion eventPreMotion) {
-        boolean bl;
-        if (this.u()) {
-            EventMotion.setRotationYaw(this.v);
-            EventMotion.setRotationPitch(this.J);
+    public void onMotionUpdate(EventPreMotion event) {
+        if (this.hasAdaptiveController()) {
+            EventMotion.setRotationYaw(this.managedYaw);
+            EventMotion.setRotationPitch(this.managedPitch);
         }
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        this.P = entityPlayerSP.g();
-        this.e = entityPlayerSP.a$src$F$1txy325();
-        this.r = EventMotion.getRotationYaw();
-        this.A = EventMotion.getRotationPitch();
-        boolean bl2 = bl = this.r != entityPlayerSP.J() || this.A != entityPlayerSP.V();
-        if (!this.j && bl) {
-            this.p = entityPlayerSP.W$src$F$153nzpr();
-            this.g = entityPlayerSP.S$src$F$151gtcb();
+        EntityPlayerSP player = Minecraft.thePlayer();
+        this.previousMotionYaw = player.g();
+        this.previousMotionPitch = player.a$src$F$1txy325();
+        this.motionYaw = EventMotion.getRotationYaw();
+        this.motionPitch = EventMotion.getRotationPitch();
+        boolean rotationChanged = this.motionYaw != player.J() || this.motionPitch != player.V();
+        if (!this.renderRotationActive && rotationChanged) {
+            this.renderBodyYaw = player.W$src$F$153nzpr();
+            this.previousRenderBodyYaw = player.S$src$F$151gtcb();
         }
-        this.j = bl;
+        this.renderRotationActive = rotationChanged;
     }
 
-    public float H() {
-        return this.u() ? Minecraft.thePlayer().a$src$F$1txy325() : Minecraft.F().D();
+    public float getPreviousManagedPitch() {
+        return this.hasAdaptiveController() ? Minecraft.thePlayer().a$src$F$1txy325() : Minecraft.F().D();
     }
 
-    public boolean A$src$Z$yoncmr() {
-        return this.E != null && !this.E.V$src$Z$lb4tvc();
+    public boolean isControllerUpdating() {
+        return this.activeController != null && !this.activeController.isComplete();
     }
 
-    private void D$src$V$yqaqbe() {
-        boolean bl;
-        double d = Vape.INSTANCE.getModManager().getMod(Reach.class).e();
-        double d2 = Vape.INSTANCE.getModManager().getMod(HitBoxes.class).z();
-        boolean bl2 = bl = d > 3.0;
-        if (!this.u() && FreeLookHudModule.z()) {
-            this.v = FreeLookHudModule.L$src$F$1jnmc2m();
-            this.J = FreeLookHudModule.U();
+    private void refreshReachRayTraces() {
+        double reachDistance = Vape.INSTANCE.getModManager().getMod(Reach.class).getReachDistance();
+        double hitBoxExpansion = Vape.INSTANCE.getModManager().getMod(HitBoxes.class).getExpansionAmount();
+        boolean extendedReach = reachDistance > 3.0;
+        if (!this.hasAdaptiveController() && FreeLookHudModule.isActive()) {
+            this.managedYaw = FreeLookHudModule.getSavedPitch();
+            this.managedPitch = FreeLookHudModule.getSavedYaw();
         }
-        this.z = this.F(d, (float)d2, bl);
-        this.o = this.F(3.0, 0.0f, false);
-    }
-
-    private static RuntimeException a(RuntimeException runtimeException) {
-        return runtimeException;
+        this.extendedReachRayTrace = this.rayTraceUsingManagedRotation(reachDistance, (float)hitBoxExpansion, extendedReach);
+        this.normalReachRayTrace = this.rayTraceUsingManagedRotation(3.0, 0.0f, false);
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void m(EventRightClickMouse eventRightClickMouse) {
-        if (this.u()) {
-            this.b(true);
+    public void onRightClickMouse(EventRightClickMouse eventRightClickMouse) {
+        if (this.hasAdaptiveController()) {
+            this.applyManagedMouseOver();
         }
     }
 
     public RotationManager() {
-        this.U = MouseButtonActionState.NONE;
-        this.z = T;
-        this.o = T;
+        this.forwardMovementOverride = MouseButtonActionState.NONE;
+        this.extendedReachRayTrace = EMPTY_RAY_TRACE;
+        this.normalReachRayTrace = EMPTY_RAY_TRACE;
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void m(EventThreadBoundPreTick eventThreadBoundPreTick) {
-        if (this.u()) {
-            this.Q(true);
+    public void onThreadBoundPreTick(EventThreadBoundPreTick eventThreadBoundPreTick) {
+        if (this.hasAdaptiveController()) {
+            this.applyManagedRotation(true);
         }
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void g(EventPreRenderWorldPass eventPreRenderWorldPass) {
-        if (!Vape.INSTANCE.getClientSettings().c.L().booleanValue()) {
+    public void onPreRenderWorldPass(EventPreRenderWorldPass eventPreRenderWorldPass) {
+        if (!Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
             return;
         }
-        this.B(eventPreRenderWorldPass.getPlayer());
+        this.applyRenderRotation(eventPreRenderWorldPass.getPlayer());
     }
 
-    private void J(EntityPlayerSP entityPlayerSP) {
-        this.g = this.p;
-        double d = entityPlayerSP.z() - entityPlayerSP.f();
-        double d2 = entityPlayerSP.h() - entityPlayerSP.R();
-        float f = (float)(d * d + d2 * d2);
-        float f2 = this.p;
-        float f3 = 0.0f;
-        if (f > 0.0025000002f) {
-            f3 = (float)Math.sqrt(f) * 3.0f;
-            f2 = (float)MathUtil.V(d2, d) * 180.0f / (float)Math.PI - 90.0f;
+    private void updatePlayerBodyYaw(EntityPlayerSP player) {
+        this.previousRenderBodyYaw = this.renderBodyYaw;
+        double deltaX = player.z() - player.f();
+        double deltaZ = player.h() - player.R();
+        float horizontalDistanceSquared = (float)(deltaX * deltaX + deltaZ * deltaZ);
+        float targetBodyYaw = this.renderBodyYaw;
+        if (horizontalDistanceSquared > 0.0025000002f) {
+            targetBodyYaw = (float)MathUtil.V(deltaZ, deltaX) * 180.0f / (float)Math.PI - 90.0f;
         }
-        if (entityPlayerSP.i() > 0) {
-            f2 = this.r;
+        if (player.i() > 0) {
+            targetBodyYaw = this.motionYaw;
         }
-        this.m(entityPlayerSP, f2, f3);
-        while (this.p - this.g < -180.0f) {
-            this.g -= 360.0f;
+        this.updateBodyYaw(targetBodyYaw);
+        while (this.renderBodyYaw - this.previousRenderBodyYaw < -180.0f) {
+            this.previousRenderBodyYaw -= 360.0f;
         }
-        while (this.p - this.g >= 180.0f) {
-            this.g += 360.0f;
+        while (this.renderBodyYaw - this.previousRenderBodyYaw >= 180.0f) {
+            this.previousRenderBodyYaw += 360.0f;
         }
     }
 
     @EventHandler
-    public void l(EventPostRenderTick eventPostRenderTick) {
-        if (this.Q) {
-            if (this.E != null && eventPostRenderTick.getThePlayer().isNotNull()) {
+    public void onPostRenderTick(EventPostRenderTick eventPostRenderTick) {
+        if (this.controllerHooksPending) {
+            if (this.activeController != null && eventPostRenderTick.getThePlayer().isNotNull()) {
                 try {
-                    this.E.R(eventPostRenderTick);
+                    this.activeController.onPostRenderTick(eventPostRenderTick);
                 }
                 catch (NullPointerException nullPointerException) {
                     Vape.logThrowable(nullPointerException);
                 }
             }
-            this.Q = false;
+            this.controllerHooksPending = false;
         }
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void t(EventPostRenderWorldPass eventPostRenderWorldPass) {
-        if (!Vape.INSTANCE.getClientSettings().c.L().booleanValue()) {
+    public void onPostRenderWorldPass(EventPostRenderWorldPass eventPostRenderWorldPass) {
+        if (!Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
             return;
         }
-        this.N(eventPostRenderWorldPass.getPlayer());
+        this.restoreRenderRotation(eventPostRenderWorldPass.getPlayer());
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void E(EventSendClickBlockToController eventSendClickBlockToController) {
-        if (this.u()) {
-            this.b(true);
+    public void onSendClickBlockToController(EventSendClickBlockToController eventSendClickBlockToController) {
+        if (this.hasAdaptiveController()) {
+            this.applyManagedMouseOver();
         }
     }
 
-    public float E() {
-        return this.L;
+    public float getMouseSensitivity() {
+        return this.mouseSensitivity;
     }
 
-    private void m(Color color, float f, double d, double d2, double d3, double d4, double d5, double d6) {
-        boolean bl = OpenGlBackendHolder.d.L(3042);
-        boolean bl2 = OpenGlBackendHolder.d.L(2896);
+    private void drawLine(Color color, float width, double startX, double startY, double startZ,
+                          double endX, double endY, double endZ) {
+        boolean blendEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(3042);
+        boolean lightingEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(2896);
         GL11.glBlendFunc((int)770, (int)771);
-        if (!bl) {
-            OpenGlBackendHolder.d.l(3042);
+        if (!blendEnabled) {
+            OpenGlBackendHolder.backend.enableCapability(3042);
         }
-        if (bl2) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(2896);
+        if (lightingEnabled) {
+            OpenGlBackendHolder.backend.disableCapability(2896);
         }
         GL11.glBlendFunc((int)770, (int)771);
-        OpenGlBackendHolder.d.l(2848);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3553);
+        OpenGlBackendHolder.backend.enableCapability(2848);
+        OpenGlBackendHolder.backend.disableCapability(3553);
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.Z(d, d2, d3, d4, d5, d6, f, color);
+            BufferedGuiRenderPrimitives.drawLine3D(startX, startY, startZ, endX, endY, endZ, width, color);
         } else {
-            GL11.glLineWidth((float)f);
+            GL11.glLineWidth(width);
             GL11.glBegin((int)1);
             RenderUtils.w(color);
-            GL11.glVertex3d((double)d, (double)d2, (double)d3);
-            GL11.glVertex3d((double)d4, (double)d5, (double)d6);
+            GL11.glVertex3d(startX, startY, startZ);
+            GL11.glVertex3d(endX, endY, endZ);
             GL11.glEnd();
         }
-        if (bl2) {
-            OpenGlBackendHolder.d.l(2896);
+        if (lightingEnabled) {
+            OpenGlBackendHolder.backend.enableCapability(2896);
         }
-        if (!bl) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(3042);
+        if (!blendEnabled) {
+            OpenGlBackendHolder.backend.disableCapability(3042);
         }
-        OpenGlBackendHolder.d.l(3553);
-        OpenGlBackendHolder.d.u$src$V$hntn98(2848);
+        OpenGlBackendHolder.backend.enableCapability(3553);
+        OpenGlBackendHolder.backend.disableCapability(2848);
     }
 
-    public float X() {
-        float f = b.E();
-        float f2 = f * 0.6f + 0.2f;
-        f2 = f2 * f2 * f2 * 8.0f;
-        float f3 = 0.5f;
-        f3 = f3 * f3 * f3 * 8.0f;
-        return f3 / f2;
+    public float getSensitivityTimeScale() {
+        float sensitivityBase = INSTANCE.getMouseSensitivity() * 0.6f + 0.2f;
+        float currentScale = sensitivityBase * sensitivityBase * sensitivityBase * 8.0f;
+        float referenceBase = 0.5f;
+        float referenceScale = referenceBase * referenceBase * referenceBase * 8.0f;
+        return referenceScale / currentScale;
     }
 
-    public float G(float f, boolean bl, boolean bl2, boolean bl3, boolean bl4) {
-        float f2 = f;
-        if (bl && bl2) {
-            f2 += 45.0f;
-        } else if (bl4 && bl2) {
-            f2 += 135.0f;
-        } else if (bl2) {
-            f2 += 90.0f;
-        } else if (bl && bl3) {
-            f2 -= 45.0f;
-        } else if (bl4 && bl3) {
-            f2 -= 135.0f;
-        } else if (bl3) {
-            f2 -= 90.0f;
-        } else if (bl4) {
-            f2 += 180.0f;
+    public float adjustMovementYaw(float yaw, boolean forward, boolean left, boolean right, boolean back) {
+        float adjustedYaw = yaw;
+        if (forward && left) {
+            adjustedYaw += 45.0f;
+        } else if (back && left) {
+            adjustedYaw += 135.0f;
+        } else if (left) {
+            adjustedYaw += 90.0f;
+        } else if (forward && right) {
+            adjustedYaw -= 45.0f;
+        } else if (back && right) {
+            adjustedYaw -= 135.0f;
+        } else if (right) {
+            adjustedYaw -= 90.0f;
+        } else if (back) {
+            adjustedYaw += 180.0f;
         }
-        return f2;
+        return adjustedYaw;
     }
 
     static {
-        T = new RayTraceResult(null);
-        b = new RotationManager();
+        EMPTY_RAY_TRACE = new RayTraceResult(null);
+        INSTANCE = new RotationManager();
     }
 
-    private void b(boolean bl) {
-        if (this.V == null || this.V.isNull()) {
-            EntityLivingBase entityLivingBase = Minecraft.F();
-            float f = entityLivingBase.J();
-            float f2 = entityLivingBase.s();
-            float f3 = entityLivingBase.V();
-            entityLivingBase.H(this.v);
-            entityLivingBase.z(this.v);
-            entityLivingBase.C(this.J);
-            double d = 3.0;
-            if (Vape.INSTANCE.getClientSettings().C.L().booleanValue()) {
-                d = Vape.INSTANCE.getModManager().getMod(Reach.class).e();
+    private void applyManagedMouseOver() {
+        if (this.cachedMouseOverRayTrace == null || this.cachedMouseOverRayTrace.isNull()) {
+            EntityLivingBase player = Minecraft.F();
+            float savedYaw = player.J();
+            float savedRenderYaw = player.s();
+            float savedPitch = player.V();
+            player.H(this.managedYaw);
+            player.z(this.managedYaw);
+            player.C(this.managedPitch);
+            double reachDistance = 3.0;
+            if (Vape.INSTANCE.getClientSettings().C.getEffectiveValue().booleanValue()) {
+                reachDistance = Vape.INSTANCE.getModManager().getMod(Reach.class).getReachDistance();
             }
-            double d2 = 0.0;
-            if (Vape.INSTANCE.getClientSettings().A.L().booleanValue()) {
-                d2 = Vape.INSTANCE.getModManager().getMod(HitBoxes.class).z();
+            double hitBoxExpansion = 0.0;
+            if (Vape.INSTANCE.getClientSettings().A.getEffectiveValue().booleanValue()) {
+                hitBoxExpansion = Vape.INSTANCE.getModManager().getMod(HitBoxes.class).getExpansionAmount();
             }
-            MouseOverRayTraceUpdater.s((float)d, (float)d2);
-            this.V = Minecraft.p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0();
-            entityLivingBase.H(f);
-            entityLivingBase.z(f2);
-            entityLivingBase.C(f3);
+            MouseOverRayTraceUpdater.s((float)reachDistance, (float)hitBoxExpansion);
+            this.cachedMouseOverRayTrace = Minecraft.p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0();
+            player.H(savedYaw);
+            player.z(savedRenderYaw);
+            player.C(savedPitch);
         }
-        Minecraft.O(this.V);
+        Minecraft.O(this.cachedMouseOverRayTrace);
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void onPacketReceive(EventPacketReceive eventPacketReceive) {
-        if (!this.u() || eventPacketReceive.isCanceled()) {
+    public void onPacketReceive(EventPacketReceive event) {
+        if (!this.hasAdaptiveController() || event.isCanceled()) {
             return;
         }
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return;
         }
-        AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)this.E;
-        Packet packet = eventPacketReceive.getPacket();
+        AdaptiveRotationController controller = (AdaptiveRotationController)this.activeController;
+        Packet packet = event.getPacket();
         if (packet.isInstance(MappedClasses.zw)) {
-            if (adaptiveRotationController.O$src$Z$1lvi05g()) {
-                adaptiveRotationController.u(true);
+            if (controller.isRelativeMode()) {
+                controller.setComplete(true);
             } else {
-                PlayerPositionLookPacketModern playerPositionLookPacketModern = new PlayerPositionLookPacketModern(packet);
-                float f = playerPositionLookPacketModern.f();
-                float f2 = playerPositionLookPacketModern.M();
+                PlayerPositionLookPacketModern positionLookPacket = new PlayerPositionLookPacketModern(packet);
+                float packetYaw = positionLookPacket.f();
+                float packetPitch = positionLookPacket.M();
                 if (ForgeVersion.MC_1_7_10.Y()) {
-                    Set set = playerPositionLookPacketModern.W();
-                    for (Object e : set) {
-                        PlayerInteractEventAction playerInteractEventAction = new PlayerInteractEventAction(e);
-                        if (playerInteractEventAction.T() == PlayerInteractEventAction.e()) {
-                            entityPlayerSP.C(this.J);
-                            this.J += f2;
+                    Set relativeFlags = positionLookPacket.W();
+                    for (Object relativeFlag : relativeFlags) {
+                        PlayerInteractEventAction action = new PlayerInteractEventAction(relativeFlag);
+                        if (action.T() == PlayerInteractEventAction.e()) {
+                            player.C(this.managedPitch);
+                            this.managedPitch += packetPitch;
                         }
-                        if (playerInteractEventAction.T() != PlayerInteractEventAction.t()) continue;
-                        entityPlayerSP.H(this.v);
-                        this.v += f;
+                        if (action.T() != PlayerInteractEventAction.t()) continue;
+                        player.H(this.managedYaw);
+                        this.managedYaw += packetYaw;
                     }
                 }
             }
         }
     }
 
-    public RayTraceResult D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic() {
-        return this.o;
+    public RayTraceResult getNormalReachRayTrace() {
+        return this.normalReachRayTrace;
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void F(EventThreadBoundPostTick eventThreadBoundPostTick) {
-        if (this.u()) {
-            this.Q(false);
+    public void onThreadBoundPostTick(EventThreadBoundPostTick eventThreadBoundPostTick) {
+        if (this.hasAdaptiveController()) {
+            this.applyManagedRotation(false);
         }
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void d(EventPreLocalPlayerTick eventPreLocalPlayerTick) {
-        boolean bl;
+    public void onPreLocalPlayerTick(EventPreLocalPlayerTick event) {
         if (Minecraft.thePlayer().isNull()) {
-            this.t = false;
+            this.movementKeysRemapped = false;
             return;
         }
-        boolean bl2 = this.u();
-        if (bl2) {
-            boolean bl3;
-            ModeSelection modeSelection = (ModeSelection)Vape.INSTANCE.getClientSettings().o.K();
-            if (modeSelection.equals(ClientSettings.O)) {
-                return;
-            }
-            EntityPlayerSP entityPlayerSP = eventPreLocalPlayerTick.getPlayer();
-            boolean bl4 = bl3 = modeSelection.equals(ClientSettings.Y) || modeSelection.equals(ClientSettings.u);
-            if (bl3) {
-                GameSettings gameSettings = Minecraft.gameSettings();
-                KeyBinding[] keyBindingArray = new KeyBinding[]{gameSettings.Y(), gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), gameSettings.s()};
-                boolean bl5 = false;
-                for (KeyBinding keyBinding : keyBindingArray) {
-                    if (ClientSettings.B(keyBinding) == keyBinding.isKeyDown()) continue;
-                    bl5 = true;
-                    break;
+        ModeSelection movementMode = (ModeSelection)Vape.INSTANCE.getClientSettings().o.getValue();
+        if (movementMode.equals(ClientSettings.O) || !this.isMovementCorrectionMode(movementMode)) {
+            return;
+        }
+        GameSettings settings = Minecraft.gameSettings();
+        boolean keyStateMismatch = this.hasMovementKeyStateMismatch(settings);
+        if (!this.hasAdaptiveController()) {
+            if (this.movementKeysRemapped) {
+                if (!keyStateMismatch) {
+                    this.restoreMovementKeyStates();
                 }
-                boolean bl6 = !this.i() && (bl5 ? RotationUtil.x() : MovementInputHelper.k());
-                AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)this.E;
-                this.N = FreeLookHudModule.z() ? FreeLookHudModule.L$src$F$1jnmc2m() : entityPlayerSP.J();
-                this.l = entityPlayerSP.q$src$F$1u6qsjx();
-                float f = adaptiveRotationController.v$src$F$1mgxytb();
-                float f2 = this.Y(f, bl5);
-                float f3 = modeSelection.equals(ClientSettings.u) ? f2 + 180.0f : this.v;
-                entityPlayerSP.H(f3);
-                entityPlayerSP.z(f3);
-                this.c = true;
-                if (bl6) {
-                    boolean bl7;
-                    float f4 = MathUtil.wrapAngleTo180(MathUtil.wrapAngleTo180(f3) - f2);
-                    float f5 = f4 * ((float)Math.PI / 180);
-                    float f6 = (float)Math.cos(f5);
-                    float f7 = (float)(-Math.sin(f5));
-                    double d = PlayerMovementTaskManager.G.e() != null ? 0.075 : (double)0.4f;
-                    boolean bl8 = (double)f6 >= d;
-                    boolean bl9 = (double)f7 >= d;
-                    boolean bl10 = (double)f7 <= -d;
-                    boolean bl11 = bl7 = (double)f6 <= -d;
-                    if (this.U == MouseButtonActionState.PRESS) {
-                        bl8 = true;
-                        bl7 = false;
-                    } else if (this.U == MouseButtonActionState.RELEASE) {
-                        bl8 = false;
-                        bl7 = false;
-                    }
-                    this.a = gameSettings.Y().isKeyDown();
-                    this.M = gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3().isKeyDown();
-                    this.K = gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg().isKeyDown();
-                    this.X = gameSettings.s().isKeyDown();
-                    gameSettings.Y().setPressed(bl8);
-                    gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3().setPressed(bl9);
-                    gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg().setPressed(bl10);
-                    gameSettings.s().setPressed(bl7);
-                    this.t = true;
-                }
-                if (!bl6 && this.t) {
-                    if (!bl5) {
-                        this.R();
-                    }
-                    this.t = false;
-                }
+                this.movementKeysRemapped = false;
             }
             return;
         }
-        ModeSelection modeSelection = (ModeSelection)Vape.INSTANCE.getClientSettings().o.K();
-        if (modeSelection.equals(ClientSettings.O)) {
-            return;
-        }
-        EntityPlayerSP entityPlayerSP = eventPreLocalPlayerTick.getPlayer();
-        boolean bl12 = bl = modeSelection.equals(ClientSettings.Y) || modeSelection.equals(ClientSettings.u);
-        if (bl) {
-            boolean bl13;
-            GameSettings gameSettings = Minecraft.gameSettings();
-            KeyBinding[] keyBindingArray = new KeyBinding[]{gameSettings.Y(), gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), gameSettings.s()};
-            boolean bl14 = false;
-            for (KeyBinding keyBinding : keyBindingArray) {
-                if (ClientSettings.B(keyBinding) == keyBinding.isKeyDown()) continue;
-                bl14 = true;
-                break;
+
+        EntityPlayerSP player = event.getPlayer();
+        boolean movementActive = keyStateMismatch
+                ? RotationUtil.x() : MovementInputHelper.isPhysicalMovementInputActive();
+        boolean shouldRemapMovement = !this.isRotationBlockedByScreen() && movementActive;
+        AdaptiveRotationController controller = (AdaptiveRotationController)this.activeController;
+        this.savedPlayerYaw = FreeLookHudModule.isActive()
+                ? FreeLookHudModule.getSavedPitch() : player.J();
+        this.savedRenderYawOffset = player.q$src$F$1u6qsjx();
+        float referenceYaw = controller.getReferenceYaw();
+        float movementYaw = this.adjustMovementYawFromBindings(referenceYaw, keyStateMismatch);
+        float appliedPlayerYaw = movementMode.equals(ClientSettings.u)
+                ? movementYaw + 180.0f : this.managedYaw;
+        player.H(appliedPlayerYaw);
+        player.z(appliedPlayerYaw);
+        this.playerYawRestorePending = true;
+
+        if (shouldRemapMovement) {
+            float relativeMovementYaw = MathUtil.wrapAngleTo180(
+                    MathUtil.wrapAngleTo180(appliedPlayerYaw) - movementYaw);
+            float relativeMovementRadians = relativeMovementYaw * ((float)Math.PI / 180);
+            float forwardProjection = (float)Math.cos(relativeMovementRadians);
+            float leftProjection = (float)(-Math.sin(relativeMovementRadians));
+            double movementThreshold = PlayerMovementTaskManager.INSTANCE.getActiveTask() != null
+                    ? 0.075 : (double)DEFAULT_MOVEMENT_THRESHOLD;
+            boolean pressForward = (double)forwardProjection >= movementThreshold;
+            boolean pressLeft = (double)leftProjection >= movementThreshold;
+            boolean pressRight = (double)leftProjection <= -movementThreshold;
+            boolean pressBack = (double)forwardProjection <= -movementThreshold;
+            if (this.forwardMovementOverride == MouseButtonActionState.PRESS) {
+                pressForward = true;
+                pressBack = false;
+            } else if (this.forwardMovementOverride == MouseButtonActionState.RELEASE) {
+                pressForward = false;
+                pressBack = false;
             }
-            boolean bl15 = !this.i() && (bl14 ? RotationUtil.x() : MovementInputHelper.k()) ? true : (bl13 = false);
-            if (this.t) {
-                if (!bl14) {
-                    this.R();
-                }
-                this.t = false;
+            this.savedForwardKeyState = settings.Y().isKeyDown();
+            this.savedLeftKeyState = settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3().isKeyDown();
+            this.savedRightKeyState = settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg().isKeyDown();
+            this.savedBackKeyState = settings.s().isKeyDown();
+            settings.Y().setPressed(pressForward);
+            settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3().setPressed(pressLeft);
+            settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg().setPressed(pressRight);
+            settings.s().setPressed(pressBack);
+            this.movementKeysRemapped = true;
+        } else if (this.movementKeysRemapped) {
+            if (!keyStateMismatch) {
+                this.restoreMovementKeyStates();
             }
+            this.movementKeysRemapped = false;
         }
     }
 
-    public RayTraceResult F(double d, float f, boolean bl) {
-        return this.f(d, f, bl, null);
+    private boolean isMovementCorrectionMode(ModeSelection mode) {
+        return mode.equals(ClientSettings.Y) || mode.equals(ClientSettings.u);
+    }
+
+    private boolean hasMovementKeyStateMismatch(GameSettings settings) {
+        KeyBinding[] movementKeys = new KeyBinding[]{
+                settings.Y(),
+                settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(),
+                settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(),
+                settings.s()
+        };
+        for (KeyBinding key : movementKeys) {
+            if (ClientSettings.B(key) != key.isKeyDown()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public RayTraceResult rayTraceUsingManagedRotation(double distance, float hitBoxExpansion, boolean extendedReach) {
+        return this.rayTraceUsingManagedRotation(distance, hitBoxExpansion, extendedReach, null);
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void t(EventRenderPlayerPre eventRenderPlayerPre) {
-        if (!Vape.INSTANCE.getClientSettings().c.L().booleanValue()) {
+    public void onRenderPlayerPre(EventRenderPlayerPre eventRenderPlayerPre) {
+        if (!Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
             return;
         }
-        EntityPlayer entityPlayer = eventRenderPlayerPre.getEntityPlayer();
-        if (!entityPlayer.isInstance(MappedClasses.z5)) {
+        EntityPlayer player = eventRenderPlayerPre.getEntityPlayer();
+        if (!player.isInstance(MappedClasses.z5)) {
             return;
         }
-        this.B(new EntityPlayerSP(entityPlayer));
+        this.applyRenderRotation(new EntityPlayerSP(player));
     }
 
-    public RayTraceResult F(boolean bl) {
-        RayTraceResult rayTraceResult;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        World world = entityPlayerSP.getWorld();
-        if (this.u() || FreeLookHudModule.z()) {
-            EntityLivingBase entityLivingBase = Minecraft.F();
-            float f = entityLivingBase.J();
-            float f2 = entityLivingBase.s();
-            float f3 = entityLivingBase.V();
-            entityLivingBase.H(this.v);
-            entityLivingBase.z(this.v);
-            entityLivingBase.C(this.J);
-            rayTraceResult = RayTraceUtil.p(entityPlayerSP.getWorld(), entityPlayerSP, bl);
-            entityLivingBase.H(f);
-            entityLivingBase.z(f2);
-            entityLivingBase.C(f3);
+    public RayTraceResult rayTraceUsingManagedRotation(boolean includeFluids) {
+        RayTraceResult result;
+        EntityPlayerSP player = Minecraft.thePlayer();
+        World world = player.getWorld();
+        if (this.hasAdaptiveController() || FreeLookHudModule.isActive()) {
+            EntityLivingBase renderedPlayer = Minecraft.F();
+            float savedYaw = renderedPlayer.J();
+            float savedRenderYaw = renderedPlayer.s();
+            float savedPitch = renderedPlayer.V();
+            renderedPlayer.H(this.managedYaw);
+            renderedPlayer.z(this.managedYaw);
+            renderedPlayer.C(this.managedPitch);
+            result = RayTraceUtil.p(world, player, includeFluids);
+            renderedPlayer.H(savedYaw);
+            renderedPlayer.z(savedRenderYaw);
+            renderedPlayer.C(savedPitch);
         } else {
-            rayTraceResult = RayTraceUtil.p(entityPlayerSP.getWorld(), entityPlayerSP, bl);
+            result = RayTraceUtil.p(world, player, includeFluids);
         }
-        return rayTraceResult;
+        return result;
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void onTick(EventPreTick eventPreTick) {
-        EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();
-        GuiScreen guiScreen = eventPreTick.getCurrentScreen();
-        this.L = Minecraft.gameSettings().y();
-        this.s = true;
-        this.V = T;
-        if (entityPlayerSP.isNotNull()) {
-            this.D$src$V$yqaqbe();
+    public void onTick(EventPreTick event) {
+        EntityPlayerSP player = event.getThePlayer();
+        GuiScreen screen = event.getCurrentScreen();
+        this.mouseSensitivity = Minecraft.gameSettings().y();
+        this.rayTraceRefreshPending = true;
+        this.cachedMouseOverRayTrace = EMPTY_RAY_TRACE;
+        if (player.isNotNull()) {
+            this.refreshReachRayTraces();
         }
-        if (this.E == null || entityPlayerSP.isNull()) {
-            this.E = null;
-            this.a();
+        if (this.activeController == null || player.isNull()) {
+            this.activeController = null;
+            this.resetControllerUpdateState();
             return;
         }
-        if (this.E.V$src$Z$lb4tvc() && !this.E.v()) {
-            this.E = null;
+        if (this.activeController.isComplete() && !this.activeController.shouldRetainAfterCompletion()) {
+            this.activeController = null;
         }
-        if (this.E == null) {
-            this.a();
+        if (this.activeController == null) {
+            this.resetControllerUpdateState();
             return;
         }
-        this.d.reset();
-        double d = Math.round(50.0f * this.X());
-        double d2 = Math.max(d - (double)this.S, 0.0);
-        this.p(d2, entityPlayerSP, guiScreen);
-        this.S = 0;
-        if (this.u()) {
-            AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)this.E;
-            this.v = adaptiveRotationController.J();
-            this.J = MathUtil.clamp(adaptiveRotationController.X(), -90.0f, 90.0f);
-            this.r = this.v;
-            this.A = this.J;
-            this.b(false);
+        this.controllerUpdateTimer.reset();
+        double targetUpdates = Math.round(50.0f * this.getSensitivityTimeScale());
+        double remainingUpdates = Math.max(targetUpdates - (double)this.controllerUpdatesThisTick, 0.0);
+        this.advanceControllerUpdates(remainingUpdates, player, screen);
+        this.controllerUpdatesThisTick = 0;
+        if (this.hasAdaptiveController()) {
+            AdaptiveRotationController controller = (AdaptiveRotationController)this.activeController;
+            this.managedYaw = controller.getRenderedYaw();
+            this.managedPitch = MathUtil.clamp(controller.getRenderedPitch(), -90.0f, 90.0f);
+            this.motionYaw = this.managedYaw;
+            this.motionPitch = this.managedPitch;
+            this.applyManagedMouseOver();
         }
-        this.D$src$V$yqaqbe();
+        this.refreshReachRayTraces();
     }
 
-    public static float g(EntityPlayerSP entityPlayerSP) {
-        return FreeLookHudModule.z() ? FreeLookHudModule.U() : entityPlayerSP.V();
+    public static float getViewPitch(EntityPlayerSP player) {
+        return FreeLookHudModule.isActive() ? FreeLookHudModule.getSavedYaw() : player.V();
     }
 
-    private boolean i() {
+    private boolean isRotationBlockedByScreen() {
         if (Minecraft.currentScreen().isNull()) {
             return false;
         }
         InvWalk invWalk = Vape.INSTANCE.getModManager().getMod(InvWalk.class);
-        return invWalk == null || !invWalk.r$src$Z$14eylz9() || !invWalk.g$src$Z$tdg77x();
+        return invWalk == null || !invWalk.r$src$Z$14eylz9() || !invWalk.shouldHandleCurrentScreen();
     }
 
-    public float x() {
-        return this.u() ? this.J : Minecraft.F().V();
+    public float getManagedPitch() {
+        return this.hasAdaptiveController() ? this.managedPitch : Minecraft.F().V();
     }
 
     @EventHandler
-    public void p(EventPreRenderTick eventPreRenderTick) {
-        EntityPlayerSP entityPlayerSP = eventPreRenderTick.getThePlayer();
-        if (this.E == null || entityPlayerSP.isNull()) {
-            this.E = null;
-            this.a();
+    public void onPreRenderTick(EventPreRenderTick event) {
+        EntityPlayerSP player = event.getThePlayer();
+        if (this.activeController == null || player.isNull()) {
+            this.activeController = null;
+            this.resetControllerUpdateState();
             return;
         }
-        if (this.E.V$src$Z$lb4tvc() && !this.E.v()) {
-            this.E = null;
+        if (this.activeController.isComplete() && !this.activeController.shouldRetainAfterCompletion()) {
+            this.activeController = null;
         }
-        if (this.E == null) {
-            this.a();
+        if (this.activeController == null) {
+            this.resetControllerUpdateState();
             return;
         }
-        double d = Minecraft.getTimer().getTimerSpeed();
-        double d2 = this.d.getElapsedMilliseconds() * d;
-        this.d.reset();
-        double d3 = d2 * (double)this.X();
-        this.p(d3, entityPlayerSP, eventPreRenderTick.getCurrentScreen());
-        this.Q = true;
-        this.E.Q(eventPreRenderTick);
+        double timerSpeed = Minecraft.getTimer().getTimerSpeed();
+        double elapsedGameMillis = this.controllerUpdateTimer.getElapsedMilliseconds() * timerSpeed;
+        this.controllerUpdateTimer.reset();
+        double scaledUpdates = elapsedGameMillis * (double)this.getSensitivityTimeScale();
+        this.advanceControllerUpdates(scaledUpdates, player, event.getCurrentScreen());
+        this.controllerHooksPending = true;
+        this.activeController.capturePlayerRotation(event);
     }
 
-    public RayTraceResult n() {
-        return this.z;
+    public RayTraceResult getExtendedReachRayTrace() {
+        return this.extendedReachRayTrace;
     }
 
-    public void S(@NotNull MouseRotationController mouseRotationController) {
-        AdaptiveRotationController adaptiveRotationController;
-        if (this.E == mouseRotationController) {
+    public void setController(@NotNull MouseRotationController controller) {
+        AdaptiveRotationController previousAdaptiveController;
+        if (this.activeController == controller) {
             return;
         }
-        if (this.E instanceof AdaptiveRotationController && mouseRotationController instanceof AdaptiveRotationController) {
-            adaptiveRotationController = (AdaptiveRotationController)this.E;
-            adaptiveRotationController.b(true);
-            adaptiveRotationController.u(true);
-            AdaptiveRotationController adaptiveRotationController2 = (AdaptiveRotationController)mouseRotationController;
-            adaptiveRotationController2.b(false);
-            adaptiveRotationController2.T(adaptiveRotationController.J());
-            adaptiveRotationController2.a(adaptiveRotationController.X());
+        if (this.activeController instanceof AdaptiveRotationController
+                && controller instanceof AdaptiveRotationController) {
+            previousAdaptiveController = (AdaptiveRotationController)this.activeController;
+            previousAdaptiveController.setRelativeMode(true);
+            previousAdaptiveController.setComplete(true);
+            AdaptiveRotationController nextAdaptiveController = (AdaptiveRotationController)controller;
+            nextAdaptiveController.setRelativeMode(false);
+            nextAdaptiveController.setCurrentYaw(previousAdaptiveController.getRenderedYaw());
+            nextAdaptiveController.setCurrentPitch(previousAdaptiveController.getRenderedPitch());
         }
-        if (this.E == null && mouseRotationController instanceof AdaptiveRotationController) {
-            adaptiveRotationController = (AdaptiveRotationController)mouseRotationController;
-            this.v = adaptiveRotationController.J();
-            this.J = adaptiveRotationController.X();
+        if (this.activeController == null && controller instanceof AdaptiveRotationController) {
+            AdaptiveRotationController adaptiveController = (AdaptiveRotationController)controller;
+            this.managedYaw = adaptiveController.getRenderedYaw();
+            this.managedPitch = adaptiveController.getRenderedPitch();
         }
-        this.E = mouseRotationController;
+        this.activeController = controller;
     }
 
     @EventHandler(A=EventPriority.LOW)
-    public void g(EventMouseOverUpdate eventMouseOverUpdate) {
-        if (!this.s) {
+    public void onMouseOverUpdate(EventMouseOverUpdate eventMouseOverUpdate) {
+        if (!this.rayTraceRefreshPending) {
             return;
         }
         if (Minecraft.thePlayer().isNotNull()) {
-            this.D$src$V$yqaqbe();
-            this.s = false;
+            this.refreshReachRayTraces();
+            this.rayTraceRefreshPending = false;
         }
     }
 
-    public double D() {
-        return this.C;
+    public double getControllerUpdateAccumulator() {
+        return this.controllerUpdateAccumulator;
     }
 
-    private void R() {
-        GameSettings gameSettings = Minecraft.gameSettings();
-        MovementInputHelper.P(gameSettings.Y(), this.a);
-        MovementInputHelper.P(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), this.M);
-        MovementInputHelper.P(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), this.K);
-        MovementInputHelper.P(gameSettings.s(), this.X);
+    private void restoreMovementKeyStates() {
+        GameSettings settings = Minecraft.gameSettings();
+        MovementInputHelper.synchronizeKeyState(settings.Y(), this.savedForwardKeyState);
+        MovementInputHelper.synchronizeKeyState(settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), this.savedLeftKeyState);
+        MovementInputHelper.synchronizeKeyState(settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), this.savedRightKeyState);
+        MovementInputHelper.synchronizeKeyState(settings.s(), this.savedBackKeyState);
     }
 
-    public RayTraceResult f(double d, float f, boolean bl, @Nullable Predicate<Entity> predicate) {
-        RayTraceResult rayTraceResult;
-        if (this.u() || FreeLookHudModule.z()) {
-            EntityLivingBase entityLivingBase = Minecraft.F();
-            float f2 = entityLivingBase.J();
-            float f3 = entityLivingBase.s();
-            float f4 = entityLivingBase.V();
-            entityLivingBase.H(this.v);
-            entityLivingBase.z(this.v);
-            entityLivingBase.C(this.J);
-            rayTraceResult = RayTraceUtil.U(entityLivingBase, d, f, bl, predicate);
-            entityLivingBase.H(f2);
-            entityLivingBase.z(f3);
-            entityLivingBase.C(f4);
+    public RayTraceResult rayTraceUsingManagedRotation(double distance, float hitBoxExpansion,
+                                                       boolean extendedReach,
+                                                       @Nullable Predicate<Entity> predicate) {
+        RayTraceResult result;
+        if (this.hasAdaptiveController() || FreeLookHudModule.isActive()) {
+            EntityLivingBase player = Minecraft.F();
+            float savedYaw = player.J();
+            float savedRenderYaw = player.s();
+            float savedPitch = player.V();
+            player.H(this.managedYaw);
+            player.z(this.managedYaw);
+            player.C(this.managedPitch);
+            result = RayTraceUtil.U(player, distance, hitBoxExpansion, extendedReach, predicate);
+            player.H(savedYaw);
+            player.z(savedRenderYaw);
+            player.C(savedPitch);
         } else {
-            rayTraceResult = RayTraceUtil.q(d, f, bl, predicate);
+            result = RayTraceUtil.q(distance, hitBoxExpansion, extendedReach, predicate);
         }
-        return rayTraceResult;
+        return result;
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void a(EventRenderPlayerPost eventRenderPlayerPost) {
-        if (!Vape.INSTANCE.getClientSettings().c.L().booleanValue()) {
+    public void onRenderPlayerPost(EventRenderPlayerPost eventRenderPlayerPost) {
+        if (!Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
             return;
         }
-        EntityPlayer entityPlayer = eventRenderPlayerPost.getEntityPlayer();
-        if (!entityPlayer.isInstance(MappedClasses.z5)) {
+        EntityPlayer player = eventRenderPlayerPost.getEntityPlayer();
+        if (!player.isInstance(MappedClasses.z5)) {
             return;
         }
-        this.N(new EntityPlayerSP(entityPlayer));
+        this.restoreRenderRotation(new EntityPlayerSP(player));
     }
 
-    public void B(boolean bl) {
-        this.U = bl ? MouseButtonActionState.PRESS : MouseButtonActionState.NONE;
+    public void setForwardMovementOverride(boolean pressed) {
+        this.forwardMovementOverride = pressed ? MouseButtonActionState.PRESS : MouseButtonActionState.NONE;
     }
 
-    public float s() {
-        return this.u() ? Minecraft.thePlayer().g() : Minecraft.F().j();
+    public float getPreviousManagedYaw() {
+        return this.hasAdaptiveController() ? Minecraft.thePlayer().g() : Minecraft.F().j();
     }
 }

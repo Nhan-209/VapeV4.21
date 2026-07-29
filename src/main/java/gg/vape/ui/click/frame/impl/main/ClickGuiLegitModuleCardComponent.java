@@ -17,33 +17,31 @@ import org.jetbrains.annotations.Nullable;
 
 public class ClickGuiLegitModuleCardComponent
 extends GuiComponent {
-    private final float Q = 6.0f;
-    private final String R;
-    private final DoubleAnimation cX;
-    private final IconButtonComponent G;
-    private final float v = 1.0f;
+    private static final float TOGGLE_DOT_INSET = 1.0f;
+    private static final float TOGGLE_DOT_SIZE = 4.0f;
+    private final String moduleName;
+    private final DoubleAnimation togglePositionAnimation;
+    private final IconButtonComponent settingsButton;
     @Nullable
-    private Runnable cG;
-    private final HudModule cp;
-    private boolean ci;
-    private final DoubleAnimation b;
-    private final Color K;
-    private final ColorAnimation a;
-    private boolean o;
-    private final ThemeColorAnimation i;
-    private final float cy = 6.0f;
-    private final float I;
-    private final String c_;
-    private boolean O;
-    private boolean c4;
-    private final float c8 = 4.0f;
+    private Runnable settingsAction;
+    private final HudModule module;
+    private boolean selected;
+    private final DoubleAnimation dimAnimation;
+    private final Color toggleDotColor;
+    private final ColorAnimation toggleColorAnimation;
+    private boolean hovered;
+    private final ThemeColorAnimation enabledColorAnimation;
+    private final float iconScale;
+    private final String iconKey;
+    private boolean dimmed;
+    private boolean enabled;
 
-    private Color q(Color color) {
+    private Color applyDimmedAlpha(Color color) {
         if (color == null) {
             return null;
         }
-        if (this.O && !this.ci) {
-            double d = Math.min(1.0, Math.max(0.0, this.b.getInterpolatedValue()));
+        if (this.dimmed && !this.selected) {
+            double d = Math.min(1.0, Math.max(0.0, this.dimAnimation.getInterpolatedValue()));
             float f = (float)(1.0 - 0.8 * d);
             int n = Math.max(0, Math.round((float)color.getAlpha() * f));
             return new Color(color.getRed(), color.getGreen(), color.getBlue(), n);
@@ -51,120 +49,120 @@ extends GuiComponent {
         return color;
     }
 
-    public void n(@Nullable Runnable runnable) {
-        this.cG = runnable;
+    public void setSettingsAction(@Nullable Runnable runnable) {
+        this.settingsAction = runnable;
     }
 
-    public boolean R() {
-        return this.ci;
+    public boolean isSelected() {
+        return this.selected;
     }
 
     public ClickGuiLegitModuleCardComponent(HudModule hudModule) {
         this(hudModule, 0.9f);
     }
 
-    public void N(boolean bl) {
-        this.O = bl;
+    public void setDimmed(boolean dimmed) {
+        this.dimmed = dimmed;
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
         if (guiMouseEvent.getAction().equals((Object)MouseButton.LEFT_CLICK)) {
-            this.p();
-        } else if (guiMouseEvent.getAction().equals((Object)MouseButton.RIGHT_CLICK) && this.cG != null) {
-            this.cG.run();
+            this.toggleEnabled();
+        } else if (guiMouseEvent.getAction().equals((Object)MouseButton.RIGHT_CLICK) && this.settingsAction != null) {
+            this.settingsAction.run();
         }
     }
 
 
-    public boolean c$src$Z$11dn9wd() {
-        return !this.cX.getInterpolatedValue().equals(this.cX.getStartValue()) && !this.cX.getInterpolatedValue().equals(this.cX.getEndValue());
+    public boolean isToggleAnimating() {
+        return !this.togglePositionAnimation.getInterpolatedValue().equals(this.togglePositionAnimation.getStartValue()) && !this.togglePositionAnimation.getInterpolatedValue().equals(this.togglePositionAnimation.getEndValue());
     }
 
-    public void p() {
-        if (this.c4 == this.m$src$Z$11j57tz()) {
-            this.c4 = !this.c4;
-            this.i.J();
-            this.cX.J();
-        } else if (this.c4) {
-            this.i.C();
-            this.cX.C();
+    public void toggleEnabled() {
+        if (this.enabled == this.isToggleAnimationEnabled()) {
+            this.enabled = !this.enabled;
+            this.enabledColorAnimation.J();
+            this.togglePositionAnimation.J();
+        } else if (this.enabled) {
+            this.enabledColorAnimation.C();
+            this.togglePositionAnimation.C();
         } else {
-            this.i.O();
-            this.cX.O();
+            this.enabledColorAnimation.O();
+            this.togglePositionAnimation.O();
         }
-        if (this.cp.r$src$Z$14eylz9() != this.c4) {
-            this.cp.Y(this.c4);
+        if (this.module.r$src$Z$14eylz9() != this.enabled) {
+            this.module.Y(this.enabled);
         }
     }
 
     @Override
     public void H() {
-        this.b.u(this.O && !this.ci);
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 2.0, this.n(), this.A() - 3.0, this.L() - 3.0, this.q(this.o || this.c4 ? ClickGuiLegitModuleCardComponent.J.l : ClickGuiLegitModuleCardComponent.J.m));
-        GuiRenderPrimitives.F(this.c_, this.G$src$D$1b2f02a() + 10.0 + 3.0, this.n() + 10.0, (double)(8.0f * this.I), 8.0f * this.I, this.q(this.c4 ? J.z() : (this.o ? ClickGuiLegitModuleCardComponent.J.f : ClickGuiLegitModuleCardComponent.J.W)));
-        this.G.K(this.G$src$D$1b2f02a() + this.A() - 15.0);
-        this.G.S(this.n() + 10.0 - 4.5);
-        this.G.Y(9.0);
-        this.l$src$V$11ilf56();
-        this.z();
+        this.dimAnimation.u(this.dimmed && !this.selected);
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 2.0, this.n(), this.A() - 3.0, this.L() - 3.0, this.applyDimmedAlpha(this.hovered || this.enabled ? ClickGuiLegitModuleCardComponent.J.l : ClickGuiLegitModuleCardComponent.J.m));
+        GuiRenderPrimitives.F(this.iconKey, this.G$src$D$1b2f02a() + 10.0 + 3.0, this.n() + 10.0, (double)(8.0f * this.iconScale), 8.0f * this.iconScale, this.applyDimmedAlpha(this.enabled ? J.z() : (this.hovered ? ClickGuiLegitModuleCardComponent.J.f : ClickGuiLegitModuleCardComponent.J.W)));
+        this.settingsButton.K(this.G$src$D$1b2f02a() + this.A() - 15.0);
+        this.settingsButton.S(this.n() + 10.0 - 4.5);
+        this.settingsButton.Y(9.0);
+        this.renderToggle();
+        this.renderLabel();
     }
 
-    private void l$src$V$11ilf56() {
+    private void renderToggle() {
         Color color;
         double d = this.G$src$D$1b2f02a() + this.A();
         this.getClass();
         double d2 = d - (double)(6.0f * 2.0f) - 17.5;
         double d3 = this.n() + 10.0 - 3.0;
-        Color color2 = color = this.i.q() > 0.0 ? this.i.getInterpolatedColor() : this.a.getInterpolatedColor();
-        if (this.o && this.i.q() > 0.0) {
-            color = ColorUtil.N(color, 30.0);
+        Color color2 = color = this.enabledColorAnimation.q() > 0.0 ? this.enabledColorAnimation.getInterpolatedColor() : this.toggleColorAnimation.getInterpolatedColor();
+        if (this.hovered && this.enabledColorAnimation.q() > 0.0) {
+            color = ColorUtil.offsetRgb(color, 30.0);
         }
-        Color color3 = this.q(color);
+        Color color3 = this.applyDimmedAlpha(color);
         float f = (float)d2;
         float f2 = (float)d3;
         this.getClass();
         this.getClass();
-        ImageRenderer.E(color3, f, f2, "togglebg", 6.0f, 6.0f, false);
-        ImageRenderer.E(this.q(this.K), (float)d2 + this.v + (float)this.cX.getInterpolatedValue().doubleValue(), (float)d3 + this.v, "toggledot", this.c8, this.c8, false);
+        ImageRenderer.drawImage(color3, f, f2, "togglebg", 6.0f, 6.0f, false);
+        ImageRenderer.drawImage(this.applyDimmedAlpha(this.toggleDotColor), (float)d2 + TOGGLE_DOT_INSET + (float)this.togglePositionAnimation.getInterpolatedValue().doubleValue(), (float)d3 + TOGGLE_DOT_INSET, "toggledot", TOGGLE_DOT_SIZE, TOGGLE_DOT_SIZE, false);
     }
 
     public ClickGuiLegitModuleCardComponent(HudModule hudModule, float f) {
-        this.a = new ColorAnimation(0.15, ClickGuiLegitModuleCardComponent.J.K, ClickGuiLegitModuleCardComponent.J.W);
-        this.i = new ThemeColorAnimation(0.15, ClickGuiLegitModuleCardComponent.J.W);
-        this.cX = new DoubleAnimation(0.15, 0.0, 5.0);
-        this.K = ClickGuiLegitModuleCardComponent.J.r;
-        this.b = new DoubleAnimation(0.15, 0.0, 1.0);
-        this.cp = hudModule;
-        this.R = hudModule.getName();
-        this.c_ = hudModule.s$src$Ljava_lang_String_$pdppcm();
-        this.c4 = hudModule.r$src$Z$14eylz9();
-        this.I = f;
+        this.toggleColorAnimation = new ColorAnimation(0.15, ClickGuiLegitModuleCardComponent.J.K, ClickGuiLegitModuleCardComponent.J.W);
+        this.enabledColorAnimation = new ThemeColorAnimation(0.15, ClickGuiLegitModuleCardComponent.J.W);
+        this.togglePositionAnimation = new DoubleAnimation(0.15, 0.0, 5.0);
+        this.toggleDotColor = ClickGuiLegitModuleCardComponent.J.r;
+        this.dimAnimation = new DoubleAnimation(0.15, 0.0, 1.0);
+        this.module = hudModule;
+        this.moduleName = hudModule.getName();
+        this.iconKey = hudModule.getKey();
+        this.enabled = hudModule.r$src$Z$14eylz9();
+        this.iconScale = f;
         if (hudModule.n() != null) {
             this.w(hudModule.n());
         }
-        this.G = new IconButtonComponent("settingdots", 0.8);
-        this.G.r(this::lambda$new$0);
-        this.H(this.G);
+        this.settingsButton = new IconButtonComponent("settingdots", 0.8);
+        this.settingsButton.addClickListener(this::runSettingsAction);
+        this.addChildren(this.settingsButton);
     }
 
-    public HudModule F$src$Lgg_vape_module_render_hud_HudModule_$mt0j3c() {
-        return this.cp;
+    public HudModule getModule() {
+        return this.module;
     }
 
-    private void lambda$new$0() {
-        if (this.cG != null) {
-            this.cG.run();
+    private void runSettingsAction() {
+        if (this.settingsAction != null) {
+            this.settingsAction.run();
         }
     }
 
-    public boolean W() {
-        return this.O;
+    public boolean isDimmed() {
+        return this.dimmed;
     }
 
-    private void K$src$V$110g7k9() {
-        if (this.cp.r$src$Z$14eylz9() != this.c4 || this.c4 != this.m$src$Z$11j57tz() && !this.c$src$Z$11dn9wd()) {
-            this.p();
+    private void syncEnabledState() {
+        if (this.module.r$src$Z$14eylz9() != this.enabled || this.enabled != this.isToggleAnimationEnabled() && !this.isToggleAnimating()) {
+            this.toggleEnabled();
         }
     }
 
@@ -175,37 +173,37 @@ extends GuiComponent {
 
     @Override
     public void u() {
-        if (this.o && !this.w$src$Z$e457mb()) {
-            this.o = false;
+        if (this.hovered && !this.w$src$Z$e457mb()) {
+            this.hovered = false;
         }
-        this.K$src$V$110g7k9();
+        this.syncEnabledState();
     }
 
-    public boolean m$src$Z$11j57tz() {
-        return this.cX.I$src$Z$c48gtw();
+    public boolean isToggleAnimationEnabled() {
+        return this.togglePositionAnimation.I$src$Z$c48gtw();
     }
 
-    public void J(boolean bl) {
-        this.ci = bl;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
-    private void z() {
-        SmoothFontRenderer smoothFontRenderer = this.O(0.9);
-        double d = smoothFontRenderer.d(this.R);
+    private void renderLabel() {
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.9);
+        double d = smoothFontRenderer.d(this.moduleName);
         double d2 = this.G$src$D$1b2f02a() + 10.0;
         double d3 = this.n() + (this.L() - 15.0) - d / 2.0;
-        Color color = this.c4 ? Color.WHITE : ClickGuiLegitModuleCardComponent.J.Z;
-        smoothFontRenderer.d(this.R, d2, d3, this.q(color));
-        if (!this.c4 && (this.cp.t$src$Z$14g275z() || this.cp.Q())) {
-            SmoothFontRenderer smoothFontRenderer2 = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.65f);
-            String string = this.cp.Q() ? "INDEV" : "BETA";
+        Color color = this.enabled ? Color.WHITE : ClickGuiLegitModuleCardComponent.J.Z;
+        smoothFontRenderer.d(this.moduleName, d2, d3, this.applyDimmedAlpha(color));
+        if (!this.enabled && (this.module.t$src$Z$14g275z() || this.module.Q())) {
+            SmoothFontRenderer smoothFontRenderer2 = this.getAlternateFontRenderer(0.65f);
+            String string = this.module.Q() ? "INDEV" : "BETA";
             double d4 = smoothFontRenderer2.N(string) + 4.0;
             double d5 = smoothFontRenderer2.d(string) + 2.0;
-            double d6 = d2 + smoothFontRenderer.N(this.R) + 4.0;
+            double d6 = d2 + smoothFontRenderer.N(this.moduleName) + 4.0;
             double d7 = d3 + (d - d5) / 2.0;
-            Color color2 = this.q(J.z());
+            Color color2 = this.applyDimmedAlpha(J.z());
             GuiRenderPrimitives.d(d6, d7, d4, d5, color2);
-            smoothFontRenderer2.d(string, d6 + 2.0, d7 + 1.0, this.q(ColorUtil.r(J.z(), 35, 255)));
+            smoothFontRenderer2.d(string, d6 + 2.0, d7 + 1.0, this.applyDimmedAlpha(ColorUtil.getContrastingGray(J.z(), 35, 255)));
         }
     }
 
@@ -216,7 +214,7 @@ extends GuiComponent {
 
     @Override
     public void F() {
-        this.o = true;
+        this.hovered = true;
     }
 }
 

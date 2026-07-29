@@ -28,7 +28,7 @@ extends FrameNavigationButtonComponent {
             if (string.length() > n) {
                 string = string.substring(0, n) + "...";
             }
-            SmoothFontRenderer smoothFontRenderer = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.8);
+            SmoothFontRenderer smoothFontRenderer = this.getAlternateFontRenderer(0.8);
             double d2 = this.n() + this.L() / 2.0;
             double d3 = smoothFontRenderer.N(string);
             double d4 = smoothFontRenderer.d(string);
@@ -37,7 +37,7 @@ extends FrameNavigationButtonComponent {
             double d7 = 25.0;
             double d8 = d7 + 7.0;
             double d9 = d8 + 4.0;
-            GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + this.A() - d9 - d3, d2 - d5 / 2.0, d6, d5, ColorUtil.W(Color.WHITE, 7));
+            GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + this.A() - d9 - d3, d2 - d5 / 2.0, d6, d5, ColorUtil.withAlpha(Color.WHITE, 7));
             smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + this.A() - d8 - d3, d2 - d4 / 2.0 + 0.5, new Color(115, 113, 115));
             GuiRenderPrimitives.F("update_available_active@2x", this.G$src$D$1b2f02a() + this.A() - d7, this.n() + this.L() / 2.0, 8.0, 8.0, J.z());
             return;
@@ -46,7 +46,7 @@ extends FrameNavigationButtonComponent {
         if (string.length() > n) {
             string = string.substring(0, n) + "...";
         }
-        SmoothFontRenderer smoothFontRenderer = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.8);
+        SmoothFontRenderer smoothFontRenderer = this.getAlternateFontRenderer(0.8);
         double d10 = this.n() + this.L() / 2.0;
         double d11 = smoothFontRenderer.N(string);
         double d12 = smoothFontRenderer.d(string);
@@ -54,7 +54,7 @@ extends FrameNavigationButtonComponent {
         double d14 = d11 + (double)9;
         double d15 = d = 23.0;
         double d16 = d15 + 4.0;
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + this.A() - d16 - d11, d10 - d13 / 2.0, d14, d13, ColorUtil.W(Color.WHITE, 7));
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + this.A() - d16 - d11, d10 - d13 / 2.0, d14, d13, ColorUtil.withAlpha(Color.WHITE, 7));
         smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + this.A() - d15 - d11, d10 - d12 / 2.0 + 0.5, new Color(115, 113, 115));
     }
 }

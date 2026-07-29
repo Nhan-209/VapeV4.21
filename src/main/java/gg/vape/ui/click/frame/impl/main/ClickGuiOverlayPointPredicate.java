@@ -7,17 +7,16 @@ import java.awt.Point;
 
 class ClickGuiOverlayPointPredicate
 implements GuiMouseListener {
-    final ClickGuiMainFrame P;
-    final ClickGuiOverlayController m;
+    final ClickGuiMainFrame frame;
+    final ClickGuiOverlayController controller;
 
     ClickGuiOverlayPointPredicate(ClickGuiOverlayController clickGuiOverlayController, ClickGuiMainFrame clickGuiMainFrame) {
-        this.m = clickGuiOverlayController;
-        this.P = clickGuiMainFrame;
+        this.controller = clickGuiOverlayController;
+        this.frame = clickGuiMainFrame;
     }
 
     @Override
     public boolean Q(Point point) {
-        return ClickGuiOverlayController.t(this.m).Q().R(point);
+        return ClickGuiOverlayController.getBackdrop(this.controller).getBounds().R(point);
     }
 }
-

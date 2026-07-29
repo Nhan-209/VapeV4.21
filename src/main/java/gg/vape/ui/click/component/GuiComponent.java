@@ -33,65 +33,65 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiComponent
 implements GuiComponentContract {
-    private double H;
-    private boolean Y;
-    private double h;
-    private boolean S;
-    private double y = 5.0;
-    private Value Z;
-    private List<GuiKeyTypedListener> e;
-    private long g;
-    private List<GuiMouseListener> m;
+    private double x;
+    private boolean useExplicitHeight;
+    private double width;
+    private boolean childRenderingSuppressed;
+    private double horizontalInset = 5.0;
+    private Value boundValue;
+    private List<GuiKeyTypedListener> keyTypedListeners;
+    private long tooltipHoverMillis;
+    private List<GuiMouseListener> globalMouseListeners;
     public final float V = 8.0f;
-    private boolean T = true;
-    private boolean x = false;
-    private final ArrayList<GuiComponent> W;
-    private GuiMouseEvent P;
-    private boolean F;
+    private boolean acceptsMouseInput = true;
+    private boolean propagateMouseEvents = false;
+    private final ArrayList<GuiComponent> children;
+    private GuiMouseEvent lastMouseEvent;
+    private boolean useExplicitWidth;
     @Nullable
-    private FontOption U;
-    private long D;
-    private double k;
-    private boolean j = true;
+    private FontOption fontOption;
+    private long previousTooltipHoverMillis;
+    private double y;
+    private boolean showDisabledOverlay = true;
     public final float M = 5.0f;
-    private double d = -1.0;
-    private boolean s = true;
-    private static GuiComponent[] c;
-    protected boolean q = false;
-    private FrameHeaderComponent w;
+    private double explicitHeight = -1.0;
+    private boolean visible = true;
+    private static GuiComponent[] legacyState;
+    protected boolean hovered = false;
+    private FrameHeaderComponent parentHeader;
     public final double N = 0.15;
-    private long C;
-    private double l = -1.0;
-    private double r;
-    private Color L;
-    private List<GuiMouseListener> u = new CopyOnWriteArrayList<GuiMouseListener>();
-    private boolean n = true;
-    private String z = "unnamed";
-    private boolean f;
-    private final List<GuiActivationListener> E;
-    private boolean A;
-    private ToolTips B;
-    private FrameComponent X;
+    private long tooltipHoverStartMillis;
+    private double explicitWidth = -1.0;
+    private double height;
+    private Color disabledOverlayColor;
+    private List<GuiMouseListener> mouseListeners = new CopyOnWriteArrayList<GuiMouseListener>();
+    private boolean removable = true;
+    private String text = "unnamed";
+    private boolean ignoreFrameClipping;
+    private final List<GuiActivationListener> activationListeners;
+    private boolean active;
+    private ToolTips toolTips;
+    private FrameComponent parentFrameComponent;
 
-    public GuiComponent M(ToolTips toolTips) {
-        this.B = toolTips;
+    public GuiComponent setToolTips(ToolTips toolTips) {
+        this.toolTips = toolTips;
         return this;
     }
 
     @Override
-    public void o(double d) {
-        this.h = d;
-        if (this.l == -1.0) {
-            this.l = d;
+    public void o(double width) {
+        this.width = width;
+        if (this.explicitWidth == -1.0) {
+            this.explicitWidth = width;
         }
     }
 
-    public boolean K$src$Z$1wnfv4l() {
-        return this.S;
+    public boolean isChildRenderingSuppressed() {
+        return this.childRenderingSuppressed;
     }
 
-    public void w(FrameHeaderComponent frameHeaderComponent) {
-        this.w = frameHeaderComponent;
+    public void setParentHeader(FrameHeaderComponent parentHeader) {
+        this.parentHeader = parentHeader;
     }
 
     public void B$src$V$1wihpow() {
@@ -99,214 +99,214 @@ implements GuiComponentContract {
 
     @Override
     public double L() {
-        return this.Y ? this.r : Math.max(this.r, this.C());
+        return this.useExplicitHeight ? this.height : Math.max(this.height, this.C());
     }
 
     @Override
     public boolean V$src$Z$1xhop3l() {
-        if (this.r$src$Lgg_vape_value_Value_$fdf20y() != null && this.r$src$Lgg_vape_value_Value_$fdf20y().C$src$Z$1a17d8q()) {
+        if (this.getBoundValue() != null && this.getBoundValue().isHidden()) {
             return false;
         }
         boolean bl = true;
-        if (this.Z != null) {
-            bl = this.Z.K$src$Z$1a5lpzm();
+        if (this.boundValue != null) {
+            bl = this.boundValue.areConditionsMet();
         }
-        return this.s && bl;
+        return this.visible && bl;
     }
 
-    public void Y(@Nullable FontOption fontOption) {
-        this.U = fontOption;
+    public void setFontOption(@Nullable FontOption fontOption) {
+        this.fontOption = fontOption;
     }
 
-    public void A(boolean bl) {
-        this.f = bl;
+    public void setIgnoreFrameClipping(boolean ignoreFrameClipping) {
+        this.ignoreFrameClipping = ignoreFrameClipping;
     }
 
-    public List<GuiActivationListener> j$src$Ljava_util_List_$1ys7oc7() {
-        return this.E;
+    public List<GuiActivationListener> getActivationListeners() {
+        return this.activationListeners;
     }
 
-    public void d(boolean bl) {
-        this.j = bl;
+    public void setShowDisabledOverlay(boolean showDisabledOverlay) {
+        this.showDisabledOverlay = showDisabledOverlay;
     }
 
-    public static void D(GuiComponent[] guiComponentArray) {
-        c = guiComponentArray;
+    public static void setLegacyComponentState(GuiComponent[] state) {
+        legacyState = state;
     }
 
-    public void o(boolean bl) {
-        this.x = bl;
+    public void setPropagateMouseEvents(boolean propagateMouseEvents) {
+        this.propagateMouseEvents = propagateMouseEvents;
     }
 
-    public Color d() {
-        if (this.L == null) {
-            this.L = GuiComponent.J.i;
+    public Color getDisabledOverlayColor() {
+        if (this.disabledOverlayColor == null) {
+            this.disabledOverlayColor = GuiComponent.J.i;
         }
-        return this.L;
+        return this.disabledOverlayColor;
     }
 
-    public SmoothFontRenderer U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(double d) {
-        return this.U != null ? this.U.k((float)d, true) : Vape.INSTANCE.getFontManager().W(d, false);
+    public SmoothFontRenderer getAlternateFontRenderer(double scale) {
+        return this.fontOption != null ? this.fontOption.k((float)scale, true) : Vape.INSTANCE.getFontManager().W(scale, false);
     }
 
-    public String a$src$Ljava_lang_String_$f13x47() {
-        return this.z;
+    public String getText() {
+        return this.text;
     }
 
-    public void s(FrameComponent frameComponent) {
-        this.X = frameComponent;
+    public void setParentFrameComponent(FrameComponent parentFrameComponent) {
+        this.parentFrameComponent = parentFrameComponent;
     }
 
-    public void P(boolean bl) {
-        this.F = bl;
+    public void setUseExplicitWidth(boolean useExplicitWidth) {
+        this.useExplicitWidth = useExplicitWidth;
     }
 
-    public boolean Z$src$Z$16e8vsp() {
-        return this.j;
+    public boolean isShowDisabledOverlay() {
+        return this.showDisabledOverlay;
     }
 
-    public FrameComponent B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb() {
-        return this.X;
+    public FrameComponent getParentFrameComponent() {
+        return this.parentFrameComponent;
     }
 
-    public void X$src$V$1wul6qu() {
+    public void renderDebugBounds() {
         GuiRenderPrimitives.y((float)this.G$src$D$1b2f02a(), (float)this.n(), 1.0f, (float)this.L(), Color.MAGENTA);
         GuiRenderPrimitives.y((float)this.G$src$D$1b2f02a(), (float)this.n(), (float)this.A(), 1.0f, Color.MAGENTA);
         GuiRenderPrimitives.y((float)this.G$src$D$1b2f02a() + (float)this.A(), (float)this.n(), 1.0f, (float)this.L(), Color.MAGENTA);
         GuiRenderPrimitives.y((float)this.G$src$D$1b2f02a(), (float)this.n() + (float)this.L(), (float)this.A(), 1.0f, Color.MAGENTA);
     }
 
-    public void o(GuiKeyTypedListener guiKeyTypedListener) {
-        this.e.add(guiKeyTypedListener);
+    public void addKeyTypedListener(GuiKeyTypedListener keyTypedListener) {
+        this.keyTypedListeners.add(keyTypedListener);
     }
 
-    public double H$src$D$1wlsgtk() {
-        return this.d;
+    public double getExplicitHeight() {
+        return this.explicitHeight;
     }
 
-    public void b(GuiKeyTypedListener guiKeyTypedListener) {
-        this.e.remove(guiKeyTypedListener);
+    public void removeKeyTypedListener(GuiKeyTypedListener keyTypedListener) {
+        this.keyTypedListeners.remove(keyTypedListener);
     }
 
     @Override
-    public void Y(double d) {
-        this.r = d;
-        if (this.d == -1.0) {
-            this.d = d;
+    public void Y(double height) {
+        this.height = height;
+        if (this.explicitHeight == -1.0) {
+            this.explicitHeight = height;
         }
     }
 
     public void J() {
-        if (ClientSettings.P(this)) {
+        if (ClientSettings.canReceiveInput(this)) {
             this.F();
-            if (!this.A) {
-                this.A = true;
-                for (GuiActivationListener object : this.E) {
-                    object.A(true);
+            if (!this.active) {
+                this.active = true;
+                for (GuiActivationListener activationListener : this.activationListeners) {
+                    activationListener.onActivationChanged(true);
                 }
             }
         }
-        this.n(true);
-        boolean bl = ClientSettings.fW.fe.L();
+        this.setHovered(true);
+        boolean bl = ClientSettings.INSTANCE.showTooltips.getEffectiveValue();
         for (GuiComponent guiComponent : this.f()) {
-            if (!guiComponent.V$src$Z$1xhop3l() || guiComponent.K$src$Z$1wnfv4l() || !guiComponent.t() || !ClientSettings.P(guiComponent) || this instanceof FrameComponent && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().t() && !(guiComponent instanceof FrameHeaderComponent)) continue;
+            if (!guiComponent.V$src$Z$1xhop3l() || guiComponent.isChildRenderingSuppressed() || !guiComponent.t() || !ClientSettings.canReceiveInput(guiComponent) || this instanceof FrameComponent && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().t() && !(guiComponent instanceof FrameHeaderComponent)) continue;
             guiComponent.J();
-            if (guiComponent.J$src$Lgg_vape_ui_click_component_ToolTips_$bb9snf() == null || !bl) continue;
+            if (guiComponent.getToolTips() == null || !bl) continue;
             bl = false;
         }
-        if (bl && this.B != null) {
-            this.y$src$V$1xcqebr();
+        if (bl && this.toolTips != null) {
+            this.updateToolTipHover();
         }
     }
 
-    public double U$src$D$muzvq3() {
+    public double getComponentHeight() {
         return this.L();
     }
 
-    public double l$src$D$1x5l26k() {
-        return this.l;
+    public double getExplicitWidth() {
+        return this.explicitWidth;
     }
 
-    public void I(GuiComponent guiComponent) {
-        this.f().remove(guiComponent);
+    public void removeChild(GuiComponent child) {
+        this.f().remove(child);
     }
 
-    public double Z$src$D$1wvori2() {
-        return this.y;
+    public double getHorizontalInset() {
+        return this.horizontalInset;
     }
 
-    public void C(Value value) {
-        this.Z = value;
-        value.L(this);
-        if (value.w$src$Ljava_lang_String_$ikqblg() != null) {
-            this.w(value.w$src$Ljava_lang_String_$ikqblg());
+    public void bindValue(Value value) {
+        this.boundValue = value;
+        value.setBoundComponent(this);
+        if (value.getDescription() != null) {
+            this.w(value.getDescription());
         }
     }
 
-    public List<GuiMouseListener> O$src$Ljava_util_List_$148rlrm() {
-        return this.u;
+    public List<GuiMouseListener> getMouseListeners() {
+        return this.mouseListeners;
     }
 
     @Nullable
-    public FontOption n$src$Lgg_vape_ui_font_FontOption_$1sav7ha() {
-        return this.U;
+    public FontOption getFontOption() {
+        return this.fontOption;
     }
 
-    public void S() {
+    public void removeMarkedChildren() {
         CopyOnWriteArrayList<GuiComponent> copyOnWriteArrayList = new CopyOnWriteArrayList<GuiComponent>(this.f());
         for (GuiComponent guiComponent : copyOnWriteArrayList) {
-            if (!guiComponent.j$src$Z$dapde9()) continue;
-            this.I(guiComponent);
+            if (!guiComponent.isRemovable()) continue;
+            this.removeChild(guiComponent);
         }
     }
 
-    public void y$src$V$1xcqebr() {
-        if (this.C == 0L) {
-            this.C = System.currentTimeMillis();
+    public void updateToolTipHover() {
+        if (this.tooltipHoverStartMillis == 0L) {
+            this.tooltipHoverStartMillis = System.currentTimeMillis();
         }
-        this.g += System.currentTimeMillis() - this.C;
-        if (this.g >= 2000L) {
+        this.tooltipHoverMillis += System.currentTimeMillis() - this.tooltipHoverStartMillis;
+        if (this.tooltipHoverMillis >= 2000L) {
             MousePosition mousePosition = RenderUtils.h();
-            this.B.K(mousePosition.O);
-            this.B.S(mousePosition.H);
-            this.B.Z(true);
-            ClientSettings.V = this.B;
+            this.toolTips.K(mousePosition.O);
+            this.toolTips.S(mousePosition.H);
+            this.toolTips.setVisible(true);
+            ClientSettings.activeTooltips = this.toolTips;
         }
     }
 
-    public SmoothFontRenderer A$src$Lgg_vape_ui_font_SmoothFontRenderer_$jrhwp3() {
-        return this.U != null ? this.U.k(1.0f, false) : Vape.INSTANCE.getFontManager().Y();
+    public SmoothFontRenderer getDefaultFontRenderer() {
+        return this.fontOption != null ? this.fontOption.k(1.0f, false) : Vape.INSTANCE.getFontManager().Y();
     }
 
-    public void S(boolean bl) {
-        this.T = bl;
+    public void setAcceptsMouseInput(boolean acceptsMouseInput) {
+        this.acceptsMouseInput = acceptsMouseInput;
     }
 
-    public static GuiComponent[] D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() {
-        return c;
+    public static GuiComponent[] getLegacyComponentState() {
+        return legacyState;
     }
 
-    public boolean O$src$Z$1wpn1i1() {
-        return this.j;
+    public boolean isShowDisabledOverlayCompat() {
+        return this.showDisabledOverlay;
     }
 
-    public RectData Q() {
+    public RectData getBounds() {
         return new RectData(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L());
     }
 
-    public void n(boolean bl) {
-        this.q = bl;
+    public void setHovered(boolean hovered) {
+        this.hovered = hovered;
     }
 
-    public void D(GuiMouseEvent guiMouseEvent) {
-        if (guiMouseEvent.equals(this.P)) {
+    public void dispatchMouseEvent(GuiMouseEvent guiMouseEvent) {
+        if (guiMouseEvent.equals(this.lastMouseEvent)) {
             return;
         }
-        this.P = guiMouseEvent;
+        this.lastMouseEvent = guiMouseEvent;
         if (guiMouseEvent.isCancelled()) {
             return;
         }
-        for (GuiMouseListener object2 : this.O$src$Ljava_util_List_$148rlrm()) {
+        for (GuiMouseListener object2 : this.getMouseListeners()) {
             if (!object2.Q(new Point(guiMouseEvent.getX(), guiMouseEvent.getY()))) continue;
             return;
         }
@@ -315,87 +315,87 @@ implements GuiComponentContract {
         Iterator iterator = arrayList.iterator();
         while (iterator.hasNext()) {
             GuiComponent guiComponent = (GuiComponent)iterator.next();
-            if (!guiComponent.V$src$Z$1xhop3l() || guiComponent.K$src$Z$1wnfv4l() || !guiComponent.w$src$Z$e457mb() || this instanceof FrameComponent && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().w$src$Z$e457mb() && !(guiComponent instanceof FrameHeaderComponent) || !guiComponent.b$src$Z$1x034rw()) continue;
-            guiComponent.D(guiMouseEvent);
-            if (guiComponent instanceof FrameHeaderComponent || this.x) continue;
+            if (!guiComponent.V$src$Z$1xhop3l() || guiComponent.isChildRenderingSuppressed() || !guiComponent.w$src$Z$e457mb() || this instanceof FrameComponent && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null && ((FrameComponent)this).j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().w$src$Z$e457mb() && !(guiComponent instanceof FrameHeaderComponent) || !guiComponent.acceptsMouseInput()) continue;
+            guiComponent.dispatchMouseEvent(guiMouseEvent);
+            if (guiComponent instanceof FrameHeaderComponent || this.propagateMouseEvents) continue;
             return;
         }
         this.g(guiMouseEvent);
-        for (GuiMouseListener guiMouseListener : this.O$src$Ljava_util_List_$148rlrm()) {
-            guiMouseListener.g(new Point(MouseInput.N(), MouseInput.u()), guiMouseEvent.getAction() == MouseButton.LEFT_CLICK ? MouseClickButton.LEFT_CLICK : (guiMouseEvent.getAction() == MouseButton.RIGHT_CLICK ? MouseClickButton.RIGHT_CLICK : (guiMouseEvent.getAction() == MouseButton.MIDDLE_CLICK ? MouseClickButton.MIDDLE_CLICK : null)));
+        for (GuiMouseListener guiMouseListener : this.getMouseListeners()) {
+            guiMouseListener.g(new Point(MouseInput.getMouseX(), MouseInput.getInvertedMouseY()), guiMouseEvent.getAction() == MouseButton.LEFT_CLICK ? MouseClickButton.LEFT_CLICK : (guiMouseEvent.getAction() == MouseButton.RIGHT_CLICK ? MouseClickButton.RIGHT_CLICK : (guiMouseEvent.getAction() == MouseButton.MIDDLE_CLICK ? MouseClickButton.MIDDLE_CLICK : null)));
         }
     }
 
-    public void setText(String string) {
-        this.z = string;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public void g$src$V$1x2u3n9() {
-        this.n(false);
-        if (this.A) {
-            this.A = false;
+    public void deactivate() {
+        this.setHovered(false);
+        if (this.active) {
+            this.active = false;
             this.onEnable();
-            for (GuiActivationListener guiActivationListener : this.E) {
-                guiActivationListener.A(false);
+            for (GuiActivationListener activationListener : this.activationListeners) {
+                activationListener.onActivationChanged(false);
             }
         }
     }
 
-    public void m$src$V$1x64v7f() {
-        this.g = 0L;
-        this.C = 0L;
-        this.B.Z(false);
-        ClientSettings.V = null;
+    public void hideToolTips() {
+        this.tooltipHoverMillis = 0L;
+        this.tooltipHoverStartMillis = 0L;
+        this.toolTips.setVisible(false);
+        ClientSettings.activeTooltips = null;
     }
 
-    public void j(GuiMouseListener guiMouseListener) {
-        this.u.add(guiMouseListener);
+    public void addMouseListener(GuiMouseListener mouseListener) {
+        this.mouseListeners.add(mouseListener);
     }
 
-    public void d(GuiActivationListener guiActivationListener) {
-        this.E.add(guiActivationListener);
+    public void addActivationListener(GuiActivationListener activationListener) {
+        this.activationListeners.add(activationListener);
     }
 
     @Override
     public double n() {
-        return this.k;
+        return this.y;
     }
 
     @Override
-    public void S(double d) {
-        this.k = d;
+    public void S(double y) {
+        this.y = y;
     }
 
-    public void H(GuiComponent ... guiComponentArray) {
-        Collections.addAll(this.f(), guiComponentArray);
+    public void addChildren(GuiComponent ... children) {
+        Collections.addAll(this.f(), children);
     }
 
-    public Value r$src$Lgg_vape_value_Value_$fdf20y() {
-        return this.Z;
+    public Value getBoundValue() {
+        return this.boundValue;
     }
 
-    public ToolTips J$src$Lgg_vape_ui_click_component_ToolTips_$bb9snf() {
-        return this.B;
+    public ToolTips getToolTips() {
+        return this.toolTips;
     }
 
     public void i$src$V$c9opdk() {
     }
 
-    public SmoothFontRenderer O(double d) {
-        return this.U != null ? this.U.k((float)d, false) : Vape.INSTANCE.getFontManager().Y(d);
+    public SmoothFontRenderer getFontRenderer(double scale) {
+        return this.fontOption != null ? this.fontOption.k((float)scale, false) : Vape.INSTANCE.getFontManager().Y(scale);
     }
 
-    public void W(boolean bl) {
-        this.Y = bl;
+    public void setUseExplicitHeight(boolean useExplicitHeight) {
+        this.useExplicitHeight = useExplicitHeight;
     }
 
     public boolean w$src$Z$e457mb() {
-        return this.q;
+        return this.hovered;
     }
 
-    public void q(double d) {
-        this.l = d;
-        this.h = d;
+    public void setExplicitWidth(double width) {
+        this.explicitWidth = width;
+        this.width = width;
     }
 
     public double t$src$D$1x9zexg() {
@@ -410,75 +410,75 @@ implements GuiComponentContract {
 
     @Override
     public double G$src$D$1b2f02a() {
-        return this.H;
+        return this.x;
     }
 
     public void onDisable() {
-        if (!this.Z$src$Z$16e8vsp()) {
+        if (!this.isShowDisabledOverlay()) {
             return;
         }
-        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.U$src$D$muzvq3(), this.d());
+        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.getComponentHeight(), this.getDisabledOverlayColor());
     }
 
     protected void x$src$V$1xc6lqe() {
         if (this.w$src$Z$e457mb() && !this.t()) {
-            this.g$src$V$1x2u3n9();
+            this.deactivate();
             for (GuiComponent guiComponent : this.f()) {
-                guiComponent.g$src$V$1x2u3n9();
+                guiComponent.deactivate();
             }
         }
     }
 
-    public boolean o$src$Z$1x78ghl() {
-        return this.f;
+    public boolean isIgnoreFrameClipping() {
+        return this.ignoreFrameClipping;
     }
 
     public boolean i(int n, int n2) {
-        return this.Q().J(n, n2);
+        return this.getBounds().J(n, n2);
     }
 
-    public GuiComponent T(Color color) {
-        this.L = color;
+    public GuiComponent setDisabledOverlayColor(Color color) {
+        this.disabledOverlayColor = color;
         return this;
     }
 
-    public boolean Y$src$Z$1wv4zfn() {
-        return this.x;
+    public boolean isPropagateMouseEvents() {
+        return this.propagateMouseEvents;
     }
 
     public List<GuiComponent> f() {
-        return this.W;
+        return this.children;
     }
 
     static {
-        GuiComponent.D(new GuiComponent[4]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[4]);
     }
 
-    public void B(boolean bl) {
-        this.S = bl;
+    public void setChildRenderingSuppressed(boolean suppressed) {
+        this.childRenderingSuppressed = suppressed;
     }
 
-    public boolean b$src$Z$1x034rw() {
-        return this.T;
+    public boolean acceptsMouseInput() {
+        return this.acceptsMouseInput;
     }
 
-    public List<GuiMouseListener> o$src$Ljava_util_List_$10z72du() {
-        return this.m;
+    public List<GuiMouseListener> getGlobalMouseListeners() {
+        return this.globalMouseListeners;
     }
 
-    public boolean j$src$Z$dapde9() {
-        return this.n;
+    public boolean isRemovable() {
+        return this.removable;
     }
 
-    public void Q(boolean bl) {
-        this.n = bl;
+    public void setRemovable(boolean removable) {
+        this.removable = removable;
     }
 
     public Frame L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa() {
-        if (this.w != null) {
-            return this.w.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa();
+        if (this.parentHeader != null) {
+            return this.parentHeader.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa();
         }
-        FrameComponent frameComponent = this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb();
+        FrameComponent frameComponent = this.getParentFrameComponent();
         if (frameComponent != null) {
             if (frameComponent instanceof Frame) {
                 return (Frame)frameComponent;
@@ -494,13 +494,13 @@ implements GuiComponentContract {
         return null;
     }
 
-    public void u(double d) {
-        this.d = d;
-        this.r = d;
+    public void setExplicitHeight(double height) {
+        this.explicitHeight = height;
+        this.height = height;
     }
 
-    public void z(GuiActivationListener guiActivationListener) {
-        this.E.remove(guiActivationListener);
+    public void removeActivationListener(GuiActivationListener activationListener) {
+        this.activationListeners.remove(activationListener);
     }
 
     public void e(GuiMouseEvent guiMouseEvent) {
@@ -511,12 +511,12 @@ implements GuiComponentContract {
         }
     }
 
-    public void C(double d) {
-        this.y = d;
+    public void setHorizontalInset(double horizontalInset) {
+        this.horizontalInset = horizontalInset;
     }
 
-    public void Z(boolean bl) {
-        this.s = bl;
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public void q$src$V$1x8c1kv() {
@@ -529,13 +529,13 @@ implements GuiComponentContract {
 
     public GuiComponent w(@Nullable String string) {
         if (string == null) {
-            this.B = null;
+            this.toolTips = null;
             return this;
         }
         if (string.isEmpty()) {
             return this;
         }
-        this.B = new ToolTips(this, string);
+        this.toolTips = new ToolTips(this, string);
         return this;
     }
 
@@ -550,67 +550,67 @@ implements GuiComponentContract {
 
     public void K(Color color) {
         GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), color);
-        this.O(0.75).d(String.format("x %f, y %f, w %f, h %f", this.G$src$D$1b2f02a(), this.n(), this.A(), this.L()), this.G$src$D$1b2f02a(), this.n(), Color.WHITE);
+        this.getFontRenderer(0.75).d(String.format("x %f, y %f, w %f, h %f", this.G$src$D$1b2f02a(), this.n(), this.A(), this.L()), this.G$src$D$1b2f02a(), this.n(), Color.WHITE);
     }
 
 
-    public void E(GuiMouseListener guiMouseListener) {
-        this.u.remove(guiMouseListener);
+    public void removeMouseListener(GuiMouseListener mouseListener) {
+        this.mouseListeners.remove(mouseListener);
     }
 
     @Override
     public double A() {
-        return this.F ? this.h : Math.max(this.h, this.x());
+        return this.useExplicitWidth ? this.width : Math.max(this.width, this.x());
     }
 
     public GuiComponent() {
-        this.m = new CopyOnWriteArrayList<GuiMouseListener>();
-        this.e = new ArrayList<GuiKeyTypedListener>();
-        this.E = new ArrayList<GuiActivationListener>();
-        this.W = new ArrayList();
+        this.globalMouseListeners = new CopyOnWriteArrayList<GuiMouseListener>();
+        this.keyTypedListeners = new ArrayList<GuiKeyTypedListener>();
+        this.activationListeners = new ArrayList<GuiActivationListener>();
+        this.children = new ArrayList();
     }
 
     public void q(Frame frame, Frame frame2) {
-        this.u.add(new FrameOutsideChildClickFilterMouseListener(this, frame, frame2));
+        this.mouseListeners.add(new FrameOutsideChildClickFilterMouseListener(this, frame, frame2));
     }
 
     public boolean t() {
         MousePosition mousePosition = RenderUtils.h();
-        return this.Q().Z(mousePosition);
+        return this.getBounds().Z(mousePosition);
     }
 
-    public void r$src$V$1x8vu68() {
-        this.u.clear();
+    public void clearMouseListeners() {
+        this.mouseListeners.clear();
     }
 
     @Override
-    public void K(double d) {
-        this.H = d;
+    public void K(double x) {
+        this.x = x;
     }
 
-    public List<GuiKeyTypedListener> b$src$Ljava_util_List_$1hubsov() {
-        return this.e;
+    public List<GuiKeyTypedListener> getKeyTypedListeners() {
+        return this.keyTypedListeners;
     }
 
-    public void Z(GuiMouseListener guiMouseListener) {
-        this.m.add(guiMouseListener);
+    public void addGlobalMouseListener(GuiMouseListener mouseListener) {
+        this.globalMouseListeners.add(mouseListener);
     }
 
     public void c() {
         this.x$src$V$1xc6lqe();
-        if (!(this.g == 0L || this.D != this.g || this.w$src$Z$e457mb() && this.V$src$Z$1xhop3l())) {
-            this.m$src$V$1x64v7f();
+        if (!(this.tooltipHoverMillis == 0L || this.previousTooltipHoverMillis != this.tooltipHoverMillis || this.w$src$Z$e457mb() && this.V$src$Z$1xhop3l())) {
+            this.hideToolTips();
         }
-        if (this.B != null) {
-            this.B.s(true);
+        if (this.toolTips != null) {
+            this.toolTips.setActive(true);
         }
-        this.D = this.g;
+        this.previousTooltipHoverMillis = this.tooltipHoverMillis;
         this.H();
         if (this instanceof FrameComponent) {
             ((FrameComponent)this).z$src$V$infu7a();
         }
         for (GuiComponent guiComponent : this.f()) {
-            if (!guiComponent.V$src$Z$1xhop3l() || this.K$src$Z$1wnfv4l()) continue;
+            if (!guiComponent.V$src$Z$1xhop3l() || this.isChildRenderingSuppressed()) continue;
             try {
                 guiComponent.c();
             }

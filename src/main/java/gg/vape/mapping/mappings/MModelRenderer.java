@@ -160,7 +160,7 @@ extends Mapping {
                 MModelRenderer mModelRenderer13 = this;
                 this.w = this.J(string13, bl13, clazz15);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MModelRenderer.P(new int[4]);
             }
             return;
@@ -210,7 +210,7 @@ extends Mapping {
         String string21 = "isHidden";
         MModelRenderer mModelRenderer21 = this;
         this.w = this.J(string21, bl21, clazz23);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MModelRenderer.P(new int[4]);
         }
         this.r = null;

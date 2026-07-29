@@ -6,17 +6,16 @@ import gg.vape.ui.click.component.value.ColorPaletteSliderComponent;
 
 public class ColorPaletteRefreshClickListener
 implements GuiClickListener {
-    final ColorChannelSliderComponent m;
-    final ColorPaletteSliderComponent C;
+    final ColorChannelSliderComponent channelSlider;
+    final ColorPaletteSliderComponent paletteSlider;
 
     @Override
-    public void P() {
-        this.C.k();
+    public void onPrimaryClick() {
+        this.paletteSlider.resetToMiddleColor();
     }
 
-    public ColorPaletteRefreshClickListener(ColorChannelSliderComponent r7_02, ColorPaletteSliderComponent r3_02) {
-        this.m = r7_02;
-        this.C = r3_02;
+    public ColorPaletteRefreshClickListener(ColorChannelSliderComponent channelSlider, ColorPaletteSliderComponent paletteSlider) {
+        this.channelSlider = channelSlider;
+        this.paletteSlider = paletteSlider;
     }
 }
-

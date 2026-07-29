@@ -8,53 +8,53 @@ import gg.vape.value.Value;
 
 public class BindValue
 extends Value<BindSet, BindValue> {
-    public BindValue(Object object, String string, BindSet bindSet) {
-        super(object, string, bindSet);
+    public BindValue(Object owner, String name, BindSet bindSet) {
+        super(owner, name, bindSet);
     }
 
 
-    public BindValue n() {
-        return new BindValue((Object)null, this.P$src$Ljava_lang_String_$1ijjhmj(), (BindSet)this.K());
-    }
-
-    @Override
-    public BindValue getALimit() {
-        return this.n();
+    public BindValue copyDefinition() {
+        return new BindValue((Object)null, this.getId(), (BindSet)this.getValue());
     }
 
     @Override
-    public void parse(String string) {
+    public BindValue copyValueDefinition() {
+        return this.copyDefinition();
     }
 
     @Override
-    public JsonObject H(boolean bl) {
-        JsonObject jsonObject = super.H(bl);
-        jsonObject.add("binds", (JsonElement)((BindSet)this.K()).toJson$src$Lcom_google_gson_JsonArray_$13cfbto());
+    public void parse(String serializedValue) {
+    }
+
+    @Override
+    public JsonObject toJson(boolean includeValue) {
+        JsonObject jsonObject = super.toJson(includeValue);
+        jsonObject.add("binds", (JsonElement)((BindSet)this.getValue()).serializeBoundInputs());
         jsonObject.add("value", null);
         return jsonObject;
     }
 
     @Override
-    public boolean k() {
-        for (Integer n : ((BindSet)this.K()).o()) {
-            if (((BindSet)this.K()).L().contains(n)) continue;
+    public boolean isDefault() {
+        for (Integer defaultKey : ((BindSet)this.getValue()).getDefaultKeys()) {
+            if (((BindSet)this.getValue()).getBoundInputs().contains(defaultKey)) continue;
             return false;
         }
-        return ((BindSet)this.K()).L().size() == ((BindSet)this.K()).o().size();
+        return ((BindSet)this.getValue()).getBoundInputs().size() == ((BindSet)this.getValue()).getDefaultKeys().size();
     }
 
     @Override
     public boolean loadJson(JsonObject jsonObject) {
-        JsonArray jsonArray = jsonObject.getAsJsonArray("binds");
-        ((BindSet)this.K()).O(jsonArray, false);
+        JsonArray binds = jsonObject.getAsJsonArray("binds");
+        ((BindSet)this.getValue()).loadBoundInputs(binds, false);
         return super.loadJson(jsonObject);
     }
 
-    public static BindValue O(Object object, String string, int n) {
-        return new BindValue(object, string, new BindSet(n));
+    public static BindValue createWithKey(Object owner, String name, int keyCode) {
+        return new BindValue(owner, name, new BindSet(keyCode));
     }
 
-    public static BindValue i(Object object, String string) {
-        return new BindValue(object, string, new BindSet());
+    public static BindValue createEmpty(Object owner, String name) {
+        return new BindValue(owner, name, new BindSet());
     }
 }

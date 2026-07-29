@@ -8,19 +8,19 @@ import java.awt.Point;
 
 public class DropdownPopupCloseClickHandler
 implements GuiMouseListener {
-    final DropdownSelectComponent s;
+    final DropdownSelectComponent<?> owner;
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        PopupFrame popupFrame = DropdownSelectComponent.e(this.s);
-        if (popupFrame != null && !this.s.t() && !popupFrame.t()) {
-            DropdownSelectComponent.w(this.s);
+        PopupFrame popupFrame = this.owner.getPopupFrame();
+        if (popupFrame != null && !this.owner.t() && !popupFrame.t()) {
+            this.owner.togglePopup();
         }
     }
 
 
-    public DropdownPopupCloseClickHandler(DropdownSelectComponent dropdownSelectComponent) {
-        this.s = dropdownSelectComponent;
+    public DropdownPopupCloseClickHandler(DropdownSelectComponent<?> dropdown) {
+        this.owner = dropdown;
     }
 }
 

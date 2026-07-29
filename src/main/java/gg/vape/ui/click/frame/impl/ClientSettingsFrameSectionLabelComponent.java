@@ -42,7 +42,7 @@ extends InteractiveComponent {
     @Override
     public void H() {
         float f = 6.88f;
-        SmoothFontRenderer smoothFontRenderer = this.O(this.v);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(this.v);
         double d = smoothFontRenderer.d(this.K);
         double d2 = this.n() + this.L() / 2.0 - d / 2.0;
         double d3 = this.n() + this.L() / 2.0 - (double)(f / 2.0f);
@@ -54,7 +54,7 @@ extends InteractiveComponent {
             color2 = ClientSettingsFrameSectionLabelComponent.J.A;
         }
         GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), color);
-        ImageRenderer.E(this.I, (float)this.G$src$D$1b2f02a() + (float)this.A() - 5.0f - 5.0f, (float)d4, cb, this.b, this.b, false);
+        ImageRenderer.drawImage(this.I, (float)this.G$src$D$1b2f02a() + (float)this.A() - 5.0f - 5.0f, (float)d4, cb, this.b, this.b, false);
         smoothFontRenderer.d(this.K, this.G$src$D$1b2f02a() + 5.0, d2, color2);
     }
 

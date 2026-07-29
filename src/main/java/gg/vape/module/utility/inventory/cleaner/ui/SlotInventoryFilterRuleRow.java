@@ -26,20 +26,20 @@ extends InventoryFilterRuleRowBase {
     private final ColorAnimation closeIconColor;
 
     @Override
-    public void p() {
-        this.content.p();
+    public void refresh() {
+        this.content.refresh();
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
         Runnable runnable;
         if ((double)guiMouseEvent.getX() >= this.G$src$D$1b2f02a() + this.A() - 10.0 && (double)guiMouseEvent.getX() <= this.G$src$D$1b2f02a() + this.A() && (double)guiMouseEvent.getY() >= this.n() && (double)guiMouseEvent.getY() <= this.n() + 8.0) {
-            this.rule.y();
-            this.p();
+            this.rule.reset();
+            this.refresh();
             return;
         }
         if (this.content.w$src$Z$e457mb() && (runnable = this.removeCallback) != null) {
-            ClientSettings.f6.execute(() -> this.runRemoveCallback(runnable));
+            ClientSettings.UI_EXECUTOR.execute(() -> this.runRemoveCallback(runnable));
         }
     }
 
@@ -55,9 +55,9 @@ extends InventoryFilterRuleRowBase {
         this.paddedContent.S(this.n());
         this.paddedContent.l$src$V$1mibm4x();
         super.c();
-        if (!this.rule.q().j()) {
+        if (!this.rule.getItemSelection().isEmpty()) {
             GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() - 10.0, this.n(), 10.0, 1.0, this.deleteLineColor.getInterpolatedColor());
-            ImageRenderer.E(this.closeIconColor.getInterpolatedColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 11.0), (float)(this.n() - 1.0), CLOSE_ICON, 12.0f, 12.0f, false);
+            ImageRenderer.drawImage(this.closeIconColor.getInterpolatedColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 11.0), (float)(this.n() - 1.0), CLOSE_ICON, 12.0f, 12.0f, false);
         }
     }
 
@@ -74,13 +74,13 @@ extends InventoryFilterRuleRowBase {
         }
     }
 
-    public void p(@Nullable Runnable runnable) {
-        this.removeCallback = runnable;
+    public void setRemoveCallback(@Nullable Runnable removeCallback) {
+        this.removeCallback = removeCallback;
     }
 
     private void runRemoveCallback(Runnable runnable) {
         runnable.run();
-        this.p();
+        this.refresh();
     }
 
     public SlotInventoryFilterRuleRow(InventoryCleanerProfile inventoryCleanerProfile, SlotInventoryFilterRule slotInventoryFilterRule) {
@@ -90,13 +90,13 @@ extends InventoryFilterRuleRowBase {
         this.rule = slotInventoryFilterRule;
         this.content = new SlotInventoryFilterRuleRowContent(this, inventoryCleanerProfile, slotInventoryFilterRule);
         this.paddedContent = new PaddedComponent(2.0, this.content);
-        this.p();
-        this.o(true);
-        this.H(this.paddedContent);
+        this.refresh();
+        this.setPropagateMouseEvents(true);
+        this.addChildren(this.paddedContent);
     }
 
     @Nullable
-    public Runnable L$src$Ljava_lang_Runnable_$ps7wst() {
+    public Runnable getRemoveCallback() {
         return this.removeCallback;
     }
 

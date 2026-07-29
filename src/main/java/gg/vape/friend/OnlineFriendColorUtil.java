@@ -15,10 +15,10 @@ public class OnlineFriendColorUtil {
 
     public static Color V(OnlineFriend onlineFriend) {
         OnlineSettings onlineSettings = OnlineConnectionManager.T.S();
-        if (((ModeSelection)onlineSettings.x().K()).equals(onlineSettings.v())) {
+        if (((ModeSelection)onlineSettings.x().getValue()).equals(onlineSettings.v())) {
             return OnlineFriendColorUtil.u(onlineFriend);
         }
-        if (((ModeSelection)onlineSettings.x().K()).equals(onlineSettings.I())) {
+        if (((ModeSelection)onlineSettings.x().getValue()).equals(onlineSettings.I())) {
             return OnlineFriendColorUtil.P();
         }
         return Color.WHITE;
@@ -26,7 +26,7 @@ public class OnlineFriendColorUtil {
 
 
     public static Color P() {
-        return Vape.INSTANCE.getFriendManager().R.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+        return Vape.INSTANCE.getFriendManager().R.getMutableColor();
     }
 
     public static Color f(int n) {

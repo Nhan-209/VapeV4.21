@@ -37,7 +37,7 @@ extends Mapping {
         String string = b;
         MGlyphProvider mGlyphProvider = this;
         this.f = this.Y(string, bl, clazz, classArray);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MGlyphProvider.D(new int[3]);
         }
     }

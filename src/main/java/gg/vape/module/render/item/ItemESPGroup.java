@@ -9,86 +9,71 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ItemESPGroup {
-    public double X;
-    public double e;
-    public double G;
-    public double U;
-    private static String[] itemNames;
-    public double n;
+    public double currentZ;
+    public double previousX;
+    public double previousY;
+    public double currentX;
+    public double previousZ;
     private final List<Object> itemEntities;
     private final List<ItemStack> stackedItems;
-    public double y;
-    final ItemESP q;
-
-    public static void n(String[] stringArray) {
-        itemNames = stringArray;
-    }
+    public double currentY;
+    private final ItemESP parent;
 
 
-    public List<Object> I() {
+    public List<Object> getEntityHandles() {
         return this.itemEntities;
     }
 
-    public static String[] M() {
-        return itemNames;
-    }
-
-    public void F(EntityItem entityItem) {
+    public void addItem(EntityItem entityItem) {
         if (this.itemEntities.isEmpty()) {
-            this.U = entityItem.z();
-            this.y = entityItem.N();
-            this.X = entityItem.h();
-            this.e = entityItem.M();
-            this.G = entityItem.W();
-            this.n = entityItem.m$src$D$fwnne5();
+            this.currentX = entityItem.z();
+            this.currentY = entityItem.N();
+            this.currentZ = entityItem.h();
+            this.previousX = entityItem.M();
+            this.previousY = entityItem.W();
+            this.previousZ = entityItem.m$src$D$fwnne5();
         } else {
             int count = this.itemEntities.size();
-            this.U = (this.U * (double)count + entityItem.z()) / (double)(count + 1);
-            this.y = (this.y * (double)count + entityItem.N()) / (double)(count + 1);
-            this.X = (this.X * (double)count + entityItem.h()) / (double)(count + 1);
+            this.currentX = (this.currentX * (double)count + entityItem.z()) / (double)(count + 1);
+            this.currentY = (this.currentY * (double)count + entityItem.N()) / (double)(count + 1);
+            this.currentZ = (this.currentZ * (double)count + entityItem.h()) / (double)(count + 1);
         }
         this.itemEntities.add(entityItem.getObject());
-        this.r();
+        this.rebuildStacks();
     }
 
-    public boolean e() {
+    public boolean isEmpty() {
         return this.itemEntities.isEmpty();
     }
 
-    public void k(ItemESPGroup itemESPGroup) {
-        for (Object object : itemESPGroup.itemEntities) {
-            if (this.itemEntities.contains(object)) continue;
-            this.itemEntities.add(object);
+    public void merge(ItemESPGroup other) {
+        for (Object entityHandle : other.itemEntities) {
+            if (this.itemEntities.contains(entityHandle)) continue;
+            this.itemEntities.add(entityHandle);
         }
         double sumX = 0.0;
         double sumY = 0.0;
         double sumZ = 0.0;
-        for (Object object : this.itemEntities) {
-            EntityItem entityItem = new EntityItem(object);
+        for (Object entityHandle : this.itemEntities) {
+            EntityItem entityItem = new EntityItem(entityHandle);
             sumX += entityItem.z();
             sumY += entityItem.N();
             sumZ += entityItem.h();
         }
         int count = this.itemEntities.size();
-        this.U = sumX / (double)count;
-        this.y = sumY / (double)count;
-        this.X = sumZ / (double)count;
-        this.r();
+        this.currentX = sumX / (double)count;
+        this.currentY = sumY / (double)count;
+        this.currentZ = sumZ / (double)count;
+        this.rebuildStacks();
     }
 
-    static {
-        if (ItemESPGroup.M() == null) {
-            ItemESPGroup.n(new String[4]);
-        }
-    }
-
-    public void r() {
+    public void rebuildStacks() {
         this.stackedItems.clear();
-        for (Object object : this.itemEntities) {
-            EntityItem entityItem = new EntityItem(object);
+        for (Object entityHandle : this.itemEntities) {
+            EntityItem entityItem = new EntityItem(entityHandle);
             ItemStack itemStack = entityItem.J$src$Lgg_vape_wrapper_impl_ItemStack_$5gv0ko();
             if (!itemStack.isNotNull()) continue;
-            if (ItemESP.i(this.q).L().booleanValue()) {
+            if (this.parent.isGroupingEnabled()) {
                 boolean merged = false;
                 for (ItemStack existingStack : this.stackedItems) {
                     if (!existingStack.e(itemStack)) continue;
@@ -112,64 +97,64 @@ public class ItemESPGroup {
         }
     }
 
-    public List<ItemStack> p() {
+    public List<ItemStack> getStacks() {
         return this.stackedItems;
     }
 
-    public ItemESPGroup(ItemESP itemESP, EntityItem entityItem) {
-        this.q = itemESP;
+    public ItemESPGroup(ItemESP parent, EntityItem entityItem) {
+        this.parent = parent;
         this.itemEntities = new ArrayList<Object>();
         this.stackedItems = new ArrayList<ItemStack>();
-        this.U = entityItem.z();
-        this.y = entityItem.N();
-        this.X = entityItem.h();
-        this.e = this.U;
-        this.G = this.y;
-        this.n = this.X;
-        this.F(entityItem);
+        this.currentX = entityItem.z();
+        this.currentY = entityItem.N();
+        this.currentZ = entityItem.h();
+        this.previousX = this.currentX;
+        this.previousY = this.currentY;
+        this.previousZ = this.currentZ;
+        this.addItem(entityItem);
     }
 
-    public Object g() {
+    public Object getRepresentativeHandle() {
         return this.itemEntities.isEmpty() ? null : this.itemEntities.get(0);
     }
 
-    public void x(List<Object> list, EntityPlayerSP entityPlayerSP) {
-        this.e = this.U;
-        this.G = this.y;
-        this.n = this.X;
-        EntityItem entityItem = new EntityItem(this.g());
-        double distance = entityPlayerSP.getDistanceToEntity(entityItem);
+    public void update(List<Object> worldEntities, EntityPlayerSP player) {
+        this.previousX = this.currentX;
+        this.previousY = this.currentY;
+        this.previousZ = this.currentZ;
+        EntityItem representative = new EntityItem(this.getRepresentativeHandle());
+        double distance = player.getDistanceToEntity(representative);
         double maxRadius = Math.max(1.5, distance / 5.0);
         Iterator<Object> iterator = this.itemEntities.iterator();
         while (iterator.hasNext()) {
             double deltaZ;
             double deltaY;
-            Object object = iterator.next();
-            if (!list.contains(object)) {
+            Object entityHandle = iterator.next();
+            if (!worldEntities.contains(entityHandle)) {
                 iterator.remove();
                 continue;
             }
-            EntityItem entityItem2 = new EntityItem(object);
-            double deltaX = entityItem2.z() - this.U;
-            if (!(Math.sqrt(deltaX * deltaX + (deltaY = entityItem2.N() - this.y) * deltaY + (deltaZ = entityItem2.h() - this.X) * deltaZ) > maxRadius)) continue;
+            EntityItem entityItem = new EntityItem(entityHandle);
+            double deltaX = entityItem.z() - this.currentX;
+            if (!(Math.sqrt(deltaX * deltaX + (deltaY = entityItem.N() - this.currentY) * deltaY + (deltaZ = entityItem.h() - this.currentZ) * deltaZ) > maxRadius)) continue;
             iterator.remove();
         }
         if (!this.itemEntities.isEmpty()) {
             double sumX = 0.0;
             double sumY = 0.0;
             double sumZ = 0.0;
-            for (Object object : this.itemEntities) {
-                EntityItem entityItem3 = new EntityItem(object);
-                sumX += entityItem3.z();
-                sumY += entityItem3.N();
-                sumZ += entityItem3.h();
+            for (Object entityHandle : this.itemEntities) {
+                EntityItem entityItem = new EntityItem(entityHandle);
+                sumX += entityItem.z();
+                sumY += entityItem.N();
+                sumZ += entityItem.h();
             }
             int count = this.itemEntities.size();
-            this.U = sumX / (double)count;
-            this.y = sumY / (double)count;
-            this.X = sumZ / (double)count;
+            this.currentX = sumX / (double)count;
+            this.currentY = sumY / (double)count;
+            this.currentZ = sumZ / (double)count;
         }
-        this.r();
+        this.rebuildStacks();
     }
 }
 

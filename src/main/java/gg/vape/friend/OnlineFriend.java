@@ -172,13 +172,14 @@ public class OnlineFriend {
         if (onlineStatus.equals((Object)OnlineStatus.ONLINE)) {
             Notification notification = new Notification(NotificationType.FRIENDS_ONLINE, "\u00a7f" + this.C() + " \u00a77is online", new TextNotificationContent("", NotificationType.FRIENDS_ONLINE), 0.0, 0.0, 4000L);
             boolean bl = true;
-            for (INotification iNotification : Vape.INSTANCE.getNotificationManager().f()) {
-                if (!(iNotification instanceof Notification) || !((Notification)iNotification).R().equals(notification.R())) continue;
+            for (INotification iNotification : Vape.INSTANCE.getNotificationManager().getNotifications()) {
+                if (!(iNotification instanceof Notification)
+                        || !((Notification)iNotification).getTitle().equals(notification.getTitle())) continue;
                 bl = false;
                 break;
             }
             if (bl) {
-                Vape.INSTANCE.getNotificationManager().m(notification);
+                Vape.INSTANCE.getNotificationManager().show(notification);
             }
         }
         if (this.k) {

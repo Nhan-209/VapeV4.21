@@ -48,16 +48,16 @@ extends EventKeyInputBase {
 
     @Override
     public boolean fire() {
-        int n = -100 + this.getButton();
+        int inputCode = -100 + this.getButton();
         if (this.getButtonState()) {
-            for (Profile object : Vape.INSTANCE.getProfilesManager().b()) {
-                if (!object.f(n)) continue;
+            for (Profile profile : Vape.INSTANCE.getProfilesManager().b()) {
+                if (!profile.activateIfMatched(inputCode)) continue;
                 return this.isCanceled();
             }
         }
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-            if (mod.a().L().isEmpty()) continue;
-            mod.a().U(n, this.getButtonState());
+            if (mod.a().getBoundInputs().isEmpty()) continue;
+            mod.a().handleInput(inputCode, this.getButtonState());
         }
         OnlineConnectionManager.T.S().I(this);
         return super.fire();

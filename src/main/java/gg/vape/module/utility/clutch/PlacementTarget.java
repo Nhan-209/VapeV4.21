@@ -6,51 +6,35 @@ import gg.vape.wrapper.impl.Vec3;
 
 public class PlacementTarget {
     private BlockData cachedBlockData;
-    public int Y;
-    public Vec3 v;
-    public final BlockData k;
-    public final EnumFacing G;
-    private static String token;
-    public final boolean M;
+    public int depth;
+    public Vec3 hitPoint;
+    public final BlockData supportBlock;
+    public final EnumFacing facing;
+    public final boolean offsetFromSupport;
 
     public PlacementTarget(BlockData blockData, EnumFacing enumFacing) {
         this(blockData, enumFacing, true);
     }
 
-    public static String F() {
-        return token;
-    }
-
-
     public EnumFacing getFacing() {
-        return this.G;
+        return this.facing;
     }
 
-    static {
-        if (PlacementTarget.F() != null) {
-            PlacementTarget.C("mxdNkb");
-        }
-    }
-
-    public static void C(String string) {
-        token = string;
-    }
-
-    public BlockData s() {
+    public BlockData getPlacedBlock() {
         if (this.cachedBlockData == null) {
-            this.cachedBlockData = this.M && this.G != null ? this.k.R(this.G) : this.k;
+            this.cachedBlockData = this.offsetFromSupport && this.facing != null ? this.supportBlock.R(this.facing) : this.supportBlock;
         }
         return this.cachedBlockData;
     }
 
-    public PlacementTarget(BlockData blockData, EnumFacing enumFacing, boolean bl) {
-        this.k = blockData;
-        this.G = enumFacing;
-        this.M = bl;
+    public PlacementTarget(BlockData supportBlock, EnumFacing facing, boolean offsetFromSupport) {
+        this.supportBlock = supportBlock;
+        this.facing = facing;
+        this.offsetFromSupport = offsetFromSupport;
     }
 
     public BlockData getBlockData() {
-        return this.k;
+        return this.supportBlock;
     }
 }
 

@@ -4,12 +4,11 @@ import gg.vape.wrapper.impl.Entity;
 
 public class PearlEspEnderPearlEntityWrapper
 extends Entity {
-    public PearlEspEnderPearlEntityWrapper(Object object) {
-        super(object);
+    public PearlEspEnderPearlEntityWrapper(Object handle) {
+        super(handle);
     }
 
-    public int v() {
+    public int getAgeTicks() {
         return PearlEspEnderPearlEntityWrapper.c.getMappings().Dl.k(this.I);
     }
 }
-

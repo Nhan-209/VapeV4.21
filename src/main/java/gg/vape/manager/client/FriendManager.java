@@ -54,7 +54,7 @@ public class FriendManager {
 
     @Nullable
     public FriendEntry T(String string, boolean bl) {
-        if (this.z.L().booleanValue() || !bl) {
+        if (this.z.getEffectiveValue().booleanValue() || !bl) {
             ArrayList<FriendEntry> arrayList = this.C(string);
             if (arrayList.isEmpty()) {
                 return null;
@@ -105,10 +105,10 @@ public class FriendManager {
             ArrayList<FriendEntry> arrayList = this.C(string);
             if (arrayList.isEmpty()) {
                 this.u(new Friend(string, string));
-                Vape.INSTANCE.getNotificationManager().k("\u00a7aAdded\u00a7r " + string + " to friends", "", 2000L);
+                Vape.INSTANCE.getNotificationManager().showInfo("\u00a7aAdded\u00a7r " + string + " to friends", "", 2000L);
             } else {
                 this.E(arrayList.get(0));
-                Vape.INSTANCE.getNotificationManager().k("\u00a7cRemoved\u00a7r " + string + " from friends", "", 2000L);
+                Vape.INSTANCE.getNotificationManager().showInfo("\u00a7cRemoved\u00a7r " + string + " from friends", "", 2000L);
             }
         }
     }
@@ -126,7 +126,7 @@ public class FriendManager {
     }
 
     public boolean E(String string) {
-        if (!this.z.L().booleanValue()) {
+        if (!this.z.getEffectiveValue().booleanValue()) {
             return false;
         }
         ArrayList<FriendEntry> arrayList = this.C(string);
@@ -195,10 +195,10 @@ public class FriendManager {
         this.J = BooleanValue.create(this, "Use alias", true);
         this.C = BooleanValue.create(this, "Spoof alias", false, "Replace the friend's name in chat, tablist, and regular nametags with their alias.");
         this.q = BooleanValue.create(this, "Recolor visuals", true, "Re-colors certain render modules to use \"Friends Color\" on friends");
-        this.R = ColorValue.L(this, "Friends Color", new Color(66, 244, 137));
-        this.C.B(this::lambda$new$0);
-        this.q.K(this.R);
-        this.J.K(this.C);
+        this.R = ColorValue.create(this, "Friends Color", new Color(66, 244, 137));
+        this.C.addChangeListener(this::lambda$new$0);
+        this.q.addDependentValues(this.R);
+        this.J.addDependentValues(this.C);
     }
 }
 

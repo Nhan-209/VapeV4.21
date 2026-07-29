@@ -14,8 +14,8 @@ extends InventoryCleanerClickableRowComponentBase {
     @Override
     public void H() {
         super.H();
-        ImageRenderer.E(Color.WHITE, (float)(this.G$src$D$1b2f02a() + 10.0), (float)(this.n() + this.L() / 2.0 - 3.0), this.iconPath, 6.0f, 6.0f, false);
-        SmoothFontRenderer smoothFontRenderer = this.O(0.8);
+        ImageRenderer.drawImage(Color.WHITE, (float)(this.G$src$D$1b2f02a() + 10.0), (float)(this.n() + this.L() / 2.0 - 3.0), this.iconPath, 6.0f, 6.0f, false);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.8);
         smoothFontRenderer.d(this.label, this.G$src$D$1b2f02a() + 10.0 + 6.0 + 5.0, this.n() + this.L() / 2.0 - smoothFontRenderer.d(this.label) / 2.0, InventoryCleanerIconTextActionRow.J.A);
     }
 

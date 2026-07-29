@@ -7,25 +7,24 @@ public enum ColorChannelType {
     VIBRANCE("Vibrance"),
     OPACITY("Opacity");
 
-    private final String O;
-    private static final ColorChannelType[] y;
+    private final String displayName;
+    private static final ColorChannelType[] VALUES_CACHE;
 
-    public String T() {
-        return this.O;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
     static {
-        String[] stringArray = new String[]{"Opacity", "SATURATION", "Saturation", "Custom color", "OPACITY", "BLOCK_CHILD", "Vibrance", "Rainbow", "VIBRANCE", "RAINBOW"};
+        String[] legacyNames = new String[]{"Opacity", "SATURATION", "Saturation", "Custom color", "OPACITY", "BLOCK_CHILD", "Vibrance", "Rainbow", "VIBRANCE", "RAINBOW"};
 
 
 
 
 
-        y = new ColorChannelType[]{BLOCK_CHILD, RAINBOW, SATURATION, VIBRANCE, OPACITY};
+        VALUES_CACHE = new ColorChannelType[]{BLOCK_CHILD, RAINBOW, SATURATION, VIBRANCE, OPACITY};
     }
 
-    private ColorChannelType(String string2) {
-        this.O = string2;
+    private ColorChannelType(String displayName) {
+        this.displayName = displayName;
     }
 }
-

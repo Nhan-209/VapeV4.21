@@ -1,36 +1,33 @@
 package gg.vape.notification;
 
-import gg.vape.notification.NotificationType;
-
 public interface INotification {
-    public void W();
+    void render();
 
-    public void T(double var1);
+    void setTargetX(double targetX);
 
-    public void X$src$V$1od3uxr();
+    void dismiss();
 
-    public void z(double var1, double var3);
+    void handleClick(double mouseX, double mouseY);
 
-    public double v();
+    double getCurrentY();
 
-    public double E();
+    double getTargetY();
 
-    public void I(double var1);
+    void setTargetY(double targetY);
 
-    public void r(double var1);
+    void setCurrentX(double currentX);
 
-    public void S(double var1);
+    void setCurrentY(double currentY);
 
-    public double X();
+    double getWidth();
 
-    public double t();
+    double getHeight();
 
-    public NotificationType c();
+    NotificationType getType();
 
-    public double F();
+    double getCurrentX();
 
-    public boolean P();
+    boolean shouldRemove();
 
-    public double k();
-
+    double getTargetX();
 }

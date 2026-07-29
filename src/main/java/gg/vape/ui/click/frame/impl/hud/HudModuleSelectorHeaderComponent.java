@@ -11,17 +11,17 @@ import java.awt.Color;
 
 public class HudModuleSelectorHeaderComponent
 extends FrameHeaderComponent {
-    private float I;
-    private IconButtonComponent Q;
-    private IconButtonComponent G = new IconButtonComponent("newsettings");
+    private final float iconScale;
+    private final IconButtonComponent collapseButton;
+    private final IconButtonComponent settingsButton = new IconButtonComponent("newsettings");
 
     public HudModuleSelectorHeaderComponent(HudModuleSelectorFrame hudModuleSelectorFrame, float f) {
         super(hudModuleSelectorFrame);
-        this.Q = new IconButtonComponent("min");
-        this.I = f;
-        this.G.r(new HudModuleSelectorOpenConfigFrameClickHandler(this));
-        this.Q.r(new HudModuleSelectorOpenOverviewClickHandler(this));
-        this.H(this.Q, this.G);
+        this.collapseButton = new IconButtonComponent("min");
+        this.iconScale = f;
+        this.settingsButton.addClickListener(new HudModuleSelectorOpenConfigFrameClickHandler(this));
+        this.collapseButton.addClickListener(new HudModuleSelectorOpenOverviewClickHandler());
+        this.addChildren(this.collapseButton, this.settingsButton);
     }
 
     public HudModuleSelectorHeaderComponent(HudModuleSelectorFrame hudModuleSelectorFrame) {
@@ -44,8 +44,8 @@ extends FrameHeaderComponent {
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    static IconButtonComponent a(HudModuleSelectorHeaderComponent hudModuleSelectorHeaderComponent) {
-        return hudModuleSelectorHeaderComponent.G;
+    IconButtonComponent getSettingsButton() {
+        return this.settingsButton;
     }
 
     @Override
@@ -55,14 +55,13 @@ extends FrameHeaderComponent {
 
     @Override
     public void H() {
-        float f = 8.0f * this.I;
+        float f = 8.0f * this.iconScale;
         GuiRenderPrimitives.h("legit_mode_icon", (int)(this.G$src$D$1b2f02a() + 5.0 + 8.0), (int)(this.n() + this.L() / 2.0), f, f, Color.white);
-        this.Q.K(this.G$src$D$1b2f02a() + this.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0().A() - 10.0 - 8.0);
-        this.Q.S(this.n());
-        this.Q.Y(this.L());
-        this.G.K(this.G$src$D$1b2f02a() + this.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0().A() - 30.0 - 8.0);
-        this.G.S(this.n());
-        this.G.Y(this.L());
+        this.collapseButton.K(this.G$src$D$1b2f02a() + this.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0().A() - 10.0 - 8.0);
+        this.collapseButton.S(this.n());
+        this.collapseButton.Y(this.L());
+        this.settingsButton.K(this.G$src$D$1b2f02a() + this.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0().A() - 30.0 - 8.0);
+        this.settingsButton.S(this.n());
+        this.settingsButton.Y(this.L());
     }
 }
-

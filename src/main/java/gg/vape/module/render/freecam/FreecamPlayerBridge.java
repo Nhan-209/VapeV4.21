@@ -5,60 +5,59 @@ import gg.vape.wrapper.Wrapper;
 
 public class FreecamPlayerBridge
 extends Wrapper {
-    public void G(double d) {
-        MFreecamPlayerBridge.A(FreecamPlayerBridge.c.getMappings().w, this.I, d);
+    public void setCloakZ(double z) {
+        MFreecamPlayerBridge.A(FreecamPlayerBridge.c.getMappings().w, this.I, z);
     }
 
-    public double H() {
+    public double getPreviousCloakZ() {
         return MFreecamPlayerBridge.Z(FreecamPlayerBridge.c.getMappings().w, this.I);
     }
 
-    public void i(double d) {
-        MFreecamPlayerBridge.d(FreecamPlayerBridge.c.getMappings().w, this.I, d);
+    public void setPreviousCloakZ(double z) {
+        MFreecamPlayerBridge.d(FreecamPlayerBridge.c.getMappings().w, this.I, z);
     }
 
-    public double L() {
+    public double getPreviousCloakY() {
         return MFreecamPlayerBridge.m(FreecamPlayerBridge.c.getMappings().w, this.I);
     }
 
-    public double A() {
+    public double getCloakY() {
         return MFreecamPlayerBridge.Y(FreecamPlayerBridge.c.getMappings().w, this.I);
     }
 
-    public double g() {
+    public double getPreviousCloakX() {
         return MFreecamPlayerBridge.C(FreecamPlayerBridge.c.getMappings().w, this.I);
     }
 
-    public void y(double d) {
-        MFreecamPlayerBridge.c(FreecamPlayerBridge.c.getMappings().w, this.I, d);
+    public void setCloakX(double x) {
+        MFreecamPlayerBridge.c(FreecamPlayerBridge.c.getMappings().w, this.I, x);
     }
 
-    public double j() {
+    public double getCloakX() {
         return MFreecamPlayerBridge.T(FreecamPlayerBridge.c.getMappings().w, this.I);
     }
 
-    public void J(double d) {
-        MFreecamPlayerBridge.E(FreecamPlayerBridge.c.getMappings().w, this.I, d);
+    public void setPreviousCloakY(double y) {
+        MFreecamPlayerBridge.E(FreecamPlayerBridge.c.getMappings().w, this.I, y);
     }
 
-    public void m(double d) {
-        MFreecamPlayerBridge.n(FreecamPlayerBridge.c.getMappings().w, this.I, d);
+    public void setCloakY(double y) {
+        MFreecamPlayerBridge.n(FreecamPlayerBridge.c.getMappings().w, this.I, y);
     }
 
-    public void W() {
+    public void resetBobbingState() {
         MFreecamPlayerBridge.m$src$V$n8prsk(FreecamPlayerBridge.c.getMappings().w, this.I);
     }
 
-    public void B(double d) {
-        MFreecamPlayerBridge.y(FreecamPlayerBridge.c.getMappings().w, this.I, d);
+    public void setPreviousCloakX(double x) {
+        MFreecamPlayerBridge.y(FreecamPlayerBridge.c.getMappings().w, this.I, x);
     }
 
     public FreecamPlayerBridge(Object object) {
         super(object);
     }
 
-    public double X() {
+    public double getCloakZ() {
         return MFreecamPlayerBridge.l(FreecamPlayerBridge.c.getMappings().w, this.I);
     }
 }
-

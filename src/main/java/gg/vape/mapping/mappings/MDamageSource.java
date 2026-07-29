@@ -43,7 +43,7 @@ extends Mapping {
             String string = "potionitem";
             MDamageSource mDamageSource = this;
             this.a = mDamageSource.u(string, bl, clazz);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MDamageSource.f(new int[1]);
             }
             this.A = null;
@@ -88,7 +88,7 @@ extends Mapping {
             MDamageSource mDamageSource6 = this;
             this.a = this.u(string6, bl4, clazz6);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MDamageSource.f(new int[1]);
         }
     }

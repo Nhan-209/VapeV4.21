@@ -11,99 +11,99 @@ import java.util.List;
 
 public class CollapsiblePanelComponent
 extends PanelComponent {
-    private TextLabel dE;
-    private FlowLayoutComponent dh;
-    private String dU;
-    private PanelComponent dW;
-    private WrappedTextComponent dL;
-    private boolean dI;
-    private TruncatedTextComponent dD;
+    private TextLabel toggleLabel;
+    private FlowLayoutComponent contentLayout;
+    private String text;
+    private PanelComponent togglePanel;
+    private WrappedTextComponent expandedText;
+    private boolean collapsed;
+    private TruncatedTextComponent collapsedText;
 
     @Override
     public double L() {
-        return this.dI ? this.O(0.8).d(this.dU) : this.dL.L() + 2.0 + this.dh.L();
+        return this.collapsed ? this.getFontRenderer(0.8).d(this.text) : this.expandedText.L() + 2.0 + this.contentLayout.L();
     }
 
-    private void lambda$new$0() {
-        this.dI = !this.dI;
-        this.dE.d(this.dI ? "...more" : "...less");
+    private void toggleCollapsed() {
+        this.collapsed = !this.collapsed;
+        this.toggleLabel.setLabelText(this.collapsed ? "...more" : "...less");
     }
 
-    public CollapsiblePanelComponent(String string, double d) {
-        super(d, 0.0);
-        this.dD = new TruncatedTextComponent("", "", this.A() - 10.0, 0.8f, CollapsiblePanelComponent.J.A, false);
-        this.dI = true;
-        this.dW = new PanelComponent(this.A(), 0.0);
-        this.dU = string;
-        this.dE = new TextLabel("...more", 1.0);
-        this.dL = new WrappedTextComponent(string, 0.8, CollapsiblePanelComponent.J.Z, false);
-        this.dL.c(d);
-        this.dh = new FlowLayoutComponent(d);
-        this.d(false);
-        this.dW.d(false);
-        this.dh.d(false);
+    public CollapsiblePanelComponent(String text, double width) {
+        super(width, 0.0);
+        this.collapsedText = new TruncatedTextComponent("", "", this.A() - 10.0, 0.8f, CollapsiblePanelComponent.J.A, false);
+        this.collapsed = true;
+        this.togglePanel = new PanelComponent(this.A(), 0.0);
+        this.text = text;
+        this.toggleLabel = new TextLabel("...more", 1.0);
+        this.expandedText = new WrappedTextComponent(text, 0.8, CollapsiblePanelComponent.J.Z, false);
+        this.expandedText.setWrapWidth(width);
+        this.contentLayout = new FlowLayoutComponent(width);
+        this.setShowDisabledOverlay(false);
+        this.togglePanel.setShowDisabledOverlay(false);
+        this.contentLayout.setShowDisabledOverlay(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.dW.h(this.dE, new Object[0]);
-        this.H(this.dW, this.dh);
-        this.dE.y(0.8);
-        this.dE.a(false);
-        this.dE.l(Color.WHITE);
-        this.dE.o(30.0);
-        this.dD.R(CollapsiblePanelComponent.J.Z);
-        if (string.isEmpty()) {
-            this.dI = false;
-            this.dE.Z(false);
+        this.togglePanel.h(this.toggleLabel, new Object[0]);
+        this.addChildren(this.togglePanel, this.contentLayout);
+        this.toggleLabel.setFontScale(0.8);
+        this.toggleLabel.setUppercase(false);
+        this.toggleLabel.setTextColor(Color.WHITE);
+        this.toggleLabel.o(30.0);
+        this.collapsedText.setTextColor(CollapsiblePanelComponent.J.Z);
+        if (text.isEmpty()) {
+            this.collapsed = false;
+            this.toggleLabel.setVisible(false);
         }
-        this.dE.r(this::lambda$new$0);
+        this.toggleLabel.addClickListener(this::toggleCollapsed);
     }
 
-    public FlowLayoutComponent N$src$Lgg_vape_ui_click_component_FlowLayoutComponent_$1f7l5nx() {
-        return this.dh;
+    public FlowLayoutComponent getContentLayout() {
+        return this.contentLayout;
     }
 
-    public boolean X$src$Z$1emldob() {
-        return this.dI;
+    public boolean isCollapsed() {
+        return this.collapsed;
     }
 
 
     @Override
-    public void D(GuiMouseEvent guiMouseEvent) {
-        super.D(guiMouseEvent);
+    public void dispatchMouseEvent(GuiMouseEvent mouseEvent) {
+        super.dispatchMouseEvent(mouseEvent);
     }
 
     @Override
     public void c() {
-        this.dD.K(this.G$src$D$1b2f02a());
-        this.dD.S(this.n());
-        this.dh.Z(!this.dI);
-        this.dL.G(this.dU);
-        this.dL.c(this.A() - 20.0);
-        this.dL.o(this.A() - 20.0);
-        List<String> list = this.dL.Q$src$Ljava_util_List_$1gv03oz();
-        String string = list.get(0);
-        this.dD.O(string);
-        this.dD.D(this.A() - 20.0);
-        this.dD.o(list.size() > 1 ? this.dL.O(0.8).N(string) : this.dL.A() - 20.0);
-        this.dE.c(true);
-        if (this.dI) {
-            this.dE.K(this.G$src$D$1b2f02a() + this.dD.A() + 2.0);
-            this.dE.S(this.n());
-            this.dW.u(this.dD.L());
+        this.collapsedText.K(this.G$src$D$1b2f02a());
+        this.collapsedText.S(this.n());
+        this.contentLayout.setVisible(!this.collapsed);
+        this.expandedText.setText(this.text);
+        this.expandedText.setWrapWidth(this.A() - 20.0);
+        this.expandedText.o(this.A() - 20.0);
+        List<String> wrappedLines = this.expandedText.getWrappedLines();
+        String firstLine = wrappedLines.get(0);
+        this.collapsedText.setText(firstLine);
+        this.collapsedText.setMaxWidth(this.A() - 20.0);
+        this.collapsedText.o(wrappedLines.size() > 1 ? this.expandedText.getFontRenderer(0.8).N(firstLine) : this.expandedText.A() - 20.0);
+        this.toggleLabel.setUseAlternateFont(true);
+        if (this.collapsed) {
+            this.toggleLabel.K(this.G$src$D$1b2f02a() + this.collapsedText.A() + 2.0);
+            this.toggleLabel.S(this.n());
+            this.togglePanel.setExplicitHeight(this.collapsedText.L());
         } else {
-            String string2 = list.get(list.size() - 1);
-            double d = this.dL.O(0.8).N(string2);
-            this.dE.K(this.G$src$D$1b2f02a() + d + 3.0);
-            this.dE.S(this.n() + this.dL.L() - this.dD.L());
-            this.dW.u(this.dL.L());
+            String lastLine = wrappedLines.get(wrappedLines.size() - 1);
+            double lastLineWidth = this.expandedText.getFontRenderer(0.8).N(lastLine);
+            this.toggleLabel.K(this.G$src$D$1b2f02a() + lastLineWidth + 3.0);
+            this.toggleLabel.S(this.n() + this.expandedText.L() - this.collapsedText.L());
+            this.togglePanel.setExplicitHeight(this.expandedText.L());
         }
-        this.dE.Y(this.dD.L());
+        this.toggleLabel.Y(this.collapsedText.L());
         super.c();
-        if (this.dI) {
-            this.dD.c();
+        if (this.collapsed) {
+            this.collapsedText.c();
         } else {
-            this.dL.K(this.G$src$D$1b2f02a());
-            this.dL.S(this.n());
-            this.dL.c();
+            this.expandedText.K(this.G$src$D$1b2f02a());
+            this.expandedText.S(this.n());
+            this.expandedText.c();
         }
     }
 }

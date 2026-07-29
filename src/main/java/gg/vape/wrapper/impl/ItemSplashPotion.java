@@ -18,7 +18,7 @@ extends Item {
     public String getItemStackDisplayName(ItemStack itemStack) {
         if (ForgeVersion.MC_1_16_5.d()) {
             ITextComponent iTextComponent = new ITextComponent(MItemPotion.M(ItemSplashPotion.c.getMappings().CI, this.I, itemStack.getObject()));
-            return iTextComponent.C();
+            return iTextComponent.getFormattedText();
         }
         return MItemPotion.B(ItemSplashPotion.c.getMappings().CI, this.I, itemStack.getObject());
     }

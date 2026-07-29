@@ -8,7 +8,7 @@ implements GuiClickListener {
     final IncomingFriendRequestRow G;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         IncomingFriendRequestRow.k(this.G);
     }
 
@@ -16,4 +16,3 @@ implements GuiClickListener {
         this.G = mo_12;
     }
 }
-

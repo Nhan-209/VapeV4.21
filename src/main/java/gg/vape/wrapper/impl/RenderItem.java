@@ -137,7 +137,7 @@ extends Wrapper {
         } else if (ForgeVersion.MC_1_20_6.d()) {
             MatrixStack matrixStack = MatrixStack.A();
             matrixStack.H();
-            matrixStack.i(BufferedGuiRenderPrimitives.X.c().u());
+            matrixStack.i(BufferedGuiRenderPrimitives.matrixStack.peek().toMinecraftMatrix());
             this.o(RenderItemTextBridge.t(matrixStack), itemStack, n, n2);
         } else {
             RenderItem.c.getMappings().DI.M(this.I, itemStack.getObject(), n, n2);

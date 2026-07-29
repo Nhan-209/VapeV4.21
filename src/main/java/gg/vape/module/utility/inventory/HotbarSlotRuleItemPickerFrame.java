@@ -54,10 +54,10 @@ extends Frame {
         componentLayout.I(false);
         componentLayout.u(false);
         this.Y(new HotbarSlotRuleItemPickerHeaderComponent(this, this, null, "AutoHotbar").Q(new HotbarSlotRuleItemPickerHeaderCloseClickHandler(this)));
-        this.H(this.previewComponent);
+        this.addChildren(this.previewComponent);
         this.h(this.searchComponent, new Object[0]);
         this.h(this.slotSelectorComponent, new Object[0]);
-        this.Z(true);
+        this.setVisible(true);
         this.g(true);
     }
 
@@ -69,7 +69,7 @@ extends Frame {
     @Override
     public void t(boolean bl, boolean bl2) {
         super.t(bl, bl2);
-        this.itemListFrame.Z(bl);
+        this.itemListFrame.setVisible(bl);
     }
 
     @Override
@@ -79,7 +79,7 @@ extends Frame {
 
     @Override
     public void c() {
-        this.W(true);
+        this.setUseExplicitHeight(true);
         this.previewComponent.K(this.G$src$D$1b2f02a());
         this.previewComponent.S(this.n() + this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
         this.searchComponent.K(this.G$src$D$1b2f02a() + this.previewComponent.A());
@@ -138,13 +138,13 @@ extends Frame {
             if (frameStackManager instanceof ClickGuiFrameManager) {
                 ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)frameStackManager;
                 clickGuiFrameManager.m(this.itemListFrame);
-                clickGuiFrameManager.G();
+                clickGuiFrameManager.closeSidecar();
             } else {
-                ClientSettings.fW.I(frameStackManager);
+                ClientSettings.INSTANCE.switchFrameStack(frameStackManager);
             }
             this.parentStackManager = null;
         } else {
-            ClientSettings.fW.I(ClientSettings.a);
+            ClientSettings.INSTANCE.switchFrameStack(ClientSettings.mainStack);
         }
     }
 

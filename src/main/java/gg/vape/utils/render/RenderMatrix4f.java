@@ -8,152 +8,152 @@ import java.util.Arrays;
 import org.lwjgl.BufferUtils;
 
 public class RenderMatrix4f {
-    private static boolean P;
-    public float[] e;
-    private static final String b;
+    private static boolean legacyFlag;
+    public float[] elements;
+    private static final String MATRIX_STRING_PREFIX;
 
-    public void Z(RenderVector4f renderVector4f, RenderVector4f renderVector4f2) {
-        float f = renderVector4f.N;
-        float f2 = renderVector4f.w;
-        float f3 = renderVector4f.Y;
-        float f4 = renderVector4f.J;
-        renderVector4f2.N = this.e[0] * f + this.e[4] * f2 + this.e[8] * f3 + this.e[12] * f4;
-        renderVector4f2.w = this.e[1] * f + this.e[5] * f2 + this.e[9] * f3 + this.e[13] * f4;
-        renderVector4f2.Y = this.e[2] * f + this.e[6] * f2 + this.e[10] * f3 + this.e[14] * f4;
-        renderVector4f2.J = this.e[3] * f + this.e[7] * f2 + this.e[11] * f3 + this.e[15] * f4;
+    public void transform(RenderVector4f input, RenderVector4f output) {
+        float x = input.x;
+        float y = input.y;
+        float z = input.z;
+        float w = input.w;
+        output.x = this.elements[0] * x + this.elements[4] * y + this.elements[8] * z + this.elements[12] * w;
+        output.y = this.elements[1] * x + this.elements[5] * y + this.elements[9] * z + this.elements[13] * w;
+        output.z = this.elements[2] * x + this.elements[6] * y + this.elements[10] * z + this.elements[14] * w;
+        output.w = this.elements[3] * x + this.elements[7] * y + this.elements[11] * z + this.elements[15] * w;
     }
 
-    public RenderMatrix4f y(float f, float f2, float f3, float f4) {
-        float f5 = (float)Math.tan(Math.toRadians(f) / 2.0);
-        this.e[0] = 1.0f / (f2 * f5);
-        this.e[5] = 1.0f / f5;
-        this.e[10] = -((f4 + f3) / (f4 - f3));
-        this.e[11] = -(2.0f * f4 * f3 / (f4 - f3));
-        this.e[14] = -1.0f;
+    public RenderMatrix4f setPerspective(float fieldOfViewDegrees, float aspectRatio, float nearPlane, float farPlane) {
+        float tangent = (float)Math.tan(Math.toRadians(fieldOfViewDegrees) / 2.0);
+        this.elements[0] = 1.0f / (aspectRatio * tangent);
+        this.elements[5] = 1.0f / tangent;
+        this.elements[10] = -((farPlane + nearPlane) / (farPlane - nearPlane));
+        this.elements[11] = -(2.0f * farPlane * nearPlane / (farPlane - nearPlane));
+        this.elements[14] = -1.0f;
         return this;
     }
 
-    public RenderMatrix4f m() {
+    public RenderMatrix4f shallowCopy() {
         return new RenderMatrix4f(this);
     }
 
-    public RenderMatrix4f b() {
-        for (int i = 0; i < 16; ++i) {
-            this.e[i] = 0.0f;
+    public RenderMatrix4f setIdentity() {
+        for (int elementIndex = 0; elementIndex < 16; ++elementIndex) {
+            this.elements[elementIndex] = 0.0f;
         }
-        this.e[0] = 1.0f;
-        this.e[5] = 1.0f;
-        this.e[10] = 1.0f;
-        this.e[15] = 1.0f;
+        this.elements[0] = 1.0f;
+        this.elements[5] = 1.0f;
+        this.elements[10] = 1.0f;
+        this.elements[15] = 1.0f;
         return this;
     }
 
-    public static boolean i() {
-        return P;
+    public static boolean getLegacyFlag() {
+        return legacyFlag;
     }
 
-    public RenderMatrix4f u(RenderMatrix4f renderMatrix4f) {
-        float[] fArray = new float[16];
-        for (int i = 0; i < 4; ++i) {
-            for (int j = 0; j < 4; ++j) {
-                float f = 0.0f;
-                for (int k = 0; k < 4; ++k) {
-                    f += this.e[j + k * 4] * renderMatrix4f.e[k + i * 4];
+    public RenderMatrix4f multiply(RenderMatrix4f right) {
+        float[] product = new float[16];
+        for (int column = 0; column < 4; ++column) {
+            for (int row = 0; row < 4; ++row) {
+                float value = 0.0f;
+                for (int component = 0; component < 4; ++component) {
+                    value += this.elements[row + component * 4] * right.elements[component + column * 4];
                 }
-                fArray[j + i * 4] = f;
+                product[row + column * 4] = value;
             }
         }
-        this.e = fArray;
+        this.elements = product;
         return this;
     }
 
-    public FloatBuffer J() {
+    public FloatBuffer toFloatBuffer() {
         FloatBuffer floatBuffer = BufferUtils.createFloatBuffer((int)16);
-        floatBuffer.put(this.e).flip();
+        floatBuffer.put(this.elements).flip();
         return floatBuffer;
     }
 
     public RenderMatrix4f(Quaternion quaternion) {
         this();
-        float f = quaternion.Q();
-        float f2 = quaternion.N();
-        float f3 = quaternion.P();
-        float f4 = quaternion.q();
-        float f5 = 2.0f * f * f;
-        float f6 = 2.0f * f2 * f2;
-        float f7 = 2.0f * f3 * f3;
-        this.e[0] = 1.0f - f6 - f7;
-        this.e[5] = 1.0f - f7 - f5;
-        this.e[10] = 1.0f - f5 - f6;
-        this.e[15] = 1.0f;
-        float f8 = f * f2;
-        float f9 = f2 * f3;
-        float f10 = f3 * f;
-        float f11 = f * f4;
-        float f12 = f2 * f4;
-        float f13 = f3 * f4;
-        this.e[4] = 2.0f * (f8 + f13);
-        this.e[1] = 2.0f * (f8 - f13);
-        this.e[8] = 2.0f * (f10 - f12);
-        this.e[2] = 2.0f * (f10 + f12);
-        this.e[9] = 2.0f * (f9 + f11);
-        this.e[6] = 2.0f * (f9 - f11);
+        float quaternionX = quaternion.Q();
+        float quaternionY = quaternion.N();
+        float quaternionZ = quaternion.P();
+        float quaternionW = quaternion.q();
+        float twiceXSquared = 2.0f * quaternionX * quaternionX;
+        float twiceYSquared = 2.0f * quaternionY * quaternionY;
+        float twiceZSquared = 2.0f * quaternionZ * quaternionZ;
+        this.elements[0] = 1.0f - twiceYSquared - twiceZSquared;
+        this.elements[5] = 1.0f - twiceZSquared - twiceXSquared;
+        this.elements[10] = 1.0f - twiceXSquared - twiceYSquared;
+        this.elements[15] = 1.0f;
+        float xy = quaternionX * quaternionY;
+        float yz = quaternionY * quaternionZ;
+        float zx = quaternionZ * quaternionX;
+        float xw = quaternionX * quaternionW;
+        float yw = quaternionY * quaternionW;
+        float zw = quaternionZ * quaternionW;
+        this.elements[4] = 2.0f * (xy + zw);
+        this.elements[1] = 2.0f * (xy - zw);
+        this.elements[8] = 2.0f * (zx - yw);
+        this.elements[2] = 2.0f * (zx + yw);
+        this.elements[9] = 2.0f * (yz + xw);
+        this.elements[6] = 2.0f * (yz - xw);
     }
 
     static {
-        RenderMatrix4f.Q(true);
-        b = "Matrix4f{elements=";
+        RenderMatrix4f.setLegacyFlag(true);
+        MATRIX_STRING_PREFIX = "Matrix4f{elements=";
     }
 
-    public static boolean h() {
-        boolean bl = RenderMatrix4f.i();
+    public static boolean probeLegacyFlag() {
+        boolean ignoredLegacyFlag = RenderMatrix4f.getLegacyFlag();
         return false;
     }
 
-    public RenderMatrix4f O(float f, float f2, float f3) {
-        RenderMatrix4f renderMatrix4f = new RenderMatrix4f().b();
-        renderMatrix4f.e[0] = f;
-        renderMatrix4f.e[5] = f2;
-        renderMatrix4f.e[10] = f3;
-        return this.u(renderMatrix4f);
+    public RenderMatrix4f scale(float x, float y, float z) {
+        RenderMatrix4f scaleMatrix = new RenderMatrix4f().setIdentity();
+        scaleMatrix.elements[0] = x;
+        scaleMatrix.elements[5] = y;
+        scaleMatrix.elements[10] = z;
+        return this.multiply(scaleMatrix);
     }
 
-    public RenderMatrix4f I(float f, float f2, float f3) {
-        RenderMatrix4f renderMatrix4f = new RenderMatrix4f().b();
-        renderMatrix4f.e[12] = f;
-        renderMatrix4f.e[13] = f2;
-        renderMatrix4f.e[14] = f3;
-        return this.u(renderMatrix4f);
+    public RenderMatrix4f translate(float x, float y, float z) {
+        RenderMatrix4f translationMatrix = new RenderMatrix4f().setIdentity();
+        translationMatrix.elements[12] = x;
+        translationMatrix.elements[13] = y;
+        translationMatrix.elements[14] = z;
+        return this.multiply(translationMatrix);
     }
 
     public String toString() {
-        return b + Arrays.toString(this.e) + '}';
+        return MATRIX_STRING_PREFIX + Arrays.toString(this.elements) + '}';
     }
 
-    public static void Q(boolean bl) {
-        P = bl;
+    public static void setLegacyFlag(boolean legacyFlag) {
+        RenderMatrix4f.legacyFlag = legacyFlag;
     }
 
     public RenderMatrix4f(RenderVector4f renderVector4f) {
         this();
-        this.e[0] = renderVector4f.N;
-        this.e[5] = renderVector4f.w;
-        this.e[10] = renderVector4f.Y;
-        this.e[15] = renderVector4f.J;
+        this.elements[0] = renderVector4f.x;
+        this.elements[5] = renderVector4f.y;
+        this.elements[10] = renderVector4f.z;
+        this.elements[15] = renderVector4f.w;
     }
 
 
     public RenderMatrix4f() {
-        this.e = new float[16];
+        this.elements = new float[16];
     }
 
-    public boolean Z(RenderMatrix4f renderMatrix4f) {
-        if (this == renderMatrix4f) {
+    public boolean contentEquals(RenderMatrix4f other) {
+        if (this == other) {
             return true;
         }
-        if (renderMatrix4f != null) {
-            for (int i = 0; i < 16; ++i) {
-                if (Float.compare(this.e[i], renderMatrix4f.e[i]) == 0) continue;
+        if (other != null) {
+            for (int elementIndex = 0; elementIndex < 16; ++elementIndex) {
+                if (Float.compare(this.elements[elementIndex], other.elements[elementIndex]) == 0) continue;
                 return false;
             }
             return true;
@@ -161,56 +161,56 @@ public class RenderMatrix4f {
         return false;
     }
 
-    public RenderMatrix4f v(float f) {
-        this.b();
-        float f2 = (float)Math.toRadians(f);
-        this.e[5] = (float)Math.cos(f2);
-        this.e[6] = -((float)Math.sin(f2));
-        this.e[9] = (float)Math.sin(f2);
-        this.e[10] = (float)Math.cos(f2);
+    public RenderMatrix4f setXRotation(float angleDegrees) {
+        this.setIdentity();
+        float angleRadians = (float)Math.toRadians(angleDegrees);
+        this.elements[5] = (float)Math.cos(angleRadians);
+        this.elements[6] = -((float)Math.sin(angleRadians));
+        this.elements[9] = (float)Math.sin(angleRadians);
+        this.elements[10] = (float)Math.cos(angleRadians);
         return this;
     }
 
     public RenderMatrix4f(RenderMatrix4f renderMatrix4f) {
-        this.e = renderMatrix4f.e;
+        this.elements = renderMatrix4f.elements;
     }
 
-    public RenderMatrix4f e(float f, float f2, float f3, float f4, float f5, float f6) {
-        this.e[0] = 2.0f / (f2 - f);
-        this.e[5] = 2.0f / (f4 - f3);
-        this.e[10] = -2.0f / (f6 - f5);
-        this.e[12] = -((f2 + f) / (f2 - f));
-        this.e[13] = -((f4 + f3) / (f4 - f3));
-        this.e[14] = -((f6 + f5) / (f6 - f5));
+    public RenderMatrix4f setOrthographic(float left, float right, float bottom, float top, float nearPlane, float farPlane) {
+        this.elements[0] = 2.0f / (right - left);
+        this.elements[5] = 2.0f / (top - bottom);
+        this.elements[10] = -2.0f / (farPlane - nearPlane);
+        this.elements[12] = -((right + left) / (right - left));
+        this.elements[13] = -((top + bottom) / (top - bottom));
+        this.elements[14] = -((farPlane + nearPlane) / (farPlane - nearPlane));
         return this;
     }
 
-    public Matrix4f u() {
-        Matrix4f matrix4f = Matrix4f.G();
-        Matrix4f matrix4f2 = matrix4f.c(this.J());
-        return matrix4f2 == null ? matrix4f : matrix4f2;
+    public Matrix4f toMinecraftMatrix() {
+        Matrix4f minecraftMatrix = Matrix4f.G();
+        Matrix4f loadedMatrix = minecraftMatrix.c(this.toFloatBuffer());
+        return loadedMatrix == null ? minecraftMatrix : loadedMatrix;
     }
 
-    public RenderMatrix4f d(float f, float f2, float f3, float f4) {
-        float f5 = (float)Math.toRadians(f);
-        float f6 = (float)Math.cos(f5);
-        float f7 = (float)Math.sin(f5);
-        float f8 = 1.0f - f6;
-        RenderMatrix4f renderMatrix4f = new RenderMatrix4f().b();
-        renderMatrix4f.e[0] = f2 * f2 * f8 + f6;
-        renderMatrix4f.e[1] = f3 * f2 * f8 + f4 * f7;
-        renderMatrix4f.e[2] = f2 * f4 * f8 - f3 * f7;
-        renderMatrix4f.e[4] = f2 * f3 * f8 - f4 * f7;
-        renderMatrix4f.e[5] = f3 * f3 * f8 + f6;
-        renderMatrix4f.e[6] = f3 * f4 * f8 + f2 * f7;
-        renderMatrix4f.e[8] = f2 * f4 * f8 + f3 * f7;
-        renderMatrix4f.e[9] = f3 * f4 * f8 - f2 * f7;
-        renderMatrix4f.e[10] = f4 * f4 * f8 + f6;
-        return this.u(renderMatrix4f);
+    public RenderMatrix4f rotate(float angleDegrees, float axisX, float axisY, float axisZ) {
+        float angleRadians = (float)Math.toRadians(angleDegrees);
+        float cosine = (float)Math.cos(angleRadians);
+        float sine = (float)Math.sin(angleRadians);
+        float oneMinusCosine = 1.0f - cosine;
+        RenderMatrix4f rotationMatrix = new RenderMatrix4f().setIdentity();
+        rotationMatrix.elements[0] = axisX * axisX * oneMinusCosine + cosine;
+        rotationMatrix.elements[1] = axisY * axisX * oneMinusCosine + axisZ * sine;
+        rotationMatrix.elements[2] = axisX * axisZ * oneMinusCosine - axisY * sine;
+        rotationMatrix.elements[4] = axisX * axisY * oneMinusCosine - axisZ * sine;
+        rotationMatrix.elements[5] = axisY * axisY * oneMinusCosine + cosine;
+        rotationMatrix.elements[6] = axisY * axisZ * oneMinusCosine + axisX * sine;
+        rotationMatrix.elements[8] = axisX * axisZ * oneMinusCosine + axisY * sine;
+        rotationMatrix.elements[9] = axisY * axisZ * oneMinusCosine - axisX * sine;
+        rotationMatrix.elements[10] = axisZ * axisZ * oneMinusCosine + cosine;
+        return this.multiply(rotationMatrix);
     }
 
-    public RenderMatrix4f(float[] fArray) {
-        this.e = fArray;
+    public RenderMatrix4f(float[] elements) {
+        this.elements = elements;
     }
 }
 

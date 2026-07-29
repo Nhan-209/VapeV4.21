@@ -11,7 +11,7 @@ implements GuiClickListener {
 
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         if (this.n.equals(HotbarSlotRuleEditorComponent.H(this.l)) && HotbarSlotRuleEditorComponent.N(this.l).size() > 0) {
             this.l.f((HotbarSlotRuleGroupComponent)HotbarSlotRuleEditorComponent.N(this.l).get(0));
         }

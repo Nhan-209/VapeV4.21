@@ -26,7 +26,7 @@ extends Wrapper {
     public String Z(PlayerInfo playerInfo) {
         if (ForgeVersion.MC_1_20_6.d()) {
             ITextComponent iTextComponent = new ITextComponent(MGuiPlayerTabOverlay.d(GuiPlayerTabOverlayBridge.c.getMappings().hP, this.I, playerInfo.getObject()));
-            return iTextComponent.C();
+            return iTextComponent.getFormattedText();
         }
         return MGuiPlayerTabOverlay.d(GuiPlayerTabOverlayBridge.c.getMappings().hP, this.getObject(), playerInfo.getObject());
     }
@@ -53,4 +53,3 @@ extends Wrapper {
         return new TextComponentBaseBridge(MGuiPlayerTabOverlay.Z(Wrapper.c.getMappings().hP, this.getObject(), playerInfo.getObject(), textComponentBaseBridge.getObject()));
     }
 }
-

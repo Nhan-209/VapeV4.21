@@ -370,7 +370,7 @@ public class MappingField {
             this.V = bl2;
             this.x = ++F;
             this.n = bl3;
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MappingMethod.f("E1SOdc");
             }
             return;
@@ -389,7 +389,7 @@ public class MappingField {
         this.V = bl2;
         this.x = ++F;
         this.n = bl3;
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MappingMethod.f("E1SOdc");
         }
     }

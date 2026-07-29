@@ -6,16 +6,16 @@ import java.util.Map;
 
 public class SuffixTextTruncationIndexLruCache
 extends LinkedHashMap<Integer, Integer> {
-    final SuffixTextTruncationIndexCache g;
+    final SuffixTextTruncationIndexCache owner;
 
     @Override
     protected boolean removeEldestEntry(Map.Entry<Integer, Integer> entry) {
         return this.size() > 512;
     }
 
-    public SuffixTextTruncationIndexLruCache(SuffixTextTruncationIndexCache suffixTextTruncationIndexCache, int n, float f, boolean bl) {
-        super(n, f, bl);
-        this.g = suffixTextTruncationIndexCache;
+    public SuffixTextTruncationIndexLruCache(SuffixTextTruncationIndexCache owner, int initialCapacity, float loadFactor, boolean accessOrder) {
+        super(initialCapacity, loadFactor, accessOrder);
+        this.owner = owner;
     }
 
 }

@@ -59,7 +59,6 @@ import gg.vape.value.EntityTargetFilterValue;
 import gg.vape.value.ModeValue;
 import gg.vape.value.NumberValue;
 import gg.vape.value.RandomValue;
-import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.Block;
 import gg.vape.wrapper.impl.BlockPos;
@@ -82,12 +81,10 @@ import gg.vape.wrapper.impl.RayTraceResult_type;
 import gg.vape.wrapper.impl.RenderManager;
 import gg.vape.wrapper.impl.UseEntityPacketBridge;
 import gg.vape.wrapper.impl.Vec3;
-import gg.vape.wrapper.impl.Vec3i;
 import gg.vape.wrapper.impl.World;
 import gg.vape.wrapper.impl.WorldClient;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
 
@@ -114,7 +111,7 @@ extends SubModule<CrystalAura> {
     private CrystalAura crystalAura;
     public final EntityTargetFilterValue targetFilter;
     private final TimerUtil delayTimer;
-    private final NumberValue aimSpeed = NumberValue.E(this, "Aim speed", "#.#", "", 1.0, 4.5, 10.0, "Aim rotation speed");
+    private final NumberValue aimSpeed = NumberValue.createWithDescription(this, "Aim speed", "#.#", "", 1.0, 4.5, 10.0, "Aim rotation speed");
     private int previousSlot = -1;
     private final ColorValue targetColor;
     private final ModeOption predictMode;
@@ -142,189 +139,164 @@ extends SubModule<CrystalAura> {
     private boolean lowEfficiency;
     private boolean attacked;
 
-    private void validateAction(EntityPlayerSP entityPlayerSP, World world) {
-        if (this.currentAction != null && this.rotationController != null && this.rotationManager.w() == this.rotationController) {
-            Object object;
-            Wrapper wrapper;
-            double d;
-            RayTraceResult rayTraceResult = this.rotationManager.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
-            CrystalAuraAction crystalAuraAction = this.currentAction.R();
-            DirectionalPosition directionalPosition = this.currentAction.s;
-            int n = directionalPosition.B();
-            int n2 = directionalPosition.E();
-            int n3 = directionalPosition.A();
-            Vec3 vec3 = entityPlayerSP.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, entityPlayerSP.X(), 0.0);
-            Vec3 vec32 = this.crystalAura.B(directionalPosition);
-            boolean bl = crystalAuraAction != CrystalAuraAction.ATTACKING_CRYSTAL;
-            double d2 = d = bl ? 4.0 : 4.0;
-            if (vec3.distanceTo(vec32) > d) {
-                Vec3 vec33 = Vec3.create(entityPlayerSP.z(), vec32.getY(), entityPlayerSP.h());
-                Vec3 vec34 = Vec3.create(entityPlayerSP.M(), vec32.getY(), entityPlayerSP.m$src$D$fwnne5());
-                double d3 = vec34.distanceTo(vec32);
-                double d4 = vec33.distanceTo(vec32);
-                if (d4 >= d3 || d4 > 4.5) {
-                    this.currentAction = null;
-                    this.placementSent = false;
+    private void invalidateAction() {
+        this.currentAction = null;
+        this.placementSent = false;
+    }
+
+    private void clickUseItem() {
+        KeyBinding attackKey = Minecraft.gameSettings().F();
+        if (attackKey.u() || attackKey.isPressed()) {
+            KeyBinding.setKeyBindState(attackKey, false);
+        }
+        KeyBinding useItemKey = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
+        if (useItemKey.u() || useItemKey.isPressed()) {
+            KeyBinding.setKeyBindState(useItemKey, false);
+        }
+        KeyBinding.setKeyBindState(useItemKey, true);
+        KeyBinding.onTick(useItemKey);
+        KeyBinding.setKeyBindState(useItemKey, false);
+    }
+
+    private boolean hasPlacementPath(EntityPlayerSP player, World world, Vec3 eyePosition, DirectionalPosition actionPosition) {
+        BlockData baseBlock = new BlockData(actionPosition.B(), actionPosition.E(), actionPosition.A());
+        EnumFacing facing = EnumFacing.T(actionPosition.getFacingIndex());
+        PlacementTarget placementTarget = new PlacementTarget(baseBlock, facing);
+        return ClutchPlacementPathUtils.isBlockFaceVisible(eyePosition, world, baseBlock, facing)
+                && ClutchPlacementPathUtils.findBestPlacementHitPoint(player, world, eyePosition, placementTarget,
+                this.rotationManager.getManagedYaw(), this.rotationManager.getManagedPitch()) != null;
+    }
+
+    private boolean hasComputedPlacementHit(EntityPlayerSP player, World world, Vec3 eyePosition, DirectionalPosition actionPosition) {
+        BlockData baseBlock = new BlockData(actionPosition.B(), actionPosition.E(), actionPosition.A());
+        PlacementTarget placementTarget = new PlacementTarget(baseBlock, EnumFacing.T(actionPosition.getFacingIndex()));
+        return ClutchPlacementPathUtils.findBestPlacementHitPoint(player, world, eyePosition, placementTarget,
+                this.rotationManager.getManagedYaw(), this.rotationManager.getManagedPitch()) != null;
+    }
+
+    private void validateAction(EntityPlayerSP player, World world) {
+        if (this.currentAction == null || this.rotationController == null || this.rotationManager.getActiveController() != this.rotationController) {
+            return;
+        }
+        RayTraceResult crosshairHit = this.rotationManager.getNormalReachRayTrace();
+        CrystalAuraAction action = this.currentAction.getAction();
+        DirectionalPosition actionPosition = this.currentAction.directionalPosition;
+        Vec3 eyePosition = player.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, player.X(), 0.0);
+        Vec3 interactionPoint = this.crystalAura.getInteractionPoint(actionPosition);
+        if (eyePosition.distanceTo(interactionPoint) > 4.0) {
+            Vec3 currentPlayerPosition = Vec3.create(player.z(), interactionPoint.getY(), player.h());
+            Vec3 previousPlayerPosition = Vec3.create(player.M(), interactionPoint.getY(), player.m$src$D$fwnne5());
+            double currentDistance = currentPlayerPosition.distanceTo(interactionPoint);
+            if (currentDistance >= previousPlayerPosition.distanceTo(interactionPoint) || currentDistance > 4.5) {
+                this.invalidateAction();
+            }
+            return;
+        }
+
+        if (action == CrystalAuraAction.PLACING_OBSIDIAN) {
+            AxisAlignedBB placementBox = AxisAlignedBB.create(actionPosition.B(), actionPosition.E() + 1, actionPosition.A(),
+                    (double)actionPosition.B() + 1.0, (double)actionPosition.E() + 2.0, (double)actionPosition.A() + 1.0);
+            ArrayList<Entity> entities = new ArrayList<Entity>();
+            world.A().p(placementBox, entityObject -> CrystalAuraPlacementSubModule.collectEntities(entities, entityObject));
+            for (Entity entity : entities) {
+                if (entity.n$src$Z$fx7gig() || entity.isInstance(MappedClasses.Ze)) {
+                    this.invalidateAction();
+                    return;
+                }
+            }
+            if (crosshairHit.getTypeOfHit().equals(RayTraceResult_type.block())) {
+                BlockPos hitPosition = crosshairHit.getBlockPos();
+                DirectionalPosition hitSide = new DirectionalPosition(hitPosition.P(), hitPosition.o(), hitPosition.d(), crosshairHit.Z());
+                Block hitBlock = crosshairHit.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a();
+                boolean replaceableHit = BlockUtil.u(hitBlock) && !BlockUtil.J(hitBlock);
+                EnumFacing facing = EnumFacing.T(crosshairHit.Z());
+                BlockData adjacentBlock = new BlockData(hitPosition.P(), hitPosition.o(), hitPosition.d()).R(facing.getOpposite());
+                DirectionalPosition adjacentSide = new DirectionalPosition(adjacentBlock.D(), adjacentBlock.B(), adjacentBlock.G(), facing.Y());
+                if (hitSide.equals(actionPosition) || replaceableHit && adjacentSide.equals(actionPosition)) {
+                    this.clickUseItem();
+                } else if (!ClutchPlacementPathUtils.isBlockFaceVisible(eyePosition, world,
+                        new BlockData(actionPosition.B(), actionPosition.E(), actionPosition.A()), EnumFacing.T(actionPosition.getFacingIndex()))
+                        && !this.hasComputedPlacementHit(player, world, eyePosition, actionPosition)) {
+                    this.invalidateAction();
+                }
+            }
+            return;
+        }
+
+        if (action == CrystalAuraAction.PLACING_CRYSTAL) {
+            AxisAlignedBB crystalBox = AxisAlignedBB.create(actionPosition.B(), actionPosition.E(), actionPosition.A(),
+                    (double)actionPosition.B() + 1.0, (double)actionPosition.E() + 2.0, (double)actionPosition.A() + 1.0);
+            ArrayList<Entity> entities = new ArrayList<Entity>();
+            world.A().p(crystalBox, entityObject -> CrystalAuraPlacementSubModule.collectEntities(entities, entityObject));
+            if (!entities.isEmpty() && this.wouldIntersect(this.target, actionPosition, player, world)) {
+                Entity crystal = null;
+                for (Entity entity : entities) {
+                    if (entity.isInstance(MappedClasses.Ze)) {
+                        crystal = entity;
+                    }
+                }
+                if (crystal != null && entities.size() == 1) {
+                    this.currentAction.setAction(CrystalAuraAction.ATTACKING_CRYSTAL);
+                } else {
+                    this.invalidateAction();
                 }
                 return;
             }
-            if (crystalAuraAction == CrystalAuraAction.PLACING_OBSIDIAN) {
-                wrapper = AxisAlignedBB.create(n, n2 + 1, n3, (double)n + 1.0, (double)n2 + 2.0, (double)n3 + 1.0);
-                ArrayList<Entity> entities = new ArrayList<Entity>();
-                world.A().p((AxisAlignedBB)wrapper, arg_0 -> CrystalAuraPlacementSubModule.lambda$handleExplosive$6(entities, arg_0));
-                if (!entities.isEmpty()) {
-                    boolean bl2 = false;
-                    Iterator<Entity> iterator = entities.iterator();
-                    while (iterator.hasNext()) {
-                        Entity entity = (Entity)iterator.next();
-                        if (!entity.n$src$Z$fx7gig() && !entity.isInstance(MappedClasses.Ze)) continue;
-                        bl2 = true;
-                    }
-                    if (bl2) {
-                        this.currentAction = null;
-                        this.placementSent = false;
-                        return;
-                    }
+            if (crosshairHit.getTypeOfHit().equals(RayTraceResult_type.block())) {
+                BlockPos hitPosition = crosshairHit.getBlockPos();
+                DirectionalPosition hitSide = new DirectionalPosition(hitPosition.P(), hitPosition.o(), hitPosition.d(), crosshairHit.Z());
+                if (actionPosition.equals(hitSide)) {
+                    this.clickUseItem();
+                } else if (!this.hasPlacementPath(player, world, eyePosition, actionPosition)) {
+                    this.invalidateAction();
                 }
-                if (rayTraceResult.getTypeOfHit().equals(RayTraceResult_type.block())) {
-                    Wrapper wrapper2;
-                    Object object2;
-                    Object object3;
-                    Object object4;
-                    boolean bl3;
-                    BlockPos blockPos = rayTraceResult.getBlockPos();
-                    int n4 = blockPos.P();
-                    int n5 = blockPos.o();
-                    int n6 = blockPos.d();
-                    DirectionalPosition directionalPosition2 = new DirectionalPosition(n4, n5, n6, rayTraceResult.Z());
-                    Block block = rayTraceResult.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a();
-                    boolean bl4 = false;
-                    boolean bl5 = bl3 = BlockUtil.u(block) && !BlockUtil.J(block);
-                    if (directionalPosition2.equals(directionalPosition)) {
-                        bl4 = true;
-                    } else if (bl3 && ((BlockCoordinate)(object4 = new DirectionalPosition(((BlockData)(object3 = new BlockData(n4, n5, n6).R((EnumFacing)(object2 = ((EnumFacing)(wrapper2 = EnumFacing.T(rayTraceResult.Z()))).getOpposite())))).D(), ((BlockData)object3).B(), ((BlockData)object3).G(), ((EnumFacing)wrapper2).Y()))).equals(directionalPosition)) {
-                        bl4 = true;
-                    }
-                    if (bl4) {
-                        wrapper2 = Minecraft.gameSettings().F();
-                        if (((KeyBinding)wrapper2).u() || ((KeyBinding)wrapper2).isPressed()) {
-                            KeyBinding.setKeyBindState((KeyBinding)wrapper2, false);
-                        }
-                        object2 = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
-                        KeyBinding.setKeyBindState((KeyBinding)object2, true);
-                        KeyBinding.onTick((KeyBinding)object2);
-                        KeyBinding.setKeyBindState((KeyBinding)object2, false);
-                    } else {
-                        wrapper2 = world.getBlockState(blockPos).getBlock();
-                        object2 = new BlockData(directionalPosition.B(), directionalPosition.E(), directionalPosition.A());
-                        object3 = EnumFacing.T(directionalPosition.X());
-                        object4 = new PlacementTarget((BlockData)object2, (EnumFacing)object3);
-                        if (!ClutchPlacementPathUtils.P(vec3, world, (BlockData)object2, (EnumFacing)object3) && ClutchPlacementPathUtils.D(entityPlayerSP, world, vec3, (PlacementTarget)object4, this.rotationManager.V(), this.rotationManager.x()) == null) {
-                            this.currentAction = null;
-                            this.placementSent = false;
-                        }
-                    }
-                }
-            } else if (crystalAuraAction == CrystalAuraAction.PLACING_CRYSTAL) {
-                wrapper = AxisAlignedBB.create(n, n2, n3, (double)n + 1.0, (double)n2 + 2.0, (double)n3 + 1.0);
-                ArrayList<Entity> entities = new ArrayList<Entity>();
-                world.A().p((AxisAlignedBB)wrapper, arg_0 -> CrystalAuraPlacementSubModule.lambda$handleExplosive$7(entities, arg_0));
-                if (!entities.isEmpty() && this.wouldIntersect(this.target, directionalPosition, entityPlayerSP, world)) {
-                    boolean bl6 = false;
-                    Iterator<Entity> iterator = entities.iterator();
-                    while (iterator.hasNext()) {
-                        Entity entity = (Entity)iterator.next();
-                        if (!entity.isInstance(MappedClasses.Ze)) continue;
-                        this.currentAction.D(CrystalAuraAction.ATTACKING_CRYSTAL);
-                        bl6 = entities.size() == 1;
-                    }
-                    if (!bl6) {
-                        this.currentAction = null;
-                        this.placementSent = false;
-                    }
-                    return;
-                }
-                if (rayTraceResult.getTypeOfHit().equals(RayTraceResult_type.block())) {
-                    int n7;
-                    int n8;
-                    BlockPos blockPos = rayTraceResult.getBlockPos();
-                    int n9 = blockPos.P();
-                    if (directionalPosition.equals(new DirectionalPosition(n9, n8 = blockPos.o(), n7 = blockPos.d(), rayTraceResult.Z()))) {
-                        KeyBinding keyBinding = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
-                        KeyBinding keyBinding2 = Minecraft.gameSettings().F();
-                        if (keyBinding2.u() || keyBinding2.isPressed()) {
-                            KeyBinding.setKeyBindState(keyBinding2, false);
-                        }
-                        if (keyBinding.u() || keyBinding.isPressed()) {
-                            KeyBinding.setKeyBindState(keyBinding, false);
-                        }
-                        KeyBinding.setKeyBindState(keyBinding, true);
-                        KeyBinding.onTick(keyBinding);
-                        KeyBinding.setKeyBindState(keyBinding, false);
-                    } else {
-                        Block block = world.getBlockState(blockPos).getBlock();
-                        BlockData blockData = new BlockData(directionalPosition.B(), directionalPosition.E(), directionalPosition.A());
-                        EnumFacing enumFacing = EnumFacing.T(directionalPosition.X());
-                        PlacementTarget placementTarget = new PlacementTarget(blockData, enumFacing);
-                        if (!ClutchPlacementPathUtils.P(vec3, world, blockData, enumFacing) || ClutchPlacementPathUtils.D(entityPlayerSP, world, vec3, placementTarget, this.rotationManager.V(), this.rotationManager.x()) == null) {
-                            this.currentAction = null;
-                            this.placementSent = false;
-                        }
-                    }
-                } else if (rayTraceResult.isEntityHit() && rayTraceResult.getEntity().isInstance(MappedClasses.Ze)) {
-                    this.currentAction.D(CrystalAuraAction.ATTACKING_CRYSTAL);
-                    crystalAuraAction = CrystalAuraAction.ATTACKING_CRYSTAL;
-                } else {
-                    BlockData blockData = new BlockData(directionalPosition.B(), directionalPosition.E(), directionalPosition.A());
-                    EnumFacing enumFacing = EnumFacing.T(directionalPosition.X());
-                    PlacementTarget placementTarget = new PlacementTarget(blockData, enumFacing);
-                    if (!ClutchPlacementPathUtils.P(vec3, world, blockData, enumFacing) || ClutchPlacementPathUtils.D(entityPlayerSP, world, vec3, placementTarget, this.rotationManager.V(), this.rotationManager.x()) == null) {
-                        this.currentAction = null;
-                        this.placementSent = false;
-                    }
-                }
+            } else if (crosshairHit.isEntityHit() && crosshairHit.getEntity().isInstance(MappedClasses.Ze)) {
+                this.currentAction.setAction(CrystalAuraAction.ATTACKING_CRYSTAL);
+                action = CrystalAuraAction.ATTACKING_CRYSTAL;
+            } else if (!this.hasPlacementPath(player, world, eyePosition, actionPosition)) {
+                this.invalidateAction();
             }
-            if (crystalAuraAction == CrystalAuraAction.ATTACKING_CRYSTAL) {
-                if (this.target == null || this.target.M$src$Z$ff28xj() || this.target.w$src$F$15l9epb() <= 0.0f) {
-                    this.currentAction = null;
-                    this.placementSent = false;
-                    return;
+        }
+
+        if (action == CrystalAuraAction.ATTACKING_CRYSTAL) {
+            if (!this.isAlive(this.target)) {
+                this.invalidateAction();
+                return;
+            }
+            if (crosshairHit.getTypeOfHit().equals(RayTraceResult_type.entity()) && crosshairHit.getEntity().isInstance(MappedClasses.Ze)) {
+                KeyBinding attackKey = Minecraft.gameSettings().F();
+                if (attackKey.u() || attackKey.isPressed()) {
+                    KeyBinding.setKeyBindState(attackKey, false);
                 }
-                if (rayTraceResult.getTypeOfHit().equals(RayTraceResult_type.entity()) && (wrapper = rayTraceResult.getEntity()).isInstance(MappedClasses.Ze)) {
-                    object = Minecraft.gameSettings().F();
-                    if (((KeyBinding)object).u() || ((KeyBinding)object).isPressed()) {
-                        KeyBinding.setKeyBindState((KeyBinding)object, false);
-                    }
-                    KeyBinding keyBinding = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
-                    if (((ModeSelection)this.optimizationMode.K()).equals(this.rapidFireMode) && this.currentAction.Q() >= (Double)this.rapidMinEfficiency.K() / 100.0) {
-                        KeyBinding.setKeyBindState(keyBinding, true);
-                        KeyBinding.onTick(keyBinding);
-                    }
-                    if (keyBinding.u() || keyBinding.isPressed()) {
-                        KeyBinding.setKeyBindState(keyBinding, false);
-                    }
-                    KeyBinding.setKeyBindState((KeyBinding)object, true);
-                    KeyBinding.onTick((KeyBinding)object);
-                    KeyBinding.setKeyBindState((KeyBinding)object, false);
+                KeyBinding useItemKey = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
+                if (((ModeSelection)this.optimizationMode.getValue()).equals(this.rapidFireMode)
+                        && this.currentAction.getDamage() >= (Double)this.rapidMinEfficiency.getValue() / 100.0) {
+                    KeyBinding.setKeyBindState(useItemKey, true);
+                    KeyBinding.onTick(useItemKey);
                 }
+                if (useItemKey.u() || useItemKey.isPressed()) {
+                    KeyBinding.setKeyBindState(useItemKey, false);
+                }
+                KeyBinding.setKeyBindState(attackKey, true);
+                KeyBinding.onTick(attackKey);
+                KeyBinding.setKeyBindState(attackKey, false);
             }
         }
     }
 
-    private CrystalAuraActionCandidate findAction(EntityPlayerSP entityPlayerSP, World world, double d, boolean bl) {
-        int n = MathUtil.floor(entityPlayerSP.N());
-        CrystalAuraActionCandidate crystalAuraActionCandidate = this.findActionAtYLevel(entityPlayerSP, world, d, bl, n);
-        if (crystalAuraActionCandidate != null) {
-            return crystalAuraActionCandidate;
+    private CrystalAuraActionCandidate findAction(EntityPlayerSP player, World world, double searchRange, boolean includeObsidian) {
+        int playerY = MathUtil.floor(player.N());
+        CrystalAuraActionCandidate currentLevelAction = this.findActionAtYLevel(player, world, searchRange, includeObsidian, playerY);
+        if (currentLevelAction != null) {
+            return currentLevelAction;
         }
-        String string = this.statusLabel;
-        int n2 = n + 1;
-        CrystalAuraActionCandidate crystalAuraActionCandidate2 = this.findActionAtYLevel(entityPlayerSP, world, d, bl, n2);
-        if (crystalAuraActionCandidate2 != null) {
-            return crystalAuraActionCandidate2;
+        String currentLevelStatus = this.statusLabel;
+        CrystalAuraActionCandidate upperLevelAction = this.findActionAtYLevel(player, world, searchRange, includeObsidian, playerY + 1);
+        if (upperLevelAction != null) {
+            return upperLevelAction;
         }
-        if (this.statusPriority(string) > this.statusPriority(this.statusLabel)) {
-            this.statusLabel = string;
+        if (this.statusPriority(currentLevelStatus) > this.statusPriority(this.statusLabel)) {
+            this.statusLabel = currentLevelStatus;
         }
         return null;
     }
@@ -337,26 +309,24 @@ extends SubModule<CrystalAura> {
 
     @EventHandler
     public void onPacketSend(EventPacketSend eventPacketSend) {
-        EntityPlayerSP entityPlayerSP = eventPacketSend.getThePlayer();
-        int n = ExplosionType.q();
-        if (n != 0) {
-            WorldClient worldClient = eventPacketSend.getWorld();
-            boolean bl = entityPlayerSP.isNull();
-            if (bl || worldClient.isNull()) {
+        EntityPlayerSP player = eventPacketSend.getThePlayer();
+        int controlFlowState = ExplosionType.getDerivedControlFlowState();
+        if (controlFlowState != 0) {
+            WorldClient world = eventPacketSend.getWorld();
+            if (player.isNull() || world.isNull()) {
                 return;
             }
             Packet packet = eventPacketSend.getPacket();
-            boolean bl2 = UseEntityPacketBridge.h(packet);
-            if (bl2) {
+            if (UseEntityPacketBridge.h(packet)) {
                 UseEntityPacketBridge useEntityPacket = new UseEntityPacketBridge(packet.getObject());
                 if (useEntityPacket.S()) {
-                    Entity entity = useEntityPacket.C(eventPacketSend.getWorld());
-                    if (this.predictAttackVelocity.L().booleanValue() && entity.isNotNull() && entity.isInstance(MappedClasses.zm) && entity.V$src$I$fk0dv5() <= 13) {
+                    Entity attackedEntity = useEntityPacket.C(world);
+                    if (this.predictAttackVelocity.getEffectiveValue().booleanValue() && attackedEntity.isNotNull() && attackedEntity.isInstance(MappedClasses.zm) && attackedEntity.V$src$I$fk0dv5() <= 13) {
                         this.attacked = true;
                     }
-                    if (this.currentAction != null && this.currentAction.R() == CrystalAuraAction.ATTACKING_CRYSTAL && entity.isNotNull() && entity.isInstance(MappedClasses.Ze)) {
-                        if (((ModeSelection)this.optimizationMode.K()).equals(this.predictMode) && !Minecraft.V()) {
-                            this.pendingRemoveEntityId = entity.S();
+                    if (this.currentAction != null && this.currentAction.getAction() == CrystalAuraAction.ATTACKING_CRYSTAL && attackedEntity.isNotNull() && attackedEntity.isInstance(MappedClasses.Ze)) {
+                        if (((ModeSelection)this.optimizationMode.getValue()).equals(this.predictMode) && !Minecraft.V()) {
+                            this.pendingRemoveEntityId = attackedEntity.S();
                         }
                         this.currentAction = null;
                         this.placementSent = false;
@@ -364,113 +334,108 @@ extends SubModule<CrystalAura> {
                 }
             }
             if (packet.isInstance(MappedClasses.YB)) {
-                CrystalAuraAction crystalAuraAction;
-                CrystalAuraActionCandidate crystalAuraActionCandidate = this.currentAction;
-                if (crystalAuraActionCandidate != null) {
-                    CrystalAuraAction action = this.currentAction.R();
-                    if (action == (crystalAuraAction = CrystalAuraAction.PLACING_OBSIDIAN) || action == CrystalAuraAction.PLACING_CRYSTAL) {
+                if (this.currentAction != null) {
+                    CrystalAuraAction action = this.currentAction.getAction();
+                    if (action == CrystalAuraAction.PLACING_OBSIDIAN || action == CrystalAuraAction.PLACING_CRYSTAL) {
                         this.placementSent = true;
                     }
                 }
             }
             return;
         }
-        WorldClient worldClient = eventPacketSend.getWorld();
-        boolean bl = entityPlayerSP.isNull();
-        if (bl) {
+        if (player.isNull()) {
             return;
         }
         Packet packet = eventPacketSend.getPacket();
-        boolean bl3 = UseEntityPacketBridge.h(packet);
-        if (bl3) {
-            CrystalAuraAction crystalAuraAction;
-            CPacketPlayerBlockPlacement cPacketPlayerBlockPlacement = new CPacketPlayerBlockPlacement(packet.getObject());
-            CrystalAuraActionCandidate crystalAuraActionCandidate = this.currentAction;
-            CrystalAuraAction crystalAuraAction2 = crystalAuraActionCandidate.R();
-            CrystalAuraAction crystalAuraAction3 = crystalAuraAction2;
-            if (crystalAuraAction3 == (crystalAuraAction = CrystalAuraAction.PLACING_OBSIDIAN)) {
+        if (UseEntityPacketBridge.h(packet) && this.currentAction != null) {
+            CPacketPlayerBlockPlacement placementPacket = new CPacketPlayerBlockPlacement(packet.getObject());
+            if (this.currentAction.getAction() == CrystalAuraAction.PLACING_OBSIDIAN) {
                 this.placementSent = true;
             }
         }
     }
 
-    private float computeDamage(EntityLivingBase entityLivingBase, ExplosionType explosionType, Vec3 vec3, EntityPlayerSP entityPlayerSP, World world) {
-        double d;
-        int n;
-        double d2;
-        double d3;
-        EntityLivingBase entityLivingBase2;
-        float f = explosionType.I() * 2.0f;
-        double d4 = vec3.getX();
-        double d5 = vec3.getY();
-        double d6 = vec3.getZ();
-        if (entityLivingBase.isInstance(MappedClasses.Yl)) {
-            EntityPlayer entityPlayer = new EntityPlayer(entityLivingBase);
-            BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayer, entityPlayerSP, world, new BlockPlacementGraph(entityPlayerSP));
-            entityLivingBase2 = blockPathPlanner.T();
-            blockPathPlanner.h();
-            blockPathPlanner.K();
-            d3 = entityLivingBase2.z() - entityLivingBase2.M();
-            d2 = entityLivingBase2.N() - entityLivingBase2.W();
-            double d7 = entityLivingBase2.h() - entityLivingBase2.m$src$D$fwnne5();
-            if (this.predictAttackVelocity.L().booleanValue() && this.attacked && entityLivingBase.equals(this.target)) {
-                float f2 = 0.4f;
-                d2 = entityLivingBase.b$src$Z$fqlxe4() ? Math.min(0.4, d2 / 2.0 + (double)f2) : (double)f2;
+    private float computeDamageEfficiency(EntityLivingBase target, ExplosionType explosionType, Vec3 explosionPosition, EntityPlayerSP player, World world) {
+        EntityLivingBase predictedTarget;
+        if (target.isInstance(MappedClasses.Yl)) {
+            EntityPlayer targetPlayer = new EntityPlayer(target);
+            BlockPathPlanner pathPlanner = new BlockPathPlanner(targetPlayer, player, world, new BlockPlacementGraph(player));
+            predictedTarget = pathPlanner.getSimulatedPlayer();
+            pathPlanner.clearInput();
+            pathPlanner.finishSimulation();
+            double motionX = predictedTarget.z() - predictedTarget.M();
+            double motionY = predictedTarget.N() - predictedTarget.W();
+            double motionZ = predictedTarget.h() - predictedTarget.m$src$D$fwnne5();
+            if (this.predictAttackVelocity.getEffectiveValue().booleanValue() && this.attacked && target.equals(this.target)) {
+                float attackVerticalVelocity = 0.4f;
+                motionY = target.b$src$Z$fqlxe4() ? Math.min(0.4, motionY / 2.0 + (double)attackVerticalVelocity) : (double)attackVerticalVelocity;
             }
-            entityLivingBase2.F(d3, d2, d7);
-            for (n = 0; n < 3; ++n) {
-                blockPathPlanner.B();
+            predictedTarget.F(motionX, motionY, motionZ);
+            for (int predictionTick = 0; predictionTick < 3; ++predictionTick) {
+                pathPlanner.simulateTick();
             }
         } else {
-            entityLivingBase2 = entityLivingBase;
+            predictedTarget = target;
         }
-        double d8 = entityLivingBase2.z();
-        d3 = entityLivingBase2.N();
-        d2 = entityLivingBase2.h();
-        int n2 = NumericMathUtil.r(d4 - (double)f - 1.0);
-        int n3 = NumericMathUtil.r(d4 + (double)f + 1.0);
-        n = NumericMathUtil.r(d5 - (double)f - 1.0);
-        int n4 = NumericMathUtil.r(d5 + (double)f + 1.0);
-        int n5 = NumericMathUtil.r(d6 - (double)f - 1.0);
-        int n6 = NumericMathUtil.r(d6 + (double)f + 1.0);
-        if (MathUtil.e(d8, (double)n2, (double)n3) && MathUtil.e(d3, (double)n, (double)n4) && MathUtil.e(d2, (double)n5, (double)n6) && (d = ForgeVersion.MC_1_16_5.d() ? Math.sqrt(entityLivingBase2.g(vec3)) / (double)f : entityLivingBase2.i(d4, d5, d6) / (double)f) <= 1.0) {
-            float f3 = CrystalAura.O(vec3, entityLivingBase2, world);
-            double d9 = ForgeVersion.MC_1_12_2.d() ? 7.0 : 8.0;
-            float f4 = (float)(d9 * (double)f + 1.0);
-            double d10 = (1.0 - d) * (double)f3;
-            float f5 = (float)((d10 * d10 + d10) / 2.0 * d9 * (double)f + 1.0);
-            return f5 / f4;
+
+        float explosionDiameter = explosionType.getExplosionPower() * 2.0f;
+        double explosionX = explosionPosition.getX();
+        double explosionY = explosionPosition.getY();
+        double explosionZ = explosionPosition.getZ();
+        int minimumX = NumericMathUtil.floorDouble(explosionX - (double)explosionDiameter - 1.0);
+        int maximumX = NumericMathUtil.floorDouble(explosionX + (double)explosionDiameter + 1.0);
+        int minimumY = NumericMathUtil.floorDouble(explosionY - (double)explosionDiameter - 1.0);
+        int maximumY = NumericMathUtil.floorDouble(explosionY + (double)explosionDiameter + 1.0);
+        int minimumZ = NumericMathUtil.floorDouble(explosionZ - (double)explosionDiameter - 1.0);
+        int maximumZ = NumericMathUtil.floorDouble(explosionZ + (double)explosionDiameter + 1.0);
+        boolean insideExplosionBounds = MathUtil.e(predictedTarget.z(), (double)minimumX, (double)maximumX)
+                && MathUtil.e(predictedTarget.N(), (double)minimumY, (double)maximumY)
+                && MathUtil.e(predictedTarget.h(), (double)minimumZ, (double)maximumZ);
+        if (insideExplosionBounds) {
+            double normalizedDistance = ForgeVersion.MC_1_16_5.d()
+                    ? Math.sqrt(predictedTarget.g(explosionPosition)) / (double)explosionDiameter
+                    : predictedTarget.i(explosionX, explosionY, explosionZ) / (double)explosionDiameter;
+            if (normalizedDistance <= 1.0) {
+                float blockDensity = CrystalAura.calculateBlockDensity(explosionPosition, predictedTarget, world);
+                double damageScale = ForgeVersion.MC_1_12_2.d() ? 7.0 : 8.0;
+                float maximumDamage = (float)(damageScale * (double)explosionDiameter + 1.0);
+                double impact = (1.0 - normalizedDistance) * (double)blockDensity;
+                float damage = (float)((impact * impact + impact) / 2.0 * damageScale * (double)explosionDiameter + 1.0);
+                return damage / maximumDamage;
+            }
         }
         return -1.0f;
     }
 
-    private void updateTarget(EntityPlayerSP entityPlayerSP, World world) {
-        ArrayList<Entity> arrayList = new ArrayList<Entity>();
-        if (this.crystalAura.W()) {
+    private void updateTarget(EntityPlayerSP player, World world) {
+        ArrayList<EntityLivingBase> candidates = new ArrayList<EntityLivingBase>();
+        if (this.crystalAura.shouldPause()) {
             return;
         }
-        List list = world.z();
-        Iterator iterator = list.iterator();
-        while (iterator.hasNext()) {
-            EntityLivingBase entityLivingBase;
-            Object e = iterator.next();
-            Entity entity = new Entity(e);
-            if (ClientSettings.H && entity.isInstance(MappedClasses.FT) || !entity.isInstance(MappedClasses.zm) || !this.isValidTarget(entityLivingBase = new EntityLivingBase(e), entityPlayerSP)) continue;
-            arrayList.add(entityLivingBase);
+        List<?> loadedEntities = world.z();
+        for (Object underlyingEntity : loadedEntities) {
+            Entity entity = new Entity(underlyingEntity);
+            EntityLivingBase candidate;
+            if (ClientSettings.H && entity.isInstance(MappedClasses.FT)
+                    || !entity.isInstance(MappedClasses.zm)
+                    || !this.isValidTarget(candidate = new EntityLivingBase(underlyingEntity), player)) {
+                continue;
+            }
+            candidates.add(candidate);
         }
-        if (this.targetMode.K() == this.yawMode) {
-            arrayList.sort(new EntityAngleComparator());
-        } else if (this.targetMode.K() == this.distanceMode) {
-            arrayList.sort(new EntityDistanceComparator());
-        } else if (this.targetMode.K() == this.armorMode) {
-            arrayList.sort(new EntityEquipmentValueComparator());
-        } else if (this.targetMode.K() == this.healthMode) {
-            arrayList.sort(new EntityHealthComparator());
+        if (this.targetMode.getValue() == this.yawMode) {
+            candidates.sort(new EntityAngleComparator());
+        } else if (this.targetMode.getValue() == this.distanceMode) {
+            candidates.sort(new EntityDistanceComparator());
+        } else if (this.targetMode.getValue() == this.armorMode) {
+            candidates.sort(new EntityEquipmentValueComparator());
+        } else if (this.targetMode.getValue() == this.healthMode) {
+            candidates.sort(new EntityHealthComparator());
         }
-        if (!arrayList.isEmpty()) {
-            EntityLivingBase target = (EntityLivingBase)arrayList.get(0);
-            this.target = target;
-            this.rememberTarget(target);
+        if (!candidates.isEmpty()) {
+            EntityLivingBase selectedTarget = candidates.get(0);
+            this.target = selectedTarget;
+            this.rememberTarget(selectedTarget);
         } else {
             this.reset();
         }
@@ -482,27 +447,27 @@ extends SubModule<CrystalAura> {
 
     @Override
     public ModDisplayInfo J() {
-        if (!this.centerScreen.L().booleanValue()) {
+        if (!this.centerScreen.getEffectiveValue().booleanValue()) {
             return null;
         }
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return null;
         }
-        int n = this.crystalAura.U(entityPlayerSP);
-        Color color = new Color(255, 20, 20);
-        if (n >= 32) {
-            color = new Color(2, 190, 58);
-        } else if (n >= 16) {
-            color = new Color(255, 249, 18);
+        int crystalCount = this.crystalAura.countCrystalsInHotbar(player);
+        Color countColor = new Color(255, 20, 20);
+        if (crystalCount >= 32) {
+            countColor = new Color(2, 190, 58);
+        } else if (crystalCount >= 16) {
+            countColor = new Color(255, 249, 18);
         }
-        String string = this.currentAction != null ? "\u00a7f\u00a7l" : "\u00a77";
-        String string2 = (this.currentAction == null ? "\u00a7r" : "\u00a75\u00a7l") + n;
+        String moduleColor = this.currentAction != null ? "\u00a7f\u00a7l" : "\u00a77";
+        String countText = (this.currentAction == null ? "\u00a7r" : "\u00a75\u00a7l") + crystalCount;
         if (this.currentAction == null && this.statusLabel != null && ("no target".equals(this.statusLabel) || "no crystals".equals(this.statusLabel) || this.getActiveTarget() != null)) {
-            string2 = string2 + " \u00a7c[" + this.statusLabel + "]";
+            countText = countText + " \u00a7c[" + this.statusLabel + "]";
         }
-        String string3 = " " + string + "(CrystalAura)";
-        return new ModDisplayInfo(string2, color, string3);
+        String suffix = " " + moduleColor + "(CrystalAura)";
+        return new ModDisplayInfo(countText, countColor, suffix);
     }
 
     private void reset() {
@@ -514,67 +479,67 @@ extends SubModule<CrystalAura> {
         this.attacked = false;
         this.delayTimer.reset();
         if (this.rotationController != null) {
-            this.rotationController.k(true);
-            this.rotationController.z(true);
-            this.rotationController.U(true);
-            this.rotationController.t(0.0f);
-            this.rotationController.Y(5.0f);
-            RotationManager.b.v(this.rotationController);
+            this.rotationController.setClampStepToRemaining(true);
+            this.rotationController.setCubicAcceleration(true);
+            this.rotationController.setScaleAxesProportionally(true);
+            this.rotationController.setTolerance(0.0f);
+            this.rotationController.setSpeed(5.0f);
+            RotationManager.INSTANCE.releaseController(this.rotationController);
         }
         if (this.previousSlot != -1) {
-            EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            if (!entityPlayerSP.isNull()) {
-                entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.previousSlot);
+            EntityPlayerSP player = Minecraft.thePlayer();
+            if (!player.isNull()) {
+                player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.previousSlot);
             }
             this.previousSlot = -1;
         }
-        if (this.rotationManager.w() == null || this.rotationManager.w() != this.rotationController || this.rotationController != null && !this.rotationController.v() && this.rotationController.V$src$Z$lb4tvc()) {
+        if (this.rotationManager.getActiveController() == null || this.rotationManager.getActiveController() != this.rotationController || this.rotationController != null && !this.rotationController.shouldRetainAfterCompletion() && this.rotationController.isComplete()) {
             this.rotationController = null;
-            this.rotationClaim.X(this.crystalAura);
+            this.rotationClaim.release(this.crystalAura);
             if (this.toggledOff) {
                 this.toggledOff = false;
-                this.crystalAura.s(false, true);
+                this.crystalAura.setEnabled(false, true);
             }
         }
     }
 
     @Override
-    public String r() {
+    public String getDetailedSuffix() {
         if (this.currentAction != null) {
-            return this.currentAction.R().toString();
+            return this.currentAction.getAction().toString();
         }
         return "";
     }
 
-    private static void lambda$getAimJob$2(ArrayList arrayList, Object object) {
-        if (MappedClasses.Ze.isAssignableFrom(object.getClass())) {
-            arrayList.add(new Entity(object));
+    private static void collectCrystalsForAim(ArrayList<Entity> crystals, Object entityObject) {
+        if (MappedClasses.Ze.isAssignableFrom(entityObject.getClass())) {
+            crystals.add(new Entity(entityObject));
         }
     }
 
-    private static void lambda$findObsidianAtYLevel$3(ArrayList arrayList, Object object) {
-        if (MappedClasses.Ze.isAssignableFrom(object.getClass())) {
-            arrayList.add(new Entity(object));
+    private static void collectCrystalsAtPosition(ArrayList<Entity> crystals, Object entityObject) {
+        if (MappedClasses.Ze.isAssignableFrom(entityObject.getClass())) {
+            crystals.add(new Entity(entityObject));
         }
     }
 
-    private int statusPriority(String string) {
-        if (string == null) {
+    private int statusPriority(String status) {
+        if (status == null) {
             return 0;
         }
-        if ("low eff".equals(string)) {
+        if ("low eff".equals(status)) {
             return 6;
         }
-        if ("blocked".equals(string) || "out range".equals(string) || "no place".equals(string)) {
+        if ("blocked".equals(status) || "out range".equals(status) || "no place".equals(status)) {
             return 5;
         }
-        if ("no candidate".equals(string)) {
+        if ("no candidate".equals(status)) {
             return 4;
         }
-        if ("no placement block".equals(string)) {
+        if ("no placement block".equals(status)) {
             return 3;
         }
-        if ("no target".equals(string)) {
+        if ("no target".equals(status)) {
             return 2;
         }
         return 1;
@@ -582,55 +547,54 @@ extends SubModule<CrystalAura> {
 
     @EventHandler
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
-        WorldClient worldClient = eventPacketReceive.getWorld();
-        EntityPlayerSP entityPlayerSP = eventPacketReceive.getThePlayer();
-        GuiScreen guiScreen = eventPacketReceive.getCurrentScreen();
-        if (worldClient.isNull() || entityPlayerSP.isNull()) {
+        WorldClient world = eventPacketReceive.getWorld();
+        EntityPlayerSP player = eventPacketReceive.getThePlayer();
+        if (world.isNull() || player.isNull()) {
             return;
         }
     }
 
-    private boolean isInRange(EntityLivingBase entityLivingBase, EntityPlayerSP entityPlayerSP) {
-        return (double)entityLivingBase.getDistanceToEntity(entityPlayerSP) <= (Double)this.range.K();
+    private boolean isInRange(EntityLivingBase target, EntityPlayerSP player) {
+        return (double)target.getDistanceToEntity(player) <= (Double)this.range.getValue();
     }
 
-    private boolean isAlive(EntityLivingBase entityLivingBase) {
-        return entityLivingBase != null && entityLivingBase.isNotNull() && !entityLivingBase.M$src$Z$ff28xj() && entityLivingBase.w$src$F$15l9epb() > 0.0f;
+    private boolean isAlive(EntityLivingBase entity) {
+        return entity != null && entity.isNotNull() && !entity.M$src$Z$ff28xj() && entity.w$src$F$15l9epb() > 0.0f;
     }
 
-    private static void lambda$handleExplosive$6(ArrayList arrayList, Object object) {
-        arrayList.add(new Entity(object));
+    private static void collectEntities(ArrayList<Entity> entities, Object entityObject) {
+        entities.add(new Entity(entityObject));
     }
 
-    public boolean isValidTarget(EntityLivingBase entityLivingBase, EntityPlayerSP entityPlayerSP) {
-        if (entityLivingBase.isNull()) {
+    public boolean isValidTarget(EntityLivingBase target, EntityPlayerSP player) {
+        if (target.isNull()) {
             return false;
         }
-        if (entityLivingBase.equals(entityPlayerSP)) {
+        if (target.equals(player)) {
             return false;
         }
-        if (entityLivingBase.w$src$F$15l9epb() <= 0.0f || entityLivingBase.M$src$Z$ff28xj()) {
+        if (target.w$src$F$15l9epb() <= 0.0f || target.M$src$Z$ff28xj()) {
             return false;
         }
-        if (!this.isInRange(entityLivingBase, entityPlayerSP)) {
+        if (!this.isInRange(target, player)) {
             return false;
         }
-        if (RotationUtil.a(entityPlayerSP, entityLivingBase) > ((Double)this.maxAngle.K()).intValue() / 2) {
+        if (RotationUtil.a(player, target) > ((Double)this.maxAngle.getValue()).intValue() / 2) {
             return false;
         }
-        FriendEntry friendEntry = this.friendManager.O(entityLivingBase.getName());
+        FriendEntry friendEntry = this.friendManager.O(target.getName());
         if (friendEntry != null && !friendEntry.c()) {
             return false;
         }
-        if (entityLivingBase.equals(entityPlayerSP.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12())) {
+        if (target.equals(player.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12())) {
             return false;
         }
-        return this.targetFilter.c(entityLivingBase);
+        return this.targetFilter.isValidTarget(target);
     }
 
-    private static void lambda$onClientTickPost$1(ArrayList arrayList, Object object) {
-        if (MappedClasses.Ze.isAssignableFrom(object.getClass())) {
-            arrayList.add(new Entity(object));
+    private static void collectCrystals(ArrayList<Entity> crystals, Object entityObject) {
+        if (MappedClasses.Ze.isAssignableFrom(entityObject.getClass())) {
+            crystals.add(new Entity(entityObject));
         }
     }
 
@@ -646,35 +610,31 @@ extends SubModule<CrystalAura> {
         this.placementSent = false;
     }
 
-    private AxisAlignedBB crystalBoundingBox(BlockCoordinate blockCoordinate) {
-        double d = blockCoordinate.B();
-        double d2 = blockCoordinate.E() + 1;
-        double d3 = blockCoordinate.A();
-        return AxisAlignedBB.create(d, d2, d3, d + 1.0, d2 + 2.0, d3 + 1.0);
-    }
-
-    private static void lambda$handleExplosive$7(ArrayList arrayList, Object object) {
-        arrayList.add(new Entity(object));
+    private AxisAlignedBB crystalBoundingBox(BlockCoordinate position) {
+        double minimumX = position.B();
+        double minimumY = position.E() + 1;
+        double minimumZ = position.A();
+        return AxisAlignedBB.create(minimumX, minimumY, minimumZ, minimumX + 1.0, minimumY + 2.0, minimumZ + 1.0);
     }
 
     private EntityLivingBase getActiveTarget() {
-        EntityLivingBase entityLivingBase;
+        EntityLivingBase activeTarget;
         if (this.isAlive(this.target)) {
             this.rememberTarget(this.target);
-            entityLivingBase = this.target;
+            activeTarget = this.target;
         } else {
-            entityLivingBase = this.isAlive(this.lastTarget) && System.currentTimeMillis() - this.lastTargetTime <= 1200L ? this.lastTarget : null;
+            activeTarget = this.isAlive(this.lastTarget) && System.currentTimeMillis() - this.lastTargetTime <= TARGET_MEMORY_MS ? this.lastTarget : null;
         }
-        if (entityLivingBase == null) {
+        if (activeTarget == null) {
             this.lastTarget = null;
         }
-        return entityLivingBase;
+        return activeTarget;
     }
 
-    private static void lambda$findObsidianAtYLevel$4(ArrayList arrayList, Object object) {
-        Entity entity = new Entity(object);
+    private static void collectCollidingEntities(ArrayList<Entity> entities, Object entityObject) {
+        Entity entity = new Entity(entityObject);
         if (entity.n$src$Z$fx7gig()) {
-            arrayList.add(entity);
+            entities.add(entity);
         }
     }
 
@@ -683,35 +643,30 @@ extends SubModule<CrystalAura> {
         this.releaseControl();
     }
 
-    /*
-     * WARNING - Removed try catching itself - possible behaviour change.
-     */
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {
-        EntityPlayerSP entityPlayerSP = eventRender3D.getThePlayer();
-        WorldClient worldClient = eventRender3D.getWorld();
-        EntityLivingBase entityLivingBase = this.getActiveTarget();
-        boolean bl = GL11.glIsEnabled((int)3042);
-        boolean bl2 = GL11.glIsEnabled((int)2848);
-        boolean bl3 = GL11.glIsEnabled((int)2929);
-        boolean bl4 = GL11.glGetBoolean((int)2930);
+        EntityLivingBase activeTarget = this.getActiveTarget();
+        boolean blendEnabled = GL11.glIsEnabled((int)3042);
+        boolean lineSmoothingEnabled = GL11.glIsEnabled((int)2848);
+        boolean depthTestEnabled = GL11.glIsEnabled((int)2929);
+        boolean depthMaskEnabled = GL11.glGetBoolean((int)2930);
         try {
             RenderUtil.d();
             RenderUtils.g();
             GlStateManager.enableBlend();
-            OpenGlBackendHolder.d.l(3042);
+            OpenGlBackendHolder.backend.enableCapability(3042);
             GL11.glBlendFunc((int)770, (int)771);
             GlStateManager.disableTexture2D();
             GlStateManager.r();
             GlStateManager.disableDepth();
             GlStateManager.depthMask(false);
-            double d = RenderManager.getInterpolatedRenderPosX();
-            double d2 = RenderManager.getInterpolatedRenderPosY();
-            double d3 = RenderManager.getInterpolatedRenderPosZ();
-            if (this.currentAction != null && this.currentAction.s != null) {
-                Color color = this.currentAction.R() == CrystalAuraAction.ATTACKING_CRYSTAL ? ATTACK_COLOR : (this.currentAction.R() == CrystalAuraAction.PLACING_CRYSTAL ? PLACE_CRYSTAL_COLOR : OBSIDIAN_COLOR);
+            double renderX = RenderManager.getInterpolatedRenderPosX();
+            double renderY = RenderManager.getInterpolatedRenderPosY();
+            double renderZ = RenderManager.getInterpolatedRenderPosZ();
+            if (this.currentAction != null && this.currentAction.directionalPosition != null) {
+                Color color = this.currentAction.getAction() == CrystalAuraAction.ATTACKING_CRYSTAL ? ATTACK_COLOR : (this.currentAction.getAction() == CrystalAuraAction.PLACING_CRYSTAL ? PLACE_CRYSTAL_COLOR : OBSIDIAN_COLOR);
                 try {
-                    RenderUtil.w(d, d2, d3, this.currentAction.s.B(), this.currentAction.s.E(), this.currentAction.s.A(), color);
+                    RenderUtil.w(renderX, renderY, renderZ, this.currentAction.directionalPosition.B(), this.currentAction.directionalPosition.E(), this.currentAction.directionalPosition.A(), color);
                 }
                 catch (Exception exception) {
                     // empty catch block
@@ -719,92 +674,84 @@ extends SubModule<CrystalAura> {
             }
         }
         finally {
-            if (bl) {
+            if (blendEnabled) {
                 GlStateManager.enableBlend();
             } else {
                 GlStateManager.disableBlend();
             }
-            if (bl3) {
+            if (depthTestEnabled) {
                 GlStateManager.enableDepth();
             } else {
                 GlStateManager.disableDepth();
             }
-            if (bl2) {
+            if (lineSmoothingEnabled) {
                 GlStateManager.r();
             } else {
                 GlStateManager.P();
             }
-            GlStateManager.depthMask(bl4);
+            GlStateManager.depthMask(depthMaskEnabled);
             RenderUtils.f();
             RenderUtil.Y();
         }
-        if (this.showTarget.L().booleanValue() && entityLivingBase != null && Minecraft.currentScreen().isNull()) {
-            float f = entityLivingBase.isInstance(MappedClasses.Yl) || entityLivingBase.isInstance(MappedClasses.lG) ? 0.7f : entityLivingBase.f$src$F$fst3ac();
-            MutableColor mutableColor = this.currentAction != null && this.currentAction.R() == CrystalAuraAction.ATTACKING_CRYSTAL ? this.attackColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3() : this.targetColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-            GuiRenderPrimitives.R(entityLivingBase.c(), entityLivingBase.A(), entityLivingBase.Z(), 50.0f, f, entityLivingBase.Y(), mutableColor);
+        if (this.showTarget.getEffectiveValue().booleanValue() && activeTarget != null && Minecraft.currentScreen().isNull()) {
+            float ringRadius = activeTarget.isInstance(MappedClasses.Yl) || activeTarget.isInstance(MappedClasses.lG) ? 0.7f : activeTarget.f$src$F$fst3ac();
+            MutableColor mutableColor = this.currentAction != null && this.currentAction.getAction() == CrystalAuraAction.ATTACKING_CRYSTAL ? this.attackColor.getMutableColor() : this.targetColor.getMutableColor();
+            GuiRenderPrimitives.R(activeTarget.c(), activeTarget.A(), activeTarget.Z(), 50.0f, ringRadius, activeTarget.Y(), mutableColor);
         }
     }
 
     @EventHandler
     public void onPostTick(EventPostTick eventPostTick) {
-        WorldClient worldClient = eventPostTick.getWorld();
-        int n = ExplosionType.q();
-        EntityPlayerSP entityPlayerSP = eventPostTick.getThePlayer();
+        WorldClient world = eventPostTick.getWorld();
+        EntityPlayerSP player = eventPostTick.getThePlayer();
         if (this.pendingRemoveEntityId != -1) {
-            Entity entity = ((World)worldClient).V(this.pendingRemoveEntityId);
+            Entity entity = ((World)world).V(this.pendingRemoveEntityId);
             if (entity.isNotNull()) {
-                worldClient.M(entity);
+                world.M(entity);
             }
             this.pendingRemoveEntityId = -1;
         }
-        if (worldClient.isNull() || entityPlayerSP.isNull() || this.currentAction == null) {
+        if (world.isNull() || player.isNull() || this.currentAction == null) {
             return;
         }
-        EntityPlayerSP entityPlayerSP2 = entityPlayerSP;
-        CrystalAuraPlacementSubModule crystalAuraPlacementSubModule = this;
-        crystalAuraPlacementSubModule.aimAtAction(entityPlayerSP2);
+        this.aimAtAction(player);
         if (!this.placementSent) {
             return;
         }
-        CrystalAuraAction action = this.currentAction.R();
+        CrystalAuraAction action = this.currentAction.getAction();
         if (action == CrystalAuraAction.PLACING_OBSIDIAN) {
-            DirectionalPosition directionalPosition = this.currentAction.s;
-            EnumFacing enumFacing = EnumFacing.T(directionalPosition.X());
-            BlockData blockData = new BlockData(directionalPosition.B(), directionalPosition.E(), directionalPosition.A()).R(enumFacing);
-            BlockPos blockPos = BlockPos.create(blockData.D(), blockData.B(), blockData.G());
-            BlockState blockState = worldClient.getBlockState(blockPos);
+            DirectionalPosition actionPosition = this.currentAction.directionalPosition;
+            EnumFacing facing = EnumFacing.T(actionPosition.getFacingIndex());
+            BlockData placedBlock = new BlockData(actionPosition.B(), actionPosition.E(), actionPosition.A()).R(facing);
+            BlockPos placedPosition = BlockPos.create(placedBlock.D(), placedBlock.B(), placedBlock.G());
+            BlockState blockState = world.getBlockState(placedPosition);
             if (blockState.isNotNull() && blockState.getBlock().U().toLowerCase().contains("obsidian")) {
-                this.currentAction.D(CrystalAuraAction.PLACING_CRYSTAL);
-                BlockCoordinate blockCoordinate = new BlockCoordinate(blockPos.P(), blockPos.o(), blockPos.d());
-                this.currentAction.s = new DirectionalPosition(blockCoordinate, 1);
-                EntityPlayerSP entityPlayerSP3 = entityPlayerSP;
-                CrystalAuraPlacementSubModule crystalAuraPlacementSubModule2 = this;
-                crystalAuraPlacementSubModule2.aimAtAction(entityPlayerSP3);
+                this.currentAction.setAction(CrystalAuraAction.PLACING_CRYSTAL);
+                BlockCoordinate placedCoordinate = new BlockCoordinate(placedPosition.P(), placedPosition.o(), placedPosition.d());
+                this.currentAction.directionalPosition = new DirectionalPosition(placedCoordinate, 1);
+                this.aimAtAction(player);
                 this.placementSent = false;
             } else {
                 this.currentAction = null;
                 this.placementSent = false;
             }
         } else if (action == CrystalAuraAction.PLACING_CRYSTAL) {
-            DirectionalPosition directionalPosition = this.currentAction.s;
-            BlockCoordinate blockCoordinate = new BlockCoordinate(directionalPosition.B(), directionalPosition.E() + 1, directionalPosition.A());
-            AxisAlignedBB axisAlignedBB = AxisAlignedBB.create((double)blockCoordinate.B() - 0.5, blockCoordinate.E(), (double)blockCoordinate.A() - 0.5, (double)blockCoordinate.B() + 0.5, (double)blockCoordinate.E() + 2.0, (double)blockCoordinate.A() + 0.5);
-            ArrayList arrayList = new ArrayList();
-            worldClient.A().p(axisAlignedBB, arg_0 -> CrystalAuraPlacementSubModule.lambda$onClientTickPost$1(arrayList, arg_0));
-            if (!arrayList.isEmpty()) {
-                this.currentAction.D(CrystalAuraAction.ATTACKING_CRYSTAL);
-                this.currentAction.J((Entity)arrayList.get(0));
+            DirectionalPosition actionPosition = this.currentAction.directionalPosition;
+            BlockCoordinate crystalPosition = new BlockCoordinate(actionPosition.B(), actionPosition.E() + 1, actionPosition.A());
+            AxisAlignedBB crystalBox = AxisAlignedBB.create((double)crystalPosition.B() - 0.5, crystalPosition.E(), (double)crystalPosition.A() - 0.5, (double)crystalPosition.B() + 0.5, (double)crystalPosition.E() + 2.0, (double)crystalPosition.A() + 0.5);
+            ArrayList<Entity> crystals = new ArrayList<Entity>();
+            world.A().p(crystalBox, entityObject -> CrystalAuraPlacementSubModule.collectCrystals(crystals, entityObject));
+            if (!crystals.isEmpty()) {
+                this.currentAction.setAction(CrystalAuraAction.ATTACKING_CRYSTAL);
+                this.currentAction.setTargetEntity(crystals.get(0));
                 this.placementSent = false;
             } else {
-                Vec3 vec3;
-                Vec3 vec32 = entityPlayerSP.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, entityPlayerSP.X(), 0.0);
-                double d = vec32.distanceTo(vec3 = this.crystalAura.B(this.currentAction.s));
-                if (d > 3.0) {
-                    Vec3 vec33 = Vec3.create(entityPlayerSP.z(), vec3.getY(), entityPlayerSP.h());
-                    Vec3 vec34 = Vec3.create(entityPlayerSP.M(), vec3.getY(), entityPlayerSP.m$src$D$fwnne5());
-                    double d2 = vec34.distanceTo(vec3);
-                    double d3 = vec33.distanceTo(vec3);
-                    if (d3 > d2) {
+                Vec3 eyePosition = player.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, player.X(), 0.0);
+                Vec3 interactionPoint = this.crystalAura.getInteractionPoint(this.currentAction.directionalPosition);
+                if (eyePosition.distanceTo(interactionPoint) > 3.0) {
+                    Vec3 currentPlayerPosition = Vec3.create(player.z(), interactionPoint.getY(), player.h());
+                    Vec3 previousPlayerPosition = Vec3.create(player.M(), interactionPoint.getY(), player.m$src$D$fwnne5());
+                    if (currentPlayerPosition.distanceTo(interactionPoint) > previousPlayerPosition.distanceTo(interactionPoint)) {
                         this.currentAction = null;
                         this.placementSent = false;
                     }
@@ -813,421 +760,472 @@ extends SubModule<CrystalAura> {
         }
     }
 
-    private static void lambda$findObsidianAtYLevel$5(ArrayList arrayList, Object object) {
-        Entity entity = new Entity(object);
-        if (entity.n$src$Z$fx7gig()) {
-            arrayList.add(entity);
+    private boolean wouldIntersect(EntityLivingBase target, BlockCoordinate crystalPosition, EntityPlayerSP player, World world) {
+        boolean intersects = false;
+        AxisAlignedBB crystalBox = this.crystalBoundingBox(crystalPosition);
+        if (target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().intersects(crystalBox)) {
+            intersects = true;
         }
+        if (target.isInstance(MappedClasses.Yl)) {
+            EntityPlayer targetPlayer = new EntityPlayer(target);
+            BlockPathPlanner pathPlanner = new BlockPathPlanner(targetPlayer, player, world, new BlockPlacementGraph(player));
+            EntityPlayer predictedTarget = pathPlanner.getSimulatedPlayer();
+            pathPlanner.clearInput();
+            pathPlanner.finishSimulation();
+            double motionX = predictedTarget.z() - predictedTarget.M();
+            double motionY = predictedTarget.N() - predictedTarget.W();
+            double motionZ = predictedTarget.h() - predictedTarget.m$src$D$fwnne5();
+            if (this.predictAttackVelocity.getEffectiveValue().booleanValue() && this.attacked && target.equals(this.target)) {
+                float attackVerticalVelocity = 0.4f;
+                motionY = target.b$src$Z$fqlxe4() ? Math.min(0.4, motionY / 2.0 + (double)attackVerticalVelocity) : (double)attackVerticalVelocity;
+                double playerDeltaX = player.z() - target.z();
+                double playerDeltaZ = player.h() - target.h();
+                double horizontalDistance = Math.sqrt(playerDeltaX * playerDeltaX + playerDeltaZ * playerDeltaZ);
+                motionX = motionX / 2.0 - playerDeltaX / horizontalDistance * 0.3;
+                motionZ = motionZ / 2.0 - playerDeltaZ / horizontalDistance * 0.3;
+            }
+            predictedTarget.F(motionX, motionY, motionZ);
+            for (int predictionTick = 0; predictionTick < 3; ++predictionTick) {
+                pathPlanner.simulateTick();
+            }
+            if (predictedTarget.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().intersects(crystalBox)) {
+                intersects = true;
+            }
+        }
+        return intersects;
     }
 
-    private boolean wouldIntersect(EntityLivingBase entityLivingBase, BlockCoordinate blockCoordinate, EntityPlayerSP entityPlayerSP, World world) {
-        boolean bl = false;
-        AxisAlignedBB axisAlignedBB = this.crystalBoundingBox(blockCoordinate);
-        if (entityLivingBase.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().intersects(axisAlignedBB)) {
-            bl = true;
-        }
-        if (entityLivingBase.isInstance(MappedClasses.Yl)) {
-            EntityPlayer entityPlayer = new EntityPlayer(entityLivingBase);
-            BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayer, entityPlayerSP, world, new BlockPlacementGraph(entityPlayerSP));
-            EntityPlayer entityPlayer2 = blockPathPlanner.T();
-            blockPathPlanner.h();
-            blockPathPlanner.K();
-            double d = entityPlayer2.z() - entityPlayer2.M();
-            double d2 = entityPlayer2.N() - entityPlayer2.W();
-            double d3 = entityPlayer2.h() - entityPlayer2.m$src$D$fwnne5();
-            if (this.predictAttackVelocity.L().booleanValue() && this.attacked && entityLivingBase.equals(this.target)) {
-                float f = 0.4f;
-                d2 = entityLivingBase.b$src$Z$fqlxe4() ? Math.min(0.4, d2 / 2.0 + (double)f) : (double)f;
-                double d4 = entityPlayerSP.z() - entityLivingBase.z();
-                double d5 = entityPlayerSP.h() - entityLivingBase.h();
-                d = d / 2.0 - d4 / Math.sqrt(d4 * d4 + d5 * d5) * 0.3;
-                d3 = d3 / 2.0 - d5 / Math.sqrt(d4 * d4 + d5 * d5) * 0.3;
-            }
-            entityPlayer2.F(d, d2, d3);
-            for (int i = 0; i < 3; ++i) {
-                blockPathPlanner.B();
-            }
-            if (entityPlayer2.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().intersects(axisAlignedBB)) {
-                bl = true;
-            }
-        }
-        return bl;
-    }
-
-    private void aimAtAction(EntityPlayerSP entityPlayerSP) {
-        Vec3 vec3;
-        Object object;
-        int n = ExplosionType.R();
-        if (!this.rotationClaim.U(this.crystalAura)) {
+    private void aimAtAction(EntityPlayerSP player) {
+        if (!this.rotationClaim.isOwnedBy(this.crystalAura)) {
             return;
         }
         if (this.rotationController == null) {
             this.rotationController = new AdaptiveRotationController();
         }
-        this.rotationController.Y(((Double)this.aimSpeed.K()).floatValue());
-        this.rotationController.u(false);
-        this.rotationController.w(true);
-        this.rotationController.k(true);
-        this.rotationController.t(0.0f);
-        this.rotationController.U(true);
-        this.rotationController.s(true);
+        this.rotationController.setSpeed(((Double)this.aimSpeed.getValue()).floatValue());
+        this.rotationController.setComplete(false);
+        this.rotationController.setRetainAfterCompletion(true);
+        this.rotationController.setClampStepToRemaining(true);
+        this.rotationController.setTolerance(0.0f);
+        this.rotationController.setScaleAxesProportionally(true);
+        this.rotationController.setLinearAcceleration(true);
         if (this.rotationController instanceof AdaptiveRotationController) {
-            ((AdaptiveRotationController)this.rotationController).b(false);
+            ((AdaptiveRotationController)this.rotationController).setRelativeMode(false);
         }
-        float f = this.rotationManager.V();
-        float f2 = this.rotationManager.x();
-        Vec3 vec32 = entityPlayerSP.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, entityPlayerSP.X(), 0.0);
-        DirectionalPosition directionalPosition = this.currentAction.s;
-        int n2 = directionalPosition.X();
-        EnumFacing enumFacing = EnumFacing.T(n2);
-        if (this.currentAction.R() == CrystalAuraAction.ATTACKING_CRYSTAL) {
-            object = this.currentAction.s;
-            BlockCoordinate blockCoordinate = new BlockCoordinate(((BlockCoordinate)object).B(), ((BlockCoordinate)object).E() + 1, ((BlockCoordinate)object).A());
-            AxisAlignedBB axisAlignedBB = AxisAlignedBB.create((double)blockCoordinate.B() - 0.5, blockCoordinate.E(), (double)blockCoordinate.A() - 0.5, (double)blockCoordinate.B() + 0.5, (double)blockCoordinate.E() + 2.0, (double)blockCoordinate.A() + 0.5);
-            ArrayList arrayList = new ArrayList();
-            entityPlayerSP.getWorld().A().p(axisAlignedBB, arg_0 -> CrystalAuraPlacementSubModule.lambda$getAimJob$2(arrayList, arg_0));
-            boolean bl = ClutchPlacementPathUtils.P(vec32, entityPlayerSP.getWorld(), new BlockData(((BlockCoordinate)object).B(), ((BlockCoordinate)object).E(), ((BlockCoordinate)object).A()), enumFacing);
-            vec3 = !arrayList.isEmpty() && !bl ? RotationUtil.M(vec32, ((Entity)arrayList.get(0)).R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0).n() : this.crystalAura.B(directionalPosition);
+        float managedYaw = this.rotationManager.getManagedYaw();
+        float managedPitch = this.rotationManager.getManagedPitch();
+        Vec3 eyePosition = player.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, player.X(), 0.0);
+        DirectionalPosition actionPosition = this.currentAction.directionalPosition;
+        EnumFacing facing = EnumFacing.T(actionPosition.getFacingIndex());
+        Vec3 targetPoint;
+        if (this.currentAction.getAction() == CrystalAuraAction.ATTACKING_CRYSTAL) {
+            BlockCoordinate crystalPosition = new BlockCoordinate(actionPosition.B(), actionPosition.E() + 1, actionPosition.A());
+            AxisAlignedBB crystalBox = AxisAlignedBB.create((double)crystalPosition.B() - 0.5, crystalPosition.E(), (double)crystalPosition.A() - 0.5, (double)crystalPosition.B() + 0.5, (double)crystalPosition.E() + 2.0, (double)crystalPosition.A() + 0.5);
+            ArrayList<Entity> crystals = new ArrayList<Entity>();
+            player.getWorld().A().p(crystalBox, entityObject -> CrystalAuraPlacementSubModule.collectCrystalsForAim(crystals, entityObject));
+            BlockData baseBlock = new BlockData(actionPosition.B(), actionPosition.E(), actionPosition.A());
+            boolean hasPlacementPath = ClutchPlacementPathUtils.isBlockFaceVisible(eyePosition, player.getWorld(), baseBlock, facing);
+            targetPoint = !crystals.isEmpty() && !hasPlacementPath
+                    ? RotationUtil.M(eyePosition, crystals.get(0).R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0).n()
+                    : this.crystalAura.getInteractionPoint(actionPosition);
         } else {
-            object = new PlacementTarget(new BlockData(directionalPosition.B(), directionalPosition.E(), directionalPosition.A()), enumFacing);
-            Vec3 vec33 = ClutchPlacementPathUtils.D(entityPlayerSP, entityPlayerSP.getWorld(), vec32, (PlacementTarget)object, f, f2);
-            vec3 = vec33 != null ? vec33 : this.crystalAura.B(directionalPosition);
+            PlacementTarget placementTarget = new PlacementTarget(new BlockData(actionPosition.B(), actionPosition.E(), actionPosition.A()), facing);
+            Vec3 placementHitPoint = ClutchPlacementPathUtils.findBestPlacementHitPoint(player, player.getWorld(), eyePosition, placementTarget, managedYaw, managedPitch);
+            targetPoint = placementHitPoint != null ? placementHitPoint : this.crystalAura.getInteractionPoint(actionPosition);
         }
-        object = RotationVectorMath.d(vec32, vec3, f, f2);
-        this.rotationController.b((RotationAngles)object);
-        if (this.rotationManager.w() != this.rotationController) {
-            // empty if block
-        }
-        this.rotationManager.S(this.rotationController);
+        RotationAngles targetRotation = RotationVectorMath.d(eyePosition, targetPoint, managedYaw, managedPitch);
+        this.rotationController.setTargetRotation(targetRotation);
+        this.rotationManager.setController(this.rotationController);
     }
 
-    /*
-     * WARNING - Removed try catching itself - possible behaviour change.
-     */
-    private CrystalAuraActionCandidate findActionAtYLevel(EntityPlayerSP entityPlayerSP, World world, double d, boolean bl, int n) {
-        CrystalAuraActionCandidate crystalAuraActionCandidate;
-        int n2;
-        int n3;
-        ItemStack itemStack;
+    private CrystalAuraActionCandidate findActionAtYLevel(EntityPlayerSP player, World world, double searchRange,
+                                                            boolean renderCandidates, int searchY) {
         if (this.target == null) {
             this.lowEfficiency = false;
             this.statusLabel = null;
             return null;
         }
-        Vec3 vec3 = entityPlayerSP.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, entityPlayerSP.X(), 0.0);
-        int n4 = n;
-        int n5 = MathUtil.floor(entityPlayerSP.z());
-        int n6 = MathUtil.floor(entityPlayerSP.h());
-        CrystalAuraActionCandidate crystalAuraActionCandidate2 = null;
-        CrystalAuraActionCandidate crystalAuraActionCandidate3 = null;
-        boolean bl2 = false;
-        float f = 0.0f;
-        float f2 = 0.0f;
-        double d2 = (double)((Double)this.minEfficiency.K()).intValue() / 100.0;
-        double d3 = 0.1;
-        CrystalAuraPlacementSearchState crystalAuraPlacementSearchState = new CrystalAuraPlacementSearchState();
-        boolean bl3 = false;
-        BlockState blockState = null;
-        int n7 = this.crystalAura.z(entityPlayerSP);
-        if (n7 != -1 && !(itemStack = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(n7)).isNull()) {
-            blockState = BlockUtil.E(itemStack);
-        }
-        if (this.autoObsidian.L().booleanValue()) {
-            boolean bl4 = bl3 = blockState != null;
-            if (!bl3) {
-                crystalAuraPlacementSearchState.t();
+        Vec3 eyePosition = player.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, player.X(), 0.0);
+        int playerBlockX = MathUtil.floor(player.z());
+        int playerBlockZ = MathUtil.floor(player.h());
+        CrystalAuraActionCandidate bestDirectPlacement = null;
+        CrystalAuraActionCandidate bestObsidianPlacement = null;
+        boolean foundCrystalBase = false;
+        float bestDirectEfficiency = 0.0f;
+        float bestObsidianEfficiency = 0.0f;
+        double minimumEfficiency = (double)((Double)this.minEfficiency.getValue()).intValue() / 100.0;
+        double collisionMargin = 0.1;
+        CrystalAuraPlacementSearchState searchState = new CrystalAuraPlacementSearchState();
+
+        BlockState obsidianState = null;
+        int obsidianSlot = this.crystalAura.findObsidianSlot(player);
+        if (obsidianSlot != -1) {
+            ItemStack obsidianStack = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(obsidianSlot);
+            if (!obsidianStack.isNull()) {
+                obsidianState = BlockUtil.E(obsidianStack);
             }
-        } else {
-            int n8 = n5 - (int)d;
-            int n9 = n5 + (int)d;
-            int n10 = n6 - (int)d;
-            int n11 = n6 + (int)d;
-            for (int i = n8; i <= n9 && !bl2; ++i) {
-                for (int j = n10; j <= n11 && !bl2; ++j) {
-                    BlockPos blockPos = BlockPos.D(i, n4, j);
-                    BlockState blockState2 = world.getBlockState(blockPos);
-                    if (blockState2.isNull()) continue;
-                    Block block = blockState2.getBlock();
-                    if (!this.crystalAura.X(blockState2)) continue;
-                    bl2 = true;
+        }
+        boolean canPlaceObsidian = this.autoObsidian.getEffectiveValue().booleanValue() && obsidianState != null;
+        if (this.autoObsidian.getEffectiveValue().booleanValue() && !canPlaceObsidian) {
+            searchState.markNoPlacement();
+        } else if (!this.autoObsidian.getEffectiveValue().booleanValue()) {
+            int radius = (int)searchRange;
+            for (int x = playerBlockX - radius; x <= playerBlockX + radius && !foundCrystalBase; ++x) {
+                for (int z = playerBlockZ - radius; z <= playerBlockZ + radius && !foundCrystalBase; ++z) {
+                    BlockState state = world.getBlockState(BlockPos.D(x, searchY, z));
+                    if (!state.isNull() && this.crystalAura.isCrystalBaseBlock(state)) {
+                        foundCrystalBase = true;
+                    }
                 }
             }
         }
-        double d4 = RenderManager.getInterpolatedRenderPosX();
-        double d5 = RenderManager.getInterpolatedRenderPosY();
-        double d6 = RenderManager.getInterpolatedRenderPosZ();
-        double d7 = entityPlayerSP.z();
-        double d8 = entityPlayerSP.h();
-        double d9 = this.target.z();
-        double d10 = this.target.h();
-        double d11 = d9 - d7;
-        double d12 = d10 - d8;
-        Color color = new Color(0, 0, 255, 25);
-        Color color2 = new Color(9, 255, 0, 25);
-        double d13 = entityPlayerSP.getDistanceToEntity(this.target);
-        boolean bl5 = d13 <= 1.75;
-        for (int i = 0; i < 2; ++i) {
-            boolean bl6 = i == 0 && !bl5;
-            for (n3 = n5 - (int)d; n3 <= n5 + (int)d; ++n3) {
-                for (n2 = n6 - (int)d; n2 <= n6 + (int)d; ++n2) {
-                    Object object;
-                    Object object2;
-                    Object object3;
-                    Object object4;
-                    Wrapper wrapper;
-                    int n12;
-                    boolean bl7;
-                    BlockData blockData;
-                    Wrapper wrapper2;
-                    Wrapper wrapper3;
-                    if (n3 == n5 && n2 == n6) continue;
-                    double d14 = (double)n3 - d7;
-                    double d15 = (double)n2 - d8;
-                    if (bl6 && d11 * d14 + d12 * d15 < 0.0) continue;
-                    AxisAlignedBB searchBox = AxisAlignedBB.create((double)n3 - d3, (double)n4 + 1.0, (double)n2 - d3, (double)n3 + 1.0 + d3, (double)n4 + 3.0, (double)n2 + 1.0 + d3);
-                    ArrayList<Entity> entities = new ArrayList<Entity>();
-                    world.A().p(searchBox, arg_0 -> CrystalAuraPlacementSubModule.lambda$findObsidianAtYLevel$3(entities, arg_0));
-                    Iterator<Entity> entityIterator = entities.iterator();
-                    while (entityIterator.hasNext()) {
-                        Object object8;
-                        Wrapper wrapper4;
-                        wrapper3 = entityIterator.next();
-                        Vec3 vec32 = ((Entity)wrapper3).I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk();
-                        if (!(vec3.distanceTo(vec32) <= 4.0) || !MathUtil.e(((Entity)wrapper3).z(), (double)n3, (double)(n3 + 1)) || !MathUtil.e(((Entity)wrapper3).h(), (double)n2, (double)(n2 + 1)) || !this.isSafeDamage(vec32, ExplosionType.Q, entityPlayerSP, world)) continue;
-                        float f3 = this.computeDamage(this.target, ExplosionType.Q, vec32, entityPlayerSP, world);
-                        wrapper2 = RotationUtil.M(vec3, ((Entity)wrapper3).R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().contract(0.01, 0.0, 0.01), 0.0, 0.0, 0.0).n();
-                        if (vec3.distanceTo((Vec3)wrapper2) > 3.5) {
-                            wrapper4 = Vec3.create(entityPlayerSP.z(), ((Vec3)wrapper2).getY(), entityPlayerSP.h());
-                            object8 = Vec3.create(entityPlayerSP.M(), ((Vec3)wrapper2).getY(), entityPlayerSP.m$src$D$fwnne5());
-                            double d16 = ((Vec3)object8).distanceTo((Vec3)wrapper2);
-                            double d17 = ((Vec3)wrapper4).distanceTo((Vec3)wrapper2);
-                            if (d17 >= d16) {
-                                crystalAuraPlacementSearchState.R();
+        double renderX = RenderManager.getInterpolatedRenderPosX();
+        double renderY = RenderManager.getInterpolatedRenderPosY();
+        double renderZ = RenderManager.getInterpolatedRenderPosZ();
+        double playerX = player.z();
+        double playerZ = player.h();
+        double targetOffsetX = this.target.z() - playerX;
+        double targetOffsetZ = this.target.h() - playerZ;
+        Color directCandidateColor = new Color(0, 0, 255, 25);
+        Color obsidianCandidateColor = new Color(9, 255, 0, 25);
+        boolean targetIsClose = player.getDistanceToEntity(this.target) <= 1.75;
+        int radius = (int)searchRange;
+
+        for (int searchPass = 0; searchPass < 2; ++searchPass) {
+            boolean onlySearchTowardTarget = searchPass == 0 && !targetIsClose;
+            for (int x = playerBlockX - radius; x <= playerBlockX + radius; ++x) {
+                for (int z = playerBlockZ - radius; z <= playerBlockZ + radius; ++z) {
+                    if (x == playerBlockX && z == playerBlockZ) {
+                        continue;
+                    }
+                    double candidateOffsetX = x - playerX;
+                    double candidateOffsetZ = z - playerZ;
+                    if (onlySearchTowardTarget
+                            && targetOffsetX * candidateOffsetX + targetOffsetZ * candidateOffsetZ < 0.0) {
+                        continue;
+                    }
+
+                    AxisAlignedBB crystalSearchBox = AxisAlignedBB.create(
+                            x - collisionMargin, searchY + 1.0, z - collisionMargin,
+                            x + 1.0 + collisionMargin, searchY + 3.0, z + 1.0 + collisionMargin);
+                    ArrayList<Entity> crystals = new ArrayList<>();
+                    world.A().p(crystalSearchBox,
+                            entity -> CrystalAuraPlacementSubModule.collectCrystalsAtPosition(crystals, entity));
+                    for (Entity crystal : crystals) {
+                        Vec3 crystalPosition = crystal.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk();
+                        if (eyePosition.distanceTo(crystalPosition) > 4.0
+                                || !MathUtil.e(crystal.z(), x, x + 1.0)
+                                || !MathUtil.e(crystal.h(), z, z + 1.0)
+                                || !this.isSafeDamage(crystalPosition, ExplosionType.CRYSTAL, player, world)) {
+                            continue;
+                        }
+                        float efficiency = this.computeDamageEfficiency(
+                                this.target, ExplosionType.CRYSTAL, crystalPosition, player, world);
+                        Vec3 nearestCrystalPoint = RotationUtil.M(eyePosition,
+                                crystal.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().contract(0.01, 0.0, 0.01),
+                                0.0, 0.0, 0.0).n();
+                        if (eyePosition.distanceTo(nearestCrystalPoint) > 3.5) {
+                            Vec3 currentPlayerPosition = Vec3.create(player.z(), nearestCrystalPoint.getY(), player.h());
+                            Vec3 previousPlayerPosition = Vec3.create(
+                                    player.M(), nearestCrystalPoint.getY(), player.m$src$D$fwnne5());
+                            if (currentPlayerPosition.distanceTo(nearestCrystalPoint)
+                                    >= previousPlayerPosition.distanceTo(nearestCrystalPoint)) {
+                                searchState.markOutOfRange();
                                 continue;
                             }
                         }
-                        if (!((RayTraceResult)(wrapper4 = RayTraceUtil.b(vec3, (Vec3)wrapper2, world, entityPlayerSP, false, false, false, null))).isEntityHit() || !((RayTraceResult)wrapper4).getEntity().equals(wrapper3)) continue;
-                        CrystalAuraActionCandidate candidate = new CrystalAuraActionCandidate(ExplosionType.Q, new DirectionalPosition(n3, n4, n2, 1), vec32, f3, 0.0);
-                        candidate.D(CrystalAuraAction.ATTACKING_CRYSTAL);
-                        candidate.J((Entity)wrapper3);
+                        RayTraceResult crystalTrace = RayTraceUtil.b(
+                                eyePosition, nearestCrystalPoint, world, player, false, false, false, null);
+                        if (!crystalTrace.isEntityHit() || !crystalTrace.getEntity().equals(crystal)) {
+                            continue;
+                        }
+                        CrystalAuraActionCandidate candidate = new CrystalAuraActionCandidate(
+                                ExplosionType.CRYSTAL, new DirectionalPosition(x, searchY, z, 1),
+                                crystalPosition, efficiency, 0.0);
+                        candidate.setAction(CrystalAuraAction.ATTACKING_CRYSTAL);
+                        candidate.setTargetEntity(crystal);
                         return candidate;
                     }
-                    Object object5 = new BlockData(n3, n4, n2);
-                    Object object6 = BlockPos.D(n3, n4, n2);
-                    Object object7 = world.getBlockState((BlockPos)object6);
-                    if (((Wrapper)object7).isNull()) continue;
-                    wrapper3 = ((BlockState)object7).getBlock();
-                    boolean bl8 = this.crystalAura.X((BlockState)object7);
-                    if (bl8) {
-                        bl2 = true;
-                    }
-                    if (!BlockUtil.u((Block)(wrapper2 = world.getBlockByPos((blockData = ((BlockData)object5).R(EnumFacing.F$src$Lgg_vape_wrapper_impl_EnumFacing_$glfxl5())).D(), blockData.B(), blockData.G())))) {
-                        crystalAuraPlacementSearchState.O();
+
+                    BlockData candidateBlock = new BlockData(x, searchY, z);
+                    BlockPos candidatePos = BlockPos.D(x, searchY, z);
+                    BlockState candidateState = world.getBlockState(candidatePos);
+                    if (candidateState.isNull()) {
                         continue;
                     }
-                    boolean bl9 = bl7 = bl3 && BlockUtil.u((Block)wrapper3);
-                    if (!bl8 && !bl7) continue;
-                    int n13 = n3 - MathUtil.floor(entityPlayerSP.z());
-                    int n14 = n2 - MathUtil.floor(entityPlayerSP.h());
-                    int n8 = n13 > 0 ? 5 : (n12 = n13 < 0 ? 4 : -1);
-                    int n16 = n14 > 0 ? 3 : (n14 < 0 ? 2 : -1);
-                    int[] nArray = new int[]{0, n8, n16};
-                    Object object9 = null;
-                    EnumFacing enumFacing = null;
-                    if (bl7) {
-                        for (int blockData3 : nArray) {
-                            if (blockData3 == -1) continue;
-                            wrapper = EnumFacing.t()[blockData3];
-                            object4 = ((BlockData)object5).R((EnumFacing)wrapper);
-                            object3 = world.getBlockByPos(((Vec3i)object6).P(), ((Vec3i)object6).o(), ((Vec3i)object6).d());
-                            object2 = world.getBlockByPos(((BlockData)object4).D(), ((BlockData)object4).B(), ((BlockData)object4).G());
-                            if (BlockUtil.u((Block)object2) || !BlockUtil.u((Block)object3)) continue;
-                            object9 = object4;
-                            enumFacing = ((EnumFacing)wrapper).getOpposite();
+                    Block candidateBlockType = candidateState.getBlock();
+                    boolean hasCrystalBase = this.crystalAura.isCrystalBaseBlock(candidateState);
+                    if (hasCrystalBase) {
+                        foundCrystalBase = true;
+                    }
+                    BlockData blockAbove = candidateBlock.R(EnumFacing.F$src$Lgg_vape_wrapper_impl_EnumFacing_$glfxl5());
+                    if (!BlockUtil.u(world.getBlockByPos(blockAbove.D(), blockAbove.B(), blockAbove.G()))) {
+                        searchState.markBlocked();
+                        continue;
+                    }
+                    boolean needsObsidian = canPlaceObsidian && BlockUtil.u(candidateBlockType);
+                    if (!hasCrystalBase && !needsObsidian) {
+                        continue;
+                    }
+
+                    int xOffset = x - playerBlockX;
+                    int zOffset = z - playerBlockZ;
+                    int xFacingIndex = xOffset > 0 ? 5 : (xOffset < 0 ? 4 : -1);
+                    int zFacingIndex = zOffset > 0 ? 3 : (zOffset < 0 ? 2 : -1);
+                    int[] preferredFacingIndices = new int[]{0, xFacingIndex, zFacingIndex};
+                    BlockData clickedBlock = null;
+                    EnumFacing placementFacing = null;
+                    if (needsObsidian) {
+                        for (int facingIndex : preferredFacingIndices) {
+                            if (facingIndex == -1) {
+                                continue;
+                            }
+                            EnumFacing direction = EnumFacing.t()[facingIndex];
+                            BlockData adjacentBlock = candidateBlock.R(direction);
+                            Block adjacentBlockType = world.getBlockByPos(
+                                    adjacentBlock.D(), adjacentBlock.B(), adjacentBlock.G());
+                            if (BlockUtil.u(adjacentBlockType) || !BlockUtil.u(candidateBlockType)) {
+                                continue;
+                            }
+                            clickedBlock = adjacentBlock;
+                            placementFacing = direction.getOpposite();
                             break;
                         }
                     } else {
-                        object9 = object5;
-                        for (int n9 : nArray) {
-                            if (n9 == -1) continue;
-                            EnumFacing enumFacing2 = EnumFacing.t()[n9];
-                            BlockData blockData2 = ((BlockData)object9).R(enumFacing2.getOpposite());
-                            object3 = world.getBlockByPos(((BlockData)object9).D(), ((BlockData)object9).B(), ((BlockData)object9).G());
-                            Block block = world.getBlockByPos(blockData2.D(), blockData2.B(), blockData2.G());
-                            if (BlockUtil.u((Block)object3) || !BlockUtil.u(block)) continue;
-                            enumFacing = enumFacing2.getOpposite();
+                        clickedBlock = candidateBlock;
+                        for (int facingIndex : preferredFacingIndices) {
+                            if (facingIndex == -1) {
+                                continue;
+                            }
+                            EnumFacing direction = EnumFacing.t()[facingIndex];
+                            BlockData oppositeBlock = clickedBlock.R(direction.getOpposite());
+                            Block clickedBlockType = world.getBlockByPos(
+                                    clickedBlock.D(), clickedBlock.B(), clickedBlock.G());
+                            Block oppositeBlockType = world.getBlockByPos(
+                                    oppositeBlock.D(), oppositeBlock.B(), oppositeBlock.G());
+                            if (BlockUtil.u(clickedBlockType) || !BlockUtil.u(oppositeBlockType)) {
+                                continue;
+                            }
+                            placementFacing = direction.getOpposite();
                             break;
                         }
                     }
-                    if (enumFacing == null) {
-                        crystalAuraPlacementSearchState.t();
+                    if (placementFacing == null) {
+                        searchState.markNoPlacement();
                         continue;
                     }
-                    DirectionalPosition directionalPosition = new DirectionalPosition(n3, n4, n2, enumFacing.Y());
-                    DirectionalPosition directionalPosition2 = new DirectionalPosition(((BlockData)object9).D(), ((BlockData)object9).B(), ((BlockData)object9).G(), enumFacing.Y());
-                    Vec3 vec32 = this.crystalAura.B(directionalPosition);
-                    if (vec3.distanceTo(vec32) > 4.0) {
-                        Vec3 vec33 = Vec3.create(entityPlayerSP.z(), vec32.getY(), entityPlayerSP.h());
-                        wrapper = Vec3.create(entityPlayerSP.M(), vec32.getY(), entityPlayerSP.m$src$D$fwnne5());
-                        double d16 = ((Vec3)wrapper).distanceTo(vec32);
-                        double d17 = vec33.distanceTo(vec32);
-                        if (!(d17 >= d16)) continue;
-                        crystalAuraPlacementSearchState.R();
+
+                    DirectionalPosition explosionPosition = new DirectionalPosition(
+                            x, searchY, z, placementFacing.Y());
+                    DirectionalPosition clickPosition = new DirectionalPosition(
+                            clickedBlock.D(), clickedBlock.B(), clickedBlock.G(), placementFacing.Y());
+                    Vec3 interactionPoint = this.crystalAura.getInteractionPoint(explosionPosition);
+                    if (eyePosition.distanceTo(interactionPoint) > 4.0) {
+                        Vec3 currentPlayerPosition = Vec3.create(player.z(), interactionPoint.getY(), player.h());
+                        Vec3 previousPlayerPosition = Vec3.create(
+                                player.M(), interactionPoint.getY(), player.m$src$D$fwnne5());
+                        if (currentPlayerPosition.distanceTo(interactionPoint)
+                                < previousPlayerPosition.distanceTo(interactionPoint)) {
+                            continue;
+                        }
+                        searchState.markOutOfRange();
                         continue;
                     }
-                    if (bl8) {
-                        boolean bl10;
-                        float f3 = this.computeDamage(this.target, ExplosionType.Q, vec32, entityPlayerSP, world);
-                        if (f3 > 0.0f && (double)f3 < d2) {
-                            crystalAuraPlacementSearchState.G();
+
+                    if (hasCrystalBase) {
+                        float efficiency = this.computeDamageEfficiency(
+                                this.target, ExplosionType.CRYSTAL, interactionPoint, player, world);
+                        if (efficiency > 0.0f && efficiency < minimumEfficiency) {
+                            searchState.markLowEfficiency();
                         }
-                        boolean bl11 = bl10 = !this.isSafeDamage(vec32, ExplosionType.Q, entityPlayerSP, world);
-                        if (bl10 || (double)f3 < d2 || f3 <= f) continue;
-                        object4 = AxisAlignedBB.create((double)n3 - d3, (double)n4 + 1.0, (double)n2 - d3, (double)n3 + 1.0 + d3, n4 + 2, (double)n2 + 1.0 + d3);
-                        object3 = new ArrayList();
-                        ArrayList nearbyEntities = (ArrayList)object3;
-                        world.A().p((AxisAlignedBB)object4, arg_0 -> CrystalAuraPlacementSubModule.lambda$findObsidianAtYLevel$4(nearbyEntities, arg_0));
-                        if (!((ArrayList)object3).isEmpty()) {
-                            crystalAuraPlacementSearchState.O();
+                        if (!this.isSafeDamage(interactionPoint, ExplosionType.CRYSTAL, player, world)
+                                || efficiency < minimumEfficiency || efficiency <= bestDirectEfficiency) {
                             continue;
                         }
-                        object2 = new BlockData(n3, n4, n2);
-                        object = new PlacementTarget((BlockData)object2, enumFacing);
-                        if (!ClutchPlacementPathUtils.P(vec3, world, ((PlacementTarget)object).k, ((PlacementTarget)object).G)) {
-                            crystalAuraPlacementSearchState.R();
+                        AxisAlignedBB placementBox = AxisAlignedBB.create(
+                                x - collisionMargin, searchY + 1.0, z - collisionMargin,
+                                x + 1.0 + collisionMargin, searchY + 2.0, z + 1.0 + collisionMargin);
+                        ArrayList<Entity> collidingEntities = new ArrayList<>();
+                        world.A().p(placementBox,
+                                entity -> CrystalAuraPlacementSubModule.collectCollidingEntities(collidingEntities, entity));
+                        if (!collidingEntities.isEmpty()) {
+                            searchState.markBlocked();
                             continue;
                         }
-                        Vec3 vec34 = ClutchPlacementPathUtils.D(entityPlayerSP, world, vec3, (PlacementTarget)object, this.rotationManager.V(), this.rotationManager.x());
-                        if (vec34 == null || vec3.distanceTo(vec34) > d) {
-                            crystalAuraPlacementSearchState.R();
+                        PlacementTarget placementTarget = new PlacementTarget(candidateBlock, placementFacing);
+                        if (!ClutchPlacementPathUtils.isBlockFaceVisible(
+                                eyePosition, world, placementTarget.supportBlock, placementTarget.facing)) {
+                            searchState.markOutOfRange();
                             continue;
                         }
-                        RayTraceResult rayTraceResult = RayTraceUtil.b(vec3, vec34, world, entityPlayerSP, false, false, false, null);
-                        if (!rayTraceResult.isBlockHit() || !rayTraceResult.getBlockPos().equals(object6)) {
-                            crystalAuraPlacementSearchState.R();
+                        Vec3 placementHit = ClutchPlacementPathUtils.findBestPlacementHitPoint(
+                                player, world, eyePosition, placementTarget,
+                                this.rotationManager.getManagedYaw(), this.rotationManager.getManagedPitch());
+                        if (placementHit == null || eyePosition.distanceTo(placementHit) > searchRange) {
+                            searchState.markOutOfRange();
                             continue;
                         }
-                        f = f3;
-                        crystalAuraActionCandidate2 = new CrystalAuraActionCandidate(ExplosionType.Q, directionalPosition2, vec32, f3, 0.0);
-                        if (!bl) continue;
-                        RenderUtil.w(d4, d5, d6, n3, n4, n2, color);
+                        RayTraceResult placementTrace = RayTraceUtil.b(
+                                eyePosition, placementHit, world, player, false, false, false, null);
+                        if (!placementTrace.isBlockHit() || !placementTrace.getBlockPos().equals(candidatePos)) {
+                            searchState.markOutOfRange();
+                            continue;
+                        }
+                        bestDirectEfficiency = efficiency;
+                        bestDirectPlacement = new CrystalAuraActionCandidate(
+                                ExplosionType.CRYSTAL, clickPosition, interactionPoint, efficiency, 0.0);
+                        if (renderCandidates) {
+                            RenderUtil.w(renderX, renderY, renderZ, x, searchY, z, directCandidateColor);
+                        }
                         continue;
                     }
-                    BlockData blockData3 = new BlockData(n3, n4 - 1, n2);
-                    wrapper = BlockPos.D(n3, n4 - 1, n2);
-                    object4 = world.getBlockState((BlockPos)wrapper);
-                    if (((Wrapper)object4).isNull() || BlockUtil.p(((BlockState)object4).getBlock())) {
-                        crystalAuraPlacementSearchState.t();
+
+                    BlockData supportBlock = new BlockData(x, searchY - 1, z);
+                    BlockPos supportPos = BlockPos.D(x, searchY - 1, z);
+                    BlockState supportState = world.getBlockState(supportPos);
+                    if (supportState.isNull() || BlockUtil.p(supportState.getBlock())) {
+                        searchState.markNoPlacement();
                         continue;
                     }
-                    object3 = vec32.C(0.0, 1.0, 0.0);
-                    if (vec3.distanceTo((Vec3)object3) > 4.0) {
-                        object2 = Vec3.create(entityPlayerSP.z(), ((Vec3)object3).getY() - 1.0, entityPlayerSP.h());
-                        object = Vec3.create(entityPlayerSP.M(), ((Vec3)object3).getY() - 1.0, entityPlayerSP.m$src$D$fwnne5());
-                        if (((Vec3)object2).distanceTo((Vec3)object3) >= ((Vec3)object).distanceTo((Vec3)object3)) {
-                            crystalAuraPlacementSearchState.R();
+                    Vec3 crystalPlacementPoint = interactionPoint.C(0.0, 1.0, 0.0);
+                    if (eyePosition.distanceTo(crystalPlacementPoint) > 4.0) {
+                        Vec3 currentPlayerPosition = Vec3.create(
+                                player.z(), crystalPlacementPoint.getY() - 1.0, player.h());
+                        Vec3 previousPlayerPosition = Vec3.create(
+                                player.M(), crystalPlacementPoint.getY() - 1.0, player.m$src$D$fwnne5());
+                        if (currentPlayerPosition.distanceTo(crystalPlacementPoint)
+                                >= previousPlayerPosition.distanceTo(crystalPlacementPoint)) {
+                            searchState.markOutOfRange();
                             continue;
                         }
                     }
-                    boolean bl12 = false;
-                    object = world.getBlockState((BlockPos)object6);
-                    BlockUtil.z(world, (BlockPos)object6, blockState);
+
+                    float efficiency;
+                    boolean safeDamage;
+                    boolean obsidianReachable;
+                    BlockUtil.z(world, candidatePos, obsidianState);
                     try {
-                        Wrapper wrapper4;
-                        float f4 = this.computeDamage(this.target, ExplosionType.Q, vec32, entityPlayerSP, world);
-                        if (f4 > 0.0f && (double)f4 < d2) {
-                            crystalAuraPlacementSearchState.G();
+                        efficiency = this.computeDamageEfficiency(
+                                this.target, ExplosionType.CRYSTAL, interactionPoint, player, world);
+                        safeDamage = this.isSafeDamage(
+                                interactionPoint, ExplosionType.CRYSTAL, player, world);
+                        PlacementTarget obsidianTarget = new PlacementTarget(
+                                candidateBlock, EnumFacing.F$src$Lgg_vape_wrapper_impl_EnumFacing_$glfxl5());
+                        obsidianReachable = ClutchPlacementPathUtils.isBlockFaceVisible(
+                                eyePosition, world, obsidianTarget.supportBlock, obsidianTarget.facing);
+                        if (obsidianReachable) {
+                            Vec3 obsidianHit = ClutchPlacementPathUtils.findBestPlacementHitPoint(
+                                    player, world, eyePosition, obsidianTarget,
+                                    this.rotationManager.getManagedYaw(), this.rotationManager.getManagedPitch());
+                            obsidianReachable = obsidianHit != null
+                                    && eyePosition.distanceTo(obsidianHit) <= searchRange;
                         }
-                        boolean bl13 = !this.isSafeDamage(vec32, ExplosionType.Q, entityPlayerSP, world);
-                        BlockData blockData4 = new BlockData(n3, n4, n2);
-                        PlacementTarget placementTarget = new PlacementTarget(blockData4, EnumFacing.F$src$Lgg_vape_wrapper_impl_EnumFacing_$glfxl5());
-                        boolean bl14 = ClutchPlacementPathUtils.P(vec3, world, placementTarget.k, placementTarget.G);
-                        if (bl14) {
-                            wrapper4 = ClutchPlacementPathUtils.D(entityPlayerSP, world, vec3, placementTarget, this.rotationManager.V(), this.rotationManager.x());
-                            bl14 = wrapper4 != null && vec3.distanceTo((Vec3)wrapper4) <= d;
-                        }
-                        BlockUtil.z(world, (BlockPos)object6, (BlockState)object);
-                        bl12 = true;
-                        if (bl13 || (double)f4 < d2 || f4 <= f2) continue;
-                        if (!bl14) {
-                            crystalAuraPlacementSearchState.R();
-                            continue;
-                        }
-                        wrapper4 = AxisAlignedBB.create((double)n3 - d3, (double)n4 + 1.0, (double)n2 - d3, (double)n3 + 1.0 + d3, n4 + 2, (double)n2 + 1.0 + d3);
-                        ArrayList arrayList = new ArrayList();
-                        world.A().p((AxisAlignedBB)wrapper4, arg_0 -> CrystalAuraPlacementSubModule.lambda$findObsidianAtYLevel$5(arrayList, arg_0));
-                        if (!arrayList.isEmpty() || this.wouldIntersect(this.target, directionalPosition, entityPlayerSP, world)) {
-                            crystalAuraPlacementSearchState.O();
-                            continue;
-                        }
-                        PlacementTarget placementTarget2 = new PlacementTarget(blockData3, enumFacing);
-                        if (!ClutchPlacementPathUtils.P(vec3, world, placementTarget2.k, placementTarget2.G)) {
-                            crystalAuraPlacementSearchState.R();
-                            continue;
-                        }
-                        Vec3 vec35 = ClutchPlacementPathUtils.D(entityPlayerSP, world, vec3, placementTarget2, this.rotationManager.V(), this.rotationManager.x());
-                        if (vec35 == null || vec3.distanceTo(vec35) > d) {
-                            crystalAuraPlacementSearchState.R();
-                            continue;
-                        }
-                        RayTraceResult rayTraceResult = RayTraceUtil.b(vec3, vec35, world, entityPlayerSP, false, false, false, null);
-                        if (!rayTraceResult.isBlockHit() || rayTraceResult.getSideHit().Y() != enumFacing.Y() || !rayTraceResult.getBlockPos().equals(wrapper)) {
-                            crystalAuraPlacementSearchState.R();
-                            continue;
-                        }
-                        f2 = f4;
-                        BlockCoordinate blockCoordinate = new BlockCoordinate(n3, n4 - 1, n2);
-                        crystalAuraActionCandidate3 = new CrystalAuraActionCandidate(ExplosionType.Q, new DirectionalPosition(blockCoordinate, enumFacing.Y()), vec32, f4, 0.0);
-                        crystalAuraActionCandidate3.H = true;
-                        if (!bl) continue;
-                        RenderUtil.w(d4, d5, d6, n3, n4 - 1, n2, color2);
+                    } finally {
+                        BlockUtil.z(world, candidatePos, candidateState);
+                    }
+                    if (efficiency > 0.0f && efficiency < minimumEfficiency) {
+                        searchState.markLowEfficiency();
+                    }
+                    if (!safeDamage || efficiency < minimumEfficiency || efficiency <= bestObsidianEfficiency) {
                         continue;
                     }
-                    catch (Throwable throwable) {
-                        if (!bl12) {
-                            BlockUtil.z(world, (BlockPos)object6, (BlockState)object);
-                        }
-                        throw throwable;
+                    if (!obsidianReachable) {
+                        searchState.markOutOfRange();
+                        continue;
+                    }
+                    AxisAlignedBB placementBox = AxisAlignedBB.create(
+                            x - collisionMargin, searchY + 1.0, z - collisionMargin,
+                            x + 1.0 + collisionMargin, searchY + 2.0, z + 1.0 + collisionMargin);
+                    ArrayList<Entity> collidingEntities = new ArrayList<>();
+                    world.A().p(placementBox,
+                            entity -> CrystalAuraPlacementSubModule.collectCollidingEntities(collidingEntities, entity));
+                    if (!collidingEntities.isEmpty()
+                            || this.wouldIntersect(this.target, explosionPosition, player, world)) {
+                        searchState.markBlocked();
+                        continue;
+                    }
+                    PlacementTarget supportTarget = new PlacementTarget(supportBlock, placementFacing);
+                    if (!ClutchPlacementPathUtils.isBlockFaceVisible(eyePosition, world, supportTarget.supportBlock, supportTarget.facing)) {
+                        searchState.markOutOfRange();
+                        continue;
+                    }
+                    Vec3 supportHit = ClutchPlacementPathUtils.findBestPlacementHitPoint(
+                            player, world, eyePosition, supportTarget,
+                            this.rotationManager.getManagedYaw(), this.rotationManager.getManagedPitch());
+                    if (supportHit == null || eyePosition.distanceTo(supportHit) > searchRange) {
+                        searchState.markOutOfRange();
+                        continue;
+                    }
+                    RayTraceResult supportTrace = RayTraceUtil.b(
+                            eyePosition, supportHit, world, player, false, false, false, null);
+                    if (!supportTrace.isBlockHit()
+                            || supportTrace.getSideHit().Y() != placementFacing.Y()
+                            || !supportTrace.getBlockPos().equals(supportPos)) {
+                        searchState.markOutOfRange();
+                        continue;
+                    }
+                    bestObsidianEfficiency = efficiency;
+                    BlockCoordinate supportCoordinate = new BlockCoordinate(x, searchY - 1, z);
+                    bestObsidianPlacement = new CrystalAuraActionCandidate(
+                            ExplosionType.CRYSTAL,
+                            new DirectionalPosition(supportCoordinate, placementFacing.Y()),
+                            interactionPoint, efficiency, 0.0);
+                    bestObsidianPlacement.requiresObsidianPlacement = true;
+                    if (renderCandidates) {
+                        RenderUtil.w(renderX, renderY, renderZ,
+                                x, searchY - 1, z, obsidianCandidateColor);
                     }
                 }
             }
-            if (crystalAuraActionCandidate2 != null || crystalAuraActionCandidate3 != null || i == 0 && bl5) break;
+            if (bestDirectPlacement != null || bestObsidianPlacement != null
+                    || searchPass == 0 && targetIsClose) {
+                break;
+            }
         }
-        CrystalAuraActionCandidate crystalAuraActionCandidate4 = crystalAuraActionCandidate = crystalAuraActionCandidate2 != null ? crystalAuraActionCandidate2 : crystalAuraActionCandidate3;
-        if (bl && crystalAuraActionCandidate != null) {
-            Color color3 = new Color(255, 255, 255, 255);
-            n3 = crystalAuraActionCandidate.s.B();
-            n2 = crystalAuraActionCandidate.s.E();
-            int n19 = crystalAuraActionCandidate.s.A();
-            RenderUtil.u(n3, n2, n19, 1.0, 1.0, 1.0, 0.1, color3, null, d4, d5, d6);
+
+        CrystalAuraActionCandidate result = bestDirectPlacement != null
+                ? bestDirectPlacement : bestObsidianPlacement;
+        if (renderCandidates && result != null) {
+            DirectionalPosition resultPosition = result.directionalPosition;
+            RenderUtil.u(resultPosition.B(), resultPosition.E(), resultPosition.A(),
+                    1.0, 1.0, 1.0, 0.1, new Color(255, 255, 255, 255), null,
+                    renderX, renderY, renderZ);
         }
-        boolean bl15 = this.lowEfficiency = crystalAuraActionCandidate == null && crystalAuraPlacementSearchState.T;
-        this.statusLabel = crystalAuraActionCandidate == null ? (crystalAuraPlacementSearchState.T ? "low eff" : (crystalAuraPlacementSearchState.z ? "blocked" : (crystalAuraPlacementSearchState.X ? "out range" : (crystalAuraPlacementSearchState.h ? (this.autoObsidian.L().booleanValue() && n7 == -1 ? "no obsidian" : "no place") : (!this.autoObsidian.L().booleanValue() && !bl2 ? "no placement block" : "no candidate"))))) : null;
-        return crystalAuraActionCandidate;
+        this.lowEfficiency = result == null && searchState.lowEfficiency;
+        this.statusLabel = result == null
+                ? (searchState.lowEfficiency ? "low eff"
+                : (searchState.blocked ? "blocked"
+                : (searchState.outOfRange ? "out range"
+                : (searchState.noPlacement
+                ? (this.autoObsidian.getEffectiveValue().booleanValue() && obsidianSlot == -1 ? "no obsidian" : "no place")
+                : (!this.autoObsidian.getEffectiveValue().booleanValue() && !foundCrystalBase
+                ? "no placement block" : "no candidate")))))
+                : null;
+        return result;
     }
 
-    private void rememberTarget(EntityLivingBase entityLivingBase) {
-        if (entityLivingBase != null && entityLivingBase.isNotNull()) {
-            this.lastTarget = entityLivingBase;
+    private void rememberTarget(EntityLivingBase target) {
+        if (target != null && target.isNotNull()) {
+            this.lastTarget = target;
             this.lastTargetTime = System.currentTimeMillis();
         }
     }
 
-    public CrystalAuraPlacementSubModule(Mod mod, String string) {
-        super(mod, string);
-        this.targetFilter = EntityTargetFilterValue.W(this);
+    public CrystalAuraPlacementSubModule(Mod parent, String name) {
+        super(parent, name);
+        this.targetFilter = EntityTargetFilterValue.createForModule(this);
         this.centerScreen = BooleanValue.create(this, "Center screen", true, "Renders crystal info on the center of your screen");
         this.showTarget = BooleanValue.create(this, "Show target", false);
-        this.targetColor = ColorValue.b(this, "Target color", new Color(255, 40, 255), 50);
-        this.attackColor = ColorValue.L(this, "Attack color", new Color(169, 0, 255, 255));
-        this.range = NumberValue.E(this, "Range", "#.#", "m", 0.0, 4.5, 6.0, "Range to check for targets");
+        this.targetColor = ColorValue.createWithAlpha(this, "Target color", new Color(255, 40, 255), 50);
+        this.attackColor = ColorValue.create(this, "Attack color", new Color(169, 0, 255, 255));
+        this.range = NumberValue.createWithDescription(this, "Range", "#.#", "m", 0.0, 4.5, 6.0, "Range to check for targets");
         this.maxAngle = NumberValue.create(this, "Max angle", "#", "", 1.0, 120.0, 360.0, 5.0, "Angle at which targets will be acquired and aimed at\n(From your cursor)");
         this.distanceMode = new ModeOption("Distance");
         this.yawMode = new ModeOption("Yaw");
         this.armorMode = new ModeOption("Armor");
         this.healthMode = new ModeOption("Health");
         this.targetMode = ModeValue.create((Object)this, "Target Mode", "How targets will be prioritized\nArmor will default to Distance for non player targets", (ModeSelection)this.distanceMode, this.distanceMode, this.yawMode, this.armorMode, this.healthMode);
-        this.activationDelay = RandomValue.G(this, "Delay", "#", "ms", 50.0, 50.0, 150.0, 500.0, 1.0, "Delay before activating");
+        this.activationDelay = RandomValue.createWithDescription(this, "Delay", "#", "ms", 50.0, 50.0, 150.0, 500.0, 1.0, "Delay before activating");
         this.antiSuicide = BooleanValue.create(this, "Anti suicide", true, "Prevents placing/breaking if it will result in fatal damage");
         this.maxSelfDamage = NumberValue.create(this, "Max self damage", "#", "HP", 0.0, 19.0, 20.0, 1.0, "Maximum self damage allowed");
         this.rapidFireMode = new ModeOption("Rapid fire");
@@ -1238,33 +1236,24 @@ extends SubModule<CrystalAura> {
         this.predictAttackVelocity = BooleanValue.create(this, "Predict attack velocity", true, "Predicts target movement when calculating damage after successfully attacking");
         this.autoObsidian = BooleanValue.create(this, "Auto obsidian", false, "Automatically places obsidian to place crystals");
         this.minEfficiency = NumberValue.create(this, "Min efficiency", "#", "%", 0.0, 50.0, 100.0, 1.0, "Minimum damage efficiency (0-100%) for placing and breaking crystals");
-        this.rotationManager = RotationManager.b;
-        this.rotationClaim = SharedModuleControlClaims.I;
-        this.mouseOverClaim = SharedModuleControlClaims.a;
+        this.rotationManager = RotationManager.INSTANCE;
+        this.rotationClaim = SharedModuleControlClaims.rotation;
+        this.mouseOverClaim = SharedModuleControlClaims.mouseOverUpdate;
         this.friendManager = Vape.INSTANCE.getFriendManager();
         this.delayTimer = new TimerUtil();
-        this.crystalAura = (CrystalAura)mod;
-        this.showTarget.K(this.targetColor, this.attackColor);
-        this.optimizationMode.f(this.rapidFireMode, this.rapidMinEfficiency);
+        this.crystalAura = (CrystalAura)parent;
+        this.showTarget.addDependentValues(this.targetColor, this.attackColor);
+        this.optimizationMode.addModeDependentValues(this.rapidFireMode, this.rapidMinEfficiency);
         this.addValue(this.targetFilter, this.targetMode, this.range, this.maxAngle, this.aimSpeed, this.minEfficiency, this.activationDelay, this.maxSelfDamage, this.autoObsidian, this.antiSuicide, this.optimizationMode, this.rapidMinEfficiency, this.predictAttackVelocity, this.centerScreen, this.showTarget, this.targetColor, this.attackColor);
-    }
-
-    private static void lambda$onClientTick$0(ArrayList arrayList, Object object) {
-        if (MappedClasses.Ze.isAssignableFrom(object.getClass())) {
-            arrayList.add(new Entity(object));
-        }
     }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        int n;
-        Object object;
-        WorldClient worldClient = eventPreTick.getWorld();
-        int n2 = ExplosionType.R();
-        EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();
-        GuiScreen guiScreen = eventPreTick.getCurrentScreen();
-        boolean bl = this.delayTimer.hasTimeElapsed((long)this.activationDelay.B());
-        if (worldClient.isNull() || entityPlayerSP.isNull() || !guiScreen.isNull() || this.toggledOff) {
+        WorldClient world = eventPreTick.getWorld();
+        EntityPlayerSP player = eventPreTick.getThePlayer();
+        GuiScreen currentScreen = eventPreTick.getCurrentScreen();
+        boolean activationDelayElapsed = this.delayTimer.hasTimeElapsed((long)this.activationDelay.getRandomValue());
+        if (world.isNull() || player.isNull() || !currentScreen.isNull() || this.toggledOff) {
             this.reset();
             return;
         }
@@ -1272,90 +1261,22 @@ extends SubModule<CrystalAura> {
             this.attacked = false;
         }
         this.attackedLastTick = this.attacked;
-        this.crystalSlot = this.crystalAura.Q(entityPlayerSP);
+        this.crystalSlot = this.crystalAura.findCrystalSlot(player);
         if (this.crystalSlot == -1) {
             this.statusLabel = "no crystal";
             this.reset();
             return;
         }
-        if (this.currentAction != null) {
-            Object object2;
-            Wrapper wrapper;
-            Object object3;
-            Object object4;
-            Wrapper wrapper2;
-            Object object5;
-            CrystalAuraAction crystalAuraAction = this.currentAction.R();
-            if (crystalAuraAction == CrystalAuraAction.PLACING_OBSIDIAN || crystalAuraAction == CrystalAuraAction.PLACING_CRYSTAL) {
-                object = this.currentAction.s;
-                if (crystalAuraAction == CrystalAuraAction.PLACING_CRYSTAL) {
-                    object5 = new BlockCoordinate(((BlockCoordinate)object).B(), ((BlockCoordinate)object).E() + 1, ((BlockCoordinate)object).A());
-                    wrapper2 = AxisAlignedBB.create((double)((BlockCoordinate)object5).B() - 0.5, (double)((BlockCoordinate)object5).E() - 0.01, (double)((BlockCoordinate)object5).A() - 0.5, (double)((BlockCoordinate)object5).B() + 0.5, (double)((BlockCoordinate)object5).E() + 2.0, (double)((BlockCoordinate)object5).A() + 0.5);
-                    object4 = new ArrayList();
-                    ArrayList collidingEntities = (ArrayList)object4;
-                    worldClient.A().p((AxisAlignedBB)wrapper2, arg_0 -> CrystalAuraPlacementSubModule.lambda$onClientTick$0(collidingEntities, arg_0));
-                    if (!((ArrayList)object4).isEmpty()) {
-                        this.currentAction.D(CrystalAuraAction.ATTACKING_CRYSTAL);
-                        this.currentAction.J((Entity)((ArrayList)object4).get(0));
-                    }
-                }
-                if (this.currentAction.R() != CrystalAuraAction.ATTACKING_CRYSTAL) {
-                    object5 = entityPlayerSP.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, entityPlayerSP.X(), 0.0);
-                    wrapper2 = EnumFacing.T(((DirectionalPosition)object).X());
-                    object4 = new BlockData(((BlockCoordinate)object).B(), ((BlockCoordinate)object).E(), ((BlockCoordinate)object).A());
-                    object3 = new PlacementTarget((BlockData)object4, (EnumFacing)wrapper2);
-                    if (!ClutchPlacementPathUtils.P((Vec3)object5, worldClient, (BlockData)object4, (EnumFacing)wrapper2) || ClutchPlacementPathUtils.D(entityPlayerSP, worldClient, (Vec3)object5, (PlacementTarget)object3, this.rotationManager.V(), this.rotationManager.x()) == null) {
-                        this.statusLabel = "out range";
-                        this.currentAction = null;
-                        this.placementSent = false;
-                    }
-                }
-            }
-            if (this.currentAction != null && this.currentAction.R() == CrystalAuraAction.ATTACKING_CRYSTAL) {
-                object = this.currentAction.A();
-                if (object == null || ((Wrapper)object).isNull() || ((Entity)object).M$src$Z$ff28xj()) {
-                    this.currentAction = null;
-                    this.placementSent = false;
-                } else {
-                    Entity entity;
-                    object5 = this.currentAction.s;
-                    wrapper2 = entityPlayerSP.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, entityPlayerSP.X(), 0.0);
-                    if (ClutchPlacementPathUtils.P((Vec3)wrapper2, worldClient, (BlockData)(object4 = new BlockData(((BlockCoordinate)object5).B(), ((BlockCoordinate)object5).E(), ((BlockCoordinate)object5).A())), (EnumFacing)(object3 = EnumFacing.T(((DirectionalPosition)object5).X()))) && ((RayTraceResult)(wrapper = RayTraceUtil.b((Vec3)wrapper2, (Vec3)(object2 = this.crystalAura.B((DirectionalPosition)object5)), worldClient, entityPlayerSP, false, true, false, null))).isEntityHit() && !(entity = ((RayTraceResult)wrapper).getEntity()).isInstance(MappedClasses.Ze) && entity.n$src$Z$fx7gig()) {
-                        this.statusLabel = "blocked";
-                        this.currentAction = null;
-                        this.placementSent = false;
-                    }
-                    if (((Vec3)wrapper2).distanceTo(((Vec3d)(object2 = RotationUtil.M((Vec3)wrapper2, ((Entity)object).R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0))).n()) > 3.0) {
-                        this.statusLabel = "out range";
-                        this.currentAction = null;
-                        this.placementSent = false;
-                    }
-                }
-            }
-            if (this.currentAction != null && this.currentAction.R() == CrystalAuraAction.PLACING_CRYSTAL) {
-                int n3;
-                int n4;
-                object = this.currentAction.s;
-                object5 = EnumFacing.T(((DirectionalPosition)object).X());
-                int n5 = ((BlockCoordinate)object).B();
-                object2 = new BlockData(n5, n4 = ((BlockCoordinate)object).E(), n3 = ((BlockCoordinate)object).A());
-                wrapper = worldClient.getBlockState(BlockPos.create(((BlockData)object2).D(), ((BlockData)object2).B(), ((BlockData)object2).G()));
-                if (!this.crystalAura.X((BlockState)wrapper)) {
-                    this.statusLabel = "no place";
-                    this.currentAction = null;
-                    this.placementSent = false;
-                }
-            }
-        }
-        this.updateTarget(entityPlayerSP, worldClient);
+        this.validateCurrentAction(player, world);
+        this.updateTarget(player, world);
         if (this.target == null) {
             this.lowEfficiency = false;
             this.statusLabel = "no target";
             this.reset();
             return;
         }
-        if (this.currentAction == null && bl) {
-            this.currentAction = this.findAction(entityPlayerSP, worldClient, 4.0, false);
+        if (this.currentAction == null && activationDelayElapsed) {
+            this.currentAction = this.findAction(player, world, 4.0, false);
             if (this.currentAction == null) {
                 this.reset();
                 if (this.statusLabel == null) {
@@ -1365,61 +1286,124 @@ extends SubModule<CrystalAura> {
             }
             this.lowEfficiency = false;
             this.statusLabel = null;
-            if (this.currentAction.H) {
-                this.currentAction.D(CrystalAuraAction.PLACING_OBSIDIAN);
+            if (this.currentAction.requiresObsidianPlacement) {
+                this.currentAction.setAction(CrystalAuraAction.PLACING_OBSIDIAN);
             } else {
-                this.currentAction.D(CrystalAuraAction.PLACING_CRYSTAL);
+                this.currentAction.setAction(CrystalAuraAction.PLACING_CRYSTAL);
             }
         }
         if (this.currentAction == null) {
             return;
         }
-        if (!this.rotationClaim.U(this.crystalAura) && !this.rotationClaim.h(this.crystalAura, true)) {
+        if (!this.rotationClaim.isOwnedBy(this.crystalAura) && !this.rotationClaim.acquire(this.crystalAura, true)) {
             this.statusLabel = "aim lock";
             return;
         }
-        object = this.currentAction.R();
-        if (object == CrystalAuraAction.PLACING_OBSIDIAN) {
-            n = this.crystalAura.z(entityPlayerSP);
-            if (n == -1) {
+        CrystalAuraAction actionType = this.currentAction.getAction();
+        int requiredSlot;
+        if (actionType == CrystalAuraAction.PLACING_OBSIDIAN) {
+            requiredSlot = this.crystalAura.findObsidianSlot(player);
+            if (requiredSlot == -1) {
                 this.statusLabel = "no obby";
-                this.currentAction = null;
-                this.placementSent = false;
+                this.invalidateAction();
                 return;
             }
         } else {
-            n = object == CrystalAuraAction.PLACING_CRYSTAL ? this.crystalSlot : this.crystalSlot;
+            requiredSlot = this.crystalSlot;
         }
-        if (entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v() != n) {
+        if (player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v() != requiredSlot) {
             if (this.previousSlot == -1) {
-                this.previousSlot = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+                this.previousSlot = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
             }
-            entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n);
+            player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(requiredSlot);
         }
-        this.validateAction(entityPlayerSP, worldClient);
+        this.validateAction(player, world);
     }
 
-    private boolean isSafeDamage(Vec3 vec3, ExplosionType explosionType, EntityPlayerSP entityPlayerSP, World world) {
-        return this.crystalAura.n(vec3, explosionType, entityPlayerSP, world, this.antiSuicide.L(), ((Double)this.maxSelfDamage.K()).floatValue());
+    private void validateCurrentAction(EntityPlayerSP player, World world) {
+        if (this.currentAction == null) {
+            return;
+        }
+
+        CrystalAuraAction actionType = this.currentAction.getAction();
+        DirectionalPosition actionPosition = this.currentAction.directionalPosition;
+        Vec3 eyePosition = player.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().addVector(0.0, player.X(), 0.0);
+        if (actionType == CrystalAuraAction.PLACING_OBSIDIAN || actionType == CrystalAuraAction.PLACING_CRYSTAL) {
+            if (actionType == CrystalAuraAction.PLACING_CRYSTAL) {
+                BlockCoordinate crystalPosition = new BlockCoordinate(actionPosition.B(), actionPosition.E() + 1, actionPosition.A());
+                AxisAlignedBB crystalBox = AxisAlignedBB.create(
+                        crystalPosition.B() - 0.5, crystalPosition.E() - 0.01, crystalPosition.A() - 0.5,
+                        crystalPosition.B() + 0.5, crystalPosition.E() + 2.0, crystalPosition.A() + 0.5);
+                ArrayList<Entity> crystals = new ArrayList<>();
+                world.A().p(crystalBox, entity -> CrystalAuraPlacementSubModule.collectCrystals(crystals, entity));
+                if (!crystals.isEmpty()) {
+                    this.currentAction.setAction(CrystalAuraAction.ATTACKING_CRYSTAL);
+                    this.currentAction.setTargetEntity(crystals.get(0));
+                }
+            }
+            if (this.currentAction.getAction() != CrystalAuraAction.ATTACKING_CRYSTAL
+                    && !this.hasPlacementPath(player, world, eyePosition, actionPosition)) {
+                this.statusLabel = "out range";
+                this.invalidateAction();
+            }
+        }
+
+        if (this.currentAction != null && this.currentAction.getAction() == CrystalAuraAction.ATTACKING_CRYSTAL) {
+            Entity crystal = this.currentAction.getTargetEntity();
+            if (crystal == null || crystal.isNull() || crystal.M$src$Z$ff28xj()) {
+                this.invalidateAction();
+            } else {
+                BlockData baseBlock = new BlockData(actionPosition.B(), actionPosition.E(), actionPosition.A());
+                EnumFacing facing = EnumFacing.T(actionPosition.getFacingIndex());
+                Vec3 interactionPoint = this.crystalAura.getInteractionPoint(actionPosition);
+                RayTraceResult rayTrace = RayTraceUtil.b(eyePosition, interactionPoint, world, player, false, true, false, null);
+                if (ClutchPlacementPathUtils.isBlockFaceVisible(eyePosition, world, baseBlock, facing) && rayTrace.isEntityHit()) {
+                    Entity obstructingEntity = rayTrace.getEntity();
+                    if (!obstructingEntity.isInstance(MappedClasses.Ze) && obstructingEntity.n$src$Z$fx7gig()) {
+                        this.statusLabel = "blocked";
+                        this.invalidateAction();
+                    }
+                }
+                Vec3 nearestCrystalPoint = RotationUtil.M(eyePosition,
+                        crystal.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0).n();
+                if (eyePosition.distanceTo(nearestCrystalPoint) > 3.0) {
+                    this.statusLabel = "out range";
+                    this.invalidateAction();
+                }
+            }
+        }
+
+        if (this.currentAction != null && this.currentAction.getAction() == CrystalAuraAction.PLACING_CRYSTAL) {
+            BlockData baseBlock = new BlockData(actionPosition.B(), actionPosition.E(), actionPosition.A());
+            BlockState baseState = world.getBlockState(BlockPos.create(baseBlock.D(), baseBlock.B(), baseBlock.G()));
+            if (!this.crystalAura.isCrystalBaseBlock(baseState)) {
+                this.statusLabel = "no place";
+                this.invalidateAction();
+            }
+        }
+    }
+
+    private boolean isSafeDamage(Vec3 explosionPosition, ExplosionType explosionType, EntityPlayerSP player, World world) {
+        return this.crystalAura.isSelfDamageSafe(explosionPosition, explosionType, player, world, this.antiSuicide.getEffectiveValue(), ((Double)this.maxSelfDamage.getValue()).floatValue());
     }
 
     public void releaseControl() {
         if (this.rotationController != null) {
-            RotationManager.b.v(this.rotationController);
-            if (this.rotationManager.w() == this.rotationController) {
-                this.rotationController.w(false);
-                this.rotationController.u(true);
+            RotationManager.INSTANCE.releaseController(this.rotationController);
+            if (this.rotationManager.getActiveController() == this.rotationController) {
+                this.rotationController.setRetainAfterCompletion(false);
+                this.rotationController.setComplete(true);
                 if (this.rotationController instanceof AdaptiveRotationController) {
-                    ((AdaptiveRotationController)this.rotationController).b(true);
+                    ((AdaptiveRotationController)this.rotationController).setRelativeMode(true);
                 }
             }
             this.rotationController = null;
         }
-        this.rotationClaim.X(this.crystalAura);
+        this.rotationClaim.release(this.crystalAura);
         if (this.previousSlot != -1) {
-            EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            if (!entityPlayerSP.isNull()) {
-                entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.previousSlot);
+            EntityPlayerSP player = Minecraft.thePlayer();
+            if (!player.isNull()) {
+                player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.previousSlot);
             }
             this.previousSlot = -1;
         }

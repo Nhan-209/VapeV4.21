@@ -43,7 +43,7 @@ extends Mapping {
             String string3 = "getDuration";
             MPotionEffect mPotionEffect3 = this;
             this.Y = this.Y(string3, bl3, clazz3, classArray3);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MPotion.U(new int[1]);
             }
             return;
@@ -114,7 +114,7 @@ extends Mapping {
         String string7 = "getDuration";
         MPotionEffect mPotionEffect7 = this;
         this.Y = this.Y(string7, bl7, clazz7, classArray5);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MPotion.U(new int[1]);
         }
     }

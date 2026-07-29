@@ -35,192 +35,192 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 public class RenderBatchManager {
-    private int J;
-    private RenderBatchBuilder z;
-    private int K = 999;
-    private int p;
-    private int s;
-    private int f = 0;
-    private static RenderBatchManager F;
-    private static final long R = 1000L;
-    public RenderBatchBuffer h;
-    private int o;
-    private int w;
-    private boolean H;
-    private int t;
-    private final Deque<RenderBatchStateFlags> N = new ArrayDeque<RenderBatchStateFlags>();
-    private long S = 0L;
-    private RenderBatchBuilder B;
-    public ArrayList<RenderBatch> u = new ArrayList();
-    public RenderBatchShaderProgram q;
-    public ArrayList<RenderBatch> i = new ArrayList();
+    private int savedElementArrayBufferId;
+    private RenderBatchBuilder lastWorldBuilder;
+    private int targetFramebufferId = 999;
+    private int savedArrayBufferId;
+    private int savedFramebufferId;
+    private int previousTargetFramebufferId = 0;
+    private static RenderBatchManager instance;
+    private static final long FRAMEBUFFER_REFRESH_INTERVAL_MS = 1000L;
+    public RenderBatchBuffer batchBuffer;
+    private int savedTextureId;
+    private int savedProgramId;
+    private boolean batchResourcesBound;
+    private int savedVertexArrayId;
+    private final Deque<RenderBatchStateFlags> savedGlStates = new ArrayDeque<RenderBatchStateFlags>();
+    private long lastFramebufferRefreshTime = 0L;
+    private RenderBatchBuilder lastGuiBuilder;
+    public ArrayList<RenderBatch> worldBatches = new ArrayList();
+    public RenderBatchShaderProgram shaderProgram;
+    public ArrayList<RenderBatch> guiBatches = new ArrayList();
 
-    private boolean z(RenderBatchBuilder renderBatchBuilder, RenderBatchBuilder renderBatchBuilder2, boolean bl) {
-        GlScissorRect glScissorRect;
-        GlCapabilityState glCapabilityState;
-        PrimitiveTopology primitiveTopology;
-        GlImageTexture glImageTexture;
-        if (renderBatchBuilder2 == null) {
+    private boolean shouldStartNewBatch(RenderBatchBuilder builder, RenderBatchBuilder previousBuilder, boolean worldSpace) {
+        if (previousBuilder == null) {
             return true;
         }
-        if (renderBatchBuilder.m() != renderBatchBuilder2.m()) {
+        if (builder.getCoordinateMode() != previousBuilder.getCoordinateMode()) {
             return true;
         }
-        GlImageTexture glImageTexture2 = renderBatchBuilder.C();
-        if (glImageTexture2 != (glImageTexture = renderBatchBuilder2.C())) {
-            if (glImageTexture2 == null || glImageTexture == null) {
+        GlImageTexture texture = builder.getTexture();
+        GlImageTexture previousTexture = previousBuilder.getTexture();
+        if (texture != previousTexture) {
+            if (texture == null || previousTexture == null) {
                 return true;
             }
-            if (glImageTexture2.F != glImageTexture.F) {
+            if (texture.textureId != previousTexture.textureId) {
                 return true;
             }
         }
-        if (renderBatchBuilder.d() != null || renderBatchBuilder2.d() != null) {
+        if (builder.getDrawSetupCallback() != null || previousBuilder.getDrawSetupCallback() != null) {
             return true;
         }
-        PrimitiveTopology primitiveTopology2 = renderBatchBuilder.q();
-        if (!Objects.equals((Object)primitiveTopology2, (Object)(primitiveTopology = renderBatchBuilder2.q()))) {
+        PrimitiveTopology topology = builder.getTopology();
+        PrimitiveTopology previousTopology = previousBuilder.getTopology();
+        if (!Objects.equals((Object)topology, (Object)previousTopology)) {
             return true;
         }
-        if (!renderBatchBuilder.C.Z(renderBatchBuilder2.C)) {
+        if (!builder.modelMatrix.contentEquals(previousBuilder.modelMatrix)) {
             return true;
         }
-        GlCapabilityState glCapabilityState2 = renderBatchBuilder.A();
-        if (!Objects.equals(glCapabilityState2, glCapabilityState = renderBatchBuilder2.A())) {
+        GlCapabilityState capabilityState = builder.getCapabilityState();
+        GlCapabilityState previousCapabilityState = previousBuilder.getCapabilityState();
+        if (!Objects.equals(capabilityState, previousCapabilityState)) {
             return true;
         }
-        GlScissorRect glScissorRect2 = renderBatchBuilder.c();
-        if (!Objects.equals(glScissorRect2, glScissorRect = renderBatchBuilder2.c())) {
+        GlScissorRect scissorRect = builder.getScissorRect();
+        GlScissorRect previousScissorRect = previousBuilder.getScissorRect();
+        if (!Objects.equals(scissorRect, previousScissorRect)) {
             return true;
         }
-        return this.C(renderBatchBuilder, bl);
+        return this.exceedsBatchCapacity(builder, worldSpace);
     }
 
-    public int A(boolean bl) {
+    public int getLastBatchMergeCount(boolean worldSpace) {
         try {
-            if (bl) {
-                return this.u.get(this.u.size() - 1).O();
+            if (worldSpace) {
+                return this.worldBatches.get(this.worldBatches.size() - 1).getMergedBuilderCount();
             }
-            return this.i.get(this.i.size() - 1).O();
+            return this.guiBatches.get(this.guiBatches.size() - 1).getMergedBuilderCount();
         }
         catch (Exception exception) {
             return 0;
         }
     }
 
-    public int E() {
-        long l = System.currentTimeMillis();
-        if (this.K == 999 || l - this.S >= 1000L && this.f == 0) {
-            this.S = l;
-            int n = this.K;
-            this.f();
-            if (n == 999 || n == this.K || this.K != -1) {
+    public int getTargetFramebufferId() {
+        long currentTime = System.currentTimeMillis();
+        if (this.targetFramebufferId == 999 || currentTime - this.lastFramebufferRefreshTime >= FRAMEBUFFER_REFRESH_INTERVAL_MS && this.previousTargetFramebufferId == 0) {
+            this.lastFramebufferRefreshTime = currentTime;
+            int previousFramebufferId = this.targetFramebufferId;
+            this.refreshTargetFramebuffer();
+            if (previousFramebufferId == 999 || previousFramebufferId == this.targetFramebufferId || this.targetFramebufferId != -1) {
                 // empty if block
             }
         }
-        return this.K;
+        return this.targetFramebufferId;
     }
 
-    public static RenderBatchManager M() {
+    public static RenderBatchManager getInstance() {
         if (!GuiRenderPrimitives.d()) {
             throw new IllegalStateException("Attempting to call RenderEngine on an older version of OpenGL");
         }
-        if (F == null) {
-            F = new RenderBatchManager();
+        if (instance == null) {
+            instance = new RenderBatchManager();
         }
-        return F;
+        return instance;
     }
 
-    public void a(int n) {
-        this.f = this.E();
-        this.K = n;
+    public void setFramebufferOverride(int framebufferId) {
+        this.previousTargetFramebufferId = this.getTargetFramebufferId();
+        this.targetFramebufferId = framebufferId;
     }
 
-    private boolean C(RenderBatchBuilder renderBatchBuilder, boolean bl) {
-        if (renderBatchBuilder.y() == null || renderBatchBuilder.R() == null) {
+    private boolean exceedsBatchCapacity(RenderBatchBuilder builder, boolean worldSpace) {
+        if (builder.getVertexData() == null || builder.getIndices() == null) {
             return false;
         }
-        RenderBatch renderBatch = bl ? this.u.get(this.u.size() - 1) : this.i.get(this.i.size() - 1);
-        return renderBatch.U().size() >= 4500;
+        RenderBatch renderBatch = worldSpace ? this.worldBatches.get(this.worldBatches.size() - 1) : this.guiBatches.get(this.guiBatches.size() - 1);
+        return renderBatch.getBuilders().size() >= 4500;
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void T(float f, boolean bl) {
-        if (this.i.isEmpty()) {
+    public void flushGuiBatches(float partialTicks, boolean resetProjection) {
+        if (this.guiBatches.isEmpty()) {
             return;
         }
-        if (bl) {
-            LocalPlayerRotationUtil.t();
+        if (resetProjection) {
+            LocalPlayerRotationUtil.resetProjectionMatrix();
         }
-        this.v();
-        this.Y();
+        this.captureGlBindings();
+        this.saveAndPrepareGlState();
         try {
-            for (RenderBatch renderBatch : this.i) {
-                this.o();
-                boolean bl2 = GL11.glIsEnabled((int)3089);
-                if (renderBatch.J()) {
-                    if (!bl2) {
-                        OpenGlBackendHolder.d.l(3089);
+            for (RenderBatch renderBatch : this.guiBatches) {
+                this.ensureBatchResourcesBound();
+                boolean scissorTestEnabled = GL11.glIsEnabled((int)3089);
+                if (renderBatch.hasScissorRect()) {
+                    if (!scissorTestEnabled) {
+                        OpenGlBackendHolder.backend.enableCapability(3089);
                     }
-                    GlScissorRect glScissorRect = renderBatch.z();
-                    GL11.glScissor((int)glScissorRect.v, (int)glScissorRect.F, (int)glScissorRect.I, (int)glScissorRect.f);
-                } else if (bl2) {
-                    OpenGlBackendHolder.d.u$src$V$hntn98(3089);
+                    GlScissorRect glScissorRect = renderBatch.getScissorRect();
+                    GL11.glScissor((int)glScissorRect.x, (int)glScissorRect.y, (int)glScissorRect.width, (int)glScissorRect.height);
+                } else if (scissorTestEnabled) {
+                    OpenGlBackendHolder.backend.disableCapability(3089);
                 }
-                if (!renderBatch.Y().isEmpty()) {
-                    this.F();
-                    this.E$src$V$ni8yo1();
-                    OpenGlBackendHolder.d.u$src$V$hntn98(3089);
-                    for (Supplier supplier : renderBatch.Y()) {
+                if (!renderBatch.getStandaloneRenderCallbacks().isEmpty()) {
+                    this.unbindBatchVertexArray();
+                    this.restoreCapturedGlBindings();
+                    OpenGlBackendHolder.backend.disableCapability(3089);
+                    for (Supplier supplier : renderBatch.getStandaloneRenderCallbacks()) {
                         supplier.get();
                     }
-                    this.v();
+                    this.captureGlBindings();
                     continue;
                 }
-                if (renderBatch.R() != null) {
-                    renderBatch.R().get();
+                if (renderBatch.getDrawSetupCallback() != null) {
+                    renderBatch.getDrawSetupCallback().get();
                 }
-                this.h.m(renderBatch);
-                if (!this.H) continue;
-                this.h.i();
+                this.batchBuffer.stageBatch(renderBatch);
+                if (!this.batchResourcesBound) continue;
+                this.batchBuffer.draw();
             }
         }
         finally {
-            this.i.clear();
-            this.B = null;
-            OpenGlBackendHolder.d.u$src$V$hntn98(3089);
-            this.F();
-            this.l();
-            this.E$src$V$ni8yo1();
-            BufferedGuiRenderPrimitives.X = new RenderMatrixStack();
-            if (bl) {
-                LocalPlayerRotationUtil.Q(f);
+            this.guiBatches.clear();
+            this.lastGuiBuilder = null;
+            OpenGlBackendHolder.backend.disableCapability(3089);
+            this.unbindBatchVertexArray();
+            this.restoreSavedGlState();
+            this.restoreCapturedGlBindings();
+            BufferedGuiRenderPrimitives.matrixStack = new RenderMatrixStack();
+            if (resetProjection) {
+                LocalPlayerRotationUtil.updateProjectionMatrix(partialTicks);
             }
         }
     }
 
-    private void F() {
-        if (this.H) {
+    private void unbindBatchVertexArray() {
+        if (this.batchResourcesBound) {
             GL30.glBindVertexArray((int)0);
-            this.H = false;
+            this.batchResourcesBound = false;
         }
     }
 
-    public void G(float f) {
-        this.T(f, true);
+    public void flushGuiBatches(float partialTicks) {
+        this.flushGuiBatches(partialTicks, true);
     }
 
-    private static Throwable a(Throwable throwable) {
+    private static Throwable propagateThrowable(Throwable throwable) {
         return throwable;
     }
 
-    public static String i(String string, Throwable throwable) {
+    public static String buildInitializationDiagnostics(String phase, Throwable throwable) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Failed to initialize modern renderer\n");
-        stringBuilder.append("Phase: ").append(string).append('\n');
-        OpenGlDeviceInfo.Z(stringBuilder);
+        stringBuilder.append("Phase: ").append(phase).append('\n');
+        OpenGlDeviceInfo.appendDeviceInfo(stringBuilder);
         try {
             stringBuilder.append("Current Program: ").append(GL11.glGetInteger((int)35725)).append('\n');
             stringBuilder.append("Current VAO: ").append(GL11.glGetInteger((int)34229)).append('\n');
@@ -242,153 +242,157 @@ public class RenderBatchManager {
         return stringBuilder.toString();
     }
 
-    public void G() {
+    public void restoreRendererState() {
         GL30.glBindVertexArray((int)0);
-        this.l();
-        GL30.glBindVertexArray((int)this.t);
-        GL20.glUseProgram((int)this.w);
-        GL11.glBindTexture((int)3553, (int)this.o);
-        GL30.glBindFramebuffer((int)36160, (int)this.s);
-        GL15.glBindBuffer((int)34962, (int)this.p);
-        GL15.glBindBuffer((int)34963, (int)this.J);
-        this.H = false;
+        this.restoreSavedGlState();
+        GL30.glBindVertexArray((int)this.savedVertexArrayId);
+        GL20.glUseProgram((int)this.savedProgramId);
+        GL11.glBindTexture((int)3553, (int)this.savedTextureId);
+        GL30.glBindFramebuffer((int)36160, (int)this.savedFramebufferId);
+        GL15.glBindBuffer((int)34962, (int)this.savedArrayBufferId);
+        GL15.glBindBuffer((int)34963, (int)this.savedElementArrayBufferId);
+        this.batchResourcesBound = false;
     }
 
-    public void c(RenderBatchBuilder renderBatchBuilder) {
-        if (this.z(renderBatchBuilder, this.z, true)) {
-            this.u.add(new RenderBatch(renderBatchBuilder));
+    public void queueWorldBatch(RenderBatchBuilder builder) {
+        if (this.shouldStartNewBatch(builder, this.lastWorldBuilder, true)) {
+            this.worldBatches.add(new RenderBatch(builder));
         } else {
-            RenderBatch renderBatch = this.u.get(this.u.size() - 1);
-            renderBatch.l();
-            renderBatch.e(renderBatchBuilder);
+            RenderBatch renderBatch = this.worldBatches.get(this.worldBatches.size() - 1);
+            renderBatch.incrementMergedBuilderCount();
+            renderBatch.addBuilder(builder);
         }
-        this.z = renderBatchBuilder;
+        this.lastWorldBuilder = builder;
     }
 
-    private void l() {
-        if (this.N.isEmpty()) {
+    private void restoreSavedGlState() {
+        if (this.savedGlStates.isEmpty()) {
             return;
         }
-        RenderBatchStateFlags renderBatchStateFlags = this.N.pop();
-        if (renderBatchStateFlags.A) {
+        RenderBatchStateFlags renderBatchStateFlags = this.savedGlStates.pop();
+        if (renderBatchStateFlags.blendEnabled) {
             GlStateManager.enableBlend();
         } else {
             GlStateManager.disableBlend();
         }
-        if (renderBatchStateFlags.X) {
-            OpenGlBackendHolder.d.l(2884);
+        if (renderBatchStateFlags.cullFaceEnabled) {
+            OpenGlBackendHolder.backend.enableCapability(2884);
         } else {
-            OpenGlBackendHolder.d.u$src$V$hntn98(2884);
+            OpenGlBackendHolder.backend.disableCapability(2884);
         }
-        if (renderBatchStateFlags.W) {
+        if (renderBatchStateFlags.depthTestEnabled) {
             GlStateManager.enableDepth();
         } else {
             GlStateManager.disableDepth();
         }
-        GL11.glDepthMask((boolean)renderBatchStateFlags.M);
+        GL11.glDepthMask((boolean)renderBatchStateFlags.depthWriteEnabled);
     }
 
-    public RenderBatchBuffer s() {
-        return this.h;
+    public RenderBatchBuffer getBatchBuffer() {
+        return this.batchBuffer;
     }
 
-    public void O(RenderBatchBuilder renderBatchBuilder) {
-        if (renderBatchBuilder.C() == null) {
-            renderBatchBuilder.o(TextureAtlasRegistry.w().m("vape_texture").d());
+    public void queueGuiBatch(RenderBatchBuilder builder) {
+        if (builder.getTexture() == null) {
+            builder.setTexture(TextureAtlasRegistry.getInstance().get("vape_texture").getTexture());
         }
-        if (this.z(renderBatchBuilder, this.B, false)) {
-            this.i.add(new RenderBatch(renderBatchBuilder));
+        if (this.shouldStartNewBatch(builder, this.lastGuiBuilder, false)) {
+            this.guiBatches.add(new RenderBatch(builder));
         } else {
-            RenderBatch renderBatch = this.i.get(this.i.size() - 1);
-            renderBatch.l();
-            renderBatch.e(renderBatchBuilder);
+            RenderBatch renderBatch = this.guiBatches.get(this.guiBatches.size() - 1);
+            renderBatch.incrementMergedBuilderCount();
+            renderBatch.addBuilder(builder);
         }
-        this.B = renderBatchBuilder;
+        this.lastGuiBuilder = builder;
     }
 
-    private void v() {
-        this.t = GL11.glGetInteger((int)34229);
-        this.w = GL11.glGetInteger((int)35725);
-        this.o = GL11.glGetInteger((int)32873);
-        this.s = GL11.glGetInteger((int)36006);
-        this.p = GL11.glGetInteger((int)34964);
-        this.J = GL11.glGetInteger((int)34965);
+    private void captureGlBindings() {
+        this.savedVertexArrayId = GL11.glGetInteger((int)34229);
+        this.savedProgramId = GL11.glGetInteger((int)35725);
+        this.savedTextureId = GL11.glGetInteger((int)32873);
+        this.savedFramebufferId = GL11.glGetInteger((int)36006);
+        this.savedArrayBufferId = GL11.glGetInteger((int)34964);
+        this.savedElementArrayBufferId = GL11.glGetInteger((int)34965);
     }
 
-    public static IllegalStateException I(String string, Throwable throwable) {
-        return new IllegalStateException(RenderBatchManager.i(string, throwable), throwable);
+    public static IllegalStateException initializationFailure(String phase, Throwable throwable) {
+        return new IllegalStateException(RenderBatchManager.buildInitializationDiagnostics(phase, throwable), throwable);
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void C(float f) {
-        if (this.u.isEmpty()) {
+    public void flushWorldBatches(float partialTicks) {
+        if (this.worldBatches.isEmpty()) {
             return;
         }
-        this.v();
-        this.Y();
+        this.captureGlBindings();
+        this.saveAndPrepareGlState();
         try {
-            LocalPlayerRotationUtil.Q(f);
-            for (RenderBatch renderBatch : this.u) {
-                this.o();
-                renderBatch.y().K();
-                if (!renderBatch.Y().isEmpty()) {
-                    this.F();
-                    this.E$src$V$ni8yo1();
+            LocalPlayerRotationUtil.updateProjectionMatrix(partialTicks);
+            for (RenderBatch renderBatch : this.worldBatches) {
+                this.ensureBatchResourcesBound();
+                renderBatch.getCapabilityState().apply();
+                if (!renderBatch.getStandaloneRenderCallbacks().isEmpty()) {
+                    this.unbindBatchVertexArray();
+                    this.restoreCapturedGlBindings();
                     GlStateManager.enableBlend();
-                    for (Supplier<Void> supplier : renderBatch.Y()) {
+                    for (Supplier<Void> supplier : renderBatch.getStandaloneRenderCallbacks()) {
                         supplier.get();
                     }
-                    this.v();
+                    this.captureGlBindings();
                     continue;
                 }
-                this.h.m(renderBatch);
-                if (!this.H) continue;
-                this.h.i();
+                this.batchBuffer.stageBatch(renderBatch);
+                if (!this.batchResourcesBound) continue;
+                this.batchBuffer.draw();
             }
         }
         finally {
-            this.z = null;
-            this.u.clear();
-            this.F();
-            this.l();
-            this.E$src$V$ni8yo1();
-            BufferedGuiRenderPrimitives.X = new RenderMatrixStack();
-            LocalPlayerRotationUtil.t();
+            this.lastWorldBuilder = null;
+            this.worldBatches.clear();
+            this.unbindBatchVertexArray();
+            this.restoreSavedGlState();
+            this.restoreCapturedGlBindings();
+            BufferedGuiRenderPrimitives.matrixStack = new RenderMatrixStack();
+            LocalPlayerRotationUtil.resetProjectionMatrix();
         }
     }
 
-    public void j() {
-        this.K = this.f;
-        this.f = 0;
+    public void restoreFramebufferOverride() {
+        this.targetFramebufferId = this.previousTargetFramebufferId;
+        this.previousTargetFramebufferId = 0;
     }
 
-    private void P() {
-        int n = this.E();
-        if (n != -1) {
-            GL30.glBindFramebuffer((int)36160, (int)n);
+    private void bindBatchResources() {
+        int targetFramebufferId = this.getTargetFramebufferId();
+        if (targetFramebufferId != -1) {
+            GL30.glBindFramebuffer((int)36160, (int)targetFramebufferId);
         }
-        this.h.z();
-        this.H = true;
+        this.batchBuffer.bindResources();
+        this.batchResourcesBound = true;
     }
 
-    public static void K() {
-        RenderBatchState.r();
-        InvWalkKeyLayout.F();
-        F = null;
+    public static void shutdown() {
+        RenderBatchState.cleanupInstance();
+        InvWalkKeyLayout.clearShaders();
+        instance = null;
     }
 
-    public void f() {
+    public void refreshTargetFramebuffer() {
         if (ForgeVersion.MC_1_21_10.d()) {
             try {
-                TextureObjectHandle textureObjectHandle;
-                int n;
-                int n2;
-                TextureObjectHandle textureObjectHandle2;
-                TextureManagerHandle textureManagerHandle = Minecraft.M$src$Lgg_vape_wrapper_impl_TextureManagerHandle_$r0mor();
-                if (textureManagerHandle != null && textureManagerHandle.isNotNull() && (textureObjectHandle2 = textureManagerHandle.e()) != null && textureObjectHandle2.isNotNull() && (n2 = textureObjectHandle2.G(n = (textureObjectHandle = textureManagerHandle.x()) != null && textureObjectHandle.isNotNull() ? textureObjectHandle.J() : 0)) > 0) {
-                    this.K = n2;
+                TextureManagerHandle textureManager = Minecraft.M$src$Lgg_vape_wrapper_impl_TextureManagerHandle_$r0mor();
+                TextureObjectHandle framebufferResolver;
+                if (textureManager != null && textureManager.isNotNull() && (framebufferResolver = textureManager.e()) != null && framebufferResolver.isNotNull()) {
+                    TextureObjectHandle fallbackTexture = textureManager.x();
+                    int fallbackTextureId = fallbackTexture != null && fallbackTexture.isNotNull() ? fallbackTexture.J() : 0;
+                    int resolvedFramebufferId = framebufferResolver.G(fallbackTextureId);
+                    if (resolvedFramebufferId <= 0) {
+                        this.targetFramebufferId = -1;
+                        return;
+                    }
+                    this.targetFramebufferId = resolvedFramebufferId;
                     return;
                 }
             }
@@ -396,76 +400,74 @@ public class RenderBatchManager {
                 // empty catch block
             }
         }
-        this.K = -1;
+        this.targetFramebufferId = -1;
     }
 
     public RenderBatchManager() {
-        Object object;
         try {
-            InvWalkKeyLayout.y();
-            this.q = InvWalkKeyLayout.Q;
+            InvWalkKeyLayout.initializeShaders();
+            this.shaderProgram = InvWalkKeyLayout.universalShader;
         }
         catch (Throwable throwable) {
-            throw RenderBatchManager.I("shader load", throwable);
+            throw RenderBatchManager.initializationFailure("shader load", throwable);
         }
         try {
-            object = new VertexAttributeType[]{VertexAttributeType.Float, VertexAttributeType.Vec3, VertexAttributeType.Vec2, VertexAttributeType.Vec4, VertexAttributeType.Float, VertexAttributeType.Float, VertexAttributeType.Vec2, VertexAttributeType.Float, VertexAttributeType.Float, VertexAttributeType.Vec2, VertexAttributeType.Vec2, VertexAttributeType.Vec4, VertexAttributeType.Vec3, VertexAttributeType.Float, VertexAttributeType.Vec4};
-            this.h = new RenderBatchBuffer(this.q, 5000, (VertexAttributeType[])object);
+            VertexAttributeType[] vertexAttributes = new VertexAttributeType[]{VertexAttributeType.Float, VertexAttributeType.Vec3, VertexAttributeType.Vec2, VertexAttributeType.Vec4, VertexAttributeType.Float, VertexAttributeType.Float, VertexAttributeType.Vec2, VertexAttributeType.Float, VertexAttributeType.Float, VertexAttributeType.Vec2, VertexAttributeType.Vec2, VertexAttributeType.Vec4, VertexAttributeType.Vec3, VertexAttributeType.Float, VertexAttributeType.Vec4};
+            this.batchBuffer = new RenderBatchBuffer(this.shaderProgram, 5000, vertexAttributes);
         }
         catch (Throwable throwable) {
-            throw RenderBatchManager.I("mesh creation", throwable);
+            throw RenderBatchManager.initializationFailure("mesh creation", throwable);
         }
         try {
-            object = TextureAtlasRegistry.w();
-            ((TextureAtlasRegistry)object).U(((TextureAtlasRegistry)object).U("vape_texture"));
+            TextureAtlasRegistry textureAtlasRegistry = TextureAtlasRegistry.getInstance();
+            textureAtlasRegistry.setActiveAtlas(textureAtlasRegistry.getOrCreate("vape_texture"));
         }
         catch (Throwable throwable) {
-            throw RenderBatchManager.I("texture atlas creation", throwable);
+            throw RenderBatchManager.initializationFailure("texture atlas creation", throwable);
         }
     }
 
-    private void Y() {
-        boolean bl = GL11.glIsEnabled((int)2884);
-        boolean bl2 = GL11.glIsEnabled((int)3042);
-        boolean bl3 = GL11.glIsEnabled((int)2929);
-        boolean bl4 = GL11.glGetBoolean((int)2930);
-        this.N.push(new RenderBatchStateFlags(bl, bl2, bl3, bl4));
-        if (bl) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(2884);
+    private void saveAndPrepareGlState() {
+        boolean cullFaceEnabled = GL11.glIsEnabled((int)2884);
+        boolean blendEnabled = GL11.glIsEnabled((int)3042);
+        boolean depthTestEnabled = GL11.glIsEnabled((int)2929);
+        boolean depthWriteEnabled = GL11.glGetBoolean((int)2930);
+        this.savedGlStates.push(new RenderBatchStateFlags(cullFaceEnabled, blendEnabled, depthTestEnabled, depthWriteEnabled));
+        if (cullFaceEnabled) {
+            OpenGlBackendHolder.backend.disableCapability(2884);
         }
-        if (!bl2) {
-            OpenGlBackendHolder.d.l(3042);
+        if (!blendEnabled) {
+            OpenGlBackendHolder.backend.enableCapability(3042);
         }
-        if (bl3) {
+        if (depthTestEnabled) {
             GlStateManager.disableDepth();
         }
         GlStateManager.Y(770, 771);
     }
 
-    public void q() {
-        this.v();
-        int n = this.E();
-        if (n != -1) {
-            GL30.glBindFramebuffer((int)36160, (int)n);
+    public void beginBatchRendering() {
+        this.captureGlBindings();
+        int targetFramebufferId = this.getTargetFramebufferId();
+        if (targetFramebufferId != -1) {
+            GL30.glBindFramebuffer((int)36160, (int)targetFramebufferId);
         }
-        this.Y();
-        this.h.z();
-        this.H = true;
+        this.saveAndPrepareGlState();
+        this.batchBuffer.bindResources();
+        this.batchResourcesBound = true;
     }
 
-    private void E$src$V$ni8yo1() {
-        GL30.glBindVertexArray((int)this.t);
-        GL20.glUseProgram((int)this.w);
-        GL11.glBindTexture((int)3553, (int)this.o);
-        GL30.glBindFramebuffer((int)36160, (int)this.s);
-        GL15.glBindBuffer((int)34962, (int)this.p);
-        GL15.glBindBuffer((int)34963, (int)this.J);
+    private void restoreCapturedGlBindings() {
+        GL30.glBindVertexArray((int)this.savedVertexArrayId);
+        GL20.glUseProgram((int)this.savedProgramId);
+        GL11.glBindTexture((int)3553, (int)this.savedTextureId);
+        GL30.glBindFramebuffer((int)36160, (int)this.savedFramebufferId);
+        GL15.glBindBuffer((int)34962, (int)this.savedArrayBufferId);
+        GL15.glBindBuffer((int)34963, (int)this.savedElementArrayBufferId);
     }
 
-    private void o() {
-        if (!this.H) {
-            this.P();
+    private void ensureBatchResourcesBound() {
+        if (!this.batchResourcesBound) {
+            this.bindBatchResources();
         }
     }
 }
-

@@ -25,10 +25,10 @@ public class NativeBridge {
             + "{\"title\":\"Settings\",\"x\":32,\"y\":32,\"visible\":false,\"pinned\":false},"
             + "{\"title\":\"ModuleSearch\",\"x\":32,\"y\":32,\"visible\":false,\"pinned\":false}"
             + "]}]}";
-    private static boolean v = true;
-    static boolean flag;
+    private static boolean forgeAbsent = true;
+    static boolean alphaTestWasEnabled;
 
-    public static int ss_3(String string) {
+    public static int ss_3(String value) {
         return 0;
     }
 
@@ -36,158 +36,206 @@ public class NativeBridge {
         return 1;
     }
 
-    public static void smdp(int n, int n2) {
-        NativeBridge.smd(n, n2);
+    public static void smdp(int mode, int value) {
+        NativeBridge.smd(mode, value);
     }
 
+    //GetRenderHandler
+    //Java Layer Unused
     public static Object grh() {
         return null;
     }
 
-    public static int mf(int n, int n2, String string) {
+    //MakeFont
+    //Java Layer Unused
+    public static int mf(int fontId, int style, String text) {
         return 0;
     }
 
-    public static void exit(boolean bl) {
-        System.out.println("exit " + bl);
+    //Controller Exit
+    public static void exit(boolean forced) {
+        System.out.println("exit " + forced);
     }
 
-    public static byte[] gt(String string) {
+    //GetTexture
+    //Java Layer Unused
+    public static byte[] gt(String key) {
         return new byte[0];
     }
 
+    //Disconnect
+    //Disconnect dll with loader after finished loading
     public static void dc() {
     }
 
-    public static String[] gcf(Class clazz) {
-        return null;
+    //GetClassFields
+    //Java Layer Unused
+    public static String[] gcf(Class<?> targetClass) {
+        if (targetClass == null) {
+            return new String[0];
+        }
+        java.lang.reflect.Field[] fields = targetClass.getDeclaredFields();
+        String[] names = new String[fields.length];
+        for (int index = 0; index < fields.length; ++index) {
+            names[index] = fields[index].getName();
+        }
+        return names;
     }
 
     public static int gts() {
         return 1;
     }
 
-    public static boolean iv() {
-        return v;
+    public static boolean isForgeAbsent() {
+        return forgeAbsent;
     }
 
-    public static double[] trn(double d, double d2, double d3) {
-        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer((int)16);
-        FloatBuffer floatBuffer2 = BufferUtils.createFloatBuffer((int)16);
-        IntBuffer intBuffer = BufferUtils.createIntBuffer((int)16);
-        GL11.glGetFloat((int)2982, (FloatBuffer)floatBuffer);
-        GL11.glGetFloat((int)2983, (FloatBuffer)floatBuffer2);
-        GL11.glGetInteger((int)2978, (IntBuffer)intBuffer);
-        FloatBuffer floatBuffer3 = BufferUtils.createFloatBuffer((int)3);
-        GLU.gluProject((float)((float)d), (float)((float)d2), (float)((float)d3), (FloatBuffer)floatBuffer, (FloatBuffer)floatBuffer2, (IntBuffer)intBuffer, (FloatBuffer)floatBuffer3);
-        double[] dArray = new double[]{floatBuffer3.get(0), floatBuffer3.get(1), floatBuffer3.get(2)};
-        return dArray;
+    //Translate
+    public static double[] trn(double worldX, double worldY, double worldZ) {
+        FloatBuffer modelViewMatrix = BufferUtils.createFloatBuffer(16);
+        FloatBuffer projectionMatrix = BufferUtils.createFloatBuffer(16);
+        IntBuffer viewport = BufferUtils.createIntBuffer(16);
+        GL11.glGetFloat(2982, modelViewMatrix);
+        GL11.glGetFloat(2983, projectionMatrix);
+        GL11.glGetInteger(2978, viewport);
+        FloatBuffer screenPosition = BufferUtils.createFloatBuffer(3);
+        GLU.gluProject((float)worldX, (float)worldY, (float)worldZ,
+                modelViewMatrix, projectionMatrix, viewport, screenPosition);
+        return new double[]{screenPosition.get(0), screenPosition.get(1), screenPosition.get(2)};
     }
 
-    public static boolean gtcf(Object object, int n, int n2) {
+    public static boolean gtcf(Object target, int index, int flags) {
         return false;
     }
 
-    public static native String gkn(long var0);
+    //GetKeyName
+    public static native String gkn(long keyCode);
 
-    public static void mb(int n) {
+    //MessageBox
+    public static void mb(int messageCode) {
+        //can't understand why manthe would print error code instead of any meaningful text
     }
 
-    public static native short gks(int var0);
+    //GetKeyState
+    public static native short gks(int keyCode);
 
-    public static void rs(int n, double d, double d2) {
+    //RenderState
+    public static void rs(int phase, double width, double height) {
         GL11.glClear((int)256);
         GL11.glMatrixMode((int)5889);
         GL11.glLoadIdentity();
-        GL11.glOrtho((double)0.0, (double)d, (double)d2, (double)0.0, (double)1000.0, (double)3000.0);
+        GL11.glOrtho(0.0, width, height, 0.0, 1000.0, 3000.0);
         GL11.glMatrixMode((int)5888);
         GL11.glLoadIdentity();
         GL11.glTranslatef((float)0.0f, (float)0.0f, (float)-2000.0f);
-        if (n > 0) {
-            if (flag) {
+        if (phase > 0) {
+            if (alphaTestWasEnabled) {
                 GL11.glEnable((int)3008);
             }
         } else {
-            flag = GL11.glIsEnabled((int)3008);
-            if (flag) {
+            alphaTestWasEnabled = GL11.glIsEnabled((int)3008);
+            if (alphaTestWasEnabled) {
                 GL11.glDisable((int)3008);
             }
         }
     }
 
-    public static Class gc(String string) {
+    //GetClass
+    public static Class<?> gc(String internalName) {
         try {
-            return Class.forName(string.replace("/", "."));
+            return Class.forName(internalName.replace("/", "."));
         }
         catch (Throwable throwable) {
             return null;
         }
     }
 
-    public static String gat() {
-        return Base64Util.encodeUtf8Base64(DEFAULT_CONFIG_JSON);
-    }
+    //GetAccessToken
+    public static native String gat();
 
-    public static Object[] gco(Class clazz) {
+    //GetClassObjects
+    //Since our native does not depend on jvmti, gco could not be implemented right away
+    public static Object[] gco(Class<?> targetClass) {
         return new Object[0];
     }
 
-    public static native byte[] gcb(Class var0);
+    //GetClassBytes
+    public static native byte[] gcb(Class<?> targetClass);
 
-    public static native void trs(int var0);
+    public static native void trs(int state);
 
-    public static String cs(int n) {
+    //CopyString
+    //Java Layer Unused
+    public static String cs(int stringId) {
         return "";
     }
 
-    public static native byte[] gfb(String var0);
+    public static native byte[] gfb(String name);
 
-    public static void scm(String string, String string2) {
+    public static void scm(String sourceName, String mappedName) {
     }
 
-    public static Class gcj(String string) {
+    //GetClassJava
+    public static Class<?> gcj(String descriptor) {
         try {
-            return string.startsWith("[") ? Class.forName(string.substring(2, string.length() - 1).replace("/", ".")) : Class.forName(Type.getType(string.substring(1, string.length() - 1)).getClassName());
+            return descriptor.startsWith("[")
+                    ? Class.forName(descriptor.substring(2, descriptor.length() - 1).replace("/", "."))
+                    : Class.forName(Type.getType(descriptor.substring(1, descriptor.length() - 1)).getClassName());
         }
         catch (Exception exception) {
             return null;
         }
     }
 
-    public static String gp(String string) {
+    //GetProfile
+    public static String gp(String key) {
+        if ("all".equals(key)) {
+            return Base64Util.encodeUtf8Base64(DEFAULT_CONFIG_JSON);
+        }
         return "";
     }
 
     public static void test() {
     }
 
-    public static double gshv2(int n, String string) {
+    //GetStringHightV2
+    //Java Layer Unused
+    public static double gshv2(int fontId, String text) {
         return 0.0;
     }
 
-    public static String gcs(Class clazz) {
-        if (clazz == null) {
+    //GetClassSignature
+    public static String gcs(Class<?> targetClass) {
+        if (targetClass == null) {
             return "";
         }
-        return "L" + clazz.getName().replaceAll("\\.", "/") + ";";
+        return Type.getDescriptor(targetClass);
     }
 
-    public static native int mvk(int var0, int var1);
+    //MapVirtualKey
+    public static native int mvk(int virtualKey, int scanCode);
 
-    public static double gsh(int n, String string) {
+    //GetStringHeight
+    //Java Layer Unused
+    public static double gsh(int fontId, String text) {
         return 0.0;
     }
 
     public static void start() throws Throwable {
         try {
             Class.forName("net.minecraftforge.common.ForgeVersion");
-            v = false;
+            forgeAbsent = false;
         }
         catch (ClassNotFoundException classNotFoundException) {
-            v = true;
+            forgeAbsent = true;
         }
         Vape vape = new Vape();
         NativeBridge.invokeVoidInit(vape, "loadMappings");
+        NativeBridge.sce("LOAD initAccountInfo");
+        if (!vape.initAccountInfo()) {
+            throw new IllegalStateException("Failed to initialize account information");
+        }
+        NativeBridge.sce("OK initAccountInfo");
         NativeBridge.invokeVoidInit(vape, "initializeManagers");
     }
 
@@ -216,100 +264,135 @@ public class NativeBridge {
         for (Throwable current = error; current != null && depth < 8; current = current.getCause(), ++depth) {
             NativeBridge.sce("EXC " + context + " -> " + current.getClass().getName() + ": " + current.getMessage());
             StackTraceElement[] frames = current.getStackTrace();
-            for (int i = 0; i < frames.length && i < 12; ++i) {
-                NativeBridge.sce("    at " + frames[i].toString());
+            for (int frameIndex = 0; frameIndex < frames.length && frameIndex < 12; ++frameIndex) {
+                NativeBridge.sce("    at " + frames[frameIndex].toString());
             }
         }
     }
 
-    public static double gswv2(int n, String string) {
+    //GetStringWidthV2
+    //Java Layer Unused
+    public static double gswv2(int fontId, String text) {
         return 0.0;
     }
 
-    public static int ds(int n, String string, double d, double d2, int n2) {
+    //DrawString
+    //Java Layer Unused
+    public static int ds(int fontId, String text, double x, double y, int color) {
         return 0;
     }
 
-    public static double gsw(int n, String string) {
+    //GetStringWidth
+    //Java Layer Unused
+    public static double gsw(int fontId, String text) {
         return 0.0;
     }
 
-    public static void su(String string) {
+    //SetUsername
+    //Not available under current recovery project
+    public static void su(String username) {
     }
 
-    public static void cpy(String string) {
-    }
+    //ClipboardCopy
+    public static native void cpy(String text);
 
-    public static long smpm(boolean bl, long l, int n, long l2, long l3) {
+    public static long smpm(boolean pressed, long windowHandle, int button,
+                            long cursorPosition, long extraInfo) {
         return 0L;
     }
 
+    //Reload
+    //Java Layer Unused
     public static void rl() {
     }
 
-    public static String[] gcm(Class clazz) {
-        return new String[0];
+    //GetClassMethods
+    //Java Layer Unused
+    public static String[] gcm(Class<?> targetClass) {
+        if (targetClass == null) {
+            return new String[0];
+        }
+        Method[] methods = targetClass.getDeclaredMethods();
+        String[] names = new String[methods.length];
+        for (int index = 0; index < methods.length; ++index) {
+            names[index] = methods[index].getName();
+        }
+        return names;
     }
 
+    //GetKey
+    //Java Layer Unused
     public static int gk() {
         return 0;
     }
 
-    public static native void smd(int var0, int var1);
+    //SendMouseDown
+    public static native void smd(int mode, int value);
 
     public static void rsc() {
     }
 
-    public static void updc(String string, String string2) {
+    //UpdateDiscord
+    public static void updc(String serverDescription, String clientDescription) {
     }
 
     public static void fs() {
     }
 
-    public static native int dsv2(int var0, String var1, double var2, double var4, int var6, float var7);
+    //DrawStringV2
+    //Java Layer Unused
+    public static native int dsv2(int fontId, String text, double x, double y,
+                                  int color, float scale);
 
+    //GetMinorVersion
     public static int gmv() {
         return 15;
     }
 
-    public static native int ss_2(String var0);
+    public static native int ss_2(String value);
 
-    public static String sp(String string, String string2) {
+    public static String sp(String key, String value) {
         return null;
     }
 
     public static void reload() {
     }
 
-    public static void p(String string) {
-        System.out.println(string);
+    public static void printLog(String message) {
+        System.out.println(message);
     }
 
-    public static native int scb(Class var0, byte[] var1);
+    //SetClassBytes
+    public static native int scb(Class<?> targetClass, byte[] bytecode);
 
-    public static native int mfv2(int var0, int var1, String var2);
+    //MakeFontV2
+    //Java Layer Unused
+    public static native int mfv2(int fontId, int style, String text);
 
+    //SaveSettings
     @Deprecated
-    public static native void ss(String var0);
+    public static native void ss(String value);
 
     public static boolean[] gls() {
         return new boolean[0];
     }
 
-    public static Class gvc(String string) {
+    //GetVanillaClas
+    public static Class<?> gvc(String internalName) {
         try {
-            return Class.forName(string.replace("/", "."));
+            return Class.forName(internalName.replace("/", "."));
         }
         catch (Throwable throwable) {
             return null;
         }
     }
 
-    public static native void sce(String var0);
+    //SendClientError
+    public static native void sce(String message);
 
-    public static native Object inv(Method var0, Object var1, Object ... var2);
+    public static native Object inv(Method method, Object target, Object ... arguments);
 
-    public static boolean om(int n, long l, long l2) {
-        return GuiScreenNativeCallbackBridge.onNotification(n, l, l2);
+    public static boolean om(int eventId, long firstArgument, long secondArgument) {
+        return GuiScreenNativeCallbackBridge.onNotification(eventId, firstArgument, secondArgument);
     }
 }

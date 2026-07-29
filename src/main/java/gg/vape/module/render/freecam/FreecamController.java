@@ -6,21 +6,21 @@ import gg.vape.module.Mod;
 
 public abstract class FreecamController<T extends Mod>
 implements EventListener {
-    protected static final Vape i = Vape.INSTANCE;
-    protected final T n;
+    protected static final Vape VAPE = Vape.INSTANCE;
+    protected final T module;
 
-    public FreecamController(T mod) {
-        this.n = mod;
+    public FreecamController(T module) {
+        this.module = module;
     }
 
-    public T l() {
-        return this.n;
+    public T getModule() {
+        return this.module;
     }
 
-    public void B() {
+    public void onEnable() {
     }
 
-    public void I() {
+    public void onDisable() {
     }
 }
 

@@ -8,11 +8,10 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 public interface InventoryFilterPresetData
 extends INamed {
-    public @UnmodifiableView List<InventoryFilterConditionGroup> z();
+    public @UnmodifiableView List<InventoryFilterConditionGroup> getConditionGroups();
 
-    public boolean x(ItemStack var1);
+    public boolean matches(ItemStack itemStack);
 
     @Override
     public String getName();
 }
-

@@ -1,58 +1,50 @@
 package gg.vape.click;
 
 import gg.vape.Vape;
-import gg.vape.click.ClickButton;
-import gg.vape.click.ClickEngine;
 import gg.vape.module.combat.ClickerMod;
 import gg.vape.utils.SleepUtil;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClickerWorker
 implements Runnable {
-    private final AtomicBoolean H = new AtomicBoolean(false);
-    private final Object j = new Object();
-    private boolean k;
-    private final ClickerMod u;
+    private final AtomicBoolean active = new AtomicBoolean(false);
+    private final Object activityMonitor = new Object();
+    private boolean started;
+    private final ClickerMod clickerModule;
 
-    private static InterruptedException a(InterruptedException interruptedException) {
-        return interruptedException;
+    public ClickerWorker(ClickerMod clickerModule) {
+        this.clickerModule = clickerModule;
     }
 
-    public void K() {
-        if (!this.k) {
-            this.k = true;
-            Thread thread = new Thread(this);
-            thread.start();
+    public void startOrResume() {
+        if (!this.started) {
+            this.started = true;
+            Thread workerThread = new Thread(this);
+            workerThread.start();
         }
-        this.C();
-    }
-
-    public ClickerWorker(ClickerMod clickerMod) {
-        this.u = clickerMod;
+        this.resume();
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    private void F() {
-        ClickEngine clickEngine = this.u.s;
+    private void awaitActivityAndRunClickCycle() {
+        ClickEngine clickEngine = this.clickerModule.getClickEngine();
         try {
-            Object object = this.j;
-            synchronized (object) {
-                if (!this.H.get()) {
+            synchronized (this.activityMonitor) {
+                if (!this.active.get()) {
                     try {
-                        this.j.wait();
+                        this.activityMonitor.wait();
                     }
                     catch (InterruptedException interruptedException) {
                         Thread.currentThread().interrupt();
                     }
                 }
             }
-            if (clickEngine.s() == ClickButton.LEFT && this.u.C()) {
+            if (clickEngine.getButton() == ClickButton.LEFT && this.clickerModule.isClickCycleBlocked()) {
                 return;
             }
-            ClickerMod clickerMod = this.u;
-            clickerMod.U$src$V$ml8mr6();
+            this.clickerModule.runClickCycle();
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
@@ -63,29 +55,26 @@ implements Runnable {
     public void run() {
         while (true) {
             SleepUtil.sleep(5L);
-            this.F();
+            this.awaitActivityAndRunClickCycle();
         }
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void C() {
-        Object object = this.j;
-        synchronized (object) {
-            this.H.set(true);
-            this.j.notify();
+    public void resume() {
+        synchronized (this.activityMonitor) {
+            this.active.set(true);
+            this.activityMonitor.notify();
         }
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void W() {
-        Object object = this.j;
-        synchronized (object) {
-            this.H.set(false);
+    public void pause() {
+        synchronized (this.activityMonitor) {
+            this.active.set(false);
         }
     }
 }
-

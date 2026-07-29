@@ -20,22 +20,22 @@ implements GuiKeyTypedListener {
     }
 
     @Override
-    public void v(char c, int n) {
+    public void onKeyTyped(char c, int n) {
         if (FrameMacrosAddMacroInputComponent.p$src$Z$xrofzd(this.d)) {
-            this.d.p();
+            this.d.submit();
             if (FrameMacrosAddMacroInputComponent.j(this.d) != null) {
                 Macro macro = Macro.create(FrameMacrosAddMacroInputComponent.j(this.d));
                 if (Vape.INSTANCE.getMacrosManager().getMacro(FrameMacrosAddMacroInputComponent.j(this.d)) != null) {
-                    this.d.k("");
-                    ClientSettings.fT = null;
+                    this.d.setText("");
+                    ClientSettings.activeComponent = null;
                     return;
                 }
-                ClientSettings.fT = null;
+                ClientSettings.activeComponent = null;
                 FrameMacrosAddMacroInputComponent.w(this.d, new FrameMacrosEditor(this.C, macro));
                 FrameMacrosAddMacroInputComponent.p(this.d).N$src$V$13y6z98();
-                this.d.H(FrameMacrosAddMacroInputComponent.p(this.d));
+                this.d.addChildren(FrameMacrosAddMacroInputComponent.p(this.d));
             }
-            this.d.k("");
+            this.d.setText("");
         }
     }
 }

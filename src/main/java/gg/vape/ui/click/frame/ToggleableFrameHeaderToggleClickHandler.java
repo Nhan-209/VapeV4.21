@@ -8,7 +8,7 @@ implements GuiClickListener {
     final ToggleableFrameHeaderComponent w;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         ToggleableFrameHeaderComponent toggleableFrameHeaderComponent = this.w;
         boolean bl = !ToggleableFrameHeaderComponent.i(this.w);
         ToggleableFrameHeaderComponent.a(toggleableFrameHeaderComponent, bl);

@@ -6,7 +6,6 @@ public class PublicProfileResultsListComponent
 extends PagedResultListComponent {
     public PublicProfileResultsListComponent(double d, double d2) {
         super(d, d2);
-        this.H(6);
+        this.setLoadThreshold(6);
     }
 }
-

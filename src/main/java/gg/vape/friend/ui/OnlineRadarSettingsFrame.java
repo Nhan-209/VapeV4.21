@@ -59,15 +59,17 @@ extends HudSettingsFrameBase {
         this.kG = new NumberSliderComponent(this.kv.C);
         this.k4 = new BooleanToggleComponent(this.kv.U);
         this.kQ = new BooleanToggleComponent(this.kv.r);
-        this.kj = (Double)this.kv.h.K();
-        this.M(this.kh, this.kp, this.kN, this.kE, this.kS, this.kg, this.kJ, this.kY, this.kC, this.k_, this.kw, this.kF, this.kG, this.k4, this.kQ);
+        this.kj = (Double)this.kv.h.getValue();
+        this.addSettings(this.kh, this.kp, this.kN, this.kE, this.kS, this.kg,
+                this.kJ, this.kY, this.kC, this.k_, this.kw, this.kF, this.kG,
+                this.k4, this.kQ);
         this.h(new OnlineRadarPreviewComponent(this), new Object[0]);
     }
 
     @Override
     public double A() {
-        if (this.L$src$Z$1v7qi9z() && this.m$src$Z$1ty1uhu()) {
-            return this.kC.W$src$Z$38isfa() ? this.kj : (Double)this.kv.h.K();
+        if (this.isPublicProfilePreview() && this.m$src$Z$1ty1uhu()) {
+            return this.kC.isDragging() ? this.kj : (Double)this.kv.h.getValue();
         }
         return super.A();
     }
@@ -78,18 +80,18 @@ extends HudSettingsFrameBase {
     }
 
     private boolean m$src$Z$1ty1uhu() {
-        return this.kv.n.K() == this.kv.W;
+        return this.kv.n.getValue() == this.kv.W;
     }
 
     @Override
     public double L() {
-        if (this.L$src$Z$1v7qi9z() && this.m$src$Z$1ty1uhu()) {
-            double d = this.kC.W$src$Z$38isfa() ? this.kj : (Double)this.kv.h.K();
+        if (this.isPublicProfilePreview() && this.m$src$Z$1ty1uhu()) {
+            double d = this.kC.isDragging() ? this.kj : (Double)this.kv.h.getValue();
             return d + 2.0;
         }
-        if (this.L$src$Z$1v7qi9z() && !this.m$src$Z$1ty1uhu()) {
+        if (this.isPublicProfilePreview() && !this.m$src$Z$1ty1uhu()) {
             boolean bl;
-            boolean bl2 = bl = !ClientSettings.fW.P && HudModuleConfigFrameBase.h$src$Z$1tlh1co();
+            boolean bl2 = bl = !ClientSettings.INSTANCE.inputEnabled && HudModuleConfigFrameBase.isHudEditorContext();
             if (bl) {
                 return Math.max(26, 32);
             }
@@ -101,13 +103,13 @@ extends HudSettingsFrameBase {
     @Override
     public void t(JsonObject jsonObject) {
         super.t(jsonObject);
-        ClientSettings.g(QuickActionsFrame.class).E$src$Lgg_vape_ui_click_frame_impl_quickactions_QuickA$1snij4t().h(this.V$src$Z$1xhop3l());
+        ClientSettings.getFrame(QuickActionsFrame.class).E$src$Lgg_vape_ui_click_frame_impl_quickactions_QuickA$1snij4t().setValue(this.V$src$Z$1xhop3l());
     }
 
     @Override
     public void Y() {
-        if (this.L$src$Z$1v7qi9z() && this.m$src$Z$1ty1uhu()) {
-            if (this.kC.W$src$Z$38isfa()) {
+        if (this.isPublicProfilePreview() && this.m$src$Z$1ty1uhu()) {
+            if (this.kC.isDragging()) {
                 if (!this.km) {
                     this.km = true;
                 }
@@ -116,16 +118,16 @@ extends HudSettingsFrameBase {
                     this.km = false;
                     this.H(true);
                 }
-                this.kj = (Double)this.kv.h.K();
+                this.kj = (Double)this.kv.h.getValue();
             }
             return;
         }
         this.km = false;
-        this.kj = (Double)this.kv.h.K();
+        this.kj = (Double)this.kv.h.getValue();
     }
 
     @Override
-    protected void o$src$V$7f79jo() {
+    protected void renderHudModeBorder() {
     }
 }
 

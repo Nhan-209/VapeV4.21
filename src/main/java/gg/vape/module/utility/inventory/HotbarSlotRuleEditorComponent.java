@@ -79,12 +79,12 @@ extends GuiComponent {
 
     public void w$src$V$j701ty() {
         this.f().clear();
-        this.H(this.v);
+        this.addChildren(this.v);
         for (HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent : this.U$src$Ljava_util_List_$1g9oi4r()) {
             HotbarSlotRuleGroupComponent hotbarSlotRuleGroupComponent2 = hotbarSlotRuleGroupComponent.Q(new HotbarSlotRuleGroupSelectClickHandler(this, hotbarSlotRuleGroupComponent));
-            this.H(hotbarSlotRuleGroupComponent2);
+            this.addChildren(hotbarSlotRuleGroupComponent2);
         }
-        this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().l$src$V$1mibm4x();
+        this.getParentFrameComponent().l$src$V$1mibm4x();
     }
 
     static {
@@ -103,9 +103,9 @@ extends GuiComponent {
     public HotbarSlotRuleEditorComponent(HotbarSlotRuleValue hotbarSlotRuleValue) {
         this.Q = new ArrayList<HotbarSlotRuleGroupComponent>();
         this.I = hotbarSlotRuleValue;
-        hotbarSlotRuleValue.u(this);
+        hotbarSlotRuleValue.setEditor(this);
         HotbarSlotRuleEditorComponent hotbarSlotRuleEditorComponent = this;
-        this.v.r(() -> {
+        this.v.addClickListener(() -> {
             HotbarSlotRuleGroupComponent groupComponent = new HotbarSlotRuleGroupComponent(hotbarSlotRuleEditorComponent, this.B$src$Ljava_util_List_$12o4b7i());
             this.Q.add(groupComponent);
             if (this.O == null) {
@@ -113,7 +113,7 @@ extends GuiComponent {
             }
             this.w$src$V$j701ty();
         });
-        this.H(this.v);
+        this.addChildren(this.v);
     }
 
     static HotbarSlotRuleGroupComponent H(HotbarSlotRuleEditorComponent hotbarSlotRuleEditorComponent) {

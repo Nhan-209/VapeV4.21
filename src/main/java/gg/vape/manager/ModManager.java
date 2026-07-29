@@ -138,14 +138,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class ModManager
 implements EventListener {
-    private static GuiComponent[] L;
-    private Map<Class<? extends Mod>, Mod> slot_o_1_4;
-    private ArrayList<Mod> slot_o_1_116;
-    private HashSet<Mod> slot_o_1_155;
-    private XRay slot_o_1_383;
-    private ReusableTextNotification slot_o_1_661;
-    private Map<Class<? extends Mod>, Mod> slot_o_1_757;
-    private boolean slot_o_524_110;
+    private static GuiComponent[] legacyCategoryComponents;
+    private Map<Class<? extends Mod>, Mod> allModulesByType;
+    private ArrayList<Mod> activeModuleList;
+    private HashSet<Mod> enabledModules;
+    private XRay xrayModule;
+    private ReusableTextNotification profileSwitchNotification;
+    private Map<Class<? extends Mod>, Mod> activeModulesByType;
+    private boolean suppressStateNotifications;
 
     public Collection<Mod> f() {
         ArrayList<Mod> arrayList = new ArrayList<Mod>();
@@ -222,16 +222,16 @@ implements EventListener {
         modArray[59] = new AutoClickerInputModule();
         modArray[60] = new BedPlates();
         this.L(Stream.of(modArray));
-        ModRegistrationBuilder.X().O(new PearlESP()).H(ForgeVersion.MC_1_16_5.b()).e(this);
+        ModRegistrationBuilder.create().setModule(new PearlESP()).addVersionConstraint(ForgeVersion.MC_1_16_5.b()).registerWith(this);
         Mod[] modArray2 = new Mod[2];
         modArray2[0] = new Chams();
         XRay xRay = new XRay();
         ModManager modManager = this;
-        modManager.slot_o_1_383 = xRay;
+        modManager.xrayModule = xRay;
         modArray2[1] = xRay;
         this.Y(Stream.of(modArray2), ModManager::lambda$addModules$0);
         GuiComponent[] guiComponentArray2 = guiComponentArray;
-        ModRegistrationBuilder.X().O(new Freecam()).H(ForgeVersion.MC_1_16_5.b()).H(ForgeVersion.MC_1_21_11.n()).e(this);
+        ModRegistrationBuilder.create().setModule(new Freecam()).addVersionConstraint(ForgeVersion.MC_1_16_5.b()).addVersionConstraint(ForgeVersion.MC_1_21_11.n()).registerWith(this);
         this.Y(Stream.of(new InvWalk()), ModManager::lambda$addModules$1);
         this.Y(Stream.of(new Backtrack()), ModManager::lambda$addModules$2);
         this.Y(Stream.of(new MLG(), new BedBreaker(), new BlockIn(), new FastUseModule()), ModManager::lambda$addModules$3);
@@ -242,7 +242,7 @@ implements EventListener {
         this.h();
         this.c();
         if (guiComponentArray2 == null) {
-            GuiComponent.D(new GuiComponent[2]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[2]);
         }
     }
 
@@ -255,7 +255,7 @@ implements EventListener {
     }
 
     private static void lambda$addLegitModules$7(ModRegistrationBuilder modRegistrationBuilder) {
-        modRegistrationBuilder.H(ForgeVersion.MC_1_20_6.b());
+        modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_20_6.b());
     }
 
     public JsonObject getJsonObj() {
@@ -270,7 +270,7 @@ implements EventListener {
     public void S(Profile profile) {
         boolean bl = true;
         ModManager modManager = this;
-        modManager.slot_o_524_110 = bl;
+        modManager.suppressStateNotifications = bl;
         JsonObject jsonObject = profile.V();
         int n = 0;
         for (Mod mod : this.collectMods()) {
@@ -297,19 +297,20 @@ implements EventListener {
         }
         boolean bl2 = false;
         ModManager modManager2 = this;
-        modManager2.slot_o_524_110 = bl2;
-        if (Vape.INSTANCE.getPublicProfileSettings().A.L().booleanValue()) {
-            this.slot_o_1_661.S("Profile swap to " + gg.vape.config.ClientSettings.F + "6" + profile.n$src$Ljava_lang_String_$xqhelw()).m(n + " modules enabled").B();
-            Vape.INSTANCE.getNotificationManager().m(this.slot_o_1_661);
+        modManager2.suppressStateNotifications = bl2;
+        if (Vape.INSTANCE.getPublicProfileSettings().A.getEffectiveValue().booleanValue()) {
+            this.profileSwitchNotification.withTitle("Profile swap to " + gg.vape.config.ClientSettings.F + "6" + profile.n$src$Ljava_lang_String_$xqhelw())
+                    .withMessage(n + " modules enabled").reset();
+            Vape.INSTANCE.getNotificationManager().show(this.profileSwitchNotification);
         }
     }
 
     private static void lambda$addModules$6(ModRegistrationBuilder modRegistrationBuilder) {
-        modRegistrationBuilder.H(ForgeVersion.MC_1_21_4.b());
+        modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_21_4.b());
     }
 
     public void A() {
-        for (Mod mod : this.slot_o_1_4.values()) {
+        for (Mod mod : this.allModulesByType.values()) {
             mod.I();
         }
     }
@@ -319,19 +320,19 @@ implements EventListener {
     }
 
     public HashSet<Mod> getMods() {
-        return this.slot_o_1_155;
+        return this.enabledModules;
     }
 
     public static void Q(GuiComponent[] guiComponentArray) {
-        L = guiComponentArray;
+        legacyCategoryComponents = guiComponentArray;
     }
 
     private void L(Stream<Mod> stream) {
         this.Y(stream, ModManager::lambda$registerStream$9);
     }
 
-    void d(Mod mod, List<List<MinecraftVersionConstraint>> list, boolean bl) {
-        this.slot_o_1_4.put(mod.getClass(), mod);
+    void registerModule(Mod mod, List<List<MinecraftVersionConstraint>> list, boolean addToActiveList) {
+        this.allModulesByType.put(mod.getClass(), mod);
         if (!list.isEmpty()) {
             boolean bl2 = false;
             for (List<MinecraftVersionConstraint> list2 : list) {
@@ -343,35 +344,35 @@ implements EventListener {
                 return;
             }
         }
-        this.slot_o_1_757.put(mod.getClass(), mod);
-        this.slot_o_1_116.add(mod);
+        this.activeModulesByType.put(mod.getClass(), mod);
+        this.activeModuleList.add(mod);
         for (Value<?, ?> value : mod.F$src$Ljava_util_List_$1kytx9u()) {
             if (!(value instanceof ModeValue)) continue;
             ModeValue modeValue = (ModeValue)value;
             for (ModeSelection modeSelection : modeValue.getModes()) {
                 SubModuleValue subModuleValue;
                 if (!(modeSelection instanceof SubModuleValue) || !((SubModule)(subModuleValue = (SubModuleValue)modeSelection).getInstance()).U()) continue;
-                this.d((Mod)subModuleValue.getInstance(), list, false);
+                this.registerModule((Mod)subModuleValue.getInstance(), list, false);
                 mod.k(new SubModule[]{subModuleValue.getInstance()});
             }
         }
-        if (bl) {
+        if (addToActiveList) {
             mod.Y(true);
         }
     }
 
     private void h() {
-        ModRegistrationBuilder.X().O(new TextGuiSettings()).e(this);
+        ModRegistrationBuilder.create().setModule(new TextGuiSettings()).registerWith(this);
     }
 
     private void lambda$registerStream$8(Consumer consumer, Mod mod) {
-        ModRegistrationBuilder<Mod> modRegistrationBuilder = ModRegistrationBuilder.X().O(mod);
+        ModRegistrationBuilder<Mod> modRegistrationBuilder = ModRegistrationBuilder.create().setModule(mod);
         consumer.accept(modRegistrationBuilder);
-        modRegistrationBuilder.e(this);
+        modRegistrationBuilder.registerWith(this);
     }
 
     public void m() {
-        for (Mod mod : this.slot_o_1_757.values()) {
+        for (Mod mod : this.activeModulesByType.values()) {
             mod.t();
         }
         if (ForgeVersion.MC_1_8_9.L()) {
@@ -401,8 +402,8 @@ implements EventListener {
                 String string4 = string2 + "." + value.getName().replace(" ", "_").toLowerCase();
                 stringBuilder.append(string4 + "=" + string3);
                 stringBuilder.append("\n");
-                if (value.w$src$Ljava_lang_String_$ikqblg() == null || value.w$src$Ljava_lang_String_$ikqblg().isEmpty()) continue;
-                String string5 = value.w$src$Ljava_lang_String_$ikqblg().replace("\n", " ");
+                if (value.getDescription() == null || value.getDescription().isEmpty()) continue;
+                String string5 = value.getDescription().replace("\n", " ");
                 String string6 = string4 + ".tooltip";
                 stringBuilder.append(string6 + "=" + string5);
                 stringBuilder.append("\n");
@@ -419,14 +420,14 @@ implements EventListener {
     public void a(EventModStateChange eventModStateChange) {
         Mod mod = eventModStateChange.getModule();
         if (mod.r$src$Z$14eylz9()) {
-            this.slot_o_1_155.add(mod);
+            this.enabledModules.add(mod);
         } else {
-            this.slot_o_1_155.remove(mod);
+            this.enabledModules.remove(mod);
         }
         for (Mod mod2 : this.getMods()) {
             mod2.U(mod);
         }
-        if (ClientSettings.fW.v() && mod.q$src$Z$12h8h4c() && Vape.INSTANCE.getPublicProfileSettings().r.L().booleanValue() && !this.slot_o_524_110) {
+        if (ClientSettings.INSTANCE.isInputEnabled() && mod.q$src$Z$12h8h4c() && Vape.INSTANCE.getPublicProfileSettings().r.getEffectiveValue().booleanValue() && !this.suppressStateNotifications) {
             mod.B();
         }
     }
@@ -440,7 +441,7 @@ implements EventListener {
     }
 
     private static void lambda$addModules$5(ModRegistrationBuilder modRegistrationBuilder) {
-        modRegistrationBuilder.H(ForgeVersion.MC_1_21_4.n());
+        modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_21_4.n());
     }
 
     static {
@@ -448,19 +449,19 @@ implements EventListener {
     }
 
     private void c() {
-        ModRegistrationBuilder.X().O(new FreeLookHudModule()).e(this);
-        ModRegistrationBuilder.X().O(new NoClickDelayHudModule()).H(ForgeVersion.MC_1_7_10.N()).e(this);
-        ModRegistrationBuilder.X().O(new MouseDelayFix()).H(ForgeVersion.MC_1_8_9.S()).e(this);
+        ModRegistrationBuilder.create().setModule(new FreeLookHudModule()).registerWith(this);
+        ModRegistrationBuilder.create().setModule(new NoClickDelayHudModule()).addVersionConstraint(ForgeVersion.MC_1_7_10.N()).registerWith(this);
+        ModRegistrationBuilder.create().setModule(new MouseDelayFix()).addVersionConstraint(ForgeVersion.MC_1_8_9.S()).registerWith(this);
         this.L(Stream.of(new KeystrokesHudModule(), new ClockHudModule(), new PotionEffectsHudModule()));
-        ModRegistrationBuilder.X().O(new BlockhitAnimationHudModule()).H(ForgeVersion.MC_1_8_9.S()).e(this);
+        ModRegistrationBuilder.create().setModule(new BlockhitAnimationHudModule()).addVersionConstraint(ForgeVersion.MC_1_8_9.S()).registerWith(this);
         this.L(Stream.of(new NoHurtDelayHudModule(), new ArmorStatusHudModule(), new CompassHudModule(), new WeatherChangerHudModule(), new NoHurtCameraHudModule(), new TimeChangerHudModule(), new CoordinatesHudModule(), new FpsDisplayHudModule(), new ReachDisplayHudModule(), new NoFogHudModule(), new BlockOverlayHudModule()));
-        ModRegistrationBuilder.X().O(new BlockRenderColorOverrideHudModule()).u(ForgeVersion.MC_1_7_10.N(), ForgeVersion.MC_1_16_5.b()).e(this);
+        ModRegistrationBuilder.create().setModule(new BlockRenderColorOverrideHudModule()).addVersionConstraints(ForgeVersion.MC_1_7_10.N(), ForgeVersion.MC_1_16_5.b()).registerWith(this);
         this.Y(Stream.of(new ScoreboardHudModule(), new InventoryBlurHudModule()), ModManager::lambda$addLegitModules$7);
     }
 
     public int x(Category category) {
         int n = 0;
-        for (Mod mod : this.slot_o_1_757.values()) {
+        for (Mod mod : this.activeModulesByType.values()) {
             if (mod.getCategory() != category || !mod.r$src$Z$14eylz9()) continue;
             ++n;
         }
@@ -469,7 +470,7 @@ implements EventListener {
 
     @Nullable
     public XRay G() {
-        return this.slot_o_1_383;
+        return this.xrayModule;
     }
 
     public JsonArray toJson(boolean bl) {
@@ -492,11 +493,11 @@ implements EventListener {
     }
 
     public static GuiComponent[] S() {
-        return L;
+        return legacyCategoryComponents;
     }
 
     private static void lambda$addModules$2(ModRegistrationBuilder modRegistrationBuilder) {
-        modRegistrationBuilder.H(ForgeVersion.MC_1_8_9.H()).H(ForgeVersion.MC_1_21_4.n());
+        modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_8_9.H()).addVersionConstraint(ForgeVersion.MC_1_21_4.n());
     }
 
     public void T(JsonObject jsonObject) {
@@ -509,18 +510,18 @@ implements EventListener {
     }
 
     private static void lambda$addModules$1(ModRegistrationBuilder modRegistrationBuilder) {
-        modRegistrationBuilder.H(ForgeVersion.MC_1_8_9.H());
+        modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_8_9.H());
     }
 
     public <T extends Mod> T getMod(Class<T> clazz) {
-        return (T)((Mod)this.slot_o_1_757.get(clazz));
+        return (T)((Mod)this.activeModulesByType.get(clazz));
     }
 
     public boolean N(Class<? extends InventoryActionModule> clazz) {
-        for (Mod mod : this.slot_o_1_757.values()) {
+        for (Mod mod : this.activeModulesByType.values()) {
             if (mod.getClass() == clazz || !(mod instanceof InventoryActionModule)) continue;
             InventoryActionModule inventoryActionModule = (InventoryActionModule)((Object)mod);
-            if (!mod.r$src$Z$14eylz9() || !inventoryActionModule.x()) continue;
+            if (!mod.r$src$Z$14eylz9() || !inventoryActionModule.isPerformingInventoryAction()) continue;
             return true;
         }
         return false;
@@ -529,18 +530,18 @@ implements EventListener {
     public void y() {
         boolean bl = true;
         ModManager modManager = this;
-        modManager.slot_o_524_110 = bl;
+        modManager.suppressStateNotifications = bl;
         for (Mod mod : this.collectMods()) {
             if (mod.getCategory() == Category.b || !mod.r$src$Z$14eylz9() || mod instanceof HudModule) continue;
             mod.Y(false);
         }
         boolean bl2 = false;
         ModManager modManager2 = this;
-        modManager2.slot_o_524_110 = bl2;
+        modManager2.suppressStateNotifications = bl2;
     }
 
     public Mod getMod(String string) {
-        for (Map.Entry<Class<? extends Mod>, Mod> entry : this.slot_o_1_757.entrySet()) {
+        for (Map.Entry<Class<? extends Mod>, Mod> entry : this.activeModulesByType.entrySet()) {
             if (!((Mod)entry.getValue()).getName().equals(string)) continue;
             return (Mod)entry.getValue();
         }
@@ -548,7 +549,7 @@ implements EventListener {
     }
 
     private static void lambda$addModules$3(ModRegistrationBuilder modRegistrationBuilder) {
-        modRegistrationBuilder.H(ForgeVersion.MC_1_7_10.N());
+        modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_7_10.N());
     }
 
     public List<Mod> F(JsonObject jsonObject) {
@@ -561,18 +562,18 @@ implements EventListener {
     }
 
     public Collection<Mod> s() {
-        return this.slot_o_1_4.values();
+        return this.allModulesByType.values();
     }
 
     private static void lambda$addModules$0(ModRegistrationBuilder modRegistrationBuilder) {
-        modRegistrationBuilder.H(ForgeVersion.MC_1_16_5.b());
+        modRegistrationBuilder.addVersionConstraint(ForgeVersion.MC_1_16_5.b());
     }
 
     private static void lambda$registerStream$9(ModRegistrationBuilder modRegistrationBuilder) {
     }
 
     public Collection<Mod> collectMods() {
-        return this.slot_o_1_757.values();
+        return this.activeModulesByType.values();
     }
 
     public void loadJson(JsonArray jsonArray) {
@@ -602,7 +603,7 @@ implements EventListener {
             mod.F();
         }
         if (n > 0) {
-            Vape.INSTANCE.getNotificationManager().t("Hidden Disabled", n + " module(s) have been disabled!", NotificationType.WARNING, 2500L);
+            Vape.INSTANCE.getNotificationManager().show("Hidden Disabled", n + " module(s) have been disabled!", NotificationType.WARNING, 2500L);
         }
     }
 
@@ -621,29 +622,29 @@ implements EventListener {
         Array.newInstance(Boolean.TYPE, 506);
         LinkedHashMap linkedHashMap = new LinkedHashMap();
         ModManager modManager = this;
-        modManager.slot_o_1_4 = linkedHashMap;
+        modManager.allModulesByType = linkedHashMap;
         LinkedHashMap linkedHashMap2 = new LinkedHashMap();
         ModManager modManager2 = this;
-        modManager2.slot_o_1_757 = linkedHashMap2;
+        modManager2.activeModulesByType = linkedHashMap2;
         HashSet hashSet = new HashSet();
         ModManager modManager3 = this;
-        modManager3.slot_o_1_155 = hashSet;
+        modManager3.enabledModules = hashSet;
         ArrayList arrayList = new ArrayList();
         ModManager modManager4 = this;
-        modManager4.slot_o_1_116 = arrayList;
+        modManager4.activeModuleList = arrayList;
         ReusableTextNotification reusableTextNotification = new ReusableTextNotification(NotificationType.INFO, "", "", 2000L);
         ModManager modManager5 = this;
-        modManager5.slot_o_1_661 = reusableTextNotification;
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        modManager5.profileSwitchNotification = reusableTextNotification;
+        if (GuiComponent.getLegacyComponentState() == null) {
             Category.q(new GuiComponent[1]);
         }
     }
 
     public ArrayList<Mod> l() {
-        return this.slot_o_1_116;
+        return this.activeModuleList;
     }
 
     private static void lambda$addModules$4(ModRegistrationBuilder modRegistrationBuilder) {
-        modRegistrationBuilder.u(ForgeVersion.MC_1_7_10.N(), ForgeVersion.MC_1_20_6.b());
+        modRegistrationBuilder.addVersionConstraints(ForgeVersion.MC_1_7_10.N(), ForgeVersion.MC_1_20_6.b());
     }
 }

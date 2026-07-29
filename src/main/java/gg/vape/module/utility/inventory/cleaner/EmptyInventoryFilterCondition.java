@@ -8,25 +8,22 @@ import gg.vape.wrapper.impl.ItemStack;
 public class EmptyInventoryFilterCondition
 implements InventoryFilterCondition<EmptyInventoryFilterCondition> {
     @Override
-    public EmptyInventoryFilterCondition w() {
-        return this.Q();
+    public EmptyInventoryFilterCondition copy() {
+        return new EmptyInventoryFilterCondition();
     }
     @Override
-    public JsonObject L() {
+    public JsonObject toJson() {
         return null;
     }
 
     @Override
-    public InventoryFilterConditionType K() {
+    public InventoryFilterConditionType getType() {
         return null;
     }
 
     @Override
-    public boolean g(ItemStack itemStack) {
+    public boolean matches(ItemStack itemStack) {
         return false;
     }
 
-    public EmptyInventoryFilterCondition Q() {
-        return new EmptyInventoryFilterCondition();
-    }
 }

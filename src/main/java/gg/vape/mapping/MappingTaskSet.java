@@ -29,7 +29,7 @@ public class MappingTaskSet {
             if (n2 == 0) continue;
             String string = n2 + " " + n;
             if (Vape.INSTANCE.getNotificationManager() == null) continue;
-            Vape.INSTANCE.getNotificationManager().K("Error with injection", "Please report to support:\nError code " + string + "\n\nSome features may not function", NotificationType.ALERT, 30000L, true);
+            Vape.INSTANCE.getNotificationManager().show("Error with injection", "Please report to support:\nError code " + string + "\n\nSome features may not function", NotificationType.ALERT, 30000L, true);
         }
     }
 
@@ -43,4 +43,3 @@ public class MappingTaskSet {
         }
     }
 }
-

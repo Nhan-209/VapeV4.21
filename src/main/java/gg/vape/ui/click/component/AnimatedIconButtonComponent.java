@@ -10,93 +10,93 @@ import org.jetbrains.annotations.Nullable;
 
 public class AnimatedIconButtonComponent
 extends IconButtonComponent {
-    private boolean j1;
-    private ColorAnimation jd;
-    private float jS = 1.5f;
-    private float jW = 1.0f;
+    private boolean selected;
+    private ColorAnimation backgroundAnimation;
+    private float borderRadius = 1.5f;
+    private float borderAlpha = 1.0f;
     @Nullable
-    private Color jK;
-    private boolean jG;
+    private Color borderColor;
+    private boolean dimOnHover;
 
-    public void X(@Nullable Color color) {
-        this.jK = color;
+    public void setAnimatedBorderColor(@Nullable Color borderColor) {
+        this.borderColor = borderColor;
     }
 
     @Override
     public void H() {
-        double d = 1.0;
-        if (this.jG && this.w$src$Z$e457mb()) {
-            d = this.j1 ? 0.9 : 0.5;
+        double alphaMultiplier = 1.0;
+        if (this.dimOnHover && this.w$src$Z$e457mb()) {
+            alphaMultiplier = this.selected ? 0.9 : 0.5;
         }
-        if (this.w$src$Z$e457mb() || this.j1) {
-            Color color = this.jd.getInterpolatedColor();
-            color = ColorUtil.W(color, (int)(d * 255.0));
-            GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 0.5, this.n() + 0.5, this.A() - 1.0, this.L() - 1.0, color);
+        if (this.w$src$Z$e457mb() || this.selected) {
+            Color renderedBackgroundColor = this.backgroundAnimation.getInterpolatedColor();
+            renderedBackgroundColor = ColorUtil.withAlpha(renderedBackgroundColor, (int)(alphaMultiplier * 255.0));
+            GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 0.5, this.n() + 0.5, this.A() - 1.0, this.L() - 1.0, renderedBackgroundColor);
         } else {
-            GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 0.5, this.n() + 0.5, this.A() - 1.0, this.L() - 1.0, this.d());
+            GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 0.5, this.n() + 0.5, this.A() - 1.0, this.L() - 1.0, this.getDisabledOverlayColor());
         }
-        GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.jK != null ? this.jK : AnimatedIconButtonComponent.J.l, this.jS, this.jW, 1.0f);
+        GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.borderColor != null ? this.borderColor : AnimatedIconButtonComponent.J.l, this.borderRadius, this.borderAlpha, 1.0f);
         super.H();
     }
 
-    public void L(boolean bl) {
-        this.j1 = bl;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
 
-    public AnimatedIconButtonComponent(String string, Color color) {
-        this(string, 1.0, color);
+    public AnimatedIconButtonComponent(String iconResource, Color hoverBackgroundColor) {
+        this(iconResource, 1.0, hoverBackgroundColor);
     }
 
-    public float x$src$F$d1ko1n() {
-        return this.jS;
+    public float getBorderRadius() {
+        return this.borderRadius;
     }
 
-    public AnimatedIconButtonComponent(String string) {
-        super(string);
-        this.jd = new ThemeColorAnimation(0.15, this.d());
+    public AnimatedIconButtonComponent(String iconResource) {
+        super(iconResource);
+        this.backgroundAnimation = new ThemeColorAnimation(0.15, this.getDisabledOverlayColor());
     }
 
-    public void A(float f) {
-        this.jW = f;
+    public void setBorderAlpha(float borderAlpha) {
+        this.borderAlpha = borderAlpha;
     }
 
-    public AnimatedIconButtonComponent(String string, double d, Color color) {
-        this(string, d, null, color);
+    public AnimatedIconButtonComponent(String iconResource, double iconScale, Color hoverBackgroundColor) {
+        this(iconResource, iconScale, null, hoverBackgroundColor);
     }
 
-    public ColorAnimation d$src$Lgg_vape_ui_click_animation_ColorAnimation_$10kme50() {
-        return this.jd;
+    public ColorAnimation getBackgroundAnimation() {
+        return this.backgroundAnimation;
     }
 
-    public AnimatedIconButtonComponent(String string, double d, Color color, Color color2) {
-        super(string, d);
-        this.jd = new ColorAnimation(0.15, color == null ? this.d() : color, color2);
+    public AnimatedIconButtonComponent(String iconResource, double iconScale, Color backgroundColor, Color hoverBackgroundColor) {
+        super(iconResource, iconScale);
+        this.backgroundAnimation = new ColorAnimation(0.15, backgroundColor == null ? this.getDisabledOverlayColor() : backgroundColor, hoverBackgroundColor);
     }
 
-    public void E(float f) {
-        this.jS = f;
+    public void setBorderRadius(float borderRadius) {
+        this.borderRadius = borderRadius;
     }
 
-    public void h(boolean bl) {
-        this.jG = bl;
+    public void setDimOnHover(boolean dimOnHover) {
+        this.dimOnHover = dimOnHover;
     }
 
     @Override
-    public void n(boolean bl) {
-        if (this.w$src$Z$e457mb() != bl && !this.j1) {
-            this.jd.J();
+    public void setHovered(boolean hovered) {
+        if (this.w$src$Z$e457mb() != hovered && !this.selected) {
+            this.backgroundAnimation.J();
         }
-        super.n(bl);
+        super.setHovered(hovered);
     }
 
-    public float L$src$F$cddpxr() {
-        return this.jW;
+    public float getBorderAlpha() {
+        return this.borderAlpha;
     }
 
     @Nullable
-    public Color m$src$Ljava_awt_Color_$sx1hy() {
-        return this.jK;
+    public Color getAnimatedBorderColor() {
+        return this.borderColor;
     }
 }
 

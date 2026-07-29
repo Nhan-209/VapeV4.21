@@ -81,7 +81,7 @@ implements Comparable<Profile> {
         jsonObject.add("values", (JsonElement)Vape.INSTANCE.getValueManager().toJson());
         jsonObject.add("macros", (JsonElement)Vape.INSTANCE.getMacrosManager().toJson());
         jsonObject.add("search", (JsonElement)Vape.INSTANCE.getSearch().toJson());
-        jsonObject.add("frames", (JsonElement)gg.vape.module.none.ClientSettings.fW.J$src$Lcom_google_gson_JsonArray_$albj9k());
+        jsonObject.add("frames", (JsonElement)gg.vape.module.none.ClientSettings.INSTANCE.serializeFrameStates());
         return jsonObject;
     }
 
@@ -133,7 +133,7 @@ implements Comparable<Profile> {
         }
         jsonObject.addProperty("name", this.M.length() > 48 ? this.M.substring(0, 47) : this.M);
         jsonObject.addProperty(bl ? "vapeVersion" : "version", this.l);
-        this.p.add("keybinds", (JsonElement)this.toJson$src$Lcom_google_gson_JsonArray_$13cfbto());
+        this.p.add("keybinds", (JsonElement)this.serializeBoundInputs());
         this.p.addProperty("sortOrder", (Number)this.L$src$I$1g3udot());
         jsonObject.add("data", (JsonElement)this.p);
         jsonObject.addProperty("is_public", Boolean.valueOf(this.z));
@@ -158,7 +158,7 @@ implements Comparable<Profile> {
     }
 
     @Override
-    public boolean m() {
+    public boolean isActive() {
         return Vape.INSTANCE.getProfilesManager().M().equals(this);
     }
 
@@ -171,8 +171,8 @@ implements Comparable<Profile> {
     }
 
     @Override
-    public String y() {
-        return String.format(" %s7[%sr%s%s7]%sr %s", ClientSettings.F, ClientSettings.F, this.h(), ClientSettings.F, ClientSettings.F, this.n$src$Ljava_lang_String_$xqhelw());
+    public String getDisplayText() {
+        return String.format(" %s7[%sr%s%s7]%sr %s", ClientSettings.F, ClientSettings.F, this.getBindText(), ClientSettings.F, ClientSettings.F, this.n$src$Ljava_lang_String_$xqhelw());
     }
 
     public void r$src$V$1goqkjq() {
@@ -197,7 +197,7 @@ implements Comparable<Profile> {
 
     public void S(boolean bl) {
         JsonArray jsonArray;
-        if (bl && Vape.INSTANCE.getPublicProfileSettings().u.L().booleanValue()) {
+        if (bl && Vape.INSTANCE.getPublicProfileSettings().u.getEffectiveValue().booleanValue()) {
             Vape.INSTANCE.getModManager().y();
         }
         if (this.p.get("values") != null && !this.p.get("values").isJsonNull()) {
@@ -216,21 +216,21 @@ implements Comparable<Profile> {
             jsonArray = this.p.get("search").getAsJsonArray();
             Vape.INSTANCE.getSearch().loadJson(jsonArray);
         }
-        if (bl && Vape.INSTANCE.getPublicProfileSettings().u.L().booleanValue()) {
+        if (bl && Vape.INSTANCE.getPublicProfileSettings().u.getEffectiveValue().booleanValue()) {
             this.r$src$V$1goqkjq();
         }
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
             if (!mod.r$src$Z$14eylz9()) continue;
-            mod.q(true, true);
+            mod.syncSubModuleStates(true, true);
         }
         Vape.INSTANCE.getModManager().i();
-        gg.vape.module.none.ClientSettings.M$src$V$1giazqf();
-        gg.vape.module.none.ClientSettings.d();
-        if (this.p.get("frames") != null && !this.p.get("frames").isJsonNull() && Vape.INSTANCE.getPublicProfileSettings().Z.L().booleanValue()) {
+        gg.vape.module.none.ClientSettings.refreshModuleCategoryHeaders();
+        gg.vape.module.none.ClientSettings.closeListDropdowns();
+        if (this.p.get("frames") != null && !this.p.get("frames").isJsonNull() && Vape.INSTANCE.getPublicProfileSettings().Z.getEffectiveValue().booleanValue()) {
             jsonArray = this.p.get("frames").getAsJsonArray();
             JsonArray frameGroups = new JsonArray();
             frameGroups.add((JsonElement)jsonArray);
-            gg.vape.module.none.ClientSettings.fW.j(frameGroups);
+            gg.vape.module.none.ClientSettings.INSTANCE.loadFrameStates(frameGroups);
         }
         if (this.p.get("original_uuid") != null && !this.p.get("original_uuid").isJsonNull()) {
             this.h = this.p.get("original_uuid").getAsString();
@@ -263,7 +263,7 @@ implements Comparable<Profile> {
     }
 
     @Override
-    public void A() {
+    public void onBindActivated() {
         Vape.INSTANCE.getProfilesManager().U(this);
     }
 
@@ -325,7 +325,7 @@ implements Comparable<Profile> {
             this.p.add("values", (JsonElement)jsonArray2);
         }
         if ((jsonArray = ConfigJsonUtils.q(jsonObject, "keybinds")) != null) {
-            this.O(jsonArray, false);
+            this.loadBoundInputs(jsonArray, false);
         }
         if ((jsonObject3 = ConfigJsonUtils.E(jsonObject, "enabled")) != null) {
             this.i = jsonObject3;
@@ -379,14 +379,14 @@ implements Comparable<Profile> {
     }
 
     @Override
-    public void c(List<Integer> list) {
-        ArrayList<Integer> arrayList = new ArrayList<Integer>();
-        for (Integer n : list) {
-            int n2;
-            if (n < 0 && (n2 = n + 100) <= 1) continue;
-            arrayList.add(n);
+    public void setBoundInputs(List<Integer> inputCodes) {
+        ArrayList<Integer> validInputCodes = new ArrayList<Integer>();
+        for (Integer inputCode : inputCodes) {
+            int mouseButton;
+            if (inputCode < 0 && (mouseButton = inputCode + 100) <= 1) continue;
+            validInputCodes.add(inputCode);
         }
-        super.c(arrayList);
+        super.setBoundInputs(validInputCodes);
     }
 
     public int D() {

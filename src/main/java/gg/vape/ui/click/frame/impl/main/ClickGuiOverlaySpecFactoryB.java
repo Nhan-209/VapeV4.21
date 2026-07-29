@@ -12,7 +12,7 @@ public final class ClickGuiOverlaySpecFactoryB {
     }
 
     public static ClickGuiOverlaySpec F() {
-        return ClickGuiOverlaySpec.q().e("Register").C("register").N(ClickGuiOverlaySpecFactoryB::x).r(ClickGuiOverlayTransitionMode.REPLACE).w();
+        return ClickGuiOverlaySpec.builder().title("Register").sidecarIcon("register").initializeContent(ClickGuiOverlaySpecFactoryB::x).transitionMode(ClickGuiOverlayTransitionMode.REPLACE).build();
     }
 
     private static void x(PanelComponent panelComponent) {

@@ -12,12 +12,12 @@ extends GuiComponent {
     private OnlineCombatStatsSettingsFrame I;
 
     private void R() {
-        SmoothFontRenderer smoothFontRenderer = this.O(0.9);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.9);
         double d = smoothFontRenderer.d("Aim");
         double d2 = this.n() + this.L() / 2.0 - d / 2.0;
         double d3 = this.n() + this.L() / 2.0 - 3.0;
-        Color color = this.I.N$src$Z$1ad1ggw() ? this.I.l(OnlineCombatStatsTargetLabelComponent.J.Z) : OnlineCombatStatsTargetLabelComponent.J.Z;
-        ImageRenderer.E(color, (float)this.G$src$D$1b2f02a() + 5.0f, (float)d3, "newaim", 6.0f, 6.0f, false);
+        Color color = this.I.isManagedByClickGui() ? this.I.applyDefaultEditorAlpha(OnlineCombatStatsTargetLabelComponent.J.Z) : OnlineCombatStatsTargetLabelComponent.J.Z;
+        ImageRenderer.drawImage(color, (float)this.G$src$D$1b2f02a() + 5.0f, (float)d3, "newaim", 6.0f, 6.0f, false);
         smoothFontRenderer.d(this.I.b$src$Ljava_lang_String_$tewuww(), this.G$src$D$1b2f02a() + 8.0 + 10.0, d2, color);
     }
 

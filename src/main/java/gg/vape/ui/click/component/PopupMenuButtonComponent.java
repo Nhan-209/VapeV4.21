@@ -20,35 +20,35 @@ import org.jetbrains.annotations.Nullable;
 
 public class PopupMenuButtonComponent
 extends InteractiveComponent {
-    private ColorAnimation ey;
-    private final float eT;
-    private float v;
-    private final Color el;
-    private boolean K;
-    private boolean eW;
-    private boolean eH;
-    private boolean e0;
+    private ColorAnimation backgroundAnimation;
+    private final float arrowSize;
+    private float borderRadius;
+    private final Color hoverTextColor;
+    private boolean interactionBlocked;
+    private boolean useContentInset;
+    private boolean openUpward;
+    private boolean enabled;
     @Nullable
-    private Color eU;
-    private final ColorAnimation eh;
-    private Color e5;
+    private Color secondaryColor;
+    private final ColorAnimation textAnimation;
+    private Color borderColor;
     @Nullable
-    private Color eo;
-    private final PanelComponent I;
-    private boolean eX;
-    private final Color eI;
-    private final List<GuiComponent> b;
-    private static final float e6 = 12.5f;
+    private Color dividerColor;
+    private final PanelComponent menuPanel;
+    private boolean pressed;
+    private final Color normalTextColor;
+    private final List<GuiComponent> menuItems;
+    private static final float ARROW_SECTION_WIDTH = 12.5f;
     @Nullable
-    private PopupFrame ef;
-    private final ColorAnimation Q;
-    private boolean eb;
-    private float eP;
-    private final String eR;
+    private PopupFrame popupFrame;
+    private final ColorAnimation interactionAnimation;
+    private boolean centerLabel;
+    private float borderAlpha;
+    private final String label;
 
     @Nullable
-    public Color R() {
-        return this.eU;
+    public Color getSecondaryColor() {
+        return this.secondaryColor;
     }
 
     @Override
@@ -56,86 +56,82 @@ extends InteractiveComponent {
         return 0.0;
     }
 
-    public void z(boolean bl) {
-        this.eW = bl;
+    public void setUseContentInset(boolean useContentInset) {
+        this.useContentInset = useContentInset;
     }
 
-    public boolean z() {
-        return this.eb;
+    public boolean isLabelCentered() {
+        return this.centerLabel;
     }
 
-    public void S(@Nullable Color color) {
-        this.eU = color;
+    public void setSecondaryColor(@Nullable Color secondaryColor) {
+        this.secondaryColor = secondaryColor;
     }
 
-    public boolean l$src$Z$dxtwac() {
-        return this.eW;
+    public boolean isUsingContentInset() {
+        return this.useContentInset;
     }
 
-    public boolean k$src$Z$dxa3oz() {
-        return this.eH;
+    public boolean isOpeningUpward() {
+        return this.openUpward;
     }
 
-    public static void l(PopupMenuButtonComponent popupMenuButtonComponent) {
-        popupMenuButtonComponent.t$src$V$e288xs();
-    }
-
-    public void c(boolean bl) {
-        this.eb = bl;
+    public void setCenterLabel(boolean centerLabel) {
+        this.centerLabel = centerLabel;
     }
 
     @Override
     public void I() {
     }
 
-    public void r(@Nullable Color color) {
-        this.eo = color;
+    public void setDividerColor(@Nullable Color dividerColor) {
+        this.dividerColor = dividerColor;
     }
 
-    public PopupMenuButtonComponent(String string, List<GuiComponent> list, Color color, Color color2, Color color3, float f, float f2) {
+    public PopupMenuButtonComponent(String label, List<GuiComponent> menuItems, Color baseBackgroundColor, Color hoverBackgroundColor, Color borderColor, float borderRadius, float borderAlpha) {
         this.getClass();
-        this.Q = new ColorAnimation(0.15, PopupMenuButtonComponent.J.l, PopupMenuButtonComponent.J.y);
-        this.eT = 2.0f;
-        this.eI = PopupMenuButtonComponent.J.Z;
-        this.el = PopupMenuButtonComponent.J.Z;
-        this.e5 = null;
-        this.v = 2.0f;
-        this.eP = 1.0f;
-        this.eo = new Color(255, 255, 255, 30);
-        this.eU = new Color(255, 255, 255, 30);
-        this.eW = true;
-        this.eb = true;
-        this.e0 = true;
-        this.eR = string;
-        this.b = new ArrayList<GuiComponent>(list);
-        for (GuiComponent guiComponent : list) {
-            guiComponent.W(true);
-            guiComponent.P(true);
+        this.interactionAnimation = new ColorAnimation(0.15, PopupMenuButtonComponent.J.l, PopupMenuButtonComponent.J.y);
+        this.arrowSize = 2.0f;
+        this.normalTextColor = PopupMenuButtonComponent.J.Z;
+        this.hoverTextColor = PopupMenuButtonComponent.J.Z;
+        this.borderColor = null;
+        this.borderRadius = 2.0f;
+        this.borderAlpha = 1.0f;
+        this.dividerColor = new Color(255, 255, 255, 30);
+        this.secondaryColor = new Color(255, 255, 255, 30);
+        this.useContentInset = true;
+        this.centerLabel = true;
+        this.enabled = true;
+        this.label = label;
+        this.menuItems = new ArrayList<GuiComponent>(menuItems);
+        for (GuiComponent menuItem : menuItems) {
+            menuItem.setUseExplicitHeight(true);
+            menuItem.setUseExplicitWidth(true);
         }
-        if (color != null) {
-            this.T(color);
+        if (baseBackgroundColor != null) {
+            this.setDisabledOverlayColor(baseBackgroundColor);
         }
-        this.I = new PanelComponent(110.0, 20.0);
-        this.I.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.I.t(120.0);
-        this.I.d(false);
-        this.I.I(true);
+        this.menuPanel = new PanelComponent(110.0, 20.0);
+        this.menuPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.menuPanel.t(120.0);
+        this.menuPanel.setShowDisabledOverlay(false);
+        this.menuPanel.I(true);
         this.getClass();
-        this.ey = new ColorAnimation(0.15, this.d(), color2);
+        this.backgroundAnimation = new ColorAnimation(0.15, this.getDisabledOverlayColor(), hoverBackgroundColor);
         this.getClass();
-        this.eh = new ColorAnimation(0.15, this.eI, this.el);
-        if (color3 != null && color != null) {
-            this.j(color3, color);
+        this.textAnimation = new ColorAnimation(0.15, this.normalTextColor, this.hoverTextColor);
+        if (borderColor != null && baseBackgroundColor != null) {
+            this.setBorderAndBackgroundColors(borderColor, baseBackgroundColor);
         }
-        this.v = f;
-        this.eP = f2;
+        this.borderRadius = borderRadius;
+        this.borderAlpha = borderAlpha;
     }
 
     @Override
     public void u() {
-        if (this.eX && !this.w$src$Z$e457mb() && !this.y$src$Z$e4z801()) {
-            this.Q.J();
-            this.eX = false;
+        if (this.pressed && !this.w$src$Z$e457mb() && !this.isPopupOpen()) {
+            this.interactionAnimation.J();
+            this.pressed = false;
         }
     }
 
@@ -146,187 +142,190 @@ extends InteractiveComponent {
 
     @Override
     public void H() {
-        double d;
-        double d2;
-        PopupFrame popupFrame = this.ef;
-        if (popupFrame != null) {
-            if (this.eH) {
-                d2 = this.n() - popupFrame.L();
-                d = this.L() + popupFrame.L();
+        double renderHeight;
+        double renderY;
+        PopupFrame currentPopup = this.popupFrame;
+        if (currentPopup != null) {
+            if (this.openUpward) {
+                renderY = this.n() - currentPopup.L();
+                renderHeight = this.L() + currentPopup.L();
             } else {
-                d2 = this.n();
-                d = this.L() + popupFrame.L();
+                renderY = this.n();
+                renderHeight = this.L() + currentPopup.L();
             }
         } else {
-            d2 = this.n();
-            d = this.L();
+            renderY = this.n();
+            renderHeight = this.L();
         }
-        if (this.y$src$Z$e4z801()) {
-            this.ey.u(this.w$src$Z$e457mb() && !this.y$src$Z$e4z801());
-            GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), d2, this.A(), d, this.ey.getInterpolatedColor());
+        if (this.isPopupOpen()) {
+            this.backgroundAnimation.u(this.w$src$Z$e457mb() && !this.isPopupOpen());
+            GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), renderY, this.A(), renderHeight, this.backgroundAnimation.getInterpolatedColor());
         } else {
-            if (this.Z$src$Z$16e8vsp()) {
-                GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), d2, this.A(), d, this.ey.getInterpolatedColor());
+            if (this.isShowDisabledOverlay()) {
+                GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), renderY, this.A(), renderHeight, this.backgroundAnimation.getInterpolatedColor());
             }
             if (this.w$src$Z$e457mb()) {
-                GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), d2, this.A(), d, new Color(100, 100, 100, 10));
+                GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), renderY, this.A(), renderHeight, new Color(100, 100, 100, 10));
             }
         }
-        if (this.e5 != null) {
-            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), d2, this.A(), d, this.e5, this.v, this.eP, 1.0f);
+        if (this.borderColor != null) {
+            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), renderY, this.A(), renderHeight, this.borderColor, this.borderRadius, this.borderAlpha, 1.0f);
         }
-        SmoothFontRenderer smoothFontRenderer = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.7);
-        double d3 = smoothFontRenderer.d(this.eR);
-        double d4 = this.G$src$D$1b2f02a();
-        double d5 = this.n() + this.L() / 2.0 - d3 / 2.0;
-        double d6 = this.n() + this.L() / 2.0;
+        SmoothFontRenderer fontRenderer = this.getAlternateFontRenderer(0.7);
+        double labelHeight = fontRenderer.d(this.label);
+        double labelX = this.G$src$D$1b2f02a();
+        double labelY = this.n() + this.L() / 2.0 - labelHeight / 2.0;
+        double centerY = this.n() + this.L() / 2.0;
         this.getClass();
-        double d7 = d6 - 2.0 / 2.0;
-        if (this.eb) {
-            smoothFontRenderer.W(this.eR, d4 += (this.A() - 12.5) / 2.0, d5, PopupMenuButtonComponent.J.A);
+        double arrowY = centerY - this.arrowSize / 2.0;
+        if (this.centerLabel) {
+            labelX += (this.A() - ARROW_SECTION_WIDTH) / 2.0;
+            fontRenderer.W(this.label, labelX, labelY, PopupMenuButtonComponent.J.A);
         } else {
             this.getClass();
-            smoothFontRenderer.d(this.eR, d4 += 5.0, d5, PopupMenuButtonComponent.J.A);
+            labelX += 5.0;
+            fontRenderer.d(this.label, labelX, labelY, PopupMenuButtonComponent.J.A);
         }
-        if (this.eo != null) {
-            GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + this.A() - 12.5, this.n() + 2.0, 1.0, this.L() - 4.5, this.eo);
+        if (this.dividerColor != null) {
+            GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + this.A() - ARROW_SECTION_WIDTH, this.n() + 2.0, 1.0, this.L() - 4.5, this.dividerColor);
         }
-        ImageRenderer.E(Color.WHITE, (float)(this.G$src$D$1b2f02a() + this.A()) - 8.0f, (float)d7, this.y$src$Z$e4z801() ? "upcollapse" : "downexpand", this.eT, this.eT, false);
+        ImageRenderer.drawImage(Color.WHITE, (float)(this.G$src$D$1b2f02a() + this.A()) - 8.0f, (float)arrowY, this.isPopupOpen() ? "upcollapse" : "downexpand", this.arrowSize, this.arrowSize, false);
     }
 
-    public boolean y$src$Z$e4z801() {
-        return this.ef != null;
+    public boolean isPopupOpen() {
+        return this.popupFrame != null;
     }
 
-    public String P$src$Ljava_lang_String_$1jjvsuy() {
-        return this.eR;
+    public String getLabel() {
+        return this.label;
     }
 
-    public boolean c$src$Z$dsvqy3() {
-        return this.e0;
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
-    public void p(boolean bl) {
-        this.K = bl;
+    public void setInteractionBlocked(boolean interactionBlocked) {
+        this.interactionBlocked = interactionBlocked;
     }
 
 
     @Nullable
-    public Color D$src$Ljava_awt_Color_$1717gti() {
-        return this.eo;
+    public Color getDividerColor() {
+        return this.dividerColor;
     }
 
     @Override
     public void F() {
-        if (!this.eX) {
-            this.Q.J();
+        if (!this.pressed) {
+            this.interactionAnimation.J();
         }
-        this.eX = true;
+        this.pressed = true;
     }
 
-    public boolean isBlatantMod() {
-        return this.K;
+    public boolean isInteractionBlocked() {
+        return this.interactionBlocked;
     }
 
-    private void t$src$V$e288xs() {
-        PopupFrame popupFrame = this.ef;
+    public void togglePopup() {
+        PopupFrame popupFrame = this.popupFrame;
         if (popupFrame != null) {
-            this.ef = null;
-            ClientSettings.fT = null;
-            ClientSettings.K(popupFrame);
+            this.popupFrame = null;
+            ClientSettings.activeComponent = null;
+            ClientSettings.removePopup(popupFrame);
         } else {
-            this.I.S();
-            if (this.eW) {
-                this.I.q(this.A() - this.Z$src$D$1wvori2());
+            this.menuPanel.removeMarkedChildren();
+            if (this.useContentInset) {
+                this.menuPanel.setExplicitWidth(this.A() - this.getHorizontalInset());
             } else {
-                this.I.q(this.A());
+                this.menuPanel.setExplicitWidth(this.A());
             }
-            this.I.V(3.0f);
-            this.I.h(new SpacerComponent(0.0, 2.0), new Object[0]);
-            for (GuiComponent guiComponent : this.b) {
-                guiComponent.q(this.I.A() - 3.0);
-                guiComponent.u(12.0);
-                this.I.h(new PaddedComponent(0.0, 0.5, 0.0, 0.0, guiComponent), "wrap");
+            this.menuPanel.setCornerRadius(3.0f);
+            this.menuPanel.h(new SpacerComponent(0.0, 2.0), new Object[0]);
+            for (GuiComponent guiComponent : this.menuItems) {
+                guiComponent.setExplicitWidth(this.menuPanel.A() - 3.0);
+                guiComponent.setExplicitHeight(12.0);
+                this.menuPanel.h(new PaddedComponent(0.0, 0.5, 0.0, 0.0, guiComponent), "wrap");
             }
-            this.I.u(Math.min(this.I.d$src$D$ibccpu(), this.I.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y()));
-            this.I.H(true);
-            this.ef = ClientSettings.g(this, this.I, PopupFrame.class);
-            this.ef.Z(new InteractivePopupOutsideCloseMouseListener(this));
-            ClientSettings.fT = this;
-            this.K$src$V$dfoolz();
+            this.menuPanel.setExplicitHeight(Math.min(this.menuPanel.d$src$D$ibccpu(), this.menuPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y()));
+            this.menuPanel.H(true);
+            this.popupFrame = ClientSettings.createPopup(this, this.menuPanel, PopupFrame.class);
+            this.popupFrame.addGlobalMouseListener(new InteractivePopupOutsideCloseMouseListener(this));
+            ClientSettings.activeComponent = this;
+            this.updatePopupPosition();
         }
     }
 
-    public void j(Color color, Color color2) {
-        this.e5 = color;
+    public void setBorderAndBackgroundColors(Color borderColor, Color baseBackgroundColor) {
+        this.borderColor = borderColor;
         this.getClass();
-        this.ey = new ColorAnimation(0.15, color2, this.ey.getEndColor());
+        this.backgroundAnimation = new ColorAnimation(0.15, baseBackgroundColor, this.backgroundAnimation.getEndColor());
     }
 
-    public static PopupFrame g(PopupMenuButtonComponent popupMenuButtonComponent) {
-        return popupMenuButtonComponent.ef;
+    @Nullable
+    public PopupFrame getPopupFrame() {
+        return this.popupFrame;
     }
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
-        if (this.eo != null && (double)guiMouseEvent.getX() < this.G$src$D$1b2f02a() + this.A() - 12.5 && (double)guiMouseEvent.getY() > this.n()) {
-            super.g(guiMouseEvent);
-            ClientSettings.fT = null;
+    public void g(GuiMouseEvent mouseEvent) {
+        if (this.dividerColor != null && (double)mouseEvent.getX() < this.G$src$D$1b2f02a() + this.A() - ARROW_SECTION_WIDTH && (double)mouseEvent.getY() > this.n()) {
+            super.g(mouseEvent);
+            ClientSettings.activeComponent = null;
             return;
         }
-        if (this.K) {
+        if (this.interactionBlocked) {
             return;
         }
-        PopupFrame popupFrame = this.ef;
+        PopupFrame popupFrame = this.popupFrame;
         if (popupFrame != null) {
             if (popupFrame.t()) {
-                popupFrame.D(guiMouseEvent);
-                this.t$src$V$e288xs();
+                popupFrame.dispatchMouseEvent(mouseEvent);
+                this.togglePopup();
                 return;
             }
             if (!popupFrame.t()) {
-                this.t$src$V$e288xs();
+                this.togglePopup();
             }
             return;
         }
-        this.t$src$V$e288xs();
+        this.togglePopup();
     }
 
-    public void t(Color color) {
-        this.e5 = color;
+    public void setBorderWithTransparentBackground(Color borderColor) {
+        this.borderColor = borderColor;
         this.getClass();
-        this.ey = new ColorAnimation(0.15, new Color(0, 0, 0, 0), this.ey.getEndColor());
+        this.backgroundAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), this.backgroundAnimation.getEndColor());
     }
 
     @Override
     public void c() {
         super.c();
-        PopupFrame popupFrame = this.ef;
+        PopupFrame popupFrame = this.popupFrame;
         if (popupFrame != null) {
-            this.K$src$V$dfoolz();
-            this.I.T(this.ey.getInterpolatedColor());
-            this.I.H(true);
-            this.I.c();
+            this.updatePopupPosition();
+            this.menuPanel.setDisabledOverlayColor(this.backgroundAnimation.getInterpolatedColor());
+            this.menuPanel.H(true);
+            this.menuPanel.c();
         }
     }
 
-    public void e(boolean bl) {
-        this.e0 = bl;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
-    public void l(boolean bl) {
-        this.eH = bl;
+    public void setOpenUpward(boolean openUpward) {
+        this.openUpward = openUpward;
     }
 
-    private void K$src$V$dfoolz() {
-        PopupFrame popupFrame = this.ef;
+    private void updatePopupPosition() {
+        PopupFrame popupFrame = this.popupFrame;
         if (popupFrame != null) {
-            if (this.eW) {
-                popupFrame.K(this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2());
+            if (this.useContentInset) {
+                popupFrame.K(this.G$src$D$1b2f02a() + this.getHorizontalInset());
             } else {
                 popupFrame.K(this.G$src$D$1b2f02a());
             }
-            if (this.eH) {
+            if (this.openUpward) {
                 popupFrame.S(this.n() - popupFrame.L());
             } else {
                 popupFrame.S(this.n() + this.L());

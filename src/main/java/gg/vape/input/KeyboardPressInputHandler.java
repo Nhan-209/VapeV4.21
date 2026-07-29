@@ -11,26 +11,26 @@ import java.util.Set;
 
 public class KeyboardPressInputHandler
 implements InputEventHandler {
-    private final Set<Integer> s = new HashSet<Integer>();
+    private final Set<Integer> navigationKeys = new HashSet<Integer>();
 
 
     public KeyboardPressInputHandler() {
-        this.s.add(37);
-        this.s.add(39);
-        this.s.add(36);
-        this.s.add(35);
+        this.navigationKeys.add(37);
+        this.navigationKeys.add(39);
+        this.navigationKeys.add(36);
+        this.navigationKeys.add(35);
     }
 
     @Override
-    public boolean handle(long l, long l2) {
-        int n = NativeBridge.mvk((int)l, 2);
-        if (this.s.contains((int)l)) {
-            GuiKeyTypedDispatcher.p((char)n, (int)l);
+    public boolean handle(long virtualKey, long keyMetadata) {
+        int translatedCharacter = NativeBridge.mvk((int)virtualKey, 2);
+        if (this.navigationKeys.contains((int)virtualKey)) {
+            GuiKeyTypedDispatcher.dispatch((char)translatedCharacter, (int)virtualKey);
         }
-        int n2 = KeyboardCodeUtil.M((int)l, (int)l2);
-        KeyboardInputState keyboardInputState = InputEventDispatcher.getInstance().getKeyboardState();
-        keyboardInputState.setKeyState(n2, true);
-        return keyboardInputState.isCanceled();
+        int keyCode = KeyboardCodeUtil.resolveModifierKey((int)virtualKey, (int)keyMetadata);
+        KeyboardInputState keyboardState = InputEventDispatcher.getInstance().getKeyboardState();
+        keyboardState.setKeyState(keyCode, true);
+        return keyboardState.isCanceled();
     }
 }
 

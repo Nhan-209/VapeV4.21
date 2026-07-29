@@ -15,34 +15,34 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ValueManager {
-    private static final List<Class<?>> z = Arrays.asList(Mod.class, UtilityMod.class, Macro.class);
-    private final List<Value<?, ?>> c = new ArrayList();
-    private static final List<Class<?>> u = Arrays.asList(ClientSettings.class);
+    private static final List<Class<?>> NON_SERIALIZED_OWNER_TYPES = Arrays.asList(Mod.class, UtilityMod.class, Macro.class);
+    private final List<Value<?, ?>> registeredValues = new ArrayList();
+    private static final List<Class<?>> CONFIG_SETTINGS_OWNER_TYPES = Arrays.asList(ClientSettings.class);
 
     public List<Value<?, ?>> getValues() {
-        return this.c;
+        return this.registeredValues;
     }
 
     public JsonArray toJson() {
         JsonArray jsonArray = new JsonArray();
         for (Value<?, ?> value : this.getValues()) {
             JsonObject jsonObject;
-            if (z.contains(value.k$src$Ljava_lang_Object_$13p7u5q().getClass()) || !value.s$src$Z$1arlhq2() || value.k() || (jsonObject = value.H(false)).entrySet().size() <= 1) continue;
+            if (NON_SERIALIZED_OWNER_TYPES.contains(value.getOwner().getClass()) || !value.isSerializable() || value.isDefault() || (jsonObject = value.toJson(false)).entrySet().size() <= 1) continue;
             jsonArray.add((JsonElement)jsonObject);
         }
         return jsonArray;
     }
 
 
-    private void F(JsonObject jsonObject) {
+    private void loadConfigSettings(JsonObject jsonObject) {
         for (Mod mod : Vape.INSTANCE.getModManager().s()) {
             if (!(mod instanceof ConfigSettingsModule)) continue;
-            ((ConfigSettingsModule)mod).G(jsonObject);
+            ((ConfigSettingsModule)mod).loadMatchingValues(jsonObject);
         }
     }
 
     public void registerValue(Value<?, ?> value) {
-        this.c.add(value);
+        this.registeredValues.add(value);
     }
 
     public void loadJson(JsonArray jsonArray) {
@@ -52,7 +52,7 @@ public class ValueManager {
             JsonElement jsonElement = jsonArray.get(i);
             if (!jsonElement.isJsonObject() || jsonElement.isJsonNull() || (jsonObject = jsonElement.getAsJsonObject()).get("id") == null || jsonObject.get("id").isJsonNull()) continue;
             for (Value<?, ?> value : this.getValues()) {
-                if (arrayList.contains(value) || !u.contains(value.k$src$Ljava_lang_Object_$13p7u5q().getClass().getSuperclass()) && !u.contains(value.k$src$Ljava_lang_Object_$13p7u5q().getClass()) && z.contains(value.k$src$Ljava_lang_Object_$13p7u5q().getClass().getSuperclass()) || z.contains(value.k$src$Ljava_lang_Object_$13p7u5q().getClass()) || !value.W(jsonObject)) continue;
+                if (arrayList.contains(value) || !CONFIG_SETTINGS_OWNER_TYPES.contains(value.getOwner().getClass().getSuperclass()) && !CONFIG_SETTINGS_OWNER_TYPES.contains(value.getOwner().getClass()) && NON_SERIALIZED_OWNER_TYPES.contains(value.getOwner().getClass().getSuperclass()) || NON_SERIALIZED_OWNER_TYPES.contains(value.getOwner().getClass()) || !value.matchesJsonId(jsonObject)) continue;
                 arrayList.add(value);
                 value.loadJson(jsonObject);
             }

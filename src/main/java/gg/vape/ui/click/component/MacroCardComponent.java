@@ -19,401 +19,247 @@ import org.jetbrains.annotations.Nullable;
 
 public class MacroCardComponent
 extends GuiComponent {
-    private static final double R = 10.0;
+    private static final double BIND_INPUT_HEIGHT = 10.0;
     @Nullable
-    private Runnable G;
-    private final DoubleAnimation Cq;
-    private final TruncatedTextComponent Cc;
-    private static final double C2 = 8.0;
-    private final ColorAnimation Cx;
-    private static final double CZ = 160.0;
-    private static final double K = 6.0;
+    private Runnable settingsAction;
+    private final DoubleAnimation dimmingAnimation;
+    private final TruncatedTextComponent detailsLabel;
+    private static final double SETTINGS_HITBOX_VERTICAL_PADDING = 8.0;
+    private final ColorAnimation selectedAccentAnimation;
+    private static final double LEGACY_COLOR_CHANNEL_VALUE = 160.0;
+    private static final double ICON_SIZE = 6.0;
     @Nullable
-    private Runnable I;
-    private boolean CO;
-    private final RectData Cz;
-    private boolean Q;
-    private final IconGlyphComponent b;
-    private final DoubleAnimation v;
-    private final ColorAnimation o;
-    private static final double Cb = 22.0;
-    private final TruncatedTextComponent CW;
-    private final BindableInputComponent C5;
-    private final IconGlyphComponent i;
-    private static final double CC = 10.0;
-    private static final float CF = 3.0f;
+    private Runnable auxiliaryAction;
+    private boolean dimmed;
+    private final RectData settingsHitbox;
+    private boolean selected;
+    private final IconGlyphComponent settingsIcon;
+    private final DoubleAnimation selectionOffsetAnimation;
+    private final ColorAnimation cardHoverAnimation;
+    private static final double CARD_HEIGHT = 22.0;
+    private final TruncatedTextComponent macroNameLabel;
+    private final BindableInputComponent bindInput;
+    private final IconGlyphComponent macroIcon;
+    private static final double SETTINGS_HITBOX_WIDTH_PADDING = 10.0;
+    private static final float CORNER_RADIUS = 3.0f;
     @Nullable
-    private Runnable a;
-    private final ColorAnimation Co;
-    private static final double Ca = 8.0;
-    private final Macro O;
-    private final ColorAnimation CE;
-    private static final double Ct = 6.0;
+    private Runnable cardAction;
+    private final ColorAnimation settingsHoverAnimation;
+    private static final double CONTENT_PADDING = 8.0;
+    private final Macro macro;
+    private final ColorAnimation selectedBackgroundAnimation;
+    private static final double LABEL_GAP = 6.0;
 
-    public void k(@Nullable Runnable runnable) {
-        this.G = runnable;
+    public void setSettingsAction(@Nullable Runnable settingsAction) {
+        this.settingsAction = settingsAction;
     }
 
-    public void I(boolean bl) {
-        this.Q = bl;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
-    public boolean Q$src$Z$jxpu9m() {
-        return this.Q;
+    public boolean isSelected() {
+        return this.selected;
     }
 
     @Override
     public double C() {
-        return 22.0;
+        return CARD_HEIGHT;
     }
 
-    private Color W(Color color) {
+    private Color applyDimmedAlpha(Color color) {
         if (color == null) {
             return null;
         }
-        if (this.CO && !this.Q) {
-            double d = Math.min(1.0, Math.max(0.0, this.Cq.getInterpolatedValue()));
-            float f = (float)(1.0 - 0.8 * d);
-            int n = Math.max(0, Math.round((float)color.getAlpha() * f));
-            return new Color(color.getRed(), color.getGreen(), color.getBlue(), n);
+        if (this.dimmed && !this.selected) {
+            double dimProgress = Math.min(1.0, Math.max(0.0, this.dimmingAnimation.getInterpolatedValue()));
+            float alphaMultiplier = (float)(1.0 - 0.8 * dimProgress);
+            int dimmedAlpha = Math.max(0, Math.round((float)color.getAlpha() * alphaMultiplier));
+            return new Color(color.getRed(), color.getGreen(), color.getBlue(), dimmedAlpha);
         }
         return color;
     }
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
-        if (guiMouseEvent.getAction() != MouseButton.LEFT_CLICK && guiMouseEvent.getAction() != MouseButton.RIGHT_CLICK) {
+    public void g(GuiMouseEvent mouseEvent) {
+        if (mouseEvent.getAction() != MouseButton.LEFT_CLICK && mouseEvent.getAction() != MouseButton.RIGHT_CLICK) {
             return;
         }
-        if (this.Cz.J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
-            if (this.G != null) {
-                this.G.run();
+        if (this.settingsHitbox.J(mouseEvent.getX(), mouseEvent.getY())) {
+            if (this.settingsAction != null) {
+                this.settingsAction.run();
             }
             return;
         }
-        if (this.C5.V$src$Z$1xhop3l() && this.C5.i(guiMouseEvent.getX(), guiMouseEvent.getY())) {
+        if (this.bindInput.V$src$Z$1xhop3l() && this.bindInput.i(mouseEvent.getX(), mouseEvent.getY())) {
             return;
         }
-        if (this.a != null) {
-            this.a.run();
+        if (this.cardAction != null) {
+            this.cardAction.run();
         }
     }
 
-    private String R() {
-        String string = this.O.h();
-        if (string != null && !string.isEmpty()) {
-            return string;
+    private String getBindDisplayText() {
+        String bindText = this.macro.getBindText();
+        if (bindText != null && !bindText.isEmpty()) {
+            return bindText;
         }
         return "Set bind";
     }
 
-    public MacroCardComponent(Macro macro, double d) {
+    public MacroCardComponent(Macro macro, double legacyHeight) {
         this.getClass();
-        this.o = new ColorAnimation(0.15, MacroCardComponent.J.t, MacroCardComponent.J.z);
+        this.cardHoverAnimation = new ColorAnimation(0.15, MacroCardComponent.J.t, MacroCardComponent.J.z);
         this.getClass();
-        this.Co = new ColorAnimation(0.15, MacroCardComponent.J.t, MacroCardComponent.J.E);
+        this.settingsHoverAnimation = new ColorAnimation(0.15, MacroCardComponent.J.t, MacroCardComponent.J.E);
         this.getClass();
-        this.CE = new ColorAnimation(0.15 * 1.5, MacroCardComponent.J.m, MacroCardComponent.J.H);
+        this.selectedBackgroundAnimation = new ColorAnimation(0.15 * 1.5, MacroCardComponent.J.m, MacroCardComponent.J.H);
         this.getClass();
-        this.Cx = new ColorAnimation(0.15, MacroCardComponent.J.R, MacroCardComponent.J.o);
+        this.selectedAccentAnimation = new ColorAnimation(0.15, MacroCardComponent.J.R, MacroCardComponent.J.o);
         this.getClass();
-        this.v = new DoubleAnimation(0.15, 0.0, 2.0);
+        this.selectionOffsetAnimation = new DoubleAnimation(0.15, 0.0, 2.0);
         this.getClass();
-        this.Cq = new DoubleAnimation(0.15, 0.0, 1.0);
-        this.Cz = new RectData(0.0, 0.0, 0.0, 0.0);
-        this.O = macro;
-        this.o(true);
-        this.i = new IconGlyphComponent("standalone_macro", 6.0f, 6.0f);
-        this.i.S(MacroCardComponent.J.W);
-        this.b = new IconGlyphComponent("settingdots", 6.0f, 6.0f);
-        this.b.S(MacroCardComponent.J.W);
-        this.CW = new TruncatedTextComponent(macro.getName(), 50.0, 0.75);
-        this.CW.C(0.0);
-        this.Cc = new TruncatedTextComponent(this.getName(), 50.0, 0.625);
-        this.Cc.C(0.0);
-        this.Cc.P(true);
-        this.C5 = new BindableInputComponent(this.O, MacroCardComponent.J.A);
-        this.C5.Z(false);
-        this.C5.Y(10.0);
-        this.H(this.i, this.CW, this.Cc, this.b);
-        this.H(this.C5);
+        this.dimmingAnimation = new DoubleAnimation(0.15, 0.0, 1.0);
+        this.settingsHitbox = new RectData(0.0, 0.0, 0.0, 0.0);
+        this.macro = macro;
+        this.setPropagateMouseEvents(true);
+        this.macroIcon = new IconGlyphComponent("standalone_macro", 6.0f, 6.0f);
+        this.macroIcon.setColor(MacroCardComponent.J.W);
+        this.settingsIcon = new IconGlyphComponent("settingdots", 6.0f, 6.0f);
+        this.settingsIcon.setColor(MacroCardComponent.J.W);
+        this.macroNameLabel = new TruncatedTextComponent(macro.getName(), 50.0, 0.75);
+        this.macroNameLabel.setHorizontalInset(0.0);
+        this.detailsLabel = new TruncatedTextComponent(this.buildDetailsText(), 50.0, 0.625);
+        this.detailsLabel.setHorizontalInset(0.0);
+        this.detailsLabel.setUseExplicitWidth(true);
+        this.bindInput = new BindableInputComponent(this.macro, MacroCardComponent.J.A);
+        this.bindInput.setVisible(false);
+        this.bindInput.Y(BIND_INPUT_HEIGHT);
+        this.addChildren(this.macroIcon, this.macroNameLabel, this.detailsLabel, this.settingsIcon);
+        this.addChildren(this.bindInput);
     }
 
-    private String getName() {
-        int n;
-        int n2 = this.O.getDelay().s$src$I$vi2lk8();
-        boolean bl = n2 != (n = this.O.getDelay().y());
-        StringBuilder stringBuilder = new StringBuilder(bl ? n2 + "-" + n : String.valueOf(n));
-        stringBuilder.append("ms delay");
-        if (this.O.getDoubleClick().L().booleanValue()) {
-            stringBuilder.append(" \u2022 double click ");
-            stringBuilder.append(this.O.getDoubleClickDelay().y());
-            stringBuilder.append("ms");
+    private String buildDetailsText() {
+        int maximumDelay;
+        int minimumDelay = this.macro.getDelay().getMinimumInt();
+        boolean hasDelayRange = minimumDelay != (maximumDelay = this.macro.getDelay().getMaximumInt());
+        StringBuilder details = new StringBuilder(hasDelayRange ? minimumDelay + "-" + maximumDelay : String.valueOf(maximumDelay));
+        details.append("ms delay");
+        if (this.macro.getDoubleClick().getEffectiveValue().booleanValue()) {
+            details.append(" \u2022 double click ");
+            details.append(this.macro.getDoubleClickDelay().getMaximumInt());
+            details.append("ms");
         }
-        return stringBuilder.toString();
+        return details.toString();
     }
 
-    public Macro j$src$Lgg_vape_module_Macro_$1ed9en7() {
-        return this.O;
+    public Macro getMacro() {
+        return this.macro;
     }
 
     public MacroCardComponent(Macro macro) {
         this(macro, 22.0);
     }
 
-    public void Z(@Nullable Runnable runnable) {
-        this.a = runnable;
+    public void setCardAction(@Nullable Runnable cardAction) {
+        this.cardAction = cardAction;
     }
 
-    public void l(boolean bl) {
-        this.CO = bl;
+    public void setDimmed(boolean dimmed) {
+        this.dimmed = dimmed;
     }
 
     @Override
     public void H() {
-        Color color;
-        this.CE.u(this.Q);
-        this.Cx.u(this.Q);
-        this.v.u(this.Q);
-        this.Cq.u(this.CO && !this.Q);
-        double d = this.G$src$D$1b2f02a();
-        double d2 = this.n();
-        double d3 = this.A();
-        double d4 = this.L();
-        double d5 = d2 + d4 / 2.0;
-        double d6 = this.v.getInterpolatedValue();
-        d += d6;
-        double d7 = d3 / 2.0;
-        boolean bl = this.O.y$src$Z$r0tfl8();
-        if (bl) {
-            Color color2;
-            String string = this.getName();
-            if (!string.equals(this.Cc.S$src$Ljava_lang_String_$1bp7ddx())) {
-                this.Cc.O(string);
-            }
-            double d8 = d + d3 - 6.0;
-            double d9 = this.b.A();
-            double d10 = this.b.L();
-            double d11 = d8 - d9;
-            double d12 = d5 - d10 / 2.0;
-            this.b.K(d11);
-            this.b.S(d12);
-            this.Cz.M(d11 - 6.0);
-            this.Cz.O(d12 - 8.0);
-            this.Cz.A(d9 + 10.0);
-            this.Cz.U(d10 + 16.0);
-            MousePosition mousePosition = RenderUtils.h();
-            boolean bl2 = this.Cz.Z(mousePosition);
-            if (bl2) {
-                Color color3;
-                if (this.w$src$Z$e457mb()) {
-                    // empty if block
-                }
-                boolean bl3 = false;
-                this.o.u(bl3);
-                this.Co.u(bl2);
-                Color color4 = this.CE.getInterpolatedColor();
-                GuiRenderPrimitives.B(d, d2, d3, d4, this.W(color4), 3.0f);
-                Color color5 = this.o.getInterpolatedColor();
-                if (color5.getAlpha() > 0 && !this.Q) {
-                    GuiRenderPrimitives.B(d, d2, d3, d4, this.W(color5), 3.0f);
-                }
-                if ((color3 = this.Co.getInterpolatedColor()).getAlpha() > 0) {
-                    GuiRenderPrimitives.p(this.Cz.o(), this.Cz.W(), this.Cz.e(), this.Cz.R(), this.W(color3), false, 2.0f, 1.0f, 0.0f, MacroCardComponent.J.u, 6);
-                }
-                this.b.S(this.W(MacroCardComponent.J.f));
-                d8 = d11 - 8.0;
-                double d13 = d8 - this.C5.A();
-                double d14 = d5 - 5.0;
-                boolean bl4 = this.C5.u$src$Lgg_vape_input_BindCaptureTask_$1o4th8o().V$src$Z$xc25df();
-                boolean bl5 = true;
-                this.C5.K(d13);
-                this.C5.S(d14);
-                this.C5.o(this.C5.Q$src$Lgg_vape_ui_click_component_TruncatedTextCompone$6s53nl().u$src$D$ivbecn());
-                this.C5.Y(10.0);
-                this.C5.Z(bl5);
-                GuiRenderPrimitives.p(d, d2, d7, d4, this.W(MacroCardComponent.J.E), false, 3.0f, 1.0f, 0.0f, this.W(MacroCardComponent.J.u), 9);
-                GuiRenderPrimitives.C(d + d7 - 1.0, d2 - 0.5, 1.0, d4, this.W(MacroCardComponent.J.z));
-                double d15 = d + 8.0;
-                this.i.S(this.W(ClientSettings.fW.O$src$Ljava_awt_Color_$19t4jn1()));
-                this.i.K(d15);
-                this.i.S(d5 - this.i.L() / 2.0);
-                this.CW.p(this.Q);
-                this.CW.R(this.Q ? this.W(Color.WHITE) : this.W(MacroCardComponent.J.A));
-                this.CW.K(d15 += this.i.A() + 6.0);
-                this.CW.S(d2);
-                this.CW.o(d7 - this.i.A() - 8.0 - 6.0 - 5.0);
-                this.CW.D(this.CW.A());
-                this.CW.Y(d4);
-                this.Cc.R(this.Q ? this.W(MacroCardComponent.J.A) : this.W(MacroCardComponent.J.h));
-                this.Cc.K(d + d7 + 5.0);
-                this.Cc.S(d2);
-                this.Cc.o(d7 - (this.C5.V$src$Z$1xhop3l() ? this.C5.A() : 0.0) - this.Cz.e() - 8.0 - 6.0 - 8.0);
-                this.Cc.D(this.Cc.A());
-                this.Cc.Y(d4);
-                return;
-            }
-            boolean bl6 = this.w$src$Z$e457mb();
-            this.o.u(bl6);
-            this.Co.u(bl2);
-            Color color6 = this.CE.getInterpolatedColor();
-            GuiRenderPrimitives.B(d, d2, d3, d4, this.W(color6), 3.0f);
-            Color color7 = this.o.getInterpolatedColor();
-            if (color7.getAlpha() > 0 && !this.Q) {
-                GuiRenderPrimitives.B(d, d2, d3, d4, this.W(color7), 3.0f);
-            }
-            if ((color2 = this.Co.getInterpolatedColor()).getAlpha() > 0) {
-                GuiRenderPrimitives.p(this.Cz.o(), this.Cz.W(), this.Cz.e(), this.Cz.R(), this.W(color2), false, 2.0f, 1.0f, 0.0f, MacroCardComponent.J.u, 6);
-            }
-            this.b.S(this.W(MacroCardComponent.J.W));
-            d8 = d11 - 8.0;
-            double d16 = d8 - this.C5.A();
-            double d17 = d5 - 5.0;
-            boolean bl7 = this.C5.u$src$Lgg_vape_input_BindCaptureTask_$1o4th8o().V$src$Z$xc25df();
-            boolean bl8 = true;
-            this.C5.K(d16);
-            this.C5.S(d17);
-            this.C5.o(this.C5.Q$src$Lgg_vape_ui_click_component_TruncatedTextCompone$6s53nl().u$src$D$ivbecn());
-            this.C5.Y(10.0);
-            this.C5.Z(bl8);
-            GuiRenderPrimitives.p(d, d2, d7, d4, this.W(MacroCardComponent.J.E), false, 3.0f, 1.0f, 0.0f, this.W(MacroCardComponent.J.u), 9);
-            GuiRenderPrimitives.C(d + d7 - 1.0, d2 - 0.5, 1.0, d4, this.W(MacroCardComponent.J.z));
-            double d18 = d + 8.0;
-            this.i.S(this.W(ClientSettings.fW.O$src$Ljava_awt_Color_$19t4jn1()));
-            this.i.K(d18);
-            this.i.S(d5 - this.i.L() / 2.0);
-            this.CW.p(this.Q);
-            this.CW.R(this.Q ? this.W(Color.WHITE) : this.W(MacroCardComponent.J.A));
-            this.CW.K(d18 += this.i.A() + 6.0);
-            this.CW.S(d2);
-            this.CW.o(d7 - this.i.A() - 8.0 - 6.0 - 5.0);
-            this.CW.D(this.CW.A());
-            this.CW.Y(d4);
-            this.Cc.R(this.Q ? this.W(MacroCardComponent.J.A) : this.W(MacroCardComponent.J.h));
-            this.Cc.K(d + d7 + 5.0);
-            this.Cc.S(d2);
-            this.Cc.o(d7 - (this.C5.V$src$Z$1xhop3l() ? this.C5.A() : 0.0) - this.Cz.e() - 8.0 - 6.0 - 8.0);
-            this.Cc.D(this.Cc.A());
-            this.Cc.Y(d4);
-            return;
+        this.selectedBackgroundAnimation.u(this.selected);
+        this.selectedAccentAnimation.u(this.selected);
+        this.selectionOffsetAnimation.u(this.selected);
+        this.dimmingAnimation.u(this.dimmed && !this.selected);
+
+        double cardX = this.G$src$D$1b2f02a() + this.selectionOffsetAnimation.getInterpolatedValue();
+        double cardY = this.n();
+        double cardWidth = this.A();
+        double cardHeight = this.L();
+        double centerY = cardY + cardHeight / 2.0;
+        double halfWidth = cardWidth / 2.0;
+        boolean macroHasBind = this.macro.hasValidBinding();
+
+        String detailsText = this.buildDetailsText();
+        if (!detailsText.equals(this.detailsLabel.getText())) {
+            this.detailsLabel.setText(detailsText);
         }
-        String string = this.getName();
-        if (!string.equals(this.Cc.S$src$Ljava_lang_String_$1bp7ddx())) {
-            this.Cc.O(string);
-        }
-        double d19 = d + d3 - 6.0;
-        double d20 = this.b.A();
-        double d21 = this.b.L();
-        double d22 = d19 - d20;
-        double d23 = d5 - d21 / 2.0;
-        this.b.K(d22);
-        this.b.S(d23);
-        this.Cz.M(d22 - 6.0);
-        this.Cz.O(d23 - 8.0);
-        this.Cz.A(d20 + 10.0);
-        this.Cz.U(d21 + 16.0);
+
+        double settingsIconWidth = this.settingsIcon.A();
+        double settingsIconHeight = this.settingsIcon.L();
+        double settingsIconX = cardX + cardWidth - LABEL_GAP - settingsIconWidth;
+        double settingsIconY = centerY - settingsIconHeight / 2.0;
+        this.settingsIcon.K(settingsIconX);
+        this.settingsIcon.S(settingsIconY);
+        this.settingsHitbox.M(settingsIconX - ICON_SIZE);
+        this.settingsHitbox.O(settingsIconY - SETTINGS_HITBOX_VERTICAL_PADDING);
+        this.settingsHitbox.A(settingsIconWidth + SETTINGS_HITBOX_WIDTH_PADDING);
+        this.settingsHitbox.U(settingsIconHeight + SETTINGS_HITBOX_VERTICAL_PADDING * 2.0);
+
         MousePosition mousePosition = RenderUtils.h();
-        boolean bl9 = this.Cz.Z(mousePosition);
-        if (bl9) {
-            Color color8;
-            if (this.w$src$Z$e457mb()) {
-                // empty if block
-            }
-            boolean bl10 = false;
-            this.o.u(bl10);
-            this.Co.u(bl9);
-            Color color9 = this.CE.getInterpolatedColor();
-            GuiRenderPrimitives.B(d, d2, d3, d4, this.W(color9), 3.0f);
-            Color color10 = this.o.getInterpolatedColor();
-            if (color10.getAlpha() > 0 && !this.Q) {
-                GuiRenderPrimitives.B(d, d2, d3, d4, this.W(color10), 3.0f);
-            }
-            if ((color8 = this.Co.getInterpolatedColor()).getAlpha() > 0) {
-                GuiRenderPrimitives.p(this.Cz.o(), this.Cz.W(), this.Cz.e(), this.Cz.R(), this.W(color8), false, 2.0f, 1.0f, 0.0f, MacroCardComponent.J.u, 6);
-            }
-            this.b.S(this.W(MacroCardComponent.J.f));
-            d19 = d22 - 8.0;
-            double d24 = d19 - this.C5.A();
-            double d25 = d5 - 5.0;
-            boolean bl11 = this.C5.u$src$Lgg_vape_input_BindCaptureTask_$1o4th8o().V$src$Z$xc25df();
-            boolean bl12 = bl11;
-            this.C5.K(d24);
-            this.C5.S(d25);
-            this.C5.o(this.C5.Q$src$Lgg_vape_ui_click_component_TruncatedTextCompone$6s53nl().u$src$D$ivbecn());
-            this.C5.Y(10.0);
-            this.C5.Z(bl12);
-            GuiRenderPrimitives.p(d, d2, d7, d4, this.W(MacroCardComponent.J.E), false, 3.0f, 1.0f, 0.0f, this.W(MacroCardComponent.J.u), 9);
-            GuiRenderPrimitives.C(d + d7 - 1.0, d2 - 0.5, 1.0, d4, this.W(MacroCardComponent.J.z));
-            double d26 = d + 8.0;
-            this.i.S(this.W(ClientSettings.fW.O$src$Ljava_awt_Color_$19t4jn1()));
-            this.i.K(d26);
-            this.i.S(d5 - this.i.L() / 2.0);
-            this.CW.p(this.Q);
-            this.CW.R(this.Q ? this.W(Color.WHITE) : this.W(MacroCardComponent.J.A));
-            this.CW.K(d26 += this.i.A() + 6.0);
-            this.CW.S(d2);
-            this.CW.o(d7 - this.i.A() - 8.0 - 6.0 - 5.0);
-            this.CW.D(this.CW.A());
-            this.CW.Y(d4);
-            this.Cc.R(this.Q ? this.W(MacroCardComponent.J.A) : this.W(MacroCardComponent.J.h));
-            this.Cc.K(d + d7 + 5.0);
-            this.Cc.S(d2);
-            this.Cc.o(d7 - (this.C5.V$src$Z$1xhop3l() ? this.C5.A() : 0.0) - this.Cz.e() - 8.0 - 6.0 - 8.0);
-            this.Cc.D(this.Cc.A());
-            this.Cc.Y(d4);
-            return;
+        boolean settingsHovered = this.settingsHitbox.Z(mousePosition);
+        boolean cardHovered = this.w$src$Z$e457mb();
+        this.cardHoverAnimation.u(!settingsHovered && cardHovered);
+        this.settingsHoverAnimation.u(settingsHovered);
+
+        Color selectedBackgroundColor = this.selectedBackgroundAnimation.getInterpolatedColor();
+        GuiRenderPrimitives.B(cardX, cardY, cardWidth, cardHeight, this.applyDimmedAlpha(selectedBackgroundColor), CORNER_RADIUS);
+        Color hoverBackgroundColor = this.cardHoverAnimation.getInterpolatedColor();
+        if (hoverBackgroundColor.getAlpha() > 0 && !this.selected) {
+            GuiRenderPrimitives.B(cardX, cardY, cardWidth, cardHeight, this.applyDimmedAlpha(hoverBackgroundColor), CORNER_RADIUS);
         }
-        boolean bl13 = this.w$src$Z$e457mb();
-        this.o.u(bl13);
-        this.Co.u(bl9);
-        Color color11 = this.CE.getInterpolatedColor();
-        GuiRenderPrimitives.B(d, d2, d3, d4, this.W(color11), 3.0f);
-        Color color12 = this.o.getInterpolatedColor();
-        if (color12.getAlpha() > 0 && !this.Q) {
-            GuiRenderPrimitives.B(d, d2, d3, d4, this.W(color12), 3.0f);
+        Color settingsHoverColor = this.settingsHoverAnimation.getInterpolatedColor();
+        if (settingsHoverColor.getAlpha() > 0) {
+            GuiRenderPrimitives.p(this.settingsHitbox.o(), this.settingsHitbox.W(), this.settingsHitbox.e(), this.settingsHitbox.R(), this.applyDimmedAlpha(settingsHoverColor), false, 2.0f, 1.0f, 0.0f, MacroCardComponent.J.u, 6);
         }
-        if ((color = this.Co.getInterpolatedColor()).getAlpha() > 0) {
-            GuiRenderPrimitives.p(this.Cz.o(), this.Cz.W(), this.Cz.e(), this.Cz.R(), this.W(color), false, 2.0f, 1.0f, 0.0f, MacroCardComponent.J.u, 6);
-        }
-        this.b.S(this.W(MacroCardComponent.J.W));
-        d19 = d22 - 8.0;
-        double d27 = d19 - this.C5.A();
-        double d28 = d5 - 5.0;
-        boolean bl14 = this.C5.u$src$Lgg_vape_input_BindCaptureTask_$1o4th8o().V$src$Z$xc25df();
-        boolean bl15 = bl14 || bl13;
-        this.C5.K(d27);
-        this.C5.S(d28);
-        this.C5.o(this.C5.Q$src$Lgg_vape_ui_click_component_TruncatedTextCompone$6s53nl().u$src$D$ivbecn());
-        this.C5.Y(10.0);
-        this.C5.Z(bl15);
-        GuiRenderPrimitives.p(d, d2, d7, d4, this.W(MacroCardComponent.J.E), false, 3.0f, 1.0f, 0.0f, this.W(MacroCardComponent.J.u), 9);
-        GuiRenderPrimitives.C(d + d7 - 1.0, d2 - 0.5, 1.0, d4, this.W(MacroCardComponent.J.z));
-        double d29 = d + 8.0;
-        this.i.S(this.W(ClientSettings.fW.O$src$Ljava_awt_Color_$19t4jn1()));
-        this.i.K(d29);
-        this.i.S(d5 - this.i.L() / 2.0);
-        this.CW.p(this.Q);
-        this.CW.R(this.Q ? this.W(Color.WHITE) : this.W(MacroCardComponent.J.A));
-        this.CW.K(d29 += this.i.A() + 6.0);
-        this.CW.S(d2);
-        this.CW.o(d7 - this.i.A() - 8.0 - 6.0 - 5.0);
-        this.CW.D(this.CW.A());
-        this.CW.Y(d4);
-        this.Cc.R(this.Q ? this.W(MacroCardComponent.J.A) : this.W(MacroCardComponent.J.h));
-        this.Cc.K(d + d7 + 5.0);
-        this.Cc.S(d2);
-        this.Cc.o(d7 - (this.C5.V$src$Z$1xhop3l() ? this.C5.A() : 0.0) - this.Cz.e() - 8.0 - 6.0 - 8.0);
-        this.Cc.D(this.Cc.A());
-        this.Cc.Y(d4);
+        this.settingsIcon.setColor(this.applyDimmedAlpha(settingsHovered ? MacroCardComponent.J.f : MacroCardComponent.J.W));
+
+        double bindInputX = settingsIconX - CONTENT_PADDING - this.bindInput.A();
+        double bindInputY = centerY - BIND_INPUT_HEIGHT / 2.0;
+        boolean bindCaptureActive = this.bindInput.getCaptureTask().isCapturing();
+        boolean showBindInput = macroHasBind || bindCaptureActive || !settingsHovered && cardHovered;
+        this.bindInput.K(bindInputX);
+        this.bindInput.S(bindInputY);
+        this.bindInput.o(this.bindInput.getBindLabel().getRenderedWidth());
+        this.bindInput.Y(BIND_INPUT_HEIGHT);
+        this.bindInput.setVisible(showBindInput);
+
+        GuiRenderPrimitives.p(cardX, cardY, halfWidth, cardHeight, this.applyDimmedAlpha(MacroCardComponent.J.E), false, CORNER_RADIUS, 1.0f, 0.0f, this.applyDimmedAlpha(MacroCardComponent.J.u), 9);
+        GuiRenderPrimitives.C(cardX + halfWidth - 1.0, cardY - 0.5, 1.0, cardHeight, this.applyDimmedAlpha(MacroCardComponent.J.z));
+
+        double macroIconX = cardX + CONTENT_PADDING;
+        this.macroIcon.setColor(this.applyDimmedAlpha(ClientSettings.INSTANCE.getAccentColor()));
+        this.macroIcon.K(macroIconX);
+        this.macroIcon.S(centerY - this.macroIcon.L() / 2.0);
+
+        this.macroNameLabel.setBold(this.selected);
+        this.macroNameLabel.setTextColor(this.selected ? this.applyDimmedAlpha(Color.WHITE) : this.applyDimmedAlpha(MacroCardComponent.J.A));
+        double macroNameX = macroIconX + this.macroIcon.A() + LABEL_GAP;
+        this.macroNameLabel.K(macroNameX);
+        this.macroNameLabel.S(cardY);
+        this.macroNameLabel.o(halfWidth - this.macroIcon.A() - CONTENT_PADDING - LABEL_GAP - 5.0);
+        this.macroNameLabel.setMaxWidth(this.macroNameLabel.A());
+        this.macroNameLabel.Y(cardHeight);
+
+        this.detailsLabel.setTextColor(this.selected ? this.applyDimmedAlpha(MacroCardComponent.J.A) : this.applyDimmedAlpha(MacroCardComponent.J.h));
+        this.detailsLabel.K(cardX + halfWidth + 5.0);
+        this.detailsLabel.S(cardY);
+        this.detailsLabel.o(halfWidth - (this.bindInput.V$src$Z$1xhop3l() ? this.bindInput.A() : 0.0) - this.settingsHitbox.e() - CONTENT_PADDING - LABEL_GAP - CONTENT_PADDING);
+        this.detailsLabel.setMaxWidth(this.detailsLabel.A());
+        this.detailsLabel.Y(cardHeight);
     }
 
 
-    public boolean r$src$Z$kfv1uj() {
-        return this.CO;
+    public boolean isDimmed() {
+        return this.dimmed;
     }
 
-    public void S(@Nullable Runnable runnable) {
-        this.I = runnable;
+    public void setAuxiliaryAction(@Nullable Runnable auxiliaryAction) {
+        this.auxiliaryAction = auxiliaryAction;
     }
 }
 

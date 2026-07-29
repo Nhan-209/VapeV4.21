@@ -18,12 +18,12 @@ implements GuiClickListener {
     }
 
     @Override
-    public void G() {
+    public void onSecondaryClick() {
         this.F.N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f().u$src$Ljava_util_List_$1u5n2i3().set(this.d, new HotbarSlotRule(0));
     }
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         this.F.t(this.d);
     }
 }

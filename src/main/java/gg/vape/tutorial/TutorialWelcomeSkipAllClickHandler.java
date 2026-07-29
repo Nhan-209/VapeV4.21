@@ -10,7 +10,7 @@ implements GuiClickListener {
     final TutorialWelcomePanel F;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         Vape.INSTANCE.getTutorialManager().I(TutorialState.COMPLETED_ALL);
     }
 
@@ -18,4 +18,3 @@ implements GuiClickListener {
         this.F = tutorialWelcomePanel;
     }
 }
-

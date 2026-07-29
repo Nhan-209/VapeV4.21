@@ -32,7 +32,7 @@ extends Mapping {
         String string = b;
         MEnumHandBridge mEnumHandBridge = this;
         this.s = this.u(string, bl, clazz);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MEnumHandBridge.q(++n2);
         }
     }

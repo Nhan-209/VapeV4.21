@@ -13,77 +13,76 @@ import gg.vape.module.utility.inventory.ArmorItemMappingEntry;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemStackSemanticResolver {
-    private final List<ItemMappingEntry> h = new ArrayList<ItemMappingEntry>();
-    private final List<ItemMappingEntry> l = new ArrayList<ItemMappingEntry>();
-    public static boolean A = true;
+    private final List<ItemMappingEntry> mappings = new ArrayList<ItemMappingEntry>();
+    private final List<ItemMappingEntry> legacyMappings = new ArrayList<ItemMappingEntry>();
+    public static boolean LOG_MISSING_MAPPINGS = true;
 
-    public void p() {
-        String[] stringArray;
-        String string = "universal_items.csv";
-        byte[] byArray = Vape.readResource(string);
-        for (String string2 : stringArray = new String(byArray).split("\n")) {
-            String string3 = string2.trim();
-            ItemMappingEntry itemMappingEntry = ItemMappingEntry.w(string3);
+    public void loadMappings() {
+        String resourceName = "universal_items.csv";
+        byte[] resourceBytes = Vape.readResource(resourceName);
+        for (String line : new String(resourceBytes).split("\n")) {
+            String mappingLine = line.trim();
+            ItemMappingEntry itemMappingEntry = ItemMappingEntry.w(mappingLine);
             if (itemMappingEntry.j() != null && ItemStackScoreUtil.R(itemMappingEntry.j())) {
                 for (ArmorMaterialType armorMaterialType : ArmorMaterialType.values()) {
                     if (!armorMaterialType.G(itemMappingEntry.M())) continue;
                     itemMappingEntry = new ArmorItemMappingEntry(itemMappingEntry, armorMaterialType);
                 }
             }
-            this.h.add(itemMappingEntry);
+            this.mappings.add(itemMappingEntry);
             if (itemMappingEntry.A() == null) continue;
-            this.l.add(itemMappingEntry);
+            this.legacyMappings.add(itemMappingEntry);
         }
     }
 
     @Nullable
-    public ItemMappingEntry b(String string) {
-        for (ItemMappingEntry itemMappingEntry : this.h) {
-            if (!itemMappingEntry.M().equals(string)) continue;
+    public ItemMappingEntry findByName(String name) {
+        for (ItemMappingEntry itemMappingEntry : this.mappings) {
+            if (!itemMappingEntry.M().equals(name)) continue;
             return itemMappingEntry;
         }
         return null;
     }
 
 
-    public void Q() {
-        ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
+    public void reportMissingMappings() {
+        ArrayList<ItemStack> missingItems = new ArrayList<ItemStack>();
         for (ItemStack itemStack : ItemStackScoreUtil.S()) {
-            ItemMappingEntry itemMappingEntry = this.j(itemStack);
+            ItemMappingEntry itemMappingEntry = this.resolve(itemStack);
             if (itemMappingEntry != null) continue;
-            arrayList.add(itemStack);
+            missingItems.add(itemStack);
         }
-        if (!A) {
+        if (!LOG_MISSING_MAPPINGS) {
             return;
         }
-        if (arrayList.isEmpty()) {
+        if (missingItems.isEmpty()) {
             return;
         }
-        Vape.debugLog("Failed to find " + arrayList.size() + " item(s):");
+        Vape.debugLog("Failed to find " + missingItems.size() + " item(s):");
     }
 
     @Nullable
-    public ItemMappingEntry K(int n, int n2) {
-        for (ItemMappingEntry itemMappingEntry : this.l) {
+    public ItemMappingEntry findLegacyMapping(int itemId, int metadata) {
+        for (ItemMappingEntry itemMappingEntry : this.legacyMappings) {
             assert (itemMappingEntry.s() != null);
-            if (itemMappingEntry.s() != n || itemMappingEntry.f() == null || itemMappingEntry.f() != n2) continue;
+            if (itemMappingEntry.s() != itemId || itemMappingEntry.f() == null || itemMappingEntry.f() != metadata) continue;
             return itemMappingEntry;
         }
         return null;
     }
 
     @Nullable
-    public ItemMappingEntry l(int n) {
-        for (ItemMappingEntry itemMappingEntry : this.l) {
+    public ItemMappingEntry findLegacyMapping(int itemId) {
+        for (ItemMappingEntry itemMappingEntry : this.legacyMappings) {
             assert (itemMappingEntry.s() != null);
-            if (itemMappingEntry.s() != n || itemMappingEntry.f() != null && itemMappingEntry.f() != 0) continue;
+            if (itemMappingEntry.s() != itemId || itemMappingEntry.f() != null && itemMappingEntry.f() != 0) continue;
             return itemMappingEntry;
         }
         return null;
     }
 
     @Nullable
-    public ItemMappingEntry j(ItemStack itemStack) {
+    public ItemMappingEntry resolve(ItemStack itemStack) {
         ItemMappingEntry itemMappingEntry;
         if (itemStack.isNull()) {
             return null;
@@ -93,22 +92,22 @@ public class ItemStackSemanticResolver {
             return null;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            String string = item.getObject().toString();
-            String string2 = ForgeVersion.MC_1_21_0.d() ? string : "minecraft:" + string;
-            return this.b(string2);
+            String itemName = item.getObject().toString();
+            String normalizedName = ForgeVersion.MC_1_21_0.d() ? itemName : "minecraft:" + itemName;
+            return this.findByName(normalizedName);
         }
-        int n = item.P();
-        int n2 = itemStack.L();
+        int itemId = item.P();
+        int metadata = itemStack.L();
         if (!item.p()) {
-            n2 = 0;
+            metadata = 0;
         }
-        if ((itemMappingEntry = this.K(n, n2)) != null) {
+        if ((itemMappingEntry = this.findLegacyMapping(itemId, metadata)) != null) {
             return itemMappingEntry;
         }
         if (itemStack.L() != 0) {
             return null;
         }
-        return this.l(n);
+        return this.findLegacyMapping(itemId);
     }
 }
 

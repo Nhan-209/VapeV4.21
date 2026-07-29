@@ -36,7 +36,7 @@ extends Mapping {
                 MEffectRenderer mEffectRenderer = this;
                 this.F = mEffectRenderer.T(string, clazz).J(1).z();
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MSoundAwareEntityFX.Z(new String[5]);
             }
             return;
@@ -45,7 +45,7 @@ extends Mapping {
         String string = "fxLayers";
         MEffectRenderer mEffectRenderer = this;
         this.F = mEffectRenderer.T(string, clazz).J(1).z(); 
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MSoundAwareEntityFX.Z(new String[5]);
         }
     }

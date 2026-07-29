@@ -19,69 +19,69 @@ import java.text.DecimalFormat;
 
 public class NumberSliderComponent
 extends SliderComponentBase {
-    private Double jI;
-    private static final long cb;
-    protected DoubleAnimation jP;
-    private String a;
-    private Color jA;
-    private DoubleAnimation jj;
-    private boolean jD;
-    private double jf;
-    private double O;
-    private double jw;
-    private NumberSliderInputHandle jp;
-    private double v;
-    private RectData jm;
-    private int jv;
-    private NumberValue K;
-    private double R;
+    private Double legacyDragValueSentinel;
+    private static final long FINE_STEP_DECIMAL_PLACES;
+    protected DoubleAnimation handleHoverAnimation;
+    private String unitSuffix;
+    private Color labelColor;
+    private DoubleAnimation handlePositionAnimation;
+    private boolean hovered;
+    private double fontScale;
+    private double valuePerPercent;
+    private double step;
+    private NumberSliderInputHandle inputHandle;
+    private double maximum;
+    private RectData handleBounds;
+    private int decimalPlaces;
+    private NumberValue numberValue;
+    private double minimum;
 
-    public NumberValue f$src$Lgg_vape_value_NumberValue_$1des1vc() {
-        return this.K;
+    public NumberValue getNumberValue() {
+        return this.numberValue;
     }
 
-    public void a(double d) {
-        this.jw = d;
+    public void setStep(double step) {
+        this.step = step;
     }
 
     @Override
     public void F() {
-        if (!this.jD) {
-            this.jP.J();
+        if (!this.hovered) {
+            this.handleHoverAnimation.J();
         }
-        this.jD = true;
+        this.hovered = true;
     }
 
     static {
-        cb = 2501393815093379082L;
+        FINE_STEP_DECIMAL_PLACES = 2501393815093379082L;
     }
 
-    public NumberSliderComponent(String string, double d, double d2, double d3) {
-        super(string);
-        this.a = "";
-        this.jf = 0.75;
-        this.jv = 1;
-        this.jm = new RectData(0.0, 0.0, 0.0, 0.0);
-        this.jj = new DoubleAnimation(0.0, 0.0, 0.0);
-        this.jP = new DoubleAnimation(0.15, 7.0, 8.0);
-        this.jA = NumberSliderComponent.J.Z;
-        this.jI = -1.0;
-        this.R = d;
-        this.v = d2;
-        this.jw = d3;
-        this.O = (double)((int)(d2 * 100.0) - (int)(d * 100.0)) / 10000.0;
-        this.jp = new NumberSliderInputHandle(this);
-        this.H(this.jp);
-        if (d3 <= 0.01) {
-            this.jv = (int)cb;
+    public NumberSliderComponent(String label, double minimum, double maximum, double step) {
+        super(label);
+        this.unitSuffix = "";
+        this.fontScale = 0.75;
+        this.decimalPlaces = 1;
+        this.handleBounds = new RectData(0.0, 0.0, 0.0, 0.0);
+        this.handlePositionAnimation = new DoubleAnimation(0.0, 0.0, 0.0);
+        this.handleHoverAnimation = new DoubleAnimation(0.15, 7.0, 8.0);
+        this.labelColor = NumberSliderComponent.J.Z;
+        this.legacyDragValueSentinel = -1.0;
+        this.minimum = minimum;
+        this.maximum = maximum;
+        this.step = step;
+        this.valuePerPercent = (double)((int)(maximum * 100.0) - (int)(minimum * 100.0)) / 10000.0;
+        this.inputHandle = new NumberSliderInputHandle(this);
+        this.addChildren(this.inputHandle);
+        if (step <= 0.01) {
+            this.decimalPlaces = (int)FINE_STEP_DECIMAL_PLACES;
         }
     }
 
     @Override
     public void u() {
-        if (this.jD && !this.w$src$Z$e457mb()) {
-            this.jP.J();
-            this.jD = false;
+        if (this.hovered && !this.w$src$Z$e457mb()) {
+            this.handleHoverAnimation.J();
+            this.hovered = false;
         }
     }
 
@@ -90,55 +90,55 @@ extends SliderComponentBase {
         return 25.0;
     }
 
-    public String n$src$Ljava_lang_String_$af0f9r() {
-        return this.a;
+    public String getUnitSuffix() {
+        return this.unitSuffix;
     }
 
-    public DecimalFormat O$src$Ljava_text_DecimalFormat_$mv9dca() {
-        return this.K.Q$src$Ljava_text_DecimalFormat_$j98hth();
+    public DecimalFormat getDecimalFormat() {
+        return this.numberValue.getInputFormat();
     }
 
-    private double P(double d) {
-        double d2;
-        Double d4 = this.K != null ? (Double)this.K.K() : null;
-        double d3 = d2 = d4 != null ? (d4 - this.R) / (this.v - this.R) : 0.0;
-        if (d2 > 1.0) {
-            d2 = 1.0;
-        } else if (d2 < 0.0) {
-            d2 = 0.0;
+    private double calculateHandleOffset(double trackWidth) {
+        double normalizedValue;
+        Double currentValue = this.numberValue != null ? (Double)this.numberValue.getValue() : null;
+        double normalizedValueSnapshot = normalizedValue = currentValue != null ? (currentValue - this.minimum) / (this.maximum - this.minimum) : 0.0;
+        if (normalizedValue > 1.0) {
+            normalizedValue = 1.0;
+        } else if (normalizedValue < 0.0) {
+            normalizedValue = 0.0;
         }
-        return (d - this.jP.getEndValue()) * d2 + this.Z$src$D$1wvori2() + this.jP.getEndValue() / 2.0;
+        return (trackWidth - this.handleHoverAnimation.getEndValue()) * normalizedValue + this.getHorizontalInset() + this.handleHoverAnimation.getEndValue() / 2.0;
     }
 
-    public double o$src$D$3h2b8a() {
-        return this.R;
+    public double getMinimum() {
+        return this.minimum;
     }
 
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
-        RectData rectData = new RectData(this.G$src$D$1b2f02a(), this.jm.W(), this.A(), this.jm.R());
-        if (rectData.J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
-            this.o = RenderUtils.h();
-            this.I = true;
+    public void g(GuiMouseEvent mouseEvent) {
+        RectData interactionBounds = new RectData(this.G$src$D$1b2f02a(), this.handleBounds.W(), this.A(), this.handleBounds.R());
+        if (interactionBounds.J(mouseEvent.getX(), mouseEvent.getY())) {
+            this.dragStartMousePosition = RenderUtils.h();
+            this.dragging = true;
         }
     }
 
-    public void A(double d) {
-        this.v = d;
+    public void setMaximum(double maximum) {
+        this.maximum = maximum;
     }
 
     @Override
-    public void q(double d) {
-        if (this.A() == d) {
+    public void setExplicitWidth(double width) {
+        if (this.A() == width) {
             return;
         }
-        super.q(d);
-        this.q(true);
+        super.setExplicitWidth(width);
+        this.updateHandleAnimation(true);
     }
 
-    private void lambda$new$0(NumberValue numberValue) {
-        this.q(false);
+    private void handleValueChanged(NumberValue changedValue) {
+        this.updateHandleAnimation(false);
     }
 
     @Override
@@ -146,83 +146,83 @@ extends SliderComponentBase {
         return 110.0;
     }
 
-    private void A$src$V$2rrsd6() {
-        if (this.I) {
-            if (!MouseInput.I(MouseButton.LEFT_CLICK.ordinal())) {
-                this.I = false;
+    private void updateDraggingValue() {
+        if (this.dragging) {
+            if (!MouseInput.isButtonDown(MouseButton.LEFT_CLICK.ordinal())) {
+                this.dragging = false;
                 return;
             }
-            double d = (double)this.o.O - this.G$src$D$1b2f02a() + this.P$src$D$34o7qt() - this.Z$src$D$1wvori2() - this.jm.e() / 2.0;
-            double d2 = this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2() + this.jm.e() / 2.0;
-            double d3 = this.G$src$D$1b2f02a() + this.A() - 5.0 - this.jm.e() / 2.0;
-            double d4 = this.h(this.R, this.v, d2, d3, this.jw, d);
-            d4 = new BigDecimal("" + d4).setScale(this.jv, RoundingMode.HALF_UP).doubleValue();
-            if (this.K != null) {
-                if (((Double)this.K.K()).equals(this.jI)) {
+            double trackOffset = (double)this.dragStartMousePosition.O - this.G$src$D$1b2f02a() + this.getMouseDeltaX() - this.getHorizontalInset() - this.handleBounds.e() / 2.0;
+            double trackStart = this.G$src$D$1b2f02a() + this.getHorizontalInset() + this.handleBounds.e() / 2.0;
+            double trackEnd = this.G$src$D$1b2f02a() + this.A() - 5.0 - this.handleBounds.e() / 2.0;
+            double updatedValue = this.mapTrackOffsetToValue(this.minimum, this.maximum, trackStart, trackEnd, this.step, trackOffset);
+            updatedValue = new BigDecimal("" + updatedValue).setScale(this.decimalPlaces, RoundingMode.HALF_UP).doubleValue();
+            if (this.numberValue != null) {
+                if (((Double)this.numberValue.getValue()).equals(this.legacyDragValueSentinel)) {
                     return;
                 }
-                this.K.A(d4);
+                this.numberValue.setValue(updatedValue);
             }
         }
     }
 
-    public double p() {
-        return this.jw;
+    public double getStep() {
+        return this.step;
     }
 
-    public void N(double d) {
-        this.R = d;
+    public void setMinimum(double minimum) {
+        this.minimum = minimum;
     }
 
     @Override
     public void H() {
-        this.A$src$V$2rrsd6();
+        this.updateDraggingValue();
         this.onDisable();
-        SmoothFontRenderer smoothFontRenderer = this.O(this.jf);
-        double d = smoothFontRenderer.d(this.W$src$Ljava_lang_String_$24bvf0());
-        double d2 = this.jP.getInterpolatedValue();
-        double d3 = this.n() + 12.5 + d;
-        double d4 = this.G$src$D$1b2f02a() + this.jj.getInterpolatedValue();
-        smoothFontRenderer.d(this.W$src$Ljava_lang_String_$24bvf0(), this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2(), this.n() + 5.0, this.jA);
-        this.jp.K(this.G$src$D$1b2f02a() + this.A() - 5.0 - this.jp.A());
-        this.jp.S(this.n() + 5.0);
-        this.jm = this.L(d4, d3 + 0.5, this.jP.getEndValue() / 2.0);
-        double d5 = this.jm.o() - this.G$src$D$1b2f02a() - this.Z$src$D$1wvori2();
-        double d6 = this.G$src$D$1b2f02a() + this.A() - this.jm.o() - 5.0;
-        double d7 = d3 + 0.5 - 1.0;
-        if (d5 - 0.5 >= 2.0) {
-            GuiRenderPrimitives.j(this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2(), d7, d5 - 0.5, 2.0, J.z());
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(this.fontScale);
+        double labelHeight = fontRenderer.d(this.getLabel());
+        double handleSize = this.handleHoverAnimation.getInterpolatedValue();
+        double trackCenterY = this.n() + 12.5 + labelHeight;
+        double handleCenterX = this.G$src$D$1b2f02a() + this.handlePositionAnimation.getInterpolatedValue();
+        fontRenderer.d(this.getLabel(), this.G$src$D$1b2f02a() + this.getHorizontalInset(), this.n() + 5.0, this.labelColor);
+        this.inputHandle.K(this.G$src$D$1b2f02a() + this.A() - 5.0 - this.inputHandle.A());
+        this.inputHandle.S(this.n() + 5.0);
+        this.handleBounds = this.createHandleBounds(handleCenterX, trackCenterY + 0.5, this.handleHoverAnimation.getEndValue() / 2.0);
+        double filledTrackWidth = this.handleBounds.o() - this.G$src$D$1b2f02a() - this.getHorizontalInset();
+        double remainingTrackWidth = this.G$src$D$1b2f02a() + this.A() - this.handleBounds.o() - 5.0;
+        double trackY = trackCenterY + 0.5 - 1.0;
+        if (filledTrackWidth - 0.5 >= 2.0) {
+            GuiRenderPrimitives.j(this.G$src$D$1b2f02a() + this.getHorizontalInset(), trackY, filledTrackWidth - 0.5, 2.0, J.z());
         }
-        if (d6 - 8.5 >= 2.0) {
-            GuiRenderPrimitives.j(this.jm.o() + 8.5, d7, d6 - 8.5, 2.0, NumberSliderComponent.J.l);
+        if (remainingTrackWidth - 8.5 >= 2.0) {
+            GuiRenderPrimitives.j(this.handleBounds.o() + 8.5, trackY, remainingTrackWidth - 8.5, 2.0, NumberSliderComponent.J.l);
         }
-        GuiRenderPrimitives.Y((float)(d4 - d2 / 2.0), (float)(d3 + 0.5 - d2 / 2.0), (float)d2, (float)(0.8 / Vape.INSTANCE.getClientSettings().s()), J.z(), 0.0, this.d());
+        GuiRenderPrimitives.Y((float)(handleCenterX - handleSize / 2.0), (float)(trackCenterY + 0.5 - handleSize / 2.0), (float)handleSize, (float)(0.8 / Vape.INSTANCE.getClientSettings().s()), J.z(), 0.0, this.getDisabledOverlayColor());
     }
 
     public NumberSliderComponent(NumberValue numberValue) {
-        this(numberValue.getName(), numberValue.S$src$D$10pa1t3(), numberValue.Q$src$D$10o6gmd(), numberValue.K$src$D$10kvp27());
-        this.a = numberValue.T();
-        this.K = numberValue;
-        if (numberValue.w$src$Ljava_lang_String_$ikqblg() != null) {
-            this.w(numberValue.w$src$Ljava_lang_String_$ikqblg());
+        this(numberValue.getName(), numberValue.getMinimum(), numberValue.getMaximum(), numberValue.getIncrement());
+        this.unitSuffix = numberValue.getUnitSuffix();
+        this.numberValue = numberValue;
+        if (numberValue.getDescription() != null) {
+            this.w(numberValue.getDescription());
         }
-        this.C(numberValue);
-        numberValue.B(this::lambda$new$0);
-        this.q(true);
+        this.bindValue(numberValue);
+        numberValue.addChangeListener(this::handleValueChanged);
+        this.updateHandleAnimation(true);
     }
 
-    private void q(boolean bl) {
-        double d = this.A() - (this.Z$src$D$1wvori2() + 5.0);
-        double d2 = this.P(d);
-        double d3 = this.jj.getInterpolatedValue();
-        this.jj = new DoubleAnimation(0.05, d3, d2);
-        this.jj.c();
-        if (bl) {
-            this.jj.C();
+    private void updateHandleAnimation(boolean immediate) {
+        double trackWidth = this.A() - (this.getHorizontalInset() + 5.0);
+        double targetHandleOffset = this.calculateHandleOffset(trackWidth);
+        double currentHandleOffset = this.handlePositionAnimation.getInterpolatedValue();
+        this.handlePositionAnimation = new DoubleAnimation(0.05, currentHandleOffset, targetHandleOffset);
+        this.handlePositionAnimation.c();
+        if (immediate) {
+            this.handlePositionAnimation.C();
         }
     }
 
-    public double v() {
-        return this.v;
+    public double getMaximum() {
+        return this.maximum;
     }
 }

@@ -27,38 +27,17 @@ import java.util.List;
 
 public class HudOverlaySelectorFrame
 extends Frame {
-    private static final double BZ = 6.0;
-    private final List<HudOverlayEntryInteractiveComponent> BS = new ArrayList<HudOverlayEntryInteractiveComponent>();
-    private static final double Bh = 6.0;
-    private static final double Bd = 2.0;
-    private static final double BR = 370.0;
-    private static final double By = 18.0;
-    private final HudOverlayEntryPanel Bc;
-    private static final float Bt = 4.0f;
-    private static final double B0 = 2.0;
-    private static GuiComponent[] B4;
-    private static final Color Bk;
-    private final List<HudOverlayEntrySpec> Bi = new ArrayList<HudOverlayEntrySpec>();
-    private static final int BU;
+    private final List<HudOverlayEntryInteractiveComponent> entryComponents = new ArrayList<HudOverlayEntryInteractiveComponent>();
+    private final HudOverlayEntryPanel headerPanel;
+    private final List<HudOverlayEntrySpec> entrySpecs = new ArrayList<HudOverlayEntrySpec>();
+    private static final int MAX_COLUMNS = calculateMaxColumns();
 
-    private static double j(int n) {
-        int n2 = Math.min(n, BU);
+    private static double calculateContentWidth(int entryCount) {
+        int n2 = Math.min(entryCount, MAX_COLUMNS);
         if (n2 <= 0) {
             n2 = 1;
         }
         return 12.0 + (double)n2 * 22.0 + (double)(n2 - 1) * 2.0;
-    }
-
-    public HudOverlayEntryPanel t$src$Lgg_vape_ui_click_frame_impl_hud_HudOverlayEntry$1tdwl41() {
-        return this.Bc;
-    }
-
-    public List<HudOverlayEntrySpec> S$src$Ljava_util_List_$11hop4i() {
-        return Collections.unmodifiableList(this.Bi);
-    }
-
-    public static GuiComponent[] v$src$ALgg_vape_ui_click_component_GuiComponent_$14bodu2() {
-        return B4;
     }
 
     @Override
@@ -71,40 +50,40 @@ extends Frame {
         GuiRenderPrimitives.g(d2, d3, d4, d, 12.0f, 4.0f, new Color(0, 0, 0, 70));
     }
 
-    private int p() {
-        if (this.BS.isEmpty()) {
+    private int getRowCount() {
+        if (this.entryComponents.isEmpty()) {
             return 0;
         }
-        int n = Math.min(this.BS.size(), BU);
-        return Math.max(1, (int)Math.ceil((double)this.BS.size() / (double)n));
+        int n = Math.min(this.entryComponents.size(), MAX_COLUMNS);
+        return Math.max(1, (int)Math.ceil((double)this.entryComponents.size() / (double)n));
     }
 
     private static void lambda$getLegitModuleOverlays$2(ModManager modManager, HudModule hudModule, Class clazz) {
         Object obj = modManager.getMod(hudModule.getClass());
         if (obj != null) {
             ((Mod)obj).F();
-            Object t = ClientSettings.g(clazz);
+            Object t = ClientSettings.getFrame(clazz);
             if (t != null) {
-                ((Frame)t).Z(((Mod)obj).r$src$Z$14eylz9());
+                ((Frame)t).setVisible(((Mod)obj).r$src$Z$14eylz9());
             }
         }
     }
 
-    private void s$src$V$1omanr1() {
-        if (this.BS.isEmpty()) {
+    private void layoutEntries() {
+        if (this.entryComponents.isEmpty()) {
             return;
         }
-        int n = this.BS.size();
-        int n2 = Math.min(n, BU);
+        int n = this.entryComponents.size();
+        int n2 = Math.min(n, MAX_COLUMNS);
         int n3 = Math.max(1, (int)Math.ceil((double)n / (double)n2));
-        double d = HudOverlaySelectorFrame.j(n);
+        double d = HudOverlaySelectorFrame.calculateContentWidth(n);
         this.o(d);
-        this.e(n3);
+        this.setRowCount(n3);
         double d2 = 22.0;
         double d3 = this.n() + 18.0;
         double d4 = this.G$src$D$1b2f02a() + 6.0;
         for (int i = 0; i < n; ++i) {
-            HudOverlayEntryInteractiveComponent hudOverlayEntryInteractiveComponent = this.BS.get(i);
+            HudOverlayEntryInteractiveComponent hudOverlayEntryInteractiveComponent = this.entryComponents.get(i);
             int n4 = i % n2;
             int n5 = i / n2;
             double d5 = d4 + (double)n4 * (d2 + 2.0);
@@ -116,13 +95,13 @@ extends Frame {
         }
     }
 
-    public void x(HudOverlayEntrySpec hudOverlayEntrySpec) {
-        ArrayList<HudOverlayEntrySpec> arrayList = new ArrayList<HudOverlayEntrySpec>(this.Bi);
+    public void addEntry(HudOverlayEntrySpec hudOverlayEntrySpec) {
+        ArrayList<HudOverlayEntrySpec> arrayList = new ArrayList<HudOverlayEntrySpec>(this.entrySpecs);
         arrayList.add(hudOverlayEntrySpec);
-        this.q(arrayList);
+        this.setEntries(arrayList);
     }
 
-    private void e(int n) {
+    private void setRowCount(int n) {
         if (n <= 0) {
             n = 1;
         }
@@ -131,32 +110,29 @@ extends Frame {
         this.K = d;
     }
 
-    private void w$src$V$1oohu4h() {
-        this.Bc.o(this.A() - 12.0);
-        this.Bc.Y(18.0);
-        this.Bc.K(this.G$src$D$1b2f02a() + 6.0);
-        this.Bc.S(this.n());
-    }
-
-    static {
-        HudOverlaySelectorFrame.R(null);
-        Bk = new Color(0, 0, 0, 72);
-        BU = HudOverlaySelectorFrame.V$src$I$1o6cm8d();
+    private void layoutHeader() {
+        this.headerPanel.o(this.A() - 12.0);
+        this.headerPanel.Y(18.0);
+        this.headerPanel.K(this.G$src$D$1b2f02a() + 6.0);
+        this.headerPanel.S(this.n());
     }
 
     private static void lambda$new$0() {
-        ClientSettings.f5.G(ClickGuiLayer.MAIN);
+        ClientSettings.clickGuiFrameManager.showLayer(ClickGuiLayer.MAIN);
     }
 
-    private static List<HudOverlayEntrySpec> t$src$Ljava_util_List_$rgpmy9() {
+    private static List<HudOverlayEntrySpec> getHudModuleEntries() {
         ArrayList<HudOverlayEntrySpec> arrayList = new ArrayList<HudOverlayEntrySpec>();
         try {
             ModManager modManager = Vape.INSTANCE.getModManager();
             for (Mod mod : new ArrayList<Mod>(modManager.l())) {
                 Class clazz;
                 HudModule hudModule;
-                if (!(mod instanceof HudModule) || (hudModule = (HudModule)mod).F$src$Lgg_vape_module_render_hud_HudModuleGroup_$1x5d82w() != HudModuleGroup.f || (clazz = hudModule.j$src$Ljava_lang_Class_$wxgaiy()) == null) continue;
-                HudOverlayEntrySpec hudOverlayEntrySpec = HudOverlayEntrySpec.O(hudModule.getName(), hudModule.s$src$Ljava_lang_String_$pdppcm(), clazz).R(() -> HudOverlaySelectorFrame.lambda$getLegitModuleOverlays$1(modManager, hudModule)).s(() -> HudOverlaySelectorFrame.lambda$getLegitModuleOverlays$2(modManager, hudModule, clazz));
+                if (!(mod instanceof HudModule) || (hudModule = (HudModule)mod).getGroup() != HudModuleGroup.HUD || (clazz = hudModule.getConfigFrameClass()) == null) continue;
+                HudOverlayEntrySpec hudOverlayEntrySpec = HudOverlayEntrySpec
+                        .forFrame(hudModule.getName(), hudModule.getKey(), clazz)
+                        .withSelectedSupplier(() -> HudOverlaySelectorFrame.lambda$getLegitModuleOverlays$1(modManager, hudModule))
+                        .withAction(() -> HudOverlaySelectorFrame.lambda$getLegitModuleOverlays$2(modManager, hudModule, clazz));
                 arrayList.add(hudOverlayEntrySpec);
             }
         }
@@ -169,59 +145,51 @@ extends Frame {
     public HudOverlaySelectorFrame() {
         this.o(370.0);
         this.Y(46.0);
-        this.T(HudOverlaySelectorFrame.J.m);
-        this.d(true);
+        this.setDisabledOverlayColor(HudOverlaySelectorFrame.J.m);
+        this.setShowDisabledOverlay(true);
         this.D(false);
         this.Y(false);
         this.L(false, false);
-        this.Bc = new HudOverlayEntryPanel(HudOverlaySelectorFrame::lambda$new$0);
-        this.Bc.q("Overlays");
-        this.h(this.Bc, new Object[0]);
-        this.q(this.d$src$Ljava_util_List_$1sm1xmp());
-    }
-
-    private static Exception a(Exception exception) {
-        return exception;
+        this.headerPanel = new HudOverlayEntryPanel(HudOverlaySelectorFrame::lambda$new$0);
+        this.headerPanel.setTitle("Overlays");
+        this.h(this.headerPanel, new Object[0]);
+        this.setEntries(this.getDefaultEntries());
     }
 
     @Override
     public void Y() {
-        this.w$src$V$1oohu4h();
-        this.s$src$V$1omanr1();
+        this.layoutHeader();
+        this.layoutEntries();
     }
 
-    public static void R(GuiComponent[] guiComponentArray) {
-        B4 = guiComponentArray;
-    }
-
-    public void q(List<HudOverlayEntrySpec> list) {
-        for (HudOverlayEntryInteractiveComponent object : this.BS) {
-            this.I(object);
+    public void setEntries(List<HudOverlayEntrySpec> list) {
+        for (HudOverlayEntryInteractiveComponent object : this.entryComponents) {
+            this.removeChild(object);
         }
-        this.BS.clear();
-        this.Bi.clear();
+        this.entryComponents.clear();
+        this.entrySpecs.clear();
         if (list == null || list.isEmpty()) {
-            this.Bi.clear();
-            this.e(0);
+            this.entrySpecs.clear();
+            this.setRowCount(0);
             return;
         }
         for (HudOverlayEntrySpec hudOverlayEntrySpec : list) {
-            HudOverlayEntryInteractiveComponent hudOverlayEntryInteractiveComponent = new HudOverlayEntryInteractiveComponent(hudOverlayEntrySpec.E(), hudOverlayEntrySpec.o());
-            if (hudOverlayEntrySpec.u() != null) {
-                hudOverlayEntryInteractiveComponent.K(hudOverlayEntrySpec.u());
+            HudOverlayEntryInteractiveComponent hudOverlayEntryInteractiveComponent = new HudOverlayEntryInteractiveComponent(hudOverlayEntrySpec.getIconName(), hudOverlayEntrySpec.getLabel());
+            if (hudOverlayEntrySpec.getFrameClass() != null) {
+                hudOverlayEntryInteractiveComponent.setFrameClass(hudOverlayEntrySpec.getFrameClass());
             }
-            if (hudOverlayEntrySpec.q() != null) {
-                hudOverlayEntryInteractiveComponent.A(hudOverlayEntrySpec.q());
+            if (hudOverlayEntrySpec.getSelectedSupplier() != null) {
+                hudOverlayEntryInteractiveComponent.setSelectedSupplier(hudOverlayEntrySpec.getSelectedSupplier());
             }
-            if (hudOverlayEntrySpec.x() != null) {
-                hudOverlayEntryInteractiveComponent.V(hudOverlayEntrySpec.x());
+            if (hudOverlayEntrySpec.getAction() != null) {
+                hudOverlayEntryInteractiveComponent.setAction(hudOverlayEntrySpec.getAction());
             }
-            this.BS.add(hudOverlayEntryInteractiveComponent);
+            this.entryComponents.add(hudOverlayEntryInteractiveComponent);
             this.h(hudOverlayEntryInteractiveComponent, new Object[0]);
         }
-        this.Bi.addAll(list);
-        this.o(HudOverlaySelectorFrame.j(this.BS.size()));
-        this.e(this.p());
+        this.entrySpecs.addAll(list);
+        this.o(HudOverlaySelectorFrame.calculateContentWidth(this.entryComponents.size()));
+        this.setRowCount(this.getRowCount());
     }
 
     @Override
@@ -229,10 +197,16 @@ extends Frame {
         return "Overlays";
     }
 
-    private List<HudOverlayEntrySpec> d$src$Ljava_util_List_$1sm1xmp() {
+    private List<HudOverlayEntrySpec> getDefaultEntries() {
         ArrayList<HudOverlayEntrySpec> arrayList = new ArrayList<HudOverlayEntrySpec>();
-        arrayList.addAll(Arrays.asList(HudOverlayEntrySpec.O("Text GUI", "newtextgui", TextGuiSettingsFrame.class), HudOverlayEntrySpec.O("Rearview", "newrearview", OnlinePlayerPreviewSettingsFrame.class), HudOverlayEntrySpec.O("Duel Info", "newduelinfo", OnlineCombatStatsSettingsFrame.class), HudOverlayEntrySpec.O("Target Info", "newtargetinfo", TargetInfoSettingsFrame.class), HudOverlayEntrySpec.O("Radar", "newradar", OnlineRadarSettingsFrame.class), HudOverlayEntrySpec.O("Party Overlay", "party hover@2x", OnlineActivitySettingsFrame.class)));
-        arrayList.addAll(HudOverlaySelectorFrame.t$src$Ljava_util_List_$rgpmy9());
+        arrayList.addAll(Arrays.asList(
+                HudOverlayEntrySpec.forFrame("Text GUI", "newtextgui", TextGuiSettingsFrame.class),
+                HudOverlayEntrySpec.forFrame("Rearview", "newrearview", OnlinePlayerPreviewSettingsFrame.class),
+                HudOverlayEntrySpec.forFrame("Duel Info", "newduelinfo", OnlineCombatStatsSettingsFrame.class),
+                HudOverlayEntrySpec.forFrame("Target Info", "newtargetinfo", TargetInfoSettingsFrame.class),
+                HudOverlayEntrySpec.forFrame("Radar", "newradar", OnlineRadarSettingsFrame.class),
+                HudOverlayEntrySpec.forFrame("Party Overlay", "party hover@2x", OnlineActivitySettingsFrame.class)));
+        arrayList.addAll(HudOverlaySelectorFrame.getHudModuleEntries());
         return arrayList;
     }
 
@@ -240,9 +214,8 @@ extends Frame {
         return ((HudModule)modManager.getMod(hudModule.getClass())).r$src$Z$14eylz9();
     }
 
-    private static int V$src$I$1o6cm8d() {
+    private static int calculateMaxColumns() {
         double d = 358.0;
         return Math.max(1, (int)Math.floor((d + 2.0) / 24.0));
     }
 }
-

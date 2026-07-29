@@ -24,7 +24,7 @@ extends Wrapper {
 
     public String h() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.i().C();
+            return this.i().getFormattedText();
         }
         return MScoreObjective.O(ScoreObjective.c.getMappingsMapperCompat().qL, this.I);
     }

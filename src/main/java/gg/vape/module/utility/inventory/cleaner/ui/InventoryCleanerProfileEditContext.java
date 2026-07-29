@@ -4,14 +4,13 @@ import gg.vape.module.utility.inventory.cleaner.InventoryCleanerProfile;
 import gg.vape.module.utility.inventory.cleaner.InventoryCleanerProfileValue;
 
 public class InventoryCleanerProfileEditContext {
-    public InventoryCleanerProfileValue I;
-    public InventoryCleanerProfile s;
-    public Runnable T;
+    public InventoryCleanerProfileValue profileValue;
+    public InventoryCleanerProfile profile;
+    public Runnable onClose;
 
     public InventoryCleanerProfileEditContext(InventoryCleanerProfileValue inventoryCleanerProfileValue, InventoryCleanerProfile inventoryCleanerProfile, Runnable runnable) {
-        this.I = inventoryCleanerProfileValue;
-        this.s = inventoryCleanerProfile;
-        this.T = runnable;
+        this.profileValue = inventoryCleanerProfileValue;
+        this.profile = inventoryCleanerProfile;
+        this.onClose = runnable;
     }
 }
-

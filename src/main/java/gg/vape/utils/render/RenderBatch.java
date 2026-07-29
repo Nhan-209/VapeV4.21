@@ -11,98 +11,97 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class RenderBatch {
-    private RenderMatrix4f U;
-    private GlCapabilityState V;
-    private float E;
-    private PrimitiveTopology C;
-    private GlImageTexture Y;
-    private List<Supplier<Void>> M = new ArrayList<Supplier<Void>>();
-    private GlScissorRect p;
-    private int t;
-    private ArrayList<RenderBatchBuilder> g = new ArrayList();
-    private Supplier<Void> A;
+    private RenderMatrix4f modelMatrix;
+    private GlCapabilityState capabilityState;
+    private float lineWidth;
+    private PrimitiveTopology topology;
+    private GlImageTexture texture;
+    private List<Supplier<Void>> standaloneRenderCallbacks = new ArrayList<Supplier<Void>>();
+    private GlScissorRect scissorRect;
+    private int mergedBuilderCount;
+    private ArrayList<RenderBatchBuilder> builders = new ArrayList();
+    private Supplier<Void> drawSetupCallback;
 
-    public boolean J() {
-        boolean bl = this.p != null;
-        return bl;
+    public boolean hasScissorRect() {
+        return this.scissorRect != null;
     }
 
-    public void l() {
-        ++this.t;
+    public void incrementMergedBuilderCount() {
+        ++this.mergedBuilderCount;
     }
 
-    public float j() {
-        return this.E;
+    public float getLineWidth() {
+        return this.lineWidth;
     }
 
-    public List<Supplier<Void>> Y() {
-        return this.M;
+    public List<Supplier<Void>> getStandaloneRenderCallbacks() {
+        return this.standaloneRenderCallbacks;
     }
 
-    public void J(GlScissorRect cv_12) {
-        this.p = cv_12;
+    public void setScissorRect(GlScissorRect scissorRect) {
+        this.scissorRect = scissorRect;
     }
 
-    public RenderBatch(RenderBatchBuilder hr_02) {
-        this.Y = hr_02.C();
-        this.U = hr_02.C;
-        this.C = hr_02.q();
-        this.E = hr_02.D();
-        this.p = hr_02.c();
-        this.V = hr_02.A();
-        this.A = hr_02.d();
-        this.t = 1;
-        if (hr_02.h() != null) {
-            this.M.add(hr_02.h());
+    public RenderBatch(RenderBatchBuilder builder) {
+        this.texture = builder.getTexture();
+        this.modelMatrix = builder.modelMatrix;
+        this.topology = builder.getTopology();
+        this.lineWidth = builder.getLineWidth();
+        this.scissorRect = builder.getScissorRect();
+        this.capabilityState = builder.getCapabilityState();
+        this.drawSetupCallback = builder.getDrawSetupCallback();
+        this.mergedBuilderCount = 1;
+        if (builder.getStandaloneRenderCallback() != null) {
+            this.standaloneRenderCallbacks.add(builder.getStandaloneRenderCallback());
         } else {
-            hr_02.a = 0;
-            hr_02.N(hr_02.q().name, 0);
+            builder.baseVertexIndex = 0;
+            builder.generateIndices(builder.getTopology().name, 0);
         }
-        this.g.add(hr_02);
+        this.builders.add(builder);
     }
 
-    public void e(RenderBatchBuilder hr_02) {
-        this.g.add(hr_02);
-        this.P(hr_02.h());
+    public void addBuilder(RenderBatchBuilder builder) {
+        this.builders.add(builder);
+        this.addStandaloneRenderCallback(builder.getStandaloneRenderCallback());
     }
 
-    public PrimitiveTopology V() {
-        return this.C;
+    public PrimitiveTopology getTopology() {
+        return this.topology;
     }
 
-    public RenderMatrix4f m() {
-        return this.U;
+    public RenderMatrix4f getModelMatrix() {
+        return this.modelMatrix;
     }
 
-    public int O() {
-        return this.t;
+    public int getMergedBuilderCount() {
+        return this.mergedBuilderCount;
     }
 
-    public GlScissorRect z() {
-        return this.p;
+    public GlScissorRect getScissorRect() {
+        return this.scissorRect;
     }
 
-    public GlImageTexture H() {
-        return this.Y;
+    public GlImageTexture getTexture() {
+        return this.texture;
     }
 
-    public void P(Supplier<Void> supplier) {
-        if (supplier != null) {
-            this.M.add(supplier);
+    public void addStandaloneRenderCallback(Supplier<Void> callback) {
+        if (callback != null) {
+            this.standaloneRenderCallbacks.add(callback);
         }
     }
 
 
-    public GlCapabilityState y() {
-        return this.V;
+    public GlCapabilityState getCapabilityState() {
+        return this.capabilityState;
     }
 
-    public Supplier<Void> R() {
-        return this.A;
+    public Supplier<Void> getDrawSetupCallback() {
+        return this.drawSetupCallback;
     }
 
-    public ArrayList<RenderBatchBuilder> U() {
-        return this.g;
+    public ArrayList<RenderBatchBuilder> getBuilders() {
+        return this.builders;
     }
 }
 

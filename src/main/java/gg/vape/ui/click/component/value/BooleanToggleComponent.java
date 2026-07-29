@@ -27,273 +27,273 @@ import java.util.List;
 public class BooleanToggleComponent
 extends PanelComponent
 implements BooleanStateAdapter<BooleanToggleComponent> {
-    private boolean Qa;
-    protected double Q0;
-    List<String> QO;
-    private String QL;
-    private final float QK = 4.0f;
-    private CompactListValueComponent Qn;
-    protected Color QE;
-    private float QA = 6.0f;
-    private boolean Qw;
-    private final ColorAnimation Qv;
-    private final BooleanValue QD;
-    private final float Qf = 1.0f;
-    private final DoubleAnimation QU;
-    protected String QR;
-    private final ThemeColorAnimation QF;
-    private final float Qp = 6.0f;
+    private boolean readOnly;
+    protected double fontScale;
+    List<String> wrappedLabelLines;
+    private String wrappedLabelSource;
+    private final float knobSize = 4.0f;
+    private CompactListValueComponent compactListComponent;
+    protected Color labelColor;
+    private float switchOffset = 6.0f;
+    private boolean brightenOnHover;
+    private final ColorAnimation hoverColorAnimation;
+    private final BooleanValue booleanValue;
+    private final float switchBorderWidth = 1.0f;
+    private final DoubleAnimation knobPositionAnimation;
+    protected String label;
+    private final ThemeColorAnimation enabledColorAnimation;
+    private final float switchHeight = 6.0f;
 
     @Override
     public double C() {
-        return 15.0 + (double)(this.F$src$Ljava_util_List_$1e3p1ge().size() - 1) * this.O(this.Q0).d(this.I$src$Ljava_lang_String_$1ewzbgi());
+        return 15.0 + (double)(this.getWrappedLabelLines().size() - 1) * this.getFontRenderer(this.fontScale).d(this.getLabel());
     }
 
-    public CompactListValueComponent G$src$Lgg_vape_ui_click_component_value_CompactListVal$1o8zcka() {
-        return this.Qn;
+    public CompactListValueComponent getCompactListComponent() {
+        return this.compactListComponent;
     }
 
-    public boolean i$src$Z$1d37ezg() {
-        return this.QU.I$src$Z$c48gtw();
+    public boolean isOn() {
+        return this.knobPositionAnimation.I$src$Z$c48gtw();
     }
 
-    public void k$src$V$5mynh8() {
-        if (this.QD != null) {
-            if (this.QD.L().equals(this.i$src$Z$1d37ezg())) {
-                if (!this.QD.b(this.QD.L() == false)) {
+    public void toggle() {
+        if (this.booleanValue != null) {
+            if (this.booleanValue.getEffectiveValue().equals(this.isOn())) {
+                if (!this.booleanValue.isChangeValid(this.booleanValue.getEffectiveValue() == false)) {
                     return;
                 }
-                this.QD.o(this.QD.L() == false);
+                this.booleanValue.setValue(this.booleanValue.getEffectiveValue() == false);
             }
-            if (this.QD.q$src$Ljava_util_List_$fyau59().size() > 0 && this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb() != null) {
-                this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().l$src$V$1mibm4x();
+            if (this.booleanValue.getDependentValues().size() > 0 && this.getParentFrameComponent() != null) {
+                this.getParentFrameComponent().l$src$V$1mibm4x();
             }
         }
-        this.QF.J();
-        this.QU.J();
+        this.enabledColorAnimation.J();
+        this.knobPositionAnimation.J();
     }
 
-    private boolean R$src$Z$1dz9xdl() {
-        if (!(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa() instanceof ClickGuiMainFrame) || this.QD == null) {
+    private boolean hasSingleListChildInMainGui() {
+        if (!(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa() instanceof ClickGuiMainFrame) || this.booleanValue == null) {
             return false;
         }
-        List<Value> list = this.QD.q$src$Ljava_util_List_$fyau59();
-        return list.size() == 1 && list.get(0) instanceof ListValue;
+        List<Value> childValues = this.booleanValue.getDependentValues();
+        return childValues.size() == 1 && childValues.get(0) instanceof ListValue;
     }
 
-    public BooleanToggleComponent(String string) {
-        this(string, 0.9);
+    public BooleanToggleComponent(String label) {
+        this(label, 0.9);
     }
 
     @Override
     public void c() {
-        Color color;
+        Color switchColor;
         super.c();
-        if (this.l$src$Z$1e669r3()) {
+        if (this.isReadOnly()) {
             this.onDisable();
-            this.s$src$V$1uam4mz();
-            String string = this.i$src$Z$1d37ezg() ? "ON" : "OFF";
-            SmoothFontRenderer smoothFontRenderer = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.Q0);
-            smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + this.A() - 4.0 - smoothFontRenderer.N(string), this.n() + this.L() / 2.0 - smoothFontRenderer.d(string) / 2.0, this.i$src$Z$1d37ezg() ? ClientSettings.fW.O$src$Ljava_awt_Color_$19t4jn1() : BooleanToggleComponent.J.Z);
+            this.renderLabel();
+            String stateText = this.isOn() ? "ON" : "OFF";
+            SmoothFontRenderer fontRenderer = this.getAlternateFontRenderer(this.fontScale);
+            fontRenderer.d(stateText, this.G$src$D$1b2f02a() + this.A() - 4.0 - fontRenderer.N(stateText), this.n() + this.L() / 2.0 - fontRenderer.d(stateText) / 2.0, this.isOn() ? ClientSettings.INSTANCE.getAccentColor() : BooleanToggleComponent.J.Z);
             return;
         }
         this.l$src$V$1mibm4x();
-        this.QA = 5.0f;
-        double d = this.G$src$D$1b2f02a() + this.A() - 10.0 - (double)this.QA;
-        double d2 = this.n() + this.L() / 2.0 - 3.0;
-        Color color2 = color = this.QF.q() > 0.0 ? this.QF.getInterpolatedColor() : this.Qv.getInterpolatedColor();
-        if (this.w$src$Z$e457mb() && this.Qw && this.QF.q() > 0.0) {
-            color = ColorUtil.N(color, 30.0);
+        this.switchOffset = 5.0f;
+        double switchX = this.G$src$D$1b2f02a() + this.A() - 10.0 - (double)this.switchOffset;
+        double switchY = this.n() + this.L() / 2.0 - 3.0;
+        Color colorSnapshot = switchColor = this.enabledColorAnimation.q() > 0.0 ? this.enabledColorAnimation.getInterpolatedColor() : this.hoverColorAnimation.getInterpolatedColor();
+        if (this.w$src$Z$e457mb() && this.brightenOnHover && this.enabledColorAnimation.q() > 0.0) {
+            switchColor = ColorUtil.offsetRgb(switchColor, 30.0);
         }
-        this.s$src$V$1uam4mz();
-        GuiRenderPrimitives.j(d - 1.0, d2 - 0.5, 12.5, 7.0, color);
-        GuiRenderPrimitives.V((float)d + 1.0f + (float)this.QU.getInterpolatedValue().doubleValue(), (float)d2 + 1.0f, 4.0, (float)(0.8 / Vape.INSTANCE.getClientSettings().s()), BooleanToggleComponent.J.i);
-        if (this.r$src$Lgg_vape_value_Value_$fdf20y() != null && this.r$src$Lgg_vape_value_Value_$fdf20y() instanceof ConditionalValue && !((ConditionalValue)this.r$src$Lgg_vape_value_Value_$fdf20y()).q$src$Ljava_util_List_$fyau59().isEmpty() && ((ConditionalValue)this.r$src$Lgg_vape_value_Value_$fdf20y()).P() && this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb() != null) {
-            FrameComponent frameComponent = this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb();
-            List<Value> list = ((ConditionalValue)this.r$src$Lgg_vape_value_Value_$fdf20y()).q$src$Ljava_util_List_$fyau59();
-            GuiComponent guiComponent = null;
-            boolean bl = false;
-            for (GuiComponent guiComponent2 : frameComponent.f()) {
-                if (guiComponent2.equals(this)) {
-                    bl = true;
+        this.renderLabel();
+        GuiRenderPrimitives.j(switchX - 1.0, switchY - 0.5, 12.5, 7.0, switchColor);
+        GuiRenderPrimitives.V((float)switchX + 1.0f + (float)this.knobPositionAnimation.getInterpolatedValue().doubleValue(), (float)switchY + 1.0f, 4.0, (float)(0.8 / Vape.INSTANCE.getClientSettings().s()), BooleanToggleComponent.J.i);
+        if (this.getBoundValue() != null && this.getBoundValue() instanceof ConditionalValue && !((ConditionalValue)this.getBoundValue()).getDependentValues().isEmpty() && ((ConditionalValue)this.getBoundValue()).hasActiveDependentBranch() && this.getParentFrameComponent() != null) {
+            FrameComponent parentFrame = this.getParentFrameComponent();
+            List<Value> childValues = ((ConditionalValue)this.getBoundValue()).getDependentValues();
+            GuiComponent nextChildComponent = null;
+            boolean foundThisComponent = false;
+            for (GuiComponent frameComponent : parentFrame.f()) {
+                if (frameComponent.equals(this)) {
+                    foundThisComponent = true;
                     continue;
                 }
-                if (!list.contains(guiComponent2.r$src$Lgg_vape_value_Value_$fdf20y()) || !bl) continue;
-                guiComponent = guiComponent2;
+                if (!childValues.contains(frameComponent.getBoundValue()) || !foundThisComponent) continue;
+                nextChildComponent = frameComponent;
                 break;
             }
-            if (guiComponent != null && !this.R$src$Z$1dz9xdl()) {
-                Color color3 = guiComponent.d();
-                ImageRenderer.E(color3, (float)(this.G$src$D$1b2f02a() + this.A() / 8.0), (float)(this.n() + this.L() - 2.0), "dropdownnotch", 7.0f, 3.0f, false);
+            if (nextChildComponent != null && !this.hasSingleListChildInMainGui()) {
+                Color childBackgroundColor = nextChildComponent.getDisabledOverlayColor();
+                ImageRenderer.drawImage(childBackgroundColor, (float)(this.G$src$D$1b2f02a() + this.A() / 8.0), (float)(this.n() + this.L() - 2.0), "dropdownnotch", 7.0f, 3.0f, false);
             }
         }
     }
 
-    protected void n$src$V$1tjvir5() {
-        if (this.QD != null && !this.QD.L().equals(this.i$src$Z$1d37ezg()) && !this.U$src$Z$1e0xb5o()) {
-            this.k$src$V$5mynh8();
+    protected void synchronizeValueState() {
+        if (this.booleanValue != null && !this.booleanValue.getEffectiveValue().equals(this.isOn()) && !this.isAnimating()) {
+            this.toggle();
         }
     }
 
     @Override
-    public BooleanToggleComponent Y(boolean bl) {
-        this.Qa = bl;
+    public BooleanToggleComponent setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
         return this;
     }
 
-    public BooleanToggleComponent(String string, double d) {
-        this(string, d, null);
+    public BooleanToggleComponent(String label, double fontScale) {
+        this(label, fontScale, null);
     }
 
     @Override
     public void F() {
         if (!this.w$src$Z$e457mb()) {
-            this.Qv.J();
+            this.hoverColorAnimation.J();
         }
     }
 
-    protected void s$src$V$1uam4mz() {
-        SmoothFontRenderer smoothFontRenderer = this.O(this.Q0);
-        List<String> list = this.F$src$Ljava_util_List_$1e3p1ge();
-        double d = smoothFontRenderer.d(this.QR) * (double)list.size();
-        double d2 = this.n() + this.L() / 2.0 - d / 2.0;
-        for (String string : list) {
-            if (!string.equals(" ")) {
-                smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2(), d2, this.QE);
+    protected void renderLabel() {
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(this.fontScale);
+        List<String> labelLines = this.getWrappedLabelLines();
+        double totalTextHeight = fontRenderer.d(this.label) * (double)labelLines.size();
+        double lineY = this.n() + this.L() / 2.0 - totalTextHeight / 2.0;
+        for (String labelLine : labelLines) {
+            if (!labelLine.equals(" ")) {
+                fontRenderer.d(labelLine, this.G$src$D$1b2f02a() + this.getHorizontalInset(), lineY, this.labelColor);
             }
-            d2 += d / (double)list.size();
+            lineY += totalTextHeight / (double)labelLines.size();
         }
     }
 
-    public BooleanValue M$src$Lgg_vape_value_BooleanValue_$1ruml8g() {
-        return this.QD;
+    public BooleanValue getBooleanValue() {
+        return this.booleanValue;
     }
 
     @Override
     public void onEnable() {
-        this.Qv.J();
+        this.hoverColorAnimation.J();
     }
 
-    public BooleanToggleComponent(String string, double d, BooleanValue booleanValue) {
+    public BooleanToggleComponent(String label, double fontScale, BooleanValue booleanValue) {
         super(0.0, 0.0);
-        this.Qv = new ColorAnimation(0.15, BooleanToggleComponent.J.K, BooleanToggleComponent.J.W);
-        this.QF = new ThemeColorAnimation(0.15, BooleanToggleComponent.J.W);
-        this.QU = new DoubleAnimation(0.15, 0.0, this.QA - 1.0f);
-        this.QE = BooleanToggleComponent.J.Z;
-        this.Qw = false;
-        this.QL = "";
-        this.QO = new ArrayList<String>();
-        this.QR = string;
-        this.Q0 = d;
-        this.QD = booleanValue;
+        this.hoverColorAnimation = new ColorAnimation(0.15, BooleanToggleComponent.J.K, BooleanToggleComponent.J.W);
+        this.enabledColorAnimation = new ThemeColorAnimation(0.15, BooleanToggleComponent.J.W);
+        this.knobPositionAnimation = new DoubleAnimation(0.15, 0.0, this.switchOffset - 1.0f);
+        this.labelColor = BooleanToggleComponent.J.Z;
+        this.brightenOnHover = false;
+        this.wrappedLabelSource = "";
+        this.wrappedLabelLines = new ArrayList<String>();
+        this.label = label;
+        this.fontScale = fontScale;
+        this.booleanValue = booleanValue;
         if (booleanValue != null) {
-            this.C(booleanValue);
-            this.Z$src$V$1e3oa11();
-            this.w(booleanValue.w$src$Ljava_lang_String_$ikqblg());
+            this.bindValue(booleanValue);
+            this.initializeCompactListComponent();
+            this.w(booleanValue.getDescription());
         }
         this.S(0);
-        this.j(new BooleanToggleComponentClickMouseListener(this));
-        this.n$src$V$1tjvir5();
-        this.Q$src$V$11xzx98();
+        this.addMouseListener(new BooleanToggleComponentClickMouseListener(this));
+        this.synchronizeValueState();
+        this.synchronizeAnimationsImmediately();
     }
 
-    public String I$src$Ljava_lang_String_$1ewzbgi() {
-        return this.QR;
+    public String getLabel() {
+        return this.label;
     }
 
     @Override
     public void u() {
-        this.n$src$V$1tjvir5();
+        this.synchronizeValueState();
     }
 
 
-    public void G(boolean bl) {
-        this.Qw = bl;
+    public void setBrightenOnHover(boolean brightenOnHover) {
+        this.brightenOnHover = brightenOnHover;
     }
 
-    private List<String> F$src$Ljava_util_List_$1e3p1ge() {
-        String string = this.I$src$Ljava_lang_String_$1ewzbgi();
-        if (string.equals(this.QL)) {
-            return this.QO;
+    private List<String> getWrappedLabelLines() {
+        String currentLabel = this.getLabel();
+        if (currentLabel.equals(this.wrappedLabelSource)) {
+            return this.wrappedLabelLines;
         }
-        SmoothFontRenderer smoothFontRenderer = this.O(this.Q0);
-        String string2 = Vape.INSTANCE.getFontSelector().W().s(this.I$src$Ljava_lang_String_$1ewzbgi());
-        String[] stringArray = string2.split(" ");
-        double d = this.A() - 20.0;
-        ArrayList<String> arrayList = new ArrayList<String>();
-        double d2 = 0.0;
-        String string3 = "";
-        for (String string4 : stringArray) {
-            double d3 = d2 + smoothFontRenderer.N(string4 + " ");
-            if (d3 > d) {
-                d2 = 0.0;
-                arrayList.add(string3);
-                string3 = string4 + " ";
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(this.fontScale);
+        String sanitizedLabel = Vape.INSTANCE.getFontSelector().W().s(this.getLabel());
+        String[] labelWords = sanitizedLabel.split(" ");
+        double availableWidth = this.A() - 20.0;
+        ArrayList<String> lines = new ArrayList<String>();
+        double currentLineWidth = 0.0;
+        String currentLine = "";
+        for (String word : labelWords) {
+            double appendedLineWidth = currentLineWidth + fontRenderer.N(word + " ");
+            if (appendedLineWidth > availableWidth) {
+                currentLineWidth = 0.0;
+                lines.add(currentLine);
+                currentLine = word + " ";
                 continue;
             }
-            d2 = d3;
-            string3 = string3 + string4 + " ";
+            currentLineWidth = appendedLineWidth;
+            currentLine = currentLine + word + " ";
         }
-        arrayList.add(string3);
-        this.QO = arrayList;
-        this.QL = string;
-        return arrayList;
+        lines.add(currentLine);
+        this.wrappedLabelLines = lines;
+        this.wrappedLabelSource = currentLabel;
+        return lines;
     }
 
     @Override
-    public boolean l$src$Z$1e669r3() {
-        return this.Qa;
+    public boolean isReadOnly() {
+        return this.readOnly;
     }
 
-    public void N() {
-        if (this.Qa) {
+    public void toggleIfInteractive() {
+        if (this.readOnly) {
             return;
         }
-        this.k$src$V$5mynh8();
+        this.toggle();
     }
 
-    public void Q$src$V$11xzx98() {
-        if (this.QD != null) {
-            if (this.QD.L().booleanValue()) {
-                this.QF.C();
-                this.QU.C();
+    public void synchronizeAnimationsImmediately() {
+        if (this.booleanValue != null) {
+            if (this.booleanValue.getEffectiveValue().booleanValue()) {
+                this.enabledColorAnimation.C();
+                this.knobPositionAnimation.C();
             } else {
-                this.QF.O();
-                this.QU.O();
+                this.enabledColorAnimation.O();
+                this.knobPositionAnimation.O();
             }
         }
     }
 
-    public void h(boolean bl) {
-        if (this.QD != null) {
-            this.QD.o(bl);
-            if (this.QD.q$src$Ljava_util_List_$fyau59().size() > 0 && this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb() != null) {
-                this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().l$src$V$1mibm4x();
+    public void setValue(boolean enabled) {
+        if (this.booleanValue != null) {
+            this.booleanValue.setValue(enabled);
+            if (this.booleanValue.getDependentValues().size() > 0 && this.getParentFrameComponent() != null) {
+                this.getParentFrameComponent().l$src$V$1mibm4x();
             }
         }
-        if (bl) {
-            this.QF.c();
-            this.QU.c();
+        if (enabled) {
+            this.enabledColorAnimation.c();
+            this.knobPositionAnimation.c();
         } else {
-            this.QF.Z();
-            this.QU.Z();
+            this.enabledColorAnimation.Z();
+            this.knobPositionAnimation.Z();
         }
     }
 
-    public DoubleAnimation n$src$Lgg_vape_ui_click_animation_DoubleAnimation_$12lr9ge() {
-        return this.QU;
+    public DoubleAnimation getKnobPositionAnimation() {
+        return this.knobPositionAnimation;
     }
 
-    public void Z$src$V$1e3oa11() {
-        if (this.QD.G() != null) {
-            this.Qn = new CompactListValueComponent(this.QD.G());
-            this.h(this.Qn, "alignright, offsetX 19, offsetY 3");
+    public void initializeCompactListComponent() {
+        if (this.booleanValue.getTerminalDependentValue() != null) {
+            this.compactListComponent = new CompactListValueComponent(this.booleanValue.getTerminalDependentValue());
+            this.h(this.compactListComponent, "alignright, offsetX 19, offsetY 3");
             this.l$src$V$1mibm4x();
         }
     }
 
-    public boolean U$src$Z$1e0xb5o() {
-        return !this.QU.getInterpolatedValue().equals(this.QU.getStartValue()) && !this.QU.getInterpolatedValue().equals(this.QU.getEndValue());
+    public boolean isAnimating() {
+        return !this.knobPositionAnimation.getInterpolatedValue().equals(this.knobPositionAnimation.getStartValue()) && !this.knobPositionAnimation.getInterpolatedValue().equals(this.knobPositionAnimation.getEndValue());
     }
 
     @Override
@@ -302,7 +302,7 @@ implements BooleanStateAdapter<BooleanToggleComponent> {
     }
 
     public BooleanToggleComponent(BooleanValue booleanValue) {
-        this(booleanValue != null ? booleanValue.o() : null, 0.9, booleanValue);
+        this(booleanValue != null ? booleanValue.getDisplayName() : null, 0.9, booleanValue);
     }
 }
 

@@ -7,178 +7,110 @@ import gg.vape.wrapper.impl.World;
 
 public abstract class AbstractBlockInMovementController
 implements BlockInMovementController {
-    protected boolean M = false;
-    protected final EntityPlayer p;
-    protected final World P;
-    protected boolean E = false;
-    protected int U = 0;
-    private static int L;
-    protected boolean f = false;
-    protected float d = 0.0f;
-    protected boolean R = false;
-    protected final EntityPlayer O;
-    protected boolean W = false;
-    protected int B = 0;
-    protected final EntityPlayerSP D;
-    protected boolean A = false;
-    protected boolean b = false;
-    protected float Z = 0.0f;
-    protected boolean r = false;
-    protected boolean g = false;
+    protected boolean backwardKeyDown;
+    protected final EntityPlayer simulatedPlayer;
+    protected final World world;
+    protected boolean jumpKeyDown;
+    protected int sprintToggleTimer;
+    protected boolean sprintKeyDown;
+    protected float moveForward;
+    protected boolean rightKeyDown;
+    protected final EntityPlayer sourcePlayer;
+    protected boolean jumpInput;
+    protected int sprintingTicksLeft;
+    protected final EntityPlayerSP localPlayer;
+    protected boolean sneakKeyDown;
+    protected boolean sneakInput;
+    protected float moveStrafe;
+    protected boolean leftKeyDown;
+    protected boolean forwardKeyDown;
 
-    public boolean boolean_y() {
-        return this.W;
+    protected AbstractBlockInMovementController(EntityPlayer simulatedPlayer, EntityPlayerSP localPlayer,
+                                                EntityPlayer sourcePlayer, World world) {
+        this.simulatedPlayer = simulatedPlayer;
+        this.localPlayer = localPlayer;
+        this.sourcePlayer = sourcePlayer;
+        this.world = world;
     }
 
-    public void E(boolean bl) {
-        this.g = bl;
+    public boolean isJumpInput() {
+        return this.jumpInput;
     }
 
-    public void G(boolean bl) {
-        this.E = bl;
+    public void setForwardKeyDown(boolean forwardKeyDown) {
+        this.forwardKeyDown = forwardKeyDown;
     }
 
-    public boolean boolean_w() {
-        return this.E;
+    public void setJumpKeyDown(boolean jumpKeyDown) {
+        this.jumpKeyDown = jumpKeyDown;
     }
 
-    public boolean boolean_s() {
-        return this.R;
+    public boolean isJumpKeyDown() {
+        return this.jumpKeyDown;
     }
 
-
-    public boolean boolean_z() {
-        return this.M;
+    public boolean isRightKeyDown() {
+        return this.rightKeyDown;
     }
 
-    public float float_x() {
-        return this.Z;
+    public boolean isBackwardKeyDown() {
+        return this.backwardKeyDown;
     }
 
-    public void r(boolean bl) {
-        this.R = bl;
+    public float getMoveStrafe() {
+        return this.moveStrafe;
     }
 
-    public int int_C() {
-        return this.B;
+    public void setRightKeyDown(boolean rightKeyDown) {
+        this.rightKeyDown = rightKeyDown;
     }
 
-    public void U(boolean bl) {
-        this.A = bl;
+    public int getSprintingTicksLeft() {
+        return this.sprintingTicksLeft;
     }
 
-    public int int_K() {
-        return this.U;
+    public void setSneakKeyDown(boolean sneakKeyDown) {
+        this.sneakKeyDown = sneakKeyDown;
     }
 
-    public void T(boolean bl) {
-        this.r = bl;
+    public int getSprintToggleTimer() {
+        return this.sprintToggleTimer;
     }
 
-    public void q(boolean bl) {
-        this.f = bl;
+    public void setLeftKeyDown(boolean leftKeyDown) {
+        this.leftKeyDown = leftKeyDown;
     }
 
-    public static void J(int n) {
-        L = n;
+    public void setSprintKeyDown(boolean sprintKeyDown) {
+        this.sprintKeyDown = sprintKeyDown;
     }
 
-    public boolean c() {
-        return this.g;
+    public boolean isForwardKeyDown() {
+        return this.forwardKeyDown;
     }
 
-    public void Z(boolean bl) {
-        this.M = bl;
+    public void setBackwardKeyDown(boolean backwardKeyDown) {
+        this.backwardKeyDown = backwardKeyDown;
     }
 
-    public static int int_w() {
-        return L;
+    public boolean isSprintKeyDown() {
+        return this.sprintKeyDown;
     }
 
-    public AbstractBlockInMovementController(EntityPlayer x_2, EntityPlayerSP xH2, EntityPlayer x_3, World world) {
-        this.p = x_2;
-        this.D = xH2;
-        this.O = x_3;
-        this.P = world;
+    public float getMoveForward() {
+        return this.moveForward;
     }
 
-    public static int n() {
-        int n = AbstractBlockInMovementController.int_w();
-        return 116;
+    public boolean isSneakKeyDown() {
+        return this.sneakKeyDown;
     }
 
-    public boolean boolean_l() {
-        return this.f;
+    public boolean isLeftKeyDown() {
+        return this.leftKeyDown;
     }
 
-    public float float_q() {
-        return this.d;
-    }
-
-    public boolean boolean_C() {
-        return this.A;
-    }
-
-    public boolean boolean_N() {
-        return this.r;
-    }
-
-    public boolean boolean_K() {
-        return this.b;
-    }
-
-    static {
-        if (AbstractBlockInMovementController.int_w() != 0) {
-            AbstractBlockInMovementController.J(9);
-        }
-    }
-
-    public /* synthetic */ int C$src$I$157pmda() {
-        return this.int_C();
-    }
-
-    public /* synthetic */ boolean C$src$Z$157pmrx() {
-        return this.boolean_C();
-    }
-
-    public /* synthetic */ int K$src$I$15c3z46() {
-        return this.int_K();
-    }
-
-    public /* synthetic */ boolean K$src$Z$15c3zit() {
-        return this.boolean_K();
-    }
-
-    public /* synthetic */ boolean N$src$Z$15drdaw() {
-        return this.boolean_N();
-    }
-
-    public /* synthetic */ boolean l$src$Z$15u973q() {
-        return this.boolean_l();
-    }
-
-    public /* synthetic */ float q$src$F$15x05lb() {
-        return this.float_q();
-    }
-
-    public /* synthetic */ boolean s$src$Z$15y3r99() {
-        return this.boolean_s();
-    }
-
-    public /* synthetic */ boolean w() {
-        return this.boolean_w();
-    }
-
-    public /* synthetic */ float x$src$F$160upqu() {
-        return this.float_x();
-    }
-
-    public /* synthetic */ boolean y$src$Z$161eitf() {
-        return this.boolean_y();
-    }
-
-    public /* synthetic */ boolean z$src$Z$161ybes() {
-        return this.boolean_z();
+    public boolean isSneaking() {
+        return this.sneakInput;
     }
 }
 

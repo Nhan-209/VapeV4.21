@@ -9,10 +9,6 @@ import java.util.List;
 
 public class ItemNameFilterCondition
 extends AbstractTextFilterCondition<ItemNameFilterCondition> {
-    @Override
-    public ItemNameFilterCondition H() {
-        return this.copy();
-    }
     public ItemNameFilterCondition(JsonObject jsonObject) {
         super(jsonObject);
     }
@@ -26,19 +22,19 @@ extends AbstractTextFilterCondition<ItemNameFilterCondition> {
     }
 
     @Override
-    public boolean g(ItemStack itemStack) {
+    public boolean matches(ItemStack itemStack) {
         if (itemStack.isNull() || itemStack.getItem().isNull()) {
             return false;
         }
-        return this.M().M(itemStack.getItem().getItemStackDisplayName(itemStack), this.M$src$Ljava_util_List_$bgq9xa());
+        return this.getMatchMode().matchesAny(itemStack.getItem().getItemStackDisplayName(itemStack), this.getTexts());
     }
 
     @Override
-    public InventoryFilterConditionType K() {
+    public InventoryFilterConditionType getType() {
         return InventoryFilterConditionType.ITEM_NAME;
     }
 
     public ItemNameFilterCondition copy() {
-        return new ItemNameFilterCondition(this.M$src$Ljava_util_List_$bgq9xa(), this.M());
+        return new ItemNameFilterCondition(this.getTexts(), this.getMatchMode());
     }
 }

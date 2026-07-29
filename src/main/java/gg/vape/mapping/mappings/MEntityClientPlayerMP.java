@@ -197,7 +197,7 @@ extends Mapping {
         String string13 = "sendMotionUpdates";
         MEntityClientPlayerMP mEntityClientPlayerMP13 = this;
         this.M = this.Y(string13, bl13, clazz13, classArray2);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MEntityPlayerSP.W(new GuiComponent[5]);
         }
     }

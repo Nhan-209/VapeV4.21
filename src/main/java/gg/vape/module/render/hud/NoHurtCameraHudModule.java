@@ -12,28 +12,28 @@ extends HudModule {
 
 
     @EventHandler
-    public void B(EventPreRenderTick eventPreRenderTick) {
-        if (eventPreRenderTick.getThePlayer().isNull()) {
+    public void onPreRenderTick(EventPreRenderTick event) {
+        if (event.getThePlayer().isNull()) {
             return;
         }
-        if (eventPreRenderTick.getThePlayer().c$src$I$15a9iwo() > 0) {
-            this.savedHurtTime = eventPreRenderTick.getThePlayer().c$src$I$15a9iwo();
-            eventPreRenderTick.getThePlayer().I(0);
+        if (event.getThePlayer().c$src$I$15a9iwo() > 0) {
+            this.savedHurtTime = event.getThePlayer().c$src$I$15a9iwo();
+            event.getThePlayer().I(0);
         }
     }
 
     public NoHurtCameraHudModule() {
-        super("NoHurtCam", HudModuleGroup.T, "legitmodeicon");
+        super("NoHurtCam", HudModuleGroup.GAME, "legitmodeicon");
         this.setSuffix("Disables the hurt camera shaking effect");
     }
 
     @EventHandler
-    public void E(EventPostRenderTick eventPostRenderTick) {
-        if (eventPostRenderTick.getThePlayer().isNull()) {
+    public void onPostRenderTick(EventPostRenderTick event) {
+        if (event.getThePlayer().isNull()) {
             return;
         }
         if (this.savedHurtTime > 0) {
-            eventPostRenderTick.getThePlayer().I(this.savedHurtTime);
+            event.getThePlayer().I(this.savedHurtTime);
             this.savedHurtTime = 0;
         }
     }

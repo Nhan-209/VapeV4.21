@@ -41,7 +41,6 @@ import gg.vape.wrapper.impl.ScorePlayerTeam;
 import gg.vape.wrapper.impl.Team;
 import gg.vape.wrapper.impl.WorldClient;
 import java.awt.Color;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -90,38 +89,41 @@ extends Mod {
     private final ModeOption whiteOption;
 
     @Nullable
-    public MutableColor F(RenderEntityContext renderEntityContext) {
-        return this.f(renderEntityContext, false);
+    public MutableColor getEntityTeamColor(RenderEntityContext renderEntityContext) {
+        return this.getEntityTeamColor(renderEntityContext, false);
     }
 
     @Nullable
-    public MutableColor f(RenderEntityContext renderEntityContext, boolean bl) {
-        return this.O(renderEntityContext, bl, false);
+    public MutableColor getEntityTeamColor(RenderEntityContext renderEntityContext, boolean bypassRecolorCheck) {
+        return this.resolveEntityTeamColor(renderEntityContext, bypassRecolorCheck, false);
     }
 
     private void refreshPlayerInfo() {
-        WorldClient worldClient = Minecraft.theWorld();
-        NetHandlerPlayClientImpl netHandlerPlayClientImpl = Minecraft.thePlayer().sendQueue();
-        if (worldClient.isNull() || netHandlerPlayClientImpl.isNull()) {
+        WorldClient world = Minecraft.theWorld();
+        NetHandlerPlayClientImpl connection = Minecraft.thePlayer().sendQueue();
+        if (world.isNull() || connection.isNull()) {
             return;
         }
-        this.playerInfoList = ForgeVersion.MC_1_20_6.d() ? Arrays.asList(netHandlerPlayClientImpl.getPlayerInfoMap().stream().sorted(GuiPlayerTabOverlayBridge.T()).toArray()) : GuiPlayerTabOverlayBridge.O().E(netHandlerPlayClientImpl.getPlayerInfoMap());
-        ArrayList<UUID> arrayList = new ArrayList<UUID>();
-        for (Object object : this.playerInfoList) {
-            PlayerInfo playerInfo = new PlayerInfo(object);
+        this.playerInfoList = ForgeVersion.MC_1_20_6.d()
+                ? Arrays.asList(connection.getPlayerInfoMap().stream()
+                        .sorted(GuiPlayerTabOverlayBridge.T()).toArray())
+                : GuiPlayerTabOverlayBridge.O().E(connection.getPlayerInfoMap());
+        ArrayList<UUID> uuids = new ArrayList<>();
+        for (Object playerInfoObject : this.playerInfoList) {
+            PlayerInfo playerInfo = new PlayerInfo(playerInfoObject);
             if (!playerInfo.isNotNull()) continue;
-            arrayList.add(playerInfo.v().getUUID());
+            uuids.add(playerInfo.v().getUUID());
         }
-        this.playerUuids = arrayList;
+        this.playerUuids = uuids;
     }
 
-    public boolean z() {
-        return this.r$src$Z$14eylz9() && this.teamsByServer.L() != false;
+    public boolean isServerTeamFilteringEnabled() {
+        return this.r$src$Z$14eylz9() && this.teamsByServer.getEffectiveValue() != false;
     }
 
     @EventHandler
-    public void E(EventEntityJoinWorld eventEntityJoinWorld) {
-        if (!this.h$src$Z$6u7aex()) {
+    public void onEntityJoinWorld(EventEntityJoinWorld eventEntityJoinWorld) {
+        if (!this.isAntiBotEnabled()) {
             return;
         }
         if (MappedClasses.Yl.isAssignableFrom(eventEntityJoinWorld.getEntity().getObject().getClass())) {
@@ -129,128 +131,130 @@ extends Mod {
         }
     }
 
-    public char B(String string, String string2) {
-        int n;
-        if (string2.contains(ClientSettings.F) && (n = string2.indexOf(string)) > 0) {
-            for (int i = n - 1; i >= 0; --i) {
-                char c;
-                String string3 = String.valueOf(string2.charAt(i));
-                if (!string3.equals(ClientSettings.F) || (c = string2.charAt(i + 1)) > 'f') continue;
-                return c;
+    public char findColorCodeBeforeName(String playerName, String formattedName) {
+        int nameIndex;
+        if (formattedName.contains(ClientSettings.F)
+                && (nameIndex = formattedName.indexOf(playerName)) > 0) {
+            for (int index = nameIndex - 1; index >= 0; --index) {
+                String character = String.valueOf(formattedName.charAt(index));
+                if (character.equals(ClientSettings.F)) {
+                    char colorCode = formattedName.charAt(index + 1);
+                    if (colorCode <= 'f') {
+                        return colorCode;
+                    }
+                }
             }
         }
         return '\u00ff';
     }
 
-    public boolean g$src$Z$6tnhtk() {
-        return this.P$src$Z$6h0869() && this.recolorVisuals.L() != false;
+    public boolean isVisualRecolorEnabled() {
+        return this.isColorTeamFilteringEnabled() && this.recolorVisuals.getEffectiveValue() != false;
     }
 
-    private void applyColorComponents(char c, float[] fArray) {
-        switch (c) {
+    private void applyColorComponents(char colorCode, float[] components) {
+        switch (colorCode) {
             case '4': {
-                fArray[0] = 1.0f;
-                fArray[1] = 0.0f;
-                fArray[2] = 0.0f;
+                components[0] = 1.0f;
+                components[1] = 0.0f;
+                components[2] = 0.0f;
                 break;
             }
             case 'c': {
-                fArray[0] = 1.0f;
-                fArray[1] = 0.33f;
-                fArray[2] = 0.33f;
+                components[0] = 1.0f;
+                components[1] = 0.33f;
+                components[2] = 0.33f;
                 break;
             }
             case '6': {
-                fArray[0] = 1.0f;
-                fArray[1] = 0.66f;
-                fArray[2] = 0.0f;
+                components[0] = 1.0f;
+                components[1] = 0.66f;
+                components[2] = 0.0f;
                 break;
             }
             case 'e': {
-                fArray[0] = 1.0f;
-                fArray[1] = 1.0f;
-                fArray[2] = 0.33f;
+                components[0] = 1.0f;
+                components[1] = 1.0f;
+                components[2] = 0.33f;
                 break;
             }
             case '2': {
-                fArray[0] = 0.0f;
-                fArray[1] = 0.66f;
-                fArray[2] = 0.0f;
+                components[0] = 0.0f;
+                components[1] = 0.66f;
+                components[2] = 0.0f;
                 break;
             }
             case 'a': {
-                fArray[0] = 0.33f;
-                fArray[1] = 1.0f;
-                fArray[2] = 0.33f;
+                components[0] = 0.33f;
+                components[1] = 1.0f;
+                components[2] = 0.33f;
                 break;
             }
             case 'b': {
-                fArray[0] = 0.33f;
-                fArray[1] = 1.0f;
-                fArray[2] = 1.0f;
+                components[0] = 0.33f;
+                components[1] = 1.0f;
+                components[2] = 1.0f;
                 break;
             }
             case '3': {
-                fArray[0] = 0.0f;
-                fArray[1] = 0.66f;
-                fArray[2] = 0.66f;
+                components[0] = 0.0f;
+                components[1] = 0.66f;
+                components[2] = 0.66f;
                 break;
             }
             case '1': {
-                fArray[0] = 0.0f;
-                fArray[1] = 0.0f;
-                fArray[2] = 0.66f;
+                components[0] = 0.0f;
+                components[1] = 0.0f;
+                components[2] = 0.66f;
                 break;
             }
             case '9': {
-                fArray[0] = 0.33f;
-                fArray[1] = 0.33f;
-                fArray[2] = 1.0f;
+                components[0] = 0.33f;
+                components[1] = 0.33f;
+                components[2] = 1.0f;
                 break;
             }
             case 'd': {
-                fArray[0] = 1.0f;
-                fArray[1] = 0.33f;
-                fArray[2] = 1.0f;
+                components[0] = 1.0f;
+                components[1] = 0.33f;
+                components[2] = 1.0f;
                 break;
             }
             case '5': {
-                fArray[0] = 0.66f;
-                fArray[1] = 0.0f;
-                fArray[2] = 0.66f;
+                components[0] = 0.66f;
+                components[1] = 0.0f;
+                components[2] = 0.66f;
                 break;
             }
             case 'f': {
-                fArray[0] = 1.0f;
-                fArray[1] = 1.0f;
-                fArray[2] = 1.0f;
+                components[0] = 1.0f;
+                components[1] = 1.0f;
+                components[2] = 1.0f;
                 break;
             }
             case '7': {
-                fArray[0] = 0.66f;
-                fArray[1] = 0.66f;
-                fArray[2] = 0.66f;
+                components[0] = 0.66f;
+                components[1] = 0.66f;
+                components[2] = 0.66f;
                 break;
             }
             case '8': {
-                fArray[0] = 0.33f;
-                fArray[1] = 0.33f;
-                fArray[2] = 0.33f;
+                components[0] = 0.33f;
+                components[1] = 0.33f;
+                components[2] = 0.33f;
                 break;
             }
             case '0': {
-                fArray[0] = 0.0f;
-                fArray[1] = 0.0f;
-                fArray[2] = 0.0f;
+                components[0] = 0.0f;
+                components[1] = 0.0f;
+                components[2] = 0.0f;
             }
         }
     }
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        Serializable serializable;
-        Object object;
-        if (!this.h$src$Z$6u7aex()) {
+        if (!this.isAntiBotEnabled()) {
             return;
         }
         this.updatePingCache();
@@ -282,55 +286,55 @@ extends Mod {
                 Vape.logThrowable(exception);
             }
         }
-        boolean bl = this.getPing((EntityPlayer)(object = Minecraft.thePlayer())) == 1;
-        serializable = new ArrayList();
-        for (Object e : worldClient.X()) {
-            boolean bl2;
-            boolean bl3;
-            double d;
-            double d2;
-            double d3;
-            double d4;
-            EntityPlayer entityPlayer;
-            if (MappedClasses.z5.isAssignableFrom(e.getClass()) || this.botScoreByEntityId.getOrDefault((entityPlayer = new EntityPlayer(e)).S(), 0) >= 3000 && entityPlayer.n$src$Z$fx7gig()) continue;
-            if (((Entity)object).l() > 250 && entityPlayer.l() <= 2 && !this.trackedEntities.contains(entityPlayer.getObject())) {
-                d4 = ((Entity)object).z() - entityPlayer.z();
-                d3 = ((Entity)object).N() - entityPlayer.h();
-                d2 = ((Entity)object).h() - entityPlayer.h();
-                d = MathUtil.sqrt(d4 * d4 + d3 * d3 + d2 * d2);
-                String string = entityPlayer.Q().C();
-                bl3 = string.endsWith("\u00a7c" + entityPlayer.getName() + "\u00a7r");
-                if (Math.abs(d) > 3.0 && ((Entity)object).l() > 260 && this.botJoinCount <= 12 && bl3) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        boolean localPlayerHasOneMillisecondPing = this.getPing(localPlayer) == 1;
+        for (Object entityObject : worldClient.X()) {
+            EntityPlayer entityPlayer = new EntityPlayer(entityObject);
+            if (MappedClasses.z5.isAssignableFrom(entityObject.getClass()) || this.botScoreByEntityId.getOrDefault(entityPlayer.S(), 0) >= 3000 && entityPlayer.n$src$Z$fx7gig()) continue;
+            if (localPlayer.l() > 250 && entityPlayer.l() <= 2 && !this.trackedEntities.contains(entityPlayer.getObject())) {
+                double deltaX = localPlayer.z() - entityPlayer.z();
+                double deltaY = localPlayer.N() - entityPlayer.h();
+                double deltaZ = localPlayer.h() - entityPlayer.h();
+                double distance = MathUtil.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                String displayName = entityPlayer.Q().getFormattedText();
+                boolean hasRedDisplayName = displayName.endsWith("\u00a7c" + entityPlayer.getName() + "\u00a7r");
+                if (Math.abs(distance) > 3.0 && localPlayer.l() > 260 && this.botJoinCount <= 12 && hasRedDisplayName) {
                     this.trackedEntities.add(entityPlayer.getObject());
                     this.botScoreByEntityId.put(entityPlayer.S(), -20);
                 }
             }
-            if (entityPlayer.l() <= 150 && ((Entity)object).getDistanceToEntity(entityPlayer) < 50.0f && ((Entity)object).l() > 150 && (d = (d4 = entityPlayer.M() - entityPlayer.z()) * d4 + (d3 = entityPlayer.W() - entityPlayer.N()) * d3 + (d2 = entityPlayer.m$src$D$fwnne5() - entityPlayer.h()) * d2) > 2.0 && d < 400.0 && this.trackedEntities.contains(entityPlayer.getObject()) && (!((Entity)object).J$src$Z$fdev5g() || ((EntityPlayer)object).C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().H()) && !entityPlayer.f$src$Z$fst3rk()) {
-                int n = this.botScoreByEntityId.getOrDefault(entityPlayer.S(), 0);
-                if (n > -50000 && !entityPlayer.J$src$Z$fdev5g() && entityPlayer.Q().C().contains("\u00a7c" + entityPlayer.getName() + "\u00a7r") && (double)((Entity)object).getDistanceToEntity(entityPlayer) < 7.5) {
-                    Vape.INSTANCE.getNotificationManager().t("\u00a7cInvalid Player Spawn", entityPlayer.Q().C() + " \u00a7fmay be a fake player!", NotificationType.WARNING, 5000L);
-                    this.botScoreByEntityId.put(entityPlayer.S(), -999999);
+            if (entityPlayer.l() <= 150 && localPlayer.getDistanceToEntity(entityPlayer) < 50.0f && localPlayer.l() > 150) {
+                double motionX = entityPlayer.M() - entityPlayer.z();
+                double motionY = entityPlayer.W() - entityPlayer.N();
+                double motionZ = entityPlayer.m$src$D$fwnne5() - entityPlayer.h();
+                double motionSquared = motionX * motionX + motionY * motionY + motionZ * motionZ;
+                if (motionSquared > 2.0 && motionSquared < 400.0 && this.trackedEntities.contains(entityPlayer.getObject()) && (!localPlayer.J$src$Z$fdev5g() || localPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().H()) && !entityPlayer.f$src$Z$fst3rk()) {
+                    int botScore = this.botScoreByEntityId.getOrDefault(entityPlayer.S(), 0);
+                    if (botScore > -50000 && !entityPlayer.J$src$Z$fdev5g() && entityPlayer.Q().getFormattedText().contains("\u00a7c" + entityPlayer.getName() + "\u00a7r") && (double)localPlayer.getDistanceToEntity(entityPlayer) < 7.5) {
+                        Vape.INSTANCE.getNotificationManager().show("\u00a7cInvalid Player Spawn", entityPlayer.Q().getFormattedText() + " \u00a7fmay be a fake player!", NotificationType.WARNING, 5000L);
+                        this.botScoreByEntityId.put(entityPlayer.S(), -999999);
+                    }
+                    this.botScoreByEntityId.put(entityPlayer.S(), Math.max(botScore - 50, -50));
                 }
-                this.botScoreByEntityId.put(entityPlayer.S(), Math.max(n - 50, -50));
             }
-            if (bl && this.playerUuids.contains(entityPlayer.X$src$Ljava_util_UUID_$1o5dyg6()) && this.getPing(entityPlayer) == 1 && entityPlayer.n$src$Z$fx7gig() && this.botScoreByEntityId.getOrDefault(entityPlayer.S(), 0) > 1500) continue;
-            int n = (int)Math.floor(entityPlayer.z());
-            int n2 = (int)Math.floor(entityPlayer.N() + (double)entityPlayer.X());
-            int n3 = (int)Math.floor(entityPlayer.h());
+            if (localPlayerHasOneMillisecondPing && this.playerUuids.contains(entityPlayer.X$src$Ljava_util_UUID_$1o5dyg6()) && this.getPing(entityPlayer) == 1 && entityPlayer.n$src$Z$fx7gig() && this.botScoreByEntityId.getOrDefault(entityPlayer.S(), 0) > 1500) continue;
+            int blockX = (int)Math.floor(entityPlayer.z());
+            int blockY = (int)Math.floor(entityPlayer.N() + (double)entityPlayer.X());
+            int blockZ = (int)Math.floor(entityPlayer.h());
             BlockState blockState = null;
             if (ForgeVersion.MC_1_12_2.d()) {
-                blockState = worldClient.getBlockState(BlockPos.create(n, n2, n3));
+                blockState = worldClient.getBlockState(BlockPos.create(blockX, blockY, blockZ));
             }
-            boolean bl4 = !worldClient.getBlockByPos(n, n2, n3).p(blockState);
-            double d5 = entityPlayer.W() - entityPlayer.N();
-            double d6 = Math.abs(entityPlayer.W() - entityPlayer.N());
-            bl3 = this.C(worldClient, n, (int)(entityPlayer.N() - (d5 < 0.05 ? 0.45 : 0.9)), n3);
-            boolean bl5 = bl2 = bl4 && bl3;
-            if (bl2) {
-                this.botScoreByEntityId.put(entityPlayer.S(), this.botScoreByEntityId.getOrDefault(entityPlayer.S(), 0) + (d6 < 0.05 ? (entityPlayer.J$src$Z$fdev5g() ? 1 : 3) : 1));
+            boolean occupiesNonSolidBlock = !worldClient.getBlockByPos(blockX, blockY, blockZ).p(blockState);
+            double verticalMotion = entityPlayer.W() - entityPlayer.N();
+            double absoluteVerticalMotion = Math.abs(verticalMotion);
+            boolean hasSolidBlockBelow = this.isSolidBlockAt(worldClient, blockX,
+                    (int)(entityPlayer.N() - (verticalMotion < 0.05 ? 0.45 : 0.9)), blockZ);
+            if (occupiesNonSolidBlock && hasSolidBlockBelow) {
+                this.botScoreByEntityId.put(entityPlayer.S(), this.botScoreByEntityId.getOrDefault(entityPlayer.S(), 0) + (absoluteVerticalMotion < 0.05 ? (entityPlayer.J$src$Z$fdev5g() ? 1 : 3) : 1));
                 continue;
             }
-            if (!(entityPlayer.c$src$I$15a9iwo() <= 0 && !entityPlayer.P() && !entityPlayer.f$src$Z$fst3rk() && d6 > 0.1) && (!entityPlayer.J$src$Z$fdev5g() || d6 != 0.0 && !(d6 > 0.5))) continue;
+            if (!(entityPlayer.c$src$I$15a9iwo() <= 0 && !entityPlayer.P() && !entityPlayer.f$src$Z$fst3rk() && absoluteVerticalMotion > 0.1) && (!entityPlayer.J$src$Z$fdev5g() || absoluteVerticalMotion != 0.0 && !(absoluteVerticalMotion > 0.5))) continue;
             this.botScoreByEntityId.put(entityPlayer.S(), this.botScoreByEntityId.getOrDefault(entityPlayer.S(), 0) - (entityPlayer.J$src$Z$fdev5g() ? 4 : 1));
         }
         this.botJoinCount = 0;
@@ -344,33 +348,35 @@ extends Mod {
     }
 
     @Nullable
-    public MutableColor O(RenderEntityContext renderEntityContext, boolean bl, boolean bl2) {
-        char c;
-        if (!bl2 && !this.r$src$Z$14eylz9()) {
+    public MutableColor resolveEntityTeamColor(RenderEntityContext renderEntityContext,
+                                               boolean bypassRecolorCheck, boolean allowDisabled) {
+        char colorCode;
+        if (!allowDisabled && !this.r$src$Z$14eylz9()) {
             return null;
         }
-        if (!bl && !this.g$src$Z$6tnhtk()) {
+        if (!bypassRecolorCheck && !this.isVisualRecolorEnabled()) {
             return null;
         }
         if (ForgeVersion.MC_1_21_11.d()) {
-            Integer n;
-            EntityPlayer entityPlayer = renderEntityContext.T();
-            if (entityPlayer != null && (n = this.entityCache.r(entityPlayer)) != null) {
-                return new MutableColor(new Color(n));
+            Integer teamColor;
+            EntityPlayer entityPlayer = renderEntityContext.getEntityPlayer();
+            if (entityPlayer != null && (teamColor = this.entityCache.getTeamColor(entityPlayer)) != null) {
+                return new MutableColor(new Color(teamColor));
             }
             return null;
         }
-        String string = renderEntityContext.k();
-        String string2 = renderEntityContext.o();
-        if (string2.startsWith(ClientSettings.F) && (c = this.B(string, string2)) != '\u00ff') {
-            return new MutableColor(this.colorForChar(c));
+        String playerName = renderEntityContext.getName();
+        String formattedName = renderEntityContext.getTypeName();
+        if (formattedName.startsWith(ClientSettings.F)
+                && (colorCode = this.findColorCodeBeforeName(playerName, formattedName)) != COLOR_NONE) {
+            return new MutableColor(this.colorForChar(colorCode));
         }
         return null;
     }
 
-    public boolean C(WorldClient worldClient, int n, int n2, int n3) {
-        BlockPos blockPos = BlockPos.create(n, n2, n3);
-        BlockState blockState = worldClient.getBlockState(blockPos);
+    public boolean isSolidBlockAt(WorldClient world, int x, int y, int z) {
+        BlockPos blockPos = BlockPos.create(x, y, z);
+        BlockState blockState = world.getBlockState(blockPos);
         if (blockState.isNull()) {
             return false;
         }
@@ -381,7 +387,7 @@ extends Mod {
         return block.p(blockState) || !BlockUtil.p(block);
     }
 
-    public boolean g(Entity entity, boolean bl) {
+    public boolean isValidTarget(Entity entity, boolean excludeInvisible) {
         if (entity.isNull()) {
             return false;
         }
@@ -402,66 +408,46 @@ extends Mod {
         if (entityLivingBase.w$src$F$15l9epb() <= 0.0f) {
             return false;
         }
-        if (bl && RotationUtil.k(entityLivingBase)) {
+        if (excludeInvisible && RotationUtil.k(entityLivingBase)) {
             return false;
         }
         if (Vape.INSTANCE.getFriendManager().isFriend(entityLivingBase)) {
             return false;
         }
-        if (this.Z(entityPlayerSP, entity)) {
+        if (this.isTeammate(entityPlayerSP, entity)) {
             return false;
         }
-        return !this.S(entity);
+        return !this.isBot(entity);
     }
 
-    public boolean h(WorldClient worldClient, double d, double d2, double d3) {
-        boolean bl;
-        boolean bl2;
-        boolean bl3 = bl2 = MathUtil.roundToScale(d2 - (double)((int)d2), 1) == 0.5;
-        if (bl2) {
-            WorldClient worldClient2 = worldClient;
-            double d4 = d;
-            double d5 = d2;
-            BlockState blockState = worldClient2.getBlockState(BlockPos.D(d4, d5 - 0.0, d3));
-            if (blockState.isNull()) {
-                return false;
-            }
-            Block block = blockState.getBlock();
-            if (block.isNull()) {
-                return false;
-            }
-            boolean bl4 = BlockUtil.p(block);
-            if (bl4) {
-                return true;
-            }
-            int n = (int)d2;
-            int n2 = (int)d;
-            WorldClient worldClient3 = worldClient;
-            AntiBot antiBot = this;
-            return antiBot.C(worldClient3, n2, n - 0, (int)d3);
-        }
-        WorldClient worldClient4 = worldClient;
-        double d6 = d;
-        double d7 = d2;
-        BlockState blockState = worldClient4.getBlockState(BlockPos.D(d6, d7 - 0.1, d3));
-        if (blockState.isNull()) {
+    public boolean isSupportedBySolidBlock(WorldClient world, double positionX,
+                                           double positionY, double positionZ) {
+        boolean isHalfBlockHeight = MathUtil.roundToScale(
+                positionY - (int)positionY, 1) == 0.5;
+        double sampleOffset = isHalfBlockHeight ? 0.0 : 0.1;
+        BlockState state = world.getBlockState(
+                BlockPos.D(positionX, positionY - sampleOffset, positionZ));
+        if (state.isNull()) {
             return false;
         }
-        Block block = blockState.getBlock();
+        Block block = state.getBlock();
         if (block.isNull()) {
             return false;
         }
-        boolean bl5 = bl = !block.p(blockState) || BlockUtil.p(block);
-        if (bl) {
+
+        if (isHalfBlockHeight) {
+            if (BlockUtil.p(block)) {
+                return true;
+            }
+            return this.isSolidBlockAt(
+                    world, (int)positionX, (int)positionY, (int)positionZ);
+        }
+        if (!block.p(state) || BlockUtil.p(block)) {
             return true;
         }
-        int n = (int)d2;
-        int n3 = (int)d;
-        WorldClient worldClient5 = worldClient;
-        AntiBot antiBot = this;
-        return antiBot.C(worldClient5, n3, n - 1, (int)d3);
+        return this.isSolidBlockAt(
+                world, (int)positionX, (int)positionY - 1, (int)positionZ);
     }
-
     private void updatePingCache() {
         if (this.tickCounter >= 20) {
             this.tickCounter = 0;
@@ -469,64 +455,60 @@ extends Mod {
         if (this.tickCounter++ == 0) {
             this.pingByEntityId.clear();
             this.refreshPlayerInfo();
-            List list = Minecraft.theWorld().X();
-            for (Object object : this.playerInfoList) {
-                if (object == null) continue;
-                PlayerInfo playerInfo = new PlayerInfo(object);
-                for (Object e : list) {
-                    EntityPlayer entityPlayer = new EntityPlayer(e);
-                    if (!entityPlayer.c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937().isNotNull() || !entityPlayer.c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937().equals(playerInfo.v())) continue;
-                    int n = Math.max(playerInfo.z(), 0);
-                    this.pingByEntityId.put(entityPlayer.S(), n);
+            List worldPlayers = Minecraft.theWorld().X();
+            for (Object playerInfoObject : this.playerInfoList) {
+                if (playerInfoObject == null) continue;
+                PlayerInfo playerInfo = new PlayerInfo(playerInfoObject);
+                for (Object playerObject : worldPlayers) {
+                    EntityPlayer player = new EntityPlayer(playerObject);
+                    GameProfile profile = player.c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937();
+                    if (!profile.isNotNull() || !profile.equals(playerInfo.v())) continue;
+                    int ping = Math.max(playerInfo.z(), 0);
+                    this.pingByEntityId.put(player.S(), ping);
                 }
             }
         }
     }
 
-    private static Exception identityException(Exception exception) {
-        return exception;
-    }
-
-    public boolean Z(@Nullable EntityPlayerSP entityPlayerSP, Entity entity) {
-        EntityPlayerSP entityPlayerSP2;
+    public boolean isTeammate(@Nullable EntityPlayerSP localPlayer, Entity entity) {
         if (!this.r$src$Z$14eylz9()) {
             return false;
         }
-        if (!this.P$src$Z$6h0869() && !this.z()) {
+        if (!this.isColorTeamFilteringEnabled() && !this.isServerTeamFilteringEnabled()) {
             return false;
         }
-        EntityPlayerSP entityPlayerSP3 = entityPlayerSP2 = entityPlayerSP != null ? entityPlayerSP : Minecraft.thePlayer();
+        EntityPlayerSP resolvedLocalPlayer = localPlayer != null ? localPlayer : Minecraft.thePlayer();
         if (entity.isInstance(MappedClasses.lG)) {
-            EntityOtherPlayerMP entityOtherPlayerMP = new EntityOtherPlayerMP(entity);
-            if (this.P$src$Z$6h0869() && (ForgeVersion.MC_1_21_11.d() ? this.entityCache.r(entityPlayerSP2, entityOtherPlayerMP) : this.stateTracker.A((ModeOption)this.teamColorMode.K(), entityOtherPlayerMP))) {
+            EntityOtherPlayerMP otherPlayer = new EntityOtherPlayerMP(entity);
+            if (this.isColorTeamFilteringEnabled() && (ForgeVersion.MC_1_21_11.d() ? this.entityCache.hasSameTeamColor(resolvedLocalPlayer, otherPlayer) : this.stateTracker.matchesOption((ModeOption)this.teamColorMode.getValue(), otherPlayer))) {
                 return true;
             }
-            if (this.z()) {
-                Team team = this.w(entityPlayerSP2);
-                if (team == null || team.isNull()) {
+            if (this.isServerTeamFilteringEnabled()) {
+                Team localTeam = this.getTeam(resolvedLocalPlayer);
+                if (localTeam == null || localTeam.isNull()) {
                     return false;
                 }
-                Team team2 = this.w(entityOtherPlayerMP);
-                if (team2 == null || team2.isNull()) {
+                Team otherTeam = this.getTeam(otherPlayer);
+                if (otherTeam == null || otherTeam.isNull()) {
                     return false;
                 }
-                if (team.isInstance(MappedClasses.u6) && team2.isInstance(MappedClasses.u6)) {
-                    String string;
-                    ScorePlayerTeam scorePlayerTeam = new ScorePlayerTeam(team);
-                    ScorePlayerTeam scorePlayerTeam2 = new ScorePlayerTeam(team2);
-                    String string2 = scorePlayerTeam.A();
-                    if (string2.equals(string = scorePlayerTeam2.A())) {
+                if (localTeam.isInstance(MappedClasses.u6) && otherTeam.isInstance(MappedClasses.u6)) {
+                    ScorePlayerTeam localScoreTeam = new ScorePlayerTeam(localTeam);
+                    ScorePlayerTeam otherScoreTeam = new ScorePlayerTeam(otherTeam);
+                    String localTeamName = localScoreTeam.A();
+                    String otherTeamName = otherScoreTeam.A();
+                    if (localTeamName.equals(otherTeamName)) {
                         return true;
                     }
                 }
-                return team.isSameTeam(team2);
+                return localTeam.isSameTeam(otherTeam);
             }
         }
         return false;
     }
 
-    public boolean S(Entity entity) {
-        if (!this.h$src$Z$6u7aex()) {
+    public boolean isBot(Entity entity) {
+        if (!this.isAntiBotEnabled()) {
             return false;
         }
         if (!ClientSettings.H) {
@@ -536,34 +518,33 @@ extends Mod {
             return false;
         }
         if (entity.isInstance(MappedClasses.Yl)) {
-            boolean bl;
-            int n;
             EntityPlayer entityPlayer = new EntityPlayer(entity);
-            if (this.getPing(Minecraft.thePlayer()) == 1 && (n = this.getPing(entityPlayer)) != -1) {
-                boolean bl2;
-                boolean bl3 = bl2 = n == 1;
-                return !bl2;
+            if (this.getPing(Minecraft.thePlayer()) == 1) {
+                int entityPing = this.getPing(entityPlayer);
+                if (entityPing != -1) {
+                    return entityPing != 1;
+                }
             }
-            String string = entityPlayer.Q().C();
+            String displayName = entityPlayer.Q().getFormattedText();
             if (this.botScoreByEntityId.getOrDefault(entityPlayer.S(), 0) < 15) {
                 return true;
             }
             if (entityPlayer.w$src$Z$1iu64de()) {
                 return true;
             }
-            boolean bl4 = bl = !this.playerUuids.contains(entityPlayer.X$src$Ljava_util_UUID_$1o5dyg6());
-            if (string.equals("\u00a7r" + entityPlayer.getName() + "\u00a7r") || string.equals(entityPlayer.getName() + "\u00a7r") || string.contains("[NPC]")) {
-                return bl;
+            boolean isMissingFromPlayerList = !this.playerUuids.contains(entityPlayer.X$src$Ljava_util_UUID_$1o5dyg6());
+            if (displayName.equals("\u00a7r" + entityPlayer.getName() + "\u00a7r") || displayName.equals(entityPlayer.getName() + "\u00a7r") || displayName.contains("[NPC]")) {
+                return isMissingFromPlayerList;
             }
         }
         return false;
     }
 
-    public boolean o(Entity entity) {
-        return this.Z(null, entity);
+    public boolean isTeammate(Entity entity) {
+        return this.isTeammate(null, entity);
     }
 
-    public ModeValue K() {
+    public ModeValue getTeamColorMode() {
         return this.teamColorMode;
     }
 
@@ -617,12 +598,12 @@ extends Mod {
         this.colorCharByOption.put(this.blackOption, Character.valueOf('0'));
         this.stateTracker = new AntiBotStateTracker(this.colorCharByOption);
         this.entityCache = new AntiBotEntityCache();
-        this.teamColorMode = AntiBotModeValue.u(this, "Your team color", "Uses this color to determine your team", this.greenOption, 2, this.darkRedOption, this.redOption, this.goldOption, this.yellowOption, this.darkGreenOption, this.greenOption, this.aquaOption, this.darkAquaOption, this.darkBlueOption, this.blueOption, this.purpleOption, this.darkPurpleOption, this.whiteOption, this.grayOption, this.darkGrayOption, this.blackOption);
-        this.detectedTeamColorValue = AntiBotBooleanValue.i(this, "Your team color", "Shows your detected team color", null);
+        this.teamColorMode = AntiBotModeValue.create(this, "Your team color", "Uses this color to determine your team", this.greenOption, this.darkRedOption, this.redOption, this.goldOption, this.yellowOption, this.darkGreenOption, this.greenOption, this.aquaOption, this.darkAquaOption, this.darkBlueOption, this.blueOption, this.purpleOption, this.darkPurpleOption, this.whiteOption, this.grayOption, this.darkGrayOption, this.blackOption);
+        this.detectedTeamColorValue = AntiBotBooleanValue.createWithDescription(this, "Your team color", "Shows your detected team color", null);
         if (ForgeVersion.MC_1_21_11.d()) {
-            this.teamsByColor.K(this.recolorVisuals, this.detectedTeamColorValue);
+            this.teamsByColor.addDependentValues(this.recolorVisuals, this.detectedTeamColorValue);
         } else {
-            this.teamsByColor.K(this.recolorVisuals, this.autoDetectColor, this.teamColorMode);
+            this.teamsByColor.addDependentValues(this.recolorVisuals, this.autoDetectColor, this.teamColorMode);
         }
         this.addValue(this.teamsByServer, this.teamsByColor, this.recolorVisuals);
         this.U(this.autoDetectColor, ForgeVersion.MC_1_21_11.b());
@@ -631,20 +612,20 @@ extends Mod {
         this.U(this.antiBot, new MinecraftVersionConstraint[0]);
     }
 
-    public AntiBotBooleanValue P() {
+    public AntiBotBooleanValue getDetectedTeamColorValue() {
         return this.detectedTeamColorValue;
     }
 
-    public boolean P$src$Z$6h0869() {
-        return this.r$src$Z$14eylz9() && this.teamsByColor.L() != false;
+    public boolean isColorTeamFilteringEnabled() {
+        return this.r$src$Z$14eylz9() && this.teamsByColor.getEffectiveValue() != false;
     }
 
-    public boolean h$src$Z$6u7aex() {
-        return this.r$src$Z$14eylz9() && this.antiBot.L() != false;
+    public boolean isAntiBotEnabled() {
+        return this.r$src$Z$14eylz9() && this.antiBot.getEffectiveValue() != false;
     }
 
     @Nullable
-    public Team w(Entity entity) {
+    public Team getTeam(Entity entity) {
         if (!entity.isInstance(MappedClasses.Yl)) {
             return null;
         }
@@ -654,33 +635,33 @@ extends Mod {
             return team;
         }
         GameProfile gameProfile = entityPlayer.c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937();
-        UUID uUID = gameProfile.getUUID();
-        for (Object e : Minecraft.N().getPlayerInfoMap()) {
-            ScorePlayerTeam scorePlayerTeam;
-            PlayerInfo playerInfo = new PlayerInfo(e);
-            GameProfile gameProfile2 = playerInfo.v();
-            if (!gameProfile2.getUUID().equals(uUID) || !(scorePlayerTeam = playerInfo.X()).isNotNull()) continue;
-            return scorePlayerTeam;
+        UUID playerUuid = gameProfile.getUUID();
+        for (Object playerInfoObject : Minecraft.N().getPlayerInfoMap()) {
+            ScorePlayerTeam scoreTeam;
+            PlayerInfo playerInfo = new PlayerInfo(playerInfoObject);
+            GameProfile playerInfoProfile = playerInfo.v();
+            if (!playerInfoProfile.getUUID().equals(playerUuid) || !(scoreTeam = playerInfo.X()).isNotNull()) continue;
+            return scoreTeam;
         }
         return null;
     }
 
-    private Color colorForChar(char c) {
-        Color color = this.colorByChar.get(Character.valueOf(c));
-        if (color != null) {
-            return color;
+    private Color colorForChar(char colorCode) {
+        Color cachedColor = this.colorByChar.get(Character.valueOf(colorCode));
+        if (cachedColor != null) {
+            return cachedColor;
         }
-        float[] fArray = new float[4];
-        this.applyColorComponents(c, fArray);
-        Color color2 = new Color((int)(fArray[0] * 255.0f), (int)(fArray[1] * 255.0f), (int)(fArray[2] * 255.0f));
-        this.colorByChar.put(Character.valueOf(c), color2);
-        return color2;
+        float[] components = new float[4];
+        this.applyColorComponents(colorCode, components);
+        Color resolvedColor = new Color((int)(components[0] * 255.0f), (int)(components[1] * 255.0f), (int)(components[2] * 255.0f));
+        this.colorByChar.put(Character.valueOf(colorCode), resolvedColor);
+        return resolvedColor;
     }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
         ModeOption modeOption;
-        if (!this.r$src$Z$14eylz9() || !this.teamsByColor.L().booleanValue() || !this.autoDetectColor.L().booleanValue() && !ForgeVersion.MC_1_21_11.d()) {
+        if (!this.r$src$Z$14eylz9() || !this.teamsByColor.getEffectiveValue().booleanValue() || !this.autoDetectColor.getEffectiveValue().booleanValue() && !ForgeVersion.MC_1_21_11.d()) {
             return;
         }
         EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();
@@ -688,19 +669,20 @@ extends Mod {
             return;
         }
         if (ForgeVersion.MC_1_21_11.d()) {
-            Integer n = this.entityCache.r(entityPlayerSP);
-            if (n != null) {
-                this.detectedTeamColorValue.f(true);
-                this.detectedTeamColorValue.o(n);
-                this.detectedTeamColorValue.f(false);
+            Integer detectedColor = this.entityCache.getTeamColor(entityPlayerSP);
+            if (detectedColor != null) {
+                this.detectedTeamColorValue.setPersistenceSuppressed(true);
+                this.detectedTeamColorValue.setValue(detectedColor);
+                this.detectedTeamColorValue.setPersistenceSuppressed(false);
             }
             return;
         }
-        char c = this.stateTracker.s(entityPlayerSP);
-        if (c != '\u00ff' && (modeOption = this.stateTracker.c(c)) != null) {
-            this.teamColorMode.f(true);
+        char detectedColorCode = this.stateTracker.detectColorCode(entityPlayerSP);
+        if (detectedColorCode != AntiBotStateTracker.UNKNOWN_COLOR_CODE
+                && (modeOption = this.stateTracker.findOptionByColorCode(detectedColorCode)) != null) {
+            this.teamColorMode.setPersistenceSuppressed(true);
             this.teamColorMode.setValue(modeOption);
-            this.teamColorMode.f(false);
+            this.teamColorMode.setPersistenceSuppressed(false);
         }
     }
 }

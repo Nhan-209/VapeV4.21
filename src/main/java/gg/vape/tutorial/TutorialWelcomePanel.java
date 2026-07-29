@@ -29,7 +29,7 @@ extends TutorialOverlayPanelBase {
 
     @Override
     public void H() {
-        this.T(new Color(26, 26, 26, 255));
+        this.setDisabledOverlayColor(new Color(26, 26, 26, 255));
         GuiRenderPrimitives.P(this.G$src$D$1b2f02a() - 1.0, this.n() - 1.0, this.A() + 2.0, this.L() + 2.0 + 2.0, new Color(38, 38, 38, 255), 1.0f, 2.0f, 1.0f);
         super.H();
     }
@@ -60,8 +60,8 @@ extends TutorialOverlayPanelBase {
         ((GuiComponent)tutorialWelcomeStartButton).o(44.0);
         tutorialWelcomeStartButton.Y(14.0);
         this.h(tutorialWelcomeStartButton, "offsetX 70, offsetY 77");
-        underlinedTextLabel.s(new TutorialWelcomeSkipAllClickHandler(this));
-        tutorialWelcomeStartButton.s(new TutorialWelcomeStartClickHandler(this));
+        underlinedTextLabel.setClickListener(new TutorialWelcomeSkipAllClickHandler(this));
+        tutorialWelcomeStartButton.setClickListener(new TutorialWelcomeStartClickHandler(this));
     }
 
     @Override

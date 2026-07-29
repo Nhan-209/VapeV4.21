@@ -5,10 +5,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 class BendableBindList
 extends CopyOnWriteArrayList<Integer> {
-    final Bendable V;
+    final Bendable owner;
 
     BendableBindList(Bendable owner) {
-        this.V = owner;
+        this.owner = owner;
     }
 
     @Override
@@ -16,4 +16,3 @@ extends CopyOnWriteArrayList<Integer> {
         return super.add(bindId);
     }
 }
-

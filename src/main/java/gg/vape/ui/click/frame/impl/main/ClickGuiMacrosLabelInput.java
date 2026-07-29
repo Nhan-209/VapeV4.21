@@ -5,17 +5,17 @@ import gg.vape.ui.click.frame.impl.main.ClickGuiMacrosController;
 
 public class ClickGuiMacrosLabelInput
 extends LabeledTextInputComponent {
-    final ClickGuiMacrosController Z8;
+    final ClickGuiMacrosController controller;
 
     @Override
-    public void k(String string) {
-        super.k(string);
-        ClickGuiMacrosController.b(this.Z8, string);
-        this.Z8.S();
+    public void setText(String text) {
+        super.setText(text);
+        ClickGuiMacrosController.setSearchQuery(this.controller, text);
+        this.controller.rebuildMacroCards();
     }
 
     public ClickGuiMacrosLabelInput(ClickGuiMacrosController clickGuiMacrosController, String string) {
         super(string);
-        this.Z8 = clickGuiMacrosController;
+        this.controller = clickGuiMacrosController;
     }
 }

@@ -12,51 +12,42 @@ public enum HudSnapEdge {
     RIGHT,
     HORIZONTAL_CENTRE;
 
-    private static final Set<HudSnapEdge> x;
-    private static final Set<HudSnapEdge> N;
-    private static final HudSnapEdge[] q;
+    private static final Set<HudSnapEdge> Y_EDGES;
+    private static final Set<HudSnapEdge> X_EDGES;
 
-    public static Set<HudSnapEdge> a() {
-        return x;
+    public static Set<HudSnapEdge> getYEdges() {
+        return Y_EDGES;
     }
 
     static {
-        String[] stringArray = new String[]{"VERTICAL_CENTRE", "RIGHT", "HORIZONTAL_CENTRE", "LEFT", "TOP", "BOTTOM"};
-
-
-
-
-
-
-        q = new HudSnapEdge[]{TOP, BOTTOM, VERTICAL_CENTRE, LEFT, RIGHT, HORIZONTAL_CENTRE};
-        x = Sets.newHashSet(TOP, BOTTOM, HORIZONTAL_CENTRE);
-        N = Sets.newHashSet(LEFT, RIGHT, VERTICAL_CENTRE);
+        Y_EDGES = Sets.newHashSet(TOP, BOTTOM, HORIZONTAL_CENTRE);
+        X_EDGES = Sets.newHashSet(LEFT, RIGHT, VERTICAL_CENTRE);
     }
 
-    public static Set<HudSnapEdge> L() {
-        return N;
+    public static Set<HudSnapEdge> getXEdges() {
+        return X_EDGES;
     }
 
 
-    public double t(RectData rectData) {
+    public double getPosition(RectData bounds) {
         switch (this) {
             case LEFT: {
-                return rectData.o();
+                return bounds.o();
             }
             case RIGHT: {
-                return rectData.o() + (rectData.e() - 19.0);
+                return bounds.o() + (bounds.e() - 19.0);
             }
             case TOP: {
-                return rectData.W();
+                return bounds.W();
             }
             case BOTTOM: {
-                return rectData.W() + rectData.R() + 2.0;
+                return bounds.W() + bounds.R() + 2.0;
             }
             case HORIZONTAL_CENTRE: {
-                return rectData.W() + rectData.R() / 2.0;
+                return bounds.W() + bounds.R() / 2.0;
             }
             case VERTICAL_CENTRE: {
-                return rectData.o() + (rectData.e() - 20.0) / 2.0;
+                return bounds.o() + (bounds.e() - 20.0) / 2.0;
             }
         }
         return 0.0;

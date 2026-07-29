@@ -10,21 +10,21 @@ import gg.vape.ui.click.component.GuiClickListener;
 
 public class FriendListEntryRemoveClickHandler
 implements GuiClickListener {
-    final FriendEntry n;
-    final FriendListEntryRow a;
+    private final FriendEntry friendEntry;
+    private final FriendListEntryRow entryRow;
 
     public FriendListEntryRemoveClickHandler(FriendListEntryRow friendListEntryRow, FriendEntry friendEntry) {
-        this.a = friendListEntryRow;
-        this.n = friendEntry;
+        this.entryRow = friendListEntryRow;
+        this.friendEntry = friendEntry;
     }
 
 
     @Override
-    public void P() {
-        if (this.n instanceof Friend) {
-            Vape.INSTANCE.getFriendManager().E((Friend)this.n);
-        } else if (this.n instanceof ExternalFriend) {
-            ExternalFriend externalFriend = (ExternalFriend)this.n;
+    public void onPrimaryClick() {
+        if (this.friendEntry instanceof Friend) {
+            Vape.INSTANCE.getFriendManager().E((Friend)this.friendEntry);
+        } else if (this.friendEntry instanceof ExternalFriend) {
+            ExternalFriend externalFriend = (ExternalFriend)this.friendEntry;
             externalFriend.d().O(false);
         }
         OnlineFriendUiHelper.n$src$V$uh9sir();

@@ -9,71 +9,73 @@ import gg.vape.wrapper.impl.Vec3;
 public class WorldPointMouseRotationController
 extends MouseRotationController
 implements WorldPointRotationTarget {
-    private double z;
-    private double j;
-    private double H;
+    private double targetZ;
+    private double targetY;
+    private double targetX;
 
-    public void A(double d) {
-        this.j = d;
+    public void setTargetY(double targetY) {
+        this.targetY = targetY;
     }
 
-    public WorldPointMouseRotationController(double d, double d2, double d3) {
-        this.H = d;
-        this.j = d2;
-        this.z = d3;
+    public WorldPointMouseRotationController(double targetX, double targetY, double targetZ) {
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.targetZ = targetZ;
     }
 
-    public void e(double d) {
-        this.H = d;
+    public void setTargetX(double targetX) {
+        this.targetX = targetX;
     }
 
     @Override
-    public boolean A() {
-        double d = RotationUtil.T(Minecraft.thePlayer(), this.H, this.z);
-        if (d > (double)this.W) {
-            this.B = RotationUtil.k(Minecraft.thePlayer(), this.H, this.z) ? (this.B -= this.O()) : (this.B += this.O());
+    public boolean updateYaw() {
+        double yawDifference = RotationUtil.T(Minecraft.thePlayer(), this.targetX, this.targetZ);
+        if (yawDifference > (double)this.tolerance) {
+            this.pendingYawDelta = RotationUtil.k(Minecraft.thePlayer(), this.targetX, this.targetZ)
+                    ? (this.pendingYawDelta -= this.getSpeed()) : (this.pendingYawDelta += this.getSpeed());
             return false;
         }
         return true;
     }
 
 
-    public double a() {
-        return this.z;
+    public double getTargetZ() {
+        return this.targetZ;
     }
 
     @Override
-    public void J(Vec3 vec3) {
-        this.H = vec3.getX();
-        this.j = vec3.getY();
-        this.z = vec3.getZ();
+    public void setTarget(Vec3 target) {
+        this.targetX = target.getX();
+        this.targetY = target.getY();
+        this.targetZ = target.getZ();
     }
 
     @Override
-    public Vec3 w() {
-        return Vec3.create(this.Q(), this.Y(), this.a());
+    public Vec3 getTarget() {
+        return Vec3.create(this.getTargetX(), this.getTargetY(), this.getTargetZ());
     }
 
-    public double Q() {
-        return this.H;
+    public double getTargetX() {
+        return this.targetX;
     }
 
     @Override
-    public boolean m() {
-        double d = RotationUtil.H(Minecraft.thePlayer(), this.H, this.j, this.z);
-        if (d > (double)this.W || d < (double)(-this.W)) {
-            this.y = RotationUtil.h$src$Z$kozqzr(Minecraft.thePlayer(), this.H, this.j, this.z) ? (this.y += this.O()) : (this.y -= this.O());
+    public boolean updatePitch() {
+        double pitchDifference = RotationUtil.H(Minecraft.thePlayer(), this.targetX, this.targetY, this.targetZ);
+        if (pitchDifference > (double)this.tolerance || pitchDifference < (double)(-this.tolerance)) {
+            this.pendingPitchDelta = RotationUtil.h$src$Z$kozqzr(Minecraft.thePlayer(), this.targetX, this.targetY, this.targetZ)
+                    ? (this.pendingPitchDelta += this.getSpeed()) : (this.pendingPitchDelta -= this.getSpeed());
             return false;
         }
         return true;
     }
 
-    public double Y() {
-        return this.j;
+    public double getTargetY() {
+        return this.targetY;
     }
 
-    public void h(double d) {
-        this.z = d;
+    public void setTargetZ(double targetZ) {
+        this.targetZ = targetZ;
     }
 }
 

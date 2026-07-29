@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jetbrains.annotations.Nullable;
 
 public class ClientSettings {
-    public BooleanValue I;
+    public BooleanValue estimateFallDamage;
     public BooleanValue T;
     public BooleanValue S;
     private static int n;
@@ -55,20 +55,20 @@ public class ClientSettings {
     private static Set<Integer> l;
     @Nullable
     public AntiBot q;
-    public BooleanValue B;
+    public BooleanValue healthPrediction;
     private static final Random k;
     public final BooleanValue e;
     public static boolean d;
     public static String F;
     public static boolean H;
     public ModeValue W;
-    public BooleanValue J;
+    public BooleanValue estimateFoodHealing;
     static double[] f;
     public static final ModeOption u;
     public final BooleanValue C;
     public static final ModeOption O;
     public final ModeValue o;
-    public ColorValue w = ColorValue.L(this, "Gui Color", new Color(5, 134, 105));
+    public ColorValue w = ColorValue.create(this, "Gui Color", new Color(5, 134, 105));
     public static final ModeOption Y;
 
     public static boolean E(Entity entity) {
@@ -92,7 +92,7 @@ public class ClientSettings {
 
     public static boolean l(int n) {
         if (n < 0) {
-            return MouseInput.I(100 + n);
+            return MouseInput.isButtonDown(100 + n);
         }
         return KeyboardInput.isKeyDown(n);
     }
@@ -107,7 +107,7 @@ public class ClientSettings {
         if (ForgeVersion.MC_1_21_4.v()) {
             n2 += 100;
         }
-        return KeyBindingInputState.n(n2);
+        return KeyBindingInputState.isMouseButtonDown(n2);
     }
 
     public static double X(ItemStack itemStack) {
@@ -134,9 +134,9 @@ public class ClientSettings {
         int n2 = Minecraft.gameSettings().F().getKeyCode();
         int n3 = n = ForgeVersion.MC_1_16_5.d() ? n2 : 100 + n2;
         if (n == 0) {
-            return KeyBindingInputState.l();
+            return KeyBindingInputState.isLeftButtonDown();
         }
-        return KeyBindingInputState.q$src$Z$1enyqt3();
+        return KeyBindingInputState.isRightButtonDown();
     }
 
     public static void D(EntityLivingBase entityLivingBase) {
@@ -164,16 +164,16 @@ public class ClientSettings {
         if (this.q == null || !this.q.r$src$Z$14eylz9()) {
             return false;
         }
-        return this.q.Z(entityPlayerSP, entity);
+        return this.q.isTeammate(entityPlayerSP, entity);
     }
 
     public MutableColor e(RenderEntityContext renderEntityContext) {
-        String string = renderEntityContext.k();
-        if (Vape.INSTANCE.getFriendManager().E(string) && Vape.INSTANCE.getFriendManager().q.L().booleanValue()) {
-            return Vape.INSTANCE.getFriendManager().R.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+        String string = renderEntityContext.getName();
+        if (Vape.INSTANCE.getFriendManager().E(string) && Vape.INSTANCE.getFriendManager().q.getEffectiveValue().booleanValue()) {
+            return Vape.INSTANCE.getFriendManager().R.getMutableColor();
         }
-        if (Vape.INSTANCE.getEnemyManager().q(string) && Vape.INSTANCE.getEnemyManager().p.L().booleanValue()) {
-            return Vape.INSTANCE.getEnemyManager().i.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+        if (Vape.INSTANCE.getEnemyManager().q(string) && Vape.INSTANCE.getEnemyManager().p.getEffectiveValue().booleanValue()) {
+            return Vape.INSTANCE.getEnemyManager().i.getMutableColor();
         }
         return this.l(renderEntityContext);
     }
@@ -234,7 +234,7 @@ public class ClientSettings {
         if (n > 0) {
             return KeyboardInput.isKeyDown(n);
         }
-        return MouseInput.I(100 + n);
+        return MouseInput.isButtonDown(100 + n);
     }
 
     private double U() {
@@ -252,9 +252,9 @@ public class ClientSettings {
         int n = keyBinding.getKeyCode();
         if (n > 0) {
             if (ForgeVersion.MC_1_16_5.v()) {
-                n = KeyboardCodeUtil.m(n);
+                n = KeyboardCodeUtil.convertLegacyKeyCode(n);
             } else {
-                int n2 = GlfwToVirtualKeyCodeMap.h(n);
+                int n2 = GlfwToVirtualKeyCodeMap.toVirtualKey(n);
                 if (n2 != 0) {
                     n = n2;
                 }
@@ -277,13 +277,13 @@ public class ClientSettings {
             return false;
         }
         if (this.q != null) {
-            return this.q.S(entity);
+            return this.q.isBot(entity);
         }
         return false;
     }
 
     public double s() {
-        int n = this.W.w$src$I$15qcf2k();
+        int n = this.W.getSelectedIndex();
         if (n == 0) {
             return this.U();
         }
@@ -309,9 +309,9 @@ public class ClientSettings {
         int n2 = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().getKeyCode();
         int n3 = n = ForgeVersion.MC_1_16_5.d() ? n2 : 100 + n2;
         if (n == 0) {
-            return KeyBindingInputState.l();
+            return KeyBindingInputState.isLeftButtonDown();
         }
-        return KeyBindingInputState.q$src$Z$1enyqt3();
+        return KeyBindingInputState.isRightButtonDown();
     }
 
     public MutableColor l(RenderEntityContext renderEntityContext) {
@@ -319,13 +319,13 @@ public class ClientSettings {
     }
 
     public ClientSettings() {
-        this.Z = BindValue.i(this, "Add friend bind");
+        this.Z = BindValue.createEmpty(this, "Add friend bind");
         this.S = BooleanValue.create(this, "Show NBT Tags", false, "Shows NBT tags set by the server.\nUseful for servers with custom items.");
         this.N = BooleanValue.create(this, "Lobby Check", false, "Temporarily disables certain features in server lobbies.");
         this.T = BooleanValue.create(this, "Sanity Check", false, "Disables all modules when you connect/disconnect from a server.");
-        this.B = BooleanValue.create(this, "Health prediction", false, "Estimates player health on pvp servers\nBy default attacks and health pots will be estimated\nNOTE: This feature may not always be accurate!");
-        this.J = BooleanValue.create(this, "Estimate Food", true, "Automatically estimates food + healing from food.");
-        this.I = BooleanValue.create(this, "Estimate Fall", true, "Automatically estimates damage from falling.");
+        this.healthPrediction = BooleanValue.create(this, "Health prediction", false, "Estimates player health on pvp servers\nBy default attacks and health pots will be estimated\nNOTE: This feature may not always be accurate!");
+        this.estimateFoodHealing = BooleanValue.create(this, "Estimate Food", true, "Automatically estimates food + healing from food.");
+        this.estimateFallDamage = BooleanValue.create(this, "Estimate Fall", true, "Automatically estimates damage from falling.");
         this.o = ModeValue.create((Object)this, "Movement", "Corrects your movement to prevent irregular speeds whilst silent aiming, which is normally impossible\nNone - Does not correct your movement\nSlow - Will slow down your movement to prevent irregular speeds\nProper - Will attempt to steer you towards your cursor location with proper movements", (ModeSelection)Y, O, u, Y);
         this.c = BooleanValue.create(this, "3rd person aim view", false, "In 3rd person sets your 3D model angles where you are aiming silently");
         this.e = BooleanValue.create(this, "Aim indicator", false, "Shows a line where you are aiming silently");
@@ -333,9 +333,9 @@ public class ClientSettings {
         this.A = BooleanValue.create(this, "Use Hitboxes", false, "Uses Hitboxes module to increase hitboxes for Silent Aim modules");
         ModeOption modeOption = new ModeOption("Auto");
         this.W = ModeValue.create((Object)this, "GUI Scale", "Scale of GUI", (ModeSelection)modeOption, modeOption, new ModeOption("Tiny"), new ModeOption("Small"), new ModeOption("Normal"), new ModeOption("Large"), new ModeOption("Huge"));
-        this.w.o(true);
-        this.B.K(this.J, this.I);
-        ((BindSet)this.Z.K()).R(new ClientSettingsBindChangeListener(this));
+        this.w.setColorTransformEnabled(true);
+        this.healthPrediction.addDependentValues(this.estimateFoodHealing, this.estimateFallDamage);
+        ((BindSet)this.Z.getValue()).addChangeListener(new ClientSettingsBindChangeListener(this));
     }
 
     public static int f() {
@@ -350,7 +350,7 @@ public class ClientSettings {
         if (this.q == null) {
             return null;
         }
-        return this.q.O(renderEntityContext, bl, bl2);
+        return this.q.resolveEntityTeamColor(renderEntityContext, bl, bl2);
     }
 
     public boolean S(Entity entity) {
@@ -358,7 +358,7 @@ public class ClientSettings {
     }
 
     public boolean J$src$Z$c57s1l() {
-        return this.N.L() != false && !Minecraft.thePlayer().C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().c();
+        return this.N.getEffectiveValue() != false && !Minecraft.thePlayer().C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().c();
     }
 }
 

@@ -9,18 +9,16 @@ import java.awt.Point;
 
 class PublicProfileOwnerShareCodeCopyClickHandler
 implements GuiMouseListener {
-    private static final String b = "Copied share code to clipboard!";
-    final PublicProfileOwnerDetailsPanel S;
+    private static final String SUCCESS_MESSAGE = "Copied share code to clipboard!";
+    private final PublicProfileOwnerDetailsPanel ownerDetailsPanel;
 
     PublicProfileOwnerShareCodeCopyClickHandler(PublicProfileOwnerDetailsPanel publicProfileOwnerDetailsPanel) {
-        this.S = publicProfileOwnerDetailsPanel;
+        this.ownerDetailsPanel = publicProfileOwnerDetailsPanel;
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        String string = this.S.rS.a();
-        NativeBridge.cpy(string);
-        PublicProfileManager.M(b);
+        NativeBridge.cpy(this.ownerDetailsPanel.getShareCode());
+        PublicProfileManager.M(SUCCESS_MESSAGE);
     }
 }
-

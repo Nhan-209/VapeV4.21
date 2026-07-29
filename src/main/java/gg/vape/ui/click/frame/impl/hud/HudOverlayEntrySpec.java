@@ -6,60 +6,65 @@ import java.util.function.BooleanSupplier;
 import org.jetbrains.annotations.Nullable;
 
 public final class HudOverlayEntrySpec {
-    private final String m;
+    private final String iconName;
     @Nullable
-    private final Runnable G;
+    private final Runnable action;
     @Nullable
-    private final BooleanSupplier X;
-    private final String e;
+    private final BooleanSupplier selectedSupplier;
+    private final String label;
     @Nullable
-    private final Class<? extends Frame> K;
+    private final Class<? extends Frame> frameClass;
 
-    public String E() {
-        return this.m;
-    }
-
-    @Nullable
-    public Runnable x() {
-        return this.G;
-    }
-
-    public static HudOverlayEntrySpec O(String string, String string2, Class<? extends Frame> clazz) {
-        return new HudOverlayEntrySpec(string, string2, clazz, null, null);
-    }
-
-    public String o() {
-        return this.e;
-    }
-
-    public static HudOverlayEntrySpec s(String string, String string2, @Nullable Runnable runnable, @Nullable BooleanSupplier booleanSupplier) {
-        return new HudOverlayEntrySpec(string, string2, null, booleanSupplier, runnable);
-    }
-
-    public HudOverlayEntrySpec R(BooleanSupplier booleanSupplier) {
-        return new HudOverlayEntrySpec(this.e, this.m, this.K, booleanSupplier, this.G);
-    }
-
-    public HudOverlayEntrySpec s(Runnable runnable) {
-        return new HudOverlayEntrySpec(this.e, this.m, this.K, this.X, runnable);
-    }
-
-    private HudOverlayEntrySpec(String string, String string2, @Nullable Class<? extends Frame> clazz, @Nullable BooleanSupplier booleanSupplier, @Nullable Runnable runnable) {
-        this.e = Objects.requireNonNull(string, "label");
-        this.m = Objects.requireNonNull(string2, "iconName");
-        this.K = clazz;
-        this.X = booleanSupplier;
-        this.G = runnable;
+    public String getIconName() {
+        return this.iconName;
     }
 
     @Nullable
-    public BooleanSupplier q() {
-        return this.X;
+    public Runnable getAction() {
+        return this.action;
+    }
+
+    public static HudOverlayEntrySpec forFrame(String label, String iconName,
+            Class<? extends Frame> frameClass) {
+        return new HudOverlayEntrySpec(label, iconName, frameClass, null, null);
+    }
+
+    public String getLabel() {
+        return this.label;
+    }
+
+    public static HudOverlayEntrySpec forAction(String label, String iconName,
+            @Nullable Runnable action, @Nullable BooleanSupplier selectedSupplier) {
+        return new HudOverlayEntrySpec(label, iconName, null, selectedSupplier, action);
+    }
+
+    public HudOverlayEntrySpec withSelectedSupplier(BooleanSupplier selectedSupplier) {
+        return new HudOverlayEntrySpec(this.label, this.iconName, this.frameClass,
+                selectedSupplier, this.action);
+    }
+
+    public HudOverlayEntrySpec withAction(Runnable action) {
+        return new HudOverlayEntrySpec(this.label, this.iconName, this.frameClass,
+                this.selectedSupplier, action);
+    }
+
+    private HudOverlayEntrySpec(String label, String iconName,
+            @Nullable Class<? extends Frame> frameClass,
+            @Nullable BooleanSupplier selectedSupplier, @Nullable Runnable action) {
+        this.label = Objects.requireNonNull(label, "label");
+        this.iconName = Objects.requireNonNull(iconName, "iconName");
+        this.frameClass = frameClass;
+        this.selectedSupplier = selectedSupplier;
+        this.action = action;
     }
 
     @Nullable
-    public Class<? extends Frame> u() {
-        return this.K;
+    public BooleanSupplier getSelectedSupplier() {
+        return this.selectedSupplier;
+    }
+
+    @Nullable
+    public Class<? extends Frame> getFrameClass() {
+        return this.frameClass;
     }
 }
-

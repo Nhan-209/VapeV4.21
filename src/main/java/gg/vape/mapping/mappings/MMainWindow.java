@@ -79,7 +79,7 @@ extends Mapping {
             String string = "v";
             MMainWindow mMainWindow = this;
             this.O = mMainWindow.J(string, bl, clazz);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MTextureManager.T(++n2);
             }
             return;
@@ -127,7 +127,7 @@ extends Mapping {
             MMainWindow mMainWindow7 = this;
             this.O = this.J(string7, bl7, clazz7);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MTextureManager.T(++n2);
         }
     }

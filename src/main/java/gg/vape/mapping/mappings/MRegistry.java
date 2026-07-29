@@ -106,7 +106,7 @@ extends Mapping {
             String string6 = "get";
             MRegistry mRegistry6 = this;
             this.u = ((MappingMethodBuilder)this.u(string6, clazz7, classArray6).A(ForgeVersion.MC_1_21_4.n(), "getValue")).s();
-            GuiComponent.D(new GuiComponent[3]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[3]);
             return;
         }
         Class[] classArray7 = new Class[]{};

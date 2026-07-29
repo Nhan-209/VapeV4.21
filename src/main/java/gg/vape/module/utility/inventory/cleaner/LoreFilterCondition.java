@@ -10,17 +10,13 @@ import java.util.List;
 public class LoreFilterCondition
 extends AbstractTextFilterCondition<LoreFilterCondition> {
     @Override
-    public LoreFilterCondition H() {
-        return this.copy();
-    }
-    @Override
-    public boolean g(ItemStack itemStack) {
+    public boolean matches(ItemStack itemStack) {
         if (itemStack.isNull()) {
             return false;
         }
         List<String> list = itemStack.z();
         for (String string : list) {
-            if (!this.M().M(string, this.M$src$Ljava_util_List_$bgq9xa())) continue;
+            if (!this.getMatchMode().matchesAny(string, this.getTexts())) continue;
             return true;
         }
         return false;
@@ -31,7 +27,7 @@ extends AbstractTextFilterCondition<LoreFilterCondition> {
     }
 
     @Override
-    public InventoryFilterConditionType K() {
+    public InventoryFilterConditionType getType() {
         return InventoryFilterConditionType.LORE;
     }
 
@@ -44,6 +40,6 @@ extends AbstractTextFilterCondition<LoreFilterCondition> {
     }
 
     public LoreFilterCondition copy() {
-        return new LoreFilterCondition(this.M$src$Ljava_util_List_$bgq9xa(), this.M());
+        return new LoreFilterCondition(this.getTexts(), this.getMatchMode());
     }
 }

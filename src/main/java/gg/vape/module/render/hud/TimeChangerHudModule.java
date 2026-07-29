@@ -12,8 +12,8 @@ import gg.vape.wrapper.impl.WorldClient;
 
 public class TimeChangerHudModule
 extends HudModule {
-    private long worldTime = 0L;
-    private NumberValue timeValue = NumberValue.create((Object)this, "Time", "#", "hours", 0.0, 12.0, 24.0, 1.0);
+    private long overriddenWorldTime;
+    private final NumberValue timeValue = NumberValue.create((Object)this, "Time", "#", "hours", 0.0, 12.0, 24.0, 1.0);
 
     private void applyWorldTime(WorldClient worldClient, long time) {
         if (ForgeVersion.MC_1_16_5.d()) {
@@ -26,41 +26,41 @@ extends HudModule {
 
 
     @EventHandler
-    public void g(EventPreRenderTick eventPreRenderTick) {
+    public void onPreRenderTick(EventPreRenderTick event) {
         if (ForgeVersion.MC_1_8_9.L()) {
             return;
         }
-        if (eventPreRenderTick.getWorld().isNull()) {
+        if (event.getWorld().isNull()) {
             return;
         }
-        double hours = (Double)this.timeValue.K();
+        double hours = (Double)this.timeValue.getValue();
         if ((hours -= 6.0) < 0.0) {
             hours = 24.0 + hours;
         }
-        this.applyWorldTime(eventPreRenderTick.getWorld(), Math.round(hours * 1000.0));
+        this.applyWorldTime(event.getWorld(), Math.round(hours * 1000.0));
     }
 
     public TimeChangerHudModule() {
-        super("Time Changer", HudModuleGroup.T, "time_changer");
+        super("Time Changer", HudModuleGroup.GAME, "time_changer");
         this.setSuffix("Sets the in-game world time");
         this.addValue(this.timeValue);
     }
 
     @EventHandler
-    public void V(EventWorldTime eventWorldTime) {
-        eventWorldTime.setWorldTime(this.worldTime);
+    public void onWorldTime(EventWorldTime event) {
+        event.setWorldTime(this.overriddenWorldTime);
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
+    public void onTick(EventPreTick event) {
         if (ForgeVersion.MC_1_8_9.A()) {
             return;
         }
-        double hours = (Double)this.timeValue.K();
+        double hours = (Double)this.timeValue.getValue();
         if ((hours -= 6.0) < 0.0) {
             hours = 24.0 + hours;
         }
-        this.worldTime = Math.round(hours * 1000.0);
+        this.overriddenWorldTime = Math.round(hours * 1000.0);
     }
 }
 

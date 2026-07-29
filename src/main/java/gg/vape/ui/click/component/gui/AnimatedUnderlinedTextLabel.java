@@ -10,49 +10,48 @@ import java.awt.Color;
 
 public class AnimatedUnderlinedTextLabel
 extends UnderlinedTextLabel {
-    private static final String cb = "expandarrow";
-    private DoubleAnimation Z6 = new DoubleAnimation(0.15, 0.0, 1.0);
-    private float Z5 = 4.0f;
+    private static final String ARROW_ICON_RESOURCE = "expandarrow";
+    private final DoubleAnimation hoverAnimation = new DoubleAnimation(0.15, 0.0, 1.0);
+    private float arrowSize = 4.0f;
 
     @Override
     public double C() {
-        SmoothFontRenderer smoothFontRenderer = this.O(this.Yc);
-        return smoothFontRenderer.d(this.Q);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(this.fontScale);
+        return smoothFontRenderer.d(this.text);
     }
 
-    public AnimatedUnderlinedTextLabel(String string, double d, Color color, Color color2) {
-        super(string, d, color, color2);
+    public AnimatedUnderlinedTextLabel(String text, double fontScale, Color textColor, Color underlineColor) {
+        super(text, fontScale, textColor, underlineColor);
     }
 
 
     @Override
     public void H() {
-        Color color;
-        SmoothFontRenderer smoothFontRenderer = this.O(this.Yc);
-        double d = smoothFontRenderer.d(this.Q);
-        double d2 = this.A();
-        double d3 = this.G$src$D$1b2f02a();
-        double d4 = this.n() + this.L() / 2.0 - d / 2.0;
-        Color color2 = this.w$src$Z$e457mb() ? this.G().brighter() : this.G();
-        Color color3 = color = this.w$src$Z$e457mb() ? this.R$src$Ljava_awt_Color_$bufo6d().brighter() : this.R$src$Ljava_awt_Color_$bufo6d();
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(this.fontScale);
+        double textHeight = fontRenderer.d(this.text);
+        double width = this.A();
+        double x = this.G$src$D$1b2f02a();
+        double textY = this.n() + this.L() / 2.0 - textHeight / 2.0;
+        Color renderedTextColor = this.w$src$Z$e457mb() ? this.getTextColor().brighter() : this.getTextColor();
+        Color renderedUnderlineColor = this.w$src$Z$e457mb() ? this.getUnderlineColor().brighter() : this.getUnderlineColor();
         if (this.w$src$Z$e457mb()) {
-            if (!this.Z6.I$src$Z$c48gtw()) {
-                this.Z6.c();
+            if (!this.hoverAnimation.I$src$Z$c48gtw()) {
+                this.hoverAnimation.c();
             }
-        } else if (this.Z6.I$src$Z$c48gtw()) {
-            this.Z6.Z();
+        } else if (this.hoverAnimation.I$src$Z$c48gtw()) {
+            this.hoverAnimation.Z();
         }
-        smoothFontRenderer.d(this.Q, d3, d4, color2);
-        OpenGlBackendHolder.d.m();
-        float f = 2.0f;
-        OpenGlBackendHolder.d.H(0.5f, 0.5f, 0.5f);
-        int n = 0;
-        while ((double)n < d2) {
-            GuiRenderPrimitives.V((int)((this.G$src$D$1b2f02a() + (double)n + 1.0 * this.Yc) * (double)f), (int)((d4 + d + 2.0 * this.Yc) * (double)f), 1.0 * this.Yc, 1.0 * this.Yc, color);
-            ++n;
+        fontRenderer.d(this.text, x, textY, renderedTextColor);
+        OpenGlBackendHolder.backend.pushMatrix();
+        float renderScale = 2.0f;
+        OpenGlBackendHolder.backend.scale(0.5f, 0.5f, 0.5f);
+        int underlineOffset = 0;
+        while ((double)underlineOffset < width) {
+            GuiRenderPrimitives.V((int)((this.G$src$D$1b2f02a() + (double)underlineOffset + 1.0 * this.fontScale) * (double)renderScale), (int)((textY + textHeight + 2.0 * this.fontScale) * (double)renderScale), 1.0 * this.fontScale, 1.0 * this.fontScale, renderedUnderlineColor);
+            ++underlineOffset;
         }
-        OpenGlBackendHolder.d.F();
-        ImageRenderer.E(color2, (float)this.G$src$D$1b2f02a() + (float)this.A() - 5.0f + this.Z6.getInterpolatedValue().floatValue(), (float)d4 + 2.0f, cb, this.Z5, this.Z5, false);
+        OpenGlBackendHolder.backend.popMatrix();
+        ImageRenderer.drawImage(renderedTextColor, (float)this.G$src$D$1b2f02a() + (float)this.A() - 5.0f + this.hoverAnimation.getInterpolatedValue().floatValue(), (float)textY + 2.0f, ARROW_ICON_RESOURCE, this.arrowSize, this.arrowSize, false);
     }
 
     @Override

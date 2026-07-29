@@ -45,7 +45,7 @@ extends Wrapper {
             object = new Holder(this.I).N();
         }
         ITextComponent iTextComponent = new ITextComponent(MStatusEffect.g(StatusEffect.c.getMappingsMapperCompat().Rb, object));
-        return iTextComponent.C();
+        return iTextComponent.getFormattedText();
     }
 
     public static StatusEffect E(int n) {
@@ -56,4 +56,3 @@ extends Wrapper {
         return new StatusEffect(StatusEffect.c.getMappingsMapperCompat().Rb.O(n));
     }
 }
-

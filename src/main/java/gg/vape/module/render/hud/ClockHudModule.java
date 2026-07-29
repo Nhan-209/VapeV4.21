@@ -10,20 +10,20 @@ import gg.vape.value.ModeValue;
 public class ClockHudModule
 extends HudModule {
     private final ModeOption digitalMode;
-    public final ModeValue L;
-    public final BooleanValue k;
+    public final ModeValue clockType;
+    public final BooleanValue showDate;
     private final ModeOption analogMode;
-    public final BooleanValue o = BooleanValue.create(this, "24 Hour Time", false);
+    public final BooleanValue use24HourTime = BooleanValue.create(this, "24 Hour Time", false);
 
     public ClockHudModule() {
-        super("Clock", HudModuleGroup.f, "clock_mod", ClockHudFrame.class);
-        this.k = BooleanValue.create(this, "Show date", true);
+        super("Clock", HudModuleGroup.HUD, "clock_mod", ClockHudFrame.class);
+        this.showDate = BooleanValue.create(this, "Show date", true);
         this.analogMode = new ModeOption("Analog");
         this.digitalMode = new ModeOption("Digital");
-        this.L = ModeValue.create((Object)this, "Clock Type", this.analogMode, this.analogMode, this.digitalMode);
+        this.clockType = ModeValue.create((Object)this, "Clock Type", this.analogMode, this.analogMode, this.digitalMode);
         this.setSuffix("Draws a clock with the current real-world time");
-        this.L.f(this.digitalMode, this.k);
-        this.addValue(this.L, this.k, this.o);
+        this.clockType.addModeDependentValues(this.digitalMode, this.showDate);
+        this.addValue(this.clockType, this.showDate, this.use24HourTime);
     }
 }
 

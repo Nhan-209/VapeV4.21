@@ -31,10 +31,10 @@ implements EventListener {
     }
 
     private void v() {
-        ItemIconRenderer.t();
-        EntityModelRenderCache.F();
-        PotionEffectIconRenderer.g();
-        NameTagsRenderStateTracker.u.k();
+        ItemIconRenderer.clear();
+        EntityModelRenderCache.clear();
+        PotionEffectIconRenderer.clear();
+        NameTagsRenderStateTracker.INSTANCE.clear();
     }
 
     private void Z() {
@@ -196,4 +196,3 @@ implements EventListener {
         }
     }
 }
-

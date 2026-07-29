@@ -28,14 +28,14 @@ extends PanelComponent {
         boolean bl = !this.tC.r().equals(Vape.INSTANCE.getOnlineManager().r());
         for (OnlineFriend onlineFriend : this.tC.c()) {
             if (this.tC.r() == onlineFriend) {
-                this.tR.H(new PartyFriendRowComponent(onlineFriend, false, true));
+                this.tR.addChildren(new PartyFriendRowComponent(onlineFriend, false, true));
                 continue;
             }
-            this.tR.H(new PartyFriendRowComponent(onlineFriend, false, bl));
+            this.tR.addChildren(new PartyFriendRowComponent(onlineFriend, false, bl));
         }
-        this.tD.Z(!this.tC.S().isEmpty());
+        this.tD.setVisible(!this.tC.S().isEmpty());
         for (OnlineFriend onlineFriend : this.tC.S()) {
-            this.t9.H(new PartyFriendRowComponent(onlineFriend, true, bl));
+            this.t9.addChildren(new PartyFriendRowComponent(onlineFriend, true, bl));
         }
     }
 
@@ -52,13 +52,13 @@ extends PanelComponent {
     @Override
     public void u() {
         super.u();
-        this.t_.Z(false);
+        this.t_.setVisible(false);
     }
 
     @Override
     public void c() {
         super.c();
-        this.O(0.75).d("In party", this.G$src$D$1b2f02a() + 4.0, this.n() + 6.0, PartyPanel.J.Z);
+        this.getFontRenderer(0.75).d("In party", this.G$src$D$1b2f02a() + 4.0, this.n() + 6.0, PartyPanel.J.Z);
     }
 
     public PartyPanel(PartyState partyState) {
@@ -72,8 +72,8 @@ extends PanelComponent {
         this.tC = partyState;
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         PanelComponent panelComponent = new PanelComponent(99.0, 15.0);
-        panelComponent.H(new SpacerComponent(87.0, 8.0), this.tQ);
-        this.H(new SpacerComponent(1.0, 4.0), panelComponent, new SpacerComponent(1.0, 3.0), this.tR, new SpacerComponent(1.0, 1.0), this.tD, new SpacerComponent(1.0, 3.0), this.t9, new SpacerComponent(1.0, 1.0), this.t_, new SpacerComponent(1.0, 3.0), this.tq);
+        panelComponent.addChildren(new SpacerComponent(87.0, 8.0), this.tQ);
+        this.addChildren(new SpacerComponent(1.0, 4.0), panelComponent, new SpacerComponent(1.0, 3.0), this.tR, new SpacerComponent(1.0, 1.0), this.tD, new SpacerComponent(1.0, 3.0), this.t9, new SpacerComponent(1.0, 1.0), this.t_, new SpacerComponent(1.0, 3.0), this.tq);
         this.tR.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.t9.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.t(150.0);

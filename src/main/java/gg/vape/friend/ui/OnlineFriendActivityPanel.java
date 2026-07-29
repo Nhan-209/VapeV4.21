@@ -71,8 +71,8 @@ extends AnimatedPanelComponent {
                     ItemStack itemStack;
                     OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent4;
                     OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent5;
-                    this.pZ.d(false);
-                    this.pZ.T(OnlineFriendActivityPanel.J.d);
+                    this.pZ.setShowDisabledOverlay(false);
+                    this.pZ.setDisabledOverlayColor(OnlineFriendActivityPanel.J.d);
                     this.n$src$V$naoy1s();
                     float f = this.c$src$F$n4n751();
                     n = (int)(f * 255.0f);
@@ -81,17 +81,17 @@ extends AnimatedPanelComponent {
                         ActivityItemStack activityItemStack = this.pV.N$src$ALgg_vape_friend_activity_ActivityItemStack_$1nvfl9h()[this.pV.N()];
                         ItemStack itemStack2 = this.p6 != null && this.p6.isNotNull() ? (this.p6.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt().isNotNull() ? this.p6.B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt() : null) : null;
                         OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent6 = this.pA;
-                        onlineActivityHeldItemSlotComponent6.P(itemStack2);
+                        onlineActivityHeldItemSlotComponent6.setItemStack(itemStack2);
                         OnlineActivityHeldItemSlotComponent onlineActivityHeldItemSlotComponent7 = this.pA;
-                        onlineActivityHeldItemSlotComponent7.e(itemStack2 != null && EnchantmentUtil.A(itemStack2).size() > 0);
+                        onlineActivityHeldItemSlotComponent7.setSelected(itemStack2 != null && EnchantmentUtil.A(itemStack2).size() > 0);
                         this.pA.X(n);
-                        this.pA.d(bl);
+                        this.pA.setShowDisabledOverlay(bl);
                         for (int i = 0; i < this.pb.length; ++i) {
                             ItemStackSlotComponent itemStackSlotComponent = this.pb[i];
                             ItemStack itemStack3 = new ItemStack(Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().i()[3 - i]);
-                            itemStackSlotComponent.P(itemStack3.isNotNull() ? itemStack3 : null);
-                            itemStackSlotComponent.e(itemStack3.isNotNull() && EnchantmentUtil.A(itemStack3).size() > 0);
-                            itemStackSlotComponent.d(bl);
+                            itemStackSlotComponent.setItemStack(itemStack3.isNotNull() ? itemStack3 : null);
+                            itemStackSlotComponent.setSelected(itemStack3.isNotNull() && EnchantmentUtil.A(itemStack3).size() > 0);
+                            itemStackSlotComponent.setShowDisabledOverlay(bl);
                         }
                         return;
                     }
@@ -105,7 +105,7 @@ extends AnimatedPanelComponent {
                         onlineActivityHeldItemSlotComponent4 = onlineActivityHeldItemSlotComponent8;
                         itemStack = null;
                     }
-                    onlineActivityHeldItemSlotComponent4.P(itemStack);
+                    onlineActivityHeldItemSlotComponent4.setItemStack(itemStack);
                     onlineActivityHeldItemSlotComponent2 = onlineActivityHeldItemSlotComponent3 = this.pA;
                     if (activityItemStack == null) break block7;
                     onlineActivityHeldItemSlotComponent = onlineActivityHeldItemSlotComponent2;
@@ -117,19 +117,19 @@ extends AnimatedPanelComponent {
             }
             bl2 = false;
         }
-        onlineActivityHeldItemSlotComponent.e(bl2);
+        onlineActivityHeldItemSlotComponent.setSelected(bl2);
         this.pA.X(n);
-        this.pA.d(bl);
+        this.pA.setShowDisabledOverlay(bl);
         for (int i = 0; i < this.pb.length; ++i) {
             ItemStackSlotComponent itemStackSlotComponent = this.pb[i];
             ActivityItemStack activityItemStack = this.pV.I()[3 - i];
             if (activityItemStack != null && activityItemStack.I() != 0) {
-                itemStackSlotComponent.P(activityItemStack.T());
-                itemStackSlotComponent.e(activityItemStack.O());
+                itemStackSlotComponent.setItemStack(activityItemStack.T());
+                itemStackSlotComponent.setSelected(activityItemStack.O());
             } else {
-                itemStackSlotComponent.P(null);
+                itemStackSlotComponent.setItemStack(null);
             }
-            itemStackSlotComponent.d(bl);
+            itemStackSlotComponent.setShowDisabledOverlay(bl);
         }
     }
 
@@ -167,7 +167,7 @@ extends AnimatedPanelComponent {
     }
 
     private void k(double d, double d2, boolean bl) {
-        SmoothFontRenderer smoothFontRenderer = this.O(0.75);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.75);
         String string = this.pV.L() + "";
         if (bl) {
             // empty if block
@@ -199,17 +199,17 @@ extends AnimatedPanelComponent {
         double d4 = this.G$src$D$1b2f02a() + 6.0;
         double d5 = this.n() + 10.0;
         double d6 = 22.0;
-        GlImageTexture glImageTexture = RemoteImageTextureManager.e().r(this.pV.a().I(), 32);
+        GlImageTexture glImageTexture = RemoteImageTextureManager.getInstance().getTexture(this.pV.a().I(), 32);
         if (glImageTexture != null) {
             GuiRenderPrimitives.V((float)(d4 - 0.5), (float)(d5 - 0.5), (float)(d6 + 1.0), 1.0, new Color(50, 50, 50, 255));
             GuiRenderPrimitives.u((float)d4, (float)d5, (float)d6, 1.0f, Color.WHITE, glImageTexture);
         }
         double d7 = d4 + d6 + 6.0;
-        this.pw.U(this.pV != null ? this.pV.a().I() : "N/A");
+        this.pw.setText(this.pV != null ? this.pV.a().I() : "N/A");
         double d8 = d5 + 4.0;
-        this.pw.R(d7, d8 - this.pw.v() / 2.0);
-        this.p5.U(this.pV != null ? this.pV.a().C() : "N/A");
-        this.p5.R(d7, d8 + 10.0 - this.p5.v() / 2.0);
+        this.pw.renderAt(d7, d8 - this.pw.getTextHeight() / 2.0);
+        this.p5.setText(this.pV != null ? this.pV.a().C() : "N/A");
+        this.p5.renderAt(d7, d8 + 10.0 - this.p5.getTextHeight() / 2.0);
         double d9 = d5 + 18.0;
         this.O(d7, d9, f, f2, f3);
         this.b$src$V$n43exg();
@@ -257,7 +257,7 @@ extends AnimatedPanelComponent {
                                     itemStackSlotComponent4 = itemStackSlotComponent7;
                                     itemStack = null;
                                 }
-                                itemStackSlotComponent4.P(itemStack);
+                                itemStackSlotComponent4.setItemStack(itemStack);
                                 itemStackSlotComponent2 = itemStackSlotComponent3 = itemStackSlotComponent6;
                                 if (!bl3) break block9;
                                 itemStackSlotComponent = itemStackSlotComponent2;
@@ -269,7 +269,7 @@ extends AnimatedPanelComponent {
                         }
                         bl2 = false;
                     }
-                    itemStackSlotComponent.e(bl2);
+                    itemStackSlotComponent.setSelected(bl2);
                     ++n;
                 }
             }
@@ -301,7 +301,7 @@ extends AnimatedPanelComponent {
                                 itemStackSlotComponent10 = itemStackSlotComponent13;
                                 itemStack = null;
                             }
-                            itemStackSlotComponent10.P(itemStack);
+                            itemStackSlotComponent10.setItemStack(itemStack);
                             itemStackSlotComponent8 = itemStackSlotComponent9 = itemStackSlotComponent12;
                             if (activityItemStack == null) break block12;
                             itemStackSlotComponent = itemStackSlotComponent8;
@@ -313,14 +313,14 @@ extends AnimatedPanelComponent {
                     }
                     bl = false;
                 }
-                itemStackSlotComponent.e(bl);
+                itemStackSlotComponent.setSelected(bl);
                 ++n;
             }
         }
     }
 
     private boolean A$src$Z$mly7fz() {
-        return this.pP.P().L();
+        return this.pP.P().getEffectiveValue();
     }
 
     public OnlineFriendActivityState y$src$Lgg_vape_friend_OnlineFriendActivityState_$6vxj8m() {
@@ -328,7 +328,7 @@ extends AnimatedPanelComponent {
     }
 
     private boolean P$src$Z$mu74ce() {
-        return this.pP.i().L();
+        return this.pP.i().getEffectiveValue();
     }
 
 
@@ -342,11 +342,11 @@ extends AnimatedPanelComponent {
         this.pW = bl;
         if (bl) {
             this.h();
-            this.pZ.Z(false);
-            this.py.Z(true);
+            this.pZ.setVisible(false);
+            this.py.setVisible(true);
         } else {
-            this.py.Z(false);
-            this.pZ.Z(true);
+            this.py.setVisible(false);
+            this.pZ.setVisible(true);
             this.pZ.l$src$V$1mibm4x();
         }
     }
@@ -354,9 +354,9 @@ extends AnimatedPanelComponent {
     private SmoothFontRenderer h(double d) {
         int n = (d + "m").length();
         if (n < 10) {
-            return this.O(0.8);
+            return this.getFontRenderer(0.8);
         }
-        return this.O(0.7);
+        return this.getFontRenderer(0.7);
     }
 
     private void n$src$V$naoy1s() {
@@ -382,21 +382,21 @@ extends AnimatedPanelComponent {
     private void e$src$V$n5qspj() {
         this.pn.clear();
         this.py.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.py.d(false);
+        this.py.setShowDisabledOverlay(false);
         this.py.t$src$V$zbu1jn();
         this.py.h(new SpacerComponent(110.0, 1.5), new Object[0]);
         PanelComponent panelComponent = new PanelComponent(110.0, 6.0);
-        panelComponent.H(new SpacerComponent(110.0, 1.0), new SpacerComponent(93.0, 6.0));
+        panelComponent.addChildren(new SpacerComponent(110.0, 1.0), new SpacerComponent(93.0, 6.0));
         this.py.h(panelComponent, new Object[0]);
-        panelComponent.d(false);
+        panelComponent.setShowDisabledOverlay(false);
         for (int n : pQ) {
             PanelComponent panelComponent2 = new PanelComponent(110.0, 11.0);
-            panelComponent2.d(false);
+            panelComponent2.setShowDisabledOverlay(false);
             panelComponent2.h(new SpacerComponent(8.0, 10.0), new Object[0]);
             for (int i = 0; i < 9; ++i) {
                 ItemStackSlotComponent itemStackSlotComponent = new ItemStackSlotComponent(10.0, 10.0, 8);
                 ActivityItemStack activityItemStack = this.pV.N$src$ALgg_vape_friend_activity_ActivityItemStack_$1nvfl9h()[n * 9 + i];
-                itemStackSlotComponent.P(activityItemStack != null ? activityItemStack.T() : null);
+                itemStackSlotComponent.setItemStack(activityItemStack != null ? activityItemStack.T() : null);
                 this.pn.add(itemStackSlotComponent);
                 if (i != 0) {
                     panelComponent2.h(new SpacerComponent(1.0, 11.0), new Object[0]);
@@ -417,24 +417,24 @@ extends AnimatedPanelComponent {
         this.pk = new TimerUtil();
         this.pg = new TimerUtil();
         this.pV = onlineFriendActivityState;
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.pw = new TextLabelComponent(onlineFriendActivityState.a().I(), 0.7, 1.0, 0.1, 74.0, false, true, Color.white);
         this.p5 = new TextLabelComponent(onlineFriendActivityState.a().C(), 0.6, 0.9, 0.1, 74.0, false, true, OnlineFriendActivityPanel.J.A);
         this.pZ.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.pZ.H(new SpacerComponent(110.0, 36.0));
+        this.pZ.addChildren(new SpacerComponent(110.0, 36.0));
         PanelComponent panelComponent = new PanelComponent(110.0, 23.0);
-        panelComponent.d(false);
+        panelComponent.setShowDisabledOverlay(false);
         panelComponent.h(new SpacerComponent(34.0, 1.0), new Object[0]);
         panelComponent.h(this.pA, new Object[0]);
         for (ItemStackSlotComponent itemStackSlotComponent : this.pb) {
-            panelComponent.H(new SpacerComponent(1.0, 0.0), itemStackSlotComponent);
+            panelComponent.addChildren(new SpacerComponent(1.0, 0.0), itemStackSlotComponent);
         }
         this.pZ.h(panelComponent, new Object[0]);
-        this.pZ.d(false);
+        this.pZ.setShowDisabledOverlay(false);
         this.h(this.pZ, new Object[0]);
-        this.py.d(false);
+        this.py.setShowDisabledOverlay(false);
         this.e$src$V$n5qspj();
-        this.py.Z(false);
+        this.py.setVisible(false);
         this.h(this.py, new Object[0]);
         this.pP = OnlineActivityPanelOptions.p;
     }
@@ -499,7 +499,7 @@ extends AnimatedPanelComponent {
     private void u(float f) {
         if (f <= 0.0f) {
             GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + 5.0, this.n() + 7.0, 24.0, 1.0, new Color(0, 0, 0, 200));
-            ImageRenderer.E(new Color(197, 49, 49, 255), (float)this.G$src$D$1b2f02a() + 5.0f + 12.0f - 4.0f, (float)this.n() + 9.0f + 13.0f - 6.0f, "newblatant", 8.0f, 8.0f, true);
+            ImageRenderer.drawImage(new Color(197, 49, 49, 255), (float)this.G$src$D$1b2f02a() + 5.0f + 12.0f - 4.0f, (float)this.n() + 9.0f + 13.0f - 6.0f, "newblatant", 8.0f, 8.0f, true);
         }
     }
 
@@ -565,7 +565,7 @@ extends AnimatedPanelComponent {
         if (!this.pV.Q()) {
             return;
         }
-        GlImageTexture glImageTexture = RemoteImageTextureManager.e().r(this.pV.m() + "", 32);
+        GlImageTexture glImageTexture = RemoteImageTextureManager.getInstance().getTexture(this.pV.m() + "", 32);
         if (glImageTexture != null) {
             GuiRenderPrimitives.V((float)(d - 0.5), (float)(d2 - 0.5), 11.0, 1.0, OnlineFriendActivityPanel.J.d);
             GuiRenderPrimitives.u((float)d, (float)d2, 10.0f, 1.0f, Color.WHITE, glImageTexture);
@@ -583,12 +583,12 @@ extends AnimatedPanelComponent {
             string = string + object.getName() + "\n";
         }
         for (ItemStackSlotComponent itemStackSlotComponent : this.pn) {
-            itemStackSlotComponent.T(this.A$src$Z$mly7fz() ? OnlineFriendActivityPanel.J.i : new Color(26, 25, 26, 150));
+            itemStackSlotComponent.setDisabledOverlayColor(this.A$src$Z$mly7fz() ? OnlineFriendActivityPanel.J.i : new Color(26, 25, 26, 150));
         }
         if (this.A$src$Z$mly7fz()) {
             GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), new Color(26, 25, 26, 150));
         }
-        SmoothFontRenderer smoothFontRenderer = this.O(0.75);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.75);
         smoothFontRenderer.v(this.pV.a().I(), this.G$src$D$1b2f02a() + 8.0, this.n() + 4.0 - smoothFontRenderer.d(this.pV.a().I()) / 2.0, this.A$src$Z$mly7fz() ? OnlineFriendActivityPanel.J.A : Color.white);
         return this.pn.get(bl ? this.p6.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v() + 27 : this.pV.N() + 27);
     }

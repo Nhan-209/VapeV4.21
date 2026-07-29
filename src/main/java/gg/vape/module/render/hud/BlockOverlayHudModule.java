@@ -31,26 +31,26 @@ import org.lwjgl.opengl.GL11;
 
 public class BlockOverlayHudModule
 extends HudModule {
-    private ColorValue overlayColor = ColorValue.L(this, "Overlay Color", new Color(255, 0, 0, 95));
-    private ColorValue outlineColor = ColorValue.L(this, "Outline Color", new Color(255, 0, 0, 200));
+    private final ColorValue overlayColor = ColorValue.create(this, "Overlay Color", new Color(255, 0, 0, 95));
+    private final ColorValue outlineColor = ColorValue.create(this, "Outline Color", new Color(255, 0, 0, 200));
 
 
     private void drawOutline(AxisAlignedBB axisAlignedBB, Color color) {
         if (GuiRenderPrimitives.d()) {
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), 2.0f, color);
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), 2.0f, color);
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), 2.0f, color);
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), 2.0f, color);
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), 2.0f, color);
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), 2.0f, color);
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), 2.0f, color);
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), 2.0f, color);
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), 2.0f, color);
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), 2.0f, color);
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), 2.0f, color);
-            BufferedRenderPrimitives.Q(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), 2.0f, color);
+            BufferedRenderPrimitives.drawLine3D(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), 2.0f, color);
         } else {
-            OpenGlBackendHolder.d.q((float)color.getRed() / 255.0f, (float)color.getGreen() / 255.0f, (float)color.getBlue() / 255.0f, (float)color.getAlpha() / 255.0f);
+            OpenGlBackendHolder.backend.setColor((float)color.getRed() / 255.0f, (float)color.getGreen() / 255.0f, (float)color.getBlue() / 255.0f, (float)color.getAlpha() / 255.0f);
             GL11.glBegin((int)1);
             GL11.glVertex3d((double)axisAlignedBB.getMinX(), (double)axisAlignedBB.getMinY(), (double)axisAlignedBB.getMinZ());
             GL11.glVertex3d((double)axisAlignedBB.getMaxX(), (double)axisAlignedBB.getMinY(), (double)axisAlignedBB.getMinZ());
@@ -82,14 +82,14 @@ extends HudModule {
 
     private void drawFilledBox(AxisAlignedBB axisAlignedBB, Color color) {
         if (GuiRenderPrimitives.d()) {
-            BufferedRenderPrimitives.z(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), color);
-            BufferedRenderPrimitives.z(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), color);
-            BufferedRenderPrimitives.z(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), color);
-            BufferedRenderPrimitives.z(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), color);
-            BufferedRenderPrimitives.z(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), color);
-            BufferedRenderPrimitives.z(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), color);
+            BufferedRenderPrimitives.fillQuad(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), color);
+            BufferedRenderPrimitives.fillQuad(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), color);
+            BufferedRenderPrimitives.fillQuad(axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), color);
+            BufferedRenderPrimitives.fillQuad(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), color);
+            BufferedRenderPrimitives.fillQuad(axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMinX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), color);
+            BufferedRenderPrimitives.fillQuad(axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMinY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMaxZ(), axisAlignedBB.getMaxX(), axisAlignedBB.getMaxY(), axisAlignedBB.getMinZ(), color);
         } else {
-            OpenGlBackendHolder.d.q((float)color.getRed() / 255.0f, (float)color.getGreen() / 255.0f, (float)color.getBlue() / 255.0f, (float)color.getAlpha() / 255.0f);
+            OpenGlBackendHolder.backend.setColor((float)color.getRed() / 255.0f, (float)color.getGreen() / 255.0f, (float)color.getBlue() / 255.0f, (float)color.getAlpha() / 255.0f);
             GL11.glBegin((int)7);
             GL11.glVertex3d((double)axisAlignedBB.getMinX(), (double)axisAlignedBB.getMinY(), (double)axisAlignedBB.getMinZ());
             GL11.glVertex3d((double)axisAlignedBB.getMaxX(), (double)axisAlignedBB.getMinY(), (double)axisAlignedBB.getMinZ());
@@ -119,76 +119,96 @@ extends HudModule {
         }
     }
 
+    private AxisAlignedBB resolveTargetBounds(RayTraceResult target, WorldClient world) {
+        Block block = target.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a();
+        if (ForgeVersion.MC_1_7_10.B()) {
+            return block.M(world, target.g(), target.T(), target.a$src$I$8nuo9d());
+        }
+
+        BlockPos position = BlockPos.D(
+                MathUtil.floor(target.g()),
+                MathUtil.floor(target.T()),
+                MathUtil.floor(target.a$src$I$8nuo9d()));
+        BlockState state = world.getBlockState(position);
+        if (!ForgeVersion.MC_1_16_5.d()) {
+            return ForgeVersion.MC_1_12_2.L()
+                    ? block.Y(state, world, position)
+                    : block.Q(world, position);
+        }
+        if (!state.isInstance(MappedClasses.Fj)) {
+            return block.Q(world, position);
+        }
+
+        BlockReaderBridge blockReader = new BlockReaderBridge(state);
+        EntityFishHook shape = blockReader.Z(
+                Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf()
+                        .l().x$src$Lgg_vape_wrapper_impl_BlockReader_$120g8sh(),
+                position);
+        return shape.o() ? null : shape.n();
+    }
+
     @EventHandler
-    public void onRender3D(EventRender3D eventRender3D) {
-        double d;
-        double d2;
-        double d3;
-        AxisAlignedBB axisAlignedBB;
-        RayTraceResult rayTraceResult = RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
-        if (rayTraceResult.isNull()) {
+    public void onRender3D(EventRender3D event) {
+        RayTraceResult target = RotationManager.INSTANCE.getNormalReachRayTrace();
+        if (target.isNull()) {
             return;
         }
-        if (!rayTraceResult.getTypeOfHit().equals(RayTraceResult_type.block())) {
+        if (!target.getTypeOfHit().equals(RayTraceResult_type.block())) {
             return;
         }
-        Block block = rayTraceResult.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a();
+        Block block = target.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a();
         if (block == null || block.isNull()) {
             return;
         }
-        RenderUtil.d();
-        OpenGlBackendHolder.d.l(3042);
-        OpenGlBackendHolder.d.l(2929);
-        GL11.glBlendFunc((int)770, (int)771);
-        OpenGlBackendHolder.d.l(2848);
-        OpenGlBackendHolder.d.r(2.0f);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-        GlStateManager.depthMask(false);
-        WorldClient worldClient = Minecraft.theWorld();
-        if (ForgeVersion.MC_1_7_10.B()) {
-            axisAlignedBB = rayTraceResult.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a().M(Minecraft.theWorld(), rayTraceResult.g(), rayTraceResult.T(), rayTraceResult.a$src$I$8nuo9d());
-        } else {
-            BlockReaderBridge blockReaderBridge;
-            EntityFishHook entityFishHook;
-            BlockState blockState;
-            BlockPos blockPos = BlockPos.D(MathUtil.floor((double)rayTraceResult.g()), MathUtil.floor((double)rayTraceResult.T()), MathUtil.floor((double)rayTraceResult.a$src$I$8nuo9d()));
-            axisAlignedBB = ForgeVersion.MC_1_16_5.d() ? ((blockState = worldClient.getBlockState(blockPos)).isInstance(MappedClasses.Fj) ? (!(entityFishHook = (blockReaderBridge = new BlockReaderBridge(blockState)).Z(Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().l().x$src$Lgg_vape_wrapper_impl_BlockReader_$120g8sh(), blockPos)).o() ? entityFishHook.n() : null) : rayTraceResult.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a().Q(worldClient, blockPos)) : (ForgeVersion.MC_1_12_2.L() ? rayTraceResult.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a().Y(Minecraft.theWorld().getBlockState(blockPos), worldClient, blockPos) : rayTraceResult.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a().Q(worldClient, blockPos));
-        }
-        if (axisAlignedBB == null) {
+        WorldClient world = Minecraft.theWorld();
+        AxisAlignedBB targetBounds = this.resolveTargetBounds(target, world);
+        if (targetBounds == null) {
             return;
         }
+
+        RenderUtil.d();
+        OpenGlBackendHolder.backend.enableCapability(3042);
+        OpenGlBackendHolder.backend.enableCapability(2929);
+        GL11.glBlendFunc((int)770, (int)771);
+        OpenGlBackendHolder.backend.enableCapability(2848);
+        OpenGlBackendHolder.backend.setLineWidth(2.0f);
+        OpenGlBackendHolder.backend.disableCapability(3553);
+        GlStateManager.depthMask(false);
+        double cameraX;
+        double cameraY;
+        double cameraZ;
         if (ForgeVersion.MC_1_20_6.d()) {
-            d3 = RenderManager.getInterpolatedRenderPosX();
-            d2 = RenderManager.getInterpolatedRenderPosY();
-            d = RenderManager.getInterpolatedRenderPosZ();
+            cameraX = RenderManager.getInterpolatedRenderPosX();
+            cameraY = RenderManager.getInterpolatedRenderPosY();
+            cameraZ = RenderManager.getInterpolatedRenderPosZ();
         } else {
             RenderManager renderManager = Minecraft.D();
-            d3 = renderManager.getRenderPosX();
-            d2 = renderManager.getRenderPosY();
-            d = renderManager.getRenderPosZ();
+            cameraX = renderManager.getRenderPosX();
+            cameraY = renderManager.getRenderPosY();
+            cameraZ = renderManager.getRenderPosZ();
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            OpenGlBackendHolder.d.I(rayTraceResult.g(), rayTraceResult.T(), rayTraceResult.a$src$I$8nuo9d());
+            OpenGlBackendHolder.backend.translate(target.g(), target.T(), target.a$src$I$8nuo9d());
         }
-        axisAlignedBB = axisAlignedBB.expand(0.002f, 0.002f, 0.002f).A(-d3, -d2, -d);
+        AxisAlignedBB renderBounds = targetBounds.expand(0.002f, 0.002f, 0.002f)
+                .A(-cameraX, -cameraY, -cameraZ);
         RenderUtils.g();
-        this.drawFilledBox(axisAlignedBB, this.overlayColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
-        OpenGlBackendHolder.d.r(2.0f);
-        this.drawOutline(axisAlignedBB, this.outlineColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
+        this.drawFilledBox(renderBounds, this.overlayColor.getMutableColor());
+        OpenGlBackendHolder.backend.setLineWidth(2.0f);
+        this.drawOutline(renderBounds, this.outlineColor.getMutableColor());
         GlStateManager.depthMask(true);
         RenderUtils.f();
-        OpenGlBackendHolder.d.l(3553);
+        OpenGlBackendHolder.backend.enableCapability(3553);
         if (ForgeVersion.MC_1_21_6.d()) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(3042);
+            OpenGlBackendHolder.backend.disableCapability(3042);
         }
-        OpenGlBackendHolder.d.u$src$V$hntn98(2848);
+        OpenGlBackendHolder.backend.disableCapability(2848);
         RenderUtil.Y();
     }
 
     public BlockOverlayHudModule() {
-        super("Block Overlay", HudModuleGroup.T, "block_overlay");
+        super("Block Overlay", HudModuleGroup.GAME, "block_overlay");
         this.setSuffix("Highlights the block you're hovering by the specified color");
         this.addValue(this.overlayColor, this.outlineColor);
     }
 }
-

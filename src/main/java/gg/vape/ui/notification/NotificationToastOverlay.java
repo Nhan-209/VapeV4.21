@@ -48,7 +48,7 @@ extends GuiComponent {
         this.i.setEndValue(Math.max(14.5, this.O.C() + 8.0));
         int n = (int)(255.0 * this.i.X());
         int n2 = this.i.l() ? n : (!this.i.n() ? n : (int)(255.0 * this.i.X() / 4.0));
-        RectData rectData = this.Q();
+        RectData rectData = this.getBounds();
         MutableColor mutableColor = new MutableColor(this.Q.t().getRed(), this.Q.t().getGreen(), this.Q.t().getBlue(), n);
         MutableColor mutableColor2 = new MutableColor(this.Q.Y().getRed(), this.Q.Y().getGreen(), this.Q.Y().getBlue(), n);
         double d = 6.0;
@@ -57,7 +57,7 @@ extends GuiComponent {
         this.O.K(rectData.o() + d);
         this.O.S(Math.min(rectData.W() + 4.0, this.G.n() + this.G.L() - 6.0));
         MutableColor mutableColor3 = new MutableColor(this.Q.Y().darker().getRGB(), n2);
-        this.O.T$src$V$1orl066(mutableColor3);
+        this.O.setTextColor(mutableColor3);
         RenderUtils.m(rectData.o(), rectData.W(), rectData.e(), rectData.R());
         this.O.c();
         RenderUtils.T();
@@ -66,7 +66,7 @@ extends GuiComponent {
     private void T(NotificationMessage notificationMessage) {
         this.Q = notificationMessage;
         this.O = new WrappedTextComponent(this.Q.S(), 0.8f);
-        this.O.c(this.G.A() - 14.0);
+        this.O.setWrapWidth(this.G.A() - 14.0);
         this.i.c();
     }
 
@@ -175,7 +175,7 @@ extends GuiComponent {
     }
 
     @Override
-    public RectData Q() {
+    public RectData getBounds() {
         return new RectData(this.G.G$src$D$1b2f02a() + 2.5, this.G.n() + this.G.L() - this.i.getInterpolatedValue(), this.G.A() - 5.0, Math.max(Math.max(this.i.getInterpolatedValue() - 0.5, 4.0), 0.0));
     }
 

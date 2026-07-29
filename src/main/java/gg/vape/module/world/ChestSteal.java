@@ -33,50 +33,50 @@ import java.util.Collections;
 public class ChestSteal
 extends Mod
 implements InventoryActionModule {
-    private final int[] S;
-    private final TimerUtil r;
-    private final int[] c;
-    private boolean p;
-    private final BooleanValue U;
-    private TimerUtil H;
-    private final LimitValue o;
-    private final BooleanValue k;
-    private final TimerUtil D;
-    private final int[] j;
-    private int P = -1;
-    private final RandomValue s;
-    private ArrayList<Integer> t;
-    private boolean K = false;
-    boolean b = false;
-    private final BooleanValue O = BooleanValue.create(this, "Check in menu", false, "This will attempt to ignore Menus such as\nServer selectors, and settings inventory menus\nThis may not work 100% on all servers");
-    private final BooleanValue I = BooleanValue.create(this, "Best only", false, "Only takes an item if it is better than what you have equipped.");
-    boolean L = false;
-    private final int[] J;
-    private TimerUtil F;
-    private ChestStealBestSlotTracker C;
+    private final int[] leggingsItemIds;
+    private final TimerUtil clickTimer;
+    private final int[] bootsItemIds;
+    private boolean performingWindowClick;
+    private final BooleanValue shuffle;
+    private final TimerUtil screenReadyTimer;
+    private final LimitValue blacklist;
+    private final BooleanValue keepOpen;
+    private final TimerUtil actionDelayTimer;
+    private final int[] helmetItemIds;
+    private int previousSlot = -1;
+    private final RandomValue clickDelay;
+    private final ArrayList<Integer> pendingSlots;
+    private boolean queueInitialized;
+    private boolean waitingToClose;
+    private final BooleanValue checkMenu = BooleanValue.create(this, "Check in menu", false, "This will attempt to ignore Menus such as\nServer selectors, and settings inventory menus\nThis may not work 100% on all servers");
+    private final BooleanValue bestOnly = BooleanValue.create(this, "Best only", false, "Only takes an item if it is better than what you have equipped.");
+    private boolean stealing;
+    private final int[] chestplateItemIds;
+    private final TimerUtil windowClickGuardTimer;
+    private final ChestStealBestSlotTracker bestSlotTracker;
 
-    private int I(ItemStack itemStack) {
-        int n = itemStack.getItem().P();
-        for (int n2 : this.c) {
-            if (n != n2) continue;
+    public int getArmorSlot(ItemStack itemStack) {
+        int itemId = itemStack.getItem().P();
+        for (int armorItemId : this.bootsItemIds) {
+            if (itemId != armorItemId) continue;
             return 8;
         }
-        for (int n2 : this.S) {
-            if (n != n2) continue;
+        for (int armorItemId : this.leggingsItemIds) {
+            if (itemId != armorItemId) continue;
             return 7;
         }
-        for (int n2 : this.J) {
-            if (n != n2) continue;
+        for (int armorItemId : this.chestplateItemIds) {
+            if (itemId != armorItemId) continue;
             return 6;
         }
-        for (int n2 : this.j) {
-            if (n != n2) continue;
+        for (int armorItemId : this.helmetItemIds) {
+            if (itemId != armorItemId) continue;
             return 5;
         }
         return -1;
     }
 
-    private void C$src$V$1buey7d() {
+    private void scanPlayerInventory() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
             return;
@@ -84,73 +84,69 @@ implements InventoryActionModule {
         for (int i = 0; i < 45; ++i) {
             ItemStack itemStack = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).I();
             if (itemStack.isNull() || itemStack.getItem().isNull()) continue;
-            this.C.v(itemStack, -1);
+            this.bestSlotTracker.trackCandidate(itemStack, -1);
         }
     }
 
-    private int e(int n, int n2) {
-        int n3 = n2 % 9;
-        int n4 = (n2 - n3) / 9;
-        int n5 = n % 9;
-        int n6 = (n - n5) / 9;
-        double d = RotationUtil.r(n3, n4, n5, n6);
-        if (d < 3.0) {
-            d = 0.0;
+    private int calculateSlotTravelDelay(int previousSlot, int targetSlot) {
+        int targetColumn = targetSlot % 9;
+        int targetRow = (targetSlot - targetColumn) / 9;
+        int previousColumn = previousSlot % 9;
+        int previousRow = (previousSlot - previousColumn) / 9;
+        double distance = RotationUtil.r(targetColumn, targetRow, previousColumn, previousRow);
+        if (distance < 3.0) {
+            distance = 0.0;
         }
-        return (int)(d * 30.0);
+        return (int)(distance * 30.0);
     }
 
-    public static int G(ChestSteal chestSteal, ItemStack itemStack) {
-        return chestSteal.I(itemStack);
-    }
-
-    private void C(GuiChest guiChest) {
+    private void collectAllEligibleSlots(GuiChest guiChest) {
         Inventory inventory = guiChest.getLowerChestInventory();
         for (int i = 0; i < inventory.getSizeInventory(); ++i) {
             ItemStack itemStack = inventory.getStackInSlot(i);
-            if (itemStack.isNull() || ForgeVersion.MC_26_1.v() && itemStack.toString().contains("tile.air") || this.o.isValid(itemStack, true) || itemStack.getItem().isInstance(MappedClasses.Di) && this.c(itemStack)) continue;
-            this.t.add(i);
+            if (itemStack.isNull() || ForgeVersion.MC_26_1.v() && itemStack.toString().contains("tile.air") || this.blacklist.isValid(itemStack, true) || itemStack.getItem().isInstance(MappedClasses.Di) && this.isHarmfulSplashPotion(itemStack)) continue;
+            this.pendingSlots.add(i);
         }
     }
 
     @Override
-    public boolean x() {
-        return this.r$src$Z$14eylz9() && this.L;
+    public boolean isPerformingInventoryAction() {
+        return this.r$src$Z$14eylz9() && this.stealing;
     }
 
-    private void p() {
-        this.D.reset();
-        this.r.reset();
-        this.t.clear();
-        this.C.F();
+    private void initializeStealQueue() {
+        this.actionDelayTimer.reset();
+        this.clickTimer.reset();
+        this.pendingSlots.clear();
+        this.bestSlotTracker.reset();
         GuiChest guiChest = new GuiChest(Minecraft.currentScreen());
-        if (this.I.L().booleanValue()) {
+        if (this.bestOnly.getEffectiveValue().booleanValue()) {
             Inventory inventory = guiChest.getLowerChestInventory();
             for (int i = 0; i < inventory.getSizeInventory(); ++i) {
                 ItemStack itemStack = inventory.getStackInSlot(i);
-                if (itemStack.isNull() || this.o.isValid(itemStack, true) || this.C.v(itemStack, i) || !itemStack.getItem().isNotNull() || itemStack.getItem().isInstance(MappedClasses.Di) && this.c(itemStack)) continue;
-                this.t.add(i);
+                if (itemStack.isNull() || this.blacklist.isValid(itemStack, true) || this.bestSlotTracker.trackCandidate(itemStack, i) || !itemStack.getItem().isNotNull() || itemStack.getItem().isInstance(MappedClasses.Di) && this.isHarmfulSplashPotion(itemStack)) continue;
+                this.pendingSlots.add(i);
             }
         } else {
-            this.C(guiChest);
+            this.collectAllEligibleSlots(guiChest);
         }
-        if (this.I.L().booleanValue()) {
-            this.C$src$V$1buey7d();
-            this.t.addAll(this.C.Y());
+        if (this.bestOnly.getEffectiveValue().booleanValue()) {
+            this.scanPlayerInventory();
+            this.pendingSlots.addAll(this.bestSlotTracker.getBestSlotIndexes());
         }
-        if (this.U.L().booleanValue() && this.U.L().booleanValue()) {
-            Collections.shuffle(this.t);
+        if (this.shuffle.getEffectiveValue().booleanValue()) {
+            Collections.shuffle(this.pendingSlots);
             try {
-                this.t.sort(new ChestStealSlotDistanceComparator(this.P));
+                this.pendingSlots.sort(new ChestStealSlotDistanceComparator(this.previousSlot));
             }
             catch (Exception exception) {
                 // empty catch block
             }
         }
-        this.K = true;
+        this.queueInitialized = true;
     }
 
-    private boolean c(ItemStack itemStack) {
+    private boolean isHarmfulSplashPotion(ItemStack itemStack) {
         if (itemStack.getItem().isNotNull() && itemStack.getItem().isInstance(MappedClasses.Di)) {
             ItemSplashPotion itemSplashPotion = new ItemSplashPotion(itemStack.getItem().getObject());
             for (Object e : itemSplashPotion.getRawPotionEffects(itemStack)) {
@@ -164,52 +160,48 @@ implements InventoryActionModule {
 
     public ChestSteal() {
         super("ChestSteal", -208, Category.m, "Take items upon opening a chest");
-        this.k = BooleanValue.create(this, "Keep open", false, "Keep chest open after clearing");
-        this.U = BooleanValue.create(this, "Shuffle", false, "Take items in a random order");
-        this.s = RandomValue.C(this, "Click delay", "#", "", 50.0, 150.0, 200.0, 300.0, 5.0);
-        this.o = LimitValue.n(this, "cheatsteal-blacklisted", "Blacklisted", LimitValue.G, Collections.emptyList());
-        this.r = new TimerUtil();
-        this.t = new ArrayList();
-        this.C = new ChestStealBestSlotTracker(this);
-        this.D = new TimerUtil();
-        this.H = new TimerUtil();
-        this.F = new TimerUtil();
-        this.addValue(this.O, this.I, this.k, this.U, this.s, this.o);
+        this.keepOpen = BooleanValue.create(this, "Keep open", false, "Keep chest open after clearing");
+        this.shuffle = BooleanValue.create(this, "Shuffle", false, "Take items in a random order");
+        this.clickDelay = RandomValue.createWithIncrement(this, "Click delay", "#", "", 50.0, 150.0, 200.0, 300.0, 5.0);
+        this.blacklist = LimitValue.create(this, "cheatsteal-blacklisted", "Blacklisted", LimitValue.BLOCK_LIST_COLOR, Collections.emptyList());
+        this.clickTimer = new TimerUtil();
+        this.pendingSlots = new ArrayList();
+        this.bestSlotTracker = new ChestStealBestSlotTracker(this);
+        this.actionDelayTimer = new TimerUtil();
+        this.screenReadyTimer = new TimerUtil();
+        this.windowClickGuardTimer = new TimerUtil();
+        this.addValue(this.checkMenu, this.bestOnly, this.keepOpen, this.shuffle, this.clickDelay, this.blacklist);
         if (ForgeVersion.MC_1_16_5.d()) {
-            this.c = new int[]{633, 629, 625, 641, 645, 637};
-            this.J = new int[]{623, 627, 631, 635, 639, 643};
-            this.j = new int[]{622, 630, 626, 634, 638, 642};
-            this.S = new int[]{624, 632, 628, 636, 640, 644};
+            this.bootsItemIds = new int[]{633, 629, 625, 641, 645, 637};
+            this.chestplateItemIds = new int[]{623, 627, 631, 635, 639, 643};
+            this.helmetItemIds = new int[]{622, 630, 626, 634, 638, 642};
+            this.leggingsItemIds = new int[]{624, 632, 628, 636, 640, 644};
         } else {
-            this.c = new int[]{313, 309, 317, 305, 301};
-            this.J = new int[]{311, 307, 315, 303, 299};
-            this.j = new int[]{310, 306, 314, 302, 298};
-            this.S = new int[]{312, 308, 316, 304, 300};
+            this.bootsItemIds = new int[]{313, 309, 317, 305, 301};
+            this.chestplateItemIds = new int[]{311, 307, 315, 303, 299};
+            this.helmetItemIds = new int[]{310, 306, 314, 302, 298};
+            this.leggingsItemIds = new int[]{312, 308, 316, 304, 300};
         }
     }
 
     @EventHandler
-    public void b(EventWindowClick eventWindowClick) {
-        if (!this.p) {
-            if (!this.F.hasTimeElapsed(100L)) {
+    public void onWindowClick(EventWindowClick eventWindowClick) {
+        if (!this.performingWindowClick) {
+            if (!this.windowClickGuardTimer.hasTimeElapsed(100L)) {
                 eventWindowClick.setCancelled(true);
             }
-            this.H.reset();
+            this.screenReadyTimer.reset();
         }
-    }
-
-    private static Exception a(Exception exception) {
-        return exception;
     }
 
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
         if (Vape.INSTANCE.getModManager().N(ChestSteal.class) || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
-            this.L = false;
+            this.stealing = false;
             return;
         }
         if (Minecraft.currentScreen().isNull() || !Minecraft.currentScreen().isInstance(MappedClasses.qs)) {
-            this.G();
+            this.resetState();
             return;
         }
         if (Minecraft.thePlayer().isNull() || Minecraft.theWorld().isNull()) {
@@ -218,61 +210,61 @@ implements InventoryActionModule {
         if (RotationUtil.Z().isNotNull()) {
             return;
         }
-        if (!this.H.hasTimeElapsed(150L)) {
+        if (!this.screenReadyTimer.hasTimeElapsed(150L)) {
             return;
         }
-        if (this.b) {
-            if (this.r.hasTimeElapsed(RandomUtil.i(this.s) + 200) && this.D.hasTimeElapsed(RandomUtil.i(this.s) + 200)) {
+        if (this.waitingToClose) {
+            if (this.clickTimer.hasTimeElapsed(RandomUtil.i(this.clickDelay) + 200) && this.actionDelayTimer.hasTimeElapsed(RandomUtil.i(this.clickDelay) + 200)) {
                 if (Minecraft.currentScreen().isNotNull()) {
                     Minecraft.thePlayer().Z$src$V$1ie832h();
                 }
-                this.G();
+                this.resetState();
             }
             return;
         }
         GuiChest guiChest = new GuiChest(Minecraft.currentScreen());
-        if (this.O.L().booleanValue() && !this.p(guiChest)) {
-            this.G();
+        if (this.checkMenu.getEffectiveValue().booleanValue() && !this.isStandardChest(guiChest)) {
+            this.resetState();
             return;
         }
-        if (!this.k.L().booleanValue() && this.e()) {
-            this.b = true;
-            this.r.reset();
-            this.D.reset();
-            this.L = false;
+        if (!this.keepOpen.getEffectiveValue().booleanValue() && this.isInventoryFull()) {
+            this.waitingToClose = true;
+            this.clickTimer.reset();
+            this.actionDelayTimer.reset();
+            this.stealing = false;
             return;
         }
-        if (!this.K) {
-            this.p();
+        if (!this.queueInitialized) {
+            this.initializeStealQueue();
             return;
         }
-        if (!this.t.isEmpty()) {
-            int n = this.t.get(0);
-            int n2 = this.e(this.P, n);
-            if (this.r.hasTimeElapsed(RandomUtil.i(this.s) + n2) && this.D.hasTimeElapsed(RandomUtil.i(this.s) + 100)) {
-                this.L = true;
-                this.P = n;
-                Slot slot = guiChest.getInventorySlots().getSlot(n);
+        if (!this.pendingSlots.isEmpty()) {
+            int slotIndex = this.pendingSlots.get(0);
+            int travelDelay = this.calculateSlotTravelDelay(this.previousSlot, slotIndex);
+            if (this.clickTimer.hasTimeElapsed(RandomUtil.i(this.clickDelay) + travelDelay) && this.actionDelayTimer.hasTimeElapsed(RandomUtil.i(this.clickDelay) + 100)) {
+                this.stealing = true;
+                this.previousSlot = slotIndex;
+                Slot slot = guiChest.getInventorySlots().getSlot(slotIndex);
                 if (slot.v()) {
-                    this.p = true;
-                    this.F.reset();
-                    Minecraft.playerController().O(guiChest.getInventorySlots().getWindowId(), n, 0, 1, Minecraft.thePlayer());
-                    this.p = false;
+                    this.performingWindowClick = true;
+                    this.windowClickGuardTimer.reset();
+                    Minecraft.playerController().O(guiChest.getInventorySlots().getWindowId(), slotIndex, 0, 1, Minecraft.thePlayer());
+                    this.performingWindowClick = false;
                 }
-                this.r.reset();
-                this.t.remove(0);
+                this.clickTimer.reset();
+                this.pendingSlots.remove(0);
             }
         } else {
-            this.L = false;
-            if (!this.k.L().booleanValue()) {
-                this.b = true;
-                this.r.reset();
+            this.stealing = false;
+            if (!this.keepOpen.getEffectiveValue().booleanValue()) {
+                this.waitingToClose = true;
+                this.clickTimer.reset();
             }
-            this.P = -1;
+            this.previousSlot = -1;
         }
     }
 
-    private boolean e() {
+    private boolean isInventoryFull() {
         Container container = Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm();
         for (int i = 9; i <= 44; ++i) {
             ItemStack itemStack = container.getSlot(i).I();
@@ -282,27 +274,27 @@ implements InventoryActionModule {
         return true;
     }
 
-    private boolean p(GuiChest guiChest) {
+    private boolean isStandardChest(GuiChest guiChest) {
         Inventory inventory = guiChest.getLowerChestInventory();
-        String string = guiChest.z();
+        String chestTitle = guiChest.z();
         if (ForgeVersion.MC_1_16_5.d()) {
-            String string2 = ChestStealInventoryState.v("container.chest", new Object[0]).C().toLowerCase();
-            String string3 = ChestStealInventoryState.v("container.chestDouble", new Object[0]).C().toLowerCase();
-            return string.equalsIgnoreCase(string2) || string.equalsIgnoreCase(string3);
+            String standardChestTitle = ChestStealInventoryState.createTranslation("container.chest", new Object[0]).getFormattedText().toLowerCase();
+            String doubleChestTitle = ChestStealInventoryState.createTranslation("container.chestDouble", new Object[0]).getFormattedText().toLowerCase();
+            return chestTitle.equalsIgnoreCase(standardChestTitle) || chestTitle.equalsIgnoreCase(doubleChestTitle);
         }
-        String string4 = ChestStealInventoryState.v("container.chest", new Object[0]).a().toLowerCase();
-        String string5 = ChestStealInventoryState.v("container.chestDouble", new Object[0]).a().toLowerCase();
-        return !inventory.hasCustomInventoryName() || string.equalsIgnoreCase(string4) || string.equalsIgnoreCase(string5);
+        String standardChestTitle = ChestStealInventoryState.createTranslation("container.chest", new Object[0]).a().toLowerCase();
+        String doubleChestTitle = ChestStealInventoryState.createTranslation("container.chestDouble", new Object[0]).a().toLowerCase();
+        return !inventory.hasCustomInventoryName() || chestTitle.equalsIgnoreCase(standardChestTitle) || chestTitle.equalsIgnoreCase(doubleChestTitle);
     }
 
-    private void G() {
-        this.D.reset();
-        this.r.reset();
-        this.t.clear();
-        this.b = false;
-        this.P = -1;
-        this.L = false;
-        this.K = false;
+    private void resetState() {
+        this.actionDelayTimer.reset();
+        this.clickTimer.reset();
+        this.pendingSlots.clear();
+        this.waitingToClose = false;
+        this.previousSlot = -1;
+        this.stealing = false;
+        this.queueInitialized = false;
     }
 }
 

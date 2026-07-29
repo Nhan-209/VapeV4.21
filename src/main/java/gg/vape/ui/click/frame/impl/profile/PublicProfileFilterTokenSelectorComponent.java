@@ -15,30 +15,30 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PublicProfileFilterTokenSelectorComponent
 extends FlowLayoutComponent {
-    SquareIconButtonComponent TA;
-    private final Runnable T1;
-    private boolean T7 = false;
-    private final List<PublicProfileFilterTokenComponent> TY = new ArrayList<PublicProfileFilterTokenComponent>();
-    private final TextInputComponentBase TF;
-    private PublicProfileFilterTokenComponent To;
+    private final SquareIconButtonComponent clearButton;
+    private final Runnable changeCallback;
+    private boolean overflowed;
+    private final List<PublicProfileFilterTokenComponent> tokens = new ArrayList<>();
+    private final TextInputComponentBase input;
+    private final PublicProfileFilterTokenComponent overflowSummary;
 
-    public boolean F(String string) {
-        for (PublicProfileFilterTokenComponent publicProfileFilterTokenComponent : this.TY) {
-            if (!publicProfileFilterTokenComponent.N().equalsIgnoreCase(string)) continue;
+    public boolean containsToken(String value) {
+        for (PublicProfileFilterTokenComponent token : this.tokens) {
+            if (!token.getText().equalsIgnoreCase(value)) continue;
             return true;
         }
         return false;
     }
 
-    public TextInputComponentBase o$src$Lgg_vape_ui_click_component_TextInputComponentBa$1oe42xz() {
-        return this.TF;
+    public TextInputComponentBase getInput() {
+        return this.input;
     }
 
-    public void k$src$V$15g9qa7() {
-        if (!this.TF.i$src$Ljava_lang_String_$1n2xf3k().isEmpty() || !this.TY.isEmpty()) {
-            this.TF.k("");
-            this.TY.clear();
-            this.T1.run();
+    public void clearTokens() {
+        if (!this.input.getText().isEmpty() || !this.tokens.isEmpty()) {
+            this.input.setText("");
+            this.tokens.clear();
+            this.changeCallback.run();
         }
     }
 
@@ -46,17 +46,17 @@ extends FlowLayoutComponent {
     public void H() {
         super.H();
         double d = 0.0;
-        for (PublicProfileFilterTokenComponent publicProfileFilterTokenComponent : this.TY) {
+        for (PublicProfileFilterTokenComponent publicProfileFilterTokenComponent : this.tokens) {
             if (!((d += publicProfileFilterTokenComponent.A() + 2.0) > this.A() / 2.0)) continue;
-            this.T7 = true;
+            this.overflowed = true;
             return;
         }
-        this.T7 = false;
+        this.overflowed = false;
     }
 
-    public void V(PublicProfileFilterTokenComponent publicProfileFilterTokenComponent) {
-        this.TY.add(publicProfileFilterTokenComponent);
-        this.T1.run();
+    public void addToken(PublicProfileFilterTokenComponent token) {
+        this.tokens.add(token);
+        this.changeCallback.run();
     }
 
     @Override
@@ -64,8 +64,8 @@ extends FlowLayoutComponent {
         return super.x();
     }
 
-    public List<PublicProfileFilterTokenComponent> i$src$Ljava_util_List_$1ydnhqa() {
-        return this.TY;
+    public List<PublicProfileFilterTokenComponent> getTokens() {
+        return this.tokens;
     }
 
     @Override
@@ -73,74 +73,70 @@ extends FlowLayoutComponent {
         return super.C();
     }
 
-    public static PublicProfileFilterTokenComponent E(PublicProfileFilterTokenSelectorComponent publicProfileFilterTokenSelectorComponent) {
-        return publicProfileFilterTokenSelectorComponent.To;
+    PublicProfileFilterTokenComponent getOverflowSummary() {
+        return this.overflowSummary;
     }
 
-    public List<String> m$src$Ljava_util_List_$17c1eke() {
-        ArrayList<String> arrayList = new ArrayList<String>();
-        for (PublicProfileFilterTokenComponent publicProfileFilterTokenComponent : this.TY) {
-            arrayList.add(publicProfileFilterTokenComponent.N());
+    public List<String> getTokenValues() {
+        ArrayList<String> values = new ArrayList<>();
+        for (PublicProfileFilterTokenComponent token : this.tokens) {
+            values.add(token.getText());
         }
-        return arrayList;
+        return values;
     }
 
-    public void R(PublicProfileFilterTokenComponent publicProfileFilterTokenComponent) {
-        this.TY.remove(publicProfileFilterTokenComponent);
-        this.T1.run();
+    public void removeToken(PublicProfileFilterTokenComponent token) {
+        this.tokens.remove(token);
+        this.changeCallback.run();
     }
 
-    public static List<PublicProfileFilterTokenComponent> u(PublicProfileFilterTokenSelectorComponent publicProfileFilterTokenSelectorComponent) {
-        return publicProfileFilterTokenSelectorComponent.TY;
+    boolean isOverflowed() {
+        return this.overflowed;
     }
 
     public PublicProfileFilterTokenSelectorComponent(String string, Runnable runnable, double d, double d2, boolean bl, boolean bl2) {
         super(d);
-        this.T1 = runnable;
-        this.To = new PublicProfileFilterTokenComponent("...");
+        this.changeCallback = runnable;
+        this.overflowSummary = new PublicProfileFilterTokenComponent("...");
         FixedStringListSuggestionProvider fixedStringListSuggestionProvider = new FixedStringListSuggestionProvider();
         fixedStringListSuggestionProvider.setComparator(null);
-        this.TF = new PublicProfileFilterTokenSearchInputComponent(this, string, bl, bl2, runnable);
-        this.TF.E(fixedStringListSuggestionProvider);
-        this.TA = new SquareIconButtonComponent("newclose", 1.0);
-        this.TA.Z(false);
-        this.TA.o(10.0);
-        this.TA.Y(10.0);
-        PaddedComponent paddedComponent = new PaddedComponent(5.0, 0.0, 1.0, 4.0, this.TA);
+        this.input = new PublicProfileFilterTokenSearchInputComponent(this, string, bl, bl2, runnable);
+        this.input.setSuggestionProvider(fixedStringListSuggestionProvider);
+        this.clearButton = new SquareIconButtonComponent("newclose", 1.0);
+        this.clearButton.setVisible(false);
+        this.clearButton.o(10.0);
+        this.clearButton.Y(10.0);
+        PaddedComponent paddedComponent = new PaddedComponent(5.0, 0.0, 1.0, 4.0, this.clearButton);
         paddedComponent.o(15.0);
         paddedComponent.Y(10.0);
-        this.TF.o(d - 16.0);
-        this.TF.Y(d2);
-        this.TF.d(false);
-        this.TF.e(false);
-        this.TF.C(0.0);
-        this.TF.H(0.0f);
-        this.TF.O(0.0f);
-        this.TF.d(false);
-        this.TF.e(false);
-        this.TF.T(Color.RED);
-        this.TF.W(Color.BLUE);
-        this.d(false);
-        this.TF.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().Z(false);
-        this.TF.A(PublicProfileFilterTokenSelectorComponent.J.h);
-        this.h(this.TF, new Object[0]);
+        this.input.o(d - 16.0);
+        this.input.Y(d2);
+        this.input.setShowDisabledOverlay(false);
+        this.input.setBackgroundVisible(false);
+        this.input.setHorizontalInset(0.0);
+        this.input.setLeftInset(0.0f);
+        this.input.setVerticalInset(0.0f);
+        this.input.setShowDisabledOverlay(false);
+        this.input.setBackgroundVisible(false);
+        this.input.setDisabledOverlayColor(Color.RED);
+        this.input.setBackgroundColorOrNull(Color.BLUE);
+        this.setShowDisabledOverlay(false);
+        this.input.getActionButton().setVisible(false);
+        this.input.setPlaceholderColor(PublicProfileFilterTokenSelectorComponent.J.h);
+        this.h(this.input, new Object[0]);
         this.h(paddedComponent, new Object[0]);
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        this.TF.j(new PublicProfileFilterTokenSelectorClickHandler(this, atomicBoolean));
+        this.input.addMouseListener(new PublicProfileFilterTokenSelectorClickHandler(this, atomicBoolean));
     }
 
-    public static boolean A(PublicProfileFilterTokenSelectorComponent publicProfileFilterTokenSelectorComponent) {
-        return publicProfileFilterTokenSelectorComponent.T7;
+    public SquareIconButtonComponent getClearButton() {
+        return this.clearButton;
     }
 
-    public SquareIconButtonComponent B$src$Lgg_vape_ui_click_component_SquareIconButtonComp$6e843w() {
-        return this.TA;
-    }
-
-    public void A$src$V$14t6dd1() {
-        if (!this.TY.isEmpty()) {
-            this.TY.remove(this.TY.size() - 1);
-            this.T1.run();
+    public void removeLastToken() {
+        if (!this.tokens.isEmpty()) {
+            this.tokens.remove(this.tokens.size() - 1);
+            this.changeCallback.run();
         }
     }
 

@@ -8,21 +8,18 @@ import gg.vape.utils.render.RenderUtils;
 
 class ModuleComponentDragStartClickHandler
 implements GuiClickListener {
-    final ModuleComponent D;
-    final ModuleComponent v;
+    final ModuleComponent owner;
 
-    ModuleComponentDragStartClickHandler(ModuleComponent moduleComponent, ModuleComponent moduleComponent2) {
-        this.v = moduleComponent;
-        this.D = moduleComponent2;
+    ModuleComponentDragStartClickHandler(ModuleComponent owner) {
+        this.owner = owner;
     }
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         MousePosition mousePosition = RenderUtils.h();
-        ModuleComponent.g(this.v, mousePosition.H);
-        ModuleComponent.f(this.v, this.v.double_n());
-        ModuleComponent.t(this.v, true);
-        ClientSettings.fT = this.D;
+        this.owner.setLastDragMouseY(mousePosition.H);
+        this.owner.setDragStartY(this.owner.double_n());
+        this.owner.setDragging(true);
+        ClientSettings.activeComponent = this.owner;
     }
 }
-

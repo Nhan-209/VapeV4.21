@@ -6,91 +6,91 @@ import java.util.Random;
 
 public class RandomClickDelayValue
 extends RandomValue {
-    private int L;
-    private final Random w;
-    private final Random Z;
-    private long R;
-    private final TimerUtil f = new TimerUtil();
-    private final Random D;
-    private boolean M;
-    private final Random v = new Random();
-    private int r;
+    private int burstLength;
+    private final Random delaySpikeChanceRandom;
+    private final Random burstRandom;
+    private long currentDelayMillis;
+    private final TimerUtil clickTimer = new TimerUtil();
+    private final Random delaySpikeRandom;
+    private boolean burstActive;
+    private final Random clicksPerSecondRandom = new Random();
+    private int burstProgress;
 
-    public boolean R() {
-        return this.f.hasTimeElapsed(this.F());
+    public boolean hasClickDelayElapsed() {
+        return this.clickTimer.hasTimeElapsed(this.calculateNextDelayMillis());
     }
 
-    public static RandomClickDelayValue M(Object object, String string, String string2, String string3, double d, double d2, double d3, double d4) {
-        return new RandomClickDelayValue(object, string, new double[]{d2, d3}, d, d4, string2, string3);
+    public static RandomClickDelayValue create(Object owner, String name, String formatPattern, String suffix, double allowedMinimum, double defaultMinimum, double defaultMaximum, double allowedMaximum) {
+        return new RandomClickDelayValue(owner, name, new double[]{defaultMinimum, defaultMaximum}, allowedMinimum, allowedMaximum, formatPattern, suffix);
     }
 
-    public RandomClickDelayValue(Object object, String string, double[] dArray, double d, double d2, String string2, String string3) {
-        super(object, string, dArray, d, d2, string2, string3);
-        this.w = new Random();
-        this.D = new Random();
-        this.Z = new Random();
+    public RandomClickDelayValue(Object owner, String name, double[] defaultRange, double allowedMinimum, double allowedMaximum, String formatPattern, String suffix) {
+        super(owner, name, defaultRange, allowedMinimum, allowedMaximum, formatPattern, suffix);
+        this.delaySpikeChanceRandom = new Random();
+        this.delaySpikeRandom = new Random();
+        this.burstRandom = new Random();
     }
 
-    public long F() {
-        int n;
-        int n2;
-        int n3 = this.s$src$I$vi2lk8();
-        int n4 = n3 - (n2 = this.y());
-        int n5 = n = n4 <= 0 ? n2 : this.v.nextInt(n4) + n2 + 1;
-        if (n == 0) {
-            n = 1;
+    public long calculateNextDelayMillis() {
+        int selectedCps;
+        int maximumCps;
+        int minimumCps = this.getMinimumInt();
+        int cpsSpan = minimumCps - (maximumCps = this.getMaximumInt());
+        int unusedSelectedCps = selectedCps = cpsSpan <= 0 ? maximumCps : this.clicksPerSecondRandom.nextInt(cpsSpan) + maximumCps + 1;
+        if (selectedCps == 0) {
+            selectedCps = 1;
         }
-        if (!this.M) {
-            this.R = 1000 / n;
-            if (this.Z.nextInt(4) == 1) {
-                this.M = true;
-                this.L = 1 + this.Z.nextInt(5);
-            } else if (this.Z.nextInt(10) != 1 && this.Z.nextInt(10) == 1) {
-                this.M = true;
-                this.L = 5 + this.Z.nextInt(10);
+        if (!this.burstActive) {
+            this.currentDelayMillis = 1000 / selectedCps;
+            if (this.burstRandom.nextInt(4) == 1) {
+                this.burstActive = true;
+                this.burstLength = 1 + this.burstRandom.nextInt(5);
+            } else if (this.burstRandom.nextInt(10) != 1 && this.burstRandom.nextInt(10) == 1) {
+                this.burstActive = true;
+                this.burstLength = 5 + this.burstRandom.nextInt(10);
             }
         }
-        if (this.M) {
-            ++this.r;
-            if (this.r >= this.L) {
-                this.r = 0;
-                this.M = false;
+        if (this.burstActive) {
+            ++this.burstProgress;
+            if (this.burstProgress >= this.burstLength) {
+                this.burstProgress = 0;
+                this.burstActive = false;
             }
         }
-        boolean bl = true;
-        if (this.w.nextInt(48) % 10 == 0 && !this.M) {
-            n2 = 25;
-            n3 = 70;
-            n4 = n3 - n2;
-            this.R += (long)(this.D.nextInt(n4) + n2);
+        boolean unused = true;
+        if (this.delaySpikeChanceRandom.nextInt(48) % 10 == 0 && !this.burstActive) {
+            maximumCps = 25;
+            minimumCps = 70;
+            cpsSpan = minimumCps - maximumCps;
+            this.currentDelayMillis += (long)(this.delaySpikeRandom.nextInt(cpsSpan) + maximumCps);
         }
-        return this.R;
+        return this.currentDelayMillis;
     }
 
-    public static RandomClickDelayValue f(Object object, String string, String string2, String string3, String string4, double d, double d2, double d3, double d4, double d5) {
-        return new RandomClickDelayValue(object, string, new double[]{d2, d3}, d, d4, string3, string4);
+    public static RandomClickDelayValue createLegacy(Object owner, String name, String legacyLabel, String formatPattern, String suffix, double allowedMinimum, double defaultMinimum, double defaultMaximum, double allowedMaximum, double legacyIncrement) {
+        return new RandomClickDelayValue(owner, name, new double[]{defaultMinimum, defaultMaximum}, allowedMinimum, allowedMaximum, formatPattern, suffix);
     }
 
-    public static RandomClickDelayValue h(Object object, String string, String string2, String string3, double d, double d2, double d3, double d4, double d5, String string4) {
-        RandomClickDelayValue randomClickDelayValue = new RandomClickDelayValue(object, string, new double[]{d2, d3}, d, d4, string2, string3);
-        randomClickDelayValue.W(d5);
-        randomClickDelayValue.Z$src$Lgg_vape_value_Value_$16i62fx(string4);
+    public static RandomClickDelayValue createWithDescription(Object owner, String name, String formatPattern, String suffix, double allowedMinimum, double defaultMinimum, double defaultMaximum, double allowedMaximum, double increment, String description) {
+        RandomClickDelayValue randomClickDelayValue = new RandomClickDelayValue(owner, name, new double[]{defaultMinimum, defaultMaximum}, allowedMinimum, allowedMaximum, formatPattern, suffix);
+        randomClickDelayValue.setIncrement(increment);
+        randomClickDelayValue.setDescription(description);
         return randomClickDelayValue;
     }
 
-    public void s() {
-        this.f.reset();
+    public void resetClickTimer() {
+        this.clickTimer.reset();
     }
 
-    public static RandomClickDelayValue u(Object object, String string, String string2, String string3, double d, double d2, double d3, double d4, double d5) {
-        RandomClickDelayValue randomClickDelayValue = new RandomClickDelayValue(object, string, new double[]{d2, d3}, d, d4, string2, string3);
-        randomClickDelayValue.W(d5);
+    public static RandomClickDelayValue createWithIncrement(Object owner, String name, String formatPattern, String suffix, double allowedMinimum, double defaultMinimum, double defaultMaximum, double allowedMaximum, double increment) {
+        RandomClickDelayValue randomClickDelayValue = new RandomClickDelayValue(owner, name, new double[]{defaultMinimum, defaultMaximum}, allowedMinimum, allowedMaximum, formatPattern, suffix);
+        randomClickDelayValue.setIncrement(increment);
         return randomClickDelayValue;
     }
 
 
-    public boolean R(long l) {
-        return this.f.hasTimeElapsed(l);
+    public boolean hasClickDelayElapsed(long delayMillis) {
+        return this.clickTimer.hasTimeElapsed(delayMillis);
     }
 }
 

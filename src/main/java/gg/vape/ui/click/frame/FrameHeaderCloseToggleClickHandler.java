@@ -16,7 +16,7 @@ implements GuiClickListener {
     }
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         if (this.h instanceof CollapsibleFrame) {
             ((CollapsibleFrame)((Object)this.h)).w();
             CloseableFrameHeaderComponent.c(this.x, ((CollapsibleFrame)((Object)this.h)).q());

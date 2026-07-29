@@ -17,7 +17,7 @@ extends Event {
 
     @Override
     public boolean fire() {
-        if (ClientSettings.d && Vape.INSTANCE.getClientSettings().T.L().booleanValue()) {
+        if (ClientSettings.d && Vape.INSTANCE.getClientSettings().T.getEffectiveValue().booleanValue()) {
             ClientSettings.d = false;
             boolean bl = false;
             if (this.a.isInstance(MappedClasses.u5) || this.a.isInstance(MappedClasses.D6) || this.a.isInstance(MappedClasses.F_)) {
@@ -28,7 +28,7 @@ extends Event {
                 }
             }
             if (bl) {
-                Vape.INSTANCE.getNotificationManager().k("Sanity Check", "All modules have been disabled!", 5000L);
+                Vape.INSTANCE.getNotificationManager().showInfo("Sanity Check", "All modules have been disabled!", 5000L);
             }
         }
         return super.fire();

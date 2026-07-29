@@ -8,7 +8,7 @@ implements GuiClickListener {
     final UsernameEditorPanel b;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         UsernameEditorPanel.t(this.b);
     }
 
@@ -16,4 +16,3 @@ implements GuiClickListener {
         this.b = m5_02;
     }
 }
-

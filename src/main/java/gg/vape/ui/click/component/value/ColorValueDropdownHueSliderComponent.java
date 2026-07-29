@@ -8,21 +8,21 @@ import java.awt.Color;
 
 public class ColorValueDropdownHueSliderComponent
 extends ColorPaletteSliderComponent {
-    final ColorValueDropdownComponent kO;
-    private static final String gb = "teamdot";
+    final ColorValueDropdownComponent dropdownComponent;
+    private static final String HANDLE_ICON = "teamdot";
 
     @Override
-    protected void C$src$V$1okgo1v() {
-        GuiRenderPrimitives.F(gb, this.G$src$D$1b2f02a() + (double)this.I$src$Lgg_vape_ui_click_animation_DoubleAnimation_$f0r39g().getInterpolatedValue().floatValue(), this.v.W() + this.v.R() / 2.0, this.v.e(), this.v.R(), this.l$src$Lgg_vape_ui_click_animation_ColorAnimation_$lcq3bn().getInterpolatedColor());
+    protected void renderHandle() {
+        GuiRenderPrimitives.F(HANDLE_ICON, this.G$src$D$1b2f02a() + (double)this.getHandlePositionAnimation().getInterpolatedValue().floatValue(), this.handleBounds.W() + this.handleBounds.R() / 2.0, this.handleBounds.e(), this.handleBounds.R(), this.getHandleColorAnimation().getInterpolatedColor());
     }
 
     @Override
-    public boolean D() {
+    public boolean isCustomColor() {
         return false;
     }
 
-    public ColorValueDropdownHueSliderComponent(ColorValueDropdownComponent colorValueDropdownComponent, String string, ColorValue colorValue, Color[] colorArray) {
-        super(string, colorValue, colorArray);
-        this.kO = colorValueDropdownComponent;
+    public ColorValueDropdownHueSliderComponent(ColorValueDropdownComponent dropdownComponent, String label, ColorValue colorValue, Color[] paletteColors) {
+        super(label, colorValue, paletteColors);
+        this.dropdownComponent = dropdownComponent;
     }
 }

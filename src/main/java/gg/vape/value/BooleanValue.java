@@ -8,127 +8,126 @@ import org.jetbrains.annotations.Nullable;
 
 public class BooleanValue
 extends ConditionalValue<Boolean, BooleanValue> {
-    private static String[] o;
+    private static String[] legacyState;
     @Nullable
-    private ListValue R = null;
-    private final String L;
+    private ListValue compactListValue = null;
+    private final String displayName;
 
-    public BooleanValue(Object object, String string, boolean bl) {
-        this(object, string, string, bl);
+    public BooleanValue(Object owner, String name, boolean defaultValue) {
+        this(owner, name, name, defaultValue);
     }
 
     @Override
-    public void parse(String string) {
-        if (string.isEmpty()) {
+    public void parse(String serializedValue) {
+        if (serializedValue.isEmpty()) {
             return;
         }
-        this.o(Boolean.parseBoolean(string));
+        this.setValue(Boolean.parseBoolean(serializedValue));
     }
 
-    public static void W(String[] stringArray) {
-        o = stringArray;
-    }
-
-    @Override
-    public ListValue G() {
-        return this.R;
+    public static void setBooleanLegacyState(String[] state) {
+        legacyState = state;
     }
 
     @Override
-    public boolean P() {
-        return this.L();
-    }
-
-    public BooleanValue L$src$Lgg_vape_value_BooleanValue_$9w2bbh() {
-        return BooleanValue.U(null, this.P$src$Ljava_lang_String_$1ijjhmj(), this.o(), this.L(), this.w$src$Ljava_lang_String_$ikqblg());
+    public ListValue getTerminalDependentValue() {
+        return this.compactListValue;
     }
 
     @Override
-    public BooleanValue getALimit() {
-        return this.L$src$Lgg_vape_value_BooleanValue_$9w2bbh();
+    public boolean hasActiveDependentBranch() {
+        return this.isEnabled();
     }
 
-    public void l(ListValue listValue) {
-        this.R = listValue;
-    }
-
-    public static BooleanValue D(Object object, String string, String string2, boolean bl) {
-        return BooleanValue.U(object, string, string2, bl, null);
+    public BooleanValue copyDefinition() {
+        return BooleanValue.createFull(null, this.getId(), this.getDisplayName(), this.getEffectiveValue(), this.getDescription());
     }
 
     @Override
-    public boolean q(Value value) {
-        return this.e();
+    public BooleanValue copyValueDefinition() {
+        return this.copyDefinition();
     }
 
-    public BooleanValue(Object object, String string, String string2, boolean bl) {
-        super(object, string, bl);
-        this.L = string2;
+    public void setCompactListValue(ListValue listValue) {
+        this.compactListValue = listValue;
     }
 
-    public static BooleanValue create(Object object, String string, boolean bl, String string2) {
-        return BooleanValue.U(object, string, string, bl, string2);
+    public static BooleanValue createWithDisplayName(Object owner, String name, String displayName, boolean defaultValue) {
+        return BooleanValue.createFull(owner, name, displayName, defaultValue, null);
     }
 
-    public Boolean L() {
-        if (this.C$src$Z$1a17d8q()) {
+    @Override
+    public boolean isDependentValueActive(Value dependentValue) {
+        return this.isEnabled();
+    }
+
+    public BooleanValue(Object owner, String name, String displayName, boolean defaultValue) {
+        super(owner, name, defaultValue);
+        this.displayName = displayName;
+    }
+
+    public static BooleanValue create(Object owner, String name, boolean defaultValue, String description) {
+        return BooleanValue.createFull(owner, name, name, defaultValue, description);
+    }
+
+    public Boolean getEffectiveValue() {
+        if (this.isHidden()) {
             return false;
         }
-        return (Boolean)super.K();
+        return (Boolean)super.getValue();
     }
 
-    public boolean e() {
-        return this.L();
+    public boolean isEnabled() {
+        return this.getEffectiveValue();
     }
 
-    public static BooleanValue create(Object object, String string, boolean bl) {
-        return BooleanValue.create(object, string, bl, null);
+    public static BooleanValue create(Object owner, String name, boolean defaultValue) {
+        return BooleanValue.create(owner, name, defaultValue, null);
     }
 
     public ValueCondition getEnabledCondition() {
-        return new ValueCondition().L(this);
+        return new ValueCondition().requireTrue(this);
     }
 
-    public static BooleanValue U(Object object, String string, String string2, boolean bl, String string3) {
-        BooleanValue booleanValue = new BooleanValue(object, string, string2, bl);
-        booleanValue.Z$src$Lgg_vape_value_Value_$16i62fx(string3);
+    public static BooleanValue createFull(Object owner, String name, String displayName, boolean defaultValue, String description) {
+        BooleanValue booleanValue = new BooleanValue(owner, name, displayName, defaultValue);
+        booleanValue.setDescription(description);
         return booleanValue;
     }
 
-    public ValueCondition C() {
-        return new ValueCondition().I(this);
+    public ValueCondition getDisabledCondition() {
+        return new ValueCondition().requireFalse(this);
     }
 
     static {
-        if (BooleanValue.H() == null) {
-            BooleanValue.W(new String[3]);
+        if (BooleanValue.getBooleanLegacyState() == null) {
+            BooleanValue.setBooleanLegacyState(new String[3]);
         }
     }
 
-    public boolean Z$src$Z$15e9hxx() {
-        boolean bl;
-        boolean bl2 = bl = this.L() == false;
-        if (this.b(bl)) {
-            this.o(bl);
+    public boolean toggleIfValid() {
+        boolean nextValue = !this.getEffectiveValue();
+        if (this.isChangeValid(nextValue)) {
+            this.setValue(nextValue);
             return true;
         }
         return false;
     }
 
 
-    public void M() {
-        this.o(this.L() == false);
+    public void toggle() {
+        this.setValue(!this.getEffectiveValue());
     }
 
-    public static String[] H() {
-        return o;
+    public static String[] getBooleanLegacyState() {
+        return legacyState;
     }
 
-    public String o() {
-        return this.L;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
-    public Boolean java_lang_Boolean_L() {
-        return this.L();
+    public Boolean getEffectiveValueCompat() {
+        return this.getEffectiveValue();
     }
 }

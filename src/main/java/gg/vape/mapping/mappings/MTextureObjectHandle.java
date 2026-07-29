@@ -28,7 +28,7 @@ extends Mapping {
             String string = "id";
             MTextureObjectHandle mTextureObjectHandle = this;
             this.F = mTextureObjectHandle.J(string, bl, clazz);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MRenderBatchFlushTarget.c(++n2);
             }
             return;
@@ -61,7 +61,7 @@ extends Mapping {
             MTextureObjectHandle mTextureObjectHandle5 = this;
             this.F = this.J(string5, bl5, clazz5);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MRenderBatchFlushTarget.c(++n2);
         }
     }

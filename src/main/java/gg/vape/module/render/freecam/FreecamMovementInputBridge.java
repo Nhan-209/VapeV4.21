@@ -6,27 +6,29 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class FreecamMovementInputBridge
 extends Wrapper {
-    public void N(boolean bl) {
+    public void setSprinting(boolean sprinting) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            this.applyMovementInput(this.x(), this.r(), this.e(), this.F(), this.f(), this.A(), bl);
+            this.applyMovementInput(this.isMovingForward(), this.isMovingBackward(),
+                    this.isMovingLeft(), this.isMovingRight(), this.isJumping(),
+                    this.isSneaking(), sprinting);
             return;
         }
-        FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.K(this.I, bl);
+        FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.K(this.I, sprinting);
     }
 
-    public boolean A() {
+    public boolean isSneaking() {
         return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.r(this.I);
     }
 
-    public boolean x() {
+    public boolean isMovingForward() {
         return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.H(this.I);
     }
 
-    public boolean r() {
+    public boolean isMovingBackward() {
         return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.W(this.I);
     }
 
-    public boolean e() {
+    public boolean isMovingLeft() {
         return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.K(this.I);
     }
 
@@ -35,37 +37,44 @@ extends Wrapper {
     }
 
 
-    private void applyMovementInput(boolean bl, boolean bl2, boolean bl3, boolean bl4, boolean bl5, boolean bl6, boolean bl7) {
-        FreecamMovementInputBridge input = new FreecamMovementInputBridge(FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.z(bl, bl2, bl3, bl4, bl5, bl6, bl7));
+    private void applyMovementInput(boolean forward, boolean backward, boolean left,
+            boolean right, boolean jump, boolean sneak, boolean sprint) {
+        FreecamMovementInputBridge input = new FreecamMovementInputBridge(
+                FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.z(
+                        forward, backward, left, right, jump, sneak, sprint));
         this.I = input.getObject();
-        Minecraft.a_xH_J().a_jw_2_I().r(input);
+        Minecraft.a_xH_J().a_jw_2_I().setFreecamInput(input);
     }
 
-    public boolean u() {
+    public boolean isSprinting() {
         return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.Y(this.I);
     }
 
-    public void P(boolean bl) {
+    public void setSneaking(boolean sneaking) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            this.applyMovementInput(this.x(), this.r(), this.e(), this.F(), this.f(), bl, this.u());
+            this.applyMovementInput(this.isMovingForward(), this.isMovingBackward(),
+                    this.isMovingLeft(), this.isMovingRight(), this.isJumping(),
+                    sneaking, this.isSprinting());
             return;
         }
-        FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.V(this.I, bl);
+        FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.V(this.I, sneaking);
     }
 
-    public boolean F() {
+    public boolean isMovingRight() {
         return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.A(this.I);
     }
 
-    public void F(boolean bl) {
+    public void setJumping(boolean jumping) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            this.applyMovementInput(this.x(), this.r(), this.e(), this.F(), bl, this.A(), this.u());
+            this.applyMovementInput(this.isMovingForward(), this.isMovingBackward(),
+                    this.isMovingLeft(), this.isMovingRight(), jumping,
+                    this.isSneaking(), this.isSprinting());
             return;
         }
-        FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.A(this.I, bl);
+        FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.A(this.I, jumping);
     }
 
-    public boolean f() {
+    public boolean isJumping() {
         return FreecamMovementInputBridge.c.getMappingsMapperCompat().Cc.p(this.I);
     }
 }

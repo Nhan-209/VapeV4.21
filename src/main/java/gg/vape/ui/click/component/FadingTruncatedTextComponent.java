@@ -14,139 +14,113 @@ import org.lwjgl.opengl.GL11;
 
 public class FadingTruncatedTextComponent
 extends TruncatedTextComponent {
-    private Color i;
+    private Color fadeColor;
 
     @Override
-    public double u$src$D$ivbecn() {
-        SmoothFontRenderer smoothFontRenderer;
-        int n = TextTruncationIndexCache.J.d(this.I);
-        SmoothFontRenderer smoothFontRenderer2 = smoothFontRenderer = this.I.q() ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.I.N()) : this.O(this.I.N());
-        if (n >= 0) {
-            return smoothFontRenderer.N(this.S$src$Ljava_lang_String_$1bp7ddx().substring(0, n));
+    public double getRenderedWidth() {
+        int truncationIndex = TextTruncationIndexCache.INSTANCE.getTruncationIndex(this.textSpec);
+        SmoothFontRenderer fontRenderer = this.textSpec.isBold() ? this.getAlternateFontRenderer(this.textSpec.getFontScale()) : this.getFontRenderer(this.textSpec.getFontScale());
+        if (truncationIndex >= 0) {
+            return fontRenderer.N(this.getText().substring(0, truncationIndex));
         }
         return 0.0;
     }
 
-    public FadingTruncatedTextComponent(String string, double d, double d2, Color color, Color color2, boolean bl, boolean bl2) {
-        super(string, "", d, d2, color, bl, bl2);
-        this.i = color2;
+    public FadingTruncatedTextComponent(String text, double maxWidth, double fontScale, Color textColor, Color fadeColor, boolean bold, boolean drawShadow) {
+        super(text, "", maxWidth, fontScale, textColor, bold, drawShadow);
+        this.fadeColor = fadeColor;
     }
 
-    public Color J$src$Ljava_awt_Color_$1ku31x1() {
-        return this.i;
+    public Color getFadeColor() {
+        return this.fadeColor;
     }
 
     @Override
-    public void V(double d, double d2) {
-        String string;
-        String string2;
-        StringBuilder stringBuilder;
-        SmoothFontRenderer smoothFontRenderer;
-        int n = TextTruncationIndexCache.J.d(this.I);
-        if (n == this.S$src$Ljava_lang_String_$1bp7ddx().length() - 1) {
-            SmoothFontRenderer smoothFontRenderer2 = smoothFontRenderer = this.I.q() ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.I.N()) : this.O(this.I.N());
-            if (this.G) {
-                smoothFontRenderer.v(this.S$src$Ljava_lang_String_$1bp7ddx(), d, d2, this.o);
+    public void renderAt(double x, double y) {
+        int truncationIndex = TextTruncationIndexCache.INSTANCE.getTruncationIndex(this.textSpec);
+        if (truncationIndex == this.getText().length() - 1) {
+            SmoothFontRenderer fontRenderer = this.textSpec.isBold() ? this.getAlternateFontRenderer(this.textSpec.getFontScale()) : this.getFontRenderer(this.textSpec.getFontScale());
+            if (this.drawShadow) {
+                fontRenderer.v(this.getText(), x, y, this.textColor);
             } else {
-                smoothFontRenderer.d(this.S$src$Ljava_lang_String_$1bp7ddx(), d, d2, this.o);
+                fontRenderer.d(this.getText(), x, y, this.textColor);
             }
-        } else if (n >= 0) {
-            smoothFontRenderer = this.I.q() ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.I.N()) : this.O(this.I.N());
-            String string3 = this.S$src$Ljava_lang_String_$1bp7ddx().substring(0, n);
-            double d3 = smoothFontRenderer.N(string3);
-            double d4 = smoothFontRenderer.d(string3);
-            RectData rectData = new RectData(d, d2, this.v(), d4);
+        } else if (truncationIndex >= 0) {
+            SmoothFontRenderer fontRenderer = this.textSpec.isBold() ? this.getAlternateFontRenderer(this.textSpec.getFontScale()) : this.getFontRenderer(this.textSpec.getFontScale());
+            String visibleText = this.getText().substring(0, truncationIndex);
+            double visibleTextWidth = fontRenderer.N(visibleText);
+            double visibleTextHeight = fontRenderer.d(visibleText);
+            RectData rectData = new RectData(x, y, this.getMaxWidth(), visibleTextHeight);
             RenderUtils.m(rectData.o() - 1.0, rectData.W(), rectData.e() + 1.0, rectData.R());
-            if (this.G) {
-                smoothFontRenderer.v(string3, rectData.o(), rectData.W(), this.o);
+            if (this.drawShadow) {
+                fontRenderer.v(visibleText, rectData.o(), rectData.W(), this.textColor);
             } else {
-                smoothFontRenderer.d(string3, rectData.o(), rectData.W(), this.o);
+                fontRenderer.d(visibleText, rectData.o(), rectData.W(), this.textColor);
             }
             RenderUtils.T();
             if (GuiRenderPrimitives.d()) {
-                MutableColor mutableColor = new MutableColor(this.i);
+                MutableColor mutableColor = new MutableColor(this.fadeColor);
                 mutableColor.withAlpha(0);
-                BufferedGuiRenderPrimitives.N(rectData.o() + rectData.e() - 6.0, rectData.W(), rectData.o() + rectData.e() - 6.0, rectData.W() + rectData.R(), rectData.o() + rectData.e(), rectData.W() + rectData.R(), rectData.o() + rectData.e(), rectData.W(), mutableColor, this.i == null ? new Color(0, 0, 0, 0) : this.i);
+                BufferedGuiRenderPrimitives.fillGradientQuad(rectData.o() + rectData.e() - 6.0, rectData.W(), rectData.o() + rectData.e() - 6.0, rectData.W() + rectData.R(), rectData.o() + rectData.e(), rectData.W() + rectData.R(), rectData.o() + rectData.e(), rectData.W(), mutableColor, this.fadeColor == null ? new Color(0, 0, 0, 0) : this.fadeColor);
             } else {
-                boolean bl = GL11.glIsEnabled((int)3042);
-                boolean bl2 = GL11.glIsEnabled((int)3553);
-                boolean bl3 = GL11.glIsEnabled((int)2896);
-                boolean bl4 = GL11.glIsEnabled((int)3008);
-                boolean bl5 = GL11.glIsEnabled((int)2884);
-                if (!bl) {
+                boolean blendEnabled = GL11.glIsEnabled((int)3042);
+                boolean texture2DEnabled = GL11.glIsEnabled((int)3553);
+                boolean lightingEnabled = GL11.glIsEnabled((int)2896);
+                boolean alphaTestEnabled = GL11.glIsEnabled((int)3008);
+                boolean cullFaceEnabled = GL11.glIsEnabled((int)2884);
+                if (!blendEnabled) {
                     GlStateManager.enableBlend();
                 }
-                if (bl2) {
+                if (texture2DEnabled) {
                     GlStateManager.disableTexture2D();
                 }
-                if (bl3) {
+                if (lightingEnabled) {
                     GlStateManager.disableLighting();
                 }
-                if (!bl4) {
+                if (!alphaTestEnabled) {
                     GlStateManager.enableAlpha();
                 }
-                if (bl5) {
+                if (cullFaceEnabled) {
                     GlStateManager.Y();
                 }
                 GL11.glShadeModel((int)7425);
-                MutableColor mutableColor = new MutableColor(this.i);
+                MutableColor mutableColor = new MutableColor(this.fadeColor);
                 mutableColor.withAlpha(0);
                 RenderUtils.w(mutableColor);
                 GL11.glBegin((int)7);
                 GL11.glVertex2d((double)(rectData.o() + rectData.e() - 6.0), (double)rectData.W());
                 GL11.glVertex2d((double)(rectData.o() + rectData.e() - 6.0), (double)(rectData.W() + rectData.R()));
-                RenderUtils.w(this.i == null ? new Color(0, 0, 0, 0) : this.i);
+                RenderUtils.w(this.fadeColor == null ? new Color(0, 0, 0, 0) : this.fadeColor);
                 GL11.glVertex2d((double)(rectData.o() + rectData.e()), (double)(rectData.W() + rectData.R()));
                 GL11.glVertex2d((double)(rectData.o() + rectData.e()), (double)rectData.W());
                 GL11.glEnd();
                 GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
                 GL11.glShadeModel((int)7424);
-                if (!bl4) {
+                if (!alphaTestEnabled) {
                     GlStateManager.disableAlpha();
                 }
-                if (bl3) {
+                if (lightingEnabled) {
                     GlStateManager.enableLighting();
                 }
-                if (!bl) {
+                if (!blendEnabled) {
                     GlStateManager.disableBlend();
                 }
-                if (bl5) {
+                if (cullFaceEnabled) {
                     GlStateManager.L();
                 }
-                if (bl2) {
+                if (texture2DEnabled) {
                     GlStateManager.enableTexture2D();
                 }
             }
         }
-        boolean bl = n < this.I.g().length() - 1;
-        boolean bl6 = !this.a.equals("");
-        StringBuilder stringBuilder2 = new StringBuilder();
-        if (bl) {
-            stringBuilder = stringBuilder2;
-            string2 = this.I.g();
-        } else {
-            stringBuilder = stringBuilder2;
-            string2 = "";
-        }
-        StringBuilder stringBuilder3 = stringBuilder.append(string2);
-        if (bl6) {
-            StringBuilder stringBuilder4 = stringBuilder3;
-            if (bl) {
-                stringBuilder3 = stringBuilder4;
-                string = "\n" + this.a;
-            } else {
-                stringBuilder3 = stringBuilder4;
-                string = this.a;
-            }
-        } else {
-            string = "";
-        }
-        String string4 = stringBuilder3.append(string).toString();
-        this.w(string4);
+        boolean textWasTruncated = truncationIndex < this.textSpec.getText().length() - 1;
+        boolean hasAdditionalTooltip = !this.additionalTooltipText.equals("");
+        String tooltipText = (textWasTruncated ? this.textSpec.getText() : "") + (hasAdditionalTooltip ? (textWasTruncated ? "\n" + this.additionalTooltipText : this.additionalTooltipText) : "");
+        this.w(tooltipText);
     }
 
-    public void C(Color color) {
-        this.i = color;
+    public void setFadeColor(Color fadeColor) {
+        this.fadeColor = fadeColor;
     }
 
 }

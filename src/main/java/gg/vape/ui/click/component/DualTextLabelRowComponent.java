@@ -8,32 +8,32 @@ import java.awt.Color;
 
 public class DualTextLabelRowComponent
 extends PanelComponent {
-    private final SimpleTextLabelComponent wu;
-    private final WrappingTextLabelComponent wr;
+    private final SimpleTextLabelComponent primaryLabel;
+    private final WrappingTextLabelComponent secondaryLabel;
 
     @Override
     public void c() {
-        GuiRenderPrimitives.d(this.wr.G$src$D$1b2f02a() - 2.0, this.wr.n() + 1.0, this.wr.A() + 4.0, this.wr.g$src$D$i3e26l() * 10.0, DualTextLabelRowComponent.J.z);
+        GuiRenderPrimitives.d(this.secondaryLabel.G$src$D$1b2f02a() - 2.0, this.secondaryLabel.n() + 1.0, this.secondaryLabel.A() + 4.0, this.secondaryLabel.getFontScale() * 10.0, DualTextLabelRowComponent.J.z);
         super.c();
     }
 
-    public DualTextLabelRowComponent(String string, String string2, double d, double d2) {
-        super(40.0, d);
-        this.d(false);
-        this.T(Color.RED);
-        this.wu = new SimpleTextLabelComponent(string, d2, DualTextLabelRowComponent.J.A);
-        this.wu.o(this.wu.h() + 8.0);
-        this.wu.l(true);
-        this.wu.g(0.0f);
-        this.wr = new WrappingTextLabelComponent(string2, d2 * 0.9, DualTextLabelRowComponent.J.Z);
-        this.wr.o(this.wr.h() + 4.0);
-        this.q(this.wu.A() + this.wr.A() + 2.0);
-        this.H(this.wu, this.wr);
+    public DualTextLabelRowComponent(String primaryText, String secondaryText, double height, double fontScale) {
+        super(40.0, height);
+        this.setShowDisabledOverlay(false);
+        this.setDisabledOverlayColor(Color.RED);
+        this.primaryLabel = new SimpleTextLabelComponent(primaryText, fontScale, DualTextLabelRowComponent.J.A);
+        this.primaryLabel.o(this.primaryLabel.getTextWidth() + 8.0);
+        this.primaryLabel.setBold(true);
+        this.primaryLabel.setOffsetX(0.0f);
+        this.secondaryLabel = new WrappingTextLabelComponent(secondaryText, fontScale * 0.9, DualTextLabelRowComponent.J.Z);
+        this.secondaryLabel.o(this.secondaryLabel.getTextWidth() + 4.0);
+        this.setExplicitWidth(this.primaryLabel.A() + this.secondaryLabel.A() + 2.0);
+        this.addChildren(this.primaryLabel, this.secondaryLabel);
     }
 
     @Override
     public double x() {
-        return this.wr.A();
+        return this.secondaryLabel.A();
     }
 
     @Override
@@ -45,9 +45,8 @@ extends PanelComponent {
         return 6.0;
     }
 
-    public void J(double d) {
-        this.wu.i(d);
-        this.wr.i(d);
+    public void setFontScale(double fontScale) {
+        this.primaryLabel.setFontScale(fontScale);
+        this.secondaryLabel.setFontScale(fontScale);
     }
 }
-

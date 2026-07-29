@@ -50,18 +50,18 @@ implements InsertedEventCallback {
                     Vape.logThrowable(exception);
                 }
             } else {
-                SharedModuleControlClaims.p.E();
+                SharedModuleControlClaims.renderPass.blockRender();
                 GL11.glPushMatrix();
                 GlStateManager.F$src$V$acq27m();
                 entityRenderer.Y(this.N);
                 bl3 = new EventRenderTracers3D(this.y, this.N).fire();
                 GL11.glPopMatrix();
-                SharedModuleControlClaims.p.Q();
+                SharedModuleControlClaims.renderPass.clearClaimed();
             }
         }
         if (bl) {
             entityRenderer.B(1.0);
-            OpenGlBackendHolder.d.q(1.0f, 1.0f, 1.0f, 1.0f);
+            OpenGlBackendHolder.backend.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         }
         D = this.N;
         return bl2 || bl3;

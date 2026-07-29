@@ -7,40 +7,40 @@ import java.awt.Color;
 
 public class SquareIconButtonComponent
 extends IconButtonComponent {
-    private final ColorAnimation Ws;
+    private final ColorAnimation backgroundColorAnimation;
 
     @Override
     public void F() {
         if (!this.w$src$Z$e457mb()) {
-            this.Ws.J();
+            this.backgroundColorAnimation.J();
         }
         super.F();
     }
 
-    public SquareIconButtonComponent(String string, double d, Color color, Color color2, double d2, double d3) {
-        super(string, d, d2, d3);
-        this.Ws = new ColorAnimation(0.1, color, color2);
+    public SquareIconButtonComponent(String iconResource, double iconScale, Color backgroundColor, Color hoverBackgroundColor, double width, double height) {
+        super(iconResource, iconScale, width, height);
+        this.backgroundColorAnimation = new ColorAnimation(0.1, backgroundColor, hoverBackgroundColor);
     }
 
 
-    public SquareIconButtonComponent(String string, double d) {
-        this(string, d, new Color(0, 0, 0, 0), SquareIconButtonComponent.J.h, 8.0, 8.0);
+    public SquareIconButtonComponent(String iconResource, double iconScale) {
+        this(iconResource, iconScale, new Color(0, 0, 0, 0), SquareIconButtonComponent.J.h, 8.0, 8.0);
     }
 
     @Override
     public void H() {
-        float f = (float)(this.A() * (double)((float)this.K));
-        GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() / 2.0 - (double)(f / 2.0f), this.n() + this.L() / 2.0 - (double)(f / 2.0f), f, 1.0, this.Ws.getInterpolatedColor());
+        float backgroundSize = (float)(this.A() * (double)((float)this.iconScale));
+        GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() / 2.0 - (double)(backgroundSize / 2.0f), this.n() + this.L() / 2.0 - (double)(backgroundSize / 2.0f), backgroundSize, 1.0, this.backgroundColorAnimation.getInterpolatedColor());
         super.H();
     }
 
-    public SquareIconButtonComponent(String string) {
-        this(string, 1.0);
+    public SquareIconButtonComponent(String iconResource) {
+        this(iconResource, 1.0);
     }
 
     @Override
     public void onEnable() {
-        this.Ws.J();
+        this.backgroundColorAnimation.J();
         super.onEnable();
     }
 }

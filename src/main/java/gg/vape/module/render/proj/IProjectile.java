@@ -4,16 +4,15 @@ import gg.vape.wrapper.impl.EntityEnderPearl;
 import java.awt.Color;
 
 public interface IProjectile {
-    default public float getCollisionRadius() {
+    default float getCollisionRadius() {
         return 0.125f;
     }
 
-    public boolean matches(EntityEnderPearl var1);
+    boolean matches(EntityEnderPearl entity);
 
-    default public float getCollisionHeight() {
+    default float getCollisionHeight() {
         return 0.25f;
     }
 
-    public Color getColor(Object var1);
+    Color getColor();
 }
-

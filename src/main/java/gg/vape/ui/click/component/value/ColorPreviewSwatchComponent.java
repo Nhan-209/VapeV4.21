@@ -10,46 +10,46 @@ import gg.vape.value.ColorValue;
 
 public class ColorPreviewSwatchComponent
 extends InteractiveComponent {
-    private final ColorValue K;
-    private TimerUtil v;
-    private boolean Q;
-    int b = 0;
-    private RectData I = new RectData(0.0, 0.0, 0.0, 0.0);
+    private final ColorValue colorValue;
+    private TimerUtil animationTimer;
+    private boolean hovered;
+    int animationFrame = 0;
+    private RectData swatchBounds = new RectData(0.0, 0.0, 0.0, 0.0);
 
     @Override
-    public void D(GuiMouseEvent guiMouseEvent) {
-        if (this.I.J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
-            this.K.Y(!this.K.g());
-            if (this.K.g()) {
-                this.K.G().A(255.0);
-                this.K.y().A(255.0);
+    public void dispatchMouseEvent(GuiMouseEvent guiMouseEvent) {
+        if (this.swatchBounds.J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
+            this.colorValue.setRainbowEnabled(!this.colorValue.isRainbowEnabled());
+            if (this.colorValue.isRainbowEnabled()) {
+                this.colorValue.getSaturationValue().setValue(255.0);
+                this.colorValue.getBrightnessValue().setValue(255.0);
             }
         }
     }
 
     @Override
     public void u() {
-        if (this.Q && !this.I.Z(RenderUtils.h())) {
-            this.Q = false;
+        if (this.hovered && !this.swatchBounds.Z(RenderUtils.h())) {
+            this.hovered = false;
         }
     }
 
     @Override
     public void H() {
-        this.I = new RectData(this.G$src$D$1b2f02a(), this.n(), 6.0, 6.0);
-        ImageRenderer.E(this.K.g() ? ColorPreviewSwatchComponent.J.W : (this.Q ? ColorPreviewSwatchComponent.J.f : ColorPreviewSwatchComponent.J.W), (float)this.I.o(), (float)this.I.W(), "rainbow_4", (float)this.I.e(), (float)this.I.R(), false);
-        ImageRenderer.E(this.b >= 3 ? ColorPreviewSwatchComponent.J.d : (this.Q ? ColorPreviewSwatchComponent.J.f : ColorPreviewSwatchComponent.J.W), (float)this.I.o(), (float)this.I.W(), "rainbow_3", (float)this.I.e(), (float)this.I.R(), false);
-        ImageRenderer.E(this.b >= 2 ? ColorPreviewSwatchComponent.J.I : (this.Q ? ColorPreviewSwatchComponent.J.f : ColorPreviewSwatchComponent.J.W), (float)this.I.o(), (float)this.I.W(), "rainbow_2", (float)this.I.e(), (float)this.I.R(), false);
-        ImageRenderer.E(this.b >= 1 ? ColorPreviewSwatchComponent.J.B : (this.Q ? ColorPreviewSwatchComponent.J.f : ColorPreviewSwatchComponent.J.W), (float)this.I.o(), (float)this.I.W(), "rainbow_1", (float)this.I.e(), (float)this.I.R(), false);
-        if (this.v.hasTimeElapsed(100L)) {
-            if (this.K.g()) {
-                if (this.b < 3) {
-                    ++this.b;
+        this.swatchBounds = new RectData(this.G$src$D$1b2f02a(), this.n(), 6.0, 6.0);
+        ImageRenderer.drawImage(this.colorValue.isRainbowEnabled() ? ColorPreviewSwatchComponent.J.W : (this.hovered ? ColorPreviewSwatchComponent.J.f : ColorPreviewSwatchComponent.J.W), (float)this.swatchBounds.o(), (float)this.swatchBounds.W(), "rainbow_4", (float)this.swatchBounds.e(), (float)this.swatchBounds.R(), false);
+        ImageRenderer.drawImage(this.animationFrame >= 3 ? ColorPreviewSwatchComponent.J.d : (this.hovered ? ColorPreviewSwatchComponent.J.f : ColorPreviewSwatchComponent.J.W), (float)this.swatchBounds.o(), (float)this.swatchBounds.W(), "rainbow_3", (float)this.swatchBounds.e(), (float)this.swatchBounds.R(), false);
+        ImageRenderer.drawImage(this.animationFrame >= 2 ? ColorPreviewSwatchComponent.J.I : (this.hovered ? ColorPreviewSwatchComponent.J.f : ColorPreviewSwatchComponent.J.W), (float)this.swatchBounds.o(), (float)this.swatchBounds.W(), "rainbow_2", (float)this.swatchBounds.e(), (float)this.swatchBounds.R(), false);
+        ImageRenderer.drawImage(this.animationFrame >= 1 ? ColorPreviewSwatchComponent.J.B : (this.hovered ? ColorPreviewSwatchComponent.J.f : ColorPreviewSwatchComponent.J.W), (float)this.swatchBounds.o(), (float)this.swatchBounds.W(), "rainbow_1", (float)this.swatchBounds.e(), (float)this.swatchBounds.R(), false);
+        if (this.animationTimer.hasTimeElapsed(100L)) {
+            if (this.colorValue.isRainbowEnabled()) {
+                if (this.animationFrame < 3) {
+                    ++this.animationFrame;
                 }
-            } else if (this.b > 0) {
-                --this.b;
+            } else if (this.animationFrame > 0) {
+                --this.animationFrame;
             }
-            this.v.reset();
+            this.animationTimer.reset();
         }
     }
 
@@ -65,8 +65,8 @@ extends InteractiveComponent {
     }
 
     public ColorPreviewSwatchComponent(ColorValue colorValue) {
-        this.v = new TimerUtil();
-        this.K = colorValue;
+        this.animationTimer = new TimerUtil();
+        this.colorValue = colorValue;
     }
 }
 

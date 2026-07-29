@@ -55,11 +55,11 @@ extends FreecamController<Freecam> {
     private float savedPrevYaw;
 
     private void syncMouseHelper() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return;
         }
-        entityPlayerSP.E().W();
+        player.getFreecamPlayerBridge().resetBobbingState();
     }
 
     private void handleMovement() {
@@ -74,22 +74,22 @@ extends FreecamController<Freecam> {
         if (Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        double d6 = forward = ClientSettings.B(Minecraft.gameSettings().Y()) ? 1.0 : 0.0;
+        forward = ClientSettings.B(Minecraft.gameSettings().Y()) ? 1.0 : 0.0;
         if (ClientSettings.B(Minecraft.gameSettings().s())) {
             forward -= 1.0;
         }
-        double d7 = strafe = ClientSettings.B(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()) ? 1.0 : 0.0;
+        strafe = ClientSettings.B(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()) ? 1.0 : 0.0;
         if (ClientSettings.B(Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3())) {
             strafe -= 1.0;
         }
-        double d8 = vertical = ClientSettings.B(Minecraft.gameSettings().O()) ? 1.0 : 0.0;
+        vertical = ClientSettings.B(Minecraft.gameSettings().O()) ? 1.0 : 0.0;
         if (ClientSettings.B(Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0())) {
             vertical -= 1.0;
         }
         if ((magnitude = Math.sqrt(forward * forward + strafe * strafe)) > 0.0) {
             forward /= magnitude;
             strafe /= magnitude;
-            speed = (Double)((Freecam)this.n).Y.K() / 5.0;
+            speed = (Double)this.module.horizontalSpeed.getValue() / 5.0;
             if (ClientSettings.B(Minecraft.gameSettings().r())) {
                 speed *= 2.0;
             }
@@ -98,7 +98,7 @@ extends FreecamController<Freecam> {
             this.posZ += (forward * Math.sin(yawRadians) - strafe * Math.cos(yawRadians)) * speed;
         }
         if (vertical != 0.0) {
-            speed = (Double)((Freecam)this.n).v.K() / 5.0 * 0.42;
+            speed = (Double)this.module.verticalSpeed.getValue() / 5.0 * 0.42;
             if (ClientSettings.B(Minecraft.gameSettings().r())) {
                 speed *= 2.0;
             }
@@ -111,52 +111,52 @@ extends FreecamController<Freecam> {
     }
 
     private void updateFakePlayer() {
-        EntityPlayerSP entityPlayerSP;
-        if (!((Freecam)this.n).A.L().booleanValue()) {
-            ((Freecam)this.n).Z();
+        EntityPlayerSP player;
+        if (!this.module.spawnFakePlayer.getEffectiveValue().booleanValue()) {
+            this.module.removeFakePlayer();
             return;
         }
-        if (((Freecam)this.n).Z != null && (((Freecam)this.n).Z.M$src$Z$ff28xj() || ((Freecam)this.n).H == 0 || Minecraft.theWorld().V(((Freecam)this.n).H).isNull())) {
-            ClientSettings.I(((Freecam)this.n).H);
-            ((Freecam)this.n).H = 0;
-            ((Freecam)this.n).Z = null;
+        if (this.module.fakePlayer != null && (this.module.fakePlayer.M$src$Z$ff28xj() || this.module.fakeEntityId == 0 || Minecraft.theWorld().V(this.module.fakeEntityId).isNull())) {
+            ClientSettings.I(this.module.fakeEntityId);
+            this.module.fakeEntityId = 0;
+            this.module.fakePlayer = null;
         }
-        if (((Freecam)this.n).Z == null) {
+        if (this.module.fakePlayer == null) {
             this.spawnFakePlayer();
         }
-        if ((entityPlayerSP = Minecraft.thePlayer()).isNull() || ((Freecam)this.n).Z == null) {
+        if ((player = Minecraft.thePlayer()).isNull() || this.module.fakePlayer == null) {
             return;
         }
-        ((Freecam)this.n).Z.t(entityPlayerSP.z(), entityPlayerSP.N(), entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
-        ((Freecam)this.n).Z.n(entityPlayerSP.f());
-        ((Freecam)this.n).Z.w(entityPlayerSP.H());
-        ((Freecam)this.n).Z.A(entityPlayerSP.R());
-        ((Freecam)this.n).Z.C(entityPlayerSP.M());
-        ((Freecam)this.n).Z.L(entityPlayerSP.W());
-        ((Freecam)this.n).Z.s(entityPlayerSP.m$src$D$fwnne5());
-        ((Freecam)this.n).Z.H(entityPlayerSP.J());
-        ((Freecam)this.n).Z.D(entityPlayerSP.j());
-        ((Freecam)this.n).Z.z(entityPlayerSP.s());
-        ((Freecam)this.n).Z.o(entityPlayerSP.P$src$F$14ztfk8());
-        ((Freecam)this.n).Z.C(entityPlayerSP.V());
-        ((Freecam)this.n).Z.l(entityPlayerSP.D());
-        ((Freecam)this.n).Z.U(entityPlayerSP.b$src$Z$fqlxe4());
-        ((Freecam)this.n).Z.E(entityPlayerSP.t(), entityPlayerSP.q(), entityPlayerSP.T());
+        this.module.fakePlayer.t(player.z(), player.N(), player.h(), player.J(), player.V());
+        this.module.fakePlayer.n(player.f());
+        this.module.fakePlayer.w(player.H());
+        this.module.fakePlayer.A(player.R());
+        this.module.fakePlayer.C(player.M());
+        this.module.fakePlayer.L(player.W());
+        this.module.fakePlayer.s(player.m$src$D$fwnne5());
+        this.module.fakePlayer.H(player.J());
+        this.module.fakePlayer.D(player.j());
+        this.module.fakePlayer.z(player.s());
+        this.module.fakePlayer.o(player.P$src$F$14ztfk8());
+        this.module.fakePlayer.C(player.V());
+        this.module.fakePlayer.l(player.D());
+        this.module.fakePlayer.U(player.b$src$Z$fqlxe4());
+        this.module.fakePlayer.E(player.t(), player.q(), player.T());
     }
 
 
-    private void applyFreecamRotation(EntityPlayerSP entityPlayerSP) {
+    private void applyFreecamRotation(EntityPlayerSP player) {
         if (!this.rotationSaved) {
-            this.savedRenderYaw = entityPlayerSP.q$src$F$1u6qsjx();
-            this.savedRenderPitch = entityPlayerSP.t$src$F$1u8e6c0();
-            this.savedPrevRenderYaw = entityPlayerSP.x$src$F$1ualcpg();
-            this.savedPrevRenderPitch = entityPlayerSP.n$src$F$1u53eru();
+            this.savedRenderYaw = player.q$src$F$1u6qsjx();
+            this.savedRenderPitch = player.t$src$F$1u8e6c0();
+            this.savedPrevRenderYaw = player.x$src$F$1ualcpg();
+            this.savedPrevRenderPitch = player.n$src$F$1u53eru();
             this.rotationSaved = true;
         }
-        entityPlayerSP.F(this.cameraYaw);
-        entityPlayerSP.d(this.cameraPitch);
-        entityPlayerSP.E(this.cameraYaw);
-        entityPlayerSP.a(this.cameraPitch);
+        player.F(this.cameraYaw);
+        player.d(this.cameraPitch);
+        player.E(this.cameraYaw);
+        player.a(this.cameraPitch);
     }
 
     private void suppressViewBobbing() {
@@ -173,18 +173,18 @@ extends FreecamController<Freecam> {
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
+    public void onTick(EventPreTick event) {
         if (Minecraft.theWorld().isNull() || Minecraft.thePlayer().isNull() || Minecraft.thePlayer().w$src$F$15l9epb() <= 0.0f) {
-            ((Freecam)this.n).s(false, false);
+            this.module.setEnabled(false, false);
         }
-        if (((Freecam)this.n).C) {
+        if (this.module.disableRequested) {
             this.restorePlayerView();
-            ((Freecam)this.n).Z();
-            ((Freecam)this.n).M$src$V$nre1v6();
+            this.module.removeFakePlayer();
+            this.module.completeDisable();
             return;
         }
-        ((Freecam)this.n).c.d(this.n);
-        if (((Freecam)this.n).S || !this.active) {
+        this.module.rotationClaim.acquire(this.module);
+        if (this.module.initializationPending || !this.active) {
             this.captureState();
         }
         this.handleMovement();
@@ -198,7 +198,7 @@ extends FreecamController<Freecam> {
     }
 
     @EventHandler
-    public void t(EventPreRenderTick eventPreRenderTick) {
+    public void onPreRenderTick(EventPreRenderTick event) {
         if (!this.active) {
             return;
         }
@@ -213,35 +213,35 @@ extends FreecamController<Freecam> {
     }
 
     @EventHandler
-    public void w(EventEntityRendererMouseUpdate eventEntityRendererMouseUpdate) {
+    public void onEntityRendererMouseUpdate(EventEntityRendererMouseUpdate event) {
         if (!this.active) {
             return;
         }
-        this.updateRenderViewPosition(eventEntityRendererMouseUpdate.getPartialTicks());
+        this.updateRenderViewPosition(event.getPartialTicks());
     }
 
     private void spawnFakePlayer() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull() || Minecraft.theWorld().isNull()) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull() || Minecraft.theWorld().isNull()) {
             return;
         }
-        GameProfile gameProfile = GameProfile.create(UUID.randomUUID(), entityPlayerSP.getName());
-        EntityOtherPlayerMP entityOtherPlayerMP = EntityOtherPlayerMP.create(Minecraft.theWorld(), gameProfile);
-        entityOtherPlayerMP.M(entityPlayerSP, true);
-        ((Freecam)this.n).H = ClientSettings.f();
-        entityOtherPlayerMP.Q(((Freecam)this.n).H);
-        entityOtherPlayerMP.y(UUID.randomUUID());
-        entityOtherPlayerMP.t(entityPlayerSP.z(), entityPlayerSP.N(), entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
-        entityOtherPlayerMP.z(entityPlayerSP.s());
-        entityOtherPlayerMP.o(entityPlayerSP.P$src$F$14ztfk8());
-        ((Freecam)this.n).Z = entityOtherPlayerMP;
-        Minecraft.theWorld().D(((Freecam)this.n).H, entityOtherPlayerMP);
+        GameProfile profile = GameProfile.create(UUID.randomUUID(), player.getName());
+        EntityOtherPlayerMP fakePlayer = EntityOtherPlayerMP.create(Minecraft.theWorld(), profile);
+        fakePlayer.M(player, true);
+        this.module.fakeEntityId = ClientSettings.f();
+        fakePlayer.Q(this.module.fakeEntityId);
+        fakePlayer.y(UUID.randomUUID());
+        fakePlayer.t(player.z(), player.N(), player.h(), player.J(), player.V());
+        fakePlayer.z(player.s());
+        fakePlayer.o(player.P$src$F$14ztfk8());
+        this.module.fakePlayer = fakePlayer;
+        Minecraft.theWorld().D(this.module.fakeEntityId, fakePlayer);
     }
 
     @Override
-    public void B() {
+    public void onEnable() {
         this.active = false;
-        ((Freecam)this.n).S = true;
+        this.module.initializationPending = true;
         this.captureState();
     }
 
@@ -260,7 +260,7 @@ extends FreecamController<Freecam> {
     }
 
     @EventHandler
-    public void T(EventPostEntityRendererMouseUpdate eventPostEntityRendererMouseUpdate) {
+    public void onPostEntityRendererMouseUpdate(EventPostEntityRendererMouseUpdate event) {
         if (!this.active) {
             return;
         }
@@ -268,7 +268,7 @@ extends FreecamController<Freecam> {
     }
 
     @EventHandler
-    public void t(EventPreLocalPlayerTick eventPreLocalPlayerTick) {
+    public void onPreLocalPlayerTick(EventPreLocalPlayerTick event) {
         if (!this.active) {
             return;
         }
@@ -287,17 +287,17 @@ extends FreecamController<Freecam> {
     }
 
     @EventHandler
-    public void r(EventKeyBindingState eventKeyBindingState) {
-        if (!this.active || !eventKeyBindingState.isPressed() || eventKeyBindingState.getKeyBinding() == null) {
+    public void onKeyBindingState(EventKeyBindingState event) {
+        if (!this.active || !event.isPressed() || event.getKeyBinding() == null) {
             return;
         }
-        if (this.isMovementKey(eventKeyBindingState.getKeyBinding())) {
-            eventKeyBindingState.setCancelled(true);
+        if (this.isMovementKey(event.getKeyBinding())) {
+            event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void D(EventPreLivingTravel eventPreLivingTravel) {
+    public void onPreLivingTravel(EventPreLivingTravel event) {
         if (!this.active) {
             return;
         }
@@ -305,19 +305,15 @@ extends FreecamController<Freecam> {
     }
 
     @EventHandler
-    public void Z(EventPreEntityRendererMouseUpdate eventPreEntityRendererMouseUpdate) {
+    public void onPreEntityRendererMouseUpdate(EventPreEntityRendererMouseUpdate event) {
         if (!this.active) {
             return;
         }
         this.applyCameraToPlayer();
     }
 
-    private boolean isArrowKeyMovement() {
-        return ((Freecam)this.n).A.L() != false && ((Freecam)this.n).r.L() != false && Minecraft.currentScreen().isNull() && (KeyboardInput.isKeyDown(38) || KeyboardInput.isKeyDown(40) || KeyboardInput.isKeyDown(37) || KeyboardInput.isKeyDown(39));
-    }
-
     private void applyCameraToPlayer() {
-        if (SharedModuleControlClaims.p.I()) {
+        if (SharedModuleControlClaims.renderPass.isRenderBlocked()) {
             return;
         }
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
@@ -367,7 +363,7 @@ extends FreecamController<Freecam> {
         this.lastMouseX = Minecraft.s().R();
         this.lastMouseY = Minecraft.s().b();
         this.active = true;
-        ((Freecam)this.n).S = false;
+        this.module.initializationPending = false;
     }
 
     private void restoreViewBobbing() {
@@ -393,17 +389,17 @@ extends FreecamController<Freecam> {
     }
 
     @Override
-    public void I() {
+    public void onDisable() {
         this.restoreViewBobbing();
         this.restorePlayerRotation();
-        ((Freecam)this.n).Z();
+        this.module.removeFakePlayer();
         this.active = false;
-        ((Freecam)this.n).S = false;
-        ((Freecam)this.n).C = false;
+        this.module.initializationPending = false;
+        this.module.disableRequested = false;
     }
 
-    private boolean isMovementKey(Object object) {
-        KeyBinding keyBinding = new KeyBinding(object);
+    private boolean isMovementKey(Object keyBindingHandle) {
+        KeyBinding keyBinding = new KeyBinding(keyBindingHandle);
         return keyBinding.equals(Minecraft.gameSettings().Y()) || keyBinding.equals(Minecraft.gameSettings().s()) || keyBinding.equals(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()) || keyBinding.equals(Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3()) || keyBinding.equals(Minecraft.gameSettings().O()) || keyBinding.equals(Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0()) || keyBinding.equals(Minecraft.gameSettings().r());
     }
 
@@ -414,7 +410,7 @@ extends FreecamController<Freecam> {
         }
         float forward = 0.0f;
         float strafe = 0.0f;
-        if (((Freecam)this.n).A.L().booleanValue() && ((Freecam)this.n).r.L().booleanValue() && Minecraft.currentScreen().isNull()) {
+        if (this.module.spawnFakePlayer.getEffectiveValue().booleanValue() && this.module.moveFakePlayer.getEffectiveValue().booleanValue() && Minecraft.currentScreen().isNull()) {
             if (KeyboardInput.isKeyDown(38)) {
                 forward += 1.0f;
             }
@@ -433,14 +429,14 @@ extends FreecamController<Freecam> {
         movementInput.M(strafe);
         movementInput.V(false);
         movementInput.setCancelled(false);
-        movementInput.b().N(false);
+        movementInput.getFreecamInput().setSprinting(false);
         entityPlayerSP.M(forward);
         entityPlayerSP.k$src$V$5315b7(strafe);
         entityPlayerSP.R(false);
     }
 
     @EventHandler
-    public void w(EventPostRenderTick eventPostRenderTick) {
+    public void onPostRenderTick(EventPostRenderTick event) {
         if (!this.active) {
             return;
         }
@@ -448,23 +444,23 @@ extends FreecamController<Freecam> {
         this.restoreViewBobbing();
     }
 
-    private void restoreRenderRotation(EntityPlayerSP entityPlayerSP) {
+    private void restoreRenderRotation(EntityPlayerSP player) {
         if (!this.rotationSaved) {
             return;
         }
-        entityPlayerSP.F(this.savedRenderYaw);
-        entityPlayerSP.d(this.savedRenderPitch);
-        entityPlayerSP.E(this.savedPrevRenderYaw);
-        entityPlayerSP.a(this.savedPrevRenderPitch);
+        player.F(this.savedRenderYaw);
+        player.d(this.savedRenderPitch);
+        player.E(this.savedPrevRenderYaw);
+        player.a(this.savedPrevRenderPitch);
         this.rotationSaved = false;
     }
 
     private boolean isActiveAndEnabled() {
-        return this.active && ((Freecam)this.n).A.L() != false && ((Freecam)this.n).r.L() != false;
+        return this.active && this.module.spawnFakePlayer.getEffectiveValue() != false && this.module.moveFakePlayer.getEffectiveValue() != false;
     }
 
     @EventHandler
-    public void r(EventPostTick eventPostTick) {
+    public void onPostTick(EventPostTick event) {
         if (!this.active) {
             return;
         }

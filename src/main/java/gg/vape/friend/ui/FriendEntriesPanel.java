@@ -27,7 +27,7 @@ extends PanelComponent {
     public FriendEntriesPanel() {
         super(99.0, 110.0);
         this.F(FrameScrollbarPlacement.INSIDE);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
     }
 
@@ -45,11 +45,11 @@ extends PanelComponent {
     }
 
     public void n(FriendListEntryRow friendListEntryRow) {
-        this.I(friendListEntryRow);
+        this.removeChild(friendListEntryRow);
     }
 
     private void w$src$V$h6k7cb() {
-        this.S();
+        this.removeMarkedChildren();
         for (FriendEntry friendEntry : Vape.INSTANCE.getFriendManager().getFriends()) {
             Object object;
             if (friendEntry instanceof ExternalFriend && (((ExternalFriend)(object = (ExternalFriend)friendEntry)).d().F() == OnlineStatus.OFFLINE || OnlineConnectionManager.T.Q$src$Z$x2tw73())) continue;

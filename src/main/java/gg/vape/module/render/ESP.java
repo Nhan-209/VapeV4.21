@@ -26,99 +26,95 @@ import java.awt.Color;
 
 public class ESP
 extends Mod {
-    public BooleanValue J;
-    private final ModeOption V;
-    private final BooleanValue C;
-    public BooleanValue a;
-    public BooleanValue o;
-    public BooleanValue S;
-    private final ESP2D Y;
-    public BooleanValue D;
-    private ESPOutline p;
-    public final ModeValue O;
-    public BooleanValue I;
-    public RenderManager r;
-    public final ModeOption L = new ESP3D(this, "3D").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-    private final ModeOption s;
-    public BooleanValue U;
-    public final ColorValue H;
-    public BooleanValue Z;
-    private final ModeOption t;
-    public BooleanValue A;
-    public BooleanValue F;
-    public BooleanValue K;
-    public BooleanValue c;
+    public final BooleanValue healthBar;
+    private final ModeOption outlineMode;
+    private final BooleanValue showInvisibles;
+    public final BooleanValue showNameBackground;
+    public final BooleanValue enemyListOnly;
+    public final BooleanValue enemyOnly;
+    public final BooleanValue priorityOnly;
+    private final ESPOutline outlineRenderer;
+    public final ModeValue mode;
+    public final BooleanValue useDisplayName;
+    public final RenderManager renderManager;
+    public final ModeOption threeDimensionalMode = new ESP3D(this, "3D").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+    private final ModeOption skeletonMode;
+    public final BooleanValue showName;
+    public final ColorValue playerColor;
+    public final BooleanValue hideBots;
+    private final ModeOption twoDimensionalMode;
+    public final BooleanValue showExpandedHitbox;
+    public final BooleanValue showNormalHitbox;
+    public final BooleanValue showBoundingBox;
 
     public ESP() {
         super("ESP", -16711936, Category.k, "Extra Sensory Perception\nRenders an ESP on players.");
-        this.Y = new ESP2D(this, "2D");
-        this.t = this.Y.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-        this.p = new ESPOutline(this, "Outline");
-        this.V = this.p.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-        this.s = new ESPSkeleton(this, "Skeleton").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
-        this.H = ColorValue.L(this, "Player Color", new Color(-14368924));
-        this.C = BooleanValue.create(this, "Invisibles", false, "Show invisibles.");
-        this.S = BooleanValue.create(this, "Enemy Only", false, "Only render enemies.");
-        this.D = BooleanValue.create(this, "Priority Only", false, "Only shows the ESP box on friends/enemies.");
-        this.o = BooleanValue.create(this, "Enemies List Only", false);
-        this.Z = BooleanValue.create(this, "Hide Bots", false);
-        this.A = BooleanValue.create(this, "Hitbox", false, "Shows the current entity hitbox size.\n(HitBoxes expansion visible)\n(3D Only)");
-        this.K = BooleanValue.create(this, "Show Normal", false, "Shows the true entity hitbox size.\n(3D Only)");
-        this.c = BooleanValue.create(this, "Bounding Box", true, "Shows an ESP box that wraps around the players BoundingBox.");
-        this.J = BooleanValue.create(this, "Health Bar", false, "Shows a healthbar next to the ESP box");
-        this.U = BooleanValue.create(this, "Name", false, "Shows a nametag above the ESP box");
-        this.I = BooleanValue.create(this, "Use Displayname", false, "Shows the tab list display name.");
-        this.a = BooleanValue.create(this, "Show Background", false, "Renders a box behind the text.");
-        this.F = BooleanValue.create(this, "Damage", false, "Shows enemy damage relative to yours");
-        this.r = Minecraft.D();
-        this.A.K(this.K);
-        this.O = ForgeVersion.MC_1_17.d() ? ModeValue.create((Object)this, "Mode", this.L, this.L, this.t) : (ForgeVersion.MC_1_12_2.d() ? ModeValue.create((Object)this, "Mode", this.L, this.L, this.t, this.s) : ModeValue.create((Object)this, "Mode", this.L, this.L, this.t, this.s, this.V));
-        this.A.K(this.K);
-        this.c.K(this.D);
-        this.U.K(this.I, this.a);
-        this.O.U(this.t).z(this.c, this.D, this.J, this.U, this.I, this.a);
-        this.O.U(this.L).z(this.A, this.K);
-        this.addValue(this.H, this.O, this.A, this.K, this.c, this.D, this.J, this.U, this.I, this.a, this.C, this.Z);
+        ESP2D esp2D = new ESP2D(this, "2D");
+        this.twoDimensionalMode = esp2D.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+        this.outlineRenderer = new ESPOutline(this, "Outline");
+        this.outlineMode = this.outlineRenderer.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+        this.skeletonMode = new ESPSkeleton(this, "Skeleton").r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx();
+        this.playerColor = ColorValue.create(this, "Player Color", new Color(-14368924));
+        this.showInvisibles = BooleanValue.create(this, "Invisibles", false, "Show invisibles.");
+        this.enemyOnly = BooleanValue.create(this, "Enemy Only", false, "Only render enemies.");
+        this.priorityOnly = BooleanValue.create(this, "Priority Only", false, "Only shows the ESP box on friends/enemies.");
+        this.enemyListOnly = BooleanValue.create(this, "Enemies List Only", false);
+        this.hideBots = BooleanValue.create(this, "Hide Bots", false);
+        this.showExpandedHitbox = BooleanValue.create(this, "Hitbox", false, "Shows the current entity hitbox size.\n(HitBoxes expansion visible)\n(3D Only)");
+        this.showNormalHitbox = BooleanValue.create(this, "Show Normal", false, "Shows the true entity hitbox size.\n(3D Only)");
+        this.showBoundingBox = BooleanValue.create(this, "Bounding Box", true, "Shows an ESP box that wraps around the players BoundingBox.");
+        this.healthBar = BooleanValue.create(this, "Health Bar", false, "Shows a healthbar next to the ESP box");
+        this.showName = BooleanValue.create(this, "Name", false, "Shows a nametag above the ESP box");
+        this.useDisplayName = BooleanValue.create(this, "Use Displayname", false, "Shows the tab list display name.");
+        this.showNameBackground = BooleanValue.create(this, "Show Background", false, "Renders a box behind the text.");
+        this.renderManager = Minecraft.D();
+        this.mode = ForgeVersion.MC_1_17.d() ? ModeValue.create((Object)this, "Mode", this.threeDimensionalMode, this.threeDimensionalMode, this.twoDimensionalMode) : (ForgeVersion.MC_1_12_2.d() ? ModeValue.create((Object)this, "Mode", this.threeDimensionalMode, this.threeDimensionalMode, this.twoDimensionalMode, this.skeletonMode) : ModeValue.create((Object)this, "Mode", this.threeDimensionalMode, this.threeDimensionalMode, this.twoDimensionalMode, this.skeletonMode, this.outlineMode));
+        this.showExpandedHitbox.addDependentValues(this.showNormalHitbox);
+        this.showBoundingBox.addDependentValues(this.priorityOnly);
+        this.showName.addDependentValues(this.useDisplayName, this.showNameBackground);
+        this.mode.whenEqualTo(this.twoDimensionalMode).applyTo(this.showBoundingBox, this.priorityOnly, this.healthBar, this.showName, this.useDisplayName, this.showNameBackground);
+        this.mode.whenEqualTo(this.threeDimensionalMode).applyTo(this.showExpandedHitbox, this.showNormalHitbox);
+        this.addValue(this.playerColor, this.mode, this.showExpandedHitbox, this.showNormalHitbox, this.showBoundingBox, this.priorityOnly, this.healthBar, this.showName, this.useDisplayName, this.showNameBackground, this.showInvisibles, this.hideBots);
     }
 
 
-    public MutableColor J(EntityPlayerSP entityPlayerSP, Object object) {
-        if (OffscreenRenderContext.W()) {
+    public MutableColor resolveEntityColor(EntityPlayerSP viewer, Object entityHandle) {
+        if (OffscreenRenderContext.isRenderingOffscreen()) {
             return null;
         }
-        if (object == null) {
+        if (entityHandle == null) {
             return null;
         }
-        Entity entity = new Entity(object);
+        Entity entity = new Entity(entityHandle);
         if (!entity.isInstance(MappedClasses.zm)) {
             return null;
         }
-        if (object.equals(entityPlayerSP)) {
+        if (entityHandle.equals(viewer)) {
             return null;
         }
-        EntityLivingBase entityLivingBase = new EntityLivingBase(object);
-        RenderEntityContext renderEntityContext = RenderEntityContextCache.V(entityLivingBase, entityPlayerSP);
-        if (renderEntityContext.P()) {
+        EntityLivingBase entityLivingBase = new EntityLivingBase(entityHandle);
+        RenderEntityContext renderEntityContext = RenderEntityContextCache.getOrCreate(entityLivingBase, viewer);
+        if (renderEntityContext.isSyntheticEntity()) {
             return null;
         }
-        if (this.Z.L().booleanValue() && renderEntityContext.D()) {
+        if (this.hideBots.getEffectiveValue().booleanValue() && renderEntityContext.isBot()) {
             return null;
         }
-        if (!this.C.L().booleanValue() && renderEntityContext.o$src$Z$1y639j7()) {
+        if (!this.showInvisibles.getEffectiveValue().booleanValue() && renderEntityContext.isInvisibleWithoutEquipment()) {
             return null;
         }
         if (entityLivingBase.isInstance(MappedClasses.lG)) {
             MutableColor mutableColor = Vape.INSTANCE.getClientSettings().e(renderEntityContext);
             if (mutableColor == null) {
-                mutableColor = this.H.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                mutableColor = this.playerColor.getMutableColor();
             }
             return new MutableColor(((Color)mutableColor).getRGB(), ((Color)mutableColor).getAlpha());
         }
         return null;
     }
 
-    public boolean c() {
-        return this.O.K() == this.V && this.p.K();
+    public boolean isOutlineModeActive() {
+        return this.mode.getValue() == this.outlineMode && this.outlineRenderer.isRenderingOutline();
     }
 }
 

@@ -23,7 +23,7 @@ extends OnlineConnectionSettingsPageComponent {
     public OnlineConnectionConnectingPageComponent() {
         this.E7 = new float[]{0.0f, 0.0f, 0.0f};
         this.Ee = new UnderlinedTextLabel("Cancel", (double)0.8f, OnlineConnectionConnectingPageComponent.J.A, new Color(255, 255, 255, 255));
-        this.Ee.r(OnlineConnectionConnectingPageComponent::lambda$new$0);
+        this.Ee.addClickListener(OnlineConnectionConnectingPageComponent::lambda$new$0);
         this.Ee.o(50.0);
         this.Ee.Y(10.0);
         this.h(new PaddedComponent(125.0, 0.0, 20.0, 0.0, this.Ee), new Object[0]);
@@ -32,8 +32,8 @@ extends OnlineConnectionSettingsPageComponent {
     @Override
     public void c() {
         super.c();
-        this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(1.0).W("Connecting...", this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + 52.0, OnlineConnectionConnectingPageComponent.J.A);
-        this.Ee.q(60.0);
+        this.getAlternateFontRenderer(1.0).W("Connecting...", this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + 52.0, OnlineConnectionConnectingPageComponent.J.A);
+        this.Ee.setExplicitWidth(60.0);
         if (this.Ei.hasTimeElapsed(50L)) {
             int n = (this.Ev + 1) % 3;
             for (int i = 0; i < 3; ++i) {

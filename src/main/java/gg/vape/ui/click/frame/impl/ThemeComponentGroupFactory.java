@@ -28,7 +28,7 @@ public final class ThemeComponentGroupFactory {
 
     public static GuiComponent[] E(ThemeColors themeColors) {
         BindValueRowComponent bindValueRowComponent = new BindValueRowComponent("Ping Keybind", OnlineConnectionManager.T.S().p(), themeColors.Z);
-        bindValueRowComponent.K$src$Lgg_vape_ui_click_component_input_BindableInputC$1pa6t6b().g(20);
+        bindValueRowComponent.getBindInput().setActiveAlpha(20);
         return new GuiComponent[]{bindValueRowComponent};
     }
 
@@ -48,7 +48,7 @@ public final class ThemeComponentGroupFactory {
             // empty catch block
         }
         if (friendNotificationSettings != null) {
-            linkedHashMap.put(new ThemeComponentGroupKey("Notification Settings", null), new GuiComponent[]{new BooleanToggleComponent(friendNotificationSettings.K), new BooleanToggleComponent(friendNotificationSettings.P), new BooleanToggleComponent(friendNotificationSettings.I), new BooleanToggleComponent(friendNotificationSettings.p), new BooleanToggleComponent(friendNotificationSettings.q), new BooleanToggleComponent(friendNotificationSettings.Q)});
+            linkedHashMap.put(new ThemeComponentGroupKey("Notification Settings", null), new GuiComponent[]{new BooleanToggleComponent(friendNotificationSettings.general), new BooleanToggleComponent(friendNotificationSettings.friendRequests), new BooleanToggleComponent(friendNotificationSettings.chats), new BooleanToggleComponent(friendNotificationSettings.friendOnline), new BooleanToggleComponent(friendNotificationSettings.partyInvites), new BooleanToggleComponent(friendNotificationSettings.partyInviteAccepted)});
         }
         if (onlineSettings != null) {
             linkedHashMap.put(new ThemeComponentGroupKey("Party Settings", null), new GuiComponent[]{new DropdownSelectComponent(onlineSettings.x()), new BooleanToggleComponent(onlineSettings.y()), new BooleanToggleComponent(onlineSettings.k$src$Lgg_vape_value_BooleanValue_$ffgfgd()), new BooleanToggleComponent(onlineSettings.U())});
@@ -59,4 +59,3 @@ public final class ThemeComponentGroupFactory {
     private ThemeComponentGroupFactory() {
     }
 }
-

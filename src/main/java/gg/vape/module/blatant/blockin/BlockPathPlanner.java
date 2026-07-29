@@ -30,352 +30,350 @@ import gg.vape.wrapper.impl.RayTraceResult;
 import gg.vape.wrapper.impl.World;
 
 public class BlockPathPlanner {
-    private final World K;
-    private final BlockPlacementGraph Y;
-    private boolean S;
-    private final GuiScreen H;
-    private MouseRotationController I;
-    private boolean J;
-    private float D;
-    private final RotationManager x = RotationManager.b;
-    private double U;
-    private final EntityPlayer k;
-    private float s;
-    private final AbstractBlockInMovementController c;
-    private float g;
-    private final EntityPlayer E;
-    private final EntityPlayerSP j;
+    private final BlockPlacementGraph initialSnapshot;
+    private boolean movementKeysAdjusted;
+    private final GuiScreen currentScreen;
+    private MouseRotationController rotationController;
+    private boolean restoreYawPending;
+    private float simulatedYaw;
+    private final RotationManager rotationManager = RotationManager.INSTANCE;
+    private double rotationUpdateAccumulator;
+    private final EntityPlayer sourcePlayer;
+    private float savedYaw;
+    private final AbstractBlockInMovementController movementController;
+    private float simulatedPitch;
+    private final EntityPlayer simulatedPlayer;
+    private final EntityPlayerSP localPlayer;
 
-    public int g() {
-        return this.c.K$src$I$15c3z46();
+    public int getSprintToggleTimer() {
+        return this.movementController.getSprintToggleTimer();
     }
 
-    public boolean K$src$Z$17o55j8() {
-        return this.c.y$src$Z$161eitf();
+    public boolean isJumpInput() {
+        return this.movementController.isJumpInput();
     }
 
-    public void y(MouseRotationController mouseRotationController) {
+    public void setRotationController(MouseRotationController mouseRotationController) {
         AdaptiveRotationController adaptiveRotationController;
-        if (this.I == mouseRotationController) {
+        if (this.rotationController == mouseRotationController) {
             return;
         }
-        if (this.I instanceof AdaptiveRotationController && mouseRotationController instanceof AdaptiveRotationController) {
-            adaptiveRotationController = (AdaptiveRotationController)this.I;
-            adaptiveRotationController.b(true);
-            adaptiveRotationController.u(true);
+        if (this.rotationController instanceof AdaptiveRotationController && mouseRotationController instanceof AdaptiveRotationController) {
+            adaptiveRotationController = (AdaptiveRotationController)this.rotationController;
+            adaptiveRotationController.setRelativeMode(true);
+            adaptiveRotationController.setComplete(true);
             AdaptiveRotationController adaptiveRotationController2 = (AdaptiveRotationController)mouseRotationController;
-            adaptiveRotationController2.b(false);
-            adaptiveRotationController2.T(adaptiveRotationController.J());
-            adaptiveRotationController2.a(adaptiveRotationController.X());
+            adaptiveRotationController2.setRelativeMode(false);
+            adaptiveRotationController2.setCurrentYaw(adaptiveRotationController.getRenderedYaw());
+            adaptiveRotationController2.setCurrentPitch(adaptiveRotationController.getRenderedPitch());
         }
-        if (this.I == null && mouseRotationController instanceof AdaptiveRotationController) {
+        if (this.rotationController == null && mouseRotationController instanceof AdaptiveRotationController) {
             adaptiveRotationController = (AdaptiveRotationController)mouseRotationController;
-            this.D = adaptiveRotationController.J();
-            this.g = adaptiveRotationController.X();
+            this.simulatedYaw = adaptiveRotationController.getRenderedYaw();
+            this.simulatedPitch = adaptiveRotationController.getRenderedPitch();
         }
-        this.I = mouseRotationController;
+        this.rotationController = mouseRotationController;
     }
 
-    public boolean E$src$Z$17kudz2() {
-        return this.I != null && this.I instanceof AdaptiveRotationController;
+    public boolean hasAdaptiveRotationController() {
+        return this.rotationController instanceof AdaptiveRotationController;
     }
 
-    public void t() {
-        if (this.Y != null) {
-            this.Y.M = true;
-            this.Y.D = false;
-            this.Y.R = false;
-            this.Y.Y = false;
+    public void setForwardOnly() {
+        if (this.initialSnapshot != null) {
+            this.initialSnapshot.forwardKeyDown = true;
+            this.initialSnapshot.backwardKeyDown = false;
+            this.initialSnapshot.leftKeyDown = false;
+            this.initialSnapshot.rightKeyDown = false;
         }
-        this.G(true, false, false, false);
+        this.setDirectionalKeys(true, false, false, false);
     }
 
-    private static AbstractBlockInMovementController w(EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP, EntityPlayer entityPlayer2, World world) {
+    private static AbstractBlockInMovementController createMovementController(EntityPlayer simulatedPlayer,
+                                                                              EntityPlayerSP localPlayer,
+                                                                              EntityPlayer sourcePlayer,
+                                                                              World world) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            return new BlockInEntityMovementController(entityPlayer, entityPlayerSP, entityPlayer2, world);
+            return new BlockInEntityMovementController(simulatedPlayer, localPlayer, sourcePlayer, world);
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            return new BlockInCollisionMovementController(entityPlayer, entityPlayerSP, entityPlayer2, world);
+            return new BlockInCollisionMovementController(simulatedPlayer, localPlayer, sourcePlayer, world);
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return new BlockInLegacyMovementController1122(entityPlayer, entityPlayerSP, entityPlayer2, world);
+            return new BlockInLegacyMovementController1122(simulatedPlayer, localPlayer, sourcePlayer, world);
         }
-        return new BlockInLegacyMovementController189(entityPlayer, entityPlayerSP, entityPlayer2, world);
+        return new BlockInLegacyMovementController189(simulatedPlayer, localPlayer, sourcePlayer, world);
     }
 
-    public void U(BlockPlacementGraph blockPlacementGraph) {
-        this.c.X(blockPlacementGraph);
+    public void applySnapshot(BlockPlacementGraph snapshot) {
+        this.movementController.applySnapshot(snapshot);
     }
 
-    public void r(boolean bl) {
-        this.c.q(bl);
+    public void setSprintKeyDown(boolean sprintKeyDown) {
+        this.movementController.setSprintKeyDown(sprintKeyDown);
     }
 
-    private boolean lambda$getMouseOver$0(Entity entity) {
-        return !entity.O$src$Z$fg5u49() && entity.n$src$Z$fx7gig() && !entity.equals(this.k) && !entity.equals(this.j);
+    private boolean canRayTraceEntity(Entity entity) {
+        return !entity.O$src$Z$fg5u49() && entity.n$src$Z$fx7gig()
+                && !entity.equals(this.sourcePlayer) && !entity.equals(this.localPlayer);
     }
 
-    public int D() {
-        return this.c.C$src$I$157pmda();
+    public int getSprintingTicksLeft() {
+        return this.movementController.getSprintingTicksLeft();
     }
 
-    private boolean lambda$getMouseOver$1(Entity entity) {
-        return !entity.O$src$Z$fg5u49() && entity.n$src$Z$fx7gig() && !entity.equals(this.k) && !entity.equals(this.j);
+    public float getMoveStrafe() {
+        return this.movementController.getMoveStrafe();
     }
 
-    public float U() {
-        return this.c.x$src$F$160upqu();
-    }
-
-    public void l() {
-        this.c.b(this.Y.M, this.Y.D, this.Y.R, this.Y.Y, this.Y.l, this.Y.c);
+    public void restoreSnapshotInput() {
+        this.movementController.setInput(this.initialSnapshot.forwardKeyDown, this.initialSnapshot.backwardKeyDown,
+                this.initialSnapshot.leftKeyDown, this.initialSnapshot.rightKeyDown,
+                this.initialSnapshot.jumpInput, this.initialSnapshot.sneakInput);
     }
 
     public BlockPathPlanner(EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP, World world, BlockPlacementGraph blockPlacementGraph) {
-        this.k = entityPlayer;
-        this.j = entityPlayerSP;
-        this.K = world;
-        this.E = PlayerSimulationUtil.I(entityPlayer);
-        this.Y = blockPlacementGraph;
-        this.U = this.x.D();
-        this.H = Minecraft.currentScreen();
-        this.c = BlockPathPlanner.w(this.E, entityPlayerSP, entityPlayer, world);
-        this.q();
-        if (entityPlayer.isInstance(MappedClasses.z5) && RotationManager.b.u()) {
-            AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)RotationManager.b.w();
-            this.D = adaptiveRotationController.J();
-            this.g = adaptiveRotationController.X();
+        this.sourcePlayer = entityPlayer;
+        this.localPlayer = entityPlayerSP;
+        this.simulatedPlayer = PlayerSimulationUtil.I(entityPlayer);
+        this.initialSnapshot = blockPlacementGraph;
+        this.rotationUpdateAccumulator = this.rotationManager.getControllerUpdateAccumulator();
+        this.currentScreen = Minecraft.currentScreen();
+        this.movementController = BlockPathPlanner.createMovementController(
+                this.simulatedPlayer, entityPlayerSP, entityPlayer, world);
+        this.initializeMovementController();
+        if (entityPlayer.isInstance(MappedClasses.z5) && RotationManager.INSTANCE.hasAdaptiveController()) {
+            AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)RotationManager.INSTANCE.getActiveController();
+            this.simulatedYaw = adaptiveRotationController.getRenderedYaw();
+            this.simulatedPitch = adaptiveRotationController.getRenderedPitch();
         }
     }
 
-    public BlockInTargetRotationState E() {
-        BlockInTargetRotationState blockInTargetRotationState = new BlockInTargetRotationState(this.E);
-        blockInTargetRotationState.m(new BlockPlacementGraph(this));
+    public BlockInTargetRotationState createRotationState() {
+        BlockInTargetRotationState blockInTargetRotationState = new BlockInTargetRotationState(this.simulatedPlayer);
+        blockInTargetRotationState.setPlacementGraph(new BlockPlacementGraph(this));
         return blockInTargetRotationState;
     }
 
-    public void K() {
-        this.c.G(false);
+    public void finishSimulation() {
+        this.movementController.setJumpKeyDown(false);
     }
 
-    public void q() {
-        this.c.B();
+    public void initializeMovementController() {
+        this.movementController.initialize();
     }
 
-    public void h() {
-        this.c.b(false, false, false, false, false, false);
+    public void clearInput() {
+        this.movementController.setInput(false, false, false, false, false, false);
     }
 
-    public float k() {
-        return this.c.q$src$F$15x05lb();
+    public float getMoveForward() {
+        return this.movementController.getMoveForward();
     }
 
     public BlockPathPlanner(EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP, World world, BlockPlacementGraph blockPlacementGraph, BlockPathPlanner blockPathPlanner) {
-        this.k = entityPlayer;
-        this.j = entityPlayerSP;
-        this.K = world;
-        this.E = blockPathPlanner.T();
-        PlayerSimulationUtil.s(this.E, entityPlayer);
-        this.Y = blockPlacementGraph;
-        this.U = this.x.D();
-        this.H = Minecraft.currentScreen();
-        this.c = BlockPathPlanner.w(this.E, entityPlayerSP, entityPlayer, world);
-        this.q();
-        if (entityPlayer.isInstance(MappedClasses.z5) && RotationManager.b.u()) {
-            AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)RotationManager.b.w();
-            this.D = adaptiveRotationController.J();
-            this.g = adaptiveRotationController.X();
+        this.sourcePlayer = entityPlayer;
+        this.localPlayer = entityPlayerSP;
+        this.simulatedPlayer = blockPathPlanner.getSimulatedPlayer();
+        PlayerSimulationUtil.s(this.simulatedPlayer, entityPlayer);
+        this.initialSnapshot = blockPlacementGraph;
+        this.rotationUpdateAccumulator = this.rotationManager.getControllerUpdateAccumulator();
+        this.currentScreen = Minecraft.currentScreen();
+        this.movementController = BlockPathPlanner.createMovementController(
+                this.simulatedPlayer, entityPlayerSP, entityPlayer, world);
+        this.initializeMovementController();
+        if (entityPlayer.isInstance(MappedClasses.z5) && RotationManager.INSTANCE.hasAdaptiveController()) {
+            AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)RotationManager.INSTANCE.getActiveController();
+            this.simulatedYaw = adaptiveRotationController.getRenderedYaw();
+            this.simulatedPitch = adaptiveRotationController.getRenderedPitch();
         }
     }
 
-    public Vec3d f() {
-        return new Vec3d(this.E.z(), this.E.N(), this.E.h());
+    public Vec3d getSimulatedPosition() {
+        return new Vec3d(this.simulatedPlayer.z(), this.simulatedPlayer.N(), this.simulatedPlayer.h());
     }
 
-    public boolean i() {
-        return this.c.l$src$Z$15u973q();
+    public boolean isSprintKeyDown() {
+        return this.movementController.isSprintKeyDown();
     }
 
-    public boolean Y() {
-        return this.c.K$src$Z$15c3zit();
+    public boolean isSneaking() {
+        return this.movementController.isSneaking();
     }
 
-    public void O() {
-        boolean bl;
-        boolean bl2 = this.E$src$Z$17kudz2();
-        if (bl2) {
-            boolean bl3;
-            ModeSelection modeSelection = (ModeSelection)Vape.INSTANCE.getClientSettings().o.K();
-            if (modeSelection.equals(ClientSettings.O)) {
-                return;
-            }
-            boolean bl4 = bl3 = modeSelection.equals(ClientSettings.Y) || modeSelection.equals(ClientSettings.u);
-            if (bl3) {
-                boolean bl5 = this.D$src$Z$17kaldp();
-                AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)this.I;
-                this.s = FreeLookHudModule.z() ? FreeLookHudModule.L$src$F$1jnmc2m() : this.E.J();
-                float f = adaptiveRotationController.v$src$F$1mgxytb();
-                float f2 = this.x.G(f, this.c.c(), this.c.s$src$Z$15y3r99(), this.c.N$src$Z$15drdaw(), this.c.z$src$Z$161ybes());
-                float f3 = modeSelection.equals(ClientSettings.u) ? f2 + 180.0f : this.D;
-                this.E.H(f3);
-                this.E.z(f3);
-                this.J = true;
-                if (bl5) {
-                    float f4 = MathUtil.wrapAngleTo180(MathUtil.wrapAngleTo180(f3) - f2);
-                    float f5 = f4 * ((float)Math.PI / 180);
-                    float f6 = (float)Math.cos(f5);
-                    float f7 = (float)(-Math.sin(f5));
-                    double d = PlayerMovementTaskManager.G.e() != null ? 0.075 : (double)0.4f;
-                    boolean bl6 = (double)f6 >= d;
-                    boolean bl7 = (double)f7 >= d;
-                    boolean bl8 = (double)f7 <= -d;
-                    boolean bl9 = (double)f6 <= -d;
-                    this.G(bl6, bl9, bl8, bl7);
-                    this.S = true;
-                }
-                if (!bl5 && this.S) {
-                    this.l();
-                    this.S = false;
-                }
-            }
-            return;
-        }
-        ModeSelection modeSelection = (ModeSelection)Vape.INSTANCE.getClientSettings().o.K();
+    public void adjustMovementForRotation() {
+        ModeSelection modeSelection = (ModeSelection)Vape.INSTANCE.getClientSettings().o.getValue();
         if (modeSelection.equals(ClientSettings.O)) {
             return;
         }
-        boolean bl10 = bl = modeSelection.equals(ClientSettings.Y) || modeSelection.equals(ClientSettings.u);
-        if (bl) {
-            boolean bl11 = this.D$src$Z$17kaldp();
-            if (this.S) {
-                this.l();
-                this.S = false;
+        boolean movementCorrectionEnabled = modeSelection.equals(ClientSettings.Y)
+                || modeSelection.equals(ClientSettings.u);
+        if (!movementCorrectionEnabled) {
+            return;
+        }
+        if (!this.hasAdaptiveRotationController()) {
+            if (this.movementKeysAdjusted) {
+                this.restoreSnapshotInput();
+                this.movementKeysAdjusted = false;
             }
+            return;
+        }
+
+        boolean hasDirectionalInput = this.hasDirectionalInput();
+        AdaptiveRotationController adaptiveController = (AdaptiveRotationController)this.rotationController;
+        this.savedYaw = FreeLookHudModule.isActive()
+                ? FreeLookHudModule.getSavedPitch() : this.simulatedPlayer.J();
+        float referenceYaw = adaptiveController.getReferenceYaw();
+        float movementYaw = this.rotationManager.adjustMovementYaw(referenceYaw,
+                this.movementController.isForwardKeyDown(), this.movementController.isRightKeyDown(),
+                this.movementController.isLeftKeyDown(), this.movementController.isBackwardKeyDown());
+        float correctedYaw = modeSelection.equals(ClientSettings.u) ? movementYaw + 180.0f : this.simulatedYaw;
+        this.simulatedPlayer.H(correctedYaw);
+        this.simulatedPlayer.z(correctedYaw);
+        this.restoreYawPending = true;
+        if (hasDirectionalInput) {
+            float yawDifference = MathUtil.wrapAngleTo180(MathUtil.wrapAngleTo180(correctedYaw) - movementYaw);
+            float yawRadians = yawDifference * ((float)Math.PI / 180);
+            float forwardProjection = (float)Math.cos(yawRadians);
+            float rightProjection = (float)(-Math.sin(yawRadians));
+            double activationThreshold = PlayerMovementTaskManager.INSTANCE.getActiveTask() != null ? 0.075 : 0.4f;
+            this.setDirectionalKeys(forwardProjection >= activationThreshold,
+                    forwardProjection <= -activationThreshold,
+                    rightProjection <= -activationThreshold,
+                    rightProjection >= activationThreshold);
+            this.movementKeysAdjusted = true;
+        } else if (this.movementKeysAdjusted) {
+            this.restoreSnapshotInput();
+            this.movementKeysAdjusted = false;
         }
     }
 
-    public void G(boolean bl, boolean bl2, boolean bl3, boolean bl4) {
-        this.c.E(bl);
-        this.c.Z(bl2);
-        this.c.T(bl3);
-        this.c.r(bl4);
+    public void setDirectionalKeys(boolean forward, boolean backward, boolean left, boolean right) {
+        this.movementController.setForwardKeyDown(forward);
+        this.movementController.setBackwardKeyDown(backward);
+        this.movementController.setLeftKeyDown(left);
+        this.movementController.setRightKeyDown(right);
     }
 
-    public void e(boolean bl, boolean bl2, boolean bl3, boolean bl4, boolean bl5, boolean bl6) {
-        this.c.b(bl, bl2, bl3, bl4, bl5, bl6);
+    public void setInput(boolean forward, boolean backward, boolean left, boolean right,
+                         boolean jump, boolean sneak) {
+        this.movementController.setInput(forward, backward, left, right, jump, sneak);
     }
 
-    public boolean d$src$Z$181w0d9() {
-        return this.c.s$src$Z$15y3r99();
+    public boolean isRightKeyDown() {
+        return this.movementController.isRightKeyDown();
     }
 
-    public MouseRotationController H() {
-        return this.I;
+    public MouseRotationController getRotationController() {
+        return this.rotationController;
     }
 
-    public boolean g$src$Z$183je5c() {
-        return this.c.w();
+    public boolean isJumpKeyDown() {
+        return this.movementController.isJumpKeyDown();
     }
 
-    public EntityPlayer T() {
-        return this.E;
+    public EntityPlayer getSimulatedPlayer() {
+        return this.simulatedPlayer;
     }
 
-    public boolean o() {
-        return this.c.N$src$Z$15drdaw();
+    public boolean isLeftKeyDown() {
+        return this.movementController.isLeftKeyDown();
     }
 
-    public void d() {
-        if (this.I != null) {
-            double d = Math.round(50.0f * this.x.X());
-            this.U += d;
-            int n = (int)Math.round(this.U);
-            for (int i = 0; i < n; ++i) {
+    public void updateRotation() {
+        if (this.rotationController != null) {
+            double updatesPerTick = Math.round(50.0f * this.rotationManager.getSensitivityTimeScale());
+            this.rotationUpdateAccumulator += updatesPerTick;
+            int updateCount = (int)Math.round(this.rotationUpdateAccumulator);
+            for (int update = 0; update < updateCount; ++update) {
                 try {
-                    this.I.J(this.j, this.H);
-                    this.I.o(this.H);
+                    this.rotationController.update(this.localPlayer, this.currentScreen);
+                    this.rotationController.applyPendingMovement(this.currentScreen);
                     continue;
                 }
                 catch (Exception exception) {
                     // empty catch block
                 }
             }
-            this.U -= (double)n;
-            if (this.E$src$Z$17kudz2()) {
-                AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)this.I;
-                this.D = adaptiveRotationController.J();
-                this.g = adaptiveRotationController.X();
+            this.rotationUpdateAccumulator -= updateCount;
+            if (this.hasAdaptiveRotationController()) {
+                AdaptiveRotationController adaptiveRotationController =
+                        (AdaptiveRotationController)this.rotationController;
+                this.simulatedYaw = adaptiveRotationController.getRenderedYaw();
+                this.simulatedPitch = adaptiveRotationController.getRenderedPitch();
             }
         }
     }
 
-    public boolean C() {
-        return this.c.c();
+    public boolean isForwardKeyDown() {
+        return this.movementController.isForwardKeyDown();
     }
 
 
-    public void B() {
-        this.I(true);
+    public void simulateTick() {
+        this.simulateTick(true);
     }
 
-    public RayTraceResult C(double d, float f, boolean bl) {
-        RayTraceResult rayTraceResult;
-        EntityPlayer entityPlayer = this.E;
-        if (this.E$src$Z$17kudz2()) {
-            float f2 = entityPlayer.J();
-            float f3 = entityPlayer.s();
-            float f4 = entityPlayer.V();
-            entityPlayer.H(this.D);
-            entityPlayer.z(this.D);
-            entityPlayer.C(this.g);
-            rayTraceResult = RayTraceUtil.U(this.E, d, f, bl, ForgeVersion.MC_1_16_5.v() ? null : this::lambda$getMouseOver$0);
-            entityPlayer.H(f2);
-            entityPlayer.z(f3);
-            entityPlayer.C(f4);
+    public RayTraceResult rayTrace(double reach, float partialTicks, boolean includeFluids) {
+        RayTraceResult result;
+        if (this.hasAdaptiveRotationController()) {
+            float savedRenderYaw = this.simulatedPlayer.J();
+            float savedYaw = this.simulatedPlayer.s();
+            float savedPitch = this.simulatedPlayer.V();
+            this.simulatedPlayer.H(this.simulatedYaw);
+            this.simulatedPlayer.z(this.simulatedYaw);
+            this.simulatedPlayer.C(this.simulatedPitch);
+            result = RayTraceUtil.U(this.simulatedPlayer, reach, partialTicks, includeFluids,
+                    ForgeVersion.MC_1_16_5.v() ? null : this::canRayTraceEntity);
+            this.simulatedPlayer.H(savedRenderYaw);
+            this.simulatedPlayer.z(savedYaw);
+            this.simulatedPlayer.C(savedPitch);
         } else {
-            entityPlayer.z(entityPlayer.J());
-            rayTraceResult = RayTraceUtil.U(this.E, d, f, bl, ForgeVersion.MC_1_16_5.v() ? null : this::lambda$getMouseOver$1);
+            this.simulatedPlayer.z(this.simulatedPlayer.J());
+            result = RayTraceUtil.U(this.simulatedPlayer, reach, partialTicks, includeFluids,
+                    ForgeVersion.MC_1_16_5.v() ? null : this::canRayTraceEntity);
         }
-        return rayTraceResult;
+        return result;
     }
 
-    public void I(boolean bl) {
-        if (bl) {
-            this.d();
+    public void simulateTick(boolean updateRotation) {
+        if (updateRotation) {
+            this.updateRotation();
         }
-        this.E.D(this.E.J());
-        this.E.l(this.E.V());
-        this.E.n(this.E.z());
-        this.E.w(this.E.N());
-        this.E.A(this.E.h());
-        if (this.E$src$Z$17kudz2()) {
-            AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)this.I;
-            this.D = adaptiveRotationController.J();
-            this.g = MathUtil.clamp(adaptiveRotationController.X(), -90.0f, 90.0f);
-            this.O();
+        this.simulatedPlayer.D(this.simulatedPlayer.J());
+        this.simulatedPlayer.l(this.simulatedPlayer.V());
+        this.simulatedPlayer.n(this.simulatedPlayer.z());
+        this.simulatedPlayer.w(this.simulatedPlayer.N());
+        this.simulatedPlayer.A(this.simulatedPlayer.h());
+        if (this.hasAdaptiveRotationController()) {
+            AdaptiveRotationController adaptiveRotationController =
+                    (AdaptiveRotationController)this.rotationController;
+            this.simulatedYaw = adaptiveRotationController.getRenderedYaw();
+            this.simulatedPitch = MathUtil.clamp(adaptiveRotationController.getRenderedPitch(), -90.0f, 90.0f);
+            this.adjustMovementForRotation();
         }
-        this.c.N();
-        if (this.J) {
-            this.E.H(this.s);
-            this.E.z(this.s);
-            this.J = false;
+        this.movementController.tick();
+        if (this.restoreYawPending) {
+            this.simulatedPlayer.H(this.savedYaw);
+            this.simulatedPlayer.z(this.savedYaw);
+            this.restoreYawPending = false;
         }
-        if (this.S) {
-            this.l();
-            this.S = false;
+        if (this.movementKeysAdjusted) {
+            this.restoreSnapshotInput();
+            this.movementKeysAdjusted = false;
         }
     }
 
-    public boolean D$src$Z$17kaldp() {
-        return this.c.c() || this.c.z$src$Z$161ybes() || this.c.N$src$Z$15drdaw() || this.c.s$src$Z$15y3r99();
+    public boolean hasDirectionalInput() {
+        return this.movementController.isForwardKeyDown() || this.movementController.isBackwardKeyDown()
+                || this.movementController.isLeftKeyDown() || this.movementController.isRightKeyDown();
     }
 
-    public boolean s() {
-        return this.c.z$src$Z$161ybes();
+    public boolean isBackwardKeyDown() {
+        return this.movementController.isBackwardKeyDown();
     }
 
-    public boolean R() {
-        return this.c.C$src$Z$157pmrx();
+    public boolean isSneakKeyDown() {
+        return this.movementController.isSneakKeyDown();
     }
 }
-

@@ -17,71 +17,71 @@ import org.jetbrains.annotations.Nullable;
 
 public class ConfirmationDialogComponent
 extends GuiComponent {
-    private IconGlyphComponent Q;
-    private final WrappingTextLabelComponent a;
-    private double I = 80.0;
-    private final IconButtonComponent v = new SquareIconButtonComponent("newclose", 1.0, new Color(255, 255, 255, 0), new Color(255, 255, 255, 25), 10.0, 10.0);
-    private Color o;
-    private final boolean i;
-    private final TextButton b;
-    private double O = 0.0;
-    private boolean R;
-    private final TextButton G;
+    private IconGlyphComponent dialogIcon;
+    private final WrappingTextLabelComponent messageLabel;
+    private double requestedHeight = 80.0;
+    private final IconButtonComponent closeButton = new SquareIconButtonComponent("newclose", 1.0, new Color(255, 255, 255, 0), new Color(255, 255, 255, 25), 10.0, 10.0);
+    private Color borderColor;
+    private final boolean hasIcon;
+    private final TextButton cancelButton;
+    private double renderedHeight = 0.0;
+    private boolean showBorder;
+    private final TextButton confirmButton;
 
-    public void c(double d) {
-        this.I = d;
+    public void setRequestedHeight(double requestedHeight) {
+        this.requestedHeight = requestedHeight;
     }
 
-    public TextButton T$src$Lgg_vape_ui_click_component_gui_TextButton_$17m2d4e() {
-        return this.G;
+    public TextButton getConfirmButton() {
+        return this.confirmButton;
     }
 
-    public static CompletableFuture<Void> x(Frame frame, String string, String string2, String string3, Runnable runnable, double d, @Nullable String string4, @Nullable Runnable runnable2) {
-        CompletableFuture<Void> completableFuture = new CompletableFuture<Void>();
-        ConfirmationDialogComponent confirmationDialogComponent = new ConfirmationDialogComponent(string, string2, string3);
-        if (d != -1.0) {
-            confirmationDialogComponent.c(d);
+    public static CompletableFuture<Void> show(Frame ownerFrame, String message, String confirmText, String iconResource, Runnable confirmAction, double requestedHeight, @Nullable String cancelText, @Nullable Runnable cancelAction) {
+        CompletableFuture<Void> completion = new CompletableFuture<Void>();
+        ConfirmationDialogComponent dialog = new ConfirmationDialogComponent(message, confirmText, iconResource);
+        if (requestedHeight != -1.0) {
+            dialog.setRequestedHeight(requestedHeight);
         }
-        if (string4 != null) {
-            confirmationDialogComponent.b.Z(true);
-            confirmationDialogComponent.b.d(string4);
-            confirmationDialogComponent.b.h(ConfirmationDialogComponent.J.Z);
-            confirmationDialogComponent.b.G(Color.WHITE);
-            confirmationDialogComponent.b.c(true);
-            confirmationDialogComponent.b.p(true);
-            confirmationDialogComponent.G.G(ConfirmationDialogComponent.J.B, ConfirmationDialogComponent.J.O);
+        if (cancelText != null) {
+            dialog.cancelButton.setVisible(true);
+            dialog.cancelButton.setLabelText(cancelText);
+            dialog.cancelButton.setNormalTextColor(ConfirmationDialogComponent.J.Z);
+            dialog.cancelButton.setHoverTextColor(Color.WHITE);
+            dialog.cancelButton.setUseAlternateFont(true);
+            dialog.cancelButton.setAnimateTextColor(true);
+            dialog.confirmButton.setBackgroundAnimationColors(ConfirmationDialogComponent.J.B, ConfirmationDialogComponent.J.O);
         }
-        DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.g(frame, confirmationDialogComponent, DimmedCenteredPopupFrame.class);
-        confirmationDialogComponent.T$src$Lgg_vape_ui_click_component_gui_TextButton_$17m2d4e().r(() -> ConfirmationDialogComponent.lambda$createStandard$0(dimmedCenteredPopupFrame, runnable, completableFuture));
-        confirmationDialogComponent.E().r(() -> ConfirmationDialogComponent.lambda$createStandard$1(dimmedCenteredPopupFrame, completableFuture));
-        confirmationDialogComponent.u$src$Lgg_vape_ui_click_component_gui_TextButton_$1ht3xvz().r(() -> ConfirmationDialogComponent.lambda$createStandard$2(dimmedCenteredPopupFrame, runnable2, completableFuture));
-        dimmedCenteredPopupFrame.q(frame, dimmedCenteredPopupFrame);
-        return completableFuture;
+        DimmedCenteredPopupFrame popupFrame = ClientSettings.createPopup(ownerFrame, dialog, DimmedCenteredPopupFrame.class);
+        dialog.getConfirmButton().addClickListener(() -> ConfirmationDialogComponent.handleConfirm(popupFrame, confirmAction, completion));
+        dialog.getCloseButton().addClickListener(() -> ConfirmationDialogComponent.handleClose(popupFrame, completion));
+        dialog.getCancelButton().addClickListener(() -> ConfirmationDialogComponent.handleCancel(popupFrame, cancelAction, completion));
+        popupFrame.q(ownerFrame, popupFrame);
+        return completion;
     }
 
-    private static void lambda$createStandard$1(PopupFrame popupFrame, CompletableFuture completableFuture) {
-        ClientSettings.K(popupFrame);
-        completableFuture.complete(null);
+    private static void handleClose(PopupFrame popupFrame, CompletableFuture<Void> completion) {
+        ClientSettings.removePopup(popupFrame);
+        completion.complete(null);
     }
 
-    public ConfirmationDialogComponent(String string, String string2, @Nullable String string3) {
-        this.o = ConfirmationDialogComponent.J.y;
-        this.R = true;
-        this.a = new WrappingTextLabelComponent(string, 0.9f, ConfirmationDialogComponent.J.Z);
-        this.G = new TextButton(string2, 0.7, ConfirmationDialogComponent.J.d, ConfirmationDialogComponent.J.c, 36.0, 14.0);
-        this.b = new TextButton("Cancel", 0.7, ConfirmationDialogComponent.J.d, ConfirmationDialogComponent.J.c, 36.0, 14.0);
-        this.b.Z(false);
-        this.d(false);
-        this.T(ConfirmationDialogComponent.J.m.brighter());
-        this.G.F(false);
-        this.G.h(Color.WHITE);
-        this.G.G(Color.WHITE);
-        boolean bl = this.i = string3 != null;
-        if (this.i) {
-            this.Q = new IconGlyphComponent(string3, 12.0f, 12.0f, Color.white);
-            this.H(this.Q);
+    public ConfirmationDialogComponent(String message, String confirmText, @Nullable String iconResource) {
+        this.borderColor = ConfirmationDialogComponent.J.y;
+        this.showBorder = true;
+        this.messageLabel = new WrappingTextLabelComponent(message, 0.9f, ConfirmationDialogComponent.J.Z);
+        this.confirmButton = new TextButton(confirmText, 0.7, ConfirmationDialogComponent.J.d, ConfirmationDialogComponent.J.c, 36.0, 14.0);
+        this.cancelButton = new TextButton("Cancel", 0.7, ConfirmationDialogComponent.J.d, ConfirmationDialogComponent.J.c, 36.0, 14.0);
+        this.cancelButton.setVisible(false);
+        this.setShowDisabledOverlay(false);
+        this.setDisabledOverlayColor(ConfirmationDialogComponent.J.m.brighter());
+        this.confirmButton.setDeriveTextColorFromBackground(false);
+        this.confirmButton.setNormalTextColor(Color.WHITE);
+        this.confirmButton.setHoverTextColor(Color.WHITE);
+        this.hasIcon = iconResource != null;
+        if (this.hasIcon) {
+            this.dialogIcon = new IconGlyphComponent(iconResource, 12.0f, 12.0f, Color.white);
+            this.addChildren(this.dialogIcon);
         }
-        this.H(this.G, this.v, this.a, this.b);
+        this.addChildren(this.confirmButton, this.closeButton, this.messageLabel, this.cancelButton);
     }
 
 
@@ -92,86 +92,86 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        double d = this.I;
-        double d2 = 0.0;
-        if (!this.i) {
-            d -= 20.0;
-            d2 += 20.0;
+        double height = this.requestedHeight;
+        double messageOffsetY = 0.0;
+        if (!this.hasIcon) {
+            height -= 20.0;
+            messageOffsetY += 20.0;
         }
-        this.O = d;
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), 100.0, d, this.d());
-        if (this.R) {
-            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), 100.0, d, this.o, 2.0f, 1.0f, 1.0f);
+        this.renderedHeight = height;
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), 100.0, height, this.getDisabledOverlayColor());
+        if (this.showBorder) {
+            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), 100.0, height, this.borderColor, 2.0f, 1.0f, 1.0f);
         }
-        if (this.i) {
-            this.Q.K(this.G$src$D$1b2f02a() + (100.0 - this.Q.A()) / 2.0);
-            this.Q.S(this.n() + 10.0);
+        if (this.hasIcon) {
+            this.dialogIcon.K(this.G$src$D$1b2f02a() + (100.0 - this.dialogIcon.A()) / 2.0);
+            this.dialogIcon.S(this.n() + 10.0);
         }
-        this.v.K(this.G$src$D$1b2f02a() + 100.0 - this.v.A() - 2.0);
-        this.v.S(this.n() + 2.0);
-        this.a.K(this.G$src$D$1b2f02a() + 5.0);
-        this.a.q(this.A() - 10.0);
-        this.a.S(this.n() + 32.0 - d2);
-        double d3 = this.a.w$src$D$x8xgh3();
-        this.G.K(this.G$src$D$1b2f02a() + (100.0 - this.G.A()) / 2.0);
-        this.G.S(this.a.n() + d3 + 10.0);
-        if (this.b.V$src$Z$1xhop3l()) {
-            this.b.o(36.0);
-            this.b.G(ConfirmationDialogComponent.J.t, ConfirmationDialogComponent.J.t);
-            this.b.F(false);
-            double d4 = this.b.A() + this.G.A() + 5.0;
-            double d5 = this.G$src$D$1b2f02a() + this.A() / 2.0 - d4 / 2.0;
-            this.G.K(d5);
-            this.b.K(this.G.G$src$D$1b2f02a() + this.b.A() + 2.5);
-            this.b.S(this.G.n());
+        this.closeButton.K(this.G$src$D$1b2f02a() + 100.0 - this.closeButton.A() - 2.0);
+        this.closeButton.S(this.n() + 2.0);
+        this.messageLabel.K(this.G$src$D$1b2f02a() + 5.0);
+        this.messageLabel.setExplicitWidth(this.A() - 10.0);
+        this.messageLabel.S(this.n() + 32.0 - messageOffsetY);
+        double messageHeight = this.messageLabel.getMeasuredTextHeight();
+        this.confirmButton.K(this.G$src$D$1b2f02a() + (100.0 - this.confirmButton.A()) / 2.0);
+        this.confirmButton.S(this.messageLabel.n() + messageHeight + 10.0);
+        if (this.cancelButton.V$src$Z$1xhop3l()) {
+            this.cancelButton.o(36.0);
+            this.cancelButton.setBackgroundAnimationColors(ConfirmationDialogComponent.J.t, ConfirmationDialogComponent.J.t);
+            this.cancelButton.setDeriveTextColorFromBackground(false);
+            double buttonGroupWidth = this.cancelButton.A() + this.confirmButton.A() + 5.0;
+            double buttonGroupX = this.G$src$D$1b2f02a() + this.A() / 2.0 - buttonGroupWidth / 2.0;
+            this.confirmButton.K(buttonGroupX);
+            this.cancelButton.K(this.confirmButton.G$src$D$1b2f02a() + this.cancelButton.A() + 2.5);
+            this.cancelButton.S(this.confirmButton.n());
         }
     }
 
     @Override
     public double C() {
-        return this.O;
+        return this.renderedHeight;
     }
 
-    public void G(boolean bl) {
-        this.R = bl;
+    public void setShowBorder(boolean showBorder) {
+        this.showBorder = showBorder;
     }
 
-    private static void lambda$createStandard$0(PopupFrame popupFrame, Runnable runnable, CompletableFuture completableFuture) {
-        ClientSettings.K(popupFrame);
-        runnable.run();
-        completableFuture.complete(null);
+    private static void handleConfirm(PopupFrame popupFrame, Runnable confirmAction, CompletableFuture<Void> completion) {
+        ClientSettings.removePopup(popupFrame);
+        confirmAction.run();
+        completion.complete(null);
     }
 
-    private static void lambda$createStandard$2(PopupFrame popupFrame, Runnable runnable, CompletableFuture completableFuture) {
-        ClientSettings.K(popupFrame);
-        if (runnable != null) {
-            runnable.run();
+    private static void handleCancel(PopupFrame popupFrame, Runnable cancelAction, CompletableFuture<Void> completion) {
+        ClientSettings.removePopup(popupFrame);
+        if (cancelAction != null) {
+            cancelAction.run();
         }
-        completableFuture.complete(null);
+        completion.complete(null);
     }
 
-    public TextButton u$src$Lgg_vape_ui_click_component_gui_TextButton_$1ht3xvz() {
-        return this.b;
+    public TextButton getCancelButton() {
+        return this.cancelButton;
     }
 
-    public static CompletableFuture<Void> U(Frame frame, String string, String string2, String string3, Runnable runnable) {
-        return ConfirmationDialogComponent.x(frame, string, string2, string3, runnable, -1.0, null, null);
+    public static CompletableFuture<Void> showStandard(Frame ownerFrame, String message, String confirmText, String iconResource, Runnable confirmAction) {
+        return ConfirmationDialogComponent.show(ownerFrame, message, confirmText, iconResource, confirmAction, -1.0, null, null);
     }
 
-    public boolean m$src$Z$2x2rjh() {
-        return this.R;
+    public boolean isShowBorder() {
+        return this.showBorder;
     }
 
-    public Color g$src$Ljava_awt_Color_$bfdv6z() {
-        return this.o;
+    public Color getBorderColor() {
+        return this.borderColor;
     }
 
-    public void N(Color color) {
-        this.o = color;
+    public void setBorderColor(Color borderColor) {
+        this.borderColor = borderColor;
     }
 
-    public IconButtonComponent E() {
-        return this.v;
+    public IconButtonComponent getCloseButton() {
+        return this.closeButton;
     }
 }
 

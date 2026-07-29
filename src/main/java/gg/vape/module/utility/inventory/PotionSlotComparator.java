@@ -14,14 +14,14 @@ implements Comparator<Slot> {
     }
     final InventoryManager inventoryManager;
 
-    public int comparePotionScore(Slot slot, Slot slot2) {
-        ItemStack itemStack = slot.I();
-        ItemStack itemStack2 = slot2.I();
-        TileEntityEnderChest tileEntityEnderChest = new TileEntityEnderChest(itemStack.getItem());
-        TileEntityEnderChest tileEntityEnderChest2 = new TileEntityEnderChest(itemStack2.getItem());
-        float score = (float)tileEntityEnderChest.o$src$I$tnn4wh() * tileEntityEnderChest.o();
-        float score2 = (float)tileEntityEnderChest2.o$src$I$tnn4wh() * tileEntityEnderChest2.o();
-        return Float.compare(score, score2);
+    public int comparePotionScore(Slot first, Slot second) {
+        ItemStack firstStack = first.I();
+        ItemStack secondStack = second.I();
+        TileEntityEnderChest firstPotion = new TileEntityEnderChest(firstStack.getItem());
+        TileEntityEnderChest secondPotion = new TileEntityEnderChest(secondStack.getItem());
+        float firstScore = (float)firstPotion.o$src$I$tnn4wh() * firstPotion.o();
+        float secondScore = (float)secondPotion.o$src$I$tnn4wh() * secondPotion.o();
+        return Float.compare(firstScore, secondScore);
     }
 
     public PotionSlotComparator(InventoryManager inventoryManager) {

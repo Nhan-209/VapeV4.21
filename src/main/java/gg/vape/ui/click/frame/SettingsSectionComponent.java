@@ -36,7 +36,7 @@ extends InteractiveComponent {
     @Override
     public void H() {
         float f = 6.88f;
-        SmoothFontRenderer smoothFontRenderer = this.O(this.K);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(this.K);
         double d = smoothFontRenderer.d(this.I);
         double d2 = this.n() + this.L() / 2.0 - d / 2.0;
         double d3 = this.n() + this.L() / 2.0 - (double)(f / 2.0f);
@@ -48,7 +48,7 @@ extends InteractiveComponent {
             color2 = SettingsSectionComponent.J.A;
         }
         GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), color);
-        ImageRenderer.E(this.b, (float)this.G$src$D$1b2f02a() + (float)this.A() - 5.0f - 5.0f, (float)d4, cb, this.Ah, this.Ah, false);
+        ImageRenderer.drawImage(this.b, (float)this.G$src$D$1b2f02a() + (float)this.A() - 5.0f - 5.0f, (float)d4, cb, this.Ah, this.Ah, false);
         smoothFontRenderer.d(this.I, this.G$src$D$1b2f02a() + 5.0, d2, color2);
     }
 

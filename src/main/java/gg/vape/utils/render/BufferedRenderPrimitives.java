@@ -15,158 +15,157 @@ import java.awt.Color;
 import org.lwjgl.opengl.GL11;
 
 public class BufferedRenderPrimitives {
-    public static void x(float f, float f2, float f3, float f4, float f5, Color color) {
-        BufferedRenderPrimitives.X(f, f2, 0.0f, f3, f2, 0.0f, f5, color);
-        BufferedRenderPrimitives.X(f3, f2, 0.0f, f3, f4, 0.0f, f5, color);
-        BufferedRenderPrimitives.X(f3, f4, 0.0f, f, f4, 0.0f, f5, color);
-        BufferedRenderPrimitives.X(f, f4, 0.0f, f, f2, 0.0f, f5, color);
+    public static void drawRectOutline(float left, float top, float right, float bottom, float lineWidth, Color color) {
+        BufferedRenderPrimitives.drawLine3D(left, top, 0.0f, right, top, 0.0f, lineWidth, color);
+        BufferedRenderPrimitives.drawLine3D(right, top, 0.0f, right, bottom, 0.0f, lineWidth, color);
+        BufferedRenderPrimitives.drawLine3D(right, bottom, 0.0f, left, bottom, 0.0f, lineWidth, color);
+        BufferedRenderPrimitives.drawLine3D(left, bottom, 0.0f, left, top, 0.0f, lineWidth, color);
     }
 
-    public static void x(double d, double d2, double d3, double d4, float f, Color color) {
-        BufferedRenderPrimitives.m((float)d, (float)d2, (float)d3, (float)d4, f, color);
+    public static void drawLine(double startX, double startY, double endX, double endY, float width, Color color) {
+        BufferedRenderPrimitives.drawLine((float)startX, (float)startY, (float)endX, (float)endY, width, color);
     }
 
-    public static void Q(double d, double d2, double d3, double d4, double d5, double d6, float f, Color color) {
-        BufferedRenderPrimitives.X((float)d, (float)d2, (float)d3, (float)d4, (float)d5, (float)d6, f, color);
+    public static void drawLine3D(double x1, double y1, double z1, double x2, double y2, double z2, float width, Color color) {
+        BufferedRenderPrimitives.drawLine3D((float)x1, (float)y1, (float)z1, (float)x2, (float)y2, (float)z2, width, color);
     }
 
-    public static void q(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, float f9, float f10, float f11, float f12, Color color) {
-        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).q(f, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, color);
-        RenderBatchManager.M().c(renderBatchBuilder);
+    public static void fillQuad(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, Color color) {
+        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).addQuad(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, color);
+        RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
     }
 
-    public static void v(float f, float f2, SmoothFontGlyph smoothFontGlyph, GlImageTexture glImageTexture, Color color, float f3) {
-        BufferedGuiRenderPrimitives.e = glImageTexture;
-        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).H(f, f2, smoothFontGlyph, color, f3);
-        RenderBatchManager.M().c(renderBatchBuilder);
+    public static void drawFontGlyph(float x, float y, SmoothFontGlyph glyph, GlImageTexture texture, Color color, float scale) {
+        BufferedGuiRenderPrimitives.fontTexture = texture;
+        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).addFontGlyph(x, y, glyph, color, scale);
+        RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
     }
 
-    public static void A(double d, double d2, double d3, double d4, Color color) {
-        BufferedRenderPrimitives.G((float)d, (float)d2, (float)d3, (float)d4, color);
+    public static void fillRect(double x, double y, double width, double height, Color color) {
+        BufferedRenderPrimitives.fillRect((float)x, (float)y, (float)width, (float)height, color);
     }
 
-    public static void X(float f, float f2, float f3, float f4, float f5, float f6, float f7, Color color) {
-        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(2, VertexCoordinateMode.DEFAULT, true).b(f, f2, f3, f4, f5, f6, f7, color);
-        RenderBatchManager.M().c(renderBatchBuilder);
+    public static void drawLine3D(float x1, float y1, float z1, float x2, float y2, float z2, float width, Color color) {
+        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(2, VertexCoordinateMode.DEFAULT, true).addLine(x1, y1, z1, x2, y2, z2, width, color);
+        RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
     }
 
-    public static void z(double d, double d2, double d3, double d4, double d5, double d6, double d7, double d8, double d9, double d10, double d11, double d12, Color color) {
-        BufferedRenderPrimitives.q((float)d, (float)d2, (float)d3, (float)d4, (float)d5, (float)d6, (float)d7, (float)d8, (float)d9, (float)d10, (float)d11, (float)d12, color);
+    public static void fillQuad(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double x4, double y4, double z4, Color color) {
+        BufferedRenderPrimitives.fillQuad((float)x1, (float)y1, (float)z1, (float)x2, (float)y2, (float)z2, (float)x3, (float)y3, (float)z3, (float)x4, (float)y4, (float)z4, color);
     }
 
-    public static void v(float f, float f2, float f3, float f4, float f5, Color color, Color color2) {
-        if (color.equals(color2)) {
-            f5 = 0.0f;
-            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).d(f, f2, f3 - f5, f4 - f5, color);
-            RenderBatchManager.M().c(renderBatchBuilder);
+    public static void fillBorderAdjustedRect(float x, float y, float width, float height, float borderWidth, Color fillColor, Color borderColor) {
+        if (fillColor.equals(borderColor)) {
+            borderWidth = 0.0f;
+            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).addSolidRect(x, y, width - borderWidth, height - borderWidth, fillColor);
+            RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
             return;
         }
-        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).d(f -= f5, f2, (f3 += f5) - f5, (f4 += f5) - f5, color);
-        RenderBatchManager.M().c(renderBatchBuilder);
-        float f6 = f + f3;
-        float f7 = f2 + f4;
+        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).addSolidRect(x -= borderWidth, y, (width += borderWidth) - borderWidth, (height += borderWidth) - borderWidth, fillColor);
+        RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
+        float right = x + width;
+        float bottom = y + height;
     }
 
-    public static void G(float f, float f2, float f3, float f4, Color color) {
-        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).d(f, f2, f3, f4, color);
-        RenderBatchManager.M().c(renderBatchBuilder);
+    public static void fillRect(float x, float y, float width, float height, Color color) {
+        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).addSolidRect(x, y, width, height, color);
+        RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
     }
 
-    public static void n(float f, float f2, float f3, float f4, float f5, float f6, Color color) {
-        BufferedRenderPrimitives.X(f, f2, f3, f4, f2, f3, 1.0f, color);
-        BufferedRenderPrimitives.X(f4, f2, f3, f4, f2, f6, 1.0f, color);
-        BufferedRenderPrimitives.X(f4, f2, f3, f4, f2, f6, 1.0f, color);
-        BufferedRenderPrimitives.X(f, f2, f3, f, f2, f6, 1.0f, color);
-        BufferedRenderPrimitives.X(f, f2, f6, f4, f2, f6, 1.0f, color);
-        BufferedRenderPrimitives.X(f, f2, f3, f, f5, f3, 1.0f, color);
-        BufferedRenderPrimitives.X(f4, f2, f6, f4, f5, f6, 1.0f, color);
-        BufferedRenderPrimitives.X(f, f2, f6, f, f5, f6, 1.0f, color);
-        BufferedRenderPrimitives.X(f4, f2, f3, f4, f5, f3, 1.0f, color);
-        BufferedRenderPrimitives.X(f, f5, f3, f4, f5, f3, 1.0f, color);
-        BufferedRenderPrimitives.X(f4, f5, f3, f4, f5, f6, 1.0f, color);
-        BufferedRenderPrimitives.X(f, f5, f3, f, f5, f6, 1.0f, color);
-        BufferedRenderPrimitives.X(f, f5, f6, f4, f5, f6, 1.0f, color);
+    public static void drawBoxOutline(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Color color) {
+        BufferedRenderPrimitives.drawLine3D(minX, minY, minZ, maxX, minY, minZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(maxX, minY, minZ, maxX, minY, maxZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(maxX, minY, minZ, maxX, minY, maxZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(minX, minY, minZ, minX, minY, maxZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(minX, minY, maxZ, maxX, minY, maxZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(minX, minY, minZ, minX, maxY, minZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(maxX, minY, maxZ, maxX, maxY, maxZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(minX, minY, maxZ, minX, maxY, maxZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(maxX, minY, minZ, maxX, maxY, minZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(minX, maxY, minZ, maxX, maxY, minZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(maxX, maxY, minZ, maxX, maxY, maxZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(minX, maxY, minZ, minX, maxY, maxZ, 1.0f, color);
+        BufferedRenderPrimitives.drawLine3D(minX, maxY, maxZ, maxX, maxY, maxZ, 1.0f, color);
     }
 
-    public static void e(double d, double d2, double d3, double d4, double d5, double d6, Color color) {
-        BufferedRenderPrimitives.n((float)d, (float)d2, (float)d3, (float)d4, (float)d5, (float)d6, color);
+    public static void drawBoxOutline(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, Color color) {
+        BufferedRenderPrimitives.drawBoxOutline((float)minX, (float)minY, (float)minZ, (float)maxX, (float)maxY, (float)maxZ, color);
     }
 
-    public static void X(double d, double d2, double d3, float f, float f2, float f3, Color color) {
-        double d4 = RenderManager.getInterpolatedRenderPosX();
-        double d5 = RenderManager.getInterpolatedRenderPosY();
-        double d6 = RenderManager.getInterpolatedRenderPosZ();
-        float f4 = (float)(d - d4);
-        float f5 = (float)(d2 - d5);
-        float f6 = (float)(d3 - d6);
+    public static void drawCylinderSides(double worldX, double worldY, double worldZ, float segments, float radius, float height, Color color) {
+        double cameraX = RenderManager.getInterpolatedRenderPosX();
+        double cameraY = RenderManager.getInterpolatedRenderPosY();
+        double cameraZ = RenderManager.getInterpolatedRenderPosZ();
+        float centerX = (float)(worldX - cameraX);
+        float baseY = (float)(worldY - cameraY);
+        float centerZ = (float)(worldZ - cameraZ);
         RenderUtil.d();
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().B(1.0);
-        OpenGlBackendHolder.d.l(3042);
+        OpenGlBackendHolder.backend.enableCapability(3042);
         GL11.glBlendFunc((int)770, (int)771);
-        OpenGlBackendHolder.d.U(false);
-        OpenGlBackendHolder.d.u$src$V$hntn98(2884);
-        float f7 = f5;
-        float f8 = f5 + f3;
-        MutableColor mutableColor = new MutableColor(color).withAlpha(0);
-        Color color2 = color;
-        float f9 = 0.0f;
-        float f10 = 0.0f;
-        boolean bl = false;
-        int n = 0;
-        while ((float)n <= f) {
-            float f11 = (float)(Math.PI * 2 * (double)n / (double)f);
-            float f12 = (float)((double)f2 * Math.cos(f11) + (double)f4);
-            float f13 = (float)((double)f2 * Math.sin(f11) + (double)f6);
-            if (!bl) {
-                bl = true;
-                f9 = f12;
-                f10 = f13;
+        OpenGlBackendHolder.backend.setDepthMask(false);
+        OpenGlBackendHolder.backend.disableCapability(2884);
+        float bottomY = baseY;
+        float topY = baseY + height;
+        MutableColor transparentColor = new MutableColor(color).withAlpha(0);
+        Color opaqueColor = color;
+        float previousX = 0.0f;
+        float previousZ = 0.0f;
+        boolean hasPreviousPoint = false;
+        int segmentIndex = 0;
+        while ((float)segmentIndex <= segments) {
+            float angle = (float)(Math.PI * 2 * (double)segmentIndex / (double)segments);
+            float currentX = (float)((double)radius * Math.cos(angle) + (double)centerX);
+            float currentZ = (float)((double)radius * Math.sin(angle) + (double)centerZ);
+            if (!hasPreviousPoint) {
+                hasPreviousPoint = true;
+                previousX = currentX;
+                previousZ = currentZ;
             } else {
-                BufferedRenderPrimitives.H(f12, f8, f13, f9, f8, f10, f9, f7, f10, f12, f7, f13, mutableColor, color2);
-                f9 = f12;
-                f10 = f13;
+                BufferedRenderPrimitives.fillGradientQuad(currentX, topY, currentZ, previousX, topY, previousZ, previousX, bottomY, previousZ, currentX, bottomY, currentZ, transparentColor, opaqueColor);
+                previousX = currentX;
+                previousZ = currentZ;
             }
-            ++n;
+            ++segmentIndex;
         }
-        OpenGlBackendHolder.d.U(true);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3042);
+        OpenGlBackendHolder.backend.setDepthMask(true);
+        OpenGlBackendHolder.backend.disableCapability(3042);
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
         RenderUtil.Y();
     }
 
-    public static void m(float f, float f2, float f3, float f4, float f5, Color color) {
-        BufferedRenderPrimitives.X(f, f2, 0.0f, f3, f4, 0.0f, f5, color);
+    public static void drawLine(float startX, float startY, float endX, float endY, float width, Color color) {
+        BufferedRenderPrimitives.drawLine3D(startX, startY, 0.0f, endX, endY, 0.0f, width, color);
     }
 
-    public static void W(double d, double d2, double d3, double d4, double d5, double d6, Color color) {
-        BufferedRenderPrimitives.Z((float)d, (float)d2, (float)d3, (float)d4, (float)d5, (float)d6, color);
+    public static void fillBox(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, Color color) {
+        BufferedRenderPrimitives.fillBox((float)minX, (float)minY, (float)minZ, (float)maxX, (float)maxY, (float)maxZ, color);
     }
 
-    public static void K(double d, double d2, double d3, double d4, float f, Color color, Color color2) {
-        BufferedRenderPrimitives.v((float)d, (float)d2, (float)d3, (float)d4, f, color, color2);
+    public static void fillBorderAdjustedRect(double x, double y, double width, double height, float borderWidth, Color fillColor, Color borderColor) {
+        BufferedRenderPrimitives.fillBorderAdjustedRect((float)x, (float)y, (float)width, (float)height, borderWidth, fillColor, borderColor);
     }
 
-    public static void Z(float f, float f2, float f3, float f4, float f5, float f6, Color color) {
-        BufferedRenderPrimitives.q(f, f2, f3, f, f5, f3, f4, f5, f3, f4, f2, f3, color);
-        BufferedRenderPrimitives.q(f4, f2, f6, f4, f5, f6, f, f5, f6, f, f2, f6, color);
-        BufferedRenderPrimitives.q(f4, f2, f3, f4, f5, f3, f4, f5, f6, f4, f2, f6, color);
-        BufferedRenderPrimitives.q(f, f2, f6, f, f5, f6, f, f5, f3, f, f2, f3, color);
-        BufferedRenderPrimitives.q(f, f5, f3, f, f5, f6, f4, f5, f6, f4, f5, f3, color);
-        BufferedRenderPrimitives.q(f, f2, f3, f4, f2, f3, f4, f2, f6, f, f2, f6, color);
+    public static void fillBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Color color) {
+        BufferedRenderPrimitives.fillQuad(minX, minY, minZ, minX, maxY, minZ, maxX, maxY, minZ, maxX, minY, minZ, color);
+        BufferedRenderPrimitives.fillQuad(maxX, minY, maxZ, maxX, maxY, maxZ, minX, maxY, maxZ, minX, minY, maxZ, color);
+        BufferedRenderPrimitives.fillQuad(maxX, minY, minZ, maxX, maxY, minZ, maxX, maxY, maxZ, maxX, minY, maxZ, color);
+        BufferedRenderPrimitives.fillQuad(minX, minY, maxZ, minX, maxY, maxZ, minX, maxY, minZ, minX, minY, minZ, color);
+        BufferedRenderPrimitives.fillQuad(minX, maxY, minZ, minX, maxY, maxZ, maxX, maxY, maxZ, maxX, maxY, minZ, color);
+        BufferedRenderPrimitives.fillQuad(minX, minY, minZ, maxX, minY, minZ, maxX, minY, maxZ, minX, minY, maxZ, color);
     }
 
-    public static void P(float f, float f2, float f3, float f4, float f5, float f6, Color color, float f7, float f8, float f9, Color color2, Color color3, float f10, float f11, Color color4, boolean bl) {
-        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).Y(f, f2, f3, f4, f5, f6, color, f7, f8, f9, color2, color3, f10, f11, color4, bl);
-        RenderBatchManager.M().c(renderBatchBuilder);
+    public static void drawCompositeRoundedRect(float x, float y, float width, float height, float shadowSpread, float cornerRadius, Color shadowColor, float shadowOffsetX, float shadowOffsetY, float strokeWidth, Color strokeColor, Color fillColor, float circleThickness, float circleYOffset, Color circleColor, boolean texturePassthrough) {
+        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).addCompositeRoundedRect(x, y, width, height, shadowSpread, cornerRadius, shadowColor, shadowOffsetX, shadowOffsetY, strokeWidth, strokeColor, fillColor, circleThickness, circleYOffset, circleColor, texturePassthrough);
+        RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
     }
 
-    public static void H(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, float f9, float f10, float f11, float f12, Color color, Color color2) {
-        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).k(f, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, color, color2);
-        RenderBatchManager.M().c(renderBatchBuilder);
+    public static void fillGradientQuad(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, Color startColor, Color endColor) {
+        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.DEFAULT, true).addGradientQuad(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, startColor, endColor);
+        RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
     }
 
-    public static void c(double d, double d2, double d3, double d4, float f, Color color) {
-        BufferedRenderPrimitives.x((float)d, (float)d2, (float)d3, (float)d4, f, color);
+    public static void drawRectOutline(double left, double top, double right, double bottom, float lineWidth, Color color) {
+        BufferedRenderPrimitives.drawRectOutline((float)left, (float)top, (float)right, (float)bottom, lineWidth, color);
     }
 }
-

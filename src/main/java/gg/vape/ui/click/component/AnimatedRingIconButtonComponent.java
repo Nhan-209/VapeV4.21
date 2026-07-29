@@ -7,30 +7,30 @@ import java.awt.Color;
 
 public class AnimatedRingIconButtonComponent
 extends IconButtonComponent {
-    private final ColorAnimation VT;
+    private final ColorAnimation ringAnimation;
 
     @Override
     public void H() {
         super.H();
-        float f = (float)this.A();
-        GuiRenderPrimitives.m((float)(this.G$src$D$1b2f02a() + this.A() / 2.0 - (double)(f / 2.0f)), (float)(this.n() + this.L() / 2.0 - (double)(f / 2.0f)), f, 1.5f, 1.0f, this.VT.getInterpolatedColor());
+        float diameter = (float)this.A();
+        GuiRenderPrimitives.m((float)(this.G$src$D$1b2f02a() + this.A() / 2.0 - (double)(diameter / 2.0f)), (float)(this.n() + this.L() / 2.0 - (double)(diameter / 2.0f)), diameter, 1.5f, 1.0f, this.ringAnimation.getInterpolatedColor());
     }
 
     @Override
     public void onEnable() {
-        this.VT.J();
+        this.ringAnimation.J();
     }
 
 
-    public AnimatedRingIconButtonComponent(String string, Color color, double d, double d2, double d3) {
-        super(string, d, d2, d3);
-        this.VT = new ColorAnimation(0.1, color, color.brighter());
+    public AnimatedRingIconButtonComponent(String iconResource, Color ringColor, double iconScale, double width, double height) {
+        super(iconResource, iconScale, width, height);
+        this.ringAnimation = new ColorAnimation(0.1, ringColor, ringColor.brighter());
     }
 
     @Override
     public void F() {
         if (!this.w$src$Z$e457mb()) {
-            this.VT.J();
+            this.ringAnimation.J();
         }
         super.F();
     }

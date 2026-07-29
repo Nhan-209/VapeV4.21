@@ -47,7 +47,7 @@ extends FriendEntry {
 
     @Override
     public String o() {
-        if (Vape.INSTANCE.getFriendManager().J.L().booleanValue()) {
+        if (Vape.INSTANCE.getFriendManager().J.getEffectiveValue().booleanValue()) {
             return this.E();
         }
         return this.e;

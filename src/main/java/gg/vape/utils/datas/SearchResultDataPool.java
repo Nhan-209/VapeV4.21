@@ -6,19 +6,18 @@ import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SearchResultDataPool {
-    public static final Stack<SearchResultData> L = new Stack();
+    public static final Stack<SearchResultData> AVAILABLE_RESULTS = new Stack();
 
-    public static SearchResultData n(int n, int n2, int n3, int n4, SearchBlock searchBlock, AtomicBoolean atomicBoolean, int n5) {
-        if (!L.isEmpty()) {
-            SearchResultData eO = L.pop();
-            eO.t(n, n2, n3, n4, searchBlock, atomicBoolean, n5);
-            return eO;
+    public static SearchResultData acquire(int x, int y, int z, int blockId, SearchBlock searchBlock, AtomicBoolean active, int metadata) {
+        if (!AVAILABLE_RESULTS.isEmpty()) {
+            SearchResultData result = AVAILABLE_RESULTS.pop();
+            result.t(x, y, z, blockId, searchBlock, active, metadata);
+            return result;
         }
-        return new SearchResultData(n, n2, n3, n4, searchBlock, atomicBoolean, n5);
+        return new SearchResultData(x, y, z, blockId, searchBlock, active, metadata);
     }
 
-    public static void h(SearchResultData eO) {
-        L.push(eO);
+    public static void release(SearchResultData result) {
+        AVAILABLE_RESULTS.push(result);
     }
 }
-

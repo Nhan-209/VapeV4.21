@@ -66,7 +66,7 @@ extends Mapping {
         String string7 = "put";
         MItemAttributeModifiers mItemAttributeModifiers5 = this;
         this.u = this.Y(string7, bl5, clazz5, classArray5);
-        GuiComponent.D(new GuiComponent[4]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[4]);
     }
 
 

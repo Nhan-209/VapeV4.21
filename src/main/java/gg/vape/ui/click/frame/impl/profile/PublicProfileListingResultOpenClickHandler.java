@@ -18,10 +18,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 class PublicProfileListingResultOpenClickHandler
 implements GuiMouseListener {
-    final PublicProfileSummary p;
-    final AtomicBoolean Q;
-    final PublicProfilesFrame J;
-    static final boolean c = !PublicProfilesFrame.class.desiredAssertionStatus();
+    final PublicProfileSummary profileSummary;
+    final AtomicBoolean clickPending;
+    final PublicProfilesFrame profilesFrame;
+    static final boolean ASSERTIONS_DISABLED = !PublicProfilesFrame.class.desiredAssertionStatus();
 
 
     private static ApiResponse lambda$onClick$1(Throwable throwable) {
@@ -31,41 +31,41 @@ implements GuiMouseListener {
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        if (!this.Q.get()) {
+        if (!this.clickPending.get()) {
             return;
         }
-        this.Q.set(false);
-        PublicProfileListingDetailsPanel publicProfileListingDetailsPanel = this.J.l((PublicProfile)null);
-        publicProfileListingDetailsPanel.T(ApiServices.d().R().x(this.p.h()).whenCompleteAsync((arg_0, arg_1) -> this.lambda$onClick$0(this.Q, publicProfileListingDetailsPanel, this.p, arg_0, arg_1), (Executor)ClientSettings.f6).exceptionally(PublicProfileListingResultOpenClickHandler::lambda$onClick$1));
+        this.clickPending.set(false);
+        PublicProfileListingDetailsPanel detailsPanel = this.profilesFrame.l((PublicProfile)null);
+        detailsPanel.T(ApiServices.d().R().x(this.profileSummary.h()).whenCompleteAsync((response, error) -> this.handleProfileLoad(this.clickPending, detailsPanel, this.profileSummary, response, error), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileListingResultOpenClickHandler::lambda$onClick$1));
     }
 
-    private void lambda$onClick$0(AtomicBoolean atomicBoolean, PublicProfileListingDetailsPanel publicProfileListingDetailsPanel, PublicProfileSummary publicProfileSummary, ApiResponse apiResponse, Throwable throwable) {
-        atomicBoolean.set(true);
-        if (publicProfileListingDetailsPanel.R$src$Ljava_util_concurrent_CompletableFuture_$1ccqvok().isCancelled()) {
+    private void handleProfileLoad(AtomicBoolean clickState, PublicProfileListingDetailsPanel detailsPanel, PublicProfileSummary summary, ApiResponse apiResponse, Throwable throwable) {
+        clickState.set(true);
+        if (detailsPanel.R$src$Ljava_util_concurrent_CompletableFuture_$1ccqvok().isCancelled()) {
             return;
         }
-        publicProfileListingDetailsPanel.T((CompletableFuture<?>)null);
+        detailsPanel.T((CompletableFuture<?>)null);
         if (throwable != null) {
             Vape.logThrowable(throwable);
-            PublicProfilesFrame.k(this.J, publicProfileListingDetailsPanel.E());
+            PublicProfilesFrame.k(this.profilesFrame, detailsPanel.E());
             return;
         }
         if (!apiResponse.t()) {
-            Vape.debugLog("Failed to get public response details of " + publicProfileSummary.h() + ": " + apiResponse.N());
+            Vape.debugLog("Failed to get public response details of " + summary.h() + ": " + apiResponse.N());
             PublicProfileManager.b("Failed to view profile: " + apiResponse.N());
-            PublicProfilesFrame.k(this.J, publicProfileListingDetailsPanel.E());
+            PublicProfilesFrame.k(this.profilesFrame, detailsPanel.E());
             return;
         }
-        if (!c && apiResponse.T() == null) {
+        if (!ASSERTIONS_DISABLED && apiResponse.T() == null) {
             throw new AssertionError();
         }
         Vape.INSTANCE.getPublicProfileManager().Z((PublicProfile)apiResponse.T());
-        this.J.l((PublicProfile)apiResponse.T());
+        this.profilesFrame.l((PublicProfile)apiResponse.T());
     }
 
     PublicProfileListingResultOpenClickHandler(PublicProfilesFrame publicProfilesFrame, AtomicBoolean atomicBoolean, PublicProfileSummary publicProfileSummary) {
-        this.J = publicProfilesFrame;
-        this.Q = atomicBoolean;
-        this.p = publicProfileSummary;
+        this.profilesFrame = publicProfilesFrame;
+        this.clickPending = atomicBoolean;
+        this.profileSummary = publicProfileSummary;
     }
 }

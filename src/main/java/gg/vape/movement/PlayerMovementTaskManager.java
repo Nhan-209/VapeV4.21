@@ -6,68 +6,65 @@ import gg.vape.event.EventListener;
 import gg.vape.event.EventPriority;
 import gg.vape.event.impl.EventPreLocalPlayerTick;
 import gg.vape.event.impl.EventPreTick;
-import gg.vape.movement.MovementInputHelper;
-import gg.vape.movement.PlayerMovementTask;
 import gg.vape.wrapper.impl.Minecraft;
 
 public class PlayerMovementTaskManager
 implements EventListener {
-    private static String y;
-    public static PlayerMovementTaskManager G;
-    private PlayerMovementTask x;
-    private boolean k;
+    private static String controlFlowMarker;
+    public static PlayerMovementTaskManager INSTANCE;
+    private PlayerMovementTask activeTask;
 
-    private static RuntimeException a(RuntimeException runtimeException) {
-        return runtimeException;
+    private static RuntimeException propagateRuntimeException(RuntimeException exception) {
+        return exception;
     }
 
-    public static void C(String string) {
-        y = string;
+    public static void setControlFlowMarker(String marker) {
+        controlFlowMarker = marker;
     }
 
-    public void Q(PlayerMovementTask playerMovementTask) {
-        if (this.x != null && this.x.equals(playerMovementTask)) {
-            this.x.s(true);
+    public void cancel(PlayerMovementTask task) {
+        if (this.activeTask != null && this.activeTask.equals(task)) {
+            this.activeTask.setCompleted(true);
         }
     }
 
     private PlayerMovementTaskManager() {
-        G = this;
+        INSTANCE = this;
     }
 
     public boolean e$src$Z$17ayaq9() {
-        return this.x != null && !this.x.q$src$Z$naak2i();
+        return this.activeTask != null && !this.activeTask.isCompleted();
     }
 
     @EventHandler(A=EventPriority.HIGH)
-    public void u(EventPreLocalPlayerTick eventPreLocalPlayerTick) {
-        if (this.x == null && Minecraft.thePlayer().isNotNull()) {
+    public void onPreLocalPlayerTick(EventPreLocalPlayerTick event) {
+        if (this.activeTask == null && Minecraft.thePlayer().isNotNull()) {
             return;
         }
-        this.x.r();
-        if (this.x.q$src$Z$naak2i()) {
-            if (this.x.n()) {
-                MovementInputHelper.q();
+        this.activeTask.updateCompletion();
+        if (this.activeTask.isCompleted()) {
+            if (this.activeTask.shouldRestoreInputOnCompletion()) {
+                MovementInputHelper.restorePhysicalInput();
             } else {
-                MovementInputHelper.i();
+                MovementInputHelper.releaseMovementKeys();
             }
-            this.x = null;
+            this.activeTask = null;
         }
     }
 
-    public PlayerMovementTask e() {
-        return this.x;
+    public PlayerMovementTask getActiveTask() {
+        return this.activeTask;
     }
 
-    public static String S() {
-        return y;
+    public static String getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        if (this.x != null && Minecraft.thePlayer().isNotNull()) {
+        if (this.activeTask != null && Minecraft.thePlayer().isNotNull()) {
             try {
-                this.x.i(eventPreTick);
+                this.activeTask.applyMovementInput(eventPreTick);
             }
             catch (NullPointerException nullPointerException) {
                 Vape.logThrowable(nullPointerException);
@@ -75,13 +72,12 @@ implements EventListener {
         }
     }
 
-    public void i(PlayerMovementTask playerMovementTask) {
-        this.x = playerMovementTask;
+    public void submit(PlayerMovementTask task) {
+        this.activeTask = task;
     }
 
     static {
-        G = new PlayerMovementTaskManager();
-        PlayerMovementTaskManager.C(null);
+        INSTANCE = new PlayerMovementTaskManager();
+        PlayerMovementTaskManager.setControlFlowMarker(null);
     }
 }
-

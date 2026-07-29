@@ -4,18 +4,18 @@ import gg.vape.wrapper.impl.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
 public class GlCapabilityState {
-    private static String J;
-    public boolean K;
-    public boolean k;
-    public boolean r;
-    public boolean Z;
+    private static String legacyMarker;
+    public boolean depthTestEnabled;
+    public boolean depthWriteEnabled;
+    public boolean blendEnabled;
+    public boolean cullFaceEnabled;
 
-    public static String u() {
-        return J;
+    public static String getLegacyMarker() {
+        return legacyMarker;
     }
 
-    public static void m(String string) {
-        J = string;
+    public static void setLegacyMarker(String legacyMarker) {
+        GlCapabilityState.legacyMarker = legacyMarker;
     }
 
     public boolean equals(Object object) {
@@ -25,75 +25,74 @@ public class GlCapabilityState {
         if (!(object instanceof GlCapabilityState)) {
             return false;
         }
-        GlCapabilityState eZ = (GlCapabilityState)object;
-        boolean bl = this.Y() == eZ.Y();
-        return bl;
+        GlCapabilityState other = (GlCapabilityState)object;
+        return this.toBitMask() == other.toBitMask();
     }
 
-    public void a(boolean bl) {
-        this.k = bl;
+    public void setDepthWriteEnabled(boolean depthWriteEnabled) {
+        this.depthWriteEnabled = depthWriteEnabled;
     }
 
-    public GlCapabilityState L() {
+    public GlCapabilityState copy() {
         return new GlCapabilityState(this);
     }
 
-    public boolean Z(int capability) {
+    public boolean disableCapability(int capability) {
         switch (capability) {
             case GL11.GL_DEPTH_TEST:
-                this.K = false;
+                this.depthTestEnabled = false;
                 return true;
             case GL11.GL_CULL_FACE:
-                this.Z = false;
+                this.cullFaceEnabled = false;
                 return true;
             case GL11.GL_BLEND:
-                this.r = false;
+                this.blendEnabled = false;
                 return true;
             default:
                 return false;
         }
     }
 
-    public void K() {
-        if (this.K) {
+    public void apply() {
+        if (this.depthTestEnabled) {
             GlStateManager.enableDepth();
         } else {
             GlStateManager.disableDepth();
         }
-        if (this.r) {
+        if (this.blendEnabled) {
             GlStateManager.enableBlend();
         } else {
             GlStateManager.disableBlend();
         }
-        GL11.glDepthMask((boolean)this.k);
+        GL11.glDepthMask((boolean)this.depthWriteEnabled);
     }
 
-    public long Y() {
+    public long toBitMask() {
         long state = 0L;
-        state |= (this.Z ? 1L : 0L) << 0;
-        state |= (this.K ? 1L : 0L) << 1;
-        state |= (this.r ? 1L : 0L) << 2;
-        state |= (this.k ? 1L : 0L) << 3;
+        state |= (this.cullFaceEnabled ? 1L : 0L) << 0;
+        state |= (this.depthTestEnabled ? 1L : 0L) << 1;
+        state |= (this.blendEnabled ? 1L : 0L) << 2;
+        state |= (this.depthWriteEnabled ? 1L : 0L) << 3;
         return state;
     }
 
-    public GlCapabilityState(GlCapabilityState eZ) {
-        this.Z = eZ.Z;
-        this.K = eZ.K;
-        this.r = eZ.r;
-        this.k = eZ.k;
+    public GlCapabilityState(GlCapabilityState source) {
+        this.cullFaceEnabled = source.cullFaceEnabled;
+        this.depthTestEnabled = source.depthTestEnabled;
+        this.blendEnabled = source.blendEnabled;
+        this.depthWriteEnabled = source.depthWriteEnabled;
     }
 
-    public boolean D(int capability) {
+    public boolean enableCapability(int capability) {
         switch (capability) {
             case GL11.GL_DEPTH_TEST:
-                this.K = true;
+                this.depthTestEnabled = true;
                 return true;
             case GL11.GL_CULL_FACE:
-                this.Z = true;
+                this.cullFaceEnabled = true;
                 return true;
             case GL11.GL_BLEND:
-                this.r = true;
+                this.blendEnabled = true;
                 return true;
             default:
                 return false;
@@ -105,8 +104,8 @@ public class GlCapabilityState {
 
 
     static {
-        if (GlCapabilityState.u() != null) {
-            GlCapabilityState.m("DrzNk");
+        if (GlCapabilityState.getLegacyMarker() != null) {
+            GlCapabilityState.setLegacyMarker("DrzNk");
         }
     }
 }

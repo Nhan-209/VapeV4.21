@@ -30,14 +30,15 @@ extends ClickerMod {
     private final RandomValue cps = RandomValue.create(this, "CPS", "#.#", "", 1.0, 7.0, 13.0, 20.0);
 
     @Override
-    public boolean d(EntityPlayerSP entityPlayerSP) {
-        if (SharedModuleControlClaims.x.v$src$Z$1r7ksy2()) {
+    public boolean shouldBlockClick(EntityPlayerSP player) {
+        if (SharedModuleControlClaims.rightClickUse.isClaimed()) {
             return true;
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            ItemStack itemStack = entityPlayerSP.i(EnumHand.M());
-            ItemStack itemStack2 = entityPlayerSP.i(EnumHand.p());
-            if (!this.itemWhitelist.A(itemStack) && this.itemWhitelist.A(itemStack2) && this.isUsableItem(itemStack, entityPlayerSP)) {
+            ItemStack mainHandItem = player.i(EnumHand.M());
+            ItemStack offHandItem = player.i(EnumHand.p());
+            if (!this.itemWhitelist.matches(mainHandItem) && this.itemWhitelist.matches(offHandItem)
+                    && this.isUsableItem(mainHandItem, player)) {
                 return true;
             }
         }
@@ -46,23 +47,24 @@ extends ClickerMod {
 
 
     @Override
-    public double U() {
-        return (Double)this.startDelay.K();
+    public double getStartDelayMillis() {
+        return (Double)this.startDelay.getValue();
     }
 
-    private boolean isUsableItem(ItemStack itemStack, EntityPlayerSP entityPlayerSP) {
-        return itemStack.isNotNull() && itemStack.getItem().isNotNull() && itemStack.getItem().I(itemStack, entityPlayerSP) > 0;
+    private boolean isUsableItem(ItemStack itemStack, EntityPlayerSP player) {
+        return itemStack.isNotNull() && itemStack.getItem().isNotNull()
+                && itemStack.getItem().I(itemStack, player) > 0;
     }
 
     @Override
-    public String r() {
-        return this.cps.c() + "cps";
+    public String getDetailedSuffix() {
+        return this.cps.getDisplayValue() + "cps";
     }
 
     public RightClicker() {
         super("RightClicker");
         this.holdToClick = BooleanValue.create(this, "Hold to Click", true);
-        this.itemWhitelist = LimitValue.N(this, "autoclicker-allowed-items", "Item whitelist", LimitValue.r, new ItemLimitData("blocks")).F(true);
+        this.itemWhitelist = LimitValue.create(this, "autoclicker-allowed-items", "Item whitelist", LimitValue.ALLOW_LIST_COLOR, new ItemLimitData("blocks")).setIncludeOffhand(true);
         this.jitter = BooleanValue.create(this, "Jitter", false);
         this.useItemWhitelist = BooleanValue.create(this, "Use item whitelist", false);
         this.modeExtra = new ModeOption("Extra");
@@ -70,11 +72,11 @@ extends ClickerMod {
         this.modeNormal = new ModeOption("Normal");
         this.randomization = ModeValue.create((Object)this, "Randomization", this.modeExtraPlus, this.modeNormal, this.modeExtra, this.modeExtraPlus);
         this.startDelay = NumberValue.create(this, "Start Delay", "#.#", "", 0.0, 0.0, 1000.0);
-        this.useItemWhitelist.K(this.itemWhitelist);
+        this.useItemWhitelist.addDependentValues(this.itemWhitelist);
         this.addValue(this.cps, this.startDelay, this.randomization, this.jitter, this.useItemWhitelist, this.itemWhitelist);
         ClickEngine clickEngine = new ClickEngine(ClickButton.RIGHT, this.cps, this.useItemWhitelist, this.itemWhitelist, this.holdToClick, this.randomization, this.jitter);
-        this.F(clickEngine);
-        this.cps.V(0);
+        this.setClickEngine(clickEngine);
+        this.cps.setMaximumFractionDigits(0);
     }
 }
 

@@ -5,17 +5,18 @@ import gg.vape.value.ModeValue;
 
 public class AntiBotModeValue
 extends ModeValue {
-    public static AntiBotModeValue u(Object object, String string, String string2, ModeSelection modeSelection, int n, ModeSelection ... modeSelectionArray) {
-        AntiBotModeValue mo_02 = new AntiBotModeValue(object, string, string, modeSelection, modeSelectionArray);
-        mo_02.Z$src$Lgg_vape_value_Value_$16i62fx(string2);
-        for (ModeSelection modeSelection2 : modeSelectionArray) {
-            modeSelection2.S(mo_02);
+    public static AntiBotModeValue create(Object owner, String name, String description,
+                                          ModeSelection defaultMode, ModeSelection ... modes) {
+        AntiBotModeValue value = new AntiBotModeValue(owner, name, name, defaultMode, modes);
+        value.setDescription(description);
+        for (ModeSelection mode : modes) {
+            mode.attachToMode(value);
         }
-        return mo_02;
+        return value;
     }
 
-    public AntiBotModeValue(Object object, String string, String string2, ModeSelection modeSelection, ModeSelection[] modeSelectionArray) {
-        super(object, string, string2, modeSelection, modeSelectionArray);
+    public AntiBotModeValue(Object owner, String name, String description,
+                            ModeSelection defaultMode, ModeSelection[] modes) {
+        super(owner, name, description, defaultMode, modes);
     }
 }
-

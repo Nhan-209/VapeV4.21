@@ -14,7 +14,6 @@ import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.Freecam;
 import gg.vape.rotation.RotationControlClaim;
-import gg.vape.rotation.RotationManager;
 import gg.vape.ui.click.frame.impl.hud.ActiveModuleStackFrame;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.MathUtil;
@@ -39,121 +38,100 @@ import gg.vape.wrapper.impl.World;
 
 public class CrystalAura
 extends Mod {
-    public static final float Z = 0.2f;
-    public final ModeValue J;
-    public static final float v = 2.0f;
-    private CrystalAuraPlacementSubModule autoSubModule = new CrystalAuraPlacementSubModule(this, "Auto");
+    private final ModeValue mode;
+    private final CrystalAuraPlacementSubModule autoSubModule = new CrystalAuraPlacementSubModule(this, "Auto");
     private static Freecam freecam;
-    public static final float r = 25.0f;
-    private CrystalAuraTargetSubModule manualSubModule = new CrystalAuraTargetSubModule(this, "Manual");
-    private final RotationControlClaim rotationClaim = SharedModuleControlClaims.I;
-    public static final float F = 20.0f;
-    private static final int Y;
-
-    public RotationManager I$src$Lgg_vape_rotation_RotationManager_$10bv4gd() {
-        return RotationManager.b;
+    private final CrystalAuraTargetSubModule manualSubModule = new CrystalAuraTargetSubModule(this, "Manual");
+    private final RotationControlClaim rotationClaim = SharedModuleControlClaims.rotation;
+    public float applyDamageReductions(EntityPlayerSP player, float damage) {
+        damage = this.applyArmorReduction(player, damage);
+        damage = this.applyPotionAndEnchantmentReductions(player, damage);
+        return Math.max(damage, 0.0f);
     }
 
-    static {
-        Y = 4;
-    }
-
-    public float j(EntityPlayerSP entityPlayerSP, float f) {
-        f = this.B(entityPlayerSP, f);
-        f = this.b(entityPlayerSP, f);
-        return Math.max(f, 0.0f);
-    }
-
-    public int z(EntityPlayerSP entityPlayerSP) {
-        for (int i = 0; i < 9; ++i) {
-            ItemStack itemStack = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(i);
-            if (!this.p(itemStack)) continue;
-            return i;
+    public int findObsidianSlot(EntityPlayerSP player) {
+        for (int slot = 0; slot < 9; ++slot) {
+            ItemStack itemStack = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(slot);
+            if (!this.isObsidian(itemStack)) continue;
+            return slot;
         }
         return -1;
     }
 
-    public static float E(float f, float f2, float f3) {
-        float f4 = 2.0f + f3 / 4.0f;
-        float f5 = NumericMathUtil.w(f2 - f / f4, f2 * 0.2f, 20.0f);
-        float f6 = f5 / 25.0f;
-        float f7 = 1.0f - f6;
-        return f * f7;
+    public static float reduceDamageByArmor(float damage, float armor, float armorToughness) {
+        float toughnessScale = 2.0f + armorToughness / 4.0f;
+        float effectiveArmor = NumericMathUtil.clamp(armor - damage / toughnessScale, armor * 0.2f, 20.0f);
+        return damage * (1.0f - effectiveArmor / 25.0f);
     }
 
-    public boolean W() {
+    public boolean shouldPause() {
         if (freecam == null) {
             freecam = Vape.INSTANCE.getModManager().getMod(Freecam.class);
         }
-        return freecam != null && freecam.r$src$Z$14eylz9() || this.rotationClaim.e(this) && !this.rotationClaim.h(this, true);
+        return freecam != null && freecam.r$src$Z$14eylz9() || this.rotationClaim.isBlockedFor(this) && !this.rotationClaim.acquire(this, true);
     }
 
-    protected float b(EntityPlayerSP entityPlayerSP, float f) {
-        if (entityPlayerSP.i(PotionRegistry.P)) {
-            int n = (entityPlayerSP.b(PotionRegistry.P).L() + 1) * 5;
-            int n2 = 25 - n;
-            float f2 = f * (float)n2;
-            f = Math.max(f2 / 25.0f, 0.0f);
+    protected float applyPotionAndEnchantmentReductions(EntityPlayerSP player, float damage) {
+        if (player.i(PotionRegistry.P)) {
+            int resistanceReduction = (player.b(PotionRegistry.P).L() + 1) * 5;
+            int remainingPercent = 25 - resistanceReduction;
+            damage = Math.max(damage * (float)remainingPercent / 25.0f, 0.0f);
         }
-        if (f <= 0.0f) {
+        if (damage <= 0.0f) {
             return 0.0f;
         }
-        float f3 = CrystalAura.w(entityPlayerSP);
-        if (f3 > 0.0f) {
-            f = CrystalAura.Y(f, f3);
+        float blastProtection = CrystalAura.getBlastProtectionLevel(player);
+        if (blastProtection > 0.0f) {
+            damage = CrystalAura.reduceDamageByBlastProtection(damage, blastProtection);
         }
-        return f;
+        return damage;
     }
 
     @Override
-    public String r() {
+    public String getDetailedSuffix() {
         if (this.autoSubModule.J$src$Z$gcqtyf() && this.autoSubModule.r$src$Z$14eylz9()) {
-            return this.autoSubModule.r();
+            return this.autoSubModule.getDetailedSuffix();
         }
         if (this.manualSubModule.J$src$Z$gcqtyf() && this.manualSubModule.r$src$Z$14eylz9()) {
-            return this.manualSubModule.r();
+            return this.manualSubModule.getDetailedSuffix();
         }
         return "";
     }
 
-    public boolean u(ItemStack itemStack) {
+    public boolean isEndCrystal(ItemStack itemStack) {
         if (itemStack.isNull()) {
             return false;
         }
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack);
+        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         if (itemMappingEntry != null) {
             return "minecraft:end_crystal".equals(itemMappingEntry.M()) || "end_crystal".equals(itemMappingEntry.q());
         }
         return itemStack.f().toLowerCase().contains("end_crystal");
     }
 
-    public RotationControlClaim X$src$Lgg_vape_rotation_RotationControlClaim_$1j4bdqm() {
-        return this.rotationClaim;
-    }
-
-    public int Q(EntityPlayerSP entityPlayerSP) {
-        for (int i = 0; i < 9; ++i) {
-            ItemStack itemStack = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(i);
-            if (!this.u(itemStack)) continue;
-            return i;
+    public int findCrystalSlot(EntityPlayerSP player) {
+        for (int slot = 0; slot < 9; ++slot) {
+            ItemStack itemStack = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(slot);
+            if (!this.isEndCrystal(itemStack)) continue;
+            return slot;
         }
         return -1;
     }
 
-    public boolean n(Vec3 vec3, ExplosionType explosionType, EntityPlayerSP entityPlayerSP, World world, boolean bl, double d) {
-        float f;
-        float f2 = this.k(entityPlayerSP, explosionType, vec3, world);
-        if (f2 <= 0.0f) {
+    public boolean isSelfDamageSafe(Vec3 explosionPosition, ExplosionType explosionType, EntityPlayerSP player, World world, boolean preventSuicide, double maximumDamage) {
+        float explosionDamage = this.calculateExplosionDamage(player, explosionType, explosionPosition, world);
+        if (explosionDamage <= 0.0f) {
             return true;
         }
-        if (bl && (f = entityPlayerSP.w$src$F$15l9epb() + entityPlayerSP.p()) <= f2) {
+        float effectiveHealth = player.w$src$F$15l9epb() + player.p();
+        if (preventSuicide && effectiveHealth <= explosionDamage) {
             return false;
         }
-        return (double)f2 <= d;
+        return (double)explosionDamage <= maximumDamage;
     }
 
-    public Vec3 B(DirectionalPosition directionalPosition) {
-        switch (directionalPosition.X()) {
+    public Vec3 getInteractionPoint(DirectionalPosition directionalPosition) {
+        switch (directionalPosition.getFacingIndex()) {
             case 1: {
                 return Vec3.create((double)directionalPosition.B() + 0.5, directionalPosition.E() + 1, (double)directionalPosition.A() + 0.5);
             }
@@ -184,89 +162,91 @@ extends Mod {
         return null;
     }
 
-    public int U(EntityPlayerSP entityPlayerSP) {
-        int n = 0;
+    public int countCrystalsInHotbar(EntityPlayerSP player) {
+        int crystalCount = 0;
         for (int i = 0; i < 9; ++i) {
-            ItemStack itemStack = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(i);
-            if (!this.u(itemStack)) continue;
-            n += itemStack.t();
+            ItemStack itemStack = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(i);
+            if (!this.isEndCrystal(itemStack)) continue;
+            crystalCount += itemStack.t();
         }
-        return n;
+        return crystalCount;
     }
 
-    protected float B(EntityPlayerSP entityPlayerSP, float f) {
-        f = CrystalAura.E(f, (float)entityPlayerSP.o(MonsterAttributesBridge.L()), (float)entityPlayerSP.o(MonsterAttributesBridge.m$src$Lgg_vape_wrapper_impl_Holder_$1lgjxui()));
-        return f;
+    protected float applyArmorReduction(EntityPlayerSP player, float damage) {
+        return CrystalAura.reduceDamageByArmor(damage, (float)player.o(MonsterAttributesBridge.L()), (float)player.o(MonsterAttributesBridge.m$src$Lgg_vape_wrapper_impl_Holder_$1lgjxui()));
     }
 
-    public float E(float f, double d, float f2) {
-        float f3 = f;
-        double d2 = (1.0 - d) * (double)f2;
-        double d3 = ForgeVersion.MC_1_12_2.d() ? 7.0 : 8.0;
-        return (float)((d2 * d2 + d2) / 2.0 * d3 * (double)f3 + 1.0);
+    public float calculateRawExplosionDamage(float explosionDiameter, double normalizedDistance, float blockDensity) {
+        double impact = (1.0 - normalizedDistance) * (double)blockDensity;
+        double damageScale = ForgeVersion.MC_1_12_2.d() ? 7.0 : 8.0;
+        return (float)((impact * impact + impact) / 2.0 * damageScale * (double)explosionDiameter + 1.0);
     }
 
-    public float k(EntityPlayerSP entityPlayerSP, ExplosionType explosionType, Vec3 vec3, World world) {
-        double d;
-        float f = explosionType.I() * 2.0f;
-        double d2 = vec3.getX();
-        double d3 = vec3.getY();
-        double d4 = vec3.getZ();
-        double d5 = entityPlayerSP.z();
-        double d6 = entityPlayerSP.N();
-        double d7 = entityPlayerSP.h();
-        int n = NumericMathUtil.r(d2 - (double)f - 1.0);
-        int n2 = NumericMathUtil.r(d2 + (double)f + 1.0);
-        int n3 = NumericMathUtil.r(d3 - (double)f - 1.0);
-        int n4 = NumericMathUtil.r(d3 + (double)f + 1.0);
-        int n5 = NumericMathUtil.r(d4 - (double)f - 1.0);
-        int n6 = NumericMathUtil.r(d4 + (double)f + 1.0);
-        if (MathUtil.e(d5, (double)n, (double)n2) && MathUtil.e(d6, (double)n3, (double)n4) && MathUtil.e(d7, (double)n5, (double)n6) && (d = ForgeVersion.MC_1_16_5.d() ? Math.sqrt(entityPlayerSP.g(vec3)) / (double)f : entityPlayerSP.i(d2, d3, d4) / (double)f) <= 1.0) {
-            float f2 = CrystalAura.O(vec3, entityPlayerSP, world);
-            float f3 = this.E(f, d, f2);
-            return this.j(entityPlayerSP, f3);
+    public float calculateExplosionDamage(EntityPlayerSP player, ExplosionType explosionType, Vec3 explosionPosition, World world) {
+        float explosionDiameter = explosionType.getExplosionPower() * 2.0f;
+        double explosionX = explosionPosition.getX();
+        double explosionY = explosionPosition.getY();
+        double explosionZ = explosionPosition.getZ();
+        int minimumX = NumericMathUtil.floorDouble(explosionX - (double)explosionDiameter - 1.0);
+        int maximumX = NumericMathUtil.floorDouble(explosionX + (double)explosionDiameter + 1.0);
+        int minimumY = NumericMathUtil.floorDouble(explosionY - (double)explosionDiameter - 1.0);
+        int maximumY = NumericMathUtil.floorDouble(explosionY + (double)explosionDiameter + 1.0);
+        int minimumZ = NumericMathUtil.floorDouble(explosionZ - (double)explosionDiameter - 1.0);
+        int maximumZ = NumericMathUtil.floorDouble(explosionZ + (double)explosionDiameter + 1.0);
+        boolean insideExplosionBounds = MathUtil.e(player.z(), (double)minimumX, (double)maximumX)
+                && MathUtil.e(player.N(), (double)minimumY, (double)maximumY)
+                && MathUtil.e(player.h(), (double)minimumZ, (double)maximumZ);
+        if (insideExplosionBounds) {
+            double normalizedDistance = ForgeVersion.MC_1_16_5.d()
+                    ? Math.sqrt(player.g(explosionPosition)) / (double)explosionDiameter
+                    : player.i(explosionX, explosionY, explosionZ) / (double)explosionDiameter;
+            if (normalizedDistance <= 1.0) {
+                float blockDensity = CrystalAura.calculateBlockDensity(explosionPosition, player, world);
+                float rawDamage = this.calculateRawExplosionDamage(explosionDiameter, normalizedDistance, blockDensity);
+                return this.applyDamageReductions(player, rawDamage);
+            }
         }
         return -1.0f;
     }
 
     public CrystalAura() {
         super("CrystalAura", -4263937, Category.g, "Automatically places crystals on obsidian and breaks them for you.");
-        this.J = ModeValue.create((Object)this, "Mode", "Auto - Automatically finds targets and places/breaks crystals\nManual - Hold right-click on obsidian with crystal to place and break crystals", (ModeSelection)this.autoSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.autoSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.manualSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx());
-        this.P(this.J, new MinecraftVersionConstraint[0]);
-        this.rotationClaim.l(this, 6);
+        this.mode = ModeValue.create((Object)this, "Mode", "Auto - Automatically finds targets and places/breaks crystals\nManual - Hold right-click on obsidian with crystal to place and break crystals", (ModeSelection)this.autoSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.autoSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.manualSubModule.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx());
+        this.P(this.mode, new MinecraftVersionConstraint[0]);
+        this.rotationClaim.setPriority(this, 6);
     }
 
-    public static float O(Vec3 vec3, Entity entity, World world) {
-        AxisAlignedBB axisAlignedBB = entity.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
-        double d = axisAlignedBB.getMinX();
-        double d2 = axisAlignedBB.getMinY();
-        double d3 = axisAlignedBB.getMinZ();
-        double d4 = axisAlignedBB.getMaxX();
-        double d5 = axisAlignedBB.getMaxY();
-        double d6 = axisAlignedBB.getMaxZ();
-        double d7 = 1.0 / ((d4 - d) * 2.0 + 1.0);
-        double d8 = 1.0 / ((d5 - d2) * 2.0 + 1.0);
-        double d9 = 1.0 / ((d6 - d3) * 2.0 + 1.0);
-        double d10 = (1.0 - Math.floor(1.0 / d7) * d7) / 2.0;
-        double d11 = (1.0 - Math.floor(1.0 / d9) * d9) / 2.0;
-        if (!(d7 < 0.0 || d8 < 0.0 || d9 < 0.0)) {
-            int n = 0;
-            int n2 = 0;
-            for (double d12 = 0.0; d12 <= 1.0; d12 += d7) {
-                for (double d13 = 0.0; d13 <= 1.0; d13 += d8) {
-                    for (double d14 = 0.0; d14 <= 1.0; d14 += d9) {
-                        double d15;
-                        double d16;
-                        double d17 = NumericMathUtil.S(d12, d, d4);
-                        Vec3 vec32 = Vec3.create(d17 + d10, d16 = NumericMathUtil.S(d13, d2, d5), (d15 = NumericMathUtil.S(d14, d3, d6)) + d11);
-                        if (world.K(vec32, vec3, false, true, false, entity).getTypeOfHit().equals(RayTraceResult_type.miss())) {
-                            ++n;
+    public static float calculateBlockDensity(Vec3 explosionPosition, Entity entity, World world) {
+        AxisAlignedBB bounds = entity.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+        double minimumX = bounds.getMinX();
+        double minimumY = bounds.getMinY();
+        double minimumZ = bounds.getMinZ();
+        double maximumX = bounds.getMaxX();
+        double maximumY = bounds.getMaxY();
+        double maximumZ = bounds.getMaxZ();
+        double xStep = 1.0 / ((maximumX - minimumX) * 2.0 + 1.0);
+        double yStep = 1.0 / ((maximumY - minimumY) * 2.0 + 1.0);
+        double zStep = 1.0 / ((maximumZ - minimumZ) * 2.0 + 1.0);
+        double xOffset = (1.0 - Math.floor(1.0 / xStep) * xStep) / 2.0;
+        double zOffset = (1.0 - Math.floor(1.0 / zStep) * zStep) / 2.0;
+        if (!(xStep < 0.0 || yStep < 0.0 || zStep < 0.0)) {
+            int unobstructedSamples = 0;
+            int totalSamples = 0;
+            for (double xFraction = 0.0; xFraction <= 1.0; xFraction += xStep) {
+                for (double yFraction = 0.0; yFraction <= 1.0; yFraction += yStep) {
+                    for (double zFraction = 0.0; zFraction <= 1.0; zFraction += zStep) {
+                        double sampleX = NumericMathUtil.interpolate(xFraction, minimumX, maximumX);
+                        double sampleY = NumericMathUtil.interpolate(yFraction, minimumY, maximumY);
+                        double sampleZ = NumericMathUtil.interpolate(zFraction, minimumZ, maximumZ);
+                        Vec3 samplePoint = Vec3.create(sampleX + xOffset, sampleY, sampleZ + zOffset);
+                        if (world.K(samplePoint, explosionPosition, false, true, false, entity).getTypeOfHit().equals(RayTraceResult_type.miss())) {
+                            ++unobstructedSamples;
                         }
-                        ++n2;
+                        ++totalSamples;
                     }
                 }
             }
-            return (float)n / (float)n2;
+            return (float)unobstructedSamples / (float)totalSamples;
         }
         return 0.0f;
     }
@@ -274,50 +254,49 @@ extends Mod {
 
     @Override
     public void onEnable() {
-        ClientSettings.g(ActiveModuleStackFrame.class).c(this);
+        ClientSettings.getFrame(ActiveModuleStackFrame.class).addModule(this);
     }
 
-    public static float Y(float f, float f2) {
-        float f3 = NumericMathUtil.w(f2, 0.0f, 20.0f);
-        return f * (1.0f - f3 / 25.0f);
+    public static float reduceDamageByBlastProtection(float damage, float protectionLevel) {
+        float clampedProtection = NumericMathUtil.clamp(protectionLevel, 0.0f, 20.0f);
+        return damage * (1.0f - clampedProtection / 25.0f);
     }
 
     @Override
     public void onDisable() {
-        ClientSettings.g(ActiveModuleStackFrame.class).w(this);
-        this.rotationClaim.X(this);
+        ClientSettings.getFrame(ActiveModuleStackFrame.class).removeModule(this);
+        this.rotationClaim.release(this);
     }
 
-    public boolean X(BlockState blockState) {
+    public boolean isCrystalBaseBlock(BlockState blockState) {
         if (blockState.isNull()) {
             return false;
         }
-        String string = blockState.getBlock().U().toLowerCase();
-        return string.contains("obsidian") || string.contains("bedrock");
+        String blockName = blockState.getBlock().U().toLowerCase();
+        return blockName.contains("obsidian") || blockName.contains("bedrock");
     }
 
-    public static float w(EntityLivingBase entityLivingBase) {
-        int n;
-        int n2 = 0;
-        int n3 = EnchantmentHelper.a(Enchantments.c(), new EntityLiving(entityLivingBase.getObject()));
-        if (n3 > 0) {
-            n2 += n3;
+    public static float getBlastProtectionLevel(EntityLivingBase entity) {
+        int protectionLevel = 0;
+        int generalProtection = EnchantmentHelper.a(Enchantments.c(), new EntityLiving(entity.getObject()));
+        if (generalProtection > 0) {
+            protectionLevel += generalProtection;
         }
-        if ((n = EnchantmentHelper.a(Enchantments.N(), new EntityLiving(entityLivingBase.getObject()))) > 0) {
-            n2 += 2 * n;
+        int blastProtection = EnchantmentHelper.a(Enchantments.N(), new EntityLiving(entity.getObject()));
+        if (blastProtection > 0) {
+            protectionLevel += 2 * blastProtection;
         }
-        return n2;
+        return protectionLevel;
     }
 
-    public boolean p(ItemStack itemStack) {
+    public boolean isObsidian(ItemStack itemStack) {
         if (itemStack.isNull() || !itemStack.getItem().isInstance(MappedClasses.Vw)) {
             return false;
         }
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack);
+        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         if (itemMappingEntry != null) {
             return "minecraft:obsidian".equals(itemMappingEntry.M()) || "obsidian".equals(itemMappingEntry.q());
         }
         return itemStack.f().toLowerCase().contains("obsidian");
     }
 }
-

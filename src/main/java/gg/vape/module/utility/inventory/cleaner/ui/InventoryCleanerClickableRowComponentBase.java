@@ -39,7 +39,7 @@ extends GuiComponent {
     public void g(GuiMouseEvent guiMouseEvent) {
         GuiClickListener guiClickListener = this.clickListener;
         if (guiClickListener != null) {
-            guiClickListener.P();
+            guiClickListener.onPrimaryClick();
         }
     }
 }

@@ -24,110 +24,110 @@ import org.lwjgl.opengl.GL30;
 
 public class PotionEffectIcon
 implements PotionEffectIconRenderBackend {
-    GlFramebuffer n;
+    GlFramebuffer framebuffer;
 
     @Override
-    public void d(float f, float f2, int n, int n2, float f3) {
+    public void render(float x, float y, int width, int height, float opacity) {
         GL11.glEnable(2903);
-        boolean bl = GL11.glIsEnabled(3553);
-        boolean bl2 = GL11.glIsEnabled(2896);
-        boolean bl3 = GL11.glIsEnabled(3008);
-        boolean bl4 = GL11.glIsEnabled(3042);
-        if (!bl) {
+        boolean textureEnabled = GL11.glIsEnabled(3553);
+        boolean lightingEnabled = GL11.glIsEnabled(2896);
+        boolean alphaTestEnabled = GL11.glIsEnabled(3008);
+        boolean blendEnabled = GL11.glIsEnabled(3042);
+        if (!textureEnabled) {
             GlStateManager.enableTexture2D();
         }
-        if (bl2) {
+        if (lightingEnabled) {
             GlStateManager.disableLighting();
         }
-        if (!bl3) {
+        if (!alphaTestEnabled) {
             GlStateManager.enableAlpha();
         }
-        if (!bl4) {
+        if (!blendEnabled) {
             GlStateManager.enableBlend();
         }
-        int n3 = GL11.glGetInteger(32873);
-        this.n.S();
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, f3);
+        int previousTextureId = GL11.glGetInteger(32873);
+        this.framebuffer.bindColorTexture();
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, opacity);
         GL11.glPushMatrix();
-        float f4 = 0.0f;
-        float f5 = 1.0f;
-        float f6 = 1.0f;
-        float f7 = 0.0f;
+        float minU = 0.0f;
+        float maxV = 1.0f;
+        float maxU = 1.0f;
+        float minV = 0.0f;
         GL11.glBegin(7);
-        GL11.glTexCoord2f(f6, f5);
-        GL11.glVertex2f(f + (float)n, f2);
-        GL11.glTexCoord2f(f4, f5);
-        GL11.glVertex2f(f, f2);
-        GL11.glTexCoord2f(f4, f7);
-        GL11.glVertex2f(f, f2 + (float)n2);
-        GL11.glTexCoord2f(f6, f7);
-        GL11.glVertex2f(f + (float)n, f2 + (float)n2);
+        GL11.glTexCoord2f(maxU, maxV);
+        GL11.glVertex2f(x + (float)width, y);
+        GL11.glTexCoord2f(minU, maxV);
+        GL11.glVertex2f(x, y);
+        GL11.glTexCoord2f(minU, minV);
+        GL11.glVertex2f(x, y + (float)height);
+        GL11.glTexCoord2f(maxU, minV);
+        GL11.glVertex2f(x + (float)width, y + (float)height);
         GL11.glEnd();
         GL11.glPopMatrix();
-        this.n.M();
-        GlStateManager.bindTexture(n3);
-        if (!bl) {
+        this.framebuffer.restorePreviousTexture();
+        GlStateManager.bindTexture(previousTextureId);
+        if (!textureEnabled) {
             GlStateManager.disableTexture2D();
         }
-        if (bl2) {
+        if (lightingEnabled) {
             GlStateManager.enableLighting();
         }
-        if (!bl3) {
+        if (!alphaTestEnabled) {
             GlStateManager.disableAlpha();
         }
-        if (!bl4) {
+        if (!blendEnabled) {
             GlStateManager.disableBlend();
         }
     }
 
-    private void T(PotionEffect potionEffect, int n, int n2) {
+    private void drawEffectSprite(PotionEffect effect, int width, int height) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            StatusEffectSpriteUploader statusEffectSpriteUploader = StatusEffectSpriteUploader.c();
-            StatusEffect statusEffect = potionEffect.i();
-            TextureAtlasSprite textureAtlasSprite = statusEffectSpriteUploader.l(statusEffect);
-            TextureAtlas textureAtlas = new TextureAtlas(textureAtlasSprite.e());
+            StatusEffectSpriteUploader spriteUploader = StatusEffectSpriteUploader.c();
+            StatusEffect statusEffect = effect.i();
+            TextureAtlasSprite sprite = spriteUploader.l(statusEffect);
+            TextureAtlas textureAtlas = new TextureAtlas(sprite.e());
             Minecraft.Z().g(textureAtlas.K());
             GL11.glPushMatrix();
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             GlStateManager.disableDepth();
-            RenderItemTextBridge.x(MatrixStack.A(), 0, 0, 0, n, n2, textureAtlasSprite);
+            RenderItemTextBridge.x(MatrixStack.A(), 0, 0, 0, width, height, sprite);
             GL11.glPopMatrix();
             return;
         }
         Minecraft.Z().g(GuiContainer.m$src$Lgg_vape_wrapper_impl_ResourceLocation_$1fc62cj());
-        Potion potion = Potion.getPotionById(potionEffect.C());
+        Potion potion = Potion.getPotionById(effect.C());
         if (potion.isBadEffect()) {
-            int n3 = potion.y();
+            int iconIndex = potion.y();
             GL11.glPushMatrix();
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             GlStateManager.disableDepth();
-            RenderUtils.R(0, 0, n3 % 8 * 18, 198 + n3 / 8 * 18, n, n2);
+            RenderUtils.R(0, 0, iconIndex % 8 * 18, 198 + iconIndex / 8 * 18, width, height);
             GL11.glPopMatrix();
         }
     }
 
 
     @Override
-    public void a(PotionEffect potionEffect) {
-        int n = 18;
-        int n2 = 18;
-        int n3 = GL11.glGetInteger(36006);
-        int n4 = GL11.glGetInteger(32873);
-        boolean bl = GL11.glIsEnabled(3089);
-        boolean bl2 = GL11.glIsEnabled(3553);
-        if (bl) {
+    public void capture(PotionEffect effect) {
+        int iconWidth = 18;
+        int iconHeight = 18;
+        int previousFramebufferId = GL11.glGetInteger(36006);
+        int previousTextureId = GL11.glGetInteger(32873);
+        boolean scissorEnabled = GL11.glIsEnabled(3089);
+        boolean textureEnabled = GL11.glIsEnabled(3553);
+        if (scissorEnabled) {
             GL11.glDisable(3089);
         }
-        if (!bl2) {
+        if (!textureEnabled) {
             GlStateManager.enableTexture2D();
         }
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(64);
-        byteBuffer.order(ByteOrder.nativeOrder());
-        IntBuffer intBuffer = byteBuffer.asIntBuffer();
-        gg.vape.wrapper.impl.GL11.X(2978, intBuffer);
+        ByteBuffer viewportBytes = ByteBuffer.allocateDirect(64);
+        viewportBytes.order(ByteOrder.nativeOrder());
+        IntBuffer viewport = viewportBytes.asIntBuffer();
+        gg.vape.wrapper.impl.GL11.X(2978, viewport);
         GL11.glPushMatrix();
-        this.n = new GlFramebuffer(n, n2, true);
-        this.n.f(true);
+        this.framebuffer = new GlFramebuffer(iconWidth, iconHeight, true);
+        this.framebuffer.bind(true);
         GlStateManager.enableDepth();
         GlStateManager.enableBlend();
         GL11.glEnable(2929);
@@ -148,33 +148,33 @@ implements PotionEffectIconRenderBackend {
         GL11.glEnable(32826);
         GL11.glPushMatrix();
         GlStateManager.disableBlend();
-        this.T(potionEffect, n, n2);
+        this.drawEffectSprite(effect, iconWidth, iconHeight);
         GL11.glPopMatrix();
         GL11.glMatrixMode(5888);
         GL11.glPopMatrix();
-        this.n.S();
+        this.framebuffer.bindColorTexture();
         GL11.glMatrixMode(5889);
         GL11.glPopMatrix();
         GL11.glMatrixMode(5888);
         RenderHelper.s();
         GL11.glDisable(32826);
-        this.n.S();
-        this.n.o();
+        this.framebuffer.bindColorTexture();
+        this.framebuffer.unbind();
         GL11.glPopMatrix();
-        GL11.glViewport(intBuffer.get(0), intBuffer.get(1), intBuffer.get(2), intBuffer.get(3));
-        GL30.glBindFramebuffer(36160, n3);
-        GlStateManager.bindTexture(n4);
-        if (bl) {
+        GL11.glViewport(viewport.get(0), viewport.get(1), viewport.get(2), viewport.get(3));
+        GL30.glBindFramebuffer(36160, previousFramebufferId);
+        GlStateManager.bindTexture(previousTextureId);
+        if (scissorEnabled) {
             GL11.glEnable(3089);
         }
-        if (!bl2) {
+        if (!textureEnabled) {
             GlStateManager.disableTexture2D();
         }
     }
 
     @Override
-    public void B() {
-        this.n.x();
-        this.n = null;
+    public void dispose() {
+        this.framebuffer.delete();
+        this.framebuffer = null;
     }
 }

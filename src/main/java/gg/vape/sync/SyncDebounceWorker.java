@@ -23,10 +23,10 @@ implements Runnable {
     private void processPendingSave() {
         try {
             SleepUtil.sleep(1000L);
-            if (!Vape.INSTANCE.getPublicProfileSettings().o.L()) {
+            if (!Vape.INSTANCE.getPublicProfileSettings().o.getEffectiveValue()) {
                 return;
             }
-            if (!ClientSettings.fW.l$src$Z$1gzcm82() && !ClientSettings.fW.P) {
+            if (!ClientSettings.INSTANCE.isMainGuiStack() && !ClientSettings.INSTANCE.inputEnabled) {
                 return;
             }
             long observedChangeTime = this.lastChangeTime;

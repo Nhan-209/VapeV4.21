@@ -1,64 +1,50 @@
 package gg.vape.module.render.hud;
 
-import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.unmap.INamed;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HudModuleGroup
 implements INamed {
-    public static HudModuleGroup T;
-    public static List<HudModuleGroup> j;
+    public static final HudModuleGroup GAME;
+    public static final List<HudModuleGroup> GROUPS;
     private final String name;
     private final String key;
-    public static HudModuleGroup J;
-    private static GuiComponent[] components;
-    public static HudModuleGroup f;
-    public static HudModuleGroup r;
+    public static final HudModuleGroup ALL;
+    public static final HudModuleGroup HUD;
+    public static final HudModuleGroup FAVORITE;
 
     public String toString() {
         return this.name;
     }
 
-    public HudModuleGroup(String string, String string2) {
-        this.name = string;
-        this.key = string2;
+    public HudModuleGroup(String name, String key) {
+        this.name = name;
+        this.key = key;
     }
 
-    public static GuiComponent[] l() {
-        return components;
-    }
-
-    public String R() {
+    public String getKey() {
         return this.key;
     }
 
-    public static void C(GuiComponent[] guiComponentArray) {
-        components = guiComponentArray;
-    }
-
     static {
-        if (HudModuleGroup.l() != null) {
-            HudModuleGroup.C(new GuiComponent[1]);
-        }
-        String[] stringArray = new String[]{"HUD", "All", "Favorite", "Game"};
-        r = new HudModuleGroup(stringArray[2]);
-        J = new HudModuleGroup(stringArray[1]);
-        f = new HudModuleGroup(stringArray[0]);
-        T = new HudModuleGroup(stringArray[3]);
-        j = new ArrayList<HudModuleGroup>();
-        j.add(r);
-        j.add(J);
-        j.add(f);
-        j.add(T);
+        FAVORITE = new HudModuleGroup("Favorite");
+        ALL = new HudModuleGroup("All");
+        HUD = new HudModuleGroup("HUD");
+        GAME = new HudModuleGroup("Game");
+        GROUPS = new ArrayList<HudModuleGroup>();
+        GROUPS.add(FAVORITE);
+        GROUPS.add(ALL);
+        GROUPS.add(HUD);
+        GROUPS.add(GAME);
     }
 
-    public HudModuleGroup(String string) {
-        this(string, "");
+    public HudModuleGroup(String name) {
+        this(name, "");
     }
 
-    public static List<HudModuleGroup> C() {
-        return j;
+    public static List<HudModuleGroup> getGroups() {
+        return GROUPS;
     }
 
     @Override

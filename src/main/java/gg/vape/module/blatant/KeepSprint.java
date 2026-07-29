@@ -18,58 +18,49 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class KeepSprint
 extends Mod {
-    private final NumberValue Y = new NumberValue(this, "Retain factor", 0.95, 0.6, 1.0, "#.##", "");
-    private TimerUtil a;
-    private double H;
-    private boolean K;
-    private boolean k;
-    private final BooleanValue C = new BooleanValue((Object)this, "Reset sprint", false);
-    private Scaffold v;
-    private double b;
-    private static final long r = -249991328817855756L;
+    private final NumberValue retainFactor = new NumberValue(this, "Retain factor", 0.95, 0.6, 1.0, "#.##", "");
+    private final TimerUtil sprintResetTimer;
+    private double preAttackMotionX;
+    private boolean cancelNextSprintEnable;
+    private boolean sprintResetPending;
+    private final BooleanValue resetSprint = new BooleanValue((Object)this, "Reset sprint", false);
+    private Scaffold scaffold;
+    private double preAttackMotionZ;
+    private static final long MODULE_ID = -249991328817855756L;
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        if (this.k) {
-            eventPrePlayerTick.getThePlayer().R(false);
-            this.K = true;
-            this.k = false;
+    public void onTick(EventPrePlayerTick event) {
+        if (this.sprintResetPending) {
+            event.getThePlayer().R(false);
+            this.cancelNextSprintEnable = true;
+            this.sprintResetPending = false;
         }
     }
 
 
     @Override
-    public String r() {
-        return this.Y.c();
+    public String getDetailedSuffix() {
+        return this.retainFactor.getDisplayValue();
     }
 
     @EventHandler
-    public void onSetSprinting(EventSetSprinting eventSetSprinting) {
-        if (this.K && eventSetSprinting.isNewStateSprinting()) {
-            eventSetSprinting.setCancelled(true);
-            this.K = false;
+    public void onSetSprinting(EventSetSprinting event) {
+        if (this.cancelNextSprintEnable && event.isNewStateSprinting()) {
+            event.setCancelled(true);
+            this.cancelNextSprintEnable = false;
         }
     }
 
-    private boolean t(EntityPlayerSP entityPlayerSP) {
-        float f = entityPlayerSP.F();
-        if (f > 0.0f) {
-            double d;
-            float f2 = entityPlayerSP.J();
-            float f3 = -MathUtil.sin(f2 * (float)Math.PI / 180.0f);
-            float f4 = MathUtil.cos(f2 * (float)Math.PI / 180.0f);
-            double d2 = entityPlayerSP.t();
-            double d3 = d2 * (double)f3 + (d = entityPlayerSP.T()) * (double)f4;
-            return d3 > 0.0;
+    private boolean isMovingForward(EntityPlayerSP player) {
+        float forwardInput = player.F();
+        if (forwardInput > 0.0f) {
+            float yaw = player.J();
+            float forwardX = -MathUtil.sin(yaw * (float)Math.PI / 180.0f);
+            float forwardZ = MathUtil.cos(yaw * (float)Math.PI / 180.0f);
+            double forwardMotion = player.t() * forwardX + player.T() * forwardZ;
+            return forwardMotion > 0.0;
         }
         return false;
-    }
-
-    private boolean A(EntityPlayerSP entityPlayerSP) {
-        if (entityPlayerSP.isNull()) {
-            return false;
-        }
-        return !this.v.o$src$Z$dv6vsx() && entityPlayerSP.F() > 0.0f && !entityPlayerSP.P() && entityPlayerSP.Y$src$Lgg_vape_wrapper_impl_FoodStats_$fakh1z().getFoodLevel() > 6 && !entityPlayerSP.r();
     }
 
     @Override
@@ -78,55 +69,54 @@ extends Mod {
     }
 
     @EventHandler
-    public void v(EventPreAttack eventPreAttack) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (this.v == null) {
-            this.v = Vape.INSTANCE.getModManager().getMod(Scaffold.class);
+    public void onPreAttack(EventPreAttack event) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (this.scaffold == null) {
+            this.scaffold = Vape.INSTANCE.getModManager().getMod(Scaffold.class);
         }
-        if (this.v.o$src$Z$dv6vsx()) {
+        if (this.scaffold.isActivelyScaffolding()) {
             return;
         }
-        this.H = entityPlayerSP.t();
-        this.b = entityPlayerSP.T();
+        this.preAttackMotionX = player.t();
+        this.preAttackMotionZ = player.T();
     }
 
     public KeepSprint() {
-        super("KeepSprint", (int)r, Category.w, "Prevents you from losing sprint when attacking");
-        this.a = new TimerUtil();
-        this.addValue(this.Y, this.C);
+        super("KeepSprint", (int)MODULE_ID, Category.w, "Prevents you from losing sprint when attacking");
+        this.sprintResetTimer = new TimerUtil();
+        this.addValue(this.retainFactor, this.resetSprint);
     }
 
     @EventHandler
-    public void A(EventPostAttack eventPostAttack) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (this.v == null) {
-            this.v = Vape.INSTANCE.getModManager().getMod(Scaffold.class);
+    public void onPostAttack(EventPostAttack event) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (this.scaffold == null) {
+            this.scaffold = Vape.INSTANCE.getModManager().getMod(Scaffold.class);
         }
-        if (this.v.o$src$Z$dv6vsx()) {
+        if (this.scaffold.isActivelyScaffolding()) {
             return;
         }
-        if (eventPostAttack.getThePlayer().F() <= 0.0f) {
+        if (event.getThePlayer().F() <= 0.0f) {
             return;
         }
-        if (!entityPlayerSP.b$src$Z$fqlxe4() && !this.t(entityPlayerSP)) {
+        if (!player.b$src$Z$fqlxe4() && !this.isMovingForward(player)) {
             return;
         }
-        double d = 0.6;
-        if (entityPlayerSP.t() == this.H * d && entityPlayerSP.T() == this.b * d && !entityPlayerSP.r()) {
-            double d2 = (Double)this.Y.K();
-            double d3 = entityPlayerSP.t() / d;
-            double d4 = entityPlayerSP.T() / d;
-            double d5 = d3 * d2;
-            double d6 = d4 * d2;
-            entityPlayerSP.r(d5);
-            entityPlayerSP.i(d6);
-            if (this.C.L().booleanValue()) {
-                if (this.a.hasTimeElapsed(500L)) {
-                    this.k = true;
-                    this.a.reset();
+        double vanillaAttackSlowdown = 0.6;
+        if (player.t() == this.preAttackMotionX * vanillaAttackSlowdown
+                && player.T() == this.preAttackMotionZ * vanillaAttackSlowdown && !player.r()) {
+            double retainedMotionScale = (Double)this.retainFactor.getValue();
+            double restoredMotionX = player.t() / vanillaAttackSlowdown * retainedMotionScale;
+            double restoredMotionZ = player.T() / vanillaAttackSlowdown * retainedMotionScale;
+            player.r(restoredMotionX);
+            player.i(restoredMotionZ);
+            if (this.resetSprint.getEffectiveValue()) {
+                if (this.sprintResetTimer.hasTimeElapsed(500L)) {
+                    this.sprintResetPending = true;
+                    this.sprintResetTimer.reset();
                 }
             } else {
-                entityPlayerSP.R(true);
+                player.R(true);
             }
         }
     }

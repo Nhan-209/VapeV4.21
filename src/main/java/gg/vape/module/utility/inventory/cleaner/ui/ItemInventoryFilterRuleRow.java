@@ -27,7 +27,7 @@ extends InventoryFilterRuleRowBase {
     private final ColorAnimation lineAnimation;
     private final ColorAnimation iconAnimation;
 
-    public ItemInventoryFilterRule R() {
+    public ItemInventoryFilterRule getRule() {
         return this.rule;
     }
 
@@ -41,11 +41,11 @@ extends InventoryFilterRuleRowBase {
         this.iconAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), Color.WHITE);
         this.profile = inventoryCleanerProfile;
         this.rule = itemInventoryFilterRule;
-        this.o(true);
+        this.setPropagateMouseEvents(true);
         this.content = new ItemInventoryFilterRuleRowContent(this, inventoryCleanerProfile, itemInventoryFilterRule);
         this.paddedContent = new PaddedComponent(2.0, this.content);
-        this.H(this.paddedContent);
-        this.p();
+        this.addChildren(this.paddedContent);
+        this.refresh();
     }
 
     @Override
@@ -60,34 +60,34 @@ extends InventoryFilterRuleRowBase {
         this.paddedContent.l$src$V$1mibm4x();
         super.c();
         GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() - 10.0, this.n(), 10.0, 1.0, this.lineAnimation.getInterpolatedColor());
-        ImageRenderer.E(this.iconAnimation.getInterpolatedColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 11.0), (float)(this.n() - 1.0), CLOSE_ICON, 12.0f, 12.0f, false);
+        ImageRenderer.drawImage(this.iconAnimation.getInterpolatedColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 11.0), (float)(this.n() - 1.0), CLOSE_ICON, 12.0f, 12.0f, false);
     }
 
     @Override
-    public void p() {
-        this.content.p();
+    public void refresh() {
+        this.content.refresh();
     }
 
-    public InventoryCleanerProfile x$src$Lgg_vape_module_utility_inventory_cleaner_Invent$r6nguw() {
+    public InventoryCleanerProfile getProfile() {
         return this.profile;
     }
 
 
-    public void z(@Nullable Runnable runnable) {
-        this.onSelect = runnable;
+    public void setOnSelect(@Nullable Runnable onSelect) {
+        this.onSelect = onSelect;
     }
 
     @Nullable
-    public Runnable d$src$Ljava_lang_Runnable_$o59fr4() {
+    public Runnable getOnDelete() {
         return this.onDelete;
     }
 
-    public void v(@Nullable Runnable runnable) {
-        this.onDelete = runnable;
+    public void setOnDelete(@Nullable Runnable onDelete) {
+        this.onDelete = onDelete;
     }
 
     @Nullable
-    public Runnable a$src$Ljava_lang_Runnable_$rgxzz7() {
+    public Runnable getOnSelect() {
         return this.onSelect;
     }
 
@@ -103,9 +103,9 @@ extends InventoryFilterRuleRowBase {
         if (this.content.w$src$Z$e457mb()) {
             Runnable runnable = this.onSelect;
             if (runnable != null) {
-                ClientSettings.f6.execute(runnable);
+                ClientSettings.UI_EXECUTOR.execute(runnable);
             }
-            this.p();
+            this.refresh();
         }
     }
 

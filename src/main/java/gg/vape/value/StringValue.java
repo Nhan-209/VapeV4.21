@@ -4,41 +4,41 @@ import gg.vape.value.Value;
 
 public class StringValue
 extends Value<String, StringValue> {
-    private String A;
+    private String definitionName;
 
     public String toString() {
-        return (String)this.K();
+        return (String)this.getValue();
     }
 
-    public StringValue(Object object, String string, String string2) {
-        super(object, string, string2);
+    public StringValue(Object owner, String name, String defaultValue) {
+        super(owner, name, defaultValue);
     }
 
     @Override
-    public void parse(String string) {
-        this.o(string);
+    public void parse(String serializedValue) {
+        this.setValue(serializedValue);
     }
 
-    public static StringValue Z(Object object, String string, String string2) {
-        StringValue stringValue = new StringValue(object, string, string2);
-        stringValue.M(string);
+    public static StringValue create(Object owner, String name, String defaultValue) {
+        StringValue stringValue = new StringValue(owner, name, defaultValue);
+        stringValue.setDefinitionName(name);
         return stringValue;
     }
 
-    public StringValue Z$src$Lgg_vape_value_StringValue_$84j5z9() {
-        return StringValue.Z(null, this.S$src$Ljava_lang_String_$1b9155(), (String)this.K());
+    public StringValue copyDefinition() {
+        return StringValue.create(null, this.getDefinitionName(), (String)this.getValue());
     }
 
     @Override
-    public StringValue getALimit() {
-        return this.Z$src$Lgg_vape_value_StringValue_$84j5z9();
+    public StringValue copyValueDefinition() {
+        return this.copyDefinition();
     }
 
-    public String S$src$Ljava_lang_String_$1b9155() {
-        return this.A;
+    public String getDefinitionName() {
+        return this.definitionName;
     }
 
-    private void M(String string) {
-        this.A = string;
+    private void setDefinitionName(String definitionName) {
+        this.definitionName = definitionName;
     }
 }

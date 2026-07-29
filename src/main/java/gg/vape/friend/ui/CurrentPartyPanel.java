@@ -68,7 +68,7 @@ extends AnimatedPanelComponent {
     }
 
     private void lambda$leaveAction$2(PopupFrame popupFrame) {
-        ClientSettings.K(popupFrame);
+        ClientSettings.removePopup(popupFrame);
         ZeusConnectionManager.T().u().l(CurrentPartyPanel::lambda$null$0, this::lambda$null$1);
     }
 
@@ -79,30 +79,30 @@ extends AnimatedPanelComponent {
         }
         this.D9.u(this.w$src$Z$e457mb());
         this.Dd = Vape.INSTANCE.getOnlineManager().y().j();
-        this.Z(this.Dd != null);
+        this.setVisible(this.Dd != null);
         if (this.Dd != null) {
             if (this.Dd.r().equals(Vape.INSTANCE.getOnlineManager().r())) {
-                this.Dq.d("DISBAND");
+                this.Dq.setLabelText("DISBAND");
                 this.Dq.w("Disband party");
-                this.Dq.q(23.0);
+                this.Dq.setExplicitWidth(23.0);
                 this.Dq.o(23.0);
                 this.w("Disband party");
                 this.D_ = "My party";
             } else {
-                this.Dq.d("LEAVE");
+                this.Dq.setLabelText("LEAVE");
                 this.Dq.w("Leave party");
                 this.w("Leave party");
-                this.Dq.q(18.0);
+                this.Dq.setExplicitWidth(18.0);
                 this.Dq.o(18.0);
                 this.D_ = this.Dd.r().C() + "'s party";
             }
-            this.DU.q(this.A() - 18.0 - this.Dq.A() - 4.0);
-            this.DU.D(this.A() - 18.0 - this.Dq.A() - 6.0);
-            this.DU.O(this.D_);
+            this.DU.setExplicitWidth(this.A() - 18.0 - this.Dq.A() - 4.0);
+            this.DU.setMaxWidth(this.A() - 18.0 - this.Dq.A() - 6.0);
+            this.DU.setText(this.D_);
         } else {
             this.w("Open party");
             if (this.D1 != null) {
-                ClientSettings.K(this.D1);
+                ClientSettings.removePopup(this.D1);
                 this.D8 = null;
                 this.D1 = null;
             }
@@ -121,8 +121,8 @@ extends AnimatedPanelComponent {
 
     private void q(Point point, MouseClickButton mouseClickButton) {
         this.D8 = new PartyDetailsAndChatPanel(this.Dd);
-        this.D1 = ClientSettings.g(this, this.D8, PopupFrame.class);
-        this.D8.e$src$Lgg_vape_ui_click_component_IconButtonComponent_$pbqe5z().r(new PartyDetailsPopupCloseClickHandler(this));
+        this.D1 = ClientSettings.createPopup(this, this.D8, PopupFrame.class);
+        this.D8.e$src$Lgg_vape_ui_click_component_IconButtonComponent_$pbqe5z().addClickListener(new PartyDetailsPopupCloseClickHandler(this));
     }
 
     private static void lambda$null$0(GroupDeleteResponsePacket groupDeleteResponsePacket) {
@@ -133,7 +133,7 @@ extends AnimatedPanelComponent {
     }
 
     private void lambda$leaveAction$3(PopupFrame popupFrame) {
-        ClientSettings.K(popupFrame);
+        ClientSettings.removePopup(popupFrame);
         this.Ds = false;
     }
 
@@ -143,18 +143,18 @@ extends AnimatedPanelComponent {
         this.Dq = new TextButton("LEAVE", 0.6, CurrentPartyPanel.J.d, CurrentPartyPanel.J.c, 18.0, 8.0);
         this.D9 = new ColorAnimation(0.15, new Color(150, 150, 150, 0), new Color(150, 150, 150, 20));
         this.Ds = false;
-        this.d(false);
-        this.Dg.d(false);
+        this.setShowDisabledOverlay(false);
+        this.Dg.setShowDisabledOverlay(false);
         this.Dg.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
         this.DU = new TruncatedTextComponent("", "...", 48.0, 0.8, CurrentPartyPanel.J.A, true);
-        this.Dq.r(new CurrentPartyLeaveDeleteClickHandler(this));
-        this.DU.j(new CurrentPartyNameOpenDetailsMouseListener(this));
-        this.j(new CurrentPartyPanelOpenDetailsMouseListener(this));
+        this.Dq.addClickListener(new CurrentPartyLeaveDeleteClickHandler(this));
+        this.DU.addMouseListener(new CurrentPartyNameOpenDetailsMouseListener(this));
+        this.addMouseListener(new CurrentPartyPanelOpenDetailsMouseListener(this));
         this.w("Open party");
-        this.Dq.F(false);
-        this.Dq.h(Color.WHITE);
-        this.Dg.H(this.Dq);
-        this.H(this.DT, this.DU, this.Dg);
+        this.Dq.setDeriveTextColorFromBackground(false);
+        this.Dq.setNormalTextColor(Color.WHITE);
+        this.Dg.addChildren(this.Dq);
+        this.addChildren(this.DT, this.DU, this.Dg);
     }
 
     @Override
@@ -164,7 +164,7 @@ extends AnimatedPanelComponent {
             this.D1.K(this.G$src$D$1b2f02a());
             this.D1.S(frame.n() + frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
             double d = frame.L() - frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() - 45.0;
-            this.D8.e$src$Lgg_vape_friend_ui_OnlineChatPanel_$1fym7va().z().u(d);
+            this.D8.e$src$Lgg_vape_friend_ui_OnlineChatPanel_$1fym7va().z().setExplicitHeight(d);
             this.D8.e$src$Lgg_vape_friend_ui_OnlineChatPanel_$1fym7va().z().t(d);
             this.D8.e$src$Lgg_vape_friend_ui_OnlineChatPanel_$1fym7va().z().l$src$V$1mibm4x();
             this.D1.l$src$V$1mibm4x();
@@ -185,8 +185,8 @@ extends AnimatedPanelComponent {
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L() - 2.0, this.D9.getInterpolatedColor());
         float f = (float)(this.G$src$D$1b2f02a() + 6.0);
         float f2 = (float)(this.n() + 4.0);
-        ImageRenderer.E(CurrentPartyPanel.J.B, f, f2, "party1@2x", 7.0f, 6.3f, false);
-        ImageRenderer.E(CurrentPartyPanel.J.B, (float)(this.G$src$D$1b2f02a() + this.A() - 22.0), (float)this.n() - 0.5f, "join party texture@2x", 14.5f, 14.5f, false);
+        ImageRenderer.drawImage(CurrentPartyPanel.J.B, f, f2, "party1@2x", 7.0f, 6.3f, false);
+        ImageRenderer.drawImage(CurrentPartyPanel.J.B, (float)(this.G$src$D$1b2f02a() + this.A() - 22.0), (float)this.n() - 0.5f, "join party texture@2x", 14.5f, 14.5f, false);
         super.c();
     }
 
@@ -207,9 +207,9 @@ extends AnimatedPanelComponent {
         if (this.Dd != null) {
             if (this.Dd.r().equals(Vape.INSTANCE.getOnlineManager().r())) {
                 ConfirmationDialogComponent confirmationDialogComponent = new ConfirmationDialogComponent("Are you sure you want to disband the party?", "DISBAND", "disband confirm@2x");
-                DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.g(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialogComponent, DimmedCenteredPopupFrame.class);
-                confirmationDialogComponent.T$src$Lgg_vape_ui_click_component_gui_TextButton_$17m2d4e().r(() -> this.lambda$leaveAction$2(dimmedCenteredPopupFrame));
-                confirmationDialogComponent.E().r(() -> this.lambda$leaveAction$3(dimmedCenteredPopupFrame));
+                DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.createPopup(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialogComponent, DimmedCenteredPopupFrame.class);
+                confirmationDialogComponent.getConfirmButton().addClickListener(() -> this.lambda$leaveAction$2(dimmedCenteredPopupFrame));
+                confirmationDialogComponent.getCloseButton().addClickListener(() -> this.lambda$leaveAction$3(dimmedCenteredPopupFrame));
                 dimmedCenteredPopupFrame.q(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), dimmedCenteredPopupFrame);
             } else {
                 ZeusConnectionManager.T().u().u(CurrentPartyPanel::lambda$leaveAction$4, this::lambda$leaveAction$5);

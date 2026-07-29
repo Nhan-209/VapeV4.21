@@ -7,7 +7,6 @@ import gg.vape.ui.click.frame.impl.hud.HudModuleCategoryConfigFrame;
 public class HudModuleCategoryEntry
 extends HudModule {
     public HudModuleCategoryEntry() {
-        super("Cooldown", HudModuleGroup.f, "cooldowns", HudModuleCategoryConfigFrame.class);
+        super("Cooldown", HudModuleGroup.HUD, "cooldowns", HudModuleCategoryConfigFrame.class);
     }
 }
-

@@ -5,14 +5,13 @@ public enum ValueDisplayNameMode {
     SIMPLE,
     CUSTOM;
 
-    private static final ValueDisplayNameMode[] N;
+    private static final ValueDisplayNameMode[] legacyValues;
 
     static {
         String[] stringArray = new String[]{"FULL", "SIMPLE", "CUSTOM"};
 
 
 
-        N = new ValueDisplayNameMode[]{FULL, SIMPLE, CUSTOM};
+        legacyValues = new ValueDisplayNameMode[]{FULL, SIMPLE, CUSTOM};
     }
 }
-

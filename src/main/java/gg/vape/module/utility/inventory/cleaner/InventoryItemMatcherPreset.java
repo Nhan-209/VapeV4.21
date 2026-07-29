@@ -9,26 +9,25 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 public class InventoryItemMatcherPreset
 extends AbstractInventoryFilterPreset {
-    private final List<InventoryFilterConditionGroup> q;
-    private final List<InventoryItemMatcher> S;
+    private final List<InventoryFilterConditionGroup> conditionGroups;
+    private final List<InventoryItemMatcher> matchers;
 
     InventoryItemMatcherPreset(String string, List<InventoryFilterConditionGroup> list, List<InventoryItemMatcher> list2) {
         super(string);
-        this.q = list;
-        this.S = list2;
+        this.conditionGroups = list;
+        this.matchers = list2;
     }
 
     @Override
-    public List<InventoryFilterConditionGroup> z() {
-        return this.q;
+    public List<InventoryFilterConditionGroup> getConditionGroups() {
+        return this.conditionGroups;
     }
 
-    public static InventoryItemMatcherPresetBuilder J() {
+    public static InventoryItemMatcherPresetBuilder builder() {
         return new InventoryItemMatcherPresetBuilder();
     }
 
-    public @UnmodifiableView List<InventoryItemMatcher> U() {
-        return this.S;
+    public @UnmodifiableView List<InventoryItemMatcher> getMatchers() {
+        return this.matchers;
     }
 }
-

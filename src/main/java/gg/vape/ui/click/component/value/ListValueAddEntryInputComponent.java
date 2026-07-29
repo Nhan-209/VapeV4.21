@@ -6,26 +6,26 @@ import gg.vape.value.ListValue;
 
 public class ListValueAddEntryInputComponent
 extends ListValueEntryInputComponentBase {
-    final ListValueOptionsPanel _a;
-    final ListValue _Y;
+    final ListValueOptionsPanel optionsPanel;
+    final ListValue listValue;
 
     @Override
-    public void p() {
-        if (!this.u$src$Z$wt77ym()) {
-            this.k("");
+    public void submit() {
+        if (!this.hasNonBlankText()) {
+            this.setText("");
             return;
         }
-        String string = this.i$src$Ljava_lang_String_$1n2xf3k();
-        this._Y.j(string, -1);
-        this._Y.g$src$V$1akzyia();
-        this._a.k$src$V$admw0a();
-        this.k("");
+        String string = this.getText();
+        this.listValue.createEntry(string, -1);
+        this.listValue.notifyChanged();
+        this.optionsPanel.refreshEntries();
+        this.setText("");
     }
 
 
-    public ListValueAddEntryInputComponent(ListValueOptionsPanel listValueOptionsPanel, boolean bl, String string, ListValue listValue) {
-        super(bl, string);
-        this._a = listValueOptionsPanel;
-        this._Y = listValue;
+    public ListValueAddEntryInputComponent(ListValueOptionsPanel optionsPanel, boolean blockedList, String placeholder, ListValue listValue) {
+        super(blockedList, placeholder);
+        this.optionsPanel = optionsPanel;
+        this.listValue = listValue;
     }
 }

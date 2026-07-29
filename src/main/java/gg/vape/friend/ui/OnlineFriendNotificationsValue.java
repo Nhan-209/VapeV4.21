@@ -8,7 +8,7 @@ extends BooleanValue {
     final OnlineFriendActionPanel y;
 
     @Override
-    public Boolean L() {
+    public Boolean getEffectiveValue() {
         if (OnlineFriendActionPanel.O(this.y) == null) {
             return false;
         }
@@ -16,7 +16,7 @@ extends BooleanValue {
     }
 
     public void P(Boolean bl) {
-        super.o(bl);
+        super.setValue(bl);
         OnlineFriendActionPanel.O(this.y).O(bl);
     }
 

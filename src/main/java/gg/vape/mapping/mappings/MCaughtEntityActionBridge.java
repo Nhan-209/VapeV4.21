@@ -44,7 +44,7 @@ extends Mapping {
         String string3 = "execute";
         MCaughtEntityActionBridge mCaughtEntityActionBridge3 = this;
         this.I = this.Y(string3, bl5, clazz3, classArray3);
-        GuiComponent.D(new GuiComponent[3]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[3]);
     }
 
     private boolean d(Object object) {

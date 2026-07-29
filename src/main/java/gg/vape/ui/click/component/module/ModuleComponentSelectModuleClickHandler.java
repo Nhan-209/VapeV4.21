@@ -8,20 +8,19 @@ import gg.vape.ui.click.frame.impl.ModuleCategoryFrame;
 
 class ModuleComponentSelectModuleClickHandler
 implements GuiClickListener {
-    final Mod g;
-    final ModuleComponent K;
-    final ModuleCategoryFrame h;
+    final Mod module;
+    final ModuleComponent owner;
+    final ModuleCategoryFrame categoryFrame;
 
     ModuleComponentSelectModuleClickHandler(ModuleComponent moduleComponent, Mod mod, ModuleCategoryFrame moduleCategoryFrame) {
-        this.K = moduleComponent;
-        this.g = mod;
-        this.h = moduleCategoryFrame;
+        this.owner = moduleComponent;
+        this.module = mod;
+        this.categoryFrame = moduleCategoryFrame;
     }
 
     @Override
-    public void P() {
-        Vape.INSTANCE.getModuleProfileMetadataCodec().v(this.g);
-        this.h.l$src$Z$193vdc5();
+    public void onPrimaryClick() {
+        Vape.INSTANCE.getModuleProfileMetadataCodec().v(this.module);
+        this.categoryFrame.l$src$Z$193vdc5();
     }
 }
-

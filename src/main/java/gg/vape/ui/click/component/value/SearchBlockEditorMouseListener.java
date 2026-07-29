@@ -9,19 +9,18 @@ import java.awt.Point;
 
 public class SearchBlockEditorMouseListener
 implements GuiMouseListener {
-    final SearchBlockEditorComponent S;
-    final SearchBlock I;
-    private static final String b = "Clicked tracers";
+    final SearchBlockEditorComponent editor;
+    final SearchBlock searchBlock;
+    private static final String DEBUG_MESSAGE = "Clicked tracers";
 
     public SearchBlockEditorMouseListener(SearchBlockEditorComponent searchBlockEditorComponent, SearchBlock searchBlock) {
-        this.S = searchBlockEditorComponent;
-        this.I = searchBlock;
+        this.editor = searchBlockEditorComponent;
+        this.searchBlock = searchBlock;
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        this.I.H(SearchBlockEditorComponent.q(this.S).L());
-        Vape.debugLog(b);
+        this.searchBlock.H(SearchBlockEditorComponent.getTracersValueCompat(this.editor).getEffectiveValue());
+        Vape.debugLog(DEBUG_MESSAGE);
     }
 }
-

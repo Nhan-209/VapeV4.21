@@ -5,20 +5,20 @@ import gg.vape.ui.click.component.value.StringMapValueComponent;
 
 class StringMapValueInputComponent
 extends TextInputComponentBase {
-    final StringMapValueComponent ko;
+    final StringMapValueComponent owner;
 
     @Override
     public double x() {
         return 110.0;
     }
 
-    StringMapValueInputComponent(StringMapValueComponent stringMapValueComponent, String string) {
-        super(string);
-        this.ko = stringMapValueComponent;
+    StringMapValueInputComponent(StringMapValueComponent owner, String placeholder) {
+        super(placeholder);
+        this.owner = owner;
     }
 
     @Override
-    public void p() {
+    public void submit() {
     }
 
     @Override

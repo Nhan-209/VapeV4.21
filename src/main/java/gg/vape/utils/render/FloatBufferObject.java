@@ -4,30 +4,30 @@ import java.nio.FloatBuffer;
 import org.lwjgl.opengl.GL15;
 
 public class FloatBufferObject {
-    private int I = GL15.glGenBuffers();
+    private int bufferId = GL15.glGenBuffers();
 
-    public void G() {
-        GL15.glDeleteBuffers((int)this.I);
+    public void delete() {
+        GL15.glDeleteBuffers((int)this.bufferId);
     }
 
-    public void U(long l) {
-        GL15.glBufferData((int)34962, (long)l, (int)35048);
+    public void allocate(long sizeBytes) {
+        GL15.glBufferData((int)34962, (long)sizeBytes, (int)35048);
     }
 
 
-    public int T() {
-        return this.I;
+    public int getBufferId() {
+        return this.bufferId;
     }
 
-    public void w() {
-        GL15.glBindBuffer((int)34962, (int)this.I);
+    public void bind() {
+        GL15.glBindBuffer((int)34962, (int)this.bufferId);
     }
 
-    public void Q(FloatBuffer floatBuffer) {
+    public void upload(FloatBuffer floatBuffer) {
         GL15.glBufferSubData((int)34962, (long)0L, (FloatBuffer)floatBuffer);
     }
 
-    public void I() {
+    public void unbind() {
         GL15.glBindBuffer((int)34962, (int)0);
     }
 }

@@ -12,9 +12,9 @@ implements GuiClickListener {
     }
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         if (SettingsFrameHeaderComponent.O(this.Q) != null) {
-            SettingsFrameHeaderComponent.O(this.Q).P();
+            SettingsFrameHeaderComponent.O(this.Q).onPrimaryClick();
         }
     }
 

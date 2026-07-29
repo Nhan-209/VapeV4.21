@@ -39,25 +39,25 @@ extends GuiComponent {
     }
 
     private static void lambda$new$0() {
-        OnlineConnectionSettingsFrame.x4.e(false);
+        OnlineConnectionSettingsFrame.getInstance().e(false);
     }
 
     public ClickGuiQuickActionsComponent() {
         this.v = new ArrayList<ClickGuiQuickActionActiveFrameIndicator>();
-        this.T(ClickGuiQuickActionsComponent.J.i);
+        this.setDisabledOverlayColor(ClickGuiQuickActionsComponent.J.i);
         this.O = new ClickGuiQuickActionsOnlineSettingsButton(this, "vape_online", 0.75);
         this.Q = new ClickGuiQuickActionsFrameButton(this, "newoverlays", 0.6);
-        this.Q.r(new ClickGuiQuickActionsFrameToggleClickHandler(this));
+        this.Q.addClickListener(new ClickGuiQuickActionsFrameToggleClickHandler(this));
         this.Q.w("Open overlays menu");
-        this.O.r(ClickGuiQuickActionsComponent::lambda$new$0);
-        this.i.r(new ClickGuiQuickActionsVisibleModulesClickHandler(this));
+        this.O.addClickListener(ClickGuiQuickActionsComponent::lambda$new$0);
+        this.i.addClickListener(new ClickGuiQuickActionsVisibleModulesClickHandler(this));
         this.i.w("Favorites");
-        this.H(this.O, this.i, this.Q);
-        this.v.add(new ClickGuiQuickActionActiveFrameIndicator("newtextgui", ClientSettings.g(TextGuiSettingsFrame.class), 5));
-        this.v.add(new ClickGuiQuickActionActiveFrameIndicator("newrearview", ClientSettings.g(OnlinePlayerPreviewSettingsFrame.class), 6));
-        this.v.add(new ClickGuiQuickActionActiveFrameIndicator("newduelinfo", ClientSettings.g(OnlineCombatStatsSettingsFrame.class), 6));
-        this.v.add(new ClickGuiQuickActionActiveFrameIndicator("newtargetinfo", ClientSettings.g(TargetInfoSettingsFrame.class), 7));
-        this.v.add(new ClickGuiQuickActionActiveFrameIndicator("newradar", ClientSettings.g(OnlineRadarSettingsFrame.class), 7));
+        this.addChildren(this.O, this.i, this.Q);
+        this.v.add(new ClickGuiQuickActionActiveFrameIndicator("newtextgui", ClientSettings.getFrame(TextGuiSettingsFrame.class), 5));
+        this.v.add(new ClickGuiQuickActionActiveFrameIndicator("newrearview", ClientSettings.getFrame(OnlinePlayerPreviewSettingsFrame.class), 6));
+        this.v.add(new ClickGuiQuickActionActiveFrameIndicator("newduelinfo", ClientSettings.getFrame(OnlineCombatStatsSettingsFrame.class), 6));
+        this.v.add(new ClickGuiQuickActionActiveFrameIndicator("newtargetinfo", ClientSettings.getFrame(TargetInfoSettingsFrame.class), 7));
+        this.v.add(new ClickGuiQuickActionActiveFrameIndicator("newradar", ClientSettings.getFrame(OnlineRadarSettingsFrame.class), 7));
     }
 
 
@@ -67,14 +67,14 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.d());
+        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.getDisabledOverlayColor());
         this.O.K(this.G$src$D$1b2f02a() + 3.0);
         this.O.S(this.n());
         this.O.Y(this.L());
         this.i.K(this.G$src$D$1b2f02a() + this.A() - 32.0);
         this.i.S(this.n());
         this.i.Y(this.L());
-        this.i.G(ClientSettings.g(VisibleModuleListFrame.class).V$src$Z$1xhop3l() ? (this.i.w$src$Z$e457mb() ? ClickGuiQuickActionsComponent.J.Y : ClickGuiQuickActionsComponent.J.I) : null);
+        this.i.setOverrideColor(ClientSettings.getFrame(VisibleModuleListFrame.class).V$src$Z$1xhop3l() ? (this.i.w$src$Z$e457mb() ? ClickGuiQuickActionsComponent.J.Y : ClickGuiQuickActionsComponent.J.I) : null);
         this.Q.K(this.G$src$D$1b2f02a() + this.A() - 18.0);
         this.Q.S(this.n());
         this.Q.Y(this.L());
@@ -87,7 +87,7 @@ extends GuiComponent {
             bl = true;
             d2 -= (double)(5.0f + (float)clickGuiQuickActionActiveFrameIndicator.W);
         }
-        this.Q.G(bl ? (this.Q.w$src$Z$e457mb() ? ColorUtil.N(J.z(), 10.0) : J.z()) : null);
+        this.Q.setOverrideColor(bl ? (this.Q.w$src$Z$e457mb() ? ColorUtil.offsetRgb(J.z(), 10.0) : J.z()) : null);
     }
 
     public IconButtonComponent b$src$Lgg_vape_ui_click_component_IconButtonComponent_$1sg98rj() {

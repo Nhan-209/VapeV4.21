@@ -8,17 +8,16 @@ import gg.vape.utils.render.ImageRenderer;
 
 final class ClickGuiFriendsRequestRemoveComponent
 extends InteractiveComponent {
-    final ClickGuiFriendsFriendRequestComponent K;
-    private final ColorAnimation I;
-    private static final String v = "newsettings";
+    private static final String SETTINGS_ICON = "newsettings";
+    final ClickGuiFriendsFriendRequestComponent owner;
+    private final ColorAnimation colorAnimation;
 
     private ClickGuiFriendsRequestRemoveComponent(ClickGuiFriendsFriendRequestComponent clickGuiFriendsFriendRequestComponent) {
-        this.K = clickGuiFriendsFriendRequestComponent;
-        this.getClass();
-        this.I = new ColorAnimation(0.15, ClickGuiFriendsFriendRequestComponent.g$src$Ljava_awt_Color_$1956ipg(), ClickGuiFriendsFriendRequestComponent.I$src$Ljava_awt_Color_$yvy0ia());
+        this.owner = clickGuiFriendsFriendRequestComponent;
+        this.colorAnimation = new ColorAnimation(0.15, ClickGuiFriendsFriendRequestComponent.getSettingsColor(), ClickGuiFriendsFriendRequestComponent.getSettingsHoverColor());
         this.o(10.0);
         this.Y(10.0);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
     }
 
     ClickGuiFriendsRequestRemoveComponent(ClickGuiFriendsFriendRequestComponent clickGuiFriendsFriendRequestComponent, ClickGuiFriendsRequestStatusComponent clickGuiFriendsRequestStatusComponent) {
@@ -37,10 +36,9 @@ extends InteractiveComponent {
 
     @Override
     public void H() {
-        this.I.u(this.w$src$Z$e457mb());
+        this.colorAnimation.u(this.w$src$Z$e457mb());
         double d = this.G$src$D$1b2f02a() + (this.A() - 5.0) / 2.0;
         double d2 = this.n() + (this.L() - 5.0) / 2.0;
-        ImageRenderer.E(this.I.getInterpolatedColor(), (float)d, (float)d2, v, 5.0f, 5.0f, false);
+        ImageRenderer.drawImage(this.colorAnimation.getInterpolatedColor(), (float)d, (float)d2, SETTINGS_ICON, 5.0f, 5.0f, false);
     }
 }
-

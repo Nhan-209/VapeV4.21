@@ -36,7 +36,7 @@ public class InventoryItemMatcherPresetBuilder {
     }
 
     public InventoryItemMatcherPresetBuilder addConditionGroup(InventoryFilterConditionGroupBuilder inventoryFilterConditionGroupBuilder) {
-        this.conditionGroups.add(inventoryFilterConditionGroupBuilder.w());
+        this.conditionGroups.add(inventoryFilterConditionGroupBuilder.build());
         return this;
     }
 }

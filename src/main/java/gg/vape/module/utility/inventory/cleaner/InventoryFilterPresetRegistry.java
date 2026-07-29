@@ -14,78 +14,60 @@ import gg.vape.module.utility.inventory.cleaner.SlotInventoryFilterRule;
 import java.util.Iterator;
 
 public class InventoryFilterPresetRegistry {
-    private static boolean x;
-    private final InventoryFilterPresetStore W = new InventoryFilterPresetStore();
-    private final InventoryFilterPresetStore E = new InventoryFilterPresetStore();
+    private final InventoryFilterPresetStore slotRulePresets = new InventoryFilterPresetStore();
+    private final InventoryFilterPresetStore itemRulePresets = new InventoryFilterPresetStore();
 
-    public InventoryFilterPresetStore g() {
-        return this.W;
-    }
-
-    static {
-        InventoryFilterPresetRegistry.e(false);
-    }
-
-    public static boolean w() {
-        return x;
+    public InventoryFilterPresetStore getSlotRulePresets() {
+        return this.slotRulePresets;
     }
 
 
-    public void L(JsonObject jsonObject) {
+    public void loadJson(JsonObject jsonObject) {
         JsonArray jsonArray = ConfigJsonUtils.q(jsonObject, "slotRules");
         if (jsonArray != null) {
             for (JsonElement element : jsonArray) {
                 if (!element.isJsonObject()) continue;
-                this.W.n(new SharedInventoryFilterPreset(element.getAsJsonObject()));
+                this.slotRulePresets.add(new SharedInventoryFilterPreset(element.getAsJsonObject()));
             }
         }
         JsonArray inventoryFilterRules = ConfigJsonUtils.q(jsonObject, "inventoryFilterRules");
         if (inventoryFilterRules != null) {
             for (JsonElement jsonElement : inventoryFilterRules) {
                 if (!jsonElement.isJsonObject()) continue;
-                this.E.n(new SharedInventoryFilterPreset(jsonElement.getAsJsonObject()));
+                this.itemRulePresets.add(new SharedInventoryFilterPreset(jsonElement.getAsJsonObject()));
             }
         }
     }
 
-    public InventoryFilterPresetStore r() {
-        return this.E;
+    public InventoryFilterPresetStore getItemRulePresets() {
+        return this.itemRulePresets;
     }
 
-    public static void e(boolean bl) {
-        x = bl;
-    }
-
-    public static boolean u() {
-        boolean bl = InventoryFilterPresetRegistry.w();
-        return true;
-    }
-
-    public JsonObject U() {
+    public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
-        for (SharedInventoryFilterPreset object : this.W.M()) {
-            jsonArray.add((JsonElement)object.K());
+        for (SharedInventoryFilterPreset object : this.slotRulePresets.getAll()) {
+            jsonArray.add((JsonElement)object.toJson());
         }
         JsonArray jsonArray2 = new JsonArray();
-        for (SharedInventoryFilterPreset sharedInventoryFilterPreset : this.E.M()) {
-            jsonArray2.add((JsonElement)sharedInventoryFilterPreset.K());
+        for (SharedInventoryFilterPreset sharedInventoryFilterPreset : this.itemRulePresets.getAll()) {
+            jsonArray2.add((JsonElement)sharedInventoryFilterPreset.toJson());
         }
         jsonObject.add("slotRules", (JsonElement)jsonArray);
         jsonObject.add("inventoryFilterRules", (JsonElement)jsonArray2);
         return jsonObject;
     }
 
-    public void Z(SharedInventoryFilterPreset sharedInventoryFilterPreset) {
+    public void clearReferencesTo(SharedInventoryFilterPreset sharedInventoryFilterPreset) {
         InvCleaner invCleaner = Vape.INSTANCE.getModManager().getMod(InvCleaner.class);
-        for (InventoryCleanerProfile inventoryCleanerProfile : invCleaner.E$src$Lgg_vape_module_utility_inventory_cleaner_Invent$199cpgr().w()) {
-            for (ItemInventoryFilterRule itemInventoryFilterRule : inventoryCleanerProfile.Q()) {
-                if (!sharedInventoryFilterPreset.equals(itemInventoryFilterRule.W())) continue;
-                itemInventoryFilterRule.U();
+        for (InventoryCleanerProfile inventoryCleanerProfile : invCleaner.getProfileValue().getProfiles()) {
+            for (ItemInventoryFilterRule itemInventoryFilterRule : inventoryCleanerProfile.getItemRules()) {
+                if (!sharedInventoryFilterPreset.equals(itemInventoryFilterRule.resolvePreset())) continue;
+                itemInventoryFilterRule.clearPresetReference();
             }
-            for (SlotInventoryFilterRule slotInventoryFilterRule : inventoryCleanerProfile.P()) {
-                if (!sharedInventoryFilterPreset.equals(slotInventoryFilterRule.W())) continue;
-                slotInventoryFilterRule.U();
+            for (SlotInventoryFilterRule slotInventoryFilterRule : inventoryCleanerProfile.getSlotRules()) {
+                if (!sharedInventoryFilterPreset.equals(slotInventoryFilterRule.resolvePreset())) continue;
+                slotInventoryFilterRule.clearPresetReference();
             }
         }
     }

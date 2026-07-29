@@ -90,7 +90,7 @@ extends PingMarker {
             float f2 = 12.0f;
             float f3 = 0.0f - f2 / 2.0f;
             float f4 = (float)d3 - f2;
-            ImageRenderer.E(Color.WHITE, f3, f4, b, f2, f2, false);
+            ImageRenderer.drawImage(Color.WHITE, f3, f4, b, f2, f2, false);
             GuiRenderPrimitives.m(-2.5f, (float)((d3 -= 7.7) - 2.5), 5.0f, 2.0f, 1.0f, new Color(0, 0, 0, n));
             GuiRenderPrimitives.V(-2.5, (float)(d3 - 2.5), 5.0, 1.0, color3);
         }
@@ -116,17 +116,17 @@ extends PingMarker {
                 double d12 = Math.cos(Math.toRadians(f6)) * (d9 + 1.0);
                 double d13 = Math.sin(Math.toRadians(f6)) * (d9 + 1.0);
                 if (GuiRenderPrimitives.d()) {
-                    RenderMatrix4f renderMatrix4f = BufferedGuiRenderPrimitives.X.c();
-                    OpenGlBackendHolder.d.m();
-                    BufferedGuiRenderPrimitives.X.c().u(renderMatrix4f);
+                    RenderMatrix4f renderMatrix4f = BufferedGuiRenderPrimitives.matrixStack.peek();
+                    OpenGlBackendHolder.backend.pushMatrix();
+                    BufferedGuiRenderPrimitives.matrixStack.peek().multiply(renderMatrix4f);
                 } else {
-                    OpenGlBackendHolder.d.m();
+                    OpenGlBackendHolder.backend.pushMatrix();
                 }
-                OpenGlBackendHolder.d.I(0.0 + d12, 0.0 + d13 - (double)f, 0.0);
-                OpenGlBackendHolder.d.X(f6, 0.0f, 0.0f, 1.0f);
+                OpenGlBackendHolder.backend.translate(0.0 + d12, 0.0 + d13 - (double)f, 0.0);
+                OpenGlBackendHolder.backend.rotate(f6, 0.0f, 0.0f, 1.0f);
                 GuiRenderPrimitives.B(0.0, 0.0, d10 * d11, 0.5 * d11, new MutableColor(Color.BLACK).withAlpha(255), 1.0f);
                 GuiRenderPrimitives.B(0.0, 0.0, d10 * d11, 0.5 * d11, new MutableColor(Color.WHITE).withAlpha(255), 1.0f);
-                OpenGlBackendHolder.d.F();
+                OpenGlBackendHolder.backend.popMatrix();
                 f6 += 90.0f;
             }
         }

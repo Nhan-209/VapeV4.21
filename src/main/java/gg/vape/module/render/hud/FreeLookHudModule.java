@@ -36,7 +36,6 @@ extends HudModule {
     private static float renderPitch;
     private static float originalYaw;
     private final ModeOption thirdPersonMode;
-    private static float originalPrevYaw;
     private final NumberValue sensitivity;
     private static boolean active;
     private double mouseDY;
@@ -45,28 +44,27 @@ extends HudModule {
     private static float savedYaw;
     private double mouseLastY;
     private final BooleanValue customSensitivity;
-    private static float originalPrevPitch;
     private final ModeOption firstPersonMode;
     private static float renderYaw;
     private boolean enabled = false;
-    public final ModeValue oO;
+    public final ModeValue startingPositionMode;
     private static float originalPitch;
     private static float pitchOffset;
     private static float yawOffset;
     private double mouseLastX;
-    public final ModeValue t = ModeValue.create((Object)this, "Activate Freelook", this.holdMode, this.holdMode, this.toggleMode);
-    public final ModeValue p;
+    public final ModeValue activationMode = ModeValue.create((Object)this, "Activate Freelook", this.holdMode, this.holdMode, this.toggleMode);
+    public final ModeValue perspectiveMode;
     private final ModeOption backwardMode;
     private int savedPerspective = -1;
     private double mouseDX;
 
 
-    public static float c() {
+    public static float getRenderYaw() {
         return renderYaw;
     }
 
     @EventHandler
-    public void Q(EventPostRenderTick eventPostRenderTick) {
+    public void onPostRenderTick(EventPostRenderTick event) {
         if (!this.enabled) {
             return;
         }
@@ -74,22 +72,22 @@ extends HudModule {
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void m(EventPreRenderWorldPass eventPreRenderWorldPass) {
+    public void onPreRenderWorldPass(EventPreRenderWorldPass event) {
         this.applyWorldRotation();
     }
 
     private double getSensitivity() {
-        if (!this.customSensitivity.L().booleanValue()) {
+        if (!this.customSensitivity.getEffectiveValue().booleanValue()) {
             return (double)Minecraft.gameSettings().y() * 0.6 * 0.2 * 8.0;
         }
-        return (Double)this.sensitivity.K();
+        return (Double)this.sensitivity.getValue();
     }
 
     private void applyRenderRotation() {
         if (!this.enabled) {
             return;
         }
-        if (RotationManager.b.u() && Vape.INSTANCE.getClientSettings().c.L().booleanValue()) {
+        if (RotationManager.INSTANCE.hasAdaptiveController() && Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
             return;
         }
         this.applyCameraRotation();
@@ -104,18 +102,18 @@ extends HudModule {
             this.mouseLastX = Minecraft.s().R();
             this.mouseLastY = Minecraft.s().b();
         }
-        if (this.t.K() == this.toggleMode) {
+        if (this.activationMode.getValue() == this.toggleMode) {
             EventTickBase.p.execute(this::toggleFreelook);
         }
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void L(EventRenderPlayerPost eventRenderPlayerPost) {
+    public void onRenderPlayerPost(EventRenderPlayerPost event) {
         this.applyRenderRotation();
     }
 
     @EventHandler
-    public void G(EventPreEntityRendererMouseUpdate eventPreEntityRendererMouseUpdate) {
+    public void onPreMouseUpdate(EventPreEntityRendererMouseUpdate event) {
         if (!active) {
             return;
         }
@@ -129,8 +127,8 @@ extends HudModule {
     }
 
     @EventHandler
-    public void o(EventPostTick eventPostTick) {
-        if (this.t.K() != this.holdMode) {
+    public void onPostTick(EventPostTick event) {
+        if (this.activationMode.getValue() != this.holdMode) {
             return;
         }
         if (Minecraft.currentScreen().isNotNull()) {
@@ -139,7 +137,7 @@ extends HudModule {
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        this.enabled = this.a().K();
+        this.enabled = this.a().areBoundInputsDown();
         if (!this.enabled) {
             active = false;
             if (this.savedPerspective == -1) {
@@ -152,19 +150,19 @@ extends HudModule {
     }
 
     @EventHandler
-    public void h(EventPostEntityRendererMouseUpdate eventPostEntityRendererMouseUpdate) {
+    public void onPostMouseUpdate(EventPostEntityRendererMouseUpdate event) {
         if (!this.enabled) {
             return;
         }
         this.restorePlayerView();
     }
 
-    public static boolean z() {
+    public static boolean isActive() {
         return active;
     }
 
     private void toggleFreelook() {
-        boolean bl = this.enabled = !this.enabled;
+        this.enabled = !this.enabled;
         if (!this.enabled) {
             active = false;
             if (this.savedPerspective == -1) {
@@ -174,10 +172,6 @@ extends HudModule {
             this.savedPerspective = -1;
             this.restorePlayerView();
         }
-    }
-
-    static {
-        active = false;
     }
 
     private void restorePlayerView() {
@@ -193,12 +187,12 @@ extends HudModule {
         entityPlayerSP.l(savedYaw);
     }
 
-    public void G(float f, float f2, float f3, float f4) {
-        savedPitch = f;
-        savedYaw = f2;
+    public void capturePlayerRotation(float pitch, float yaw) {
+        savedPitch = pitch;
+        savedYaw = yaw;
     }
 
-    public static float w$src$F$1kb9hl5() {
+    public static float getRenderPitch() {
         return renderPitch;
     }
 
@@ -206,19 +200,19 @@ extends HudModule {
         if (!this.enabled) {
             return;
         }
-        if (RotationManager.b.u() && Vape.INSTANCE.getClientSettings().c.L().booleanValue()) {
+        if (RotationManager.INSTANCE.hasAdaptiveController() && Vape.INSTANCE.getClientSettings().c.getEffectiveValue().booleanValue()) {
             return;
         }
         this.restorePlayerView();
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void w(EventRenderPlayerPre eventRenderPlayerPre) {
+    public void onRenderPlayerPre(EventRenderPlayerPre event) {
         this.applyWorldRotation();
     }
 
     private void applyCameraRotation() {
-        if (SharedModuleControlClaims.p.I()) {
+        if (SharedModuleControlClaims.renderPass.isRenderBlocked()) {
             return;
         }
         this.renderPlayer.H(renderPitch);
@@ -227,32 +221,32 @@ extends HudModule {
         this.renderPlayer.l(renderYaw);
     }
 
-    public static float L$src$F$1jnmc2m() {
+    public static float getSavedPitch() {
         return savedPitch;
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void d(EventPostRenderWorldPass eventPostRenderWorldPass) {
+    public void onPostRenderWorldPass(EventPostRenderWorldPass event) {
         this.applyRenderRotation();
     }
 
     public FreeLookHudModule() {
-        super("Freelook", HudModuleGroup.T, "freelook2");
+        super("Freelook", HudModuleGroup.GAME, "freelook2");
         this.customSensitivity = BooleanValue.create(this, "Use Custom Sensitivity", false, "Enable to set a separate sensitivity from Minecraft using a slider");
         this.sensitivity = NumberValue.create(this, "Sensitivity", "#.#", "", 0.001, 0.5, 1.0);
         this.thirdPersonMode = new ModeOption("3rd Person");
         this.firstPersonMode = new ModeOption("1st Person");
-        this.p = ModeValue.create((Object)this, "Perspective", this.thirdPersonMode, this.thirdPersonMode, this.firstPersonMode);
+        this.perspectiveMode = ModeValue.create((Object)this, "Perspective", this.thirdPersonMode, this.thirdPersonMode, this.firstPersonMode);
         this.forwardMode = new ModeOption("Forward");
         this.backwardMode = new ModeOption("Backward");
-        this.oO = ModeValue.create((Object)this, "Starting Position", this.forwardMode, this.forwardMode, this.backwardMode);
+        this.startingPositionMode = ModeValue.create((Object)this, "Starting Position", this.forwardMode, this.forwardMode, this.backwardMode);
         this.setSuffix("Freely rotates your perspective");
-        this.q$src$V$1apmftw(true);
-        this.addValue(this.t, this.oO, this.customSensitivity, this.sensitivity);
-        this.customSensitivity.K(this.sensitivity);
+        this.setShowKeybindSetting(true);
+        this.addValue(this.activationMode, this.startingPositionMode, this.customSensitivity, this.sensitivity);
+        this.customSensitivity.addDependentValues(this.sensitivity);
     }
 
-    public static float U() {
+    public static float getSavedYaw() {
         return savedYaw;
     }
 
@@ -269,19 +263,17 @@ extends HudModule {
     }
 
     @EventHandler
-    public void u(EventPreRenderTick eventPreRenderTick) {
-        int n;
-        this.renderPlayer = eventPreRenderTick.getThePlayer();
+    public void onPreRenderTick(EventPreRenderTick event) {
+        int perspective;
+        this.renderPlayer = event.getThePlayer();
         if (!this.enabled) {
             return;
         }
         if (!active) {
             originalYaw = this.renderPlayer.V();
             originalPitch = this.renderPlayer.J();
-            originalPrevYaw = this.renderPlayer.D();
-            originalPrevPitch = this.renderPlayer.j();
             this.savedPerspective = Minecraft.gameSettings().x();
-            yawOffset = ((ModeSelection)this.oO.K()).equals(this.forwardMode) ? 0.0f : 180.0f;
+            yawOffset = ((ModeSelection)this.startingPositionMode.getValue()).equals(this.forwardMode) ? 0.0f : 180.0f;
             pitchOffset = 0.0f;
             this.mouseDX = 0.0;
             this.mouseDY = 0.0;
@@ -292,9 +284,9 @@ extends HudModule {
             active = true;
             return;
         }
-        int n2 = n = ((ModeSelection)this.p.K()).equals(this.firstPersonMode) ? 0 : 1;
-        if (Minecraft.gameSettings().x() != n) {
-            Minecraft.gameSettings().I(n);
+        perspective = ((ModeSelection)this.perspectiveMode.getValue()).equals(this.firstPersonMode) ? 0 : 1;
+        if (Minecraft.gameSettings().x() != perspective) {
+            Minecraft.gameSettings().I(perspective);
         }
         if (Minecraft.currentScreen().isNotNull()) {
             yawOffset = 0.0f;
@@ -302,14 +294,13 @@ extends HudModule {
             this.mouseDX = this.mouseDY = (double)0.0f;
         }
         this.updateMouseDelta();
-        double d = this.mouseDX * this.getSensitivity() * 0.15;
-        double d2 = this.mouseDY * this.getSensitivity() * 0.15;
-        renderPitch = (float)(d - (double)yawOffset + (double)originalPitch);
-        renderYaw = (float)(d2 - (double)pitchOffset + (double)originalYaw);
+        double yawDelta = this.mouseDX * this.getSensitivity() * 0.15;
+        double pitchDelta = this.mouseDY * this.getSensitivity() * 0.15;
+        renderPitch = (float)(yawDelta - (double)yawOffset + (double)originalPitch);
+        renderYaw = (float)(pitchDelta - (double)pitchOffset + (double)originalYaw);
         renderYaw = MathUtil.clamp(renderYaw, -90.0f, 90.0f);
-        yawOffset = (float)(d + (double)yawOffset);
-        pitchOffset = (float)(d2 + (double)pitchOffset);
+        yawOffset = (float)(yawDelta + (double)yawOffset);
+        pitchOffset = (float)(pitchDelta + (double)pitchOffset);
         pitchOffset = MathUtil.clamp(pitchOffset, -(90.0f - originalYaw), 90.0f + originalYaw);
     }
 }
-

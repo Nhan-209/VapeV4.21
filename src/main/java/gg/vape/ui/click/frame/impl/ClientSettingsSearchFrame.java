@@ -61,17 +61,17 @@ extends ModuleCategoryFrame {
     }
 
     public void K$src$V$1nbah4f() {
-        this.S();
-        if (((ModeSelection)ClientSettings.fW.fz.K()).equals(ClientSettings.fW.fM) && this.Ij.O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().i$src$Ljava_lang_String_$1n2xf3k().length() > 0) {
+        this.removeMarkedChildren();
+        if (((ModeSelection)ClientSettings.INSTANCE.searchBarStyle.getValue()).equals(ClientSettings.INSTANCE.integratedSearchBarMode) && this.Ij.O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().getText().length() > 0) {
             for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
                 if (mod.getCategory().equals(Category.b)) continue;
                 String string = StringUtils.y(mod.getName());
-                String string2 = StringUtils.y(this.Ij.O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().i$src$Ljava_lang_String_$1n2xf3k());
+                String string2 = StringUtils.y(this.Ij.O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().getText());
                 boolean bl = mod.getCategory().equals(Category.w) ? string.equals(string2) : string.contains(string2);
                 if (!bl) continue;
                 ModuleComponent moduleComponent = new ModuleComponent(this, mod);
                 this.h(moduleComponent, new Object[0]);
-                moduleComponent.d$src$V$m6rlha();
+                moduleComponent.buildValueComponents();
             }
         } else {
             this.o$src$V$1nv32hf();
@@ -79,8 +79,8 @@ extends ModuleCategoryFrame {
     }
 
     @Override
-    public void D(GuiMouseEvent guiMouseEvent) {
-        QuickActionsFrame quickActionsFrame = ClientSettings.g(QuickActionsFrame.class);
+    public void dispatchMouseEvent(GuiMouseEvent guiMouseEvent) {
+        QuickActionsFrame quickActionsFrame = ClientSettings.getFrame(QuickActionsFrame.class);
         if (quickActionsFrame.Q$src$I$1o5zb27() == 3 || quickActionsFrame.Q$src$I$1o5zb27() == 4) {
             return;
         }
@@ -89,12 +89,12 @@ extends ModuleCategoryFrame {
             quickActionsFrame.U();
             return;
         }
-        super.D(guiMouseEvent);
+        super.dispatchMouseEvent(guiMouseEvent);
     }
 
     public ClientSettingsSearchFrame() {
         super(Category.b);
-        this.T(ClientSettingsSearchFrame.J.r);
+        this.setDisabledOverlayColor(ClientSettingsSearchFrame.J.r);
         this.K(32.0);
         this.S(32.0);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
@@ -113,8 +113,8 @@ extends ModuleCategoryFrame {
     public void u() {
         boolean bl = OutlinedFrameBase.D$src$Z$g1pigg();
         try {
-            ClientSettingsFrame clientSettingsFrame = ClientSettings.g(ClientSettingsFrame.class);
-            ClientSettingsSectionFrame clientSettingsSectionFrame = ClientSettings.g(ClientSettingsSectionFrame.class);
+            ClientSettingsFrame clientSettingsFrame = ClientSettings.getFrame(ClientSettingsFrame.class);
+            ClientSettingsSectionFrame clientSettingsSectionFrame = ClientSettings.getFrame(ClientSettingsSectionFrame.class);
             if (this.IG == null && this.Il == 0L) {
                 Class clazz = (Class)MappedClasses.x()[0];
                 try {
@@ -140,13 +140,13 @@ extends ModuleCategoryFrame {
                 }
                 if (l2 > 1117030L && l > 1809594154878L) {
                     Frame frame = null;
-                    Iterator<Frame> iterator = ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().Y().iterator();
+                    Iterator<Frame> iterator = ClientSettings.INSTANCE.getActiveStack().Y().iterator();
                     while (iterator.hasNext()) {
                         Frame frame2;
                         frame = frame2 = iterator.next();
                     }
                     if (frame != null) {
-                        ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().m(frame);
+                        ClientSettings.INSTANCE.getActiveStack().m(frame);
                     }
                 }
                 this.IL = l;
@@ -169,7 +169,7 @@ extends ModuleCategoryFrame {
 
     @Override
     public void J() {
-        if (ClientSettings.g(QuickActionsFrame.class).V$src$Z$1xhop3l()) {
+        if (ClientSettings.getFrame(QuickActionsFrame.class).V$src$Z$1xhop3l()) {
             return;
         }
         super.J();
@@ -191,9 +191,9 @@ extends ModuleCategoryFrame {
             this.g(new SimpleTextLabelComponent("  MISC", 0.625));
             this.g(new SpacerComponent(1.0, 2.0));
             this.g(new ColorDividerComponent(ClientSettingsSearchFrame.J.m));
-            this.g(new FrameNavigationButtonComponent("Friends", null, OnlineFriendsFrame.class).r(new ClientSettingsSearchFrameClassOpenClickHandler(this, OnlineFriendsFrame.class)));
-            this.g(new ProfilesFrameNavigationButtonComponent().r(new ClientSettingsSearchFrameClassOpenClickHandler(this, ProfilesSettingsFrame.class)));
-            this.g(new FrameNavigationButtonComponent("Macros", null, FrameMacros.class).r(new ClientSettingsSearchFrameClassOpenClickHandler(this, FrameMacros.class)));
+            this.g(new FrameNavigationButtonComponent("Friends", null, OnlineFriendsFrame.class).addClickListener(new ClientSettingsSearchFrameClassOpenClickHandler(this, OnlineFriendsFrame.class)));
+            this.g(new ProfilesFrameNavigationButtonComponent().addClickListener(new ClientSettingsSearchFrameClassOpenClickHandler(this, ProfilesSettingsFrame.class)));
+            this.g(new FrameNavigationButtonComponent("Macros", null, FrameMacros.class).addClickListener(new ClientSettingsSearchFrameClassOpenClickHandler(this, FrameMacros.class)));
             this.g(new ColorDividerComponent(ClientSettingsSearchFrame.J.m));
             this.g(new ClickGuiQuickActionsComponent());
         } else {
@@ -207,7 +207,7 @@ extends ModuleCategoryFrame {
     public void t(JsonObject jsonObject) {
         super.t(jsonObject);
         this.K$src$V$1nbah4f();
-        ClientSettings.M$src$V$1giazqf();
+        ClientSettings.refreshModuleCategoryHeaders();
     }
 
     @Override
@@ -215,7 +215,7 @@ extends ModuleCategoryFrame {
     }
 
     public void N$src$V$1ncxuwi() {
-        ClientSettings.f6.execute(this::lambda$resetSearch$0);
+        ClientSettings.UI_EXECUTOR.execute(this::lambda$resetSearch$0);
     }
 
     public static long V(String string) {
@@ -238,7 +238,7 @@ extends ModuleCategoryFrame {
     }
 
     private void lambda$resetSearch$0() {
-        this.Ij.O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().k("");
+        this.Ij.O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().setText("");
         this.K$src$V$1nbah4f();
     }
 

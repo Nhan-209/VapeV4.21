@@ -8,54 +8,54 @@ import java.util.Set;
 
 public class CharacterInputHandler
 implements InputEventHandler {
-    private Set<Integer> b = new HashSet<Integer>();
-    private static int q;
+    private Set<Integer> allowedControlCharacters = new HashSet<Integer>();
+    private static int legacyState;
 
 
     @Override
-    public boolean handle(long l, long l2) {
-        char c3 = (char)l;
-        char c2 = '\u0000';
-        if (c3 == '\u00a7' || c3 < ' ' || c3 == '\u007f') {
-            if (this.b.contains(Character.valueOf(c3))) {
-                c2 = c3;
+    public boolean handle(long firstArgument, long secondArgument) {
+        char typedCharacter = (char)firstArgument;
+        char controlCharacter = '\u0000';
+        if (typedCharacter == '\u00a7' || typedCharacter < ' ' || typedCharacter == '\u007f') {
+            if (this.allowedControlCharacters.contains(Integer.valueOf(typedCharacter))) {
+                controlCharacter = typedCharacter;
             }
-            if (c2 == '\u0000') {
+            if (controlCharacter == '\u0000') {
                 return false;
             }
         }
-        GuiKeyTypedDispatcher.p(c3, c2);
-        return !ClientSettings.fW.P;
+        GuiKeyTypedDispatcher.dispatch(typedCharacter, controlCharacter);
+        return !ClientSettings.INSTANCE.inputEnabled;
     }
 
-    public static int r() {
-        int n = CharacterInputHandler.z();
-        if (n == 0) {
+    public static int getLegacySentinelResult() {
+        int state = CharacterInputHandler.getLegacyState();
+        if (state == 0) {
             return 63;
         }
         return 0;
     }
 
     public CharacterInputHandler() {
-        this.b.add(8);
-        this.b.add(3);
-        this.b.add(22);
-        this.b.add(27);
-        this.b.add(13);
-        this.b.add(9);
+        this.allowedControlCharacters.add(8);
+        this.allowedControlCharacters.add(3);
+        this.allowedControlCharacters.add(22);
+        this.allowedControlCharacters.add(27);
+        this.allowedControlCharacters.add(13);
+        this.allowedControlCharacters.add(9);
     }
 
-    public static void G(int n) {
-        q = n;
+    public static void setLegacyState(int state) {
+        legacyState = state;
     }
 
-    public static int z() {
-        return q;
+    public static int getLegacyState() {
+        return legacyState;
     }
 
     static {
-        if (CharacterInputHandler.r() == 0) {
-            CharacterInputHandler.G(4);
+        if (CharacterInputHandler.getLegacySentinelResult() == 0) {
+            CharacterInputHandler.setLegacyState(4);
         }
     }
 }

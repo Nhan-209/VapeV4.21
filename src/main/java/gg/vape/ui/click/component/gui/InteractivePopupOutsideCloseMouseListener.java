@@ -7,18 +7,18 @@ import java.awt.Point;
 
 public class InteractivePopupOutsideCloseMouseListener
 implements GuiMouseListener {
-    final PopupMenuButtonComponent e;
+    final PopupMenuButtonComponent owner;
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        if (!this.e.t() && !PopupMenuButtonComponent.g(this.e).t()) {
-            PopupMenuButtonComponent.l(this.e);
+        if (!this.owner.t() && !this.owner.getPopupFrame().t()) {
+            this.owner.togglePopup();
         }
     }
 
 
     public InteractivePopupOutsideCloseMouseListener(PopupMenuButtonComponent popupMenuButtonComponent) {
-        this.e = popupMenuButtonComponent;
+        this.owner = popupMenuButtonComponent;
     }
 }
 

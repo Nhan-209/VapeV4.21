@@ -12,8 +12,7 @@ extends DropdownSelectComponent<FontOption> {
     }
 
     @Override
-    public void L$src$V$1e9izof() {
-        Vape.INSTANCE.getFontSelector().N((FontOption)this.j$src$Ljava_lang_Object_$an7bt2());
+    public void onSelectionChanged() {
+        Vape.INSTANCE.getFontSelector().N(this.getSelectedValue());
     }
 }
-

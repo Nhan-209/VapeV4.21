@@ -18,10 +18,10 @@ public class WTapRightClickUseCancelMode
 extends SubModule<HitSelect> {
     private int cooldownTicks = -1;
     private boolean cancelActive = false;
-    private static final long c;
+    private static final long COOLDOWN_TICKS;
 
     static {
-        c = -5882419382201614328L;
+        COOLDOWN_TICKS = -5882419382201614328L;
     }
 
     public WTapRightClickUseCancelMode(Mod mod, String string) {
@@ -30,7 +30,7 @@ extends SubModule<HitSelect> {
 
     @EventHandler
     public void onClickMouse(EventClickMouse eventClickMouse) {
-        if (this.l()) {
+        if (this.isCancelActive()) {
             eventClickMouse.setCancelled(true);
         }
     }
@@ -38,9 +38,8 @@ extends SubModule<HitSelect> {
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        int n;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             this.cancelActive = false;
             return;
         }
@@ -49,16 +48,17 @@ extends SubModule<HitSelect> {
             this.cancelActive = false;
             return;
         }
-        RayTraceResult rayTraceResult = RotationManager.b.n();
-        EntityLivingBase entityLivingBase = rayTraceResult.isNotNull() && rayTraceResult.getEntity().isInstance(MappedClasses.zm) ? new EntityLivingBase(rayTraceResult.getEntity()) : new EntityLivingBase(null);
-        GuiScreen guiScreen = Minecraft.currentScreen();
-        if (entityLivingBase.isNull() && guiScreen.isNull()) {
+        RayTraceResult rayTrace = RotationManager.INSTANCE.getExtendedReachRayTrace();
+        EntityLivingBase target = rayTrace.isNotNull() && rayTrace.getEntity().isInstance(MappedClasses.zm)
+                ? new EntityLivingBase(rayTrace.getEntity()) : new EntityLivingBase(null);
+        GuiScreen screen = Minecraft.currentScreen();
+        if (target.isNull() && screen.isNull()) {
             this.cancelActive = false;
             return;
         }
-        if (entityLivingBase.isNotNull() && entityPlayerSP.b$src$Z$fqlxe4() && (n = entityLivingBase.V$src$I$fk0dv5()) > 12) {
-            if (!((HitSelect)this.getParent()).a$src$Z$1npvv6h()) {
-                this.cooldownTicks = (int)c;
+        if (target.isNotNull() && player.b$src$Z$fqlxe4() && target.V$src$I$fk0dv5() > 12) {
+            if (!((HitSelect)this.getParent()).shouldTrigger()) {
+                this.cooldownTicks = (int)COOLDOWN_TICKS;
             }
             this.cancelActive = true;
             return;
@@ -66,8 +66,7 @@ extends SubModule<HitSelect> {
         this.cancelActive = false;
     }
 
-    public boolean l() {
+    public boolean isCancelActive() {
         return this.cancelActive;
     }
 }
-

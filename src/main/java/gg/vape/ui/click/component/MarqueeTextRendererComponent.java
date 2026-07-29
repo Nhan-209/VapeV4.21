@@ -15,17 +15,17 @@ import org.lwjgl.opengl.GL11;
 
 public class MarqueeTextRendererComponent
 extends GuiComponent {
-    private TimerUtil o = new TimerUtil();
-    GuiComponent R;
-    private double a = 0.0;
+    private TimerUtil scrollTimer = new TimerUtil();
+    GuiComponent hoverTrigger;
+    private double scrollOffset = 0.0;
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
+    public void g(GuiMouseEvent mouseEvent) {
     }
 
 
-    public void h(String string, double d, double d2, double d3, double d4, Color color) {
-        this.j(string, d, d2, d3, d4, false, color, null);
+    public void render(String text, double x, double y, double width, double fontScale, Color textColor) {
+        this.renderInternal(text, x, y, width, fontScale, false, textColor, null);
     }
 
     @Override
@@ -42,102 +42,101 @@ extends GuiComponent {
     public void F() {
     }
 
-    public void o(String string, double d, double d2, double d3, double d4, Color color, @Nullable Color color2) {
-        this.j(string, d, d2, d3, d4, false, color, color2);
+    public void renderWithFade(String text, double x, double y, double width, double fontScale, Color textColor, @Nullable Color fadeColor) {
+        this.renderInternal(text, x, y, width, fontScale, false, textColor, fadeColor);
     }
 
     @Override
     public void H() {
     }
 
-    public MarqueeTextRendererComponent(@Nullable GuiComponent guiComponent) {
-        this.R = guiComponent;
+    public MarqueeTextRendererComponent(@Nullable GuiComponent hoverTrigger) {
+        this.hoverTrigger = hoverTrigger;
     }
 
     @Override
     public void I() {
     }
 
-    public void j(String string, double d, double d2, double d3, double d4, boolean bl, Color color, @Nullable Color color2) {
-        Color color3;
-        SmoothFontRenderer smoothFontRenderer = bl ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(d4) : this.O(d4);
-        double d5 = smoothFontRenderer.N(string);
-        double d6 = smoothFontRenderer.d(string);
-        RectData rectData = new RectData(d, d2, d3, d6);
-        if (this.R != null && this.R.w$src$Z$e457mb() && d5 > rectData.e()) {
-            RenderUtils.m(rectData.o() - 1.0, rectData.W(), rectData.e() + 1.0, rectData.R());
-            smoothFontRenderer.d(string + " " + string, rectData.o() - this.a, rectData.W(), color);
+    public void renderInternal(String text, double x, double y, double width, double fontScale, boolean bold, Color textColor, @Nullable Color fadeColor) {
+        SmoothFontRenderer fontRenderer = bold ? this.getAlternateFontRenderer(fontScale) : this.getFontRenderer(fontScale);
+        double textWidth = fontRenderer.N(text);
+        double textHeight = fontRenderer.d(text);
+        RectData clipBounds = new RectData(x, y, width, textHeight);
+        if (this.hoverTrigger != null && this.hoverTrigger.w$src$Z$e457mb() && textWidth > clipBounds.e()) {
+            RenderUtils.m(clipBounds.o() - 1.0, clipBounds.W(), clipBounds.e() + 1.0, clipBounds.R());
+            fontRenderer.d(text + " " + text, clipBounds.o() - this.scrollOffset, clipBounds.W(), textColor);
             RenderUtils.T();
-            if (this.o.hasTimeElapsed(30L)) {
-                this.a += 0.25;
-                this.o.reset();
+            if (this.scrollTimer.hasTimeElapsed(30L)) {
+                this.scrollOffset += 0.25;
+                this.scrollTimer.reset();
             }
-            if (this.a >= d5 + smoothFontRenderer.N(" ")) {
-                this.a = 0.0;
+            if (this.scrollOffset >= textWidth + fontRenderer.N(" ")) {
+                this.scrollOffset = 0.0;
             }
         } else {
-            this.a = 0.0;
-            RenderUtils.m(rectData.o() - 1.0, rectData.W(), rectData.e() + 1.0, rectData.R());
-            smoothFontRenderer.d(string, rectData.o() - this.a, rectData.W(), color);
+            this.scrollOffset = 0.0;
+            RenderUtils.m(clipBounds.o() - 1.0, clipBounds.W(), clipBounds.e() + 1.0, clipBounds.R());
+            fontRenderer.d(text, clipBounds.o() - this.scrollOffset, clipBounds.W(), textColor);
             RenderUtils.T();
         }
-        Color color4 = color3 = color2 == null ? new Color(0, 0, 0, 0) : color2;
+        Color resolvedFadeColor = fadeColor == null ? new Color(0, 0, 0, 0) : fadeColor;
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.N(rectData.o() + 1.0, rectData.W(), rectData.o() + 1.0, rectData.W() + rectData.R(), rectData.o() - 3.0, rectData.W() + rectData.R(), rectData.o() - 3.0, rectData.W(), new Color(31, 30, 31, 0), color3);
-            BufferedGuiRenderPrimitives.N(rectData.o() + rectData.e() - 3.0, rectData.W(), rectData.o() + rectData.e() - 3.0, rectData.W() + rectData.R(), rectData.o() + rectData.e(), rectData.W() + rectData.R(), rectData.o() + rectData.e(), rectData.W(), new Color(31, 30, 31, 0), color3);
+            BufferedGuiRenderPrimitives.fillGradientQuad(clipBounds.o() + 1.0, clipBounds.W(), clipBounds.o() + 1.0, clipBounds.W() + clipBounds.R(), clipBounds.o() - 3.0, clipBounds.W() + clipBounds.R(), clipBounds.o() - 3.0, clipBounds.W(), new Color(31, 30, 31, 0), resolvedFadeColor);
+            BufferedGuiRenderPrimitives.fillGradientQuad(clipBounds.o() + clipBounds.e() - 3.0, clipBounds.W(), clipBounds.o() + clipBounds.e() - 3.0, clipBounds.W() + clipBounds.R(), clipBounds.o() + clipBounds.e(), clipBounds.W() + clipBounds.R(), clipBounds.o() + clipBounds.e(), clipBounds.W(), new Color(31, 30, 31, 0), resolvedFadeColor);
         } else {
-            boolean bl2 = GL11.glIsEnabled((int)3042);
-            boolean bl3 = GL11.glIsEnabled((int)3553);
-            boolean bl4 = GL11.glIsEnabled((int)2896);
-            boolean bl5 = GL11.glIsEnabled((int)3008);
-            boolean bl6 = GL11.glIsEnabled((int)2884);
-            if (!bl2) {
+            boolean blendEnabled = GL11.glIsEnabled((int)3042);
+            boolean texture2DEnabled = GL11.glIsEnabled((int)3553);
+            boolean lightingEnabled = GL11.glIsEnabled((int)2896);
+            boolean alphaTestEnabled = GL11.glIsEnabled((int)3008);
+            boolean cullFaceEnabled = GL11.glIsEnabled((int)2884);
+            if (!blendEnabled) {
                 GlStateManager.enableBlend();
             }
-            if (bl3) {
+            if (texture2DEnabled) {
                 GlStateManager.disableTexture2D();
             }
-            if (bl4) {
+            if (lightingEnabled) {
                 GlStateManager.disableLighting();
             }
-            if (!bl5) {
+            if (!alphaTestEnabled) {
                 GlStateManager.enableAlpha();
             }
-            if (bl6) {
+            if (cullFaceEnabled) {
                 GlStateManager.Y();
             }
             GL11.glShadeModel((int)7425);
             RenderUtils.w(new Color(31, 30, 31, 0));
             GL11.glBegin((int)7);
-            GL11.glVertex2d((double)(rectData.o() + 1.0), (double)rectData.W());
-            GL11.glVertex2d((double)(rectData.o() + 1.0), (double)(rectData.W() + rectData.R()));
-            RenderUtils.w(color3);
-            GL11.glVertex2d((double)(rectData.o() - 3.0), (double)(rectData.W() + rectData.R()));
-            GL11.glVertex2d((double)(rectData.o() - 3.0), (double)rectData.W());
+            GL11.glVertex2d((double)(clipBounds.o() + 1.0), (double)clipBounds.W());
+            GL11.glVertex2d((double)(clipBounds.o() + 1.0), (double)(clipBounds.W() + clipBounds.R()));
+            RenderUtils.w(resolvedFadeColor);
+            GL11.glVertex2d((double)(clipBounds.o() - 3.0), (double)(clipBounds.W() + clipBounds.R()));
+            GL11.glVertex2d((double)(clipBounds.o() - 3.0), (double)clipBounds.W());
             GL11.glEnd();
             RenderUtils.w(new Color(31, 30, 31, 0));
             GL11.glBegin((int)7);
-            GL11.glVertex2d((double)(rectData.o() + rectData.e() - 3.0), (double)rectData.W());
-            GL11.glVertex2d((double)(rectData.o() + rectData.e() - 3.0), (double)(rectData.W() + rectData.R()));
-            RenderUtils.w(color3);
-            GL11.glVertex2d((double)(rectData.o() + rectData.e()), (double)(rectData.W() + rectData.R()));
-            GL11.glVertex2d((double)(rectData.o() + rectData.e()), (double)rectData.W());
+            GL11.glVertex2d((double)(clipBounds.o() + clipBounds.e() - 3.0), (double)clipBounds.W());
+            GL11.glVertex2d((double)(clipBounds.o() + clipBounds.e() - 3.0), (double)(clipBounds.W() + clipBounds.R()));
+            RenderUtils.w(resolvedFadeColor);
+            GL11.glVertex2d((double)(clipBounds.o() + clipBounds.e()), (double)(clipBounds.W() + clipBounds.R()));
+            GL11.glVertex2d((double)(clipBounds.o() + clipBounds.e()), (double)clipBounds.W());
             GL11.glEnd();
             GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
             GL11.glShadeModel((int)7424);
-            if (!bl5) {
+            if (!alphaTestEnabled) {
                 GlStateManager.disableAlpha();
             }
-            if (bl4) {
+            if (lightingEnabled) {
                 GlStateManager.enableLighting();
             }
-            if (!bl2) {
+            if (!blendEnabled) {
                 GlStateManager.disableBlend();
             }
-            if (bl6) {
+            if (cullFaceEnabled) {
                 GlStateManager.L();
             }
-            if (bl3) {
+            if (texture2DEnabled) {
                 GlStateManager.enableTexture2D();
             }
         }

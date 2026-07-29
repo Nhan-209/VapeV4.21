@@ -12,69 +12,57 @@ import gg.vape.wrapper.impl.ItemStack;
 public class AttackDamageFilterCondition
 implements NumericFilterCondition<AttackDamageFilterCondition> {
     @Override
-    public AttackDamageFilterCondition Q(String string) throws NumberFormatException {
-        return this.R(string);
+    public AttackDamageFilterCondition parseValue(String value) throws NumberFormatException {
+        this.damage = Integer.parseInt(value);
+        return this;
     }
 
     @Override
-    public AttackDamageFilterCondition J(ComparisonOperator operator) {
-        return this.F(operator);
+    public AttackDamageFilterCondition withOperator(ComparisonOperator operator) {
+        this.operator = operator;
+        return this;
     }
 
     @Override
-    public AttackDamageFilterCondition w() {
-        return this.j();
+    public AttackDamageFilterCondition copy() {
+        return new AttackDamageFilterCondition(this.damage, this.operator);
     }
-    private int g;
-    private ComparisonOperator F = ComparisonOperator.EQUALS;
+    private int damage;
+    private ComparisonOperator operator = ComparisonOperator.EQUALS;
 
     public AttackDamageFilterCondition(JsonObject jsonObject) {
-        this.g = jsonObject.get("damage").getAsInt();
-        this.F = ComparisonOperator.a(jsonObject.get("operator").getAsString());
+        this.damage = jsonObject.get("damage").getAsInt();
+        this.operator = ComparisonOperator.fromName(jsonObject.get("operator").getAsString());
     }
 
-    public int Z() {
-        return this.g;
-    }
-
-    private static NumberFormatException a(NumberFormatException numberFormatException) {
-        return numberFormatException;
+    public int getDamage() {
+        return this.damage;
     }
 
     public AttackDamageFilterCondition(int n, ComparisonOperator comparisonOperator) {
-        this.g = n;
-        this.F = comparisonOperator;
+        this.damage = n;
+        this.operator = comparisonOperator;
     }
 
     @Override
-    public InventoryFilterConditionType K() {
+    public InventoryFilterConditionType getType() {
         return InventoryFilterConditionType.ATTACK_DAMAGE;
     }
 
     @Override
-    public ComparisonOperator p() {
-        return this.F;
+    public ComparisonOperator getOperator() {
+        return this.operator;
     }
 
     @Override
-    public JsonObject L() {
-        JsonObject jsonObject = NumericFilterCondition.super.L();
-        jsonObject.addProperty("damage", (Number)this.g);
+    public JsonObject toJson() {
+        JsonObject jsonObject = NumericFilterCondition.super.toJson();
+        jsonObject.addProperty("damage", (Number)this.damage);
         return jsonObject;
     }
 
-    public AttackDamageFilterCondition R(String string) {
-        this.g = Integer.parseInt(string);
-        return this;
-    }
-
-    public AttackDamageFilterCondition F(ComparisonOperator comparisonOperator) {
-        this.F = comparisonOperator;
-        return this;
-    }
-
     @Override
-    public boolean g(ItemStack itemStack) {
+    public boolean matches(ItemStack itemStack) {
         if (itemStack.isNull()) {
             return false;
         }
@@ -85,21 +73,17 @@ implements NumericFilterCondition<AttackDamageFilterCondition> {
             AttributeModifier attributeModifier = new AttributeModifier(itemAttributeModifiers.f().toArray()[n]);
             f += (float)attributeModifier.getAmount();
         }
-        return this.F.A(f, this.g);
+        return this.operator.compare(f, this.damage);
     }
 
     @Override
-    public String k() {
-        return String.valueOf(this.g);
+    public String getValueText() {
+        return String.valueOf(this.damage);
     }
 
-    public AttackDamageFilterCondition O(int n) {
-        this.g = n;
+    public AttackDamageFilterCondition withDamage(int n) {
+        this.damage = n;
         return this;
-    }
-
-    public AttackDamageFilterCondition j() {
-        return new AttackDamageFilterCondition(this.g, this.F);
     }
 
     public AttackDamageFilterCondition() {

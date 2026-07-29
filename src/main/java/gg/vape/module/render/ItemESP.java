@@ -47,45 +47,45 @@ import java.util.List;
 
 public class ItemESP
 extends Mod {
-    private final Color p;
-    private final LimitValue A;
-    private final List<ItemESPGroup> I;
-    private final BooleanValue Z;
-    private final NumberValue v;
-    private final BooleanValue s;
-    private final BooleanValue D;
-    private final BooleanValue k = BooleanValue.create(this, "Distance", false, "Shows the distance of the item.");
+    private final Color backgroundColor;
+    private final LimitValue allowedItems;
+    private final List<ItemESPGroup> groups;
+    private final BooleanValue autoScale;
+    private final NumberValue scale;
+    private final BooleanValue whitelistOnly;
+    private final BooleanValue groupItems;
+    private final BooleanValue showDistance = BooleanValue.create(this, "Distance", false, "Shows the distance of the item.");
 
     @EventHandler
-    public void onRender3D(EventRender3D eventRender3D) {
+    public void onRender3D(EventRender3D event) {
         if (Minecraft.theWorld().isNull()) {
             return;
         }
-        double d = RenderManager.getInterpolatedRenderPosX();
-        double d2 = RenderManager.getInterpolatedRenderPosY();
-        double d3 = RenderManager.getInterpolatedRenderPosZ();
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
+        double cameraX = RenderManager.getInterpolatedRenderPosX();
+        double cameraY = RenderManager.getInterpolatedRenderPosY();
+        double cameraZ = RenderManager.getInterpolatedRenderPosZ();
+        EntityPlayerSP player = Minecraft.thePlayer();
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().B(1.0);
         RenderHelper.e();
         GlStateManager.disableLighting();
         GlStateManager.depthMask(false);
         GlStateManager.disableDepth();
-        boolean bl = OpenGlBackendHolder.d.L(3042);
+        boolean blendEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(3042);
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.disableLighting();
-        for (ItemESPGroup itemESPGroup : this.I) {
-            if (itemESPGroup.e()) continue;
-            double d4 = itemESPGroup.e + (itemESPGroup.U - itemESPGroup.e) * (double)eventRender3D.getTicks() - d;
-            double d5 = itemESPGroup.G + (itemESPGroup.y - itemESPGroup.G) * (double)eventRender3D.getTicks() - d2;
-            double d6 = itemESPGroup.n + (itemESPGroup.X - itemESPGroup.n) * (double)eventRender3D.getTicks() - d3;
-            this.U(entityPlayerSP, itemESPGroup, d4, d5, d6, ForgeVersion.MC_1_16_5.d() ? eventRender3D.getMatrixStack() : null);
+        for (ItemESPGroup group : this.groups) {
+            if (group.isEmpty()) continue;
+            double renderX = group.previousX + (group.currentX - group.previousX) * (double)event.getTicks() - cameraX;
+            double renderY = group.previousY + (group.currentY - group.previousY) * (double)event.getTicks() - cameraY;
+            double renderZ = group.previousZ + (group.currentZ - group.previousZ) * (double)event.getTicks() - cameraZ;
+            this.renderGroupLabel(player, group, renderX, renderY, renderZ, ForgeVersion.MC_1_16_5.d() ? event.getMatrixStack() : null);
         }
         GlStateManager.enableLighting();
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
         GlStateManager.enableLighting();
-        if (!bl) {
+        if (!blendEnabled) {
             GlStateManager.disableBlend();
         }
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -93,24 +93,24 @@ extends Mod {
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
     }
 
-    private void c(EntityPlayerSP entityPlayerSP) {
-        for (int i = 0; i < this.I.size(); ++i) {
-            for (int j = i + 1; j < this.I.size(); ++j) {
-                ItemESPGroup itemESPGroup = this.I.get(i);
-                ItemESPGroup itemESPGroup2 = this.I.get(j);
-                EntityItem entityItem = new EntityItem(itemESPGroup.g());
-                EntityItem entityItem2 = new EntityItem(itemESPGroup2.g());
-                double d = entityPlayerSP.getDistanceToEntity(entityItem);
-                double d2 = entityPlayerSP.getDistanceToEntity(entityItem2);
-                double d3 = (d + d2) / 2.0;
-                double d4 = Math.max(1.5, d3 / 5.0);
-                double d5 = itemESPGroup.U - itemESPGroup2.U;
-                double d6 = itemESPGroup.y - itemESPGroup2.y;
-                double d7 = itemESPGroup.X - itemESPGroup2.X;
-                double d8 = Math.sqrt(d5 * d5 + d6 * d6 + d7 * d7);
-                if (!(d8 <= d4)) continue;
-                itemESPGroup.k(itemESPGroup2);
-                this.I.remove(j);
+    private void mergeNearbyGroups(EntityPlayerSP player) {
+        for (int i = 0; i < this.groups.size(); ++i) {
+            for (int j = i + 1; j < this.groups.size(); ++j) {
+                ItemESPGroup first = this.groups.get(i);
+                ItemESPGroup second = this.groups.get(j);
+                EntityItem firstItem = new EntityItem(first.getRepresentativeHandle());
+                EntityItem secondItem = new EntityItem(second.getRepresentativeHandle());
+                double firstDistance = player.getDistanceToEntity(firstItem);
+                double secondDistance = player.getDistanceToEntity(secondItem);
+                double averageDistance = (firstDistance + secondDistance) / 2.0;
+                double mergeRadius = Math.max(1.5, averageDistance / 5.0);
+                double deltaX = first.currentX - second.currentX;
+                double deltaY = first.currentY - second.currentY;
+                double deltaZ = first.currentZ - second.currentZ;
+                double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                if (!(distance <= mergeRadius)) continue;
+                first.merge(second);
+                this.groups.remove(j);
                 --j;
             }
         }
@@ -118,204 +118,194 @@ extends Mod {
 
     public ItemESP() {
         super("ItemESP", 48779, Category.k, "Renders tags on dropped items.");
-        this.D = BooleanValue.create(this, "Group Items", false, "Groups items into easier to read tags.");
-        this.Z = BooleanValue.create(this, "Auto Scale", true, "Automatically scales up tags\nthe further the distance.");
-        this.s = BooleanValue.create(this, "Whitelist Only", false, "Only renders whitelisted items.");
-        this.A = LimitValue.n(this, "itemesp-alloweditems", "Allowed Items", LimitValue.r, Collections.emptyList());
-        this.v = NumberValue.create((Object)this, "Scale", "#.#", "", 0.1, 1.0, 1.5, 0.1);
-        this.p = new Color(20, 20, 20, 64);
-        this.I = new ArrayList<ItemESPGroup>();
-        this.D.B(this::lambda$new$0);
-        this.s.K(this.A);
-        this.addValue(this.k, this.D, this.Z, this.v, this.s, this.A);
+        this.groupItems = BooleanValue.create(this, "Group Items", false, "Groups items into easier to read tags.");
+        this.autoScale = BooleanValue.create(this, "Auto Scale", true, "Automatically scales up tags\nthe further the distance.");
+        this.whitelistOnly = BooleanValue.create(this, "Whitelist Only", false, "Only renders whitelisted items.");
+        this.allowedItems = LimitValue.create(this, "itemesp-alloweditems", "Allowed Items", LimitValue.ALLOW_LIST_COLOR, Collections.emptyList());
+        this.scale = NumberValue.create((Object)this, "Scale", "#.#", "", 0.1, 1.0, 1.5, 0.1);
+        this.backgroundColor = new Color(20, 20, 20, 64);
+        this.groups = new ArrayList<ItemESPGroup>();
+        this.groupItems.addChangeListener(this::onGroupItemsChanged);
+        this.whitelistOnly.addDependentValues(this.allowedItems);
+        this.addValue(this.showDistance, this.groupItems, this.autoScale, this.scale, this.whitelistOnly, this.allowedItems);
     }
 
-    public static BooleanValue i(ItemESP itemESP) {
-        return itemESP.D;
+    public boolean isGroupingEnabled() {
+        return this.groupItems.getEffectiveValue().booleanValue();
     }
 
-    private void U(EntityPlayerSP entityPlayerSP, ItemESPGroup itemESPGroup, double d, double d2, double d3, MatrixStack matrixStack) {
-        float f;
-        float f2;
-        Object object;
-        int n;
-        EntityItem entityItem = new EntityItem(itemESPGroup.g());
-        List<ItemStack> list = itemESPGroup.p();
-        int n2 = 0;
-        String[] stringArray = new String[list.size()];
+    private void renderGroupLabel(EntityPlayerSP player, ItemESPGroup group, double renderX, double renderY, double renderZ, MatrixStack matrixStack) {
+        EntityItem entityItem = new EntityItem(group.getRepresentativeHandle());
+        List<ItemStack> stacks = group.getStacks();
+        int maxHalfWidth = 0;
+        String[] lines = new String[stacks.size()];
         FontRenderer fontRenderer = Minecraft.getFontRenderer();
-        for (n = 0; n < list.size(); ++n) {
-            object = list.get(n);
-            String string = ((ItemStack)object).x();
-            if (this.k.L().booleanValue() && n == 0) {
-                string = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)entityPlayerSP.getDistanceToEntity(entityItem) + ClientSettings.F + "a]" + ClientSettings.F + "r " + string;
+        for (int index = 0; index < stacks.size(); ++index) {
+            ItemStack stack = stacks.get(index);
+            String line = stack.x();
+            if (this.showDistance.getEffectiveValue().booleanValue() && index == 0) {
+                line = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)player.getDistanceToEntity(entityItem) + ClientSettings.F + "a]" + ClientSettings.F + "r " + line;
             }
-            if (((ItemStack)object).P() > 1 && ((ItemStack)object).t() > 1) {
-                string = string + ClientSettings.F + "r x" + ((ItemStack)object).t();
+            if (stack.P() > 1 && stack.t() > 1) {
+                line = line + ClientSettings.F + "r x" + stack.t();
             }
-            n2 = Math.max(fontRenderer.getStringWidth(string) / 2, n2);
-            stringArray[n] = string;
+            maxHalfWidth = Math.max(fontRenderer.getStringWidth(line) / 2, maxHalfWidth);
+            lines[index] = line;
         }
-        n = -1;
-        object = this.p;
-        float f3 = (float)(0.03333335 * (Double)this.v.K());
-        if (this.Z.L().booleanValue()) {
-            f2 = entityPlayerSP.getDistanceToEntity(entityItem);
-            f = f2 / 5.0f <= 2.0f ? 2.0f : f2 / 5.0f;
-            f3 = (float)(0.01666666753590107 * ((double)f * (Double)this.v.K()));
+        int textColor = -1;
+        float labelScale = (float)(0.03333335 * (Double)this.scale.getValue());
+        if (this.autoScale.getEffectiveValue().booleanValue()) {
+            float distance = player.getDistanceToEntity(entityItem);
+            float distanceScale = distance / 5.0f <= 2.0f ? 2.0f : distance / 5.0f;
+            labelScale = (float)(0.01666666753590107 * ((double)distanceScale * (Double)this.scale.getValue()));
         }
         RenderUtil.d();
-        f2 = FreeLookHudModule.z() ? FreeLookHudModule.w$src$F$1kb9hl5() : Minecraft.D().getPlayerViewX();
-        float f4 = f = FreeLookHudModule.z() ? FreeLookHudModule.c() : Minecraft.D().getPlayerViewY();
+        float viewPitch = FreeLookHudModule.isActive() ? FreeLookHudModule.getRenderPitch() : Minecraft.D().getPlayerViewX();
+        float viewYaw = FreeLookHudModule.isActive() ? FreeLookHudModule.getRenderYaw() : Minecraft.D().getPlayerViewY();
         if (ForgeVersion.MC_1_16_5.d()) {
             if (Minecraft.gameSettings().x() == 0) {
-                OpenGlBackendHolder.d.I(d + 0.0, d2 + 0.25 + 0.5, d3);
-                OpenGlBackendHolder.d.F(0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(-f2, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(-f, -1.0f, 0.0f, 0.0f);
+                OpenGlBackendHolder.backend.translate(renderX, renderY + 0.75, renderZ);
+                OpenGlBackendHolder.backend.setNormal(0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-viewPitch, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-viewYaw, -1.0f, 0.0f, 0.0f);
             } else {
                 ActiveRenderInfo activeRenderInfo = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().l();
-                double d4 = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosX() - activeRenderInfo.o().getX();
-                double d5 = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosY() - activeRenderInfo.o().getY();
-                double d6 = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosZ() - activeRenderInfo.o().getZ();
-                OpenGlBackendHolder.d.I(d + d4, d2 + d5 + 0.25 + 0.5, d3 + d6);
-                OpenGlBackendHolder.d.F(0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(-f2, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(f, 1.0f, 0.0f, 0.0f);
+                double cameraOffsetX = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosX() - activeRenderInfo.o().getX();
+                double cameraOffsetY = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosY() - activeRenderInfo.o().getY();
+                double cameraOffsetZ = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosZ() - activeRenderInfo.o().getZ();
+                OpenGlBackendHolder.backend.translate(renderX + cameraOffsetX, renderY + cameraOffsetY + 0.75, renderZ + cameraOffsetZ);
+                OpenGlBackendHolder.backend.setNormal(0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-viewPitch, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(viewYaw, 1.0f, 0.0f, 0.0f);
             }
         } else {
-            OpenGlBackendHolder.d.I(d + 0.0, d2 + 0.25 + 0.5, d3);
-            OpenGlBackendHolder.d.F(0.0f, 1.0f, 0.0f);
+            OpenGlBackendHolder.backend.translate(renderX, renderY + 0.75, renderZ);
+            OpenGlBackendHolder.backend.setNormal(0.0f, 1.0f, 0.0f);
             if (Minecraft.gameSettings().x() == 2) {
-                OpenGlBackendHolder.d.X(-f2, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(f, -1.0f, 0.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-viewPitch, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(viewYaw, -1.0f, 0.0f, 0.0f);
             } else {
-                OpenGlBackendHolder.d.X(-f2, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(f, 1.0f, 0.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-viewPitch, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(viewYaw, 1.0f, 0.0f, 0.0f);
             }
         }
-        OpenGlBackendHolder.d.H(-f3, -f3, f3);
-        int n3 = fontRenderer.getFontHeight();
-        int n4 = n2;
-        int n5 = -(n3 * stringArray.length - 1);
-        RenderUtils.M((double)(-n4) - 2.0, n5, (double)n4 + 2.0, 2.0, 0.0, (Color)object, (Color)object);
+        OpenGlBackendHolder.backend.scale(-labelScale, -labelScale, labelScale);
+        int fontHeight = fontRenderer.getFontHeight();
+        int top = -(fontHeight * lines.length - 1);
+        RenderUtils.M((double)(-maxHalfWidth) - 2.0, top, (double)maxHalfWidth + 2.0, 2.0, 0.0, this.backgroundColor, this.backgroundColor);
         GlStateManager.enableTexture2D();
         GlStateManager.disableDepth();
-        OpenGlBackendHolder.d.E(1.0f, 1.0f, 1.0f);
-        Object var25_23 = null;
+        OpenGlBackendHolder.backend.setColor(1.0f, 1.0f, 1.0f);
         if (ForgeVersion.MC_1_16_5.d() && (matrixStack == null || matrixStack.isNull() || !matrixStack.isInstance(MappedClasses.DQ))) {
             matrixStack = MatrixStack.A();
         }
-        int n6 = n5 + 2;
-        for (int i = 0; i < stringArray.length; ++i) {
-            RenderItemFontBridge renderItemFontBridge;
-            Object object2;
-            String string = stringArray[i];
-            int n7 = fontRenderer.getStringWidth(string) / 2;
-            int n8 = -(fontRenderer.FONT_HEIGHT(string) - 1);
+        int lineY = top + 2;
+        for (String line : lines) {
+            RenderItemFontBridge fontBuffer;
+            int halfWidth = fontRenderer.getStringWidth(line) / 2;
             if (GuiRenderPrimitives.d()) {
-                object2 = new RenderMatrix4f().b();
-                ((RenderMatrix4f)object2).u(BufferedGuiRenderPrimitives.l);
-                ((RenderMatrix4f)object2).u(BufferedGuiRenderPrimitives.X.c());
+                RenderMatrix4f renderMatrix = new RenderMatrix4f().setIdentity();
+                renderMatrix.multiply(BufferedGuiRenderPrimitives.viewMatrix);
+                renderMatrix.multiply(BufferedGuiRenderPrimitives.matrixStack.peek());
                 if (ForgeVersion.MC_1_20_6.d()) {
-                    fontRenderer.h(string, -n7, n6, n, false, (RenderMatrix4f)object2, SharedMonsterAttributes.V());
+                    fontRenderer.h(line, -halfWidth, lineY, textColor, false, renderMatrix, SharedMonsterAttributes.V());
                 } else {
-                    int n9 = 0xF000F0;
-                    renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
-                    ScorePlayerTeamTextComponent scorePlayerTeamTextComponent = ScorePlayerTeamTextComponent.B(string);
-                    fontRenderer.Z(scorePlayerTeamTextComponent, -n7, n6, n, false, ((RenderMatrix4f)object2).u(), renderItemFontBridge, true, 0, n9);
-                    renderItemFontBridge.q();
+                    int packedLight = 0xF000F0;
+                    fontBuffer = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
+                    ScorePlayerTeamTextComponent textComponent = ScorePlayerTeamTextComponent.B(line);
+                    fontRenderer.Z(textComponent, -halfWidth, lineY, textColor, false, renderMatrix.toMinecraftMatrix(), fontBuffer, true, 0, packedLight);
+                    fontBuffer.q();
                 }
             } else if (ForgeVersion.MC_1_16_5.d()) {
                 matrixStack.H();
-                object2 = Minecraft.D().getCameraOrientation();
-                matrixStack.i((Quaternion)object2);
+                Quaternion cameraOrientation = Minecraft.D().getCameraOrientation();
+                matrixStack.i(cameraOrientation);
                 matrixStack.i(Quaternion.K(180.0f, 0.0f, 180.0f, true));
-                ScorePlayerTeamTextComponent scorePlayerTeamTextComponent = ScorePlayerTeamTextComponent.B(string);
-                renderItemFontBridge = RenderItemFontBridge.V(Tessellator.getInstance().getWorldRenderer());
-                int n10 = 0xF000F0;
-                Matrix4f matrix4f = matrixStack.F().u();
-                fontRenderer.Z(scorePlayerTeamTextComponent, -n7, n6, n, false, matrix4f, renderItemFontBridge, true, 0, n10);
-                renderItemFontBridge.q();
+                ScorePlayerTeamTextComponent textComponent = ScorePlayerTeamTextComponent.B(line);
+                fontBuffer = RenderItemFontBridge.V(Tessellator.getInstance().getWorldRenderer());
+                int packedLight = 0xF000F0;
+                Matrix4f matrix = matrixStack.F().u();
+                fontRenderer.Z(textComponent, -halfWidth, lineY, textColor, false, matrix, fontBuffer, true, 0, packedLight);
+                fontBuffer.q();
                 matrixStack.U();
             } else {
-                fontRenderer.drawString(string, (double)(-n7), (double)n6, n);
+                fontRenderer.drawString(line, (double)(-halfWidth), (double)lineY, textColor);
             }
-            n6 += n3;
+            lineY += fontHeight;
         }
         RenderUtil.Y();
     }
 
 
     @EventHandler
-    public void r(EventGuiOpen eventGuiOpen) {
-        GuiScreen guiScreen = eventGuiOpen.getGuiScreen();
+    public void onGuiOpen(EventGuiOpen event) {
+        GuiScreen guiScreen = event.getGuiScreen();
         if (guiScreen.isInstance(MappedClasses.u5) || guiScreen.isInstance(MappedClasses.D6) || guiScreen.isInstance(MappedClasses.F_)) {
-            this.I.clear();
+            this.groups.clear();
         }
     }
 
     @EventHandler
-    public void C(EventPostTick eventPostTick) {
+    public void onPostTick(EventPostTick event) {
         if (Minecraft.thePlayer().isNull() || Minecraft.theWorld().isNull()) {
-            this.I.clear();
+            this.groups.clear();
             return;
         }
         List<Object> worldEntities = Minecraft.theWorld().z();
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (!this.D.L().booleanValue()) {
-            this.I.clear();
-            for (Object e : worldEntities) {
-                Entity entity = new Entity(e);
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (!this.groupItems.getEffectiveValue().booleanValue()) {
+            this.groups.clear();
+            for (Object entityHandle : worldEntities) {
+                Entity entity = new Entity(entityHandle);
                 if (!entity.isInstance(MappedClasses.zW)) continue;
                 EntityItem entityItem = new EntityItem(entity);
-                if (this.s.L().booleanValue() && !this.A.A(entityItem.J$src$Lgg_vape_wrapper_impl_ItemStack_$5gv0ko())) continue;
-                this.I.add(new ItemESPGroup(this, entityItem));
+                if (this.whitelistOnly.getEffectiveValue().booleanValue() && !this.allowedItems.matches(entityItem.J$src$Lgg_vape_wrapper_impl_ItemStack_$5gv0ko())) continue;
+                this.groups.add(new ItemESPGroup(this, entityItem));
             }
             return;
         }
-        Iterator<ItemESPGroup> groupIterator = this.I.iterator();
+        Iterator<ItemESPGroup> groupIterator = this.groups.iterator();
         while (groupIterator.hasNext()) {
             ItemESPGroup group = groupIterator.next();
-            group.x(worldEntities, entityPlayerSP);
-            if (!group.e()) continue;
+            group.update(worldEntities, player);
+            if (!group.isEmpty()) continue;
             groupIterator.remove();
         }
-        this.c(entityPlayerSP);
+        this.mergeNearbyGroups(player);
         HashSet<Object> groupedEntities = new HashSet<Object>();
-        for (ItemESPGroup itemESPGroup : this.I) {
-            groupedEntities.addAll(itemESPGroup.I());
+        for (ItemESPGroup group : this.groups) {
+            groupedEntities.addAll(group.getEntityHandles());
         }
         for (Object entityObject : worldEntities) {
             Entity entity = new Entity(entityObject);
             if (!entity.isInstance(MappedClasses.zW)) continue;
             EntityItem entityItem = new EntityItem(entity);
-            if (this.s.L().booleanValue() && !this.A.A(entityItem.J$src$Lgg_vape_wrapper_impl_ItemStack_$5gv0ko()) || groupedEntities.contains(entityItem.getObject())) continue;
-            double d = entityPlayerSP.getDistanceToEntity(entityItem);
-            double d2 = Math.max(1.5, d / 5.0);
-            boolean bl = false;
-            double d3 = entityItem.z();
-            double d4 = entityItem.N();
-            double d5 = entityItem.h();
-            for (ItemESPGroup itemESPGroup2 : this.I) {
-                double d6 = d3 - itemESPGroup2.U;
-                double d7 = d4 - itemESPGroup2.y;
-                double d8 = d5 - itemESPGroup2.X;
-                double d9 = Math.sqrt(d6 * d6 + d7 * d7 + d8 * d8);
-                if (!(d9 <= d2)) continue;
-                itemESPGroup2.F(entityItem);
+            if (this.whitelistOnly.getEffectiveValue().booleanValue() && !this.allowedItems.matches(entityItem.J$src$Lgg_vape_wrapper_impl_ItemStack_$5gv0ko()) || groupedEntities.contains(entityItem.getObject())) continue;
+            double playerDistance = player.getDistanceToEntity(entityItem);
+            double groupRadius = Math.max(1.5, playerDistance / 5.0);
+            boolean addedToGroup = false;
+            double itemX = entityItem.z();
+            double itemY = entityItem.N();
+            double itemZ = entityItem.h();
+            for (ItemESPGroup group : this.groups) {
+                double deltaX = itemX - group.currentX;
+                double deltaY = itemY - group.currentY;
+                double deltaZ = itemZ - group.currentZ;
+                double groupDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+                if (!(groupDistance <= groupRadius)) continue;
+                group.addItem(entityItem);
                 groupedEntities.add(entityItem.getObject());
-                bl = true;
+                addedToGroup = true;
                 break;
             }
-            if (bl) continue;
-            ItemESPGroup itemESPGroup3 = new ItemESPGroup(this, entityItem);
-            this.I.add(itemESPGroup3);
+            if (addedToGroup) continue;
+            ItemESPGroup newGroup = new ItemESPGroup(this, entityItem);
+            this.groups.add(newGroup);
             groupedEntities.add(entityItem.getObject());
         }
     }
 
-    private void lambda$new$0(BooleanValue booleanValue) {
-        this.I.clear();
+    private void onGroupItemsChanged(BooleanValue value) {
+        this.groups.clear();
     }
 }

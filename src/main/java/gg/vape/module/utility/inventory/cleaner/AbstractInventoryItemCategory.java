@@ -17,37 +17,31 @@ implements InventoryItemCategory {
     private final String displayName;
     private final List<InventoryItemMatcher> matchers;
     private final String id;
-    private static String secretKey;
-
-    public static String X() {
-        return secretKey;
-    }
-
     @Override
-    public @UnmodifiableView List<InventoryItemMatcher> i() {
+    public @UnmodifiableView List<InventoryItemMatcher> getMatchers() {
         return this.matchers;
     }
 
     @Override
-    public String r() {
+    public String getDisplayName() {
         return this.displayName;
     }
 
     protected AbstractInventoryItemCategory(InventoryItemCategoryBuilder<?> builder) {
-        this.id = builder.J();
-        this.name = builder.F();
-        this.displayName = builder.X();
-        this.comparator = builder.e();
-        this.matchers = builder.K();
+        this.id = builder.getId();
+        this.name = builder.getName();
+        this.displayName = builder.getDisplayName();
+        this.comparator = builder.getComparator();
+        this.matchers = builder.getMatchers();
     }
 
     @Override
-    public String F() {
+    public String getId() {
         return this.id;
     }
 
     @Override
-    public Comparator<ItemStack> j() {
+    public Comparator<ItemStack> getComparator() {
         return this.comparator;
     }
 
@@ -56,14 +50,5 @@ implements InventoryItemCategory {
         return this.name;
     }
 
-    public static void K(String string) {
-        secretKey = string;
-    }
-
-    static {
-        if (AbstractInventoryItemCategory.X() == null) {
-            AbstractInventoryItemCategory.K("FTzSR");
-        }
-    }
 }
 

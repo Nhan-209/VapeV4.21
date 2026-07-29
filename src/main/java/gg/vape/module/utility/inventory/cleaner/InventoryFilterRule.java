@@ -9,31 +9,31 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface InventoryFilterRule {
-    public void p(@Nullable InventoryFilterPreset var1);
+    public void setPreset(@Nullable InventoryFilterPreset preset);
 
-    public void U();
+    public void clearPresetReference();
 
     @Nullable
-    public UUID t();
+    public UUID getSharedPresetId();
 
-    default public boolean q(ItemStack itemStack) {
-        InventoryFilterPreset inventoryFilterPreset = this.W();
-        return inventoryFilterPreset == null || inventoryFilterPreset.x(itemStack);
+    default public boolean matches(ItemStack itemStack) {
+        InventoryFilterPreset preset = this.resolvePreset();
+        return preset == null || preset.matches(itemStack);
     }
 
-    public ItemFilterSelection q();
+    public ItemFilterSelection getItemSelection();
 
-    public void i(@Nullable InventoryItemCategory var1);
+    public void setPriorityOverride(@Nullable InventoryItemCategory priority);
 
     @NotNull
-    public InventoryItemCategory o();
+    public InventoryItemCategory getPriority();
 
 
-    public void y();
+    public void reset();
 
-    public InventoryItemCategory L();
+    public InventoryItemCategory getDefaultPriority();
 
     @Nullable
-    public InventoryFilterPreset W();
+    public InventoryFilterPreset resolvePreset();
 }
 

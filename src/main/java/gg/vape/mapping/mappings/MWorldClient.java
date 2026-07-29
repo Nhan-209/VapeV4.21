@@ -46,7 +46,7 @@ extends Mapping {
             MWorldClient mWorldClient = this;
             this.s = mWorldClient.Y(string, bl, clazz, classArray);
             this.u = null;
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MPlayerControllerMP.p(++n2);
             }
             return;
@@ -85,7 +85,7 @@ extends Mapping {
             MWorldClient mWorldClient5 = this;
             this.s = this.Y(string5, bl, clazz8, classArray3);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MPlayerControllerMP.p(++n2);
         }
     }

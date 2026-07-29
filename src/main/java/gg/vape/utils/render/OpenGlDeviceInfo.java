@@ -5,57 +5,57 @@ import gg.vape.utils.render.GpuVendor;
 import org.lwjgl.opengl.GL11;
 
 public class OpenGlDeviceInfo {
-    public static String h;
-    public static GpuVendor T;
-    private static int Q;
-    public static String m;
-    public static String f;
+    public static String vendorName;
+    public static GpuVendor gpuVendor;
+    private static int legacyValue;
+    public static String rendererName;
+    public static String versionName;
 
-    public static int e() {
-        int n = OpenGlDeviceInfo.i();
+    public static int getLegacyConstant() {
+        int ignoredLegacyValue = OpenGlDeviceInfo.getLegacyValue();
         return 112;
     }
 
-    public static int i() {
-        return Q;
+    public static int getLegacyValue() {
+        return legacyValue;
     }
 
-    public static void n() {
+    public static void collectDeviceInfo() {
         try {
-            String string = GL11.glGetString((int)7937);
-            String string2 = GL11.glGetString((int)7936);
-            String string3 = GL11.glGetString((int)7938);
-            h = string2 != null ? string2 : "Unknown Vendor";
-            m = string != null ? string : "Unknown GPU";
-            f = string3 != null ? string3 : "Unknown Version";
-            T = OpenGlDeviceInfo.e(string2);
+            String renderer = GL11.glGetString((int)7937);
+            String vendor = GL11.glGetString((int)7936);
+            String version = GL11.glGetString((int)7938);
+            vendorName = vendor != null ? vendor : "Unknown Vendor";
+            rendererName = renderer != null ? renderer : "Unknown GPU";
+            versionName = version != null ? version : "Unknown Version";
+            gpuVendor = OpenGlDeviceInfo.detectGpuVendor(vendor);
         }
         catch (Exception exception) {
             Vape.debugLog("Error getting OpenGL: " + exception.getMessage());
         }
     }
 
-    public static void L(int n) {
-        Q = n;
+    public static void setLegacyValue(int value) {
+        legacyValue = value;
     }
 
     static {
-        OpenGlDeviceInfo.L(0);
-        T = GpuVendor.UNKNOWN;
-        h = null;
-        f = null;
-        m = null;
+        OpenGlDeviceInfo.setLegacyValue(0);
+        gpuVendor = GpuVendor.UNKNOWN;
+        vendorName = null;
+        versionName = null;
+        rendererName = null;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 
-    private static GpuVendor e(String string) {
-        if (string == null) {
+    private static GpuVendor detectGpuVendor(String vendorName) {
+        if (vendorName == null) {
             return GpuVendor.UNKNOWN;
         }
-        switch (string) {
+        switch (vendorName) {
             case "NVIDIA Corporation": {
                 return GpuVendor.NVIDIA;
             }
@@ -71,14 +71,14 @@ public class OpenGlDeviceInfo {
         return GpuVendor.UNKNOWN;
     }
 
-    public static void Z(StringBuilder stringBuilder) {
-        OpenGlDeviceInfo.n();
-        stringBuilder.append("GPU Vendor: ").append(T.name()).append(" (").append(h).append(")\n");
-        stringBuilder.append("GPU Renderer: ").append(m).append('\n');
-        stringBuilder.append("OpenGL Version: ").append(f).append('\n');
+    public static void appendDeviceInfo(StringBuilder output) {
+        OpenGlDeviceInfo.collectDeviceInfo();
+        output.append("GPU Vendor: ").append(gpuVendor.name()).append(" (").append(vendorName).append(")\n");
+        output.append("GPU Renderer: ").append(rendererName).append('\n');
+        output.append("OpenGL Version: ").append(versionName).append('\n');
     }
 
-    private static void l() {
+    private static void logCapabilities() {
         try {
             Vape.debugLog("MAX_TEXTURE_SIZE - " + GL11.glGetInteger((int)3379));
             Vape.debugLog("MAX_TEXTURE_UNITS - " + GL11.glGetInteger((int)34930));
@@ -93,14 +93,13 @@ public class OpenGlDeviceInfo {
         }
     }
 
-    public static void P() {
+    public static void logDeviceInfo() {
         Vape.debugLog("===== Graphics Information =====");
-        Vape.debugLog("Vendor: " + T.name() + " (" + h + ")");
-        Vape.debugLog("Device Name: " + m);
-        Vape.debugLog("Driver Version: " + f);
+        Vape.debugLog("Vendor: " + gpuVendor.name() + " (" + vendorName + ")");
+        Vape.debugLog("Device Name: " + rendererName);
+        Vape.debugLog("Driver Version: " + versionName);
         Vape.debugLog("---GPU Capabilities---");
-        OpenGlDeviceInfo.l();
+        OpenGlDeviceInfo.logCapabilities();
         Vape.debugLog("================================");
     }
 }
-

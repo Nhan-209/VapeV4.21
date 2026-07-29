@@ -8,15 +8,15 @@ public class ItemPickerSelection<L, R> {
     @Nullable
     private final R right;
 
-    public static <L, R> ItemPickerSelection<L, R> B() {
+    public static <L, R> ItemPickerSelection<L, R> empty() {
         return new ItemPickerSelection<L, R>(null, null);
     }
 
-    public static <L, R> ItemPickerSelection<L, R> D(@Nullable R r) {
+    public static <L, R> ItemPickerSelection<L, R> ofRight(@Nullable R r) {
         return new ItemPickerSelection<L, R>(null, r);
     }
 
-    public static <L, R> ItemPickerSelection<L, R> k(@Nullable L l) {
+    public static <L, R> ItemPickerSelection<L, R> ofLeft(@Nullable L l) {
         return new ItemPickerSelection<L, R>(l, null);
     }
 
@@ -30,12 +30,12 @@ public class ItemPickerSelection<L, R> {
     }
 
     @Nullable
-    public L N() {
+    public L getLeft() {
         return this.left;
     }
 
     @Nullable
-    public R X() {
+    public R getRight() {
         return this.right;
     }
 }

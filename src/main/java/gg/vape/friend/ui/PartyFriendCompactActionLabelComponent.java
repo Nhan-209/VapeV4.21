@@ -20,6 +20,6 @@ extends AnimatedCenteredTextLabelComponent {
 
     @Override
     public double x() {
-        return this.A$src$Lgg_vape_ui_font_SmoothFontRenderer_$jrhwp3().N(this.L$src$Ljava_lang_String_$1ncdwqb());
+        return this.getDefaultFontRenderer().N(this.getText());
     }
 }

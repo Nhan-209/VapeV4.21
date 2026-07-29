@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.config.ClientSettings;
 import gg.vape.event.EventHandler;
 import gg.vape.event.EventPriority;
-import gg.vape.event.impl.EventGuiOpen;
 import gg.vape.event.impl.EventPacketReceive;
 import gg.vape.event.impl.EventPacketSend;
 import gg.vape.event.impl.EventRender3D;
@@ -38,95 +37,77 @@ import org.lwjgl.opengl.GL11;
 
 public class Blink
 extends Mod {
-    private final ModeOption P;
-    private boolean D = false;
-    private int Z;
-    private int a;
-    private final ModeValue J;
-    private final Queue<PacketDispatchTask> H;
-    private boolean o = false;
-    private final BooleanValue p;
-    private final List<Vec3d> F = new CopyOnWriteArrayList<Vec3d>();
-    private final BooleanValue V;
-    private final ModeValue c;
-    private final BooleanValue C;
-    private final NumberValue S;
-    private final ModeOption r;
-    private boolean v = false;
-    private final ModeOption O = new ModeOption("Outgoing only");
-    private static final long t = -1017515784348886721L;
-    private EntityOtherPlayerMP L;
-    public RenderManager I;
-    private final ModeOption K;
+    private final ModeOption bidirectionalMode;
+    private int fakePlayerEntityId;
+    private int packetCount;
+    private final ModeValue packetType;
+    private final Queue<PacketDispatchTask> queuedPackets;
+    private boolean flushPending;
+    private final BooleanValue breadcrumbs;
+    private final List<Vec3d> breadcrumbPositions = new CopyOnWriteArrayList<Vec3d>();
+    private final BooleanValue autoSend;
+    private final ModeValue directionMode;
+    private final BooleanValue spawnFakePlayer;
+    private final NumberValue sendThreshold;
+    private final ModeOption allPacketsMode;
+    private boolean dispatchingPackets;
+    private final ModeOption outgoingOnlyMode = new ModeOption("Outgoing only");
+    private static final long MODULE_ID = -1017515784348886721L;
+    private EntityOtherPlayerMP fakePlayer;
+    private final ModeOption movementOnlyMode;
 
     @EventHandler(A=EventPriority.LOW)
-    public void onPacketSend(EventPacketSend eventPacketSend) {
+    public void onPacketSend(EventPacketSend event) {
         try {
             EntityPlayerSP entityPlayerSP;
-            if (eventPacketSend.isCanceled()) {
+            if (event.isCanceled()) {
                 return;
             }
             GuiScreen guiScreen = Minecraft.currentScreen();
             if (guiScreen.isInstance(MappedClasses.u5) || guiScreen.isInstance(MappedClasses.D6) || guiScreen.isInstance(MappedClasses.F_) || Minecraft.thePlayer().isNull()) {
-                this.o = true;
-                this.C$src$V$1j3s29b();
-                if (!this.V.L().booleanValue()) {
+                this.flushPending = true;
+                this.flushQueuedPackets();
+                if (!this.autoSend.getEffectiveValue()) {
                     super.Y(false);
                 }
                 return;
             }
-            if (this.v) {
+            if (this.dispatchingPackets) {
                 return;
             }
-            Packet packet = eventPacketSend.getPacket();
-            if (this.Y(packet)) {
+            Packet packet = event.getPacket();
+            if (this.isIncomingPacket(packet)) {
                 return;
             }
             if (packet.isInstance(MappedClasses.qD)) {
-                if (this.G() && this.a % 5 == 0) {
-                    int n;
-                    double d;
-                    int n2;
-                    double d2;
+                if (this.isPlayerMoving() && this.packetCount % 5 == 0) {
                     entityPlayerSP = Minecraft.thePlayer();
-                    boolean bl = this.a % 2 == 0;
-                    double d3 = 0.2;
-                    if (bl) {
-                        d2 = d3;
-                        n2 = -1;
-                    } else {
-                        d2 = d3;
-                        n2 = 1;
-                    }
-                    double d4 = d2 * (double)n2 * Math.cos(Math.toRadians(entityPlayerSP.J()));
-                    double d5 = 0.2;
-                    if (bl) {
-                        d = d5;
-                        n = -1;
-                    } else {
-                        d = d5;
-                        n = 1;
-                    }
-                    double d6 = d * (double)n * Math.sin(Math.toRadians(entityPlayerSP.J()));
-                    this.F.add(new Vec3d(entityPlayerSP.z() + d4, entityPlayerSP.N(), entityPlayerSP.h() + d6));
+                    boolean alternateSide = this.packetCount % 2 == 0;
+                    int side = alternateSide ? -1 : 1;
+                    double yawRadians = Math.toRadians(entityPlayerSP.J());
+                    double offsetX = 0.2 * side * Math.cos(yawRadians);
+                    double offsetZ = 0.2 * side * Math.sin(yawRadians);
+                    this.breadcrumbPositions.add(new Vec3d(
+                            entityPlayerSP.z() + offsetX, entityPlayerSP.N(), entityPlayerSP.h() + offsetZ));
                 }
-            } else if (((ModeSelection)this.J.K()).equals(this.K)) {
+            } else if (((ModeSelection)this.packetType.getValue()).equals(this.movementOnlyMode)) {
                 return;
             }
-            ++this.a;
-            if (this.V.L().booleanValue() && (Double)this.S.K() > 0.0 && (double)this.a >= (Double)this.S.K()) {
-                this.o = true;
-                if (this.L != null && this.L.isNotNull()) {
+            ++this.packetCount;
+            if (this.autoSend.getEffectiveValue() && (Double)this.sendThreshold.getValue() > 0.0
+                    && this.packetCount >= (Double)this.sendThreshold.getValue()) {
+                this.flushPending = true;
+                if (this.fakePlayer != null && this.fakePlayer.isNotNull()) {
                     entityPlayerSP = Minecraft.thePlayer();
-                    this.L.t(entityPlayerSP.z(), ClientSettings.H ? entityPlayerSP.N() : entityPlayerSP.N() - 1.5, entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
-                    this.L.z(entityPlayerSP.s());
+                    this.fakePlayer.t(entityPlayerSP.z(), ClientSettings.H ? entityPlayerSP.N() : entityPlayerSP.N() - 1.5, entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
+                    this.fakePlayer.z(entityPlayerSP.s());
                 }
-                this.a = 0;
-                this.F.clear();
+                this.packetCount = 0;
+                this.breadcrumbPositions.clear();
             }
-            this.H.add(new PacketDispatchTask(packet, true, eventPacketSend.getNetworkManager()));
-            eventPacketSend.setCancelled(true);
-            this.C$src$V$1j3s29b();
+            this.queuedPackets.add(new PacketDispatchTask(packet, true, event.getNetworkManager()));
+            event.setCancelled(true);
+            this.flushQueuedPackets();
         }
         catch (Exception exception) {
             Vape.debugLog("ex1");
@@ -135,80 +116,80 @@ extends Mod {
     }
 
     public Blink() {
-        super("Blink", (int)t, Category.Y, "Chokes packets until disabled.");
-        this.P = new ModeOption("Bi-directional");
-        this.c = ModeValue.create((Object)this, "Direction", "Outgoing only - only chokes packets that you're sending\nBi-directional - additionally chokes incoming packets from the server", (ModeSelection)this.O, this.O, this.P);
-        this.r = new ModeOption("All");
-        this.K = new ModeOption("Movement only");
-        this.J = ModeValue.create((Object)this, "Type", "All - chokes all packets of all types\nMovement only - Only chokes movement related packets", (ModeSelection)this.r, this.r, this.K);
-        this.p = BooleanValue.create(this, "Breadcrumbs", false, "Drops breadcrumbs in case you forgot where you came from.");
-        this.C = BooleanValue.create(this, "Spawn fake", false, "Spawns a fake player where you started/are on the servers side.");
-        this.V = BooleanValue.create(this, "Auto send", false, "Automatically sends packets after a limit is reached");
-        this.S = NumberValue.create(this, "Send threshold", "#", "", 0.0, 50.0, 100.0, 1.0, "Allows you to choke your packets for a custom set limit.\nAfter the limit is reached, all packets will be sent.\nNOTE: 0 = No Limit");
-        this.H = new ConcurrentLinkedQueue<PacketDispatchTask>();
-        this.I = Minecraft.D();
-        this.V.K(this.S);
-        this.addValue(this.c, this.J, this.p, this.C, this.V, this.S);
+        super("Blink", (int)MODULE_ID, Category.Y, "Chokes packets until disabled.");
+        this.bidirectionalMode = new ModeOption("Bi-directional");
+        this.directionMode = ModeValue.create((Object)this, "Direction", "Outgoing only - only chokes packets that you're sending\nBi-directional - additionally chokes incoming packets from the server", (ModeSelection)this.outgoingOnlyMode, this.outgoingOnlyMode, this.bidirectionalMode);
+        this.allPacketsMode = new ModeOption("All");
+        this.movementOnlyMode = new ModeOption("Movement only");
+        this.packetType = ModeValue.create((Object)this, "Type", "All - chokes all packets of all types\nMovement only - Only chokes movement related packets", (ModeSelection)this.allPacketsMode, this.allPacketsMode, this.movementOnlyMode);
+        this.breadcrumbs = BooleanValue.create(this, "Breadcrumbs", false, "Drops breadcrumbs in case you forgot where you came from.");
+        this.spawnFakePlayer = BooleanValue.create(this, "Spawn fake", false, "Spawns a fake player where you started/are on the servers side.");
+        this.autoSend = BooleanValue.create(this, "Auto send", false, "Automatically sends packets after a limit is reached");
+        this.sendThreshold = NumberValue.create(this, "Send threshold", "#", "", 0.0, 50.0, 100.0, 1.0, "Allows you to choke your packets for a custom set limit.\nAfter the limit is reached, all packets will be sent.\nNOTE: 0 = No Limit");
+        this.queuedPackets = new ConcurrentLinkedQueue<PacketDispatchTask>();
+        this.autoSend.addDependentValues(this.sendThreshold);
+        this.addValue(this.directionMode, this.packetType, this.breadcrumbs,
+                this.spawnFakePlayer, this.autoSend, this.sendThreshold);
     }
 
     @Override
     public void onEnable() {
-        this.U();
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (this.C.L().booleanValue()) {
-            this.L = EntityOtherPlayerMP.create(Minecraft.theWorld(), Minecraft.thePlayer().c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937());
-            this.L.M(entityPlayerSP, true);
+        this.resetState();
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (this.spawnFakePlayer.getEffectiveValue()) {
+            this.fakePlayer = EntityOtherPlayerMP.create(
+                    Minecraft.theWorld(), player.c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937());
+            this.fakePlayer.M(player, true);
             if (ForgeVersion.MC_1_17.d()) {
-                this.L.Q(-420);
-                this.L.y(UUID.randomUUID());
+                this.fakePlayer.Q(-420);
+                this.fakePlayer.y(UUID.randomUUID());
             }
-            this.H();
-            this.L.z(entityPlayerSP.s());
-            this.Z = ClientSettings.f();
-            Minecraft.theWorld().D(this.Z, this.L);
+            this.fakePlayer.z(player.s());
+            this.fakePlayerEntityId = ClientSettings.f();
+            Minecraft.theWorld().D(this.fakePlayerEntityId, this.fakePlayer);
         }
     }
 
-    private boolean G() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        return entityPlayerSP.t() != 0.0 || entityPlayerSP.T() != 0.0;
+    private boolean isPlayerMoving() {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        return player.t() != 0.0 || player.T() != 0.0;
     }
 
     @Override
-    public String E() {
-        if (this.a == 0) {
+    public String getSimpleSuffix() {
+        if (this.packetCount == 0) {
             return "";
         }
-        return String.valueOf(this.a);
+        return String.valueOf(this.packetCount);
     }
 
     @EventHandler
-    public void onPacketReceive(EventPacketReceive eventPacketReceive) {
+    public void onPacketReceive(EventPacketReceive event) {
         try {
-            Packet packet = eventPacketReceive.getPacket();
+            Packet packet = event.getPacket();
             if (packet.isInstance(MappedClasses.zw)) {
-                this.o = true;
-                this.C$src$V$1j3s29b();
-                if (!this.V.L().booleanValue()) {
+                this.flushPending = true;
+                this.flushQueuedPackets();
+                if (!this.autoSend.getEffectiveValue()) {
                     super.Y(false);
                 }
                 return;
             }
-            if (((ModeSelection)this.c.K()).equals(this.O)) {
+            if (((ModeSelection)this.directionMode.getValue()).equals(this.outgoingOnlyMode)) {
                 return;
             }
-            if (this.v) {
+            if (this.dispatchingPackets) {
                 return;
             }
-            ++this.a;
-            if (this.V.L().booleanValue() && (Double)this.S.K() > 0.0 && (double)this.a >= (Double)this.S.K()) {
-                this.o = true;
-                this.H();
-                this.a = 0;
-                this.F.clear();
+            ++this.packetCount;
+            if (this.autoSend.getEffectiveValue() && (Double)this.sendThreshold.getValue() > 0.0
+                    && this.packetCount >= (Double)this.sendThreshold.getValue()) {
+                this.flushPending = true;
+                this.packetCount = 0;
+                this.breadcrumbPositions.clear();
             }
-            this.H.add(new PacketDispatchTask(packet, false, eventPacketReceive.getNetworkManager()));
-            eventPacketReceive.setCancelled(true);
+            this.queuedPackets.add(new PacketDispatchTask(packet, false, event.getNetworkManager()));
+            event.setCancelled(true);
         }
         catch (Exception exception) {
             Vape.debugLog("ex2");
@@ -217,114 +198,82 @@ extends Mod {
     }
 
     @EventHandler
-    public void onRender3D(EventRender3D eventRender3D) {
-        if (!this.p.L().booleanValue() || this.F.isEmpty()) {
+    public void onRender3D(EventRender3D event) {
+        if (!this.breadcrumbs.getEffectiveValue() || this.breadcrumbPositions.isEmpty()) {
             return;
         }
-        eventRender3D.getEntityRenderer().B(1.0);
+        event.getEntityRenderer().B(1.0);
         RenderUtil.d();
         if (!GuiRenderPrimitives.d()) {
-            OpenGlBackendHolder.d.l(3042);
+            OpenGlBackendHolder.backend.enableCapability(3042);
             GL11.glBlendFunc((int)770, (int)771);
             GL11.glLineWidth((float)1.5f);
-            OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-            OpenGlBackendHolder.d.l(2848);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2929);
+            OpenGlBackendHolder.backend.disableCapability(3553);
+            OpenGlBackendHolder.backend.enableCapability(2848);
+            OpenGlBackendHolder.backend.disableCapability(2929);
             GL11.glDepthMask((boolean)false);
         }
-        double d = RenderManager.getInterpolatedRenderPosX();
-        double d2 = RenderManager.getInterpolatedRenderPosY();
-        double d3 = RenderManager.getInterpolatedRenderPosZ();
-        boolean bl = true;
-        for (Vec3d vec3d : this.F) {
+        double renderX = RenderManager.getInterpolatedRenderPosX();
+        double renderY = RenderManager.getInterpolatedRenderPosY();
+        double renderZ = RenderManager.getInterpolatedRenderPosZ();
+        boolean firstBreadcrumb = true;
+        for (Vec3d position : this.breadcrumbPositions) {
             Color color = Color.RED;
-            if (bl) {
+            if (firstBreadcrumb) {
                 color = Color.YELLOW;
-                bl = false;
+                firstBreadcrumb = false;
             }
-            RenderUtil.u(vec3d.H - 0.1, vec3d.B, vec3d.i - 0.1, 0.2, 0.0, 0.2, 1.0, Color.BLACK, color, d, d2, d3);
+            RenderUtil.u(position.H - 0.1, position.B, position.i - 0.1,
+                    0.2, 0.0, 0.2, 1.0, Color.BLACK, color, renderX, renderY, renderZ);
         }
         if (!GuiRenderPrimitives.d()) {
             GL11.glDepthMask((boolean)true);
-            OpenGlBackendHolder.d.l(2929);
-            OpenGlBackendHolder.d.l(3553);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2848);
-            OpenGlBackendHolder.d.u$src$V$hntn98(3042);
+            OpenGlBackendHolder.backend.enableCapability(2929);
+            OpenGlBackendHolder.backend.enableCapability(3553);
+            OpenGlBackendHolder.backend.disableCapability(2848);
+            OpenGlBackendHolder.backend.disableCapability(3042);
         }
         RenderUtil.Y();
-        eventRender3D.getEntityRenderer().O(1.0);
+        event.getEntityRenderer().O(1.0);
     }
 
-    @Override
-    public void Y(boolean bl) {
-        super.Y(bl);
+    private void resetState() {
+        this.packetCount = 0;
+        this.queuedPackets.clear();
+        this.breadcrumbPositions.clear();
     }
 
-    private void H() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNotNull() || this.L.isNotNull() || !this.C.L().booleanValue()) {
-            return;
-        }
-        this.L.t(entityPlayerSP.z(), ClientSettings.H ? entityPlayerSP.N() : entityPlayerSP.N() - 1.5, entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
-        this.L.z(entityPlayerSP.s());
-    }
-
-    private void U() {
-        this.a = 0;
-        this.H.clear();
-        this.F.clear();
-    }
-
-    private void C$src$V$1j3s29b() {
-        if (this.o) {
-            this.v = true;
-            while (!this.H.isEmpty()) {
-                PacketDispatchTask packetDispatchTask = this.H.poll();
-                packetDispatchTask.t();
+    private void flushQueuedPackets() {
+        if (this.flushPending) {
+            this.dispatchingPackets = true;
+            while (!this.queuedPackets.isEmpty()) {
+                this.queuedPackets.poll().t();
             }
-            this.v = false;
-            this.o = false;
-            if (this.D) {
-                this.D = false;
-            }
+            this.dispatchingPackets = false;
+            this.flushPending = false;
         }
     }
 
     @Override
     public void onDisable() {
         if (Minecraft.thePlayer().isNull() || Minecraft.theWorld().isNull()) {
-            this.F.clear();
-            this.L = null;
-            this.a = 0;
+            this.breadcrumbPositions.clear();
+            this.fakePlayer = null;
+            this.packetCount = 0;
         }
-        if (this.L != null && Minecraft.theWorld().V(this.Z).isNotNull()) {
-            Minecraft.theWorld().M(this.L);
+        if (this.fakePlayer != null && Minecraft.theWorld().V(this.fakePlayerEntityId).isNotNull()) {
+            Minecraft.theWorld().M(this.fakePlayer);
         }
-        this.L = null;
+        this.fakePlayer = null;
     }
 
     @Override
-    public void g() {
-        this.o = true;
-        this.D = true;
-        this.C$src$V$1j3s29b();
+    public void onBeforeDisable() {
+        this.flushPending = true;
+        this.flushQueuedPackets();
     }
 
-    private static Exception a(Exception exception) {
-        return exception;
-    }
-
-    @Override
-    public void s(boolean bl, boolean bl2) {
-        super.s(bl, bl2);
-    }
-
-    private boolean Y(Packet packet) {
+    private boolean isIncomingPacket(Packet packet) {
         return packet.getObject().getClass().toString().contains("play.server") || packet.getObject().toString().contains("SPacket");
     }
-
-    @EventHandler
-    public void H(EventGuiOpen eventGuiOpen) {
-    }
 }
-

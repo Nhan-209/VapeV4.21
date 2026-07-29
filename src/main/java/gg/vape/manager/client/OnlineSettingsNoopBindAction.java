@@ -12,17 +12,16 @@ extends Bendable {
     }
 
     @Override
-    public void A() {
+    public void onBindActivated() {
     }
 
     @Override
-    public boolean m() {
+    public boolean isActive() {
         return false;
     }
 
     @Override
-    public String y() {
+    public String getDisplayText() {
         return null;
     }
 }
-

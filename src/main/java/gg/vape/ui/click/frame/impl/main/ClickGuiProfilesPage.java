@@ -49,101 +49,94 @@ import org.jetbrains.annotations.Nullable;
 public class ClickGuiProfilesPage
 extends ClickGuiPageBase
 implements EventListener {
-    private final DoubleAnimation Ba;
-    private final ClickGuiMainFrame Bt;
-    private final Runnable B8;
-    private TextButton Bm;
-    private boolean Bg;
-    private SmallTextInputComponent Bz;
+    private final DoubleAnimation cardSelectionAnimation;
+    private final ClickGuiMainFrame mainFrame;
+    private final Runnable overlayCloseCallback;
+    private TextButton newProfileButton;
+    private boolean cardSelectionActive;
+    private SmallTextInputComponent createNameInput;
     @Nullable
-    private ClickGuiProfileCardComponent BF;
-    private Profile Bd;
-    private ProfileModuleSnapshotListComponent Bv;
-    private FlowLayoutComponent BB;
-    private PanelComponent BA;
-    private TextButton BD;
-    private Profile Bk;
-    private static boolean B3;
-    private Profile BW;
-    private Profile B1;
-    private boolean BU;
-    private ClickGuiProfileHeaderComponent BE;
+    private ClickGuiProfileCardComponent draftProfileCard;
+    private Profile draftProfile;
+    private ProfileModuleSnapshotListComponent snapshotList;
+    private FlowLayoutComponent profileList;
+    private PanelComponent mainPanel;
+    private TextButton createButton;
+    private Profile previousActiveProfile;
+    private Profile displayedActiveProfile;
+    private boolean creatingProfile;
+    private ClickGuiProfileHeaderComponent profileHeader;
 
-    private void U$src$V$1llirxg() {
-        if (this.BU) {
+    private void beginCreateProfile() {
+        if (this.creatingProfile) {
             return;
         }
-        this.Bt.K$src$V$sfnnd();
+        this.mainFrame.closeActiveOverlay();
         Profile profile = Vape.INSTANCE.getProfilesManager().M();
         profile.a();
-        this.Bk = profile;
-        this.Bd = new Profile(profile.n$src$Ljava_lang_String_$xqhelw(), "4.21");
-        this.Bd.e(profile.C(true));
-        this.Bd.d(UUID.randomUUID());
-        this.Bd.K(null);
-        this.Bd.s(false);
-        this.Bd.B(true);
-        ApiServices.d().c().u().whenCompleteAsync(this::lambda$beginCreateProfileFlow$4, (Executor)ClientSettings.f6).exceptionally(ClickGuiProfilesPage::lambda$beginCreateProfileFlow$5);
-        Vape.INSTANCE.getProfilesManager().U(this.Bd);
-        this.BU = true;
-        this.d$src$V$1ltrotv();
-        this.p$src$V$1m0d7y7();
+        this.previousActiveProfile = profile;
+        this.draftProfile = new Profile(profile.n$src$Ljava_lang_String_$xqhelw(), "4.21");
+        this.draftProfile.e(profile.C(true));
+        this.draftProfile.d(UUID.randomUUID());
+        this.draftProfile.K(null);
+        this.draftProfile.s(false);
+        this.draftProfile.B(true);
+        ApiServices.d().c().u().whenCompleteAsync(this::handleDraftProfileIdResponse, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(ClickGuiProfilesPage::ignoreCreateProfileFailure);
+        Vape.INSTANCE.getProfilesManager().U(this.draftProfile);
+        this.creatingProfile = true;
+        this.refreshProfileList();
+        this.renderMainContent();
     }
 
-    private void a$src$V$1ls4b1s() {
-        if (!this.BU) {
+    private void cancelCreateProfile() {
+        if (!this.creatingProfile) {
             return;
         }
         Profile profile = Vape.INSTANCE.getProfilesManager().M();
         if (profile != null && profile.Z()) {
-            Vape.INSTANCE.getProfilesManager().L(this.Bk != null ? this.Bk : this.B1);
+            Vape.INSTANCE.getProfilesManager().L(this.previousActiveProfile != null ? this.previousActiveProfile : this.displayedActiveProfile);
         }
-        this.Bd = null;
-        this.Bk = null;
-        this.Bz = null;
-        this.BF = null;
-        this.BD = null;
-        this.BU = false;
-        this.d$src$V$1ltrotv();
-        this.p$src$V$1m0d7y7();
+        this.draftProfile = null;
+        this.previousActiveProfile = null;
+        this.createNameInput = null;
+        this.draftProfileCard = null;
+        this.createButton = null;
+        this.creatingProfile = false;
+        this.refreshProfileList();
+        this.renderMainContent();
     }
 
-    static {
-        ClickGuiProfilesPage.f(true);
-    }
-
-    private void l(Profile profile) {
-        if (this.BB == null) {
+    private void selectProfileCard(Profile profile) {
+        if (this.profileList == null) {
             return;
         }
-        this.BW = profile;
-        this.Bg = profile != null;
-        for (GuiComponent guiComponent : this.BB.f()) {
+        this.cardSelectionActive = profile != null;
+        for (GuiComponent guiComponent : this.profileList.f()) {
             ClickGuiProfileCardComponent clickGuiProfileCardComponent;
-            if (!(guiComponent instanceof PaddedComponent) || (clickGuiProfileCardComponent = ((PaddedComponent)guiComponent).t(ClickGuiProfileCardComponent.class)) == null || clickGuiProfileCardComponent.h$src$Lgg_vape_config_Profile_$18amnwr() == null) continue;
-            boolean bl = profile != null && clickGuiProfileCardComponent.h$src$Lgg_vape_config_Profile_$18amnwr() == profile;
-            clickGuiProfileCardComponent.v(bl);
+            if (!(guiComponent instanceof PaddedComponent) || (clickGuiProfileCardComponent = ((PaddedComponent)guiComponent).t(ClickGuiProfileCardComponent.class)) == null || clickGuiProfileCardComponent.getProfile() == null) continue;
+            boolean bl = profile != null && clickGuiProfileCardComponent.getProfile() == profile;
+            clickGuiProfileCardComponent.setSelected(bl);
             boolean bl2 = profile != null && !bl;
-            clickGuiProfileCardComponent.e(bl2);
+            clickGuiProfileCardComponent.setDimmed(bl2);
         }
     }
 
-    private void t(Profile profile, PanelComponent panelComponent) {
+    private void populateProfileSidecar(Profile profile, PanelComponent panelComponent) {
         double d = 16.0;
         double d2 = 4.0;
         double d3 = 18.0;
         double d4 = 8.0;
         PanelComponent panelComponent2 = new PanelComponent(panelComponent.A() - d4 * 2.0, d);
-        panelComponent2.d(false);
+        panelComponent2.setShowDisabledOverlay(false);
         panelComponent2.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         double d5 = panelComponent.A() - d4 * 2.0 - d3 - d2;
         ProfileListEntryMetadataComponent profileListEntryMetadataComponent = new ProfileListEntryMetadataComponent(profile);
-        profileListEntryMetadataComponent.q(d5);
-        profileListEntryMetadataComponent.u(d);
-        ProfileListEntryOpenButtonComponent profileListEntryOpenButtonComponent = new ProfileListEntryOpenButtonComponent(profile, this::lambda$createProfileContent$8);
-        profileListEntryOpenButtonComponent.h$src$Lgg_vape_ui_click_frame_impl_profile_ProfileList$h82ue1();
-        profileListEntryOpenButtonComponent.q(d3);
-        profileListEntryOpenButtonComponent.u(d);
+        profileListEntryMetadataComponent.setExplicitWidth(d5);
+        profileListEntryMetadataComponent.setExplicitHeight(d);
+        ProfileListEntryOpenButtonComponent profileListEntryOpenButtonComponent = new ProfileListEntryOpenButtonComponent(profile, this::closeOverlayAndRefreshList);
+        profileListEntryOpenButtonComponent.useOverlayStyle();
+        profileListEntryOpenButtonComponent.setExplicitWidth(d3);
+        profileListEntryOpenButtonComponent.setExplicitHeight(d);
         panelComponent2.h(profileListEntryMetadataComponent, new Object[0]);
         panelComponent2.h(new SpacerComponent(d2, 0.0), new Object[0]);
         panelComponent2.h(profileListEntryOpenButtonComponent, new Object[0]);
@@ -151,280 +144,267 @@ implements EventListener {
         double d6 = d + 4.0 + 8.0;
         double d7 = panelComponent.L() - d6 - 22.0;
         ProfileModuleSnapshotListComponent profileModuleSnapshotListComponent = new ProfileModuleSnapshotListComponent(profile, panelComponent.A() - 4.0, d7);
-        profileModuleSnapshotListComponent.o(ProfileModuleSnapshotListStyle.MODERN);
+        profileModuleSnapshotListComponent.setStyle(ProfileModuleSnapshotListStyle.MODERN);
         panelComponent.h(new SpacerComponent(0.0, 4.0), new Object[0]);
         panelComponent.h(profileModuleSnapshotListComponent, new Object[0]);
     }
 
-    public static void f(boolean bl) {
-        B3 = bl;
-    }
-
-    private void M(Profile profile, double d, double d2) {
-        this.BE = new ClickGuiProfileHeaderComponent(profile, d2);
-        this.BA.h(new PaddedComponent(2.0, d, d, d, this.BE), new Object[0]);
+    private void renderExistingProfile(Profile profile, double d, double d2) {
+        this.profileHeader = new ClickGuiProfileHeaderComponent(profile, d2);
+        this.mainPanel.h(new PaddedComponent(2.0, d, d, d, this.profileHeader), new Object[0]);
         double d3 = d * 2.0;
-        double d4 = this.BA.L() - this.BA.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y() - d3;
-        this.Bv = new ProfileModuleSnapshotListComponent(profile, this.BA.A() - 6.0 - 3.0, d4);
-        this.Bv.o(ProfileModuleSnapshotListStyle.MODERN);
-        this.BA.h(new PaddedComponent(0.0, d, 3.0, 0.0, this.Bv), new Object[0]);
+        double d4 = this.mainPanel.L() - this.mainPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y() - d3;
+        this.snapshotList = new ProfileModuleSnapshotListComponent(profile, this.mainPanel.A() - 6.0 - 3.0, d4);
+        this.snapshotList.setStyle(ProfileModuleSnapshotListStyle.MODERN);
+        this.mainPanel.h(new PaddedComponent(0.0, d, 3.0, 0.0, this.snapshotList), new Object[0]);
     }
 
-    private void h() {
-        this.Bt.Z(ClickGuiOverlaySpec.q().e("Settings").C("newsettings").n(ClickGuiOverlayPlacement.DOCKED).N(this::O).w());
+    private void openProfileSettings() {
+        this.mainFrame.showOverlay(ClickGuiOverlaySpec.builder().title("Settings").sidecarIcon("newsettings").placement(ClickGuiOverlayPlacement.DOCKED).initializeContent(this::populateSettings).build());
     }
 
-    public static SmallTextInputComponent V(ClickGuiProfilesPage clickGuiProfilesPage) {
-        return clickGuiProfilesPage.Bz;
+    public static SmallTextInputComponent getCreateNameInput(ClickGuiProfilesPage page) {
+        return page.createNameInput;
     }
 
-    private Color a(Color color) {
-        return ProfileCardActionState.t(color, this.Ba, this.Bg);
+    private Color applyCardSelectionState(Color color) {
+        return ProfileCardActionState.t(color, this.cardSelectionAnimation, this.cardSelectionActive);
     }
 
-    private void lambda$refreshProfilesList$6(Profile profile) {
-        if (!this.BU) {
-            this.o(profile);
+    private void handleProfileCardSettings(Profile profile) {
+        if (!this.creatingProfile) {
+            this.openProfile(profile);
         }
     }
 
-    private static void lambda$renderCategoryButtons$2() {
-        PublicProfilesFrame publicProfilesFrame = ClientSettings.g(PublicProfilesFrame.class);
-        ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v();
-        clickGuiFrameManager.K(publicProfilesFrame);
+    private static void openPublicProfiles() {
+        PublicProfilesFrame publicProfilesFrame = ClientSettings.getFrame(PublicProfilesFrame.class);
+        ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)ClientSettings.INSTANCE.getActiveStack();
+        clickGuiFrameManager.setSidecarFrame(publicProfilesFrame);
     }
 
-    private void Q$src$V$1ljblk0() {
-        GuiComponent guiComponent = this.H$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$3n0k6u().f().get(0);
-        this.H$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$3n0k6u().S();
-        this.H$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$3n0k6u().h(guiComponent, "widthwrap");
-        this.Bm = new TextButton("NEW PROFILE", 0.625, J.z(), J.z().brighter(), null, 2.0f, 1.0f, 53.0, 16.0);
-        this.Bm.T("newadd");
-        this.Bm.i(6.0f);
-        this.Bm.c(true);
-        this.Bm.a(true);
-        this.Bm.F(true);
-        this.Bm.m(true);
-        this.Bm.r(this::U$src$V$1llirxg);
+    private void renderSidebar() {
+        GuiComponent guiComponent = this.getSidebarHeader().f().get(0);
+        this.getSidebarHeader().removeMarkedChildren();
+        this.getSidebarHeader().h(guiComponent, "widthwrap");
+        this.newProfileButton = new TextButton("NEW PROFILE", 0.625, J.z(), J.z().brighter(), null, 2.0f, 1.0f, 53.0, 16.0);
+        this.newProfileButton.setIconResource("newadd");
+        this.newProfileButton.setIconSize(6.0f);
+        this.newProfileButton.setUseAlternateFont(true);
+        this.newProfileButton.setUppercase(true);
+        this.newProfileButton.setDeriveTextColorFromBackground(true);
+        this.newProfileButton.setUseThemeBackground(true);
+        this.newProfileButton.addClickListener(this::beginCreateProfile);
         Object object = new GlyphIconComponent("newsettings", 6.0, 6.0, 10.0, 10.0, null, null, null);
-        ((GlyphIconComponent)object).R(true);
-        ((GlyphIconComponent)object).q(true);
-        ((InteractiveComponent)object).r(this::h);
-        this.H$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$3n0k6u().h(new SpacerComponent(this.H$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$3n0k6u().A() - this.H$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$3n0k6u().l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().C() - this.Bm.A() - ((GuiComponent)object).A() - 8.0 - 1.0, 0.0), new Object[0]);
-        this.H$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$3n0k6u().h(new PaddedComponent(0.0, 0.0, 0.0, 8.0, this.Bm), new Object[0]);
-        this.H$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$3n0k6u().h(new PaddedComponent(4.0, 0.0, 0.0, 1.0, (GuiComponent)object), new Object[0]);
-        this.L$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$m6o1mi().S();
-        this.L$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$m6o1mi().h(new SpacerComponent(0.0, 3.0), new Object[0]);
-        this.BB = this.p(this.L$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$m6o1mi().A(), this.L$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$m6o1mi().L() - this.L$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$m6o1mi().l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y() - 21.0);
-        this.BB.F(FrameScrollbarPlacement.OUTSIDE);
-        this.BB.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.BB.t(this.BB.L());
-        this.BB.d(false);
-        this.BB.E(true);
-        this.BB.h(new SpacerComponent(0.0, 1.0), new Object[0]);
-        this.L$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$m6o1mi().h(this.BB, new Object[0]);
+        ((GlyphIconComponent)object).setCenterVertically(true);
+        ((GlyphIconComponent)object).setCenterHorizontally(true);
+        ((InteractiveComponent)object).addClickListener(this::openProfileSettings);
+        this.getSidebarHeader().h(new SpacerComponent(this.getSidebarHeader().A() - this.getSidebarHeader().l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().C() - this.newProfileButton.A() - ((GuiComponent)object).A() - 8.0 - 1.0, 0.0), new Object[0]);
+        this.getSidebarHeader().h(new PaddedComponent(0.0, 0.0, 0.0, 8.0, this.newProfileButton), new Object[0]);
+        this.getSidebarHeader().h(new PaddedComponent(4.0, 0.0, 0.0, 1.0, (GuiComponent)object), new Object[0]);
+        this.getSidebarContent().removeMarkedChildren();
+        this.getSidebarContent().h(new SpacerComponent(0.0, 3.0), new Object[0]);
+        this.profileList = this.createFlowLayout(this.getSidebarContent().A(), this.getSidebarContent().L() - this.getSidebarContent().l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y() - 21.0);
+        this.profileList.F(FrameScrollbarPlacement.OUTSIDE);
+        this.profileList.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.profileList.t(this.profileList.L());
+        this.profileList.setShowDisabledOverlay(false);
+        this.profileList.E(true);
+        this.profileList.h(new SpacerComponent(0.0, 1.0), new Object[0]);
+        this.getSidebarContent().h(this.profileList, new Object[0]);
         object = Vape.INSTANCE.getProfilesManager().M();
         for (Profile profile : Vape.INSTANCE.getProfilesManager().b()) {
             ClickGuiProfileCardComponent clickGuiProfileCardComponent = new ClickGuiProfileCardComponent(profile);
-            clickGuiProfileCardComponent.o(this.BB.A());
+            clickGuiProfileCardComponent.o(this.profileList.A());
             clickGuiProfileCardComponent.Y(20.0);
-            clickGuiProfileCardComponent.g(profile == object);
-            clickGuiProfileCardComponent.f(() -> this.lambda$renderCategoryButtons$1(profile));
-            this.BB.h(new PaddedComponent(0.0, 3.0, 0.0, 0.0, clickGuiProfileCardComponent), new Object[0]);
+            clickGuiProfileCardComponent.setActive(profile == object);
+            clickGuiProfileCardComponent.setSettingsAction(() -> this.openProfileFromCard(profile));
+            this.profileList.h(new PaddedComponent(0.0, 3.0, 0.0, 0.0, clickGuiProfileCardComponent), new Object[0]);
         }
         ProfileListEntryBadgeComponent profileListEntryBadgeComponent = new ProfileListEntryBadgeComponent();
-        profileListEntryBadgeComponent.p(6);
-        profileListEntryBadgeComponent.r(ClickGuiProfilesPage::lambda$renderCategoryButtons$2);
-        this.L$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$m6o1mi().h(new PaddedComponent(6.0, 0.0, 3.0, 0.0, profileListEntryBadgeComponent), new Object[0]);
+        profileListEntryBadgeComponent.setBadgeCount(6);
+        profileListEntryBadgeComponent.addClickListener(ClickGuiProfilesPage::openPublicProfiles);
+        this.getSidebarContent().h(new PaddedComponent(6.0, 0.0, 3.0, 0.0, profileListEntryBadgeComponent), new Object[0]);
     }
 
-    private void L$src$V$1lgkml7() {
-        if (this.Bd == null || this.Bz == null) {
+    private void createProfile() {
+        if (this.draftProfile == null || this.createNameInput == null) {
             return;
         }
-        if (!this.Bz.u$src$Z$wt77ym()) {
-            this.Bz.k("");
+        if (!this.createNameInput.hasNonBlankText()) {
+            this.createNameInput.setText("");
             return;
         }
-        String string = this.Bz.i$src$Ljava_lang_String_$1n2xf3k();
+        String string = this.createNameInput.getText();
         Profile profile = Vape.INSTANCE.getProfilesManager().G(string);
         if (profile != null) {
             return;
         }
-        this.Bd.h(string);
-        this.Bd.c(true);
-        this.Bd.B(false);
-        Vape.INSTANCE.getProfilesManager().m(this.Bd, true);
-        Vape.INSTANCE.getProfilesManager().L(this.Bd);
-        this.Bd = null;
-        this.Bk = null;
-        this.Bz = null;
-        this.BF = null;
-        this.BD = null;
-        this.BU = false;
-        this.d$src$V$1ltrotv();
-        this.p$src$V$1m0d7y7();
+        this.draftProfile.h(string);
+        this.draftProfile.c(true);
+        this.draftProfile.B(false);
+        Vape.INSTANCE.getProfilesManager().m(this.draftProfile, true);
+        Vape.INSTANCE.getProfilesManager().L(this.draftProfile);
+        this.draftProfile = null;
+        this.previousActiveProfile = null;
+        this.createNameInput = null;
+        this.draftProfileCard = null;
+        this.createButton = null;
+        this.creatingProfile = false;
+        this.refreshProfileList();
+        this.renderMainContent();
     }
 
     @EventHandler
-    public void g(ProfileListMutationEvent profileListMutationEvent) {
-        this.d$src$V$1ltrotv();
+    public void onProfileListMutation(ProfileListMutationEvent profileListMutationEvent) {
+        this.refreshProfileList();
         Profile profile = Vape.INSTANCE.getProfilesManager().M();
-        if (!this.BU && this.B1 != profile) {
-            this.p$src$V$1m0d7y7();
+        if (!this.creatingProfile && this.displayedActiveProfile != profile) {
+            this.renderMainContent();
         }
     }
 
-    private void lambda$renderCategoryButtons$1(Profile profile) {
-        this.o(profile);
+    private void openProfileFromCard(Profile profile) {
+        this.openProfile(profile);
     }
 
-    private void lambda$createProfileContent$8() {
-        this.Bt.K$src$V$sfnnd();
-        this.d$src$V$1ltrotv();
+    private void closeOverlayAndRefreshList() {
+        this.mainFrame.closeActiveOverlay();
+        this.refreshProfileList();
     }
 
-    private void O(PanelComponent panelComponent) {
+    private void populateSettings(PanelComponent panelComponent) {
         for (GuiComponent guiComponent : ProfilesSettingsFrameState.F(true)) {
             guiComponent.o(panelComponent.A());
-            guiComponent.q(panelComponent.A());
+            guiComponent.setExplicitWidth(panelComponent.A());
             panelComponent.h(guiComponent, new Object[0]);
         }
     }
 
-    private void Z(Profile profile, double d, double d2) {
-        this.Bz = new SmallTextInputComponent("Type name");
-        this.Bz.V(0.0f);
-        this.Bz.C(0.0);
-        this.Bz.H(0.0f);
-        this.Bz.O(0.0f);
-        this.Bz.W(true);
-        this.Bz.Y(14.0);
-        this.Bz.n(48);
+    private void renderCreateProfile(Profile profile, double d, double d2) {
+        this.createNameInput = new SmallTextInputComponent("Type name");
+        this.createNameInput.setRightInset(0.0f);
+        this.createNameInput.setHorizontalInset(0.0);
+        this.createNameInput.setLeftInset(0.0f);
+        this.createNameInput.setVerticalInset(0.0f);
+        this.createNameInput.setUseExplicitHeight(true);
+        this.createNameInput.Y(14.0);
+        this.createNameInput.setMaxLength(48);
         BindableInputComponent bindableInputComponent = new BindableInputComponent(profile, ClickGuiProfilesPage.J.Z);
-        bindableInputComponent.f(false);
+        bindableInputComponent.setActiveOverride(false);
         bindableInputComponent.Y(10.0);
         ProfilesPageEmptyStateComponent profilesPageEmptyStateComponent = new ProfilesPageEmptyStateComponent(this, bindableInputComponent);
         profilesPageEmptyStateComponent.o(d2);
         profilesPageEmptyStateComponent.Y(22.0);
-        profilesPageEmptyStateComponent.d(false);
-        profilesPageEmptyStateComponent.H(this.Bz, bindableInputComponent);
-        this.BA.h(new PaddedComponent(2.0, d, d, d, profilesPageEmptyStateComponent), new Object[0]);
-        PanelComponent panelComponent = new PanelComponent(this.BA.A(), 14.0);
-        panelComponent.d(false);
+        profilesPageEmptyStateComponent.setShowDisabledOverlay(false);
+        profilesPageEmptyStateComponent.addChildren(this.createNameInput, bindableInputComponent);
+        this.mainPanel.h(new PaddedComponent(2.0, d, d, d, profilesPageEmptyStateComponent), new Object[0]);
+        PanelComponent panelComponent = new PanelComponent(this.mainPanel.A(), 14.0);
+        panelComponent.setShowDisabledOverlay(false);
         panelComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         TextButton textButton = new TextButton("CANCEL", 0.625, ClickGuiProfilesPage.J.i, ClickGuiProfilesPage.J.i.brighter(), null, 2.0f, 1.0f, 35.5, 14.0);
-        textButton.a(true);
-        textButton.c(true);
-        textButton.F(false);
-        textButton.h(ClickGuiProfilesPage.J.A);
-        textButton.r(this::a$src$V$1ls4b1s);
-        this.BD = new TextButton("CREATE", 0.625, ClickGuiProfilesPage.J.B, ClickGuiProfilesPage.J.B.brighter(), null, 2.0f, 1.0f, 35.5, 14.0);
-        this.BD.a(true);
-        this.BD.c(true);
-        this.BD.F(false);
-        this.BD.h(ClickGuiProfilesPage.J.A);
-        this.BD.k(true);
-        this.BD.r(this::L$src$V$1lgkml7);
-        panelComponent.h(new SpacerComponent(this.BA.A() - textButton.A() - 4.0 - this.BD.A() - 8.0, 0.0), new Object[0]);
+        textButton.setUppercase(true);
+        textButton.setUseAlternateFont(true);
+        textButton.setDeriveTextColorFromBackground(false);
+        textButton.setNormalTextColor(ClickGuiProfilesPage.J.A);
+        textButton.addClickListener(this::cancelCreateProfile);
+        this.createButton = new TextButton("CREATE", 0.625, ClickGuiProfilesPage.J.B, ClickGuiProfilesPage.J.B.brighter(), null, 2.0f, 1.0f, 35.5, 14.0);
+        this.createButton.setUppercase(true);
+        this.createButton.setUseAlternateFont(true);
+        this.createButton.setDeriveTextColorFromBackground(false);
+        this.createButton.setNormalTextColor(ClickGuiProfilesPage.J.A);
+        this.createButton.setInteractionDisabled(true);
+        this.createButton.addClickListener(this::createProfile);
+        panelComponent.h(new SpacerComponent(this.mainPanel.A() - textButton.A() - 4.0 - this.createButton.A() - 8.0, 0.0), new Object[0]);
         panelComponent.h(new PaddedComponent(0.0, 0.0, 0.0, 4.0, textButton), new Object[0]);
-        panelComponent.h(new PaddedComponent(0.0, 0.0, 0.0, 0.0, this.BD), new Object[0]);
-        double d3 = this.BA.L() - this.BA.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y() - panelComponent.L() - d * 5.0 + 1.0;
+        panelComponent.h(new PaddedComponent(0.0, 0.0, 0.0, 0.0, this.createButton), new Object[0]);
+        double d3 = this.mainPanel.L() - this.mainPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y() - panelComponent.L() - d * 5.0 + 1.0;
         d3 = Math.max(0.0, d3);
-        this.Bv = new ProfileModuleSnapshotListComponent(profile, this.BA.A() - 6.0 - 3.0, d3);
-        this.Bv.o(ProfileModuleSnapshotListStyle.MODERN);
-        this.BA.h(new PaddedComponent(0.0, 0.0, 3.0, 0.0, this.Bv), new Object[0]);
-        this.BA.h(new PaddedComponent(d * 2.0 - 1.0, d, 0.0, 0.0, panelComponent), new Object[0]);
-        this.Bz.o(this::lambda$renderCreateProfileContent$3);
-        this.Bz.s(new ProfilesPageRefreshListener(this));
-        this.s$src$V$1m20lqa();
-        this.Bz.b$src$V$17wa4kz();
+        this.snapshotList = new ProfileModuleSnapshotListComponent(profile, this.mainPanel.A() - 6.0 - 3.0, d3);
+        this.snapshotList.setStyle(ProfileModuleSnapshotListStyle.MODERN);
+        this.mainPanel.h(new PaddedComponent(0.0, 0.0, 3.0, 0.0, this.snapshotList), new Object[0]);
+        this.mainPanel.h(new PaddedComponent(d * 2.0 - 1.0, d, 0.0, 0.0, panelComponent), new Object[0]);
+        this.createNameInput.addKeyTypedListener(this::handleNameInputChanged);
+        this.createNameInput.addRefreshListener(new ProfilesPageRefreshListener(this));
+        this.updateCreateButtonState();
+        this.createNameInput.requestFocus();
     }
 
-    public static void q(ClickGuiProfilesPage clickGuiProfilesPage) {
-        clickGuiProfilesPage.s$src$V$1m20lqa();
+    public static void updateCreateButtonState(ClickGuiProfilesPage page) {
+        page.updateCreateButtonState();
     }
 
-    private void lambda$beginCreateProfileFlow$4(ApiResponse apiResponse, Throwable throwable) {
+    private void handleDraftProfileIdResponse(ApiResponse apiResponse, Throwable throwable) {
         if (throwable != null) {
             return;
         }
         if (!apiResponse.t()) {
             return;
         }
-        this.Bd.K((UUID)apiResponse.T());
+        this.draftProfile.K((UUID)apiResponse.T());
     }
 
-    public static boolean D$src$Z$1lc69xr() {
-        boolean bl = ClickGuiProfilesPage.p();
-        return false;
+    private void initializeProfileSidecar(Profile profile, PanelComponent panelComponent) {
+        this.populateProfileSidecar(profile, panelComponent);
     }
 
-    public static boolean p() {
-        return B3;
-    }
-
-    private void lambda$createProfileSidecar$7(Profile profile, PanelComponent panelComponent) {
-        this.t(profile, panelComponent);
-    }
-
-    private void s$src$V$1m20lqa() {
-        if (this.BD == null || this.Bz == null) {
+    private void updateCreateButtonState() {
+        if (this.createButton == null || this.createNameInput == null) {
             return;
         }
-        boolean bl = this.Bz.u$src$Z$wt77ym();
-        this.BD.k(!bl);
-        this.n$src$V$1lz9mrh();
+        boolean bl = this.createNameInput.hasNonBlankText();
+        this.createButton.setInteractionDisabled(!bl);
+        this.updateDraftCardName();
     }
 
-    private void o(Profile profile) {
-        this.l(profile);
+    private void openProfile(Profile profile) {
+        this.selectProfileCard(profile);
         ProfilesPageOverlayController profilesPageOverlayController = new ProfilesPageOverlayController(null, profile);
-        profilesPageOverlayController.c(false);
-        this.Bt.Z(ClickGuiOverlaySpec.q().e(profile.n$src$Ljava_lang_String_$xqhelw()).C("newsettings").n(ClickGuiOverlayPlacement.DOCKED).K(192.0).x(false).v(profilesPageOverlayController).N(arg_0 -> this.lambda$createProfileSidecar$7(profile, arg_0)).w());
+        profilesPageOverlayController.setDividerVisible(false);
+        this.mainFrame.showOverlay(ClickGuiOverlaySpec.builder().title(profile.n$src$Ljava_lang_String_$xqhelw()).sidecarIcon("newsettings").placement(ClickGuiOverlayPlacement.DOCKED).width(192.0).backdropEnabled(false).sidecar(profilesPageOverlayController).initializeContent(panel -> this.initializeProfileSidecar(profile, panel)).build());
     }
 
-    private void n$src$V$1lz9mrh() {
-        if (this.BF == null || this.Bz == null) {
+    private void updateDraftCardName() {
+        if (this.draftProfileCard == null || this.createNameInput == null) {
             return;
         }
-        String string = this.Bz.i$src$Ljava_lang_String_$1n2xf3k();
+        String string = this.createNameInput.getText();
         if (string == null || string.trim().isEmpty()) {
-            this.BF.X("New Profile");
+            this.draftProfileCard.setDisplayName("New Profile");
         } else {
-            this.BF.X(string);
+            this.draftProfileCard.setDisplayName(string);
         }
     }
 
-    private void lambda$new$0() {
-        this.l(null);
+    private void clearCardSelection() {
+        this.selectProfileCard(null);
     }
 
 
     @Override
     public void u() {
-        this.Ba.u(this.Bg);
-        if (this.BA != null) {
-            this.BA.T(this.a(ClickGuiProfilesPage.J.m));
+        this.cardSelectionAnimation.u(this.cardSelectionActive);
+        if (this.mainPanel != null) {
+            this.mainPanel.setDisabledOverlayColor(this.applyCardSelectionState(ClickGuiProfilesPage.J.m));
         }
-        if (this.BU) {
-            this.n$src$V$1lz9mrh();
+        if (this.creatingProfile) {
+            this.updateDraftCardName();
         }
-        if (this.BB != null) {
+        if (this.profileList != null) {
             Profile profile = Vape.INSTANCE.getProfilesManager().M();
-            if (this.B1 != profile && !this.BU) {
-                this.B1 = profile;
-                if (this.BE != null) {
-                    this.BE.R(profile);
+            if (this.displayedActiveProfile != profile && !this.creatingProfile) {
+                this.displayedActiveProfile = profile;
+                if (this.profileHeader != null) {
+                    this.profileHeader.updateProfile(profile);
                 }
-                if (this.Bv != null) {
-                    this.Bv.j(profile);
+                if (this.snapshotList != null) {
+                    this.snapshotList.setProfile(profile);
                 }
             }
-            for (GuiComponent guiComponent : this.BB.f()) {
+            for (GuiComponent guiComponent : this.profileList.f()) {
                 ClickGuiProfileCardComponent clickGuiProfileCardComponent;
-                if (!(guiComponent instanceof PaddedComponent) || (clickGuiProfileCardComponent = ((PaddedComponent)guiComponent).t(ClickGuiProfileCardComponent.class)) == null || clickGuiProfileCardComponent.h$src$Lgg_vape_config_Profile_$18amnwr() == null || clickGuiProfileCardComponent == this.BF) continue;
-                clickGuiProfileCardComponent.g(clickGuiProfileCardComponent.h$src$Lgg_vape_config_Profile_$18amnwr() == profile);
+                if (!(guiComponent instanceof PaddedComponent) || (clickGuiProfileCardComponent = ((PaddedComponent)guiComponent).t(ClickGuiProfileCardComponent.class)) == null || clickGuiProfileCardComponent.getProfile() == null || clickGuiProfileCardComponent == this.draftProfileCard) continue;
+                clickGuiProfileCardComponent.setActive(clickGuiProfileCardComponent.getProfile() == profile);
             }
         }
     }
@@ -432,93 +412,93 @@ implements EventListener {
     @Override
     public void Z$src$V$15w0jcm() {
         super.Z$src$V$15w0jcm();
-        if (this.B8 != null) {
-            this.Bt.F(this.B8);
-            this.Bt.k(this.B8);
+        if (this.overlayCloseCallback != null) {
+            this.mainFrame.removeContentOverlayCallback(this.overlayCloseCallback);
+            this.mainFrame.addContentOverlayCallback(this.overlayCloseCallback);
         }
         EventBus.getInstance().unregisterListener(this);
         EventBus.getInstance().registerListener(this, new Predicate[0]);
-        this.d$src$V$1ltrotv();
+        this.refreshProfileList();
     }
 
-    private void p$src$V$1m0d7y7() {
-        this.I$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$89xfjr().S();
+    private void renderMainContent() {
+        this.getMainContent().removeMarkedChildren();
         Profile profile = Vape.INSTANCE.getProfilesManager().M();
-        if (!this.BU) {
-            this.B1 = profile;
+        if (!this.creatingProfile) {
+            this.displayedActiveProfile = profile;
         }
-        this.BA = new PanelComponent(this.f$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$o6l04().A(), this.I$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$89xfjr().L());
-        this.BA.T(ClickGuiProfilesPage.J.m);
-        this.BA.V(3.0f);
-        this.BA.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.mainPanel = new PanelComponent(this.getMainContainer().A(), this.getMainContent().L());
+        this.mainPanel.setDisabledOverlayColor(ClickGuiProfilesPage.J.m);
+        this.mainPanel.setCornerRadius(3.0f);
+        this.mainPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         double d = 8.0;
-        double d2 = this.BA.A() - d * 2.0;
-        if (this.BU) {
-            this.Z(profile, d, d2);
+        double d2 = this.mainPanel.A() - d * 2.0;
+        if (this.creatingProfile) {
+            this.renderCreateProfile(profile, d, d2);
         } else {
-            this.M(profile, d, d2);
+            this.renderExistingProfile(profile, d, d2);
         }
-        this.I$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$89xfjr().h(this.BA, new Object[0]);
+        this.getMainContent().h(this.mainPanel, new Object[0]);
     }
 
-    private static ApiResponse lambda$beginCreateProfileFlow$5(Throwable throwable) {
+    private static ApiResponse ignoreCreateProfileFailure(Throwable throwable) {
         return null;
     }
 
     public ClickGuiProfilesPage(ClickGuiMainFrame clickGuiMainFrame, double d, double d2, double d3) {
         super(d, d2, d3, 2.0, "Profiles");
-        this.Bt = clickGuiMainFrame;
+        this.mainFrame = clickGuiMainFrame;
         this.getClass();
-        this.Ba = new DoubleAnimation(0.15, 0.0, 1.0);
-        this.Bg = false;
-        this.BU = false;
-        this.B8 = this::lambda$new$0;
-        this.Bt.k(this.B8);
+        this.cardSelectionAnimation = new DoubleAnimation(0.15, 0.0, 1.0);
+        this.cardSelectionActive = false;
+        this.creatingProfile = false;
+        this.overlayCloseCallback = this::clearCardSelection;
+        this.mainFrame.addContentOverlayCallback(this.overlayCloseCallback);
         EventBus.getInstance().registerListener(this, new Predicate[0]);
-        this.Q$src$V$1ljblk0();
-        this.p$src$V$1m0d7y7();
+        this.renderSidebar();
+        this.renderMainContent();
     }
 
-    private void lambda$renderCreateProfileContent$3(char c, int n) {
-        this.s$src$V$1m20lqa();
+    private void handleNameInputChanged(char c, int n) {
+        this.updateCreateButtonState();
     }
 
-    private void d$src$V$1ltrotv() {
-        if (this.BB == null) {
+    private void refreshProfileList() {
+        if (this.profileList == null) {
             return;
         }
-        this.BB.S();
-        this.BB.h(new SpacerComponent(0.0, 1.0), new Object[0]);
+        this.profileList.removeMarkedChildren();
+        this.profileList.h(new SpacerComponent(0.0, 1.0), new Object[0]);
         Profile profile = Vape.INSTANCE.getProfilesManager().M();
-        if (this.BU && this.Bd != null) {
-            this.BF = new ClickGuiProfileCardComponent(this.Bd);
-            this.BF.o(this.BB.A());
-            this.BF.Y(20.0);
-            this.BF.g(false);
-            this.BF.j(false);
-            this.BF.v(true);
-            this.BF.X("New Profile");
-            this.BB.h(new PaddedComponent(0.0, 3.0, 0.0, 0.0, this.BF), new Object[0]);
+        if (this.creatingProfile && this.draftProfile != null) {
+            this.draftProfileCard = new ClickGuiProfileCardComponent(this.draftProfile);
+            this.draftProfileCard.o(this.profileList.A());
+            this.draftProfileCard.Y(20.0);
+            this.draftProfileCard.setActive(false);
+            this.draftProfileCard.setBadgeVisible(false);
+            this.draftProfileCard.setSelected(true);
+            this.draftProfileCard.setDisplayName("New Profile");
+            this.profileList.h(new PaddedComponent(0.0, 3.0, 0.0, 0.0, this.draftProfileCard), new Object[0]);
         } else {
-            this.BF = null;
+            this.draftProfileCard = null;
         }
         for (Profile profile2 : Vape.INSTANCE.getProfilesManager().b()) {
             ClickGuiProfileCardComponent clickGuiProfileCardComponent = new ClickGuiProfileCardComponent(profile2);
-            clickGuiProfileCardComponent.o(this.BB.A());
+            clickGuiProfileCardComponent.o(this.profileList.A());
             clickGuiProfileCardComponent.Y(20.0);
-            clickGuiProfileCardComponent.g(!this.BU && profile2 == profile);
-            clickGuiProfileCardComponent.e(this.BU);
-            clickGuiProfileCardComponent.f(() -> this.lambda$refreshProfilesList$6(profile2));
-            this.BB.h(new PaddedComponent(0.0, 3.0, 0.0, 0.0, clickGuiProfileCardComponent), new Object[0]);
+            clickGuiProfileCardComponent.setActive(!this.creatingProfile && profile2 == profile);
+            clickGuiProfileCardComponent.setDimmed(this.creatingProfile);
+            clickGuiProfileCardComponent.setSettingsAction(() -> this.handleProfileCardSettings(profile2));
+            this.profileList.h(new PaddedComponent(0.0, 3.0, 0.0, 0.0, clickGuiProfileCardComponent), new Object[0]);
         }
-        this.BB.l$src$V$1mibm4x();
+        this.profileList.l$src$V$1mibm4x();
     }
 
     @Override
     public void K() {
         super.K();
-        if (this.B8 != null) {
-            this.Bt.F(this.B8);
+        if (this.overlayCloseCallback != null) {
+            this.mainFrame.removeContentOverlayCallback(this.overlayCloseCallback);
         }
         EventBus.getInstance().unregisterListener(this);
     }

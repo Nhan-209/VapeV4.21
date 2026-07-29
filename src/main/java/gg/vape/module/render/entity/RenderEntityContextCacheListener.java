@@ -1,14 +1,10 @@
 package gg.vape.module.render.entity;
 
-import gg.vape.event.EventBus;
 import gg.vape.event.EventHandler;
 import gg.vape.event.EventListener;
-import gg.vape.event.EventListenerRegistration;
 import gg.vape.event.EventPriority;
-import gg.vape.event.IEvent;
 import gg.vape.event.impl.EventPreTick;
 import gg.vape.event.impl.EventWorldChange;
-import gg.vape.event.listener.EventTimingOverlayListener;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.render.entity.RenderEntityContext;
 import gg.vape.module.render.entity.RenderEntityContextCache;
@@ -16,83 +12,43 @@ import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.WorldClient;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
 
 public class RenderEntityContextCacheListener
 implements EventListener {
     private long tickCounter;
-    private int worldChangeCounter;
 
     @EventHandler
-    public void n(EventWorldChange eventWorldChange) {
-        String[] stringArray = EventTimingOverlayListener.s();
-        RenderEntityContextCache.u();
-        int n = 1344000;
-        String[] stringArray2 = stringArray;
-        int n2 = 143640;
-        int n3 = 280430;
-        if (this.worldChangeCounter > n / 56 && MappedClasses.x()[n2 / 7980] != MappedClasses.x()[n3 / 9670]) {
-            AtomicReference atomicReference = new AtomicReference();
-            EventBus eventBus = EventBus.getInstance();
-            Map<Class<? extends IEvent>, ArrayList<EventListenerRegistration>> map = eventBus.getRegistrationsByEventType();
-            int n4 = map.size();
-            ThreadLocalRandom threadLocalRandom = ThreadLocalRandom.current();
-            int n5 = threadLocalRandom.nextInt(n4);
-            AtomicInteger atomicInteger = new AtomicInteger();
-            EventBus eventBus2 = EventBus.getInstance();
-            BiConsumer<Class, ArrayList> biConsumer = (arg_0, arg_1) -> RenderEntityContextCacheListener.selectListenerAtIndex(atomicInteger, n5, atomicReference, arg_0, arg_1);
-            Map<Class<? extends IEvent>, ArrayList<EventListenerRegistration>> map2 = eventBus2.getRegistrationsByEventType();
-            map2.forEach(biConsumer);
-            AtomicReference atomicReference2 = atomicReference;
-            if (atomicReference2.get() != null) {
-                EventBus eventBus3 = EventBus.getInstance();
-                AtomicReference atomicReference3 = atomicReference;
-                Object selectedEventType = atomicReference3.get();
-                Map<Class<? extends IEvent>, ArrayList<EventListenerRegistration>> map3 = eventBus3.getRegistrationsByEventType();
-                map3.remove(selectedEventType);
-            }
-        }
-    }
-
-    private static void selectListenerAtIndex(AtomicInteger atomicInteger, int n, AtomicReference atomicReference, Class clazz, ArrayList arrayList) {
-        if (atomicInteger.getAndIncrement() == n) {
-            atomicReference.set(clazz);
-        }
+    public void onWorldChange(EventWorldChange event) {
+        RenderEntityContextCache.clear();
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void onTick(EventPreTick eventPreTick) {
-        EntityPlayerSP entityPlayerSP;
+    public void onTick(EventPreTick event) {
         ++this.tickCounter;
-        ++this.worldChangeCounter;
         if (this.tickCounter % 10L == 0L) {
-            RenderEntityContextCache.J();
+            RenderEntityContextCache.clearNameCaches();
         }
-        if ((entityPlayerSP = eventPreTick.getThePlayer()).isNull()) {
+        EntityPlayerSP viewer = event.getThePlayer();
+        if (viewer.isNull()) {
             return;
         }
-        WorldClient worldClient = eventPreTick.getWorld();
-        if (worldClient.isNull()) {
+        WorldClient world = event.getWorld();
+        if (world.isNull()) {
             return;
         }
-        LinkedHashSet<Integer> linkedHashSet = new LinkedHashSet<Integer>();
-        for (RenderEntityContext object : RenderEntityContextCache.E()) {
-            Entity entity = worldClient.V(object.U$src$I$1xrslp6());
+        LinkedHashSet<Integer> staleEntityIds = new LinkedHashSet<>();
+        for (RenderEntityContext context : RenderEntityContextCache.getContexts()) {
+            Entity entity = world.V(context.getEntityId());
             if (entity.isNull() || !entity.isInstance(MappedClasses.zm)) {
-                linkedHashSet.add(object.U$src$I$1xrslp6());
+                staleEntityIds.add(context.getEntityId());
                 continue;
             }
-            EntityLivingBase entityLivingBase = new EntityLivingBase(entity.getObject());
-            object.v(entityLivingBase, entityPlayerSP);
+            EntityLivingBase livingEntity = new EntityLivingBase(entity.getObject());
+            context.update(livingEntity, viewer);
         }
-        for (Integer n : linkedHashSet) {
-            RenderEntityContextCache.E(n);
+        for (Integer entityId : staleEntityIds) {
+            RenderEntityContextCache.remove(entityId);
         }
     }
 

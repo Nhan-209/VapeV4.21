@@ -24,15 +24,15 @@ extends GuiComponent {
     }
 
     @Override
-    public boolean j$src$Z$dapde9() {
+    public boolean isRemovable() {
         return false;
     }
 
     @Override
-    public void H(GuiComponent ... guiComponentArray) {
-        super.H(guiComponentArray);
+    public void addChildren(GuiComponent ... guiComponentArray) {
+        super.addChildren(guiComponentArray);
         for (GuiComponent guiComponent : guiComponentArray) {
-            guiComponent.w(this);
+            guiComponent.setParentHeader(this);
         }
     }
 
@@ -56,12 +56,12 @@ extends GuiComponent {
     }
 
     @Override
-    public void D(GuiMouseEvent guiMouseEvent) {
+    public void dispatchMouseEvent(GuiMouseEvent guiMouseEvent) {
         if (guiMouseEvent.getAction().equals((Object)MouseButton.RIGHT_CLICK) && this.b instanceof CollapsibleFrame && !(this.b instanceof ModuleSearchFrame)) {
             ((CollapsibleFrame)((Object)this.b)).w();
             return;
         }
-        super.D(guiMouseEvent);
+        super.dispatchMouseEvent(guiMouseEvent);
     }
 
     static {
@@ -84,10 +84,10 @@ extends GuiComponent {
 
     public boolean D(int n, int n2) {
         for (GuiComponent guiComponent : this.f()) {
-            if (!guiComponent.Q().J(n, n2)) continue;
+            if (!guiComponent.getBounds().J(n, n2)) continue;
             return false;
         }
-        return this.Q().J(n, n2);
+        return this.getBounds().J(n, n2);
     }
 }
 

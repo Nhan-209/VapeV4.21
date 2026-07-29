@@ -9,61 +9,32 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class ItemMacro
 extends Macro {
-    private static boolean initialized;
-
-    public static boolean isReady() {
-        boolean ready = ItemMacro.isInitialized();
-        return false;
-    }
-
-    public static void setInitialized(boolean value) {
-        initialized = value;
-    }
-
-    public ItemMacro(String string) {
-        super(string);
-    }
-
-    public static int k(ItemMacro itemMacro) {
-        return itemMacro.findSlot();
-    }
-
-    private static Exception b(Exception exception) {
-        return exception;
-    }
-
-    public static boolean isInitialized() {
-        return initialized;
-    }
-
-    static {
-        if (!ItemMacro.isInitialized()) {
-            ItemMacro.setInitialized(true);
-        }
+    public ItemMacro(String name) {
+        super(name);
     }
 
     @Override
-    public MacroAction N() {
-        int slot = this.findSlot();
-        if (slot == -1) {
+    public MacroAction createAction() {
+        int hotbarSlot = this.findHotbarSlot();
+        if (hotbarSlot == -1) {
             return null;
         }
         return new ItemMacroAction(this);
     }
 
-    private int findSlot() {
+    int findHotbarSlot() {
         try {
-            for (int i = 0; i < 9; ++i) {
-                ItemStack itemStack = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(i);
+            for (int hotbarSlot = 0; hotbarSlot < 9; ++hotbarSlot) {
+                ItemStack itemStack = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(hotbarSlot);
                 if (itemStack.getObject() == null || itemStack.getItem().getObject() == null) continue;
                 if (String.valueOf(Item.f(itemStack.getItem())).equals(this.getName())) {
-                    return i;
+                    return hotbarSlot;
                 }
                 if (!itemStack.x().equalsIgnoreCase(this.getName()) && !itemStack.getItem().getItemStackDisplayName(itemStack).equalsIgnoreCase(this.getName())) continue;
-                return i;
+                return hotbarSlot;
             }
         }
-        catch (Exception exception) {
+        catch (Exception ignored) {
             // empty catch block
         }
         return -1;

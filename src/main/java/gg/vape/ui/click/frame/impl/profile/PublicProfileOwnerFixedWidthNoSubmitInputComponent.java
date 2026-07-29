@@ -5,17 +5,15 @@ import gg.vape.ui.click.frame.impl.profile.PublicProfileOwnerDetailsPanel;
 
 class PublicProfileOwnerFixedWidthNoSubmitInputComponent
 extends TextInputComponentBase {
-    final double qb;
-    final PublicProfileOwnerDetailsPanel qV;
+    private final double fixedWidth;
 
-    PublicProfileOwnerFixedWidthNoSubmitInputComponent(PublicProfileOwnerDetailsPanel publicProfileOwnerDetailsPanel, String string, double d) {
-        super(string);
-        this.qV = publicProfileOwnerDetailsPanel;
-        this.qb = d;
+    PublicProfileOwnerFixedWidthNoSubmitInputComponent(String placeholder, double fixedWidth) {
+        super(placeholder);
+        this.fixedWidth = fixedWidth;
     }
 
     @Override
-    public void p() {
+    public void submit() {
     }
 
     @Override
@@ -25,6 +23,6 @@ extends TextInputComponentBase {
 
     @Override
     public double x() {
-        return this.qb;
+        return this.fixedWidth;
     }
 }

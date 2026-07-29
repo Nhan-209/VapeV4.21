@@ -17,103 +17,102 @@ import org.jetbrains.annotations.Nullable;
 
 public class ProfileSnapshotApplyBarComponent
 extends FlowLayoutComponent {
-    private final TextLabel Jz;
+    private final TextLabel actionLabel;
     @Nullable
-    private FrameStackManager JR;
-    private int Jm;
-    private float Ji = 6.0f;
-    private boolean JN;
-    private ProfileSnapshot J6;
+    private FrameStackManager returnStack;
+    private int affectedModuleCount;
+    private float leftPadding = 6.0f;
+    private boolean countAllModules;
+    private ProfileSnapshot snapshot;
 
-    public ProfileSnapshot v$src$Lgg_vape_config_ProfileSnapshot_$e3ok07() {
-        return this.J6;
+    public ProfileSnapshot getSnapshot() {
+        return this.snapshot;
     }
 
-    public void K(ProfileSnapshot profileSnapshot) {
-        this.J6 = profileSnapshot;
-        this.d$src$V$zcunh4();
-        this.Jz.Z(profileSnapshot != null);
+    public void setSnapshot(ProfileSnapshot snapshot) {
+        this.snapshot = snapshot;
+        this.refreshModuleCount();
+        this.actionLabel.setVisible(snapshot != null);
         this.l$src$V$1mibm4x();
     }
 
     @Nullable
-    public FrameStackManager Z$src$Lgg_vape_ui_click_frame_FrameStackManager_$5cq39t() {
-        return this.JR;
+    public FrameStackManager getReturnStack() {
+        return this.returnStack;
     }
 
-    private void d$src$V$zcunh4() {
-        if (this.J6 != null) {
-            this.Jm = this.J6.H(this.JN).size();
+    private void refreshModuleCount() {
+        if (this.snapshot != null) {
+            this.affectedModuleCount = this.snapshot.getModules(this.countAllModules).size();
         }
     }
 
-
-    private void lambda$null$0(ProfileSnapshotFrame profileSnapshotFrame) {
-        profileSnapshotFrame.s$src$V$txekt8();
-        this.d$src$V$zcunh4();
+    private void handleResetConfirmed(ProfileSnapshotFrame snapshotFrame) {
+        snapshotFrame.resetAllSettings();
+        this.refreshModuleCount();
     }
 
-    public void v(boolean bl) {
-        this.JN = bl;
-        this.Jm = this.J6.H(bl).size();
+    public void setCountAllModules(boolean countAllModules) {
+        this.countAllModules = countAllModules;
+        this.refreshModuleCount();
     }
 
-    public ProfileSnapshotApplyBarComponent(ProfileSnapshot profileSnapshot, double d, boolean bl) {
+    public ProfileSnapshotApplyBarComponent(ProfileSnapshot snapshot, double width, boolean resetAction) {
         super(110.0);
-        this.d(false);
-        PanelComponent panelComponent = new PanelComponent(d, 12.0);
-        this.H(new PaddedComponent(2.0, panelComponent));
-        this.Jz = new TextLabel(bl ? "Reset all" : "edit all", 0.75, false);
-        this.Jz.o(20.0);
-        this.Jz.Y(14.0);
-        panelComponent.h(this.Jz, "alignright");
-        panelComponent.d(false);
-        this.Jz.l(null);
-        this.Jz.r(() -> {
-            ProfileSnapshotFrame profileSnapshotFrame = ClientSettings.g(ProfileSnapshotFrame.class);
-            if (bl) {
-                ConfirmationDialogComponent.U(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), "Are you sure you want to reset all settings?", "Reset", "reset_circle", () -> this.lambda$null$0(profileSnapshotFrame));
+        this.setShowDisabledOverlay(false);
+        PanelComponent panelComponent = new PanelComponent(width, 12.0);
+        this.addChildren(new PaddedComponent(2.0, panelComponent));
+        this.actionLabel = new TextLabel(resetAction ? "Reset all" : "edit all", 0.75, false);
+        this.actionLabel.o(20.0);
+        this.actionLabel.Y(14.0);
+        panelComponent.h(this.actionLabel, "alignright");
+        panelComponent.setShowDisabledOverlay(false);
+        this.actionLabel.setTextColor(null);
+        this.actionLabel.addClickListener(() -> {
+            ProfileSnapshotFrame profileSnapshotFrame = ClientSettings.getFrame(ProfileSnapshotFrame.class);
+            if (resetAction) {
+                ConfirmationDialogComponent.showStandard(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), "Are you sure you want to reset all settings?", "Reset", "reset_circle", () -> this.handleResetConfirmed(profileSnapshotFrame));
             } else {
                 Profile profile = Vape.INSTANCE.getProfilesManager().o();
-                Profile profile2 = this.v$src$Lgg_vape_config_ProfileSnapshot_$e3ok07().d();
+                Profile snapshotProfile = this.getSnapshot().getProfile();
                 profile.a();
-                if (profile2 != null && profile2.equals(profile)) {
-                    this.K(profile2.n(false));
+                if (snapshotProfile != null && snapshotProfile.equals(profile)) {
+                    this.setSnapshot(snapshotProfile.n(false));
                 }
-                profileSnapshotFrame.V(this.v$src$Lgg_vape_config_ProfileSnapshot_$e3ok07());
-                if (ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v() instanceof ClickGuiFrameManager) {
-                    ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v();
-                    profileSnapshotFrame.A(clickGuiFrameManager);
-                    clickGuiFrameManager.K(profileSnapshotFrame);
+                profileSnapshotFrame.setSnapshot(this.getSnapshot());
+                if (ClientSettings.INSTANCE.getActiveStack() instanceof ClickGuiFrameManager) {
+                    ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)ClientSettings.INSTANCE.getActiveStack();
+                    profileSnapshotFrame.setReturnStack(clickGuiFrameManager);
+                    clickGuiFrameManager.setSidecarFrame(profileSnapshotFrame);
                 } else {
-                    profileSnapshotFrame.A(this.Z$src$Lgg_vape_ui_click_frame_FrameStackManager_$5cq39t());
-                    ClientSettings.fW.I(ClientSettings.fr);
+                    profileSnapshotFrame.setReturnStack(this.getReturnStack());
+                    ClientSettings.INSTANCE.switchFrameStack(ClientSettings.profileSnapshotStack);
                 }
             }
         });
-        this.K(profileSnapshot);
+        this.setSnapshot(snapshot);
     }
 
-    public void T(float f) {
-        this.Ji = f;
+    public void setLeftPadding(float leftPadding) {
+        this.leftPadding = leftPadding;
     }
 
     @Override
     public void c() {
         super.c();
-        SmoothFontRenderer smoothFontRenderer = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.8);
-        SmoothFontRenderer smoothFontRenderer2 = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.8);
-        double d = this.Jz.S$src$D$83wc3g() + 0.5;
-        if (this.JN) {
-            smoothFontRenderer.d(this.Jm + " ", this.G$src$D$1b2f02a() + (double)this.Ji, d, ProfileSnapshotApplyBarComponent.J.A);
-            smoothFontRenderer2.d("MODULES", this.G$src$D$1b2f02a() + (double)this.Ji + smoothFontRenderer.N(this.Jm + " "), d, ProfileSnapshotApplyBarComponent.J.h);
+        SmoothFontRenderer smoothFontRenderer = this.getAlternateFontRenderer(0.8);
+        SmoothFontRenderer smoothFontRenderer2 = this.getAlternateFontRenderer(0.8);
+        double textY = this.actionLabel.getTextY() + 0.5;
+        if (this.countAllModules) {
+            smoothFontRenderer.d(this.affectedModuleCount + " ", this.G$src$D$1b2f02a() + (double)this.leftPadding, textY, ProfileSnapshotApplyBarComponent.J.A);
+            smoothFontRenderer2.d("MODULES", this.G$src$D$1b2f02a() + (double)this.leftPadding + smoothFontRenderer.N(this.affectedModuleCount + " "), textY, ProfileSnapshotApplyBarComponent.J.h);
         } else {
-            smoothFontRenderer.d(this.Jm + " ", this.G$src$D$1b2f02a() + (double)this.Ji, d, ProfileSnapshotApplyBarComponent.J.A);
-            smoothFontRenderer2.d("AFFECTED MODULES", this.G$src$D$1b2f02a() + (double)this.Ji + smoothFontRenderer.N(this.Jm + " "), d, ProfileSnapshotApplyBarComponent.J.h);
+            smoothFontRenderer.d(this.affectedModuleCount + " ", this.G$src$D$1b2f02a() + (double)this.leftPadding, textY, ProfileSnapshotApplyBarComponent.J.A);
+            smoothFontRenderer2.d("AFFECTED MODULES", this.G$src$D$1b2f02a() + (double)this.leftPadding + smoothFontRenderer.N(this.affectedModuleCount + " "), textY, ProfileSnapshotApplyBarComponent.J.h);
         }
     }
 
-    public void M(@Nullable FrameStackManager frameStackManager) {
-        this.JR = frameStackManager;
+    public void setReturnStack(@Nullable FrameStackManager returnStack) {
+        this.returnStack = returnStack;
     }
 }

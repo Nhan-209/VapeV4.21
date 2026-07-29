@@ -4,29 +4,28 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 public class VertexArrayObject {
-    private int W = GL30.glGenVertexArrays();
-    private int y;
-    private static final long b;
+    private int vertexArrayId = GL30.glGenVertexArrays();
+    private int previousVertexArrayId;
+    private static final long VERTEX_ARRAY_BINDING_QUERY_SEED;
 
-    public int L() {
-        return this.W;
+    public int getVertexArrayId() {
+        return this.vertexArrayId;
     }
 
-    public void c() {
-        GL30.glDeleteVertexArrays((int)this.W);
+    public void delete() {
+        GL30.glDeleteVertexArrays((int)this.vertexArrayId);
     }
 
-    public void m() {
-        this.y = GL11.glGetInteger((int)((int)b));
-        GL30.glBindVertexArray((int)this.W);
+    public void bindAndRememberPrevious() {
+        this.previousVertexArrayId = GL11.glGetInteger((int)((int)VERTEX_ARRAY_BINDING_QUERY_SEED));
+        GL30.glBindVertexArray((int)this.vertexArrayId);
     }
 
-    public void X() {
-        GL30.glBindVertexArray((int)this.y);
+    public void restorePreviousBinding() {
+        GL30.glBindVertexArray((int)this.previousVertexArrayId);
     }
 
     static {
-        b = -614517057353906763L;
+        VERTEX_ARRAY_BINDING_QUERY_SEED = -614517057353906763L;
     }
 }
-

@@ -1,74 +1,62 @@
 package gg.vape.value;
 
 import com.google.gson.JsonObject;
-import gg.vape.config.ProfileSnapshot;
 import gg.vape.value.Value;
 import java.util.Arrays;
 import java.util.Objects;
 
 public class ValueSnapshot<T extends Value<R, ?>, R> {
-    private final ProfileSnapshot J;
-    private final T E;
-    private R b;
+    private final T sourceValue;
+    private R value;
 
-    public boolean h() {
-        return this.x();
-    }
-
-    public void s(Object object) {
+    public void setValue(Object object) {
         if (object instanceof Object[]) {
-            this.b = (R)Arrays.copyOf((Object[])object, ((Object[])object).length);
+            this.value = (R)Arrays.copyOf((Object[])object, ((Object[])object).length);
             return;
         }
-        this.b = (R)object;
+        this.value = (R)object;
     }
 
-    public R J() {
-        return this.b;
+    public R getValue() {
+        return this.value;
     }
 
-    public ProfileSnapshot m() {
-        return this.J;
-    }
-
-    public boolean x() {
-        R k = this.E.P$src$Ljava_lang_Object_$qcpui1();
-        if (k instanceof Object[]) {
-            return Arrays.equals((Object[])k, (Object[])this.b);
+    public boolean isDefault() {
+        R defaultValue = this.sourceValue.getDefaultValue();
+        if (defaultValue instanceof Object[]) {
+            return Arrays.equals((Object[])defaultValue, (Object[])this.value);
         }
-        if (k instanceof double[]) {
-            return Arrays.equals((double[])k, (double[])this.b);
+        if (defaultValue instanceof double[]) {
+            return Arrays.equals((double[])defaultValue, (double[])this.value);
         }
-        return Objects.equals(k, this.b);
+        return Objects.equals(defaultValue, this.value);
     }
 
-    public T W() {
-        return this.E;
+    public T getSourceValue() {
+        return this.sourceValue;
     }
 
-    public void j(JsonObject jsonObject) {
-        this.E.f(true);
-        R k = this.E.m();
-        this.E.S();
-        if (this.E.loadJson(jsonObject)) {
-            this.b = this.E.m();
+    public void loadJson(JsonObject jsonObject) {
+        this.sourceValue.setPersistenceSuppressed(true);
+        R originalValue = this.sourceValue.getValueCompat();
+        this.sourceValue.reset();
+        if (this.sourceValue.loadJson(jsonObject)) {
+            this.value = this.sourceValue.getValueCompat();
         }
-        this.E.o(k);
-        this.E.f(false);
+        this.sourceValue.setValue(originalValue);
+        this.sourceValue.setPersistenceSuppressed(false);
     }
 
-
-    public ValueSnapshot(ProfileSnapshot profileSnapshot, T t) {
-        this.J = profileSnapshot;
-        this.E = t;
-        this.b = t.P$src$Ljava_lang_Object_$qcpui1();
+    public ValueSnapshot(T sourceValue) {
+        this.sourceValue = sourceValue;
+        this.value = sourceValue.getDefaultValue();
     }
 
-    public JsonObject I() {
-        R k = this.E.m();
-        this.E.o(this.J());
-        JsonObject jsonObject = this.E.H(false);
-        this.E.o(k);
+    public JsonObject toJson() {
+        R originalValue = this.sourceValue.getValueCompat();
+        this.sourceValue.setValue(this.getValue());
+        JsonObject jsonObject = this.sourceValue.toJson(false);
+        this.sourceValue.setValue(originalValue);
         return jsonObject;
     }
 }

@@ -44,7 +44,7 @@ implements CollapsibleFrame {
             if (!mod.getCategory().equals(this.Hp) || mod.J$src$Lgg_vape_module_ModuleDisplayScope_$1w905sh() == ModuleDisplayScope.STANDALONE_ONLY) continue;
             ModuleComponent moduleComponent = new ModuleComponent(this, mod);
             this.h(moduleComponent, new Object[0]);
-            moduleComponent.d$src$V$m6rlha();
+            moduleComponent.buildValueComponents();
         }
     }
 
@@ -65,20 +65,20 @@ implements CollapsibleFrame {
         int n = 0;
         for (GuiComponent guiComponent : this.f()) {
             if (guiComponent instanceof ModuleComponent) {
-                boolean bl = ((ModuleComponent)guiComponent).N$src$Lgg_vape_module_Mod_$rb0ew8().O();
-                ((ModuleComponent)guiComponent).m(false);
+                boolean bl = ((ModuleComponent)guiComponent).getModule().O();
+                ((ModuleComponent)guiComponent).setExpanded(false);
                 if (!bl) {
                     ++n;
                 }
-                if (ClientSettings.Y) {
-                    guiComponent.Z(true);
+                if (ClientSettings.moduleSearchActive) {
+                    guiComponent.setVisible(true);
                     continue;
                 }
-                guiComponent.Z(bl);
+                guiComponent.setVisible(bl);
                 continue;
             }
             if (guiComponent instanceof FrameHeaderComponent) continue;
-            guiComponent.Z(false);
+            guiComponent.setVisible(false);
         }
         this.P$src$V$i0cha4();
         return n;
@@ -101,7 +101,7 @@ implements CollapsibleFrame {
 
     public ModuleComponent W(Mod mod) {
         for (GuiComponent guiComponent : this.f()) {
-            if (!(guiComponent instanceof ModuleComponent) || !((ModuleComponent)guiComponent).N$src$Lgg_vape_module_Mod_$rb0ew8().equals(mod)) continue;
+            if (!(guiComponent instanceof ModuleComponent) || !((ModuleComponent)guiComponent).getModule().equals(mod)) continue;
             return (ModuleComponent)guiComponent;
         }
         return null;
@@ -118,13 +118,13 @@ implements CollapsibleFrame {
         if (category.equals(Category.b)) {
             return;
         }
-        this.T(ModuleCategoryFrame.J.i);
+        this.setDisabledOverlayColor(ModuleCategoryFrame.J.i);
         this.K(200.0);
         this.S(100.0);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(fb);
         this.s$src$V$1a2f6mi();
-        this.Z(false);
+        this.setVisible(false);
     }
 
     public Category G$src$Lgg_vape_module_Category_$qyt4o7() {

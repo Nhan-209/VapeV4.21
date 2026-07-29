@@ -5,56 +5,56 @@ import gg.vape.ui.click.component.SpacerComponent;
 
 public class SplitPanelComponent
 extends PanelComponent {
-    private final PanelComponent GC;
-    private static final String jb = "widthwrap";
-    private final PanelComponent Gp;
+    private final PanelComponent rightPanel;
+    private static final String WIDTH_WRAP_LAYOUT = "widthwrap";
+    private final PanelComponent leftPanel;
 
     @Override
-    public void o(double d) {
-        super.o(d);
-        this.j$src$V$aeemu9();
+    public void o(double width) {
+        super.o(width);
+        this.updatePanelWidths();
     }
 
-    private void j$src$V$aeemu9() {
-        if (this.Gp == null || this.GC == null) {
+    private void updatePanelWidths() {
+        if (this.leftPanel == null || this.rightPanel == null) {
             return;
         }
-        this.Gp.o(this.A() / 3.0);
-        this.Gp.q(this.A() / 3.0);
-        this.GC.q(this.A() - this.Gp.A() - 10.0);
+        this.leftPanel.o(this.A() / 3.0);
+        this.leftPanel.setExplicitWidth(this.A() / 3.0);
+        this.rightPanel.setExplicitWidth(this.A() - this.leftPanel.A() - 10.0);
     }
 
     @Override
-    public void Y(double d) {
-        super.Y(d);
-        this.W();
+    public void Y(double height) {
+        super.Y(height);
+        this.updatePanelHeights();
     }
 
-    public PanelComponent K$src$Lgg_vape_ui_click_component_PanelComponent_$111vavy() {
-        return this.GC;
+    public PanelComponent getRightPanel() {
+        return this.rightPanel;
     }
 
-    private void W() {
-        if (this.Gp == null || this.GC == null) {
+    private void updatePanelHeights() {
+        if (this.leftPanel == null || this.rightPanel == null) {
             return;
         }
-        this.Gp.Y(this.L());
-        this.Gp.u(this.L());
-        this.GC.Y(this.L());
-        this.GC.u(this.L());
+        this.leftPanel.Y(this.L());
+        this.leftPanel.setExplicitHeight(this.L());
+        this.rightPanel.Y(this.L());
+        this.rightPanel.setExplicitHeight(this.L());
     }
 
 
-    public SplitPanelComponent(double d, double d2, PanelComponent panelComponent, PanelComponent panelComponent2) {
-        super(d, d2);
-        this.Gp = panelComponent;
-        this.GC = panelComponent2;
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(jb);
-        this.H(this.Gp, new SpacerComponent(10.0, 1.0), this.GC);
+    public SplitPanelComponent(double width, double height, PanelComponent leftPanel, PanelComponent rightPanel) {
+        super(width, height);
+        this.leftPanel = leftPanel;
+        this.rightPanel = rightPanel;
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(WIDTH_WRAP_LAYOUT);
+        this.addChildren(this.leftPanel, new SpacerComponent(10.0, 1.0), this.rightPanel);
     }
 
-    public PanelComponent X$src$Lgg_vape_ui_click_component_PanelComponent_$ylzx2j() {
-        return this.Gp;
+    public PanelComponent getLeftPanel() {
+        return this.leftPanel;
     }
 
     @Override

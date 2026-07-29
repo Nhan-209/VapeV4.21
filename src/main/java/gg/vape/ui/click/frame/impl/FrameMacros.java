@@ -26,33 +26,33 @@ EventListener {
     private FrameMacrosEditor jg;
 
     @Override
-    public void D(GuiMouseEvent guiMouseEvent) {
+    public void dispatchMouseEvent(GuiMouseEvent guiMouseEvent) {
         if (this.jg != null) {
-            this.jg.D(guiMouseEvent);
+            this.jg.dispatchMouseEvent(guiMouseEvent);
             return;
         }
-        super.D(guiMouseEvent);
+        super.dispatchMouseEvent(guiMouseEvent);
     }
 
     private void o$src$V$ezev80() {
         for (GuiComponent guiComponent : this.f()) {
             if (guiComponent instanceof FrameHeaderComponent) continue;
-            guiComponent.Z(this.jm);
+            guiComponent.setVisible(this.jm);
         }
         this.l$src$V$1mibm4x();
     }
 
 
     public FrameMacros() {
-        this.T(FrameMacros.J.i);
+        this.setDisabledOverlayColor(FrameMacros.J.i);
         this.K(300.0);
         this.S(100.0);
         this.jm = true;
-        this.Z(false);
+        this.setVisible(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.Y(new CloseableFrameHeaderComponent(this, "newmacros", "Macros"));
-        this.H(new FrameMacrosAddMacroInputComponent(this));
+        this.addChildren(new FrameMacrosAddMacroInputComponent(this));
         jo = this;
         EventBus.getInstance().registerListener(this, new Predicate[0]);
     }
@@ -73,7 +73,7 @@ EventListener {
     }
 
     public void v(Macro macro) {
-        this.H(new FrameMacrosEditor(this, macro));
+        this.addChildren(new FrameMacrosEditor(this, macro));
     }
 
     @Override
@@ -95,7 +95,7 @@ EventListener {
             if (d > 0.0) {
                 this.b(this.J$src$D$hx1pag() - d);
             }
-            GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), Math.min(this.L(), this.d$src$D$ibccpu()), ColorUtil.W(this.d(), 100));
+            GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), Math.min(this.L(), this.d$src$D$ibccpu()), ColorUtil.withAlpha(this.getDisabledOverlayColor(), 100));
             this.jg.c();
         }
     }
@@ -115,7 +115,7 @@ EventListener {
     public void Z(Macro macro) {
         for (GuiComponent guiComponent : this.f()) {
             if (!(guiComponent instanceof FrameMacrosEditor) || !((FrameMacrosEditor)guiComponent).z().getName().equals(macro.getName())) continue;
-            this.I(guiComponent);
+            this.removeChild(guiComponent);
         }
     }
 

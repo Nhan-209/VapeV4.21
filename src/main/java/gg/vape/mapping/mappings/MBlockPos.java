@@ -205,7 +205,7 @@ extends Mapping {
             MBlockPos mBlockPos18 = this;
             this.a = this.Y(string18, bl18, clazz18, classArray18);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             BlockData.y(new String[2]);
         }
     }

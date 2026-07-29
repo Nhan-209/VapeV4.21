@@ -18,34 +18,33 @@ implements BlockPathSearchStrategy<PlacementTarget> {
     final World world;
     final Clutch clutch;
     final EntityPlayerSP player;
-    final HashSet allowedBlocks;
-    final HashSet excludedBlocks;
+    final HashSet<BlockData> allowedBlocks;
+    final HashSet<BlockData> excludedBlocks;
     final BlockPlacementNode node;
 
 
     @Override
-    public int t(Vector<PlacementTarget> vector) {
-        return Clutch.F(this.clutch, this.world, vector);
+    public int scorePath(Vector<PlacementTarget> path) {
+        return path.size();
     }
 
-    public ClutchBlockPlacementPathSearchStrategy(Clutch clutch, HashSet hashSet, BlockPlacementNode blockPlacementNode, World world, EntityPlayerSP entityPlayerSP, HashSet hashSet2) {
+    public ClutchBlockPlacementPathSearchStrategy(Clutch clutch, HashSet<BlockData> excludedBlocks, BlockPlacementNode node, World world, EntityPlayerSP player, HashSet<BlockData> allowedBlocks) {
         this.clutch = clutch;
-        this.excludedBlocks = hashSet;
-        this.node = blockPlacementNode;
+        this.excludedBlocks = excludedBlocks;
+        this.node = node;
         this.world = world;
-        this.player = entityPlayerSP;
-        this.allowedBlocks = hashSet2;
+        this.player = player;
+        this.allowedBlocks = allowedBlocks;
     }
 
     @Override
-    public boolean B(BlockData blockData) {
+    public boolean isValidBlock(BlockData blockData) {
         if (this.allowedBlocks.contains(blockData)) {
             return true;
         }
         Block block = this.world.getBlockByPos(blockData.D(), blockData.B(), blockData.G());
-        boolean isPlaceable = BlockUtil.k(block) && !ClutchPlacementPathUtils.e(block);
-        boolean result = isPlaceable;
-        return result;
+        boolean isPlaceable = BlockUtil.k(block) && !ClutchPlacementPathUtils.isBlacklistedPlacementBlock(block);
+        return isPlaceable;
     }
 
     /*
@@ -53,15 +52,15 @@ implements BlockPathSearchStrategy<PlacementTarget> {
      * Lifted jumps to return sites
      */
     @Override
-    public boolean V(BlockData blockData) {
+    public boolean canVisit(BlockData blockData) {
         if (this.excludedBlocks.contains(blockData)) return false;
-        if (this.node.Y.contains(blockData)) return false;
-        if (!ClutchPlacementPathUtils.V(this.world, this.player, blockData)) return false;
+        if (this.node.occupiedBlocks.contains(blockData)) return false;
+        if (!ClutchPlacementPathUtils.isPlacementSpaceClear(this.world, this.player, blockData)) return false;
         return true;
     }
 
     @Override
-    public int w() {
+    public int getMaxDepth() {
         return 2;
     }
 }

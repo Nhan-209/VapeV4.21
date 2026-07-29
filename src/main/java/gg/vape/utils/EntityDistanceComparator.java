@@ -8,12 +8,12 @@ import java.util.Comparator;
 public class EntityDistanceComparator
 implements Comparator<Entity> {
     @Override
-    public int compare(Entity entity, Entity entity2) {
-        return this.e(entity, entity2);
+    public int compare(Entity firstEntity, Entity secondEntity) {
+        return this.compareByDistance(firstEntity, secondEntity);
     }
 
-    public int e(Entity entity, Entity entity2) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        return Float.compare(entityPlayerSP.getDistanceToEntity(entity), entityPlayerSP.getDistanceToEntity(entity2));
+    public int compareByDistance(Entity firstEntity, Entity secondEntity) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        return Float.compare(player.getDistanceToEntity(firstEntity), player.getDistanceToEntity(secondEntity));
     }
 }

@@ -57,7 +57,7 @@ extends HighlightTutorialAction {
             this.B().addAll(arrayList);
         }
         if (this.V()) {
-            this.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().Z(false);
+            this.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().setVisible(false);
             MultiComponentHighlightAdvanceClickListener multiComponentHighlightAdvanceClickListener = new MultiComponentHighlightAdvanceClickListener(this);
             for (GuiComponent guiComponent : this.B()) {
                 this.H(guiComponent, multiComponentHighlightAdvanceClickListener);

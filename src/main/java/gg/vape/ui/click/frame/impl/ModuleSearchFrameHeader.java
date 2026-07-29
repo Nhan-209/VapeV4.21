@@ -30,7 +30,7 @@ extends FrameHeaderComponent {
 
     public void K$src$V$10w6uwu() {
         this.I.G(null);
-        ClientSettings.g(ModuleSearchFrame.class).D(this.K.i$src$Ljava_lang_String_$1n2xf3k());
+        ClientSettings.getFrame(ModuleSearchFrame.class).D(this.K.getText());
     }
 
     @Override
@@ -39,11 +39,11 @@ extends FrameHeaderComponent {
     }
 
     public void l$src$V$11ec2hr() {
-        List<GuiComponent> list = ClientSettings.g(ModuleSearchFrame.class).f();
+        List<GuiComponent> list = ClientSettings.getFrame(ModuleSearchFrame.class).f();
         for (GuiComponent guiComponent : list) {
             if (!(guiComponent instanceof ModuleComponent)) continue;
             ModuleComponent moduleComponent = (ModuleComponent)guiComponent;
-            moduleComponent.l$src$V$mb5y86();
+            moduleComponent.collapseValueComponents();
         }
     }
 
@@ -61,7 +61,7 @@ extends FrameHeaderComponent {
     }
 
     private void lambda$new$0() {
-        ClientSettings.fT = this.K;
+        ClientSettings.activeComponent = this.K;
     }
 
     @Override
@@ -80,20 +80,20 @@ extends FrameHeaderComponent {
         this.R = new SquareIconButtonComponent("newclose");
         this.K = new ModuleSearchInputComponent(this);
         this.I = moduleSearchFrame;
-        this.o(true);
-        this.G.r(this::lambda$new$0);
-        this.R.r(this::lambda$new$1);
-        this.K.s(new ModuleSearchFrameHeaderRefreshListener(this));
-        this.v.r(this::lambda$new$2);
+        this.setPropagateMouseEvents(true);
+        this.G.addClickListener(this::lambda$new$0);
+        this.R.addClickListener(this::lambda$new$1);
+        this.K.addRefreshListener(new ModuleSearchFrameHeaderRefreshListener(this));
+        this.v.addClickListener(this::lambda$new$2);
         ModuleNameSuggestionProvider moduleNameSuggestionProvider = new ModuleNameSuggestionProvider(true);
         moduleNameSuggestionProvider.setComparator(null);
-        this.K.E(moduleNameSuggestionProvider);
-        this.H(this.G, this.R, this.K, this.v);
+        this.K.setSuggestionProvider(moduleNameSuggestionProvider);
+        this.addChildren(this.G, this.R, this.K, this.v);
     }
 
     public void s() {
         this.l$src$V$11ec2hr();
-        this.K.k("");
+        this.K.setText("");
         this.K$src$V$10w6uwu();
     }
 
@@ -104,26 +104,26 @@ extends FrameHeaderComponent {
     @Override
     public void H() {
         this.I.p();
-        boolean bl = ((ModeSelection)ClientSettings.fW.fz.K()).equals(ClientSettings.fW.c);
+        boolean bl = ((ModeSelection)ClientSettings.INSTANCE.searchBarStyle.getValue()).equals(ClientSettings.INSTANCE.floatingSearchBarMode);
         if (bl) {
-            if (ClientSettings.fW.O.L().booleanValue()) {
-                this.v.Z(true);
+            if (ClientSettings.INSTANCE.showLegitMode.getEffectiveValue().booleanValue()) {
+                this.v.setVisible(true);
                 this.v.K(this.G$src$D$1b2f02a() + 3.0);
                 this.v.S(this.n() + 1.0);
                 this.v.o(18.0);
                 this.v.Y(this.L());
-                this.v.W(true);
-                this.v.d(true);
-                this.v.T(Color.RED);
+                this.v.setUseExplicitHeight(true);
+                this.v.setShowDisabledOverlay(true);
+                this.v.setDisabledOverlayColor(Color.RED);
                 if (this.v.w$src$Z$e457mb()) {
-                    this.v.G(J.z().brighter());
+                    this.v.setOverrideColor(J.z().brighter());
                 } else {
-                    this.v.G(J.z());
+                    this.v.setOverrideColor(J.z());
                 }
             } else {
-                this.v.Z(false);
+                this.v.setVisible(false);
             }
-            this.K.W(true);
+            this.K.setUseExplicitHeight(true);
             double d = this.G$src$D$1b2f02a() + 6.0;
             if (this.v.V$src$Z$1xhop3l()) {
                 d = this.v.G$src$D$1b2f02a() + this.v.A() + 4.0;
@@ -133,45 +133,45 @@ extends FrameHeaderComponent {
             this.K.S(this.n());
             this.K.o(this.v.V$src$Z$1xhop3l() ? this.A() - this.v.A() - this.R.A() - 4.0 : this.A() - this.R.A() - 3.0);
             this.K.Y(this.L());
-            if (!this.K.i$src$Ljava_lang_String_$1n2xf3k().isEmpty()) {
-                this.G.Z(false);
-                this.R.Z(true);
+            if (!this.K.getText().isEmpty()) {
+                this.G.setVisible(false);
+                this.R.setVisible(true);
                 this.R.K(this.G$src$D$1b2f02a() + this.A() - 13.0);
                 this.R.S(this.n() + 1.0);
                 this.R.o(10.0);
                 this.R.Y(this.L());
             } else {
-                this.R.Z(false);
-                this.G.Z(true);
+                this.R.setVisible(false);
+                this.G.setVisible(true);
                 this.G.K(this.G$src$D$1b2f02a() + this.A() - 14.0);
                 this.G.S(this.n() + 0.5);
                 this.G.o(10.0);
                 this.G.Y(this.L());
             }
-            this.K.Z(true);
+            this.K.setVisible(true);
             this.o(110.0);
-            this.q(110.0);
-            this.P(true);
+            this.setExplicitWidth(110.0);
+            this.setUseExplicitWidth(true);
             return;
         }
-        if (ClientSettings.fW.O.L().booleanValue()) {
-            this.v.Z(true);
+        if (ClientSettings.INSTANCE.showLegitMode.getEffectiveValue().booleanValue()) {
+            this.v.setVisible(true);
             this.v.K(this.G$src$D$1b2f02a() + 3.0);
             this.v.S(this.n() + 1.0);
             this.v.o(18.0);
             this.v.Y(this.L());
-            this.v.W(true);
-            this.v.d(true);
-            this.v.T(Color.RED);
+            this.v.setUseExplicitHeight(true);
+            this.v.setShowDisabledOverlay(true);
+            this.v.setDisabledOverlayColor(Color.RED);
             if (this.v.w$src$Z$e457mb()) {
-                this.v.G(J.z().brighter());
+                this.v.setOverrideColor(J.z().brighter());
             } else {
-                this.v.G(J.z());
+                this.v.setOverrideColor(J.z());
             }
         } else {
-            this.v.Z(false);
+            this.v.setVisible(false);
         }
-        this.K.W(true);
+        this.K.setUseExplicitHeight(true);
         double d = this.G$src$D$1b2f02a() + 6.0;
         if (this.v.V$src$Z$1xhop3l()) {
             // empty if block
@@ -180,30 +180,30 @@ extends FrameHeaderComponent {
         this.K.S(this.n());
         this.K.o(this.v.V$src$Z$1xhop3l() ? this.A() - this.v.A() - this.R.A() - 4.0 : this.A() - this.R.A() - 3.0);
         this.K.Y(this.L());
-        if (!this.K.i$src$Ljava_lang_String_$1n2xf3k().isEmpty()) {
-            this.G.Z(false);
-            this.R.Z(true);
+        if (!this.K.getText().isEmpty()) {
+            this.G.setVisible(false);
+            this.R.setVisible(true);
             this.R.K(this.G$src$D$1b2f02a() + this.A() - 13.0);
             this.R.S(this.n() + 1.0);
             this.R.o(10.0);
             this.R.Y(this.L());
         } else {
-            this.R.Z(false);
-            this.G.Z(true);
+            this.R.setVisible(false);
+            this.G.setVisible(true);
             this.G.K(this.G$src$D$1b2f02a() + this.A() - 14.0);
             this.G.S(this.n() + 0.5);
             this.G.o(10.0);
             this.G.Y(this.L());
         }
         boolean bl2 = this.K.V$src$Z$1xhop3l();
-        this.K.Z(false);
-        this.G.Z(false);
+        this.K.setVisible(false);
+        this.G.setVisible(false);
         if (bl2) {
             this.s();
         }
         this.o(22.0);
-        this.q(22.0);
-        this.P(true);
+        this.setExplicitWidth(22.0);
+        this.setUseExplicitWidth(true);
     }
 
     public ModuleSearchInputComponent A$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1efzz7n() {
@@ -215,14 +215,13 @@ extends FrameHeaderComponent {
     }
 
     private void lambda$new$2() {
-        this.K.k("");
+        this.K.setText("");
         this.K$src$V$10w6uwu();
-        if (HudModuleSelectorFrame.W_) {
-            ClientSettings.g(HudModuleOverviewListFrame.class).w$src$V$1pyk8v9();
+        if (HudModuleSelectorFrame.overviewVisible) {
+            ClientSettings.getFrame(HudModuleOverviewListFrame.class).refreshFavorites();
         } else {
-            ClientSettings.g(HudModuleListPanel.class).N$src$V$wrn2a4();
+            ClientSettings.getFrame(HudModuleListPanel.class).refreshModules();
         }
-        ClientSettings.fW.I(ClientSettings.t);
+        ClientSettings.INSTANCE.switchFrameStack(ClientSettings.hudEditorStack);
     }
 }
-

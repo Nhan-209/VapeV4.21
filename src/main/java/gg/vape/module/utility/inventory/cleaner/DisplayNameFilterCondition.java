@@ -10,11 +10,12 @@ import java.util.List;
 public class DisplayNameFilterCondition
 extends AbstractTextFilterCondition<DisplayNameFilterCondition> {
     @Override
-    public DisplayNameFilterCondition H() {
-        return this.E();
+    public DisplayNameFilterCondition copy() {
+        return new DisplayNameFilterCondition(this.getTexts(), this.getMatchMode());
     }
+
     @Override
-    public InventoryFilterConditionType K() {
+    public InventoryFilterConditionType getType() {
         return InventoryFilterConditionType.DISPLAY_NAME;
     }
 
@@ -27,17 +28,12 @@ extends AbstractTextFilterCondition<DisplayNameFilterCondition> {
     }
 
 
-    public DisplayNameFilterCondition E() {
-        return new DisplayNameFilterCondition(this.M$src$Ljava_util_List_$bgq9xa(), this.M());
-    }
-
-    @Override
-    public boolean g(ItemStack itemStack) {
+    public boolean matches(ItemStack itemStack) {
         if (itemStack.isNull()) {
             return false;
         }
         String string = itemStack.x();
-        return this.M().M(string, this.M$src$Ljava_util_List_$bgq9xa());
+        return this.getMatchMode().matchesAny(string, this.getTexts());
     }
 
     public DisplayNameFilterCondition() {

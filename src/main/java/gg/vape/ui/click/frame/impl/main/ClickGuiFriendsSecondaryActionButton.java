@@ -9,18 +9,18 @@ import gg.vape.utils.render.ImageRenderer;
 
 final class ClickGuiFriendsSecondaryActionButton
 extends InteractiveComponent {
-    private final ColorAnimation b;
-    private final String Q;
-    private boolean K;
-    final ClickGuiFriendsFriendListComponent v;
+    private final ColorAnimation colorAnimation;
+    private final String iconKey;
+    private boolean notificationDotVisible;
+    final ClickGuiFriendsFriendListComponent owner;
 
     @Override
     public void H() {
-        this.b.u(this.w$src$Z$e457mb());
+        this.colorAnimation.u(this.w$src$Z$e457mb());
         double d = this.G$src$D$1b2f02a() + (this.A() - 6.0) / 2.0;
         double d2 = this.n() + (this.L() - 6.0) / 2.0;
-        ImageRenderer.E(this.b.getInterpolatedColor(), (float)d, (float)d2, this.Q, 6.0f, 6.0f, false);
-        if (this.K) {
+        ImageRenderer.drawImage(this.colorAnimation.getInterpolatedColor(), (float)d, (float)d2, this.iconKey, 6.0f, 6.0f, false);
+        if (this.notificationDotVisible) {
             double d3 = 3.0;
             double d4 = this.G$src$D$1b2f02a() + this.A() - 3.0;
             double d5 = this.n() + 1.0;
@@ -32,8 +32,8 @@ extends InteractiveComponent {
         this(clickGuiFriendsFriendListComponent, string);
     }
 
-    private void h(boolean bl) {
-        this.K = bl;
+    void setNotificationDotVisible(boolean visible) {
+        this.notificationDotVisible = visible;
     }
 
     @Override
@@ -41,15 +41,11 @@ extends InteractiveComponent {
         return 10.0;
     }
 
-    static void y(ClickGuiFriendsSecondaryActionButton clickGuiFriendsSecondaryActionButton, boolean bl) {
-        clickGuiFriendsSecondaryActionButton.h(bl);
-    }
-
     private ClickGuiFriendsSecondaryActionButton(ClickGuiFriendsFriendListComponent clickGuiFriendsFriendListComponent, String string) {
-        this.v = clickGuiFriendsFriendListComponent;
-        this.b = new ColorAnimation(0.15, ClickGuiFriendsSecondaryActionButton.J.W, ClickGuiFriendsSecondaryActionButton.J.f);
-        this.Q = string;
-        this.d(false);
+        this.owner = clickGuiFriendsFriendListComponent;
+        this.colorAnimation = new ColorAnimation(0.15, ClickGuiFriendsSecondaryActionButton.J.W, ClickGuiFriendsSecondaryActionButton.J.f);
+        this.iconKey = string;
+        this.setShowDisabledOverlay(false);
     }
 
     @Override
@@ -57,4 +53,3 @@ extends InteractiveComponent {
         return 10.0;
     }
 }
-

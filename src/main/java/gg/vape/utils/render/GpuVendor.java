@@ -6,15 +6,14 @@ public enum GpuVendor {
     INTEL,
     UNKNOWN;
 
-    private static final /* synthetic */ GpuVendor[] V;
+    private static final /* synthetic */ GpuVendor[] VALUES;
 
     static {
-        String[] stringArray = new String[]{"UNKNOWN", "NVIDIA", "AMD", "INTEL"};
+        String[] legacyEnumNames = new String[]{"UNKNOWN", "NVIDIA", "AMD", "INTEL"};
 
 
 
 
-        V = new GpuVendor[]{NVIDIA, AMD, INTEL, UNKNOWN};
+        VALUES = new GpuVendor[]{NVIDIA, AMD, INTEL, UNKNOWN};
     }
 }
-

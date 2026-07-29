@@ -18,145 +18,145 @@ import java.math.RoundingMode;
 
 public class ColorPaletteSliderComponent
 extends SliderComponentBase {
-    private double hQ;
-    private boolean hY;
-    private Color R;
-    private boolean hN;
-    private double hD = 0.0;
-    private double hu = 0.0;
-    private int hr;
-    private double O = 1.0;
-    private ColorAnimation hH;
-    private boolean K;
-    private ColorValue hE;
-    private boolean a;
-    protected RectData v;
-    private double hi;
-    private double hK = 0.75;
-    protected int h3;
-    private Color[] h2;
-    private DoubleAnimation hA;
-    protected DoubleAnimation ho = new DoubleAnimation(0.15, 7.0, 8.0);
+    private double maximumPaletteValue;
+    private boolean hovered;
+    private Color labelColor;
+    private boolean separatedSegments;
+    private double labelWidth = 0.0;
+    private double minimumPaletteValue = 0.0;
+    private int previousSelectedIndex;
+    private double step = 1.0;
+    private ColorAnimation handleColorAnimation;
+    private boolean forceCustomColor;
+    private ColorValue colorValue;
+    private boolean initialized;
+    protected RectData handleBounds;
+    private double valuePerPercent;
+    private double fontScale = 0.75;
+    protected int selectedIndex;
+    private Color[] paletteColors;
+    private DoubleAnimation handlePositionAnimation;
+    protected DoubleAnimation handleHoverAnimation = new DoubleAnimation(0.15, 7.0, 8.0);
 
-    public ColorValue Z$src$Lgg_vape_value_ColorValue_$1er4i1l() {
-        return this.hE;
+    public ColorValue getColorValue() {
+        return this.colorValue;
     }
 
-    public DoubleAnimation I$src$Lgg_vape_ui_click_animation_DoubleAnimation_$f0r39g() {
-        return this.hA;
+    public DoubleAnimation getHandlePositionAnimation() {
+        return this.handlePositionAnimation;
     }
 
-    public void v() {
-        double d = this.A() - 10.0 - (double)this.h2.length * 0.5;
-        double d2 = d / (double)this.h2.length;
-        double d3 = this.X$src$D$1ej56qc() - 1.0;
-        double d4 = (double)this.h3 / d3;
-        d = this.A() - 10.0 - (double)(this.hN ? 2 : 0);
-        double d5 = 5.0 + d * d4;
-        double d6 = this.hA.getInterpolatedValue();
-        this.hA = new DoubleAnimation(0.15, d6, (d5 += (d4 - 0.5) * -1.0 * d2) + (this.hN ? 0.5 : 0.0));
-        this.hA.c();
-        this.hH = new ColorAnimation(0.15, this.h2[this.hr], this.h2[this.h3]);
-        this.hH.c();
+    public void animateSelection() {
+        double paletteTrackWidth = this.A() - 10.0 - (double)this.paletteColors.length * 0.5;
+        double segmentWidth = paletteTrackWidth / (double)this.paletteColors.length;
+        double maximumIndex = this.getMaximumPaletteValue() - 1.0;
+        double selectionRatio = (double)this.selectedIndex / maximumIndex;
+        paletteTrackWidth = this.A() - 10.0 - (double)(this.separatedSegments ? 2 : 0);
+        double targetHandleX = 5.0 + paletteTrackWidth * selectionRatio;
+        double currentHandleX = this.handlePositionAnimation.getInterpolatedValue();
+        this.handlePositionAnimation = new DoubleAnimation(0.15, currentHandleX, (targetHandleX += (selectionRatio - 0.5) * -1.0 * segmentWidth) + (this.separatedSegments ? 0.5 : 0.0));
+        this.handlePositionAnimation.c();
+        this.handleColorAnimation = new ColorAnimation(0.15, this.paletteColors[this.previousSelectedIndex], this.paletteColors[this.selectedIndex]);
+        this.handleColorAnimation.c();
     }
 
     @Override
     public void F() {
-        if (!this.hY) {
-            this.ho.J();
+        if (!this.hovered) {
+            this.handleHoverAnimation.J();
         }
-        this.hY = true;
+        this.hovered = true;
     }
 
-    public double J$src$D$1ebg2fa() {
-        return this.hu;
+    public double getMinimumPaletteValue() {
+        return this.minimumPaletteValue;
     }
 
-    public double X$src$D$1ej56qc() {
-        return this.hQ;
+    public double getMaximumPaletteValue() {
+        return this.maximumPaletteValue;
     }
 
     @Override
     public void H() {
-        double d;
-        this.V$src$V$1ei1lz4();
-        SmoothFontRenderer smoothFontRenderer = this.O(this.hK);
-        double d2 = smoothFontRenderer.d(this.W$src$Ljava_lang_String_$24bvf0());
-        this.hD = smoothFontRenderer.N(this.W$src$Ljava_lang_String_$24bvf0());
-        double d3 = this.n() + 12.5 + d2;
-        double d4 = this.A() - 10.0 - (double)this.h2.length * 0.5;
-        double d5 = 5.0;
-        double d6 = d4 / (double)this.h2.length;
-        double d7 = this.X$src$D$1ej56qc() - 1.0;
-        smoothFontRenderer.d(this.W$src$Ljava_lang_String_$24bvf0(), this.G$src$D$1b2f02a() + 5.0, this.n() + 5.0, this.R);
-        if (this.hN) {
-            d6 = (d4 - 2.0) / (double)this.h2.length;
-            for (d = 1.0; d < (double)(this.h2.length + 1); d += 1.0) {
-                if (d - 1.0 == (double)this.H(this.hA.getInterpolatedValue())) {
-                    GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + d5 - 1.0, d3, d6 + 1.0, 1.0, this.d());
-                    d5 += d6 + 2.5;
+        double paletteValue;
+        this.updateDraggingValue();
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(this.fontScale);
+        double labelHeight = fontRenderer.d(this.getLabel());
+        this.labelWidth = fontRenderer.N(this.getLabel());
+        double trackY = this.n() + 12.5 + labelHeight;
+        double paletteTrackWidth = this.A() - 10.0 - (double)this.paletteColors.length * 0.5;
+        double segmentX = 5.0;
+        double segmentWidth = paletteTrackWidth / (double)this.paletteColors.length;
+        double maximumIndex = this.getMaximumPaletteValue() - 1.0;
+        fontRenderer.d(this.getLabel(), this.G$src$D$1b2f02a() + 5.0, this.n() + 5.0, this.labelColor);
+        if (this.separatedSegments) {
+            segmentWidth = (paletteTrackWidth - 2.0) / (double)this.paletteColors.length;
+            for (paletteValue = 1.0; paletteValue < (double)(this.paletteColors.length + 1); paletteValue += 1.0) {
+                if (paletteValue - 1.0 == (double)this.findPaletteIndexAtOffset(this.handlePositionAnimation.getInterpolatedValue())) {
+                    GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + segmentX - 1.0, trackY, segmentWidth + 1.0, 1.0, this.getDisabledOverlayColor());
+                    segmentX += segmentWidth + 2.5;
                     continue;
                 }
-                GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + d5, d3, d6, 1.0, this.d(d));
-                d5 += d6 + 0.5;
+                GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + segmentX, trackY, segmentWidth, 1.0, this.getColorForPaletteValue(paletteValue));
+                segmentX += segmentWidth + 0.5;
             }
         } else {
-            for (d = 1.0; d < (double)(this.h2.length + 1); d += 1.0) {
-                GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + d5, d3, d6, 1.0, this.d(d));
-                if (d == 1.0) {
-                    GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + d5 - 0.5, d3 + 0.25, 0.5, 1.0, this.d(d));
-                } else if (d == (double)this.h2.length) {
-                    GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + d5 + d6, d3 + 0.25, 0.5, 1.0, this.d(d));
+            for (paletteValue = 1.0; paletteValue < (double)(this.paletteColors.length + 1); paletteValue += 1.0) {
+                GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + segmentX, trackY, segmentWidth, 1.0, this.getColorForPaletteValue(paletteValue));
+                if (paletteValue == 1.0) {
+                    GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + segmentX - 0.5, trackY + 0.25, 0.5, 1.0, this.getColorForPaletteValue(paletteValue));
+                } else if (paletteValue == (double)this.paletteColors.length) {
+                    GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + segmentX + segmentWidth, trackY + 0.25, 0.5, 1.0, this.getColorForPaletteValue(paletteValue));
                 }
-                d5 += d6 + 0.5;
+                segmentX += segmentWidth + 0.5;
             }
         }
-        d = 0.5;
-        if (!this.D()) {
-            d = this.hE != null ? (double)this.h3 / d7 : 0.0;
+        paletteValue = 0.5;
+        if (!this.isCustomColor()) {
+            paletteValue = this.colorValue != null ? (double)this.selectedIndex / maximumIndex : 0.0;
         }
-        d4 = this.A() - 10.0 + (double)(this.hN ? 2 : 0);
-        double d8 = this.G$src$D$1b2f02a() + 5.0 + d4 * d;
-        this.v = this.L(d8 += (d - 0.5) * -1.0 * d6, d3 + 0.5, this.ho.getEndValue() / 2.0);
-        if (!this.a) {
-            this.a = true;
-            double d9 = d8 - this.G$src$D$1b2f02a();
-            this.hA = new DoubleAnimation(0.0, d9, d9);
-            this.hH = new ColorAnimation(0.0, this.h2[this.h3], this.h2[this.h3]);
+        paletteTrackWidth = this.A() - 10.0 + (double)(this.separatedSegments ? 2 : 0);
+        double handleCenterX = this.G$src$D$1b2f02a() + 5.0 + paletteTrackWidth * paletteValue;
+        this.handleBounds = this.createHandleBounds(handleCenterX += (paletteValue - 0.5) * -1.0 * segmentWidth, trackY + 0.5, this.handleHoverAnimation.getEndValue() / 2.0);
+        if (!this.initialized) {
+            this.initialized = true;
+            double initialHandleX = handleCenterX - this.G$src$D$1b2f02a();
+            this.handlePositionAnimation = new DoubleAnimation(0.0, initialHandleX, initialHandleX);
+            this.handleColorAnimation = new ColorAnimation(0.0, this.paletteColors[this.selectedIndex], this.paletteColors[this.selectedIndex]);
         }
-        this.C$src$V$1okgo1v();
+        this.renderHandle();
     }
 
     @Override
     public void u() {
-        if (this.hY && !this.w$src$Z$e457mb()) {
-            this.ho.J();
-            this.hY = false;
+        if (this.hovered && !this.w$src$Z$e457mb()) {
+            this.handleHoverAnimation.J();
+            this.hovered = false;
         }
-        this.l$src$V$1eu5312();
+        this.synchronizeSelectionFromValue();
     }
 
-    public void Y(boolean bl) {
-        this.hN = bl;
+    public void setSeparatedSegments(boolean separatedSegments) {
+        this.separatedSegments = separatedSegments;
     }
 
-    public void k() {
-        this.hE.Y(false);
-        int n = Math.round(this.h2.length / 2);
-        this.hE.Z(this.h2[n]);
-        this.h3 = n;
-        this.v();
-        this.s(false);
+    public void resetToMiddleColor() {
+        this.colorValue.setRainbowEnabled(false);
+        int middleIndex = Math.round(this.paletteColors.length / 2);
+        this.colorValue.setColor(this.paletteColors[middleIndex]);
+        this.selectedIndex = middleIndex;
+        this.animateSelection();
+        this.setForceCustomColor(false);
     }
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
-        RectData rectData = new RectData(this.G$src$D$1b2f02a(), this.v.W(), this.A(), this.v.R());
-        if (rectData.J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
-            this.s(false);
-            this.hE.Y(false);
-            this.o = RenderUtils.h();
-            this.I = true;
+    public void g(GuiMouseEvent mouseEvent) {
+        RectData interactionBounds = new RectData(this.G$src$D$1b2f02a(), this.handleBounds.W(), this.A(), this.handleBounds.R());
+        if (interactionBounds.J(mouseEvent.getX(), mouseEvent.getY())) {
+            this.setForceCustomColor(false);
+            this.colorValue.setRainbowEnabled(false);
+            this.dragStartMousePosition = RenderUtils.h();
+            this.dragging = true;
         }
     }
 
@@ -165,41 +165,41 @@ extends SliderComponentBase {
         return 110.0;
     }
 
-    protected void C$src$V$1okgo1v() {
-        if (this.D()) {
-            GuiRenderPrimitives.F("newcustomtheme", this.G$src$D$1b2f02a() + (double)this.hA.getInterpolatedValue().floatValue() - 3.5, this.v.W() + this.v.R() / 2.0, this.v.e() - 2.0, this.v.R() - 2.0, Color.WHITE);
-            GuiRenderPrimitives.F("toggledot", this.G$src$D$1b2f02a() + (double)this.hA.getInterpolatedValue().floatValue(), this.v.W() + this.v.R() / 2.0, this.v.e() - 4.0, this.v.R() - 4.0, ColorPaletteSliderComponent.J.i);
+    protected void renderHandle() {
+        if (this.isCustomColor()) {
+            GuiRenderPrimitives.F("newcustomtheme", this.G$src$D$1b2f02a() + (double)this.handlePositionAnimation.getInterpolatedValue().floatValue() - 3.5, this.handleBounds.W() + this.handleBounds.R() / 2.0, this.handleBounds.e() - 2.0, this.handleBounds.R() - 2.0, Color.WHITE);
+            GuiRenderPrimitives.F("toggledot", this.G$src$D$1b2f02a() + (double)this.handlePositionAnimation.getInterpolatedValue().floatValue(), this.handleBounds.W() + this.handleBounds.R() / 2.0, this.handleBounds.e() - 4.0, this.handleBounds.R() - 4.0, ColorPaletteSliderComponent.J.i);
             return;
         }
-        GuiRenderPrimitives.F("newtheme", this.G$src$D$1b2f02a() + (double)this.hA.getInterpolatedValue().floatValue() - 3.5, this.v.W() + this.v.R() / 2.0, this.v.e() - 2.0, this.v.R() - 2.0, this.hH.getInterpolatedColor());
+        GuiRenderPrimitives.F("newtheme", this.G$src$D$1b2f02a() + (double)this.handlePositionAnimation.getInterpolatedValue().floatValue() - 3.5, this.handleBounds.W() + this.handleBounds.R() / 2.0, this.handleBounds.e() - 2.0, this.handleBounds.R() - 2.0, this.handleColorAnimation.getInterpolatedColor());
     }
 
-    public boolean D() {
-        if (this.K) {
+    public boolean isCustomColor() {
+        if (this.forceCustomColor) {
             return true;
         }
-        for (Color color : this.h2) {
-            if (!this.hE.H(color)) continue;
+        for (Color paletteColor : this.paletteColors) {
+            if (!this.colorValue.matchesColor(paletteColor)) continue;
             return false;
         }
-        this.h3 = Math.round(this.h2.length / 2);
-        this.v();
-        this.hr = this.h3;
+        this.selectedIndex = Math.round(this.paletteColors.length / 2);
+        this.animateSelection();
+        this.previousSelectedIndex = this.selectedIndex;
         return true;
     }
 
-    public ColorPaletteSliderComponent(String string, ColorValue colorValue, Color[] colorArray) {
-        super(string);
-        this.v = new RectData(0.0, 0.0, 0.0, 0.0);
-        this.hA = new DoubleAnimation(0.0, 0.0, 0.0);
-        this.hH = new ColorAnimation(0.0, Color.BLACK, Color.BLACK);
-        this.R = ColorPaletteSliderComponent.J.Z;
-        this.hE = colorValue;
-        this.C(colorValue);
-        this.h2 = colorArray;
-        this.hQ = colorArray.length;
-        this.hi = (this.hQ - this.hu) / 100.0;
-        this.l$src$V$1eu5312();
+    public ColorPaletteSliderComponent(String label, ColorValue colorValue, Color[] paletteColors) {
+        super(label);
+        this.handleBounds = new RectData(0.0, 0.0, 0.0, 0.0);
+        this.handlePositionAnimation = new DoubleAnimation(0.0, 0.0, 0.0);
+        this.handleColorAnimation = new ColorAnimation(0.0, Color.BLACK, Color.BLACK);
+        this.labelColor = ColorPaletteSliderComponent.J.Z;
+        this.colorValue = colorValue;
+        this.bindValue(colorValue);
+        this.paletteColors = paletteColors;
+        this.maximumPaletteValue = paletteColors.length;
+        this.valuePerPercent = (this.maximumPaletteValue - this.minimumPaletteValue) / 100.0;
+        this.synchronizeSelectionFromValue();
     }
 
     @Override
@@ -207,127 +207,127 @@ extends SliderComponentBase {
         return 20.0;
     }
 
-    public void l$src$V$1eu5312() {
-        if (!this.D()) {
-            for (int i = 0; i < this.h2.length; ++i) {
-                if (!this.hE.H(this.h2[i])) continue;
-                this.h3 = i;
-                if (this.h3 != this.hr) {
-                    this.v();
+    public void synchronizeSelectionFromValue() {
+        if (!this.isCustomColor()) {
+            for (int paletteIndex = 0; paletteIndex < this.paletteColors.length; ++paletteIndex) {
+                if (!this.colorValue.matchesColor(this.paletteColors[paletteIndex])) continue;
+                this.selectedIndex = paletteIndex;
+                if (this.selectedIndex != this.previousSelectedIndex) {
+                    this.animateSelection();
                 }
-                this.hr = this.h3;
+                this.previousSelectedIndex = this.selectedIndex;
             }
         }
     }
 
-    public Color d(double d) {
-        double d2 = (this.X$src$D$1ej56qc() - this.J$src$D$1ebg2fa()) / (double)this.h2.length;
-        double d3 = this.J$src$D$1ebg2fa();
-        Color color = Color.BLACK;
-        boolean bl = false;
-        for (int i = 0; i < this.h2.length; ++i) {
-            double d4 = d3 + (double)i * d2;
-            int n = i + 1;
-            double d5 = d3 + (double)n * d2;
-            if (!(d > d4) || !(d <= d5)) continue;
-            color = this.h2[i];
-            bl = true;
+    public Color getColorForPaletteValue(double paletteValue) {
+        double valuePerColor = (this.getMaximumPaletteValue() - this.getMinimumPaletteValue()) / (double)this.paletteColors.length;
+        double minimumValue = this.getMinimumPaletteValue();
+        Color selectedColor = Color.BLACK;
+        boolean matchedSegment = false;
+        for (int paletteIndex = 0; paletteIndex < this.paletteColors.length; ++paletteIndex) {
+            double segmentStart = minimumValue + (double)paletteIndex * valuePerColor;
+            int nextIndex = paletteIndex + 1;
+            double segmentEnd = minimumValue + (double)nextIndex * valuePerColor;
+            if (!(paletteValue > segmentStart) || !(paletteValue <= segmentEnd)) continue;
+            selectedColor = this.paletteColors[paletteIndex];
+            matchedSegment = true;
             break;
         }
-        if (!bl) {
-            color = d <= d3 ? this.h2[0] : this.h2[this.h2.length - 1];
+        if (!matchedSegment) {
+            selectedColor = paletteValue <= minimumValue ? this.paletteColors[0] : this.paletteColors[this.paletteColors.length - 1];
         }
-        return color;
+        return selectedColor;
     }
 
-    public void Y(int n) {
-        Color color = this.h2[n];
-        this.hE.Z(color);
+    public void selectPaletteIndex(int paletteIndex) {
+        Color selectedColor = this.paletteColors[paletteIndex];
+        this.colorValue.setColor(selectedColor);
     }
 
     @Override
-    public void Z(boolean bl) {
-        super.Z(bl);
-        this.K = false;
-        this.a = false;
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        this.forceCustomColor = false;
+        this.initialized = false;
     }
 
-    public ColorAnimation l$src$Lgg_vape_ui_click_animation_ColorAnimation_$lcq3bn() {
-        return this.hH;
+    public ColorAnimation getHandleColorAnimation() {
+        return this.handleColorAnimation;
     }
 
-    public double F$src$D$1e98w1u() {
-        return this.hD;
+    public double getLabelWidth() {
+        return this.labelWidth;
     }
 
-    public void R(double d) {
-        this.hQ = d;
+    public void setMaximumPaletteValue(double maximumPaletteValue) {
+        this.maximumPaletteValue = maximumPaletteValue;
     }
 
 
-    public void f(double d) {
-        this.O = d;
+    public void setStep(double step) {
+        this.step = step;
     }
 
     @Override
     public void I() {
     }
 
-    public int y$src$I$1f1aefk() {
-        return this.h3;
+    public int getSelectedIndex() {
+        return this.selectedIndex;
     }
 
-    private void V$src$V$1ei1lz4() {
-        if (this.I) {
-            if (!MouseInput.I(MouseButton.LEFT_CLICK.ordinal())) {
-                this.I = false;
+    private void updateDraggingValue() {
+        if (this.dragging) {
+            if (!MouseInput.isButtonDown(MouseButton.LEFT_CLICK.ordinal())) {
+                this.dragging = false;
                 return;
             }
-            double d = this.A() - 10.0;
+            double trackWidth = this.A() - 10.0;
             MousePosition mousePosition = RenderUtils.h();
-            double d2 = (double)mousePosition.O - this.G$src$D$1b2f02a() - 5.0 - this.v.e() / 2.0;
-            double d3 = this.G$src$D$1b2f02a() + 5.0 + this.v.e() / 2.0;
-            double d4 = this.G$src$D$1b2f02a() + this.A() - 5.0 - this.v.e() / 2.0;
-            double d5 = this.h(this.hu, this.hQ, d3, d4, this.O, d2);
-            d5 = new BigDecimal("" + d5).setScale(1, RoundingMode.HALF_UP).doubleValue();
-            if (this.hE != null) {
-                this.hE.Z(this.d(d5 + 0.0));
-                this.l$src$V$1eu5312();
+            double trackOffset = (double)mousePosition.O - this.G$src$D$1b2f02a() - 5.0 - this.handleBounds.e() / 2.0;
+            double trackStart = this.G$src$D$1b2f02a() + 5.0 + this.handleBounds.e() / 2.0;
+            double trackEnd = this.G$src$D$1b2f02a() + this.A() - 5.0 - this.handleBounds.e() / 2.0;
+            double paletteValue = this.mapTrackOffsetToValue(this.minimumPaletteValue, this.maximumPaletteValue, trackStart, trackEnd, this.step, trackOffset);
+            paletteValue = new BigDecimal("" + paletteValue).setScale(1, RoundingMode.HALF_UP).doubleValue();
+            if (this.colorValue != null) {
+                this.colorValue.setColor(this.getColorForPaletteValue(paletteValue + 0.0));
+                this.synchronizeSelectionFromValue();
             }
         }
     }
 
-    public RectData A$src$Lfunc_skidline_RectData_$x2qn2p() {
-        return this.v;
+    public RectData getHandleBounds() {
+        return this.handleBounds;
     }
 
-    public void s(boolean bl) {
-        this.K = bl;
+    public void setForceCustomColor(boolean forceCustomColor) {
+        this.forceCustomColor = forceCustomColor;
     }
 
-    public int H(double d) {
-        double d2 = this.A() - 10.0 - (double)this.h2.length * 0.5;
-        double d3 = 5.0;
-        double d4 = d2 / (double)this.h2.length;
-        for (int i = 1; i < this.h2.length + 1; ++i) {
-            if (d >= d3 && d <= d3 + d4 + 0.5) {
-                return i - 1;
+    public int findPaletteIndexAtOffset(double handleOffset) {
+        double paletteTrackWidth = this.A() - 10.0 - (double)this.paletteColors.length * 0.5;
+        double segmentStart = 5.0;
+        double segmentWidth = paletteTrackWidth / (double)this.paletteColors.length;
+        for (int paletteNumber = 1; paletteNumber < this.paletteColors.length + 1; ++paletteNumber) {
+            if (handleOffset >= segmentStart && handleOffset <= segmentStart + segmentWidth + 0.5) {
+                return paletteNumber - 1;
             }
-            d3 += d4 + 0.5;
+            segmentStart += segmentWidth + 0.5;
         }
         return 0;
     }
 
-    public Color[] j$src$ALjava_awt_Color_$sw9v39() {
-        return this.h2;
+    public Color[] getPaletteColors() {
+        return this.paletteColors;
     }
 
-    public double S$src$D$1ege7rj() {
-        return this.O;
+    public double getStep() {
+        return this.step;
     }
 
-    public void W(double d) {
-        this.hu = d;
+    public void setMinimumPaletteValue(double minimumPaletteValue) {
+        this.minimumPaletteValue = minimumPaletteValue;
     }
 }
 

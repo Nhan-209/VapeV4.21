@@ -2,163 +2,114 @@ package gg.vape.module.control;
 
 import gg.vape.module.Mod;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ModuleControlClaim {
-    private static boolean j;
-    private final AtomicBoolean R;
-    private final HashMap<Mod, Integer> E = new HashMap();
-    private final AtomicBoolean K = new AtomicBoolean();
-    protected Mod v;
-    protected Mod S;
-    private final boolean O;
-
-    public void l(Mod mod, int n) {
-        this.E.put(mod, n);
-    }
-
-    public Mod N() {
-        return this.S;
-    }
-
-    protected boolean l(Mod mod) {
-        boolean bl = this.v != null && this.v.equals(mod);
-        return bl;
-    }
-
-    public void M(boolean bl) {
-        this.R.set(bl);
-    }
-
-    public Mod y() {
-        return this.v;
-    }
-
+    private final AtomicBoolean claimed;
+    private final Map<Mod, Integer> priorities = new HashMap<>();
+    private final AtomicBoolean pendingOwnerSet = new AtomicBoolean();
+    protected Mod owner;
+    protected Mod pendingOwner;
+    private final boolean priorityAware;
 
     public ModuleControlClaim() {
         this(false);
     }
 
-    public void A(Mod mod) {
-        this.K.set(true);
-        this.S = mod;
+    public ModuleControlClaim(boolean priorityAware) {
+        this.claimed = new AtomicBoolean();
+        this.priorityAware = priorityAware;
     }
 
-    public boolean X() {
-        return this.K.get();
+    public void setPriority(Mod module, int priority) {
+        this.priorities.put(module, priority);
     }
 
-    protected boolean s(Mod mod) {
-        if (this.O) {
-            if (this.W(mod)) {
-                this.void_v();
+    protected boolean isCurrentOwner(Mod module) {
+        return this.owner != null && this.owner.equals(module);
+    }
+
+    public void setClaimed(boolean claimed) {
+        this.claimed.set(claimed);
+    }
+
+    private void setPendingOwner(Mod module) {
+        this.pendingOwnerSet.set(true);
+        this.pendingOwner = module;
+    }
+
+    public boolean hasPendingOwner() {
+        return this.pendingOwnerSet.get();
+    }
+
+    protected boolean release(Mod module) {
+        if (this.priorityAware) {
+            if (this.isPendingOwner(module)) {
+                this.clearPendingOwner();
                 return true;
             }
-            if (!this.l(mod)) {
+            if (!this.isCurrentOwner(module)) {
                 return false;
             }
         }
-        this.v = null;
-        this.R.set(false);
+        this.owner = null;
+        this.claimed.set(false);
         return true;
     }
 
-    public ModuleControlClaim(boolean bl) {
-        this.R = new AtomicBoolean();
-        this.O = bl;
+    public void clearPendingOwner() {
+        this.pendingOwnerSet.set(false);
+        this.pendingOwner = null;
     }
 
-    public void void_v() {
-        this.K.set(false);
-        this.S = null;
+    protected boolean hasHigherPriorityThanCurrent(Mod module) {
+        int requestedPriority = this.priorities.getOrDefault(module, 0);
+        int currentPriority = this.priorities.getOrDefault(this.owner, 0);
+        return requestedPriority > currentPriority;
     }
 
-    protected boolean r(Mod mod) {
-        int n;
-        int n2 = this.E.getOrDefault(mod, 0);
-        boolean bl = n2 > (n = this.E.getOrDefault(this.v, 0).intValue());
-        return bl;
-    }
-
-    public static boolean U() {
-        return j;
-    }
-
-    protected boolean q(Mod mod) {
-        if (this.O) {
-            if (this.R.get() || this.X() && !this.W(mod)) {
+    protected boolean tryClaim(Mod module) {
+        if (this.priorityAware) {
+            if (this.claimed.get() || this.hasPendingOwner() && !this.isPendingOwner(module)) {
                 return false;
             }
-            this.void_v();
+            this.clearPendingOwner();
         }
-        this.v = mod;
-        this.R.set(true);
+        this.owner = module;
+        this.claimed.set(true);
         return true;
     }
 
-    public HashMap<Mod, Integer> D() {
-        return this.E;
+    public boolean isClaimed() {
+        return this.claimed.get();
     }
 
-    public boolean boolean_v() {
-        return this.R.get();
+    protected boolean isPendingOwner(Mod module) {
+        return this.pendingOwner != null && this.pendingOwner.equals(module);
     }
 
-    public static void u(boolean bl) {
-        j = bl;
+    public void clearClaimed() {
+        this.claimed.set(false);
     }
 
-    protected boolean W(Mod mod) {
-        boolean bl = this.S != null && this.S.equals(mod);
-        return bl;
+    public void markClaimed() {
+        this.claimed.set(true);
     }
 
-    public static boolean r() {
-        boolean bl = ModuleControlClaim.U();
-        return true;
-    }
-
-    public void Q() {
-        this.R.set(false);
-    }
-
-    public void c() {
-        this.R.set(true);
-    }
-
-    public boolean w(Mod mod) {
-        if (this.q(mod)) {
+    public boolean tryAcquire(Mod module) {
+        if (this.tryClaim(module)) {
             return true;
         }
-        if (this.O) {
-            boolean bl = this.X();
-            boolean bl2 = this.W(mod);
-            boolean bl3 = this.r(mod);
-            if (this.boolean_v() && !this.l(mod)) {
-                if (bl && !bl2) {
-                    return false;
-                }
-                if (!bl3) {
-                    return false;
-                }
-                this.A(mod);
+        if (this.priorityAware && this.isClaimed() && !this.isCurrentOwner(module)) {
+            if (this.hasPendingOwner() && !this.isPendingOwner(module)) {
+                return false;
             }
+            if (!this.hasHigherPriorityThanCurrent(module)) {
+                return false;
+            }
+            this.setPendingOwner(module);
         }
         return false;
     }
-
-    static {
-        if (ModuleControlClaim.U()) {
-            ModuleControlClaim.u(true);
-        }
-    }
-
-    public /* synthetic */ void v() {
-        this.void_v();
-    }
-
-    public /* synthetic */ boolean v$src$Z$1r7ksy2() {
-        return this.boolean_v();
-    }
 }
-

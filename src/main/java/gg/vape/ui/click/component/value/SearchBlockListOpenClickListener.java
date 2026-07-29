@@ -5,15 +5,14 @@ import gg.vape.ui.click.component.value.SearchBlockListComponent;
 
 public class SearchBlockListOpenClickListener
 implements GuiClickListener {
-    final SearchBlockListComponent k;
+    final SearchBlockListComponent component;
 
     @Override
-    public void P() {
-        SearchBlockListComponent.e(this.k);
+    public void onPrimaryClick() {
+        SearchBlockListComponent.openEditorCompat(this.component);
     }
 
-    public SearchBlockListOpenClickListener(SearchBlockListComponent ud_22) {
-        this.k = ud_22;
+    public SearchBlockListOpenClickListener(SearchBlockListComponent component) {
+        this.component = component;
     }
 }
-

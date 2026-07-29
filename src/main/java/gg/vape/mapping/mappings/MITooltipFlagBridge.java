@@ -37,7 +37,7 @@ extends Mapping {
         String string = b;
         MITooltipFlagBridge mITooltipFlagBridge = this;
         this.H = this.u(string, bl, clazz);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MITooltipFlagBridge.s(new GuiComponent[1]);
         }
     }

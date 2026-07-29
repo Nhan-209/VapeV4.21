@@ -6,17 +6,16 @@ import gg.vape.ui.click.component.value.ListValueDropdownLayer;
 
 public class ListValueDropdownCloseClickHandler
 implements GuiClickListener {
-    final ListValueComponent z;
-    final ListValueDropdownLayer b;
+    final ListValueComponent component;
+    final ListValueDropdownLayer dropdownLayer;
 
     public ListValueDropdownCloseClickHandler(ListValueDropdownLayer listValueDropdownLayer, ListValueComponent listValueComponent) {
-        this.b = listValueDropdownLayer;
-        this.z = listValueComponent;
+        this.dropdownLayer = listValueDropdownLayer;
+        this.component = listValueComponent;
     }
 
     @Override
-    public void P() {
-        this.z.a(false);
+    public void onPrimaryClick() {
+        this.component.setExpanded(false);
     }
 }
-

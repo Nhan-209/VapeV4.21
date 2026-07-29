@@ -109,7 +109,7 @@ extends Mapping {
             String string7 = "type";
             MEquipmentSlotSet mEquipmentSlotSet7 = this;
             this.a = this.J(string7, bl7, clazz7);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MSlot.w(new int[5]);
             }
             return;
@@ -131,7 +131,7 @@ extends Mapping {
             MEquipmentSlotSet mEquipmentSlotSet10 = this;
             this.a = this.J(string10, bl10, clazz10);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MSlot.w(new int[5]);
         }
     }

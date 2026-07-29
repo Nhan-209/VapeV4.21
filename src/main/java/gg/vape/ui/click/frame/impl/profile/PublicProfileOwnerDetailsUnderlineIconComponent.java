@@ -7,11 +7,8 @@ import java.awt.Color;
 
 class PublicProfileOwnerDetailsUnderlineIconComponent
 extends GlyphIconComponent {
-    final PublicProfileOwnerDetailsPanel G2;
-
-    PublicProfileOwnerDetailsUnderlineIconComponent(PublicProfileOwnerDetailsPanel publicProfileOwnerDetailsPanel, String string, double d, double d2, double d3, double d4, Color color, Color color2, Color color3) {
-        super(string, d, d2, d3, d4, color, color2, color3);
-        this.G2 = publicProfileOwnerDetailsPanel;
+    PublicProfileOwnerDetailsUnderlineIconComponent(String icon, double iconWidth, double iconHeight, double width, double height, Color color, Color hoverColor, Color pressedColor) {
+        super(icon, iconWidth, iconHeight, width, height, color, hoverColor, pressedColor);
     }
 
     @Override

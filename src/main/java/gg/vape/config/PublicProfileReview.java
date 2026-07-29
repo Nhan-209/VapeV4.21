@@ -126,7 +126,7 @@ public class PublicProfileReview {
     }
 
     public void B(PublicProfile publicProfile, Runnable runnable) {
-        ApiServices.d().R().P(this).whenCompleteAsync((arg_0, arg_1) -> this.lambda$deleteReview$0(publicProfile, runnable, arg_0, arg_1), (Executor)ClientSettings.f6);
+        ApiServices.d().R().P(this).whenCompleteAsync((arg_0, arg_1) -> this.lambda$deleteReview$0(publicProfile, runnable, arg_0, arg_1), (Executor)ClientSettings.UI_EXECUTOR);
     }
 
     public PublicProfileUser F() {

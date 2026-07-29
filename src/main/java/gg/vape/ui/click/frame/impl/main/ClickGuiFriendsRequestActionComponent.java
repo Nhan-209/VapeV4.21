@@ -8,9 +8,9 @@ import gg.vape.utils.render.ImageRenderer;
 
 final class ClickGuiFriendsRequestActionComponent
 extends InteractiveComponent {
-    final ClickGuiFriendsFriendRequestComponent I;
-    private final ColorAnimation Q;
-    private static final String v = "newtrash";
+    private static final String TRASH_ICON = "newtrash";
+    final ClickGuiFriendsFriendRequestComponent owner;
+    private final ColorAnimation colorAnimation;
 
     ClickGuiFriendsRequestActionComponent(ClickGuiFriendsFriendRequestComponent clickGuiFriendsFriendRequestComponent, ClickGuiFriendsRequestStatusComponent clickGuiFriendsRequestStatusComponent) {
         this(clickGuiFriendsFriendRequestComponent);
@@ -22,12 +22,11 @@ extends InteractiveComponent {
     }
 
     private ClickGuiFriendsRequestActionComponent(ClickGuiFriendsFriendRequestComponent clickGuiFriendsFriendRequestComponent) {
-        this.I = clickGuiFriendsFriendRequestComponent;
-        this.getClass();
-        this.Q = new ColorAnimation(0.15, ClickGuiFriendsFriendRequestComponent.T$src$Ljava_awt_Color_$vjmbs7(), ClickGuiFriendsFriendRequestComponent.s$src$Ljava_awt_Color_$z1gb6w());
+        this.owner = clickGuiFriendsFriendRequestComponent;
+        this.colorAnimation = new ColorAnimation(0.15, ClickGuiFriendsFriendRequestComponent.getRemoveColor(), ClickGuiFriendsFriendRequestComponent.getRemoveHoverColor());
         this.o(9.0);
         this.Y(9.0);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
     }
 
     @Override
@@ -37,10 +36,9 @@ extends InteractiveComponent {
 
     @Override
     public void H() {
-        this.Q.u(this.w$src$Z$e457mb());
+        this.colorAnimation.u(this.w$src$Z$e457mb());
         double d = this.G$src$D$1b2f02a() + (this.A() - 4.5) / 2.0;
         double d2 = this.n() + (this.L() - 4.5) / 2.0;
-        ImageRenderer.E(this.Q.getInterpolatedColor(), (float)d, (float)d2, v, 4.5f, 4.5f, false);
+        ImageRenderer.drawImage(this.colorAnimation.getInterpolatedColor(), (float)d, (float)d2, TRASH_ICON, 4.5f, 4.5f, false);
     }
 }
-

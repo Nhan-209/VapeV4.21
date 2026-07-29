@@ -81,7 +81,7 @@ public class OnlineConnectionManager {
     private int r;
 
     private static void lambda$setState$5(OnlineConnectionState onlineConnectionState) {
-        OnlineConnectionSettingsFrame.x4.x(onlineConnectionState);
+        OnlineConnectionSettingsFrame.updateConnectionStateIfCreated(onlineConnectionState);
     }
 
     private static void lambda$setupListeners$12(FriendRequestReceivedEvent friendRequestReceivedEvent) {
@@ -118,7 +118,7 @@ public class OnlineConnectionManager {
             this.l(OnlineConnectionState.OFFLINE);
         }
         if (onlineDisconnectReason == OnlineDisconnectReason.LOGGED_IN_FROM_ANOTHER_LOCATION) {
-            ClientSettings.g(OnlineFriendsFrame.class).e();
+            ClientSettings.getFrame(OnlineFriendsFrame.class).e();
             return;
         }
         if (onlineDisconnectReason == OnlineDisconnectReason.BANNED) {
@@ -146,7 +146,7 @@ public class OnlineConnectionManager {
     }
 
     private static void lambda$setAccountState$6(OnlineAccountState onlineAccountState, OnlineConnectionState onlineConnectionState) {
-        OnlineConnectionSettingsFrame.x4.F(onlineAccountState, onlineConnectionState);
+        OnlineConnectionSettingsFrame.updateAccountStateIfCreated(onlineAccountState, onlineConnectionState);
     }
 
     private static OnlineFriend lambda$null$24(FriendRequestEvent friendRequestEvent) {
@@ -217,7 +217,7 @@ public class OnlineConnectionManager {
         }
         Value<?, ?> value = partyState.L().get((Object)groupOptionUpdatedEvent.j());
         if (value != null) {
-            ((Value)value).o(groupOptionUpdatedEvent.U());
+            ((Value)value).setValue(groupOptionUpdatedEvent.U());
         }
     }
 
@@ -237,7 +237,7 @@ public class OnlineConnectionManager {
     public void o(OnlineAccountState onlineAccountState) {
         this.y = onlineAccountState;
         OnlineConnectionState onlineConnectionState = this.v;
-        ClientSettings.f6.execute(() -> OnlineConnectionManager.lambda$setAccountState$6(onlineAccountState, onlineConnectionState));
+        ClientSettings.UI_EXECUTOR.execute(() -> OnlineConnectionManager.lambda$setAccountState$6(onlineAccountState, onlineConnectionState));
     }
 
     private static void lambda$setupListeners$15(GroupChatMessageEvent groupChatMessageEvent) {
@@ -302,7 +302,7 @@ public class OnlineConnectionManager {
 
     private void lambda$initialize$0() {
         this.o(OnlineAccountState.REGISTRATION_OFFLINE);
-        ClientSettings.g(OnlineFriendsFrame.class).Z$src$V$vdheo7();
+        ClientSettings.getFrame(OnlineFriendsFrame.class).Z$src$V$vdheo7();
         this.m = false;
     }
 
@@ -341,7 +341,7 @@ public class OnlineConnectionManager {
 
     private void lambda$startup$4(AuthenticationResponsePacket authenticationResponsePacket) {
         this.r = 0;
-        ClientSettings.g(OnlineFriendsFrame.class).Q$src$V$v8j9by();
+        ClientSettings.getFrame(OnlineFriendsFrame.class).Q$src$V$v8j9by();
         this.l(OnlineConnectionState.ONLINE);
         this.z = true;
     }
@@ -540,7 +540,7 @@ public class OnlineConnectionManager {
             partyState.q(onlineFriend);
             partyState.Q(onlineFriend);
             onlineFriend.K(partyMemberUpdateEvent.S().e());
-            Vape.INSTANCE.getNotificationManager().t(onlineFriend.C() + b, "", NotificationType.FRIENDS_PARTY_GENERAL, 3000L);
+            Vape.INSTANCE.getNotificationManager().show(onlineFriend.C() + b, "", NotificationType.FRIENDS_PARTY_GENERAL, 3000L);
         } else {
             if (onlineFriend.equals(Vape.INSTANCE.getOnlineManager().r())) {
                 runnable.run();
@@ -554,10 +554,10 @@ public class OnlineConnectionManager {
     public void l(OnlineConnectionState onlineConnectionState) {
         if (onlineConnectionState == OnlineConnectionState.OFFLINE && this.v != onlineConnectionState) {
             Vape.INSTANCE.getOnlineManager().t();
-            ClientSettings.g(OnlineFriendsFrame.class).N$src$V$v6vvjv();
+            ClientSettings.getFrame(OnlineFriendsFrame.class).N$src$V$v6vvjv();
         }
         this.v = onlineConnectionState;
-        ClientSettings.f6.execute(() -> OnlineConnectionManager.lambda$setState$5(onlineConnectionState));
+        ClientSettings.UI_EXECUTOR.execute(() -> OnlineConnectionManager.lambda$setState$5(onlineConnectionState));
     }
 
     public void E() throws Exception {
@@ -579,15 +579,15 @@ public class OnlineConnectionManager {
             } else if (bl2) {
                 this.o(OnlineAccountState.REGISTERED);
                 this.Y.B();
-                if (this.Y.X$src$Lgg_vape_value_BooleanValue_$7rygmo().L().booleanValue()) {
+                if (this.Y.X$src$Lgg_vape_value_BooleanValue_$7rygmo().getEffectiveValue().booleanValue()) {
                     this.I();
                 } else {
-                    ClientSettings.g(OnlineFriendsFrame.class).p$src$Lgg_vape_friend_ui_OnlineModeToggleComponent_$u0bbsl().u(false);
+                    ClientSettings.getFrame(OnlineFriendsFrame.class).p$src$Lgg_vape_friend_ui_OnlineModeToggleComponent_$u0bbsl().u(false);
                 }
             } else {
                 this.o(OnlineAccountState.UNREGISTERED);
-                ClientSettings.g(OnlineFriendsFrame.class).e();
-                ClientSettings.g(OnlineFriendsFrame.class).o$src$V$vp134s();
+                ClientSettings.getFrame(OnlineFriendsFrame.class).e();
+                ClientSettings.getFrame(OnlineFriendsFrame.class).o$src$V$vp134s();
             }
         }
         catch (Throwable throwable) {

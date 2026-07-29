@@ -7,23 +7,22 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
 public class TextLabelFitScaleCache {
-    LinkedHashMap<String, Double> p = new LinkedHashMap();
-    public static TextLabelFitScaleCache m = new TextLabelFitScaleCache();
+    LinkedHashMap<String, Double> scaleBySpecKey = new LinkedHashMap();
+    public static TextLabelFitScaleCache INSTANCE = new TextLabelFitScaleCache();
 
 
-    public double T(TextLabelFitSpec textLabelFitSpec) {
-        if (this.p.containsKey(textLabelFitSpec.toString())) {
-            return this.p.get(textLabelFitSpec.toString());
+    public double getFittedScale(TextLabelFitSpec fitSpec) {
+        if (this.scaleBySpecKey.containsKey(fitSpec.toString())) {
+            return this.scaleBySpecKey.get(fitSpec.toString());
         }
-        double d = textLabelFitSpec.u();
-        while (d >= textLabelFitSpec.g() && d <= textLabelFitSpec.u()) {
-            SmoothFontRenderer smoothFontRenderer;
-            SmoothFontRenderer smoothFontRenderer2 = smoothFontRenderer = textLabelFitSpec.x() ? Vape.INSTANCE.getFontManager().W(d, false) : Vape.INSTANCE.getFontManager().E(d, false);
-            if (!(smoothFontRenderer.N(textLabelFitSpec.o()) > textLabelFitSpec.T())) break;
-            d = new BigDecimal(d).subtract(BigDecimal.valueOf(textLabelFitSpec.h())).setScale(1, 4).doubleValue();
+        double fittedScale = fitSpec.getMaxScale();
+        while (fittedScale >= fitSpec.getMinScale() && fittedScale <= fitSpec.getMaxScale()) {
+            SmoothFontRenderer fontRenderer = fitSpec.isBold() ? Vape.INSTANCE.getFontManager().W(fittedScale, false) : Vape.INSTANCE.getFontManager().E(fittedScale, false);
+            if (!(fontRenderer.N(fitSpec.getText()) > fitSpec.getMaxWidth())) break;
+            fittedScale = new BigDecimal(fittedScale).subtract(BigDecimal.valueOf(fitSpec.getScaleIncrement())).setScale(1, 4).doubleValue();
         }
-        this.p.put(textLabelFitSpec.toString(), d);
-        return d;
+        this.scaleBySpecKey.put(fitSpec.toString(), fittedScale);
+        return fittedScale;
     }
 }
 

@@ -50,7 +50,7 @@ extends Mapping {
         String string5 = "assetId";
         MEquippable mEquippable3 = this;
         this.n = this.J(string5, bl3, clazz3);
-        GuiComponent.D(new GuiComponent[5]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 
     public static void z(String string) {

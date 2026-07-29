@@ -1,43 +1,42 @@
 package gg.vape.inventory;
 
-import gg.vape.inventory.InventoryClickBuilder;
 import gg.vape.wrapper.impl.Minecraft;
 
 public class InventoryClick {
-    private final int E;
-    private final int C;
-    private final int B;
-    private final int i;
+    private final int windowId;
+    private final int slotId;
+    private final int mouseButton;
+    private final int clickMode;
 
-    public int t() {
-        return this.E;
+    public int getWindowId() {
+        return this.windowId;
     }
 
-    public int W() {
-        return this.i;
+    public int getClickMode() {
+        return this.clickMode;
     }
 
-    public int M() {
-        return this.B;
+    public int getMouseButton() {
+        return this.mouseButton;
     }
 
-    public static InventoryClickBuilder P() {
+    public static InventoryClickBuilder builder() {
         return new InventoryClickBuilder();
     }
 
-    public int G() {
-        return this.C;
+    public int getSlotId() {
+        return this.slotId;
     }
 
-    public void k() {
-        Minecraft.playerController().O(this.E, this.C, this.B, this.i, Minecraft.thePlayer());
+    public void execute() {
+        Minecraft.playerController().O(this.windowId, this.slotId, this.mouseButton,
+                this.clickMode, Minecraft.thePlayer());
     }
 
-    public InventoryClick(int n, int n2, int n3, int n4) {
-        this.E = n;
-        this.C = n2;
-        this.B = n3;
-        this.i = n4;
+    public InventoryClick(int windowId, int slotId, int mouseButton, int clickMode) {
+        this.windowId = windowId;
+        this.slotId = slotId;
+        this.mouseButton = mouseButton;
+        this.clickMode = clickMode;
     }
 }
-

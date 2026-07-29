@@ -8,65 +8,64 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
 public class SoundClip {
-    private static final String[] S = new String[]{".wav", ".au", ".aif", ".aiff"};
-    private final byte[] u;
-    private Clip Q;
+    private static final String[] SUPPORTED_EXTENSIONS = new String[]{".wav", ".au", ".aif", ".aiff"};
+    private final byte[] audioData;
+    private Clip clip;
 
-    public ByteArrayInputStream x() {
-        return new ByteArrayInputStream(this.u);
+    public ByteArrayInputStream openStream() {
+        return new ByteArrayInputStream(this.audioData);
     }
 
-    private static byte[] w(String string) {
-        if (string.contains(".")) {
-            String string2 = "sounds/" + string;
-            byte[] byArray = Vape.readResource(string2);
-            if (byArray != null) {
-                return byArray;
+    private static byte[] loadAudioData(String resourceName) {
+        if (resourceName.contains(".")) {
+            String resourcePath = "sounds/" + resourceName;
+            byte[] data = Vape.readResource(resourcePath);
+            if (data != null) {
+                return data;
             }
-            throw new IllegalArgumentException("Missing sound resource: " + string);
+            throw new IllegalArgumentException("Missing sound resource: " + resourceName);
         }
-        for (String string3 : S) {
-            String string4 = "sounds/" + string + string3;
-            byte[] byArray = Vape.readResource(string4);
-            if (byArray == null) continue;
-            return byArray;
+        for (String extension : SUPPORTED_EXTENSIONS) {
+            String resourcePath = "sounds/" + resourceName + extension;
+            byte[] data = Vape.readResource(resourcePath);
+            if (data == null) continue;
+            return data;
         }
-        throw new IllegalArgumentException("Missing sound resource with supported extensions: " + string);
+        throw new IllegalArgumentException(
+                "Missing sound resource with supported extensions: " + resourceName);
     }
 
-    public SoundClip(String string) {
-        this.u = SoundClip.w(string);
+    public SoundClip(String resourceName) {
+        this.audioData = SoundClip.loadAudioData(resourceName);
     }
 
-    public void E(float f) {
-        Object object;
-        if (this.Q == null) {
+    public void play(float volumePercent) {
+        if (this.clip == null) {
             try {
-                object = AudioSystem.getAudioInputStream(this.x());
-                this.Q = AudioSystem.getClip();
-                this.Q.open((AudioInputStream)object);
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(this.openStream());
+                this.clip = AudioSystem.getClip();
+                this.clip.open(audioStream);
             }
-            catch (Exception exception) {
-                Vape.logThrowable(exception);
+            catch (Exception error) {
+                Vape.logThrowable(error);
             }
         }
-        if (this.Q == null) {
+        if (this.clip == null) {
             return;
         }
-        object = (FloatControl)this.Q.getControl(FloatControl.Type.MASTER_GAIN);
-        ((FloatControl)object).setValue(20.0f * (float)Math.log10((double)f / 100.0));
-        this.Q.setFramePosition(0);
-        this.Q.start();
+        FloatControl gainControl = (FloatControl)this.clip.getControl(FloatControl.Type.MASTER_GAIN);
+        gainControl.setValue(20.0f * (float)Math.log10((double)volumePercent / 100.0));
+        this.clip.setFramePosition(0);
+        this.clip.start();
         try {
-            Thread.sleep(this.Q.getMicrosecondLength() / 1000L);
+            Thread.sleep(this.clip.getMicrosecondLength() / 1000L);
         }
         catch (InterruptedException interruptedException) {
             throw new RuntimeException(interruptedException);
         }
     }
 
-    private static Exception a(Exception exception) {
-        return exception;
+    private static Exception propagateException(Exception error) {
+        return error;
     }
 }
-

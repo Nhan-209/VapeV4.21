@@ -70,7 +70,7 @@ extends Mapping {
                 MMouseHelper mMouseHelper7 = this;
                 this.H = this.J(string7, bl7, clazz7);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MMinecraft.u(new String[1]);
             }
             return;
@@ -123,7 +123,7 @@ extends Mapping {
             MMouseHelper mMouseHelper15 = this;
             this.H = this.J(string15, bl15, clazz15);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MMinecraft.u(new String[1]);
         }
     }

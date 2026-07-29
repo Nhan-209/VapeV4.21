@@ -10,14 +10,14 @@ import gg.vape.wrapper.impl.PotionEffect;
 import java.util.HashMap;
 
 public class PotionEffectIconRenderer {
-    private static String f;
-    static HashMap<PotionEffectIconKey, PotionEffectIconRenderBackend> k;
+    private static String legacyMarker;
+    static HashMap<PotionEffectIconKey, PotionEffectIconRenderBackend> cache;
 
-    public static void f(PotionEffect ti_22, float f, float f2, int n, int n2, float f3, boolean bl) {
+    public static void render(PotionEffect effect, float x, float y, int width, int height, float opacity, boolean worldSpace) {
         try {
-            PotionEffectIconKey is_22 = new PotionEffectIconKey(ti_22.C());
-            PotionEffectIconRenderer.Y(ti_22.C());
-            k.get(is_22).l(f, f2, n, n2, f3, bl);
+            PotionEffectIconKey cacheKey = new PotionEffectIconKey(effect.C());
+            PotionEffectIconRenderer.ensureCached(effect.C());
+            cache.get(cacheKey).renderQueued(x, y, width, height, opacity, worldSpace);
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
@@ -25,41 +25,41 @@ public class PotionEffectIconRenderer {
     }
 
 
-    public static void Y(int n) {
-        PotionEffectIconKey is_22 = new PotionEffectIconKey(n);
-        if (!k.containsKey(is_22)) {
-            PotionEffectIconRenderer.z(PotionEffect.o(n, 100, 0), is_22);
+    public static void ensureCached(int effectId) {
+        PotionEffectIconKey cacheKey = new PotionEffectIconKey(effectId);
+        if (!cache.containsKey(cacheKey)) {
+            PotionEffectIconRenderer.createRenderer(PotionEffect.o(effectId, 100, 0), cacheKey);
         }
     }
 
-    public static void g(String string) {
-        f = string;
+    public static void setLegacyMarker(String legacyMarker) {
+        PotionEffectIconRenderer.legacyMarker = legacyMarker;
     }
 
-    public static String Q() {
-        return f;
+    public static String getLegacyMarker() {
+        return legacyMarker;
     }
 
-    public static void g() {
-        for (PotionEffectIconRenderBackend go_22 : k.values()) {
-            go_22.B();
+    public static void clear() {
+        for (PotionEffectIconRenderBackend renderer : cache.values()) {
+            renderer.dispose();
         }
-        k.clear();
+        cache.clear();
     }
 
-    public static void V(PotionEffect ti_22, float f, float f2, int n, int n2, float f3) {
-        PotionEffectIconRenderer.f(ti_22, f, f2, n, n2, f3, false);
+    public static void render(PotionEffect effect, float x, float y, int width, int height, float opacity) {
+        PotionEffectIconRenderer.render(effect, x, y, width, height, opacity, false);
     }
 
-    private static void z(PotionEffect ti_22, PotionEffectIconKey is_22) {
-        PotionEffectIconRenderBackend go_22 = GuiRenderPrimitives.d() ? new PotionEffectIconTexture() : new PotionEffectIcon();
-        go_22.a(ti_22);
-        k.put(is_22, go_22);
+    private static void createRenderer(PotionEffect effect, PotionEffectIconKey cacheKey) {
+        PotionEffectIconRenderBackend renderer = GuiRenderPrimitives.d() ? new PotionEffectIconTexture() : new PotionEffectIcon();
+        renderer.capture(effect);
+        cache.put(cacheKey, renderer);
     }
 
     static {
-        k = new HashMap();
-        PotionEffectIconRenderer.g(null);
+        cache = new HashMap();
+        PotionEffectIconRenderer.setLegacyMarker(null);
     }
 }
 

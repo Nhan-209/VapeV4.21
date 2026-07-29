@@ -42,6 +42,6 @@ extends Mapping {
         String string = b;
         MEntityRayTraceBridge mEntityRayTraceBridge = this;
         this.n = mEntityRayTraceBridge.Y(string, bl, clazz, classArray); 
-        GuiComponent.D(new GuiComponent[5]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 }

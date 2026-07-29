@@ -8,15 +8,15 @@ import java.util.List;
 public class InventoryFilterConditionGroupBuilder {
     private final List<InventoryFilterCondition<?>> conditions = new ArrayList();
 
-    public InventoryFilterConditionGroupBuilder O(InventoryFilterCondition<?> inventoryFilterCondition) {
-        this.conditions.add(inventoryFilterCondition);
+    public InventoryFilterConditionGroupBuilder addCondition(InventoryFilterCondition<?> condition) {
+        this.conditions.add(condition);
         return this;
     }
 
-    public InventoryFilterConditionGroup w() {
-        InventoryFilterConditionGroup inventoryFilterConditionGroup = new InventoryFilterConditionGroup();
-        InventoryFilterConditionGroup.i(inventoryFilterConditionGroup).addAll(this.conditions);
-        return inventoryFilterConditionGroup;
+    public InventoryFilterConditionGroup build() {
+        InventoryFilterConditionGroup group = new InventoryFilterConditionGroup();
+        InventoryFilterConditionGroup.mutableConditions(group).addAll(this.conditions);
+        return group;
     }
 }
 

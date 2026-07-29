@@ -9,45 +9,45 @@ import java.util.Arrays;
 import java.util.zip.Inflater;
 
 public class ImageParser {
-    private int T;
-    private int k;
-    private final byte z = 0;
-    private int g;
-    private final int i;
-    private int F;
-    private final int Q;
-    private final byte t;
-    private byte[] h;
-    private final byte l;
-    private int u;
-    private final byte[] q = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10};
-    private final byte o;
-    private int V;
-    private final int L;
-    private byte[] v;
-    private byte[] x;
-    private final byte[] P;
-    private final InputStream n;
-    private final int b;
-    private int A;
-    private final int C;
-    private final byte U;
-    private int Z;
+    private int currentChunkType;
+    private int bytesPerPixel;
+    private final byte zeroByte = 0;
+    private int colorType;
+    private final int idatChunkType;
+    private int currentChunkLength;
+    private final int iendChunkType;
+    private final byte indexedColorType = 3;
+    private byte[] palette;
+    private final byte truecolorType = 2;
+    private int remainingChunkBytes;
+    private final byte[] pngSignature = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10};
+    private final byte rgbaColorType = 4;
+    private int imageHeight;
+    private final int plteChunkType;
+    private byte[] transparencyData;
+    private byte[] paletteAlpha;
+    private final byte[] ioBuffer;
+    private final InputStream inputStream;
+    private final int trnsChunkType;
+    private int bitDepth;
+    private final int ihdrChunkType;
+    private final byte alphaColorType = 6;
+    private int imageWidth;
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 
-    private void n(ByteBuffer byteBuffer, byte[] byArray) {
+    private void writeAbgrPixels(ByteBuffer byteBuffer, byte[] byArray) {
         int n = byArray.length;
         for (int i = 1; i < n; i += 4) {
             byteBuffer.put(byArray[i + 3]).put(byArray[i + 2]).put(byArray[i + 1]).put(byArray[i]);
         }
     }
 
-    private void C(long l) throws IOException {
+    private void skipInputBytes(long l) throws IOException {
         while (l > 0L) {
-            long l2 = this.n.skip(l);
+            long l2 = this.inputStream.skip(l);
             if (l2 < 0L) {
                 throw new EOFException();
             }
@@ -55,54 +55,54 @@ public class ImageParser {
         }
     }
 
-    private boolean E(byte[] byArray) {
-        for (int i = 0; i < this.q.length; ++i) {
-            if (byArray[i] == this.q[i]) continue;
+    private boolean hasPngSignature(byte[] byArray) {
+        for (int i = 0; i < this.pngSignature.length; ++i) {
+            if (byArray[i] == this.pngSignature[i]) continue;
             return false;
         }
         return true;
     }
 
-    private void L(ByteBuffer byteBuffer, byte[] byArray) {
+    private void writeRgbPixels(ByteBuffer byteBuffer, byte[] byArray) {
         int n = byArray.length;
         for (int i = 1; i < n; i += 4) {
             byteBuffer.put(byArray[i]).put(byArray[i + 1]).put(byArray[i + 2]);
         }
     }
 
-    public int k() {
-        return this.V;
+    public int getHeight() {
+        return this.imageHeight;
     }
 
-    public ImageParser$Format Z(ImageParser$Format imageParser$Format) {
-        switch (this.g) {
+    public ImageParser$Format resolveOutputFormat(ImageParser$Format requestedFormat) {
+        switch (this.colorType) {
             case 2: {
-                switch (imageParser$Format) {
+                switch (requestedFormat) {
                     case ABGR: 
                     case RGBA: 
                     case BGRA: 
                     case RGB: {
-                        return imageParser$Format;
+                        return requestedFormat;
                     }
                 }
                 return ImageParser$Format.RGB;
             }
             case 6: {
-                switch (imageParser$Format) {
+                switch (requestedFormat) {
                     case ABGR: 
                     case RGBA: 
                     case BGRA: 
                     case RGB: {
-                        return imageParser$Format;
+                        return requestedFormat;
                     }
                 }
                 return ImageParser$Format.RGBA;
             }
             case 0: {
-                switch (imageParser$Format) {
+                switch (requestedFormat) {
                     case LUMINANCE: 
                     case ALPHA: {
-                        return imageParser$Format;
+                        return requestedFormat;
                     }
                 }
                 return ImageParser$Format.LUMINANCE;
@@ -111,11 +111,11 @@ public class ImageParser {
                 return ImageParser$Format.LUMINANCE_ALPHA;
             }
             case 3: {
-                switch (imageParser$Format) {
+                switch (requestedFormat) {
                     case ABGR: 
                     case RGBA: 
                     case BGRA: {
-                        return imageParser$Format;
+                        return requestedFormat;
                     }
                 }
                 return ImageParser$Format.RGBA;
@@ -124,25 +124,25 @@ public class ImageParser {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private void D(byte[] byArray, byte[] byArray2) throws IOException {
+    private void unfilterScanline(byte[] byArray, byte[] byArray2) throws IOException {
         switch (byArray[0]) {
             case 0: {
                 break;
             }
             case 1: {
-                this.P(byArray);
+                this.unfilterSub(byArray);
                 break;
             }
             case 2: {
-                this.P(byArray, byArray2);
+                this.unfilterUp(byArray, byArray2);
                 break;
             }
             case 3: {
-                this.J(byArray, byArray2);
+                this.unfilterAverage(byArray, byArray2);
                 break;
             }
             case 4: {
-                this.O(byArray, byArray2);
+                this.unfilterPaeth(byArray, byArray2);
                 break;
             }
             default: {
@@ -151,8 +151,8 @@ public class ImageParser {
         }
     }
 
-    private void P(byte[] byArray) {
-        int n = this.k;
+    private void unfilterSub(byte[] byArray) {
+        int n = this.bytesPerPixel;
         int n2 = byArray.length;
         for (int i = n + 1; i < n2; ++i) {
             int n3 = i;
@@ -160,37 +160,37 @@ public class ImageParser {
         }
     }
 
-    private int X(byte[] byArray, int n, int n2) throws IOException {
-        if (n2 > this.u) {
-            n2 = this.u;
+    private int readChunkBytes(byte[] byArray, int n, int n2) throws IOException {
+        if (n2 > this.remainingChunkBytes) {
+            n2 = this.remainingChunkBytes;
         }
-        this.g(byArray, n, n2);
-        this.u -= n2;
+        this.readFully(byArray, n, n2);
+        this.remainingChunkBytes -= n2;
         return n2;
     }
 
-    private void p(Inflater inflater) throws IOException {
-        while (this.u == 0) {
-            this.T();
-            this.g(1229209940);
+    private void refillInflaterInput(Inflater inflater) throws IOException {
+        while (this.remainingChunkBytes == 0) {
+            this.skipToNextChunk();
+            this.expectChunk(1229209940);
         }
-        int n = this.X(this.P, 0, this.P.length);
-        inflater.setInput(this.P, 0, n);
+        int n = this.readChunkBytes(this.ioBuffer, 0, this.ioBuffer.length);
+        inflater.setInput(this.ioBuffer, 0, n);
     }
 
-    public void u(ByteBuffer byteBuffer, int n, ImageParser$Format imageParser$Format) throws IOException {
-        if (n <= 0) {
+    public void decodeFlipped(ByteBuffer byteBuffer, int stride, ImageParser$Format outputFormat) throws IOException {
+        if (stride <= 0) {
             throw new IllegalArgumentException("stride");
         }
-        int n2 = byteBuffer.position();
-        int n3 = (this.V - 1) * n;
-        byteBuffer.position(n2 + n3);
-        this.i(byteBuffer, -n, imageParser$Format);
-        byteBuffer.position(byteBuffer.position() + n3);
+        int initialPosition = byteBuffer.position();
+        int rowOffset = (this.imageHeight - 1) * stride;
+        byteBuffer.position(initialPosition + rowOffset);
+        this.decode(byteBuffer, -stride, outputFormat);
+        byteBuffer.position(byteBuffer.position() + rowOffset);
     }
 
-    private void P(byte[] byArray, byte[] byArray2) {
-        int n = this.k;
+    private void unfilterUp(byte[] byArray, byte[] byArray2) {
+        int n = this.bytesPerPixel;
         int n2 = byArray.length;
         for (int i = 1; i < n2; ++i) {
             int n3 = i;
@@ -202,58 +202,54 @@ public class ImageParser {
      * Enabled aggressive block sorting
      */
     public ImageParser(InputStream inputStream) throws IOException {
-        this.C = 1229472850;
-        this.L = 1347179589;
-        this.b = 1951551059;
-        this.i = 1229209940;
-        this.Q = 1229278788;
-        this.l = (byte)2;
-        this.t = (byte)3;
-        this.o = (byte)4;
-        this.U = (byte)6;
-        this.n = inputStream;
-        this.P = new byte[4096];
-        this.g(this.P, 0, this.q.length);
-        if (!this.E(this.P)) {
+        this.ihdrChunkType = 1229472850;
+        this.plteChunkType = 1347179589;
+        this.trnsChunkType = 1951551059;
+        this.idatChunkType = 1229209940;
+        this.iendChunkType = 1229278788;
+        this.inputStream = inputStream;
+        this.ioBuffer = new byte[4096];
+        this.readFully(this.ioBuffer, 0, this.pngSignature.length);
+        if (!this.hasPngSignature(this.ioBuffer)) {
             throw new IOException("Not a valid PNG file");
         }
-        this.g(1229472850);
-        this.G();
-        this.T();
+        this.expectChunk(1229472850);
+        this.readIhdrChunk();
+        this.skipToNextChunk();
         block5: while (true) {
-            this.Y();
-            switch (this.T) {
+            this.readChunkHeader();
+            switch (this.currentChunkType) {
                 case 1229209940: {
                     break block5;
                 }
                 case 1347179589: {
-                    this.t();
+                    this.readPaletteChunk();
                     break;
                 }
                 case 1951551059: {
-                    this.U();
+                    this.readTransparencyChunk();
                 }
             }
-            this.T();
+            this.skipToNextChunk();
         }
-        if (this.g == 3 && this.h == null) {
+        if (this.colorType == 3 && this.palette == null) {
             throw new IOException("Missing PLTE chunk");
         }
     }
 
-    public boolean O() {
-        return this.X() || this.x != null || this.v != null;
+    public boolean hasTransparency() {
+        return this.hasAlphaChannel() || this.paletteAlpha != null || this.transparencyData != null;
     }
 
-    public boolean X() {
-        return this.g == 6 || this.g == 4;
+    public boolean hasAlphaChannel() {
+        return this.colorType == 6 || this.colorType == 4;
     }
 
-    public int q() {
-        return this.Z;
+    public int getWidth() {
+        return this.imageWidth;
     }
 
-    private void l(Inflater inflater, byte[] byArray, int n, int n2) throws IOException {
+    private void inflateFully(Inflater inflater, byte[] byArray, int n, int n2) throws IOException {
         try {
             do {
                 int n3;
@@ -262,7 +258,7 @@ public class ImageParser {
                         throw new EOFException();
                     }
                     if (inflater.needsInput()) {
-                        this.p(inflater);
+                        this.refillInflaterInput(inflater);
                         continue;
                     }
                     throw new IOException("Can't inflate " + n2 + " bytes");
@@ -276,54 +272,54 @@ public class ImageParser {
         }
     }
 
-    private void F(ByteBuffer byteBuffer, byte[] byArray) {
-        if (this.x != null) {
+    private void writeBgraPalettePixels(ByteBuffer byteBuffer, byte[] byArray) {
+        if (this.paletteAlpha != null) {
             int n = byArray.length;
             for (int i = 1; i < n; ++i) {
                 int n2 = byArray[i] & 0xFF;
-                byte by = this.h[n2 * 3 + 0];
-                byte by2 = this.h[n2 * 3 + 1];
-                byte by3 = this.h[n2 * 3 + 2];
-                byte by4 = this.x[n2];
+                byte by = this.palette[n2 * 3 + 0];
+                byte by2 = this.palette[n2 * 3 + 1];
+                byte by3 = this.palette[n2 * 3 + 2];
+                byte by4 = this.paletteAlpha[n2];
                 byteBuffer.put(by3).put(by2).put(by).put(by4);
             }
         } else {
             int n = byArray.length;
             for (int i = 1; i < n; ++i) {
                 int n3 = byArray[i] & 0xFF;
-                byte by = this.h[n3 * 3 + 0];
-                byte by5 = this.h[n3 * 3 + 1];
-                byte by6 = this.h[n3 * 3 + 2];
+                byte by = this.palette[n3 * 3 + 0];
+                byte by5 = this.palette[n3 * 3 + 1];
+                byte by6 = this.palette[n3 * 3 + 2];
                 byte by7 = -1;
                 byteBuffer.put(by6).put(by5).put(by).put(by7);
             }
         }
     }
 
-    private void n(int n) throws IOException {
-        if (this.F != n) {
+    private void requireChunkLength(int n) throws IOException {
+        if (this.currentChunkLength != n) {
             throw new IOException("Chunk has wrong size");
         }
     }
 
-    private void c(ByteBuffer byteBuffer, byte[] byArray) {
-        if (this.x != null) {
+    private void writeAbgrPalettePixels(ByteBuffer byteBuffer, byte[] byArray) {
+        if (this.paletteAlpha != null) {
             int n = byArray.length;
             for (int i = 1; i < n; ++i) {
                 int n2 = byArray[i] & 0xFF;
-                byte by = this.h[n2 * 3 + 0];
-                byte by2 = this.h[n2 * 3 + 1];
-                byte by3 = this.h[n2 * 3 + 2];
-                byte by4 = this.x[n2];
+                byte by = this.palette[n2 * 3 + 0];
+                byte by2 = this.palette[n2 * 3 + 1];
+                byte by3 = this.palette[n2 * 3 + 2];
+                byte by4 = this.paletteAlpha[n2];
                 byteBuffer.put(by4).put(by3).put(by2).put(by);
             }
         } else {
             int n = byArray.length;
             for (int i = 1; i < n; ++i) {
                 int n3 = byArray[i] & 0xFF;
-                byte by = this.h[n3 * 3 + 0];
-                byte by5 = this.h[n3 * 3 + 1];
-                byte by6 = this.h[n3 * 3 + 2];
+                byte by = this.palette[n3 * 3 + 0];
+                byte by5 = this.palette[n3 * 3 + 1];
+                byte by6 = this.palette[n3 * 3 + 2];
                 byte by7 = -1;
                 byteBuffer.put(by7).put(by6).put(by5).put(by);
             }
@@ -333,117 +329,117 @@ public class ImageParser {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void i(ByteBuffer byteBuffer, int n, ImageParser$Format imageParser$Format) throws IOException {
+    public void decode(ByteBuffer byteBuffer, int stride, ImageParser$Format outputFormat) throws IOException {
         int n2 = byteBuffer.position();
-        int n3 = (this.Z * this.A + 7) / 8 * this.k;
+        int n3 = (this.imageWidth * this.bitDepth + 7) / 8 * this.bytesPerPixel;
         byte[] byArray = new byte[n3 + 1];
         byte[] byArray2 = new byte[n3 + 1];
-        byte[] byArray3 = this.A < 8 ? new byte[this.Z + 1] : null;
+        byte[] byArray3 = this.bitDepth < 8 ? new byte[this.imageWidth + 1] : null;
         Inflater inflater = new Inflater();
         try {
-            for (int i = 0; i < this.V; ++i) {
-                this.l(inflater, byArray, 0, byArray.length);
-                this.D(byArray, byArray2);
-                byteBuffer.position(n2 + i * n);
-                block1 : switch (this.g) {
+            for (int i = 0; i < this.imageHeight; ++i) {
+                this.inflateFully(inflater, byArray, 0, byArray.length);
+                this.unfilterScanline(byArray, byArray2);
+                byteBuffer.position(n2 + i * stride);
+                block1 : switch (this.colorType) {
                     case 2: {
-                        switch (imageParser$Format) {
+                        switch (outputFormat) {
                             case ABGR: {
-                                this.R(byteBuffer, byArray);
+                                this.writeAbgrPixelsWithTransparency(byteBuffer, byArray);
                                 break block1;
                             }
                             case RGBA: {
-                                this.j(byteBuffer, byArray);
+                                this.writeRgbaPixelsWithTransparency(byteBuffer, byArray);
                                 break block1;
                             }
                             case BGRA: {
-                                this.z(byteBuffer, byArray);
+                                this.writeBgraPixelsWithTransparency(byteBuffer, byArray);
                                 break block1;
                             }
                             case RGB: {
-                                this.f(byteBuffer, byArray);
+                                this.writeRawPixels(byteBuffer, byArray);
                                 break block1;
                             }
                         }
                         throw new UnsupportedOperationException("Unsupported format for this image");
                     }
                     case 6: {
-                        switch (imageParser$Format) {
+                        switch (outputFormat) {
                             case ABGR: {
-                                this.n(byteBuffer, byArray);
+                                this.writeAbgrPixels(byteBuffer, byArray);
                                 break block1;
                             }
                             case RGBA: {
-                                this.f(byteBuffer, byArray);
+                                this.writeRawPixels(byteBuffer, byArray);
                                 break block1;
                             }
                             case WHITE: {
-                                this.O(byteBuffer, byArray);
+                                this.writeWhitePixels(byteBuffer, byArray);
                                 break block1;
                             }
                             case BGRA: {
-                                this.e(byteBuffer, byArray);
+                                this.writeBgraPixels(byteBuffer, byArray);
                                 break block1;
                             }
                             case RGB: {
-                                this.L(byteBuffer, byArray);
+                                this.writeRgbPixels(byteBuffer, byArray);
                                 break block1;
                             }
                         }
                         throw new UnsupportedOperationException("Unsupported format for this image");
                     }
                     case 0: {
-                        switch (imageParser$Format) {
+                        switch (outputFormat) {
                             case LUMINANCE: 
                             case ALPHA: {
-                                this.f(byteBuffer, byArray);
+                                this.writeRawPixels(byteBuffer, byArray);
                                 break block1;
                             }
                         }
                         throw new UnsupportedOperationException("Unsupported format for this image");
                     }
                     case 4: {
-                        switch (imageParser$Format) {
+                        switch (outputFormat) {
                             case LUMINANCE_ALPHA: {
-                                this.f(byteBuffer, byArray);
+                                this.writeRawPixels(byteBuffer, byArray);
                                 break block1;
                             }
                         }
                         throw new UnsupportedOperationException("Unsupported format for this image");
                     }
                     case 3: {
-                        switch (this.A) {
+                        switch (this.bitDepth) {
                             case 8: {
                                 byArray3 = byArray;
                                 break;
                             }
                             case 4: {
-                                this.C(byArray, byArray3);
+                                this.unpack4BitSamples(byArray, byArray3);
                                 break;
                             }
                             case 2: {
-                                this.f(byArray, byArray3);
+                                this.unpack2BitSamples(byArray, byArray3);
                                 break;
                             }
                             case 1: {
-                                this.q(byArray, byArray3);
+                                this.unpack1BitSamples(byArray, byArray3);
                                 break;
                             }
                             default: {
                                 throw new UnsupportedOperationException("Unsupported bitdepth for this image");
                             }
                         }
-                        switch (imageParser$Format) {
+                        switch (outputFormat) {
                             case ABGR: {
-                                this.c(byteBuffer, byArray3);
+                                this.writeAbgrPalettePixels(byteBuffer, byArray3);
                                 break block1;
                             }
                             case RGBA: {
-                                this.T(byteBuffer, byArray3);
+                                this.writeRgbaPalettePixels(byteBuffer, byArray3);
                                 break block1;
                             }
                             case BGRA: {
-                                this.F(byteBuffer, byArray3);
+                                this.writeBgraPalettePixels(byteBuffer, byArray3);
                                 break block1;
                             }
                         }
@@ -463,101 +459,101 @@ public class ImageParser {
         }
     }
 
-    private void O(ByteBuffer byteBuffer, byte[] byArray) {
+    private void writeWhitePixels(ByteBuffer byteBuffer, byte[] byArray) {
         int n = byArray.length;
         for (int i = 1; i < n; i += 4) {
             byteBuffer.put((byte)-1).put((byte)-1).put((byte)-1).put(byArray[i + 3]);
         }
     }
 
-    private void G() throws IOException {
-        this.n(13);
-        this.X(this.P, 0, 13);
-        this.Z = this.h(this.P, 0);
-        this.V = this.h(this.P, 4);
-        this.A = this.P[8] & 0xFF;
-        this.g = this.P[9] & 0xFF;
-        block0 : switch (this.g) {
+    private void readIhdrChunk() throws IOException {
+        this.requireChunkLength(13);
+        this.readChunkBytes(this.ioBuffer, 0, 13);
+        this.imageWidth = this.readInt32(this.ioBuffer, 0);
+        this.imageHeight = this.readInt32(this.ioBuffer, 4);
+        this.bitDepth = this.ioBuffer[8] & 0xFF;
+        this.colorType = this.ioBuffer[9] & 0xFF;
+        block0 : switch (this.colorType) {
             case 0: {
-                if (this.A != 8) {
-                    throw new IOException("Unsupported bit depth: " + this.A);
+                if (this.bitDepth != 8) {
+                    throw new IOException("Unsupported bit depth: " + this.bitDepth);
                 }
-                this.k = 1;
+                this.bytesPerPixel = 1;
                 break;
             }
             case 4: {
-                if (this.A != 8) {
-                    throw new IOException("Unsupported bit depth: " + this.A);
+                if (this.bitDepth != 8) {
+                    throw new IOException("Unsupported bit depth: " + this.bitDepth);
                 }
-                this.k = 2;
+                this.bytesPerPixel = 2;
                 break;
             }
             case 2: {
-                if (this.A != 8) {
-                    throw new IOException("Unsupported bit depth: " + this.A);
+                if (this.bitDepth != 8) {
+                    throw new IOException("Unsupported bit depth: " + this.bitDepth);
                 }
-                this.k = 3;
+                this.bytesPerPixel = 3;
                 break;
             }
             case 6: {
-                if (this.A != 8) {
-                    throw new IOException("Unsupported bit depth: " + this.A);
+                if (this.bitDepth != 8) {
+                    throw new IOException("Unsupported bit depth: " + this.bitDepth);
                 }
-                this.k = 4;
+                this.bytesPerPixel = 4;
                 break;
             }
             case 3: {
-                switch (this.A) {
+                switch (this.bitDepth) {
                     case 1: 
                     case 2: 
                     case 4: 
                     case 8: {
-                        this.k = 1;
+                        this.bytesPerPixel = 1;
                         break block0;
                     }
                 }
-                throw new IOException("Unsupported bit depth: " + this.A);
+                throw new IOException("Unsupported bit depth: " + this.bitDepth);
             }
             default: {
-                throw new IOException("unsupported color format: " + this.g);
+                throw new IOException("unsupported color format: " + this.colorType);
             }
         }
-        if (this.P[10] != 0) {
+        if (this.ioBuffer[10] != 0) {
             throw new IOException("unsupported compression method");
         }
-        if (this.P[11] != 0) {
+        if (this.ioBuffer[11] != 0) {
             throw new IOException("unsupported filtering method");
         }
-        if (this.P[12] != 0) {
+        if (this.ioBuffer[12] != 0) {
             throw new IOException("unsupported interlace method");
         }
     }
 
-    private void T(ByteBuffer byteBuffer, byte[] byArray) {
-        if (this.x != null) {
+    private void writeRgbaPalettePixels(ByteBuffer byteBuffer, byte[] byArray) {
+        if (this.paletteAlpha != null) {
             int n = byArray.length;
             for (int i = 1; i < n; ++i) {
                 int n2 = byArray[i] & 0xFF;
-                byte by = this.h[n2 * 3 + 0];
-                byte by2 = this.h[n2 * 3 + 1];
-                byte by3 = this.h[n2 * 3 + 2];
-                byte by4 = this.x[n2];
+                byte by = this.palette[n2 * 3 + 0];
+                byte by2 = this.palette[n2 * 3 + 1];
+                byte by3 = this.palette[n2 * 3 + 2];
+                byte by4 = this.paletteAlpha[n2];
                 byteBuffer.put(by).put(by2).put(by3).put(by4);
             }
         } else {
             int n = byArray.length;
             for (int i = 1; i < n; ++i) {
                 int n3 = byArray[i] & 0xFF;
-                byte by = this.h[n3 * 3 + 0];
-                byte by5 = this.h[n3 * 3 + 1];
-                byte by6 = this.h[n3 * 3 + 2];
+                byte by = this.palette[n3 * 3 + 0];
+                byte by5 = this.palette[n3 * 3 + 1];
+                byte by6 = this.palette[n3 * 3 + 2];
                 byte by7 = -1;
                 byteBuffer.put(by).put(by5).put(by6).put(by7);
             }
         }
     }
 
-    private void C(byte[] byArray, byte[] byArray2) {
+    private void unpack4BitSamples(byte[] byArray, byte[] byArray2) {
         int n = byArray2.length;
         for (int i = 1; i < n; i += 2) {
             int n2 = byArray[1 + (i >> 1)] & 0xFF;
@@ -571,9 +567,9 @@ public class ImageParser {
         }
     }
 
-    private void J(byte[] byArray, byte[] byArray2) {
+    private void unfilterAverage(byte[] byArray, byte[] byArray2) {
         int n;
-        int n2 = this.k;
+        int n2 = this.bytesPerPixel;
         for (n = 1; n <= n2; ++n) {
             int n3 = n;
             byArray[n3] = (byte)(byArray[n3] + (byte)((byArray2[n] & 0xFF) >>> 1));
@@ -586,11 +582,11 @@ public class ImageParser {
         }
     }
 
-    private void R(ByteBuffer byteBuffer, byte[] byArray) {
-        if (this.v != null) {
-            byte by = this.v[1];
-            byte by2 = this.v[3];
-            byte by3 = this.v[5];
+    private void writeAbgrPixelsWithTransparency(ByteBuffer byteBuffer, byte[] byArray) {
+        if (this.transparencyData != null) {
+            byte by = this.transparencyData[1];
+            byte by2 = this.transparencyData[3];
+            byte by3 = this.transparencyData[5];
             int n = byArray.length;
             for (int i = 1; i < n; i += 3) {
                 byte by4 = byArray[i];
@@ -610,14 +606,14 @@ public class ImageParser {
         }
     }
 
-    private void g(int n) throws IOException {
-        this.Y();
-        if (this.T != n) {
+    private void expectChunk(int n) throws IOException {
+        this.readChunkHeader();
+        if (this.currentChunkType != n) {
             throw new IOException("Expected chunk: " + Integer.toHexString(n));
         }
     }
 
-    private void q(byte[] byArray, byte[] byArray2) {
+    private void unpack1BitSamples(byte[] byArray, byte[] byArray2) {
         int n = byArray2.length;
         for (int i = 1; i < n; i += 8) {
             int n2 = byArray[1 + (i >> 3)] & 0xFF;
@@ -649,19 +645,19 @@ public class ImageParser {
         }
     }
 
-    public boolean u() {
-        return this.g == 6 || this.g == 2 || this.g == 3;
+    public boolean isColorTypeSupported() {
+        return this.colorType == 6 || this.colorType == 2 || this.colorType == 3;
     }
 
-    private void f(ByteBuffer byteBuffer, byte[] byArray) {
+    private void writeRawPixels(ByteBuffer byteBuffer, byte[] byArray) {
         byteBuffer.put(byArray, 1, byArray.length - 1);
     }
 
-    private void z(ByteBuffer byteBuffer, byte[] byArray) {
-        if (this.v != null) {
-            byte by = this.v[1];
-            byte by2 = this.v[3];
-            byte by3 = this.v[5];
+    private void writeBgraPixelsWithTransparency(ByteBuffer byteBuffer, byte[] byArray) {
+        if (this.transparencyData != null) {
+            byte by = this.transparencyData[1];
+            byte by2 = this.transparencyData[3];
+            byte by3 = this.transparencyData[5];
             int n = byArray.length;
             for (int i = 1; i < n; i += 3) {
                 byte by4 = byArray[i];
@@ -681,39 +677,39 @@ public class ImageParser {
         }
     }
 
-    private void g(byte[] byArray, int n, int n2) throws IOException {
+    private void readFully(byte[] byArray, int n, int n2) throws IOException {
         int n3;
         do {
-            if ((n3 = this.n.read(byArray, n, n2)) < 0) {
+            if ((n3 = this.inputStream.read(byArray, n, n2)) < 0) {
                 throw new EOFException();
             }
             n += n3;
         } while ((n2 -= n3) > 0);
     }
 
-    private void e(ByteBuffer byteBuffer, byte[] byArray) {
+    private void writeBgraPixels(ByteBuffer byteBuffer, byte[] byArray) {
         int n = byArray.length;
         for (int i = 1; i < n; i += 4) {
             byteBuffer.put(byArray[i + 2]).put(byArray[i + 1]).put(byArray[i]).put(byArray[i + 3]);
         }
     }
 
-    private void T() throws IOException {
-        if (this.u > 0) {
-            this.C(this.u + 4);
+    private void skipToNextChunk() throws IOException {
+        if (this.remainingChunkBytes > 0) {
+            this.skipInputBytes(this.remainingChunkBytes + 4);
         } else {
-            this.g(this.P, 0, 4);
+            this.readFully(this.ioBuffer, 0, 4);
         }
-        this.u = 0;
-        this.F = 0;
-        this.T = 0;
+        this.remainingChunkBytes = 0;
+        this.currentChunkLength = 0;
+        this.currentChunkType = 0;
     }
 
-    private int h(byte[] byArray, int n) {
+    private int readInt32(byte[] byArray, int n) {
         return byArray[n] << 24 | (byArray[n + 1] & 0xFF) << 16 | (byArray[n + 2] & 0xFF) << 8 | byArray[n + 3] & 0xFF;
     }
 
-    private void f(byte[] byArray, byte[] byArray2) {
+    private void unpack2BitSamples(byte[] byArray, byte[] byArray2) {
         int n = byArray2.length;
         for (int i = 1; i < n; i += 4) {
             int n2 = byArray[1 + (i >> 2)] & 0xFF;
@@ -733,27 +729,27 @@ public class ImageParser {
         }
     }
 
-    private void Y() throws IOException {
-        this.g(this.P, 0, 8);
-        this.F = this.h(this.P, 0);
-        this.T = this.h(this.P, 4);
-        this.u = this.F;
+    private void readChunkHeader() throws IOException {
+        this.readFully(this.ioBuffer, 0, 8);
+        this.currentChunkLength = this.readInt32(this.ioBuffer, 0);
+        this.currentChunkType = this.readInt32(this.ioBuffer, 4);
+        this.remainingChunkBytes = this.currentChunkLength;
     }
 
-    public void L(byte by, byte by2, byte by3) {
-        if (this.X()) {
+    public void setTransparentColor(byte red, byte green, byte blue) {
+        if (this.hasAlphaChannel()) {
             throw new UnsupportedOperationException("image has an alpha channel");
         }
-        byte[] byArray = this.h;
+        byte[] byArray = this.palette;
         if (byArray == null) {
-            this.v = new byte[]{0, by, 0, by2, 0, by3};
+            this.transparencyData = new byte[]{0, red, 0, green, 0, blue};
         } else {
-            this.x = new byte[byArray.length / 3];
+            this.paletteAlpha = new byte[byArray.length / 3];
             int n = 0;
             int n2 = 0;
             while (n < byArray.length) {
-                if (byArray[n] != by || byArray[n + 1] != by2 || byArray[n + 2] != by3) {
-                    this.x[n2] = -1;
+                if (byArray[n] != red || byArray[n + 1] != green || byArray[n + 2] != blue) {
+                    this.paletteAlpha[n2] = -1;
                 }
                 n += 3;
                 ++n2;
@@ -761,11 +757,11 @@ public class ImageParser {
         }
     }
 
-    private void j(ByteBuffer byteBuffer, byte[] byArray) {
-        if (this.v != null) {
-            byte by = this.v[1];
-            byte by2 = this.v[3];
-            byte by3 = this.v[5];
+    private void writeRgbaPixelsWithTransparency(ByteBuffer byteBuffer, byte[] byArray) {
+        if (this.transparencyData != null) {
+            byte by = this.transparencyData[1];
+            byte by2 = this.transparencyData[3];
+            byte by3 = this.transparencyData[5];
             int n = byArray.length;
             for (int i = 1; i < n; i += 3) {
                 byte by4 = byArray[i];
@@ -785,43 +781,43 @@ public class ImageParser {
         }
     }
 
-    private void t() throws IOException {
-        int n = this.F / 3;
-        if (n < 1 || n > 256 || this.F % 3 != 0) {
+    private void readPaletteChunk() throws IOException {
+        int n = this.currentChunkLength / 3;
+        if (n < 1 || n > 256 || this.currentChunkLength % 3 != 0) {
             throw new IOException("PLTE chunk has wrong length");
         }
-        this.h = new byte[n * 3];
-        this.X(this.h, 0, this.h.length);
+        this.palette = new byte[n * 3];
+        this.readChunkBytes(this.palette, 0, this.palette.length);
     }
 
-    private void U() throws IOException {
-        switch (this.g) {
+    private void readTransparencyChunk() throws IOException {
+        switch (this.colorType) {
             case 0: {
-                this.n(2);
-                this.v = new byte[2];
-                this.X(this.v, 0, 2);
+                this.requireChunkLength(2);
+                this.transparencyData = new byte[2];
+                this.readChunkBytes(this.transparencyData, 0, 2);
                 break;
             }
             case 2: {
-                this.n(6);
-                this.v = new byte[6];
-                this.X(this.v, 0, 6);
+                this.requireChunkLength(6);
+                this.transparencyData = new byte[6];
+                this.readChunkBytes(this.transparencyData, 0, 6);
                 break;
             }
             case 3: {
-                if (this.h == null) {
+                if (this.palette == null) {
                     throw new IOException("tRNS chunk without PLTE chunk");
                 }
-                this.x = new byte[this.h.length / 3];
-                Arrays.fill(this.x, (byte)-1);
-                this.X(this.x, 0, this.x.length);
+                this.paletteAlpha = new byte[this.palette.length / 3];
+                Arrays.fill(this.paletteAlpha, (byte)-1);
+                this.readChunkBytes(this.paletteAlpha, 0, this.paletteAlpha.length);
             }
         }
     }
 
-    private void O(byte[] byArray, byte[] byArray2) {
+    private void unfilterPaeth(byte[] byArray, byte[] byArray2) {
         int n;
-        int n2 = this.k;
+        int n2 = this.bytesPerPixel;
         for (n = 1; n <= n2; ++n) {
             int n3 = n;
             byArray[n3] = (byte)(byArray[n3] + byArray2[n]);
@@ -854,4 +850,3 @@ public class ImageParser {
         }
     }
 }
-

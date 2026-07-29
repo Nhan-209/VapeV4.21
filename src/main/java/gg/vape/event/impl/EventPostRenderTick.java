@@ -23,8 +23,8 @@ extends EventRenderTickBase {
     public boolean fire() {
         GuiScreenNativeCallbackBridge.drawScreen(null, 0, 0, 0.0f);
         if (GuiRenderPrimitives.d()) {
-            RenderThreadTaskQueue.t();
-            RenderBatchManager.M().G(this.getTicks());
+            RenderThreadTaskQueue.runPendingTasks();
+            RenderBatchManager.getInstance().flushGuiBatches(this.getTicks());
         }
         boolean bl = super.fire();
         GuiRenderPrimitives.l(b);

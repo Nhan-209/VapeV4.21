@@ -21,132 +21,117 @@ import gg.vape.wrapper.impl.RayTraceResult;
 
 public class DamageResponsiveAnimationsMode
 extends AnimationsMode {
-    private long A;
-    private boolean P;
-    private boolean V = false;
+    private long releaseTime;
+    private boolean damageTriggered;
+    private boolean useKeyPressed;
 
-    private void k(EntityPlayerSP entityPlayerSP) {
-        if (((Animations)this.getParent()).n$src$Z$uk21qf() && !gg.vape.config.ClientSettings.V()) {
+    private void triggerUseForTarget(EntityPlayerSP player) {
+        if (((Animations)this.getParent()).requiresMouseDown() && !gg.vape.config.ClientSettings.V()) {
             return;
         }
-        RayTraceResult rayTraceResult = RotationManager.b.n();
+        RayTraceResult rayTraceResult = RotationManager.INSTANCE.getExtendedReachRayTrace();
         if (rayTraceResult.isNotNull() && rayTraceResult.getEntity().isInstance(MappedClasses.zm)) {
-            EntityLivingBase entityLivingBase = new EntityLivingBase(rayTraceResult.getEntity());
-            int n = entityLivingBase.c$src$I$15a9iwo();
-            int n2 = AttackPacketTimingTracker.a.Z() + 1;
-            if (!this.V && !entityPlayerSP.o$src$Z$1iprrmi() && n <= n2 + 1 && n <= n2 && ((Animations)this.getParent()).j$src$Lgg_vape_wrapper_impl_EntityLivingBase_$m2mrxi() != null) {
-                boolean bl = true;
-                DamageResponsiveAnimationsMode damageResponsiveAnimationsMode = this;
-                damageResponsiveAnimationsMode.o(bl);
-                this.A = System.currentTimeMillis() + 50L * (long)(n2 + 1);
+            EntityLivingBase target = new EntityLivingBase(rayTraceResult.getEntity());
+            int hurtTime = target.c$src$I$15a9iwo();
+            int expectedHurtTime = AttackPacketTimingTracker.INSTANCE.getExpectedHurtTimeTicks() + 1;
+            if (!this.useKeyPressed && !player.o$src$Z$1iprrmi() && hurtTime <= expectedHurtTime + 1 && hurtTime <= expectedHurtTime && ((Animations)this.getParent()).findDefaultTarget() != null) {
+                this.setUseKeyPressed(true);
+                this.releaseTime = System.currentTimeMillis() + 50L * (long)(expectedHurtTime + 1);
             }
         }
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
-        boolean bl;
-        boolean bl2;
-        int[] nArray = ClientSettings.A();
-        if (Minecraft.thePlayer().isNull() || !((Animations)this.getParent()).a$src$Z$ucwq0q()) {
+    public void onTick(EventPreTick event) {
+        if (Minecraft.thePlayer().isNull() || !((Animations)this.getParent()).isHoldingSword()) {
             return;
         }
         if (Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        EntityLivingBase entityLivingBase = ((Animations)this.getParent()).j$src$Lgg_vape_wrapper_impl_EntityLivingBase_$m2mrxi();
-        boolean bl3 = eventPreTick.getThePlayer().c$src$I$15a9iwo() > AttackPacketTimingTracker.a.Z() + 1;
-        boolean bl4 = bl2 = this.A > 0L && System.currentTimeMillis() >= this.A;
-        if (entityLivingBase == null || bl3 || bl2) {
-            boolean bl5 = false;
-            DamageResponsiveAnimationsMode damageResponsiveAnimationsMode = this;
-            damageResponsiveAnimationsMode.o(bl5);
+        EntityLivingBase target = ((Animations)this.getParent()).findDefaultTarget();
+        boolean playerHurtTimeExpired = event.getThePlayer().c$src$I$15a9iwo() > AttackPacketTimingTracker.INSTANCE.getExpectedHurtTimeTicks() + 1;
+        boolean releaseTimeReached = this.releaseTime > 0L && System.currentTimeMillis() >= this.releaseTime;
+        if (target == null || playerHurtTimeExpired || releaseTimeReached) {
+            this.setUseKeyPressed(false);
             return;
         }
-        if (((Animations)this.getParent()).n$src$Z$uk21qf() && !gg.vape.config.ClientSettings.V()) {
+        if (((Animations)this.getParent()).requiresMouseDown() && !gg.vape.config.ClientSettings.V()) {
             return;
         }
-        int n = eventPreTick.getThePlayer().c$src$I$15a9iwo();
-        int n2 = AttackPacketTimingTracker.a.Z() + 2;
-        boolean bl6 = bl = entityLivingBase.c$src$I$15a9iwo() <= n2 + 2;
-        if (!(this.V && this.P && bl || this.V || n > n2 + 1 || n <= 0)) {
-            boolean bl7 = true;
-            DamageResponsiveAnimationsMode damageResponsiveAnimationsMode = this;
-            damageResponsiveAnimationsMode.o(bl7);
-            this.P = true;
-            this.A = System.currentTimeMillis() + 50L * (long)n2;
+        int playerHurtTime = event.getThePlayer().c$src$I$15a9iwo();
+        int expectedHurtTime = AttackPacketTimingTracker.INSTANCE.getExpectedHurtTimeTicks() + 2;
+        boolean targetCanBeHit = target.c$src$I$15a9iwo() <= expectedHurtTime + 2;
+        if (!(this.useKeyPressed && this.damageTriggered && targetCanBeHit || this.useKeyPressed || playerHurtTime > expectedHurtTime + 1 || playerHurtTime <= 0)) {
+            this.setUseKeyPressed(true);
+            this.damageTriggered = true;
+            this.releaseTime = System.currentTimeMillis() + 50L * (long)expectedHurtTime;
         }
     }
 
     @Override
-    public boolean i() {
+    public boolean shouldBlock() {
         return false;
     }
 
     @Override
-    public boolean M() {
-        return this.V;
+    public boolean isBlocking() {
+        return this.useKeyPressed;
     }
 
 
-    public DamageResponsiveAnimationsMode(Mod mod, String string) {
-        super(mod, string);
+    public DamageResponsiveAnimationsMode(Mod parent, String name) {
+        super(parent, name);
     }
 
     @EventHandler(A=EventPriority.LOW)
-    public void a(SyntheticAttackRequestEvent syntheticAttackRequestEvent) {
-        int[] nArray = ClientSettings.A();
-        if (syntheticAttackRequestEvent.isCanceled() || !((Animations)this.getParent()).a$src$Z$ucwq0q()) {
+    public void onSyntheticAttack(SyntheticAttackRequestEvent event) {
+        if (event.isCanceled() || !((Animations)this.getParent()).isHoldingSword()) {
             return;
         }
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return;
         }
-        this.k(entityPlayerSP);
+        this.triggerUseForTarget(player);
     }
 
-    public void o(boolean bl) {
-        int[] nArray = ClientSettings.A();
-        if (this.V != bl) {
-            this.V = bl;
-            this.A = 0L;
-            this.P = false;
-            Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().setPressed(bl);
-        }
-    }
-
-    @EventHandler
-    public void onUpdate(EventLivingUpdate eventLivingUpdate) {
-        if (!((Animations)this.getParent()).a$src$Z$ucwq0q()) {
-            return;
-        }
-        this.A = System.currentTimeMillis();
-        if (eventLivingUpdate.getEntity().getObject().equals(Minecraft.thePlayer().getObject())) {
-            EventTickBase.S.execute(this::lambda$onDamaged$0);
+    public void setUseKeyPressed(boolean pressed) {
+        if (this.useKeyPressed != pressed) {
+            this.useKeyPressed = pressed;
+            this.releaseTime = 0L;
+            this.damageTriggered = false;
+            Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().setPressed(pressed);
         }
     }
 
     @EventHandler
-    public void c(EventMouseButton eventMouseButton) {
-        int n = -100 + eventMouseButton.getButton();
-        int[] nArray = ClientSettings.A();
-        if (!eventMouseButton.getButtonState() || !((Animations)this.getParent()).a$src$Z$ucwq0q()) {
+    public void onLivingUpdate(EventLivingUpdate event) {
+        if (!((Animations)this.getParent()).isHoldingSword()) {
             return;
         }
-        if (n == Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().getKeyCode() && ((Animations)this.getParent()).n$src$Z$uk21qf() && gg.vape.config.ClientSettings.M()) {
-            eventMouseButton.setCancelled(true);
-            return;
-        }
-        if (n == Minecraft.gameSettings().F().getKeyCode()) {
-            this.k(eventMouseButton.getThePlayer());
+        this.releaseTime = System.currentTimeMillis();
+        if (event.getEntity().getObject().equals(Minecraft.thePlayer().getObject())) {
+            EventTickBase.S.execute(this::resetUseKey);
         }
     }
 
-    private void lambda$onDamaged$0() {
-        boolean bl = false;
-        DamageResponsiveAnimationsMode damageResponsiveAnimationsMode = this;
-        damageResponsiveAnimationsMode.o(bl);
+    @EventHandler
+    public void onMouseButton(EventMouseButton event) {
+        int buttonBinding = -100 + event.getButton();
+        if (!event.getButtonState() || !((Animations)this.getParent()).isHoldingSword()) {
+            return;
+        }
+        if (buttonBinding == Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().getKeyCode() && ((Animations)this.getParent()).requiresMouseDown() && gg.vape.config.ClientSettings.M()) {
+            event.setCancelled(true);
+            return;
+        }
+        if (buttonBinding == Minecraft.gameSettings().F().getKeyCode()) {
+            this.triggerUseForTarget(event.getThePlayer());
+        }
+    }
+
+    private void resetUseKey() {
+        this.setUseKeyPressed(false);
     }
 }
-

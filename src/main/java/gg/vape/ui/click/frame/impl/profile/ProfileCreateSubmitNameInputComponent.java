@@ -6,18 +6,18 @@ import gg.vape.ui.click.frame.impl.profile.ProfileCreatePanelComponent;
 
 class ProfileCreateSubmitNameInputComponent
 extends ProfileCreateNameInputComponent {
-    final ProfileCreatePanelComponent My;
+    private final ProfileCreatePanelComponent createPanel;
 
     @Override
-    public void p() {
-        super.p();
-        this.My.u(null);
-        ProfileCreatePanelComponent.f(this.My).N$src$V$66cfbp();
-        this.L$src$V$w6nnjd();
+    public void submit() {
+        super.submit();
+        this.createPanel.setPendingProfile(null);
+        this.createPanel.getSettingsFrame().closePopupAndDiscardDraft();
+        this.clearFocus();
     }
 
-    ProfileCreateSubmitNameInputComponent(ProfileCreatePanelComponent profileCreatePanelComponent, String string, Profile profile) {
-        super(string, profile);
-        this.My = profileCreatePanelComponent;
+    ProfileCreateSubmitNameInputComponent(ProfileCreatePanelComponent createPanel, String placeholder, Profile profile) {
+        super(placeholder, profile);
+        this.createPanel = createPanel;
     }
 }

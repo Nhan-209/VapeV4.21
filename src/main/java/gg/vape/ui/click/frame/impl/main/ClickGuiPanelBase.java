@@ -17,8 +17,8 @@ extends PanelComponent {
 
     protected ClickGuiPanelBase(double d, double d2) {
         super(d, d2);
-        this.C(0.0);
-        this.d(false);
+        this.setHorizontalInset(0.0);
+        this.setShowDisabledOverlay(false);
     }
 
     public void K(double d, double d2, double d3) {

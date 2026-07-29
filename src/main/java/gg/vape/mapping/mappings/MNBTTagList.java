@@ -55,7 +55,7 @@ extends Mapping {
             String string2 = "getStringTagAt";
             MNBTTagList mNBTTagList = this;
             this.F = mNBTTagList.Y(string2, bl, clazz, classArray);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MNBTTagList.Z("tnDLE");
             }
             this.r = null;
@@ -101,7 +101,7 @@ extends Mapping {
             MNBTTagList mNBTTagList5 = this;
             this.F = this.Y(string8, bl5, clazz5, classArray5);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MNBTTagList.Z("tnDLE");
         }
     }

@@ -36,7 +36,7 @@ extends Mapping {
         if (MRegistryAccess.d() != null) {
             return;
         }
-        GuiComponent.D(new GuiComponent[3]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[3]);
     }
 
     public Optional<Object> f(Object object, Object object2) {

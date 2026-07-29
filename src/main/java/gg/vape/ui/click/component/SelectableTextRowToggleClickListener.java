@@ -7,18 +7,19 @@ import java.awt.Point;
 
 public class SelectableTextRowToggleClickListener
 implements GuiMouseListener {
-    final ClickGuiSidecarPanelBase h;
+    private final ClickGuiSidecarPanelBase sidecar;
 
 
     @Override
-    public void g(Point point, MouseClickButton uA) {
-        if (uA == MouseClickButton.LEFT_CLICK && ClickGuiSidecarPanelBase.m(this.h) != null) {
-            ClickGuiSidecarPanelBase.m(this.h).run();
+    public void g(Point point, MouseClickButton button) {
+        Runnable action = this.sidecar.getLeadingAction();
+        if (button == MouseClickButton.LEFT_CLICK && action != null) {
+            action.run();
         }
     }
 
-    public SelectableTextRowToggleClickListener(ClickGuiSidecarPanelBase ye_12) {
-        this.h = ye_12;
+    public SelectableTextRowToggleClickListener(ClickGuiSidecarPanelBase sidecar) {
+        this.sidecar = sidecar;
     }
 }
 

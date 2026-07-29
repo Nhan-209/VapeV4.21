@@ -35,231 +35,231 @@ import org.lwjgl.opengl.GL30;
 
 public class Post117ItemIconFramebufferRenderer
 implements ItemIconRenderBackend {
-    GlFramebuffer T;
+    GlFramebuffer framebuffer;
 
     @Override
-    public void N(ItemStack itemStack, float f) {
-        RenderBatchManager.M().G(0.0f);
-        int n = 32;
-        int n2 = 32;
-        int n3 = GL11.glGetInteger((int)36006);
-        int n4 = GL11.glGetInteger((int)32873);
-        boolean bl = GL11.glIsEnabled((int)3089);
-        if (bl) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(3089);
-            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(64);
-            byteBuffer.order(ByteOrder.nativeOrder());
-            IntBuffer intBuffer = byteBuffer.asIntBuffer();
-            gg.vape.wrapper.impl.GL11.X(2978, intBuffer);
-            this.T = new GlFramebuffer(n, n2, true);
-            this.T.f(true);
+    public void capture(ItemStack itemStack, float scale) {
+        RenderBatchManager.getInstance().flushGuiBatches(0.0f);
+        int iconWidth = 32;
+        int iconHeight = 32;
+        int previousFramebufferId = GL11.glGetInteger((int)36006);
+        int previousTextureId = GL11.glGetInteger((int)32873);
+        boolean scissorEnabled = GL11.glIsEnabled((int)3089);
+        if (scissorEnabled) {
+            OpenGlBackendHolder.backend.disableCapability(3089);
+            ByteBuffer viewportBytes = ByteBuffer.allocateDirect(64);
+            viewportBytes.order(ByteOrder.nativeOrder());
+            IntBuffer viewport = viewportBytes.asIntBuffer();
+            gg.vape.wrapper.impl.GL11.X(2978, viewport);
+            this.framebuffer = new GlFramebuffer(iconWidth, iconHeight, true);
+            this.framebuffer.bind(true);
             GL11.glClearColor((float)0.0f, (float)0.0f, (float)0.0f, (float)0.0f);
             GL11.glClear((int)16384);
             GL11.glClear((int)256);
             GlStateManager.enableDepth();
             GlStateManager.enableBlend();
-            MatrixStack matrixStack = MatrixStack.A();
-            matrixStack.H();
-            float f2 = Minecraft.p().k(Minecraft.gameSettings().T(), false);
-            float f3 = 1.0f / f2;
-            matrixStack.S(f3, f3, f3);
-            matrixStack.S((float)Minecraft.J() / 32.0f, (float)Minecraft.h() / 32.0f, 0.0f);
-            OpenGlBackendHolder.d.m();
+            MatrixStack renderMatrixStack = MatrixStack.A();
+            renderMatrixStack.H();
+            float guiScale = Minecraft.p().k(Minecraft.gameSettings().T(), false);
+            float inverseGuiScale = 1.0f / guiScale;
+            renderMatrixStack.S(inverseGuiScale, inverseGuiScale, inverseGuiScale);
+            renderMatrixStack.S((float)Minecraft.J() / 32.0f, (float)Minecraft.h() / 32.0f, 0.0f);
+            OpenGlBackendHolder.backend.pushMatrix();
             if (ForgeVersion.MC_1_20_6.d()) {
-                RenderItemTextBridge renderItemTextBridge;
-                Object object;
+                RenderItemTextBridge itemRenderState;
+                Object matrixHandle;
                 if (ForgeVersion.MC_1_21_6.d()) {
-                    object = Matrix4fHandle.b(16);
-                    renderItemTextBridge = RenderItemTextBridge.l((Matrix4fHandle)object);
+                    matrixHandle = Matrix4fHandle.b(16);
+                    itemRenderState = RenderItemTextBridge.l((Matrix4fHandle)matrixHandle);
                 } else {
-                    renderItemTextBridge = RenderItemTextBridge.t(matrixStack);
+                    itemRenderState = RenderItemTextBridge.t(renderMatrixStack);
                 }
                 if (ForgeVersion.MC_1_21_6.d()) {
-                    renderItemTextBridge.S().Q();
+                    itemRenderState.S().Q();
                 }
-                ItemStackRenderUtils.O(renderItemTextBridge, itemStack, 0, -100);
+                ItemStackRenderUtils.renderItemOverlay(itemRenderState, itemStack, 0, -100);
                 if (ForgeVersion.MC_1_21_10.d()) {
-                    float f4;
-                    float f5;
-                    int n5;
-                    Object v;
-                    Wrapper wrapper;
-                    List<String> fogEntries = renderItemTextBridge.S().getFogMode().F();
+                    float maxV;
+                    float maxU;
+                    int renderTargetTextureId;
+                    Object renderTarget;
+                    Wrapper renderTargetHandle;
+                    List<String> fogEntries = itemRenderState.S().getFogMode().F();
                     if (fogEntries == null || fogEntries.isEmpty()) {
-                        OpenGlBackendHolder.d.F();
+                        OpenGlBackendHolder.backend.popMatrix();
                         return;
                     }
-                    StringTextComponent stringTextComponent = new StringTextComponent(fogEntries.get(fogEntries.size() - 1));
-                    RenderBufferBridge renderBufferBridge = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().V();
-                    renderBufferBridge.j();
-                    Post117RenderPhaseCompat.P();
+                    StringTextComponent renderTargetName = new StringTextComponent(fogEntries.get(fogEntries.size() - 1));
+                    RenderBufferBridge renderBuffer = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().V();
+                    renderBuffer.j();
+                    Post117RenderPhaseCompat.applyRenderPhaseCompat();
                     if (ForgeVersion.MC_26_1.d()) {
-                        wrapper = renderBufferBridge.P();
-                        v = wrapper.isNull() ? null : ((BlockStateContainerBridge)wrapper).w(stringTextComponent.H());
-                        n5 = wrapper.isNull() ? -1 : ((BlockStateContainerBridge)wrapper).I();
+                        renderTargetHandle = renderBuffer.P();
+                        renderTarget = renderTargetHandle.isNull() ? null : ((BlockStateContainerBridge)renderTargetHandle).w(renderTargetName.H());
+                        renderTargetTextureId = renderTargetHandle.isNull() ? -1 : ((BlockStateContainerBridge)renderTargetHandle).I();
                     } else {
-                        v = renderBufferBridge.p().get(stringTextComponent.H().m$src$Ljava_lang_Object_$hvczij());
-                        int n6 = n5 = renderBufferBridge.F().isNull() ? -1 : renderBufferBridge.F().J();
+                        renderTarget = renderBuffer.p().get(renderTargetName.H().m$src$Ljava_lang_Object_$hvczij());
+                        int resolvedTextureId = renderTargetTextureId = renderBuffer.F().isNull() ? -1 : renderBuffer.F().J();
                     }
-                    if (v == null || n5 == -1) {
-                        OpenGlBackendHolder.d.F();
+                    if (renderTarget == null || renderTargetTextureId == -1) {
+                        OpenGlBackendHolder.backend.popMatrix();
                         return;
                     }
-                    wrapper = new MainWindow(v);
-                    float f6 = ((MainWindow)wrapper).q();
-                    float f7 = ((MainWindow)wrapper).r();
+                    renderTargetHandle = new MainWindow(renderTarget);
+                    float minU = ((MainWindow)renderTargetHandle).q();
+                    float minV = ((MainWindow)renderTargetHandle).r();
                     if (ForgeVersion.MC_26_1.d()) {
-                        f5 = ((MainWindow)wrapper).i();
-                        f4 = ((MainWindow)wrapper).A();
+                        maxU = ((MainWindow)renderTargetHandle).i();
+                        maxV = ((MainWindow)renderTargetHandle).A();
                     } else {
-                        int n7 = Minecraft.p().P();
-                        int n8 = 16 * n7;
-                        int n9 = renderBufferBridge.L(n8);
-                        f5 = f6 + (float)n8 / (float)n9;
-                        f4 = f7 + (float)(-n8) / (float)n9;
+                        int guiScaleFactor = Minecraft.p().P();
+                        int pixelOffset = 16 * guiScaleFactor;
+                        int renderTargetSize = renderBuffer.L(pixelOffset);
+                        maxU = minU + (float)pixelOffset / (float)renderTargetSize;
+                        maxV = minV + (float)(-pixelOffset) / (float)renderTargetSize;
                     }
-                    this.T.f(true);
+                    this.framebuffer.bind(true);
                     GL11.glColorMask((boolean)true, (boolean)true, (boolean)true, (boolean)true);
-                    GlScissorRect glScissorRect = BufferedGuiRenderPrimitives.u;
-                    BufferedGuiRenderPrimitives.u = null;
-                    RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder().o(new GlImageTexture(n5)).e(0.0f, 0.0f, n, n2, n, n2, f6, f7, f5, f4, Color.WHITE);
-                    BufferedGuiRenderPrimitives.k = new RenderMatrix4f().b().e(0.0f, n, n2, 0.0f, -21000.0f, 21000.0f);
-                    RenderBatchManager renderBatchManager = RenderBatchManager.M();
-                    renderBatchManager.O(renderBatchBuilder);
-                    renderBatchManager.a(this.T.w);
-                    renderBatchManager.T(0.0f, false);
-                    renderBatchManager.j();
-                    BufferedGuiRenderPrimitives.u = glScissorRect;
-                    OpenGlBackendHolder.d.F();
+                    GlScissorRect previousScissorRect = BufferedGuiRenderPrimitives.scissorRect;
+                    BufferedGuiRenderPrimitives.scissorRect = null;
+                    RenderBatchBuilder batchBuilder = new RenderBatchBuilder().setTexture(new GlImageTexture(renderTargetTextureId)).addTexturedRect(0.0f, 0.0f, iconWidth, iconHeight, iconWidth, iconHeight, minU, minV, maxU, maxV, Color.WHITE);
+                    BufferedGuiRenderPrimitives.projectionMatrix = new RenderMatrix4f().setIdentity().setOrthographic(0.0f, iconWidth, iconHeight, 0.0f, -21000.0f, 21000.0f);
+                    RenderBatchManager batchManager = RenderBatchManager.getInstance();
+                    batchManager.queueGuiBatch(batchBuilder);
+                    batchManager.setFramebufferOverride(this.framebuffer.framebufferId);
+                    batchManager.flushGuiBatches(0.0f, false);
+                    batchManager.restoreFramebufferOverride();
+                    BufferedGuiRenderPrimitives.scissorRect = previousScissorRect;
+                    OpenGlBackendHolder.backend.popMatrix();
                 }
             } else {
                 RenderItem renderItem = Minecraft.v();
-                renderItem.a(itemStack, 0, 0, matrixStack);
+                renderItem.a(itemStack, 0, 0, renderMatrixStack);
             }
-            this.T.S();
-            this.T.o();
-            GL11.glViewport((int)intBuffer.get(0), (int)intBuffer.get(1), (int)intBuffer.get(2), (int)intBuffer.get(3));
-            GL30.glBindFramebuffer((int)36160, (int)n3);
-            GlStateManager.bindTexture(n4);
-            OpenGlBackendHolder.d.l(3089);
+            this.framebuffer.bindColorTexture();
+            this.framebuffer.unbind();
+            GL11.glViewport((int)viewport.get(0), (int)viewport.get(1), (int)viewport.get(2), (int)viewport.get(3));
+            GL30.glBindFramebuffer((int)36160, (int)previousFramebufferId);
+            GlStateManager.bindTexture(previousTextureId);
+            OpenGlBackendHolder.backend.enableCapability(3089);
             return;
         }
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(64);
-        byteBuffer.order(ByteOrder.nativeOrder());
-        IntBuffer intBuffer = byteBuffer.asIntBuffer();
-        gg.vape.wrapper.impl.GL11.X(2978, intBuffer);
-        this.T = new GlFramebuffer(n, n2, true);
-        this.T.f(true);
+        ByteBuffer viewportBytes = ByteBuffer.allocateDirect(64);
+        viewportBytes.order(ByteOrder.nativeOrder());
+        IntBuffer viewport = viewportBytes.asIntBuffer();
+        gg.vape.wrapper.impl.GL11.X(2978, viewport);
+        this.framebuffer = new GlFramebuffer(iconWidth, iconHeight, true);
+        this.framebuffer.bind(true);
         GL11.glClearColor((float)0.0f, (float)0.0f, (float)0.0f, (float)0.0f);
         GL11.glClear((int)16384);
         GL11.glClear((int)256);
         GlStateManager.enableDepth();
         GlStateManager.enableBlend();
-        MatrixStack matrixStack = MatrixStack.A();
-        matrixStack.H();
-        float f8 = Minecraft.p().k(Minecraft.gameSettings().T(), false);
-        float f9 = 1.0f / f8;
-        matrixStack.S(f9, f9, f9);
-        matrixStack.S((float)Minecraft.J() / 32.0f, (float)Minecraft.h() / 32.0f, 0.0f);
-        OpenGlBackendHolder.d.m();
+        MatrixStack renderMatrixStack = MatrixStack.A();
+        renderMatrixStack.H();
+        float guiScale = Minecraft.p().k(Minecraft.gameSettings().T(), false);
+        float inverseGuiScale = 1.0f / guiScale;
+        renderMatrixStack.S(inverseGuiScale, inverseGuiScale, inverseGuiScale);
+        renderMatrixStack.S((float)Minecraft.J() / 32.0f, (float)Minecraft.h() / 32.0f, 0.0f);
+        OpenGlBackendHolder.backend.pushMatrix();
         if (ForgeVersion.MC_1_20_6.d()) {
-            RenderItemTextBridge renderItemTextBridge;
-            Object object;
+            RenderItemTextBridge itemRenderState;
+            Object matrixHandle;
             if (ForgeVersion.MC_1_21_6.d()) {
-                object = Matrix4fHandle.b(16);
-                renderItemTextBridge = RenderItemTextBridge.l((Matrix4fHandle)object);
+                matrixHandle = Matrix4fHandle.b(16);
+                itemRenderState = RenderItemTextBridge.l((Matrix4fHandle)matrixHandle);
             } else {
-                renderItemTextBridge = RenderItemTextBridge.t(matrixStack);
+                itemRenderState = RenderItemTextBridge.t(renderMatrixStack);
             }
             if (ForgeVersion.MC_1_21_6.d()) {
-                renderItemTextBridge.S().Q();
+                itemRenderState.S().Q();
             }
-            ItemStackRenderUtils.O(renderItemTextBridge, itemStack, 0, -100);
+            ItemStackRenderUtils.renderItemOverlay(itemRenderState, itemStack, 0, -100);
             if (ForgeVersion.MC_1_21_10.d()) {
-                float f10;
-                float f11;
-                int n10;
-                Object v;
-                Wrapper wrapper;
-                List<String> fogEntries = renderItemTextBridge.S().getFogMode().F();
+                float maxV;
+                float maxU;
+                int renderTargetTextureId;
+                Object renderTarget;
+                Wrapper renderTargetHandle;
+                List<String> fogEntries = itemRenderState.S().getFogMode().F();
                 if (fogEntries == null || fogEntries.isEmpty()) {
-                    OpenGlBackendHolder.d.F();
+                    OpenGlBackendHolder.backend.popMatrix();
                     return;
                 }
-                StringTextComponent stringTextComponent = new StringTextComponent(fogEntries.get(fogEntries.size() - 1));
-                RenderBufferBridge renderBufferBridge = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().V();
-                renderBufferBridge.j();
-                Post117RenderPhaseCompat.P();
+                StringTextComponent renderTargetName = new StringTextComponent(fogEntries.get(fogEntries.size() - 1));
+                RenderBufferBridge renderBuffer = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().V();
+                renderBuffer.j();
+                Post117RenderPhaseCompat.applyRenderPhaseCompat();
                 if (ForgeVersion.MC_26_1.d()) {
-                    wrapper = renderBufferBridge.P();
-                    v = wrapper.isNull() ? null : ((BlockStateContainerBridge)wrapper).w(stringTextComponent.H());
-                    n10 = wrapper.isNull() ? -1 : ((BlockStateContainerBridge)wrapper).I();
+                    renderTargetHandle = renderBuffer.P();
+                    renderTarget = renderTargetHandle.isNull() ? null : ((BlockStateContainerBridge)renderTargetHandle).w(renderTargetName.H());
+                    renderTargetTextureId = renderTargetHandle.isNull() ? -1 : ((BlockStateContainerBridge)renderTargetHandle).I();
                 } else {
-                    v = renderBufferBridge.p().get(stringTextComponent.H().m$src$Ljava_lang_Object_$hvczij());
-                    int n11 = n10 = renderBufferBridge.F().isNull() ? -1 : renderBufferBridge.F().J();
+                    renderTarget = renderBuffer.p().get(renderTargetName.H().m$src$Ljava_lang_Object_$hvczij());
+                    int resolvedTextureId = renderTargetTextureId = renderBuffer.F().isNull() ? -1 : renderBuffer.F().J();
                 }
-                if (v == null || n10 == -1) {
-                    OpenGlBackendHolder.d.F();
+                if (renderTarget == null || renderTargetTextureId == -1) {
+                    OpenGlBackendHolder.backend.popMatrix();
                     return;
                 }
-                wrapper = new MainWindow(v);
-                float f12 = ((MainWindow)wrapper).q();
-                float f13 = ((MainWindow)wrapper).r();
+                renderTargetHandle = new MainWindow(renderTarget);
+                float minU = ((MainWindow)renderTargetHandle).q();
+                float minV = ((MainWindow)renderTargetHandle).r();
                 if (ForgeVersion.MC_26_1.d()) {
-                    f11 = ((MainWindow)wrapper).i();
-                    f10 = ((MainWindow)wrapper).A();
+                    maxU = ((MainWindow)renderTargetHandle).i();
+                    maxV = ((MainWindow)renderTargetHandle).A();
                 } else {
-                    int n12 = Minecraft.p().P();
-                    int n13 = 16 * n12;
-                    int n14 = renderBufferBridge.L(n13);
-                    f11 = f12 + (float)n13 / (float)n14;
-                    f10 = f13 + (float)(-n13) / (float)n14;
+                    int guiScaleFactor = Minecraft.p().P();
+                    int pixelOffset = 16 * guiScaleFactor;
+                    int renderTargetSize = renderBuffer.L(pixelOffset);
+                    maxU = minU + (float)pixelOffset / (float)renderTargetSize;
+                    maxV = minV + (float)(-pixelOffset) / (float)renderTargetSize;
                 }
-                this.T.f(true);
+                this.framebuffer.bind(true);
                 GL11.glColorMask((boolean)true, (boolean)true, (boolean)true, (boolean)true);
-                GlScissorRect glScissorRect = BufferedGuiRenderPrimitives.u;
-                BufferedGuiRenderPrimitives.u = null;
-                RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder().o(new GlImageTexture(n10)).e(0.0f, 0.0f, n, n2, n, n2, f12, f13, f11, f10, Color.WHITE);
-                BufferedGuiRenderPrimitives.k = new RenderMatrix4f().b().e(0.0f, n, n2, 0.0f, -21000.0f, 21000.0f);
-                RenderBatchManager renderBatchManager = RenderBatchManager.M();
-                renderBatchManager.O(renderBatchBuilder);
-                renderBatchManager.a(this.T.w);
-                renderBatchManager.T(0.0f, false);
-                renderBatchManager.j();
-                BufferedGuiRenderPrimitives.u = glScissorRect;
-                OpenGlBackendHolder.d.F();
+                GlScissorRect previousScissorRect = BufferedGuiRenderPrimitives.scissorRect;
+                BufferedGuiRenderPrimitives.scissorRect = null;
+                RenderBatchBuilder batchBuilder = new RenderBatchBuilder().setTexture(new GlImageTexture(renderTargetTextureId)).addTexturedRect(0.0f, 0.0f, iconWidth, iconHeight, iconWidth, iconHeight, minU, minV, maxU, maxV, Color.WHITE);
+                BufferedGuiRenderPrimitives.projectionMatrix = new RenderMatrix4f().setIdentity().setOrthographic(0.0f, iconWidth, iconHeight, 0.0f, -21000.0f, 21000.0f);
+                RenderBatchManager batchManager = RenderBatchManager.getInstance();
+                batchManager.queueGuiBatch(batchBuilder);
+                batchManager.setFramebufferOverride(this.framebuffer.framebufferId);
+                batchManager.flushGuiBatches(0.0f, false);
+                batchManager.restoreFramebufferOverride();
+                BufferedGuiRenderPrimitives.scissorRect = previousScissorRect;
+                OpenGlBackendHolder.backend.popMatrix();
             }
         } else {
             RenderItem renderItem = Minecraft.v();
-            renderItem.a(itemStack, 0, 0, matrixStack);
+            renderItem.a(itemStack, 0, 0, renderMatrixStack);
         }
-        this.T.S();
-        this.T.o();
-        GL11.glViewport((int)intBuffer.get(0), (int)intBuffer.get(1), (int)intBuffer.get(2), (int)intBuffer.get(3));
-        GL30.glBindFramebuffer((int)36160, (int)n3);
-        GlStateManager.bindTexture(n4);
+        this.framebuffer.bindColorTexture();
+        this.framebuffer.unbind();
+        GL11.glViewport((int)viewport.get(0), (int)viewport.get(1), (int)viewport.get(2), (int)viewport.get(3));
+        GL30.glBindFramebuffer((int)36160, (int)previousFramebufferId);
+        GlStateManager.bindTexture(previousTextureId);
     }
 
 
     @Override
-    public void s(float f, float f2, int n, int n2, float f3, boolean bl) {
-        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(VertexCoordinateMode.DEFAULT, bl).o(new GlImageTexture(this.T.l)).e(f, f2, n, n2, 64.0f, 64.0f, 0.0f, 1.0f, 1.0f, 0.0f, new Color(1.0f, 1.0f, 1.0f, f3));
-        if (bl) {
-            RenderBatchManager.M().c(renderBatchBuilder);
+    public void renderQueued(float x, float y, int width, int height, float opacity, boolean worldSpace) {
+        RenderBatchBuilder batchBuilder = new RenderBatchBuilder(VertexCoordinateMode.DEFAULT, worldSpace).setTexture(new GlImageTexture(this.framebuffer.colorTextureId)).addTexturedRect(x, y, width, height, 64.0f, 64.0f, 0.0f, 1.0f, 1.0f, 0.0f, new Color(1.0f, 1.0f, 1.0f, opacity));
+        if (worldSpace) {
+            RenderBatchManager.getInstance().queueWorldBatch(batchBuilder);
         } else {
-            RenderBatchManager.M().O(renderBatchBuilder);
+            RenderBatchManager.getInstance().queueGuiBatch(batchBuilder);
         }
     }
 
     @Override
-    public void H(float f, float f2, int n, int n2, float f3) {
-        this.s(f, f2, n, n2, f3, false);
+    public void render(float x, float y, int width, int height, float opacity) {
+        this.renderQueued(x, y, width, height, opacity, false);
     }
 
 
     @Override
-    public void e() {
-        this.T.x();
-        this.T = null;
+    public void dispose() {
+        this.framebuffer.delete();
+        this.framebuffer = null;
     }
 }

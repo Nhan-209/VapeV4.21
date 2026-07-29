@@ -26,17 +26,17 @@ extends Frame {
     @Override
     public void A$src$V$4ceaf0() {
         this.l$src$V$1mibm4x();
-        ClientSettings.fW.N(this.FV, this);
+        ClientSettings.INSTANCE.replaceFrame(this.FV, this);
         boolean bl = false;
         if (this.FV instanceof CollapsibleFrame) {
             bl = ((CollapsibleFrame)((Object)this.FV)).q();
         }
-        this.Z(this.FV.V$src$Z$1xhop3l() && !bl && this.FM.V$src$Z$1xhop3l());
+        this.setVisible(this.FV.V$src$Z$1xhop3l() && !bl && this.FM.V$src$Z$1xhop3l());
     }
 
     @Override
-    public void Z(boolean bl) {
-        super.Z(bl);
+    public void setVisible(boolean bl) {
+        super.setVisible(bl);
     }
 
     @Nullable

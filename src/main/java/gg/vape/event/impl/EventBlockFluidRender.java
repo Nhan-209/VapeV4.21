@@ -38,7 +38,7 @@ extends Event {
         if (xRay == null || !xRay.boolean_r()) {
             return false;
         }
-        xRay.s(this);
+        xRay.onBlockFluidRender(this);
         if (this.isCanceled()) {
             this.v = Vape.INSTANCE.getMappingsMapperCompat().i.E.e(this.h, this.A, this.T, this.d, this.n, Float.valueOf(1.0f), Float.valueOf(1.0f), Float.valueOf(1.0f));
         }

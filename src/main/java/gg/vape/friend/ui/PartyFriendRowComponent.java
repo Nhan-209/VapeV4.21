@@ -77,18 +77,18 @@ extends PanelComponent {
         this.Xs.h(this.Xz, new Object[0]);
         this.Xq.h(this.Xj, new Object[0]);
         if (bl) {
-            this.Xq.H(this.X5);
+            this.Xq.addChildren(this.X5);
         } else {
-            this.Xq.H(this.XQ, this.XL, new SpacerComponent(2.0, 1.0), this.X7);
+            this.Xq.addChildren(this.XQ, this.XL, new SpacerComponent(2.0, 1.0), this.X7);
         }
         this.Xs.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.Xs.H(new SpacerComponent(0.0, 9.0));
-        this.Xs.H(this.Xq);
-        this.H(new SpacerComponent(4.0, 1.0), new OnlineFriendAvatarComponent(onlineFriend, 8.0, 8.0), new SpacerComponent(4.0, 1.0), this.Xs);
-        this.XL.r(this::e$src$V$hles3e);
-        this.X7.r(this::d$src$V$hkuzi1);
-        this.X5.r(this::Q$src$V$haew86);
-        this.XQ.r(this::o$src$V$hqwq10);
+        this.Xs.addChildren(new SpacerComponent(0.0, 9.0));
+        this.Xs.addChildren(this.Xq);
+        this.addChildren(new SpacerComponent(4.0, 1.0), new OnlineFriendAvatarComponent(onlineFriend, 8.0, 8.0), new SpacerComponent(4.0, 1.0), this.Xs);
+        this.XL.addClickListener(this::e$src$V$hles3e);
+        this.X7.addClickListener(this::d$src$V$hkuzi1);
+        this.X5.addClickListener(this::Q$src$V$haew86);
+        this.XQ.addClickListener(this::o$src$V$hqwq10);
     }
 
     public static String getName() {
@@ -131,42 +131,42 @@ extends PanelComponent {
         boolean bl4 = bl = !bl2 && !bl3;
         if (this.w$src$Z$e457mb()) {
             if (this.X4) {
-                this.XQ.Z(bl);
-                this.XL.Z(false);
-                this.X7.Z(false);
-                this.X5.Z(false);
+                this.XQ.setVisible(bl);
+                this.XL.setVisible(false);
+                this.X7.setVisible(false);
+                this.X5.setVisible(false);
             } else {
-                this.XQ.Z(bl);
-                this.XL.Z(true);
-                this.X7.Z(true);
-                this.X5.Z(true);
+                this.XQ.setVisible(bl);
+                this.XL.setVisible(true);
+                this.X7.setVisible(true);
+                this.X5.setVisible(true);
             }
         } else {
-            this.XQ.Z(false);
-            this.XL.Z(false);
-            this.X7.Z(false);
-            this.X5.Z(false);
+            this.XQ.setVisible(false);
+            this.XL.setVisible(false);
+            this.X7.setVisible(false);
+            this.X5.setVisible(false);
         }
-        this.Xj.Z(!this.w$src$Z$e457mb() || this.X4 && !bl);
+        this.Xj.setVisible(!this.w$src$Z$e457mb() || this.X4 && !bl);
         this.l$src$V$1mibm4x();
-        this.Xz.O(this.Xl.C());
+        this.Xz.setText(this.Xl.C());
         if (this.XS) {
-            this.Xj.U(this.Xl.I());
+            this.Xj.setText(this.Xl.I());
         } else {
-            this.Xj.U("   " + this.Xl.I());
+            this.Xj.setText("   " + this.Xl.I());
         }
         super.c();
         this.b();
-        this.XL.y((double)0.65f);
-        this.X7.y((double)0.65f);
-        this.X5.y((double)0.65f);
-        this.XQ.y((double)0.65f);
-        this.XL.y(1.0f);
-        this.X7.y(1.0f);
-        this.X5.y(1.0f);
-        this.XQ.y(1.0f);
-        this.Xs.d(false);
-        this.d(false);
+        this.XL.setFontScale((double)0.65f);
+        this.X7.setFontScale((double)0.65f);
+        this.X5.setFontScale((double)0.65f);
+        this.XQ.setFontScale((double)0.65f);
+        this.XL.setBorderAlpha(1.0f);
+        this.X7.setBorderAlpha(1.0f);
+        this.X5.setBorderAlpha(1.0f);
+        this.XQ.setBorderAlpha(1.0f);
+        this.Xs.setShowDisabledOverlay(false);
+        this.setShowDisabledOverlay(false);
     }
 
     private void lambda$onPromote$1() {

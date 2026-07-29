@@ -15,16 +15,16 @@ extends InventoryItemMatcherBuilderBase<InventoryItemMatcherBuilderFoundation> {
         this(base);
     }
 
-    public CompositeInventoryItemMatcher q() {
+    public CompositeInventoryItemMatcher build() {
         return new CompositeInventoryItemMatcher(this);
     }
 
-    public BiPredicate<ItemStack, Item> R() {
+    public BiPredicate<ItemStack, Item> getPredicate() {
         return this.predicate;
     }
 
-    public InventoryItemMatcherBuilderFoundation t(BiPredicate<ItemStack, Item> biPredicate) {
-        this.predicate = biPredicate;
+    public InventoryItemMatcherBuilderFoundation withPredicate(BiPredicate<ItemStack, Item> predicate) {
+        this.predicate = predicate;
         return this;
     }
 

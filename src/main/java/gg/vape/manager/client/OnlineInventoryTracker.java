@@ -39,7 +39,7 @@ public class OnlineInventoryTracker {
             this.y[n2] = updatedStack;
             hashMap.put(36 + n2, updatedStack);
         }
-        n2 = OnlineConnectionManager.T.S().l().L() == false ? 1 : 0;
+        n2 = OnlineConnectionManager.T.S().l().getEffectiveValue() == false ? 1 : 0;
         this.E = n = entityPlayer.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
         if (bl && n2 == 0) {
             Object[] inventoryContents = entityPlayer.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().M();

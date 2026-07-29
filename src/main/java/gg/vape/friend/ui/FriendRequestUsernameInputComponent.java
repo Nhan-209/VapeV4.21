@@ -24,16 +24,16 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public void p() {
-        if (this.i$src$Ljava_lang_String_$1n2xf3k().equals("")) {
+    public void submit() {
+        if (this.getText().equals("")) {
             return;
         }
-        FriendRequestsPanel.I(this.qM, this.i$src$Ljava_lang_String_$1n2xf3k());
-        this.k("");
+        FriendRequestsPanel.I(this.qM, this.getText());
+        this.setText("");
     }
 
     @Override
-    public float y() {
+    public float getLeftInset() {
         return 2.0f;
     }
 }

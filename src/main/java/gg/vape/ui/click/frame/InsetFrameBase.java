@@ -14,11 +14,11 @@ extends Frame {
 
     @Override
     public void z(boolean bl) {
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() - 5.0, this.n(), this.A() + 10.0, bl ? this.K + 2.0 : this.L() + 2.0, this.d());
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() - 5.0, this.n(), this.A() + 10.0, bl ? this.K + 2.0 : this.L() + 2.0, this.getDisabledOverlayColor());
     }
 
     @Override
-    public RectData Q() {
+    public RectData getBounds() {
         if (this.NS) {
             return new RectData(this.G$src$D$1b2f02a() - 5.0, this.n(), this.A() + 10.0, this.d$src$D$ibccpu());
         }

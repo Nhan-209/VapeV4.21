@@ -5,55 +5,43 @@ import gg.vape.utils.datas.BlockCoordinate;
 import gg.vape.wrapper.impl.BlockPos;
 
 public class BlockPathSearchNode {
-    private static String t;
-    public double j;
-    public final double w;
-    public BlockPathSearchNode C;
-    public final double E;
-    public double T;
-    public final double S;
+    public double pathCost;
+    public final double z;
+    public BlockPathSearchNode parent;
+    public final double y;
+    public double heuristicCost;
+    public final double x;
 
-    static {
-        BlockPathSearchNode.l(null);
+    public BlockPathSearchNode(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    public BlockPathSearchNode(double d, double d2, double d3) {
-        this.S = d;
-        this.E = d2;
-        this.w = d3;
+    public BlockCoordinate getBlockCoordinate() {
+        return new BlockCoordinate(MathUtil.floor(this.x), MathUtil.floor(this.y), MathUtil.floor(this.z));
     }
 
-    public BlockCoordinate b() {
-        return new BlockCoordinate(MathUtil.floor(this.S), MathUtil.floor(this.E), MathUtil.floor(this.w));
+    public double getTotalCost() {
+        return this.pathCost + this.heuristicCost;
     }
 
+    @Override
     public String toString() {
-        return "X: " + this.S + " Y: " + this.E + " Z: " + this.w;
+        return "X: " + this.x + " Y: " + this.y + " Z: " + this.z;
     }
 
+    @Override
     public int hashCode() {
-        return (int)BlockPos.f(MathUtil.floor(this.S), MathUtil.floor(this.E), MathUtil.floor(this.w));
+        return (int)BlockPos.f(MathUtil.floor(this.x), MathUtil.floor(this.y), MathUtil.floor(this.z));
     }
 
-    public static void l(String string) {
-        t = string;
-    }
-
-    public double p() {
-        return this.j + this.T;
-    }
-
-    public static String O() {
-        return t;
-    }
-
-
-    public boolean equals(Object object) {
-        if (!(object instanceof BlockPathSearchNode)) {
+    @Override
+    public boolean equals(Object candidate) {
+        if (!(candidate instanceof BlockPathSearchNode)) {
             return false;
         }
-        BlockPathSearchNode blockPathSearchNode = (BlockPathSearchNode)object;
-        return this.S == blockPathSearchNode.S && this.E == blockPathSearchNode.E && this.w == blockPathSearchNode.w;
+        BlockPathSearchNode other = (BlockPathSearchNode)candidate;
+        return this.x == other.x && this.y == other.y && this.z == other.z;
     }
 }
-

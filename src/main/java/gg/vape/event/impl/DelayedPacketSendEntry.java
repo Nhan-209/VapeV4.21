@@ -4,53 +4,23 @@ import gg.vape.event.impl.EventPacketSend;
 import gg.vape.module.world.fastuse.FastUsePacketDelaySubModule;
 
 public class DelayedPacketSendEntry {
-    private boolean d;
-    private final EventPacketSend P;
-    final FastUsePacketDelaySubModule q;
-    private static int f;
+    private boolean offsetApplied;
+    private final EventPacketSend event;
 
-    public static int G() {
-        int n = DelayedPacketSendEntry.I();
-        if (n == 0) {
-            return 111;
-        }
-        return 0;
+    public DelayedPacketSendEntry(EventPacketSend event) {
+        this.event = event;
     }
 
-    public DelayedPacketSendEntry(FastUsePacketDelaySubModule n2, EventPacketSend eventPacketSend) {
-        this.q = n2;
-        this.P = eventPacketSend;
+    public void setOffsetApplied(boolean offsetApplied) {
+        this.offsetApplied = offsetApplied;
     }
 
-    public static int I() {
-        return f;
+    public EventPacketSend getEvent() {
+        return this.event;
     }
 
-    public static void A(int n) {
-        f = n;
-    }
-
-    public void d(boolean bl) {
-        this.d = bl;
-    }
-
-    public EventPacketSend V() {
-        return this.P;
-    }
-
-
-    public boolean E() {
-        return this.d;
-    }
-
-    public static EventPacketSend g(DelayedPacketSendEntry rk_02) {
-        return rk_02.P;
-    }
-
-    static {
-        if (DelayedPacketSendEntry.G() == 0) {
-            DelayedPacketSendEntry.A(123);
-        }
+    public boolean isOffsetApplied() {
+        return this.offsetApplied;
     }
 }
 

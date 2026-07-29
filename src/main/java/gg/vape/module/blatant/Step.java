@@ -6,7 +6,6 @@ import gg.vape.event.impl.EventStepHeightOverride;
 import gg.vape.event.impl.EventStepSnapshot;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.blatant.Speed;
 import gg.vape.threads.ResetTimerThread;
 import gg.vape.wrapper.impl.CPacketPlayerPosition;
 import gg.vape.wrapper.impl.EntityPlayerSP;
@@ -19,16 +18,16 @@ extends Mod {
 
 
     @EventHandler
-    public void v(EventStepHeightOverride eventStepHeightOverride) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (eventStepHeightOverride.getRealHeight() > 0.5 && eventStepHeightOverride.getStepHeight() > 0.0 && !entityPlayerSP.movementInput().G() && entityPlayerSP.u$src$Z$g120nz()) {
-            Vape.INSTANCE.getModManager().getMod(Speed.class).setStep(-4);
+    public void onStepHeightOverride(EventStepHeightOverride eventStepHeightOverride) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (eventStepHeightOverride.getRealHeight() > 0.5 && eventStepHeightOverride.getStepHeight() > 0.0 && !localPlayer.movementInput().G() && localPlayer.u$src$Z$g120nz()) {
+            Vape.INSTANCE.getModManager().getMod(Speed.class).setStage(-4);
             if (eventStepHeightOverride.getRealHeight() >= 0.87) {
-                double d = eventStepHeightOverride.getRealHeight();
-                double d2 = d * 0.42;
-                double d3 = d * 0.75;
-                entityPlayerSP.sendQueue().addToSendQueue(CPacketPlayerPosition.newInstance(entityPlayerSP.z(), entityPlayerSP.N() + d2, entityPlayerSP.h(), entityPlayerSP.b$src$Z$fqlxe4()));
-                entityPlayerSP.sendQueue().addToSendQueue(CPacketPlayerPosition.newInstance(entityPlayerSP.z(), entityPlayerSP.N() + d3, entityPlayerSP.h(), entityPlayerSP.b$src$Z$fqlxe4()));
+                double stepHeight = eventStepHeightOverride.getRealHeight();
+                double firstOffset = stepHeight * 0.42;
+                double secondOffset = stepHeight * 0.75;
+                localPlayer.sendQueue().addToSendQueue(CPacketPlayerPosition.newInstance(localPlayer.z(), localPlayer.N() + firstOffset, localPlayer.h(), localPlayer.b$src$Z$fqlxe4()));
+                localPlayer.sendQueue().addToSendQueue(CPacketPlayerPosition.newInstance(localPlayer.z(), localPlayer.N() + secondOffset, localPlayer.h(), localPlayer.b$src$Z$fqlxe4()));
             }
             Minecraft.getTimer().setTimerSpeed(0.45f);
             ResetTimerThread resetTimerThread = new ResetTimerThread(this);
@@ -46,9 +45,9 @@ extends Mod {
     }
 
     @EventHandler
-    public void j(EventStepSnapshot eventStepSnapshot) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (!entityPlayerSP.movementInput().G() && entityPlayerSP.u$src$Z$g120nz()) {
+    public void onStepSnapshot(EventStepSnapshot eventStepSnapshot) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (!localPlayer.movementInput().G() && localPlayer.u$src$Z$g120nz()) {
             eventStepSnapshot.setStepHeight(1.0);
         }
     }

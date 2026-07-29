@@ -6,8 +6,8 @@ import gg.vape.ui.click.frame.FrameScrollbarPlacement;
 
 public class FixedProgressPanel
 extends PanelComponent {
-    double a6 = 0.0;
-    private static final String db = "wrap";
+    double preferredHeight = 0.0;
+    private static final String WRAP_LAYOUT_CONSTRAINT = "wrap";
 
     @Override
     public void v() {
@@ -20,15 +20,15 @@ extends PanelComponent {
 
     @Override
     public double C() {
-        return this.a6;
+        return this.preferredHeight;
     }
 
     public FixedProgressPanel() {
         super(100.0, 0.0);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.t(24.0);
         this.F(FrameScrollbarPlacement.OUTSIDE);
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(WRAP_LAYOUT_CONSTRAINT);
         this.o(100.0);
         this.N(false);
     }
@@ -38,11 +38,10 @@ extends PanelComponent {
     }
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
+    public void g(GuiMouseEvent mouseEvent) {
     }
 
     @Override
     public void V() {
     }
 }
-

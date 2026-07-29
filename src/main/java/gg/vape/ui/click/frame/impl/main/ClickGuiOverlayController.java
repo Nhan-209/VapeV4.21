@@ -14,243 +14,236 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 final class ClickGuiOverlayController {
-    private final ClickGuiOverlayLayer y;
-    private static final String c = "mode";
-    final ClickGuiMainFrame o;
-    private final ClickGuiOverlayNavigationPanel k;
-    private final DoubleAnimation l;
-    private boolean a;
-    private final ClickGuiOverlayBackdropComponent z;
-    private ClickGuiOverlayPlacement U;
-    private final DoubleAnimation m;
-    private double P;
-    private ClickGuiOverlaySpec x;
-    private boolean w;
+    private static final String PLACEMENT_ARGUMENT = "mode";
+    private final ClickGuiOverlayLayer layer;
+    final ClickGuiMainFrame frame;
+    private final ClickGuiOverlayNavigationPanel navigationPanel;
+    private final DoubleAnimation visibilityAnimation;
+    private boolean closeCallbacksFired;
+    private final ClickGuiOverlayBackdropComponent backdrop;
+    private ClickGuiOverlayPlacement placement;
+    private final DoubleAnimation backdropAnimation;
+    private double width;
+    private ClickGuiOverlaySpec activeSpec;
+    private boolean open;
 
-    private boolean t(double d) {
-        return this.w || d > 0.001;
-    }
-
-    private static Throwable a(Throwable throwable) {
-        return throwable;
+    private boolean isVisible(double progress) {
+        return this.open || progress > 0.001;
     }
 
     private ClickGuiOverlayController(ClickGuiMainFrame clickGuiMainFrame, ClickGuiOverlayLayer clickGuiOverlayLayer, double d) {
-        this.o = clickGuiMainFrame;
-        this.y = clickGuiOverlayLayer;
-        clickGuiMainFrame.getClass();
-        this.l = new DoubleAnimation(0.15, 0.0, 1.0);
-        this.l.O();
-        clickGuiMainFrame.getClass();
-        this.m = new DoubleAnimation(0.15, 0.0, 1.0);
-        this.m.O();
-        this.P = d;
-        this.U = clickGuiOverlayLayer == ClickGuiOverlayLayer.FRAME_OVERLAY ? ClickGuiOverlayPlacement.OVERLAY : ClickGuiOverlayPlacement.DOCKED;
-        Runnable runnable = this::lambda$new$0;
-        this.k = new ClickGuiOverlayNavigationPanel(clickGuiMainFrame, d, this::n, runnable, null);
-        this.k.o(this::Q);
-        this.k.Z(false);
-        this.z = new ClickGuiOverlayBackdropComponent(clickGuiMainFrame, this::V, this::P, runnable);
-        this.z.Z(false);
-        this.z.Z(new ClickGuiOverlayPointPredicate(this, clickGuiMainFrame));
+        this.frame = clickGuiMainFrame;
+        this.layer = clickGuiOverlayLayer;
+        this.visibilityAnimation = new DoubleAnimation(0.15, 0.0, 1.0);
+        this.visibilityAnimation.O();
+        this.backdropAnimation = new DoubleAnimation(0.15, 0.0, 1.0);
+        this.backdropAnimation.O();
+        this.width = d;
+        this.placement = clickGuiOverlayLayer == ClickGuiOverlayLayer.FRAME_OVERLAY ? ClickGuiOverlayPlacement.OVERLAY : ClickGuiOverlayPlacement.DOCKED;
+        Runnable closeAction = this::closeAndRefreshLayout;
+        this.navigationPanel = new ClickGuiOverlayNavigationPanel(clickGuiMainFrame, d, this::getVisibilityProgress, closeAction, null);
+        this.navigationPanel.setSpecChangeListener(this::handleSpecChanged);
+        this.navigationPanel.setVisible(false);
+        this.backdrop = new ClickGuiOverlayBackdropComponent(clickGuiMainFrame, this::getBackdropOpacity, this::getPlacement, closeAction);
+        this.backdrop.setVisible(false);
+        this.backdrop.addGlobalMouseListener(new ClickGuiOverlayPointPredicate(this, clickGuiMainFrame));
     }
 
-    boolean z() {
-        return this.w;
+    boolean isOpen() {
+        return this.open;
     }
 
-    void L(ClickGuiOverlaySpec clickGuiOverlaySpec) {
+    void show(ClickGuiOverlaySpec clickGuiOverlaySpec) {
         boolean bl;
-        ClickGuiOverlayPlacement clickGuiOverlayPlacement = Objects.requireNonNull(clickGuiOverlaySpec.O(), c);
-        double d = ClickGuiMainFrame.G(this.o, clickGuiOverlayPlacement);
-        double d2 = this.n();
-        boolean bl2 = this.t(d2);
-        this.x = clickGuiOverlaySpec;
-        this.U = clickGuiOverlayPlacement;
-        this.P = d;
-        this.k.o(d);
-        this.k.O(clickGuiOverlaySpec, bl2);
-        boolean bl3 = this.w;
+        ClickGuiOverlayPlacement clickGuiOverlayPlacement = Objects.requireNonNull(clickGuiOverlaySpec.getPlacement(), PLACEMENT_ARGUMENT);
+        double d = ClickGuiMainFrame.getOverlayWidth(this.frame, clickGuiOverlayPlacement);
+        double d2 = this.getVisibilityProgress();
+        boolean bl2 = this.isVisible(d2);
+        this.activeSpec = clickGuiOverlaySpec;
+        this.placement = clickGuiOverlayPlacement;
+        this.width = d;
+        this.navigationPanel.o(d);
+        this.navigationPanel.showRoot(clickGuiOverlaySpec, bl2);
+        boolean bl3 = this.open;
         if (bl3) {
             boolean bl4;
-            this.w = true;
-            boolean bl5 = clickGuiOverlaySpec.y() == ClickGuiOverlayTransitionMode.PUSH && this.k.A$src$Z$fwf4yb();
-            boolean bl6 = bl4 = bl5 ? this.k.X$src$Z$g92elm() : clickGuiOverlaySpec.R();
+            this.open = true;
+            boolean bl5 = clickGuiOverlaySpec.getTransitionMode() == ClickGuiOverlayTransitionMode.PUSH && this.navigationPanel.hasActiveSpec();
+            boolean bl6 = bl4 = bl5 ? this.navigationPanel.isBackdropEnabled() : clickGuiOverlaySpec.isBackdropEnabled();
             if (bl4) {
-                this.m.C();
+                this.backdropAnimation.C();
             } else {
-                this.m.O();
+                this.backdropAnimation.O();
             }
-            this.z.G(bl4);
-            this.k.Z(true);
-            this.z.Z(bl4);
+            this.backdrop.setInteractive(bl4);
+            this.navigationPanel.setVisible(true);
+            this.backdrop.setVisible(bl4);
             return;
         }
-        this.w = true;
-        this.l.J();
-        boolean bl7 = clickGuiOverlaySpec.y() == ClickGuiOverlayTransitionMode.PUSH && this.k.A$src$Z$fwf4yb();
-        boolean bl8 = bl = bl7 ? this.k.X$src$Z$g92elm() : clickGuiOverlaySpec.R();
+        this.open = true;
+        this.visibilityAnimation.J();
+        boolean bl7 = clickGuiOverlaySpec.getTransitionMode() == ClickGuiOverlayTransitionMode.PUSH && this.navigationPanel.hasActiveSpec();
+        boolean bl8 = bl = bl7 ? this.navigationPanel.isBackdropEnabled() : clickGuiOverlaySpec.isBackdropEnabled();
         if (bl) {
-            this.m.J();
+            this.backdropAnimation.J();
         } else {
-            this.m.O();
+            this.backdropAnimation.O();
         }
-        this.z.G(bl);
-        this.k.Z(true);
-        this.z.Z(bl);
+        this.backdrop.setInteractive(bl);
+        this.navigationPanel.setVisible(true);
+        this.backdrop.setVisible(bl);
     }
 
-    boolean F() {
-        return this.z.V$src$Z$1xhop3l() && this.z.P();
+    boolean capturesInput() {
+        return this.backdrop.V$src$Z$1xhop3l() && this.backdrop.isInteractive();
     }
 
-    private ClickGuiOverlayPlacement P() {
-        return this.U;
+    private ClickGuiOverlayPlacement getPlacement() {
+        return this.placement;
     }
 
-    ClickGuiOverlayNavigationPanel o() {
-        return this.k;
+    ClickGuiOverlayNavigationPanel getNavigationPanel() {
+        return this.navigationPanel;
     }
 
-    boolean L() {
-        return this.t(this.n());
+    boolean isVisible() {
+        return this.isVisible(this.getVisibilityProgress());
     }
 
     ClickGuiOverlayController(ClickGuiMainFrame clickGuiMainFrame, ClickGuiOverlayLayer clickGuiOverlayLayer, double d, ClickGuiSectionSwitchMap clickGuiSectionSwitchMap) {
         this(clickGuiMainFrame, clickGuiOverlayLayer, d);
     }
 
-    private void lambda$new$0() {
-        this.q();
-        ClickGuiMainFrame.V(this.o);
+    private void closeAndRefreshLayout() {
+        this.close();
+        ClickGuiMainFrame.refreshOverlayLayout(this.frame);
     }
 
-    double V() {
-        return Math.max(0.0, Math.min(1.0, this.m.getInterpolatedValue()));
+    double getBackdropOpacity() {
+        return Math.max(0.0, Math.min(1.0, this.backdropAnimation.getInterpolatedValue()));
     }
 
-    boolean d(double d) {
-        if (this.y != ClickGuiOverlayLayer.CONTENT_OVERLAY) {
+    boolean shiftsContent(double progress) {
+        if (this.layer != ClickGuiOverlayLayer.CONTENT_OVERLAY) {
             return false;
         }
-        return (this.w || d > 0.001) && this.U == ClickGuiOverlayPlacement.DOCKED_SHIFT;
+        return (this.open || progress > 0.001) && this.placement == ClickGuiOverlayPlacement.DOCKED_SHIFT;
     }
 
-    ClickGuiOverlayBackdropComponent f() {
-        return this.z;
+    ClickGuiOverlayBackdropComponent getBackdrop() {
+        return this.backdrop;
     }
 
-    double y() {
-        return this.P;
+    double getWidth() {
+        return this.width;
     }
 
-    ClickGuiOverlaySpec u() {
-        return this.x;
+    ClickGuiOverlaySpec getActiveSpec() {
+        return this.activeSpec;
     }
 
-    private void U() {
-        if (this.y == ClickGuiOverlayLayer.FRAME_OVERLAY) {
-            this.U = ClickGuiOverlayPlacement.OVERLAY;
-            this.P = 136.0;
+    private void resetPlacement() {
+        if (this.layer == ClickGuiOverlayLayer.FRAME_OVERLAY) {
+            this.placement = ClickGuiOverlayPlacement.OVERLAY;
         } else {
-            this.U = ClickGuiOverlayPlacement.DOCKED;
-            this.P = 120.0;
+            this.placement = ClickGuiOverlayPlacement.DOCKED;
         }
+        this.width = ClickGuiMainFrame.getOverlayWidth(this.frame, this.placement);
     }
 
-    void l() {
-        this.z.K(this.o.G$src$D$1b2f02a());
-        this.z.S(this.o.n());
-        this.k.K(this.o.G$src$D$1b2f02a());
-        this.k.S(this.o.n());
-        this.k.T$src$V$1wse0de();
+    void updateBounds() {
+        this.backdrop.K(this.frame.G$src$D$1b2f02a());
+        this.backdrop.S(this.frame.n());
+        this.navigationPanel.K(this.frame.G$src$D$1b2f02a());
+        this.navigationPanel.S(this.frame.n());
+        this.navigationPanel.T$src$V$1wse0de();
     }
 
-    double n() {
-        return Math.max(0.0, Math.min(1.0, this.l.getInterpolatedValue()));
+    double getVisibilityProgress() {
+        return Math.max(0.0, Math.min(1.0, this.visibilityAnimation.getInterpolatedValue()));
     }
 
-    void q() {
+    void close() {
         boolean bl;
-        boolean bl2 = this.w;
-        double d = this.n();
-        boolean bl3 = bl = this.x != null && (this.x.y() == ClickGuiOverlayTransitionMode.PUSH && this.k.A$src$Z$fwf4yb() ? this.k.X$src$Z$g92elm() : this.x.R());
+        boolean bl2 = this.open;
+        double d = this.getVisibilityProgress();
+        boolean bl3 = bl = this.activeSpec != null && (this.activeSpec.getTransitionMode() == ClickGuiOverlayTransitionMode.PUSH && this.navigationPanel.hasActiveSpec() ? this.navigationPanel.isBackdropEnabled() : this.activeSpec.isBackdropEnabled());
         if (!bl2 && d <= 0.0) {
             return;
         }
-        this.w = false;
+        this.open = false;
         if (bl2 || d > 0.0) {
-            for (Object pendingCallback : ClickGuiMainFrame.b(this.o)) {
+            for (Runnable pendingCallback : ClickGuiMainFrame.getContentOverlayCallbacks(this.frame)) {
                 try {
-                    ((Runnable)pendingCallback).run();
+                    pendingCallback.run();
                 }
                 catch (Throwable throwable) {}
             }
         }
         if (bl2) {
-            this.l.J();
+            this.visibilityAnimation.J();
             if (bl) {
-                this.m.J();
+                this.backdropAnimation.J();
             } else {
-                this.m.O();
+                this.backdropAnimation.O();
             }
         }
-        this.z.G(false);
-        if (this.x != null && this.n() <= 0.0 && !this.a) {
-            this.a = true;
-            for (Object pendingCallback : ClickGuiMainFrame.W(this.o)) {
+        this.backdrop.setInteractive(false);
+        if (this.activeSpec != null && this.getVisibilityProgress() <= 0.0 && !this.closeCallbacksFired) {
+            this.closeCallbacksFired = true;
+            for (Runnable pendingCallback : ClickGuiMainFrame.getFrameOverlayCallbacks(this.frame)) {
                 try {
-                    ((Runnable)pendingCallback).run();
+                    pendingCallback.run();
                 }
                 catch (Throwable throwable) {}
             }
         }
     }
 
-    static ClickGuiOverlayBackdropComponent t(ClickGuiOverlayController clickGuiOverlayController) {
-        return clickGuiOverlayController.z;
+    static ClickGuiOverlayBackdropComponent getBackdrop(ClickGuiOverlayController controller) {
+        return controller.backdrop;
     }
 
-    private void Q(@Nullable ClickGuiOverlaySpec clickGuiOverlaySpec) {
-        this.x = clickGuiOverlaySpec;
+    private void handleSpecChanged(@Nullable ClickGuiOverlaySpec clickGuiOverlaySpec) {
+        this.activeSpec = clickGuiOverlaySpec;
         if (clickGuiOverlaySpec != null) {
-            this.U = this.k.I$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiOverla$1h8izi9();
-            this.P = this.k.A();
+            this.placement = this.navigationPanel.getPlacement();
+            this.width = this.navigationPanel.A();
         }
     }
 
-    void K() {
-        double d = this.n();
-        boolean bl = this.t(d);
-        this.k.Z(bl);
+    void updateAnimationState() {
+        double d = this.getVisibilityProgress();
+        boolean bl = this.isVisible(d);
+        this.navigationPanel.setVisible(bl);
         boolean bl2 = false;
-        if (bl && this.x != null) {
-            boolean bl3 = this.x.y() == ClickGuiOverlayTransitionMode.PUSH && this.k.A$src$Z$fwf4yb();
-            bl2 = bl3 ? this.k.X$src$Z$g92elm() : this.x.R();
+        if (bl && this.activeSpec != null) {
+            boolean bl3 = this.activeSpec.getTransitionMode() == ClickGuiOverlayTransitionMode.PUSH && this.navigationPanel.hasActiveSpec();
+            bl2 = bl3 ? this.navigationPanel.isBackdropEnabled() : this.activeSpec.isBackdropEnabled();
         }
-        double d2 = this.V();
+        double d2 = this.getBackdropOpacity();
         boolean bl4 = bl2 && d2 > 0.001;
-        this.z.Z(bl4);
-        this.z.G(bl2 && this.w);
-        if (!bl && this.x != null) {
-            this.k.U$src$V$g7f0q3();
-            this.x = null;
-            this.U();
-            if (!this.a) {
-                this.a = true;
-                for (Object pendingCallback : ClickGuiMainFrame.W(this.o)) {
+        this.backdrop.setVisible(bl4);
+        this.backdrop.setInteractive(bl2 && this.open);
+        if (!bl && this.activeSpec != null) {
+            this.navigationPanel.clearNavigation();
+            this.activeSpec = null;
+            this.resetPlacement();
+            if (!this.closeCallbacksFired) {
+                this.closeCallbacksFired = true;
+                for (Runnable pendingCallback : ClickGuiMainFrame.getFrameOverlayCallbacks(this.frame)) {
                     try {
-                        ((Runnable)pendingCallback).run();
+                        pendingCallback.run();
                     }
                     catch (Exception exception) {}
                 }
             }
         } else if (bl) {
-            this.a = false;
+            this.closeCallbacksFired = false;
         }
     }
 
-    boolean x() {
-        return this.x != null;
+    boolean hasActiveSpec() {
+        return this.activeSpec != null;
     }
 }

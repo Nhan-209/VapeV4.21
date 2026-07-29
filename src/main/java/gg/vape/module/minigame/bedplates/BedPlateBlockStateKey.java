@@ -1,50 +1,52 @@
 package gg.vape.module.minigame.bedplates;
 
-import gg.vape.module.minigame.bedplates.BedPlateBlockStateKeyMarker;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Item;
 import java.util.Objects;
 
 public class BedPlateBlockStateKey {
-    public int f;
-    private boolean isNull;
-    public int i;
+    private final int metadata;
+    private final boolean nullItem;
+    private final int itemId;
 
-    public boolean equals(Object object) {
-        if (this == object) {
+    public boolean equals(Object candidate) {
+        if (this == candidate) {
             return true;
         }
-        if (object == null || this.getClass() != object.getClass()) {
+        if (candidate == null || this.getClass() != candidate.getClass()) {
             return false;
         }
-        BedPlateBlockStateKey bedPlateBlockStateKey = (BedPlateBlockStateKey)object;
+        BedPlateBlockStateKey other = (BedPlateBlockStateKey)candidate;
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.i == bedPlateBlockStateKey.i;
+            return this.itemId == other.itemId;
         }
-        return this.i == bedPlateBlockStateKey.i && this.f == bedPlateBlockStateKey.f;
+        return this.itemId == other.itemId && this.metadata == other.metadata;
     }
 
-    private BedPlateBlockStateKey(int id, int meta) {
-        this.i = id;
-        this.f = meta;
-        this.isNull = id == 0 || Item.T(id).isNull();
+    public BedPlateBlockStateKey(int itemId, int metadata) {
+        this.itemId = itemId;
+        this.metadata = metadata;
+        this.nullItem = itemId == 0 || Item.T(itemId).isNull();
     }
 
     public String toString() {
-        return "BlockData{id=" + this.i + ", meta=" + this.f + '}';
+        return "BlockData{id=" + this.itemId + ", meta=" + this.metadata + '}';
     }
 
-    public BedPlateBlockStateKey(int id, int meta, BedPlateBlockStateKeyMarker bedPlateBlockStateKeyMarker) {
-        this(id, meta);
+    public int getItemId() {
+        return this.itemId;
     }
 
-    public boolean U() {
-        return this.isNull;
+    public int getMetadata() {
+        return this.metadata;
     }
 
+    public boolean isNullItem() {
+        return this.nullItem;
+    }
 
     public int hashCode() {
-        return Objects.hash(this.i, this.f);
+        return Objects.hash(this.itemId, this.metadata);
     }
 }
 

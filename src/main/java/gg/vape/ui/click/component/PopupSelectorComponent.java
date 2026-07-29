@@ -8,42 +8,41 @@ import org.jetbrains.annotations.Nullable;
 
 public class PopupSelectorComponent
 extends InteractiveComponent {
-    protected final FrameComponent Q;
+    protected final FrameComponent popupContent;
     @Nullable
-    protected AnchoredPopupFrame K;
-    private static String v;
+    protected AnchoredPopupFrame popupFrame;
+    private static String legacyMarker;
 
     static {
-        if (PopupSelectorComponent.A$src$Ljava_lang_String_$jvxvcn() != null) {
-            PopupSelectorComponent.L("ECQHRb");
+        if (PopupSelectorComponent.getLegacyMarker() != null) {
+            PopupSelectorComponent.setLegacyMarker("ECQHRb");
         }
     }
 
-    public FrameComponent u$src$Lgg_vape_ui_click_frame_FrameComponent_$bcl1km() {
-        return this.Q;
+    public FrameComponent getPopupContent() {
+        return this.popupContent;
     }
 
-    public static String A$src$Ljava_lang_String_$jvxvcn() {
-        return v;
+    public static String getLegacyMarker() {
+        return legacyMarker;
     }
 
-    private void W() {
-        this.K = ClientSettings.g(this, this.Q, AnchoredPopupFrame.class);
-        this.K.t(true);
+    private void openPopup() {
+        this.popupFrame = ClientSettings.createPopup(this, this.popupContent, AnchoredPopupFrame.class);
+        this.popupFrame.t(true);
     }
 
     @Nullable
-    public AnchoredPopupFrame p() {
-        return this.K;
+    public AnchoredPopupFrame getPopupFrame() {
+        return this.popupFrame;
     }
 
-    public PopupSelectorComponent(FrameComponent frameComponent) {
-        this.Q = frameComponent;
-        this.s(this::W);
+    public PopupSelectorComponent(FrameComponent popupContent) {
+        this.popupContent = popupContent;
+        this.setClickListener(this::openPopup);
     }
 
-    public static void L(String string) {
-        v = string;
+    public static void setLegacyMarker(String marker) {
+        legacyMarker = marker;
     }
 }
-

@@ -16,7 +16,7 @@ extends Mod {
     @EventHandler
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
         this.tickParity = !this.tickParity;
-        Minecraft.getTimer().setTimerSpeed(((Double)this.speedValue.K()).floatValue());
+        Minecraft.getTimer().setTimerSpeed(((Double)this.speedValue.getValue()).floatValue());
     }
 
     public Timer() {

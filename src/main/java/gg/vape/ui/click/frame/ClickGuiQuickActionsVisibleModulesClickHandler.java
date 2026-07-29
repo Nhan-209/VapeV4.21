@@ -10,12 +10,11 @@ implements GuiClickListener {
     final ClickGuiQuickActionsComponent v;
 
     @Override
-    public void P() {
-        ClientSettings.T(VisibleModuleListFrame.class);
+    public void onPrimaryClick() {
+        ClientSettings.showFrame(VisibleModuleListFrame.class);
     }
 
     public ClickGuiQuickActionsVisibleModulesClickHandler(ClickGuiQuickActionsComponent clickGuiQuickActionsComponent) {
         this.v = clickGuiQuickActionsComponent;
     }
 }
-

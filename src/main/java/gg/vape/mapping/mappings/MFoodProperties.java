@@ -38,7 +38,7 @@ extends Mapping {
         MFoodProperties mFoodProperties3 = this;
         this.b = this.J(string3, bl3, clazz3);
         String string4 = MFoods.A();
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MFoods.h("P9qc6b");
         }
     }

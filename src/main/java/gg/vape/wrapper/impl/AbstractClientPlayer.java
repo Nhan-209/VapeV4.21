@@ -16,7 +16,7 @@ extends EntityPlayer {
         o = guiComponentArray;
     }
 
-    public FreecamPlayerBridge E() {
+    public FreecamPlayerBridge getFreecamPlayerBridge() {
         return new FreecamPlayerBridge(AbstractClientPlayer.c.getMappings().Dk.x(this.I));
     }
 

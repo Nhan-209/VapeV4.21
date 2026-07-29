@@ -16,37 +16,37 @@ import org.lwjgl.opengl.GL11;
 
 public class ItemIcon
 implements ItemIconRenderBackend {
-    GlFramebuffer I;
-    private GLUtils O = new GLUtils();
+    GlFramebuffer framebuffer;
+    private GLUtils texturedQuadBuffer = new GLUtils();
 
     @Override
-    public void N(ItemStack itemStack, float f) {
-        int n = 32;
-        int n2 = 32;
-        boolean bl = GL11.glIsEnabled((int)3089);
-        boolean bl2 = GL11.glIsEnabled((int)3553);
-        boolean bl3 = GL11.glIsEnabled((int)2929);
-        if (bl) {
+    public void capture(ItemStack itemStack, float scale) {
+        int framebufferWidth = 32;
+        int framebufferHeight = 32;
+        boolean scissorEnabled = GL11.glIsEnabled((int)3089);
+        boolean textureEnabled = GL11.glIsEnabled((int)3553);
+        boolean depthTestEnabled = GL11.glIsEnabled((int)2929);
+        if (scissorEnabled) {
             GL11.glDisable((int)3089);
         }
-        if (!bl2) {
+        if (!textureEnabled) {
             GlStateManager.enableTexture2D();
         }
-        if (!bl3) {
+        if (!depthTestEnabled) {
             GL11.glEnable((int)2929);
         }
         GlStateManager.depthMask(true);
-        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer((int)16);
-        gg.vape.wrapper.impl.GL11.G(3106, floatBuffer);
+        FloatBuffer previousClearColor = BufferUtils.createFloatBuffer((int)16);
+        gg.vape.wrapper.impl.GL11.G(3106, previousClearColor);
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().B(1.0);
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(64);
-        byteBuffer.order(ByteOrder.nativeOrder());
-        IntBuffer intBuffer = byteBuffer.asIntBuffer();
-        gg.vape.wrapper.impl.GL11.X(2978, intBuffer);
+        ByteBuffer viewportBytes = ByteBuffer.allocateDirect(64);
+        viewportBytes.order(ByteOrder.nativeOrder());
+        IntBuffer viewport = viewportBytes.asIntBuffer();
+        gg.vape.wrapper.impl.GL11.X(2978, viewport);
         GL11.glPushMatrix();
-        this.I = new GlFramebuffer(n, n2, true);
-        this.I.f(true);
-        this.I.S();
+        this.framebuffer = new GlFramebuffer(framebufferWidth, framebufferHeight, true);
+        this.framebuffer.bind(true);
+        this.framebuffer.bindColorTexture();
         GL11.glClearColor((float)0.0f, (float)0.0f, (float)0.0f, (float)0.0f);
         GL11.glClear((int)16384);
         GL11.glClear((int)256);
@@ -60,7 +60,7 @@ implements ItemIconRenderBackend {
         GL11.glTranslatef((float)0.0f, (float)0.0f, (float)-2000.0f);
         GL11.glEnable((int)32826);
         GL11.glPushMatrix();
-        GuiRenderPrimitives.g(itemStack, f, 0.0, 0.0, true);
+        GuiRenderPrimitives.g(itemStack, scale, 0.0, 0.0, true);
         GL11.glPopMatrix();
         GL11.glMatrixMode((int)5888);
         GL11.glPopMatrix();
@@ -68,18 +68,18 @@ implements ItemIconRenderBackend {
         GL11.glPopMatrix();
         GL11.glMatrixMode((int)5888);
         GL11.glDisable((int)32826);
-        this.I.M();
-        this.I.o();
+        this.framebuffer.restorePreviousTexture();
+        this.framebuffer.unbind();
         GL11.glPopMatrix();
-        GL11.glClearColor((float)floatBuffer.get(0), (float)floatBuffer.get(1), (float)floatBuffer.get(2), (float)floatBuffer.get(3));
-        GL11.glViewport((int)intBuffer.get(0), (int)intBuffer.get(1), (int)intBuffer.get(2), (int)intBuffer.get(3));
-        if (!bl3) {
+        GL11.glClearColor((float)previousClearColor.get(0), (float)previousClearColor.get(1), (float)previousClearColor.get(2), (float)previousClearColor.get(3));
+        GL11.glViewport((int)viewport.get(0), (int)viewport.get(1), (int)viewport.get(2), (int)viewport.get(3));
+        if (!depthTestEnabled) {
             GL11.glDisable((int)2929);
         }
-        if (bl) {
+        if (scissorEnabled) {
             GL11.glEnable((int)3089);
         }
-        if (!bl2) {
+        if (!textureEnabled) {
             GlStateManager.disableTexture2D();
         }
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
@@ -87,69 +87,69 @@ implements ItemIconRenderBackend {
 
 
     public ItemIcon() {
-        this.O.b(8, 7, 2);
-        this.O.X();
+        this.texturedQuadBuffer.configureVertexBuffer(8, 7, 2);
+        this.texturedQuadBuffer.enableTextureCoordinates();
     }
 
     @Override
-    public void H(float f, float f2, int n, int n2, float f3) {
+    public void render(float x, float y, int width, int height, float opacity) {
         GL11.glEnable((int)2903);
-        boolean bl = GL11.glIsEnabled((int)3553);
-        boolean bl2 = GL11.glIsEnabled((int)2896);
-        boolean bl3 = GL11.glIsEnabled((int)3008);
-        boolean bl4 = GL11.glIsEnabled((int)3042);
-        if (!bl) {
+        boolean textureEnabled = GL11.glIsEnabled((int)3553);
+        boolean lightingEnabled = GL11.glIsEnabled((int)2896);
+        boolean alphaTestEnabled = GL11.glIsEnabled((int)3008);
+        boolean blendEnabled = GL11.glIsEnabled((int)3042);
+        if (!textureEnabled) {
             GlStateManager.enableTexture2D();
         }
-        if (bl2) {
+        if (lightingEnabled) {
             GlStateManager.disableLighting();
         }
-        if (bl2) {
+        if (lightingEnabled) {
             GlStateManager.disableLighting();
         }
-        if (!bl3) {
+        if (!alphaTestEnabled) {
             GlStateManager.enableAlpha();
         }
-        if (!bl4) {
+        if (!blendEnabled) {
             GlStateManager.enableBlend();
         }
-        this.I.S();
-        GL11.glColor4f((float)1.0f, (float)1.0f, (float)1.0f, (float)f3);
+        this.framebuffer.bindColorTexture();
+        GL11.glColor4f((float)1.0f, (float)1.0f, (float)1.0f, (float)opacity);
         GL11.glPushMatrix();
-        float f4 = 0.0f;
-        float f5 = 1.0f;
-        float f6 = 1.0f;
-        float f7 = 0.0f;
+        float minU = 0.0f;
+        float maxV = 1.0f;
+        float maxU = 1.0f;
+        float minV = 0.0f;
         GL11.glBegin((int)7);
-        GL11.glTexCoord2f((float)f6, (float)f5);
-        GL11.glVertex2f((float)(f + (float)n), (float)f2);
-        GL11.glTexCoord2f((float)f4, (float)f5);
-        GL11.glVertex2f((float)f, (float)f2);
-        GL11.glTexCoord2f((float)f4, (float)f7);
-        GL11.glVertex2f((float)f, (float)(f2 + (float)n2));
-        GL11.glTexCoord2f((float)f6, (float)f7);
-        GL11.glVertex2f((float)(f + (float)n), (float)(f2 + (float)n2));
+        GL11.glTexCoord2f((float)maxU, (float)maxV);
+        GL11.glVertex2f((float)(x + (float)width), (float)y);
+        GL11.glTexCoord2f((float)minU, (float)maxV);
+        GL11.glVertex2f((float)x, (float)y);
+        GL11.glTexCoord2f((float)minU, (float)minV);
+        GL11.glVertex2f((float)x, (float)(y + (float)height));
+        GL11.glTexCoord2f((float)maxU, (float)minV);
+        GL11.glVertex2f((float)(x + (float)width), (float)(y + (float)height));
         GL11.glEnd();
         GL11.glPopMatrix();
-        this.I.M();
-        if (!bl) {
+        this.framebuffer.restorePreviousTexture();
+        if (!textureEnabled) {
             GlStateManager.disableTexture2D();
         }
-        if (bl2) {
+        if (lightingEnabled) {
             GlStateManager.enableLighting();
         }
-        if (bl3) {
+        if (alphaTestEnabled) {
             GlStateManager.enableAlpha();
         }
-        if (bl4) {
+        if (blendEnabled) {
             GlStateManager.enableBlend();
         }
     }
 
 
     @Override
-    public void e() {
-        this.I.x();
-        this.I = null;
+    public void dispose() {
+        this.framebuffer.delete();
+        this.framebuffer = null;
     }
 }

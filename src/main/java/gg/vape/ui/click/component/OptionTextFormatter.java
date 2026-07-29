@@ -4,30 +4,30 @@ import gg.vape.unmap.INamed;
 import org.jetbrains.annotations.Nullable;
 
 public interface OptionTextFormatter<T> {
-    public String I(T var1);
+    public String format(T value);
 
-    public static OptionTextFormatter<String> N() {
-        return OptionTextFormatter.c("");
+    public static OptionTextFormatter<String> strings() {
+        return OptionTextFormatter.strings("");
     }
 
-    public static OptionTextFormatter<String> c(@Nullable String string) {
-        return arg_0 -> OptionTextFormatter.lambda$createStringFormatter$1(string, arg_0);
+    public static OptionTextFormatter<String> strings(@Nullable String fallbackText) {
+        return value -> OptionTextFormatter.formatStringOrFallback(fallbackText, value);
     }
 
-    public static <N extends INamed> OptionTextFormatter<N> W(@Nullable String string) {
-        return arg_0 -> OptionTextFormatter.lambda$createNamedFormatter$0(string, arg_0);
+    public static <N extends INamed> OptionTextFormatter<N> namedValues(@Nullable String fallbackText) {
+        return value -> OptionTextFormatter.formatNamedOrFallback(fallbackText, value);
     }
 
-    static String lambda$createStringFormatter$1(String string, String string2) {
-        return string2 != null ? string2 : string;
+    static String formatStringOrFallback(String fallbackText, String value) {
+        return value != null ? value : fallbackText;
     }
 
-    public static <N extends INamed> OptionTextFormatter<N> j() {
-        return OptionTextFormatter.W("");
+    public static <N extends INamed> OptionTextFormatter<N> namedValues() {
+        return OptionTextFormatter.namedValues("");
     }
 
-    static String lambda$createNamedFormatter$0(String string, INamed iNamed) {
-        return iNamed != null ? iNamed.getName() : string;
+    static String formatNamedOrFallback(String fallbackText, INamed value) {
+        return value != null ? value.getName() : fallbackText;
     }
 
 }

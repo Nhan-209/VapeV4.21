@@ -6,17 +6,16 @@ import gg.vape.ui.click.frame.impl.hud.HudModuleSelectorFrame;
 
 public class HudModuleSearchKeyHandler
 implements GuiKeyTypedListener {
-    final HudModuleSelectorFrame y;
-    final HudModuleSearchBox J;
+    private final HudModuleSelectorFrame selectorFrame;
+    private final HudModuleSearchBox searchBox;
 
     @Override
-    public void v(char c, int n) {
-        this.y.j(HudModuleSearchBox.N(this.J).i$src$Z$1n22b4s());
+    public void onKeyTyped(char c, int n) {
+        this.selectorFrame.setSearchQuery(this.searchBox.getInput().getText());
     }
 
     public HudModuleSearchKeyHandler(HudModuleSearchBox hudModuleSearchBox, HudModuleSelectorFrame hudModuleSelectorFrame) {
-        this.J = hudModuleSearchBox;
-        this.y = hudModuleSelectorFrame;
+        this.searchBox = hudModuleSearchBox;
+        this.selectorFrame = hudModuleSelectorFrame;
     }
 }
-

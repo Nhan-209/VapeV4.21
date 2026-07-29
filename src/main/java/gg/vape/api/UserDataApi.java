@@ -34,7 +34,7 @@ public class UserDataApi {
 
     private ApiResponse lambda$savePrivateProfileData$2(String string, JsonObject jsonObject) {
         try {
-            return ApiHttpClient.z(this.s + "/api/v1/" + string + "/profile/private/save/profile/", jsonObject, RemoteProfileDataMap::U);
+            return ApiHttpClient.z(this.s + "/api/v1/" + string + "/profile/private/save/profile/", jsonObject, RemoteProfileDataMap::fromJson);
         }
         catch (Exception exception) {
             throw new RuntimeException(exception);
@@ -77,4 +77,3 @@ public class UserDataApi {
         this.s = string;
     }
 }
-

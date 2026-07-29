@@ -39,261 +39,254 @@ import org.lwjgl.opengl.GL14;
 
 public class Projectiles
 extends Mod {
-    private final List<Float> A;
-    private final BooleanValue j;
-    private final ArrowProjectile V = new ArrowProjectile();
-    private IntBuffer s = null;
-    private final Projectile a;
-    private final RenderManager t;
-    private final BooleanValue k;
-    private final List<Integer> Z;
-    private IntBuffer K = null;
-    private final Projectile J;
-    private final BooleanValue c;
-    private final PotionProjectile o = new PotionProjectile();
-    private FloatBuffer b = null;
-    private final BooleanValue S;
-    private final Projectile H = new Projectile(Collections.singleton(MappedClasses.Zg), new Color(173, 12, 255));
-    private final List<Integer> O;
-    private final BooleanValue P;
+    private final List<Float> vertices;
+    private final BooleanValue showPearls;
+    private final ArrowProjectile arrowProjectile = new ArrowProjectile();
+    private IntBuffer vertexCountBuffer;
+    private final Projectile eggProjectile;
+    private final BooleanValue showArrows;
+    private final List<Integer> firstVertices;
+    private IntBuffer firstVertexBuffer;
+    private final Projectile snowballProjectile;
+    private final BooleanValue showPotions;
+    private final PotionProjectile potionProjectile = new PotionProjectile();
+    private FloatBuffer vertexBuffer;
+    private final BooleanValue showSnowballs;
+    private final Projectile pearlProjectile = new Projectile(Collections.singleton(MappedClasses.Zg), new Color(173, 12, 255));
+    private final List<Integer> vertexCounts;
+    private final BooleanValue showEggs;
 
-    private IProjectile C(EntityEnderPearl entityEnderPearl) {
-        if (entityEnderPearl.b$src$Z$fqlxe4()) {
+    private IProjectile resolveProjectile(EntityEnderPearl entity) {
+        if (entity.b$src$Z$fqlxe4()) {
             return null;
         }
-        if (entityEnderPearl.z() == entityEnderPearl.M() && entityEnderPearl.h() == entityEnderPearl.m$src$D$fwnne5()) {
+        if (entity.z() == entity.M() && entity.h() == entity.m$src$D$fwnne5()) {
             return null;
         }
-        for (IProjectile iProjectile : this.p()) {
-            if (!iProjectile.matches(entityEnderPearl)) continue;
-            return iProjectile;
+        for (IProjectile projectile : this.getEnabledProjectiles()) {
+            if (!projectile.matches(entity)) continue;
+            return projectile;
         }
         return null;
     }
 
-    private void n(double d, double d2, double d3, Color color) {
-        double d4 = RenderManager.getInterpolatedRenderPosX();
-        double d5 = RenderManager.getInterpolatedRenderPosY();
-        double d6 = RenderManager.getInterpolatedRenderPosZ();
-        this.A.add(Float.valueOf((float)(d - d4)));
-        this.A.add(Float.valueOf((float)(d2 - d5)));
-        this.A.add(Float.valueOf((float)(d3 - d6)));
-        this.A.add(Float.valueOf((float)color.getRed() / 255.0f));
-        this.A.add(Float.valueOf((float)color.getGreen() / 255.0f));
-        this.A.add(Float.valueOf((float)color.getBlue() / 255.0f));
-        this.A.add(Float.valueOf((float)color.getAlpha() / 255.0f));
+    private void addVertex(double x, double y, double z, Color color) {
+        double cameraX = RenderManager.getInterpolatedRenderPosX();
+        double cameraY = RenderManager.getInterpolatedRenderPosY();
+        double cameraZ = RenderManager.getInterpolatedRenderPosZ();
+        this.vertices.add(Float.valueOf((float)(x - cameraX)));
+        this.vertices.add(Float.valueOf((float)(y - cameraY)));
+        this.vertices.add(Float.valueOf((float)(z - cameraZ)));
+        this.vertices.add(Float.valueOf((float)color.getRed() / 255.0f));
+        this.vertices.add(Float.valueOf((float)color.getGreen() / 255.0f));
+        this.vertices.add(Float.valueOf((float)color.getBlue() / 255.0f));
+        this.vertices.add(Float.valueOf((float)color.getAlpha() / 255.0f));
     }
 
-    private void Z() {
-        if (this.b == null || this.b.capacity() < this.A.size()) {
-            this.b = BufferUtils.createFloatBuffer((int)this.A.size());
+    private void drawLegacyVertices() {
+        if (this.vertexBuffer == null || this.vertexBuffer.capacity() < this.vertices.size()) {
+            this.vertexBuffer = BufferUtils.createFloatBuffer((int)this.vertices.size());
         } else {
-            this.b.clear();
+            this.vertexBuffer.clear();
         }
-        for (Float comparable2 : this.A) {
-            this.b.put(comparable2.floatValue());
+        for (Float value : this.vertices) {
+            this.vertexBuffer.put(value.floatValue());
         }
-        this.b.flip();
+        this.vertexBuffer.flip();
         GL11.glEnableClientState((int)32884);
         GL11.glEnableClientState((int)32886);
-        int n = 28;
-        FloatBuffer floatBuffer = this.b.duplicate();
-        floatBuffer.position(0);
-        GL11.glVertexPointer((int)3, (int)n, (FloatBuffer)floatBuffer);
-        FloatBuffer floatBuffer2 = this.b.duplicate();
-        floatBuffer2.position(3);
-        GL11.glColorPointer((int)4, (int)n, (FloatBuffer)floatBuffer2);
-        int n2 = this.Z.size();
-        if (this.K == null || this.K.capacity() < n2) {
-            this.K = BufferUtils.createIntBuffer((int)n2);
+        int stride = 28;
+        FloatBuffer positionBuffer = this.vertexBuffer.duplicate();
+        positionBuffer.position(0);
+        GL11.glVertexPointer((int)3, (int)stride, (FloatBuffer)positionBuffer);
+        FloatBuffer colorBuffer = this.vertexBuffer.duplicate();
+        colorBuffer.position(3);
+        GL11.glColorPointer((int)4, (int)stride, (FloatBuffer)colorBuffer);
+        int trajectoryCount = this.firstVertices.size();
+        if (this.firstVertexBuffer == null || this.firstVertexBuffer.capacity() < trajectoryCount) {
+            this.firstVertexBuffer = BufferUtils.createIntBuffer((int)trajectoryCount);
         } else {
-            this.K.clear();
+            this.firstVertexBuffer.clear();
         }
-        if (this.s == null || this.s.capacity() < n2) {
-            this.s = BufferUtils.createIntBuffer((int)n2);
+        if (this.vertexCountBuffer == null || this.vertexCountBuffer.capacity() < trajectoryCount) {
+            this.vertexCountBuffer = BufferUtils.createIntBuffer((int)trajectoryCount);
         } else {
-            this.s.clear();
+            this.vertexCountBuffer.clear();
         }
-        for (int i = 0; i < n2; ++i) {
-            this.K.put(this.Z.get(i));
-            this.s.put(this.O.get(i));
+        for (int i = 0; i < trajectoryCount; ++i) {
+            this.firstVertexBuffer.put(this.firstVertices.get(i));
+            this.vertexCountBuffer.put(this.vertexCounts.get(i));
         }
-        this.K.flip();
-        this.s.flip();
-        GL14.glMultiDrawArrays((int)3, (IntBuffer)this.K, (IntBuffer)this.s);
+        this.firstVertexBuffer.flip();
+        this.vertexCountBuffer.flip();
+        GL14.glMultiDrawArrays((int)3, (IntBuffer)this.firstVertexBuffer, (IntBuffer)this.vertexCountBuffer);
         GL11.glDisableClientState((int)32884);
         GL11.glDisableClientState((int)32886);
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
-        this.A.clear();
-        this.Z.clear();
-        this.O.clear();
-        WorldClient worldClient = Minecraft.theWorld();
-        if (worldClient.isNull()) {
+    public void onTick(EventPreTick event) {
+        this.vertices.clear();
+        this.firstVertices.clear();
+        this.vertexCounts.clear();
+        WorldClient world = Minecraft.theWorld();
+        if (world.isNull()) {
             return;
         }
-        for (Object e : worldClient.S()) {
-            Entity entity = new Entity(e);
+        for (Object entityHandle : world.S()) {
+            Entity entity = new Entity(entityHandle);
             if (!entity.isInstance(MappedClasses.lv)) continue;
-            EnderPearlProjectileBridge enderPearlProjectileBridge = new EnderPearlProjectileBridge(entity.getObject());
-            EntityEnderPearl entityEnderPearl = new EntityEnderPearl(entity.getObject());
-            IProjectile iProjectile = this.C(enderPearlProjectileBridge);
-            if (iProjectile == null) continue;
-            this.Q(entityEnderPearl, iProjectile);
+            EnderPearlProjectileBridge projectileEntity = new EnderPearlProjectileBridge(entity.getObject());
+            EntityEnderPearl simulatedEntity = new EntityEnderPearl(entity.getObject());
+            IProjectile projectile = this.resolveProjectile(projectileEntity);
+            if (projectile == null) continue;
+            this.simulateTrajectory(simulatedEntity, projectile);
         }
     }
 
     @EventHandler
-    public void onRender3D(EventRender3D eventRender3D) {
-        if (this.A.isEmpty()) {
+    public void onRender3D(EventRender3D event) {
+        if (this.vertices.isEmpty()) {
             return;
         }
-        OpenGlBackendHolder.d.r(1.5f);
-        OpenGlBackendHolder.d.l(2848);
-        boolean bl = OpenGlBackendHolder.d.L(3042);
-        if (bl) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2929);
-            RenderUtil.d();
-            if (GuiRenderPrimitives.d()) {
-                this.M$src$V$zpanub();
-            } else {
-                this.Z();
-            }
-            RenderUtil.Y();
-            OpenGlBackendHolder.d.u$src$V$hntn98(2848);
-            OpenGlBackendHolder.d.l(3553);
-            OpenGlBackendHolder.d.l(2929);
-            return;
+        OpenGlBackendHolder.backend.setLineWidth(1.5f);
+        OpenGlBackendHolder.backend.enableCapability(2848);
+        boolean blendEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(3042);
+        if (!blendEnabled) {
+            OpenGlBackendHolder.backend.enableCapability(3042);
         }
-        OpenGlBackendHolder.d.l(3042);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-        OpenGlBackendHolder.d.u$src$V$hntn98(2929);
+        OpenGlBackendHolder.backend.disableCapability(3553);
+        OpenGlBackendHolder.backend.disableCapability(2929);
         RenderUtil.d();
         if (GuiRenderPrimitives.d()) {
-            this.M$src$V$zpanub();
+            this.drawBufferedSegments();
         } else {
-            this.Z();
+            this.drawLegacyVertices();
         }
         RenderUtil.Y();
-        OpenGlBackendHolder.d.u$src$V$hntn98(2848);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3042);
-        OpenGlBackendHolder.d.l(3553);
-        OpenGlBackendHolder.d.l(2929);
+        OpenGlBackendHolder.backend.disableCapability(2848);
+        if (!blendEnabled) {
+            OpenGlBackendHolder.backend.disableCapability(3042);
+        }
+        OpenGlBackendHolder.backend.enableCapability(3553);
+        OpenGlBackendHolder.backend.enableCapability(2929);
     }
 
     public Projectiles() {
         super("Projectiles", -16535661, Category.k, "Shows projectile trajectories while in air");
-        this.a = new Projectile(Collections.singleton(MappedClasses.l2), new Color(255, 238, 154));
-        this.J = new Projectile(Collections.singleton(MappedClasses.YZ), new Color(255, 255, 255));
-        this.k = BooleanValue.create(this, "Show Arrows", true);
-        this.j = BooleanValue.create(this, "Show Pearls", true);
-        this.c = BooleanValue.create(this, "Show Potions", false);
-        this.P = BooleanValue.create(this, "Show Eggs", false);
-        this.S = BooleanValue.create(this, "Show Snowballs", false);
-        this.A = new ArrayList<Float>();
-        this.Z = new ArrayList<Integer>();
-        this.O = new ArrayList<Integer>();
-        this.t = Minecraft.D();
-        this.addValue(this.k, this.j, this.c, this.P, this.S);
+        this.eggProjectile = new Projectile(Collections.singleton(MappedClasses.l2), new Color(255, 238, 154));
+        this.snowballProjectile = new Projectile(Collections.singleton(MappedClasses.YZ), new Color(255, 255, 255));
+        this.showArrows = BooleanValue.create(this, "Show Arrows", true);
+        this.showPearls = BooleanValue.create(this, "Show Pearls", true);
+        this.showPotions = BooleanValue.create(this, "Show Potions", false);
+        this.showEggs = BooleanValue.create(this, "Show Eggs", false);
+        this.showSnowballs = BooleanValue.create(this, "Show Snowballs", false);
+        this.vertices = new ArrayList<Float>();
+        this.firstVertices = new ArrayList<Integer>();
+        this.vertexCounts = new ArrayList<Integer>();
+        this.addValue(this.showArrows, this.showPearls, this.showPotions, this.showEggs, this.showSnowballs);
     }
 
 
-    private void Q(EntityEnderPearl entityEnderPearl, IProjectile iProjectile) {
-        if (!entityEnderPearl.isInstance(MappedClasses.lv)) {
+    private void simulateTrajectory(EntityEnderPearl entity, IProjectile projectile) {
+        if (!entity.isInstance(MappedClasses.lv)) {
             return;
         }
-        int n = this.A.size() / 7;
-        Color color = iProjectile.getColor(entityEnderPearl.getObject());
+        int firstVertex = this.vertices.size() / 7;
+        Color color = projectile.getColor();
         if (color == null) {
             color = new Color(255, 255, 255);
         }
-        this.n(entityEnderPearl.z(), entityEnderPearl.N(), entityEnderPearl.h(), color);
-        double d = entityEnderPearl.z();
-        double d2 = entityEnderPearl.N();
-        double d3 = entityEnderPearl.h();
-        double d4 = entityEnderPearl.t();
-        double d5 = entityEnderPearl.q();
-        double d6 = entityEnderPearl.T();
-        WorldClient worldClient = Minecraft.theWorld();
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
+        this.addVertex(entity.z(), entity.N(), entity.h(), color);
+        double x = entity.z();
+        double y = entity.N();
+        double z = entity.h();
+        double motionX = entity.t();
+        double motionY = entity.q();
+        double motionZ = entity.T();
+        WorldClient world = Minecraft.theWorld();
+        EntityPlayerSP player = Minecraft.thePlayer();
         while (true) {
-            float f = iProjectile.getCollisionRadius();
-            float f2 = iProjectile.getCollisionHeight();
-            AxisAlignedBB axisAlignedBB = AxisAlignedBB.create(d - (double)f, d2, d3 - (double)f, d + (double)f, d2 + (double)f2, d3 + (double)f);
-            Vec3 vec3 = Vec3.create(d, d2, d3);
-            Vec3 vec32 = Vec3.create(d + d4, d2 + d5, d3 + d6);
-            RayTraceResult rayTraceResult = worldClient.K(vec3, vec32, false, entityEnderPearl.isInstance(MappedClasses.F), false, entityEnderPearl);
+            float collisionRadius = projectile.getCollisionRadius();
+            float collisionHeight = projectile.getCollisionHeight();
+            AxisAlignedBB projectileBounds = AxisAlignedBB.create(x - (double)collisionRadius, y, z - (double)collisionRadius, x + (double)collisionRadius, y + (double)collisionHeight, z + (double)collisionRadius);
+            Vec3 start = Vec3.create(x, y, z);
+            Vec3 end = Vec3.create(x + motionX, y + motionY, z + motionZ);
+            RayTraceResult hitResult = world.K(start, end, false, entity.isInstance(MappedClasses.F), false, entity);
             if (ForgeVersion.MC_1_16_5.d()) {
-                if (!rayTraceResult.getTypeOfHit().equals(RayTraceResult_type.miss())) {
-                    vec32 = Vec3.create(rayTraceResult.getHitVec().getX(), rayTraceResult.getHitVec().getY(), rayTraceResult.getHitVec().getZ());
+                if (!hitResult.getTypeOfHit().equals(RayTraceResult_type.miss())) {
+                    end = Vec3.create(hitResult.getHitVec().getX(), hitResult.getHitVec().getY(), hitResult.getHitVec().getZ());
                 }
-            } else if (rayTraceResult.isNotNull()) {
-                vec32 = Vec3.create(rayTraceResult.getHitVec().getX(), rayTraceResult.getHitVec().getY(), rayTraceResult.getHitVec().getZ());
+            } else if (hitResult.isNotNull()) {
+                end = Vec3.create(hitResult.getHitVec().getX(), hitResult.getHitVec().getY(), hitResult.getHitVec().getZ());
             }
-            List list = worldClient.F(entityPlayerSP, axisAlignedBB.addCoord(d4, d5, d6).expand(1.0, 1.0, 1.0));
-            double d7 = 0.0;
-            for (Object e : list) {
-                RayTraceResult rayTraceResult2;
-                Entity entity = new Entity(e);
-                if (!entity.isInstance(MappedClasses.zm) || entity.isInstance(MappedClasses.uz) || !entity.n$src$Z$fx7gig() || entity.equals(entityPlayerSP) || !(rayTraceResult2 = (axisAlignedBB = entity.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().expand(0.3, 0.3, 0.3)).calculateIntercept(vec3, vec32)).isNotNull()) continue;
-                double d8 = vec3.distanceTo(rayTraceResult2.getHitVec());
-                if (d7 != 0.0 && !(d8 < d7)) continue;
-                d7 = d8;
-                rayTraceResult2.setEntity(entity);
-                rayTraceResult = rayTraceResult2;
+            List<Object> candidates = world.F(player, projectileBounds.addCoord(motionX, motionY, motionZ).expand(1.0, 1.0, 1.0));
+            double closestDistance = 0.0;
+            for (Object entityHandle : candidates) {
+                Entity candidate = new Entity(entityHandle);
+                if (!candidate.isInstance(MappedClasses.zm) || candidate.isInstance(MappedClasses.uz) || !candidate.n$src$Z$fx7gig() || candidate.equals(player)) continue;
+                AxisAlignedBB candidateBounds = candidate.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().expand(0.3, 0.3, 0.3);
+                RayTraceResult entityHit = candidateBounds.calculateIntercept(start, end);
+                if (!entityHit.isNotNull()) continue;
+                double hitDistance = start.distanceTo(entityHit.getHitVec());
+                if (closestDistance != 0.0 && !(hitDistance < closestDistance)) continue;
+                closestDistance = hitDistance;
+                entityHit.setEntity(candidate);
+                hitResult = entityHit;
             }
-            d += d4;
-            d3 += d6;
-            if ((!ForgeVersion.MC_1_16_5.d() ? rayTraceResult.isNotNull() : !rayTraceResult.getTypeOfHit().equals(RayTraceResult_type.miss())) || (d2 += d5) < -128.0) break;
-            d5 *= entityEnderPearl.h$src$Z$ftwoya() ? 0.8 : 0.99;
-            this.n(d + (d4 *= entityEnderPearl.h$src$Z$ftwoya() ? 0.8 : 0.99), d2 + (d5 -= 0.05), d3 + (d6 *= entityEnderPearl.h$src$Z$ftwoya() ? 0.8 : 0.99), color);
+            x += motionX;
+            z += motionZ;
+            if ((!ForgeVersion.MC_1_16_5.d() ? hitResult.isNotNull() : !hitResult.getTypeOfHit().equals(RayTraceResult_type.miss())) || (y += motionY) < -128.0) break;
+            double drag = entity.h$src$Z$ftwoya() ? 0.8 : 0.99;
+            motionX *= drag;
+            motionY *= drag;
+            motionZ *= drag;
+            motionY -= 0.05;
+            this.addVertex(x + motionX, y + motionY, z + motionZ, color);
         }
-        int n2 = this.A.size() / 7 - n;
-        this.Z.add(n);
-        this.O.add(n2);
+        int vertexCount = this.vertices.size() / 7 - firstVertex;
+        this.firstVertices.add(firstVertex);
+        this.vertexCounts.add(vertexCount);
     }
 
-    private void M$src$V$zpanub() {
-        if (this.A.size() < 14) {
+    private void drawBufferedSegments() {
+        if (this.vertices.size() < 14) {
             return;
         }
-        int n = 7;
-        for (int i = 0; i < this.Z.size(); ++i) {
-            int n2;
-            for (int j = n2 = this.Z.get(i) * n; j < this.O.get(i) * n + n2 && j + n + 1 <= this.O.get(i) * n + n2; j += n) {
-                Color color = new Color(this.A.get(j + 3).floatValue(), this.A.get(j + 4).floatValue(), this.A.get(j + 5).floatValue(), this.A.get(j + 6).floatValue());
-                float f = this.A.get(j).floatValue();
-                float f2 = this.A.get(j + 1).floatValue();
-                float f3 = this.A.get(j + 2).floatValue();
-                float f4 = this.A.get(j + 7).floatValue();
-                float f5 = this.A.get(j + 8).floatValue();
-                float f6 = this.A.get(j + 9).floatValue();
-                BufferedRenderPrimitives.X(f, f2, f3, f4, f5, f6, 1.5f, color);
+        int vertexStride = 7;
+        for (int trajectoryIndex = 0; trajectoryIndex < this.firstVertices.size(); ++trajectoryIndex) {
+            int firstOffset = this.firstVertices.get(trajectoryIndex) * vertexStride;
+            int endOffset = this.vertexCounts.get(trajectoryIndex) * vertexStride + firstOffset;
+            for (int offset = firstOffset; offset < endOffset && offset + vertexStride + 1 <= endOffset; offset += vertexStride) {
+                Color color = new Color(this.vertices.get(offset + 3).floatValue(), this.vertices.get(offset + 4).floatValue(), this.vertices.get(offset + 5).floatValue(), this.vertices.get(offset + 6).floatValue());
+                float startX = this.vertices.get(offset).floatValue();
+                float startY = this.vertices.get(offset + 1).floatValue();
+                float startZ = this.vertices.get(offset + 2).floatValue();
+                float endX = this.vertices.get(offset + 7).floatValue();
+                float endY = this.vertices.get(offset + 8).floatValue();
+                float endZ = this.vertices.get(offset + 9).floatValue();
+                BufferedRenderPrimitives.drawLine3D(startX, startY, startZ, endX, endY, endZ, 1.5f, color);
             }
         }
     }
 
-    private List<IProjectile> p() {
-        ArrayList<IProjectile> arrayList = new ArrayList<IProjectile>();
-        if (this.k.L().booleanValue()) {
-            arrayList.add(this.V);
+    private List<IProjectile> getEnabledProjectiles() {
+        ArrayList<IProjectile> projectiles = new ArrayList<IProjectile>();
+        if (this.showArrows.getEffectiveValue().booleanValue()) {
+            projectiles.add(this.arrowProjectile);
         }
-        if (this.c.L().booleanValue()) {
-            arrayList.add(this.o);
+        if (this.showPotions.getEffectiveValue().booleanValue()) {
+            projectiles.add(this.potionProjectile);
         }
-        if (this.j.L().booleanValue()) {
-            arrayList.add(this.H);
+        if (this.showPearls.getEffectiveValue().booleanValue()) {
+            projectiles.add(this.pearlProjectile);
         }
-        if (this.P.L().booleanValue()) {
-            arrayList.add(this.a);
+        if (this.showEggs.getEffectiveValue().booleanValue()) {
+            projectiles.add(this.eggProjectile);
         }
-        if (this.S.L().booleanValue()) {
-            arrayList.add(this.J);
+        if (this.showSnowballs.getEffectiveValue().booleanValue()) {
+            projectiles.add(this.snowballProjectile);
         }
-        return arrayList;
+        return projectiles;
     }
 }
-

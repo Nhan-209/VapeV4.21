@@ -27,16 +27,16 @@ extends EventKeyInputBase {
 
     @Override
     public boolean fire() {
-        if (!gg.vape.module.none.ClientSettings.fW.v() && KeyboardInput.isKeyDown(9) && KeyboardInput.isKeyDown(114)) {
+        if (!gg.vape.module.none.ClientSettings.INSTANCE.isInputEnabled() && KeyboardInput.isKeyDown(9) && KeyboardInput.isKeyDown(114)) {
             boolean bl = EventBus.y = !EventBus.y;
         }
-        if (!gg.vape.module.none.ClientSettings.fW.v() && this.getKey() != 27) {
-            boolean bl = gg.vape.module.none.ClientSettings.fW.H(this);
+        if (!gg.vape.module.none.ClientSettings.INSTANCE.isInputEnabled() && this.getKey() != 27) {
+            boolean bl = gg.vape.module.none.ClientSettings.INSTANCE.handleSearchShortcut(this);
             return bl;
         }
         if (this.getKey() > 0 && this.isDown() && Minecraft.currentScreen().getObject() == null) {
-            for (Profile object : Vape.INSTANCE.getProfilesManager().b()) {
-                if (!object.f(this.getKey())) continue;
+            for (Profile profile : Vape.INSTANCE.getProfilesManager().b()) {
+                if (!profile.activateIfMatched(this.getKey())) continue;
             }
         }
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {

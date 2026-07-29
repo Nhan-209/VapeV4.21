@@ -7,15 +7,15 @@ import java.awt.Color;
 
 public class TextLabel
 extends InteractiveComponent {
-    private boolean Y_;
-    private static String YM;
-    protected String Q;
-    protected boolean I = true;
-    protected double Yc;
-    private boolean b;
-    private boolean K;
-    private Color v;
-    private Color YI;
+    private boolean centered;
+    private static String legacyState;
+    protected String text;
+    protected boolean uppercase = true;
+    protected double fontScale;
+    private boolean underlined;
+    private boolean useAlternateFont;
+    private Color borderColor;
+    private Color textColor;
 
     @Override
     public double x() {
@@ -23,33 +23,33 @@ extends InteractiveComponent {
     }
 
     static {
-        if (TextLabel.A$src$Ljava_lang_String_$3x6e5a() != null) {
-            TextLabel.A("dpEwx");
+        if (TextLabel.getLegacyState() != null) {
+            TextLabel.setLegacyState("dpEwx");
         }
     }
 
-    public double R() {
-        SmoothFontRenderer smoothFontRenderer = this.K ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.Yc) : this.O(this.Yc);
-        return smoothFontRenderer.d(this.Q.toUpperCase());
+    public double getUppercaseTextHeight() {
+        SmoothFontRenderer fontRenderer = this.useAlternateFont ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer(this.fontScale);
+        return fontRenderer.d(this.text.toUpperCase());
     }
 
-    public boolean k$src$Z$8h3ev2() {
-        return this.b;
+    public boolean isUnderlined() {
+        return this.underlined;
     }
 
-    public TextLabel(String string) {
-        this(string, 0.9);
+    public TextLabel(String text) {
+        this(text, 0.9);
     }
 
-    public double S$src$D$83wc3g() {
-        SmoothFontRenderer smoothFontRenderer = this.K ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.Yc) : this.O(this.Yc);
-        double d = smoothFontRenderer.d(this.Q);
-        return this.n() + this.L() / 2.0 - d / 2.0;
+    public double getTextY() {
+        SmoothFontRenderer fontRenderer = this.useAlternateFont ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer(this.fontScale);
+        double textHeight = fontRenderer.d(this.text);
+        return this.n() + this.L() / 2.0 - textHeight / 2.0;
     }
 
-    public TextLabel d(String string) {
-        this.Q = string;
-        this.o(this.W());
+    public TextLabel setLabelText(String text) {
+        this.text = text;
+        this.o(this.getTextWidth());
         return this;
     }
 
@@ -57,71 +57,71 @@ extends InteractiveComponent {
     public void I() {
     }
 
-    public TextLabel c(boolean bl) {
-        this.K = bl;
+    public TextLabel setUseAlternateFont(boolean useAlternateFont) {
+        this.useAlternateFont = useAlternateFont;
         return this;
     }
 
-    public double W() {
-        SmoothFontRenderer smoothFontRenderer = this.K ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.Yc) : this.O(this.Yc);
-        return smoothFontRenderer.N(this.Q.toUpperCase());
+    public double getTextWidth() {
+        SmoothFontRenderer fontRenderer = this.useAlternateFont ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer(this.fontScale);
+        return fontRenderer.N(this.text.toUpperCase());
     }
 
-    public TextLabel(String string, double d, boolean bl) {
-        this.YI = TextLabel.J.Z;
-        this.v = null;
-        this.Q = string;
-        this.Yc = d;
-        this.I = bl;
+    public TextLabel(String text, double fontScale, boolean uppercase) {
+        this.textColor = TextLabel.J.Z;
+        this.borderColor = null;
+        this.text = text;
+        this.fontScale = fontScale;
+        this.uppercase = uppercase;
     }
 
-    public TextLabel l(Color color) {
-        this.YI = color;
+    public TextLabel setTextColor(Color textColor) {
+        this.textColor = textColor;
         return this;
     }
 
-    public Color G() {
-        return this.YI;
+    public Color getTextColor() {
+        return this.textColor;
     }
 
     @Override
     public void u() {
         if (this.A() < 0.0) {
-            this.o(this.W());
+            this.o(this.getTextWidth());
         }
     }
 
-    public TextLabel(String string, double d) {
-        this.YI = TextLabel.J.Z;
-        this.v = null;
-        this.Q = string;
-        this.Yc = d;
+    public TextLabel(String text, double fontScale) {
+        this.textColor = TextLabel.J.Z;
+        this.borderColor = null;
+        this.text = text;
+        this.fontScale = fontScale;
     }
 
-    public String L$src$Ljava_lang_String_$1ncdwqb() {
-        return this.Q;
+    public String getText() {
+        return this.text;
     }
 
-    public void s(boolean bl) {
-        this.b = bl;
+    public void setUnderlined(boolean underlined) {
+        this.underlined = underlined;
     }
 
-    public static String A$src$Ljava_lang_String_$3x6e5a() {
-        return YM;
+    public static String getLegacyState() {
+        return legacyState;
     }
 
-    public TextLabel B$src$Lgg_vape_ui_click_component_gui_TextLabel_$1bc29rb(boolean bl) {
-        this.Y_ = bl;
+    public TextLabel setCentered(boolean centered) {
+        this.centered = centered;
         return this;
     }
 
-    public boolean s$src$Z$8lhrly() {
-        return this.K;
+    public boolean isUsingAlternateFont() {
+        return this.useAlternateFont;
     }
 
-    public TextLabel(String string, double d, boolean bl, Color color) {
-        this(string, d, bl);
-        this.v = color;
+    public TextLabel(String text, double fontScale, boolean uppercase, Color borderColor) {
+        this(text, fontScale, uppercase);
+        this.borderColor = borderColor;
     }
 
     @Override
@@ -129,66 +129,65 @@ extends InteractiveComponent {
         return 0.0;
     }
 
-    public static void A(String string) {
-        YM = string;
+    public static void setLegacyState(String state) {
+        legacyState = state;
     }
 
-    public boolean D$src$Z$7vnfpz() {
-        return this.Y_;
+    public boolean isCentered() {
+        return this.centered;
     }
 
-    public void B(Color color) {
-        this.v = color;
+    public void setBorderColor(Color borderColor) {
+        this.borderColor = borderColor;
     }
 
-    public void a(boolean bl) {
-        this.I = bl;
+    public void setUppercase(boolean uppercase) {
+        this.uppercase = uppercase;
     }
 
-    public TextLabel(String string, double d, boolean bl, double d2, double d3) {
-        this.YI = TextLabel.J.Z;
-        this.v = null;
-        this.Q = string;
-        this.Yc = d;
-        this.I = bl;
-        this.o(d2);
-        this.Y(d3);
+    public TextLabel(String text, double fontScale, boolean uppercase, double width, double height) {
+        this.textColor = TextLabel.J.Z;
+        this.borderColor = null;
+        this.text = text;
+        this.fontScale = fontScale;
+        this.uppercase = uppercase;
+        this.o(width);
+        this.Y(height);
     }
 
-    public void y(double d) {
-        this.Yc = d;
+    public void setFontScale(double fontScale) {
+        this.fontScale = fontScale;
     }
 
 
     @Override
     public void H() {
-        Color color;
-        String string = this.I ? this.Q.toUpperCase() : this.Q;
-        SmoothFontRenderer smoothFontRenderer = this.K ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.Yc) : this.O(this.Yc);
-        double d = this.S$src$D$83wc3g();
-        color = this.YI != null
-                ? (this.w$src$Z$e457mb() ? this.YI.brighter() : this.YI)
+        String renderedText = this.uppercase ? this.text.toUpperCase() : this.text;
+        SmoothFontRenderer fontRenderer = this.useAlternateFont ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer(this.fontScale);
+        double textY = this.getTextY();
+        Color renderedColor = this.textColor != null
+                ? (this.w$src$Z$e457mb() ? this.textColor.brighter() : this.textColor)
                 : (this.w$src$Z$e457mb() ? TextLabel.J.A : TextLabel.J.Z);
-        if (this.v != null) {
-            smoothFontRenderer.W(string, this.G$src$D$1b2f02a() + this.A() / 2.0, d, color);
-            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.w$src$Z$e457mb() ? this.v.brighter() : this.v, 1.5f, 0.75f, 1.0f);
+        if (this.borderColor != null) {
+            fontRenderer.W(renderedText, this.G$src$D$1b2f02a() + this.A() / 2.0, textY, renderedColor);
+            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.w$src$Z$e457mb() ? this.borderColor.brighter() : this.borderColor, 1.5f, 0.75f, 1.0f);
             return;
         }
-        if (this.Y_) {
-            smoothFontRenderer.W(string, this.G$src$D$1b2f02a() + this.A() / 2.0, d, color);
+        if (this.centered) {
+            fontRenderer.W(renderedText, this.G$src$D$1b2f02a() + this.A() / 2.0, textY, renderedColor);
         } else {
-            smoothFontRenderer.d(string, this.G$src$D$1b2f02a(), d, color);
+            fontRenderer.d(renderedText, this.G$src$D$1b2f02a(), textY, renderedColor);
         }
-        if (this.b) {
-            GuiRenderPrimitives.L(this.G$src$D$1b2f02a(), d + smoothFontRenderer.d(string), this.A(), TextLabel.J.Z);
+        if (this.underlined) {
+            GuiRenderPrimitives.L(this.G$src$D$1b2f02a(), textY + fontRenderer.d(renderedText), this.A(), TextLabel.J.Z);
         }
     }
 
-    public boolean N$src$Z$815dnl() {
-        return this.I;
+    public boolean isUppercase() {
+        return this.uppercase;
     }
 
-    public Color T$src$Ljava_awt_Color_$1e8t7l7() {
-        return this.v;
+    public Color getBorderColor() {
+        return this.borderColor;
     }
 }

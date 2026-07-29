@@ -89,7 +89,7 @@ implements EventListener {
     }
 
     private void k() {
-        Vape.INSTANCE.getNotificationManager().t(b, "", NotificationType.FRIENDS_GENERAL, 2000L);
+        Vape.INSTANCE.getNotificationManager().show(b, "", NotificationType.FRIENDS_GENERAL, 2000L);
     }
 
     private List<PingMarker> c() {
@@ -170,7 +170,7 @@ implements EventListener {
         if (this.C.isEmpty()) {
             return;
         }
-        OpenGlBackendHolder.d.m();
+        OpenGlBackendHolder.backend.pushMatrix();
         GlStateManager.enableAlpha();
         boolean bl = GL11.glIsEnabled((int)3042);
         RenderUtils.g();
@@ -184,7 +184,7 @@ implements EventListener {
         } else {
             GlStateManager.disableBlend();
         }
-        OpenGlBackendHolder.d.F();
+        OpenGlBackendHolder.backend.popMatrix();
     }
 
     @EventHandler

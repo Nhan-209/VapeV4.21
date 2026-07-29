@@ -14,71 +14,71 @@ public class InventoryFilterConditionGroup
 implements Cloneable {
     private final List<InventoryFilterCondition<?>> conditions = new ArrayList();
 
-    public void L(InventoryFilterCondition<?> inventoryFilterCondition, InventoryFilterCondition<?> inventoryFilterCondition2) {
-        int n = this.conditions.indexOf(inventoryFilterCondition);
-        if (n != -1) {
-            this.conditions.add(n, inventoryFilterCondition2);
+    public void replaceCondition(InventoryFilterCondition<?> existingCondition, InventoryFilterCondition<?> replacement) {
+        int index = this.conditions.indexOf(existingCondition);
+        if (index != -1) {
+            this.conditions.add(index, replacement);
         } else {
-            this.conditions.add(inventoryFilterCondition2);
+            this.conditions.add(replacement);
         }
-        this.conditions.remove(inventoryFilterCondition);
+        this.conditions.remove(existingCondition);
     }
 
-    public @UnmodifiableView List<InventoryFilterCondition<?>> c() {
+    public @UnmodifiableView List<InventoryFilterCondition<?>> getConditions() {
         return this.conditions;
     }
 
-    public void j(InventoryFilterCondition<?> inventoryFilterCondition) {
-        this.conditions.remove(inventoryFilterCondition);
+    public void removeCondition(InventoryFilterCondition<?> condition) {
+        this.conditions.remove(condition);
     }
 
     public InventoryFilterConditionGroup(JsonObject jsonObject) {
         JsonArray jsonArray = jsonObject.getAsJsonArray("conditions");
         for (int i = 0; i < jsonArray.size(); ++i) {
             JsonObject jsonObject2 = jsonArray.get(i).getAsJsonObject();
-            this.conditions.add(InventoryFilterCondition.h(jsonObject2));
+            this.conditions.add(InventoryFilterCondition.fromJson(jsonObject2));
         }
     }
 
     InventoryFilterConditionGroup() {
     }
 
-    static List i(InventoryFilterConditionGroup inventoryFilterConditionGroup) {
-        return inventoryFilterConditionGroup.conditions;
+    static List<InventoryFilterCondition<?>> mutableConditions(InventoryFilterConditionGroup group) {
+        return group.conditions;
     }
 
 
-    public JsonObject g() {
+    public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         jsonObject.add("conditions", (JsonElement)jsonArray);
         for (InventoryFilterCondition<?> inventoryFilterCondition : this.conditions) {
-            JsonObject jsonObject2 = inventoryFilterCondition.L();
+            JsonObject jsonObject2 = inventoryFilterCondition.toJson();
             if (jsonObject2 == null) continue;
             jsonArray.add((JsonElement)jsonObject2);
         }
         return jsonObject;
     }
 
-    public static InventoryFilterConditionGroupBuilder w() {
+    public static InventoryFilterConditionGroupBuilder builder() {
         return new InventoryFilterConditionGroupBuilder();
     }
 
-    public void O(InventoryFilterCondition<?> inventoryFilterCondition) {
-        this.conditions.add(inventoryFilterCondition);
+    public void addCondition(InventoryFilterCondition<?> condition) {
+        this.conditions.add(condition);
     }
 
-    public InventoryFilterConditionGroup A() {
-        InventoryFilterConditionGroupBuilder inventoryFilterConditionGroupBuilder = InventoryFilterConditionGroup.w();
-        for (InventoryFilterCondition<?> inventoryFilterCondition : this.conditions) {
-            inventoryFilterConditionGroupBuilder.O((InventoryFilterCondition<?>)inventoryFilterCondition.w());
+    public InventoryFilterConditionGroup copy() {
+        InventoryFilterConditionGroupBuilder builder = InventoryFilterConditionGroup.builder();
+        for (InventoryFilterCondition<?> condition : this.conditions) {
+            builder.addCondition((InventoryFilterCondition<?>)condition.copy());
         }
-        return inventoryFilterConditionGroupBuilder.w();
+        return builder.build();
     }
 
-    public boolean u(ItemStack itemStack) {
-        for (InventoryFilterCondition<?> inventoryFilterCondition : this.conditions) {
-            if (inventoryFilterCondition.g(itemStack)) continue;
+    public boolean matches(ItemStack itemStack) {
+        for (InventoryFilterCondition<?> condition : this.conditions) {
+            if (condition.matches(itemStack)) continue;
             return false;
         }
         return true;

@@ -28,7 +28,7 @@ extends Mapping {
             String string2 = "GOLD_TOOL_MATERIALS";
             MChestTypeHolder mChestTypeHolder2 = this;
             this.O = this.u(string2, bl3, clazz2);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MChestTypeHolder.F(false);
             }
             return;
@@ -38,7 +38,7 @@ extends Mapping {
         String string3 = "GOLD_TOOL_MATERIALS";
         MChestTypeHolder mChestTypeHolder3 = this;
         this.O = this.u(string3, bl4, clazz3);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MChestTypeHolder.F(true);
         }
     }

@@ -7,7 +7,7 @@ extends TextInputComponentBase {
     private static String am;
 
     @Override
-    public float y() {
+    public float getLeftInset() {
         return 0.0f;
     }
 
@@ -38,7 +38,7 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public void p() {
+    public void submit() {
     }
 
     @Override
@@ -50,4 +50,3 @@ extends TextInputComponentBase {
         return am;
     }
 }
-

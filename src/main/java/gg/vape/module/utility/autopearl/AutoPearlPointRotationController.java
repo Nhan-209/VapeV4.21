@@ -16,7 +16,7 @@ extends PointRotationController {
     }
 
     @Override
-    public void g(float yaw, float pitch) {
-        super.g(yaw, this.pitch.floatValue());
+    public void setTargetRotation(float yaw, float pitch) {
+        super.setTargetRotation(yaw, this.pitch.floatValue());
     }
 }

@@ -52,7 +52,7 @@ extends Mapping {
                 MEntityPotion mEntityPotion = this;
                 this.o = mEntityPotion.J(string4, bl, clazz);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MSPacketMapChunkBulk.o("JSVoh");
             }
             return;
@@ -70,7 +70,7 @@ extends Mapping {
         String string6 = "potionDamage";
         MEntityPotion mEntityPotion = this;
         this.o = mEntityPotion.J(string6, bl, clazz); 
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MSPacketMapChunkBulk.o("JSVoh");
         }
     }

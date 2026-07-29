@@ -11,34 +11,36 @@ import gg.vape.wrapper.impl.GuiScreen;
 
 public class ScaffoldPointRotationController
 extends PointRotationController {
-    final int direction;
-    boolean rotationApplied;
-    final double[] placePos;
-    final Scaffold scaffold;
+    private final int direction;
+    private boolean speedInitialized;
+    private final double[] placementPosition;
+    private final Scaffold scaffold;
 
 
-    public ScaffoldPointRotationController(Scaffold scaffold, double d, double d2, double d3, int n, double[] dArray) {
-        super(d, d2, d3);
+    public ScaffoldPointRotationController(Scaffold scaffold, double targetX, double targetY,
+                                           double targetZ, int direction,
+                                           double[] placementPosition) {
+        super(targetX, targetY, targetZ);
         this.scaffold = scaffold;
-        this.direction = n;
-        this.placePos = dArray;
-        this.rotationApplied = false;
+        this.direction = direction;
+        this.placementPosition = placementPosition;
+        this.speedInitialized = false;
     }
 
     @Override
-    public void J(EntityPlayerSP entityPlayerSP, GuiScreen guiScreen) {
-        if (guiScreen.isNotNull()) {
+    public void update(EntityPlayerSP player, GuiScreen currentScreen) {
+        if (currentScreen.isNotNull()) {
             return;
         }
-        this.V$src$V$1law04n();
-        this.m();
-        EnumFacing enumFacing = Scaffold.B(this.scaffold, this.direction);
-        if (RotationUtil.p(enumFacing, new BlockCoordinate(MathUtil.floor(this.placePos[0]), MathUtil.floor(this.placePos[1]), MathUtil.floor(this.placePos[2])))) {
-            if (!this.rotationApplied) {
-                this.Y(Scaffold.Access.W(this.scaffold, this.direction));
-                this.rotationApplied = true;
+        this.updateTargetRotation();
+        this.updatePitch();
+        EnumFacing facing = this.scaffold.getFacingForDirection(this.direction);
+        if (RotationUtil.p(facing, new BlockCoordinate(MathUtil.floor(this.placementPosition[0]), MathUtil.floor(this.placementPosition[1]), MathUtil.floor(this.placementPosition[2])))) {
+            if (!this.speedInitialized) {
+                this.setSpeed(this.scaffold.getDirectionRotationSpeed(this.direction));
+                this.speedInitialized = true;
             }
-            this.A();
+            this.updateYaw();
         }
     }
 }

@@ -7,36 +7,36 @@ import gg.vape.unmap.PropertyKey;
 import java.util.HashMap;
 
 public class PropertyContainer {
-    public static PropertyKey<Boolean> W;
-    public static PropertyKey<Boolean> B;
-    private static String T;
-    public static PropertyKey<Boolean> x;
-    private HashMap<PropertyKey<?>, Object> n = new HashMap();
+    public static PropertyKey<Boolean> LEGACY_FLAG;
+    public static PropertyKey<Boolean> BETA_BADGE;
+    private static String legacyLabel;
+    public static PropertyKey<Boolean> NEW_BADGE;
+    private HashMap<PropertyKey<?>, Object> properties = new HashMap();
 
-    public <T> void putProperty(PropertyKey<T> propertyKey, T t) {
-        this.n.put(propertyKey, t);
+    public <T> void putProperty(PropertyKey<T> propertyKey, T value) {
+        this.properties.put(propertyKey, value);
     }
 
     public <T> T getProperty(PropertyKey<T> propertyKey) {
-        if (!this.n.containsKey(propertyKey)) {
+        if (!this.properties.containsKey(propertyKey)) {
             return propertyKey.getDefaultValue();
         }
-        return (T)this.n.get(propertyKey);
+        return (T)this.properties.get(propertyKey);
     }
 
     public static String getLabel() {
-        return T;
+        return legacyLabel;
     }
 
-    public static void setLabel(String string) {
-        T = string;
+    public static void setLabel(String label) {
+        legacyLabel = label;
     }
 
 
     static {
-        x = new PropertyContainerBooleanKeyA();
-        B = new PropertyContainerBooleanKeyB();
+        NEW_BADGE = new PropertyContainerBooleanKeyA();
+        BETA_BADGE = new PropertyContainerBooleanKeyB();
         PropertyContainer.setLabel("m4RdLb");
-        W = new PropertyContainerBooleanKeyC();
+        LEGACY_FLAG = new PropertyContainerBooleanKeyC();
     }
 }

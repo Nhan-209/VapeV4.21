@@ -9,9 +9,9 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 public class QuickActionRowComponent
 extends BooleanToggleComponent {
-    private String N1;
-    private Class Nt;
-    private int Nb;
+    private String iconName;
+    private Class targetFrameClass;
+    private int iconSize;
 
 
     @Override
@@ -20,32 +20,32 @@ extends BooleanToggleComponent {
     }
 
     @Override
-    protected void s$src$V$1uam4mz() {
-        SmoothFontRenderer smoothFontRenderer = this.O(this.Q0);
-        double d = smoothFontRenderer.d(this.QR);
-        double d2 = this.n() + this.L() / 2.0 - d / 2.0;
-        GuiRenderPrimitives.F(this.N1, this.G$src$D$1b2f02a() + 5.0 + 4.0, this.n() + this.L() / 2.0, (double)this.Nb, this.Nb, this.QE);
-        smoothFontRenderer.d(this.QR, this.G$src$D$1b2f02a() + (double)this.Nb + 10.0, d2, this.QE);
+    protected void renderLabel() {
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(this.fontScale);
+        double textHeight = fontRenderer.d(this.label);
+        double textY = this.n() + this.L() / 2.0 - textHeight / 2.0;
+        GuiRenderPrimitives.F(this.iconName, this.G$src$D$1b2f02a() + 5.0 + 4.0, this.n() + this.L() / 2.0, (double)this.iconSize, this.iconSize, this.labelColor);
+        fontRenderer.d(this.label, this.G$src$D$1b2f02a() + (double)this.iconSize + 10.0, textY, this.labelColor);
     }
 
-    public QuickActionRowComponent(String string, String string2, double d, int n) {
-        super(string, d);
-        this.N1 = string2;
-        this.Nb = n;
-        this.G(true);
+    public QuickActionRowComponent(String label, String iconName, double fontScale, int iconSize) {
+        super(label, fontScale);
+        this.iconName = iconName;
+        this.iconSize = iconSize;
+        this.setBrightenOnHover(true);
     }
 
-    public void y(Class clazz) {
-        this.Nt = clazz;
-        this.j(new QuickActionRowClickListener(this, clazz));
+    public void setTargetFrameClass(Class targetFrameClass) {
+        this.targetFrameClass = targetFrameClass;
+        this.addMouseListener(new QuickActionRowClickListener(this, targetFrameClass));
     }
 
     @Override
-    protected void n$src$V$1tjvir5() {
-        if (this.Nt != null && ((GuiComponent)ClientSettings.g(this.Nt)).V$src$Z$1xhop3l() != this.i$src$Z$1d37ezg() && !this.U$src$Z$1e0xb5o()) {
-            this.k$src$V$5mynh8();
+    protected void synchronizeValueState() {
+        if (this.targetFrameClass != null && ((GuiComponent)ClientSettings.getFrame(this.targetFrameClass)).V$src$Z$1xhop3l() != this.isOn() && !this.isAnimating()) {
+            this.toggle();
         }
-        super.n$src$V$1tjvir5();
+        super.synchronizeValueState();
     }
 }
 

@@ -5,10 +5,8 @@ import gg.vape.module.render.hud.HudModuleGroup;
 
 public class HudModuleVisibilityEntry
 extends HudModule {
-    private boolean toggled = false;
-
     public HudModuleVisibilityEntry() {
-        super("Toggle Sprint", HudModuleGroup.T, "toggle_sprint");
+        super("Toggle Sprint", HudModuleGroup.GAME, "toggle_sprint");
     }
 }
 

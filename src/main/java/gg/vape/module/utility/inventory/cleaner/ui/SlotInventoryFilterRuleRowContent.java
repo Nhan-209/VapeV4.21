@@ -15,32 +15,32 @@ extends InventoryFilterRuleRowBase {
     private final InventoryCleanerProfile profile;
     private final ColorAnimation dotColorAnimation;
     private final ColorAnimation backgroundColorAnimation;
-    final SlotInventoryFilterRuleRow Q;
+    final SlotInventoryFilterRuleRow parent;
     private final ItemFilterSelectionComponent itemSelection;
 
     SlotInventoryFilterRuleRowContent(SlotInventoryFilterRuleRow slotInventoryFilterRuleRow, InventoryCleanerProfile inventoryCleanerProfile, SlotInventoryFilterRule slotInventoryFilterRule) {
-        this.Q = slotInventoryFilterRuleRow;
+        this.parent = slotInventoryFilterRuleRow;
         this.backgroundColorAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), SlotInventoryFilterRuleRowContent.J.l);
         this.dotColorAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), SlotInventoryFilterRuleRowContent.J.K);
         this.profile = inventoryCleanerProfile;
         this.rule = slotInventoryFilterRule;
         this.itemSelection = new ItemFilterSelectionComponent(slotInventoryFilterRule);
-        this.itemSelection.K(true);
-        this.p();
-        this.o(true);
-        this.H(this.itemSelection);
+        this.itemSelection.setBlatantMod(true);
+        this.refresh();
+        this.setPropagateMouseEvents(true);
+        this.addChildren(this.itemSelection);
     }
 
 
     @Override
-    public void p() {
-        this.backgroundColorAnimation.setStartColor(this.rule.q().j() ? SlotInventoryFilterRuleRowContent.J.t : SlotInventoryFilterRuleRowContent.J.l);
-        this.backgroundColorAnimation.setEndColor(this.rule.q().j() ? SlotInventoryFilterRuleRowContent.J.l : SlotInventoryFilterRuleRowContent.J.y);
+    public void refresh() {
+        this.backgroundColorAnimation.setStartColor(this.rule.getItemSelection().isEmpty() ? SlotInventoryFilterRuleRowContent.J.t : SlotInventoryFilterRuleRowContent.J.l);
+        this.backgroundColorAnimation.setEndColor(this.rule.getItemSelection().isEmpty() ? SlotInventoryFilterRuleRowContent.J.l : SlotInventoryFilterRuleRowContent.J.y);
     }
 
     @Override
     public void H() {
-        boolean enabled = this.rule.q().j();
+        boolean enabled = this.rule.getItemSelection().isEmpty();
         if (enabled) {
             GuiRenderPrimitives.B(this.G$src$D$1b2f02a() + 1.0, this.n() + 1.0, this.A() - 2.0, this.L() - 2.0, new Color(0, 0, 0, 127), 2.0f);
             GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.backgroundColorAnimation.getInterpolatedColor(), 4.0f, 1.0f, 1.0f);

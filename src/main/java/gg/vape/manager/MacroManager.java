@@ -13,20 +13,20 @@ import java.util.List;
 import java.util.Set;
 
 public class MacroManager {
-    private final Set<Macro> U = new LinkedHashSet<Macro>();
+    private final Set<Macro> macros = new LinkedHashSet<Macro>();
 
     public void removeMacro(Macro macro) {
-        this.U.remove(macro);
+        this.macros.remove(macro);
         FrameMacros.jo.Z(macro);
     }
 
     public void addMacro(Macro macro) {
-        this.U.add(macro);
+        this.macros.add(macro);
         FrameMacros.jo.v(macro);
     }
 
     public Macro getMacro(String string) {
-        for (Macro macro : this.U) {
+        for (Macro macro : this.macros) {
             if (!macro.getName().equalsIgnoreCase(string)) continue;
             return macro;
         }
@@ -35,15 +35,15 @@ public class MacroManager {
 
 
     private void clear() {
-        for (Macro macro : new HashSet<Macro>(this.U)) {
+        for (Macro macro : new HashSet<Macro>(this.macros)) {
             this.removeMacro(macro);
         }
     }
 
     public List<Macro> getMacros(List<Integer> list) {
         ArrayList<Macro> arrayList = new ArrayList<Macro>();
-        for (Macro macro : this.U) {
-            if (!macro.L().equals(list)) continue;
+        for (Macro macro : this.macros) {
+            if (!macro.getBoundInputs().equals(list)) continue;
             arrayList.add(macro);
         }
         return arrayList;
@@ -51,8 +51,8 @@ public class MacroManager {
 
     public List<Macro> getMacros(int n) {
         ArrayList<Macro> arrayList = new ArrayList<Macro>();
-        for (Macro macro : this.U) {
-            if (!macro.L().contains(n)) continue;
+        for (Macro macro : this.macros) {
+            if (!macro.getBoundInputs().contains(n)) continue;
             arrayList.add(macro);
         }
         return arrayList;
@@ -60,14 +60,14 @@ public class MacroManager {
 
     public JsonArray toJson() {
         JsonArray jsonArray = new JsonArray();
-        for (Macro macro : this.U) {
+        for (Macro macro : this.macros) {
             jsonArray.add((JsonElement)macro.toJson());
         }
         return jsonArray;
     }
 
     public Set<Macro> getMacros() {
-        return this.U;
+        return this.macros;
     }
 
     public void loadJson(JsonArray jsonArray) {

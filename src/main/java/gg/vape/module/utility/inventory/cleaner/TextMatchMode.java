@@ -20,17 +20,16 @@ implements INamed {
     public static final @UnmodifiableView List<TextMatchMode> VALUES;
     private final String name;
     private final boolean multiValue;
-    private static final TextMatchMode[] valuesCache;
 
-    public boolean M(String string, List<String> list) {
+    public boolean matchesAny(String string, List<String> list) {
         for (String string2 : list) {
-            if (!this.y(string, string2)) continue;
+            if (!this.matches(string, string2)) continue;
             return true;
         }
         return false;
     }
 
-    public boolean y(String string, String string2) {
+    public boolean matches(String string, String string2) {
         string = string.toLowerCase();
         string2 = string2.toLowerCase();
         switch (this) {
@@ -69,16 +68,6 @@ implements INamed {
 
 
     static {
-        String[] stringArray = new String[]{"DOES_NOT_CONTAIN", "is not in", "contains", "CONTAINS", "matches regex", "IS_NOT_IN", "MATCH_REGEX", "does not match regex", "DOES_NOT_MATCH_REGEX", "IS_IN", "does not contain", "is in", "EQUALS", "does not equal", "equals", "DOES_NOT_EQUAL"};
-
-
-
-
-
-
-
-
-        valuesCache = new TextMatchMode[]{EQUALS, DOES_NOT_EQUAL, MATCH_REGEX, DOES_NOT_MATCH_REGEX, CONTAINS, DOES_NOT_CONTAIN, IS_IN, IS_NOT_IN};
         VALUES = Arrays.asList(TextMatchMode.values());
     }
 
@@ -87,7 +76,7 @@ implements INamed {
         return this.name;
     }
 
-    public boolean d() {
+    public boolean supportsMultipleValues() {
         return this.multiValue;
     }
 
@@ -100,7 +89,7 @@ implements INamed {
         this(string2, false);
     }
 
-    public static TextMatchMode p(String string) {
+    public static TextMatchMode fromName(String string) {
         return TextMatchMode.fromNameOrDefault(string, EQUALS);
     }
 

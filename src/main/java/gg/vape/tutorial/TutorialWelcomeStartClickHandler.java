@@ -13,8 +13,7 @@ implements GuiClickListener {
     }
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         Vape.INSTANCE.getTutorialManager().B();
     }
 }
-

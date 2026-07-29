@@ -12,24 +12,24 @@ import org.jetbrains.annotations.Nullable;
 
 public class InventoryItemPreviewComponent
 extends GuiComponent {
-    private final ColorAnimation a;
-    private final boolean O;
-    private static final String i = "newclose";
-    private final InventoryItemPreviewIconComponent K;
-    private final ColorAnimation G;
+    private final ColorAnimation closeIconAnimation;
+    private final boolean removable;
+    private static final String CLOSE_ICON = "newclose";
+    private final InventoryItemPreviewIconComponent iconComponent;
+    private final ColorAnimation dividerAnimation;
 
     @Override
     public double C() {
         return 14.0;
     }
 
-    public InventoryItemPreviewComponent(@Nullable ItemStack itemStack, boolean bl) {
-        this.G = new ColorAnimation(0.15, new Color(0, 0, 0, 0), InventoryItemPreviewComponent.J.d);
-        this.a = new ColorAnimation(0.15, new Color(0, 0, 0, 0), Color.WHITE);
-        this.K = new InventoryItemPreviewIconComponent(this, itemStack);
-        this.O = bl;
-        this.o(true);
-        this.H(this.K);
+    public InventoryItemPreviewComponent(@Nullable ItemStack itemStack, boolean removable) {
+        this.dividerAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), InventoryItemPreviewComponent.J.d);
+        this.closeIconAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), Color.WHITE);
+        this.iconComponent = new InventoryItemPreviewIconComponent(this, itemStack);
+        this.removable = removable;
+        this.setPropagateMouseEvents(true);
+        this.addChildren(this.iconComponent);
     }
 
     @Override
@@ -37,39 +37,39 @@ extends GuiComponent {
         return 14.0;
     }
 
-    public InventoryItemPreviewComponent(@Nullable Item item, boolean bl) {
-        this.G = new ColorAnimation(0.15, new Color(0, 0, 0, 0), InventoryItemPreviewComponent.J.d);
-        this.a = new ColorAnimation(0.15, new Color(0, 0, 0, 0), Color.WHITE);
-        this.K = new InventoryItemPreviewIconComponent(this, item);
-        this.O = bl;
-        this.o(true);
-        this.H(this.K);
+    public InventoryItemPreviewComponent(@Nullable Item item, boolean removable) {
+        this.dividerAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), InventoryItemPreviewComponent.J.d);
+        this.closeIconAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), Color.WHITE);
+        this.iconComponent = new InventoryItemPreviewIconComponent(this, item);
+        this.removable = removable;
+        this.setPropagateMouseEvents(true);
+        this.addChildren(this.iconComponent);
     }
 
 
     @Override
     public void c() {
-        this.K.K(this.G$src$D$1b2f02a() + 1.0);
-        this.K.S(this.n() + 1.0);
+        this.iconComponent.K(this.G$src$D$1b2f02a() + 1.0);
+        this.iconComponent.S(this.n() + 1.0);
         super.c();
-        if (this.O) {
-            GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() - 5.0, this.n(), 6.0, 1.0, this.G.getInterpolatedColor());
-            ImageRenderer.E(this.a.getInterpolatedColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 5.5), (float)(this.n() - 1.0), i, 7.0f, 7.0f, false);
+        if (this.removable) {
+            GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() - 5.0, this.n(), 6.0, 1.0, this.dividerAnimation.getInterpolatedColor());
+            ImageRenderer.drawImage(this.closeIconAnimation.getInterpolatedColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 5.5), (float)(this.n() - 1.0), CLOSE_ICON, 7.0f, 7.0f, false);
         }
     }
 
     @Override
     public void F() {
         if (!this.w$src$Z$e457mb()) {
-            this.G.J();
-            this.a.J();
+            this.dividerAnimation.J();
+            this.closeIconAnimation.J();
         }
     }
 
     @Override
     public void onEnable() {
-        this.G.J();
-        this.a.J();
+        this.dividerAnimation.J();
+        this.closeIconAnimation.J();
     }
 }
 

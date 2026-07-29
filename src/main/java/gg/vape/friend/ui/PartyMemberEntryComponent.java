@@ -119,22 +119,22 @@ extends InteractiveComponent {
 
     private void V$src$V$1xpbqj3() {
         this.Y(22.0);
-        this.d(false);
-        this.tu.K(false);
-        this.tr.K(false);
-        this.tr.G("");
+        this.setShowDisabledOverlay(false);
+        this.tu.setShadowEnabled(false);
+        this.tr.setShadowEnabled(false);
+        this.tr.setAdditionalTooltipText("");
         this.t2.Y(10.0);
-        this.t2.F(false);
-        this.t2.h(Color.WHITE);
-        this.t2.m(2.0f);
-        this.t2.r(this::v);
-        this.H(this.tu, this.tr, this.t2);
+        this.t2.setDeriveTextColorFromBackground(false);
+        this.t2.setNormalTextColor(Color.WHITE);
+        this.t2.setCornerRadius(2.0f);
+        this.t2.addClickListener(this::v);
+        this.addChildren(this.tu, this.tr, this.t2);
         if (this.tk != null) {
-            this.H(this.tk);
+            this.addChildren(this.tk);
         }
         if (this.Q != null) {
-            this.H(this.Q);
-            this.Q.r(this::U$src$V$1xorxxq);
+            this.addChildren(this.Q);
+            this.Q.addClickListener(this::U$src$V$1xorxxq);
         }
     }
 
@@ -214,10 +214,10 @@ extends InteractiveComponent {
     }
 
     private void L$src$V$1xjtslh() {
-        this.Z(true);
+        this.setVisible(true);
         OnlineFriend onlineFriend = this.K.x();
-        this.tu.O(PartyMemberEntryComponent.y(onlineFriend));
-        this.tr.O(PartyMemberEntryComponent.d(onlineFriend));
+        this.tu.setText(PartyMemberEntryComponent.y(onlineFriend));
+        this.tr.setText(PartyMemberEntryComponent.d(onlineFriend));
         this.t2.w("Accept party invite");
     }
 
@@ -243,7 +243,7 @@ extends InteractiveComponent {
         d3 = d4 + 20.0;
         double d9 = Math.max(0.0, d8 - d3);
         if (this.tk != null && this.tk.V$src$Z$1xhop3l()) {
-            d2 = this.tk.O$src$D$h1g6kw();
+            d2 = this.tk.getRequiredWidth();
             d9 = Math.max(0.0, d9 - d2 - 6.0);
             d = d4 + 20.0 + d9 + 6.0;
             this.tk.K(d);
@@ -255,21 +255,21 @@ extends InteractiveComponent {
         this.tu.S(d5);
         this.tu.o(d9);
         this.tu.Y(d7);
-        this.tu.D(d9);
+        this.tu.setMaxWidth(d9);
         d2 = d4 + 8.0 + 6.0 + 4.0;
         d = Math.max(0.0, d8 - d2);
         this.tr.K(d2);
         this.tr.S(d5);
         this.tr.o(d);
         this.tr.Y(d7);
-        this.tr.D(d);
+        this.tr.setMaxWidth(d);
     }
 
     private void D$src$V$1xffful() {
         double d = this.G$src$D$1b2f02a() + 8.0;
         double d2 = this.n() + (this.L() - 6.0) / 2.0;
         Color color = this.tV == PartyMemberEntryMode.CURRENT_PARTY ? tg : t7;
-        ImageRenderer.E(color, (float)d, (float)d2, "party1@2x", 6.0f, 6.0f, false);
+        ImageRenderer.drawImage(color, (float)d, (float)d2, "party1@2x", 6.0f, 6.0f, false);
     }
 
     @Override
@@ -313,13 +313,13 @@ extends InteractiveComponent {
     }
 
     private static void lambda$showConfirmationPopup$7(PopupFrame popupFrame, Runnable runnable) {
-        ClientSettings.K(popupFrame);
+        ClientSettings.removePopup(popupFrame);
         runnable.run();
     }
 
     private TruncatedTextComponent g$src$Lgg_vape_ui_click_component_TruncatedTextCompone$1sn5zit() {
         TruncatedTextComponent truncatedTextComponent = new TruncatedTextComponent("", "", 0.0, 0.625, t1, false);
-        truncatedTextComponent.N(true);
+        truncatedTextComponent.setCentered(true);
         return truncatedTextComponent;
     }
 
@@ -348,7 +348,7 @@ extends InteractiveComponent {
     }
 
     private void E(double d, double d2) {
-        double d3 = this.t2.W();
+        double d3 = this.t2.getTextWidth();
         double d4 = Math.max(d3 + 8.0, this.t2.A());
         this.t2.o(d4);
         this.t2.Y(10.0);
@@ -378,8 +378,8 @@ extends InteractiveComponent {
         }
         this.o$src$V$1y32ld4();
         this.D$src$V$1xffful();
-        this.tr.R(bl ? t6 : t1);
-        this.tu.R(this.tV == PartyMemberEntryMode.CURRENT_PARTY ? t4 : tJ);
+        this.tr.setTextColor(bl ? t6 : t1);
+        this.tu.setTextColor(this.tV == PartyMemberEntryMode.CURRENT_PARTY ? t4 : tJ);
     }
 
 
@@ -388,7 +388,7 @@ extends InteractiveComponent {
     }
 
     private void lambda$showConfirmationPopup$8(PopupFrame popupFrame) {
-        ClientSettings.K(popupFrame);
+        ClientSettings.removePopup(popupFrame);
         this.v = false;
     }
 
@@ -403,27 +403,27 @@ extends InteractiveComponent {
         PartyState partyState2 = partyState = this.tc != null ? this.tc.get() : null;
         if (partyState != null) {
             boolean bl;
-            this.Z(true);
+            this.setVisible(true);
             OnlineFriend onlineFriend = partyState.r();
             LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().r();
             boolean bl2 = bl = onlineFriend != null && onlineFriend.equals(localOnlineFriend);
             if (bl) {
-                this.tu.O("My VAPE Party");
-                this.t2.d("DISBAND");
+                this.tu.setText("My VAPE Party");
+                this.t2.setLabelText("DISBAND");
                 this.t2.w("Disband party");
             } else {
-                this.tu.O(PartyMemberEntryComponent.y(onlineFriend));
-                this.t2.d("LEAVE");
+                this.tu.setText(PartyMemberEntryComponent.y(onlineFriend));
+                this.t2.setLabelText("LEAVE");
                 this.t2.w("Leave party");
             }
-            this.tr.O(PartyMemberEntryComponent.c(partyState, localOnlineFriend));
+            this.tr.setText(PartyMemberEntryComponent.c(partyState, localOnlineFriend));
             if (this.tk != null) {
-                this.tk.O("ACTIVE");
-                this.tk.Z(true);
+                this.tk.setText("ACTIVE");
+                this.tk.setVisible(true);
             }
             return;
         }
-        this.Z(false);
+        this.setVisible(false);
     }
 
     static {
@@ -455,9 +455,9 @@ extends InteractiveComponent {
 
     private void U(String string, Runnable runnable) {
         ConfirmationDialogComponent confirmationDialogComponent = new ConfirmationDialogComponent(string, "DISBAND", "disband confirm@2x");
-        DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.g(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialogComponent, DimmedCenteredPopupFrame.class);
-        confirmationDialogComponent.T$src$Lgg_vape_ui_click_component_gui_TextButton_$17m2d4e().r(() -> PartyMemberEntryComponent.lambda$showConfirmationPopup$7(dimmedCenteredPopupFrame, runnable));
-        confirmationDialogComponent.E().r(() -> this.lambda$showConfirmationPopup$8(dimmedCenteredPopupFrame));
+        DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.createPopup(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialogComponent, DimmedCenteredPopupFrame.class);
+        confirmationDialogComponent.getConfirmButton().addClickListener(() -> PartyMemberEntryComponent.lambda$showConfirmationPopup$7(dimmedCenteredPopupFrame, runnable));
+        confirmationDialogComponent.getCloseButton().addClickListener(() -> this.lambda$showConfirmationPopup$8(dimmedCenteredPopupFrame));
         dimmedCenteredPopupFrame.q(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), dimmedCenteredPopupFrame);
     }
 
@@ -497,7 +497,7 @@ extends InteractiveComponent {
 
     private TextButton T(Color color, Color color2, String string) {
         TextButton textButton = new TextButton(string, 0.5, color, color2);
-        textButton.a(true);
+        textButton.setUppercase(true);
         return textButton;
     }
 }

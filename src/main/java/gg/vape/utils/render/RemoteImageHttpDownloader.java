@@ -8,51 +8,50 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class RemoteImageHttpDownloader {
-    private static final Map<String, byte[]> H;
-    private static final String F;
-    private static boolean u;
+    private static final Map<String, byte[]> imageCache;
+    private static final String CACHE_DIRECTORY;
+    private static boolean enabled;
 
-    public static byte[] A(String string) {
-        File file = new File(F);
-        if (!file.exists()) {
-            file.mkdirs();
+    public static byte[] loadCachedImage(String imageName) {
+        File cacheDirectory = new File(CACHE_DIRECTORY);
+        if (!cacheDirectory.exists()) {
+            cacheDirectory.mkdirs();
         }
-        if (H.containsKey(string)) {
-            return H.get(string);
+        if (imageCache.containsKey(imageName)) {
+            return imageCache.get(imageName);
         }
         try {
-            byte[] byArray = Files.readAllBytes(new File(F + string + ".png").toPath());
-            H.put(string, byArray);
-            return byArray;
+            byte[] imageData = Files.readAllBytes(new File(CACHE_DIRECTORY + imageName + ".png").toPath());
+            imageCache.put(imageName, imageData);
+            return imageData;
         }
-        catch (IOException iOException) {
-            Vape.logThrowable(iOException);
-            H.put(string, null);
+        catch (IOException exception) {
+            Vape.logThrowable(exception);
+            imageCache.put(imageName, null);
             return null;
         }
     }
 
-    public static void C(boolean bl) {
-        u = bl;
+    public static void setEnabled(boolean enabled) {
+        RemoteImageHttpDownloader.enabled = enabled;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 
     static {
-        RemoteImageHttpDownloader.C(true);
-        F = System.getProperty("user.home") + File.separator + "vapeTextures" + File.separator;
-        H = new LinkedHashMap<String, byte[]>();
+        RemoteImageHttpDownloader.setEnabled(true);
+        CACHE_DIRECTORY = System.getProperty("user.home") + File.separator + "vapeTextures" + File.separator;
+        imageCache = new LinkedHashMap<String, byte[]>();
     }
 
-    public static boolean W() {
-        boolean bl = RemoteImageHttpDownloader.q();
+    public static boolean legacyAlwaysFalseCheck() {
+        boolean enabled = RemoteImageHttpDownloader.isEnabled();
         return false;
     }
 
-    public static boolean q() {
-        return u;
+    public static boolean isEnabled() {
+        return enabled;
     }
 }
-

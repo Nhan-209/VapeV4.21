@@ -51,7 +51,7 @@ extends Mapping {
         String string4 = "source";
         MFontSet mFontSet3 = this;
         this.W = this.Y(string4, bl3, clazz3, classArray);
-        GuiComponent.D(new GuiComponent[5]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 
     public static String A() {

@@ -4,13 +4,12 @@ public enum VertexCoordinateMode {
     DEFAULT,
     MINECRAFT;
 
-    private static final VertexCoordinateMode[] h;
+    private static final VertexCoordinateMode[] DECLARED_VALUES;
 
     static {
-        String[] stringArray = new String[]{"DEFAULT", "MINECRAFT"};
+        String[] legacyNames = new String[]{"DEFAULT", "MINECRAFT"};
 
 
-        h = new VertexCoordinateMode[]{DEFAULT, MINECRAFT};
+        DECLARED_VALUES = new VertexCoordinateMode[]{DEFAULT, MINECRAFT};
     }
 }
-

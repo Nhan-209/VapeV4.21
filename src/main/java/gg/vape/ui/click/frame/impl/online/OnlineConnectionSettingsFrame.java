@@ -57,14 +57,32 @@ extends SettingsSubpageFrame {
         }
         if (onlineConnectionSettingsPageComponent != null) {
             ((OnlineConnectionSettingsPageComponent)onlineConnectionSettingsPageComponent).s();
-            this.xN.S();
+            this.xN.removeMarkedChildren();
             this.xN.h(onlineConnectionSettingsPageComponent, new Object[0]);
         }
     }
 
-    static {
-        x4 = new OnlineConnectionSettingsFrame();
-        xp = new OnlineConnectionBackdropFrame();
+    public static synchronized OnlineConnectionSettingsFrame getInstance() {
+        if (x4 == null) {
+            xp = new OnlineConnectionBackdropFrame();
+            x4 = new OnlineConnectionSettingsFrame();
+        }
+        return x4;
+    }
+
+    public static void updateConnectionStateIfCreated(OnlineConnectionState connectionState) {
+        OnlineConnectionSettingsFrame frame = x4;
+        if (frame != null) {
+            frame.x(connectionState);
+        }
+    }
+
+    public static void updateAccountStateIfCreated(OnlineAccountState accountState,
+                                                    OnlineConnectionState connectionState) {
+        OnlineConnectionSettingsFrame frame = x4;
+        if (frame != null) {
+            frame.F(accountState, connectionState);
+        }
     }
 
     @Override
@@ -74,22 +92,22 @@ extends SettingsSubpageFrame {
     @Override
     public void H() {
         super.H();
-        ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().v(xp);
-        ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().v(this);
+        ClientSettings.INSTANCE.getActiveStack().v(xp);
+        ClientSettings.INSTANCE.getActiveStack().v(this);
         if (this.H$src$Lgg_vape_ui_click_frame_CenteredPopupFrame_$1qmombx() != null) {
-            ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().R(this, this.H$src$Lgg_vape_ui_click_frame_CenteredPopupFrame_$1qmombx());
+            ClientSettings.INSTANCE.getActiveStack().R(this, this.H$src$Lgg_vape_ui_click_frame_CenteredPopupFrame_$1qmombx());
         }
         this.H(true);
-        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().D$src$V$1njh5lz();
+        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().updateLayout();
     }
 
     public void e(boolean bl) {
         this.x0 = bl;
         this.xy = true;
-        ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().q(xp);
-        ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().q(this);
-        ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().v(xp);
-        ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().v(this);
+        ClientSettings.INSTANCE.getActiveStack().q(xp);
+        ClientSettings.INSTANCE.getActiveStack().q(this);
+        ClientSettings.INSTANCE.getActiveStack().v(xp);
+        ClientSettings.INSTANCE.getActiveStack().v(this);
     }
 
     public OnlineConnectionSettingsFrame() {
@@ -100,7 +118,7 @@ extends SettingsSubpageFrame {
         try {
             this.o(104.0);
             this.Y(160.0);
-            this.xN.d(false);
+            this.xN.setShowDisabledOverlay(false);
             ComponentLayout componentLayout = this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij();
             componentLayout.t(false);
             componentLayout.M(false);
@@ -108,17 +126,17 @@ extends SettingsSubpageFrame {
             componentLayout.I(false);
             componentLayout.u(false);
             this.g(true);
-            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().V(true);
-            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().g(104.0);
-            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().x(0.75f);
-            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().w$src$Lgg_vape_ui_click_component_SquareIconButtonComp$1a3t2u0().r(this::d$src$V$bbt7r8);
+            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().setDefaultCloseActionVisible(true);
+            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().setToolbarWidth(104.0);
+            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().setDefaultIconScale(0.75f);
+            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().getCloseButton().addClickListener(this::d$src$V$bbt7r8);
             GuiComponent[] guiComponentArray = ThemeComponentGroupFactory.k(J);
             this.n(guiComponentArray);
-            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().P(true);
+            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().setUseExplicitWidth(true);
             this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().o(104.0);
-            this.Z(new OnlineConnectionBackdropMouseListener(this));
+            this.addGlobalMouseListener(new OnlineConnectionBackdropMouseListener(this));
             this.h(this.xN, new Object[0]);
-            this.x(OnlineConnectionState.OFFLINE);
+            this.x(OnlineConnectionManager.T.n());
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
@@ -130,8 +148,8 @@ extends SettingsSubpageFrame {
         if (this.H$src$Lgg_vape_ui_click_frame_CenteredPopupFrame_$1qmombx() != null) {
             this.p();
         }
-        ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().m(xp);
-        ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().m(this);
+        ClientSettings.INSTANCE.getActiveStack().m(xp);
+        ClientSettings.INSTANCE.getActiveStack().m(this);
     }
 
 }

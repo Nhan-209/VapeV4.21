@@ -7,102 +7,100 @@ import java.awt.Color;
 
 public class AntiBotBooleanValue
 extends Value<Integer, AntiBotBooleanValue> {
-    private static final long RGB_MASK = 2840276557354762239L;
+    private static final int RGB_MASK = 0xFFFFFF;
 
-    public AntiBotBooleanValue(Object object, String string, Integer n) {
-        super(object, string, n);
+    public AntiBotBooleanValue(Object owner, String name, Integer defaultColor) {
+        super(owner, name, defaultColor);
     }
 
-    public static AntiBotBooleanValue y(Object object, String string, Integer n) {
-        return new AntiBotBooleanValue(object, string, n);
+    public static AntiBotBooleanValue create(Object owner, String name, Integer defaultColor) {
+        return new AntiBotBooleanValue(owner, name, defaultColor);
     }
 
     @Override
-    public String c() {
-        Integer n = (Integer)this.K();
-        if (n == null) {
+    public String getDisplayValue() {
+        Integer color = (Integer)this.getValue();
+        if (color == null) {
             return "None";
         }
-        return "#" + String.format("%06X", n);
+        return "#" + String.format("%06X", color);
     }
 
     @Override
-    public void parse(String string) {
-        if (string == null || string.isEmpty()) {
-            this.o(this.P$src$Ljava_lang_Object_$qcpui1());
+    public void parse(String value) {
+        if (value == null || value.isEmpty()) {
+            this.setValue(this.getDefaultValue());
             return;
         }
         try {
-            if (string.startsWith("0x") || string.startsWith("0X")) {
-                this.o(Integer.parseInt(string.substring(2), 16));
-            } else if (string.startsWith("#")) {
-                this.o(Integer.parseInt(string.substring(1), 16));
+            if (value.startsWith("0x") || value.startsWith("0X")) {
+                this.setValue(Integer.parseInt(value.substring(2), 16));
+            } else if (value.startsWith("#")) {
+                this.setValue(Integer.parseInt(value.substring(1), 16));
             } else {
-                this.o(Integer.parseInt(string));
+                this.setValue(Integer.parseInt(value));
             }
         }
         catch (NumberFormatException numberFormatException) {
-            this.o(this.P$src$Ljava_lang_Object_$qcpui1());
+            this.setValue(this.getDefaultValue());
         }
     }
 
     public Color getDisplayColor() {
-        Integer n = (Integer)this.K();
-        if (n == null) {
+        Integer color = (Integer)this.getValue();
+        if (color == null) {
             return Color.WHITE;
         }
-        return new Color(n);
+        return new Color(color);
     }
 
-    public AntiBotBooleanValue P$src$Lgg_vape_module_blatant_AntiBotBooleanValue_$nq50fd() {
-        AntiBotBooleanValue antiBotBooleanValue = new AntiBotBooleanValue((Object)null, this.getName(), (Integer)this.P$src$Ljava_lang_Object_$qcpui1());
-        antiBotBooleanValue.o(this.K());
-        return antiBotBooleanValue;
-    }
-
-    @Override
-    public AntiBotBooleanValue getALimit() {
-        return this.P$src$Lgg_vape_module_blatant_AntiBotBooleanValue_$nq50fd();
+    public AntiBotBooleanValue copy() {
+        AntiBotBooleanValue copy = new AntiBotBooleanValue(
+                null, this.getName(), (Integer)this.getDefaultValue());
+        copy.setValue(this.getValue());
+        return copy;
     }
 
     @Override
-    public JsonObject H(boolean bl) {
+    public AntiBotBooleanValue copyValueDefinition() {
+        return this.copy();
+    }
+
+    @Override
+    public JsonObject toJson(boolean includeDefaults) {
         JsonObject jsonObject = this.toJson();
-        Integer n = (Integer)this.K();
-        if (n != null) {
-            jsonObject.addProperty("value", "0x" + Integer.toHexString(n).toUpperCase());
+        Integer color = (Integer)this.getValue();
+        if (color != null) {
+            jsonObject.addProperty("value", "0x" + Integer.toHexString(color).toUpperCase());
         }
         return jsonObject;
     }
 
-    public void V(Color color) {
+    public void setColor(Color color) {
         if (color == null) {
-            this.o(null);
+            this.setValue(null);
         } else {
-            this.o(color.getRGB() & (int)RGB_MASK);
+            this.setValue(color.getRGB() & RGB_MASK);
         }
-    }
-
-    private static NumberFormatException passThrough(NumberFormatException numberFormatException) {
-        return numberFormatException;
     }
 
     @Override
     public boolean loadJson(JsonObject jsonObject) {
-        if (this.W(jsonObject)) {
+        if (this.matchesJsonId(jsonObject)) {
             String string = ConfigJsonUtils.P(jsonObject, "value");
             if (string != null) {
                 this.parse(string);
             }
-            this.Z();
+            this.notifyChangeListeners();
             return true;
         }
         return false;
     }
 
-    public static AntiBotBooleanValue i(Object object, String string, String string2, Integer n) {
-        AntiBotBooleanValue antiBotBooleanValue = new AntiBotBooleanValue(object, string, n);
-        antiBotBooleanValue.Z$src$Lgg_vape_value_Value_$16i62fx(string2);
-        return antiBotBooleanValue;
+    public static AntiBotBooleanValue createWithDescription(Object owner, String name,
+                                                            String description, Integer defaultColor) {
+        AntiBotBooleanValue value = new AntiBotBooleanValue(owner, name, defaultColor);
+        value.setDescription(description);
+        return value;
     }
 }

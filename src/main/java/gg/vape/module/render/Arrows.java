@@ -33,122 +33,119 @@ import java.util.Map;
 
 public class Arrows
 extends Mod {
-    private final BooleanValue O;
-    private final NumberValue Y;
-    private final ColorValue a = ColorValue.L(this, "Color", new Color(255, 0, 0));
-    private static final long p = 6320396365828000318L;
-    private final BooleanValue L;
-    private final Map<Entity, double[]> j;
+    private final BooleanValue showDistance;
+    private final NumberValue radiusScale;
+    private final ColorValue color = ColorValue.create(this, "Color", new Color(255, 0, 0));
+    private static final long MODULE_COLOR = 6320396365828000318L;
+    private final BooleanValue scaleOpacity;
+    private final Map<Entity, double[]> projectedPositions;
 
     @EventHandler
-    public void onRender2D(EventRender2D eventRender2D) {
-        EntityPlayerSP entityPlayerSP = eventRender2D.getThePlayer();
-        if (entityPlayerSP.isNull() || eventRender2D.getWorld().isNull()) {
+    public void onRender2D(EventRender2D event) {
+        EntityPlayerSP player = event.getThePlayer();
+        if (player.isNull() || event.getWorld().isNull()) {
             return;
         }
-        int n = Minecraft.J();
-        int n2 = Minecraft.h();
-        float f = (float)n / 4.0f;
-        float f2 = (float)n2 / 4.0f;
+        int displayWidth = Minecraft.J();
+        int displayHeight = Minecraft.h();
+        float centerX = (float)displayWidth / 4.0f;
+        float centerY = (float)displayHeight / 4.0f;
         GuiRenderPrimitives.u(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Color.WHITE);
-        FontRenderer fontRenderer = eventRender2D.getFontRenderer();
-        for (Entity entity : this.j.keySet()) {
-            Color color;
-            int n3;
-            Object object;
-            int n4;
-            double[] dArray = this.j.get(entity);
-            double d = dArray[0];
-            double d2 = (double)Minecraft.h() - dArray[1];
-            if (dArray[2] < 1.0 && this.isOnScreen(d / 2.0, d2 / 2.0, n, n2)) continue;
-            float f3 = this.getAngle(f, d / 2.0, f2, d2 / 2.0) + (float)(dArray[2] > 1.0 ? 180 : 0);
-            double d3 = (double)f * (Double)this.Y.K();
-            double d4 = (double)f2 * (Double)this.Y.K();
-            double d5 = Math.sqrt(1.0 / (1.0 / (d3 * d3) + Math.pow(Math.tan(Math.toRadians(f3)), 2.0) / (d4 * d4)));
-            double d6 = Math.tan(Math.toRadians(f3)) * d5;
-            float f4 = MathUtil.wrapAngleTo180(f3 + 90.0f);
-            if (f4 < 0.0f) {
-                d5 = -d5;
-                if (f4 > -180.0f) {
-                    d6 = -d6;
+        FontRenderer fontRenderer = event.getFontRenderer();
+        for (Entity entity : this.projectedPositions.keySet()) {
+            double[] projectedPosition = this.projectedPositions.get(entity);
+            double screenX = projectedPosition[0];
+            double screenY = (double)Minecraft.h() - projectedPosition[1];
+            if (projectedPosition[2] < 1.0 && this.isOnScreen(screenX / 2.0, screenY / 2.0, displayWidth, displayHeight)) continue;
+            float angle = this.getAngle(centerX, screenX / 2.0, centerY, screenY / 2.0) + (float)(projectedPosition[2] > 1.0 ? 180 : 0);
+            double horizontalRadius = (double)centerX * (Double)this.radiusScale.getValue();
+            double verticalRadius = (double)centerY * (Double)this.radiusScale.getValue();
+            double arrowX = Math.sqrt(1.0 / (1.0 / (horizontalRadius * horizontalRadius) + Math.pow(Math.tan(Math.toRadians(angle)), 2.0) / (verticalRadius * verticalRadius)));
+            double arrowY = Math.tan(Math.toRadians(angle)) * arrowX;
+            float wrappedAngle = MathUtil.wrapAngleTo180(angle + 90.0f);
+            if (wrappedAngle < 0.0f) {
+                arrowX = -arrowX;
+                if (wrappedAngle > -180.0f) {
+                    arrowY = -arrowY;
                 }
             }
-            if ((n4 = (int)((double)entityPlayerSP.getDistanceToEntity(entity) * 1.5)) > 255) {
-                n4 = 255;
+            int distanceAlpha = (int)((double)player.getDistanceToEntity(entity) * 1.5);
+            if (distanceAlpha > 255) {
+                distanceAlpha = 255;
             }
-            if (this.O.L().booleanValue() && n4 < 255) {
-                OpenGlBackendHolder.d.m();
+            if (this.showDistance.getEffectiveValue().booleanValue() && distanceAlpha < 255) {
+                OpenGlBackendHolder.backend.pushMatrix();
                 RenderUtils.g();
-                object = (int)entityPlayerSP.getDistanceToEntity(entity) + "m";
-                OpenGlBackendHolder.d.I(d5 + (double)((float)n / 4.0f), d6 + (double)((float)n2 / 4.0f), 0.0);
-                OpenGlBackendHolder.d.G(0.5, 0.5, 0.0);
-                n3 = OpenGlBackendHolder.d.L(3042) ? 1 : 0;
+                String distanceText = (int)player.getDistanceToEntity(entity) + "m";
+                OpenGlBackendHolder.backend.translate(arrowX + (double)centerX, arrowY + (double)centerY, 0.0);
+                OpenGlBackendHolder.backend.scale(0.5, 0.5, 0.0);
+                boolean blendEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(3042);
                 GlStateManager.enableBlend();
-                color = new Color(255, 255, 255, 255 - (this.L.L() != false ? n4 : 0));
+                Color textColor = new Color(255, 255, 255, 255 - (this.scaleOpacity.getEffectiveValue() != false ? distanceAlpha : 0));
                 if (GuiRenderPrimitives.d()) {
                     MatrixStack matrixStack = MatrixStack.A();
                     matrixStack.H();
-                    float f5 = (float)Minecraft.p().k(Minecraft.gameSettings().T(), false) / 2.0f;
-                    float f6 = 1.0f;
-                    float f7 = 1.0f / f5;
-                    d5 = Math.ceil(d5);
-                    d6 = Math.ceil(d6);
-                    d5 /= (double)f6;
-                    d6 /= (double)f6;
-                    matrixStack.S(f7, f7, f7);
-                    matrixStack.S(f6, f6, f6);
-                    matrixStack.i(BufferedGuiRenderPrimitives.X.c().u());
-                    fontRenderer.V((String)object, (float)(-fontRenderer.getStringWidth((String)object)) / 2.0f, -fontRenderer.getHalfFontHeight((String)object), ColorUtil.n(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()), matrixStack);
+                    float guiScale = (float)Minecraft.p().k(Minecraft.gameSettings().T(), false) / 2.0f;
+                    float renderScale = 1.0f;
+                    float inverseGuiScale = 1.0f / guiScale;
+                    arrowX = Math.ceil(arrowX);
+                    arrowY = Math.ceil(arrowY);
+                    arrowX /= (double)renderScale;
+                    arrowY /= (double)renderScale;
+                    matrixStack.S(inverseGuiScale, inverseGuiScale, inverseGuiScale);
+                    matrixStack.S(renderScale, renderScale, renderScale);
+                    matrixStack.i(BufferedGuiRenderPrimitives.matrixStack.peek().toMinecraftMatrix());
+                    fontRenderer.V(distanceText, (float)(-fontRenderer.getStringWidth(distanceText)) / 2.0f, -fontRenderer.getHalfFontHeight(distanceText), ColorUtil.packRgba(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), textColor.getAlpha()), matrixStack);
                 } else {
-                    fontRenderer.drawStringWithShadow((String)object, (double)((float)(-fontRenderer.getStringWidth((String)object)) / 2.0f), -fontRenderer.getHalfFontHeight((String)object), ColorUtil.n(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()));
+                    fontRenderer.drawStringWithShadow(distanceText, (double)((float)(-fontRenderer.getStringWidth(distanceText)) / 2.0f), -fontRenderer.getHalfFontHeight(distanceText), ColorUtil.packRgba(textColor.getRed(), textColor.getGreen(), textColor.getBlue(), textColor.getAlpha()));
                 }
-                if (n3 == 0) {
+                if (!blendEnabled) {
                     GlStateManager.disableBlend();
                 }
                 RenderUtils.f();
-                OpenGlBackendHolder.d.F();
+                OpenGlBackendHolder.backend.popMatrix();
             }
-            OpenGlBackendHolder.d.m();
+            OpenGlBackendHolder.backend.pushMatrix();
             RenderUtils.g();
-            OpenGlBackendHolder.d.I(d5 + (double)((float)n / 4.0f), d6 + (double)((float)n2 / 4.0f), 0.0);
-            OpenGlBackendHolder.d.X(f3 - 90.0f, 0.0f, 0.0f, 1.0f);
-            OpenGlBackendHolder.d.G(0.375, 0.5, 0.0);
-            object = this.a.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-            n3 = ((Color)object).getAlpha();
-            if (this.L.L().booleanValue()) {
-                n3 = 255 - n4;
+            OpenGlBackendHolder.backend.translate(arrowX + (double)centerX, arrowY + (double)centerY, 0.0);
+            OpenGlBackendHolder.backend.rotate(angle - 90.0f, 0.0f, 0.0f, 1.0f);
+            OpenGlBackendHolder.backend.scale(0.375, 0.5, 0.0);
+            Color configuredColor = this.color.getMutableColor();
+            int alpha = configuredColor.getAlpha();
+            if (this.scaleOpacity.getEffectiveValue().booleanValue()) {
+                alpha = 255 - distanceAlpha;
             }
-            color = new Color(((Color)object).getRed(), ((Color)object).getGreen(), ((Color)object).getBlue(), n3);
-            ImageRenderer.drawResWithShadow(color, -16.0f, 0.0f, "exo", 1.0f, false);
+            Color arrowColor = new Color(configuredColor.getRed(), configuredColor.getGreen(), configuredColor.getBlue(), alpha);
+            ImageRenderer.drawResWithShadow(arrowColor, -16.0f, 0.0f, "exo", 1.0f, false);
             RenderUtils.f();
-            OpenGlBackendHolder.d.F();
+            OpenGlBackendHolder.backend.popMatrix();
         }
-        this.j.clear();
+        this.projectedPositions.clear();
     }
 
 
-    private boolean isOnScreen(double d, double d2, int n, int n2) {
-        return d > 0.0 && d2 > 0.0 && d < (double)(n / 2) && d2 < (double)(n2 / 2);
+    private boolean isOnScreen(double x, double y, int displayWidth, int displayHeight) {
+        return x > 0.0 && y > 0.0 && x < (double)(displayWidth / 2) && y < (double)(displayHeight / 2);
     }
 
     @EventHandler
-    public void onRender3D(EventRender3D eventRender3D) {
-        this.j.clear();
+    public void onRender3D(EventRender3D event) {
+        this.projectedPositions.clear();
         RenderUtil.d();
-        for (Object e : Minecraft.theWorld().z()) {
-            Entity entity = new Entity(e);
-            if (!this.L(entity)) continue;
-            double d = entity.M() + (entity.z() - entity.M()) * (double)eventRender3D.getTicks() - RenderManager.getInterpolatedRenderPosX();
-            double d2 = entity.W() + (entity.N() - entity.W()) * (double)eventRender3D.getTicks() - RenderManager.getInterpolatedRenderPosY();
-            double d3 = entity.m$src$D$fwnne5() + (entity.h() - entity.m$src$D$fwnne5()) * (double)eventRender3D.getTicks() - RenderManager.getInterpolatedRenderPosZ();
-            double[] dArray = RenderUtil.W(d, d2, d3);
-            this.j.put(entity, dArray);
+        for (Object entityHandle : Minecraft.theWorld().z()) {
+            Entity entity = new Entity(entityHandle);
+            if (!this.shouldTrack(entity)) continue;
+            double renderX = entity.M() + (entity.z() - entity.M()) * (double)event.getTicks() - RenderManager.getInterpolatedRenderPosX();
+            double renderY = entity.W() + (entity.N() - entity.W()) * (double)event.getTicks() - RenderManager.getInterpolatedRenderPosY();
+            double renderZ = entity.m$src$D$fwnne5() + (entity.h() - entity.m$src$D$fwnne5()) * (double)event.getTicks() - RenderManager.getInterpolatedRenderPosZ();
+            double[] projectedPosition = RenderUtil.W(renderX, renderY, renderZ);
+            this.projectedPositions.put(entity, projectedPosition);
         }
         RenderUtil.Y();
     }
 
-    public boolean L(Entity entity) {
-        if (OffscreenRenderContext.W()) {
+    public boolean shouldTrack(Entity entity) {
+        if (OffscreenRenderContext.isRenderingOffscreen()) {
             return false;
         }
         if (!entity.isInstance(MappedClasses.Yl)) {
@@ -157,27 +154,27 @@ extends Mod {
         if (entity.isInstance(MappedClasses.z5)) {
             return false;
         }
-        EntityPlayer entityPlayer = new EntityPlayer(entity.getObject());
-        if (Vape.INSTANCE.getClientSettings().J(entityPlayer)) {
+        EntityPlayer player = new EntityPlayer(entity.getObject());
+        if (Vape.INSTANCE.getClientSettings().J(player)) {
             return false;
         }
-        if (Vape.INSTANCE.getClientSettings().S(entityPlayer)) {
+        if (Vape.INSTANCE.getClientSettings().S(player)) {
             return false;
         }
-        return !Vape.INSTANCE.getFriendManager().E(entityPlayer.getName());
+        return !Vape.INSTANCE.getFriendManager().E(player.getName());
     }
 
     public Arrows() {
-        super("Arrows", (int)p, Category.k, "Draws arrows on screen when entities\nare out of your field of view.");
-        this.O = BooleanValue.create(this, "Show Distance", false, "Renders the distance next to the arrow.");
-        this.L = BooleanValue.create(this, "Scale Opacity", false, "Lowers the opacity the farther they are.");
-        this.Y = NumberValue.create((Object)this, "Radius Scale", "#.##", "x", 0.0, 0.5, 1.0, 0.05);
-        this.j = new HashMap<Entity, double[]>();
-        this.addValue(this.a, this.Y, this.O, this.L);
+        super("Arrows", (int)MODULE_COLOR, Category.k, "Draws arrows on screen when entities\nare out of your field of view.");
+        this.showDistance = BooleanValue.create(this, "Show Distance", false, "Renders the distance next to the arrow.");
+        this.scaleOpacity = BooleanValue.create(this, "Scale Opacity", false, "Lowers the opacity the farther they are.");
+        this.radiusScale = NumberValue.create((Object)this, "Radius Scale", "#.##", "x", 0.0, 0.5, 1.0, 0.05);
+        this.projectedPositions = new HashMap<Entity, double[]>();
+        this.addValue(this.color, this.radiusScale, this.showDistance, this.scaleOpacity);
     }
 
-    private float getAngle(double d, double d2, double d3, double d4) {
-        return (float)Math.toDegrees(Math.atan2(d4 - d3, d2 - d));
+    private float getAngle(double centerX, double x, double centerY, double y) {
+        return (float)Math.toDegrees(Math.atan2(y - centerY, x - centerX));
     }
 }
 

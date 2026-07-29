@@ -32,7 +32,7 @@ implements InsertedEventCallback {
         EntityPlayer entityPlayer = new EntityPlayer(this.P);
         T = true;
         this.U = (List)itemStack.A(entityPlayer, this.M);
-        if (Vape.INSTANCE.getClientSettings().S.L().booleanValue()) {
+        if (Vape.INSTANCE.getClientSettings().S.getEffectiveValue().booleanValue()) {
             if (itemStack.isNull() || itemStack.l() == null || this.U == null) {
                 return true;
             }

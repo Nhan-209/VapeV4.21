@@ -6,23 +6,18 @@ import gg.vape.value.ValueSnapshot;
 
 public class SnapshotValueAccessor<K, T extends Value<K, T>>
 extends ValueAccessor {
-    private final ValueSnapshot<T, K> l;
+    private final ValueSnapshot<T, K> snapshot;
 
-    public Object a() {
-        return this.l.J();
-    }
-
-    public Object F() {
-        return this.l.J();
+    public Object getValue() {
+        return this.snapshot.getValue();
     }
 
     public SnapshotValueAccessor(ValueSnapshot<T, K> valueSnapshot, Value<K, T> value) {
         super(value);
-        this.l = valueSnapshot;
+        this.snapshot = valueSnapshot;
     }
 
-    public void e(Object object) {
-        this.l.s(object);
+    public void setValue(Object value) {
+        this.snapshot.setValue(value);
     }
 }
-

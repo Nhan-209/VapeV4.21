@@ -71,7 +71,7 @@ extends Vec3i {
 
     public static BlockPos P(Vec3 vec3) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return BlockPos.create(NumericMathUtil.r(vec3.getX()), NumericMathUtil.r(vec3.getY()), NumericMathUtil.r(vec3.getZ()));
+            return BlockPos.create(NumericMathUtil.floorDouble(vec3.getX()), NumericMathUtil.floorDouble(vec3.getY()), NumericMathUtil.floorDouble(vec3.getZ()));
         }
         return new BlockPos(BlockPos.c.getMappings().RP.D(vec3.getObject()));
     }
@@ -122,7 +122,7 @@ extends Vec3i {
 
     public static BlockPos D(double d, double d2, double d3) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return BlockPos.create(NumericMathUtil.r(d), NumericMathUtil.r(d2), NumericMathUtil.r(d3));
+            return BlockPos.create(NumericMathUtil.floorDouble(d), NumericMathUtil.floorDouble(d2), NumericMathUtil.floorDouble(d3));
         }
         return new BlockPos(BlockPos.c.getMappings().RP.H(d, d2, d3));
     }

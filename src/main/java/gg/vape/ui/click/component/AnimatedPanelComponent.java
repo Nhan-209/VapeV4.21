@@ -13,23 +13,23 @@ import java.util.Arrays;
 
 public class AnimatedPanelComponent
 extends PanelComponent {
-    private boolean fP;
-    private float fp = 1.0f;
-    private float f0 = 2.0f;
-    private ColorAnimation fx;
-    private Color fw = null;
+    private boolean useStaticBorderColor;
+    private float borderAlpha = 1.0f;
+    private float borderRadius = 2.0f;
+    private ColorAnimation borderAnimation;
+    private Color overrideColor = null;
 
-    private GuiComponent D(GuiComponent guiComponent) {
-        ArrayList<GuiComponent> arrayList = this.X(new ArrayList<GuiComponent>(Arrays.asList(guiComponent)), 0);
-        for (GuiComponent guiComponent2 : arrayList) {
-            if (!guiComponent2.V$src$Z$1xhop3l() || !guiComponent2.w$src$Z$e457mb() || !(guiComponent2 instanceof InteractiveComponent) && !(guiComponent2 instanceof TextInputComponentBase)) continue;
-            return guiComponent2;
+    private GuiComponent findHoveredInteractiveDescendant(GuiComponent component) {
+        ArrayList<GuiComponent> descendants = this.X(new ArrayList<GuiComponent>(Arrays.asList(component)), 0);
+        for (GuiComponent descendant : descendants) {
+            if (!descendant.V$src$Z$1xhop3l() || !descendant.w$src$Z$e457mb() || !(descendant instanceof InteractiveComponent) && !(descendant instanceof TextInputComponentBase)) continue;
+            return descendant;
         }
         return null;
     }
 
-    public void T(float f) {
-        this.f0 = f;
+    public void setBorderRadius(float borderRadius) {
+        this.borderRadius = borderRadius;
     }
 
     @Override
@@ -37,31 +37,31 @@ extends PanelComponent {
         super.J();
     }
 
-    public void e(float f) {
-        this.fp = f;
+    public void setBorderAlpha(float borderAlpha) {
+        this.borderAlpha = borderAlpha;
     }
 
 
     @Override
-    public void z(boolean bl) {
-        if (!this.Z$src$Z$16e8vsp()) {
+    public void z(boolean useAlternateHeight) {
+        if (!this.isShowDisabledOverlay()) {
             return;
         }
-        GuiRenderPrimitives.e(this.G$src$D$1b2f02a(), this.n(), this.A(), bl ? this.K : this.L(), this.fP ? AnimatedPanelComponent.J.K : this.fx.getInterpolatedColor(), this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null, 2.0f, 1.0f);
+        GuiRenderPrimitives.e(this.G$src$D$1b2f02a(), this.n(), this.A(), useAlternateHeight ? this.K : this.L(), this.useStaticBorderColor ? AnimatedPanelComponent.J.K : this.borderAnimation.getInterpolatedColor(), this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null, 2.0f, 1.0f);
     }
 
-    public void L$src$V$1hgphv8() {
-        this.fP = !this.fP;
+    public void toggleStaticBorderColor() {
+        this.useStaticBorderColor = !this.useStaticBorderColor;
     }
 
-    public float j$src$F$1hx7baa() {
-        return this.f0;
+    public float getBorderRadius() {
+        return this.borderRadius;
     }
 
-    public AnimatedPanelComponent(double d, double d2) {
-        super(d, d2);
-        this.T(AnimatedPanelComponent.J.m);
-        this.fx = new ColorAnimation(0.15, this.d(), new Color(36, 35, 36));
+    public AnimatedPanelComponent(double width, double height) {
+        super(width, height);
+        this.setDisabledOverlayColor(AnimatedPanelComponent.J.m);
+        this.borderAnimation = new ColorAnimation(0.15, this.getDisabledOverlayColor(), new Color(36, 35, 36));
     }
 
     @Override
@@ -72,20 +72,20 @@ extends PanelComponent {
         super.F();
     }
 
-    public Color w$src$Ljava_awt_Color_$j769pz() {
-        return this.fw;
+    public Color getOverrideColor() {
+        return this.overrideColor;
     }
 
-    public void h(ColorAnimation colorAnimation) {
-        this.fx = colorAnimation;
+    public void setBorderAnimation(ColorAnimation borderAnimation) {
+        this.borderAnimation = borderAnimation;
     }
 
-    public ColorAnimation b$src$Lgg_vape_ui_click_animation_ColorAnimation_$1w5shon() {
-        return this.fx;
+    public ColorAnimation getBorderAnimation() {
+        return this.borderAnimation;
     }
 
-    public float b$src$F$1hssyje() {
-        return this.fp;
+    public float getBorderAlpha() {
+        return this.borderAlpha;
     }
 
     @Override
@@ -93,10 +93,10 @@ extends PanelComponent {
         super.u();
     }
 
-    public AnimatedPanelComponent(double d, double d2, Color color, Color color2) {
-        super(d, d2);
-        this.T(color);
-        this.fx = new ColorAnimation(0.15, this.d(), color2);
+    public AnimatedPanelComponent(double width, double height, Color backgroundColor, Color hoverBorderColor) {
+        super(width, height);
+        this.setDisabledOverlayColor(backgroundColor);
+        this.borderAnimation = new ColorAnimation(0.15, this.getDisabledOverlayColor(), hoverBorderColor);
     }
 
     @Override
@@ -104,13 +104,13 @@ extends PanelComponent {
         super.onEnable();
     }
 
-    public void n(Color color) {
-        this.fw = color;
+    public void setOverrideColor(Color overrideColor) {
+        this.overrideColor = overrideColor;
     }
 
     @Override
-    public void D(GuiMouseEvent guiMouseEvent) {
-        super.D(guiMouseEvent);
+    public void dispatchMouseEvent(GuiMouseEvent mouseEvent) {
+        super.dispatchMouseEvent(mouseEvent);
     }
 }
 

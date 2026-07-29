@@ -6,23 +6,23 @@ import gg.vape.wrapper.impl.EntityPlayerSP;
 
 public class BlockInThresholdRotationController
 extends ThresholdFixedRotationController {
-    final BlockIn g;
+    private final BlockIn blockIn;
 
     @Override
-    public void u(boolean bl) {
-        super.u(bl);
-        if (bl) {
-            if (BlockIn.E(this.g).X(this.g)) {
+    public void setComplete(boolean complete) {
+        super.setComplete(complete);
+        if (complete) {
+            if (this.blockIn.getRotationClaim().release(this.blockIn)) {
                 // empty if block
             }
-            BlockIn.B(this.g, -999.0);
+            this.blockIn.setSavedYaw(-999.0);
         }
     }
 
 
-    public BlockInThresholdRotationController(BlockIn blockIn, EntityPlayerSP entityPlayerSP, float f, float f2) {
-        super(entityPlayerSP, f, f2);
-        this.g = blockIn;
+    public BlockInThresholdRotationController(BlockIn blockIn, EntityPlayerSP player,
+                                              float targetYaw, float targetPitch) {
+        super(player, targetYaw, targetPitch);
+        this.blockIn = blockIn;
     }
 }
-

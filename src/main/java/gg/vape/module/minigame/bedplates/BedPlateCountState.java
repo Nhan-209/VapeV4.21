@@ -1,90 +1,54 @@
 package gg.vape.module.minigame.bedplates;
 
-import gg.vape.module.minigame.bedplates.BedPlateBlockCountComparator;
-import gg.vape.module.minigame.bedplates.BedPlateBlockStateKey;
 import gg.vape.module.world.bedbreaker.BedTargetRenderPosition;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class BedPlateCountState {
-    BedTargetRenderPosition position;
-    HashMap<Integer, HashMap<BedPlateBlockStateKey, Integer>> layerCounts = new HashMap();
-    HashMap<Integer, List<BedPlateBlockStateKey>> sortedLayers = new HashMap();
+    private final BedTargetRenderPosition position;
+    private final Map<Integer, Map<BedPlateBlockStateKey, Integer>> layerCounts = new HashMap<>();
+    private final Map<Integer, List<BedPlateBlockStateKey>> sortedLayers = new HashMap<>();
 
     public String toString() {
         return "BedData{position=" + this.position + ", layers=" + this.layerCounts + '}';
     }
 
-    public void r() {
-        for (int layer : this.layerCounts.keySet()) {
-            ArrayList arrayList = new ArrayList();
-            if (!this.layerCounts.containsKey(layer)) continue;
-            Object[] objectArray = this.layerCounts.get(layer).entrySet().toArray();
-            Arrays.sort(objectArray, new BedPlateBlockCountComparator(this));
-            for (Object object : objectArray) {
-                arrayList.add(((Map.Entry)object).getKey());
+    public void sortLayersByFrequency() {
+        for (Map.Entry<Integer, Map<BedPlateBlockStateKey, Integer>> layerEntry : this.layerCounts.entrySet()) {
+            List<Map.Entry<BedPlateBlockStateKey, Integer>> blockCounts = new ArrayList<>(layerEntry.getValue().entrySet());
+            blockCounts.sort(Map.Entry.<BedPlateBlockStateKey, Integer>comparingByValue().reversed());
+            List<BedPlateBlockStateKey> sortedBlockStates = new ArrayList<>();
+            for (Map.Entry<BedPlateBlockStateKey, Integer> blockCount : blockCounts) {
+                sortedBlockStates.add(blockCount.getKey());
             }
-            Collections.reverse(arrayList);
-            this.sortedLayers.put(layer, arrayList);
+            this.sortedLayers.put(layerEntry.getKey(), sortedBlockStates);
         }
     }
 
-    private void incrementBlock(int layer, int id, int meta) {
-        BedPlateBlockStateKey bedPlateBlockStateKey;
-        HashMap<BedPlateBlockStateKey, Integer> hashMap;
-        if (!this.layerCounts.containsKey(layer)) {
-            this.layerCounts.put(layer, new HashMap());
-        }
-        if (!(hashMap = this.layerCounts.get(layer)).containsKey(bedPlateBlockStateKey = new BedPlateBlockStateKey(id, meta, null))) {
-            hashMap.put(bedPlateBlockStateKey, 0);
-        }
-        hashMap.merge(bedPlateBlockStateKey, 1, Integer::sum);
+    public void incrementBlock(int layer, int itemId, int metadata) {
+        Map<BedPlateBlockStateKey, Integer> blockCounts = this.layerCounts.computeIfAbsent(layer, ignored -> new HashMap<>());
+        BedPlateBlockStateKey blockState = new BedPlateBlockStateKey(itemId, metadata);
+        blockCounts.merge(blockState, 1, Integer::sum);
     }
 
-    public void y() {
+    public void clearCounts() {
         this.layerCounts.clear();
+        this.sortedLayers.clear();
     }
 
-    public List<BedPlateBlockStateKey> c(int n) {
-        return this.sortedLayers.getOrDefault(n, new ArrayList());
+    public List<BedPlateBlockStateKey> getSortedLayer(int layer) {
+        return this.sortedLayers.getOrDefault(layer, new ArrayList<>());
     }
 
 
-    public BedPlateCountState(BedTargetRenderPosition bedTargetRenderPosition) {
-        this.position = bedTargetRenderPosition;
+    public BedPlateCountState(BedTargetRenderPosition position) {
+        this.position = position;
     }
 
-    public int totalDistinctBlockCount() {
-        int total = 0;
-        for (int layer : this.layerCounts.keySet()) {
-            total += this.layerCounts.get(layer).size();
-        }
-        return total;
-    }
-
-    public static void j(BedPlateCountState bedPlateCountState, int n, int n2, int n3) {
-        bedPlateCountState.incrementBlock(n, n2, n3);
-    }
-
-    public int getBlockCount(int layer, BedPlateBlockStateKey bedPlateBlockStateKey) {
-        return this.layerCounts.get(layer).get(bedPlateBlockStateKey);
-    }
-
-    public BedTargetRenderPosition l() {
+    public BedTargetRenderPosition getPosition() {
         return this.position;
-    }
-
-    public int getLayerTotalCount(int layer) {
-        HashMap<BedPlateBlockStateKey, Integer> hashMap = this.layerCounts.get(layer);
-        int total = 0;
-        for (BedPlateBlockStateKey bedPlateBlockStateKey : hashMap.keySet()) {
-            total += hashMap.get(bedPlateBlockStateKey).intValue();
-        }
-        return total;
     }
 }
 

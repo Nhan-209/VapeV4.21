@@ -36,80 +36,80 @@ import gg.vape.value.Value;
 import gg.vape.value.ValueSnapshot;
 
 public class ValueComponentFactory {
-    public static GuiComponent K(Value<?, ?> value, boolean bl, ValueComponentMode valueComponentMode) {
-        GuiComponent guiComponent = value.R$src$Lgg_vape_ui_click_component_GuiComponent_$1gnoyjm();
+    public static GuiComponent createValueComponent(Value<?, ?> value, boolean snapshotEditor, ValueComponentMode componentMode) {
+        GuiComponent component = value.getBoundComponent();
         if (value instanceof BooleanValue) {
-            guiComponent = new BooleanToggleComponent((BooleanValue)value);
+            component = new BooleanToggleComponent((BooleanValue)value);
         } else if (value instanceof AntiBotModeValue) {
-            guiComponent = new ColorValueDropdownComponent((AntiBotModeValue)value);
+            component = new ColorValueDropdownComponent((AntiBotModeValue)value);
         } else if (value instanceof AntiBotBooleanValue) {
-            guiComponent = new AntiBotBooleanValueOptionRow((AntiBotBooleanValue)value);
+            component = new AntiBotBooleanValueOptionRow((AntiBotBooleanValue)value);
         } else if (value instanceof ModeValue) {
-            guiComponent = new DropdownSelectComponent((ModeValue)value);
-            if (valueComponentMode == ValueComponentMode.STANDALONE) {
-                ((DropdownSelectComponent)guiComponent).v(true);
+            component = new DropdownSelectComponent((ModeValue)value);
+            if (componentMode == ValueComponentMode.STANDALONE) {
+                ((DropdownSelectComponent)component).setHighlightedStyle(true);
             }
         } else if (value instanceof NumberValue) {
-            guiComponent = new NumberSliderComponent((NumberValue)value);
+            component = new NumberSliderComponent((NumberValue)value);
         } else if (value instanceof RandomValue) {
-            guiComponent = new RandomRangeSliderComponent((RandomValue)value);
+            component = new RandomRangeSliderComponent((RandomValue)value);
         } else if (value instanceof ColorValue) {
-            guiComponent = new ColorValueEditorComponent((ColorValue)value);
+            component = new ColorValueEditorComponent((ColorValue)value);
         } else if (value instanceof ListValue) {
-            BooleanValue booleanValue;
+            BooleanValue parentToggle;
             ListValueComponent listValueComponent = new ListValueComponent((ListValue)value);
-            if (valueComponentMode == ValueComponentMode.STANDALONE) {
-                listValueComponent.W(ValueComponentMode.STANDALONE);
+            if (componentMode == ValueComponentMode.STANDALONE) {
+                listValueComponent.setMode(ValueComponentMode.STANDALONE);
             }
-            guiComponent = listValueComponent;
+            component = listValueComponent;
             ListValue listValue = (ListValue)value;
-            if (listValue.getParent() instanceof BooleanValue && (booleanValue = (BooleanValue)listValue.getParent()).G() != null && booleanValue.G().equals(listValue)) {
-                guiComponent = null;
+            if (listValue.getParent() instanceof BooleanValue && (parentToggle = (BooleanValue)listValue.getParent()).getTerminalDependentValue() != null && parentToggle.getTerminalDependentValue().equals(listValue)) {
+                component = null;
             }
         } else if (value instanceof HotbarSlotRuleValue) {
-            if (!bl) {
+            if (!snapshotEditor) {
                 HotbarSlotRuleValue hotbarSlotRuleValue = (HotbarSlotRuleValue)value;
-                if (hotbarSlotRuleValue.Y() != null) {
-                    guiComponent = hotbarSlotRuleValue.Y();
-                    guiComponent.Z(true);
+                if (hotbarSlotRuleValue.getEditor() != null) {
+                    component = hotbarSlotRuleValue.getEditor();
+                    component.setVisible(true);
                 } else {
-                    guiComponent = new HotbarSlotRuleEditorComponent(hotbarSlotRuleValue);
+                    component = new HotbarSlotRuleEditorComponent(hotbarSlotRuleValue);
                 }
             }
         } else if (value instanceof EntityTargetFilterValue) {
-            guiComponent = bl ? new EntityTargetFilterPopupComponent((EntityTargetFilterValue)value) : new EntityTargetFilterComponent((EntityTargetFilterValue)value);
+            component = snapshotEditor ? new EntityTargetFilterPopupComponent((EntityTargetFilterValue)value) : new EntityTargetFilterComponent((EntityTargetFilterValue)value);
         } else if (value instanceof StringMapValue) {
-            guiComponent = new StringMapValueComponent((StringMapValue)value);
+            component = new StringMapValueComponent((StringMapValue)value);
         } else if (value instanceof BindValue) {
-            guiComponent = new BindValueRowComponent((BindValue)value);
+            component = new BindValueRowComponent((BindValue)value);
         } else if (value instanceof InventoryCleanerProfileValue) {
-            guiComponent = new InventoryCleanerProfileValueComponent((InventoryCleanerProfileValue)value);
+            component = new InventoryCleanerProfileValueComponent((InventoryCleanerProfileValue)value);
         }
-        return guiComponent;
+        return component;
     }
 
 
-    public static GuiComponent Y(Value<?, ?> value) {
-        return ValueComponentFactory.K(value, false, ValueComponentMode.MAIN);
+    public static GuiComponent createMainValueComponent(Value<?, ?> value) {
+        return ValueComponentFactory.createValueComponent(value, false, ValueComponentMode.MAIN);
     }
 
-    public static Value e(ValueSnapshot valueSnapshot) {
-        Value t = valueSnapshot.W();
-        Value t2 = t.getALimit();
-        t2.A(t.P$src$Ljava_lang_Object_$qcpui1());
-        t2.o(valueSnapshot.J());
-        t2.O(new SnapshotValueAccessor(valueSnapshot, t2));
-        return t2;
+    public static Value createSnapshotProxyValue(ValueSnapshot valueSnapshot) {
+        Value sourceValue = valueSnapshot.getSourceValue();
+        Value proxyValue = sourceValue.copyValueDefinition();
+        proxyValue.setDefaultValue(sourceValue.getDefaultValue());
+        proxyValue.setValue(valueSnapshot.getValue());
+        proxyValue.setAccessor(new SnapshotValueAccessor(valueSnapshot, proxyValue));
+        return proxyValue;
     }
 
-    public static Object z(Object object) {
-        if (object instanceof OptionalLimitEntry || object instanceof ItemLimitData) {
-            return object.toString();
+    public static Object getComparableListEntryText(Object entry) {
+        if (entry instanceof OptionalLimitEntry || entry instanceof ItemLimitData) {
+            return entry.toString();
         }
         return null;
     }
 
-    public static GuiComponent v(Value<?, ?> value, boolean bl) {
-        return ValueComponentFactory.K(value, bl, ValueComponentMode.MAIN);
+    public static GuiComponent createMainValueComponent(Value<?, ?> value, boolean snapshotEditor) {
+        return ValueComponentFactory.createValueComponent(value, snapshotEditor, ValueComponentMode.MAIN);
     }
 }

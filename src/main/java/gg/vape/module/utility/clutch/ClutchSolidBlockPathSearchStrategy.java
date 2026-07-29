@@ -15,12 +15,12 @@ implements BlockPathSearchStrategy<BlockPlacementNode> {
     final Clutch clutch;
 
     @Override
-    public int t(Vector<BlockPlacementNode> vector) {
-        return Clutch.T(this.clutch, this.world, vector);
+    public int scorePath(Vector<BlockPlacementNode> path) {
+        return this.clutch.computePathCost(this.world, path);
     }
 
     @Override
-    public boolean B(BlockData blockData) {
+    public boolean isValidBlock(BlockData blockData) {
         Block block = this.world.getBlockByPos(blockData.D(), blockData.B(), blockData.G());
         return BlockUtil.f(block);
     }
@@ -31,7 +31,7 @@ implements BlockPathSearchStrategy<BlockPlacementNode> {
     }
 
     @Override
-    public int w() {
+    public int getMaxDepth() {
         return 4;
     }
 }

@@ -6,25 +6,25 @@ import gg.vape.ui.click.component.gui.InteractiveComponent;
 
 public abstract class AbstractListValueComponent
 extends InteractiveComponent {
-    private boolean Q;
-    private boolean b;
-    private ColorAnimation v;
+    private boolean expanded;
+    private boolean hovered;
+    private ColorAnimation hoverAnimation;
 
-    public void a(boolean bl) {
-        if (bl) {
-            for (GuiComponent guiComponent : this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().f()) {
+    public void setExpanded(boolean expanded) {
+        if (expanded) {
+            for (GuiComponent guiComponent : this.getParentFrameComponent().f()) {
                 if (!(guiComponent instanceof AbstractListValueComponent)) continue;
-                ((AbstractListValueComponent)guiComponent).a(false);
+                ((AbstractListValueComponent)guiComponent).setExpanded(false);
             }
         }
-        this.Q = bl;
+        this.expanded = expanded;
     }
 
     @Override
     public void u() {
-        if (this.b && !this.w$src$Z$e457mb()) {
-            this.v.J();
-            this.b = false;
+        if (this.hovered && !this.w$src$Z$e457mb()) {
+            this.hoverAnimation.J();
+            this.hovered = false;
         }
     }
 
@@ -39,32 +39,32 @@ extends InteractiveComponent {
     }
 
     public AbstractListValueComponent() {
-        this.v = new ColorAnimation(0.15, AbstractListValueComponent.J.l, AbstractListValueComponent.J.W);
+        this.hoverAnimation = new ColorAnimation(0.15, AbstractListValueComponent.J.l, AbstractListValueComponent.J.W);
     }
 
     @Override
     public void I() {
     }
 
-    public ColorAnimation K$src$Lgg_vape_ui_click_animation_ColorAnimation_$la4la() {
-        return this.v;
+    public ColorAnimation getHoverAnimation() {
+        return this.hoverAnimation;
     }
 
-    public boolean P$src$Z$og01j6() {
-        return this.Q;
+    public boolean isExpanded() {
+        return this.expanded;
     }
 
-    public boolean d$src$Z$oqzxee() {
-        return this.b;
+    public boolean isHovered() {
+        return this.hovered;
     }
 
 
     @Override
     public void F() {
-        if (!this.b) {
-            this.v.J();
+        if (!this.hovered) {
+            this.hoverAnimation.J();
         }
-        this.b = true;
+        this.hovered = true;
     }
 }
 

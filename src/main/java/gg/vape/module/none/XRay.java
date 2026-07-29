@@ -33,10 +33,10 @@ extends Mod {
     private double lastOpacity = 0.0;
     private float savedGamma = 1.0f;
     private final List<Integer> blockIds;
-    private final OptionalLimitValue blocksValue = OptionalLimitValue.l(this, "xray-blocks", "Xray Blocks", OptionalLimitValue.r, "Gold Ore", "Iron Ore", "Diamond Ore", "Emerald Ore", "Lapis Lazuli Ore", "Gold Block", "Iron Block", "Diamond Block", "Emerald Block");
+    private final OptionalLimitValue blocksValue = OptionalLimitValue.create(this, "xray-blocks", "Xray Blocks", OptionalLimitValue.ALLOW_LIST_COLOR, "Gold Ore", "Iron Ore", "Diamond Ore", "Emerald Ore", "Lapis Lazuli Ore", "Gold Block", "Iron Block", "Diamond Block", "Emerald Block");
     private final BooleanValue caveModeValue;
 
-    public void i(EventChunkRenderRebuild eventChunkRenderRebuild) {
+    public void onChunkRenderRebuild(EventChunkRenderRebuild eventChunkRenderRebuild) {
         if (!this.r$src$Z$14eylz9()) {
             return;
         }
@@ -49,7 +49,7 @@ extends Mod {
         }
     }
 
-    public void s(EventBlockFluidRender eventBlockFluidRender) {
+    public void onBlockFluidRender(EventBlockFluidRender eventBlockFluidRender) {
         if (!this.r$src$Z$14eylz9()) {
             return;
         }
@@ -79,7 +79,7 @@ extends Mod {
     }
 
     private void refreshWorldForOpacity() {
-        if (Minecraft.thePlayer().isNull() || (Double)this.opacityValue.K() == this.lastOpacity) {
+        if (Minecraft.thePlayer().isNull() || (Double)this.opacityValue.getValue() == this.lastOpacity) {
             return;
         }
         int radius = 4000;
@@ -87,7 +87,7 @@ extends Mod {
         int playerX = (int)entityPlayerSP.z();
         int playerZ = (int)entityPlayerSP.h();
         Minecraft.theWorld().Z(playerX - radius, 0, playerZ - radius, playerX + radius, 300, playerZ + radius);
-        this.lastOpacity = (Double)this.opacityValue.K();
+        this.lastOpacity = (Double)this.opacityValue.getValue();
     }
 
     private void reloadRenderers() {
@@ -122,7 +122,7 @@ extends Mod {
             return;
         }
         if (this.isTargetBlock(eventBlockShouldRender.getBlock())) {
-            eventBlockShouldRender.setCancelled(this.caveModeValue.L() == false);
+            eventBlockShouldRender.setCancelled(this.caveModeValue.getEffectiveValue() == false);
         }
     }
 
@@ -136,7 +136,7 @@ extends Mod {
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
         this.blockIds.clear();
-        for (String string : this.blocksValue.D()) {
+        for (String string : this.blocksValue.getEnabledValues()) {
             Block block = Block.t(string.replace(" ", "_").toLowerCase());
             if (block == null || this.blockIds.contains(Block.R(block))) continue;
             this.blockIds.add(Block.R(block));
@@ -153,7 +153,7 @@ extends Mod {
     }
 
     public void onBlockRenderColorOpacity(EventBlockRenderColorOpacity eventBlockRenderColorOpacity) {
-        eventBlockRenderColorOpacity.setOpacity(((Double)this.opacityValue.K()).intValue());
+        eventBlockRenderColorOpacity.setOpacity(((Double)this.opacityValue.getValue()).intValue());
     }
 
     public XRay() {
@@ -162,11 +162,11 @@ extends Mod {
         this.caveModeValue = BooleanValue.create(this, "Cave Mode", false, "Only shows ores that are exposed to air.");
         this.blockIds = new ArrayList<Integer>();
         this.addValue(this.opacityValue, this.caveModeValue, this.blocksValue);
-        this.opacityValue.B(this::onOpacityChanged);
+        this.opacityValue.addChangeListener(this::onOpacityChanged);
     }
 
     public int getOpacity() {
-        return ((Double)this.opacityValue.K()).intValue();
+        return ((Double)this.opacityValue.getValue()).intValue();
     }
 
 

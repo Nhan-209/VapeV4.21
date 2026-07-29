@@ -1,22 +1,21 @@
 package gg.vape.module.combat.autoclicker;
 
 public class AutoClickerEntityPositionState {
-    public double M;
-    public double o;
-    public double a;
-    public double v;
-    public double d;
-    public double m;
-    public double w;
-    public double G;
-    public double U;
-    public double T;
-    public double C;
-    public double L;
-    public double p;
-    public double S;
-    public double r;
-    public int O;
-    public double f;
+    public int entityId;
+    public double actualPosX;
+    public double actualPosZ;
+    public double actualLastTickPosX;
+    public double actualLastTickPosZ;
+    public double actualPrevPosX;
+    public double actualPrevPosZ;
+    public double actualServerPosX;
+    public double actualServerPosZ;
+    public double misplacedPosX;
+    public double misplacedPosZ;
+    public double misplacedLastTickPosX;
+    public double misplacedLastTickPosZ;
+    public double misplacedPrevPosX;
+    public double misplacedPrevPosZ;
+    public double previousMisplacedLastTickPosX;
+    public double previousMisplacedLastTickPosZ;
 }
-

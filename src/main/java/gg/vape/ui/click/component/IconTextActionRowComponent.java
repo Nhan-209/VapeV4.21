@@ -10,21 +10,21 @@ import java.awt.Color;
 
 public class IconTextActionRowComponent
 extends InteractiveComponent {
-    private final IconGlyphComponent b = new IconGlyphComponent("create profile from", 6.0f, 6.0f, Color.WHITE);
-    private final TruncatedTextComponent K;
+    private final IconGlyphComponent icon = new IconGlyphComponent("create profile from", 6.0f, 6.0f, Color.WHITE);
+    private final TruncatedTextComponent label;
 
-    public void F(String string) {
-        this.K.O(string);
-        this.K.G(string);
+    public void setText(String text) {
+        this.label.setText(text);
+        this.label.setAdditionalTooltipText(text);
     }
 
-    public void R(double d) {
-        this.K.M(d);
+    public void setFontScale(double fontScale) {
+        this.label.setFontScale(fontScale);
     }
 
     @Override
     public void u() {
-        this.K.u();
+        this.label.u();
     }
 
     @Override
@@ -32,18 +32,18 @@ extends InteractiveComponent {
         if (this.w$src$Z$e457mb()) {
             GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), IconTextActionRowComponent.J.z);
         }
-        double d = 12.0;
-        this.b.K(this.G$src$D$1b2f02a() + d);
-        this.b.S(this.n() + this.L() / 2.0 - this.b.L() / 2.0);
-        this.b.H();
-        this.K.K(this.b.G$src$D$1b2f02a() + 10.0);
-        this.K.S(this.n() + 0.5);
-        this.K.o(this.A() - this.b.A() - 4.0);
-        this.K.Y(this.L());
-        this.K.D(this.A() - this.b.A() - 4.0);
-        this.K.H();
-        this.b.o(6.0);
-        this.b.Y(6.0);
+        double iconOffsetX = 12.0;
+        this.icon.K(this.G$src$D$1b2f02a() + iconOffsetX);
+        this.icon.S(this.n() + this.L() / 2.0 - this.icon.L() / 2.0);
+        this.icon.H();
+        this.label.K(this.icon.G$src$D$1b2f02a() + 10.0);
+        this.label.S(this.n() + 0.5);
+        this.label.o(this.A() - this.icon.A() - 4.0);
+        this.label.Y(this.L());
+        this.label.setMaxWidth(this.A() - this.icon.A() - 4.0);
+        this.label.H();
+        this.icon.o(6.0);
+        this.icon.Y(6.0);
     }
 
     @Override
@@ -56,15 +56,15 @@ extends InteractiveComponent {
     }
 
     @Override
-    public InteractiveComponent r(GuiClickListener guiClickListener) {
-        this.K.j(new IconTextActionRowForwardClickMouseListener(this, guiClickListener));
-        return super.r(guiClickListener);
+    public InteractiveComponent addClickListener(GuiClickListener clickListener) {
+        this.label.addMouseListener(new IconTextActionRowForwardClickMouseListener(this, clickListener));
+        return super.addClickListener(clickListener);
     }
 
 
-    public IconTextActionRowComponent(String string) {
-        this.K = new TruncatedTextComponent(string, "...", string, 50.0, 0.8, Color.WHITE, false, false);
-        this.K.G(string);
+    public IconTextActionRowComponent(String text) {
+        this.label = new TruncatedTextComponent(text, "...", text, 50.0, 0.8, Color.WHITE, false, false);
+        this.label.setAdditionalTooltipText(text);
         this.Y(18.0);
     }
 
@@ -73,17 +73,17 @@ extends InteractiveComponent {
         return 0.0;
     }
 
-    public String K$src$Ljava_lang_String_$16e2ilc() {
-        return this.K.S$src$Ljava_lang_String_$1bp7ddx();
+    public String getText() {
+        return this.label.getText();
     }
 
     @Override
     public void F() {
-        this.K.F();
+        this.label.F();
     }
 
-    public double O$src$D$1kfhmr0() {
-        return this.K.b$src$D$lbm1ki();
+    public double getFontScale() {
+        return this.label.getFontScale();
     }
 }
 

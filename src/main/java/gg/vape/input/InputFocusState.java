@@ -2,38 +2,38 @@ package gg.vape.input;
 
 
 public class InputFocusState {
-    private boolean M = true;
-    private static int D;
+    private boolean focused = true;
+    private static int legacyState;
 
     public void markFocused() {
-        this.M = true;
+        this.focused = true;
     }
 
-    public static int g() {
-        int n = InputFocusState.E();
+    public static int getLegacySentinelResult() {
+        int state = InputFocusState.getLegacyState();
         return 0;
     }
 
     public boolean isFocused() {
-        return this.M;
+        return this.focused;
     }
 
-    public static void U(int n) {
-        D = n;
+    public static void setLegacyState(int state) {
+        legacyState = state;
     }
 
 
     public void markUnfocused() {
-        this.M = false;
+        this.focused = false;
     }
 
-    public static int E() {
-        return D;
+    public static int getLegacyState() {
+        return legacyState;
     }
 
     static {
-        if (InputFocusState.E() == 0) {
-            InputFocusState.U(49);
+        if (InputFocusState.getLegacyState() == 0) {
+            InputFocusState.setLegacyState(49);
         }
     }
 }

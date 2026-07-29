@@ -56,7 +56,7 @@ extends SmoothFontRenderer {
     }
 
     public void T(String string, double d, double d2, int n, boolean bl, boolean bl2) {
-        if (ClientSettings.p$src$Z$1h1jsli() && !bl) {
+        if (!bl) {
             this.v(string, d + 0.5, d2 + 0.5, Integer.MIN_VALUE);
             this.F(string, d, d2, n);
         } else {
@@ -104,7 +104,7 @@ extends SmoothFontRenderer {
         if (d != 1.0) {
             f *= (float)(1.0 / d);
         }
-        if (ClientSettings.p$src$Z$1h1jsli() && !bl) {
+        if (!bl) {
             if (this.T.containsKey(string)) {
                 return (Double)this.T.get(string);
             }
@@ -129,7 +129,7 @@ extends SmoothFontRenderer {
 
     @Override
     public double R(String string, boolean bl) {
-        if (ClientSettings.p$src$Z$1h1jsli() && !bl) {
+        if (!bl) {
             float f = 0.6f;
             float f2 = (float)Vape.INSTANCE.getClientSettings().s();
             if ((double)f2 != 1.0) {
@@ -267,7 +267,7 @@ extends SmoothFontRenderer {
         ByteBuffer byteBuffer = BufferUtils.createByteBuffer((int)byArray3.length);
         byteBuffer.put(byArray3);
         byteBuffer.flip();
-        RenderThreadTaskQueue.M(() -> this.lambda$createFont$2(n4, byteBuffer));
+        RenderThreadTaskQueue.enqueue(() -> this.lambda$createFont$2(n4, byteBuffer));
     }
 
     public BufferedSmoothFontRenderer(String string, int n) {
@@ -322,7 +322,7 @@ extends SmoothFontRenderer {
         if (this.j) {
             string = Vape.INSTANCE.getFontSelector().W().s(string);
         }
-        if (ClientSettings.p$src$Z$1h1jsli() && !bl) {
+        if (!bl) {
             if (string == null || string.length() == 0) {
                 return;
             }
@@ -375,9 +375,9 @@ extends SmoothFontRenderer {
                     }
                 }
                 if (bl2) {
-                    BufferedRenderPrimitives.v((float)d, (float)d2, smoothFontGlyph, this.i, color2, f);
+                    BufferedRenderPrimitives.drawFontGlyph((float)d, (float)d2, smoothFontGlyph, this.i, color2, f);
                 } else {
-                    BufferedGuiRenderPrimitives.b((float)d, (float)d2, smoothFontGlyph, this.i, color2, f);
+                    BufferedGuiRenderPrimitives.drawFontGlyph((float)d, (float)d2, smoothFontGlyph, this.i, color2, f);
                 }
                 d += (double)(smoothFontGlyph.S * f);
             }
@@ -412,7 +412,7 @@ extends SmoothFontRenderer {
     }
 
     private void lambda$createFont$2(int n, ByteBuffer byteBuffer) {
-        this.i = GlImageTexture.J(n, n, byteBuffer, 6403, 9729, 10497);
+        this.i = GlImageTexture.create(n, n, byteBuffer, 6403, 9729, 10497);
     }
 
     public void g(String string, double d, double d2, Color color, Color color2, boolean bl, boolean bl2) {
@@ -420,7 +420,7 @@ extends SmoothFontRenderer {
         if (color instanceof MutableColor) {
             n = ((MutableColor)color).l();
         }
-        if (ClientSettings.p$src$Z$1h1jsli() && !bl) {
+        if (!bl) {
             this.v(string, d + 0.5, d2 + 0.5, color2.getRGB());
             this.d(string, d, d2, color);
         } else {

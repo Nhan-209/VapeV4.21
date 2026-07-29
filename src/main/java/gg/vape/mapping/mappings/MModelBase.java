@@ -78,7 +78,7 @@ extends Mapping {
         String string7 = "render";
         MModelBase mModelBase7 = this;
         this.E = this.Y(string7, bl7, clazz7, classArray5);
-        GuiComponent.D(new GuiComponent[4]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[4]);
     }
 
     private void e(Object object, float f, float f2, float f3, float f4, float f5, float f6, Object object2) {

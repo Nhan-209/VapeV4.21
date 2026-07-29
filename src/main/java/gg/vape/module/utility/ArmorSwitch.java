@@ -28,7 +28,7 @@ import gg.vape.module.utility.inventory.ArmorItemMappingEntry;
 public class ArmorSwitch
 extends UtilityMod {
     private final NumberValue delayValue;
-    private static final long INITIAL_SLOT = -8554964792182308859L;
+    private static final int FIRST_ARMOR_SLOT = 5;
     private boolean screenReady;
     private final ModeValue set1;
     private ArmorMaterialType currentMaterial;
@@ -47,25 +47,25 @@ extends UtilityMod {
         this.delayValue = NumberValue.create(this, "Delay", "#", "", 0.0, 100.0, 200.0);
         this.timer = new TimerUtil();
         this.armorSlotTargets = new HashMap<Integer, Integer>();
-        ModeOption modeOption = new ModeOption("Diamond");
-        ModeOption modeOption2 = new ModeOption("Gold");
-        ModeOption modeOption3 = new ModeOption("Iron");
-        ModeOption modeOption4 = new ModeOption("Leather");
-        ModeOption modeOption5 = new ModeOption("Chain");
-        this.materialByOption.put(modeOption, ArmorMaterialType.DIAMOND);
-        this.materialByOption.put(modeOption2, ArmorMaterialType.GOLD);
-        this.materialByOption.put(modeOption3, ArmorMaterialType.IRON);
-        this.materialByOption.put(modeOption4, ArmorMaterialType.LEATHER);
-        this.materialByOption.put(modeOption5, ArmorMaterialType.CHAINMAIL);
-        this.set1 = ModeValue.create((Object)this, "Set 1", modeOption, this.materialByOption.keySet().toArray(new ModeOption[this.materialByOption.size()]));
-        this.set2 = ModeValue.create((Object)this, "Set 2", modeOption2, this.materialByOption.keySet().toArray(new ModeOption[this.materialByOption.size()]));
+        ModeOption diamondOption = new ModeOption("Diamond");
+        ModeOption goldOption = new ModeOption("Gold");
+        ModeOption ironOption = new ModeOption("Iron");
+        ModeOption leatherOption = new ModeOption("Leather");
+        ModeOption chainOption = new ModeOption("Chain");
+        this.materialByOption.put(diamondOption, ArmorMaterialType.DIAMOND);
+        this.materialByOption.put(goldOption, ArmorMaterialType.GOLD);
+        this.materialByOption.put(ironOption, ArmorMaterialType.IRON);
+        this.materialByOption.put(leatherOption, ArmorMaterialType.LEATHER);
+        this.materialByOption.put(chainOption, ArmorMaterialType.CHAINMAIL);
+        this.set1 = ModeValue.create((Object)this, "Set 1", diamondOption, this.materialByOption.keySet().toArray(new ModeOption[this.materialByOption.size()]));
+        this.set2 = ModeValue.create((Object)this, "Set 2", goldOption, this.materialByOption.keySet().toArray(new ModeOption[this.materialByOption.size()]));
         this.addValue(this.set1, this.set2, this.delayValue);
     }
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNotNull() && entityPlayerSP.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode()) {
+    public void onTick(EventPrePlayerTick event) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (localPlayer.isNotNull() && localPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode()) {
             this.Y(false);
             return;
         }
@@ -77,10 +77,10 @@ extends UtilityMod {
             if (!this.screenReady) {
                 KeyBinding keyBinding = Minecraft.gameSettings().j();
                 if (ForgeVersion.MC_1_16_5.d()) {
-                    KeyBindingHelper.a(keyBinding);
+                    KeyBindingHelper.incrementPressTime(keyBinding);
                 } else {
-                    KeyBindingHelper.d(keyBinding, true);
-                    KeyBindingHelper.v(keyBinding, false, false);
+                    KeyBindingHelper.setPressedAndTick(keyBinding, true);
+                    KeyBindingHelper.updateKeyBinding(keyBinding, false, false);
                 }
             } else {
                 this.Y(false);
@@ -92,7 +92,7 @@ extends UtilityMod {
             this.screenReady = true;
             return;
         }
-        if (this.collecting && this.timer.hasTimeElapsed(((Double)this.delayValue.K()).longValue())) {
+        if (this.collecting && this.timer.hasTimeElapsed(((Double)this.delayValue.getValue()).longValue())) {
             this.timer.reset();
             int slot = this.armorSlotTargets.get(this.slotIndex);
             this.performClick(this.slotIndex, slot);
@@ -103,8 +103,8 @@ extends UtilityMod {
         }
         boolean hasArmor = this.hasEquippedArmor();
         if (this.screenReady && hasArmor && !this.collecting) {
-            boolean wearingSet1 = this.currentMaterial.equals((Object)this.materialByOption.get(this.set1.K()));
-            if (this.findArmorSlots(wearingSet1 ? this.materialByOption.get(this.set2.K()) : this.materialByOption.get(this.set1.K()))) {
+            boolean wearingSet1 = this.currentMaterial.equals((Object)this.materialByOption.get(this.set1.getValue()));
+            if (this.findArmorSlots(wearingSet1 ? this.materialByOption.get(this.set2.getValue()) : this.materialByOption.get(this.set1.getValue()))) {
                 this.collecting = true;
             } else {
                 this.Y(false);
@@ -120,30 +120,30 @@ extends UtilityMod {
         int chestplateSlot = 0;
         int leggingsSlot = 0;
         int bootsSlot = 0;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        Container container = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm();
-        List<Slot> list = container.getInventorySlots();
-        block6: for (int i = 9; i < 45; ++i) {
-            ArmorItemMappingEntry ctFieldWithInit;
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        Container container = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm();
+        List<Slot> inventorySlots = container.getInventorySlots();
+        slotLoop: for (int slotIndex = 9; slotIndex < 45; ++slotIndex) {
+            ArmorItemMappingEntry armorMapping;
             Item item;
-            Slot slot = list.get(i);
-            if (!slot.v() || !ItemStackScoreUtil.R(item = slot.I().getItem()) || !(ctFieldWithInit = (ArmorItemMappingEntry)Vape.INSTANCE.getItemStackResolver().j(slot.I())).getArmorMaterial().equals((Object)armorMaterialType)) continue;
+            Slot slot = inventorySlots.get(slotIndex);
+            if (!slot.v() || !ItemStackScoreUtil.R(item = slot.I().getItem()) || !(armorMapping = (ArmorItemMappingEntry)Vape.INSTANCE.getItemStackResolver().resolve(slot.I())).getArmorMaterial().equals((Object)armorMaterialType)) continue;
             int armorType = ItemStackScoreUtil.H(item);
             switch (armorType) {
                 case 0: {
-                    helmetSlot = i;
-                    continue block6;
+                    helmetSlot = slotIndex;
+                    continue slotLoop;
                 }
                 case 1: {
-                    chestplateSlot = i;
-                    continue block6;
+                    chestplateSlot = slotIndex;
+                    continue slotLoop;
                 }
                 case 2: {
-                    leggingsSlot = i;
-                    continue block6;
+                    leggingsSlot = slotIndex;
+                    continue slotLoop;
                 }
                 case 3: {
-                    bootsSlot = i;
+                    bootsSlot = slotIndex;
                 }
             }
         }
@@ -170,12 +170,12 @@ extends UtilityMod {
 
     @Override
     public void onEnable() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNotNull() && entityPlayerSP.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode()) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (localPlayer.isNotNull() && localPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode()) {
             this.Y(false);
             return;
         }
-        this.slotIndex = (int)INITIAL_SLOT;
+        this.slotIndex = FIRST_ARMOR_SLOT;
         this.clickPhase = 0;
         this.collecting = false;
         this.finished = false;
@@ -197,14 +197,14 @@ extends UtilityMod {
     }
 
     private boolean hasEquippedArmor() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        Container container = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm();
-        List<Slot> list = container.getInventorySlots();
-        for (int i = 5; i < 9; ++i) {
-            Slot slot = list.get(i);
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        Container container = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm();
+        List<Slot> inventorySlots = container.getInventorySlots();
+        for (int armorSlot = 5; armorSlot < 9; ++armorSlot) {
+            Slot slot = inventorySlots.get(armorSlot);
             if (!slot.v() || !ItemStackScoreUtil.R(slot.I().getItem())) continue;
-            ArmorItemMappingEntry ctFieldWithInit = (ArmorItemMappingEntry)Vape.INSTANCE.getItemStackResolver().j(slot.I());
-            this.currentMaterial = ctFieldWithInit.getArmorMaterial();
+            ArmorItemMappingEntry armorMapping = (ArmorItemMappingEntry)Vape.INSTANCE.getItemStackResolver().resolve(slot.I());
+            this.currentMaterial = armorMapping.getArmorMaterial();
             return true;
         }
         return false;

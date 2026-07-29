@@ -10,13 +10,13 @@ import gg.vape.value.Value;
 
 public class StringValueTextInputComponent
 extends TextInputComponentBase {
-    private final StringValue ja;
-    private static final String db = "Click to set";
+    private final StringValue stringValue;
+    private static final String EMPTY_PROMPT = "Click to set";
 
 
     @Override
-    public void p() {
-        this.L$src$V$w6nnjd();
+    public void submit() {
+        this.clearFocus();
     }
 
     @Override
@@ -25,91 +25,91 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public double r() {
-        return this.p$src$D$187zcry() - 20.0;
+    public double getAvailableTextWidth() {
+        return this.getComponentWidth() - 20.0;
     }
 
     @Override
-    public void C(Value value) {
-        super.C(value);
-        this.k(value.toString());
+    public void bindValue(Value boundValue) {
+        super.bindValue(boundValue);
+        this.setText(boundValue.toString());
     }
 
     @Override
     public void H() {
-        double d;
-        double d2;
-        double d3;
-        double d4;
+        double cursorTextWidth;
+        double cursorX;
+        double leftEdgeCorrection;
+        double overflowAmount;
         this.onDisable();
-        this.b(this.ja.getName());
-        if (!this.n$src$Z$1rnxqrn()) {
-            this.k((String)this.ja.K());
+        this.setPlaceholderText(this.stringValue.getName());
+        if (!this.isFocused()) {
+            this.setText((String)this.stringValue.getValue());
         }
-        double d5 = this.G$src$D$1b2f02a() + 5.0;
-        double d6 = d5 + 5.0;
-        double d7 = this.n() + 10.0;
-        double d8 = 14.0;
-        GuiRenderPrimitives.d(d5, d7, this.p$src$D$187zcry() - 10.0, d8, this.xR.getInterpolatedColor());
-        GuiRenderPrimitives.d(d5 + 0.5, d7 + 0.5, this.p$src$D$187zcry() - 10.0 - 1.0, d8 - 1.0, StringValueTextInputComponent.J.m);
-        SmoothFontRenderer smoothFontRenderer = this.O(0.8);
-        smoothFontRenderer.d(this.ja.getName(), d5, this.n() + 2.0, StringValueTextInputComponent.J.A);
-        SmoothFontRenderer smoothFontRenderer2 = this.O(0.9);
-        double d9 = smoothFontRenderer2.d(this.C$src$Ljava_lang_String_$1pcbyty());
-        double d10 = d7 + d8 / 2.0 - d9 / 2.0;
-        String string = this.i$src$Ljava_lang_String_$1n2xf3k();
-        boolean bl = this.n$src$Z$1rnxqrn();
-        if (!(this.i$src$Ljava_lang_String_$1n2xf3k() != null && this.i$src$Ljava_lang_String_$1n2xf3k().length() >= 1 || bl)) {
-            string = db;
+        double inputX = this.G$src$D$1b2f02a() + 5.0;
+        double textX = inputX + 5.0;
+        double inputY = this.n() + 10.0;
+        double inputHeight = 14.0;
+        GuiRenderPrimitives.d(inputX, inputY, this.getComponentWidth() - 10.0, inputHeight, this.borderAnimation.getInterpolatedColor());
+        GuiRenderPrimitives.d(inputX + 0.5, inputY + 0.5, this.getComponentWidth() - 10.0 - 1.0, inputHeight - 1.0, StringValueTextInputComponent.J.m);
+        SmoothFontRenderer labelRenderer = this.getFontRenderer(0.8);
+        labelRenderer.d(this.stringValue.getName(), inputX, this.n() + 2.0, StringValueTextInputComponent.J.A);
+        SmoothFontRenderer inputRenderer = this.getFontRenderer(0.9);
+        double placeholderHeight = inputRenderer.d(this.getPlaceholderText());
+        double textY = inputY + inputHeight / 2.0 - placeholderHeight / 2.0;
+        String displayText = this.getText();
+        boolean focused = this.isFocused();
+        if (!(this.getText() != null && this.getText().length() >= 1 || focused)) {
+            displayText = EMPTY_PROMPT;
         }
-        if (string == null) {
-            string = "";
+        if (displayText == null) {
+            displayText = "";
         }
-        boolean bl2 = (d4 = smoothFontRenderer2.N(this.i$src$Ljava_lang_String_$1n2xf3k()) - this.r()) > 0.0;
-        double d11 = 0.0;
-        if (bl2) {
-            RenderUtils.m(d5 + 3.0, this.n() + 2.5, this.p$src$D$187zcry() - 14.0, this.L() - 5.0);
-            d11 = -d4;
+        boolean clipped = (overflowAmount = inputRenderer.N(this.getText()) - this.getAvailableTextWidth()) > 0.0;
+        double horizontalOffset = 0.0;
+        if (clipped) {
+            RenderUtils.m(inputX + 3.0, this.n() + 2.5, this.getComponentWidth() - 14.0, this.L() - 5.0);
+            horizontalOffset = -overflowAmount;
         }
-        if (this.x2 > string.length()) {
-            this.x2 = string.length();
+        if (this.cursorPosition > displayText.length()) {
+            this.cursorPosition = displayText.length();
         }
-        if (this.x2 < 0) {
-            this.x2 = 0;
+        if (this.cursorPosition < 0) {
+            this.cursorPosition = 0;
         }
-        if ((d3 = d6 - (d2 = d6 + (d = smoothFontRenderer2.N(string.substring(0, this.x2))) + d11)) > 0.0) {
-            d11 += d3;
-            d2 += d3;
+        if ((leftEdgeCorrection = textX - (cursorX = textX + (cursorTextWidth = inputRenderer.N(displayText.substring(0, this.cursorPosition))) + horizontalOffset)) > 0.0) {
+            horizontalOffset += leftEdgeCorrection;
+            cursorX += leftEdgeCorrection;
         }
-        smoothFontRenderer2.d(string, d6 + d11, d10, StringValueTextInputComponent.J.Z);
-        if (bl2) {
+        inputRenderer.d(displayText, textX + horizontalOffset, textY, StringValueTextInputComponent.J.Z);
+        if (clipped) {
             RenderUtils.T();
         }
-        if (bl) {
-            if (this.x2 > string.length()) {
-                this.x2 = string.length();
+        if (focused) {
+            if (this.cursorPosition > displayText.length()) {
+                this.cursorPosition = displayText.length();
             }
-            if (this.x2 < 0) {
-                this.x2 = 0;
+            if (this.cursorPosition < 0) {
+                this.cursorPosition = 0;
             }
-            this.S(this.O(1.2), d2, d10 - 1.0);
+            this.renderCaret(this.getFontRenderer(1.2), cursorX, textY - 1.0);
         }
-        if (bl && KeyboardInput.isKeyDown(8) && this.e$src$Lgg_vape_utils_TimerUtil_$1qrc1iy().hasTimeElapsed(100L)) {
-            this.e$src$Lgg_vape_utils_TimerUtil_$1qrc1iy().reset();
+        if (focused && KeyboardInput.isKeyDown(8) && this.getBackspaceRepeatTimer().hasTimeElapsed(100L)) {
+            this.getBackspaceRepeatTimer().reset();
         }
     }
 
     @Override
-    public void k(String string) {
-        super.k(string);
-        this.ja.o(this.i$src$Ljava_lang_String_$1n2xf3k());
+    public void setText(String text) {
+        super.setText(text);
+        this.stringValue.setValue(this.getText());
     }
 
     public StringValueTextInputComponent(StringValue stringValue) {
         super("");
-        this.ja = stringValue;
-        this.C(stringValue);
-        this.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().Z(false);
+        this.stringValue = stringValue;
+        this.bindValue(stringValue);
+        this.getActionButton().setVisible(false);
     }
 
     @Override
@@ -117,4 +117,3 @@ extends TextInputComponentBase {
         return 110.0;
     }
 }
-

@@ -111,7 +111,7 @@ implements LayoutManager {
             object.K(d);
             object.S(d2);
             if (layoutConstraints.Y()) {
-                object.P(true);
+                object.setUseExplicitWidth(true);
                 object.o(this.Y.A());
             }
             if (layoutConstraints.a$src$Z$1xwdswu()) {
@@ -420,10 +420,10 @@ implements LayoutManager {
             guiComponent.K(0.0);
             guiComponent.S(0.0);
             if (this.G) {
-                guiComponent.Y(guiComponent.H$src$D$1wlsgtk());
+                guiComponent.Y(guiComponent.getExplicitHeight());
             }
             if (!this.z) continue;
-            guiComponent.o(guiComponent.l$src$D$1x5l26k());
+            guiComponent.o(guiComponent.getExplicitWidth());
         }
     }
 

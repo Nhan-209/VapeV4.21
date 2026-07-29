@@ -131,7 +131,7 @@ extends Mapping {
         Class clazz30 = MappedClasses.Zw;
         MMatrix4fHandle mMatrix4fHandle17 = this;
         this.n = this.X(clazz30, string16, bl16, clazz29);
-        GuiComponent.D(new GuiComponent[4]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[4]);
     }
 
     public static void j(MMatrix4fHandle mMatrix4fHandle, Object object, float f) {

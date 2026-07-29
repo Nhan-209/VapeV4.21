@@ -11,7 +11,7 @@ implements GuiClickListener {
     final EnemySettingsFrame Y;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         Vape.INSTANCE.saveAndStop();
         Vape.INSTANCE.getEnemyManager().s(this.o);
         this.Y.Q$src$V$1u5tkk5();
@@ -22,4 +22,3 @@ implements GuiClickListener {
         this.o = enemy;
     }
 }
-

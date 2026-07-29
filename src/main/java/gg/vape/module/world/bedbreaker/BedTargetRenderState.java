@@ -14,106 +14,99 @@ import gg.vape.wrapper.impl.Vec3;
 import java.awt.Color;
 
 public class BedTargetRenderState {
-    private ProjectedEntityBounds K;
-    private final BedTargetRenderPosition G;
-    private float V = 0.0f;
-    private boolean O;
-    private Vec3d D;
-    private final TimerUtil w = new TimerUtil();
+    private ProjectedEntityBounds projectedBounds;
+    private final BedTargetRenderPosition targetPosition;
+    private float visibilityProgress = 0.0f;
+    private boolean insideReticle;
+    private Vec3d obstructionPoint;
+    private final TimerUtil animationTimer = new TimerUtil();
 
-    private void H(boolean bl) {
-        this.O = bl;
+    private void setInsideReticle(boolean insideReticle) {
+        this.insideReticle = insideReticle;
     }
 
-    public void D(Vec3d vec3d) {
-        this.D = vec3d;
+    public void setObstructionPoint(Vec3d obstructionPoint) {
+        this.obstructionPoint = obstructionPoint;
     }
 
-    public static void H(BedTargetRenderState bedTargetRenderState) {
-        bedTargetRenderState.n();
+    public BedTargetRenderPosition getTargetPosition() {
+        return this.targetPosition;
     }
 
-    public BedTargetRenderPosition q() {
-        return this.G;
-    }
-
-    public void j(RectData rectData, boolean bl, float f) {
-        float f2;
-        Vec3 vec3 = Minecraft.F().O(1.0f);
-        double d = vec3.distanceTo(new Vec3d((double)this.G.N() + 0.5, (double)this.G.h() + 0.5, (double)this.G.D$src$I$nuyd86() + 0.5).n());
-        float f3 = 1.0f;
-        float f4 = 1.0f;
-        float f5 = RenderWorldLastEvent.getPartialTicks();
-        float f6 = Minecraft.h();
-        ProjectedEntityBounds projectedEntityBounds = this.K;
-        double d2 = projectedEntityBounds.r / (double)f4 / (double)f3 / (double)f5;
-        double d3 = projectedEntityBounds.V / (double)f4 / (double)f3 / (double)f5;
-        double d4 = ((double)f6 - projectedEntityBounds.g / (double)f5) / (double)f4 / (double)f3;
-        double d5 = ((double)f6 - projectedEntityBounds.I / (double)f5) / (double)f4 / (double)f3;
-        double d6 = d3 - d2;
-        double d7 = d5 - d4;
-        float f7 = (float)Math.min(d6, d7);
-        boolean bl2 = rectData.z(d2 + d6 / 2.0, d4 + d7 / 2.0, f7 / 2.0f);
-        boolean bl3 = false;
-        if (this.D != null) {
-            double d8 = vec3.distanceTo(this.D.n());
-            if (d8 < 4.5) {
-                bl3 = true;
+    public void renderIndicator(RectData rectData, boolean selected, float breakProgress) {
+        Vec3 playerView = Minecraft.F().O(1.0f);
+        double targetDistance = playerView.distanceTo(new Vec3d((double)this.targetPosition.getBlockX() + 0.5, (double)this.targetPosition.getBlockY() + 0.5, (double)this.targetPosition.getBlockZ() + 0.5).n());
+        float partialTicks = RenderWorldLastEvent.getPartialTicks();
+        float screenHeight = Minecraft.h();
+        ProjectedEntityBounds bounds = this.projectedBounds;
+        double left = bounds.minX / (double)partialTicks;
+        double right = bounds.maxX / (double)partialTicks;
+        double top = (double)screenHeight - bounds.maxY / (double)partialTicks;
+        double bottom = (double)screenHeight - bounds.minY / (double)partialTicks;
+        double projectedWidth = right - left;
+        double projectedHeight = bottom - top;
+        float indicatorSize = (float)Math.min(projectedWidth, projectedHeight);
+        boolean reticleContainsTarget = rectData.z(left + projectedWidth / 2.0, top + projectedHeight / 2.0, indicatorSize / 2.0f);
+        boolean obstructionReachable = false;
+        if (this.obstructionPoint != null) {
+            double obstructionDistance = playerView.distanceTo(this.obstructionPoint.n());
+            if (obstructionDistance < 4.5) {
+                obstructionReachable = true;
             }
-            if (!bl3) {
-                bl2 = false;
+            if (!obstructionReachable) {
+                reticleContainsTarget = false;
             }
         }
-        float f8 = 1.0f;
-        if (d < 20.0) {
-            f2 = d > 10.0 ? (float)((20.0 - d) / 10.0) : 1.0f;
-            f8 = f2;
+        float distanceFade = 1.0f;
+        if (targetDistance < 20.0) {
+            distanceFade = targetDistance > 10.0 ? (float)((20.0 - targetDistance) / 10.0) : 1.0f;
         }
-        this.H(bl2);
-        f2 = this.i();
-        int n = (int)((float)(bl3 ? 160 : 150) * f8);
-        int n2 = (int)((float)(bl3 ? 250 : 170) * f8);
-        float f9 = (float)(d2 + d6 / 2.0 - (double)((f7 += 20.0f * f2) / 2.0f));
-        float f10 = (float)(d4 + d7 / 2.0 - (double)(f7 / 2.0f));
-        GuiRenderPrimitives.V(f9, f10, f7, 1.0, new Color(10, 10, 10, n));
-        int n3 = (int)(75.0f * f2);
-        if (bl3) {
-            GuiRenderPrimitives.m(f9, f10, f7, f7 * 0.12f, 1.0f, new Color(10, 100 + n3, 10, 255));
+        this.setInsideReticle(reticleContainsTarget);
+        float visibility = this.getVisibilityProgress();
+        int backgroundAlpha = (int)((float)(obstructionReachable ? 160 : 150) * distanceFade);
+        int outlineAlpha = (int)((float)(obstructionReachable ? 250 : 170) * distanceFade);
+        indicatorSize += 20.0f * visibility;
+        float indicatorX = (float)(left + projectedWidth / 2.0 - (double)(indicatorSize / 2.0f));
+        float indicatorY = (float)(top + projectedHeight / 2.0 - (double)(indicatorSize / 2.0f));
+        GuiRenderPrimitives.V(indicatorX, indicatorY, indicatorSize, 1.0, new Color(10, 10, 10, backgroundAlpha));
+        int greenBoost = (int)(75.0f * visibility);
+        if (obstructionReachable) {
+            GuiRenderPrimitives.m(indicatorX, indicatorY, indicatorSize, indicatorSize * 0.12f, 1.0f, new Color(10, 100 + greenBoost, 10, 255));
         }
-        GuiRenderPrimitives.m(f9, f10, f7, f7 * 0.1f, 1.0f, new Color(10, 10, 10, n2));
-        if (bl) {
-            float f11 = 100.0f * f;
-            float f12 = 360.0f * (f11 / 100.0f);
-            if (f11 < 100.0f && f11 > 0.0f) {
-                GuiRenderPrimitives.p(f9, f10, f7, f7 * 0.12f, 1.0f, 270.0f, -f12, new Color(10, 100 + n3, 10, 255));
+        GuiRenderPrimitives.m(indicatorX, indicatorY, indicatorSize, indicatorSize * 0.1f, 1.0f, new Color(10, 10, 10, outlineAlpha));
+        if (selected) {
+            float breakPercent = 100.0f * breakProgress;
+            float breakDegrees = 360.0f * (breakPercent / 100.0f);
+            if (breakPercent < 100.0f && breakPercent > 0.0f) {
+                GuiRenderPrimitives.p(indicatorX, indicatorY, indicatorSize, indicatorSize * 0.12f, 1.0f, 270.0f, -breakDegrees, new Color(10, 100 + greenBoost, 10, 255));
             }
         }
     }
 
-    public float i() {
-        return this.V;
+    public float getVisibilityProgress() {
+        return this.visibilityProgress;
     }
 
     public BedTargetRenderState(BedTargetRenderPosition bedTargetRenderPosition) {
-        this.G = bedTargetRenderPosition;
+        this.targetPosition = bedTargetRenderPosition;
     }
 
-    private void n() {
-        if (this.w.hasTimeElapsed(10L)) {
-            this.V = this.O ? (float)((double)this.V + 0.05) : (float)((double)this.V - 0.05);
-            this.V = Math.min(1.0f, Math.max(0.0f, this.V));
-            this.w.reset();
+    public void updateVisibilityAnimation() {
+        if (this.animationTimer.hasTimeElapsed(10L)) {
+            this.visibilityProgress = this.insideReticle ? (float)((double)this.visibilityProgress + 0.05) : (float)((double)this.visibilityProgress - 0.05);
+            this.visibilityProgress = Math.min(1.0f, Math.max(0.0f, this.visibilityProgress));
+            this.animationTimer.reset();
         }
     }
 
-    public static boolean f(BedTargetRenderState bedTargetRenderState) {
-        return bedTargetRenderState.O;
+    public boolean isInsideReticle() {
+        return this.insideReticle;
     }
 
-    public void h() {
+    public void updateProjectedBounds() {
         AxisAlignedBB axisAlignedBB = AxisAlignedBB.create(0.2, 0.0, 0.2, 0.8, 0.8, 0.8);
         RenderUtil.d();
-        this.K = new ProjectedEntityBounds(this.G.G(), this.G.D() + 0.4, this.G.b(), axisAlignedBB, null, null, null);
+        this.projectedBounds = new ProjectedEntityBounds(this.targetPosition.getRelativeX(), this.targetPosition.getRelativeY() + 0.4, this.targetPosition.getRelativeZ(), axisAlignedBB, null, null, null);
         RenderUtil.Y();
     }
 

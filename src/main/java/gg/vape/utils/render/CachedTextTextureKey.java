@@ -3,21 +3,21 @@ package gg.vape.utils.render;
 import java.util.Objects;
 
 class CachedTextTextureKey {
-    String O;
-    int J;
+    String text;
+    int color;
 
-    public String k() {
-        return this.O;
+    public String getText() {
+        return this.text;
     }
 
-    public CachedTextTextureKey(String string, int n) {
-        this.O = string;
-        this.J = n;
+    public CachedTextTextureKey(String text, int color) {
+        this.text = text;
+        this.color = color;
     }
 
 
-    public int H() {
-        return this.J;
+    public int getColor() {
+        return this.color;
     }
 
     /*
@@ -26,13 +26,14 @@ class CachedTextTextureKey {
      */
     public boolean equals(Object object) {
         if (!(object instanceof CachedTextTextureKey)) return false;
-        if (!((CachedTextTextureKey)object).k().equals(this.k())) return false;
-        if (((CachedTextTextureKey)object).H() != this.H()) return false;
+        CachedTextTextureKey other = (CachedTextTextureKey)object;
+        if (!other.getText().equals(this.getText())) return false;
+        if (other.getColor() != this.getColor()) return false;
         return true;
     }
 
     public int hashCode() {
-        return Objects.hash(this.k(), this.H());
+        return Objects.hash(this.getText(), this.getColor());
     }
 }
 

@@ -15,7 +15,7 @@ extends TutorialTargetSelector<HudModuleListEntry> {
     }
 
     public boolean W(HudModuleListEntry hudModuleListEntry) {
-        return hudModuleListEntry.l$src$Lgg_vape_module_render_hud_HudModule_$jeyvjw().getName().equals(b);
+        return hudModuleListEntry.getModule().getName().equals(b);
     }
 
     @Override

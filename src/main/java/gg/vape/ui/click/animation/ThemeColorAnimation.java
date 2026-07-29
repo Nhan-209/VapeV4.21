@@ -7,13 +7,12 @@ import java.awt.Color;
 public class ThemeColorAnimation
 extends ColorAnimation {
     public ThemeColorAnimation(double d, Color color) {
-        super(d, color, Vape.INSTANCE.getClientSettings().w.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
+        super(d, color, Vape.INSTANCE.getClientSettings().w.getMutableColor());
     }
 
     @Override
     public Color getInterpolatedColor() {
-        super.setEndColor(Vape.INSTANCE.getClientSettings().w.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
+        super.setEndColor(Vape.INSTANCE.getClientSettings().w.getMutableColor());
         return super.getInterpolatedColor();
     }
 }
-

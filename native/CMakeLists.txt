@@ -45,6 +45,7 @@ set_property(SOURCE "${CMAKE_CURRENT_BINARY_DIR}/generated/payload.rc"
 
 add_library(Vape421Native SHARED
         dllmain.c
+        loader_bootstrap.c
         native_bridge.c
         "${CMAKE_CURRENT_BINARY_DIR}/generated/payload.rc")
 target_include_directories(Vape421Native PRIVATE
@@ -56,13 +57,32 @@ target_compile_definitions(Vape421Native PRIVATE
         WIN32_LEAN_AND_MEAN
         _CRT_SECURE_NO_WARNINGS)
 target_compile_options(Vape421Native PRIVATE /W4)
-target_link_libraries(Vape421Native PRIVATE user32)
+target_link_libraries(Vape421Native PRIVATE user32 ws2_32)
 
 add_executable(Vape421Injector injector.c)
 target_compile_definitions(Vape421Injector PRIVATE
         WIN32_LEAN_AND_MEAN
         _CRT_SECURE_NO_WARNINGS)
 target_compile_options(Vape421Injector PRIVATE /W4)
+
+include(CTest)
+if(BUILD_TESTING)
+    add_executable(Vape421BootstrapTest
+            tests/loader_bootstrap_test.c
+            loader_bootstrap.c)
+    target_include_directories(Vape421BootstrapTest PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}")
+    target_compile_definitions(Vape421BootstrapTest PRIVATE
+            WIN32_LEAN_AND_MEAN
+            _CRT_SECURE_NO_WARNINGS)
+    target_compile_options(Vape421BootstrapTest PRIVATE /W4)
+    target_link_libraries(Vape421BootstrapTest PRIVATE ws2_32)
+    add_test(NAME Vape421BootstrapStandalone
+            COMMAND Vape421BootstrapTest standalone)
+    add_test(NAME Vape421BootstrapHandoff COMMAND Vape421BootstrapTest)
+    add_test(NAME Vape421BootstrapRejectsInvalid
+            COMMAND Vape421BootstrapTest invalid)
+endif()
 
 set_property(TARGET Vape421Native Vape421Injector PROPERTY
         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")

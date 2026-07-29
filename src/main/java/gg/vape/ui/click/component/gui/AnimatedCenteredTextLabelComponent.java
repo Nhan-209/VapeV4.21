@@ -9,39 +9,40 @@ import java.awt.Color;
 
 public class AnimatedCenteredTextLabelComponent
 extends TextLabel {
-    private float lD;
-    private ColorAnimation lI;
-    private Color l4;
+    private float borderAlpha;
+    private ColorAnimation borderAnimation;
+    private Color textColor;
 
     @Override
     public double C() {
         return 0.0;
     }
 
-    public AnimatedCenteredTextLabelComponent p(Color color) {
-        this.l4 = color;
+    @Override
+    public AnimatedCenteredTextLabelComponent setTextColor(Color textColor) {
+        this.textColor = textColor;
         return this;
     }
 
-    public AnimatedCenteredTextLabelComponent(String string, Color color) {
-        super(string);
-        this.l4 = AnimatedCenteredTextLabelComponent.J.Z;
-        this.lD = 1.0f;
-        this.lI = new ColorAnimation(0.15, color, color.brighter());
+    public AnimatedCenteredTextLabelComponent(String text, Color borderColor) {
+        super(text);
+        this.textColor = AnimatedCenteredTextLabelComponent.J.Z;
+        this.borderAlpha = 1.0f;
+        this.borderAnimation = new ColorAnimation(0.15, borderColor, borderColor.brighter());
     }
 
     @Override
     public void H() {
-        GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.lI.getInterpolatedColor(), 2.0f, this.lD, 1.0f);
-        SmoothFontRenderer smoothFontRenderer = this.s$src$Z$8lhrly() ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.Yc) : this.O(this.Yc);
-        double d = smoothFontRenderer.d(this.Q);
+        GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.borderAnimation.getInterpolatedColor(), 2.0f, this.borderAlpha, 1.0f);
+        SmoothFontRenderer smoothFontRenderer = this.isUsingAlternateFont() ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer(this.fontScale);
+        double d = smoothFontRenderer.d(this.text);
         double d2 = this.n() + this.L() / 2.0 - d / 2.0;
-        smoothFontRenderer.W(this.Q, this.G$src$D$1b2f02a() + this.A() / 2.0, d2, this.G());
+        smoothFontRenderer.W(this.text, this.G$src$D$1b2f02a() + this.A() / 2.0, d2, this.getTextColor());
     }
 
-    public GuiComponent R(Color color, Color color2) {
-        this.lI = new ColorAnimation(0.15, color, color2);
-        return super.T(color);
+    public GuiComponent setBorderAnimationColors(Color normalColor, Color hoverColor) {
+        this.borderAnimation = new ColorAnimation(0.15, normalColor, hoverColor);
+        return super.setDisabledOverlayColor(normalColor);
     }
 
 
@@ -50,21 +51,21 @@ extends TextLabel {
         return 0.0;
     }
 
-    public void y(float f) {
-        this.lD = f;
+    public void setBorderAlpha(float borderAlpha) {
+        this.borderAlpha = borderAlpha;
     }
 
     @Override
-    public Color G() {
-        return this.l4;
+    public Color getTextColor() {
+        return this.textColor;
     }
 
     @Override
-    public void n(boolean bl) {
-        if (this.w$src$Z$e457mb() != bl) {
-            this.lI.J();
+    public void setHovered(boolean hovered) {
+        if (this.w$src$Z$e457mb() != hovered) {
+            this.borderAnimation.J();
         }
-        super.n(bl);
+        super.setHovered(hovered);
     }
 }
 

@@ -21,7 +21,7 @@ extends Wrapper {
         super(object);
     }
 
-    public void r(FreecamMovementInputBridge freecamMovementInputBridge) {
+    public void setFreecamInput(FreecamMovementInputBridge freecamMovementInputBridge) {
         MMovementInput.x(MovementInput.c.getMappings().h7, this.I, freecamMovementInputBridge.getObject());
     }
 
@@ -34,7 +34,7 @@ extends Wrapper {
         MMovementInput.j(MovementInput.c.getMappings().h7, this.I, f);
     }
 
-    public FreecamMovementInputBridge b() {
+    public FreecamMovementInputBridge getFreecamInput() {
         return new FreecamMovementInputBridge(MMovementInput.x(MovementInput.c.getMappings().h7, this.I));
     }
 
@@ -48,7 +48,7 @@ extends Wrapper {
 
     public void V(boolean bl) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            this.b().F(bl);
+            this.getFreecamInput().setJumping(bl);
             return;
         }
         MMovementInput.H(MovementInput.c.getMappings().h7, this.I, bl);
@@ -65,14 +65,14 @@ extends Wrapper {
 
     public boolean G() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            return this.b().f();
+            return this.getFreecamInput().isJumping();
         }
         return MMovementInput.j(MovementInput.c.getMappings().h7, this.I);
     }
 
     public void setCancelled(boolean bl) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            this.b().P(bl);
+            this.getFreecamInput().setSneaking(bl);
             return;
         }
         MMovementInput.V(MovementInput.c.getMappings().h7, this.I, bl);
@@ -80,7 +80,7 @@ extends Wrapper {
 
     public boolean D$src$Z$v5d6e8() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            return this.b().A();
+            return this.getFreecamInput().isSneaking();
         }
         return MMovementInput.R(MovementInput.c.getMappings().h7, this.I);
     }

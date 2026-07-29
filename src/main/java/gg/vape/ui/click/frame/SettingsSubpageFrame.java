@@ -36,7 +36,7 @@ implements CollapsibleFrame {
 
     private void W() {
         if (this.fu != null) {
-            ClientSettings.K(this.fu);
+            ClientSettings.removePopup(this.fu);
             this.fu = null;
         }
     }
@@ -44,9 +44,9 @@ implements CollapsibleFrame {
     public void n(GuiComponent ... guiComponentArray) {
         this.fv.addAll(Arrays.asList(guiComponentArray));
         for (GuiComponent guiComponent : this.fv) {
-            guiComponent.T(SettingsSubpageFrame.J.t);
-            if (guiComponent.r$src$Lgg_vape_value_Value_$fdf20y() == null || guiComponent.r$src$Lgg_vape_value_Value_$fdf20y().getParent() == null) continue;
-            guiComponent.T(SettingsSubpageFrame.J.r);
+            guiComponent.setDisabledOverlayColor(SettingsSubpageFrame.J.t);
+            if (guiComponent.getBoundValue() == null || guiComponent.getBoundValue().getParent() == null) continue;
+            guiComponent.setDisabledOverlayColor(SettingsSubpageFrame.J.r);
         }
     }
 
@@ -57,16 +57,16 @@ implements CollapsibleFrame {
     @Override
     public void w() {
         this.K$src$V$qg5iru();
-        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().h();
+        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().restoreDefaultNavigation();
         this.fH = !this.fH;
         for (GuiComponent guiComponent : this.f()) {
-            if (!guiComponent.j$src$Z$dapde9()) continue;
-            guiComponent.Z(!this.fH);
+            if (!guiComponent.isRemovable()) continue;
+            guiComponent.setVisible(!this.fH);
         }
         if (this.fH) {
             this.h$src$V$q8u99h();
         }
-        this.fy.H(this.fH ? "downexpand" : "upcollapse");
+        this.fy.setIconResource(this.fH ? "downexpand" : "upcollapse");
         this.H(true);
     }
 
@@ -79,19 +79,19 @@ implements CollapsibleFrame {
         componentLayout.I(false);
         componentLayout.M("wrap");
         this.fy = new IconButtonComponent(this.fH ? "downexpand" : "upcollapse", 0.25);
-        this.fy.r(new SettingsSubpageFrameRefreshClickHandler(this));
+        this.fy.addClickListener(new SettingsSubpageFrameRefreshClickHandler(this));
         this.fE = new IconButtonComponent("newsettings", 0.9);
-        this.fE.r(new SettingsSubpageFrameCollapseClickHandler(this));
+        this.fE.addClickListener(new SettingsSubpageFrameCollapseClickHandler(this));
         this.fP = new FrameToolbarComponent(this, string, string2);
         this.Y(this.fP);
         if (bl) {
-            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().C(new FrameToolbarEntry(this.fy, false));
+            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().addEntry(new FrameToolbarEntry(this.fy, false));
         }
         if (bl2) {
-            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().Q(this.fE);
-            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().w$src$Lgg_vape_ui_click_component_SquareIconButtonComp$1a3t2u0().r(this::p);
+            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().addAction(this.fE);
+            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().getCloseButton().addClickListener(this::p);
         }
-        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().r$src$Lgg_vape_ui_click_component_IconButtonComponent_$86hdsq().r(this::K$src$V$qg5iru);
+        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().getNavigationButton().addClickListener(this::K$src$V$qg5iru);
     }
 
     public FrameToolbarComponent i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6() {
@@ -104,12 +104,12 @@ implements CollapsibleFrame {
 
     public void K$src$V$qg5iru() {
         if (this.f8 != null) {
-            ClientSettings.K(this.f8);
+            ClientSettings.removePopup(this.f8);
             this.f8 = null;
             ArrayList arrayList = new ArrayList();
             this.fv.forEach(arg_0 -> SettingsSubpageFrame.lambda$onSettingsBack$0(arrayList, arg_0));
             if (arrayList.size() == 1 && arrayList.get(0) instanceof SettingsSectionComponent) {
-                this.fP.h();
+                this.fP.restoreDefaultNavigation();
                 this.W();
             }
         } else if (this.fu != null) {
@@ -118,9 +118,9 @@ implements CollapsibleFrame {
     }
 
     private void D(GuiComponent guiComponent, double d) {
-        guiComponent.P(true);
+        guiComponent.setUseExplicitWidth(true);
         guiComponent.o(d);
-        guiComponent.q(d);
+        guiComponent.setExplicitWidth(d);
         for (GuiComponent guiComponent2 : guiComponent.f()) {
             this.D(guiComponent2, d);
         }
@@ -150,7 +150,7 @@ implements CollapsibleFrame {
 
     public SettingsSectionComponent s(String string, GuiComponent ... guiComponentArray) {
         SettingsSectionComponent settingsSectionComponent = new SettingsSectionComponent(string, 0.9, guiComponentArray);
-        settingsSectionComponent.r(new SettingsSectionPopupOpenClickHandler(this, settingsSectionComponent));
+        settingsSectionComponent.addClickListener(new SettingsSectionPopupOpenClickHandler(this, settingsSectionComponent));
         return settingsSectionComponent;
     }
 
@@ -165,7 +165,7 @@ implements CollapsibleFrame {
     @Override
     public void l$src$V$1mibm4x() {
         super.H(true);
-        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().D$src$V$1njh5lz();
+        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().updateLayout();
     }
 
     @Override
@@ -189,11 +189,11 @@ implements CollapsibleFrame {
 
     public void p() {
         if (this.fu == null) {
-            this.fP.s(true);
+            this.fP.showSettingsNavigation(true);
             try {
                 double d = this.A();
                 this.fh = new PanelComponent(d, this.L() - this.fP.L());
-                this.fu = ClientSettings.g(this, this.fh, CenteredPopupFrame.class);
+                this.fu = ClientSettings.createPopup(this, this.fh, CenteredPopupFrame.class);
                 this.fu.n(18.0);
                 this.fu.o(d);
                 this.fh.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
@@ -202,10 +202,10 @@ implements CollapsibleFrame {
                 this.fh.h(new SpacerComponent(0.0, 0.5), new Object[0]);
                 ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
                 for (GuiComponent guiComponent : this.fv) {
-                    this.fh.H(guiComponent);
-                    guiComponent.T(SettingsSubpageFrame.J.r);
-                    if (guiComponent.r$src$Lgg_vape_value_Value_$fdf20y() != null && guiComponent.r$src$Lgg_vape_value_Value_$fdf20y().getParent() != null) {
-                        guiComponent.T(SettingsSubpageFrame.J.r);
+                    this.fh.addChildren(guiComponent);
+                    guiComponent.setDisabledOverlayColor(SettingsSubpageFrame.J.r);
+                    if (guiComponent.getBoundValue() != null && guiComponent.getBoundValue().getParent() != null) {
+                        guiComponent.setDisabledOverlayColor(SettingsSubpageFrame.J.r);
                     }
                     this.D(guiComponent, d);
                     if (!guiComponent.V$src$Z$1xhop3l()) continue;
@@ -214,17 +214,17 @@ implements CollapsibleFrame {
                 this.fu.l$src$V$1mibm4x();
                 if (arrayList.size() == 1 && arrayList.get(0) instanceof SettingsSectionComponent) {
                     SettingsSectionComponent settingsSectionComponent = (SettingsSectionComponent)arrayList.get(0);
-                    settingsSectionComponent.P$src$V$q7uwbv();
+                    settingsSectionComponent.dispatchPrimaryClick();
                 }
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         } else {
-            this.fP.h();
+            this.fP.restoreDefaultNavigation();
             this.W();
             if (this.f8 != null) {
-                ClientSettings.K(this.f8);
+                ClientSettings.removePopup(this.f8);
                 this.f8 = null;
             }
         }
@@ -233,8 +233,7 @@ implements CollapsibleFrame {
     public void J(String string, boolean bl) {
         for (GuiComponent guiComponent : this.X(new ArrayList<GuiComponent>(Arrays.asList(this)), 0)) {
             if (!(guiComponent instanceof SettingsSectionComponent) || !((SettingsSectionComponent)guiComponent).A$src$Ljava_lang_String_$9tmd4u().equals(string)) continue;
-            guiComponent.Z(bl);
+            guiComponent.setVisible(bl);
         }
     }
 }
-

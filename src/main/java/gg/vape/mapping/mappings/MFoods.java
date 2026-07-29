@@ -374,7 +374,7 @@ extends Mapping {
         String string56 = "TROPICAL_FISH";
         MFoods mFoods56 = this;
         this.y = this.u(string56, bl56, clazz56);
-        GuiComponent.D(new GuiComponent[5]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 
     public Object C() {

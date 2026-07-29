@@ -40,11 +40,11 @@ extends Mod {
     private World lastWorld;
     private BedTargetRenderState selectedTarget;
     private static final long MODULE_ID = -5914606721811702784L;
-    private List<BedTargetRenderPosition> targets = new CopyOnWriteArrayList<BedTargetRenderPosition>();
-    private HashMap<BedTargetRenderPosition, BedTargetRenderState> renderStates = new HashMap();
+    private final List<BedTargetRenderPosition> targets = new CopyOnWriteArrayList<BedTargetRenderPosition>();
+    private final HashMap<BedTargetRenderPosition, BedTargetRenderState> renderStates = new HashMap();
 
     @Override
-    public void q() {
+    public void onScheduledAction() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         WorldClient worldClient = Minecraft.theWorld();
         if (worldClient.isNull() || !worldClient.equals(this.lastWorld)) {
@@ -59,7 +59,7 @@ extends Mod {
                     for (int step = 0; step < 20; ++step) {
                         for (BedTargetRenderPosition bedTargetRenderPosition : this.targets) {
                             if (!this.renderStates.containsKey(bedTargetRenderPosition)) continue;
-                            BedTargetRenderState.H(this.renderStates.get(bedTargetRenderPosition));
+                            this.renderStates.get(bedTargetRenderPosition).updateVisibilityAnimation();
                         }
                         if (entityPlayerSP.isNull() || worldClient.isNull()) {
                             return;
@@ -91,14 +91,13 @@ extends Mod {
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {
         WorldClient worldClient = Minecraft.theWorld();
-        ArrayList<BedTargetRenderState> arrayList = new ArrayList<BedTargetRenderState>();
-        Vec3 vec3 = Minecraft.F().O(1.0f);
+        ArrayList<BedTargetRenderState> activeRenderStates = new ArrayList<BedTargetRenderState>();
         for (BedTargetRenderPosition bedTargetRenderPosition : this.targets) {
             boolean isHead;
             int blockZ;
             int blockY;
-            int blockX = bedTargetRenderPosition.N();
-            Block block = worldClient.getBlockByPos(blockX, blockY = bedTargetRenderPosition.h(), blockZ = bedTargetRenderPosition.D$src$I$nuyd86());
+            int blockX = bedTargetRenderPosition.getBlockX();
+            Block block = worldClient.getBlockByPos(blockX, blockY = bedTargetRenderPosition.getBlockY(), blockZ = bedTargetRenderPosition.getBlockZ());
             int blockId = Block.R(block);
             BlockBed blockBed = new BlockBed(block);
             if (blockId != 26 && !block.U().matches("block.minecraft.(.+_bed)") || (isHead = blockBed.f(worldClient, blockX, blockY, blockZ))) continue;
@@ -109,40 +108,40 @@ extends Mod {
                 renderState = new BedTargetRenderState(bedTargetRenderPosition);
                 this.renderStates.put(bedTargetRenderPosition, renderState);
             }
-            renderState.h();
-            arrayList.add(renderState);
+            renderState.updateProjectedBounds();
+            activeRenderStates.add(renderState);
         }
-        OpenGlBackendHolder.d.m();
+        OpenGlBackendHolder.backend.pushMatrix();
         GuiRenderPrimitives.Y();
         RenderUtils.g();
-        OpenGlBackendHolder.d.m();
-        OpenGlBackendHolder.d.H(0.5f, 0.5f, 0.5f);
+        OpenGlBackendHolder.backend.pushMatrix();
+        OpenGlBackendHolder.backend.scale(0.5f, 0.5f, 0.5f);
         double reticleSize = 20.0;
         RectData rectData = new RectData((double)(Minecraft.J() / 2) - reticleSize / 2.0, (double)(Minecraft.h() / 2) - reticleSize / 2.0, reticleSize, reticleSize);
-        for (BedTargetRenderState bedTargetRenderState : arrayList) {
-            bedTargetRenderState.j(rectData, this.selectedTarget == bedTargetRenderState, Minecraft.playerController().c());
+        for (BedTargetRenderState bedTargetRenderState : activeRenderStates) {
+            bedTargetRenderState.renderIndicator(rectData, this.selectedTarget == bedTargetRenderState, Minecraft.playerController().c());
         }
         BedTargetRenderState selectedState = null;
-        for (BedTargetRenderState candidateState : arrayList) {
-            if (!BedTargetRenderState.f(candidateState)) continue;
+        for (BedTargetRenderState candidateState : activeRenderStates) {
+            if (!candidateState.isInsideReticle()) continue;
             selectedState = candidateState;
         }
-        this.setSelectedTarget(selectedState);
-        OpenGlBackendHolder.d.F();
+        this.selectedTarget = selectedState;
+        OpenGlBackendHolder.backend.popMatrix();
         RenderUtils.f();
         GuiRenderPrimitives.D();
-        OpenGlBackendHolder.d.F();
+        OpenGlBackendHolder.backend.popMatrix();
     }
 
     @EventHandler
     public void onBedBreakerUpdate(EventBedBreakerUpdate eventBedBreakerUpdate) {
         if (this.selectedTarget == null) {
-            SharedModuleControlClaims.a.Q();
+            SharedModuleControlClaims.mouseOverUpdate.clearClaimed();
             return;
         }
-        int blockX = this.selectedTarget.q().N();
-        int blockY = this.selectedTarget.q().h();
-        int blockZ = this.selectedTarget.q().D$src$I$nuyd86();
+        int blockX = this.selectedTarget.getTargetPosition().getBlockX();
+        int blockY = this.selectedTarget.getTargetPosition().getBlockY();
+        int blockZ = this.selectedTarget.getTargetPosition().getBlockZ();
         BlockPos blockPos = BlockPos.create(blockX, blockY, blockZ);
         AxisAlignedBB axisAlignedBB = AxisAlignedBB.create(blockX, blockY, blockZ, blockX + 1, blockY + 1, blockZ + 1);
         EnumFacing enumFacing = null;
@@ -166,21 +165,16 @@ extends Mod {
                 enumFacing = enumFacing2;
             }
         }
-        this.selectedTarget.D(vec3d);
+        this.selectedTarget.setObstructionPoint(vec3d);
         Vec3 vec3 = Minecraft.F().O(1.0f);
         double eyeDist = vec3.distanceTo(vec3d.n());
         if (eyeDist < 4.5) {
             RayTraceResult rayTraceResult = RayTraceResult.create(RayTraceResult_type.block(), vec3d.n(), enumFacing, blockPos);
             Minecraft.O(rayTraceResult);
-            SharedModuleControlClaims.a.M(true);
+            SharedModuleControlClaims.mouseOverUpdate.setClaimed(true);
         } else {
-            SharedModuleControlClaims.a.Q();
+            SharedModuleControlClaims.mouseOverUpdate.clearClaimed();
         }
-    }
-
-
-    public void setSelectedTarget(BedTargetRenderState bedTargetRenderState) {
-        this.selectedTarget = bedTargetRenderState;
     }
 
     @Override

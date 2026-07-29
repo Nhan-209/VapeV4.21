@@ -6,23 +6,21 @@ import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameHeaderComponent;
 
 class HudModuleConfigFrameHeaderCloseClickHandler
 implements GuiClickListener {
-    final HudModuleConfigFrame p;
-    final HudModuleConfigFrameHeaderComponent t;
+    private final HudModuleConfigFrame configFrame;
 
     @Override
-    public void P() {
-        if (this.p.L$src$I$jm6ud8() == 3 || this.p.L$src$I$jm6ud8() == 4) {
+    public void onPrimaryClick() {
+        if (this.configFrame.isClosing()) {
             return;
         }
-        if (this.p.V$src$Z$1xhop3l()) {
-            this.p.R(3);
-            this.p.U();
+        if (this.configFrame.V$src$Z$1xhop3l()) {
+            this.configFrame.beginClosing();
+            this.configFrame.U();
         }
     }
 
     HudModuleConfigFrameHeaderCloseClickHandler(HudModuleConfigFrameHeaderComponent hudModuleConfigFrameHeaderComponent, HudModuleConfigFrame hudModuleConfigFrame) {
-        this.t = hudModuleConfigFrameHeaderComponent;
-        this.p = hudModuleConfigFrame;
+        this.configFrame = hudModuleConfigFrame;
     }
 
 }

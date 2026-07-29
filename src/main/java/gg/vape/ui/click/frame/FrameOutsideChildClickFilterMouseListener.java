@@ -20,7 +20,7 @@ implements GuiMouseListener {
 
     @Override
     public boolean Q(Point point) {
-        if (this.I.Q().R(point) && !this.G.Q().R(point)) {
+        if (this.I.getBounds().R(point) && !this.G.getBounds().R(point)) {
             return true;
         }
         return GuiMouseListener.super.Q(point);

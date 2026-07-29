@@ -23,230 +23,230 @@ import java.util.List;
 
 public class RandomRangeSliderComponent
 extends SliderComponentBase {
-    private int L7;
-    private RandomValue LA;
-    private final RandomRangeSliderInputHandle v;
-    private double Lk;
-    private double O;
-    private final double LZ;
-    private final RandomRangeSliderInputHandle K;
-    private DoubleAnimation a = new DoubleAnimation(0.0, 0.0, 0.0);
-    private double LI = -1.0;
-    private RectData Lw;
-    double LD;
-    private DoubleAnimation L9 = new DoubleAnimation(0.0, 0.0, 0.0);
-    private final Color LQ;
-    private double LM;
-    private double Lr;
-    private RectData Le;
-    private final DoubleAnimation L0 = new DoubleAnimation(0.15, 8.0, 9.0);
-    private final double R = 0.75;
-    private double LN = -1.0;
-    private int Lz;
-    private final double LG;
-    private final DoubleAnimation LP = new DoubleAnimation(0.15, 8.0, 9.0);
-    private double L2;
+    private int draggedEndpoint;
+    private RandomValue randomValue;
+    private final RandomRangeSliderInputHandle minimumInputHandle;
+    private double initialMinimumValue;
+    private double initialMaximumValue;
+    private final double valuePerPercent;
+    private final RandomRangeSliderInputHandle maximumInputHandle;
+    private DoubleAnimation minimumHandlePositionAnimation = new DoubleAnimation(0.0, 0.0, 0.0);
+    private double lastMaximumValue = -1.0;
+    private RectData minimumHandleBounds;
+    double wrappedLabelHeight;
+    private DoubleAnimation maximumHandlePositionAnimation = new DoubleAnimation(0.0, 0.0, 0.0);
+    private final Color labelColor;
+    private double minimum;
+    private double maximum;
+    private RectData maximumHandleBounds;
+    private final DoubleAnimation minimumHandleHoverAnimation = new DoubleAnimation(0.15, 8.0, 9.0);
+    private final double fontScale = 0.75;
+    private double lastMinimumValue = -1.0;
+    private int hoveredEndpoint;
+    private final double multilineLabelHeight;
+    private final DoubleAnimation maximumHandleHoverAnimation = new DoubleAnimation(0.15, 8.0, 9.0);
+    private double step;
 
-    public double g$src$D$bccmqt() {
-        return this.O;
+    public double getInitialMaximumValue() {
+        return this.initialMaximumValue;
     }
 
     @Override
-    public void q(double d) {
-        if (this.A() == d) {
+    public void setExplicitWidth(double width) {
+        if (this.A() == width) {
             return;
         }
-        super.q(d);
-        this.C(true);
+        super.setExplicitWidth(width);
+        this.updateHandleAnimations(true);
     }
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
-        double d = this.Le.o() - this.Lw.o();
-        double d2 = this.Lw.o() - this.G$src$D$1b2f02a() + d / 2.0;
-        RectData rectData = new RectData(this.G$src$D$1b2f02a(), this.Lw.W(), d2, this.Lw.R());
-        RectData rectData2 = new RectData(this.Le.o() - d / 2.0, this.Le.W(), this.A() - d2, this.Le.R());
-        if (rectData.J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
-            this.L7 = 1;
-        } else if (rectData2.J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
-            this.L7 = 2;
+    public void g(GuiMouseEvent mouseEvent) {
+        double handleSeparation = this.maximumHandleBounds.o() - this.minimumHandleBounds.o();
+        double minimumInteractionWidth = this.minimumHandleBounds.o() - this.G$src$D$1b2f02a() + handleSeparation / 2.0;
+        RectData minimumInteractionBounds = new RectData(this.G$src$D$1b2f02a(), this.minimumHandleBounds.W(), minimumInteractionWidth, this.minimumHandleBounds.R());
+        RectData maximumInteractionBounds = new RectData(this.maximumHandleBounds.o() - handleSeparation / 2.0, this.maximumHandleBounds.W(), this.A() - minimumInteractionWidth, this.maximumHandleBounds.R());
+        if (minimumInteractionBounds.J(mouseEvent.getX(), mouseEvent.getY())) {
+            this.draggedEndpoint = 1;
+        } else if (maximumInteractionBounds.J(mouseEvent.getX(), mouseEvent.getY())) {
+            this.draggedEndpoint = 2;
         }
-        if (this.L7 != 0) {
-            this.o = RenderUtils.h();
+        if (this.draggedEndpoint != 0) {
+            this.dragStartMousePosition = RenderUtils.h();
         }
     }
 
-    public void M(double d) {
-        this.Lk = d;
+    public void setInitialMinimumValue(double initialMinimumValue) {
+        this.initialMinimumValue = initialMinimumValue;
     }
 
     @Override
     public void u() {
-        switch (this.Lz) {
+        switch (this.hoveredEndpoint) {
             case 1: {
                 MousePosition mousePosition = RenderUtils.h();
-                if (this.Lw.Z(mousePosition)) break;
-                this.Lz = 0;
-                this.L0.J();
+                if (this.minimumHandleBounds.Z(mousePosition)) break;
+                this.hoveredEndpoint = 0;
+                this.minimumHandleHoverAnimation.J();
                 break;
             }
             case 2: {
                 MousePosition mousePosition = RenderUtils.h();
-                if (this.Le.Z(mousePosition)) break;
-                this.Lz = 0;
-                this.LP.J();
+                if (this.maximumHandleBounds.Z(mousePosition)) break;
+                this.hoveredEndpoint = 0;
+                this.maximumHandleHoverAnimation.J();
             }
         }
     }
 
-    public RandomRangeSliderComponent(String string, double d, double d2, double d3) {
-        this(string, d, d2, d3, 1.0, 1.0);
+    public RandomRangeSliderComponent(String label, double minimum, double maximum, double step) {
+        this(label, minimum, maximum, step, 1.0, 1.0);
     }
 
-    public double w$src$D$bl5c8l() {
-        return this.L2;
+    public double getStep() {
+        return this.step;
     }
 
-    private void C(boolean bl) {
-        float f = (float)this.L0.getEndValue();
-        double d = this.A() - (this.Z$src$D$1wvori2() + 5.0);
-        double d2 = (this.LA.q$src$D$vgz097() - this.LM) / (this.Lr - this.LM);
-        double d3 = 1.0 - (this.LA.M() - this.LM) / (this.Lr - this.LM);
-        if (d2 > 1.0) {
-            d2 = 1.0;
-        } else if (d2 < 0.0) {
-            d2 = 0.0;
+    private void updateHandleAnimations(boolean immediate) {
+        float handleSize = (float)this.minimumHandleHoverAnimation.getEndValue();
+        double trackWidth = this.A() - (this.getHorizontalInset() + 5.0);
+        double minimumRatio = (this.randomValue.getMinimumValue() - this.minimum) / (this.maximum - this.minimum);
+        double maximumRemainingRatio = 1.0 - (this.randomValue.getMaximumValue() - this.minimum) / (this.maximum - this.minimum);
+        if (minimumRatio > 1.0) {
+            minimumRatio = 1.0;
+        } else if (minimumRatio < 0.0) {
+            minimumRatio = 0.0;
         }
-        if (d3 > 1.0) {
-            d3 = 1.0;
-        } else if (d3 < 0.0) {
-            d3 = 0.0;
+        if (maximumRemainingRatio > 1.0) {
+            maximumRemainingRatio = 1.0;
+        } else if (maximumRemainingRatio < 0.0) {
+            maximumRemainingRatio = 0.0;
         }
-        double d4 = 1.0 - (d2 + d3);
-        double d5 = d2 * (d - (double)f - 5.0) + this.Z$src$D$1wvori2() + (double)(f / 2.0f);
-        double d6 = d5 + 5.0 + d4 * (d - (double)f - 5.0);
-        double d7 = this.a.getInterpolatedValue();
-        double d8 = this.L9.getInterpolatedValue();
-        this.a = new DoubleAnimation(0.05, d7, d5);
-        this.a.c();
-        this.L9 = new DoubleAnimation(0.05, d8, d6);
-        this.L9.c();
-        if (bl) {
-            this.a.C();
-            this.L9.C();
+        double selectedRangeRatio = 1.0 - (minimumRatio + maximumRemainingRatio);
+        double minimumTargetX = minimumRatio * (trackWidth - (double)handleSize - 5.0) + this.getHorizontalInset() + (double)(handleSize / 2.0f);
+        double maximumTargetX = minimumTargetX + 5.0 + selectedRangeRatio * (trackWidth - (double)handleSize - 5.0);
+        double currentMinimumX = this.minimumHandlePositionAnimation.getInterpolatedValue();
+        double currentMaximumX = this.maximumHandlePositionAnimation.getInterpolatedValue();
+        this.minimumHandlePositionAnimation = new DoubleAnimation(0.05, currentMinimumX, minimumTargetX);
+        this.minimumHandlePositionAnimation.c();
+        this.maximumHandlePositionAnimation = new DoubleAnimation(0.05, currentMaximumX, maximumTargetX);
+        this.maximumHandlePositionAnimation.c();
+        if (immediate) {
+            this.minimumHandlePositionAnimation.C();
+            this.maximumHandlePositionAnimation.C();
         }
     }
 
-    private void Y$src$V$b4niv9() {
-        if (this.L7 != 0) {
-            if (!MouseInput.I(MouseButton.LEFT_CLICK.ordinal())) {
-                this.L7 = 0;
+    private void updateDraggingValue() {
+        if (this.draggedEndpoint != 0) {
+            if (!MouseInput.isButtonDown(MouseButton.LEFT_CLICK.ordinal())) {
+                this.draggedEndpoint = 0;
                 return;
             }
-            double d = this.A() - (10.0 + this.Z$src$D$1wvori2()) - this.Lw.e() - this.Le.e();
-            double d2 = (double)this.o.O - this.G$src$D$1b2f02a() + this.P$src$D$34o7qt() - this.Z$src$D$1wvori2();
-            if (this.L7 == 2) {
-                d2 -= 12.0;
+            double trackWidth = this.A() - (10.0 + this.getHorizontalInset()) - this.minimumHandleBounds.e() - this.maximumHandleBounds.e();
+            double trackOffset = (double)this.dragStartMousePosition.O - this.G$src$D$1b2f02a() + this.getMouseDeltaX() - this.getHorizontalInset();
+            if (this.draggedEndpoint == 2) {
+                trackOffset -= 12.0;
             }
-            if (this.L7 == 1) {
-                d2 -= 2.0;
+            if (this.draggedEndpoint == 1) {
+                trackOffset -= 2.0;
             }
-            double d3 = this.Y(this.LM, this.Lr, d, this.L2, this.LZ, d2);
-            double d4 = this.L2;
-            int n = 0;
-            while (d4 % 1.0 != 0.0) {
-                ++n;
-                d4 *= 10.0;
+            double updatedValue = this.snapValueFromTrackOffset(this.minimum, this.maximum, trackWidth, this.step, this.valuePerPercent, trackOffset);
+            double scaledStep = this.step;
+            int decimalPlaces = 0;
+            while (scaledStep % 1.0 != 0.0) {
+                ++decimalPlaces;
+                scaledStep *= 10.0;
             }
-            d3 = new BigDecimal("" + d3).setScale(n, RoundingMode.HALF_UP).doubleValue();
-            if (d3 < this.LM) {
-                d3 = this.LM;
-            } else if (d3 > this.Lr) {
-                d3 = this.Lr;
+            updatedValue = new BigDecimal("" + updatedValue).setScale(decimalPlaces, RoundingMode.HALF_UP).doubleValue();
+            if (updatedValue < this.minimum) {
+                updatedValue = this.minimum;
+            } else if (updatedValue > this.maximum) {
+                updatedValue = this.maximum;
             }
-            if (this.L7 == 1) {
-                if (d3 == this.LN) {
+            if (this.draggedEndpoint == 1) {
+                if (updatedValue == this.lastMinimumValue) {
                     return;
                 }
-                this.LA.u(d3);
+                this.randomValue.setClampedMinimumValue(updatedValue);
             } else {
-                if (d3 == this.LI) {
+                if (updatedValue == this.lastMaximumValue) {
                     return;
                 }
-                this.LA.q(d3);
+                this.randomValue.setClampedMaximumValue(updatedValue);
             }
-            this.LN = this.LA.q$src$D$vgz097();
-            this.LI = this.LA.M();
+            this.lastMinimumValue = this.randomValue.getMinimumValue();
+            this.lastMaximumValue = this.randomValue.getMaximumValue();
         }
     }
 
     public RandomRangeSliderComponent(RandomValue randomValue) {
-        this(randomValue.getName(), randomValue.O$src$D$uya02x(), randomValue.g$src$D$vbh2bl(), randomValue.Q$src$D$uzdl9n(), randomValue.q$src$D$vgz097(), randomValue.M());
-        this.LA = randomValue;
-        this.C(randomValue);
-        randomValue.B(this::lambda$new$0);
-        this.C(true);
+        this(randomValue.getName(), randomValue.getAllowedMinimum(), randomValue.getAllowedMaximum(), randomValue.getIncrement(), randomValue.getMinimumValue(), randomValue.getMaximumValue());
+        this.randomValue = randomValue;
+        this.bindValue(randomValue);
+        randomValue.addChangeListener(this::handleValueChanged);
+        this.updateHandleAnimations(true);
     }
 
-    public void N(double d) {
-        this.Lr = d;
+    public void setMaximum(double maximum) {
+        this.maximum = maximum;
     }
 
-    private List<String> Y$src$Ljava_util_List_$1h7ga6i() {
-        SmoothFontRenderer smoothFontRenderer = this.O(0.75);
-        String string = Vape.INSTANCE.getFontSelector().W().s(this.W$src$Ljava_lang_String_$24bvf0());
-        String[] stringArray = string.split(" ");
-        double d = this.v.G$src$D$1b2f02a() - this.G$src$D$1b2f02a();
-        ArrayList<String> arrayList = new ArrayList<String>();
-        double d2 = 0.0;
-        String string2 = "";
-        for (String string3 : stringArray) {
-            double d3 = d2 + smoothFontRenderer.N(string3 + " ");
-            if (d3 > d) {
-                d2 = 0.0;
-                arrayList.add(string2);
-                string2 = string3 + " ";
+    private List<String> getWrappedLabelLines() {
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(this.fontScale);
+        String sanitizedLabel = Vape.INSTANCE.getFontSelector().W().s(this.getLabel());
+        String[] labelWords = sanitizedLabel.split(" ");
+        double availableWidth = this.minimumInputHandle.G$src$D$1b2f02a() - this.G$src$D$1b2f02a();
+        ArrayList<String> lines = new ArrayList<String>();
+        double currentLineWidth = 0.0;
+        String currentLine = "";
+        for (String word : labelWords) {
+            double appendedLineWidth = currentLineWidth + fontRenderer.N(word + " ");
+            if (appendedLineWidth > availableWidth) {
+                currentLineWidth = 0.0;
+                lines.add(currentLine);
+                currentLine = word + " ";
                 continue;
             }
-            d2 = d3;
-            string2 = string2 + string3 + " ";
+            currentLineWidth = appendedLineWidth;
+            currentLine = currentLine + word + " ";
         }
-        arrayList.add(string2);
-        return arrayList;
+        lines.add(currentLine);
+        return lines;
     }
 
-    public void E(double d) {
-        this.L2 = d;
+    public void setStep(double step) {
+        this.step = step;
     }
 
 
-    private void lambda$new$0(RandomValue randomValue) {
-        this.C(false);
+    private void handleValueChanged(RandomValue changedValue) {
+        this.updateHandleAnimations(false);
     }
 
-    public RandomRangeSliderComponent(String string, double d, double d2, double d3, double d4, double d5) {
-        super(string);
-        this.Lw = new RectData(0.0, 0.0, 0.0, 0.0);
-        this.Le = new RectData(0.0, 0.0, 0.0, 0.0);
-        this.LQ = RandomRangeSliderComponent.J.Z;
-        this.LM = d;
-        this.Lr = d2;
-        this.L2 = d3;
-        this.LZ = (d2 - d) / 100.0;
-        this.LG = (double)(string.split("\n").length - 1) * this.A$src$Lgg_vape_ui_font_SmoothFontRenderer_$jrhwp3().d(string) + 5.0;
-        if (d4 == 1.0 && d5 == 1.0) {
-            this.k();
+    public RandomRangeSliderComponent(String label, double minimum, double maximum, double step, double initialMinimumValue, double initialMaximumValue) {
+        super(label);
+        this.minimumHandleBounds = new RectData(0.0, 0.0, 0.0, 0.0);
+        this.maximumHandleBounds = new RectData(0.0, 0.0, 0.0, 0.0);
+        this.labelColor = RandomRangeSliderComponent.J.Z;
+        this.minimum = minimum;
+        this.maximum = maximum;
+        this.step = step;
+        this.valuePerPercent = (maximum - minimum) / 100.0;
+        this.multilineLabelHeight = (double)(label.split("\n").length - 1) * this.getDefaultFontRenderer().d(label) + 5.0;
+        if (initialMinimumValue == 1.0 && initialMaximumValue == 1.0) {
+            this.initializeDefaultRange();
         } else {
-            this.Lk = d4;
-            this.O = d5;
+            this.initialMinimumValue = initialMinimumValue;
+            this.initialMaximumValue = initialMaximumValue;
         }
-        this.v = new RandomRangeSliderInputHandle(this, RangeEndpoint.MINIMUM);
-        this.K = new RandomRangeSliderInputHandle(this, RangeEndpoint.MAXIMUM);
-        this.H(this.v, this.K);
+        this.minimumInputHandle = new RandomRangeSliderInputHandle(this, RangeEndpoint.MINIMUM);
+        this.maximumInputHandle = new RandomRangeSliderInputHandle(this, RangeEndpoint.MAXIMUM);
+        this.addChildren(this.minimumInputHandle, this.maximumInputHandle);
     }
 
-    public RandomValue W() {
-        return this.LA;
+    public RandomValue getRandomValue() {
+        return this.randomValue;
     }
 
     @Override
@@ -254,115 +254,115 @@ extends SliderComponentBase {
         return 110.0;
     }
 
-    public void i(double d) {
-        this.LM = d;
+    public void setMinimum(double minimum) {
+        this.minimum = minimum;
     }
 
     @Override
     public double C() {
-        return 20.0 + this.LG + this.LD;
+        return 20.0 + this.multilineLabelHeight + this.wrappedLabelHeight;
     }
 
     @Override
     public void H() {
-        double d;
-        double d2;
-        this.Y$src$V$b4niv9();
+        double handleGrowth;
+        double drawableSegmentWidth;
+        this.updateDraggingValue();
         this.onDisable();
-        SmoothFontRenderer smoothFontRenderer = this.O(0.75);
-        double d3 = smoothFontRenderer.d(this.W$src$Ljava_lang_String_$24bvf0());
-        double d4 = this.n() + 12.5 + (double)((float)d3);
-        double d5 = this.n() + 5.0;
-        this.L$src$V$axi75k();
-        double d6 = (double)(this.W$src$Ljava_lang_String_$24bvf0().split("\n").length - 1) * (smoothFontRenderer.d(this.W$src$Ljava_lang_String_$24bvf0()) + 3.0);
-        d4 += d6;
-        this.K.K(this.G$src$D$1b2f02a() + this.A() - 5.0 - this.K.A());
-        this.K.S(d5 += d6);
-        ImageRenderer.drawResWithShadow(RandomRangeSliderComponent.J.K, (int)(this.G$src$D$1b2f02a() + this.A() - 5.0 - this.K.A() - 8.0), (int)d5, "newrangeindicator", 0.1f, false);
-        this.v.K(this.G$src$D$1b2f02a() + this.A() - 10.0 - this.v.A() - this.K.A() - 8.0);
-        this.v.S(d5);
-        this.Lw = this.L(this.G$src$D$1b2f02a() + this.a.getInterpolatedValue(), (d4 += this.LD / 2.0) + 0.5, this.L0.getInterpolatedValue() / 2.0);
-        this.Le = this.L(this.G$src$D$1b2f02a() + this.L9.getInterpolatedValue(), d4 + 0.5, this.LP.getInterpolatedValue() / 2.0);
-        this.Lw.A(this.Lw.e() / 2.0);
-        this.Le.A(this.Le.e() / 2.0);
-        this.Le.M(this.Le.o() + this.Le.e());
-        double d7 = this.Lw.o() - this.G$src$D$1b2f02a() - this.Z$src$D$1wvori2();
-        double d8 = this.Le.o() - this.Lw.o();
-        double d9 = this.G$src$D$1b2f02a() + this.A() - this.Le.o() - 5.0;
-        double d10 = d4 + 0.5 - 1.0;
-        if (d7 - 0.5 >= 2.0) {
-            GuiRenderPrimitives.j(this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2(), d10, d7 - 0.5, 2.0, RandomRangeSliderComponent.J.l);
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(this.fontScale);
+        double labelHeight = fontRenderer.d(this.getLabel());
+        double trackCenterY = this.n() + 12.5 + (double)((float)labelHeight);
+        double inputY = this.n() + 5.0;
+        this.renderLabel();
+        double explicitLineBreakOffset = (double)(this.getLabel().split("\n").length - 1) * (fontRenderer.d(this.getLabel()) + 3.0);
+        trackCenterY += explicitLineBreakOffset;
+        this.maximumInputHandle.K(this.G$src$D$1b2f02a() + this.A() - 5.0 - this.maximumInputHandle.A());
+        this.maximumInputHandle.S(inputY += explicitLineBreakOffset);
+        ImageRenderer.drawResWithShadow(RandomRangeSliderComponent.J.K, (int)(this.G$src$D$1b2f02a() + this.A() - 5.0 - this.maximumInputHandle.A() - 8.0), (int)inputY, "newrangeindicator", 0.1f, false);
+        this.minimumInputHandle.K(this.G$src$D$1b2f02a() + this.A() - 10.0 - this.minimumInputHandle.A() - this.maximumInputHandle.A() - 8.0);
+        this.minimumInputHandle.S(inputY);
+        this.minimumHandleBounds = this.createHandleBounds(this.G$src$D$1b2f02a() + this.minimumHandlePositionAnimation.getInterpolatedValue(), (trackCenterY += this.wrappedLabelHeight / 2.0) + 0.5, this.minimumHandleHoverAnimation.getInterpolatedValue() / 2.0);
+        this.maximumHandleBounds = this.createHandleBounds(this.G$src$D$1b2f02a() + this.maximumHandlePositionAnimation.getInterpolatedValue(), trackCenterY + 0.5, this.maximumHandleHoverAnimation.getInterpolatedValue() / 2.0);
+        this.minimumHandleBounds.A(this.minimumHandleBounds.e() / 2.0);
+        this.maximumHandleBounds.A(this.maximumHandleBounds.e() / 2.0);
+        this.maximumHandleBounds.M(this.maximumHandleBounds.o() + this.maximumHandleBounds.e());
+        double trackBeforeMinimumWidth = this.minimumHandleBounds.o() - this.G$src$D$1b2f02a() - this.getHorizontalInset();
+        double selectedTrackWidth = this.maximumHandleBounds.o() - this.minimumHandleBounds.o();
+        double trackAfterMaximumWidth = this.G$src$D$1b2f02a() + this.A() - this.maximumHandleBounds.o() - 5.0;
+        double trackY = trackCenterY + 0.5 - 1.0;
+        if (trackBeforeMinimumWidth - 0.5 >= 2.0) {
+            GuiRenderPrimitives.j(this.G$src$D$1b2f02a() + this.getHorizontalInset(), trackY, trackBeforeMinimumWidth - 0.5, 2.0, RandomRangeSliderComponent.J.l);
         }
-        if (d8 > 0.0 && (d2 = d8 - 0.5 - 5.0 - (d = (this.L0.getInterpolatedValue() - this.L0.getStartValue()) / 2.0)) >= 2.0) {
-            GuiRenderPrimitives.j(this.Lw.o() + 5.0 + d, d10, d2, 2.0, J.z());
+        if (selectedTrackWidth > 0.0 && (drawableSegmentWidth = selectedTrackWidth - 0.5 - 5.0 - (handleGrowth = (this.minimumHandleHoverAnimation.getInterpolatedValue() - this.minimumHandleHoverAnimation.getStartValue()) / 2.0)) >= 2.0) {
+            GuiRenderPrimitives.j(this.minimumHandleBounds.o() + 5.0 + handleGrowth, trackY, drawableSegmentWidth, 2.0, J.z());
         }
-        if (d9 > 0.0 && (d2 = d9 - 5.0 - (d = (this.LP.getInterpolatedValue() - this.LP.getStartValue()) / 2.0)) >= 2.0) {
-            GuiRenderPrimitives.j(this.Le.o() + 6.0 + d, d10, d2, 2.0, RandomRangeSliderComponent.J.l);
+        if (trackAfterMaximumWidth > 0.0 && (drawableSegmentWidth = trackAfterMaximumWidth - 5.0 - (handleGrowth = (this.maximumHandleHoverAnimation.getInterpolatedValue() - this.maximumHandleHoverAnimation.getStartValue()) / 2.0)) >= 2.0) {
+            GuiRenderPrimitives.j(this.maximumHandleBounds.o() + 6.0 + handleGrowth, trackY, drawableSegmentWidth, 2.0, RandomRangeSliderComponent.J.l);
         }
-        GuiRenderPrimitives.F("rangemin", this.Lw.o() + this.Lw.e(), d4 + 0.5, (double)this.L0.getInterpolatedValue(), this.L0.getInterpolatedValue(), J.z());
-        GuiRenderPrimitives.F("rangemax", this.Le.o() + this.Le.e(), d4 + 0.5, (double)this.LP.getInterpolatedValue(), this.LP.getInterpolatedValue(), J.z());
+        GuiRenderPrimitives.F("rangemin", this.minimumHandleBounds.o() + this.minimumHandleBounds.e(), trackCenterY + 0.5, (double)this.minimumHandleHoverAnimation.getInterpolatedValue(), this.minimumHandleHoverAnimation.getInterpolatedValue(), J.z());
+        GuiRenderPrimitives.F("rangemax", this.maximumHandleBounds.o() + this.maximumHandleBounds.e(), trackCenterY + 0.5, (double)this.maximumHandleHoverAnimation.getInterpolatedValue(), this.maximumHandleHoverAnimation.getInterpolatedValue(), J.z());
     }
 
-    public double r$src$D$bied9s() {
-        return this.Lr;
+    public double getMaximum() {
+        return this.maximum;
     }
 
     @Override
     public void F() {
         MousePosition mousePosition = RenderUtils.h();
-        if (this.Lw.Z(mousePosition) && this.Lz != 1) {
-            if (this.Lz == 2) {
-                this.LP.J();
+        if (this.minimumHandleBounds.Z(mousePosition) && this.hoveredEndpoint != 1) {
+            if (this.hoveredEndpoint == 2) {
+                this.maximumHandleHoverAnimation.J();
             }
-            this.Lz = 1;
-            this.L0.J();
-        } else if (this.Le.Z(mousePosition) && this.Lz != 2) {
-            if (this.Lz == 1) {
-                this.L0.J();
+            this.hoveredEndpoint = 1;
+            this.minimumHandleHoverAnimation.J();
+        } else if (this.maximumHandleBounds.Z(mousePosition) && this.hoveredEndpoint != 2) {
+            if (this.hoveredEndpoint == 1) {
+                this.minimumHandleHoverAnimation.J();
             }
-            this.Lz = 2;
-            this.LP.J();
+            this.hoveredEndpoint = 2;
+            this.maximumHandleHoverAnimation.J();
         }
     }
 
-    private void k() {
-        double d;
-        double d2 = (this.Lr + this.LM) / 2.0;
-        this.Lk = d2 - this.LM;
-        this.O = d2 + this.LM;
-        double d3 = this.Lk % this.L2;
-        if (d3 != 0.0) {
-            this.Lk -= d3;
+    private void initializeDefaultRange() {
+        double maximumRemainder;
+        double rangeMidpoint = (this.maximum + this.minimum) / 2.0;
+        this.initialMinimumValue = rangeMidpoint - this.minimum;
+        this.initialMaximumValue = rangeMidpoint + this.minimum;
+        double minimumRemainder = this.initialMinimumValue % this.step;
+        if (minimumRemainder != 0.0) {
+            this.initialMinimumValue -= minimumRemainder;
         }
-        if ((d = this.O % this.L2) != 0.0) {
-            this.O -= d;
+        if ((maximumRemainder = this.initialMaximumValue % this.step) != 0.0) {
+            this.initialMaximumValue -= maximumRemainder;
         }
     }
 
-    public double B$src$D$as08sg() {
-        return this.Lk;
+    public double getInitialMinimumValue() {
+        return this.initialMinimumValue;
     }
 
-    public double d$src$D$bap8yq() {
-        return this.LM;
+    public double getMinimum() {
+        return this.minimum;
     }
 
-    protected void L$src$V$axi75k() {
-        double d = -6.0;
-        SmoothFontRenderer smoothFontRenderer = this.O(0.75);
-        List<String> list = this.Y$src$Ljava_util_List_$1h7ga6i();
-        double d2 = this.n() + 5.0;
-        for (String string : list) {
-            double d3 = smoothFontRenderer.d(string);
-            smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2(), d2, this.LQ);
-            d2 += d3;
-            d += d3;
+    protected void renderLabel() {
+        double accumulatedLabelHeight = -6.0;
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(this.fontScale);
+        List<String> labelLines = this.getWrappedLabelLines();
+        double lineY = this.n() + 5.0;
+        for (String labelLine : labelLines) {
+            double lineHeight = fontRenderer.d(labelLine);
+            fontRenderer.d(labelLine, this.G$src$D$1b2f02a() + this.getHorizontalInset(), lineY, this.labelColor);
+            lineY += lineHeight;
+            accumulatedLabelHeight += lineHeight;
         }
-        this.LD = d;
+        this.wrappedLabelHeight = accumulatedLabelHeight;
     }
 
-    public void h(double d) {
-        this.O = d;
+    public void setInitialMaximumValue(double initialMaximumValue) {
+        this.initialMaximumValue = initialMaximumValue;
     }
 
     @Override

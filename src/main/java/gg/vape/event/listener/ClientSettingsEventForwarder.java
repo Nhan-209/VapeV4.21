@@ -21,10 +21,8 @@ implements EventListener {
             return;
         }
         OnlinePlayerPreviewComponent.b.S(eventPreRenderTick);
-        if (!this.n.P) {
-            RenderUtils.C();
-        }
-        clientSettings.X(eventPreRenderTick);
+        RenderUtils.C();
+        clientSettings.updateGuiScale();
     }
 
     private ClientSettings B() {
@@ -40,7 +38,7 @@ implements EventListener {
         if (clientSettings == null) {
             return;
         }
-        clientSettings.d(eventPreTick);
+        clientSettings.onTick();
     }
 }
 

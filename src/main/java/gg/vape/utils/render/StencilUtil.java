@@ -9,23 +9,23 @@ import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL11;
 
 public final class StencilUtil {
-    private int g = 1;
-    private final HashMap<Integer, Stencil> T = new HashMap();
-    private static final StencilUtil j = new StencilUtil();
-    private boolean A;
+    private int currentLayer = 1;
+    private final HashMap<Integer, Stencil> stencilStatesByLayer = new HashMap();
+    private static final StencilUtil INSTANCE = new StencilUtil();
+    private boolean invertedComparison;
 
-    public void S() {
-        this.e(new Stencil(this, 517, this.g, this.I(), 7680, 7680, 7680));
+    public void configureNotEqualStencilState() {
+        this.applyStencilState(new Stencil(this, 517, this.currentLayer, this.getStencilMask(), 7680, 7680, 7680));
     }
 
-    public void N() {
+    public void reset() {
         GL11.glClearStencil((int)0);
         GL11.glClear((int)1024);
-        this.T.clear();
-        this.g = 1;
+        this.stencilStatesByLayer.clear();
+        this.currentLayer = 1;
     }
 
-    public static void S(Framebuffer framebuffer) {
+    public static void attachStencilBuffer(Framebuffer framebuffer) {
         EXTFramebufferObject.glDeleteRenderbuffersEXT((int)framebuffer.getDepthBuffer());
         int n = EXTFramebufferObject.glGenRenderbuffersEXT();
         EXTFramebufferObject.glBindRenderbufferEXT((int)36161, (int)n);
@@ -34,84 +34,84 @@ public final class StencilUtil {
         EXTFramebufferObject.glFramebufferRenderbufferEXT((int)36160, (int)36096, (int)36161, (int)n);
     }
 
-    public int I() {
-        return (int)(Math.pow(2.0, this.P()) - 1.0);
+    public int getStencilMask() {
+        return (int)(Math.pow(2.0, this.getStencilBitDepth()) - 1.0);
     }
 
-    public static StencilUtil t() {
-        return j;
+    public static StencilUtil getInstance() {
+        return INSTANCE;
     }
 
-    public void Q(double d, double d2, double d3, double d4) {
+    public void drawRectangle(double left, double top, double right, double bottom) {
         GL11.glBegin((int)7);
-        GL11.glVertex2d((double)d, (double)d4);
-        GL11.glVertex2d((double)d3, (double)d4);
-        GL11.glVertex2d((double)d3, (double)d2);
-        GL11.glVertex2d((double)d, (double)d2);
+        GL11.glVertex2d((double)left, (double)bottom);
+        GL11.glVertex2d((double)right, (double)bottom);
+        GL11.glVertex2d((double)right, (double)top);
+        GL11.glVertex2d((double)left, (double)top);
         GL11.glEnd();
     }
 
-    public static void d() {
+    public static void ensureFramebufferStencilBuffer() {
         Framebuffer framebuffer = Minecraft.getFrameBuffer();
         if (framebuffer.isNotNull() && framebuffer.getDepthBuffer() > -1) {
-            StencilUtil.S(framebuffer);
+            StencilUtil.attachStencilBuffer(framebuffer);
             framebuffer.setDepthBuffer(-1);
         }
     }
 
-    public void e(Stencil stencil) {
-        GL11.glStencilFunc((int)Stencil.Y, (int)Stencil.u, (int)Stencil.W);
-        GL11.glStencilOp((int)Stencil.n, (int)Stencil.e, (int)Stencil.a);
-        this.T.put(this.g, stencil);
+    public void applyStencilState(Stencil stencil) {
+        GL11.glStencilFunc((int)Stencil.function, (int)Stencil.referenceValue, (int)Stencil.mask);
+        GL11.glStencilOp((int)Stencil.stencilFailOperation, (int)Stencil.depthFailOperation, (int)Stencil.depthPassOperation);
+        this.stencilStatesByLayer.put(this.currentLayer, stencil);
     }
 
-    public int e() {
-        return this.g;
+    public int getCurrentLayer() {
+        return this.currentLayer;
     }
 
-    public void n() {
-        this.e(new Stencil(this, this.A ? 519 : 512, this.g, this.I(), 7681, 7680, 7680));
+    public void configureLayerIncrement() {
+        this.applyStencilState(new Stencil(this, this.invertedComparison ? 519 : 512, this.currentLayer, this.getStencilMask(), 7681, 7680, 7680));
     }
 
-    public void B(boolean bl) {
-        this.e(new Stencil(this, this.A ? 519 : 512, bl ? this.g : this.g - 1, this.I(), 7681, 7681, 7681));
+    public void configureLayerMask(boolean useCurrentLayer) {
+        this.applyStencilState(new Stencil(this, this.invertedComparison ? 519 : 512, useCurrentLayer ? this.currentLayer : this.currentLayer - 1, this.getStencilMask(), 7681, 7681, 7681));
     }
 
-    public void x(boolean bl) {
-        this.A = bl;
+    public void setInvertedComparison(boolean invertedComparison) {
+        this.invertedComparison = invertedComparison;
     }
 
-    public void R() {
-        this.e(new Stencil(this, 514, this.g, this.I(), 7680, 7680, 7680));
+    public void configureEqualLayerTest() {
+        this.applyStencilState(new Stencil(this, 514, this.currentLayer, this.getStencilMask(), 7680, 7680, 7680));
     }
 
-    public void j() {
-        if (this.g == 1) {
+    public void pushLayer() {
+        if (this.currentLayer == 1) {
             GL11.glClearStencil((int)0);
             GL11.glClear((int)1024);
         }
-        OpenGlBackendHolder.d.l(2960);
-        ++this.g;
-        if (this.g > this.I()) {
+        OpenGlBackendHolder.backend.enableCapability(2960);
+        ++this.currentLayer;
+        if (this.currentLayer > this.getStencilMask()) {
             System.out.println("StencilUtil: Reached maximum amount of layers!");
-            this.g = 1;
+            this.currentLayer = 1;
         }
     }
 
-    public Stencil J() {
-        return this.T.get(this.g);
+    public Stencil getCurrentStencilState() {
+        return this.stencilStatesByLayer.get(this.currentLayer);
     }
 
-    public void X() {
-        if (this.g == 1) {
+    public void popLayer() {
+        if (this.currentLayer == 1) {
             System.out.println("StencilUtil: No layers found!");
             return;
         }
-        --this.g;
-        if (this.g == 1) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(2960);
+        --this.currentLayer;
+        if (this.currentLayer == 1) {
+            OpenGlBackendHolder.backend.disableCapability(2960);
         } else {
-            Stencil stencil = this.T.remove(this.g);
+            Stencil stencil = this.stencilStatesByLayer.remove(this.currentLayer);
             if (stencil != null) {
                 stencil.apply();
             }
@@ -119,17 +119,17 @@ public final class StencilUtil {
     }
 
 
-    public void T(double d, double d2, double d3) {
+    public void drawCircle(double centerX, double centerY, double radius) {
         GL11.glBegin((int)6);
-        for (int i = 0; i <= 360; ++i) {
-            double d4 = Math.sin((double)i * Math.PI / 180.0) * d3;
-            double d5 = Math.cos((double)i * Math.PI / 180.0) * d3;
-            GL11.glVertex2d((double)(d + d4), (double)(d2 + d5));
+        for (int angleDegrees = 0; angleDegrees <= 360; ++angleDegrees) {
+            double offsetX = Math.sin((double)angleDegrees * Math.PI / 180.0) * radius;
+            double offsetY = Math.cos((double)angleDegrees * Math.PI / 180.0) * radius;
+            GL11.glVertex2d((double)(centerX + offsetX), (double)(centerY + offsetY));
         }
         GL11.glEnd();
     }
 
-    public int P() {
+    public int getStencilBitDepth() {
         return GL11.glGetInteger((int)3415);
     }
 }

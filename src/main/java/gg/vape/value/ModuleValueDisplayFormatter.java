@@ -18,191 +18,188 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public final class ModuleValueDisplayFormatter {
-    public static List<ClickGuiModuleCardRenderState> b(List<ValueDisplayDescriptor> list) {
-        ModeValue modeValue;
-        boolean bl;
-        List<ValueDisplayDescriptor> list2 = ModuleValueDisplayFormatter.L(list);
-        List<ClickGuiModuleCardRenderState> list3 = ModuleValueDisplayFormatter.J(list2, bl = ModuleValueDisplayFormatter.k$src$Z$jh7n4t(list2), modeValue = ModuleValueDisplayFormatter.k(list2), false);
-        int n = ModuleValueDisplayFormatter.H(list3);
-        if (n < 50) {
-            return ModuleValueDisplayFormatter.J(list2, bl, modeValue, true);
+    public static List<ClickGuiModuleCardRenderState> buildDescriptorRenderStates(List<ValueDisplayDescriptor> descriptors) {
+        List<ValueDisplayDescriptor> displayableDescriptors = ModuleValueDisplayFormatter.filterDisplayableDescriptors(descriptors);
+        boolean hasExactlyOneMode = ModuleValueDisplayFormatter.hasExactlyOneDescriptorMode(displayableDescriptors);
+        ModeValue subModuleMode = ModuleValueDisplayFormatter.findUniqueDescriptorSubModuleMode(displayableDescriptors);
+        List<ClickGuiModuleCardRenderState> renderStates = ModuleValueDisplayFormatter.buildDescriptorRenderStatesInternal(displayableDescriptors, hasExactlyOneMode, subModuleMode, false);
+        int textLength = ModuleValueDisplayFormatter.getTextLength(renderStates);
+        if (textLength < 50) {
+            return ModuleValueDisplayFormatter.buildDescriptorRenderStatesInternal(displayableDescriptors, hasExactlyOneMode, subModuleMode, true);
         }
-        return list3;
+        return renderStates;
     }
 
-    private static String i(Value<?, ?> value, boolean bl, boolean bl2) {
+    private static String formatValue(Value<?, ?> value, boolean hasExactlyOneMode, boolean isPrimaryMode) {
         if (value instanceof BooleanValue) {
             BooleanValue booleanValue = (BooleanValue)value;
-            if (ModuleValueDisplayFormatter.K(booleanValue)) {
-                return ModuleValueDisplayFormatter.X(booleanValue);
+            if (ModuleValueDisplayFormatter.hasOnlyLimitDependents(booleanValue)) {
+                return ModuleValueDisplayFormatter.formatLimitDependents(booleanValue);
             }
-            return booleanValue.o();
+            return booleanValue.getDisplayName();
         }
-        String string = value.c();
-        if ((bl || bl2) && value instanceof ModeValue) {
-            return string;
+        String displayValue = value.getDisplayValue();
+        if ((hasExactlyOneMode || isPrimaryMode) && value instanceof ModeValue) {
+            return displayValue;
         }
-        if (string.isEmpty()) {
+        if (displayValue.isEmpty()) {
             return value.getName();
         }
-        return string + " " + value.getName();
+        return displayValue + " " + value.getName();
     }
 
     private ModuleValueDisplayFormatter() {
     }
 
-    private static List<Value<?, ?>> h(List<Value<?, ?>> list) {
-        HashSet<Value> hashSet = new HashSet<Value>();
-        HashSet<Object> hashSet2 = new HashSet<Object>();
-        for (Value<?, ?> value : list) {
+    private static List<Value<?, ?>> filterDisplayableValues(List<Value<?, ?>> values) {
+        HashSet<Value> dependentValues = new HashSet<Value>();
+        HashSet<Object> colorOnlyToggles = new HashSet<Object>();
+        for (Value<?, ?> value : values) {
             if (!(value instanceof BooleanValue)) continue;
-            BooleanValue value2 = (BooleanValue)value;
-            if (ModuleValueDisplayFormatter.K(value2)) {
-                for (Value value3 : value2.q$src$Ljava_util_List_$fyau59()) {
-                    hashSet.add(value3);
+            BooleanValue booleanValue = (BooleanValue)value;
+            if (ModuleValueDisplayFormatter.hasOnlyLimitDependents(booleanValue)) {
+                for (Value dependentValue : booleanValue.getDependentValues()) {
+                    dependentValues.add(dependentValue);
                 }
                 continue;
             }
-            if (!ModuleValueDisplayFormatter.I(value2)) continue;
-            hashSet2.add(value);
+            if (!ModuleValueDisplayFormatter.hasOnlyColorDependents(booleanValue)) continue;
+            colorOnlyToggles.add(value);
         }
-        ArrayList<Value<?, ?>> arrayList = new ArrayList<Value<?, ?>>();
-        for (Value<?, ?> value : list) {
-            if (hashSet.contains(value) || hashSet2.contains(value) || !ModuleValueDisplayFormatter.I(value)) continue;
-            arrayList.add(value);
+        ArrayList<Value<?, ?>> displayableValues = new ArrayList<Value<?, ?>>();
+        for (Value<?, ?> value : values) {
+            if (dependentValues.contains(value) || colorOnlyToggles.contains(value) || !ModuleValueDisplayFormatter.shouldDisplayValue(value)) continue;
+            displayableValues.add(value);
         }
-        return arrayList;
+        return displayableValues;
     }
 
-    private static boolean I(BooleanValue booleanValue) {
-        List<Value> list = booleanValue.q$src$Ljava_util_List_$fyau59();
-        if (list.isEmpty()) {
+    private static boolean hasOnlyColorDependents(BooleanValue booleanValue) {
+        List<Value> dependentValues = booleanValue.getDependentValues();
+        if (dependentValues.isEmpty()) {
             return false;
         }
-        for (Value value : list) {
+        for (Value value : dependentValues) {
             if (value instanceof ColorValue) continue;
             return false;
         }
         return true;
     }
 
-    private static boolean x(BooleanValue booleanValue) {
-        for (Value value : booleanValue.q$src$Ljava_util_List_$fyau59()) {
+    private static boolean hasNonEmptyLimitDependent(BooleanValue booleanValue) {
+        for (Value value : booleanValue.getDependentValues()) {
             LimitValue limitValue;
-            if (!(value instanceof LimitValue) || ((List)(limitValue = (LimitValue)value).K()).isEmpty()) continue;
+            if (!(value instanceof LimitValue) || ((List)(limitValue = (LimitValue)value).getValue()).isEmpty()) continue;
             return true;
         }
         return false;
     }
 
-    private static String D(ValueDisplayDescriptor valueDisplayDescriptor, boolean bl, boolean bl2, boolean bl3) {
-        String string;
-        Value<?, ?> value = valueDisplayDescriptor.M();
+    private static String formatDescriptor(ValueDisplayDescriptor descriptor, boolean hasExactlyOneMode, boolean isPrimaryMode, boolean useFullName) {
+        Value<?, ?> value = descriptor.getValue();
         if (value instanceof BooleanValue) {
             BooleanValue booleanValue = (BooleanValue)value;
-            if (ModuleValueDisplayFormatter.K(booleanValue)) {
-                return ModuleValueDisplayFormatter.X(booleanValue);
+            if (ModuleValueDisplayFormatter.hasOnlyLimitDependents(booleanValue)) {
+                return ModuleValueDisplayFormatter.formatLimitDependents(booleanValue);
             }
-            return bl3 ? valueDisplayDescriptor.M$src$Ljava_lang_String_$1ohdx77() : valueDisplayDescriptor.S();
+            return useFullName ? descriptor.getFullName() : descriptor.getDisplayName();
         }
-        String string2 = value.c();
-        if ((bl || bl2) && value instanceof ModeValue) {
-            return string2;
+        String displayValue = value.getDisplayValue();
+        if ((hasExactlyOneMode || isPrimaryMode) && value instanceof ModeValue) {
+            return displayValue;
         }
-        String string3 = string = bl3 ? valueDisplayDescriptor.M$src$Ljava_lang_String_$1ohdx77() : valueDisplayDescriptor.S();
-        if (string2.isEmpty()) {
-            return string;
+        String displayName = useFullName ? descriptor.getFullName() : descriptor.getDisplayName();
+        if (displayValue.isEmpty()) {
+            return displayName;
         }
-        return string2 + " " + string;
+        return displayValue + " " + displayName;
     }
 
-    private static boolean C(List<Value<?, ?>> list) {
-        int n = 0;
-        for (Value<?, ?> value : list) {
-            if (!(value instanceof ModeValue) || ++n <= 1) continue;
+    private static boolean hasExactlyOneModeValue(List<Value<?, ?>> values) {
+        int modeCount = 0;
+        for (Value<?, ?> value : values) {
+            if (!(value instanceof ModeValue) || ++modeCount <= 1) continue;
             return false;
         }
-        return n == 1;
+        return modeCount == 1;
     }
 
 
-    private static boolean k$src$Z$jh7n4t(List<ValueDisplayDescriptor> list) {
-        int n = 0;
-        for (ValueDisplayDescriptor valueDisplayDescriptor : list) {
-            if (!(valueDisplayDescriptor.M() instanceof ModeValue) || ++n <= 1) continue;
+    private static boolean hasExactlyOneDescriptorMode(List<ValueDisplayDescriptor> descriptors) {
+        int modeCount = 0;
+        for (ValueDisplayDescriptor descriptor : descriptors) {
+            if (!(descriptor.getValue() instanceof ModeValue) || ++modeCount <= 1) continue;
             return false;
         }
-        return n == 1;
+        return modeCount == 1;
     }
 
-    public static String Z(List<ValueDisplayDescriptor> list) {
-        List<ValueDisplayDescriptor> list2 = ModuleValueDisplayFormatter.L(list);
-        boolean bl = ModuleValueDisplayFormatter.k$src$Z$jh7n4t(list2);
-        ModeValue modeValue = ModuleValueDisplayFormatter.k(list2);
+    public static String formatDescriptorSummary(List<ValueDisplayDescriptor> descriptors) {
+        List<ValueDisplayDescriptor> displayableDescriptors = ModuleValueDisplayFormatter.filterDisplayableDescriptors(descriptors);
+        boolean hasExactlyOneMode = ModuleValueDisplayFormatter.hasExactlyOneDescriptorMode(displayableDescriptors);
+        ModeValue modeValue = ModuleValueDisplayFormatter.findUniqueDescriptorSubModuleMode(displayableDescriptors);
         if (modeValue != null) {
             StringJoiner stringJoiner = new StringJoiner(", ");
-            boolean bl2 = false;
-            Iterator<ValueDisplayDescriptor> iterator = list2.iterator();
+            boolean addedValue = false;
+            Iterator<ValueDisplayDescriptor> iterator = displayableDescriptors.iterator();
             while (iterator.hasNext()) {
-                ValueDisplayDescriptor valueDisplayDescriptor = iterator.next();
-                boolean bl6 = valueDisplayDescriptor.M() == modeValue;
-                String string = ModuleValueDisplayFormatter.D(valueDisplayDescriptor, bl, bl6, false);
-                if (string.isEmpty()) continue;
-                stringJoiner.add(string);
-                bl2 = true;
+                ValueDisplayDescriptor descriptor = iterator.next();
+                boolean isPrimaryMode = descriptor.getValue() == modeValue;
+                String formattedValue = ModuleValueDisplayFormatter.formatDescriptor(descriptor, hasExactlyOneMode, isPrimaryMode, false);
+                if (formattedValue.isEmpty()) continue;
+                stringJoiner.add(formattedValue);
+                addedValue = true;
             }
-            if (!bl2) {
+            if (!addedValue) {
                 return "";
             }
-            String string = stringJoiner.toString();
-            if (string.length() < 50) {
-                StringJoiner object = new StringJoiner(", ");
-                Iterator<ValueDisplayDescriptor> iterator2 = list2.iterator();
+            String summary = stringJoiner.toString();
+            if (summary.length() < 50) {
+                StringJoiner fullNameSummary = new StringJoiner(", ");
+                Iterator<ValueDisplayDescriptor> iterator2 = displayableDescriptors.iterator();
                 while (iterator2.hasNext()) {
-                    ValueDisplayDescriptor valueDisplayDescriptor;
-                    boolean bl3 = (valueDisplayDescriptor = iterator2.next()).M() == modeValue;
-                    String string2 = ModuleValueDisplayFormatter.D(valueDisplayDescriptor, bl, bl3, true);
-                    if (string2.isEmpty()) continue;
-                    object.add(string2);
+                    ValueDisplayDescriptor descriptor = iterator2.next();
+                    boolean isPrimaryMode = descriptor.getValue() == modeValue;
+                    String formattedValue = ModuleValueDisplayFormatter.formatDescriptor(descriptor, hasExactlyOneMode, isPrimaryMode, true);
+                    if (formattedValue.isEmpty()) continue;
+                    fullNameSummary.add(formattedValue);
                 }
-                return object.toString();
+                return fullNameSummary.toString();
             }
-            return string;
+            return summary;
         }
         StringJoiner stringJoiner = new StringJoiner(", ");
-        boolean bl5 = false;
-        for (ValueDisplayDescriptor valueDisplayDescriptor : list2) {
-            boolean bl4;
-            String string = ModuleValueDisplayFormatter.D(valueDisplayDescriptor, bl, bl4 = false, false);
-            if (string.isEmpty()) continue;
-            stringJoiner.add(string);
-            bl5 = true;
+        boolean addedValue = false;
+        for (ValueDisplayDescriptor descriptor : displayableDescriptors) {
+            String formattedValue = ModuleValueDisplayFormatter.formatDescriptor(descriptor, hasExactlyOneMode, false, false);
+            if (formattedValue.isEmpty()) continue;
+            stringJoiner.add(formattedValue);
+            addedValue = true;
         }
-        if (!bl5) {
+        if (!addedValue) {
             return "";
         }
-        String string = stringJoiner.toString();
-        if (string.length() < 50) {
-            StringJoiner stringJoiner2 = new StringJoiner(", ");
-            for (ValueDisplayDescriptor valueDisplayDescriptor : list2) {
-                boolean bl6;
-                String string2 = ModuleValueDisplayFormatter.D(valueDisplayDescriptor, bl, bl6 = false, true);
-                if (string2.isEmpty()) continue;
-                stringJoiner2.add(string2);
+        String summary = stringJoiner.toString();
+        if (summary.length() < 50) {
+            StringJoiner fullNameSummary = new StringJoiner(", ");
+            for (ValueDisplayDescriptor descriptor : displayableDescriptors) {
+                String formattedValue = ModuleValueDisplayFormatter.formatDescriptor(descriptor, hasExactlyOneMode, false, true);
+                if (formattedValue.isEmpty()) continue;
+                fullNameSummary.add(formattedValue);
             }
-            return stringJoiner2.toString();
+            return fullNameSummary.toString();
         }
-        return string;
+        return summary;
     }
 
-    public static List<ClickGuiModuleCardRenderState> I(List<Value<?, ?>> list) {
-        List<Value<?, ?>> list2 = ModuleValueDisplayFormatter.h(list);
-        boolean bl = ModuleValueDisplayFormatter.C(list2);
-        ModeValue modeValue = ModuleValueDisplayFormatter.d(list2);
-        return ModuleValueDisplayFormatter.o(list2, bl, modeValue);
+    public static List<ClickGuiModuleCardRenderState> buildValueRenderStates(List<Value<?, ?>> values) {
+        List<Value<?, ?>> displayableValues = ModuleValueDisplayFormatter.filterDisplayableValues(values);
+        boolean hasExactlyOneMode = ModuleValueDisplayFormatter.hasExactlyOneModeValue(displayableValues);
+        ModeValue subModuleMode = ModuleValueDisplayFormatter.findUniqueSubModuleMode(displayableValues);
+        return ModuleValueDisplayFormatter.buildValueRenderStatesInternal(displayableValues, hasExactlyOneMode, subModuleMode);
     }
 
-    private static boolean T(ModeValue modeValue) {
+    private static boolean containsSubModuleMode(ModeValue modeValue) {
         for (ModeSelection modeSelection : modeValue.getModes()) {
             if (!(modeSelection instanceof SubModuleValue)) continue;
             return true;
@@ -210,25 +207,25 @@ public final class ModuleValueDisplayFormatter {
         return false;
     }
 
-    public static String v(List<Value<?, ?>> list) {
-        List<Value<?, ?>> list2 = ModuleValueDisplayFormatter.h(list);
+    public static String formatValueSummary(List<Value<?, ?>> values) {
+        List<Value<?, ?>> displayableValues = ModuleValueDisplayFormatter.filterDisplayableValues(values);
         StringJoiner stringJoiner = new StringJoiner(", ");
-        boolean bl = ModuleValueDisplayFormatter.C(list2);
-        ModeValue modeValue = ModuleValueDisplayFormatter.d(list2);
-        Iterator<Value<?, ?>> iterator = list2.iterator();
+        boolean hasExactlyOneMode = ModuleValueDisplayFormatter.hasExactlyOneModeValue(displayableValues);
+        ModeValue modeValue = ModuleValueDisplayFormatter.findUniqueSubModuleMode(displayableValues);
+        Iterator<Value<?, ?>> iterator = displayableValues.iterator();
         while (iterator.hasNext()) {
             Value<?, ?> value = iterator.next();
-            String string = ModuleValueDisplayFormatter.i(value, bl, value == modeValue);
-            if (string.isEmpty()) continue;
-            stringJoiner.add(string);
+            String formattedValue = ModuleValueDisplayFormatter.formatValue(value, hasExactlyOneMode, value == modeValue);
+            if (formattedValue.isEmpty()) continue;
+            stringJoiner.add(formattedValue);
         }
         return stringJoiner.toString();
     }
 
-    private static ModeValue d(List<Value<?, ?>> list) {
+    private static ModeValue findUniqueSubModuleMode(List<Value<?, ?>> values) {
         ModeValue modeValue = null;
-        for (Value<?, ?> value : list) {
-            if (!(value instanceof ModeValue) || !ModuleValueDisplayFormatter.T((ModeValue)value)) continue;
+        for (Value<?, ?> value : values) {
+            if (!(value instanceof ModeValue) || !ModuleValueDisplayFormatter.containsSubModuleMode((ModeValue)value)) continue;
             if (modeValue != null) {
                 return null;
             }
@@ -237,60 +234,60 @@ public final class ModuleValueDisplayFormatter {
         return modeValue;
     }
 
-    private static List<ClickGuiModuleCardRenderState> J(List<ValueDisplayDescriptor> list, boolean bl, ModeValue modeValue, boolean bl2) {
-        ArrayList<ClickGuiModuleCardRenderState> arrayList = new ArrayList<ClickGuiModuleCardRenderState>();
-        boolean bl3 = true;
-        boolean bl4 = false;
+    private static List<ClickGuiModuleCardRenderState> buildDescriptorRenderStatesInternal(List<ValueDisplayDescriptor> descriptors, boolean hasExactlyOneMode, ModeValue modeValue, boolean useFullNames) {
+        ArrayList<ClickGuiModuleCardRenderState> renderStates = new ArrayList<ClickGuiModuleCardRenderState>();
+        boolean firstValue = true;
+        boolean previousValueHasColor = false;
         if (modeValue != null) {
-            for (ValueDisplayDescriptor valueDisplayDescriptor : list) {
+            for (ValueDisplayDescriptor descriptor : descriptors) {
                 Color color;
-                if (valueDisplayDescriptor.M() != modeValue) continue;
-                String string = ModuleValueDisplayFormatter.D(valueDisplayDescriptor, bl, true, bl2);
-                if (string.isEmpty() && modeValue.Q() == null) break;
-                bl3 = false;
-                if (!string.isEmpty()) {
-                    arrayList.add(ClickGuiModuleCardRenderState.j(string));
+                if (descriptor.getValue() != modeValue) continue;
+                String formattedValue = ModuleValueDisplayFormatter.formatDescriptor(descriptor, hasExactlyOneMode, true, useFullNames);
+                if (formattedValue.isEmpty() && modeValue.getDisplayColor() == null) break;
+                firstValue = false;
+                if (!formattedValue.isEmpty()) {
+                    renderStates.add(ClickGuiModuleCardRenderState.j(formattedValue));
                 }
-                if ((color = modeValue.Q()) == null) break;
-                arrayList.add(ClickGuiModuleCardRenderState.b(color));
-                bl4 = true;
+                if ((color = modeValue.getDisplayColor()) == null) break;
+                renderStates.add(ClickGuiModuleCardRenderState.b(color));
+                previousValueHasColor = true;
                 break;
             }
         }
-        for (ValueDisplayDescriptor valueDisplayDescriptor : list) {
+        for (ValueDisplayDescriptor descriptor : descriptors) {
             Color color;
-            Value<?, ?> value = valueDisplayDescriptor.M();
+            Value<?, ?> value = descriptor.getValue();
             if (value == modeValue) continue;
-            boolean bl5 = false;
-            String string = ModuleValueDisplayFormatter.D(valueDisplayDescriptor, bl, false, bl2);
-            if (string.isEmpty() && value.Q() == null) continue;
-            if (!bl3) {
-                arrayList.add(ClickGuiModuleCardRenderState.j(bl4 ? " " : ", "));
+            String formattedValue = ModuleValueDisplayFormatter.formatDescriptor(descriptor, hasExactlyOneMode, false, useFullNames);
+            if (formattedValue.isEmpty() && value.getDisplayColor() == null) continue;
+            if (!firstValue) {
+                renderStates.add(ClickGuiModuleCardRenderState.j(previousValueHasColor ? " " : ", "));
             }
-            bl3 = false;
-            if (!string.isEmpty()) {
-                arrayList.add(ClickGuiModuleCardRenderState.j(string));
+            firstValue = false;
+            if (!formattedValue.isEmpty()) {
+                renderStates.add(ClickGuiModuleCardRenderState.j(formattedValue));
             }
-            if (!(bl4 = (color = value.Q()) != null)) continue;
-            arrayList.add(ClickGuiModuleCardRenderState.b(color));
+            previousValueHasColor = (color = value.getDisplayColor()) != null;
+            if (!previousValueHasColor) continue;
+            renderStates.add(ClickGuiModuleCardRenderState.b(color));
         }
-        return arrayList;
+        return renderStates;
     }
 
-    private static int H(List<ClickGuiModuleCardRenderState> list) {
-        int n = 0;
-        for (ClickGuiModuleCardRenderState clickGuiModuleCardRenderState : list) {
-            if (!clickGuiModuleCardRenderState.n$src$Z$1c2q0zn()) continue;
-            n += clickGuiModuleCardRenderState.n().length();
+    private static int getTextLength(List<ClickGuiModuleCardRenderState> renderStates) {
+        int textLength = 0;
+        for (ClickGuiModuleCardRenderState renderState : renderStates) {
+            if (!renderState.n$src$Z$1c2q0zn()) continue;
+            textLength += renderState.n().length();
         }
-        return n;
+        return textLength;
     }
 
-    private static ModeValue k(List<ValueDisplayDescriptor> list) {
+    private static ModeValue findUniqueDescriptorSubModuleMode(List<ValueDisplayDescriptor> descriptors) {
         ModeValue modeValue = null;
-        for (ValueDisplayDescriptor valueDisplayDescriptor : list) {
-            Value<?, ?> value = valueDisplayDescriptor.M();
-            if (!(value instanceof ModeValue) || !ModuleValueDisplayFormatter.T((ModeValue)value)) continue;
+        for (ValueDisplayDescriptor descriptor : descriptors) {
+            Value<?, ?> value = descriptor.getValue();
+            if (!(value instanceof ModeValue) || !ModuleValueDisplayFormatter.containsSubModuleMode((ModeValue)value)) continue;
             if (modeValue != null) {
                 return null;
             }
@@ -299,88 +296,89 @@ public final class ModuleValueDisplayFormatter {
         return modeValue;
     }
 
-    private static List<ClickGuiModuleCardRenderState> o(List<Value<?, ?>> list, boolean bl, ModeValue modeValue) {
-        ArrayList<ClickGuiModuleCardRenderState> arrayList = new ArrayList<ClickGuiModuleCardRenderState>();
-        boolean bl2 = true;
-        boolean bl3 = false;
+    private static List<ClickGuiModuleCardRenderState> buildValueRenderStatesInternal(List<Value<?, ?>> values, boolean hasExactlyOneMode, ModeValue modeValue) {
+        ArrayList<ClickGuiModuleCardRenderState> renderStates = new ArrayList<ClickGuiModuleCardRenderState>();
+        boolean firstValue = true;
+        boolean previousValueHasColor = false;
         if (modeValue != null) {
-            String string = ModuleValueDisplayFormatter.i(modeValue, bl, true);
-            if (!string.isEmpty() || modeValue.Q() != null) {
+            String formattedValue = ModuleValueDisplayFormatter.formatValue(modeValue, hasExactlyOneMode, true);
+            if (!formattedValue.isEmpty() || modeValue.getDisplayColor() != null) {
                 Color color;
-                bl2 = false;
-                if (!string.isEmpty()) {
-                    arrayList.add(ClickGuiModuleCardRenderState.j(string));
+                firstValue = false;
+                if (!formattedValue.isEmpty()) {
+                    renderStates.add(ClickGuiModuleCardRenderState.j(formattedValue));
                 }
-                if ((color = modeValue.Q()) != null) {
-                    arrayList.add(ClickGuiModuleCardRenderState.b(color));
-                    bl3 = true;
+                if ((color = modeValue.getDisplayColor()) != null) {
+                    renderStates.add(ClickGuiModuleCardRenderState.b(color));
+                    previousValueHasColor = true;
                 }
             }
         }
-        for (Value<?, ?> value : list) {
+        for (Value<?, ?> value : values) {
             Color color;
-            String string;
-            if (value == modeValue || (string = ModuleValueDisplayFormatter.i(value, bl, false)).isEmpty() && value.Q() == null) continue;
-            if (!bl2) {
-                arrayList.add(ClickGuiModuleCardRenderState.j(bl3 ? " " : ", "));
+            String formattedValue;
+            if (value == modeValue || (formattedValue = ModuleValueDisplayFormatter.formatValue(value, hasExactlyOneMode, false)).isEmpty() && value.getDisplayColor() == null) continue;
+            if (!firstValue) {
+                renderStates.add(ClickGuiModuleCardRenderState.j(previousValueHasColor ? " " : ", "));
             }
-            bl2 = false;
-            if (!string.isEmpty()) {
-                arrayList.add(ClickGuiModuleCardRenderState.j(string));
+            firstValue = false;
+            if (!formattedValue.isEmpty()) {
+                renderStates.add(ClickGuiModuleCardRenderState.j(formattedValue));
             }
-            if (!(bl3 = (color = value.Q()) != null)) continue;
-            arrayList.add(ClickGuiModuleCardRenderState.b(color));
+            previousValueHasColor = (color = value.getDisplayColor()) != null;
+            if (!previousValueHasColor) continue;
+            renderStates.add(ClickGuiModuleCardRenderState.b(color));
         }
-        return arrayList;
+        return renderStates;
     }
 
-    private static boolean K(BooleanValue booleanValue) {
-        List<Value> list = booleanValue.q$src$Ljava_util_List_$fyau59();
-        if (list.isEmpty()) {
+    private static boolean hasOnlyLimitDependents(BooleanValue booleanValue) {
+        List<Value> dependentValues = booleanValue.getDependentValues();
+        if (dependentValues.isEmpty()) {
             return false;
         }
-        for (Value value : list) {
+        for (Value value : dependentValues) {
             if (value instanceof LimitValue) continue;
             return false;
         }
         return true;
     }
 
-    private static List<ValueDisplayDescriptor> L(List<ValueDisplayDescriptor> list) {
-        ArrayList<ValueDisplayDescriptor> arrayList = new ArrayList<ValueDisplayDescriptor>();
-        for (ValueDisplayDescriptor valueDisplayDescriptor : list) {
-            if (!ModuleValueDisplayFormatter.I(valueDisplayDescriptor.M())) continue;
-            arrayList.add(valueDisplayDescriptor);
+    private static List<ValueDisplayDescriptor> filterDisplayableDescriptors(List<ValueDisplayDescriptor> descriptors) {
+        ArrayList<ValueDisplayDescriptor> displayableDescriptors = new ArrayList<ValueDisplayDescriptor>();
+        for (ValueDisplayDescriptor descriptor : descriptors) {
+            if (!ModuleValueDisplayFormatter.shouldDisplayValue(descriptor.getValue())) continue;
+            displayableDescriptors.add(descriptor);
         }
-        return arrayList;
+        return displayableDescriptors;
     }
 
-    private static boolean I(Value<?, ?> value) {
+    private static boolean shouldDisplayValue(Value<?, ?> value) {
         if (value instanceof EntityTargetFilterValue) {
             return false;
         }
-        if (!value.K$src$Z$1a5lpzm()) {
+        if (!value.areConditionsMet()) {
             return false;
         }
         if (value instanceof BooleanValue) {
-            if (ModuleValueDisplayFormatter.K((BooleanValue)value)) {
-                return ((BooleanValue)value).L() != false && ModuleValueDisplayFormatter.x((BooleanValue)value);
+            if (ModuleValueDisplayFormatter.hasOnlyLimitDependents((BooleanValue)value)) {
+                return ((BooleanValue)value).getEffectiveValue() != false && ModuleValueDisplayFormatter.hasNonEmptyLimitDependent((BooleanValue)value);
             }
-            return ((BooleanValue)value).L();
+            return ((BooleanValue)value).getEffectiveValue();
         }
-        return !value.c().isEmpty() || value.Q() != null;
+        return !value.getDisplayValue().isEmpty() || value.getDisplayColor() != null;
     }
 
-    private static String X(BooleanValue booleanValue) {
-        StringJoiner stringJoiner = new StringJoiner(", ");
-        HashSet<Value> hashSet = new HashSet<Value>();
-        for (Value value : booleanValue.q$src$Ljava_util_List_$fyau59()) {
+    private static String formatLimitDependents(BooleanValue booleanValue) {
+        StringJoiner summary = new StringJoiner(", ");
+        HashSet<Value> seenValues = new HashSet<Value>();
+        for (Value value : booleanValue.getDependentValues()) {
             LimitValue limitValue;
-            int n;
-            if (!(value instanceof LimitValue) || !hashSet.add(value) || (n = ((List)(limitValue = (LimitValue)value).K()).size()) == 0) continue;
-            stringJoiner.add(n + " " + limitValue.getName());
+            int entryCount;
+            if (!(value instanceof LimitValue) || !seenValues.add(value) || (entryCount = ((List)(limitValue = (LimitValue)value).getValue()).size()) == 0) continue;
+            summary.add(entryCount + " " + limitValue.getName());
         }
-        String string = stringJoiner.toString();
-        return string.isEmpty() ? "" : string;
+        String formattedSummary = summary.toString();
+        return formattedSummary.isEmpty() ? "" : formattedSummary;
     }
 }

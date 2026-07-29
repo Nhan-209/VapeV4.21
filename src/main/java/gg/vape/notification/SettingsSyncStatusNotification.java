@@ -6,72 +6,73 @@ import gg.vape.notification.TextNotificationContent;
 
 public class SettingsSyncStatusNotification
 extends Notification {
-    private boolean N = true;
-    private String F;
-    private String K;
-    private int z;
-    private String Z;
-    private int D;
+    private boolean fixedWidth = true;
+    private String apiErrorDetail;
+    private String ioExceptionMessage;
+    private int settingsSaveStatus;
+    private String ioExceptionClassName;
+    private int profilesSaveStatus;
 
-    public void F(int n) {
-        this.D = n;
-        this.F = null;
+    public void setProfilesSaveStatus(int status) {
+        this.profilesSaveStatus = status;
+        this.apiErrorDetail = null;
     }
 
-    private void j(String string) {
-        ((TextNotificationContent)super.X$src$Lgg_vape_notification_NotificationContent_$1gg6y56()).k(string);
-        this.T(-this.X());
+    private void updateMessage(String message) {
+        ((TextNotificationContent)super.getContent()).setText(message);
+        this.setTargetX(-this.getWidth());
     }
 
     @Override
-    public double C() {
-        return this.N ? 100.0 : super.C();
+    public double getWidth() {
+        return this.fixedWidth ? 100.0 : super.getWidth();
     }
 
-    public Integer v$src$Ljava_lang_Integer_$1kwyf2e() {
-        return this.D;
+    public int getProfilesSaveStatus() {
+        return this.profilesSaveStatus;
     }
 
-    public void I(int n) {
-        this.z = n;
+    public void setSettingsSaveStatus(int status) {
+        this.settingsSaveStatus = status;
     }
 
-    public void K(String string) {
-        this.Z = string;
+    public void setIoExceptionClassName(String className) {
+        this.ioExceptionClassName = className;
     }
 
-    public Integer i() {
-        return this.z;
+    public int getSettingsSaveStatus() {
+        return this.settingsSaveStatus;
     }
 
-    public void B() {
-        this.N = false;
-        if (!this.t$src$Z$1jerbif()) {
-            this.d(5000L);
-            this.j("Your settings have been successfully saved!");
+    public void complete() {
+        this.fixedWidth = false;
+        if (!this.hasSaveError()) {
+            this.setDuration(5000L);
+            this.updateMessage("Your settings have been successfully saved!");
             return;
         }
-        this.d(15000L);
-        String string = "Your settings failed to save\nError " + this.z + ":" + this.D + " ";
-        string = string + (this.Z != null ? this.Z + " " + this.K : "1");
-        if (this.F != null) {
-            string = string + "\n" + this.F;
+        this.setDuration(15000L);
+        String message = "Your settings failed to save\nError " + this.settingsSaveStatus + ":" + this.profilesSaveStatus + " ";
+        message = message + (this.ioExceptionClassName != null
+                ? this.ioExceptionClassName + " " + this.ioExceptionMessage : "1");
+        if (this.apiErrorDetail != null) {
+            message = message + "\n" + this.apiErrorDetail;
         }
-        string = string + "\nPlease contact support";
-        this.j(string);
-        super.F(NotificationType.WARNING);
+        message = message + "\nPlease contact support";
+        this.updateMessage(message);
+        super.setType(NotificationType.WARNING);
     }
 
-    public boolean t$src$Z$1jerbif() {
-        return this.z != 1 || this.D != 1;
+    public boolean hasSaveError() {
+        return this.settingsSaveStatus != 1 || this.profilesSaveStatus != 1;
     }
 
-    public void f(String string) {
-        this.F = string;
+    public void setApiErrorDetail(String detail) {
+        this.apiErrorDetail = detail;
     }
 
-    public void Z(String string) {
-        this.K = string;
+    public void setIoExceptionMessage(String message) {
+        this.ioExceptionMessage = message;
     }
 
 

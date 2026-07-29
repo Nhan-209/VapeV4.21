@@ -52,7 +52,7 @@ extends Mapping {
                 MShaderGroup mShaderGroup4 = this;
                 this.r = this.Y(string4, bl4, clazz4, classArray);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MShaderGroup.H(new String[2]);
             }
             return;
@@ -84,7 +84,7 @@ extends Mapping {
             MShaderGroup mShaderGroup7 = this;
             this.r = this.Y(string7, bl7, clazz7, classArray2);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MShaderGroup.H(new String[2]);
         }
     }

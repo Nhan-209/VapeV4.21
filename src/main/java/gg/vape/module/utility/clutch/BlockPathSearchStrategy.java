@@ -4,20 +4,19 @@ import gg.vape.utils.datas.BlockData;
 import java.util.Vector;
 
 public interface BlockPathSearchStrategy<T> {
-    public int w();
+    int getMaxDepth();
 
-    default public boolean V(BlockData blockData) {
+    default boolean canVisit(BlockData blockData) {
         return true;
     }
 
-    public boolean B(BlockData var1);
+    boolean isValidBlock(BlockData blockData);
 
-    default public int g(Vector<T> vector, int n) {
-        return this.t(vector);
+    default int scorePath(Vector<T> path, int depth) {
+        return this.scorePath(path);
     }
 
-    default public int t(Vector<T> vector) {
-        return vector.size();
+    default int scorePath(Vector<T> path) {
+        return path.size();
     }
 }
-

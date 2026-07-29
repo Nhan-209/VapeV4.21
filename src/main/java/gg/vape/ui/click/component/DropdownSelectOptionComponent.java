@@ -9,50 +9,50 @@ import java.awt.Color;
 
 public class DropdownSelectOptionComponent
 extends InteractiveComponent {
-    private Color b;
-    private boolean Q;
-    protected double OA;
-    private boolean v;
-    protected String K;
-    private boolean I;
+    private Color textColor;
+    private boolean showNewBadge;
+    protected double fontScale;
+    private boolean showBetaBadge;
+    protected String label;
+    private boolean useAlternateFont;
 
-    public double T$src$D$fk51np() {
-        SmoothFontRenderer smoothFontRenderer = this.I ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.OA) : this.O(this.OA);
-        double d = smoothFontRenderer.d(this.K);
-        return this.n() + this.L() / 2.0 - d / 2.0;
+    public double getTextY() {
+        SmoothFontRenderer fontRenderer = this.useAlternateFont ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer(this.fontScale);
+        double textHeight = fontRenderer.d(this.label);
+        return this.n() + this.L() / 2.0 - textHeight / 2.0;
     }
 
-    public void K(boolean bl) {
-        this.v = bl;
+    public void setShowBetaBadge(boolean showBetaBadge) {
+        this.showBetaBadge = showBetaBadge;
     }
 
-    public boolean P$src$Z$fhxvt7() {
-        return this.Q;
+    public boolean isShowNewBadge() {
+        return this.showNewBadge;
     }
 
-    public DropdownSelectOptionComponent(String string) {
-        this(string, 0.9);
+    public DropdownSelectOptionComponent(String label) {
+        this(label, 0.9);
     }
 
 
-    public void a(boolean bl) {
-        this.Q = bl;
+    public void setShowNewBadge(boolean showNewBadge) {
+        this.showNewBadge = showNewBadge;
     }
 
     @Override
     public void u() {
         if (this.A() < 0.0) {
-            this.o(this.r$src$D$g0mvgj());
+            this.o(this.getTextWidth());
         }
     }
 
-    public DropdownSelectOptionComponent Z$src$Lgg_vape_ui_click_component_DropdownSelectOption$8kn55b(boolean bl) {
-        this.I = bl;
+    public DropdownSelectOptionComponent setUseAlternateFont(boolean useAlternateFont) {
+        this.useAlternateFont = useAlternateFont;
         return this;
     }
 
-    public boolean F$src$Z$fcfxvl() {
-        return this.I;
+    public boolean isUseAlternateFont() {
+        return this.useAlternateFont;
     }
 
     @Override
@@ -60,83 +60,83 @@ extends InteractiveComponent {
         return 0.0;
     }
 
-    public DropdownSelectOptionComponent(String string, double d, double d2, double d3) {
-        this.b = DropdownSelectOptionComponent.J.Z;
-        this.K = string;
-        this.OA = d;
-        this.o(d2);
-        this.Y(d3);
+    public DropdownSelectOptionComponent(String label, double fontScale, double width, double height) {
+        this.textColor = DropdownSelectOptionComponent.J.Z;
+        this.label = label;
+        this.fontScale = fontScale;
+        this.o(width);
+        this.Y(height);
     }
 
-    public DropdownSelectOptionComponent(String string, double d) {
-        this.b = DropdownSelectOptionComponent.J.Z;
-        this.K = string;
-        this.OA = d;
+    public DropdownSelectOptionComponent(String label, double fontScale) {
+        this.textColor = DropdownSelectOptionComponent.J.Z;
+        this.label = label;
+        this.fontScale = fontScale;
     }
 
-    public Color q$src$Ljava_awt_Color_$1xdob5y() {
-        return this.b;
+    public Color getTextColor() {
+        return this.textColor;
     }
 
-    public double k() {
-        SmoothFontRenderer smoothFontRenderer = this.I ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.OA) : this.O(this.OA);
-        return smoothFontRenderer.d(this.K.toUpperCase());
+    public double getTextHeight() {
+        SmoothFontRenderer fontRenderer = this.useAlternateFont ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer(this.fontScale);
+        return fontRenderer.d(this.label.toUpperCase());
     }
 
-    public DropdownSelectOptionComponent b(Color color) {
-        this.b = color;
+    public DropdownSelectOptionComponent setTextColor(Color textColor) {
+        this.textColor = textColor;
         return this;
     }
 
-    public void W(double d) {
-        this.OA = d;
+    public void setFontScale(double fontScale) {
+        this.fontScale = fontScale;
     }
 
     @Override
     public void H() {
-        SmoothFontRenderer smoothFontRenderer;
-        double d;
-        double d2;
-        String string = this.K;
-        SmoothFontRenderer smoothFontRenderer2 = this.I ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.OA) : this.O(this.OA);
-        double d3 = this.T$src$D$fk51np();
+        SmoothFontRenderer badgeFontRenderer;
+        double badgeY;
+        double badgeX;
+        String displayText = this.label;
+        SmoothFontRenderer labelFontRenderer = this.useAlternateFont ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer(this.fontScale);
+        double textY = this.getTextY();
         if (this.w$src$Z$e457mb()) {
             GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + 0.5, this.n(), this.A() - 0.5, this.L(), DropdownSelectOptionComponent.J.m);
         }
-        Color color = this.b != null ? (this.w$src$Z$e457mb() ? this.b.brighter() : this.b) : (this.w$src$Z$e457mb() ? DropdownSelectOptionComponent.J.A : DropdownSelectOptionComponent.J.Z);
-        double d4 = this.G$src$D$1b2f02a();
+        Color resolvedTextColor = this.textColor != null ? (this.w$src$Z$e457mb() ? this.textColor.brighter() : this.textColor) : (this.w$src$Z$e457mb() ? DropdownSelectOptionComponent.J.A : DropdownSelectOptionComponent.J.Z);
+        double x = this.G$src$D$1b2f02a();
         this.getClass();
-        smoothFontRenderer2.d(string, d4 + 5.0, d3, color);
-        if (this.Q) {
-            double d5 = this.G$src$D$1b2f02a() + smoothFontRenderer2.N(string);
+        labelFontRenderer.d(displayText, x + 5.0, textY, resolvedTextColor);
+        if (this.showNewBadge) {
+            double textEndX = this.G$src$D$1b2f02a() + labelFontRenderer.N(displayText);
             this.getClass();
-            d2 = d5 + (double)(5.0f * 2.0f);
-            d = d3 + 0.5;
-            GuiRenderPrimitives.d(d2, d, 20.0, 7.0, J.z());
-            smoothFontRenderer = Vape.INSTANCE.getFontManager().W(0.8, false);
-            smoothFontRenderer.d("New!", d2 + 3.0, d + 0.5, ColorUtil.r(J.z(), 35, 255));
+            badgeX = textEndX + (double)(5.0f * 2.0f);
+            badgeY = textY + 0.5;
+            GuiRenderPrimitives.d(badgeX, badgeY, 20.0, 7.0, J.z());
+            badgeFontRenderer = Vape.INSTANCE.getFontManager().W(0.8, false);
+            badgeFontRenderer.d("New!", badgeX + 3.0, badgeY + 0.5, ColorUtil.getContrastingGray(J.z(), 35, 255));
         }
-        if (this.v) {
-            double d6 = this.G$src$D$1b2f02a() + smoothFontRenderer2.N(string);
+        if (this.showBetaBadge) {
+            double textEndX = this.G$src$D$1b2f02a() + labelFontRenderer.N(displayText);
             this.getClass();
-            d2 = d6 + (double)(5.0f * 2.0f);
-            if (this.Q) {
-                d2 += 24.0;
+            badgeX = textEndX + (double)(5.0f * 2.0f);
+            if (this.showNewBadge) {
+                badgeX += 24.0;
             }
-            d = d3 + 0.5;
-            smoothFontRenderer = Vape.INSTANCE.getFontManager().W(0.8, false);
-            double d7 = smoothFontRenderer.N("Beta") + 6.0;
-            GuiRenderPrimitives.d(d2, d, d7, 7.0, J.z());
-            smoothFontRenderer.d("Beta", d2 + 3.0, d + 0.5, ColorUtil.r(J.z(), 35, 255));
+            badgeY = textY + 0.5;
+            badgeFontRenderer = Vape.INSTANCE.getFontManager().W(0.8, false);
+            double badgeWidth = badgeFontRenderer.N("Beta") + 6.0;
+            GuiRenderPrimitives.d(badgeX, badgeY, badgeWidth, 7.0, J.z());
+            badgeFontRenderer.d("Beta", badgeX + 3.0, badgeY + 0.5, ColorUtil.getContrastingGray(J.z(), 35, 255));
         }
     }
 
-    public String P() {
-        return this.K;
+    public String getLabel() {
+        return this.label;
     }
 
-    public boolean u$src$Z$g2a9rk() {
-        return this.v;
+    public boolean isShowBetaBadge() {
+        return this.showBetaBadge;
     }
 
     @Override
@@ -144,15 +144,15 @@ extends InteractiveComponent {
         return 0.0;
     }
 
-    public DropdownSelectOptionComponent E(String string) {
-        this.K = string;
-        this.o(this.r$src$D$g0mvgj());
+    public DropdownSelectOptionComponent setLabel(String label) {
+        this.label = label;
+        this.o(this.getTextWidth());
         return this;
     }
 
-    public double r$src$D$g0mvgj() {
-        SmoothFontRenderer smoothFontRenderer = this.I ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.OA) : this.O(this.OA);
-        return smoothFontRenderer.N(this.K.toUpperCase());
+    public double getTextWidth() {
+        SmoothFontRenderer fontRenderer = this.useAlternateFont ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer(this.fontScale);
+        return fontRenderer.N(this.label.toUpperCase());
     }
 
     @Override

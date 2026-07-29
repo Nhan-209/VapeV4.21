@@ -123,7 +123,7 @@ public class ConfigJsonUtils {
         for (Integer n : list) {
             if (n == 0) continue;
             if (bl && n > 0) {
-                n = KeyboardCodeUtil.m(n);
+                n = KeyboardCodeUtil.convertLegacyKeyCode(n);
             }
             if (n == 0 || n == 27) continue;
             arrayList.add(n);
@@ -179,4 +179,3 @@ public class ConfigJsonUtils {
         return jsonElement.getAsString();
     }
 }
-

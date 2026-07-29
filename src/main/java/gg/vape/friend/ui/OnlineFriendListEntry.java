@@ -36,8 +36,8 @@ extends PanelComponent {
     }
 
     private void Z$src$V$1naaci3() {
-        this.I(this.iX);
-        this.ia = ClientSettings.g(this, this.iX, PopupFrame.class);
+        this.removeChild(this.iX);
+        this.ia = ClientSettings.createPopup(this, this.iX, PopupFrame.class);
         this.iX.x(true);
         this.l$src$V$1mibm4x();
     }
@@ -98,7 +98,7 @@ extends PanelComponent {
         this.ia.K(this.G$src$D$1b2f02a());
         this.ia.S(frame.n() + frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
         double d = frame.L() - frame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() - 50.0;
-        this.iX.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().o$src$Lgg_vape_friend_ui_OnlineChatPanel_$15yewwy().z().u(d);
+        this.iX.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().o$src$Lgg_vape_friend_ui_OnlineChatPanel_$15yewwy().z().setExplicitHeight(d);
         this.iX.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().o$src$Lgg_vape_friend_ui_OnlineChatPanel_$15yewwy().z().t(d);
         this.iX.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().o$src$Lgg_vape_friend_ui_OnlineChatPanel_$15yewwy().z().l$src$V$1mibm4x();
         this.ia.l$src$V$1mibm4x();
@@ -128,8 +128,8 @@ extends PanelComponent {
     }
 
     private void e$src$V$1ngc312() {
-        ClientSettings.K(this.ia);
-        this.H(this.iX);
+        ClientSettings.removePopup(this.ia);
+        this.addChildren(this.iX);
         this.iX.x(false);
         this.iy = false;
         this.ia.l$src$V$1mibm4x();
@@ -140,12 +140,12 @@ extends PanelComponent {
         super(99.0, 24.0);
         this.iI = onlineFriend;
         this.iX = new OnlineFriendCard(onlineFriend);
-        this.d(false);
-        this.H(this.iX);
-        this.iX.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().j$src$Lgg_vape_friend_ui_OnlineFriendActionPanel_$1bao1mp().b$src$Lgg_vape_ui_click_component_gui_TextActionButton$efmaux().r(new OnlineFriendListEntryOpenActionsPopupClickHandler(this));
-        this.iX.j$src$Lgg_vape_ui_click_component_IconButtonComponent_$1ooa9pe().r(new OnlineFriendListEntryOpenPopupClickHandler(this));
-        this.iX.A$src$Lgg_vape_ui_click_component_IconButtonComponent_$10cdcvf().r(() -> this.lambda$new$6(onlineFriend));
-        this.iX.b$src$Lgg_vape_ui_click_component_IconButtonComponent_$txugmi().r(new OnlineFriendListEntryClosePopupClickHandler(this));
+        this.setShowDisabledOverlay(false);
+        this.addChildren(this.iX);
+        this.iX.d$src$Lgg_vape_friend_ui_OnlineFriendDetailsPanel_$1i561zb().j$src$Lgg_vape_friend_ui_OnlineFriendActionPanel_$1bao1mp().b$src$Lgg_vape_ui_click_component_gui_TextActionButton$efmaux().addClickListener(new OnlineFriendListEntryOpenActionsPopupClickHandler(this));
+        this.iX.j$src$Lgg_vape_ui_click_component_IconButtonComponent_$1ooa9pe().addClickListener(new OnlineFriendListEntryOpenPopupClickHandler(this));
+        this.iX.A$src$Lgg_vape_ui_click_component_IconButtonComponent_$10cdcvf().addClickListener(() -> this.lambda$new$6(onlineFriend));
+        this.iX.b$src$Lgg_vape_ui_click_component_IconButtonComponent_$txugmi().addClickListener(new OnlineFriendListEntryClosePopupClickHandler(this));
     }
 
     public OnlineFriend g$src$Lgg_vape_friend_OnlineFriend_$1a3nbft() {

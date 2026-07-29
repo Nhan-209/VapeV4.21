@@ -1,10 +1,9 @@
 package gg.vape.value;
 
 public interface ToggleableListEntry {
-    public void z();
+    public void toggleEnabled();
 
-    public boolean q();
+    public boolean isEnabled();
 
-    public void x(boolean var1);
+    public void setEnabled(boolean enabled);
 }
-

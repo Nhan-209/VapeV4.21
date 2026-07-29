@@ -17,7 +17,7 @@ extends PanelComponent {
     public FriendManagementPanel() {
         super(104.0, 135.0);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
-        this.H(this.Te, this.Tf);
+        this.addChildren(this.Te, this.Tf);
     }
 
     @Override

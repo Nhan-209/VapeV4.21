@@ -36,7 +36,7 @@ public class OnlineRadarSettings {
 
     public OnlineRadarSettings() {
         this.n = ModeValue.create((Object)this, "Mode", this.W, this.W, this.H);
-        this.h = NumberValue.E(this, "Radar Size", "#.#", "", 25.0, 110.0, 500.0, "The size of the radar.");
+        this.h = NumberValue.createWithDescription(this, "Radar Size", "#.#", "", 25.0, 110.0, 500.0, "The size of the radar.");
         this.s = NumberValue.create(this, "Dot Size", "#.#", "", 0.5, 3.0, 10.0, 0.1, "The size of the radar.");
         this.V = NumberValue.create(this, "Radar Scale", "#.##", "", 0.1, 0.5, 5.0, 0.01, "The size of the radar.");
         this.e = NumberValue.create(this, "Max Distance", "#", "m", 0.0, 0.0, 100.0, 5.0, "Maximum distance to show.\nUse 0 to ignore distance requirement.");
@@ -51,16 +51,15 @@ public class OnlineRadarSettings {
         this.O = new ModeOption("Square");
         this.Q = new ModeOption("Circle");
         this.p = ModeValue.create((Object)this, "Radar Style", this.O, this.O, this.Q);
-        this.v = ColorValue.L(this, "Custom Color", Color.WHITE);
-        this.j = ColorValue.L(this, "Friendly Color", Color.GREEN);
-        this.F = ColorValue.L(this, "Enemy Color", Color.RED);
+        this.v = ColorValue.create(this, "Custom Color", Color.WHITE);
+        this.j = ColorValue.create(this, "Friendly Color", Color.GREEN);
+        this.F = ColorValue.create(this, "Enemy Color", Color.RED);
         this.U = BooleanValue.create(this, "Show Cross", true, "Render a center cross on the radar.");
         this.y = BooleanValue.create(this, "Show Background", true, "Render a background behind the radar.");
         this.r = BooleanValue.create(this, "Clamp Radar", true, "Clamps dots to the given size and shape.");
-        this.n.f(this.W, this.h, this.V, this.I, this.p, this.L, this.s, this.U, this.r);
-        this.n.f(this.H, this.e, this.C);
-        this.I.f(this.x, this.v);
-        this.I.f(this.f, this.j, this.F);
+        this.n.addModeDependentValues(this.W, this.h, this.V, this.I, this.p, this.L, this.s, this.U, this.r);
+        this.n.addModeDependentValues(this.H, this.e, this.C);
+        this.I.addModeDependentValues(this.x, this.v);
+        this.I.addModeDependentValues(this.f, this.j, this.F);
     }
 }
-

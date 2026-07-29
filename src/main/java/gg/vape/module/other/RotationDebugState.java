@@ -4,41 +4,35 @@ import gg.vape.utils.MutableFloatTriple;
 import gg.vape.utils.datas.DirectionalPosition;
 
 public class RotationDebugState {
-    private int y;
-    private Boolean w;
-    private final DirectionalPosition H;
-    private final int t;
-    private final MutableFloatTriple o;
+    private int sequence = -1;
+    private Boolean insideBlock;
+    private final DirectionalPosition blockPosition;
+    private final int packetId;
+    private final MutableFloatTriple facingVector;
 
-    public static Boolean Z(RotationDebugState rotationDebugState, Boolean bl) {
-        rotationDebugState.w = bl;
-        return rotationDebugState.w;
+    public void setInsideBlock(Boolean insideBlock) {
+        this.insideBlock = insideBlock;
     }
 
-    private String g() {
-        String string = "[C08 | %d], Block: %s, FacingVec: %s";
-        if (this.y != -1) {
-            string = string + ", Seq: " + this.y;
+    @Override
+    public String toString() {
+        String template = "[C08 | %d], Block: %s, FacingVec: %s";
+        if (this.sequence != -1) {
+            template = template + ", Seq: " + this.sequence;
         }
-        if (this.w != null) {
-            string = string + ", Inside: " + this.w;
+        if (this.insideBlock != null) {
+            template = template + ", Inside: " + this.insideBlock;
         }
-        return String.format(string, this.t, this.H.toString(), this.o);
+        return String.format(template, this.packetId, this.blockPosition.toString(), this.facingVector);
     }
 
-    public RotationDebugState(int n, DirectionalPosition directionalPosition, MutableFloatTriple mutableFloatTriple) {
-        this.t = n;
-        this.H = directionalPosition;
-        this.o = mutableFloatTriple;
+    public RotationDebugState(int packetId, DirectionalPosition blockPosition, MutableFloatTriple facingVector) {
+        this.packetId = packetId;
+        this.blockPosition = blockPosition;
+        this.facingVector = facingVector;
     }
 
-    public static String C(RotationDebugState rotationDebugState) {
-        return rotationDebugState.g();
-    }
-
-    public static int R(RotationDebugState rotationDebugState, int n) {
-        rotationDebugState.y = n;
-        return rotationDebugState.y;
+    public void setSequence(int sequence) {
+        this.sequence = sequence;
     }
 }
-

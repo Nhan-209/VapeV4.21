@@ -2,20 +2,20 @@ package gg.vape.utils;
 
 
 public class InertialFloatSmoother {
-    private float v;
-    private float C;
-    private float P;
+    private float accumulatedInput;
+    private float currentValue;
+    private float velocity;
 
 
-    public float E(float f, float f2) {
-        this.v += f;
-        f = (this.v - this.C) * f2;
-        this.P += (f - this.P) * 0.5f;
-        if (f > 0.0f && f > this.P || f < 0.0f && f < this.P) {
-            f = this.P;
+    public float update(float inputDelta, float responseFactor) {
+        this.accumulatedInput += inputDelta;
+        inputDelta = (this.accumulatedInput - this.currentValue) * responseFactor;
+        this.velocity += (inputDelta - this.velocity) * 0.5f;
+        if (inputDelta > 0.0f && inputDelta > this.velocity || inputDelta < 0.0f && inputDelta < this.velocity) {
+            inputDelta = this.velocity;
         }
-        this.C += f;
-        return f;
+        this.currentValue += inputDelta;
+        return inputDelta;
     }
 }
 

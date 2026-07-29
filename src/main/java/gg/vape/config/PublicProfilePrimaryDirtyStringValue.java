@@ -9,7 +9,7 @@ extends StringValue {
     boolean f;
 
     @Override
-    public void Z() {
+    public void notifyChangeListeners() {
         if (this.f) {
             return;
         }

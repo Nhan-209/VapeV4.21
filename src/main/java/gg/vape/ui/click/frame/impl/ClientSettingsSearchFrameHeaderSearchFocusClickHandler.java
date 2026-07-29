@@ -8,7 +8,7 @@ implements GuiClickListener {
     final ClientSettingsSearchFrameHeader q;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         this.q.V$src$V$enocyv();
     }
 
@@ -16,4 +16,3 @@ implements GuiClickListener {
         this.q = clientSettingsSearchFrameHeader;
     }
 }
-

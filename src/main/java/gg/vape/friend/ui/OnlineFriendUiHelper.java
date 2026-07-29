@@ -34,14 +34,14 @@ public final class OnlineFriendUiHelper {
     }
 
     public static void n$src$V$uh9sir() {
-        ClientSettings.g(OnlineFriendsFrame.class).d$src$Lgg_vape_friend_ui_OnlineFriendEntriesPanel_$86qf3j().b$src$V$1a27gcp();
+        ClientSettings.getFrame(OnlineFriendsFrame.class).d$src$Lgg_vape_friend_ui_OnlineFriendEntriesPanel_$86qf3j().b$src$V$1a27gcp();
         OnlineFriendUiHelper.U();
     }
 
     public static OnlineFriendsFrame N(GuiComponent guiComponent) {
         while (!guiComponent.getClass().equals(OnlineFriendsFrame.class)) {
             try {
-                guiComponent = guiComponent.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb();
+                guiComponent = guiComponent.getParentFrameComponent();
             }
             catch (Exception exception) {
                 // empty catch block
@@ -63,7 +63,7 @@ public final class OnlineFriendUiHelper {
     }
 
     public static void y(PartyMemberRow partyMemberRow) {
-        OnlineFriendsFrame onlineFriendsFrame = ClientSettings.g(OnlineFriendsFrame.class);
+        OnlineFriendsFrame onlineFriendsFrame = ClientSettings.getFrame(OnlineFriendsFrame.class);
         PartyDetailsAndChatPanel partyDetailsAndChatPanel = onlineFriendsFrame.x$src$Lgg_vape_friend_ui_OnlineFriendsListPanel_$lt2vne().U$src$Lgg_vape_friend_ui_CurrentPartyPanel_$nthhyv().v$src$Lgg_vape_friend_ui_PartyDetailsAndChatPanel_$1pxu2wh();
         if (partyDetailsAndChatPanel == null) {
             return;
@@ -72,11 +72,11 @@ public final class OnlineFriendUiHelper {
     }
 
     public static void P(NotificationMessage notificationMessage) {
-        ClientSettings.g(OnlineFriendsFrame.class).V$src$Lgg_vape_ui_notification_NotificationToastOverla$1025be3().C(notificationMessage);
+        ClientSettings.getFrame(OnlineFriendsFrame.class).V$src$Lgg_vape_ui_notification_NotificationToastOverla$1025be3().C(notificationMessage);
     }
 
     public static void U() {
-        ClientSettings.g(OnlineFriendsFrame.class).R$src$Lgg_vape_friend_ui_FriendEntriesPanel_$19ux45q().k$src$V$gzyo7z();
+        ClientSettings.getFrame(OnlineFriendsFrame.class).R$src$Lgg_vape_friend_ui_FriendEntriesPanel_$19ux45q().k$src$V$gzyo7z();
     }
 
     public static void l(OnlineFriend onlineFriend, OnlineFriend onlineFriend2, String string) {
@@ -87,7 +87,7 @@ public final class OnlineFriendUiHelper {
         onlineFriend.F(true);
         onlineFriend.J(true);
         if (onlineFriend2 != null) {
-            Vape.INSTANCE.getNotificationManager().t(b + onlineFriend2.C(), string, gg.vape.notification.NotificationType.FRIENDS_NEW_CHAT, 4000L);
+            Vape.INSTANCE.getNotificationManager().show(b + onlineFriend2.C(), string, gg.vape.notification.NotificationType.FRIENDS_NEW_CHAT, 4000L);
         }
         OnlineFriend onlineFriend3 = onlineFriend2 == null ? Vape.INSTANCE.getOnlineManager().r() : onlineFriend2;
         ChatMessagePartyMemberRow chatMessagePartyMemberRow = new ChatMessagePartyMemberRow(onlineFriend3, new PartyMemberTextStatusComponent(string));

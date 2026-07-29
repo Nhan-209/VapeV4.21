@@ -6,30 +6,30 @@ import gg.vape.input.KeyboardCodeUtil;
 
 public class ExtendedMouseButtonReleaseInputHandler
 implements InputEventHandler {
-    private static boolean L;
+    private static boolean legacyState;
 
-    public static void U(boolean bl) {
-        L = bl;
+    public static void setLegacyState(boolean state) {
+        legacyState = state;
     }
 
     @Override
-    public boolean handle(long l, long l2) {
-        return InputEventDispatcher.getInstance().getMouseState().setButtonState(KeyboardCodeUtil.s(l), false);
+    public boolean handle(long buttonMetadata, long secondArgument) {
+        return InputEventDispatcher.getInstance().getMouseState().setButtonState(KeyboardCodeUtil.decodeExtendedMouseButton(buttonMetadata), false);
     }
 
 
-    public static boolean I() {
-        boolean bl = ExtendedMouseButtonReleaseInputHandler.L();
+    public static boolean getLegacySentinelResult() {
+        boolean state = ExtendedMouseButtonReleaseInputHandler.getLegacyState();
         return false;
     }
 
-    public static boolean L() {
-        return L;
+    public static boolean getLegacyState() {
+        return legacyState;
     }
 
     static {
-        if (!ExtendedMouseButtonReleaseInputHandler.L()) {
-            ExtendedMouseButtonReleaseInputHandler.U(true);
+        if (!ExtendedMouseButtonReleaseInputHandler.getLegacyState()) {
+            ExtendedMouseButtonReleaseInputHandler.setLegacyState(true);
         }
     }
 }

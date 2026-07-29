@@ -36,7 +36,7 @@ extends Mapping {
         if (bl) {
             return;
         }
-        GuiComponent.D(new GuiComponent[4]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[4]);
     }
 
 

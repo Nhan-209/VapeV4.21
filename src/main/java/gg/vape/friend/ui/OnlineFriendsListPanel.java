@@ -52,7 +52,7 @@ extends PanelComponent {
         this.Br.h(this.BH, new Object[0]);
         this.Br.h(this.BA, new Object[0]);
         this.B0.t(126.0);
-        this.H(this.Br, this.B0);
+        this.addChildren(this.Br, this.B0);
     }
 
     public CurrentPartyPanel U$src$Lgg_vape_friend_ui_CurrentPartyPanel_$nthhyv() {

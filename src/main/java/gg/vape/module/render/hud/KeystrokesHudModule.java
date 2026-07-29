@@ -17,71 +17,71 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class KeystrokesHudModule
 extends HudModule {
-    public final ModeOption H = new ModeOption("Keyboard");
-    public final ModeOption K;
-    public final ModeValue t;
-    public final ModeValue J;
-    public final BooleanValue c;
-    public final ModeOption j;
-    public final BooleanValue P;
-    public final ModeOption O = new ModeOption("Arrow");
+    public final ModeOption keyboardKeyStyle = new ModeOption("Keyboard");
+    public final ModeOption mouseIconStyle;
+    public final ModeValue mouseStyle;
+    public final ModeValue keyStyle;
+    public final BooleanValue showCpsOnly;
+    public final ModeOption mouseButtonStyle;
+    public final BooleanValue showSpacebar;
+    public final ModeOption arrowKeyStyle = new ModeOption("Arrow");
 
     @EventHandler
-    public void U(EventKeyPress eventKeyPress) {
-        KeystrokesHudFrame keystrokesHudFrame = ClientSettings.g(KeystrokesHudFrame.class);
+    public void onKeyPress(EventKeyPress eventKeyPress) {
+        KeystrokesHudFrame keystrokesHudFrame = ClientSettings.getFrame(KeystrokesHudFrame.class);
         if (keystrokesHudFrame == null) {
             return;
         }
-        keystrokesHudFrame.T(eventKeyPress);
+        keystrokesHudFrame.handleKeyEvent(eventKeyPress);
     }
 
     public KeystrokesHudModule() {
-        super("Keystrokes", HudModuleGroup.f, "keystrokes", KeystrokesHudFrame.class);
-        this.J = ModeValue.create((Object)this, "Key Style", this.H, this.H, this.O);
-        this.j = new ModeOption("Button");
-        this.K = new ModeOption("Icon");
-        this.t = ModeValue.create((Object)this, "Mouse Style", this.j, this.j, this.K);
-        this.P = BooleanValue.create(this, "Show Spacebar", true);
-        this.c = BooleanValue.create(this, "Show CPS Only", false);
+        super("Keystrokes", HudModuleGroup.HUD, "keystrokes", KeystrokesHudFrame.class);
+        this.keyStyle = ModeValue.create((Object)this, "Key Style", this.keyboardKeyStyle, this.keyboardKeyStyle, this.arrowKeyStyle);
+        this.mouseButtonStyle = new ModeOption("Button");
+        this.mouseIconStyle = new ModeOption("Icon");
+        this.mouseStyle = ModeValue.create((Object)this, "Mouse Style", this.mouseButtonStyle, this.mouseButtonStyle, this.mouseIconStyle);
+        this.showSpacebar = BooleanValue.create(this, "Show Spacebar", true);
+        this.showCpsOnly = BooleanValue.create(this, "Show CPS Only", false);
         this.setSuffix("Shows when your movement keys or mouse buttons are pressed\nAs well as mouse clicks per second");
-        this.addValue(this.J, this.t, this.P, this.c);
+        this.addValue(this.keyStyle, this.mouseStyle, this.showSpacebar, this.showCpsOnly);
     }
 
-    public void F(KeyBinding keyBinding, boolean bl) {
-        KeystrokesHudFrame keystrokesHudFrame = ClientSettings.g(KeystrokesHudFrame.class);
+    public void updateKeyState(KeyBinding keyBinding, boolean pressed) {
+        KeystrokesHudFrame keystrokesHudFrame = ClientSettings.getFrame(KeystrokesHudFrame.class);
         if (keystrokesHudFrame == null) {
             return;
         }
-        keystrokesHudFrame.o(keyBinding, bl);
+        keystrokesHudFrame.updateKeyState(keyBinding, pressed);
     }
 
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void r(SyntheticAttackRequestEvent syntheticAttackRequestEvent) {
-        if (syntheticAttackRequestEvent.isCanceled() || Minecraft.currentScreen().isNotNull()) {
+    public void onSyntheticAttack(SyntheticAttackRequestEvent event) {
+        if (event.isCanceled() || Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        KeystrokesHudFrame keystrokesHudFrame = ClientSettings.g(KeystrokesHudFrame.class);
+        KeystrokesHudFrame keystrokesHudFrame = ClientSettings.getFrame(KeystrokesHudFrame.class);
         if (keystrokesHudFrame == null) {
             return;
         }
-        keystrokesHudFrame.WH();
+        keystrokesHudFrame.registerSyntheticAttack();
     }
 
     @EventHandler
-    public void g(EventMouseButton eventMouseButton) {
-        KeystrokesHudFrame keystrokesHudFrame = ClientSettings.g(KeystrokesHudFrame.class);
+    public void onMouseButton(EventMouseButton eventMouseButton) {
+        KeystrokesHudFrame keystrokesHudFrame = ClientSettings.getFrame(KeystrokesHudFrame.class);
         if (keystrokesHudFrame == null) {
             return;
         }
-        keystrokesHudFrame.z(eventMouseButton);
+        keystrokesHudFrame.handleMouseEvent(eventMouseButton);
         if (!eventMouseButton.getButtonState()) {
             return;
         }
         if (Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        keystrokesHudFrame.o$src$Lgg_vape_ui_click_frame_impl_hud_KeystrokesCpsCo$1bghhzn().O(eventMouseButton.getButton());
+        keystrokesHudFrame.getCpsCounter().recordClick(eventMouseButton.getButton());
     }
 }
 

@@ -27,272 +27,270 @@ import java.util.List;
 
 public class ListValueComponent
 extends AbstractListValueComponent {
-    private boolean Je;
-    private FrameStackManager Ji;
-    private ListValue K;
-    private ListValueDropdownLayer J2;
-    protected AnchoredPopupFrame Jo;
-    private ValueComponentMode JR = ValueComponentMode.MAIN;
-    private static final double JN = 0.08;
-    private final ColorAnimation I;
-    private boolean J0;
-    private String JS;
-    private final ColorAnimation Jf;
+    private boolean blockedList;
+    private FrameStackManager frameStackManager;
+    private ListValue listValue;
+    private ListValueDropdownLayer dropdownLayer;
+    protected AnchoredPopupFrame popupFrame;
+    private ValueComponentMode mode = ValueComponentMode.MAIN;
+    private static final double ANIMATION_DURATION = 0.08;
+    private final ColorAnimation iconColorAnimation;
+    private boolean useAnchoredPopup;
+    private String displayTitle;
+    private final ColorAnimation backgroundAnimation;
 
-    private void C$src$V$131te2f() {
+    private void renderDropdown() {
         this.onDisable();
-        SmoothFontRenderer smoothFontRenderer = this.O(0.9);
-        SmoothFontRenderer smoothFontRenderer2 = this.O(0.75);
-        Color color = ListValueComponent.J.i;
-        Color color2 = this.d$src$Z$oqzxee() ? ListValueComponent.J.A : (this.P$src$Z$og01j6() ? ListValueComponent.J.A : ListValueComponent.J.Z);
-        Color color3 = ListValueComponent.J.h;
-        float f = (float)(this.n() + this.L() / 2.0) - 3.0f;
-        double d = smoothFontRenderer.d(this.K.getName());
-        double d2 = this.n() + this.L() / 2.0 - d / 2.0 - 2.5;
-        double d3 = d2 + 7.5;
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0, this.n() + 2.5, this.A() - 10.0, this.L() - 5.0, this.P$src$Z$og01j6() ? J.z() : this.K$src$Lgg_vape_ui_click_animation_ColorAnimation_$la4la().getInterpolatedColor());
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0 + 0.5, this.n() + 2.5 + 0.5, this.A() - 10.0 - 1.0, this.L() - 5.0 - 1.0, color);
-        smoothFontRenderer.d(this.JS, this.G$src$D$1b2f02a() + 15.0 + 8.0, d2, color2);
-        smoothFontRenderer.d("" + this.a$src$I$13ib7k2(), this.G$src$D$1b2f02a() + this.A() - 10.0 - smoothFontRenderer.N("10"), d2, color2);
-        smoothFontRenderer2.d(this.z(smoothFontRenderer2, this.A() - 35.0), this.G$src$D$1b2f02a() + 15.0 + 8.0, d3, color3);
-        if (this.Je) {
-            ImageRenderer.E(color2, (float)this.G$src$D$1b2f02a() + 10.0f + 0.5f, f, "newblockedlist", 6.0f, 6.0f, false);
-            ImageRenderer.E(ListValueComponent.J.d, (float)this.G$src$D$1b2f02a() + 10.0f - 0.5f, f, "newblocked", 6.0f, 6.0f, false);
+        SmoothFontRenderer titleFont = this.getFontRenderer(0.9);
+        SmoothFontRenderer summaryFont = this.getFontRenderer(0.75);
+        Color panelColor = ListValueComponent.J.i;
+        Color primaryColor = this.isHovered() ? ListValueComponent.J.A : (this.isExpanded() ? ListValueComponent.J.A : ListValueComponent.J.Z);
+        Color secondaryColor = ListValueComponent.J.h;
+        float iconY = (float)(this.n() + this.L() / 2.0) - 3.0f;
+        double titleHeight = titleFont.d(this.listValue.getName());
+        double titleY = this.n() + this.L() / 2.0 - titleHeight / 2.0 - 2.5;
+        double summaryY = titleY + 7.5;
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0, this.n() + 2.5, this.A() - 10.0, this.L() - 5.0, this.isExpanded() ? J.z() : this.getHoverAnimation().getInterpolatedColor());
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0 + 0.5, this.n() + 2.5 + 0.5, this.A() - 10.0 - 1.0, this.L() - 5.0 - 1.0, panelColor);
+        titleFont.d(this.displayTitle, this.G$src$D$1b2f02a() + 15.0 + 8.0, titleY, primaryColor);
+        titleFont.d("" + this.getEntryCount(), this.G$src$D$1b2f02a() + this.A() - 10.0 - titleFont.N("10"), titleY, primaryColor);
+        summaryFont.d(this.buildEntrySummary(summaryFont, this.A() - 35.0), this.G$src$D$1b2f02a() + 15.0 + 8.0, summaryY, secondaryColor);
+        if (this.blockedList) {
+            ImageRenderer.drawImage(primaryColor, (float)this.G$src$D$1b2f02a() + 10.0f + 0.5f, iconY, "newblockedlist", 6.0f, 6.0f, false);
+            ImageRenderer.drawImage(ListValueComponent.J.d, (float)this.G$src$D$1b2f02a() + 10.0f - 0.5f, iconY, "newblocked", 6.0f, 6.0f, false);
         } else {
-            ImageRenderer.E(color2, (float)this.G$src$D$1b2f02a() + 10.0f + 0.5f, f, "newallowedlist", 6.0f, 6.0f, false);
-            ImageRenderer.E(ListValueComponent.J.B, (float)this.G$src$D$1b2f02a() + 10.0f + 0.5f, f, "newallowed", 6.0f, 6.0f, false);
+            ImageRenderer.drawImage(primaryColor, (float)this.G$src$D$1b2f02a() + 10.0f + 0.5f, iconY, "newallowedlist", 6.0f, 6.0f, false);
+            ImageRenderer.drawImage(ListValueComponent.J.B, (float)this.G$src$D$1b2f02a() + 10.0f + 0.5f, iconY, "newallowed", 6.0f, 6.0f, false);
         }
     }
 
-    private void l$src$V$13ocye8() {
+    private void openEditor() {
         Frame frame;
-        if (this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb() != null && (frame = this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa()) instanceof ClickGuiMainFrame) {
+        if (this.getParentFrameComponent() != null && (frame = this.getParentFrameComponent().L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa()) instanceof ClickGuiMainFrame) {
             ClickGuiMainFrame clickGuiMainFrame = (ClickGuiMainFrame)frame;
             ClickGuiModulesSidecarPanel clickGuiModulesSidecarPanel = new ClickGuiModulesSidecarPanel(null);
-            clickGuiModulesSidecarPanel.k(false);
-            clickGuiModulesSidecarPanel.f(false);
-            ClickGuiOverlaySpec clickGuiOverlaySpec = ClickGuiOverlaySpec.q().e(this.JS).C(this.Je ? "newblocked" : "newallowed").v(clickGuiModulesSidecarPanel).n(ClickGuiOverlayPlacement.DOCKED_SHIFT).r(ClickGuiOverlayTransitionMode.PUSH).D(ListValueComponent::lambda$onClick$1).N(this::lambda$onClick$2).w();
-            clickGuiMainFrame.Z(clickGuiOverlaySpec);
+            clickGuiModulesSidecarPanel.setFavoriteVisible(false);
+            clickGuiModulesSidecarPanel.setToggleVisible(false);
+            ClickGuiOverlaySpec clickGuiOverlaySpec = ClickGuiOverlaySpec.builder().title(this.displayTitle).sidecarIcon(this.blockedList ? "newblocked" : "newallowed").sidecar(clickGuiModulesSidecarPanel).placement(ClickGuiOverlayPlacement.DOCKED_SHIFT).transitionMode(ClickGuiOverlayTransitionMode.PUSH).initializeSidecar(ListValueComponent::hideSidecarDivider).initializeContent(this::populateOverlayContent).build();
+            clickGuiMainFrame.showOverlay(clickGuiOverlaySpec);
             return;
         }
-        if (this.J0) {
-            if (this.J2 == null) {
-                this.J2 = new ListValueDropdownLayer(this);
+        if (this.useAnchoredPopup) {
+            if (this.dropdownLayer == null) {
+                this.dropdownLayer = new ListValueDropdownLayer(this);
             }
-            this.J2.e();
-            this.Jo = ClientSettings.g(this, this.J2.m$src$Lgg_vape_ui_click_component_value_ListValueOptio$g5twj8(), AnchoredPopupFrame.class);
-            this.Jo.t(true);
+            this.dropdownLayer.refreshContents();
+            this.popupFrame = ClientSettings.createPopup(this, this.dropdownLayer.getOptionsPanel(), AnchoredPopupFrame.class);
+            this.popupFrame.t(true);
         } else {
-            this.a(!this.P$src$Z$og01j6());
-            if (this.P$src$Z$og01j6()) {
-                if (this.J2 == null) {
-                    this.J2 = new ListValueDropdownLayer(this);
+            this.setExpanded(!this.isExpanded());
+            if (this.isExpanded()) {
+                if (this.dropdownLayer == null) {
+                    this.dropdownLayer = new ListValueDropdownLayer(this);
                 }
-                this.Ji = ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v();
-                this.Ji.q(this.J2);
-                this.J2.e();
+                this.frameStackManager = ClientSettings.INSTANCE.getActiveStack();
+                this.frameStackManager.q(this.dropdownLayer);
+                this.dropdownLayer.refreshContents();
             }
         }
     }
 
-    private void lambda$onClick$2(PanelComponent panelComponent) {
-        panelComponent.S();
-        ListValueOptionsPanel listValueOptionsPanel = new ListValueOptionsPanel(this.K, this.Je, panelComponent.A(), panelComponent.L() - 0.1, true);
-        listValueOptionsPanel.k$src$V$admw0a();
+    private void populateOverlayContent(PanelComponent panelComponent) {
+        panelComponent.removeMarkedChildren();
+        ListValueOptionsPanel listValueOptionsPanel = new ListValueOptionsPanel(this.listValue, this.blockedList, panelComponent.A(), panelComponent.L() - 0.1, true);
+        listValueOptionsPanel.refreshEntries();
         panelComponent.h(listValueOptionsPanel, new Object[0]);
     }
 
     public ListValueComponent(ListValue listValue) {
-        this.Jf = new ColorAnimation(0.08, ListValueComponent.J.S, ListValueComponent.J.a);
-        this.I = new ColorAnimation(0.08, ListValueComponent.J.V, ListValueComponent.J.f);
-        this.K = listValue;
-        this.C(listValue);
-        this.r(this::lambda$new$0);
-        String string = listValue.getName().toLowerCase();
-        boolean bl = this.Je = string.contains("blacklist") || string.contains("blocked");
-        this.JS = string.contains("whitelist") ? "Whitelist" : (string.contains("blacklist") ? "Blacklist" : (string.contains("allowed") ? "Allowed Items" : (string.contains("blocked") ? "Blocked Items" : string.substring(0, 1).toUpperCase() + string.substring(1).replaceAll("-", " "))));
+        this.backgroundAnimation = new ColorAnimation(ANIMATION_DURATION, ListValueComponent.J.S, ListValueComponent.J.a);
+        this.iconColorAnimation = new ColorAnimation(ANIMATION_DURATION, ListValueComponent.J.V, ListValueComponent.J.f);
+        this.listValue = listValue;
+        this.bindValue(listValue);
+        this.addClickListener(this::openEditorFromClick);
+        String normalizedName = listValue.getName().toLowerCase();
+        this.blockedList = normalizedName.contains("blacklist") || normalizedName.contains("blocked");
+        this.displayTitle = normalizedName.contains("whitelist") ? "Whitelist" : (normalizedName.contains("blacklist") ? "Blacklist" : (normalizedName.contains("allowed") ? "Allowed Items" : (normalizedName.contains("blocked") ? "Blocked Items" : normalizedName.substring(0, 1).toUpperCase() + normalizedName.substring(1).replaceAll("-", " "))));
     }
 
-    public ValueComponentMode H$src$Lgg_vape_ui_click_component_value_ValueComponent$1x99xt8() {
-        return this.JR;
+    public ValueComponentMode getMode() {
+        return this.mode;
     }
 
     @Override
     public void H() {
-        if (this.JR == ValueComponentMode.STANDALONE) {
-            this.z();
+        if (this.mode == ValueComponentMode.STANDALONE) {
+            this.renderStandalone();
         } else {
-            this.C$src$V$131te2f();
+            this.renderDropdown();
         }
     }
 
-    public ListValue i$src$Lgg_vape_value_ListValue_$1aag8wx() {
-        return this.K;
+    public ListValue getListValue() {
+        return this.listValue;
     }
 
-    private int a$src$I$13ib7k2() {
-        return ((List)this.K.K()).size();
+    private int getEntryCount() {
+        return ((List)this.listValue.getValue()).size();
     }
 
-    private String z(SmoothFontRenderer smoothFontRenderer, double d) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Object e : (List)this.K.K()) {
-            if (e instanceof ToggleableListEntry && !((ToggleableListEntry)e).q()) continue;
-            if (stringBuilder.toString().length() < 1) {
-                stringBuilder.append(e.toString());
+    private String buildEntrySummary(SmoothFontRenderer fontRenderer, double maximumWidth) {
+        StringBuilder summary = new StringBuilder();
+        for (Object entry : (List)this.listValue.getValue()) {
+            if (entry instanceof ToggleableListEntry && !((ToggleableListEntry)entry).isEnabled()) continue;
+            if (summary.length() < 1) {
+                summary.append(entry.toString());
                 continue;
             }
-            String string = ", " + e.toString();
-            StringBuilder stringBuilder2 = new StringBuilder();
-            if (smoothFontRenderer.N(stringBuilder2.append(stringBuilder.toString()).append(string).toString()) < d) {
-                stringBuilder.append(string);
+            String nextEntry = ", " + entry.toString();
+            if (fontRenderer.N(new StringBuilder().append(summary.toString()).append(nextEntry).toString()) < maximumWidth) {
+                summary.append(nextEntry);
                 continue;
             }
-            stringBuilder.append("...");
+            summary.append("...");
             break;
         }
-        if (stringBuilder.length() < 1) {
-            stringBuilder.append("None");
+        if (summary.length() < 1) {
+            summary.append("None");
         }
-        return stringBuilder.toString();
+        return summary.toString();
     }
 
-    private void lambda$new$0() {
-        this.l$src$V$13ocye8();
+    private void openEditorFromClick() {
+        this.openEditor();
     }
 
 
     @Override
-    public void a(boolean bl) {
-        super.a(bl);
-        if (!bl && this.J2 != null) {
-            this.Ji.m(this.J2);
+    public void setExpanded(boolean expanded) {
+        super.setExpanded(expanded);
+        if (!expanded && this.dropdownLayer != null) {
+            this.frameStackManager.m(this.dropdownLayer);
         }
     }
 
-    private static void lambda$onClick$1(ClickGuiSidecarPanelBase clickGuiSidecarPanelBase) {
-        clickGuiSidecarPanelBase.c(false);
+    private static void hideSidecarDivider(ClickGuiSidecarPanelBase clickGuiSidecarPanelBase) {
+        clickGuiSidecarPanelBase.setDividerVisible(false);
     }
 
-    private void z() {
+    private void renderStandalone() {
         this.onDisable();
-        SmoothFontRenderer smoothFontRenderer = this.O(0.85);
-        SmoothFontRenderer smoothFontRenderer2 = this.O(0.7);
-        SmoothFontRenderer smoothFontRenderer3 = this.O(0.68);
-        boolean bl = this.F$src$Z$133grxy();
-        if (bl) {
-            this.Jf.u(this.d$src$Z$oqzxee());
-            this.I.u(this.d$src$Z$oqzxee());
-            double d = this.G$src$D$1b2f02a() + 5.0;
-            double d2 = this.n() + 0.5;
-            double d3 = this.A() - 10.0;
-            double d4 = this.L() - 1.0;
-            Color color = this.Jf.getInterpolatedColor();
-            Color color2 = ListValueComponent.J.A;
-            Color color3 = ListValueComponent.J.C;
-            Color color4 = ListValueComponent.J.F;
-            Color color5 = this.I.getInterpolatedColor();
-            double d5 = d2 + 3.0;
-            double d6 = d5 + smoothFontRenderer.d(this.JS) + 1.0;
-            double d7 = smoothFontRenderer3.N("" + this.a$src$I$13ib7k2());
-            double d8 = Math.max(11.0, d7 + 6.0);
-            double d9 = 10.0;
-            double d10 = d + d3 - 4.0 - d8;
-            double d11 = d2 + 3.0;
-            float f = 6.0f;
-            float f2 = (float)(d + 6.0);
-            float f3 = (float)(d2 + (d4 - (double)f) / 2.0);
-            double d12 = d + 17.0;
-            double d13 = Math.max(0.0, d10 - d12 - 4.0);
-            GuiRenderPrimitives.B(d, d2, d3, d4, color, 3.0f);
-            GuiRenderPrimitives.B(d10, d11, d8, d9, color4, 2.4f);
-            smoothFontRenderer.d(this.JS, d12, d5, color2);
-            smoothFontRenderer2.d(this.z(smoothFontRenderer2, d13), d12, d6, color3);
-            smoothFontRenderer3.d("" + this.a$src$I$13ib7k2(), d10 + (d8 - d7) / 2.0, d11 + 1.5, color2);
-            if (this.Je) {
-                ImageRenderer.E(color5, f2 + 0.5f, f3, "newblockedlist", f, f, false);
-                ImageRenderer.E(ListValueComponent.J.d, f2 - 0.5f, f3, "newblocked", f, f, false);
+        SmoothFontRenderer titleFont = this.getFontRenderer(0.85);
+        SmoothFontRenderer summaryFont = this.getFontRenderer(0.7);
+        SmoothFontRenderer countFont = this.getFontRenderer(0.68);
+        boolean specialParentStyle = this.hasSingleBooleanParentEntry();
+        if (specialParentStyle) {
+            this.backgroundAnimation.u(this.isHovered());
+            this.iconColorAnimation.u(this.isHovered());
+            double left = this.G$src$D$1b2f02a() + 5.0;
+            double top = this.n() + 0.5;
+            double width = this.A() - 10.0;
+            double height = this.L() - 1.0;
+            Color backgroundColor = this.backgroundAnimation.getInterpolatedColor();
+            Color primaryColor = ListValueComponent.J.A;
+            Color secondaryColor = ListValueComponent.J.C;
+            Color badgeColor = ListValueComponent.J.F;
+            Color iconColor = this.iconColorAnimation.getInterpolatedColor();
+            double titleY = top + 3.0;
+            double summaryY = titleY + titleFont.d(this.displayTitle) + 1.0;
+            double countTextWidth = countFont.N("" + this.getEntryCount());
+            double badgeWidth = Math.max(11.0, countTextWidth + 6.0);
+            double badgeHeight = 10.0;
+            double badgeX = left + width - 4.0 - badgeWidth;
+            double badgeY = top + 3.0;
+            float iconSize = 6.0f;
+            float iconX = (float)(left + 6.0);
+            float iconY = (float)(top + (height - (double)iconSize) / 2.0);
+            double textX = left + 17.0;
+            double summaryWidth = Math.max(0.0, badgeX - textX - 4.0);
+            GuiRenderPrimitives.B(left, top, width, height, backgroundColor, 3.0f);
+            GuiRenderPrimitives.B(badgeX, badgeY, badgeWidth, badgeHeight, badgeColor, 2.4f);
+            titleFont.d(this.displayTitle, textX, titleY, primaryColor);
+            summaryFont.d(this.buildEntrySummary(summaryFont, summaryWidth), textX, summaryY, secondaryColor);
+            countFont.d("" + this.getEntryCount(), badgeX + (badgeWidth - countTextWidth) / 2.0, badgeY + 1.5, primaryColor);
+            if (this.blockedList) {
+                ImageRenderer.drawImage(iconColor, iconX + 0.5f, iconY, "newblockedlist", iconSize, iconSize, false);
+                ImageRenderer.drawImage(ListValueComponent.J.d, iconX - 0.5f, iconY, "newblocked", iconSize, iconSize, false);
             } else {
-                ImageRenderer.E(color5, f2 + 0.5f, f3, "newallowedlist", f, f, false);
-                ImageRenderer.E(ListValueComponent.J.B, f2 + 0.5f, f3, "newallowed", f, f, false);
+                ImageRenderer.drawImage(iconColor, iconX + 0.5f, iconY, "newallowedlist", iconSize, iconSize, false);
+                ImageRenderer.drawImage(ListValueComponent.J.B, iconX + 0.5f, iconY, "newallowed", iconSize, iconSize, false);
             }
             return;
         }
-        double d = this.G$src$D$1b2f02a() + 5.0;
-        double d14 = this.n() + 0.5;
-        double d15 = this.A() - 10.0;
-        double d16 = this.L() - 1.0;
-        Color color = this.d$src$Z$oqzxee() ? ListValueComponent.J.a : ListValueComponent.J.S;
-        Color color6 = this.d$src$Z$oqzxee() ? ListValueComponent.J.A : ListValueComponent.J.Z;
-        Color color7 = ListValueComponent.J.h;
-        Color color8 = this.d$src$Z$oqzxee() ? ListValueComponent.J.F : ListValueComponent.J.a;
-        Color color9 = color6;
-        double d17 = d14 + 3.0;
-        double d18 = d17 + smoothFontRenderer.d(this.JS) + 1.0;
-        double d19 = smoothFontRenderer3.N("" + this.a$src$I$13ib7k2());
-        double d20 = Math.max(11.0, d19 + 6.0);
-        double d21 = 10.0;
-        double d22 = d + d15 - 4.0 - d20;
-        double d23 = d14 + 3.0;
-        float f = 6.0f;
-        float f4 = (float)(d + 6.0);
-        float f5 = (float)(d14 + (d16 - (double)f) / 2.0);
-        double d24 = d + 17.0;
-        double d25 = Math.max(0.0, d22 - d24 - 4.0);
-        GuiRenderPrimitives.B(d, d14, d15, d16, color, 3.0f);
-        GuiRenderPrimitives.B(d22, d23, d20, d21, color8, 2.4f);
-        smoothFontRenderer.d(this.JS, d24, d17, color6);
-        smoothFontRenderer2.d(this.z(smoothFontRenderer2, d25), d24, d18, color7);
-        smoothFontRenderer3.d("" + this.a$src$I$13ib7k2(), d22 + (d20 - d19) / 2.0, d23 + 1.5, color6);
-        if (this.Je) {
-            ImageRenderer.E(color9, f4 + 0.5f, f5, "newblockedlist", f, f, false);
-            ImageRenderer.E(ListValueComponent.J.d, f4 - 0.5f, f5, "newblocked", f, f, false);
+        double left = this.G$src$D$1b2f02a() + 5.0;
+        double top = this.n() + 0.5;
+        double width = this.A() - 10.0;
+        double height = this.L() - 1.0;
+        Color backgroundColor = this.isHovered() ? ListValueComponent.J.a : ListValueComponent.J.S;
+        Color primaryColor = this.isHovered() ? ListValueComponent.J.A : ListValueComponent.J.Z;
+        Color secondaryColor = ListValueComponent.J.h;
+        Color badgeColor = this.isHovered() ? ListValueComponent.J.F : ListValueComponent.J.a;
+        double titleY = top + 3.0;
+        double summaryY = titleY + titleFont.d(this.displayTitle) + 1.0;
+        double countTextWidth = countFont.N("" + this.getEntryCount());
+        double badgeWidth = Math.max(11.0, countTextWidth + 6.0);
+        double badgeHeight = 10.0;
+        double badgeX = left + width - 4.0 - badgeWidth;
+        double badgeY = top + 3.0;
+        float iconSize = 6.0f;
+        float iconX = (float)(left + 6.0);
+        float iconY = (float)(top + (height - (double)iconSize) / 2.0);
+        double textX = left + 17.0;
+        double summaryWidth = Math.max(0.0, badgeX - textX - 4.0);
+        GuiRenderPrimitives.B(left, top, width, height, backgroundColor, 3.0f);
+        GuiRenderPrimitives.B(badgeX, badgeY, badgeWidth, badgeHeight, badgeColor, 2.4f);
+        titleFont.d(this.displayTitle, textX, titleY, primaryColor);
+        summaryFont.d(this.buildEntrySummary(summaryFont, summaryWidth), textX, summaryY, secondaryColor);
+        countFont.d("" + this.getEntryCount(), badgeX + (badgeWidth - countTextWidth) / 2.0, badgeY + 1.5, primaryColor);
+        if (this.blockedList) {
+            ImageRenderer.drawImage(primaryColor, iconX + 0.5f, iconY, "newblockedlist", iconSize, iconSize, false);
+            ImageRenderer.drawImage(ListValueComponent.J.d, iconX - 0.5f, iconY, "newblocked", iconSize, iconSize, false);
         } else {
-            ImageRenderer.E(color9, f4 + 0.5f, f5, "newallowedlist", f, f, false);
-            ImageRenderer.E(ListValueComponent.J.B, f4 + 0.5f, f5, "newallowed", f, f, false);
+            ImageRenderer.drawImage(primaryColor, iconX + 0.5f, iconY, "newallowedlist", iconSize, iconSize, false);
+            ImageRenderer.drawImage(ListValueComponent.J.B, iconX + 0.5f, iconY, "newallowed", iconSize, iconSize, false);
         }
     }
 
     @Override
     public void c() {
-        if (!this.J0 && this.J2 != null) {
-            this.J2.h();
+        if (!this.useAnchoredPopup && this.dropdownLayer != null) {
+            this.dropdownLayer.updatePosition();
         }
         super.c();
     }
 
-    public void X(boolean bl) {
-        this.J0 = bl;
+    public void setUseAnchoredPopup(boolean useAnchoredPopup) {
+        this.useAnchoredPopup = useAnchoredPopup;
     }
 
     @Override
     public double C() {
-        if (this.JR == ValueComponentMode.STANDALONE) {
+        if (this.mode == ValueComponentMode.STANDALONE) {
             return 23.0;
         }
         return super.C();
     }
 
-    private boolean F$src$Z$133grxy() {
+    private boolean hasSingleBooleanParentEntry() {
         if (!(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa() instanceof ClickGuiMainFrame)) {
             return false;
         }
-        if (!(this.K.getParent() instanceof BooleanValue)) {
+        if (!(this.listValue.getParent() instanceof BooleanValue)) {
             return false;
         }
-        return ((BooleanValue)this.K.getParent()).q$src$Ljava_util_List_$fyau59().size() == 1;
+        return ((BooleanValue)this.listValue.getParent()).getDependentValues().size() == 1;
     }
 
-    public boolean n$src$Z$13pgjoe() {
-        return this.Je;
+    public boolean isBlockedList() {
+        return this.blockedList;
     }
 
-    public String E() {
-        return this.JS;
+    public String getDisplayTitle() {
+        return this.displayTitle;
     }
 
-    public void W(ValueComponentMode valueComponentMode) {
-        this.JR = valueComponentMode;
+    public void setMode(ValueComponentMode mode) {
+        this.mode = mode;
     }
 }
 

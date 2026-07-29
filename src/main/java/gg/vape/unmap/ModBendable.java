@@ -7,89 +7,89 @@ import gg.vape.unmap.Bendable;
 
 public class ModBendable
 extends Bendable {
-    private static final String b;
-    private BindActivationMode Z = BindActivationMode.TOGGLE;
-    private static String[] k;
-    private final Mod Q;
+    private static final String BIND_DISPLAY_FORMAT;
+    private BindActivationMode activationMode = BindActivationMode.TOGGLE;
+    private static String[] legacyStrings;
+    private final Mod module;
 
-    public static void Q(String[] stringArray) {
-        k = stringArray;
+    public static void setLegacyStrings(String[] strings) {
+        legacyStrings = strings;
     }
 
     @Override
-    public BindActivationMode G() {
-        return this.Z;
+    public BindActivationMode getActivationMode() {
+        return this.activationMode;
     }
 
     @Override
-    public void A() {
-        this.Q.y();
+    public void onBindActivated() {
+        this.module.y();
     }
 
-    public ModBendable(Mod mod) {
-        this.Q = mod;
+    public ModBendable(Mod module) {
+        this.module = module;
     }
 
     @Override
-    public boolean U(int n, boolean bl) {
-        if (this.G() == BindActivationMode.TOGGLE) {
-            return super.U(n, bl);
+    public boolean handleInput(int inputCode, boolean pressed) {
+        if (this.getActivationMode() == BindActivationMode.TOGGLE) {
+            return super.handleInput(inputCode, pressed);
         }
-        if (!this.n(n)) {
+        if (!this.containsInput(inputCode)) {
             return false;
         }
-        if (bl) {
-            if (this.A(n)) {
-                if (!this.Q.r$src$Z$14eylz9()) {
-                    this.Q.Y(true);
+        if (pressed) {
+            if (this.areOtherInputsDown(inputCode)) {
+                if (!this.module.r$src$Z$14eylz9()) {
+                    this.module.Y(true);
                 }
                 return true;
             }
             return false;
         }
-        if (this.Q.r$src$Z$14eylz9()) {
-            this.Q.Y(false);
+        if (this.module.r$src$Z$14eylz9()) {
+            this.module.Y(false);
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean A$src$Z$jg36ch() {
+    public boolean supportsActivationMode() {
         return true;
     }
 
     @Override
-    public boolean m() {
-        return this.Q.k();
+    public boolean isActive() {
+        return this.module.k();
     }
 
     @Override
-    public String y() {
-        return String.format(b, ClientSettings.F, ClientSettings.F, this.h(), ClientSettings.F, ClientSettings.F, this.Q.getName());
+    public String getDisplayText() {
+        return String.format(BIND_DISPLAY_FORMAT, ClientSettings.F, ClientSettings.F, this.getBindText(), ClientSettings.F, ClientSettings.F, this.module.getName());
     }
 
     static {
-        ModBendable.Q(new String[1]);
-        b = " %s7[%sr%s%s7]%sr %s";
+        ModBendable.setLegacyStrings(new String[1]);
+        BIND_DISPLAY_FORMAT = " %s7[%sr%s%s7]%sr %s";
     }
 
 
-    private boolean A(int n) {
-        for (int n2 : this.L()) {
-            if (n2 == n || ClientSettings.l(n2)) continue;
+    private boolean areOtherInputsDown(int triggeringInput) {
+        for (int boundInput : this.getBoundInputs()) {
+            if (boundInput == triggeringInput || ClientSettings.l(boundInput)) continue;
             return false;
         }
         return true;
     }
 
-    public static String[] e() {
-        return k;
+    public static String[] getLegacyStrings() {
+        return legacyStrings;
     }
 
     @Override
-    public void Y(BindActivationMode bindActivationMode) {
-        this.Z = bindActivationMode == null ? BindActivationMode.TOGGLE : bindActivationMode;
+    public void setActivationMode(BindActivationMode activationMode) {
+        this.activationMode = activationMode == null ? BindActivationMode.TOGGLE : activationMode;
     }
 }
 

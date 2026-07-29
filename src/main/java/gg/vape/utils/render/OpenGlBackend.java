@@ -1,66 +1,65 @@
 package gg.vape.utils.render;
 
 public interface OpenGlBackend {
-    public void m();
+    public void pushMatrix();
 
-    public void P(float var1, float var2, float var3);
+    public void translate(float x, float y, float z);
 
-    public void w(float var1, double var2, double var4, double var6);
+    public void rotate(double angle, double x, double y, double z);
 
-    public void b(double var1, float var3, float var4);
+    public void setColor(double red, float green, float blue);
 
-    public void e(int var1, int var2, int var3, int var4);
+    public void setScissor(int x, int y, int width, int height);
 
-    public void S();
+    public void loadIdentity();
 
-    public float float_u(int var1);
+    public float getFloatState(int parameter);
 
-    public void F();
+    public void popMatrix();
 
-    public void r(float var1);
+    public void setLineWidth(float width);
 
-    public void k(int var1, float var2);
+    public void setAlphaFunction(int function, float reference);
 
-    public void H(float var1, float var2, float var3);
+    public void scale(float x, float y, float z);
 
-    public void X(float var1, float var2, float var3, float var4);
+    public void rotate(float angle, float x, float y, float z);
 
-    public void E(float var1, float var2, float var3);
+    public void setColor(float red, float green, float blue);
 
-    public void F(float var1, float var2, float var3);
+    public void setNormal(float x, float y, float z);
 
-    public void l(int var1);
+    public void enableCapability(int capability);
 
-    public int K(int var1);
+    public int getIntegerState(int parameter);
 
-    public void I(double var1, double var3, double var5);
+    public void translate(double x, double y, double z);
 
-    public void M();
+    public void endPrimitive();
 
-    public void C(int var1);
+    public void beginPrimitive(int mode);
 
-    public void void_u(int var1);
+    public void disableCapabilityState(int capability);
 
-    public boolean L(int var1);
+    public boolean isCapabilityEnabled(int capability);
 
-    public void m(double var1, double var3, double var5);
+    public void addVertex(double x, double y, double z);
 
-    public void n(double var1, double var3, double var5);
+    public void setNormal(double x, double y, double z);
 
-    public void G(double var1, double var3, double var5);
+    public void scale(double x, double y, double z);
 
-    public void k(double var1, double var3, double var5, double var7);
+    public void setColor(double red, double green, double blue, double alpha);
 
-    public void q(float var1, float var2, float var3, float var4);
+    public void setColor(float red, float green, float blue, float alpha);
 
-    public void U(boolean var1);
+    public void setDepthMask(boolean enabled);
 
-    default public /* synthetic */ float u(int n) {
-        return this.float_u(n);
+    default public /* synthetic */ float getFloat(int parameter) {
+        return this.getFloatState(parameter);
     }
 
-    default public /* synthetic */ void u$src$V$hntn98(int n) {
-        this.void_u(n);
+    default public /* synthetic */ void disableCapability(int capability) {
+        this.disableCapabilityState(capability);
     }
 }
-

@@ -6,17 +6,14 @@ import gg.vape.ui.click.frame.impl.profile.ProfilesSettingsHeaderComponent;
 
 class ProfilesHeaderApplyPendingProfileClickHandler
 implements GuiClickListener {
-    final ProfilesSettingsFrame a;
-    final ProfilesSettingsHeaderComponent z;
+    private final ProfilesSettingsFrame profilesFrame;
 
-    ProfilesHeaderApplyPendingProfileClickHandler(ProfilesSettingsHeaderComponent profilesSettingsHeaderComponent, ProfilesSettingsFrame profilesSettingsFrame) {
-        this.z = profilesSettingsHeaderComponent;
-        this.a = profilesSettingsFrame;
+    ProfilesHeaderApplyPendingProfileClickHandler(ProfilesSettingsFrame profilesFrame) {
+        this.profilesFrame = profilesFrame;
     }
 
     @Override
-    public void P() {
-        this.a.N$src$V$66cfbp();
+    public void onPrimaryClick() {
+        this.profilesFrame.closePopupAndDiscardDraft();
     }
 }
-

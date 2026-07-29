@@ -37,25 +37,25 @@ public class DropdownSelectComponent<T>
 extends GuiComponent
 implements FocusableComponent {
     @Nullable
-    private ModeValue O;
-    private final Map<String, List<T>> i = new LinkedHashMap<String, List<T>>();
-    private boolean o;
-    private final OptionTextFormatter<T> Q;
-    private T b;
-    private boolean zl;
+    private ModeValue modeValue;
+    private final Map<String, List<T>> optionsByGroup = new LinkedHashMap<String, List<T>>();
+    private boolean disabled;
+    private final OptionTextFormatter<T> optionFormatter;
+    private T selectedValue;
+    private boolean pressed;
     @Nullable
-    private PopupFrame zS;
-    private final List<DropdownSelectionListener> v = new ArrayList<DropdownSelectionListener>();
-    private boolean K;
-    private final String R;
-    private boolean G;
-    private final ColorAnimation zn;
-    private final float zi = 2.0f;
-    private final PanelComponent zJ;
-    private boolean I;
-    private static String[] a;
+    private PopupFrame popupFrame;
+    private final List<DropdownSelectionListener> selectionListeners = new ArrayList<DropdownSelectionListener>();
+    private boolean highlightedStyle;
+    private final String label;
+    private boolean inputSuppressed;
+    private final ColorAnimation borderAnimation;
+    private final float arrowSize = 2.0f;
+    private final PanelComponent optionsPanel;
+    private boolean showLabelPrefix;
+    private static String[] legacyState;
     @Nullable
-    private String zV;
+    private String emptyText;
 
 
     @Override
@@ -66,19 +66,19 @@ implements FocusableComponent {
     @Override
     public void c() {
         super.c();
-        PopupFrame popupFrame = this.zS;
+        PopupFrame popupFrame = this.popupFrame;
         if (popupFrame != null) {
-            this.b$src$V$1ru9wly();
-            this.zJ.H(true);
-            this.zJ.c();
+            this.positionPopup();
+            this.optionsPanel.H(true);
+            this.optionsPanel.c();
         }
     }
 
     @Override
     public void u() {
-        if (this.zl && !this.w$src$Z$e457mb() && !this.l$src$Z$1rzrun0()) {
-            this.zn.J();
-            this.zl = false;
+        if (this.pressed && !this.w$src$Z$e457mb() && !this.isExpanded()) {
+            this.borderAnimation.J();
+            this.pressed = false;
         }
     }
 
@@ -86,60 +86,61 @@ implements FocusableComponent {
     @SuppressWarnings("unchecked")
     public void H() {
         this.onDisable();
-        SmoothFontRenderer smoothFontRenderer = this.O(0.85);
-        Object selectedValue = this.O != null ? this.O.K() : this.b;
-        String string = selectedValue != null ? this.Q.I(this.O != null ? (T)this.O.K() : this.b) : (this.zV != null ? this.zV : "");
-        if (this.I && !this.R.isEmpty()) {
-            string = this.R + " - " + string;
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(0.85);
+        Object currentValue = this.modeValue != null ? this.modeValue.getValue() : this.selectedValue;
+        String displayText = currentValue != null ? this.optionFormatter.format(this.modeValue != null ? (T)this.modeValue.getValue() : this.selectedValue) : (this.emptyText != null ? this.emptyText : "");
+        if (this.showLabelPrefix && !this.label.isEmpty()) {
+            displayText = this.label + " - " + displayText;
         }
-        double d = smoothFontRenderer.d(string);
-        double d2 = this.n() + this.L() / 2.0 - d / 2.0;
+        double textHeight = fontRenderer.d(displayText);
+        double centeredTextY = this.n() + this.L() / 2.0 - textHeight / 2.0;
         this.getClass();
-        double d3 = d2 + (double)(5.0f / 8.0f);
-        double d4 = this.n() + this.L() / 2.0 - (double)(this.zi / 2.0f);
-        double d5 = this.L();
+        double textY = centeredTextY + (double)(5.0f / 8.0f);
+        double arrowY = this.n() + this.L() / 2.0 - (double)(this.arrowSize / 2.0f);
+        double dropdownHeight = this.L();
         this.getClass();
-        double d6 = d5 - 5.0;
-        if (this.l$src$Z$1rzrun0()) {
-            d6 += this.zJ.L();
+        double backgroundHeight = dropdownHeight - 5.0;
+        if (this.isExpanded()) {
+            backgroundHeight += this.optionsPanel.L();
         }
-        if (this.K) {
-            double d7 = this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2();
-            double d8 = this.n();
+        if (this.highlightedStyle) {
+            double backgroundX = this.G$src$D$1b2f02a() + this.getHorizontalInset();
+            double backgroundY = this.n();
             this.getClass();
-            GuiRenderPrimitives.e(d7, d8 + (double)(5.0f / 2.0f) + 0.5, this.A() - this.Z$src$D$1wvori2() - 8.0 + 2.0, d6 - 1.0, this.o ? DropdownSelectComponent.J.S.darker() : DropdownSelectComponent.J.S, false, 2.0f, 1.0f);
+            GuiRenderPrimitives.e(backgroundX, backgroundY + (double)(5.0f / 2.0f) + 0.5, this.A() - this.getHorizontalInset() - 8.0 + 2.0, backgroundHeight - 1.0, this.disabled ? DropdownSelectComponent.J.S.darker() : DropdownSelectComponent.J.S, false, 2.0f, 1.0f);
         } else {
-            double d9 = this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2();
-            double d10 = this.n();
+            double backgroundX = this.G$src$D$1b2f02a() + this.getHorizontalInset();
+            double backgroundY = this.n();
             this.getClass();
-            GuiRenderPrimitives.e(d9, d10 + (double)(5.0f / 2.0f) + 0.5, this.A() - this.Z$src$D$1wvori2() - 8.0 + 2.0, d6 - 1.0, this.o ? DropdownSelectComponent.J.l.darker() : DropdownSelectComponent.J.i, false, 2.0f, 1.0f);
-            double d11 = this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2();
-            double d12 = this.n();
+            GuiRenderPrimitives.e(backgroundX, backgroundY + (double)(5.0f / 2.0f) + 0.5, this.A() - this.getHorizontalInset() - 8.0 + 2.0, backgroundHeight - 1.0, this.disabled ? DropdownSelectComponent.J.l.darker() : DropdownSelectComponent.J.i, false, 2.0f, 1.0f);
+            double borderX = this.G$src$D$1b2f02a() + this.getHorizontalInset();
+            double borderY = this.n();
             this.getClass();
-            GuiRenderPrimitives.P(d11, d12 + (double)(5.0f / 2.0f), this.A() - this.Z$src$D$1wvori2() - 8.0 + 2.0, d6 - 1.0, this.zn.getInterpolatedColor(), 3.0f, 0.75f, 1.0f);
+            GuiRenderPrimitives.P(borderX, borderY + (double)(5.0f / 2.0f), this.A() - this.getHorizontalInset() - 8.0 + 2.0, backgroundHeight - 1.0, this.borderAnimation.getInterpolatedColor(), 3.0f, 0.75f, 1.0f);
         }
-        smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2() + 5.0, d3, this.o ? DropdownSelectComponent.J.h : DropdownSelectComponent.J.Z);
-        Color color = DropdownSelectComponent.J.W;
-        float f = (float)(this.G$src$D$1b2f02a() + this.A());
+        fontRenderer.d(displayText, this.G$src$D$1b2f02a() + this.getHorizontalInset() + 5.0, textY, this.disabled ? DropdownSelectComponent.J.h : DropdownSelectComponent.J.Z);
+        Color arrowColor = DropdownSelectComponent.J.W;
+        float rightEdgeX = (float)(this.G$src$D$1b2f02a() + this.A());
         this.getClass();
-        ImageRenderer.E(color, f - 5.0f * 3.0f, (float)d4, this.l$src$Z$1rzrun0() ? "upcollapse" : "downexpand", this.zi, this.zi, false);
+        ImageRenderer.drawImage(arrowColor, rightEdgeX - 5.0f * 3.0f, (float)arrowY, this.isExpanded() ? "upcollapse" : "downexpand", this.arrowSize, this.arrowSize, false);
     }
 
-    public static PopupFrame e(DropdownSelectComponent dropdownSelectComponent) {
-        return dropdownSelectComponent.zS;
+    @Nullable
+    public PopupFrame getPopupFrame() {
+        return this.popupFrame;
     }
 
-    public void B(String string, T ... TArray) {
-        for (T t : TArray) {
-            this.e(string, t);
+    public void addGroupedOptions(String groupName, T ... options) {
+        for (T option : options) {
+            this.addGroupedOption(groupName, option);
         }
     }
 
-    public static void R(String[] stringArray) {
-        a = stringArray;
+    public static void setLegacyState(String[] state) {
+        legacyState = state;
     }
 
-    public void L$src$V$1e9izof() {
+    public void onSelectionChanged() {
     }
 
     @Override
@@ -149,184 +150,180 @@ implements FocusableComponent {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    private void U$src$V$1rn4kw9() {
-        PopupFrame popupFrame = this.zS;
-        OptionTextFormatter<T> optionTextFormatter = this.Q;
+    public void togglePopup() {
+        PopupFrame popupFrame = this.popupFrame;
+        OptionTextFormatter<T> optionTextFormatter = this.optionFormatter;
         synchronized (optionTextFormatter) {
             if (popupFrame != null) {
-                this.zS = null;
-                ClientSettings.fT = null;
-                ClientSettings.K(popupFrame);
+                this.popupFrame = null;
+                ClientSettings.activeComponent = null;
+                ClientSettings.removePopup(popupFrame);
             } else {
-                this.zJ.S();
-                this.zJ.q(this.A() - this.Z$src$D$1wvori2() - 8.0 + 2.0);
-                this.zJ.V(3.0f);
-                for (Map.Entry<String, List<T>> entry : this.i.entrySet()) {
-                    String string = entry.getKey();
-                    List<T> list = entry.getValue();
-                    if (list.isEmpty()) continue;
-                    if (string != null) {
-                        SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent(string, 0.8);
-                        simpleTextLabelComponent.l(true);
-                        simpleTextLabelComponent.T$src$V$1orl066(DropdownSelectComponent.J.A);
-                        simpleTextLabelComponent.o(simpleTextLabelComponent.h() * 1.3);
-                        double d = (this.zJ.A() - simpleTextLabelComponent.A()) / 2.0;
-                        this.zJ.h(new FilledSpacerComponent(d, simpleTextLabelComponent.L(), d - 4.0, 0.5, DropdownSelectComponent.J.y), "widthwrap");
-                        this.zJ.h(simpleTextLabelComponent, "widthwrap");
-                        this.zJ.h(new FilledSpacerComponent(d, simpleTextLabelComponent.L(), d - 4.0, 0.5, DropdownSelectComponent.J.y), "wrap");
+                this.optionsPanel.removeMarkedChildren();
+                this.optionsPanel.setExplicitWidth(this.A() - this.getHorizontalInset() - 8.0 + 2.0);
+                this.optionsPanel.setCornerRadius(3.0f);
+                for (Map.Entry<String, List<T>> entry : this.optionsByGroup.entrySet()) {
+                    String groupName = entry.getKey();
+                    List<T> options = entry.getValue();
+                    if (options.isEmpty()) continue;
+                    if (groupName != null) {
+                        SimpleTextLabelComponent groupLabel = new SimpleTextLabelComponent(groupName, 0.8);
+                        groupLabel.setBold(true);
+                        groupLabel.setTextColor(DropdownSelectComponent.J.A);
+                        groupLabel.o(groupLabel.getTextWidth() * 1.3);
+                        double dividerWidth = (this.optionsPanel.A() - groupLabel.A()) / 2.0;
+                        this.optionsPanel.h(new FilledSpacerComponent(dividerWidth, groupLabel.L(), dividerWidth - 4.0, 0.5, DropdownSelectComponent.J.y), "widthwrap");
+                        this.optionsPanel.h(groupLabel, "widthwrap");
+                        this.optionsPanel.h(new FilledSpacerComponent(dividerWidth, groupLabel.L(), dividerWidth - 4.0, 0.5, DropdownSelectComponent.J.y), "wrap");
                     }
-                    for (T e : list) {
-                        String string2 = this.Q.I(e);
-                        DropdownSelectOptionComponent dropdownSelectOptionComponent = new DropdownSelectOptionComponent(string2, 0.85);
-                        if (e instanceof DescribedOption) {
-                            DescribedOption describedOption = (DescribedOption)e;
-                            dropdownSelectOptionComponent.w(describedOption.E());
+                    for (T option : options) {
+                        String optionText = this.optionFormatter.format(option);
+                        DropdownSelectOptionComponent optionComponent = new DropdownSelectOptionComponent(optionText, 0.85);
+                        if (option instanceof DescribedOption) {
+                            DescribedOption describedOption = (DescribedOption)option;
+                            optionComponent.w(describedOption.getDescription());
                         }
-                        if (e instanceof FontOption) {
-                            FontOption fontOption = (FontOption)e;
-                            dropdownSelectOptionComponent.Y(fontOption);
+                        if (option instanceof FontOption) {
+                            FontOption fontOption = (FontOption)option;
+                            optionComponent.setFontOption(fontOption);
                         }
-                        if (e instanceof ModeOption) {
-                            ModeOption modeOption = (ModeOption)e;
-                            dropdownSelectOptionComponent.a(modeOption.getProperty(PropertyContainer.x));
-                            dropdownSelectOptionComponent.K(modeOption.getProperty(PropertyContainer.B));
+                        if (option instanceof ModeOption) {
+                            ModeOption modeOption = (ModeOption)option;
+                            optionComponent.setShowNewBadge(modeOption.getProperty(PropertyContainer.NEW_BADGE));
+                            optionComponent.setShowBetaBadge(modeOption.getProperty(PropertyContainer.BETA_BADGE));
                         }
-                        dropdownSelectOptionComponent.o(this.zJ.A() - 1.0);
-                        dropdownSelectOptionComponent.Y(12.0);
-                        dropdownSelectOptionComponent.s(() -> this.lambda$toggleContent$0(e));
-                        this.zJ.h(dropdownSelectOptionComponent, "wrap");
+                        optionComponent.o(this.optionsPanel.A() - 1.0);
+                        optionComponent.Y(12.0);
+                        optionComponent.setClickListener(() -> this.selectOption(option));
+                        this.optionsPanel.h(optionComponent, "wrap");
                     }
                 }
-                this.zJ.h(new SpacerComponent(0.0, 0.5), "wrap");
-                this.zJ.u(Math.min(this.zJ.d$src$D$ibccpu(), this.zJ.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y()));
-                this.zJ.H(true);
-                this.zS = ClientSettings.g(this, this.zJ, PopupFrame.class);
-                this.zS.Z(new DropdownPopupCloseClickHandler(this));
-                ClientSettings.fT = this;
-                this.b$src$V$1ru9wly();
+                this.optionsPanel.h(new SpacerComponent(0.0, 0.5), "wrap");
+                this.optionsPanel.setExplicitHeight(Math.min(this.optionsPanel.d$src$D$ibccpu(), this.optionsPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y()));
+                this.optionsPanel.H(true);
+                this.popupFrame = ClientSettings.createPopup(this, this.optionsPanel, PopupFrame.class);
+                this.popupFrame.addGlobalMouseListener(new DropdownPopupCloseClickHandler(this));
+                ClientSettings.activeComponent = this;
+                this.positionPopup();
             }
         }
     }
 
-    private static List lambda$addOption$1(String string) {
+    private static List createUngroupedOptionList(String ignoredGroupName) {
         return new ArrayList();
     }
 
-    public void O(T t) {
-        this.i.computeIfAbsent(null, DropdownSelectComponent::lambda$addOption$1).add(t);
+    public void addOption(T option) {
+        this.optionsByGroup.computeIfAbsent(null, DropdownSelectComponent::createUngroupedOptionList).add(option);
     }
 
-    private static List lambda$addOption$2(String string) {
+    private static List createGroupedOptionList(String ignoredGroupName) {
         return new ArrayList();
     }
 
     @Nullable
-    public String U$src$Ljava_lang_String_$10cfff1() {
-        return this.zV;
+    public String getEmptyText() {
+        return this.emptyText;
     }
 
-    public boolean l$src$Z$1rzrun0() {
-        return this.zS != null;
+    public boolean isExpanded() {
+        return this.popupFrame != null;
     }
 
-    public static String[] D$src$ALjava_lang_String_$11t6fwp() {
-        return a;
+    public static String[] getLegacyState() {
+        return legacyState;
     }
 
-    public boolean J$src$Z$1rh2ugq() {
-        return this.K;
+    public boolean isHighlightedStyle() {
+        return this.highlightedStyle;
     }
 
-    public void G(T t) {
-        this.b = t;
-        if (t instanceof DescribedOption) {
-            DescribedOption codeConverter$ArrayAccessReplacementMethodNames = (DescribedOption)t;
-            this.w(codeConverter$ArrayAccessReplacementMethodNames.E());
+    public void setSelectedValue(T selectedValue) {
+        this.selectedValue = selectedValue;
+        if (selectedValue instanceof DescribedOption) {
+            DescribedOption describedOption = (DescribedOption)selectedValue;
+            this.w(describedOption.getDescription());
         } else {
             this.w((String)null);
         }
     }
 
-    public static void w(DropdownSelectComponent dropdownSelectComponent) {
-        dropdownSelectComponent.U$src$V$1rn4kw9();
-    }
-
-    private void b$src$V$1ru9wly() {
-        PopupFrame popupFrame = this.zS;
+    private void positionPopup() {
+        PopupFrame popupFrame = this.popupFrame;
         if (popupFrame != null) {
-            popupFrame.K(this.G$src$D$1b2f02a() + this.Z$src$D$1wvori2());
+            popupFrame.K(this.G$src$D$1b2f02a() + this.getHorizontalInset());
             popupFrame.S(this.n() + 17.0);
         }
     }
 
     @Override
     public void F() {
-        if (!this.zl) {
-            this.zn.J();
+        if (!this.pressed) {
+            this.borderAnimation.J();
         }
-        this.zl = true;
+        this.pressed = true;
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public void A$src$V$1rc4p11() {
-        OptionTextFormatter<T> optionTextFormatter = this.Q;
+    public void closePopup() {
+        OptionTextFormatter<T> optionTextFormatter = this.optionFormatter;
         synchronized (optionTextFormatter) {
-            if (this.zS != null) {
-                ClientSettings.K(this.zS);
-                this.zS = null;
-                if (ClientSettings.fT == this) {
-                    ClientSettings.fT = null;
+            if (this.popupFrame != null) {
+                ClientSettings.removePopup(this.popupFrame);
+                this.popupFrame = null;
+                if (ClientSettings.activeComponent == this) {
+                    ClientSettings.activeComponent = null;
                 }
             }
         }
     }
 
-    public void q(boolean bl) {
-        this.I = bl;
+    public void setShowLabelPrefix(boolean showLabelPrefix) {
+        this.showLabelPrefix = showLabelPrefix;
     }
 
     @Override
-    public boolean v() {
-        return this.o;
+    public boolean isDisabled() {
+        return this.disabled;
     }
 
-    public String o$src$Ljava_lang_String_$cd7zeb() {
-        return this.R;
+    public String getLabel() {
+        return this.label;
     }
 
-    public @UnmodifiableView List<T> t$src$Ljava_util_List_$1iagpvr() {
-        ArrayList<T> arrayList = new ArrayList<T>();
-        for (List<T> list : this.i.values()) {
-            arrayList.addAll(list);
+    public @UnmodifiableView List<T> getOptions() {
+        ArrayList<T> options = new ArrayList<T>();
+        for (List<T> groupOptions : this.optionsByGroup.values()) {
+            options.addAll(groupOptions);
         }
-        return arrayList;
+        return options;
     }
 
-    public DropdownSelectComponent(String string, OptionTextFormatter<T> optionTextFormatter, T ... TArray) {
-        this(string, optionTextFormatter, Arrays.asList(TArray));
+    public DropdownSelectComponent(String label, OptionTextFormatter<T> optionFormatter, T ... options) {
+        this(label, optionFormatter, Arrays.asList(options));
     }
 
-    public void v(boolean bl) {
-        this.K = bl;
+    public void setHighlightedStyle(boolean highlightedStyle) {
+        this.highlightedStyle = highlightedStyle;
     }
 
-    public T j$src$Ljava_lang_Object_$an7bt2() {
-        return this.b;
+    public T getSelectedValue() {
+        return this.selectedValue;
     }
 
-    public DropdownSelectComponent<T> D(DropdownSelectionListener dropdownSelectionListener) {
-        this.v.add(dropdownSelectionListener);
+    public DropdownSelectComponent<T> addSelectionListener(DropdownSelectionListener selectionListener) {
+        this.selectionListeners.add(selectionListener);
         return this;
     }
 
-    public void e(String string, T t) {
-        this.i.computeIfAbsent(string, DropdownSelectComponent::lambda$addOption$2).add(t);
+    public void addGroupedOption(String groupName, T option) {
+        this.optionsByGroup.computeIfAbsent(groupName, DropdownSelectComponent::createGroupedOptionList).add(option);
     }
 
-    public boolean H$src$Z$1rfz9a0() {
-        return this.I;
+    public boolean isShowLabelPrefix() {
+        return this.showLabelPrefix;
     }
 
     @Override
@@ -335,82 +332,82 @@ implements FocusableComponent {
     }
 
     @Override
-    public void F(boolean bl) {
-        this.o = bl;
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     static {
-        DropdownSelectComponent.R(new String[2]);
+        DropdownSelectComponent.setLegacyState(new String[2]);
     }
 
     @SuppressWarnings("unchecked")
     public DropdownSelectComponent(ModeValue modeValue) {
-        this(modeValue.getName(), (OptionTextFormatter<T>)(OptionTextFormatter<?>)ModeEntryTextFormatter.B, (T[])modeValue.getModes());
-        this.O = modeValue;
-        this.C(modeValue);
+        this(modeValue.getName(), (OptionTextFormatter<T>)(OptionTextFormatter<?>)ModeEntryTextFormatter.DEFAULT, (T[])modeValue.getModes());
+        this.modeValue = modeValue;
+        this.bindValue(modeValue);
     }
 
-    public void V(T ... TArray) {
-        for (T t : TArray) {
-            this.O(t);
-        }
-    }
-
-    private void lambda$toggleContent$0(T object) {
-        this.b = object;
-        this.L$src$V$1e9izof();
-        this.U$src$V$1rn4kw9();
-        if (this.O != null) {
-            this.O.setValue((ModeSelection)this.b);
-            this.C(this.O);
-        }
-        for (DropdownSelectionListener dropdownSelectionListener : this.v) {
-            dropdownSelectionListener.e();
-        }
-        if (this.O != null && !this.O.q$src$Ljava_util_List_$fyau59().isEmpty()) {
-            this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().l$src$V$1mibm4x();
+    public void addOptions(T ... options) {
+        for (T option : options) {
+            this.addOption(option);
         }
     }
 
-    public DropdownSelectComponent(String string, OptionTextFormatter<T> optionTextFormatter, List<T> list) {
+    private void selectOption(T option) {
+        this.selectedValue = option;
+        this.onSelectionChanged();
+        this.togglePopup();
+        if (this.modeValue != null) {
+            this.modeValue.setValue((ModeSelection)this.selectedValue);
+            this.bindValue(this.modeValue);
+        }
+        for (DropdownSelectionListener selectionListener : this.selectionListeners) {
+            selectionListener.onSelectionChanged();
+        }
+        if (this.modeValue != null && !this.modeValue.getDependentValues().isEmpty()) {
+            this.getParentFrameComponent().l$src$V$1mibm4x();
+        }
+    }
+
+    public DropdownSelectComponent(String label, OptionTextFormatter<T> optionFormatter, List<T> options) {
         this.getClass();
-        this.zn = new ColorAnimation(0.15, DropdownSelectComponent.J.l, DropdownSelectComponent.J.y);
-        this.I = true;
-        this.K = false;
-        this.R = string;
-        this.Q = optionTextFormatter;
+        this.borderAnimation = new ColorAnimation(0.15, DropdownSelectComponent.J.l, DropdownSelectComponent.J.y);
+        this.showLabelPrefix = true;
+        this.highlightedStyle = false;
+        this.label = label;
+        this.optionFormatter = optionFormatter;
         this.o(110.0);
-        this.i.put(null, list);
-        this.zJ = new PanelComponent(110.0, 20.0);
-        this.zJ.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.zJ.t(120.0);
-        this.zJ.d(false);
-        this.zJ.T(DropdownSelectComponent.J.R);
-        this.zJ.I(true);
-        this.o(true);
+        this.optionsByGroup.put(null, options);
+        this.optionsPanel = new PanelComponent(110.0, 20.0);
+        this.optionsPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.optionsPanel.t(120.0);
+        this.optionsPanel.setShowDisabledOverlay(false);
+        this.optionsPanel.setDisabledOverlayColor(DropdownSelectComponent.J.R);
+        this.optionsPanel.I(true);
+        this.setPropagateMouseEvents(true);
     }
 
-    public void H(@Nullable String string) {
-        this.zV = string;
+    public void setEmptyText(@Nullable String emptyText) {
+        this.emptyText = emptyText;
     }
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
-        if (this.G) {
+    public void g(GuiMouseEvent mouseEvent) {
+        if (this.inputSuppressed) {
             return;
         }
-        PopupFrame popupFrame = this.zS;
+        PopupFrame popupFrame = this.popupFrame;
         if (popupFrame != null) {
             if (popupFrame.t()) {
-                popupFrame.D(guiMouseEvent);
+                popupFrame.dispatchMouseEvent(mouseEvent);
             }
-            if (!this.o && !popupFrame.t()) {
-                this.U$src$V$1rn4kw9();
+            if (!this.disabled && !popupFrame.t()) {
+                this.togglePopup();
             }
             return;
         }
-        if (!this.o) {
-            this.U$src$V$1rn4kw9();
+        if (!this.disabled) {
+            this.togglePopup();
         }
     }
 }

@@ -17,7 +17,7 @@ extends Wrapper {
     public String getName() {
         if (ForgeVersion.MC_1_16_5.d()) {
             ITextComponent iTextComponent = new ITextComponent(WorldNameable.c.getMappingsMapperCompat().Dm.s(this.I));
-            return iTextComponent.C();
+            return iTextComponent.getFormattedText();
         }
         return WorldNameable.c.getMappingsMapperCompat().Dm.L(this.I);
     }
@@ -26,4 +26,3 @@ extends Wrapper {
         super(object);
     }
 }
-

@@ -6,138 +6,137 @@ import org.lwjgl.opengl.GL11;
 public class LegacyOpenGlBackend
 implements OpenGlBackend {
     @Override
-    public void X(float f, float f2, float f3, float f4) {
-        GL11.glRotatef((float)f, (float)f2, (float)f3, (float)f4);
+    public void rotate(float angle, float x, float y, float z) {
+        GL11.glRotatef((float)angle, (float)x, (float)y, (float)z);
     }
 
     @Override
-    public void n(double d, double d2, double d3) {
-        GL11.glNormal3d((double)d, (double)d2, (double)d3);
+    public void setNormal(double x, double y, double z) {
+        GL11.glNormal3d((double)x, (double)y, (double)z);
     }
 
     @Override
-    public void M() {
+    public void endPrimitive() {
         GL11.glEnd();
     }
 
     @Override
-    public void k(int n, float f) {
-        GL11.glAlphaFunc((int)n, (float)f);
+    public void setAlphaFunction(int function, float reference) {
+        GL11.glAlphaFunc((int)function, (float)reference);
     }
 
     @Override
-    public void U(boolean bl) {
-        GL11.glDepthMask((boolean)bl);
+    public void setDepthMask(boolean enabled) {
+        GL11.glDepthMask((boolean)enabled);
     }
 
     @Override
-    public void void_u(int n) {
-        GL11.glDisable((int)n);
+    public void disableCapabilityState(int capability) {
+        GL11.glDisable((int)capability);
     }
 
     @Override
-    public void S() {
+    public void loadIdentity() {
         GL11.glLoadIdentity();
     }
 
     @Override
-    public void l(int n) {
-        GL11.glEnable((int)n);
+    public void enableCapability(int capability) {
+        GL11.glEnable((int)capability);
     }
 
     @Override
-    public void F() {
+    public void popMatrix() {
         GL11.glPopMatrix();
     }
 
     @Override
-    public void m(double d, double d2, double d3) {
-        GL11.glVertex3d((double)d, (double)d2, (double)d3);
+    public void addVertex(double x, double y, double z) {
+        GL11.glVertex3d((double)x, (double)y, (double)z);
     }
 
     @Override
-    public float float_u(int n) {
-        return GL11.glGetFloat((int)n);
+    public float getFloatState(int parameter) {
+        return GL11.glGetFloat((int)parameter);
     }
 
     @Override
-    public void P(float f, float f2, float f3) {
-        GL11.glTranslatef((float)f, (float)f2, (float)f3);
+    public void translate(float x, float y, float z) {
+        GL11.glTranslatef((float)x, (float)y, (float)z);
     }
 
     @Override
-    public boolean L(int n) {
-        return GL11.glIsEnabled((int)n);
+    public boolean isCapabilityEnabled(int capability) {
+        return GL11.glIsEnabled((int)capability);
     }
 
     @Override
-    public void q(float f, float f2, float f3, float f4) {
-        GL11.glColor4f((float)f, (float)f2, (float)f3, (float)f4);
+    public void setColor(float red, float green, float blue, float alpha) {
+        GL11.glColor4f((float)red, (float)green, (float)blue, (float)alpha);
     }
 
     @Override
-    public int K(int n) {
-        return GL11.glGetInteger((int)n);
+    public int getIntegerState(int parameter) {
+        return GL11.glGetInteger((int)parameter);
     }
 
     @Override
-    public void b(double d, float f, float f2) {
-        GL11.glColor3d((double)d, (double)f, (double)f2);
+    public void setColor(double red, float green, float blue) {
+        GL11.glColor3d((double)red, (double)green, (double)blue);
     }
 
     @Override
-    public void E(float f, float f2, float f3) {
-        GL11.glColor3f((float)f, (float)f2, (float)f3);
+    public void setColor(float red, float green, float blue) {
+        GL11.glColor3f((float)red, (float)green, (float)blue);
     }
 
     @Override
-    public void w(float f, double d, double d2, double d3) {
-        GL11.glRotated((double)f, (double)d, (double)d2, (double)d3);
+    public void rotate(double angle, double x, double y, double z) {
+        GL11.glRotated((double)angle, (double)x, (double)y, (double)z);
     }
 
     @Override
-    public void k(double d, double d2, double d3, double d4) {
-        GL11.glColor4d((double)d, (double)d2, (double)d3, (double)d4);
+    public void setColor(double red, double green, double blue, double alpha) {
+        GL11.glColor4d((double)red, (double)green, (double)blue, (double)alpha);
     }
 
     @Override
-    public void H(float f, float f2, float f3) {
-        GL11.glScalef((float)f, (float)f2, (float)f3);
+    public void scale(float x, float y, float z) {
+        GL11.glScalef((float)x, (float)y, (float)z);
     }
 
     @Override
-    public void G(double d, double d2, double d3) {
-        GL11.glScaled((double)d, (double)d2, (double)d3);
+    public void scale(double x, double y, double z) {
+        GL11.glScaled((double)x, (double)y, (double)z);
     }
 
     @Override
-    public void e(int n, int n2, int n3, int n4) {
-        GL11.glScissor((int)n, (int)n2, (int)n3, (int)n4);
+    public void setScissor(int x, int y, int width, int height) {
+        GL11.glScissor((int)x, (int)y, (int)width, (int)height);
     }
 
     @Override
-    public void r(float f) {
-        GL11.glLineWidth((float)f);
+    public void setLineWidth(float width) {
+        GL11.glLineWidth((float)width);
     }
 
     @Override
-    public void m() {
+    public void pushMatrix() {
         GL11.glPushMatrix();
     }
 
     @Override
-    public void F(float f, float f2, float f3) {
-        GL11.glNormal3f((float)f, (float)f2, (float)f3);
+    public void setNormal(float x, float y, float z) {
+        GL11.glNormal3f((float)x, (float)y, (float)z);
     }
 
     @Override
-    public void I(double d, double d2, double d3) {
-        GL11.glTranslated((double)d, (double)d2, (double)d3);
+    public void translate(double x, double y, double z) {
+        GL11.glTranslated((double)x, (double)y, (double)z);
     }
 
     @Override
-    public void C(int n) {
-        GL11.glBegin((int)n);
+    public void beginPrimitive(int mode) {
+        GL11.glBegin((int)mode);
     }
 }
-

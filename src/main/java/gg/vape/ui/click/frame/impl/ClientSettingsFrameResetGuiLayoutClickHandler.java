@@ -8,7 +8,7 @@ implements GuiClickListener {
     final ClientSettingsFrame j;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         ClientSettingsFrame.n(this.j);
     }
 
@@ -16,4 +16,3 @@ implements GuiClickListener {
         this.j = clientSettingsFrame;
     }
 }
-

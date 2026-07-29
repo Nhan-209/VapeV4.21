@@ -69,20 +69,21 @@ import org.jetbrains.annotations.Nullable;
 public class PublicProfilesFrame
 extends Frame
 implements EventListener {
-    private String Fc = "";
-    private boolean Fn;
-    private PaddedComponent Fy;
-    private PublicProfileResultsListComponent FX;
-    private boolean Fb = true;
-    private PanelComponent F6;
-    static final boolean F4 = !PublicProfilesFrame.class.desiredAssertionStatus();
-    private PublicProfileSearchFilterPanel FN;
-    private PublicProfileSortMode F8 = PublicProfileSortMode.RATED;
-    private boolean Fk;
-    private boolean FB;
-    private PanelComponent Fq;
+    private String lastSearchQuery = "";
+    private boolean layoutRebuildRequired;
+    private PaddedComponent profileListWrapper;
+    private PublicProfileResultsListComponent resultsList;
+    private boolean showingOwnedProfiles = true;
+    private PanelComponent resultsPanel;
+    static final boolean ASSERTIONS_DISABLED = !PublicProfilesFrame.class.desiredAssertionStatus();
+    private PublicProfileSearchFilterPanel searchFilterPanel;
+    private PublicProfileSortMode sortMode = PublicProfileSortMode.RATED;
+    private boolean connectionRefreshPending;
+    private boolean showingConnectionStatus;
+    private PanelComponent profileListPanel;
     @Nullable
-    private PopupFrame FH;
+    private PopupFrame activePopup;
+    /** Compatibility aliases for existing frame callbacks. */
 
     private static ApiResponse lambda$openWithEditor$23(Throwable throwable) {
         return null;
@@ -93,7 +94,7 @@ implements EventListener {
     }
 
     public PublicProfileResultsListComponent P$src$Lgg_vape_ui_click_frame_impl_profile_PublicProfi$1ezbs2g() {
-        return this.FX;
+        return this.resultsList;
     }
 
     private static void lambda$createCenteredOverlayNode$11(Runnable runnable) {
@@ -102,47 +103,47 @@ implements EventListener {
 
     private void t(PanelComponent panelComponent) {
         GuiComponent guiComponent;
-        PanelComponent panelComponent2 = new PanelComponent(this.Fb ? 92.0 : 8.0, panelComponent.L());
-        this.Fy = new PaddedComponent(4.0, 4.0, 6.0, 6.0, panelComponent2);
-        panelComponent.h(this.Fy, new Object[0]);
+        PanelComponent panelComponent2 = new PanelComponent(this.showingOwnedProfiles ? 92.0 : 8.0, panelComponent.L());
+        this.profileListWrapper = new PaddedComponent(4.0, 4.0, 6.0, 6.0, panelComponent2);
+        panelComponent.h(this.profileListWrapper, new Object[0]);
         panelComponent2.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         PanelComponent panelComponent3 = new PanelComponent(panelComponent2.A(), 12.0);
-        if (this.Fb) {
+        if (this.showingOwnedProfiles) {
             guiComponent = new SimpleTextLabelComponent("YOUR PUBLIC PROFILES");
-            ((SimpleTextLabelComponent)guiComponent).l(true);
-            ((SimpleTextLabelComponent)guiComponent).T$src$V$1orl066(PublicProfilesFrame.J.h);
-            ((SimpleTextLabelComponent)guiComponent).i(0.7);
-            ((SimpleTextLabelComponent)guiComponent).g(0.0f);
-            ((SimpleTextLabelComponent)guiComponent).z(-2.0f);
+            ((SimpleTextLabelComponent)guiComponent).setBold(true);
+            ((SimpleTextLabelComponent)guiComponent).setTextColor(PublicProfilesFrame.J.h);
+            ((SimpleTextLabelComponent)guiComponent).setFontScale(0.7);
+            ((SimpleTextLabelComponent)guiComponent).setOffsetX(0.0f);
+            ((SimpleTextLabelComponent)guiComponent).setOffsetY(-2.0f);
             panelComponent3.N(false);
             panelComponent3.h(guiComponent, new Object[0]);
         }
-        guiComponent = new GlyphIconComponent(this.Fb ? "hide hover@2x" : "show hover@2x", 5.0, 4.0, 5.0, 4.0, null, null, null);
+        guiComponent = new GlyphIconComponent(this.showingOwnedProfiles ? "hide hover@2x" : "show hover@2x", 5.0, 4.0, 5.0, 4.0, null, null, null);
         panelComponent3.h(guiComponent, "alignright");
-        ((InteractiveComponent)guiComponent).r(this::lambda$createLeftContainer$1);
+        ((InteractiveComponent)guiComponent).addClickListener(this::lambda$createLeftContainer$1);
         panelComponent2.h(panelComponent3, new Object[0]);
-        if (this.Fb) {
+        if (this.showingOwnedProfiles) {
             PanelComponent panelComponent4 = new PanelComponent(panelComponent2.A(), panelComponent2.L() - panelComponent3.L());
             panelComponent4.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
             panelComponent2.h(panelComponent4, "widthwrap");
             TextButton textButton = new TextButton("CREATE NEW", 0.8, PublicProfilesFrame.J.B, PublicProfilesFrame.J.O);
             textButton.o(panelComponent4.A());
             textButton.Y(14.0);
-            textButton.r(() -> this.lambda$createLeftContainer$2(textButton));
-            textButton.c(true);
-            textButton.F(false);
-            textButton.h(Color.WHITE);
+            textButton.addClickListener(() -> this.lambda$createLeftContainer$2(textButton));
+            textButton.setUseAlternateFont(true);
+            textButton.setDeriveTextColorFromBackground(false);
+            textButton.setNormalTextColor(Color.WHITE);
             panelComponent4.h(textButton, new Object[0]);
             SpacerComponent spacerComponent = new SpacerComponent(0.0, 2.0);
             panelComponent4.h(spacerComponent, new Object[0]);
-            this.Fq = new PanelComponent(panelComponent4.A(), panelComponent2.L() - panelComponent3.L() - textButton.L() - spacerComponent.L() + 2.0);
-            this.Fq.k(true);
-            this.Fq.t(this.Fq.L());
-            this.Fq.d(false);
-            this.Fq.F(FrameScrollbarPlacement.OUTSIDE);
-            this.Fq.T(true);
-            this.Fq.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-            panelComponent4.h(this.Fq, new Object[0]);
+            this.profileListPanel = new PanelComponent(panelComponent4.A(), panelComponent2.L() - panelComponent3.L() - textButton.L() - spacerComponent.L() + 2.0);
+            this.profileListPanel.k(true);
+            this.profileListPanel.t(this.profileListPanel.L());
+            this.profileListPanel.setShowDisabledOverlay(false);
+            this.profileListPanel.F(FrameScrollbarPlacement.OUTSIDE);
+            this.profileListPanel.T(true);
+            this.profileListPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+            panelComponent4.h(this.profileListPanel, new Object[0]);
             for (PublicProfile publicProfile : Vape.INSTANCE.getPublicProfileManager().A().values()) {
                 this.e(publicProfile);
             }
@@ -153,8 +154,8 @@ implements EventListener {
         if (popupFrame == null) {
             return;
         }
-        ClientSettings.p(popupFrame);
-        ClientSettings.K(popupFrame);
+        ClientSettings.removeFramePopups(popupFrame);
+        ClientSettings.removePopup(popupFrame);
         if (popupFrame.V$src$Lgg_vape_ui_click_component_GuiComponent_$jpbobc() instanceof PopupFrame && !bl) {
             this.J((PopupFrame)popupFrame.V$src$Lgg_vape_ui_click_component_GuiComponent_$jpbobc(), true);
         }
@@ -165,13 +166,13 @@ implements EventListener {
     }
 
     public void O(@Nullable PopupFrame popupFrame) {
-        PopupFrame popupFrame2 = this.FH;
+        PopupFrame popupFrame2 = this.activePopup;
         if (popupFrame2 != null) {
             this.D(popupFrame2);
             this.a();
             this.l$src$V$1mibm4x();
         }
-        this.FH = popupFrame;
+        this.activePopup = popupFrame;
     }
 
     private static void lambda$openWithEditor$22(PublicProfileOwnerDetailsPanel publicProfileOwnerDetailsPanel, PublicProfilesFrame publicProfilesFrame, ApiResponse apiResponse, Throwable throwable) {
@@ -190,7 +191,7 @@ implements EventListener {
             publicProfilesFrame.D(publicProfileOwnerDetailsPanel.E());
             return;
         }
-        if (!F4 && apiResponse.T() == null) {
+        if (!ASSERTIONS_DISABLED && apiResponse.T() == null) {
             throw new AssertionError();
         }
         publicProfilesFrame.N((PublicProfile)apiResponse.T());
@@ -200,10 +201,10 @@ implements EventListener {
         if (!apiResponse.t()) {
             return null;
         }
-        if (!F4 && apiResponse.T() == null) {
+        if (!ASSERTIONS_DISABLED && apiResponse.T() == null) {
             throw new AssertionError();
         }
-        this.FX.t(apiResponse.T());
+        this.resultsList.setPageMetadata(apiResponse.T());
         List<PublicProfileSummary> summaries = apiResponse.T().E();
         ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
         for (PublicProfileSummary publicProfileSummary : summaries) {
@@ -212,7 +213,7 @@ implements EventListener {
             Vape.INSTANCE.getPublicProfileManager().y(publicProfileSummary);
             PublicProfileListingResultCardComponent publicProfileListingResultCardComponent = paddedComponent.t(PublicProfileListingResultCardComponent.class);
             AtomicBoolean atomicBoolean = new AtomicBoolean(true);
-            publicProfileListingResultCardComponent.j(new PublicProfileListingResultOpenClickHandler(this, atomicBoolean, publicProfileSummary));
+            publicProfileListingResultCardComponent.addMouseListener(new PublicProfileListingResultOpenClickHandler(this, atomicBoolean, publicProfileSummary));
         }
         return arrayList;
     }
@@ -222,9 +223,9 @@ implements EventListener {
     }
 
     public static void a(@Nullable Consumer<PublicProfilesFrame> consumer) {
-        PublicProfilesFrame publicProfilesFrame = ClientSettings.g(PublicProfilesFrame.class);
+        PublicProfilesFrame publicProfilesFrame = ClientSettings.getFrame(PublicProfilesFrame.class);
         publicProfilesFrame.t(true, false);
-        ClientSettings.fW.I(ClientSettings.f0);
+        ClientSettings.INSTANCE.switchFrameStack(ClientSettings.publicProfilesStack);
         if (consumer != null) {
             consumer.accept(publicProfilesFrame);
         }
@@ -233,7 +234,7 @@ implements EventListener {
     @Override
     public void t(boolean bl, boolean bl2) {
         super.t(bl, bl2);
-        this.Fk = false;
+        this.connectionRefreshPending = false;
     }
 
     @Override
@@ -249,14 +250,14 @@ implements EventListener {
     }
 
     private void lambda$createLeftContainer$1() {
-        this.Fb = !this.Fb;
+        this.showingOwnedProfiles = !this.showingOwnedProfiles;
         this.W();
     }
 
     public PublicProfileOverlayPopupFrame y(@Nullable Frame frame, GuiComponent guiComponent) {
         AtomicReference<PublicProfileOverlayPopupFrame> atomicReference = new AtomicReference<PublicProfileOverlayPopupFrame>();
         Frame frame2 = frame != null ? frame : this;
-        PublicProfileOverlayPopupFrame publicProfileOverlayPopupFrame = ClientSettings.g(frame2, this.Z(guiComponent, () -> this.lambda$addCenteredOverlay$10(atomicReference)), PublicProfileOverlayPopupFrame.class);
+        PublicProfileOverlayPopupFrame publicProfileOverlayPopupFrame = ClientSettings.createPopup(frame2, this.Z(guiComponent, () -> this.lambda$addCenteredOverlay$10(atomicReference)), PublicProfileOverlayPopupFrame.class);
         atomicReference.set(publicProfileOverlayPopupFrame);
         publicProfileOverlayPopupFrame.T((int)((frame2.A() - guiComponent.A()) / 2.0));
         publicProfileOverlayPopupFrame.Q((int)((frame2.L() - guiComponent.L()) / 2.0));
@@ -277,24 +278,24 @@ implements EventListener {
             }
             PublicProfilesFrame.a(PublicProfilesFrame::lambda$openWithEditor$21);
         }
-        PublicProfilesFrame publicProfilesFrame = ClientSettings.g(PublicProfilesFrame.class);
+        PublicProfilesFrame publicProfilesFrame = ClientSettings.getFrame(PublicProfilesFrame.class);
         PublicProfileOwnerDetailsPanel publicProfileOwnerDetailsPanel = publicProfilesFrame.N((PublicProfile)null);
-        publicProfileOwnerDetailsPanel.T(ApiServices.d().R().x(l).whenCompleteAsync((arg_0, arg_1) -> PublicProfilesFrame.lambda$openWithEditor$22(publicProfileOwnerDetailsPanel, publicProfilesFrame, arg_0, arg_1), (Executor)ClientSettings.f6).exceptionally(PublicProfilesFrame::lambda$openWithEditor$23));
+        publicProfileOwnerDetailsPanel.T(ApiServices.d().R().x(l).whenCompleteAsync((arg_0, arg_1) -> PublicProfilesFrame.lambda$openWithEditor$22(publicProfileOwnerDetailsPanel, publicProfilesFrame, arg_0, arg_1), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfilesFrame::lambda$openWithEditor$23));
         return publicProfileOwnerDetailsPanel.R$src$Ljava_util_concurrent_CompletableFuture_$1ccqvok();
     }
 
     private void lambda$null$3() {
-        this.FX.W();
+        this.resultsList.reload();
     }
 
     public PublicProfileOverlayPopupFrame S(@Nullable Frame frame, GuiComponent guiComponent) {
-        PublicProfileOverlayPopupFrame publicProfileOverlayPopupFrame = ClientSettings.g(frame != null ? frame : this, guiComponent, PublicProfileOverlayPopupFrame.class);
+        PublicProfileOverlayPopupFrame publicProfileOverlayPopupFrame = ClientSettings.createPopup(frame != null ? frame : this, guiComponent, PublicProfileOverlayPopupFrame.class);
         this.O(publicProfileOverlayPopupFrame);
         return publicProfileOverlayPopupFrame;
     }
 
     public void l(PublicProfileSortMode publicProfileSortMode) {
-        this.F8 = publicProfileSortMode;
+        this.sortMode = publicProfileSortMode;
     }
 
     public PublicProfilesFrame() {
@@ -308,7 +309,7 @@ implements EventListener {
         this.Y(new PublicProfilesFrameHeaderComponent(this, this, "newprofiles", "Public Profiles", 0.5).Q(PublicProfilesFrame::lambda$new$0));
         this.W();
         this.Y(false);
-        this.Z(true);
+        this.setVisible(true);
         this.L(false, true);
         this.g(true);
         EventBus.getInstance().registerListener(this, new Predicate[0]);
@@ -320,11 +321,11 @@ implements EventListener {
     }
 
     private static void lambda$new$0() {
-        if (ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v() instanceof ClickGuiFrameManager) {
-            ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v();
-            clickGuiFrameManager.G();
+        if (ClientSettings.INSTANCE.getActiveStack() instanceof ClickGuiFrameManager) {
+            ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)ClientSettings.INSTANCE.getActiveStack();
+            clickGuiFrameManager.closeSidecar();
         } else {
-            ClientSettings.fW.I(ClientSettings.a);
+            ClientSettings.INSTANCE.switchFrameStack(ClientSettings.mainStack);
         }
     }
 
@@ -333,20 +334,20 @@ implements EventListener {
             this.d$src$V$fo8605();
             return;
         }
-        this.FB = false;
-        this.S();
+        this.showingConnectionStatus = false;
+        this.removeMarkedChildren();
         this.h(new InsetFilledSpacerComponent(this.A(), 2.0, 0.5, 0.0, PublicProfilesFrame.J.l), new Object[0]);
         PanelComponent panelComponent = new PanelComponent(this.x(), 185.0);
         this.h(panelComponent, new Object[0]);
         panelComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
         this.t(panelComponent);
         FilledSpacerComponent filledSpacerComponent = new FilledSpacerComponent(1.0, panelComponent.L() + 2.0, PublicProfilesFrame.J.m);
-        if (!this.Fb) {
+        if (!this.showingOwnedProfiles) {
             panelComponent.h(filledSpacerComponent, new Object[0]);
         }
         panelComponent.h(new InsetFilledSpacerComponent(4.0, 0.0, 0.5, 0.0, new Color(0, 0, 0, 0)), new Object[0]);
         this.D(panelComponent);
-        this.FX.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.resultsList.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.H(true);
     }
 
@@ -356,7 +357,7 @@ implements EventListener {
     public PublicProfileOverlayPopupFrame W(@Nullable Frame frame, GuiComponent guiComponent) {
         Frame frame2 = frame != null ? frame : this;
         AtomicReference<PublicProfileOverlayPopupFrame> atomicReference = new AtomicReference<PublicProfileOverlayPopupFrame>();
-        PublicProfileOverlayPopupFrame publicProfileOverlayPopupFrame = ClientSettings.g(frame2, this.Z(guiComponent, () -> this.lambda$setCenteredOverlay$9(atomicReference)), PublicProfileOverlayPopupFrame.class);
+        PublicProfileOverlayPopupFrame publicProfileOverlayPopupFrame = ClientSettings.createPopup(frame2, this.Z(guiComponent, () -> this.lambda$setCenteredOverlay$9(atomicReference)), PublicProfileOverlayPopupFrame.class);
         atomicReference.set(publicProfileOverlayPopupFrame);
         publicProfileOverlayPopupFrame.T((int)((frame2.A() - guiComponent.A()) / 2.0));
         publicProfileOverlayPopupFrame.Q((int)((frame2.L() - guiComponent.L()) / 2.0));
@@ -389,7 +390,7 @@ implements EventListener {
                         }
                         if (!(guiComponent2 instanceof HudSettingsFrameBase)) continue;
                         frameComponent2 = (HudSettingsFrameBase)guiComponent2;
-                        ((HudSettingsFrameBase)frameComponent2).Q$src$V$1vahh5c();
+                        ((HudSettingsFrameBase)frameComponent2).onPublicProfileContextChanged();
                     }
                 }
                 if (guiComponent instanceof PublicProfileOverlayPanelBase) {
@@ -398,21 +399,21 @@ implements EventListener {
                 }
                 if (!(guiComponent instanceof HudSettingsFrameBase)) continue;
                 frameComponent = (HudSettingsFrameBase)guiComponent;
-                ((HudSettingsFrameBase)frameComponent).Q$src$V$1vahh5c();
+                ((HudSettingsFrameBase)frameComponent).onPublicProfileContextChanged();
             }
         }
-        ClientSettings.K(popupFrame);
-        if (this.FH == popupFrame) {
-            this.FH = null;
+        ClientSettings.removePopup(popupFrame);
+        if (this.activePopup == popupFrame) {
+            this.activePopup = null;
         }
     }
 
     @Override
     public void a() {
-        PopupFrame popupFrame = this.FH;
+        PopupFrame popupFrame = this.activePopup;
         if (popupFrame != null) {
             this.T(popupFrame);
-            this.FH = null;
+            this.activePopup = null;
         }
     }
 
@@ -422,17 +423,17 @@ implements EventListener {
 
     private void lambda$onPublicProfileDelete$14(PublicProfileDeletedEvent publicProfileDeletedEvent) {
         ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
-        for (GuiComponent guiComponent : this.Fq.f()) {
+        for (GuiComponent guiComponent : this.profileListPanel.f()) {
             PaddedComponent paddedComponent;
             PublicProfileListEntryComponent publicProfileListEntryComponent;
-            if (!(guiComponent instanceof PaddedComponent) || (publicProfileListEntryComponent = (paddedComponent = (PaddedComponent)guiComponent).t(PublicProfileListEntryComponent.class)) == null || publicProfileListEntryComponent.I$src$Lgg_vape_config_PublicProfile_$mb4s3m().w() != publicProfileDeletedEvent.getProfile().w()) continue;
+            if (!(guiComponent instanceof PaddedComponent) || (publicProfileListEntryComponent = (paddedComponent = (PaddedComponent)guiComponent).t(PublicProfileListEntryComponent.class)) == null || publicProfileListEntryComponent.getPublicProfile().w() != publicProfileDeletedEvent.getProfile().w()) continue;
             arrayList.add(guiComponent);
         }
         if (arrayList.isEmpty()) {
             return;
         }
         for (GuiComponent guiComponent : arrayList) {
-            this.Fq.I(guiComponent);
+            this.profileListPanel.removeChild(guiComponent);
         }
         Vape.INSTANCE.getProfilesManager().T();
     }
@@ -449,7 +450,7 @@ implements EventListener {
             return null;
         }
         PublicProfilesFrame.a(PublicProfilesFrame::lambda$openWithPublicListing$16);
-        return ApiServices.d().R().x(l).whenCompleteAsync(PublicProfilesFrame::lambda$openWithPublicListing$18, (Executor)ClientSettings.f6).exceptionally(PublicProfilesFrame::lambda$openWithPublicListing$19);
+        return ApiServices.d().R().x(l).whenCompleteAsync(PublicProfilesFrame::lambda$openWithPublicListing$18, (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfilesFrame::lambda$openWithPublicListing$19);
     }
 
     private void lambda$addCenteredOverlay$10(AtomicReference atomicReference) {
@@ -468,19 +469,19 @@ implements EventListener {
 
     @Override
     public void u() {
-        if (!OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE) && !this.FB) {
+        if (!OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE) && !this.showingConnectionStatus) {
             this.d$src$V$fo8605();
-        } else if (OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE) && this.FB) {
-            this.Fk = false;
+        } else if (OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE) && this.showingConnectionStatus) {
+            this.connectionRefreshPending = false;
         }
-        PopupFrame popupFrame = this.FH;
+        PopupFrame popupFrame = this.activePopup;
         if (popupFrame != null && popupFrame.V$src$Z$1xhop3l()) {
             popupFrame.T$src$V$1wse0de();
         }
     }
 
     public PublicProfileSortMode Z$src$Lgg_vape_config_PublicProfileSortMode_$18pvsyy() {
-        return this.F8;
+        return this.sortMode;
     }
 
     private static ApiResponse lambda$openWithPublicListing$19(Throwable throwable) {
@@ -489,17 +490,17 @@ implements EventListener {
 
     @Override
     public void c() {
-        if (!this.Fk) {
-            this.Fk = true;
-            this.Fn = true;
+        if (!this.connectionRefreshPending) {
+            this.connectionRefreshPending = true;
+            this.layoutRebuildRequired = true;
             this.W();
-            this.Fn = false;
+            this.layoutRebuildRequired = false;
         }
-        if (this.FX != null) {
-            this.FX.H(true);
+        if (this.resultsList != null) {
+            this.resultsList.H(true);
         }
-        if (this.F6 != null) {
-            this.F6.H(true);
+        if (this.resultsPanel != null) {
+            this.resultsPanel.H(true);
         }
         super.c();
     }
@@ -510,16 +511,16 @@ implements EventListener {
 
     private PanelComponent Z(@NotNull GuiComponent guiComponent, Runnable runnable) {
         PanelComponent panelComponent = new PanelComponent(guiComponent.A(), guiComponent.L() + 11.0);
-        panelComponent.T(PublicProfilesFrame.J.m);
+        panelComponent.setDisabledOverlayColor(PublicProfilesFrame.J.m);
         panelComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        panelComponent.z(PublicProfilesFrame.J.l);
-        panelComponent.R(1.0f);
+        panelComponent.setOutlineColor(PublicProfilesFrame.J.l);
+        panelComponent.setBorderWidth(1.0f);
         PanelComponent panelComponent2 = new PanelComponent(guiComponent.A(), 10.0);
-        panelComponent2.d(false);
+        panelComponent2.setShowDisabledOverlay(false);
         panelComponent2.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("alignright");
         panelComponent.h(panelComponent2, new Object[0]);
         SquareIconButtonComponent squareIconButtonComponent = new SquareIconButtonComponent("newclose", 1.2, new Color(0, 0, 0, 0), PublicProfilesFrame.J.h, 8.0, 8.0);
-        squareIconButtonComponent.r(() -> PublicProfilesFrame.lambda$createCenteredOverlayNode$11(runnable));
+        squareIconButtonComponent.addClickListener(() -> PublicProfilesFrame.lambda$createCenteredOverlayNode$11(runnable));
         panelComponent2.h(new PaddedComponent(2.0, 2.0, 2.0, 2.0, squareIconButtonComponent), new Object[0]);
         panelComponent.h(guiComponent, new Object[0]);
         return panelComponent;
@@ -527,7 +528,7 @@ implements EventListener {
 
     public void C(PopupFrame popupFrame) {
         Vape.debugLog("addPopup(" + popupFrame + ")");
-        PopupFrame popupFrame2 = this.FH;
+        PopupFrame popupFrame2 = this.activePopup;
     }
 
     public PublicProfileOwnerDetailsPanel N(@Nullable PublicProfile publicProfile) {
@@ -536,7 +537,7 @@ implements EventListener {
             publicProfileOwnerDetailsPanel.S(this.W(null, publicProfileOwnerDetailsPanel));
             return publicProfileOwnerDetailsPanel;
         }
-        ProfileSnapshot profileSnapshot = ProfileSnapshot.z(publicProfile);
+        ProfileSnapshot profileSnapshot = ProfileSnapshot.resolvePublicProfileSnapshot(publicProfile);
         PublicProfileOwnerDetailsPanel publicProfileOwnerDetailsPanel = new PublicProfileOwnerDetailsPanel(this, publicProfile, profileSnapshot);
         publicProfileOwnerDetailsPanel.S(this.W(null, publicProfileOwnerDetailsPanel));
         return publicProfileOwnerDetailsPanel;
@@ -544,17 +545,17 @@ implements EventListener {
 
     @Nullable
     public PopupFrame A$src$Lgg_vape_ui_click_frame_PopupFrame_$45a6ba() {
-        return this.FH;
+        return this.activePopup;
     }
 
     public String o$src$Ljava_lang_String_$ububnq() {
-        return this.Fc;
+        return this.lastSearchQuery;
     }
 
     private CompletableFuture<List<GuiComponent>> lambda$createRightContainer$8(Function<PublicProfileSummary, PaddedComponent> function) {
         String string;
-        this.Fc = string = this.FN.V$src$Lgg_vape_ui_click_component_TextInputComponentBa$1su0cvr().i$src$Ljava_lang_String_$1n2xf3k().trim();
-        return ApiServices.d().R().r(this.F8, this.FX.A$src$J$1vju51i(), string, this.FN.U$src$Lgg_vape_ui_click_frame_impl_profile_PublicProfi$1cokhj1().i$src$Ljava_util_List_$1ydnhqa().stream().map(PublicProfileFilterTokenComponent::N).collect(Collectors.toList())).thenApplyAsync(arg_0 -> this.lambda$null$7(function, arg_0), (Executor)ClientSettings.f6);
+        this.lastSearchQuery = string = this.searchFilterPanel.getSearchInput().getText().trim();
+        return ApiServices.d().R().r(this.sortMode, this.resultsList.getNextPageIndex(), string, this.searchFilterPanel.getTokenSelector().getTokens().stream().map(PublicProfileFilterTokenComponent::getText).collect(Collectors.toList())).thenApplyAsync(arg_0 -> this.lambda$null$7(function, arg_0), (Executor)ClientSettings.UI_EXECUTOR);
     }
 
     private void lambda$setCenteredOverlay$9(AtomicReference atomicReference) {
@@ -567,13 +568,13 @@ implements EventListener {
     private void e(PublicProfile publicProfile) {
         PublicProfileListEntryComponent publicProfileListEntryComponent = new PublicProfileListEntryComponent(publicProfile);
         publicProfileListEntryComponent.o(92.0);
-        publicProfileListEntryComponent.e(() -> PublicProfilesFrame.lambda$addPublicProfileButton$12(publicProfile));
-        this.Fq.h(new PaddedComponent(0.0, 1.0, publicProfileListEntryComponent), new Object[0]);
+        publicProfileListEntryComponent.setSingleFutureClickListener(() -> PublicProfilesFrame.lambda$addPublicProfileButton$12(publicProfile));
+        this.profileListPanel.h(new PaddedComponent(0.0, 1.0, publicProfileListEntryComponent), new Object[0]);
     }
 
     @EventHandler
     public void R(PublicProfileCreatedEvent publicProfileCreatedEvent) {
-        ClientSettings.f6.execute(() -> this.lambda$onPublicProfileCreate$13(publicProfileCreatedEvent));
+        ClientSettings.UI_EXECUTOR.execute(() -> this.lambda$onPublicProfileCreate$13(publicProfileCreatedEvent));
     }
 
     private static void lambda$openWithPublicListing$18(ApiResponse apiResponse, Throwable throwable) {
@@ -586,7 +587,7 @@ implements EventListener {
             PublicProfileManager.b("Failed to view profile: " + apiResponse.N());
             return;
         }
-        if (!F4 && apiResponse.T() == null) {
+        if (!ASSERTIONS_DISABLED && apiResponse.T() == null) {
             throw new AssertionError();
         }
         PublicProfilesFrame.a(arg_0 -> PublicProfilesFrame.lambda$null$17(apiResponse, arg_0));
@@ -594,7 +595,7 @@ implements EventListener {
 
     @EventHandler
     public void X(PublicProfileDeletedEvent publicProfileDeletedEvent) {
-        ClientSettings.f6.execute(() -> this.lambda$onPublicProfileDelete$14(publicProfileDeletedEvent));
+        ClientSettings.UI_EXECUTOR.execute(() -> this.lambda$onPublicProfileDelete$14(publicProfileDeletedEvent));
     }
 
     public PublicProfileListingDetailsPanel l(@Nullable PublicProfile publicProfile) {
@@ -611,12 +612,12 @@ implements EventListener {
     }
 
     private void lambda$createRightContainer$4() {
-        ClientSettings.f6.execute(this::lambda$null$3);
+        ClientSettings.UI_EXECUTOR.execute(this::lambda$null$3);
     }
 
     private void d$src$V$fo8605() {
-        this.FB = true;
-        this.S();
+        this.showingConnectionStatus = true;
+        this.removeMarkedChildren();
         OnlineConnectionStatusPanelBody onlineConnectionStatusPanelBody = new OnlineConnectionStatusPanelBody();
         this.h(new PaddedComponent(this.A() / 2.0 - onlineConnectionStatusPanelBody.A() / 2.0, this.L() / 2.0 - onlineConnectionStatusPanelBody.L() / 2.0 - 20.0, onlineConnectionStatusPanelBody), new Object[0]);
         this.H(true);
@@ -633,47 +634,47 @@ implements EventListener {
     }
 
     private void D(PanelComponent panelComponent) {
-        this.F6 = new PanelComponent(panelComponent.A() - this.Fy.A() - (double)(this.Fb ? 5 : 6), panelComponent.L() + 10.0);
-        this.F6.t(this.F6.L());
-        this.F6.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        panelComponent.h(this.F6, new Object[0]);
-        this.F6.h(new SpacerComponent(0.0, 2.0), new Object[0]);
+        this.resultsPanel = new PanelComponent(panelComponent.A() - this.profileListWrapper.A() - (double)(this.showingOwnedProfiles ? 5 : 6), panelComponent.L() + 10.0);
+        this.resultsPanel.t(this.resultsPanel.L());
+        this.resultsPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        panelComponent.h(this.resultsPanel, new Object[0]);
+        this.resultsPanel.h(new SpacerComponent(0.0, 2.0), new Object[0]);
         SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent("ALL PUBLIC PROFILES");
-        simpleTextLabelComponent.l(true);
-        simpleTextLabelComponent.T$src$V$1orl066(PublicProfilesFrame.J.h);
-        simpleTextLabelComponent.i(0.7);
-        simpleTextLabelComponent.g(0.0f);
-        this.F6.h(simpleTextLabelComponent, new Object[0]);
-        this.F6.h(new SpacerComponent(0.0, 5.0), new Object[0]);
-        PublicProfileSearchFilterPanel publicProfileSearchFilterPanel = this.FN;
-        this.FN = new PublicProfileSearchFilterPanel(this.Fb ? 240.0 : 324.0, this::lambda$createRightContainer$4);
+        simpleTextLabelComponent.setBold(true);
+        simpleTextLabelComponent.setTextColor(PublicProfilesFrame.J.h);
+        simpleTextLabelComponent.setFontScale(0.7);
+        simpleTextLabelComponent.setOffsetX(0.0f);
+        this.resultsPanel.h(simpleTextLabelComponent, new Object[0]);
+        this.resultsPanel.h(new SpacerComponent(0.0, 5.0), new Object[0]);
+        PublicProfileSearchFilterPanel publicProfileSearchFilterPanel = this.searchFilterPanel;
+        this.searchFilterPanel = new PublicProfileSearchFilterPanel(this.showingOwnedProfiles ? 240.0 : 324.0, this::lambda$createRightContainer$4);
         if (publicProfileSearchFilterPanel != null) {
-            this.FN.V$src$Lgg_vape_ui_click_component_TextInputComponentBa$1su0cvr().k(publicProfileSearchFilterPanel.V$src$Lgg_vape_ui_click_component_TextInputComponentBa$1su0cvr().i$src$Ljava_lang_String_$1n2xf3k());
-            for (PublicProfileFilterTokenComponent publicProfileFilterTokenComponent : publicProfileSearchFilterPanel.U$src$Lgg_vape_ui_click_frame_impl_profile_PublicProfi$1cokhj1().i$src$Ljava_util_List_$1ydnhqa()) {
-                this.FN.U$src$Lgg_vape_ui_click_frame_impl_profile_PublicProfi$1cokhj1().V(publicProfileFilterTokenComponent);
+            this.searchFilterPanel.getSearchInput().setText(publicProfileSearchFilterPanel.getSearchInput().getText());
+            for (PublicProfileFilterTokenComponent publicProfileFilterTokenComponent : publicProfileSearchFilterPanel.getTokenSelector().getTokens()) {
+                this.searchFilterPanel.getTokenSelector().addToken(publicProfileFilterTokenComponent);
             }
         }
-        this.F6.h(this.FN, new Object[0]);
-        this.F6.h(new SpacerComponent(0.0, 5.0), new Object[0]);
-        if (this.FX == null || this.Fn) {
-            this.FX = new PublicProfileResultsListComponent(this.F6.A() - 6.0, 50.0);
-            this.FX.N(new WrappingFlowLayout(this.FX));
-            this.FX.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
-            this.FX.N(false);
-            this.FX.A(this.Fb ? 3 : 4);
-            this.FX.F(FrameScrollbarPlacement.OUTSIDE);
+        this.resultsPanel.h(this.searchFilterPanel, new Object[0]);
+        this.resultsPanel.h(new SpacerComponent(0.0, 5.0), new Object[0]);
+        if (this.resultsList == null || this.layoutRebuildRequired) {
+            this.resultsList = new PublicProfileResultsListComponent(this.resultsPanel.A() - 6.0, 50.0);
+            this.resultsList.N(new WrappingFlowLayout(this.resultsList));
+            this.resultsList.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
+            this.resultsList.N(false);
+            this.resultsList.setComponentsPerRow(this.showingOwnedProfiles ? 3 : 4);
+            this.resultsList.F(FrameScrollbarPlacement.OUTSIDE);
             Function<PublicProfileSummary, PaddedComponent> function = PublicProfilesFrame::lambda$createRightContainer$5;
-            this.FX.e(() -> PublicProfilesFrame.lambda$createRightContainer$6(function));
-            this.FX.N(() -> this.lambda$createRightContainer$8(function));
-            this.FX.W();
+            this.resultsList.setPlaceholderSupplier(() -> PublicProfilesFrame.lambda$createRightContainer$6(function));
+            this.resultsList.setPageLoader(() -> this.lambda$createRightContainer$8(function));
+            this.resultsList.reload();
         } else {
-            this.FX.q(this.F6.A() - 6.0);
-            this.FX.A(this.Fb ? 3 : 4);
-            this.FX.s$src$V$1wbbuzw();
+            this.resultsList.setExplicitWidth(this.resultsPanel.A() - 6.0);
+            this.resultsList.setComponentsPerRow(this.showingOwnedProfiles ? 3 : 4);
+            this.resultsList.rebuildLayoutPreservingScroll();
         }
-        this.FX.T(this.F6);
-        this.FX.d(false);
-        this.F6.h(this.FX, new Object[0]);
+        this.resultsList.setScrollContainer(this.resultsPanel);
+        this.resultsList.setShowDisabledOverlay(false);
+        this.resultsPanel.h(this.resultsList, new Object[0]);
     }
 
     @Override

@@ -5,44 +5,38 @@ import gg.vape.unmap.Bendable;
 
 public abstract class BindCaptureTask
 implements Runnable {
-    private BindCaptureThread S;
-    private Bendable d;
+    private BindCaptureThread captureThread;
+    private Bendable bendable;
 
     @Override
     public void run() {
-        if (this.S == null) {
-            this.S = new BindCaptureThread(this, null);
-            this.S.start();
+        if (this.captureThread == null) {
+            this.captureThread = new BindCaptureThread(this, null);
+            this.captureThread.start();
         }
     }
 
     public BindCaptureTask(Bendable bendable) {
-        this.d = bendable;
+        this.bendable = bendable;
     }
 
-    public void B(Bendable bendable) {
-        this.d = bendable;
+    public void setBendable(Bendable bendable) {
+        this.bendable = bendable;
     }
 
-    public boolean boolean_V() {
-        boolean bl = this.S != null;
-        return bl;
+    public boolean isCapturing() {
+        return this.captureThread != null;
     }
 
-    public final void p() {
-        this.S = null;
-        this.void_V();
+    public final void finishCapture() {
+        this.captureThread = null;
+        this.onCaptureComplete();
     }
 
-    static Bendable Z(BindCaptureTask bindCaptureTask) {
-        return bindCaptureTask.d;
+    Bendable getBendable() {
+        return this.bendable;
     }
 
-
-    public abstract void void_V();
-
-    public /* synthetic */ boolean V$src$Z$xc25df() {
-        return this.boolean_V();
-    }
+    public abstract void onCaptureComplete();
 }
 

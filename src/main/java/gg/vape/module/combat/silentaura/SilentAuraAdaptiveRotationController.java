@@ -6,21 +6,21 @@ import gg.vape.rotation.AdaptiveRotationController;
 
 public class SilentAuraAdaptiveRotationController
 extends AdaptiveRotationController {
-    final SilentAuraTargetingModule targetingModule;
+    private final SilentAuraTargetingModule targetingModule;
 
 
-    public SilentAuraAdaptiveRotationController(SilentAuraTargetingModule silentAuraTargetingModule) {
-        this.targetingModule = silentAuraTargetingModule;
+    public SilentAuraAdaptiveRotationController(SilentAuraTargetingModule targetingModule) {
+        this.targetingModule = targetingModule;
     }
 
     @Override
-    public float O() {
-        switch (SilentAuraAdaptiveRotationEntry.O[SilentAuraTargetingModule.p(this.targetingModule).ordinal()]) {
+    public float getSpeed() {
+        switch (SilentAuraAdaptiveRotationEntry.MODE_ORDINALS[this.targetingModule.getRotationMode().ordinal()]) {
             case 1: {
-                return SilentAuraTargetingModule.f(this.targetingModule);
+                return this.targetingModule.getAttackRotationSpeed();
             }
             case 2: {
-                return SilentAuraTargetingModule.H(this.targetingModule);
+                return this.targetingModule.getFlickAwayRotationSpeed();
             }
         }
         return 48.0f;

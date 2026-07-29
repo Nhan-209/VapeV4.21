@@ -38,8 +38,8 @@ public class PublicProfileSettings {
     public BooleanValue r;
 
     private void lambda$new$0(BooleanValue booleanValue) {
-        if (booleanValue.L().booleanValue()) {
-            this.S.o("");
+        if (booleanValue.getEffectiveValue().booleanValue()) {
+            this.S.setValue("");
         }
     }
 
@@ -53,14 +53,14 @@ public class PublicProfileSettings {
     }
 
     public PublicProfileSettings() {
-        this.U.B(this::lambda$new$0);
+        this.U.addChangeListener(this::lambda$new$0);
         this.S = new PublicProfilePrimaryDirtyStringValue(this, this, "alteningKey", "");
         this.u = BooleanValue.create(this, "Auto-load module states", true, "Automatically enable saved module states upon loading, and when selecting profiles");
         this.L = new PublicProfileSecondaryDirtyStringValue(this, this, "alts", "");
-        this.d = (StringValue)((StringValue)new PublicProfileSelectedProfileStringValue(this, this, "selectedprofile_uuid", "").W(true)).I("selectedprofile");
+        this.d = (StringValue)((StringValue)new PublicProfileSelectedProfileStringValue(this, this, "selectedprofile_uuid", "").setBase64Encoded(true)).addAlias("selectedprofile");
         this.o = BooleanValue.create(this, "Auto save", false, "Automatically sync your settings");
         this.Z = BooleanValue.create(this, "Frame positions per profile", false, "Saves the positions of your GUI frames per profile");
-        this.k = (ModeValue)ModeValue.create((Object)this, "Language", FontSelector.j, FontSelector.j, FontSelector.S, FontSelector.c, FontSelector.a, FontSelector.P).n(false);
+        this.k = (ModeValue)ModeValue.create((Object)this, "Language", FontSelector.j, FontSelector.j, FontSelector.S, FontSelector.c, FontSelector.a, FontSelector.P).setResettable(false);
         this.h = NumberValue.create(this, "Volume", "#", "%", 0.0, 50.0, 100.0);
         this.m = BooleanValue.create(this, "Muted", false, "Mutes all sounds");
         this.Y = new PublicProfileSettingsBindValue(this, this, "GUI Bind", new PublicProfileSettingsBindSet(this, 161));

@@ -9,28 +9,28 @@ import gg.vape.ui.click.frame.impl.target.TargetInfoSettings;
 public class TargetInfoSettingsFrame
 extends HudSettingsFrameBase
 implements EventListener {
-    private final TargetInfoSettings oV = new TargetInfoSettings();
-    private final BooleanToggleComponent o3;
-    private final BooleanToggleComponent o8;
-    private final TargetInfoPreviewComponent oY;
-    private final BooleanToggleComponent ov;
-    private final BooleanToggleComponent o6;
-    private final BooleanToggleComponent ou;
+    private final TargetInfoSettings settings = new TargetInfoSettings();
+    private final BooleanToggleComponent hitsComparatorToggle;
+    private final BooleanToggleComponent showHoveredToggle;
+    private final TargetInfoPreviewComponent preview;
+    private final BooleanToggleComponent damageComparatorToggle;
+    private final BooleanToggleComponent comboCounterToggle;
+    private final BooleanToggleComponent potsUsedComparatorToggle;
 
     public TargetInfoSettingsFrame() {
         super("newtargetinfo", "Target Info");
-        this.o8 = new BooleanToggleComponent(this.oV.l);
-        this.ov = new BooleanToggleComponent(this.oV.Q);
-        this.o6 = new BooleanToggleComponent(this.oV.P);
-        this.o3 = new BooleanToggleComponent(this.oV.I);
-        this.ou = new BooleanToggleComponent(this.oV.A);
-        this.M(this.o8, this.ov, this.o6, this.o3, this.ou);
-        this.oY = new TargetInfoPreviewComponent(this);
-        this.h(this.oY, new Object[0]);
+        this.showHoveredToggle = new BooleanToggleComponent(this.settings.showHovered);
+        this.damageComparatorToggle = new BooleanToggleComponent(this.settings.damageComparator);
+        this.comboCounterToggle = new BooleanToggleComponent(this.settings.comboCounter);
+        this.hitsComparatorToggle = new BooleanToggleComponent(this.settings.hitsComparator);
+        this.potsUsedComparatorToggle = new BooleanToggleComponent(this.settings.potsUsedComparator);
+        this.addSettings(this.showHoveredToggle, this.damageComparatorToggle, this.comboCounterToggle, this.hitsComparatorToggle, this.potsUsedComparatorToggle);
+        this.preview = new TargetInfoPreviewComponent(this);
+        this.h(this.preview, new Object[0]);
     }
 
-    public TargetInfoSettings U$src$Lgg_vape_ui_click_frame_impl_target_TargetInfoSe$5b5o15() {
-        return this.oV;
+    public TargetInfoSettings getSettings() {
+        return this.settings;
     }
 
     @Override
@@ -40,7 +40,7 @@ implements EventListener {
     }
 
     @Override
-    protected void o$src$V$7f79jo() {
+    protected void renderHudModeBorder() {
     }
 
     @Override
@@ -48,4 +48,3 @@ implements EventListener {
         return "Target Info";
     }
 }
-

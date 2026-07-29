@@ -17,17 +17,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class ProfileGlyphIconPanel
 extends GlyphIconComponent {
-    static final boolean nO;
-    private Profile nL;
-    private static final String ng;
-    private static final String na;
-    private static final double nh = 6.0;
-    private static final double nt = 8.0;
+    private Profile profile;
 
-    private void q(long l, ClickGuiFrameManager clickGuiFrameManager) {
-        PublicProfilesFrame publicProfilesFrame = ClientSettings.g(PublicProfilesFrame.class);
-        clickGuiFrameManager.K(publicProfilesFrame);
-        ApiServices.d().R().x(l).whenCompleteAsync((arg_0, arg_1) -> ProfileGlyphIconPanel.lambda$openAsOverlay$1(publicProfilesFrame, arg_0, arg_1), (Executor)ClientSettings.f6).exceptionally(ProfileGlyphIconPanel::lambda$openAsOverlay$2);
+    private void openAsOverlay(long publicProfileId, ClickGuiFrameManager frameManager) {
+        PublicProfilesFrame profilesFrame = ClientSettings.getFrame(PublicProfilesFrame.class);
+        frameManager.setSidecarFrame(profilesFrame);
+        ApiServices.d().R().x(publicProfileId)
+            .whenCompleteAsync((response, error) -> handleProfileResponse(profilesFrame, response, error), (Executor)ClientSettings.UI_EXECUTOR)
+            .exceptionally(ProfileGlyphIconPanel::ignoreLoadFailure);
     }
 
 
@@ -35,75 +32,69 @@ extends GlyphIconComponent {
         this(profile, 6.0, 8.0);
     }
 
-    public Profile P$src$Lgg_vape_config_Profile_$1hoiw0e() {
-        return this.nL;
+    public Profile getProfile() {
+        return this.profile;
     }
 
-    private void lambda$setupClickListener$0() {
-        if (this.nL == null || this.nL.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() == null) {
+    private void handleClick() {
+        if (this.profile == null || this.profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() == null) {
             return;
         }
-        long l = this.nL.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0().u();
-        FrameStackManager frameStackManager = ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v();
-        if (frameStackManager instanceof ClickGuiFrameManager) {
-            this.q(l, (ClickGuiFrameManager)frameStackManager);
+        long publicProfileId = this.profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0().u();
+        FrameStackManager activeStack = ClientSettings.INSTANCE.getActiveStack();
+        if (activeStack instanceof ClickGuiFrameManager) {
+            this.openAsOverlay(publicProfileId, (ClickGuiFrameManager)activeStack);
         } else {
-            PublicProfilesFrame.s(l);
+            PublicProfilesFrame.s(publicProfileId);
         }
     }
 
-    public void N(Profile profile) {
-        this.nL = profile;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
-    private static void lambda$openAsOverlay$1(PublicProfilesFrame publicProfilesFrame, ApiResponse apiResponse, Throwable throwable) {
-        if (throwable != null) {
-            Vape.logThrowable(throwable);
+    private static void handleProfileResponse(PublicProfilesFrame profilesFrame, ApiResponse response, Throwable error) {
+        if (error != null) {
+            Vape.logThrowable(error);
             return;
         }
-        if (!apiResponse.t()) {
-            Vape.debugLog("Failed to load public profile data: " + apiResponse.N());
+        if (!response.t()) {
+            Vape.debugLog("Failed to load public profile data: " + response.N());
             return;
         }
-        if (!nO && apiResponse.T() == null) {
+        if (response.T() == null) {
             throw new AssertionError();
         }
-        publicProfilesFrame.l((PublicProfile)apiResponse.T());
+        profilesFrame.l((PublicProfile)response.T());
     }
 
-    public void L$src$V$14lppcr() {
-        if (this.nL != null && this.nL.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() != null) {
-            this.Z(true);
-            String string = this.nL.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0().O() ? "external link outdated hover@2x" : "external link hover@2x";
-            this.W(string);
+    public void refreshVisibility() {
+        if (this.profile != null && this.profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0() != null) {
+            this.setVisible(true);
+            String iconKey = this.profile.j$src$Lgg_vape_config_ProfileRemoteMetadata_$1dp9fd0().O()
+                ? "external link outdated hover@2x"
+                : "external link hover@2x";
+            this.setIconResource(iconKey);
         } else {
-            this.Z(false);
+            this.setVisible(false);
         }
     }
 
-    static {
-        na = "external link hover@2x";
-        ng = "external link outdated hover@2x";
-        boolean bl = ProfileGlyphIconPanel.class.desiredAssertionStatus();
-        boolean bl2 = true;
-        nO = false;
-    }
-
-    public ProfileGlyphIconPanel(@Nullable Profile profile, double d, double d2) {
-        super("external link hover@2x", d, d, d2, d2, null, null, null);
-        this.nL = profile;
-        this.o(Color.WHITE);
+    public ProfileGlyphIconPanel(@Nullable Profile profile, double iconWidth, double iconHeight) {
+        super("external link hover@2x", iconWidth, iconWidth, iconHeight, iconHeight, null, null, null);
+        this.profile = profile;
+        this.setNormalColor(Color.WHITE);
         this.w("View public profile");
-        this.L$src$V$14lppcr();
-        this.Q$src$V$14ogobk();
+        this.refreshVisibility();
+        this.setupClickListener();
     }
 
-    private void Q$src$V$14ogobk() {
-        this.k$src$V$qmpccm();
-        this.r(this::lambda$setupClickListener$0);
+    private void setupClickListener() {
+        this.clearClickListeners();
+        this.addClickListener(this::handleClick);
     }
 
-    private static ApiResponse lambda$openAsOverlay$2(Throwable throwable) {
+    private static ApiResponse ignoreLoadFailure(Throwable error) {
         return null;
     }
 }

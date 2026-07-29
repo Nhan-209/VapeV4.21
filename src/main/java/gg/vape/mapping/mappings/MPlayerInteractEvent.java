@@ -86,7 +86,7 @@ extends Mapping {
             String string5 = "X_ROT";
             MPlayerInteractEvent mPlayerInteractEvent5 = this;
             this.y = this.u(string5, bl5, clazz5);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MSPacketEntityVelocity.N(new int[1]);
             }
             return;
@@ -121,7 +121,7 @@ extends Mapping {
         String string10 = "X_ROT";
         MPlayerInteractEvent mPlayerInteractEvent10 = this;
         this.y = this.u(string10, bl10, clazz10);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MSPacketEntityVelocity.N(new int[1]);
         }
     }

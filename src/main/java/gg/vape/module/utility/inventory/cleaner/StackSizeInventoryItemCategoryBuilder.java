@@ -9,25 +9,25 @@ extends InventoryItemCategoryBuilder<StackSizeInventoryItemCategoryBuilder> {
     private ComparisonOperator comparisonOperator;
     private int stackSize;
 
-    public StackSizeInventoryItemCategoryBuilder D(int size) {
+    public StackSizeInventoryItemCategoryBuilder withStackSize(int size) {
         this.stackSize = size;
         return this;
     }
 
-    public StackSizeInventoryItemCategory O() {
+    public StackSizeInventoryItemCategory build() {
         return new StackSizeInventoryItemCategory(this);
     }
 
-    public StackSizeInventoryItemCategoryBuilder h(ComparisonOperator operator) {
+    public StackSizeInventoryItemCategoryBuilder withOperator(ComparisonOperator operator) {
         this.comparisonOperator = operator;
         return this;
     }
 
-    public ComparisonOperator f() {
+    public ComparisonOperator getOperator() {
         return this.comparisonOperator;
     }
 
-    public int U() {
+    public int getStackSize() {
         return this.stackSize;
     }
 }

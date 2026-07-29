@@ -1,32 +1,33 @@
 package gg.vape.click;
 
-import gg.vape.click.ClickEngine;
-
 public class ClickRegionBounds {
-    int V;
-    final ClickEngine r;
-    int h;
+    private int lowerBound;
+    private final ClickEngine clickEngine;
+    private int upperBound;
 
-    public int w() {
-        return this.V;
+    public ClickRegionBounds(ClickEngine clickEngine, int lowerBound, int upperBound) {
+        this.clickEngine = clickEngine;
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
     }
 
-    public int G() {
-        return this.h;
+    public int getLowerBound() {
+        return this.lowerBound;
     }
 
-    public void K(int n) {
-        this.h = n;
+    public int getUpperBound() {
+        return this.upperBound;
     }
 
-    public void p(int n) {
-        this.V = n;
+    public void setUpperBound(int upperBound) {
+        this.upperBound = upperBound;
     }
 
-    public ClickRegionBounds(ClickEngine qp_12, int n, int n2) {
-        this.r = qp_12;
-        this.V = n;
-        this.h = n2;
+    public void setLowerBound(int lowerBound) {
+        this.lowerBound = lowerBound;
+    }
+
+    public ClickEngine getClickEngine() {
+        return this.clickEngine;
     }
 }
-

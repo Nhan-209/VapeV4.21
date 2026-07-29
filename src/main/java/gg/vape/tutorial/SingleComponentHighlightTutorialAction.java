@@ -34,7 +34,7 @@ extends HighlightTutorialAction {
         if (this.V()) {
             SingleComponentHighlightAdvanceClickListener singleComponentHighlightAdvanceClickListener = new SingleComponentHighlightAdvanceClickListener(this);
             this.H(this.Q(), singleComponentHighlightAdvanceClickListener);
-            this.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().Z(false);
+            this.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().setVisible(false);
         }
     }
 

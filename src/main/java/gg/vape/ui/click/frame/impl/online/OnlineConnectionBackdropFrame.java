@@ -8,7 +8,7 @@ import java.awt.Color;
 
 public class OnlineConnectionBackdropFrame
 extends Frame {
-    private final BlurRegionRenderer hm = new BlurRegionRenderer(0, 0);
+    private final BlurRegionRenderer backgroundBlurRenderer = new BlurRegionRenderer(0, 0);
 
     @Override
     public double A() {
@@ -17,12 +17,12 @@ extends Frame {
 
     @Override
     public void c() {
-        int n = Minecraft.J();
-        int n2 = Minecraft.h();
-        GuiRenderPrimitives.y(0.0f, 0.0f, n, n2, new Color(0, 0, 0, 100));
-        this.hm.L(n, n2);
-        int n3 = 20;
-        this.hm.t(0, 0, n3, 0.0f);
+        int screenWidth = Minecraft.J();
+        int screenHeight = Minecraft.h();
+        GuiRenderPrimitives.y(0.0f, 0.0f, screenWidth, screenHeight, new Color(0, 0, 0, 100));
+        this.backgroundBlurRenderer.setDimensions(screenWidth, screenHeight);
+        int blurRadius = 20;
+        this.backgroundBlurRenderer.renderBlur(0, 0, blurRadius, 0.0f);
     }
 
     @Override
@@ -35,4 +35,3 @@ extends Frame {
         return Minecraft.h() / 2;
     }
 }
-

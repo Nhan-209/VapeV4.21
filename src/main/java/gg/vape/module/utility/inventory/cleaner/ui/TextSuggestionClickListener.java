@@ -11,35 +11,35 @@ import java.util.function.Consumer;
 
 class TextSuggestionClickListener
 implements GuiMouseListener {
-    final TextSuggestionInputComponent n;
-    final AtomicBoolean B;
-    final Consumer Z;
+    final TextSuggestionInputComponent input;
+    final AtomicBoolean handlingClick;
+    final Consumer<TextSuggestionRow> onRemove;
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        for (TextSuggestionRow textSuggestionRow : TextSuggestionInputComponent.a(this.n)) {
+        for (TextSuggestionRow textSuggestionRow : TextSuggestionInputComponent.mutableRows(this.input)) {
             if (!textSuggestionRow.w$src$Z$e457mb()) continue;
-            if (this.B.get()) {
+            if (this.handlingClick.get()) {
                 return;
             }
-            this.B.set(true);
-            ClientSettings.f6.execute(() -> this.handleRowClick(textSuggestionRow, this.Z, this.B));
+            this.handlingClick.set(true);
+            ClientSettings.UI_EXECUTOR.execute(() -> this.handleRowClick(textSuggestionRow, this.onRemove, this.handlingClick));
             return;
         }
     }
 
-    TextSuggestionClickListener(TextSuggestionInputComponent textSuggestionInputComponent, AtomicBoolean atomicBoolean, Consumer consumer) {
-        this.n = textSuggestionInputComponent;
-        this.B = atomicBoolean;
-        this.Z = consumer;
+    TextSuggestionClickListener(TextSuggestionInputComponent textSuggestionInputComponent, AtomicBoolean atomicBoolean, Consumer<TextSuggestionRow> consumer) {
+        this.input = textSuggestionInputComponent;
+        this.handlingClick = atomicBoolean;
+        this.onRemove = consumer;
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    private void handleRowClick(TextSuggestionRow textSuggestionRow, Consumer consumer, AtomicBoolean atomicBoolean) {
+    private void handleRowClick(TextSuggestionRow textSuggestionRow, Consumer<TextSuggestionRow> consumer, AtomicBoolean atomicBoolean) {
         try {
-            this.n.Q(textSuggestionRow);
+            this.input.removeRow(textSuggestionRow);
             consumer.accept(textSuggestionRow);
         }
         finally {

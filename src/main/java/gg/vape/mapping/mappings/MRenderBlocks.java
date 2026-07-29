@@ -86,7 +86,7 @@ extends Mapping {
             String string10 = "renderFaceZPos";
             MRenderBlocks mRenderBlocks10 = this;
             this.X = this.Y(string10, bl10, clazz10, classArray9);
-            GuiComponent.D(new GuiComponent[3]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[3]);
             return;
         }
         Class<Boolean> clazz = Boolean.TYPE;

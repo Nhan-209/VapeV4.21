@@ -46,11 +46,10 @@ extends UtilityMod {
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
-        ItemStackData itemStackData;
-        KeyBinding keyBinding = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
+    public void onTick(EventPreTick event) {
+        KeyBinding useKey = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
         if (this.throwing) {
-            KeyBindingHelper.v(keyBinding, false, false);
+            KeyBindingHelper.updateKeyBinding(useKey, false, false);
             this.throwing = false;
             return;
         }
@@ -60,8 +59,9 @@ extends UtilityMod {
             }
             return;
         }
-        if (this.delayTimer.hasTimeElapsed((long)this.delay.B()) && this.selectHotbarSlotIncrementally((itemStackData = this.itemsToThrow.peek()).Y())) {
-            KeyBindingHelper.v(keyBinding, true, true);
+        ItemStackData nextItem = this.itemsToThrow.peek();
+        if (this.delayTimer.hasTimeElapsed((long)this.delay.getRandomValue()) && this.selectHotbarSlotIncrementally(nextItem.Y())) {
+            KeyBindingHelper.updateKeyBinding(useKey, true, true);
             this.throwing = true;
             this.delayTimer.reset();
             this.itemsToThrow.poll();
@@ -69,34 +69,29 @@ extends UtilityMod {
     }
 
     private boolean collectDebuffs() {
-        ArrayList<Integer> arrayList = new ArrayList<Integer>();
-        for (int i = 0; i < 9; ++i) {
-            arrayList.add(i);
+        ArrayList<Integer> hotbarSlots = new ArrayList<Integer>();
+        for (int hotbarSlot = 0; hotbarSlot < 9; ++hotbarSlot) {
+            hotbarSlots.add(hotbarSlot);
         }
-        Object[] objectArray = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().M();
-        ArrayList<BooleanValue> arrayList2 = new ArrayList<BooleanValue>();
-        block1: for (Integer n : arrayList) {
+        Object[] hotbarContents = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().M();
+        ArrayList<BooleanValue> queuedDebuffTypes = new ArrayList<BooleanValue>();
+        slotLoop: for (Integer hotbarSlot : hotbarSlots) {
             Item item;
-            ItemStack itemStack = new ItemStack(objectArray[n]);
+            ItemStack itemStack = new ItemStack(hotbarContents[hotbarSlot]);
             if (itemStack.isNull() || (item = itemStack.getItem()).isNull() || !MappedClasses.Di.isInstance(item.getObject())) continue;
-            ItemSplashPotion itemSplashPotion = new ItemSplashPotion(item.getObject());
-            for (BooleanValue booleanValue : this.debuffValues) {
-                if (((ModeSelection)this.mode.K()).equals(this.oneOfEachOption) && arrayList2.contains(booleanValue)) continue;
-                String string = itemSplashPotion.getItemStackDisplayName(itemStack).toLowerCase();
-                String string2 = booleanValue.getName().toLowerCase();
-                if (!booleanValue.L().booleanValue() || !string.contains(string2)) continue;
-                this.itemsToThrow.add(new ItemStackData(n, itemStack));
-                arrayList2.add(booleanValue);
-                if (!((ModeSelection)this.mode.K()).equals(this.firstOption)) continue block1;
-                break block1;
+            ItemSplashPotion splashPotion = new ItemSplashPotion(item.getObject());
+            for (BooleanValue debuffValue : this.debuffValues) {
+                if (((ModeSelection)this.mode.getValue()).equals(this.oneOfEachOption) && queuedDebuffTypes.contains(debuffValue)) continue;
+                String potionName = splashPotion.getItemStackDisplayName(itemStack).toLowerCase();
+                String debuffName = debuffValue.getName().toLowerCase();
+                if (!debuffValue.getEffectiveValue().booleanValue() || !potionName.contains(debuffName)) continue;
+                this.itemsToThrow.add(new ItemStackData(hotbarSlot, itemStack));
+                queuedDebuffTypes.add(debuffValue);
+                if (!((ModeSelection)this.mode.getValue()).equals(this.firstOption)) continue slotLoop;
+                break slotLoop;
             }
         }
         return !this.itemsToThrow.isEmpty();
-    }
-
-
-    @Override
-    public void q() {
     }
 
     public ThrowDebuff() {
@@ -116,7 +111,7 @@ extends UtilityMod {
             this.addValue(booleanValue);
         }
         this.addValue(this.delay);
-        this.scroll.K(this.scrollDelay);
+        this.scroll.addDependentValues(this.scrollDelay);
         this.addValue(this.scroll);
         this.addValue(this.scrollDelay);
     }
@@ -130,24 +125,24 @@ extends UtilityMod {
         }
     }
 
-    private boolean selectHotbarSlotIncrementally(int n) {
-        if (!this.scroll.L().booleanValue()) {
-            Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n);
+    private boolean selectHotbarSlotIncrementally(int targetSlot) {
+        if (!this.scroll.getEffectiveValue().booleanValue()) {
+            Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(targetSlot);
             return true;
         }
-        if (!this.scrollTimer.hasTimeElapsed(((Double)this.scrollDelay.K()).longValue())) {
+        if (!this.scrollTimer.hasTimeElapsed(((Double)this.scrollDelay.getValue()).longValue())) {
             return false;
         }
-        int n2 = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
-        if (n > n2) {
-            ++n2;
-        } else if (n < n2) {
-            --n2;
+        int currentSlot = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+        if (targetSlot > currentSlot) {
+            ++currentSlot;
+        } else if (targetSlot < currentSlot) {
+            --currentSlot;
         } else {
             this.scrollTimer.reset();
             return true;
         }
-        Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n2);
+        Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(currentSlot);
         return false;
     }
 }

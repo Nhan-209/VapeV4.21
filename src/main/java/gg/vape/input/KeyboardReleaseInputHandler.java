@@ -6,32 +6,31 @@ import gg.vape.input.KeyboardCodeUtil;
 
 public class KeyboardReleaseInputHandler
 implements InputEventHandler {
-    private static boolean t;
+    private static boolean legacyState;
 
 
-    public static void w(boolean bl) {
-        t = bl;
+    public static void setLegacyState(boolean state) {
+        legacyState = state;
     }
 
     @Override
-    public boolean handle(long l, long l2) {
-        int n = KeyboardCodeUtil.M((int)l, (int)l2);
-        InputEventDispatcher.getInstance().getKeyboardState().setKeyState(n, false);
+    public boolean handle(long virtualKey, long keyMetadata) {
+        int keyCode = KeyboardCodeUtil.resolveModifierKey((int)virtualKey, (int)keyMetadata);
+        InputEventDispatcher.getInstance().getKeyboardState().setKeyState(keyCode, false);
         return false;
     }
 
-    public static boolean U() {
-        boolean bl = KeyboardReleaseInputHandler.H();
-        return !bl;
+    public static boolean isLegacyStateDisabled() {
+        return !KeyboardReleaseInputHandler.getLegacyState();
     }
 
-    public static boolean H() {
-        return t;
+    public static boolean getLegacyState() {
+        return legacyState;
     }
 
     static {
-        if (!KeyboardReleaseInputHandler.U()) {
-            KeyboardReleaseInputHandler.w(true);
+        if (!KeyboardReleaseInputHandler.isLegacyStateDisabled()) {
+            KeyboardReleaseInputHandler.setLegacyState(true);
         }
     }
 }

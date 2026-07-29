@@ -67,7 +67,7 @@ extends Mapping {
             String string5 = "hasKey";
             MNBTTagCompound mNBTTagCompound5 = this;
             this.M = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.u(string5, clazz5, classArray4).A(ForgeVersion.MC_1_16_5.n(), "contains")).A(ForgeVersion.MC_1_7_10.S(), "func_150297_b")).i(ForgeVersion.MC_1_7_10.S(), Wrapper.G)).T(ForgeVersion.MC_1_21_6.n())).s();
-            GuiComponent.D(new GuiComponent[5]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[5]);
             return;
         }
         Class[] classArray5 = new Class[]{String.class, Integer.TYPE};

@@ -13,18 +13,17 @@ extends Bendable {
     }
 
     @Override
-    public String y() {
+    public String getDisplayText() {
         return null;
     }
 
     @Override
-    public void A() {
+    public void onBindActivated() {
         PingManager.B.onEnable();
     }
 
     @Override
-    public boolean m() {
+    public boolean isActive() {
         return false;
     }
 }
-

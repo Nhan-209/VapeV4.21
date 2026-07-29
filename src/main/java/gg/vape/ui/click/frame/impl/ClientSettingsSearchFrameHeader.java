@@ -38,16 +38,16 @@ extends FrameHeaderComponent {
             this.Q = 0;
             ModuleNameSuggestionProvider moduleNameSuggestionProvider = new ModuleNameSuggestionProvider(true);
             moduleNameSuggestionProvider.setComparator(null);
-            this.o.E(moduleNameSuggestionProvider);
-            this.R.r(new ClientSettingsSearchFrameHeaderSettingsToggleClickHandler(this));
+            this.o.setSuggestionProvider(moduleNameSuggestionProvider);
+            this.R.addClickListener(new ClientSettingsSearchFrameHeaderSettingsToggleClickHandler(this));
             this.R.w("Open settings");
-            this.v.r(new ClientSettingsSearchFrameHeaderSearchFocusClickHandler(this));
+            this.v.addClickListener(new ClientSettingsSearchFrameHeaderSearchFocusClickHandler(this));
             this.v.w("Search for modules");
-            this.G.r(new ClientSettingsSearchFrameHeaderManualSyncClickHandler(this));
+            this.G.addClickListener(new ClientSettingsSearchFrameHeaderManualSyncClickHandler(this));
             this.G.w("Save your profiles to the cloud");
-            this.o.o(new ClientSettingsSearchFrameHeaderInputChangeListener(this, clientSettingsSearchFrame));
-            this.H(this.o, this.v, this.G, this.R);
-            GuiComponent.D(new GuiComponent[1]);
+            this.o.addKeyTypedListener(new ClientSettingsSearchFrameHeaderInputChangeListener(this, clientSettingsSearchFrame));
+            this.addChildren(this.o, this.v, this.G, this.R);
+            GuiComponent.setLegacyComponentState(new GuiComponent[1]);
             return;
         }
         this.o = new ClientSettingsSearchInputComponent(this, this);
@@ -55,15 +55,15 @@ extends FrameHeaderComponent {
         this.Q = 0;
         ModuleNameSuggestionProvider moduleNameSuggestionProvider = new ModuleNameSuggestionProvider(true);
         moduleNameSuggestionProvider.setComparator(null);
-        this.o.E(moduleNameSuggestionProvider);
-        this.R.r(new ClientSettingsSearchFrameHeaderSettingsToggleClickHandler(this));
+        this.o.setSuggestionProvider(moduleNameSuggestionProvider);
+        this.R.addClickListener(new ClientSettingsSearchFrameHeaderSettingsToggleClickHandler(this));
         this.R.w("Open settings");
-        this.v.r(new ClientSettingsSearchFrameHeaderSearchFocusClickHandler(this));
+        this.v.addClickListener(new ClientSettingsSearchFrameHeaderSearchFocusClickHandler(this));
         this.v.w("Search for modules");
-        this.G.r(new ClientSettingsSearchFrameHeaderManualSyncClickHandler(this));
+        this.G.addClickListener(new ClientSettingsSearchFrameHeaderManualSyncClickHandler(this));
         this.G.w("Save your profiles to the cloud");
-        this.o.o(new ClientSettingsSearchFrameHeaderInputChangeListener(this, clientSettingsSearchFrame));
-        this.H(this.o, this.v, this.G, this.R);
+        this.o.addKeyTypedListener(new ClientSettingsSearchFrameHeaderInputChangeListener(this, clientSettingsSearchFrame));
+        this.addChildren(this.o, this.v, this.G, this.R);
     }
 
     static IconButtonComponent F(ClientSettingsSearchFrameHeader clientSettingsSearchFrameHeader) {
@@ -80,7 +80,7 @@ extends FrameHeaderComponent {
 
     public void V$src$V$enocyv() {
         this.i = true;
-        this.O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().b$src$V$17wa4kz();
+        this.O$src$Lgg_vape_ui_click_component_input_ModuleSearchIn$1smhagf().requestFocus();
     }
 
     @Override
@@ -88,22 +88,22 @@ extends FrameHeaderComponent {
         double d = this.G$src$D$1b2f02a() + this.A() - 7.5 - 8.0;
         int[] nArray = CloseableFrameHeaderComponent.A$src$AI$cq4488();
         if (this.i) {
-            this.o.Z(true);
+            this.o.setVisible(true);
             this.o.K(this.G$src$D$1b2f02a());
             this.o.S(this.n() - 2.5);
             this.o.o(this.A() - 17.5 - 16.0);
             this.o.Y(this.L());
-            this.G.Z(false);
+            this.G.setVisible(false);
         } else {
-            this.o.Z(false);
+            this.o.setVisible(false);
             this.o.o(0.0);
             float f = 6.5f;
-            float f2 = (float)ImageRenderer.m("vapelogo") / f;
-            float f3 = (float)ImageRenderer.j("vapelogo") / f;
-            float f4 = (float)ImageRenderer.m("v4") / f;
-            float f5 = (float)ImageRenderer.j("v4") / f;
-            ImageRenderer.E(Color.WHITE, (float)this.G$src$D$1b2f02a() + 6.0f, (float)this.n() + 5.0f, "vapelogo", f2, f3, false);
-            ImageRenderer.E(J.z(), (float)this.G$src$D$1b2f02a() + 6.0f + 27.0f, (float)this.n() + 5.0f, "v4", f4, f5, false);
+            float f2 = (float)ImageRenderer.getImageWidth("vapelogo") / f;
+            float f3 = (float)ImageRenderer.getImageHeight("vapelogo") / f;
+            float f4 = (float)ImageRenderer.getImageWidth("v4") / f;
+            float f5 = (float)ImageRenderer.getImageHeight("v4") / f;
+            ImageRenderer.drawImage(Color.WHITE, (float)this.G$src$D$1b2f02a() + 6.0f, (float)this.n() + 5.0f, "vapelogo", f2, f3, false);
+            ImageRenderer.drawImage(J.z(), (float)this.G$src$D$1b2f02a() + 6.0f + 27.0f, (float)this.n() + 5.0f, "v4", f4, f5, false);
             /* Timebomb here (disabled): injects Thread.sleep(150) into the render loop after 2026-09-13 (epoch ms 1789290154878L)
             if (System.currentTimeMillis() > 1789290154878L) {
                 try {
@@ -114,29 +114,29 @@ extends FrameHeaderComponent {
                 }
             }
             */
-            if (!Vape.INSTANCE.getPublicProfileSettings().o.L().booleanValue() && Vape.INSTANCE.getSyncThread().hasPendingSave() && System.currentTimeMillis() > Vape.INSTANCE.getSyncThread().getLastSaveTime() + 60000L) {
-                this.G.Z(true);
+            if (!Vape.INSTANCE.getPublicProfileSettings().o.getEffectiveValue().booleanValue() && Vape.INSTANCE.getSyncThread().hasPendingSave() && System.currentTimeMillis() > Vape.INSTANCE.getSyncThread().getLastSaveTime() + 60000L) {
+                this.G.setVisible(true);
                 this.G.K(d);
                 this.G.S(this.n());
                 this.G.Y(this.L());
                 d -= 13.0;
             } else {
-                this.G.Z(false);
+                this.G.setVisible(false);
             }
         }
-        this.R.G(this.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0().y$src$Z$1f55jvh() ? ClientSettingsSearchFrameHeader.J.f : null);
+        this.R.setOverrideColor(this.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0().y$src$Z$1f55jvh() ? ClientSettingsSearchFrameHeader.J.f : null);
         this.R.K(d);
         this.R.S(this.n());
         this.R.Y(this.L());
         d -= 13.0;
-        this.v.Z(((ModeSelection)ClientSettings.fW.fz.K()).equals(ClientSettings.fW.fM));
+        this.v.setVisible(((ModeSelection)ClientSettings.INSTANCE.searchBarStyle.getValue()).equals(ClientSettings.INSTANCE.integratedSearchBarMode));
         if (this.v.V$src$Z$1xhop3l()) {
-            this.v.G(this.i ? ClientSettingsSearchFrameHeader.J.f : null);
+            this.v.setOverrideColor(this.i ? ClientSettingsSearchFrameHeader.J.f : null);
             this.v.K(d);
             this.v.S(this.n());
             this.v.Y(this.L());
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             CloseableFrameHeaderComponent.o(new int[5]);
         }
     }
@@ -174,4 +174,3 @@ extends FrameHeaderComponent {
     public void F() {
     }
 }
-

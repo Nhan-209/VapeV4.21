@@ -10,9 +10,9 @@ import gg.vape.ui.click.frame.impl.ModuleSearchFrameHeader;
 
 public class ModuleSearchInputComponent
 extends TextInputComponentBase {
-    private ClientSettingsSearchFrameHeader XF;
-    private ModuleSearchFrameHeader Xt;
-    private int Xh = 0;
+    private ClientSettingsSearchFrameHeader clientSettingsHeader;
+    private ModuleSearchFrameHeader moduleSearchHeader;
+    private int previousQueryLength = 0;
 
     @Override
     public double x() {
@@ -21,26 +21,26 @@ extends TextInputComponentBase {
 
     public ModuleSearchInputComponent(ModuleSearchFrameHeader moduleSearchFrameHeader) {
         super("");
-        this.Xt = moduleSearchFrameHeader;
-        this.b.Z(false);
+        this.moduleSearchHeader = moduleSearchFrameHeader;
+        this.actionButton.setVisible(false);
     }
 
     @Override
     public void c() {
-        if (!(this.XF == null || ClientSettings.fT != null && ClientSettings.fT.equals(this))) {
-            ClientSettings.fT = this;
+        if (!(this.clientSettingsHeader == null || ClientSettings.activeComponent != null && ClientSettings.activeComponent.equals(this))) {
+            ClientSettings.activeComponent = this;
         }
-        this.e$src$V$wkeide();
+        this.renderText();
     }
 
     @Override
-    public float y() {
+    public float getLeftInset() {
         return 0.0f;
     }
 
 
     @Override
-    public float g() {
+    public float getRightInset() {
         return 0.0f;
     }
 
@@ -51,40 +51,40 @@ extends TextInputComponentBase {
     @Override
     public void u() {
         int n;
-        if (this.V$src$Z$1xhop3l() && this.Xt != null && (n = this.i$src$Ljava_lang_String_$1n2xf3k().length()) != this.Xh) {
-            this.Xt.l$src$V$11ec2hr();
-            this.Xt.K$src$V$10w6uwu();
-            this.Xh = n;
+        if (this.V$src$Z$1xhop3l() && this.moduleSearchHeader != null && (n = this.getText().length()) != this.previousQueryLength) {
+            this.moduleSearchHeader.l$src$V$11ec2hr();
+            this.moduleSearchHeader.K$src$V$10w6uwu();
+            this.previousQueryLength = n;
         }
     }
 
     public ModuleSearchInputComponent(ClientSettingsSearchFrameHeader clientSettingsSearchFrameHeader) {
         super("");
-        this.XF = clientSettingsSearchFrameHeader;
-        this.b.Z(false);
+        this.clientSettingsHeader = clientSettingsSearchFrameHeader;
+        this.actionButton.setVisible(false);
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        if (this.Xt != null) {
+        if (this.moduleSearchHeader != null) {
             super.g(guiMouseEvent);
             return;
         }
-        boolean bl = this.Q().J(guiMouseEvent.getX(), guiMouseEvent.getY());
+        boolean bl = this.getBounds().J(guiMouseEvent.getX(), guiMouseEvent.getY());
         if (bl) {
             if (guiMouseEvent.getAction().equals((Object)MouseButton.RIGHT_CLICK)) {
-                this.k("");
-                ((ClientSettingsSearchFrame)this.XF.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0()).K$src$V$1nbah4f();
+                this.setText("");
+                ((ClientSettingsSearchFrame)this.clientSettingsHeader.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0()).K$src$V$1nbah4f();
             }
-            if (ClientSettings.fT != null) {
+            if (ClientSettings.activeComponent != null) {
                 // empty if block
             }
             return;
         }
-        if (ClientSettings.fT != null) {
-            ClientSettings.fT = null;
-            this.XF.a(false);
-            this.Z(false);
+        if (ClientSettings.activeComponent != null) {
+            ClientSettings.activeComponent = null;
+            this.clientSettingsHeader.a(false);
+            this.setVisible(false);
         }
     }
 
@@ -98,7 +98,6 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public void p() {
+    public void submit() {
     }
 }
-

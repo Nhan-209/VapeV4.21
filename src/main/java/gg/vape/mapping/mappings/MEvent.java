@@ -24,7 +24,7 @@ extends Mapping {
         String string = c;
         MEvent mEvent = this;
         this.b = this.Y(string, bl, clazz, classArray);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MLegacyEntityRenderPreHook.Q(new String[5]);
         }
     }

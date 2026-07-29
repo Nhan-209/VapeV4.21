@@ -11,7 +11,6 @@ import gg.vape.input.KeyBindingHelper;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.utility.autohotbar.AutoHotbarSlotGroup;
 import gg.vape.module.utility.inventory.InventoryActionModule;
 import gg.vape.unmap.ModeOption;
 import gg.vape.utils.ItemStackScoreUtil;
@@ -37,9 +36,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 
 public class AutoHotbar
@@ -66,27 +63,27 @@ implements InventoryActionModule {
     private static final long MAGIC_ID = -3117147329120510770L;
 
     @Override
-    public boolean x() {
-        return this.r$src$Z$14eylz9() && this.active && (this.openInventory.L() != false || Minecraft.currentScreen().isNull());
+    public boolean isPerformingInventoryAction() {
+        return this.r$src$Z$14eylz9() && this.active && (this.openInventory.getEffectiveValue() != false || Minecraft.currentScreen().isNull());
     }
 
     public AutoHotbar() {
         super("InvCleaner", (int)MAGIC_ID, Category.M, "Cleans blacklisted items from your inventory");
         this.clickTimer = new TimerUtil();
-        this.delay = RandomValue.C(this, "Delay", "#", "", 1.0, 100.0, 120.0, 200.0, 1.0);
+        this.delay = RandomValue.createWithIncrement(this, "Delay", "#", "", 1.0, 100.0, 120.0, 200.0, 1.0);
         this.bestItems = BooleanValue.create(this, "Best Items", true, "Keeps the best set of armor, sword, axe, pickaxe and bow");
         this.removeNegativePotions = BooleanValue.create(this, "Remove Negative Potions", true, "Will always throw out negative potions");
         this.removeFood = BooleanValue.create(this, "Remove Food", true, "Remove Food except for Golden Apples");
         this.openInventory = BooleanValue.create(this, "Open Inventory", true, "Opens your inventory when cleaning.");
         this.inventoryOnly = BooleanValue.create(this, "Inventory Only", true, "Only cleans while your inventory is open.");
-        this.blacklisted = LimitValue.n(this, "invcleaner-blacklisted", "Blacklisted", LimitValue.G, Collections.emptyList());
+        this.blacklisted = LimitValue.create(this, "invcleaner-blacklisted", "Blacklisted", LimitValue.BLOCK_LIST_COLOR, Collections.emptyList());
         this.onKeyOption = new ModeOption("On Key");
         this.toggleOption = new ModeOption("Toggle");
         this.activation = ModeValue.create((Object)this, "Activation", this.onKeyOption, this.onKeyOption, this.toggleOption);
         this.R(false);
-        this.activation.K(this.openInventory, this.inventoryOnly);
-        this.activation.L(this.openInventory, this.onKeyOption);
-        this.activation.L(this.inventoryOnly, this.toggleOption);
+        this.activation.addDependentValues(this.openInventory, this.inventoryOnly);
+        this.activation.addActiveMode(this.openInventory, this.onKeyOption);
+        this.activation.addActiveMode(this.inventoryOnly, this.toggleOption);
         this.addValue(this.activation, this.delay, this.openInventory, this.inventoryOnly, this.bestItems, this.removeNegativePotions, this.removeFood, this.blacklisted);
     }
 
@@ -105,16 +102,16 @@ implements InventoryActionModule {
     }
 
     private ItemStack findBestByComparator(List<Slot> list, Class<?> clazz, Comparator<ItemStack> comparator) {
-        ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> matchingItems = new ArrayList<ItemStack>();
         for (Slot slot : list) {
             ItemStack itemStack;
             if (!slot.v() || (itemStack = slot.I()).isNull() || !itemStack.getItem().isInstance(clazz)) continue;
-            arrayList.add(itemStack);
+            matchingItems.add(itemStack);
         }
-        Collections.reverse(arrayList);
-        arrayList.sort(comparator);
-        Collections.reverse(arrayList);
-        return arrayList.isEmpty() ? null : (ItemStack)arrayList.get(0);
+        Collections.reverse(matchingItems);
+        matchingItems.sort(comparator);
+        Collections.reverse(matchingItems);
+        return matchingItems.isEmpty() ? null : matchingItems.get(0);
     }
 
     private boolean shouldRemove(ItemStack itemStack) {
@@ -124,8 +121,8 @@ implements InventoryActionModule {
             return true;
         }
         int notBest = 1;
-        notBest = this.bestItems.L() != false ? (item.isInstance(MappedClasses.Vl) && !this.bestItemC.equals(itemStack) || item.isInstance(MappedClasses.DU) && !this.bestItemB.equals(itemStack) || ItemStackScoreUtil.h(item) && !this.bestItemA.equals(itemStack) || item.isInstance(MappedClasses.YP) && !this.bestItemD.equals(itemStack) ? 1 : 0) : 0;
-        return this.blacklisted.isValid(itemStack, true) || notBest != 0 || this.removeFood.L() != false && item.isInstance(MappedClasses.DL) && !item.isInstance(MappedClasses.q3) || this.removeNegativePotions.L() != false && item.isInstance(MappedClasses.Di) && this.isNegativeSplashPotion(itemStack);
+        notBest = this.bestItems.getEffectiveValue() != false ? (item.isInstance(MappedClasses.Vl) && !this.bestItemC.equals(itemStack) || item.isInstance(MappedClasses.DU) && !this.bestItemB.equals(itemStack) || ItemStackScoreUtil.h(item) && !this.bestItemA.equals(itemStack) || item.isInstance(MappedClasses.YP) && !this.bestItemD.equals(itemStack) ? 1 : 0) : 0;
+        return this.blacklisted.isValid(itemStack, true) || notBest != 0 || this.removeFood.getEffectiveValue() != false && item.isInstance(MappedClasses.DL) && !item.isInstance(MappedClasses.q3) || this.removeNegativePotions.getEffectiveValue() != false && item.isInstance(MappedClasses.Di) && this.isNegativeSplashPotion(itemStack);
     }
 
     @Override
@@ -134,7 +131,7 @@ implements InventoryActionModule {
         if (jsonObject.get("blacklisted-items") != null) {
             JsonArray jsonArray = jsonObject.get("blacklisted-items").getAsJsonArray();
             JsonObject jsonObject2 = new JsonObject();
-            jsonObject2.addProperty("id", this.blacklisted.P$src$Ljava_lang_String_$1ijjhmj());
+            jsonObject2.addProperty("id", this.blacklisted.getId());
             jsonObject2.add("value", (JsonElement)jsonArray);
             this.blacklisted.loadJson(jsonObject2);
         }
@@ -142,98 +139,78 @@ implements InventoryActionModule {
 
     @Override
     public void I() {
-        this.blacklisted.Z("280", -1);
-        this.blacklisted.Z("287", -1);
-        this.blacklisted.Z("318", -1);
-        this.blacklisted.Z("345", -1);
-        this.blacklisted.Z("288", -1);
-        this.blacklisted.Z("374", -1);
-        this.blacklisted.Z("116", -1);
-        this.blacklisted.Z("54", -1);
-        this.blacklisted.Z("145", -1);
+        this.blacklisted.addEntry("280", -1);
+        this.blacklisted.addEntry("287", -1);
+        this.blacklisted.addEntry("318", -1);
+        this.blacklisted.addEntry("345", -1);
+        this.blacklisted.addEntry("288", -1);
+        this.blacklisted.addEntry("374", -1);
+        this.blacklisted.addEntry("116", -1);
+        this.blacklisted.addEntry("54", -1);
+        this.blacklisted.addEntry("145", -1);
     }
 
     @Override
     public boolean X() {
-        return this.activation.K() == this.onKeyOption;
+        return this.activation.getValue() == this.onKeyOption;
     }
 
-    private void closeInventoryIfOpen(EntityPlayerSP entityPlayerSP) {
+    private void closeInventoryIfOpen(EntityPlayerSP localPlayer) {
         if (Minecraft.currentScreen().isInstance(MappedClasses.Ft)) {
-            entityPlayerSP.Z$src$V$1ie832h();
+            localPlayer.Z$src$V$1ie832h();
         }
     }
 
-    public static double I(ItemStack itemStack) {
-        double d = AutoHotbar.armorScore(itemStack);
-        d += (double)EnchantmentHelper.q(32, itemStack);
-        d += (double)EnchantmentHelper.q(16, itemStack);
-        d += (double)EnchantmentHelper.q(19, itemStack);
-        d += (double)EnchantmentHelper.q(20, itemStack);
-        d += (double)EnchantmentHelper.q(48, itemStack);
-        return d += (double)EnchantmentHelper.q(34, itemStack);
+    public static double scoreArmorWithEnchantments(ItemStack itemStack) {
+        double score = AutoHotbar.armorScore(itemStack);
+        score += (double)EnchantmentHelper.q(32, itemStack);
+        score += (double)EnchantmentHelper.q(16, itemStack);
+        score += (double)EnchantmentHelper.q(19, itemStack);
+        score += (double)EnchantmentHelper.q(20, itemStack);
+        score += (double)EnchantmentHelper.q(48, itemStack);
+        return score + (double)EnchantmentHelper.q(34, itemStack);
     }
 
-    public LimitValue A() {
+    public LimitValue getBlacklist() {
         return this.blacklisted;
     }
 
-    private boolean g$src$Z$1qmj2fq() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (!Minecraft.currentScreen().isInstance(MappedClasses.Ft) && this.openInventory.L().booleanValue() && this.activation.K() == this.onKeyOption) {
+    private boolean buildCleanupQueue() {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (!Minecraft.currentScreen().isInstance(MappedClasses.Ft) && this.openInventory.getEffectiveValue().booleanValue() && this.activation.getValue() == this.onKeyOption) {
             KeyBinding keyBinding = Minecraft.gameSettings().j();
             if (ForgeVersion.MC_1_16_5.d()) {
-                KeyBindingHelper.a(keyBinding);
+                KeyBindingHelper.incrementPressTime(keyBinding);
             } else {
-                KeyBindingHelper.d(keyBinding, true);
-                KeyBindingHelper.v(keyBinding, false, false);
+                KeyBindingHelper.setPressedAndTick(keyBinding, true);
+                KeyBindingHelper.updateKeyBinding(keyBinding, false, false);
             }
             return false;
         }
-        if (entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().isNull()) {
+        if (localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().isNull()) {
             return false;
         }
-        List<Slot> list = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getInventorySlots();
-        list.sort(Comparator.comparingInt(this::hotbarRegionOf));
+        List<Slot> inventorySlots = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getInventorySlots();
+        inventorySlots.sort(Comparator.comparingInt(this::hotbarRegionOf));
         this.bestArmorPieces = this.collectBestArmor();
-        this.bestItemA = this.findBestByComparator(list, MappedClasses.V5, Comparator.comparingDouble(ClientSettings::U));
-        this.bestItemB = this.findBestByComparator(list, MappedClasses.DU, Comparator.comparingDouble(ClientSettings::X));
-        this.bestItemC = this.findBestByComparator(list, MappedClasses.Vl, Comparator.comparingDouble(ClientSettings::c));
-        this.bestItemD = this.findBestByComparator(list, MappedClasses.YP, Comparator.comparingDouble(ClientSettings::U));
-        Map<Object, AutoHotbarSlotGroup> hashMap = new HashMap<Object, AutoHotbarSlotGroup>();
-        block4: for (Slot object : entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getInventorySlots()) {
+        this.bestItemA = this.findBestByComparator(inventorySlots, MappedClasses.V5, Comparator.comparingDouble(ClientSettings::U));
+        this.bestItemB = this.findBestByComparator(inventorySlots, MappedClasses.DU, Comparator.comparingDouble(ClientSettings::X));
+        this.bestItemC = this.findBestByComparator(inventorySlots, MappedClasses.Vl, Comparator.comparingDouble(ClientSettings::c));
+        this.bestItemD = this.findBestByComparator(inventorySlots, MappedClasses.YP, Comparator.comparingDouble(ClientSettings::U));
+        slotLoop: for (Slot slot : localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getInventorySlots()) {
             try {
-                if (!object.v() || object.I().isNull()) continue;
-                for (Object object2 : entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().i()) {
-                    if (object2 != null && object2.equals(object.I())) continue block4;
+                if (!slot.v() || slot.I().isNull()) continue;
+                for (Object armorStack : localPlayer.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().i()) {
+                    if (armorStack != null && armorStack.equals(slot.I())) continue slotLoop;
                 }
-                if (!this.shouldRemove(object.I())) continue;
-                this.queueSlot(object.g());
+                if (!this.shouldRemove(slot.I())) continue;
+                this.queueSlot(slot.g());
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
             }
         }
-        try {
-            for (Map.Entry<Object, AutoHotbarSlotGroup> entry : hashMap.entrySet()) {
-                AutoHotbarSlotGroup autoHotbarSlotGroup = entry.getValue();
-                autoHotbarSlotGroup.W();
-                List<Integer> list2 = autoHotbarSlotGroup.r();
-                if (list2.size() <= 0) continue;
-                for (int i = AutoHotbarSlotGroup.l(autoHotbarSlotGroup); i < list2.size(); ++i) {
-                    if (i <= 0) continue;
-                    this.queueSlot(list2.get(i));
-                }
-            }
-        }
-        catch (Exception exception) {
-            Vape.logThrowable(exception);
-        }
         return true;
-    }
-
-    private static Exception a(Exception exception) {
-        return exception;
     }
 
     private int hotbarRegionOf(Slot slot) {
@@ -252,13 +229,13 @@ implements InventoryActionModule {
 
     private ItemStack[] collectBestArmor() {
         ItemStack[] itemStackArray = new ItemStack[4];
-        ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> armorItems = new ArrayList<ItemStack>();
         List<Slot> list = Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getInventorySlots();
         for (Slot wrapper : list) {
             if (!wrapper.v() || !ItemStackScoreUtil.R(wrapper.I().getItem())) continue;
-            arrayList.add(wrapper.I());
+            armorItems.add(wrapper.I());
         }
-        for (ItemStack itemStack : arrayList) {
+        for (ItemStack itemStack : armorItems) {
             int armorType = ItemStackScoreUtil.t(itemStack);
             ItemStack existing = itemStackArray[armorType];
             if (existing != null && !(AutoHotbar.armorScore(itemStack) > AutoHotbar.armorScore(existing))) continue;
@@ -294,45 +271,45 @@ implements InventoryActionModule {
     }
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
+    public void onTick(EventPrePlayerTick event) {
         if (Vape.INSTANCE.getModManager().N(AutoHotbar.class) || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
             this.active = false;
             return;
         }
-        EntityPlayerSP entityPlayerSP = eventPrePlayerTick.getThePlayer();
+        EntityPlayerSP localPlayer = event.getThePlayer();
         if (!this.active) {
-            if (this.g$src$Z$1qmj2fq() && !this.active && this.activation.K() == this.onKeyOption) {
+            if (this.buildCleanupQueue() && !this.active && this.activation.getValue() == this.onKeyOption) {
                 this.Y(false);
-                if (this.openInventory.L().booleanValue()) {
-                    this.closeInventoryIfOpen(entityPlayerSP);
+                if (this.openInventory.getEffectiveValue().booleanValue()) {
+                    this.closeInventoryIfOpen(localPlayer);
                 }
             }
             return;
         }
-        if (this.activation.K() == this.toggleOption && this.inventoryOnly.L().booleanValue() && (!Minecraft.currentScreen().isInstance(MappedClasses.Ft) || entityPlayerSP.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode())) {
+        if (this.activation.getValue() == this.toggleOption && this.inventoryOnly.getEffectiveValue().booleanValue() && (!Minecraft.currentScreen().isInstance(MappedClasses.Ft) || localPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode())) {
             return;
         }
-        if (this.active && this.openInventory.L().booleanValue() && !Minecraft.currentScreen().isInstance(MappedClasses.Ft)) {
+        if (this.active && this.openInventory.getEffectiveValue().booleanValue() && !Minecraft.currentScreen().isInstance(MappedClasses.Ft)) {
             this.F();
             return;
         }
         if (!this.clickQueue.isEmpty()) {
-            if (this.clickTimer.hasTimeElapsed((long)this.delay.B())) {
+            if (this.clickTimer.hasTimeElapsed((long)this.delay.getRandomValue())) {
                 this.clickTimer.reset();
                 int slotIndex = this.clickQueue.poll();
-                Minecraft.playerController().O(entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), slotIndex, 0, 0, entityPlayerSP);
+                Minecraft.playerController().O(localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), slotIndex, 0, 0, localPlayer);
             }
             return;
         }
-        if (this.activation.K() == this.onKeyOption) {
+        if (this.activation.getValue() == this.onKeyOption) {
             this.Y(false);
-            if (this.openInventory.L().booleanValue()) {
-                this.closeInventoryIfOpen(entityPlayerSP);
+            if (this.openInventory.getEffectiveValue().booleanValue()) {
+                this.closeInventoryIfOpen(localPlayer);
             }
         } else {
             this.active = false;
         }
-        if (entityPlayerSP.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode() && Minecraft.currentScreen().isInstance(MappedClasses.Ft) && this.activation.K() == this.onKeyOption) {
+        if (localPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode() && Minecraft.currentScreen().isInstance(MappedClasses.Ft) && this.activation.getValue() == this.onKeyOption) {
             this.Y(false);
         }
     }

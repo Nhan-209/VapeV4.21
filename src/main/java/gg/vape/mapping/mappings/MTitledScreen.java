@@ -59,7 +59,7 @@ extends Mapping {
             String string3 = "displayedTitle";
             MTitledScreen mTitledScreen3 = this;
             this.n = this.J(string3, bl3, clazz3);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 ScaledResolution.r(++n2);
             }
             return;
@@ -210,7 +210,7 @@ extends Mapping {
             MTitledScreen mTitledScreen6 = this;
             this.n = this.J(string6, bl6, clazz12);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             ScaledResolution.r(++n2);
         }
     }

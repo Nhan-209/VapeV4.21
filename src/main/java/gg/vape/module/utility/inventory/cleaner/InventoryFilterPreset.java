@@ -18,53 +18,40 @@ import org.jetbrains.annotations.Nullable;
 public class InventoryFilterPreset
 extends AbstractInventoryFilterPreset
 implements Cloneable {
-    protected UUID h;
-    private static boolean u;
-    private final List<InventoryFilterConditionGroup> M = new ArrayList<InventoryFilterConditionGroup>();
-
-    public static void d(boolean bl) {
-        u = bl;
-    }
+    protected UUID id;
+    private final List<InventoryFilterConditionGroup> conditionGroups = new ArrayList<InventoryFilterConditionGroup>();
 
     public InventoryFilterPreset(boolean bl) {
         this(null, "");
-        this.I(bl);
+        this.assignDefaultName(bl);
     }
 
-    public static boolean r() {
-        return u;
-    }
-
-    static {
-        InventoryFilterPreset.d(true);
-    }
-
-    public UUID j() {
-        return this.h;
+    public UUID getId() {
+        return this.id;
     }
 
 
-    public InventoryFilterPreset(@Nullable UUID uUID, String string) {
-        super(string);
-        this.h = uUID != null ? uUID : UUID.randomUUID();
+    public InventoryFilterPreset(@Nullable UUID id, String name) {
+        super(name);
+        this.id = id != null ? id : UUID.randomUUID();
     }
 
     @Override
-    public List<InventoryFilterConditionGroup> z() {
-        return this.M;
+    public List<InventoryFilterConditionGroup> getConditionGroups() {
+        return this.conditionGroups;
     }
 
-    public void J(String string) {
-        this.W = string;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public JsonObject K() {
+    public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
-        for (InventoryFilterConditionGroup inventoryFilterConditionGroup : this.M) {
-            jsonArray.add((JsonElement)inventoryFilterConditionGroup.g());
+        for (InventoryFilterConditionGroup conditionGroup : this.conditionGroups) {
+            jsonArray.add((JsonElement)conditionGroup.toJson());
         }
-        jsonObject.addProperty("uuid", this.h.toString());
+        jsonObject.addProperty("uuid", this.id.toString());
         jsonObject.addProperty("name", this.getName());
         jsonObject.add("conditions", (JsonElement)jsonArray);
         return jsonObject;
@@ -74,56 +61,51 @@ implements Cloneable {
         this(ConfigJsonUtils.u(jsonObject, "uuid"), jsonObject.get("name").getAsString());
         JsonArray jsonArray = jsonObject.getAsJsonArray("conditions");
         for (JsonElement jsonElement : jsonArray) {
-            this.x(new InventoryFilterConditionGroup(jsonElement.getAsJsonObject()));
+            this.addConditionGroup(new InventoryFilterConditionGroup(jsonElement.getAsJsonObject()));
         }
     }
 
-    public SharedInventoryFilterPreset o(InventoryFilterRule inventoryFilterRule) {
+    public SharedInventoryFilterPreset shareForRule(InventoryFilterRule inventoryFilterRule) {
         SharedInventoryFilterPreset sharedInventoryFilterPreset = new SharedInventoryFilterPreset(this);
         boolean bl = inventoryFilterRule instanceof SlotInventoryFilterRule;
-        inventoryFilterRule.p(sharedInventoryFilterPreset);
+        inventoryFilterRule.setPreset(sharedInventoryFilterPreset);
         if (bl) {
-            Vape.INSTANCE.getInventoryFilterPresetRegistry().g().u(null, sharedInventoryFilterPreset);
+            Vape.INSTANCE.getInventoryFilterPresetRegistry().getSlotRulePresets().replace(null, sharedInventoryFilterPreset);
         } else {
-            Vape.INSTANCE.getInventoryFilterPresetRegistry().r().u(null, sharedInventoryFilterPreset);
+            Vape.INSTANCE.getInventoryFilterPresetRegistry().getItemRulePresets().replace(null, sharedInventoryFilterPreset);
         }
         return sharedInventoryFilterPreset;
     }
 
-    public static boolean v() {
-        boolean bl = InventoryFilterPreset.r();
-        return false;
+    public void addConditionGroup(InventoryFilterConditionGroup conditionGroup) {
+        this.conditionGroups.add(conditionGroup);
     }
 
-    public void x(InventoryFilterConditionGroup inventoryFilterConditionGroup) {
-        this.M.add(inventoryFilterConditionGroup);
-    }
-
-    public InventoryFilterPreset s() {
-        InventoryFilterPreset inventoryFilterPreset = new InventoryFilterPreset(this.j(), this.getName());
-        for (InventoryFilterConditionGroup inventoryFilterConditionGroup : this.M) {
-            inventoryFilterPreset.x(inventoryFilterConditionGroup.A());
+    public InventoryFilterPreset copy() {
+        InventoryFilterPreset copy = new InventoryFilterPreset(this.getId(), this.getName());
+        for (InventoryFilterConditionGroup conditionGroup : this.conditionGroups) {
+            copy.addConditionGroup(conditionGroup.copy());
         }
-        return inventoryFilterPreset;
+        return copy;
     }
 
     public InventoryFilterPreset(SharedInventoryFilterPreset sharedInventoryFilterPreset) {
-        this(sharedInventoryFilterPreset.K());
-        this.h = UUID.randomUUID();
+        this(sharedInventoryFilterPreset.toJson());
+        this.id = UUID.randomUUID();
     }
 
-    public void I(boolean bl) {
-        String string = (bl ? "Inventory Filter " : "Custom ") + "Rule #";
-        int n = 1;
-        for (InventoryFilterPreset inventoryFilterPreset : (!bl ? Vape.INSTANCE.getInventoryFilterPresetRegistry().g() : Vape.INSTANCE.getInventoryFilterPresetRegistry().r()).M()) {
-            if (!inventoryFilterPreset.getName().equalsIgnoreCase(string + n)) continue;
-            ++n;
+    public void assignDefaultName(boolean inventoryRule) {
+        String prefix = (inventoryRule ? "Inventory Filter " : "Custom ") + "Rule #";
+        int suffix = 1;
+        for (InventoryFilterPreset preset : (!inventoryRule ? Vape.INSTANCE.getInventoryFilterPresetRegistry().getSlotRulePresets() : Vape.INSTANCE.getInventoryFilterPresetRegistry().getItemRulePresets()).getAll()) {
+            if (!preset.getName().equalsIgnoreCase(prefix + suffix)) continue;
+            ++suffix;
         }
-        this.W = string + n;
+        this.name = prefix + suffix;
     }
 
-    public void F(InventoryFilterConditionGroup inventoryFilterConditionGroup) {
-        this.M.remove(inventoryFilterConditionGroup);
+    public void removeConditionGroup(InventoryFilterConditionGroup conditionGroup) {
+        this.conditionGroups.remove(conditionGroup);
     }
 }
 

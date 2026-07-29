@@ -64,7 +64,7 @@ extends Event {
         }
         PlayerInfo playerInfo = this.getNetworkPlayerInfo();
         ITextComponent iTextComponent = playerInfo.R();
-        this.v = iTextComponent.isNotNull() ? iTextComponent.C() : ScorePlayerTeam.o(playerInfo.X(), playerInfo.v().getName());
+        this.v = iTextComponent.isNotNull() ? iTextComponent.getFormattedText() : ScorePlayerTeam.o(playerInfo.X(), playerInfo.v().getName());
         return this.v;
     }
 

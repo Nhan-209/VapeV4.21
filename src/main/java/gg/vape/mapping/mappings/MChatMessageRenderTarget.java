@@ -41,7 +41,7 @@ extends Mapping {
                 MChatMessageRenderTarget mChatMessageRenderTarget = this;
                 this.T = mChatMessageRenderTarget.Y(string, bl2, clazz, classArray);
             }
-            GuiComponent.D(new GuiComponent[2]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[2]);
             return;
         }
         if (ForgeVersion.MC_26_1.v()) {

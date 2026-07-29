@@ -4,13 +4,12 @@ public enum ValueComponentMode {
     MAIN,
     STANDALONE;
 
-    private static final /* synthetic */ ValueComponentMode[] A;
+    private static final /* synthetic */ ValueComponentMode[] DECLARED_VALUES;
 
     static {
-        String[] stringArray = new String[]{"MAIN", "STANDALONE"};
+        String[] declaredNames = new String[]{"MAIN", "STANDALONE"};
 
 
-        A = new ValueComponentMode[]{MAIN, STANDALONE};
+        DECLARED_VALUES = new ValueComponentMode[]{MAIN, STANDALONE};
     }
 }
-

@@ -9,7 +9,7 @@ public class GuiChest
 extends GuiContainer {
     public String z() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.F().C();
+            return this.F().getFormattedText();
         }
         return this.getLowerChestInventory().getName();
     }

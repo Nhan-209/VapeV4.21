@@ -12,302 +12,302 @@ import org.jetbrains.annotations.Nullable;
 public class ShapeIconComponent
 extends GuiComponent {
     @Nullable
-    private IconGlyphComponent a;
-    private double G;
-    private TruncatedTextComponent O;
-    private Supplier<Integer> i;
-    private Integer o;
-    private Color hX;
-    private static final String cb;
-    private static int R;
-    private String K;
-    private IconShape hV;
-    private float hz;
-    private double b;
-    private Color v;
-    private double Q;
-    private double I;
+    private IconGlyphComponent icon;
+    private double horizontalPadding;
+    private TruncatedTextComponent label;
+    private Supplier<Integer> countSupplier;
+    private Integer fixedCount;
+    private Color backgroundColor;
+    private static final String MAX_COUNT_TEXT;
+    private static int legacyState;
+    private String text;
+    private IconShape shape;
+    private float cornerRadius;
+    private double minimumWidth;
+    private Color foregroundColor;
+    private double fontScale;
+    private double iconHeight;
 
-    public double I$src$D$gy5f0q() {
-        return this.I;
+    public double getIconHeight() {
+        return this.iconHeight;
     }
 
-    public Color w$src$Ljava_awt_Color_$738qkw() {
-        return this.v;
+    public Color getForegroundColor() {
+        return this.foregroundColor;
     }
 
     static {
-        ShapeIconComponent.G(13);
-        cb = "9+";
+        ShapeIconComponent.setLegacyState(13);
+        MAX_COUNT_TEXT = "9+";
     }
 
-    public ShapeIconComponent j(IconShape iconShape) {
-        this.hV = iconShape;
+    public ShapeIconComponent setShape(IconShape shape) {
+        this.shape = shape;
         return this;
     }
 
     @Override
     public double x() {
-        return this.b;
+        return this.minimumWidth;
     }
 
-    public IconShape o$src$Lgg_vape_ui_click_component_IconShape_$20egvb() {
-        return this.hV;
+    public IconShape getShape() {
+        return this.shape;
     }
 
-    public ShapeIconComponent y(String string) {
-        this.K = string == null ? "" : string;
-        this.o = null;
-        this.i = null;
-        this.O.O(this.K.toUpperCase());
+    public ShapeIconComponent withText(String text) {
+        this.text = text == null ? "" : text;
+        this.fixedCount = null;
+        this.countSupplier = null;
+        this.label.setText(this.text.toUpperCase());
         return this;
     }
 
-    public float O$src$F$h1g6mm() {
-        return this.hz;
+    public float getCornerRadius() {
+        return this.cornerRadius;
     }
 
-    public static void G(int n) {
-        R = n;
+    public static void setLegacyState(int legacyState) {
+        ShapeIconComponent.legacyState = legacyState;
     }
 
-    public Supplier<Integer> E() {
-        return this.i;
+    public Supplier<Integer> getCountSupplier() {
+        return this.countSupplier;
     }
 
-    public static int I$src$I$gy5f51() {
-        return R;
+    public static int getLegacyState() {
+        return legacyState;
     }
 
-    public ShapeIconComponent W(Color color) {
-        this.hX = color;
+    public ShapeIconComponent setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
         return this;
     }
 
-    public double T$src$D$h475jp() {
-        return this.G;
+    public double getHorizontalPadding() {
+        return this.horizontalPadding;
     }
 
-    public Integer n$src$Ljava_lang_Integer_$lq0x92() {
-        return this.o;
+    public Integer getFixedCount() {
+        return this.fixedCount;
     }
 
-    public ShapeIconComponent H(double d) {
-        this.I = d;
+    public ShapeIconComponent setIconHeight(double iconHeight) {
+        this.iconHeight = iconHeight;
         return this;
     }
 
-    public void d$src$V$hczvgz() {
-        this.o = null;
-        this.i = null;
-        this.K = null;
-        this.O.O("");
+    public void clearContent() {
+        this.fixedCount = null;
+        this.countSupplier = null;
+        this.text = null;
+        this.label.setText("");
     }
 
-    public ShapeIconComponent(IconShape iconShape, String string, double d, double d2, double d3, float f, Color color, Color color2, double d4) {
-        this.hV = iconShape;
-        this.hX = color;
-        this.v = color2;
-        this.Q = d4;
-        this.d(false);
-        this.Y(d);
-        this.I = d;
-        this.b = d2;
-        this.G = d3;
-        this.hz = f;
-        this.O = new TruncatedTextComponent(string == null ? "" : string, "", 0.0, d4, color2, true);
-        this.O.K(false);
-        this.O.D(32767.0);
-        this.H(this.O);
-        this.a = null;
+    public ShapeIconComponent(IconShape shape, String text, double height, double minimumWidth, double horizontalPadding, float cornerRadius, Color backgroundColor, Color foregroundColor, double fontScale) {
+        this.shape = shape;
+        this.backgroundColor = backgroundColor;
+        this.foregroundColor = foregroundColor;
+        this.fontScale = fontScale;
+        this.setShowDisabledOverlay(false);
+        this.Y(height);
+        this.iconHeight = height;
+        this.minimumWidth = minimumWidth;
+        this.horizontalPadding = horizontalPadding;
+        this.cornerRadius = cornerRadius;
+        this.label = new TruncatedTextComponent(text == null ? "" : text, "", 0.0, fontScale, foregroundColor, true);
+        this.label.setShadowEnabled(false);
+        this.label.setMaxWidth(32767.0);
+        this.addChildren(this.label);
+        this.icon = null;
     }
 
-    public ShapeIconComponent x(Supplier<Integer> supplier) {
-        this.i = supplier;
-        this.o = null;
-        this.K = null;
+    public ShapeIconComponent setCountSupplier(Supplier<Integer> countSupplier) {
+        this.countSupplier = countSupplier;
+        this.fixedCount = null;
+        this.text = null;
         return this;
     }
 
-    public ShapeIconComponent H(Integer n) {
-        this.o = n;
-        this.i = null;
-        this.K = null;
+    public ShapeIconComponent setFixedCount(Integer fixedCount) {
+        this.fixedCount = fixedCount;
+        this.countSupplier = null;
+        this.text = null;
         return this;
     }
 
     @Nullable
-    private String getName() {
-        Integer n = null;
-        if (this.i != null) {
-            n = this.i.get();
-        } else if (this.o != null) {
-            n = this.o;
+    private String resolveDisplayText() {
+        Integer count = null;
+        if (this.countSupplier != null) {
+            count = this.countSupplier.get();
+        } else if (this.fixedCount != null) {
+            count = this.fixedCount;
         }
-        if (n != null) {
-            if (n <= 0) {
+        if (count != null) {
+            if (count <= 0) {
                 return "";
             }
-            if (n > 9) {
-                return cb;
+            if (count > 9) {
+                return MAX_COUNT_TEXT;
             }
-            return String.valueOf(n);
+            return String.valueOf(count);
         }
-        if (this.K != null) {
-            return this.K;
+        if (this.text != null) {
+            return this.text;
         }
         return null;
     }
 
-    public ShapeIconComponent g(float f) {
-        this.hz = f;
+    public ShapeIconComponent setCornerRadius(float cornerRadius) {
+        this.cornerRadius = cornerRadius;
         return this;
     }
 
-    public double O$src$D$h1g6kw() {
-        if (this.hV == IconShape.CIRCLE) {
-            return this.I;
+    public double getRequiredWidth() {
+        if (this.shape == IconShape.CIRCLE) {
+            return this.iconHeight;
         }
-        String string = this.getName();
-        double d = string == null || string.isEmpty() ? Math.ceil(this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.Q).N(this.O.S$src$Ljava_lang_String_$1bp7ddx())) : Math.ceil(this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.Q).N(string));
-        return Math.max(this.b, d + this.G * 2.0);
+        String displayText = this.resolveDisplayText();
+        double textWidth = displayText == null || displayText.isEmpty() ? Math.ceil(this.getAlternateFontRenderer(this.fontScale).N(this.label.getText())) : Math.ceil(this.getAlternateFontRenderer(this.fontScale).N(displayText));
+        return Math.max(this.minimumWidth, textWidth + this.horizontalPadding * 2.0);
     }
 
 
     @Nullable
-    public IconGlyphComponent M() {
-        return this.a;
+    public IconGlyphComponent getIcon() {
+        return this.icon;
     }
 
-    public ShapeIconComponent O(Color color) {
-        this.v = color;
+    public ShapeIconComponent setForegroundColor(Color foregroundColor) {
+        this.foregroundColor = foregroundColor;
         return this;
     }
 
-    public ShapeIconComponent U$src$Lgg_vape_ui_click_component_ShapeIconComponent_$1h1w58a(double d) {
-        this.G = d;
+    public ShapeIconComponent setHorizontalPadding(double horizontalPadding) {
+        this.horizontalPadding = horizontalPadding;
         return this;
     }
 
-    public TruncatedTextComponent d$src$Lgg_vape_ui_click_component_TruncatedTextCompone$1ti9i2w() {
-        return this.O;
+    public TruncatedTextComponent getLabel() {
+        return this.label;
     }
 
-    public static int X$src$I$h6ec1g() {
-        int n = ShapeIconComponent.I$src$I$gy5f51();
+    public static int getLegacyCompatibilityValue() {
+        int legacyState = ShapeIconComponent.getLegacyState();
         return 0;
     }
 
-    public ShapeIconComponent d(double d) {
-        this.b = d;
+    public ShapeIconComponent setMinimumWidth(double minimumWidth) {
+        this.minimumWidth = minimumWidth;
         return this;
     }
 
-    public void W(@Nullable IconGlyphComponent iconGlyphComponent) {
-        if (this.a != null) {
-            this.a.Z(false);
+    public void setIcon(@Nullable IconGlyphComponent icon) {
+        if (this.icon != null) {
+            this.icon.setVisible(false);
         }
-        this.a = iconGlyphComponent;
-        if (this.a != null) {
-            this.H(this.a);
+        this.icon = icon;
+        if (this.icon != null) {
+            this.addChildren(this.icon);
         }
     }
 
-    public void O(String string) {
-        this.K = string == null ? "" : string;
-        this.o = null;
-        this.i = null;
-        this.O.O(this.K == null ? "" : this.K.toUpperCase());
+    public void setText(String text) {
+        this.text = text == null ? "" : text;
+        this.fixedCount = null;
+        this.countSupplier = null;
+        this.label.setText(this.text == null ? "" : this.text.toUpperCase());
     }
 
-    public ShapeIconComponent x(double d) {
-        this.Q = d;
+    public ShapeIconComponent setFontScale(double fontScale) {
+        this.fontScale = fontScale;
         return this;
     }
 
     @Override
     public void H() {
-        double d = this.G$src$D$1b2f02a();
-        double d2 = this.n();
-        double d3 = this.A();
-        double d4 = this.L();
-        String string = this.getName();
-        if (string != null) {
-            this.O.O(string.toUpperCase());
+        double x = this.G$src$D$1b2f02a();
+        double y = this.n();
+        double width = this.A();
+        double height = this.L();
+        String displayText = this.resolveDisplayText();
+        if (displayText != null) {
+            this.label.setText(displayText.toUpperCase());
         }
-        double d5 = Math.min(d3, d4);
-        double d6 = d + (d3 - d5) / 2.0;
-        double d7 = d2 + (d4 - d5) / 2.0;
-        if (this.hV == IconShape.CIRCLE) {
-            GuiRenderPrimitives.B(d, d2, d3, d4, this.hX, (float)(this.I / 2.0));
-            if (this.a != null) {
-                this.a.K(d6);
-                this.a.S(d7);
-                this.a.o(d5);
-                this.a.Y(d5);
-                this.a.c();
+        double iconSize = Math.min(width, height);
+        double iconX = x + (width - iconSize) / 2.0;
+        double iconY = y + (height - iconSize) / 2.0;
+        if (this.shape == IconShape.CIRCLE) {
+            GuiRenderPrimitives.B(x, y, width, height, this.backgroundColor, (float)(this.iconHeight / 2.0));
+            if (this.icon != null) {
+                this.icon.K(iconX);
+                this.icon.S(iconY);
+                this.icon.o(iconSize);
+                this.icon.Y(iconSize);
+                this.icon.c();
             } else {
-                this.O.K(d);
-                this.O.S(d2);
-                this.O.o(d3);
-                this.O.Y(d4);
-                this.O.D(d3);
-                this.O.R(this.v != null ? this.v : Color.WHITE);
-                this.O.N(true);
+                this.label.K(x);
+                this.label.S(y);
+                this.label.o(width);
+                this.label.Y(height);
+                this.label.setMaxWidth(width);
+                this.label.setTextColor(this.foregroundColor != null ? this.foregroundColor : Color.WHITE);
+                this.label.setCentered(true);
             }
         } else {
-            GuiRenderPrimitives.B(d, d2, d3, d4, this.hX, this.hz);
-            if (this.a != null) {
-                this.a.K(d6);
-                this.a.S(d7);
-                this.a.o(d5);
-                this.a.Y(d5);
-                this.a.c();
+            GuiRenderPrimitives.B(x, y, width, height, this.backgroundColor, this.cornerRadius);
+            if (this.icon != null) {
+                this.icon.K(iconX);
+                this.icon.S(iconY);
+                this.icon.o(iconSize);
+                this.icon.Y(iconSize);
+                this.icon.c();
             } else {
-                this.O.K(d);
-                this.O.S(d2);
-                this.O.o(d3);
-                this.O.Y(d4);
-                this.O.D(Math.max(0.0, d3 - this.G * 2.0));
-                if (this.v != null) {
-                    this.O.R(this.v);
+                this.label.K(x);
+                this.label.S(y);
+                this.label.o(width);
+                this.label.Y(height);
+                this.label.setMaxWidth(Math.max(0.0, width - this.horizontalPadding * 2.0));
+                if (this.foregroundColor != null) {
+                    this.label.setTextColor(this.foregroundColor);
                 }
-                this.O.N(true);
+                this.label.setCentered(true);
             }
         }
     }
 
-    public ShapeIconComponent(IconShape iconShape, IconGlyphComponent iconGlyphComponent, double d, Color color) {
-        this.hV = iconShape;
-        this.hX = color;
-        this.v = null;
-        this.Q = 0.0;
-        this.d(false);
-        this.Y(d);
-        this.I = d;
-        this.b = d;
-        this.G = 0.0;
-        this.hz = (float)(d / 2.0);
-        this.O = new TruncatedTextComponent("", "", 0.0, 0.5, Color.WHITE, true);
-        this.O.K(false);
-        this.O.D(32767.0);
-        this.a = iconGlyphComponent;
-        if (this.a != null) {
-            this.H(this.a);
+    public ShapeIconComponent(IconShape shape, IconGlyphComponent icon, double size, Color backgroundColor) {
+        this.shape = shape;
+        this.backgroundColor = backgroundColor;
+        this.foregroundColor = null;
+        this.fontScale = 0.0;
+        this.setShowDisabledOverlay(false);
+        this.Y(size);
+        this.iconHeight = size;
+        this.minimumWidth = size;
+        this.horizontalPadding = 0.0;
+        this.cornerRadius = (float)(size / 2.0);
+        this.label = new TruncatedTextComponent("", "", 0.0, 0.5, Color.WHITE, true);
+        this.label.setShadowEnabled(false);
+        this.label.setMaxWidth(32767.0);
+        this.icon = icon;
+        if (this.icon != null) {
+            this.addChildren(this.icon);
         }
     }
 
-    public double s() {
-        return this.Q;
+    public double getFontScale() {
+        return this.fontScale;
     }
 
     @Override
-    public Color d() {
-        return this.hX;
+    public Color getDisabledOverlayColor() {
+        return this.backgroundColor;
     }
 
-    public String u$src$Ljava_lang_String_$9kgbbm() {
-        return this.K;
+    public String getText() {
+        return this.text;
     }
 }
 

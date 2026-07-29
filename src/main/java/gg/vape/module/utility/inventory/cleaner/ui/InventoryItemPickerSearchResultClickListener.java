@@ -10,23 +10,23 @@ import java.awt.Point;
 
 public class InventoryItemPickerSearchResultClickListener
 implements GuiMouseListener {
-    final InventoryItemPickerPanel P;
-    final ItemMappingEntry D;
+    final InventoryItemPickerPanel panel;
+    final ItemMappingEntry mappingEntry;
 
     private void selectItem(ItemMappingEntry itemMappingEntry) {
-        InventoryItemPickerPanel.U(this.P, ItemPickerSelection.D(itemMappingEntry));
-        InventoryItemPickerPanel.a(this.P).remove(itemMappingEntry.M());
-        this.P.a$src$V$bf004p();
+        InventoryItemPickerPanel.select(this.panel, ItemPickerSelection.ofRight(itemMappingEntry));
+        InventoryItemPickerPanel.getSelectedItemIds(this.panel).remove(itemMappingEntry.M());
+        this.panel.showSearchView();
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        ClientSettings.f6.execute(() -> this.selectItem(this.D));
+        ClientSettings.UI_EXECUTOR.execute(() -> this.selectItem(this.mappingEntry));
     }
 
     public InventoryItemPickerSearchResultClickListener(InventoryItemPickerPanel inventoryItemPickerPanel, ItemMappingEntry itemMappingEntry) {
-        this.P = inventoryItemPickerPanel;
-        this.D = itemMappingEntry;
+        this.panel = inventoryItemPickerPanel;
+        this.mappingEntry = itemMappingEntry;
     }
 }
 

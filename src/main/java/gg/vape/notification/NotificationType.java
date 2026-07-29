@@ -11,53 +11,53 @@ public enum NotificationType {
     FRIENDS_PARTY_GENERAL("group", -1, NotificationGroup.FRIENDS),
     FRIENDS_PARTY_INVITE("group", -1, NotificationGroup.FRIENDS);
 
-    private final String X;
-    private NotificationGroup E = NotificationGroup.NONE;
-    private final String i;
-    private final int Q;
-    private static boolean r;
+    private final String displayName;
+    private NotificationGroup group = NotificationGroup.NONE;
+    private final String iconResource;
+    private final int color;
+    private static boolean controlFlowFlag;
 
     NotificationType(String displayName, int color) {
         this(displayName, color, NotificationGroup.NONE);
     }
 
     NotificationType(String displayName, int color, NotificationGroup group) {
-        this.X = displayName;
-        this.Q = color;
-        this.i = "noti_" + displayName.toLowerCase();
-        this.E = group;
+        this.displayName = displayName;
+        this.color = color;
+        this.iconResource = "noti_" + displayName.toLowerCase();
+        this.group = group;
     }
 
-    public NotificationGroup T() {
-        return this.E;
+    public NotificationGroup getGroup() {
+        return this.group;
     }
 
-    public static boolean P() {
-        return r;
+    public static boolean getControlFlowFlag() {
+        return controlFlowFlag;
     }
 
-    public static void T(boolean value) {
-        r = value;
+    public static void setControlFlowFlag(boolean value) {
+        controlFlowFlag = value;
     }
 
-    public String i() {
-        return this.i;
+    public String getIconResource() {
+        return this.iconResource;
     }
 
-    public int v() {
-        return this.Q;
+    public int getColor() {
+        return this.color;
     }
 
-    public static boolean J() {
-        NotificationType.P();
+    public static boolean initializeControlFlowFlag() {
+        NotificationType.getControlFlowFlag();
         return true;
     }
 
-    public String M() {
-        return this.X;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
     static {
-        NotificationType.T(false);
+        NotificationType.setControlFlowFlag(false);
     }
 }

@@ -78,7 +78,7 @@ extends Mapping {
         Object object3 = this.d.L(object, object2);
         if (ForgeVersion.MC_1_16_5.d()) {
             ITextComponent iTextComponent = new ITextComponent(object3);
-            return iTextComponent.C();
+            return iTextComponent.getFormattedText();
         }
         return object3.toString();
     }
@@ -254,7 +254,7 @@ extends Mapping {
             String string13 = "getMaxItemUseDuration";
             MItem mItem13 = this;
             this.e = ((MappingMethodBuilder)this.u(string13, clazz15, classArray11).A(ForgeVersion.MC_1_16_5.n(), "getUseDuration")).v(ForgeVersion.MC_1_21_4.n(), MappedClasses.VK, MappedClasses.zm).s();
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MItemStack.E(++n2);
             }
             return;
@@ -462,7 +462,7 @@ extends Mapping {
         String string37 = "getMaxItemUseDuration";
         MItem mItem37 = this;
         this.e = ((MappingMethodBuilder)this.u(string37, clazz41, classArray29).A(ForgeVersion.MC_1_16_5.n(), "getUseDuration")).v(ForgeVersion.MC_1_21_4.n(), MappedClasses.VK, MappedClasses.zm).s();
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MItemStack.E(++n2);
         }
     }

@@ -43,21 +43,21 @@ public final class RenderUtils {
 
     public static void C() {
         double d = 2.0 * Vape.INSTANCE.getClientSettings().s();
-        int n = Minecraft.h() - MouseInput.u();
-        w = new MousePosition((int)((double)MouseInput.N() / d), (int)((double)n / d));
+        int n = Minecraft.h() - MouseInput.getInvertedMouseY();
+        w = new MousePosition((int)((double)MouseInput.getMouseX() / d), (int)((double)n / d));
     }
 
     public static void X(Color color, Color color2, double d, double d2, double d3, double d4, double d5, double d6, double d7, double d8) {
         if (GuiRenderPrimitives.d()) {
-            BufferedGuiRenderPrimitives.m(d, d2, d3, d4, 1.0f, color2);
-            BufferedGuiRenderPrimitives.m(d, d2, d7, d8, 1.0f, color2);
-            BufferedGuiRenderPrimitives.m(d5, d6, d7, d8, 1.0f, color);
-            BufferedGuiRenderPrimitives.m(d5, d6, d3, d4, 1.0f, color);
+            BufferedGuiRenderPrimitives.drawLine(d, d2, d3, d4, 1.0f, color2);
+            BufferedGuiRenderPrimitives.drawLine(d, d2, d7, d8, 1.0f, color2);
+            BufferedGuiRenderPrimitives.drawLine(d5, d6, d7, d8, 1.0f, color);
+            BufferedGuiRenderPrimitives.drawLine(d5, d6, d3, d4, 1.0f, color);
             return;
         }
-        OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-        OpenGlBackendHolder.d.l(3042);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3008);
+        OpenGlBackendHolder.backend.disableCapability(3553);
+        OpenGlBackendHolder.backend.enableCapability(3042);
+        OpenGlBackendHolder.backend.disableCapability(3008);
         GL11.glBlendFunc((int)770, (int)771);
         GL11.glShadeModel((int)7425);
         RenderUtils.w(color2);
@@ -70,9 +70,9 @@ public final class RenderUtils {
         GL11.glEnd();
         GL11.glColor4d((double)1.0, (double)1.0, (double)1.0, (double)1.0);
         GL11.glShadeModel((int)7424);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3042);
-        OpenGlBackendHolder.d.l(3008);
-        OpenGlBackendHolder.d.l(3553);
+        OpenGlBackendHolder.backend.disableCapability(3042);
+        OpenGlBackendHolder.backend.enableCapability(3008);
+        OpenGlBackendHolder.backend.enableCapability(3553);
     }
 
     public static void J(double d, double d2, double d3, double d4) {
@@ -130,7 +130,7 @@ public final class RenderUtils {
 
     public static void M(double d, double d2, double d3, double d4, double d5, Color color, Color color2) {
         if (GuiRenderPrimitives.d()) {
-            BufferedRenderPrimitives.K(d, d2, d3 - d, d4 - d2, (float)d5, color, color2);
+            BufferedRenderPrimitives.fillBorderAdjustedRect(d, d2, d3 - d, d4 - d2, (float)d5, color, color2);
         } else {
             GuiRenderPrimitives.q(d, d2, d3 - d, d4 - d2, d5, color, color2);
         }
@@ -213,11 +213,11 @@ public final class RenderUtils {
     public static void T() {
         if (!P.empty()) {
             GlScissorRect glScissorRect = P.pop();
-            OpenGlBackendHolder.d.e(glScissorRect.v, glScissorRect.F, glScissorRect.I, glScissorRect.f);
+            OpenGlBackendHolder.backend.setScissor(glScissorRect.x, glScissorRect.y, glScissorRect.width, glScissorRect.height);
         } else {
-            OpenGlBackendHolder.d.e(A, r, z, y);
-            BufferedGuiRenderPrimitives.u = null;
-            OpenGlBackendHolder.d.u$src$V$hntn98(3089);
+            OpenGlBackendHolder.backend.setScissor(A, r, z, y);
+            BufferedGuiRenderPrimitives.scissorRect = null;
+            OpenGlBackendHolder.backend.disableCapability(3089);
         }
     }
 
@@ -234,7 +234,7 @@ public final class RenderUtils {
         float f3 = (float)color.getBlue() / 255.0f;
         float f4 = (float)color.getAlpha() / 255.0f;
         boolean bl = f == l && f2 == I && f3 == O && Q == f4;
-        OpenGlBackendHolder.d.q(f, f2, f3, f4);
+        OpenGlBackendHolder.backend.setColor(f, f2, f3, f4);
         GlStateManager.color(f, f2, f3, f4);
         l = f;
         I = f2;
@@ -304,7 +304,7 @@ public final class RenderUtils {
             r = intBuffer.get(1);
             z = intBuffer.get(2);
             y = intBuffer.get(3);
-            OpenGlBackendHolder.d.l(3089);
+            OpenGlBackendHolder.backend.enableCapability(3089);
         }
         int n5 = Minecraft.h();
         int n6 = Minecraft.J();
@@ -337,7 +337,7 @@ public final class RenderUtils {
                 n8 = Math.max(0, n8);
             }
         }
-        OpenGlBackendHolder.d.e(n9, n10, n7, n8);
+        OpenGlBackendHolder.backend.setScissor(n9, n10, n7, n8);
     }
 
     public static void A(double d, double d2, double d3, double d4) {
@@ -361,7 +361,7 @@ public final class RenderUtils {
     public static void u() {
         if (!k.empty()) {
             GlScissorRect glScissorRect = k.pop();
-            GL11.glViewport((int)glScissorRect.v, (int)glScissorRect.F, (int)glScissorRect.I, (int)glScissorRect.f);
+            GL11.glViewport((int)glScissorRect.x, (int)glScissorRect.y, (int)glScissorRect.width, (int)glScissorRect.height);
         }
     }
 
@@ -372,4 +372,3 @@ public final class RenderUtils {
     private RenderUtils() {
     }
 }
-

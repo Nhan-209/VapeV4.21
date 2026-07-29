@@ -6,12 +6,11 @@ import gg.vape.module.utility.inventory.cleaner.StackSizeInventoryItemCategoryBu
 
 public class DefaultInventoryItemCategoryBuilder
 extends InventoryItemCategoryBuilder {
-    public StackSizeInventoryItemCategoryBuilder u() {
+    public StackSizeInventoryItemCategoryBuilder stackSize() {
         return new StackSizeInventoryItemCategoryBuilder();
     }
 
-    public MatcherBackedInventoryItemCategoryBuilder m() {
+    public MatcherBackedInventoryItemCategoryBuilder matcherBacked() {
         return new MatcherBackedInventoryItemCategoryBuilder();
     }
 }
-

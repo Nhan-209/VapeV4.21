@@ -26,7 +26,7 @@ extends PartyFriendRowComponent {
 
     @Override
     public void c() {
-        this.Fs.Z(this.w$src$Z$e457mb());
+        this.Fs.setVisible(this.w$src$Z$e457mb());
         super.c();
     }
 
@@ -34,11 +34,11 @@ extends PartyFriendRowComponent {
         super(onlineFriend, false, false);
         this.Fs = new PartyInviteActionLabelComponent(this, "INVITE", PartyInviteFriendRowComponent.J.l);
         this.Ff = false;
-        this.Fs.r(this::a$src$V$18kn00v);
-        this.Xq.S();
+        this.Fs.addClickListener(this::a$src$V$18kn00v);
+        this.Xq.removeMarkedChildren();
         this.Xq.h(this.Xj, new Object[0]);
-        this.Fs.y((double)0.65f);
-        this.Fs.y(1.0f);
+        this.Fs.setFontScale((double)0.65f);
+        this.Fs.setBorderAlpha(1.0f);
         this.Xq.h(this.Fs, new Object[0]);
     }
 

@@ -15,7 +15,7 @@ extends StringValue {
 
 
     @Override
-    public void Z() {
+    public void notifyChangeListeners() {
         if (this.g) {
             return;
         }

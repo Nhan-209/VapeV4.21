@@ -78,7 +78,7 @@ extends Mapping {
             String string5 = "onTick";
             MKeyBinding mKeyBinding5 = this;
             this.z = this.x(string5, bl5, clazz5, classArray3);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MKeyBinding.O(false);
             }
             this.p = null;
@@ -161,7 +161,7 @@ extends Mapping {
             MKeyBinding mKeyBinding17 = this;
             this.z = this.x(string17, bl17, clazz17, classArray13);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MKeyBinding.O(true);
         }
     }

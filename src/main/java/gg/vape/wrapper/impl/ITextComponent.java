@@ -46,7 +46,7 @@ extends Wrapper {
         return arrayList;
     }
 
-    public String C() {
+    public String getFormattedText() {
         return MITextComponent.b(ITextComponent.c.getMappings().RL, this.I);
     }
 
@@ -90,4 +90,3 @@ extends Wrapper {
         o = guiComponentArray;
     }
 }
-

@@ -19,7 +19,7 @@ public final class ClickGuiOverlaySpecFactoryA {
     }
 
     public static ClickGuiOverlaySpec o() {
-        return ClickGuiOverlaySpec.q().e("Vape Online Login").C("login").N(ClickGuiOverlaySpecFactoryA::B).r(ClickGuiOverlayTransitionMode.REPLACE).w();
+        return ClickGuiOverlaySpec.builder().title("Vape Online Login").sidecarIcon("login").initializeContent(ClickGuiOverlaySpecFactoryA::B).transitionMode(ClickGuiOverlayTransitionMode.REPLACE).build();
     }
 }
 

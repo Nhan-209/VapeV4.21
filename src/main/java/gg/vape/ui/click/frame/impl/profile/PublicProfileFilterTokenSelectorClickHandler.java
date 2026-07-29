@@ -10,12 +10,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PublicProfileFilterTokenSelectorClickHandler
 implements GuiMouseListener {
-    final PublicProfileFilterTokenSelectorComponent D;
-    final AtomicBoolean F;
+    private final PublicProfileFilterTokenSelectorComponent selector;
+    private final AtomicBoolean clickPending;
 
-    private void lambda$onClick$0(AtomicBoolean atomicBoolean) {
+    private void removeLastToken(AtomicBoolean atomicBoolean) {
         try {
-            this.D.A$src$V$14t6dd1();
+            this.selector.removeLastToken();
         }
         finally {
             atomicBoolean.set(false);
@@ -25,32 +25,32 @@ implements GuiMouseListener {
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        if (PublicProfileFilterTokenSelectorComponent.A(this.D)) {
-            if (PublicProfileFilterTokenSelectorComponent.E(this.D).w$src$Z$e457mb()) {
-                this.F.set(true);
-                ClientSettings.f6.execute(() -> this.lambda$onClick$0(this.F));
+        if (this.selector.isOverflowed()) {
+            if (this.selector.getOverflowSummary().w$src$Z$e457mb()) {
+                this.clickPending.set(true);
+                ClientSettings.UI_EXECUTOR.execute(() -> this.removeLastToken(this.clickPending));
             }
             return;
         }
-        for (PublicProfileFilterTokenComponent publicProfileFilterTokenComponent : PublicProfileFilterTokenSelectorComponent.u(this.D)) {
+        for (PublicProfileFilterTokenComponent publicProfileFilterTokenComponent : this.selector.getTokens()) {
             if (!publicProfileFilterTokenComponent.w$src$Z$e457mb()) continue;
-            if (this.F.get()) {
+            if (this.clickPending.get()) {
                 return;
             }
-            this.F.set(true);
-            ClientSettings.f6.execute(() -> this.lambda$onClick$1(publicProfileFilterTokenComponent, this.F));
+            this.clickPending.set(true);
+            ClientSettings.UI_EXECUTOR.execute(() -> this.removeToken(publicProfileFilterTokenComponent, this.clickPending));
             return;
         }
     }
 
     public PublicProfileFilterTokenSelectorClickHandler(PublicProfileFilterTokenSelectorComponent publicProfileFilterTokenSelectorComponent, AtomicBoolean atomicBoolean) {
-        this.D = publicProfileFilterTokenSelectorComponent;
-        this.F = atomicBoolean;
+        this.selector = publicProfileFilterTokenSelectorComponent;
+        this.clickPending = atomicBoolean;
     }
 
-    private void lambda$onClick$1(PublicProfileFilterTokenComponent publicProfileFilterTokenComponent, AtomicBoolean atomicBoolean) {
+    private void removeToken(PublicProfileFilterTokenComponent token, AtomicBoolean atomicBoolean) {
         try {
-            this.D.R(publicProfileFilterTokenComponent);
+            this.selector.removeToken(token);
         }
         finally {
             atomicBoolean.set(false);

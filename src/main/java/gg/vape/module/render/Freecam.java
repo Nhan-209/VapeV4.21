@@ -26,32 +26,32 @@ import java.util.function.Predicate;
 
 public class Freecam
 extends Mod {
-    public final BooleanValue r;
-    public double J;
-    public double s;
+    public final BooleanValue moveFakePlayer;
+    public double lastReportedX;
+    public double lastReportedY;
     private final FreecamController<Freecam> controller;
-    public final BooleanValue U;
+    public final BooleanValue allowInteracting;
     private static final long MODULE_ID = -3715766461932661926L;
-    public int I;
-    public float O;
-    public NetworkManager K;
-    public float F;
-    public final BooleanValue A;
-    public final NumberValue v;
-    public final RotationControlClaim c = SharedModuleControlClaims.I;
-    public double a;
-    public boolean S = false;
-    public boolean C = false;
-    public EntityOtherPlayerMP Z;
-    public final NumberValue Y;
-    public Object P;
-    public int H;
+    public int positionUpdateTicks;
+    public float lastReportedPitch;
+    public NetworkManager networkManager;
+    public float lastReportedYaw;
+    public final BooleanValue spawnFakePlayer;
+    public final NumberValue verticalSpeed;
+    public final RotationControlClaim rotationClaim = SharedModuleControlClaims.rotation;
+    public double lastReportedZ;
+    public boolean initializationPending;
+    public boolean disableRequested;
+    public EntityOtherPlayerMP fakePlayer;
+    public final NumberValue horizontalSpeed;
+    public Object bypassPacket;
+    public int fakeEntityId;
 
-    public boolean c(Packet packet) {
-        if (UseEntityPacketBridge.h(packet) && !this.U.L().booleanValue()) {
+    public boolean shouldCancelPacket(Packet packet) {
+        if (UseEntityPacketBridge.h(packet) && !this.allowInteracting.getEffectiveValue().booleanValue()) {
             return true;
         }
-        if (!this.U.L().booleanValue()) {
+        if (!this.allowInteracting.getEffectiveValue().booleanValue()) {
             if (packet.isInstance(MappedClasses.DN)) {
                 return true;
             }
@@ -60,138 +60,137 @@ extends Mod {
         return false;
     }
 
-    public void k$src$V$o7vvo0() {
-        this.Z = PlayerSimulationUtil.y();
-        this.Z.M(0.0f);
-        this.Z.k$src$V$5315b7(0.0f);
-        this.Z.R(false);
-        RotationManager rotationManager = RotationManager.b;
-        if (rotationManager.u()) {
-            this.Z.H(rotationManager.V());
-            this.Z.D(rotationManager.V());
-            this.Z.z(rotationManager.V());
-            this.Z.o(rotationManager.V());
-            this.Z.C(rotationManager.x());
+    public void spawnLegacyFakePlayer() {
+        this.fakePlayer = PlayerSimulationUtil.y();
+        this.fakePlayer.M(0.0f);
+        this.fakePlayer.k$src$V$5315b7(0.0f);
+        this.fakePlayer.R(false);
+        RotationManager rotationManager = RotationManager.INSTANCE;
+        if (rotationManager.hasAdaptiveController()) {
+            this.fakePlayer.H(rotationManager.getManagedYaw());
+            this.fakePlayer.D(rotationManager.getManagedYaw());
+            this.fakePlayer.z(rotationManager.getManagedYaw());
+            this.fakePlayer.o(rotationManager.getManagedYaw());
+            this.fakePlayer.C(rotationManager.getManagedPitch());
         }
-        this.I = Minecraft.thePlayer().y$src$I$1ub55de();
-        this.J = Minecraft.thePlayer().o$src$D$1u5n7bh();
-        this.s = Minecraft.thePlayer().Q$src$D$1tp5din();
-        this.a = Minecraft.thePlayer().X$src$D$1tszxo6();
-        this.F = Minecraft.thePlayer().g();
-        this.O = Minecraft.thePlayer().a$src$F$1txy325();
-        if (this.A.L().booleanValue()) {
-            this.H = ClientSettings.f();
-            this.Z.Q(this.H);
-            Minecraft.theWorld().D(this.H, this.Z);
+        this.positionUpdateTicks = Minecraft.thePlayer().y$src$I$1ub55de();
+        this.lastReportedX = Minecraft.thePlayer().o$src$D$1u5n7bh();
+        this.lastReportedY = Minecraft.thePlayer().Q$src$D$1tp5din();
+        this.lastReportedZ = Minecraft.thePlayer().X$src$D$1tszxo6();
+        this.lastReportedYaw = Minecraft.thePlayer().g();
+        this.lastReportedPitch = Minecraft.thePlayer().a$src$F$1txy325();
+        if (this.spawnFakePlayer.getEffectiveValue().booleanValue()) {
+            this.fakeEntityId = ClientSettings.f();
+            this.fakePlayer.Q(this.fakeEntityId);
+            Minecraft.theWorld().D(this.fakeEntityId, this.fakePlayer);
         }
     }
 
-    public void Z() {
-        if (this.H != 0 && this.Z != null && Minecraft.theWorld().isNotNull()) {
-            Minecraft.theWorld().M(this.Z);
-            ClientSettings.I(this.H);
-            this.H = 0;
+    public void removeFakePlayer() {
+        if (this.fakeEntityId != 0 && this.fakePlayer != null && Minecraft.theWorld().isNotNull()) {
+            Minecraft.theWorld().M(this.fakePlayer);
+            ClientSettings.I(this.fakeEntityId);
+            this.fakeEntityId = 0;
         }
-        this.Z = null;
+        this.fakePlayer = null;
     }
 
     @Override
     public void onDisable() {
-        this.controller.I();
+        this.controller.onDisable();
         EventBus.getInstance().unregisterListener(this.controller);
     }
 
     public Freecam() {
         super("Freecam", (int)MODULE_ID, Category.m, "Lets you fly and clip through walls freely\nwithout moving your player server-sided.");
-        this.U = BooleanValue.create(this, "Allow Interacting", true, "Allows you to interact with blocks and entities while in freecam.");
-        this.Y = NumberValue.create(this, "Speed", "#.#", "", 1.0, 3.0, 5.0, 0.1, "Horizontal speed multiplier");
-        this.r = BooleanValue.create(this, "Move Fake", false, "Move your fake entity with your arrow keys.");
-        this.A = BooleanValue.create(this, "Spawn Fake", true, "Spawns an entity on where your player is server-sided.\nUsing this will allow for simulated physics.");
-        this.v = NumberValue.create(this, "Vertical Speed", "#.#", "", 1.0, 3.0, 5.0, 0.1, "Vertical speed multiplier");
-        this.A.K(this.r);
-        this.addValue(this.Y, this.v);
-        this.U(this.U, ForgeVersion.MC_1_21_11.b());
-        this.addValue(this.A, this.r);
-        this.c.l(this, 100);
+        this.allowInteracting = BooleanValue.create(this, "Allow Interacting", true, "Allows you to interact with blocks and entities while in freecam.");
+        this.horizontalSpeed = NumberValue.create(this, "Speed", "#.#", "", 1.0, 3.0, 5.0, 0.1, "Horizontal speed multiplier");
+        this.moveFakePlayer = BooleanValue.create(this, "Move Fake", false, "Move your fake entity with your arrow keys.");
+        this.spawnFakePlayer = BooleanValue.create(this, "Spawn Fake", true, "Spawns an entity on where your player is server-sided.\nUsing this will allow for simulated physics.");
+        this.verticalSpeed = NumberValue.create(this, "Vertical Speed", "#.#", "", 1.0, 3.0, 5.0, 0.1, "Vertical speed multiplier");
+        this.spawnFakePlayer.addDependentValues(this.moveFakePlayer);
+        this.addValue(this.horizontalSpeed, this.verticalSpeed);
+        this.U(this.allowInteracting, ForgeVersion.MC_1_21_11.b());
+        this.addValue(this.spawnFakePlayer, this.moveFakePlayer);
+        this.rotationClaim.setPriority(this, 100);
         this.controller = ForgeVersion.MC_1_21_11.d() ? new FreecamModernController(this) : new FreecamLegacyController(this);
     }
 
-    public void M$src$V$nre1v6() {
-        this.C = false;
-        if (this.Z != null) {
-            this.p();
+    public void completeDisable() {
+        this.disableRequested = false;
+        if (this.fakePlayer != null) {
+            this.restorePlayerFromFake();
         }
-        super.s(false, false);
-        this.Z = null;
-        this.c.X(this);
+        super.setEnabled(false, false);
+        this.fakePlayer = null;
+        this.rotationClaim.release(this);
     }
 
     @Override
     public void onEnable() {
-        this.S = true;
-        this.c.d(this);
+        this.initializationPending = true;
+        this.rotationClaim.acquire(this);
         EventBus.getInstance().registerListener(this.controller, new Predicate[0]);
-        this.controller.B();
+        this.controller.onEnable();
     }
 
-    public void p() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        entityPlayerSP.H(this.Z.z());
-        entityPlayerSP.u(this.Z.N());
-        entityPlayerSP.l(this.Z.h());
-        entityPlayerSP.n(this.Z.f());
-        entityPlayerSP.w(this.Z.H());
-        entityPlayerSP.A(this.Z.R());
-        entityPlayerSP.C(this.Z.z());
-        entityPlayerSP.L(this.Z.N());
-        entityPlayerSP.s(this.Z.h());
-        entityPlayerSP.H(this.Z.J());
-        entityPlayerSP.C(this.Z.V());
-        entityPlayerSP.U(this.Z.b$src$Z$fqlxe4());
-        entityPlayerSP.Y(this.Z.z());
-        entityPlayerSP.I(this.Z.N());
-        entityPlayerSP.z(this.Z.h());
-        entityPlayerSP.Z(this.Z.J());
-        entityPlayerSP.A(this.Z.V());
-        entityPlayerSP.D(this.Z.j());
-        entityPlayerSP.l(this.Z.D());
-        entityPlayerSP.B(this.Z.z(), this.Z.N(), this.Z.h());
-        entityPlayerSP.E(this.Z.t(), this.Z.q(), this.Z.T());
-        Minecraft.thePlayer().E(this.I);
-        entityPlayerSP.z(false);
-        if (this.H != 0) {
-            Minecraft.theWorld().M(this.Z);
-            ClientSettings.I(this.H);
-            this.H = 0;
+    public void restorePlayerFromFake() {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        player.H(this.fakePlayer.z());
+        player.u(this.fakePlayer.N());
+        player.l(this.fakePlayer.h());
+        player.n(this.fakePlayer.f());
+        player.w(this.fakePlayer.H());
+        player.A(this.fakePlayer.R());
+        player.C(this.fakePlayer.z());
+        player.L(this.fakePlayer.N());
+        player.s(this.fakePlayer.h());
+        player.H(this.fakePlayer.J());
+        player.C(this.fakePlayer.V());
+        player.U(this.fakePlayer.b$src$Z$fqlxe4());
+        player.Y(this.fakePlayer.z());
+        player.I(this.fakePlayer.N());
+        player.z(this.fakePlayer.h());
+        player.Z(this.fakePlayer.J());
+        player.A(this.fakePlayer.V());
+        player.D(this.fakePlayer.j());
+        player.l(this.fakePlayer.D());
+        player.B(this.fakePlayer.z(), this.fakePlayer.N(), this.fakePlayer.h());
+        player.E(this.fakePlayer.t(), this.fakePlayer.q(), this.fakePlayer.T());
+        player.E(this.positionUpdateTicks);
+        player.z(false);
+        if (this.fakeEntityId != 0) {
+            Minecraft.theWorld().M(this.fakePlayer);
+            ClientSettings.I(this.fakeEntityId);
+            this.fakeEntityId = 0;
         }
     }
 
-    public void X$src$V$nxfse5() {
-        this.Z.M(0.0f);
-        this.Z.k$src$V$5315b7(0.0f);
-        if (this.r.L().booleanValue() && Minecraft.currentScreen().isNull()) {
+    public void updateLegacyFakePlayerMovement() {
+        this.fakePlayer.M(0.0f);
+        this.fakePlayer.k$src$V$5315b7(0.0f);
+        if (this.moveFakePlayer.getEffectiveValue().booleanValue() && Minecraft.currentScreen().isNull()) {
             if (KeyboardInput.isKeyDown(38)) {
-                this.Z.M(1.0f);
+                this.fakePlayer.M(1.0f);
             } else if (KeyboardInput.isKeyDown(40)) {
-                this.Z.M(-1.0f);
+                this.fakePlayer.M(-1.0f);
             }
             if (KeyboardInput.isKeyDown(37)) {
-                this.Z.k$src$V$5315b7(1.0f);
+                this.fakePlayer.k$src$V$5315b7(1.0f);
             } else if (KeyboardInput.isKeyDown(39)) {
-                this.Z.k$src$V$5315b7(-1.0f);
+                this.fakePlayer.k$src$V$5315b7(-1.0f);
             }
         }
-        PlayerSimulationUtil.t(this.Z, true);
+        PlayerSimulationUtil.t(this.fakePlayer, true);
     }
 
     @Override
-    public void s(boolean bl, boolean bl2) {
-        if (bl) {
-            super.s(bl, bl2);
+    public void setEnabled(boolean enabled, boolean bypassVisibilityCheck) {
+        if (enabled) {
+            super.setEnabled(enabled, bypassVisibilityCheck);
         } else {
-            this.C = true;
+            this.disableRequested = true;
         }
     }
 
 }
-

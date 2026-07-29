@@ -51,7 +51,7 @@ extends Mapping {
                 MStringTextComponent mStringTextComponent2 = this;
                 this.P = this.Y(string2, bl2, clazz2, classArray2);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MMutableTextComponent.U(new int[4]);
             }
             return;
@@ -81,7 +81,7 @@ extends Mapping {
             MStringTextComponent mStringTextComponent5 = this;
             this.P = this.Y(string5, bl3, clazz5, classArray5);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MMutableTextComponent.U(new int[4]);
         }
     }

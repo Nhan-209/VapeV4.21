@@ -37,7 +37,7 @@ extends GuiComponent {
         int n = 0;
         while ((double)n < d) {
             OnlineFriend onlineFriend = this.Q.get(n);
-            GlImageTexture glImageTexture = RemoteImageTextureManager.e().r(onlineFriend.I(), 32);
+            GlImageTexture glImageTexture = RemoteImageTextureManager.getInstance().getTexture(onlineFriend.I(), 32);
             if (glImageTexture != null) {
                 GuiRenderPrimitives.V((float)this.G$src$D$1b2f02a() + f - 1.0f, (float)this.n() - 1.0f, (float)d2 + 2.0f, 1.0, OnlineFriendAvatarStackComponent.J.m);
                 GuiRenderPrimitives.u((float)this.G$src$D$1b2f02a() + f, (float)this.n(), (float)d2, 1.0f, Color.WHITE, glImageTexture);

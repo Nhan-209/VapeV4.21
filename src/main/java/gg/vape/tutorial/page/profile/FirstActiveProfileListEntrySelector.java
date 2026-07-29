@@ -15,7 +15,7 @@ extends TutorialTargetSelector<ProfileListEntryComponent> {
     }
 
     public boolean m(ProfileListEntryComponent profileListEntryComponent) {
-        return profileListEntryComponent.m$src$Z$knv3du();
+        return profileListEntryComponent.isActiveProfile();
     }
 
     @Override

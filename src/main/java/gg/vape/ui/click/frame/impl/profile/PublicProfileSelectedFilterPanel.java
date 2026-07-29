@@ -5,16 +5,16 @@ import gg.vape.ui.click.frame.impl.profile.PublicProfileSearchFilterPanel;
 
 class PublicProfileSelectedFilterPanel
 extends PanelComponent {
-    final PublicProfileSearchFilterPanel rh;
+    private final PublicProfileSearchFilterPanel searchPanel;
 
     @Override
     public void c() {
-        PublicProfileSearchFilterPanel.r(this.rh);
+        this.searchPanel.renderFilterBackground();
         super.c();
     }
 
     PublicProfileSelectedFilterPanel(PublicProfileSearchFilterPanel publicProfileSearchFilterPanel, double d, double d2) {
         super(d, d2);
-        this.rh = publicProfileSearchFilterPanel;
+        this.searchPanel = publicProfileSearchFilterPanel;
     }
 }

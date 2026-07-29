@@ -44,29 +44,29 @@ public class ProfilesManager {
             if (object.getCategory() == Category.b && !(object instanceof Search) || object.r$src$Z$14eylz9()) {
                 // empty if block
             }
-            if (object.a().Y()) {
-                object.a().L().clear();
+            if (object.a().usesOwnKeybindStorage()) {
+                object.a().getBoundInputs().clear();
                 if (object.M$src$I$13um7m9() != 0) {
-                    object.a().L().add(object.M$src$I$13um7m9());
+                    object.a().getBoundInputs().add(object.M$src$I$13um7m9());
                 }
             }
             object.C(object.b());
             for (Value<?, ?> value : object.V()) {
-                value.S();
+                value.reset();
             }
         }
-        ClientSettings.M$src$V$1giazqf();
+        ClientSettings.refreshModuleCategoryHeaders();
         for (Value value : Vape.INSTANCE.getValueManager().getValues()) {
-            if (value.P$src$Ljava_lang_Object_$qcpui1() == null) continue;
-            value.S();
+            if (value.getDefaultValue() == null) continue;
+            value.reset();
         }
-        for (Frame frame : ClientSettings.G()) {
+        for (Frame frame : ClientSettings.getAllFrames()) {
             if (frame instanceof ClientSettingsFrame) {
                 ((ClientSettingsFrame)frame).d$src$V$16knweo();
                 continue;
             }
             if (!(frame instanceof FloatingValueDropdownLayer)) continue;
-            ((AbstractListValueComponent)((FloatingValueDropdownLayer)frame).C$src$Lgg_vape_ui_click_component_value_AbstractListVa$13qpumn()).a(false);
+            ((AbstractListValueComponent)((FloatingValueDropdownLayer)frame).getSourceComponent()).setExpanded(false);
         }
     }
 
@@ -84,7 +84,7 @@ public class ProfilesManager {
 
     public void S(Profile profile) {
         this.V.remove(profile);
-        ClientSettings.g(ProfilesSettingsFrame.class).F(profile);
+        ClientSettings.getFrame(ProfilesSettingsFrame.class).removeProfile(profile);
         Vape.INSTANCE.saveAndStop();
         new ProfileListMutationEvent(profile, ProfileListMutationAction.REMOVE).fire();
         if (profile.P$src$Ljava_util_UUID_$kdhg08() != null) {
@@ -101,8 +101,8 @@ public class ProfilesManager {
         } else {
             this.V.add(profile);
         }
-        ClientSettings.g(ProfilesSettingsFrame.class).P(profile);
-        ProfilesSettingsFrame.Z$src$V$6cxyg1();
+        ClientSettings.getFrame(ProfilesSettingsFrame.class).addProfile(profile);
+        ProfilesSettingsFrame.refreshProfileList();
         Vape.INSTANCE.saveAndStop();
         new ProfileListMutationEvent(profile, ProfileListMutationAction.ADD).fire();
     }
@@ -138,7 +138,7 @@ public class ProfilesManager {
         catch (Throwable throwable) {
             // empty catch block
         }
-        ProfilesSettingsFrame.Z$src$V$6cxyg1();
+        ProfilesSettingsFrame.refreshProfileList();
     }
 
     private static Throwable a(Throwable throwable) {
@@ -300,4 +300,3 @@ public class ProfilesManager {
         return null;
     }
 }
-

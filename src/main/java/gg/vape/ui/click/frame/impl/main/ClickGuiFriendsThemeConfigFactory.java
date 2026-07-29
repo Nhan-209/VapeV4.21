@@ -12,14 +12,13 @@ public final class ClickGuiFriendsThemeConfigFactory {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 
-    public static ClickGuiOverlaySpec O() {
-        return ClickGuiOverlaySpec.q().e("Vape Online Settings").C("settings").N(ClickGuiFriendsThemeConfigFactory::C).r(ClickGuiOverlayTransitionMode.REPLACE).w();
+    public static ClickGuiOverlaySpec createOverlay() {
+        return ClickGuiOverlaySpec.builder().title("Vape Online Settings").sidecarIcon("settings").initializeContent(ClickGuiFriendsThemeConfigFactory::populate).transitionMode(ClickGuiOverlayTransitionMode.REPLACE).build();
     }
 
-    private static void C(PanelComponent panelComponent) {
-        GuiComponent[] guiComponentArray;
-        for (GuiComponent guiComponent : guiComponentArray = ThemeComponentGroupFactory.k(ThemeColors.J)) {
-            guiComponent.q(panelComponent.A() - 4.0);
+    private static void populate(PanelComponent panelComponent) {
+        for (GuiComponent guiComponent : ThemeComponentGroupFactory.k(ThemeColors.J)) {
+            guiComponent.setExplicitWidth(panelComponent.A() - 4.0);
             panelComponent.h(guiComponent, new Object[0]);
         }
     }

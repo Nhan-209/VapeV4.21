@@ -12,7 +12,7 @@ extends Screen {
         }
         if (ForgeVersion.MC_1_16_5.d()) {
             ITextComponent t3_02 = new ITextComponent(TitledScreen.c.getMappingsMapperCompat().ql.o(this.I));
-            return t3_02.C();
+            return t3_02.getFormattedText();
         }
         return (String)TitledScreen.c.getMappingsMapperCompat().ql.o(this.I);
     }

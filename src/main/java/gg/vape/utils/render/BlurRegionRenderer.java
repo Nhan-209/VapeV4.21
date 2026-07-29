@@ -13,119 +13,119 @@ import java.util.function.Supplier;
 import org.lwjgl.opengl.GL11;
 
 public class BlurRegionRenderer {
-    private int Z = -1;
-    private int P;
-    private boolean h = false;
-    private static boolean e;
-    private int k;
+    private int textureId = -1;
+    private int regionWidth;
+    private boolean textureInitialized = false;
+    private static boolean legacyGlobalFlag;
+    private int regionHeight;
 
-    public BlurRegionRenderer(int n, int n2) {
-        this.P = n;
-        this.k = n2;
+    public BlurRegionRenderer(int width, int height) {
+        this.regionWidth = width;
+        this.regionHeight = height;
     }
 
-    private Void lambda$renderBlur$0(int n, float f, int n2) {
-        GL11.glBindTexture((int)3553, (int)this.Z);
-        GL11.glCopyTexSubImage2D((int)3553, (int)0, (int)0, (int)0, (int)((int)((float)n * f)), (int)n2, (int)this.P, (int)this.k);
+    private Void copyHorizontalPassSource(int x, float captureScale, int sourceY) {
+        GL11.glBindTexture((int)3553, (int)this.textureId);
+        GL11.glCopyTexSubImage2D((int)3553, (int)0, (int)0, (int)0, (int)((int)((float)x * captureScale)), (int)sourceY, (int)this.regionWidth, (int)this.regionHeight);
         return null;
     }
 
-    public void L(int n, int n2) {
-        double d = Vape.INSTANCE.getClientSettings().s();
-        n = (int)((double)n * d);
-        n2 = (int)((double)n2 * d);
-        if (this.P == n && this.k == n2) {
+    public void setDimensions(int width, int height) {
+        double uiScale = Vape.INSTANCE.getClientSettings().s();
+        width = (int)((double)width * uiScale);
+        height = (int)((double)height * uiScale);
+        if (this.regionWidth == width && this.regionHeight == height) {
             return;
         }
-        this.P = n;
-        this.k = n2;
-        this.h = false;
+        this.regionWidth = width;
+        this.regionHeight = height;
+        this.textureInitialized = false;
     }
 
-    public static boolean w() {
-        return e;
+    public static boolean getLegacyGlobalFlag() {
+        return legacyGlobalFlag;
     }
 
 
-    public static void k(boolean bl) {
-        e = bl;
+    public static void setLegacyGlobalFlag(boolean enabled) {
+        legacyGlobalFlag = enabled;
     }
 
-    public void t(int n, int n2, float f, float f2) {
-        RenderBatchBuilder renderBatchBuilder;
-        Supplier<Void> supplier;
+    public void renderBlur(int x, int y, float blurRadius, float inset) {
+        RenderBatchBuilder blurBatch;
+        Supplier<Void> drawSetupCallback;
         if (!Minecraft.gameSettings().Y$src$Z$1rxemad()) {
             return;
         }
-        float f3 = 2.0f;
-        double d = Vape.INSTANCE.getClientSettings().s();
-        n = (int)((double)n * d);
-        n2 = (int)((double)n2 * d);
-        int n4 = Minecraft.h();
-        int n5 = (int)((float)n4 - (float)n2 * f3 - (float)this.k);
-        if (!this.h) {
-            this.B();
+        float captureScale = 2.0f;
+        double uiScale = Vape.INSTANCE.getClientSettings().s();
+        x = (int)((double)x * uiScale);
+        y = (int)((double)y * uiScale);
+        int framebufferHeight = Minecraft.h();
+        int sourceY = (int)((float)framebufferHeight - (float)y * captureScale - (float)this.regionHeight);
+        if (!this.textureInitialized) {
+            this.initializeTexture();
         }
-        float f4 = 0.5f;
-        f4 = (float)((double)f4 / d);
-        OpenGlBackendHolder.d.m();
+        float renderScale = 0.5f;
+        renderScale = (float)((double)renderScale / uiScale);
+        OpenGlBackendHolder.backend.pushMatrix();
         if (!GuiRenderPrimitives.d()) {
-            OpenGlBackendHolder.d.G(f4, f4, f4);
+            OpenGlBackendHolder.backend.scale(renderScale, renderScale, renderScale);
         }
         if (!GuiRenderPrimitives.d()) {
-            GL11.glBindTexture((int)3553, (int)this.Z);
+            GL11.glBindTexture((int)3553, (int)this.textureId);
         }
         if (GuiRenderPrimitives.d()) {
-            final int capturedX = n;
-            supplier = () -> this.lambda$renderBlur$0(capturedX, f3, n5);
-            if (this.P == 0 || this.k == 0) {
+            final int capturedX = x;
+            drawSetupCallback = () -> this.copyHorizontalPassSource(capturedX, captureScale, sourceY);
+            if (this.regionWidth == 0 || this.regionHeight == 0) {
                 return;
             }
-            renderBatchBuilder = new RenderBatchBuilder().V(supplier).o(new GlImageTexture(this.Z)).A(n, n2, (float)this.P / 2.0f, (float)this.k / 2.0f, f, f2, 1.0f, 0.0f);
-            RenderBatchManager.M().O(renderBatchBuilder);
+            blurBatch = new RenderBatchBuilder().setDrawSetupCallback(drawSetupCallback).setTexture(new GlImageTexture(this.textureId)).addBlurPass(x, y, (float)this.regionWidth / 2.0f, (float)this.regionHeight / 2.0f, blurRadius, inset, 1.0f, 0.0f);
+            RenderBatchManager.getInstance().queueGuiBatch(blurBatch);
         } else {
-            GL11.glCopyTexSubImage2D((int)3553, (int)0, (int)0, (int)0, (int)((int)((float)n * f3)), (int)n5, (int)this.P, (int)this.k);
-            GuiRenderPrimitives.v((float)n * f3, (float)n2 * f3, this.P, this.k, f, f2, 1.0f, 0);
+            GL11.glCopyTexSubImage2D((int)3553, (int)0, (int)0, (int)0, (int)((int)((float)x * captureScale)), (int)sourceY, (int)this.regionWidth, (int)this.regionHeight);
+            GuiRenderPrimitives.v((float)x * captureScale, (float)y * captureScale, this.regionWidth, this.regionHeight, blurRadius, inset, 1.0f, 0);
         }
         if (GuiRenderPrimitives.d()) {
-            final int capturedX = n;
-            supplier = () -> this.lambda$renderBlur$1(capturedX, f3, n5);
-            if (this.P == 0 || this.k == 0) {
+            final int capturedX = x;
+            drawSetupCallback = () -> this.copyVerticalPassSource(capturedX, captureScale, sourceY);
+            if (this.regionWidth == 0 || this.regionHeight == 0) {
                 return;
             }
-            renderBatchBuilder = new RenderBatchBuilder().V(supplier).o(new GlImageTexture(this.Z)).A(n, n2, (float)this.P / 2.0f, (float)this.k / 2.0f, f, f2, 1.0f, 1.0f);
-            RenderBatchManager.M().O(renderBatchBuilder);
+            blurBatch = new RenderBatchBuilder().setDrawSetupCallback(drawSetupCallback).setTexture(new GlImageTexture(this.textureId)).addBlurPass(x, y, (float)this.regionWidth / 2.0f, (float)this.regionHeight / 2.0f, blurRadius, inset, 1.0f, 1.0f);
+            RenderBatchManager.getInstance().queueGuiBatch(blurBatch);
         } else {
-            GL11.glCopyTexSubImage2D((int)3553, (int)0, (int)0, (int)0, (int)((int)((float)n * f3)), (int)n5, (int)this.P, (int)this.k);
-            GuiRenderPrimitives.v((float)n * f3, (float)n2 * f3, this.P, this.k, f, f2, 1.0f, 1);
+            GL11.glCopyTexSubImage2D((int)3553, (int)0, (int)0, (int)0, (int)((int)((float)x * captureScale)), (int)sourceY, (int)this.regionWidth, (int)this.regionHeight);
+            GuiRenderPrimitives.v((float)x * captureScale, (float)y * captureScale, this.regionWidth, this.regionHeight, blurRadius, inset, 1.0f, 1);
         }
-        OpenGlBackendHolder.d.F();
+        OpenGlBackendHolder.backend.popMatrix();
         GlStateManager.bindTexture(0);
     }
 
-    public static boolean d() {
-        boolean bl = BlurRegionRenderer.w();
+    public static boolean isBlurAvailable() {
+        boolean ignoredLegacyFlag = BlurRegionRenderer.getLegacyGlobalFlag();
         return true;
     }
 
-    private Void lambda$renderBlur$1(int n, float f, int n2) {
-        GL11.glBindTexture((int)3553, (int)this.Z);
-        GL11.glCopyTexSubImage2D((int)3553, (int)0, (int)0, (int)0, (int)((int)((float)n * f)), (int)n2, (int)this.P, (int)this.k);
+    private Void copyVerticalPassSource(int x, float captureScale, int sourceY) {
+        GL11.glBindTexture((int)3553, (int)this.textureId);
+        GL11.glCopyTexSubImage2D((int)3553, (int)0, (int)0, (int)0, (int)((int)((float)x * captureScale)), (int)sourceY, (int)this.regionWidth, (int)this.regionHeight);
         return null;
     }
 
-    private void B() {
-        this.Z = GL11.glGenTextures();
-        GL11.glBindTexture((int)3553, (int)this.Z);
+    private void initializeTexture() {
+        this.textureId = GL11.glGenTextures();
+        GL11.glBindTexture((int)3553, (int)this.textureId);
         GL11.glTexParameteri((int)3553, (int)10241, (int)9729);
         GL11.glTexParameteri((int)3553, (int)10240, (int)9729);
         GL11.glTexParameteri((int)3553, (int)10242, (int)33071);
         GL11.glTexParameteri((int)3553, (int)10243, (int)33071);
-        GL11.glTexImage2D((int)3553, (int)0, (int)6407, (int)this.P, (int)this.k, (int)0, (int)6407, (int)5121, (ByteBuffer)null);
-        this.h = true;
+        GL11.glTexImage2D((int)3553, (int)0, (int)6407, (int)this.regionWidth, (int)this.regionHeight, (int)0, (int)6407, (int)5121, (ByteBuffer)null);
+        this.textureInitialized = true;
     }
 
     static {
-        BlurRegionRenderer.k(false);
+        BlurRegionRenderer.setLegacyGlobalFlag(false);
     }
 }

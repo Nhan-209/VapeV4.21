@@ -91,7 +91,7 @@ implements MappingTask {
         }
         boolean bl7 = bl2 = (bl = IEvent.class.isAssignableFrom(clazz));
         String string7 = string5;
-        GuiComponent.D(new GuiComponent[4]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[4]);
         return string7;
     }
 
@@ -114,9 +114,9 @@ implements MappingTask {
     public void O() {
         byte[] byArray = this.t;
         Class clazz = this.E;
-        int n = ClassBytecodeCache.C(clazz, byArray);
+        int n = ClassBytecodeCache.setClassBytecode(clazz, byArray);
         int n2 = ClassTransformer.Q$src$I$ouk7m6();
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             ClassTransformer.setTransformerState(++n2);
         }
     }
@@ -177,7 +177,7 @@ implements MappingTask {
     public static void p(Class clazz) {
         V.O(clazz);
         if (!Vape.INSTANCE.isNativeAvailable()) {
-            ClassBytecodeCache.U(clazz, true);
+            ClassBytecodeCache.getClassBytecode(clazz, true);
             String string = clazz.getName();
             Set set = LaunchClassLoader.getLaunchClassLoader().getClassLoaderExceptions();
             set.remove(string);
@@ -293,7 +293,7 @@ implements MappingTask {
 
     @Override
     public void K() {
-        this.t = ClassBytecodeCache.U(this.E, true);
+        this.t = ClassBytecodeCache.getClassBytecode(this.E, true);
         V.O(this.E.getClassLoader());
         if (!Vape.INSTANCE.isNativeAvailable()) {
             LaunchClassLoader.getLaunchClassLoader().cachedClasses().put(this.E.getName(), this.E);
@@ -362,7 +362,7 @@ implements MappingTask {
             }
             Class clazz = this.E;
             byte[] byArray = this.B;
-            int n3 = ClassBytecodeCache.C(clazz, byArray);
+            int n3 = ClassBytecodeCache.setClassBytecode(clazz, byArray);
             if (n3 != 0) {
                 // empty if block
             }
@@ -374,7 +374,7 @@ implements MappingTask {
         JavassistMappingTask javassistMappingTask4 = javassistMappingTask = this;
         Class clazz = javassistMappingTask4.E;
         byte[] byArray = this.B;
-        int n4 = ClassBytecodeCache.C(clazz, byArray);
+        int n4 = ClassBytecodeCache.setClassBytecode(clazz, byArray);
         if (n4 != 0) {
             // empty if block
         }

@@ -20,51 +20,46 @@ import java.util.List;
 
 public class ProfileModuleSnapshot
 implements INamed {
-    private final Mod P;
-    private final JsonObject n;
-    private final ValueSnapshot<BindValue, BindSet> X;
-    private final List<ValueSnapshot<?, ?>> h;
-    private final ProfileSnapshot H;
-    private boolean j;
-    private boolean g;
+    private final Mod module;
+    private final ValueSnapshot<BindValue, BindSet> bindSnapshot;
+    private final List<ValueSnapshot<?, ?>> valueSnapshots;
+    private final ProfileSnapshot profileSnapshot;
+    private boolean enabled;
+    private boolean visible;
 
-    public int v() {
-        int n = 0;
-        if (this.n()) {
-            n += 2;
+    public int getSortPriority() {
+        int priority = 0;
+        if (this.hasBind()) {
+            priority += 2;
         }
-        if (this.Q()) {
-            ++n;
+        if (this.isEnabled()) {
+            ++priority;
         }
-        if (this.n() && this.Q()) {
-            ++n;
+        if (this.hasBind() && this.isEnabled()) {
+            ++priority;
         }
-        return n;
+        return priority;
     }
 
-    public void T() {
-        this.X.J().c(new ArrayList<Integer>());
-        this.X.J().Y(BindActivationMode.TOGGLE);
+    public void resetBind() {
+        this.bindSnapshot.getValue().setBoundInputs(new ArrayList<Integer>());
+        this.bindSnapshot.getValue().setActivationMode(BindActivationMode.TOGGLE);
     }
 
-    public boolean Q() {
-        return this.j;
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
-    public List<ValueSnapshot<?, ?>> z() {
-        return this.h;
+    public List<ValueSnapshot<?, ?>> getValueSnapshots() {
+        return this.valueSnapshots;
     }
 
-    public Mod G() {
-        return this.P;
+    public Mod getModule() {
+        return this.module;
     }
 
-    private static RuntimeException a(RuntimeException runtimeException) {
-        return runtimeException;
-    }
-
-    public void L(boolean bl) {
-        this.j = bl;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public ProfileModuleSnapshot(ProfileSnapshot profileSnapshot, Mod mod, JsonObject jsonObject) {
@@ -72,10 +67,9 @@ implements INamed {
         JsonObject jsonObject2;
         Object object;
         JsonArray jsonArray2;
-        this.H = profileSnapshot;
-        this.P = mod;
-        this.h = new ArrayList();
-        this.n = jsonObject;
+        this.profileSnapshot = profileSnapshot;
+        this.module = mod;
+        this.valueSnapshots = new ArrayList<>();
         LinkedHashMap<String, JsonObject> linkedHashMap = new LinkedHashMap<String, JsonObject>();
         if (jsonObject != null) {
             jsonArray2 = jsonObject.getAsJsonArray("values");
@@ -89,90 +83,90 @@ implements INamed {
                 jsonArray = new JsonArray();
             }
             Boolean visible = ConfigJsonUtils.t(jsonObject, "visible");
-            this.g = visible != null ? visible.booleanValue() : mod.b();
+            this.visible = visible != null ? visible.booleanValue() : mod.b();
         } else {
             jsonArray = new JsonArray();
-            this.g = mod.b();
+            this.visible = mod.b();
         }
-        this.X = new ValueSnapshot(profileSnapshot, new BindValue((Object)null, "", new BindSet(ConfigJsonUtils.o(jsonArray, false), false, mod.a().A$src$Z$jg36ch())));
+        this.bindSnapshot = new ValueSnapshot<>(new BindValue((Object)null, "", new BindSet(ConfigJsonUtils.o(jsonArray, false), false, mod.a().supportsActivationMode())));
         String bindMode = jsonObject == null ? null : ConfigJsonUtils.P(jsonObject, "bind_mode");
-        if (bindMode != null && this.X.J().A$src$Z$jg36ch()) {
+        if (bindMode != null && this.bindSnapshot.getValue().supportsActivationMode()) {
             try {
-                this.X.J().Y(BindActivationMode.valueOf(bindMode));
+                this.bindSnapshot.getValue().setActivationMode(BindActivationMode.valueOf(bindMode));
             }
             catch (IllegalArgumentException illegalArgumentException) {
-                this.X.J().Y(BindActivationMode.TOGGLE);
+                this.bindSnapshot.getValue().setActivationMode(BindActivationMode.TOGGLE);
             }
         }
         for (Value<?, ?> value : mod.V()) {
-            jsonObject2 = (JsonObject)linkedHashMap.get(value.P$src$Ljava_lang_String_$1ijjhmj());
+            jsonObject2 = (JsonObject)linkedHashMap.get(value.getId());
             if (jsonObject2 == null) {
-                this.h.add(new ValueSnapshot(profileSnapshot, value));
+                this.valueSnapshots.add(new ValueSnapshot<>(value));
                 continue;
             }
-            object = new ValueSnapshot(profileSnapshot, value);
-            ((ValueSnapshot)object).j(jsonObject2);
-            this.h.add((ValueSnapshot<?, ?>)object);
+            ValueSnapshot<?, ?> valueSnapshot = new ValueSnapshot<>(value);
+            valueSnapshot.loadJson(jsonObject2);
+            this.valueSnapshots.add(valueSnapshot);
         }
-        if (this.H.d() != null) {
-            this.j = this.H.d().N$src$Ljava_util_List_$tynky5().contains(this.P);
+        if (this.profileSnapshot.getProfile() != null) {
+            this.enabled = this.profileSnapshot.getProfile().N$src$Ljava_util_List_$tynky5().contains(this.module);
         }
     }
 
     @Override
     public String getName() {
-        return this.P.getName();
+        return this.module.getName();
     }
 
-    public boolean j() {
-        if (this.P.getCategory() == Category.b) {
+    public boolean hasChanges() {
+        if (this.module.getCategory() == Category.b) {
             return false;
         }
-        for (ValueSnapshot<?, ?> valueSnapshot : this.z()) {
-            if (valueSnapshot.x()) continue;
+        for (ValueSnapshot<?, ?> valueSnapshot : this.getValueSnapshots()) {
+            if (valueSnapshot.isDefault()) continue;
             return true;
         }
-        if (this.n()) {
+        if (this.hasBind()) {
             return true;
         }
-        return this.Q();
+        return this.isEnabled();
     }
 
-    public List<ValueSnapshot<?, ?>> h(boolean bl) {
-        ArrayList arrayList = new ArrayList();
-        for (ValueSnapshot<?, ?> valueSnapshot : this.z()) {
-            if (valueSnapshot.h() && !bl) continue;
-            arrayList.add(valueSnapshot);
+    public List<ValueSnapshot<?, ?>> getValues(boolean includeDefaults) {
+        ArrayList<ValueSnapshot<?, ?>> values = new ArrayList<>();
+        for (ValueSnapshot<?, ?> valueSnapshot : this.getValueSnapshots()) {
+            if (valueSnapshot.isDefault() && !includeDefaults) continue;
+            values.add(valueSnapshot);
         }
-        return arrayList;
+        return values;
     }
 
-    public boolean n() {
-        return this.X.J().y$src$Z$r0tfl8();
+    public boolean hasBind() {
+        return this.bindSnapshot.getValue().hasValidBinding();
     }
 
-    public JsonObject g() {
+    public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("name", this.P.getName());
-        if (this.P.a().Y()) {
-            if (this.n()) {
-                jsonObject.add("keybinds_2", (JsonElement)this.X.J().toJson$src$Lcom_google_gson_JsonArray_$13cfbto());
+        jsonObject.addProperty("name", this.module.getName());
+        if (this.module.a().usesOwnKeybindStorage()) {
+            if (this.hasBind()) {
+                jsonObject.add("keybinds_2", this.bindSnapshot.getValue().serializeBoundInputs());
             }
-            if (this.X.J().A$src$Z$jg36ch() && this.X.J().G() != BindActivationMode.TOGGLE) {
-                jsonObject.addProperty("bind_mode", this.X.J().G().name());
+            if (this.bindSnapshot.getValue().supportsActivationMode() && this.bindSnapshot.getValue().getActivationMode() != BindActivationMode.TOGGLE) {
+                jsonObject.addProperty("bind_mode", this.bindSnapshot.getValue().getActivationMode().name());
             }
         }
         JsonArray jsonArray = new JsonArray();
-        for (ValueSnapshot<?, ?> valueSnapshot : this.h) {
+        for (ValueSnapshot<?, ?> valueSnapshot : this.valueSnapshots) {
             JsonObject jsonObject2;
-            if (!((Value)valueSnapshot.W()).s$src$Z$1arlhq2() || valueSnapshot.x() || (jsonObject2 = valueSnapshot.I()).entrySet().size() <= 1) continue;
-            jsonArray.add((JsonElement)valueSnapshot.I());
+            if (!((Value)valueSnapshot.getSourceValue()).isSerializable() || valueSnapshot.isDefault() || (jsonObject2 = valueSnapshot.toJson()).entrySet().size() <= 1) continue;
+            jsonArray.add(valueSnapshot.toJson());
         }
         if (jsonArray.size() != 0) {
             jsonObject.add("values", (JsonElement)jsonArray);
         }
-        if (this.g != this.P.b()) {
-            jsonObject.addProperty("visible", Boolean.valueOf(this.g));
+        if (this.visible != this.module.b()) {
+            jsonObject.addProperty("visible", Boolean.valueOf(this.visible));
         }
         if (jsonObject.entrySet().size() == 1) {
             return null;
@@ -180,11 +174,11 @@ implements INamed {
         return jsonObject;
     }
 
-    public String I() {
-        return this.X.J().h();
+    public String getBindDisplayText() {
+        return this.bindSnapshot.getValue().getBindText();
     }
 
-    public ValueSnapshot<BindValue, BindSet> O() {
-        return this.X;
+    public ValueSnapshot<BindValue, BindSet> getBindSnapshot() {
+        return this.bindSnapshot;
     }
 }

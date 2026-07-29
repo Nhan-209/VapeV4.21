@@ -43,7 +43,7 @@ extends Mapping {
         String string4 = "setAllVisible";
         MSetVisibility mSetVisibility3 = this;
         this.X = this.Y(string4, bl3, clazz3, classArray3);
-        GuiComponent.D(new GuiComponent[2]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[2]);
     }
 }
 

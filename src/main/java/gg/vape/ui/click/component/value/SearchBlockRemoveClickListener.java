@@ -7,20 +7,19 @@ import gg.vape.ui.unmap.SearchBlock;
 
 public class SearchBlockRemoveClickListener
 implements GuiClickListener {
-    final SearchBlock U;
-    final Runnable u;
-    final SearchBlockListComponent S;
+    final SearchBlock searchBlock;
+    final Runnable afterRemove;
+    final SearchBlockListComponent owner;
 
     @Override
-    public void P() {
-        Vape.INSTANCE.getSearch().y(this.U);
-        this.u.run();
+    public void onPrimaryClick() {
+        Vape.INSTANCE.getSearch().removeSearchBlock(this.searchBlock);
+        this.afterRemove.run();
     }
 
-    public SearchBlockRemoveClickListener(SearchBlockListComponent ud_22, SearchBlock searchBlock, Runnable runnable) {
-        this.S = ud_22;
-        this.U = searchBlock;
-        this.u = runnable;
+    public SearchBlockRemoveClickListener(SearchBlockListComponent owner, SearchBlock searchBlock, Runnable afterRemove) {
+        this.owner = owner;
+        this.searchBlock = searchBlock;
+        this.afterRemove = afterRemove;
     }
 }
-

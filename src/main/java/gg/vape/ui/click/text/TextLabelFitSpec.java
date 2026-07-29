@@ -1,72 +1,71 @@
 package gg.vape.ui.click.text;
 
 public class TextLabelFitSpec {
-    private double c;
-    private boolean l;
-    private double r;
-    private double J;
-    private String j = "";
-    private double m;
+    private double maxWidth;
+    private boolean bold;
+    private double maxScale;
+    private double scaleIncrement;
+    private String text = "";
+    private double minScale;
 
-    public void W(double d) {
-        this.m = d;
+    public void setMinScale(double minScale) {
+        this.minScale = minScale;
     }
 
-    public double u() {
-        return this.r;
+    public double getMaxScale() {
+        return this.maxScale;
     }
 
     public String toString() {
-        return "ScalingLabelData{text='" + this.j + '\'' + ", minScale=" + this.m + ", maxScale=" + this.r + ", scaleIncrement=" + this.J + ", maxWidth=" + this.c + ", bold=" + this.l + '}';
+        return "ScalingLabelData{text='" + this.text + '\'' + ", minScale=" + this.minScale + ", maxScale=" + this.maxScale + ", scaleIncrement=" + this.scaleIncrement + ", maxWidth=" + this.maxWidth + ", bold=" + this.bold + '}';
     }
 
-    public TextLabelFitSpec(String string, double d, double d2, double d3, double d4, boolean bl) {
-        this.j = string;
-        this.m = d;
-        this.r = d2;
-        this.J = d3;
-        this.c = d4;
-        this.l = bl;
+    public TextLabelFitSpec(String text, double minScale, double maxScale, double scaleIncrement, double maxWidth, boolean bold) {
+        this.text = text;
+        this.minScale = minScale;
+        this.maxScale = maxScale;
+        this.scaleIncrement = scaleIncrement;
+        this.maxWidth = maxWidth;
+        this.bold = bold;
     }
 
-    public double T() {
-        return this.c;
+    public double getMaxWidth() {
+        return this.maxWidth;
     }
 
-    public double h() {
-        return this.J;
+    public double getScaleIncrement() {
+        return this.scaleIncrement;
     }
 
-    public String o() {
-        return this.j;
+    public String getText() {
+        return this.text;
     }
 
-    public double g() {
-        return this.m;
+    public double getMinScale() {
+        return this.minScale;
     }
 
-    public void k(double d) {
-        this.r = d;
+    public void setMaxScale(double maxScale) {
+        this.maxScale = maxScale;
     }
 
-    public boolean x() {
-        return this.l;
+    public boolean isBold() {
+        return this.bold;
     }
 
-    public void u(double d) {
-        this.J = d;
+    public void setScaleIncrement(double scaleIncrement) {
+        this.scaleIncrement = scaleIncrement;
     }
 
-    public void Y(double d) {
-        this.c = d;
+    public void setMaxWidth(double maxWidth) {
+        this.maxWidth = maxWidth;
     }
 
-    public void Q(boolean bl) {
-        this.l = bl;
+    public void setBold(boolean bold) {
+        this.bold = bold;
     }
 
-    public void N(String string) {
-        this.j = string;
+    public void setText(String text) {
+        this.text = text;
     }
 }
-

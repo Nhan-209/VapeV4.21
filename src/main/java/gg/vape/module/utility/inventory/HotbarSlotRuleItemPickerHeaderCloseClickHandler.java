@@ -12,9 +12,8 @@ implements GuiClickListener {
     }
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         this.k.Z$src$V$7seznp();
         this.k.N$src$V$7ltgjd();
     }
 }
-

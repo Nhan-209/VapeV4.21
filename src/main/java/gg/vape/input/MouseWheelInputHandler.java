@@ -7,9 +7,8 @@ import gg.vape.input.Win32InputConstants;
 public class MouseWheelInputHandler
 implements InputEventHandler {
     @Override
-    public boolean handle(long l, long l2) {
-        short s = Win32InputConstants.c(l);
-        return InputEventDispatcher.getInstance().getMouseState().setScrollDelta(s);
+    public boolean handle(long packedWheelMetadata, long secondArgument) {
+        short scrollDelta = Win32InputConstants.extractHighWord(packedWheelMetadata);
+        return InputEventDispatcher.getInstance().getMouseState().setScrollDelta(scrollDelta);
     }
 }
-

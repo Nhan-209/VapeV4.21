@@ -28,21 +28,21 @@ extends AbstractInventoryFilterRule {
 
     @Override
     @Nullable
-    public InventoryFilterPreset W() {
-        UUID uUID = this.t();
-        if (uUID != null) {
-            return Vape.INSTANCE.getInventoryFilterPresetRegistry().g().l(uUID);
+    public InventoryFilterPreset resolvePreset() {
+        UUID sharedPresetId = this.getSharedPresetId();
+        if (sharedPresetId != null) {
+            return Vape.INSTANCE.getInventoryFilterPresetRegistry().getSlotRulePresets().getById(sharedPresetId);
         }
-        return this.J();
+        return this.getInlinePreset();
     }
 
-    public int b() {
-        return 36 + this.m();
+    public int getContainerSlot() {
+        return 36 + this.getSlot();
     }
 
     @Override
-    public JsonObject M(boolean bl) {
-        JsonObject jsonObject = super.M(bl);
+    public JsonObject toJson(boolean embedSharedPreset) {
+        JsonObject jsonObject = super.toJson(embedSharedPreset);
         jsonObject.addProperty("slot", (Number)this.slot);
         return jsonObject;
     }
@@ -55,7 +55,7 @@ extends AbstractInventoryFilterRule {
         return slotStateArray;
     }
 
-    public int m() {
+    public int getSlot() {
         return this.slot;
     }
 }

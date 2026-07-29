@@ -35,7 +35,7 @@ extends Team {
             if (iTextComponent.isNull()) {
                 return "";
             }
-            return iTextComponent.C();
+            return iTextComponent.getFormattedText();
         }
         return MScorePlayerTeam.L(ScorePlayerTeam.c.getMappings().Rh, this.getObject());
     }
@@ -60,4 +60,3 @@ extends Team {
         return MScorePlayerTeam.M(ScorePlayerTeam.c.getMappings().Rh, team.getObject(), string);
     }
 }
-

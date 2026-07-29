@@ -199,12 +199,8 @@ public abstract class SmoothFontRenderer {
     }
 
     public void f(String string, double d, double d2, Color color) {
-        if (ClientSettings.p$src$Z$1h1jsli()) {
-            this.L(string, d + 0.5, d2 + 0.5, Integer.MIN_VALUE);
-            this.W(string, d, d2, color);
-        } else {
-            this.v(string, d - this.N(string) / 2.0, d2, color);
-        }
+        this.L(string, d + 0.5, d2 + 0.5, Integer.MIN_VALUE);
+        this.W(string, d, d2, color);
     }
 
     public abstract void t(String var1, double var2, double var4, Color var6, Color var7, boolean var8);

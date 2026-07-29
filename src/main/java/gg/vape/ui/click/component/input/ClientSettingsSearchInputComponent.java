@@ -8,7 +8,7 @@ extends ModuleSearchInputComponent {
     final ClientSettingsSearchFrameHeader ey;
 
     @Override
-    public float y() {
+    public float getLeftInset() {
         return 2.5f;
     }
 

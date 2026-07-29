@@ -8,53 +8,53 @@ import java.awt.Color;
 @Deprecated
 public class IconButtonComponent
 extends InteractiveComponent {
-    private String v;
-    protected double K;
-    private static String[] Q;
-    private Color I;
-    private Color cZ = null;
-    private double b = -1.0;
+    private String iconResource;
+    protected double iconScale;
+    private static String[] legacyState;
+    private Color overrideColor;
+    private Color borderColor = null;
+    private double imageDivisor = -1.0;
 
-    public IconButtonComponent(String string, double d, double d2, double d3, Color color, Color color2, Color color3) {
-        this.v = string;
-        this.K = d;
-        this.o(d2);
-        this.Y(d3);
-        this.o(color != null ? color : IconButtonComponent.J.W);
-        this.P(color2 != null ? color2 : IconButtonComponent.J.f);
-        this.cZ = color3;
+    public IconButtonComponent(String iconResource, double iconScale, double width, double height, Color color, Color hoverColor, Color borderColor) {
+        this.iconResource = iconResource;
+        this.iconScale = iconScale;
+        this.o(width);
+        this.Y(height);
+        this.setNormalColor(color != null ? color : IconButtonComponent.J.W);
+        this.setHoverColor(hoverColor != null ? hoverColor : IconButtonComponent.J.f);
+        this.borderColor = borderColor;
     }
 
-    public IconButtonComponent(String string, double d, Color color) {
-        this(string, d, 13.0, 13.0, null, null, color);
+    public IconButtonComponent(String iconResource, double iconScale, Color borderColor) {
+        this(iconResource, iconScale, 13.0, 13.0, null, null, borderColor);
     }
 
-    public static void f(String[] stringArray) {
-        Q = stringArray;
+    public static void setLegacyState(String[] legacyState) {
+        IconButtonComponent.legacyState = legacyState;
     }
 
-    public void G(Color color) {
-        this.I = color;
+    public void setOverrideColor(Color overrideColor) {
+        this.overrideColor = overrideColor;
     }
 
-    public double e$src$D$yci9n1() {
-        return this.K;
+    public double getIconScale() {
+        return this.iconScale;
     }
 
-    public void l(Color color) {
-        this.cZ = color;
+    public void setBorderColor(Color borderColor) {
+        this.borderColor = borderColor;
     }
 
-    public static String[] c$src$ALjava_lang_String_$653i16() {
-        return Q;
+    public static String[] getLegacyState() {
+        return legacyState;
     }
 
-    public IconButtonComponent(String string, double d, double d2, double d3) {
-        this(string, d, d2, d3, null, null, null);
+    public IconButtonComponent(String iconResource, double iconScale, double width, double height) {
+        this(iconResource, iconScale, width, height, null, null, null);
     }
 
-    public void H(String string) {
-        this.v = string;
+    public void setIconResource(String iconResource) {
+        this.iconResource = iconResource;
     }
 
     @Override
@@ -63,18 +63,18 @@ extends InteractiveComponent {
     }
 
     static {
-        if (IconButtonComponent.c$src$ALjava_lang_String_$653i16() != null) {
-            IconButtonComponent.f(new String[1]);
+        if (IconButtonComponent.getLegacyState() != null) {
+            IconButtonComponent.setLegacyState(new String[1]);
         }
     }
 
 
-    public void E(double d) {
-        this.b = d;
+    public void setImageDivisor(double imageDivisor) {
+        this.imageDivisor = imageDivisor;
     }
 
-    public String T$src$Ljava_lang_String_$1x2cerw() {
-        return this.v;
+    public String getIconResource() {
+        return this.iconResource;
     }
 
     @Override
@@ -84,42 +84,42 @@ extends InteractiveComponent {
 
     @Override
     public void H() {
-        double d;
-        double d2;
-        if (this.b != -1.0) {
-            d2 = (double)((float)ImageRenderer.m(this.v)) / this.b;
-            d = (double)((float)ImageRenderer.j(this.v)) / this.b;
+        double imageHeight;
+        double imageWidth;
+        if (this.imageDivisor != -1.0) {
+            imageWidth = (double)((float)ImageRenderer.getImageWidth(this.iconResource)) / this.imageDivisor;
+            imageHeight = (double)((float)ImageRenderer.getImageHeight(this.iconResource)) / this.imageDivisor;
         } else {
-            d2 = d = (double)(8.0f * (float)this.K);
+            imageWidth = imageHeight = (double)(8.0f * (float)this.iconScale);
         }
-        if (this.I != null) {
-            GuiRenderPrimitives.F(this.v, this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + this.L() / 2.0, d2, d, this.I);
+        if (this.overrideColor != null) {
+            GuiRenderPrimitives.F(this.iconResource, this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + this.L() / 2.0, imageWidth, imageHeight, this.overrideColor);
         } else {
-            GuiRenderPrimitives.F(this.v, this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + this.L() / 2.0, d2, d, this.w$src$Z$e457mb() ? this.N() : this.e$src$Ljava_awt_Color_$1yl68fq());
+            GuiRenderPrimitives.F(this.iconResource, this.G$src$D$1b2f02a() + this.A() / 2.0, this.n() + this.L() / 2.0, imageWidth, imageHeight, this.w$src$Z$e457mb() ? this.getHoverColor() : this.getNormalColor());
         }
-        if (this.cZ != null) {
-            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.w$src$Z$e457mb() ? this.cZ.brighter() : this.cZ, 2.0f, 0.8f, 1.0f);
+        if (this.borderColor != null) {
+            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.w$src$Z$e457mb() ? this.borderColor.brighter() : this.borderColor, 2.0f, 0.8f, 1.0f);
         }
     }
 
-    public IconButtonComponent(String string, double d) {
-        this(string, d, 13.0, 13.0, null, null, null);
+    public IconButtonComponent(String iconResource, double iconScale) {
+        this(iconResource, iconScale, 13.0, 13.0, null, null, null);
     }
 
-    public void A(double d) {
-        this.K = d;
+    public void setIconScale(double iconScale) {
+        this.iconScale = iconScale;
     }
 
-    public IconButtonComponent(String string) {
-        this(string, 1.0, 13.0, 13.0, null, null, null);
+    public IconButtonComponent(String iconResource) {
+        this(iconResource, 1.0, 13.0, 13.0, null, null, null);
     }
 
-    public Color D$src$Ljava_awt_Color_$os7bh8() {
-        return this.I;
+    public Color getOverrideColor() {
+        return this.overrideColor;
     }
 
-    public IconButtonComponent(String string, double d, Color color, Color color2, double d2, double d3) {
-        this(string, d, d2, d3, color, color2, null);
+    public IconButtonComponent(String iconResource, double iconScale, Color color, Color hoverColor, double width, double height) {
+        this(iconResource, iconScale, width, height, color, hoverColor, null);
     }
 }
 

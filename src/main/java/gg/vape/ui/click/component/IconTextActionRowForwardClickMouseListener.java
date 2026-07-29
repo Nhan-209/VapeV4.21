@@ -8,17 +8,16 @@ import java.awt.Point;
 
 class IconTextActionRowForwardClickMouseListener
 implements GuiMouseListener {
-    final IconTextActionRowComponent q;
-    final GuiClickListener R;
+    final IconTextActionRowComponent row;
+    final GuiClickListener clickListener;
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        this.R.P();
+        this.clickListener.onPrimaryClick();
     }
 
-    IconTextActionRowForwardClickMouseListener(IconTextActionRowComponent iconTextActionRowComponent, GuiClickListener guiClickListener) {
-        this.q = iconTextActionRowComponent;
-        this.R = guiClickListener;
+    IconTextActionRowForwardClickMouseListener(IconTextActionRowComponent row, GuiClickListener clickListener) {
+        this.row = row;
+        this.clickListener = clickListener;
     }
 }
-

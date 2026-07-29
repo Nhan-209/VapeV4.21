@@ -29,61 +29,33 @@ DescribedOption {
     LORE("Lore", "The lore of the item", LoreFilterCondition::new, LoreFilterCondition::new),
     MATERIAL("Material", "The material of the item", MaterialFilterCondition::new, MaterialFilterCondition::new);
 
-    private final String T;
-    private final Supplier<? extends InventoryFilterCondition> J;
-    private static final InventoryFilterConditionType[] R;
-    private final String s;
-    private static String F;
-    private final Function<JsonObject, ? extends InventoryFilterCondition> r;
+    private final String name;
+    private final Supplier<? extends InventoryFilterCondition> factory;
+    private final String description;
+    private final Function<JsonObject, ? extends InventoryFilterCondition> jsonFactory;
 
     private InventoryFilterConditionType(String string2, String string3, Supplier<? extends InventoryFilterCondition> supplier, Function<JsonObject, ? extends InventoryFilterCondition> function) {
-        this.T = string2;
-        this.s = string3;
-        this.J = supplier;
-        this.r = function;
-    }
-
-    public static void H(String string) {
-        F = string;
+        this.name = string2;
+        this.description = string3;
+        this.factory = supplier;
+        this.jsonFactory = function;
     }
 
     @Override
-    public String E() {
-        return this.s;
+    public String getDescription() {
+        return this.description;
     }
 
     @Override
     public String getName() {
-        return this.T;
+        return this.name;
     }
 
-    public Function<JsonObject, ? extends InventoryFilterCondition> L() {
-        return this.r;
+    public Function<JsonObject, ? extends InventoryFilterCondition> getJsonFactory() {
+        return this.jsonFactory;
     }
 
-    public static String h() {
-        return F;
-    }
-
-    static {
-        if (InventoryFilterConditionType.h() == null) {
-            InventoryFilterConditionType.H("MKlmqc");
-        }
-        String[] stringArray = new String[]{"Display Name", "Lore", "MATERIAL", "The amount of durability the item has remaining", "ITEM_DURABILITY", "Quantity", "DISPLAY_NAME", "ENCHANTMENT", "POTION_EFFECT", "The enchantment the item has", "Enchantment", "The potion effect the item has", "The item stack size", "The lore of the item", "Material", "Item Name", "QUANTITY", "The display name of the item, such as \"John's Sword\"", "The amount of attack damage the item has", "ATTACK_DAMAGE", "Attack Damage", "Potion Effect", "The name of the item, such as \"Diamond Sword\"", "LORE", "The material of the item", "ITEM_NAME", "Durability"};
-
-
-
-
-
-
-
-
-
-        R = new InventoryFilterConditionType[]{ITEM_DURABILITY, ATTACK_DAMAGE, ENCHANTMENT, POTION_EFFECT, QUANTITY, DISPLAY_NAME, ITEM_NAME, LORE, MATERIAL};
-    }
-
-    public Supplier<? extends InventoryFilterCondition> O() {
-        return this.J;
+    public Supplier<? extends InventoryFilterCondition> getFactory() {
+        return this.factory;
     }
 }
-

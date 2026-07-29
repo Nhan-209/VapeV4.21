@@ -18,94 +18,94 @@ import java.util.List;
 
 public class ListValueOptionsPanel
 extends PanelComponent {
-    private final FlowLayoutComponent Lj;
-    private final ListValue L7;
-    private final boolean Ld;
-    private final boolean LO;
-    private static final Color Lt = new Color(37, 36, 37);
+    private final FlowLayoutComponent entriesLayout;
+    private final ListValue listValue;
+    private final boolean blockedList;
+    private final boolean sidecarStyle;
+    private static final Color ENTRY_BACKGROUND = new Color(37, 36, 37);
 
 
-    public ListValueOptionsPanel(ListValue listValue, boolean bl, double d, double d2, boolean bl2) {
-        super(d, d2);
-        this.L7 = listValue;
-        this.Ld = bl;
-        this.LO = bl2;
+    public ListValueOptionsPanel(ListValue listValue, boolean blockedList, double width, double height, boolean sidecarStyle) {
+        super(width, height);
+        this.listValue = listValue;
+        this.blockedList = blockedList;
+        this.sidecarStyle = sidecarStyle;
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        if (this.LO) {
-            this.d(false);
+        if (this.sidecarStyle) {
+            this.setShowDisabledOverlay(false);
         }
-        if (this.LO) {
-            this.H(new SpacerComponent(0.0, 4.0));
+        if (this.sidecarStyle) {
+            this.addChildren(new SpacerComponent(0.0, 4.0));
         }
-        ListValueAddEntryInputComponent listValueAddEntryInputComponent = new ListValueAddEntryInputComponent(this, bl, "Add entry...", listValue);
-        listValueAddEntryInputComponent.E(listValue.o());
-        listValueAddEntryInputComponent.P(true);
-        listValueAddEntryInputComponent.o(d);
-        if (this.LO) {
-            listValueAddEntryInputComponent.D(0.75f);
-            listValueAddEntryInputComponent.I(4.0f);
-            listValueAddEntryInputComponent.s(ColorAnimation.Y(ListValueOptionsPanel.J.k));
-            listValueAddEntryInputComponent.W(null);
-            listValueAddEntryInputComponent.I(ListValueOptionsPanel.J.Z);
-            listValueAddEntryInputComponent.A(ListValueOptionsPanel.J.h);
-            listValueAddEntryInputComponent.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().o(10.0);
-            listValueAddEntryInputComponent.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().Y(10.0);
-            listValueAddEntryInputComponent.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().d(6.0);
-            listValueAddEntryInputComponent.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().U(6.0);
-            listValueAddEntryInputComponent.O(0.0f);
-            listValueAddEntryInputComponent.W(true);
+        ListValueAddEntryInputComponent listValueAddEntryInputComponent = new ListValueAddEntryInputComponent(this, blockedList, "Add entry...", listValue);
+        listValueAddEntryInputComponent.setSuggestionProvider(listValue.getSuggestionProvider());
+        listValueAddEntryInputComponent.setUseExplicitWidth(true);
+        listValueAddEntryInputComponent.o(width);
+        if (this.sidecarStyle) {
+            listValueAddEntryInputComponent.setBorderThickness(0.75f);
+            listValueAddEntryInputComponent.setCornerRadius(4.0f);
+            listValueAddEntryInputComponent.setBorderAnimation(ColorAnimation.Y(ListValueOptionsPanel.J.k));
+            listValueAddEntryInputComponent.setBackgroundColorOrNull(null);
+            listValueAddEntryInputComponent.setTextColor(ListValueOptionsPanel.J.Z);
+            listValueAddEntryInputComponent.setPlaceholderColor(ListValueOptionsPanel.J.h);
+            listValueAddEntryInputComponent.getActionButton().o(10.0);
+            listValueAddEntryInputComponent.getActionButton().Y(10.0);
+            listValueAddEntryInputComponent.getActionButton().setIconWidth(6.0);
+            listValueAddEntryInputComponent.getActionButton().setIconHeight(6.0);
+            listValueAddEntryInputComponent.setVerticalInset(0.0f);
+            listValueAddEntryInputComponent.setUseExplicitHeight(true);
             listValueAddEntryInputComponent.Y(16.0);
         }
-        this.H(listValueAddEntryInputComponent);
-        if (this.LO) {
-            this.H(new SpacerComponent(0.0, 5.0));
+        this.addChildren(listValueAddEntryInputComponent);
+        if (this.sidecarStyle) {
+            this.addChildren(new SpacerComponent(0.0, 5.0));
         }
-        this.Lj = new FlowLayoutComponent(d);
-        this.Lj.t(d2 - 25.0);
-        if (this.LO) {
-            this.Lj.d(false);
+        this.entriesLayout = new FlowLayoutComponent(width);
+        this.entriesLayout.t(height - 25.0);
+        if (this.sidecarStyle) {
+            this.entriesLayout.setShowDisabledOverlay(false);
         }
-        this.H(this.Lj);
+        this.addChildren(this.entriesLayout);
     }
 
     public ListValueOptionsPanel(ListValue listValue, boolean bl, double d, double d2) {
         this(listValue, bl, d, d2, false);
     }
 
-    public void k$src$V$admw0a() {
+    public void refreshEntries() {
         block5: {
             block4: {
-                this.Lj.S();
-                if (!(this.L7 instanceof OptionalLimitValue)) break block4;
-                for (OptionalLimitEntry optionalLimitEntry : (List<OptionalLimitEntry>)((OptionalLimitValue)this.L7).K()) {
-                    SelectableTextRowComponent selectableTextRowComponent = new SelectableTextRowComponent(this.Ld ? ListValueOptionsPanel.J.d : ListValueOptionsPanel.J.B, optionalLimitEntry.r()).I(new RemoveOptionalLimitEntryHandler(this, optionalLimitEntry)).s(optionalLimitEntry);
-                    selectableTextRowComponent.P(true);
+                this.entriesLayout.removeMarkedChildren();
+                if (!(this.listValue instanceof OptionalLimitValue)) break block4;
+                for (OptionalLimitEntry optionalLimitEntry : (List<OptionalLimitEntry>)((OptionalLimitValue)this.listValue).getValue()) {
+                    SelectableTextRowComponent selectableTextRowComponent = new SelectableTextRowComponent(this.blockedList ? ListValueOptionsPanel.J.d : ListValueOptionsPanel.J.B, optionalLimitEntry.getValue()).setDeleteActionListener(new RemoveOptionalLimitEntryHandler(this, optionalLimitEntry)).setSelectionTarget(optionalLimitEntry);
+                    selectableTextRowComponent.setUseExplicitWidth(true);
                     selectableTextRowComponent.o(this.A());
-                    if (this.LO) {
-                        selectableTextRowComponent.W(true);
+                    if (this.sidecarStyle) {
+                        selectableTextRowComponent.setUseExplicitHeight(true);
                         selectableTextRowComponent.Y(20.0);
-                        selectableTextRowComponent.d(4);
-                        selectableTextRowComponent.B(0.5f);
-                        selectableTextRowComponent.R(Lt);
+                        selectableTextRowComponent.setIndicatorSize(4);
+                        selectableTextRowComponent.setIndicatorOffsetY(0.5f);
+                        selectableTextRowComponent.setBackgroundColor(ENTRY_BACKGROUND);
                     }
-                    this.Lj.h(selectableTextRowComponent, new Object[0]);
+                    this.entriesLayout.h(selectableTextRowComponent, new Object[0]);
                 }
                 break block5;
             }
-            if (!(this.L7 instanceof LimitValue)) break block5;
-            for (ItemLimitData itemLimitData : (List<ItemLimitData>)((LimitValue)this.L7).K()) {
-                String string = itemLimitData.getName() + (itemLimitData.L() < 0 ? "" : ":" + itemLimitData.L());
-                SelectableTextRowComponent selectableTextRowComponent = new SelectableTextRowComponent(this.Ld ? ListValueOptionsPanel.J.d : ListValueOptionsPanel.J.B, string).I(new RemoveLimitValueEntryHandler(this, itemLimitData)).s(itemLimitData);
-                selectableTextRowComponent.P(true);
+            if (!(this.listValue instanceof LimitValue)) break block5;
+            for (ItemLimitData itemLimitData : (List<ItemLimitData>)((LimitValue)this.listValue).getValue()) {
+                String string = itemLimitData.getName() + (itemLimitData.getMetadata() < 0 ? "" : ":" + itemLimitData.getMetadata());
+                SelectableTextRowComponent selectableTextRowComponent = new SelectableTextRowComponent(this.blockedList ? ListValueOptionsPanel.J.d : ListValueOptionsPanel.J.B, string).setDeleteActionListener(new RemoveLimitValueEntryHandler(this, itemLimitData)).setSelectionTarget(itemLimitData);
+                selectableTextRowComponent.setUseExplicitWidth(true);
                 selectableTextRowComponent.o(this.A());
-                if (this.LO) {
-                    selectableTextRowComponent.W(true);
+                if (this.sidecarStyle) {
+                    selectableTextRowComponent.setUseExplicitHeight(true);
                     selectableTextRowComponent.Y(20.0);
-                    selectableTextRowComponent.d(4);
-                    selectableTextRowComponent.B(0.5f);
-                    selectableTextRowComponent.R(Lt);
+                    selectableTextRowComponent.setIndicatorSize(4);
+                    selectableTextRowComponent.setIndicatorOffsetY(0.5f);
+                    selectableTextRowComponent.setBackgroundColor(ENTRY_BACKGROUND);
                 }
-                this.Lj.h(selectableTextRowComponent, new Object[0]);
+                this.entriesLayout.h(selectableTextRowComponent, new Object[0]);
             }
         }
     }
@@ -114,7 +114,7 @@ extends PanelComponent {
         this(listValue, bl, 110.0, 110.0, false);
     }
 
-    public static ListValue I(ListValueOptionsPanel listValueOptionsPanel) {
-        return listValueOptionsPanel.L7;
+    public static ListValue getListValueCompat(ListValueOptionsPanel panel) {
+        return panel.listValue;
     }
 }

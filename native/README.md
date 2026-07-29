@@ -22,6 +22,39 @@ The additional native declarations currently present in the recovered Java
 class are not registered by `sample.dll`, and the PE has no export table or
 second registration path. They are intentionally not invented here.
 
+## Loader token handoff design difference
+
+The local-service integration deliberately adds `gat()Ljava/lang/String;`
+as a Product compatibility native while keeping its Java-visible name exactly
+`gat`. It does not add a `native_gat()` Java method and does not change the
+existing Java online, Zeus, friend, Party, or settings-sync implementations.
+This tenth registration is not part of the nine-method `sample.dll` authority;
+the legacy official DLL provides separate evidence for native `gat()`, but its
+implementation used controller command `0x269` over a persistent EXE socket.
+
+The Product design has two explicit launch modes:
+
+- Direct `Vape421Injector.exe` injection has no Loader bootstrap, so native
+  `gat()` returns the string `"0"`.
+- Loader startup obtains a long-lived token from the loopback Service by
+  username and exposes it to `Vape421Native.dll` through the temporary
+  loopback controller socket. The DLL requests it with command `0x269`, caches
+  it for `gat()`, reports `trs(step)` with `0x25c`, and reports completion with
+  `0x25e`. The Loader remains open through the Finished Loading page.
+
+The Service does not create a token-`"0"` developer account, performs no HWID
+check, and reuses the existing long-lived token for a case-insensitive username
+match. Because current Java initialization uses `gat()` for
+`/api/v1/{token}/authenticated`, direct mode is only guaranteed to return the
+standalone sentinel `"0"`; without changes to Java initialization it may stop
+when that token is rejected or the Service is absent.
+
+The versioned named-memory block is created before DLL injection and carries
+only the controller port and Service endpoints; it never contains the token.
+The token and loading state use the decomp-supported controller commands over
+loopback. The full design is documented at
+`../../native_method_research/loader_product_token_handoff_design.md`.
+
 ## Build
 
 Use Gradle 8.8 from `product` to build the Java 8 payload, embed all remotely
@@ -47,13 +80,21 @@ Outputs are written to `build/dist`:
 - `Vape421Native.dll`
 - `Vape421Injector.exe`
 
-GLFW and MinHook are not required. The 2024 implementation is retained as
-`legacy_dllmain_2024.c` for audit only and is not compiled.
-
 ## Direct injection
 
 `Vape421Native.dll` contains the recovered Java product as an `RCDATA`
-resource. Start Minecraft 1.8.9 with a 64-bit JVM and inject the DLL:
+resource. Start Minecraft 1.8.9 with a 64-bit JVM, then run the injector from
+the bundle directory:
+
+```powershell
+Vape421Injector.exe
+```
+
+The injector refreshes its list of visible `java.exe` and `javaw.exe` windows
+every 750 ms and displays their window titles (for example, `Minecraft` or
+`Lunar Client`). Select a process with Up/Down and press Enter to inject;
+press Esc to quit. If the DLL is elsewhere, pass its path as the only
+argument. The original non-interactive form remains available for scripts:
 
 ```powershell
 Vape421Injector.exe <pid> Vape421Native.dll
@@ -62,7 +103,8 @@ Vape421Injector.exe <pid> Vape421Native.dll
 The injector only performs `LoadLibraryW`. Once loaded, the DLL worker waits
 for the JVM and Minecraft `Client thread`, materializes its embedded product
 JAR into the process temp directory, loads it through the context ClassLoader,
-registers the nine native methods, and calls
+registers the nine authoritative methods plus the Product `gat()` compatibility
+native, and calls
 `NativeBridge.start()` automatically. No second command or start flag is
 required. Inspect `vape421-native.log` beside the DLL for the exact result.
 

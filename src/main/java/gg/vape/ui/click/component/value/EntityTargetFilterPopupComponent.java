@@ -13,63 +13,63 @@ import gg.vape.value.EntityTargetFilterValue;
 
 public class EntityTargetFilterPopupComponent
 extends PopupSelectorComponent {
-    private EntityTargetFilterValue I;
-    private final FlowLayoutComponent b = (FlowLayoutComponent)this.u$src$Lgg_vape_ui_click_frame_FrameComponent_$bcl1km();
+    private EntityTargetFilterValue targetFilterValue;
+    private final FlowLayoutComponent contentLayout = (FlowLayoutComponent)this.getPopupContent();
 
 
-    public EntityTargetFilterPopupComponent(EntityTargetFilterValue entityTargetFilterValue) {
+    public EntityTargetFilterPopupComponent(EntityTargetFilterValue targetFilterValue) {
         super(new FlowLayoutComponent(50.0));
-        this.b.h(new SpacerComponent(0.0, 2.0), new Object[0]);
-        this.b.h(new EntityTargetFilterQuickToggleComponent(entityTargetFilterValue), new Object[0]);
-        this.b.h(new BooleanToggleComponent(entityTargetFilterValue.E()), new Object[0]);
-        this.b.h(new BooleanToggleComponent(entityTargetFilterValue.q$src$Lgg_vape_value_BooleanValue_$4eyax4()), new Object[0]);
-        this.b.h(new BooleanToggleComponent(entityTargetFilterValue.x()), new Object[0]);
-        this.I = entityTargetFilterValue;
-        this.C(entityTargetFilterValue);
+        this.contentLayout.h(new SpacerComponent(0.0, 2.0), new Object[0]);
+        this.contentLayout.h(new EntityTargetFilterQuickToggleComponent(targetFilterValue), new Object[0]);
+        this.contentLayout.h(new BooleanToggleComponent(targetFilterValue.getIgnoreInvisibleValue()), new Object[0]);
+        this.contentLayout.h(new BooleanToggleComponent(targetFilterValue.getIgnoreNakedValue()), new Object[0]);
+        this.contentLayout.h(new BooleanToggleComponent(targetFilterValue.getIgnoreBehindWallsValue()), new Object[0]);
+        this.targetFilterValue = targetFilterValue;
+        this.bindValue(targetFilterValue);
         this.Y(20.0);
-        this.u(20.0);
+        this.setExplicitHeight(20.0);
     }
 
     @Override
     public void H() {
-        SmoothFontRenderer smoothFontRenderer = this.O(0.8);
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(0.8);
         GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n() + 2.5, this.A() - 5.0, this.L() - 5.0, this.w$src$Z$e457mb() ? EntityTargetFilterPopupComponent.J.y : EntityTargetFilterPopupComponent.J.l, 2.0f, 0.75f, 1.0f);
-        ImageRenderer.E(EntityTargetFilterPopupComponent.J.W, (float)(this.G$src$D$1b2f02a() + 8.0), (float)(this.n() + 7.0), "target_single", 6.0f, 6.0f, false);
-        smoothFontRenderer.d("Targets", this.G$src$D$1b2f02a() + 18.0, this.n() + 7.0, EntityTargetFilterPopupComponent.J.A);
+        ImageRenderer.drawImage(EntityTargetFilterPopupComponent.J.W, (float)(this.G$src$D$1b2f02a() + 8.0), (float)(this.n() + 7.0), "target_single", 6.0f, 6.0f, false);
+        fontRenderer.d("Targets", this.G$src$D$1b2f02a() + 18.0, this.n() + 7.0, EntityTargetFilterPopupComponent.J.A);
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 44.0, this.n() + 8.0, 5.0, 1.0f, EntityTargetFilterPopupComponent.J.l);
-        String string = "";
-        if (this.I.D().L().booleanValue()) {
-            string = string + "Players, ";
+        String targetSummary = "";
+        if (this.targetFilterValue.getPlayersValue().getEffectiveValue().booleanValue()) {
+            targetSummary = targetSummary + "Players, ";
         }
-        if (this.I.f().L().booleanValue()) {
-            string = string + "Mobs, ";
+        if (this.targetFilterValue.getMobsValue().getEffectiveValue().booleanValue()) {
+            targetSummary = targetSummary + "Mobs, ";
         }
-        if (this.I.r$src$Lgg_vape_value_BooleanValue_$167auuf().L().booleanValue()) {
-            string = string + "Peaceful, ";
+        if (this.targetFilterValue.getPeacefulValue().getEffectiveValue().booleanValue()) {
+            targetSummary = targetSummary + "Peaceful, ";
         }
-        boolean bl = !string.isEmpty();
-        String string2 = "";
-        if (this.I.E().L().booleanValue()) {
-            string2 = string2 + "invisible, ";
+        boolean hasExplicitTargets = !targetSummary.isEmpty();
+        String ignoredTargetSummary = "";
+        if (this.targetFilterValue.getIgnoreInvisibleValue().getEffectiveValue().booleanValue()) {
+            ignoredTargetSummary = ignoredTargetSummary + "invisible, ";
         }
-        if (this.I.q$src$Lgg_vape_value_BooleanValue_$4eyax4().L().booleanValue()) {
-            string2 = string2 + "naked, ";
+        if (this.targetFilterValue.getIgnoreNakedValue().getEffectiveValue().booleanValue()) {
+            ignoredTargetSummary = ignoredTargetSummary + "naked, ";
         }
-        if (this.I.x().L().booleanValue()) {
-            string2 = string2 + "behind walls, ";
+        if (this.targetFilterValue.getIgnoreBehindWallsValue().getEffectiveValue().booleanValue()) {
+            ignoredTargetSummary = ignoredTargetSummary + "behind walls, ";
         }
-        if (!string2.isEmpty()) {
-            string2 = "Ignoring " + string2;
+        if (!ignoredTargetSummary.isEmpty()) {
+            ignoredTargetSummary = "Ignoring " + ignoredTargetSummary;
         }
-        if ((string = string + string2).endsWith(", ")) {
-            string = string.substring(0, string.length() - 2);
+        if ((targetSummary = targetSummary + ignoredTargetSummary).endsWith(", ")) {
+            targetSummary = targetSummary.substring(0, targetSummary.length() - 2);
         }
-        if (!bl) {
-            string = "None";
+        if (!hasExplicitTargets) {
+            targetSummary = "None";
         }
-        TruncatedTextComponent truncatedTextComponent = new TruncatedTextComponent(string, "...", 105.0, 0.8, EntityTargetFilterPopupComponent.J.A, false);
-        truncatedTextComponent.V(this.G$src$D$1b2f02a() + 52.0, this.n() + 7.0);
-        smoothFontRenderer.d("edit", this.G$src$D$1b2f02a() + this.A() - 20.0, this.n() + 7.0, EntityTargetFilterPopupComponent.J.A);
+        TruncatedTextComponent summaryText = new TruncatedTextComponent(targetSummary, "...", 105.0, 0.8, EntityTargetFilterPopupComponent.J.A, false);
+        summaryText.renderAt(this.G$src$D$1b2f02a() + 52.0, this.n() + 7.0);
+        fontRenderer.d("edit", this.G$src$D$1b2f02a() + this.A() - 20.0, this.n() + 7.0, EntityTargetFilterPopupComponent.J.A);
     }
 }
 

@@ -7,20 +7,19 @@ import gg.vape.utils.render.RemoteImageTextureManager;
 
 class RemoteImageTextureCacheUpdateThread
 extends Thread {
-    final RemoteImageTextureManager B;
+    final RemoteImageTextureManager manager;
 
     @Override
     public void run() {
         while (!Vape.INSTANCE.isEnabled()) {
             SleepUtil.sleep(50L);
-            for (Integer n : RemoteImageTextureManager.L(this.B).keySet()) {
-                ((RemoteImageTextureCache)RemoteImageTextureManager.L(this.B).get(n)).G();
+            for (Integer imageSize : RemoteImageTextureManager.getCaches(this.manager).keySet()) {
+                ((RemoteImageTextureCache)RemoteImageTextureManager.getCaches(this.manager).get(imageSize)).processPendingDownloads();
             }
         }
     }
 
-    RemoteImageTextureCacheUpdateThread(RemoteImageTextureManager remoteImageTextureManager) {
-        this.B = remoteImageTextureManager;
+    RemoteImageTextureCacheUpdateThread(RemoteImageTextureManager manager) {
+        this.manager = manager;
     }
 }
-

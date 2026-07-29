@@ -20,15 +20,15 @@ extends Event {
     public EventScoreboardObjectiveRender(Object object, Object object2) {
         ScoreboardHudModule scoreboardHudModule = Vape.INSTANCE.getModManager().getMod(ScoreboardHudModule.class);
         if (ForgeVersion.MC_1_16_5.d()) {
-            scoreboardHudModule.Y(new ScoreObjective(object2));
+            scoreboardHudModule.updateObjective(new ScoreObjective(object2));
         } else {
-            scoreboardHudModule.Y(new ScoreObjective(object));
+            scoreboardHudModule.updateObjective(new ScoreObjective(object));
         }
     }
 
     public EventScoreboardObjectiveRender(Object object, int n, int n2, Object object2) {
         ScoreboardHudModule scoreboardHudModule = Vape.INSTANCE.getModManager().getMod(ScoreboardHudModule.class);
-        scoreboardHudModule.Y(new ScoreObjective(object));
+        scoreboardHudModule.updateObjective(new ScoreObjective(object));
     }
 
     public static EventListeners getEventListeners() {

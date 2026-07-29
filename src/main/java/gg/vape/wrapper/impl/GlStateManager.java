@@ -26,7 +26,7 @@ extends Wrapper {
             return;
         }
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(3553);
+            OpenGlBackendHolder.backend.disableCapability(3553);
             return;
         }
         MGlStateManager.a(GlStateManager.c.getMappings().Dt);
@@ -41,7 +41,7 @@ extends Wrapper {
 
     public static void L() {
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.l(2884);
+            OpenGlBackendHolder.backend.enableCapability(2884);
             return;
         }
         MGlStateManager.c(GlStateManager.c.getMappings().Dt);
@@ -67,7 +67,7 @@ extends Wrapper {
     }
 
     public static void r() {
-        OpenGlBackendHolder.d.l(2848);
+        OpenGlBackendHolder.backend.enableCapability(2848);
     }
 
     public static GlStateManager_BlendState W() {
@@ -90,7 +90,7 @@ extends Wrapper {
             return;
         }
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.l(3553);
+            OpenGlBackendHolder.backend.enableCapability(3553);
             return;
         }
         MGlStateManager.Z(GlStateManager.c.getMappings().Dt);
@@ -98,7 +98,7 @@ extends Wrapper {
 
     public static void F$src$V$acq27m() {
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.S();
+            OpenGlBackendHolder.backend.loadIdentity();
             return;
         }
         MGlStateManager.P(GlStateManager.c.getMappings().Dt);
@@ -106,7 +106,7 @@ extends Wrapper {
 
     public static void Y() {
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(2884);
+            OpenGlBackendHolder.backend.disableCapability(2884);
             return;
         }
         MGlStateManager.N(GlStateManager.c.getMappings().Dt);
@@ -114,16 +114,16 @@ extends Wrapper {
 
     public static void disableBlend() {
         if (ForgeVersion.MC_1_7_10.L()) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(3042);
+            OpenGlBackendHolder.backend.disableCapability(3042);
             return;
         }
         GlStateManager.W().q().O(false);
-        BufferedGuiRenderPrimitives.b.D(3042);
+        BufferedGuiRenderPrimitives.capabilityState.enableCapability(3042);
     }
 
     public static void depthMask(boolean bl) {
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.U(bl);
+            OpenGlBackendHolder.backend.setDepthMask(bl);
             return;
         }
         MGlStateManager.p(GlStateManager.c.getMappings().Dt, bl);
@@ -131,7 +131,7 @@ extends Wrapper {
 
     public static void enableDepth() {
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.l(2929);
+            OpenGlBackendHolder.backend.enableCapability(2929);
             return;
         }
         MGlStateManager.M(GlStateManager.c.getMappings().Dt);
@@ -159,14 +159,14 @@ extends Wrapper {
 
     public static boolean i() {
         if (K == null) {
-            K = ForgeVersion.MC_1_7_10.L() || NativeBridge.iv();
+            K = ForgeVersion.MC_1_7_10.L() || NativeBridge.isForgeAbsent();
         }
         return K;
     }
 
     public static void disableDepth() {
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(2929);
+            OpenGlBackendHolder.backend.disableCapability(2929);
             return;
         }
         MGlStateManager.j(GlStateManager.c.getMappings().Dt);
@@ -174,7 +174,7 @@ extends Wrapper {
 
     public static void color(float f, float f2, float f3, float f4) {
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.q(f, f2, f3, f4);
+            OpenGlBackendHolder.backend.setColor(f, f2, f3, f4);
             return;
         }
         if (ForgeVersion.MC_1_17.d()) {
@@ -197,12 +197,12 @@ extends Wrapper {
     }
 
     public static void P() {
-        OpenGlBackendHolder.d.u$src$V$hntn98(2848);
+        OpenGlBackendHolder.backend.disableCapability(2848);
     }
 
     public static void d(float f, float f2, float f3, float f4) {
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.X(f, f2, f3, f4);
+            OpenGlBackendHolder.backend.rotate(f, f2, f3, f4);
             return;
         }
         MGlStateManager.P(GlStateManager.c.getMappings().Dt, f, f2, f3, f4);
@@ -235,7 +235,7 @@ extends Wrapper {
             return;
         }
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(2896);
+            OpenGlBackendHolder.backend.disableCapability(2896);
             return;
         }
         MGlStateManager.X(GlStateManager.c.getMappings().Dt);
@@ -243,11 +243,11 @@ extends Wrapper {
 
     public static void enableBlend() {
         if (ForgeVersion.MC_1_7_10.L()) {
-            OpenGlBackendHolder.d.l(3042);
+            OpenGlBackendHolder.backend.enableCapability(3042);
             return;
         }
         GlStateManager.W().q().O(true);
-        BufferedGuiRenderPrimitives.b.D(3042);
+        BufferedGuiRenderPrimitives.capabilityState.enableCapability(3042);
     }
 
     public static void enableAlpha() {
@@ -255,7 +255,7 @@ extends Wrapper {
             return;
         }
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.l(3008);
+            OpenGlBackendHolder.backend.enableCapability(3008);
             return;
         }
         MGlStateManager.v(GlStateManager.c.getMappings().Dt);
@@ -266,7 +266,7 @@ extends Wrapper {
             return;
         }
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(3008);
+            OpenGlBackendHolder.backend.disableCapability(3008);
             return;
         }
         MGlStateManager.O(GlStateManager.c.getMappings().Dt);
@@ -277,7 +277,7 @@ extends Wrapper {
             return;
         }
         if (GlStateManager.i()) {
-            OpenGlBackendHolder.d.l(2896);
+            OpenGlBackendHolder.backend.enableCapability(2896);
             return;
         }
         MGlStateManager.x(GlStateManager.c.getMappings().Dt);
@@ -326,9 +326,9 @@ extends Wrapper {
             }
         } else if (n == 2848) {
             if (bl) {
-                OpenGlBackendHolder.d.l(2848);
+                OpenGlBackendHolder.backend.enableCapability(2848);
             } else {
-                OpenGlBackendHolder.d.u$src$V$hntn98(2848);
+                OpenGlBackendHolder.backend.disableCapability(2848);
             }
         } else {
             throw new IllegalArgumentException(b + n);
@@ -343,4 +343,3 @@ extends Wrapper {
         return arrayList;
     }
 }
-

@@ -6,29 +6,29 @@ import gg.vape.wrapper.impl.ForgeVersion;
 import org.lwjgl.input.Keyboard;
 
 public class KeyboardInput {
-    private static KeyboardInputState t;
+    private static KeyboardInputState cachedState;
 
-    public static boolean isKeyDown(int n) {
-        return KeyboardInput.getState().isKeyDown(n);
+    public static boolean isKeyDown(int keyCode) {
+        return KeyboardInput.getState().isKeyDown(keyCode);
     }
 
-    public static String getKeyName(int n) {
-        if (n < 0) {
-            int n2 = n + 100;
-            return "M" + n2;
+    public static String getKeyName(int keyCode) {
+        if (keyCode < 0) {
+            int mouseButton = keyCode + 100;
+            return "M" + mouseButton;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            return String.valueOf((char)n);
+            return String.valueOf((char)keyCode);
         }
-        return Keyboard.getKeyName((int)n);
+        return Keyboard.getKeyName((int)keyCode);
     }
 
 
     public static KeyboardInputState getState() {
-        if (t == null) {
-            t = InputEventDispatcher.getInstance().getKeyboardState();
+        if (cachedState == null) {
+            cachedState = InputEventDispatcher.getInstance().getKeyboardState();
         }
-        return t;
+        return cachedState;
     }
 }
 

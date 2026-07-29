@@ -13,18 +13,18 @@ extends AbstractInventoryItemCategory {
 
 
     @Override
-    public boolean V(ItemFilterSelection cn_22) {
-        ItemStack itemStack = cn_22.E();
+    public boolean isCompatible(ItemFilterSelection cn_22) {
+        ItemStack itemStack = cn_22.getItemStack();
         if (itemStack == null) {
             return false;
         }
-        return this.operator.p(itemStack.P(), this.stackSize);
+        return this.operator.compare(itemStack.P(), this.stackSize);
     }
 
     StackSizeInventoryItemCategory(StackSizeInventoryItemCategoryBuilder stackSizeInventoryItemCategoryBuilder) {
         super(stackSizeInventoryItemCategoryBuilder);
-        this.stackSize = stackSizeInventoryItemCategoryBuilder.U();
-        this.operator = stackSizeInventoryItemCategoryBuilder.f();
+        this.stackSize = stackSizeInventoryItemCategoryBuilder.getStackSize();
+        this.operator = stackSizeInventoryItemCategoryBuilder.getOperator();
     }
 }
 

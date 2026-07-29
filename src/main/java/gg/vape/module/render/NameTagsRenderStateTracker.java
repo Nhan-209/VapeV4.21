@@ -18,7 +18,6 @@ import gg.vape.wrapper.impl.WorldClient;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,79 +26,72 @@ implements EventListener {
     private final HashSet<Integer> pendingEntityIds;
     private final TimerUtil cleanupTimer;
     private final HashMap<Long, NameTagsNameState> stateByKey = new HashMap();
-    public static final NameTagsRenderStateTracker u = new NameTagsRenderStateTracker();
+    public static final NameTagsRenderStateTracker INSTANCE = new NameTagsRenderStateTracker();
     private final HashMap<Long, Long> lastSeenByKey;
 
     @EventHandler
-    public void R(EventWorldChange eventWorldChange) {
-        this.k();
+    public void onWorldChange(EventWorldChange event) {
+        this.clear();
     }
 
     @EventHandler
-    public void C(EventPostRenderTick eventPostRenderTick) {
+    public void onPostRenderTick(EventPostRenderTick event) {
         if (ForgeVersion.MC_1_21_4.v()) {
             return;
         }
-        if (eventPostRenderTick.getWorld().isNull()) {
+        if (event.getWorld().isNull()) {
             return;
         }
-        this.tick(eventPostRenderTick);
+        this.tick(event);
     }
 
     @EventHandler
-    public void n(EventPreRenderTick eventPreRenderTick) {
+    public void onPreRenderTick(EventPreRenderTick event) {
         if (ForgeVersion.MC_1_21_4.d()) {
             return;
         }
-        if (eventPreRenderTick.getWorld().isNull()) {
+        if (event.getWorld().isNull()) {
             return;
         }
-        this.tick(eventPreRenderTick);
+        this.tick(event);
     }
 
     @Nullable
-    public NameTagsNameState B(EntityPlayer entityPlayer) {
-        long key = ItemStackFingerprint.T(entityPlayer);
+    public NameTagsNameState getOrSchedule(EntityPlayer player) {
+        long key = ItemStackFingerprint.T(player);
         this.lastSeenByKey.put(key, System.currentTimeMillis());
         NameTagsNameState nameTagsNameState = this.stateByKey.get(key);
         if (nameTagsNameState != null) {
-            if (nameTagsNameState.d() == null || !nameTagsNameState.d().R()) {
+            if (nameTagsNameState.getFramebufferState() == null || !nameTagsNameState.getFramebufferState().isValid()) {
                 try {
-                    if (nameTagsNameState.d() != null) {
-                        nameTagsNameState.d().n();
+                    if (nameTagsNameState.getFramebufferState() != null) {
+                        nameTagsNameState.getFramebufferState().dispose();
                     }
                 }
                 catch (Exception exception) {
                     // empty catch block
                 }
                 this.stateByKey.remove(key);
-                this.pendingEntityIds.add(entityPlayer.S());
+                this.pendingEntityIds.add(player.S());
                 return null;
             }
             return nameTagsNameState;
         }
-        this.pendingEntityIds.add(entityPlayer.S());
+        this.pendingEntityIds.add(player.S());
         return null;
     }
 
-    private static Exception rethrow(Exception exception) {
-        return exception;
-    }
-
-    private void tick(EventRenderTickBase eventRenderTickBase) {
-        Object object;
+    private void tick(EventRenderTickBase event) {
         if (this.cleanupTimer.hasTimeElapsed(1000L)) {
-            ArrayList staleKeys = new ArrayList();
+            ArrayList<Long> staleKeys = new ArrayList<Long>();
             for (Long key : this.lastSeenByKey.keySet()) {
-                if (System.currentTimeMillis() - this.lastSeenByKey.get(key) <= 10000L || (object = this.stateByKey.get(key)) == null) continue;
+                if (System.currentTimeMillis() - this.lastSeenByKey.get(key) <= 10000L || this.stateByKey.get(key) == null) continue;
                 staleKeys.add(key);
             }
-            Iterator iterator = staleKeys.iterator();
-            while (iterator.hasNext()) {
-                Long key = (Long)iterator.next();
-                object = this.stateByKey.get(key);
-                if (object != null) {
-                    ((NameTagsNameState)object).d().n();
+            for (Long key : staleKeys) {
+                NameTagsNameState state = this.stateByKey.get(key);
+                if (state != null) {
+                    state.getFramebufferState().dispose();
                 }
                 this.stateByKey.remove(key);
                 this.lastSeenByKey.remove(key);
@@ -107,21 +99,22 @@ implements EventListener {
         }
         for (Integer entityId : this.pendingEntityIds) {
             try {
-                WorldClient worldClient = eventRenderTickBase.getWorld();
-                if (worldClient.isNull() || ((Wrapper)(object = worldClient.V(entityId))).isNull() || !((Wrapper)object).isNotNull() || !((Wrapper)object).isInstance(MappedClasses.Yl) || !worldClient.z().contains(((Wrapper)object).getObject())) continue;
-                EntityPlayer entityPlayer = new EntityPlayer(object);
-                long key = ItemStackFingerprint.T(entityPlayer);
-                this.stateByKey.put(key, NameTagsNameState.T(entityPlayer));
+                WorldClient world = event.getWorld();
+                Wrapper entity = world.isNull() ? null : world.V(entityId);
+                if (entity == null || entity.isNull() || !entity.isNotNull() || !entity.isInstance(MappedClasses.Yl) || !world.z().contains(entity.getObject())) continue;
+                EntityPlayer player = new EntityPlayer(entity);
+                long key = ItemStackFingerprint.T(player);
+                this.stateByKey.put(key, NameTagsNameState.create(player));
             }
             catch (Exception exception) {}
         }
         this.pendingEntityIds.clear();
     }
 
-    public void k() {
+    public void clear() {
         if (!this.stateByKey.isEmpty()) {
             ArrayList<NameTagsNameState> states = new ArrayList<NameTagsNameState>(this.stateByKey.values());
-            RenderThreadTaskQueue.M(() -> NameTagsRenderStateTracker.disposeStates(states));
+            RenderThreadTaskQueue.enqueue(() -> NameTagsRenderStateTracker.disposeStates(states));
         }
         this.stateByKey.clear();
         this.pendingEntityIds.clear();
@@ -134,11 +127,11 @@ implements EventListener {
         this.cleanupTimer = new TimerUtil();
     }
 
-    private static void disposeStates(List<NameTagsNameState> list) {
-        for (NameTagsNameState nameTagsNameState : list) {
-            if (nameTagsNameState == null || nameTagsNameState.d() == null) continue;
+    private static void disposeStates(List<NameTagsNameState> states) {
+        for (NameTagsNameState state : states) {
+            if (state == null || state.getFramebufferState() == null) continue;
             try {
-                nameTagsNameState.d().n();
+                state.getFramebufferState().dispose();
             }
             catch (Exception exception) {}
         }

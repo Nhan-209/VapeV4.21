@@ -5,15 +5,15 @@ import gg.vape.unmap.ModeSelection;
 
 public class ModeEntryTextFormatter<T extends ModeSelection>
 implements OptionTextFormatter<T> {
-    public static final OptionTextFormatter<ModeSelection> B = new ModeEntryTextFormatter<ModeSelection>();
+    public static final OptionTextFormatter<ModeSelection> DEFAULT = new ModeEntryTextFormatter<ModeSelection>();
 
 
-    public String l(T t) {
-        return t != null ? ((ModeSelection)t).toString() : "";
+    public String formatValue(T value) {
+        return value != null ? value.toString() : "";
     }
 
     @Override
-    public String I(T t) {
-        return this.l(t);
+    public String format(T value) {
+        return this.formatValue(value);
     }
 }

@@ -12,8 +12,7 @@ implements GuiClickListener {
     }
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         IncomingFriendRequestRow.v(this.A);
     }
 }
-

@@ -18,75 +18,74 @@ public class AnimationsBlockingState
 extends AnimationsMode {
     private boolean blocking = false;
     private long releaseTime;
-    private final RandomValue chance = RandomValue.G(this, "Chance", "#", "%", 0.0, 70.0, 90.0, 100.0, 1.0, "Chance that a click will blockhit\n(Blocks per second = Your CPS * Chance)");
+    private final RandomValue chance = RandomValue.createWithDescription(this, "Chance", "#", "%", 0.0, 70.0, 90.0, 100.0, 1.0, "Chance that a click will blockhit\n(Blocks per second = Your CPS * Chance)");
 
-    public AnimationsBlockingState(Mod mod, String string) {
-        super(mod, string);
+    public AnimationsBlockingState(Mod parent, String name) {
+        super(parent, name);
         this.addValue(this.chance);
     }
 
     @Override
-    public boolean i() {
-        if (!((Animations)this.getParent()).a$src$Z$ucwq0q()) {
+    public boolean shouldBlock() {
+        if (!((Animations)this.getParent()).isHoldingSword()) {
             return false;
         }
-        if (((Animations)this.getParent()).n$src$Z$uk21qf() && !ClientSettings.V()) {
+        if (((Animations)this.getParent()).requiresMouseDown() && !ClientSettings.V()) {
             return false;
         }
-        return this.chance.B() >= Math.random() * 100.0;
+        return this.chance.getRandomValue() >= Math.random() * 100.0;
     }
 
-    public void u(boolean bl) {
-        if (this.blocking != bl) {
-            this.blocking = bl;
+    public void setBlocking(boolean blocking) {
+        if (this.blocking != blocking) {
+            this.blocking = blocking;
             this.releaseTime = 0L;
-            Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().setPressed(bl);
+            Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362().setPressed(blocking);
         }
     }
 
     @Override
-    public String r() {
-        return this.chance.c();
+    public String getDetailedSuffix() {
+        return this.chance.getDisplayValue();
     }
 
     @Override
-    public boolean M() {
+    public boolean isBlocking() {
         return this.blocking;
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
-        boolean bl;
+    public void onTick(EventPreTick event) {
         if (this.isAutoClickerActive()) {
             return;
         }
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        boolean bl2 = eventPreTick.getThePlayer().c$src$I$15a9iwo() > AttackPacketTimingTracker.a.Z() + 1;
-        boolean bl3 = bl = this.releaseTime > 0L && System.currentTimeMillis() >= this.releaseTime;
-        if (bl2 || bl) {
-            this.u(false);
+        boolean hurtTimeExpired = event.getThePlayer().c$src$I$15a9iwo() > AttackPacketTimingTracker.INSTANCE.getExpectedHurtTimeTicks() + 1;
+        boolean releaseTimeReached = this.releaseTime > 0L && System.currentTimeMillis() >= this.releaseTime;
+        if (hurtTimeExpired || releaseTimeReached) {
+            this.setBlocking(false);
             return;
         }
     }
 
 
     @EventHandler
-    public void l(EventMouseButton eventMouseButton) {
-        if (!eventMouseButton.getButtonState()) {
+    public void onMouseButton(EventMouseButton event) {
+        if (!event.getButtonState()) {
             return;
         }
         if (this.isAutoClickerActive()) {
             return;
         }
-        int n = -100 + eventMouseButton.getButton();
-        if (eventMouseButton.getButtonState() && n == Minecraft.gameSettings().F().getKeyCode()) {
-            if (!this.i()) {
+        int buttonBinding = -100 + event.getButton();
+        if (event.getButtonState() && buttonBinding == Minecraft.gameSettings().F().getKeyCode()) {
+            if (!this.shouldBlock()) {
                 return;
             }
-            if (!this.blocking && !eventMouseButton.getThePlayer().o$src$Z$1iprrmi()) {
-                this.u(true);
+            if (!this.blocking && !event.getThePlayer().o$src$Z$1iprrmi()) {
+                this.setBlocking(true);
                 this.releaseTime = System.currentTimeMillis() + 50L;
             }
         }
@@ -101,4 +100,3 @@ extends AnimationsMode {
         return silentAura.r$src$Z$14eylz9();
     }
 }
-

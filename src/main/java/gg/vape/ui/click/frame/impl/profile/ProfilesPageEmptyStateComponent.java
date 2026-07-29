@@ -6,25 +6,25 @@ import gg.vape.ui.click.frame.impl.main.ClickGuiProfilesPage;
 
 public class ProfilesPageEmptyStateComponent
 extends GuiComponent {
-    final BindableInputComponent v;
-    final ClickGuiProfilesPage R;
+    final BindableInputComponent createNameInput;
+    final ClickGuiProfilesPage profilesPage;
 
     @Override
     public void H() {
         double d = this.G$src$D$1b2f02a();
         double d2 = this.n();
         double d3 = this.A();
-        double d4 = this.v.A();
+        double d4 = this.createNameInput.A();
         double d5 = d + d3 - d4;
-        double d6 = d2 + (this.L() - this.v.L()) / 2.0;
-        this.v.K(d5);
-        this.v.S(d6);
-        double d7 = ClickGuiProfilesPage.V(this.R).L();
+        double d6 = d2 + (this.L() - this.createNameInput.L()) / 2.0;
+        this.createNameInput.K(d5);
+        this.createNameInput.S(d6);
+        double d7 = ClickGuiProfilesPage.getCreateNameInput(this.profilesPage).L();
         double d8 = d2 + (this.L() - d7) / 2.0;
         double d9 = d3 - d4 - 6.0;
-        ClickGuiProfilesPage.V(this.R).o(d9);
-        ClickGuiProfilesPage.V(this.R).K(d);
-        ClickGuiProfilesPage.V(this.R).S(d8);
+        ClickGuiProfilesPage.getCreateNameInput(this.profilesPage).o(d9);
+        ClickGuiProfilesPage.getCreateNameInput(this.profilesPage).K(d);
+        ClickGuiProfilesPage.getCreateNameInput(this.profilesPage).S(d8);
         super.H();
     }
 
@@ -33,8 +33,8 @@ extends GuiComponent {
     }
 
     public ProfilesPageEmptyStateComponent(ClickGuiProfilesPage clickGuiProfilesPage, BindableInputComponent bindableInputComponent) {
-        this.R = clickGuiProfilesPage;
-        this.v = bindableInputComponent;
+        this.profilesPage = clickGuiProfilesPage;
+        this.createNameInput = bindableInputComponent;
     }
 
     @Override
@@ -51,4 +51,3 @@ extends GuiComponent {
     public void u() {
     }
 }
-

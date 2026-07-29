@@ -24,59 +24,54 @@ import java.util.concurrent.Executor;
 
 public class PublicProfileReviewReplyComposerComponent
 extends GuiComponent {
-    private final ActionButtonGroupComponent K;
-    private final IconButtonComponent i;
-    private final PanelComponent I;
-    static final boolean v = !PublicProfileReviewReplyComposerComponent.class.desiredAssertionStatus();
-    private final SmallTextInputComponent Q;
-    private final Runnable R;
-    private final PublicProfileUserAvatarComponent b;
+    private final ActionButtonGroupComponent actionButtons;
+    private final IconButtonComponent submitOrCloseButton;
+    private final PanelComponent contentPanel;
+    private final SmallTextInputComponent responseInput;
+    private final Runnable closeCallback;
+    private final PublicProfileUserAvatarComponent avatar;
 
     public PublicProfileReviewReplyComposerComponent(PublicProfile publicProfile, PublicProfileReview publicProfileReview, Runnable runnable, double d, double d2) {
-        this.R = runnable;
-        this.I = new PanelComponent(d, d2);
-        this.I.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
-        this.I.d(false);
-        this.b = new PublicProfileUserAvatarComponent(Vape.INSTANCE.getAccountInfo().i(), 10.0, 10.0);
-        this.b.X(2.0f);
-        this.i = new IconButtonComponent("newclose", 0.8);
-        this.i.o(PublicProfileReviewReplyComposerComponent.J.f);
-        this.i.P(Color.white);
-        this.Q = new SmallTextInputComponent("Leave a response!");
-        this.Q.k(publicProfileReview.H() != null ? publicProfileReview.H().m() : "");
-        this.Q.o(d - 20.0);
-        this.Q.o(this::lambda$new$0);
-        this.i.e(() -> this.lambda$new$3(publicProfileReview));
-        this.K = new ActionButtonGroupComponent(this.i);
-        this.K.d(false);
-        this.K.T(0.0);
-        this.K.o(5.0);
-        this.K.Y(15.0);
-        this.I.H(new PaddedComponent(0.0, 2.0, this.b), this.Q, this.K);
-        this.H(this.I);
+        this.closeCallback = runnable;
+        this.contentPanel = new PanelComponent(d, d2);
+        this.contentPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
+        this.contentPanel.setShowDisabledOverlay(false);
+        this.avatar = new PublicProfileUserAvatarComponent(Vape.INSTANCE.getAccountInfo().i(), 10.0, 10.0);
+        this.avatar.setInset(2.0f);
+        this.submitOrCloseButton = new IconButtonComponent("newclose", 0.8);
+        this.submitOrCloseButton.setNormalColor(PublicProfileReviewReplyComposerComponent.J.f);
+        this.submitOrCloseButton.setHoverColor(Color.white);
+        this.responseInput = new SmallTextInputComponent("Leave a response!");
+        this.responseInput.setText(publicProfileReview.H() != null ? publicProfileReview.H().m() : "");
+        this.responseInput.o(d - 20.0);
+        this.responseInput.addKeyTypedListener(this::handleInputChanged);
+        this.submitOrCloseButton.setSingleFutureClickListener(() -> this.submitOrClose(publicProfileReview));
+        this.actionButtons = new ActionButtonGroupComponent(this.submitOrCloseButton);
+        this.actionButtons.setShowDisabledOverlay(false);
+        this.actionButtons.setPadding(0.0);
+        this.actionButtons.o(5.0);
+        this.actionButtons.Y(15.0);
+        this.contentPanel.addChildren(new PaddedComponent(0.0, 2.0, this.avatar), this.responseInput, this.actionButtons);
+        this.addChildren(this.contentPanel);
     }
 
     @Override
     public double C() {
-        return this.I.L();
+        return this.contentPanel.L();
     }
 
     @Override
     public void H() {
-        this.I.K(this.G$src$D$1b2f02a());
-        this.I.S(this.n());
-        this.I.o(this.A());
-        this.I.Y(this.L());
-        this.Q.o(this.A() - this.K.A() - this.b.A());
-        this.I.l$src$V$1mibm4x();
+        this.contentPanel.K(this.G$src$D$1b2f02a());
+        this.contentPanel.S(this.n());
+        this.contentPanel.o(this.A());
+        this.contentPanel.Y(this.L());
+        this.responseInput.o(this.A() - this.actionButtons.A() - this.avatar.A());
+        this.contentPanel.l$src$V$1mibm4x();
         GuiRenderPrimitives.u(this.G$src$D$1b2f02a() + 18.0, this.n() + this.L() - 3.0, this.G$src$D$1b2f02a() + this.A() - 4.0, this.n() + this.L() - 3.0, 1.0f, PublicProfileReviewReplyComposerComponent.J.l);
     }
 
-    public PublicProfileUserAvatarComponent W() {
-        return this.b;
-    }
-
-    private void lambda$null$1(PublicProfileReview publicProfileReview, ApiResponse apiResponse, Throwable throwable) {
+    private void handleResponseSaved(PublicProfileReview publicProfileReview, ApiResponse apiResponse, Throwable throwable) {
         if (throwable != null) {
             PublicProfileManager.b("Failed to leave response.");
             Vape.logThrowable(throwable);
@@ -86,9 +81,7 @@ extends GuiComponent {
             PublicProfileManager.b("Failed to leave response: " + apiResponse.N());
             return;
         }
-        if (!v && apiResponse.T() == null) {
-            throw new AssertionError();
-        }
+        assert apiResponse.T() != null;
         if (publicProfileReview.H() != null) {
             PublicProfileManager.M("Response updated!");
         } else {
@@ -96,18 +89,18 @@ extends GuiComponent {
         }
         publicProfileReview.U((PublicProfileReviewResponse)apiResponse.T());
         new PublicProfileReviewEvent(publicProfileReview).fire();
-        this.R.run();
+        this.closeCallback.run();
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    private void lambda$new$0(char c, int n) {
-        if (this.Q.i$src$Ljava_lang_String_$1n2xf3k().isEmpty()) {
-            this.i.H("newclose");
+    private void handleInputChanged(char character, int keyCode) {
+        if (this.responseInput.getText().isEmpty()) {
+            this.submitOrCloseButton.setIconResource("newclose");
         } else {
-            this.i.H("submit@2x");
+            this.submitOrCloseButton.setIconResource("submit@2x");
         }
     }
 
@@ -118,31 +111,23 @@ extends GuiComponent {
 
     @Override
     public double x() {
-        return this.I.A();
+        return this.contentPanel.A();
     }
 
     @Override
     public void u() {
     }
 
-    public ActionButtonGroupComponent b$src$Lgg_vape_ui_click_component_ActionButtonGroupCom$115ixr1() {
-        return this.K;
-    }
-
-    public SmallTextInputComponent X$src$Lgg_vape_ui_click_component_input_SmallTextInput$3ef19x() {
-        return this.Q;
-    }
-
-    private static ApiResponse lambda$null$2(Throwable throwable) {
+    private static ApiResponse ignoreSaveFailure(Throwable throwable) {
         return null;
     }
 
-    private CompletableFuture lambda$new$3(PublicProfileReview publicProfileReview) {
-        if (this.i.T$src$Ljava_lang_String_$1x2cerw().equalsIgnoreCase("newclose")) {
-            return CompletableFuture.runAsync(this.R, ClientSettings.f6);
+    private CompletableFuture submitOrClose(PublicProfileReview publicProfileReview) {
+        if (this.submitOrCloseButton.getIconResource().equalsIgnoreCase("newclose")) {
+            return CompletableFuture.runAsync(this.closeCallback, ClientSettings.UI_EXECUTOR);
         }
-        String string = this.Q.i$src$Ljava_lang_String_$1n2xf3k().trim();
-        return ApiServices.d().R().h(publicProfileReview, string).whenCompleteAsync((arg_0, arg_1) -> this.lambda$null$1(publicProfileReview, arg_0, arg_1), (Executor)ClientSettings.f6).exceptionally(PublicProfileReviewReplyComposerComponent::lambda$null$2);
+        String responseText = this.responseInput.getText().trim();
+        return ApiServices.d().R().h(publicProfileReview, responseText).whenCompleteAsync((response, error) -> this.handleResponseSaved(publicProfileReview, response, error), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileReviewReplyComposerComponent::ignoreSaveFailure);
     }
 
     @Override

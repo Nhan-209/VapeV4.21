@@ -11,73 +11,59 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public class InventoryItemCategoryBuilder<T extends InventoryItemCategoryBuilder<T>> {
-    private Comparator<ItemStack> v;
-    private static String y;
-    private final List<InventoryItemMatcher> M = new ArrayList<InventoryItemMatcher>();
-    private String A;
-    private String p;
-    private String d;
+    private Comparator<ItemStack> comparator;
+    private final List<InventoryItemMatcher> matchers = new ArrayList<InventoryItemMatcher>();
+    private String displayName;
+    private String id;
+    private String name;
 
-    static {
-        InventoryItemCategoryBuilder.H("DS7Jxc");
-    }
-
-    public static String v() {
-        return y;
-    }
-
-    public T M(@NotNull String string) {
-        this.d = string;
+    public T withName(@NotNull String name) {
+        this.name = name;
         return (T)this;
     }
 
-    public String X() {
-        return this.A;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
-    public T f(@NotNull String string) {
-        this.A = string;
+    public T withDisplayName(@NotNull String displayName) {
+        this.displayName = displayName;
         return (T)this;
     }
 
-    public T Z(InventoryItemMatcher inventoryItemMatcher) {
-        this.M.add(inventoryItemMatcher);
+    public T addMatcher(InventoryItemMatcher matcher) {
+        this.matchers.add(matcher);
         return (T)this;
     }
 
-    public Comparator<ItemStack> e() {
-        return this.v;
+    public Comparator<ItemStack> getComparator() {
+        return this.comparator;
     }
 
-    public String F() {
-        return this.d;
+    public String getName() {
+        return this.name;
     }
 
-    public static void H(String string) {
-        y = string;
-    }
-
-    public T M(@Nullable Comparator<ItemStack> comparator) {
-        this.v = comparator;
+    public T withComparator(@Nullable Comparator<ItemStack> comparator) {
+        this.comparator = comparator;
         return (T)this;
     }
 
-    public T X(@NotNull String string) {
-        this.p = string;
+    public T withId(@NotNull String id) {
+        this.id = id;
         return (T)this;
     }
 
-    public String J() {
-        return this.p;
+    public String getId() {
+        return this.id;
     }
 
-    public @UnmodifiableView List<InventoryItemMatcher> K() {
-        return this.M;
+    public @UnmodifiableView List<InventoryItemMatcher> getMatchers() {
+        return this.matchers;
     }
 
-    protected void l() {
-        Objects.requireNonNull(this.p, "id");
-        Objects.requireNonNull(this.F(), "name");
+    protected void validate() {
+        Objects.requireNonNull(this.id, "id");
+        Objects.requireNonNull(this.name, "name");
     }
 }
-

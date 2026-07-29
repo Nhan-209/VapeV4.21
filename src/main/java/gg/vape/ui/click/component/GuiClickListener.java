@@ -1,9 +1,8 @@
 package gg.vape.ui.click.component;
 
 public interface GuiClickListener {
-    public void P();
+    public void onPrimaryClick();
 
-    default public void G() {
+    default public void onSecondaryClick() {
     }
 }
-

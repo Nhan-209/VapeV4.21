@@ -8,10 +8,10 @@ import java.awt.Color;
 
 class InventoryFilterLogicalOperatorDividerComponent
 extends GuiComponent {
-    private final InventoryFilterLogicalOperator v;
+    private final InventoryFilterLogicalOperator operator;
 
     public InventoryFilterLogicalOperatorDividerComponent(InventoryFilterLogicalOperator inventoryFilterLogicalOperator) {
-        this.v = inventoryFilterLogicalOperator;
+        this.operator = inventoryFilterLogicalOperator;
     }
 
     @Override
@@ -27,23 +27,23 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        SmoothFontRenderer smoothFontRenderer = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.65);
-        String string = this.v.getName().toUpperCase();
-        double d = 20.0;
-        double d2 = this.G$src$D$1b2f02a();
+        SmoothFontRenderer fontRenderer = this.getAlternateFontRenderer(0.65);
+        String label = this.operator.getName().toUpperCase();
+        double badgeWidth = 20.0;
+        double componentX = this.G$src$D$1b2f02a();
         this.getClass();
-        double d3 = d2 - 5.0 / 2.0;
-        if (this.v == InventoryFilterLogicalOperator.AND) {
-            GuiRenderPrimitives.C(d3 + d / 2.0, this.n() - 1.0, 1.0, 5.0, InventoryFilterLogicalOperatorDividerComponent.J.o);
-            GuiRenderPrimitives.C(d3 + d / 2.0, this.n() + this.L() / 2.0 + smoothFontRenderer.d(string) + 2.0, 1.0, 5.0, InventoryFilterLogicalOperatorDividerComponent.J.o);
+        double badgeX = componentX - 5.0 / 2.0;
+        if (this.operator == InventoryFilterLogicalOperator.AND) {
+            GuiRenderPrimitives.C(badgeX + badgeWidth / 2.0, this.n() - 1.0, 1.0, 5.0, InventoryFilterLogicalOperatorDividerComponent.J.o);
+            GuiRenderPrimitives.C(badgeX + badgeWidth / 2.0, this.n() + this.L() / 2.0 + fontRenderer.d(label) + 2.0, 1.0, 5.0, InventoryFilterLogicalOperatorDividerComponent.J.o);
         }
-        double d4 = this.n() + this.L() / 2.0 - smoothFontRenderer.d(string) / 2.0;
+        double labelY = this.n() + this.L() / 2.0 - fontRenderer.d(label) / 2.0;
         this.getClass();
-        double d5 = d4 - 5.0 / 2.0;
-        double d6 = smoothFontRenderer.d(string);
+        double badgeY = labelY - 5.0 / 2.0;
+        double labelHeight = fontRenderer.d(label);
         this.getClass();
-        GuiRenderPrimitives.B(d3, d5, d, d6 + 5.0, InventoryFilterLogicalOperatorDividerComponent.J.R, 1.0f);
-        smoothFontRenderer.W(string, d3 + d / 2.0, this.n() + this.L() / 2.0 - smoothFontRenderer.d(string) / 2.0, Color.WHITE);
+        GuiRenderPrimitives.B(badgeX, badgeY, badgeWidth, labelHeight + 5.0, InventoryFilterLogicalOperatorDividerComponent.J.R, 1.0f);
+        fontRenderer.W(label, badgeX + badgeWidth / 2.0, labelY, Color.WHITE);
     }
 }
 

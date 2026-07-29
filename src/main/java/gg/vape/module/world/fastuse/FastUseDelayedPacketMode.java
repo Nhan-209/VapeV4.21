@@ -19,28 +19,26 @@ extends SubModule<FastUseModule> {
     private boolean flushing = false;
 
     @Override
-    public void g() {
+    public void onBeforeDisable() {
         this.flushing = true;
         this.flush(true);
     }
 
     private void flush(boolean force) {
-        TimedPacketDispatchTask timedPacketDispatchTask;
-        while (this.pendingPackets.peek() != null && (timedPacketDispatchTask = this.pendingPackets.peek()) != null && (timedPacketDispatchTask.j(((Double)((FastUseModule)this.getParent()).j.K()).longValue()) || force)) {
-            timedPacketDispatchTask = this.pendingPackets.poll();
-            timedPacketDispatchTask.z().t();
+        TimedPacketDispatchTask pendingPacket;
+        while ((pendingPacket = this.pendingPackets.peek()) != null && (pendingPacket.j(((Double)((FastUseModule)this.getParent()).delay.getValue()).longValue()) || force)) {
+            this.pendingPackets.poll().z().t();
         }
     }
 
 
-    public FastUseDelayedPacketMode(Mod mod, String string) {
-        super(mod, string);
+    public FastUseDelayedPacketMode(Mod parent, String name) {
+        super(parent, name);
     }
 
     @Override
-    public String r() {
-        String string = "Latency " + ((FastUseModule)this.getParent()).j.c() + "ms";
-        return string;
+    public String getDetailedSuffix() {
+        return "Latency " + ((FastUseModule)this.getParent()).delay.getDisplayValue() + "ms";
     }
 
     @Override

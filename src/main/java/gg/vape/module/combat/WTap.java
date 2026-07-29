@@ -16,7 +16,7 @@ import gg.vape.wrapper.impl.Packet;
 
 public class WTap
 extends Mod {
-    private final NumberValue chance = NumberValue.E(this, "Chance", "#", "%", 0.0, 90.0, 100.0, "Chance of WTapping when hitting a target");
+    private final NumberValue chance = NumberValue.createWithDescription(this, "Chance", "#", "%", 0.0, 90.0, 100.0, "Chance of WTapping when hitting a target");
     private final TimerUtil rePressTimer;
     private final NumberValue releaseDelay = NumberValue.create(this, "Release delay", "#", "", 0.0, 0.0, 500.0, 50.0, "Delay before releasing W key after hitting a target");
     private boolean releasePending;
@@ -27,11 +27,10 @@ extends Mod {
     private static final long MODULE_ID = -5147998889622254014L;
 
     private void handleRePress() {
-        if (this.rePressTimer.hasTimeElapsed(((Double)this.rePressDelay.K()).longValue())) {
-            KeyBinding keyBinding = Minecraft.gameSettings().Y();
-            boolean bl = ClientSettings.B(keyBinding);
-            if (bl) {
-                keyBinding.setPressed(true);
+        if (this.rePressTimer.hasTimeElapsed(((Double)this.rePressDelay.getValue()).longValue())) {
+            KeyBinding forwardKey = Minecraft.gameSettings().Y();
+            if (ClientSettings.B(forwardKey)) {
+                forwardKey.setPressed(true);
             }
             this.rePressPending = false;
         }
@@ -39,35 +38,25 @@ extends Mod {
 
 
     @EventHandler
-    public void onPreAttack(EventPreAttack eventPreAttack) {
-        boolean bl = Packet.h();
-        if (bl) {
-            int n;
-            boolean bl2;
-            boolean bl3 = eventPreAttack.getTarget().isInstance(MappedClasses.lG);
-            if (!bl3) {
+    public void onPreAttack(EventPreAttack event) {
+        if (Packet.h()) {
+            if (!event.getTarget().isInstance(MappedClasses.lG)) {
                 return;
             }
-            boolean bl4 = this.releasePending;
-            if (bl4 || (bl2 = this.rePressPending)) {
+            if (this.releasePending || this.rePressPending) {
                 return;
             }
-            boolean bl5 = this.selectHits.L();
-            if (bl5 && (n = eventPreAttack.getTarget().V$src$I$fk0dv5()) > 14) {
+            if (this.selectHits.getEffectiveValue() && event.getTarget().V$src$I$fk0dv5() > 14) {
                 return;
             }
-            if (this.F$src$Z$oodzg7()) {
+            if (this.shouldTrigger()) {
                 this.releasePending = true;
                 this.releaseTimer.reset();
                 this.handleRelease();
             }
             return;
         }
-        boolean bl6 = eventPreAttack.getTarget().isInstance(MappedClasses.lG);
-        boolean bl7 = bl6;
-        boolean bl8 = bl7;
-        boolean bl9 = bl8;
-        if (bl9) {
+        if (event.getTarget().isInstance(MappedClasses.lG)) {
             this.releasePending = true;
             this.releaseTimer.reset();
             this.handleRelease();
@@ -79,27 +68,21 @@ extends Mod {
         this.releaseTimer = new TimerUtil();
         this.rePressTimer = new TimerUtil();
         this.addValue(this.chance, this.releaseDelay, this.rePressDelay, this.selectHits);
-        this.releaseDelay.C(0);
+        this.releaseDelay.setMaximumFractionDigits(0);
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
-        boolean bl = Packet.A();
-        if (bl) {
-            boolean bl2 = Minecraft.currentScreen().isNull();
-            boolean bl3 = bl2;
-            if (bl3) {
+    public void onTick(EventPreTick event) {
+        if (Packet.A()) {
+            if (Minecraft.currentScreen().isNull()) {
                 this.handleRePress();
-                return;
             }
             return;
         }
-        boolean bl4 = Minecraft.currentScreen().isNull();
-        if (!bl4) {
+        if (Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        boolean bl5 = this.releasePending;
-        if (bl5) {
+        if (this.releasePending) {
             this.handleRelease();
             return;
         }
@@ -110,9 +93,9 @@ extends Mod {
     }
 
     private void handleRelease() {
-        if (this.releaseTimer.hasTimeElapsed(((Double)this.releaseDelay.K()).longValue())) {
-            KeyBinding keyBinding = Minecraft.gameSettings().Y();
-            keyBinding.setPressed(false);
+        if (this.releaseTimer.hasTimeElapsed(((Double)this.releaseDelay.getValue()).longValue())) {
+            KeyBinding forwardKey = Minecraft.gameSettings().Y();
+            forwardKey.setPressed(false);
             this.releasePending = false;
             this.rePressTimer.reset();
             this.rePressPending = true;
@@ -120,11 +103,11 @@ extends Mod {
     }
 
     @Override
-    public String r() {
-        return this.releaseDelay.c();
+    public String getDetailedSuffix() {
+        return this.releaseDelay.getDisplayValue();
     }
 
-    public boolean F$src$Z$oodzg7() {
-        return (Double)this.chance.K() >= Math.random() * 100.0;
+    public boolean shouldTrigger() {
+        return (Double)this.chance.getValue() >= Math.random() * 100.0;
     }
 }

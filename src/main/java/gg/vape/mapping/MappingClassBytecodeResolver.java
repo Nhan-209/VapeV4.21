@@ -99,7 +99,7 @@ public class MappingClassBytecodeResolver {
         if (clazz == null) {
             return null;
         }
-        byte[] byArray = ClassBytecodeCache.U(clazz, true);
+        byte[] byArray = ClassBytecodeCache.getClassBytecode(clazz, true);
         if (byArray == null) {
             byArray = this.I(clazz);
         }
@@ -186,4 +186,3 @@ public class MappingClassBytecodeResolver {
         }
     }
 }
-

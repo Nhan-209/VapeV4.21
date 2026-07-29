@@ -3,31 +3,25 @@ package gg.vape.module.utility.inventory.cleaner;
 import com.google.gson.JsonObject;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterConditionType;
 import gg.vape.wrapper.impl.ItemStack;
-import java.util.HashMap;
-import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 public interface InventoryFilterCondition<T extends InventoryFilterCondition<?>>
 extends Cloneable {
-    public static final String[] h = new String[2];
-    public static final Map j = new HashMap(13);
-    public static final String[] f = null;
-
     @Nullable
-    default public JsonObject L() {
+    default public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("type", this.K().name());
+        jsonObject.addProperty("type", this.getType().name());
         return jsonObject;
     }
 
-    public boolean g(ItemStack var1);
+    public boolean matches(ItemStack itemStack);
 
-    public InventoryFilterConditionType K();
+    public InventoryFilterConditionType getType();
 
-    public T w();
+    public T copy();
 
-    public static InventoryFilterCondition<?> h(JsonObject jsonObject) {
-        InventoryFilterConditionType inventoryFilterConditionType = InventoryFilterConditionType.valueOf(jsonObject.get("type").getAsString());
-        return inventoryFilterConditionType.L().apply(jsonObject);
+    public static InventoryFilterCondition<?> fromJson(JsonObject jsonObject) {
+        InventoryFilterConditionType type = InventoryFilterConditionType.valueOf(jsonObject.get("type").getAsString());
+        return type.getJsonFactory().apply(jsonObject);
     }
 }

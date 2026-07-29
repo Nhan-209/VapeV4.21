@@ -84,7 +84,7 @@ extends TutorialAction {
 
     @Override
     public void w() {
-        TutorialFrame tutorialFrame = ClientSettings.g(TutorialFrame.class);
+        TutorialFrame tutorialFrame = ClientSettings.getFrame(TutorialFrame.class);
         if (!this.X()) {
             return;
         }
@@ -95,7 +95,7 @@ extends TutorialAction {
         if (this.z != 0.0) {
             rectData.U(this.z);
         }
-        GuiRenderPrimitives.t(rectData.o() - 2.0, rectData.W() - 2.0, rectData.e() + 3.0, rectData.R() + 4.0, ClientSettings.fW.O$src$Ljava_awt_Color_$19t4jn1().brighter().brighter());
+        GuiRenderPrimitives.t(rectData.o() - 2.0, rectData.W() - 2.0, rectData.e() + 3.0, rectData.R() + 4.0, ClientSettings.INSTANCE.getAccentColor().brighter().brighter());
         this.V(tutorialFrame, rectData.o(), rectData.W(), rectData.e(), rectData.R(), this.j());
     }
 
@@ -108,7 +108,7 @@ extends TutorialAction {
         Vape.debugLog("completed stage");
         for (GuiComponent guiComponent : this.B) {
             Vape.debugLog("removed " + guiComponent + " " + this.N.get(guiComponent));
-            guiComponent.E(this.N.get(guiComponent));
+            guiComponent.removeMouseListener(this.N.get(guiComponent));
         }
         this.B.clear();
         this.N.clear();
@@ -122,13 +122,13 @@ extends TutorialAction {
         QueuedTutorialMessage queuedTutorialMessage = this.T.poll();
         this.I().H(queuedTutorialMessage.b);
         this.I().e(queuedTutorialMessage.E);
-        this.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().d("Ok (" + (this.u - this.T.size()) + "/" + this.u + ")");
+        this.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().setLabelText("Ok (" + (this.u - this.T.size()) + "/" + this.u + ")");
         return false;
     }
 
     public void H(GuiComponent guiComponent, GuiMouseListener guiMouseListener) {
         Vape.debugLog("adding listener " + guiComponent + " " + guiMouseListener);
-        guiComponent.j(guiMouseListener);
+        guiComponent.addMouseListener(guiMouseListener);
         this.N.put(guiComponent, guiMouseListener);
     }
 
@@ -165,7 +165,7 @@ extends TutorialAction {
 
     public HighlightTutorialAction h(String string, String string2) {
         this.T.add(new QueuedTutorialMessage(string, string2));
-        this.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().d("Ok (1/" + ++this.u + ")");
+        this.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().setLabelText("Ok (1/" + ++this.u + ")");
         return this;
     }
 

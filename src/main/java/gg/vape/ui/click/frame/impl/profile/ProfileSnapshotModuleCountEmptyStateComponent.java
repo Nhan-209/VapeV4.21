@@ -6,8 +6,8 @@ import gg.vape.ui.font.SmoothFontRenderer;
 
 public class ProfileSnapshotModuleCountEmptyStateComponent
 extends GuiComponent {
-    private int K;
-    private static final String b = "AFFECTED MODULES";
+    private final int moduleCount;
+    private static final String LABEL = "AFFECTED MODULES";
 
     @Override
     public void F() {
@@ -22,8 +22,8 @@ extends GuiComponent {
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    public ProfileSnapshotModuleCountEmptyStateComponent(int n) {
-        this.K = n;
+    public ProfileSnapshotModuleCountEmptyStateComponent(int moduleCount) {
+        this.moduleCount = moduleCount;
     }
 
     @Override
@@ -41,10 +41,9 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        SmoothFontRenderer smoothFontRenderer = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.8);
-        SmoothFontRenderer smoothFontRenderer2 = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.8);
-        smoothFontRenderer.d(this.K + " ", this.G$src$D$1b2f02a() + 10.0, this.n() + 1.0, ProfileSnapshotModuleCountEmptyStateComponent.J.A);
-        smoothFontRenderer2.d(b, this.G$src$D$1b2f02a() + 10.0 + smoothFontRenderer.N(this.K + " "), this.n() + 1.0, ProfileSnapshotModuleCountEmptyStateComponent.J.h);
+        SmoothFontRenderer smoothFontRenderer = this.getAlternateFontRenderer(0.8);
+        SmoothFontRenderer smoothFontRenderer2 = this.getAlternateFontRenderer(0.8);
+        smoothFontRenderer.d(this.moduleCount + " ", this.G$src$D$1b2f02a() + 10.0, this.n() + 1.0, ProfileSnapshotModuleCountEmptyStateComponent.J.A);
+        smoothFontRenderer2.d(LABEL, this.G$src$D$1b2f02a() + 10.0 + smoothFontRenderer.N(this.moduleCount + " "), this.n() + 1.0, ProfileSnapshotModuleCountEmptyStateComponent.J.h);
     }
 }
-

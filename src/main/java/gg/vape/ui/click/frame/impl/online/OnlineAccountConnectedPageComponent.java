@@ -1,6 +1,7 @@
 package gg.vape.ui.click.frame.impl.online;
 
 import gg.vape.Vape;
+import gg.vape.account.AccountInfo;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.ui.click.component.PanelComponent;
 import gg.vape.ui.click.component.SimpleTextLabelComponent;
@@ -22,33 +23,42 @@ extends OnlineConnectionSettingsPageComponent {
 
     @Override
     public void s() {
-        this.Gm.W(Vape.INSTANCE.getAccountInfo().i());
+        this.Gm.W(currentUserId());
+    }
+
+    private static String currentUsername() {
+        AccountInfo accountInfo = Vape.INSTANCE == null ? null : Vape.INSTANCE.getAccountInfo();
+        return accountInfo == null || accountInfo.h() == null ? "User" : accountInfo.h();
+    }
+
+    private static long currentUserId() {
+        AccountInfo accountInfo = Vape.INSTANCE == null ? null : Vape.INSTANCE.getAccountInfo();
+        return accountInfo == null ? -1L : accountInfo.i();
     }
 
     public OnlineAccountConnectedPageComponent() {
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.Gc.d(false);
+        this.Gc.setShowDisabledOverlay(false);
         this.Gc.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.Gm = new PublicProfileUserAvatarComponent(null, 16.0, 16.0);
-        this.Gm.q(true);
-        this.Gj = new WrappingTextLabelComponent("Welcome back,\n" + Vape.INSTANCE.getAccountInfo().h(), 1.0, OnlineAccountConnectedPageComponent.J.A);
+        this.Gm.setShowBorder(true);
+        this.Gj = new WrappingTextLabelComponent("Welcome back,\n" + currentUsername(), 1.0, OnlineAccountConnectedPageComponent.J.A);
         this.Gj.o(104.0);
         this.Gj.Y(12.0);
-        this.Gj.l(true);
+        this.Gj.setBold(true);
         this.Gc.h(new PaddedComponent(6.0, 6.0, this.A() / 2.0 - this.Gm.A() / 2.0, 0.0, this.Gm), new Object[0]);
         this.Gc.h(new PaddedComponent(2.0, 0.0, this.Gj), new Object[0]);
         this.Gc.h(new SpacerComponent(0.0, 4.0), new Object[0]);
-        this.Gz.d(false);
+        this.Gz.setShowDisabledOverlay(false);
         this.Ge = new TextButton("Login", OnlineAccountConnectedPageComponent.J.B, OnlineAccountConnectedPageComponent.J.O);
         this.Ge.o(50.0);
         this.Ge.Y(14.0);
-        this.Ge.F(false);
-        this.Ge.h(OnlineAccountConnectedPageComponent.J.A);
-        this.Ge.c(true);
+        this.Ge.setDeriveTextColorFromBackground(false);
+        this.Ge.setNormalTextColor(OnlineAccountConnectedPageComponent.J.A);
+        this.Ge.setUseAlternateFont(true);
         this.Gz.h(new SpacerComponent(27.0, 0.0), new Object[0]);
         this.Gz.h(this.Ge, new Object[0]);
-        this.H(new SpacerComponent(0.0, 10.0), this.Gc, this.Gz);
-        this.Ge.r(OnlineConnectionManager.T::I);
+        this.addChildren(new SpacerComponent(0.0, 10.0), this.Gc, this.Gz);
+        this.Ge.addClickListener(OnlineConnectionManager.T::I);
     }
 }
-

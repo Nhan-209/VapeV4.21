@@ -5,16 +5,15 @@ import gg.vape.wrapper.Wrapper;
 
 public class MLGBlockWrapper
 extends Wrapper {
-    public MLGBlockWrapper(Object object) {
-        super(object);
+    public MLGBlockWrapper(Object handle) {
+        super(handle);
     }
 
-    public static Object t() {
+    public static Object getWaterBlock() {
         return MMLGBlockWrapper.m(MLGBlockWrapper.c.getMappingsMapperCompat().Rj);
     }
 
-    public static Object f() {
+    public static Object getLavaBlock() {
         return MMLGBlockWrapper.a(MLGBlockWrapper.c.getMappingsMapperCompat().Rj);
     }
 }
-

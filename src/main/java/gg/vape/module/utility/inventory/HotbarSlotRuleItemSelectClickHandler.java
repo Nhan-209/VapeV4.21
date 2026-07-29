@@ -19,8 +19,8 @@ implements GuiClickListener {
     }
 
     @Override
-    public void P() {
-        HotbarSlotRule hotbarSlotRule = HotbarSlotRule.c((ItemStack)this.T.get(this.V));
+    public void onPrimaryClick() {
+        HotbarSlotRule hotbarSlotRule = HotbarSlotRule.fromItemStack((ItemStack)this.T.get(this.V));
         HotbarSlotRuleItemListFrame.a(this.p).N$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$xa58f().u$src$Ljava_util_List_$1u5n2i3().set(HotbarSlotRuleItemListFrame.a(this.p).X$src$I$7rbe5s(), hotbarSlotRule);
     }
 }

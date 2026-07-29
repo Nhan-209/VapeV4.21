@@ -9,16 +9,21 @@ import java.awt.Point;
 
 class ProfileListEntryMouseForwardingListener
 implements GuiMouseListener {
-    final ProfileListEntryComponent g;
+    private final ProfileListEntryComponent entry;
 
     @Override
-    public void g(Point point, MouseClickButton mouseClickButton) {
-        this.g.g(new GuiMouseEvent(point.x, point.y, mouseClickButton == MouseClickButton.LEFT_CLICK ? MouseButton.LEFT_CLICK : (mouseClickButton == MouseClickButton.RIGHT_CLICK ? MouseButton.RIGHT_CLICK : (mouseClickButton == MouseClickButton.MIDDLE_CLICK ? MouseButton.MIDDLE_CLICK : MouseButton.UNKNOWN))));
+    public void g(Point point, MouseClickButton button) {
+        MouseButton action = button == MouseClickButton.LEFT_CLICK
+            ? MouseButton.LEFT_CLICK
+            : button == MouseClickButton.RIGHT_CLICK
+                ? MouseButton.RIGHT_CLICK
+                : button == MouseClickButton.MIDDLE_CLICK ? MouseButton.MIDDLE_CLICK : MouseButton.UNKNOWN;
+        this.entry.g(new GuiMouseEvent(point.x, point.y, action));
     }
 
 
-    ProfileListEntryMouseForwardingListener(ProfileListEntryComponent profileListEntryComponent) {
-        this.g = profileListEntryComponent;
+    ProfileListEntryMouseForwardingListener(ProfileListEntryComponent entry) {
+        this.entry = entry;
     }
 }
 

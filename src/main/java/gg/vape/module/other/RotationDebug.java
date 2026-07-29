@@ -13,7 +13,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.other.RotationDebugRenderer;
 import gg.vape.module.other.RotationDebugState;
 import gg.vape.module.other.rotation.RotationDebugSample;
-import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.MutableFloatTriple;
 import gg.vape.utils.Vec3d;
@@ -21,7 +20,6 @@ import gg.vape.utils.datas.DirectionalPosition;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.OpenGlBackendHolder;
 import gg.vape.value.BooleanValue;
-import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.C03PacketPlayer;
 import gg.vape.wrapper.impl.CPacketPlayerBlockPlacement;
 import gg.vape.wrapper.impl.Entity;
@@ -39,72 +37,73 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.function.ToDoubleFunction;
 import org.lwjgl.opengl.GL11;
 
 public class RotationDebug
 extends Mod {
-    private final BooleanValue D;
-    private ArrayList<RotationDebugSample> j = new ArrayList();
-    private final BooleanValue o;
-    private final BooleanValue O;
-    private String S = "";
-    private RotationDebugSample H;
-    private ArrayList<RotationDebugSample> F = new ArrayList();
-    private Entity C;
+    private final BooleanValue logInteractions;
+    private final ArrayList<RotationDebugSample> samples = new ArrayList();
+    private final BooleanValue logPlacements;
+    private final BooleanValue logToFile;
+    private String sessionId = "";
+    private RotationDebugSample currentSample;
+    private final ArrayList<RotationDebugSample> pendingFileSamples = new ArrayList();
+    private Entity nearbyTarget;
 
     public RotationDebug() {
         super("OutgoingPackets", -256, Category.Y, "");
-        this.O = BooleanValue.create(this, "Log to file", false);
-        this.D = BooleanValue.create(this, "Interactions", false);
-        this.o = BooleanValue.create(this, "Placements", false);
-        this.addValue(this.O, this.D, this.o);
+        this.logToFile = BooleanValue.create(this, "Log to file", false);
+        this.logInteractions = BooleanValue.create(this, "Interactions", false);
+        this.logPlacements = BooleanValue.create(this, "Placements", false);
+        this.addValue(this.logToFile, this.logInteractions, this.logPlacements);
     }
 
     @Override
     public void onEnable() {
-        this.S = Long.toString(System.currentTimeMillis());
-        this.z();
+        this.sessionId = Long.toString(System.currentTimeMillis());
+        this.resetSamples();
     }
 
     @EventHandler
-    public void w(EventWorldChange eventWorldChange) {
-        this.z();
+    public void onWorldChange(EventWorldChange eventWorldChange) {
+        this.resetSamples();
     }
 
     @EventHandler
     public void onRender2D(EventRender2D eventRender2D) {
-        if (this.j.isEmpty()) {
+        if (this.samples.isEmpty()) {
             return;
         }
         EntityPlayerSP entityPlayerSP = eventRender2D.getThePlayer();
         WorldClient worldClient = eventRender2D.getWorld();
         if (entityPlayerSP.isNull() || worldClient.isNull()) {
-            this.z();
+            this.resetSamples();
             return;
         }
         GuiRenderPrimitives.Y();
-        OpenGlBackendHolder.d.m();
-        boolean bl = OpenGlBackendHolder.d.L(3042);
-        boolean bl2 = OpenGlBackendHolder.d.L(3553);
-        if (!bl) {
+        OpenGlBackendHolder.backend.pushMatrix();
+        boolean blendEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(3042);
+        boolean textureEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(3553);
+        if (!blendEnabled) {
             GlStateManager.enableBlend();
         }
-        if (bl2) {
+        if (textureEnabled) {
             GlStateManager.disableTexture2D();
         }
-        double d = 200.0;
-        double d2 = 90.0;
-        this.D(120.0, 20.0, d, d2);
-        this.C(340.0, 20.0, d, d2);
-        this.M(120.0, 130.0, d, d2);
-        this.Q(340.0, 130.0, d, d2);
-        if (bl2) {
+        double chartWidth = 200.0;
+        double chartHeight = 90.0;
+        this.drawYawChart(120.0, 20.0, chartWidth, chartHeight);
+        this.drawYawDeltaChart(340.0, 20.0, chartWidth, chartHeight);
+        this.drawPitchChart(120.0, 130.0, chartWidth, chartHeight);
+        this.drawPitchDeltaChart(340.0, 130.0, chartWidth, chartHeight);
+        if (textureEnabled) {
             GlStateManager.enableTexture2D();
         }
-        if (!bl) {
+        if (!blendEnabled) {
             GlStateManager.disableBlend();
         }
-        OpenGlBackendHolder.d.F();
+        OpenGlBackendHolder.backend.popMatrix();
         GuiRenderPrimitives.D();
     }
 
@@ -113,197 +112,157 @@ extends Mod {
         EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();
         WorldClient worldClient = eventPreTick.getWorld();
         if (entityPlayerSP.isNull() || worldClient.isNull()) {
-            this.z();
+            this.resetSamples();
             return;
         }
-        this.H = new RotationDebugSample(entityPlayerSP.l());
-        this.C = null;
-        ArrayList arrayList = new ArrayList(worldClient.z());
-        for (Object e : arrayList) {
-            Entity entity = new Entity(e);
+        this.currentSample = new RotationDebugSample(entityPlayerSP.l());
+        this.nearbyTarget = null;
+        ArrayList<Object> loadedEntities = new ArrayList<Object>(worldClient.z());
+        for (Object rawEntity : loadedEntities) {
+            Entity entity = new Entity(rawEntity);
             if (!entity.isInstance(MappedClasses.zm) || entity.equals(entityPlayerSP) || !(entityPlayerSP.getDistanceToEntity(entity) < 6.0f)) continue;
-            this.C = entity;
+            this.nearbyTarget = entity;
         }
     }
 
-    private void m(double d, double d2, double d3, double d4) {
-        SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().H(true);
-        double d5 = 5.0;
-        Color color = new Color(0, 0, 0, 200);
-        Color color2 = new Color(255, 255, 255, 100);
-        Color color3 = new Color(0, 255, 0, 255);
-        GuiRenderPrimitives.q(d - d5, d2 - d5, d3 + d5 + d5, d4 + d5 + d5, 1.0, color2, color);
-        smoothFontRenderer.v("Yaw/Pitch Ratio", d + 10.0, d2, Color.WHITE);
-        int n = 100;
-        double d6 = d3 / 100.0;
-        double d7 = d;
-        if (GuiRenderPrimitives.d()) {
-            for (int i = 1; i < this.j.size(); ++i) {
-                RotationDebugSample rotationDebugSample = this.j.get(i - 1);
-                RotationDebugSample rotationDebugSample2 = this.j.get(i);
-                float f = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample).z());
-                float f2 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample).N());
-                float f3 = Math.abs(f / f2);
-                double d8 = d2 + d4 - (double)f3 * d4;
-                float f4 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample2).z());
-                float f5 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample2).N());
-                float f6 = Math.abs(f4 / f5);
-                double d9 = d2 + d4 - (double)f6 * d4;
-                GuiRenderPrimitives.u((double)((float)d7), d8, (double)((float)(d7 + d6)), d9, 1.0f, color3);
-                d7 += d6;
-            }
-        } else {
-            OpenGlBackendHolder.d.k((double)color3.getRed() / 255.0, (double)color3.getGreen() / 255.0, (double)color3.getBlue() / 255.0, (double)color3.getAlpha() / 255.0);
-            OpenGlBackendHolder.d.r(1.0f);
-            OpenGlBackendHolder.d.l(2848);
-            OpenGlBackendHolder.d.C(3);
-            for (RotationDebugSample rotationDebugSample : this.j) {
-                float f = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample).z());
-                float f7 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample).N());
-                float f8 = Math.abs(f / f7);
-                GL11.glVertex2d((double)d7, (double)(d2 + d4 - (double)f8 * d4));
-                d7 += d6;
-            }
-            OpenGlBackendHolder.d.M();
-        }
+    private void drawPitchDeltaChart(double x, double y, double width, double height) {
+        this.drawDeltaChart(x, y, width, height, "Pitch Change/Time", true, sample -> sample.getRotation().getPitch());
     }
 
-    private void Q(double d, double d2, double d3, double d4) {
-        SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().H(true);
-        double d5 = 5.0;
-        Color color = new Color(0, 0, 0, 200);
-        Color color2 = new Color(255, 255, 255, 100);
-        Color color3 = new Color(0, 255, 0, 255);
-        GuiRenderPrimitives.q(d - d5, d2 - d5, d3 + d5 + d5, d4 + d5 + d5, 1.0, color2, color);
-        GuiRenderPrimitives.u(d, d2 + d4 / 2.0, d + d3, d2 + d4 / 2.0, 0.25f, Color.RED);
-        if (this.j.size() < 2) {
+    private void drawDeltaChart(double x, double y, double width, double height, String title, boolean wrapDelta, ToDoubleFunction<RotationDebugSample> angleProvider) {
+        double padding = 5.0;
+        Color background = new Color(0, 0, 0, 200);
+        Color border = new Color(255, 255, 255, 100);
+        Color lineColor = new Color(0, 255, 0, 255);
+        GuiRenderPrimitives.q(x - padding, y - padding, width + padding * 2.0, height + padding * 2.0, 1.0, border, background);
+        GuiRenderPrimitives.u(x, y + height / 2.0, x + width, y + height / 2.0, 0.25f, Color.RED);
+        if (this.samples.size() < 2) {
             return;
         }
-        float f = 1.0f;
-        float f2 = RotationDebugSample.p(this.j.get(0)).N();
-        for (RotationDebugSample rotationDebugSample : this.j) {
-            float f3 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample).N() - f2);
-            if (Math.abs(f3) > f) {
-                f = (float)Math.floor(Math.abs(f3));
-            }
-            f2 = RotationDebugSample.p(rotationDebugSample).N();
+        float maxDelta = 1.0f;
+        double previousAngle = angleProvider.applyAsDouble(this.samples.get(0));
+        for (RotationDebugSample sample : this.samples) {
+            float delta = this.angleDelta(angleProvider.applyAsDouble(sample), previousAngle, wrapDelta);
+            maxDelta = Math.max(maxDelta, (float)Math.floor(Math.abs(delta)));
+            previousAngle = angleProvider.applyAsDouble(sample);
         }
-        float f4 = -f;
-        float f5 = f;
-        int n = 100;
-        double d6 = d3 / 100.0;
-        double d7 = d;
-        smoothFontRenderer.v("Pitch Change/Time (+/- " + (int)f + ")", d + 10.0, d2, Color.WHITE);
+        Vape.INSTANCE.getFontManager().H(true).v(title + " (+/- " + (int)maxDelta + ")", x + 10.0, y, Color.WHITE);
+        double xStep = width / 100.0;
+        double currentX = x;
+        float minDelta = -maxDelta;
         if (GuiRenderPrimitives.d()) {
-            float f6 = RotationDebugSample.p(this.j.get(0)).N();
-            float f7 = RotationDebugSample.p(this.j.get(1)).N();
-            for (int i = 1; i < this.j.size(); ++i) {
-                RotationDebugSample rotationDebugSample = this.j.get(i - 1);
-                RotationDebugSample rotationDebugSample2 = this.j.get(i);
-                float f8 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample).N() - f6);
-                double d8 = d2 + d4 / 2.0 + (double)(f8 / (f4 - f5)) * d4 / 2.0;
-                float f9 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample2).N() - f7);
-                double d9 = d2 + d4 / 2.0 + (double)(f9 / (f4 - f5)) * d4 / 2.0;
-                GuiRenderPrimitives.u((double)((float)d7), d8, (double)((float)(d7 + d6)), d9, 1.0f, color3);
-                d7 += d6;
-                f6 = RotationDebugSample.p(rotationDebugSample).N();
-                f7 = RotationDebugSample.p(rotationDebugSample2).N();
+            double firstBaseline = angleProvider.applyAsDouble(this.samples.get(0));
+            double secondBaseline = angleProvider.applyAsDouble(this.samples.get(1));
+            for (int i = 1; i < this.samples.size(); ++i) {
+                RotationDebugSample first = this.samples.get(i - 1);
+                RotationDebugSample second = this.samples.get(i);
+                float firstDelta = this.angleDelta(angleProvider.applyAsDouble(first), firstBaseline, wrapDelta);
+                float secondDelta = this.angleDelta(angleProvider.applyAsDouble(second), secondBaseline, wrapDelta);
+                double firstY = y + height / 2.0 + (double)(firstDelta / (minDelta - maxDelta)) * height / 2.0;
+                double secondY = y + height / 2.0 + (double)(secondDelta / (minDelta - maxDelta)) * height / 2.0;
+                GuiRenderPrimitives.u(currentX, firstY, currentX + xStep, secondY, 1.0f, lineColor);
+                currentX += xStep;
+                firstBaseline = angleProvider.applyAsDouble(first);
+                secondBaseline = angleProvider.applyAsDouble(second);
             }
         } else {
-            OpenGlBackendHolder.d.k((double)color3.getRed() / 255.0, (double)color3.getGreen() / 255.0, (double)color3.getBlue() / 255.0, (double)color3.getAlpha() / 255.0);
-            OpenGlBackendHolder.d.r(1.0f);
-            OpenGlBackendHolder.d.l(2848);
-            OpenGlBackendHolder.d.C(3);
-            float f10 = RotationDebugSample.p(this.j.get(0)).N();
-            for (RotationDebugSample rotationDebugSample : this.j) {
-                float f11 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample).N() - f10);
-                double d10 = d2 + d4 / 2.0 + (double)(f11 / (f4 - f5)) * d4 / 2.0;
-                GL11.glVertex2d((double)d7, (double)d10);
-                d7 += d6;
-                f10 = RotationDebugSample.p(rotationDebugSample).N();
+            this.beginLegacyLine(lineColor);
+            double baseline = angleProvider.applyAsDouble(this.samples.get(0));
+            for (RotationDebugSample sample : this.samples) {
+                float delta = this.angleDelta(angleProvider.applyAsDouble(sample), baseline, wrapDelta);
+                double pointY = y + height / 2.0 + (double)(delta / (minDelta - maxDelta)) * height / 2.0;
+                GL11.glVertex2d(currentX, pointY);
+                currentX += xStep;
+                baseline = angleProvider.applyAsDouble(sample);
             }
-            OpenGlBackendHolder.d.M();
+            OpenGlBackendHolder.backend.endPrimitive();
         }
     }
 
-    private static Exception a(Exception exception) {
-        return exception;
+    private float angleDelta(double angle, double baseline, boolean wrap) {
+        float delta = (float)(angle - baseline);
+        return wrap ? MathUtil.wrapAngleTo180(delta) : delta;
+    }
+
+    private void beginLegacyLine(Color color) {
+        OpenGlBackendHolder.backend.setColor((double)color.getRed() / 255.0, (double)color.getGreen() / 255.0, (double)color.getBlue() / 255.0, (double)color.getAlpha() / 255.0);
+        OpenGlBackendHolder.backend.setLineWidth(1.0f);
+        OpenGlBackendHolder.backend.enableCapability(2848);
+        OpenGlBackendHolder.backend.beginPrimitive(3);
     }
 
     @EventHandler
     public void onPacketSend(EventPacketSend eventPacketSend) {
-        Object object;
-        Wrapper wrapper;
-        Wrapper wrapper2;
         EntityPlayerSP entityPlayerSP = eventPacketSend.getThePlayer();
         WorldClient worldClient = eventPacketSend.getWorld();
         if (entityPlayerSP.isNull() || worldClient.isNull()) {
-            this.z();
+            this.resetSamples();
             return;
         }
         Packet packet = eventPacketSend.getPacket();
-        if (this.H == null) {
-            this.H = new RotationDebugSample(Minecraft.thePlayer().l());
+        if (this.currentSample == null) {
+            this.currentSample = new RotationDebugSample(Minecraft.thePlayer().l());
         }
         if (packet.isInstance(MappedClasses.qD)) {
-            if (this.C != null) {
-                RotationDebugSample.q(this.H, new Vec3d(this.C.z(), this.C.N(), this.C.h()));
+            if (this.nearbyTarget != null) {
+                this.currentSample.setTarget(new Vec3d(this.nearbyTarget.z(), this.nearbyTarget.N(), this.nearbyTarget.h()));
             }
-            this.H.D(new C03PacketPlayer(packet.getObject()), eventPacketSend.getThePlayer());
+            this.currentSample.capturePacket(new C03PacketPlayer(packet.getObject()), eventPacketSend.getThePlayer());
         }
         if (packet.isInstance(MappedClasses.VF)) {
-            RotationDebugSample.G(this.H, true);
+            this.currentSample.markAuxiliaryPacketSent();
         }
         if (UseEntityPacketBridge.h(packet)) {
-            wrapper2 = new UseEntityPacketBridge(packet.getObject());
-            if (((UseEntityPacketBridge)wrapper2).S() && (wrapper = ((UseEntityPacketBridge)wrapper2).C(eventPacketSend.getWorld())).equals(this.C)) {
-                RotationDebugSample.s(this.H, true);
+            UseEntityPacketBridge interactionPacket = new UseEntityPacketBridge(packet.getObject());
+            Entity interactedEntity = interactionPacket.C(eventPacketSend.getWorld());
+            if (interactionPacket.S() && interactedEntity.equals(this.nearbyTarget)) {
+                this.currentSample.markTargetAttackSent();
             }
-            if (this.D.L().booleanValue() && (wrapper = ((UseEntityPacketBridge)wrapper2).C(worldClient)) != null && wrapper.isNotNull()) {
-                object = new RotationDebugRenderer(entityPlayerSP.l(), (Entity)wrapper, ((UseEntityPacketBridge)wrapper2).A$src$Ljava_lang_String_$jiwkol());
-                Vec3 vec3 = ((UseEntityPacketBridge)wrapper2).O();
+            if (this.logInteractions.getEffectiveValue().booleanValue() && interactedEntity != null && interactedEntity.isNotNull()) {
+                RotationDebugRenderer debugEntry = new RotationDebugRenderer(entityPlayerSP.l(), interactedEntity, interactionPacket.A$src$Ljava_lang_String_$jiwkol());
+                Vec3 vec3 = interactionPacket.O();
                 if (vec3 != null && vec3.isNotNull()) {
-                    RotationDebugRenderer.G((RotationDebugRenderer)object, new Vec3d(vec3.getX(), vec3.getY(), vec3.getZ()));
+                    debugEntry.setHitVector(new Vec3d(vec3.getX(), vec3.getY(), vec3.getZ()));
                 }
-                Vape.debugLog(RotationDebugRenderer.S((RotationDebugRenderer)object));
+                Vape.debugLog(debugEntry.toString());
             }
         }
-        if (this.o.L().booleanValue() && packet.isInstance(MappedClasses.YB)) {
-            wrapper2 = new CPacketPlayerBlockPlacement(packet.getObject());
-            wrapper = ((CPacketPlayerBlockPlacement)wrapper2).Q();
-            object = ((CPacketPlayerBlockPlacement)wrapper2).d$src$Lgg_vape_utils_MutableFloatTriple_$uj7uxi();
-            int n = ((CPacketPlayerBlockPlacement)wrapper2).d$src$I$17a761m();
-            DirectionalPosition directionalPosition = new DirectionalPosition(((Vec3i)wrapper).P(), ((Vec3i)wrapper).o(), ((Vec3i)wrapper).d(), n);
-            RotationDebugState rotationDebugState = new RotationDebugState(entityPlayerSP.l(), directionalPosition, (MutableFloatTriple)object);
+        if (this.logPlacements.getEffectiveValue().booleanValue() && packet.isInstance(MappedClasses.YB)) {
+            CPacketPlayerBlockPlacement placementPacket = new CPacketPlayerBlockPlacement(packet.getObject());
+            Vec3i blockPosition = placementPacket.Q();
+            MutableFloatTriple facingVector = placementPacket.d$src$Lgg_vape_utils_MutableFloatTriple_$uj7uxi();
+            int side = placementPacket.d$src$I$17a761m();
+            DirectionalPosition directionalPosition = new DirectionalPosition(blockPosition.P(), blockPosition.o(), blockPosition.d(), side);
+            RotationDebugState rotationDebugState = new RotationDebugState(entityPlayerSP.l(), directionalPosition, facingVector);
             if (ForgeVersion.MC_1_16_5_ACTUAL.d()) {
-                RotationDebugState.Z(rotationDebugState, ((CPacketPlayerBlockPlacement)wrapper2).l().a());
+                rotationDebugState.setInsideBlock(placementPacket.l().a());
                 if (ForgeVersion.MC_1_21_11.d()) {
-                    RotationDebugState.R(rotationDebugState, ((CPacketPlayerBlockPlacement)wrapper2).K());
+                    rotationDebugState.setSequence(placementPacket.K());
                 }
             }
-            Vape.debugLog(RotationDebugState.C(rotationDebugState));
+            Vape.debugLog(rotationDebugState.toString());
         }
     }
 
-    public void A() {
-        if (!this.O.L().booleanValue()) {
-            this.F.clear();
+    private void flushSamplesToFile() {
+        if (!this.logToFile.getEffectiveValue().booleanValue()) {
+            this.pendingFileSamples.clear();
             return;
         }
-        String string = "C:\\dump\\outgoing_packets_" + this.S + ".txt";
-        File file = new File(string);
+        String outputPath = "C:\\dump\\outgoing_packets_" + this.sessionId + ".txt";
+        File file = new File(outputPath);
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
         try {
-            FileWriter fileWriter = new FileWriter(string, true);
+            FileWriter fileWriter = new FileWriter(outputPath, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            for (RotationDebugSample rotationDebugSample : this.F) {
+            for (RotationDebugSample rotationDebugSample : this.pendingFileSamples) {
                 bufferedWriter.write(rotationDebugSample.toString() + '\n');
             }
             bufferedWriter.flush();
             bufferedWriter.close();
-            this.F.clear();
+            this.pendingFileSamples.clear();
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
@@ -311,180 +270,84 @@ extends Mod {
     }
 
     @EventHandler
-    public void g(EventPostTick eventPostTick) {
+    public void onPostTick(EventPostTick eventPostTick) {
         EntityPlayerSP entityPlayerSP = eventPostTick.getThePlayer();
         WorldClient worldClient = eventPostTick.getWorld();
         if (entityPlayerSP.isNull() || worldClient.isNull()) {
-            this.z();
+            this.resetSamples();
             return;
         }
-        if (this.H != null && RotationDebugSample.w(this.H) != null) {
-            while (this.j.size() >= 100) {
-                this.j.remove(0);
+        if (this.currentSample != null && this.currentSample.getPosition() != null) {
+            while (this.samples.size() >= 100) {
+                this.samples.remove(0);
             }
-            if (this.O.L().booleanValue()) {
-                if (this.F.size() >= 100) {
-                    this.A();
+            if (this.logToFile.getEffectiveValue().booleanValue()) {
+                if (this.pendingFileSamples.size() >= 100) {
+                    this.flushSamplesToFile();
                 }
-                this.F.add(this.H);
+                this.pendingFileSamples.add(this.currentSample);
             }
-            this.j.add(this.H);
+            this.samples.add(this.currentSample);
         }
     }
 
-    private void C(double d, double d2, double d3, double d4) {
-        SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().H(true);
-        double d5 = 5.0;
-        Color color = new Color(0, 0, 0, 200);
-        Color color2 = new Color(255, 255, 255, 100);
-        Color color3 = new Color(0, 255, 0, 255);
-        GuiRenderPrimitives.q(d - d5, d2 - d5, d3 + d5 + d5, d4 + d5 + d5, 1.0, color2, color);
-        GuiRenderPrimitives.u(d, d2 + d4 / 2.0, d + d3, d2 + d4 / 2.0, 0.25f, Color.RED);
-        if (this.j.size() < 2) {
-            return;
-        }
-        float f = 1.0f;
-        float f2 = RotationDebugSample.p(this.j.get(0)).z();
-        for (RotationDebugSample rotationDebugSample : this.j) {
-            float f3 = RotationDebugSample.p(rotationDebugSample).z() - f2;
-            if (Math.abs(f3) > f) {
-                f = (float)Math.floor(Math.abs(f3));
-            }
-            f2 = RotationDebugSample.p(rotationDebugSample).z();
-        }
-        float f4 = -f;
-        float f5 = f;
-        int n = 100;
-        double d6 = d3 / 100.0;
-        double d7 = d;
-        smoothFontRenderer.v("Yaw Change/Time (+/- " + (int)f + ")", d + 10.0, d2, Color.WHITE);
-        if (GuiRenderPrimitives.d()) {
-            float f6 = RotationDebugSample.p(this.j.get(0)).z();
-            float f7 = RotationDebugSample.p(this.j.get(1)).z();
-            for (int i = 1; i < this.j.size(); ++i) {
-                RotationDebugSample rotationDebugSample = this.j.get(i - 1);
-                RotationDebugSample rotationDebugSample2 = this.j.get(i);
-                float f8 = RotationDebugSample.p(rotationDebugSample).z() - f6;
-                double d8 = d2 + d4 / 2.0 + (double)(f8 / (f4 - f5)) * d4 / 2.0;
-                float f9 = RotationDebugSample.p(rotationDebugSample2).z() - f7;
-                double d9 = d2 + d4 / 2.0 + (double)(f9 / (f4 - f5)) * d4 / 2.0;
-                GuiRenderPrimitives.u((double)((float)d7), d8, (double)((float)(d7 + d6)), d9, 1.0f, color3);
-                d7 += d6;
-                f6 = RotationDebugSample.p(rotationDebugSample).z();
-                f7 = RotationDebugSample.p(rotationDebugSample2).z();
-            }
-        } else {
-            OpenGlBackendHolder.d.k((double)color3.getRed() / 255.0, (double)color3.getGreen() / 255.0, (double)color3.getBlue() / 255.0, (double)color3.getAlpha() / 255.0);
-            OpenGlBackendHolder.d.r(1.0f);
-            OpenGlBackendHolder.d.l(2848);
-            OpenGlBackendHolder.d.C(3);
-            float f10 = RotationDebugSample.p(this.j.get(0)).z();
-            for (RotationDebugSample rotationDebugSample : this.j) {
-                float f11 = RotationDebugSample.p(rotationDebugSample).z() - f10;
-                double d10 = d2 + d4 / 2.0 + (double)(f11 / (f4 - f5)) * d4 / 2.0;
-                GL11.glVertex2d((double)d7, (double)d10);
-                d7 += d6;
-                f10 = RotationDebugSample.p(rotationDebugSample).z();
-            }
-            OpenGlBackendHolder.d.M();
-        }
+    private void drawYawDeltaChart(double x, double y, double width, double height) {
+        this.drawDeltaChart(x, y, width, height, "Yaw Change/Time", false, sample -> sample.getRotation().getYaw());
     }
 
-    private void D(double d, double d2, double d3, double d4) {
-        SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().H(true);
-        double d5 = 5.0;
-        Color color = new Color(0, 0, 0, 200);
-        Color color2 = new Color(255, 255, 255, 100);
-        Color color3 = new Color(0, 255, 0, 255);
-        GuiRenderPrimitives.q(d - d5, d2 - d5, d3 + d5 + d5, d4 + d5 + d5, 1.0, color2, color);
-        GuiRenderPrimitives.u(d, d2 + d4 / 2.0, d + d3, d2 + d4 / 2.0, 0.25f, Color.RED);
-        smoothFontRenderer.v("Yaw/Time " + this.j.size(), d + 10.0, d2, Color.WHITE);
-        if (this.j.size() < 2) {
-            return;
-        }
-        float f = -180.0f;
-        float f2 = 180.0f;
-        int n = 100;
-        double d6 = d3 / 100.0;
-        double d7 = d;
-        if (GuiRenderPrimitives.d()) {
-            for (int i = 1; i < this.j.size(); ++i) {
-                RotationDebugSample rotationDebugSample = this.j.get(i - 1);
-                RotationDebugSample rotationDebugSample2 = this.j.get(i);
-                float f3 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample).z());
-                float f4 = (float)(d2 + d4 - (double)((f3 - f2) / (f - f2)) * d4);
-                float f5 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample2).z());
-                float f6 = (float)(d2 + d4 - (double)((f5 - f2) / (f - f2)) * d4);
-                GuiRenderPrimitives.u((double)((float)d7), (double)f4, (double)((float)(d7 + d6)), (double)f6, 1.0f, color3);
-                d7 += d6;
-            }
-        } else {
-            OpenGlBackendHolder.d.k((double)color3.getRed() / 255.0, (double)color3.getGreen() / 255.0, (double)color3.getBlue() / 255.0, (double)color3.getAlpha() / 255.0);
-            OpenGlBackendHolder.d.r(1.0f);
-            OpenGlBackendHolder.d.l(2848);
-            OpenGlBackendHolder.d.C(3);
-            for (RotationDebugSample rotationDebugSample : this.j) {
-                float f7 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample).z());
-                float f8 = (float)(d2 + d4 - (double)((f7 - f2) / (f - f2)) * d4);
-                GL11.glVertex2d((double)d7, (double)f8);
-                d7 += d6;
-            }
-            OpenGlBackendHolder.d.M();
-        }
+    private void drawYawChart(double x, double y, double width, double height) {
+        this.drawAngleChart(x, y, width, height, "Yaw/Time", -180.0f, 180.0f, sample -> sample.getRotation().getYaw());
     }
 
     @Override
     public void onDisable() {
-        this.A();
-        this.z();
+        this.flushSamplesToFile();
+        this.resetSamples();
     }
 
-    private void z() {
-        this.F.clear();
-        this.j.clear();
-        this.H = null;
+    private void resetSamples() {
+        this.pendingFileSamples.clear();
+        this.samples.clear();
+        this.currentSample = null;
     }
 
-    private void M(double d, double d2, double d3, double d4) {
-        SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().H(true);
-        double d5 = 5.0;
-        Color color = new Color(0, 0, 0, 200);
-        Color color2 = new Color(255, 255, 255, 100);
-        Color color3 = new Color(0, 255, 0, 255);
-        GuiRenderPrimitives.q(d - d5, d2 - d5, d3 + d5 + d5, d4 + d5 + d5, 1.0, color2, color);
-        GuiRenderPrimitives.u(d, d2 + d4 / 2.0, d + d3, d2 + d4 / 2.0, 0.25f, Color.RED);
-        smoothFontRenderer.v("Pitch/Time " + this.j.size(), d + 10.0, d2, Color.WHITE);
-        if (this.j.size() < 2) {
+    private void drawPitchChart(double x, double y, double width, double height) {
+        this.drawAngleChart(x, y, width, height, "Pitch/Time", -90.0f, 90.0f, sample -> sample.getRotation().getPitch());
+    }
+
+    private void drawAngleChart(double x, double y, double width, double height, String title, float minAngle, float maxAngle, ToDoubleFunction<RotationDebugSample> angleProvider) {
+        double padding = 5.0;
+        Color background = new Color(0, 0, 0, 200);
+        Color border = new Color(255, 255, 255, 100);
+        Color lineColor = new Color(0, 255, 0, 255);
+        GuiRenderPrimitives.q(x - padding, y - padding, width + padding * 2.0, height + padding * 2.0, 1.0, border, background);
+        GuiRenderPrimitives.u(x, y + height / 2.0, x + width, y + height / 2.0, 0.25f, Color.RED);
+        Vape.INSTANCE.getFontManager().H(true).v(title + " " + this.samples.size(), x + 10.0, y, Color.WHITE);
+        if (this.samples.size() < 2) {
             return;
         }
-        float f = -90.0f;
-        float f2 = 90.0f;
-        int n = 100;
-        double d6 = d3 / 100.0;
-        double d7 = d;
+        double xStep = width / 100.0;
+        double currentX = x;
         if (GuiRenderPrimitives.d()) {
-            for (int i = 1; i < this.j.size(); ++i) {
-                RotationDebugSample rotationDebugSample = this.j.get(i - 1);
-                RotationDebugSample rotationDebugSample2 = this.j.get(i);
-                float f3 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample).N());
-                float f4 = (float)(d2 + d4 - (double)((f3 - f2) / (f - f2)) * d4);
-                float f5 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample2).N());
-                float f6 = (float)(d2 + d4 - (double)((f5 - f2) / (f - f2)) * d4);
-                GuiRenderPrimitives.u((double)((float)d7), (double)f4, (double)((float)(d7 + d6)), (double)f6, 1.0f, color3);
-                d7 += d6;
+            for (int i = 1; i < this.samples.size(); ++i) {
+                RotationDebugSample first = this.samples.get(i - 1);
+                RotationDebugSample second = this.samples.get(i);
+                float firstAngle = MathUtil.wrapAngleTo180((float)angleProvider.applyAsDouble(first));
+                float secondAngle = MathUtil.wrapAngleTo180((float)angleProvider.applyAsDouble(second));
+                double firstY = y + height - (double)((firstAngle - maxAngle) / (minAngle - maxAngle)) * height;
+                double secondY = y + height - (double)((secondAngle - maxAngle) / (minAngle - maxAngle)) * height;
+                GuiRenderPrimitives.u(currentX, firstY, currentX + xStep, secondY, 1.0f, lineColor);
+                currentX += xStep;
             }
         } else {
-            OpenGlBackendHolder.d.k((double)color3.getRed() / 255.0, (double)color3.getGreen() / 255.0, (double)color3.getBlue() / 255.0, (double)color3.getAlpha() / 255.0);
-            OpenGlBackendHolder.d.r(1.0f);
-            OpenGlBackendHolder.d.l(2848);
-            OpenGlBackendHolder.d.C(3);
-            for (RotationDebugSample rotationDebugSample : this.j) {
-                float f7 = MathUtil.wrapAngleTo180(RotationDebugSample.p(rotationDebugSample).N());
-                float f8 = (float)(d2 + d4 - (double)((f7 - f2) / (f - f2)) * d4);
-                GL11.glVertex2d((double)d7, (double)f8);
-                d7 += d6;
+            this.beginLegacyLine(lineColor);
+            for (RotationDebugSample sample : this.samples) {
+                float angle = MathUtil.wrapAngleTo180((float)angleProvider.applyAsDouble(sample));
+                double pointY = y + height - (double)((angle - maxAngle) / (minAngle - maxAngle)) * height;
+                GL11.glVertex2d(currentX, pointY);
+                currentX += xStep;
             }
-            OpenGlBackendHolder.d.M();
+            OpenGlBackendHolder.backend.endPrimitive();
         }
     }
 }

@@ -24,152 +24,151 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 
 public class RenderBatchBuffer {
-    private RenderMatrix4f I;
-    private final FloatBufferObject k;
-    private IntBuffer o;
-    private GlImageTexture f;
-    private RenderBatchShaderProgram z;
-    private float S;
-    private FloatBuffer A;
-    private int T = 0;
-    private PrimitiveTopology c;
-    private final VertexArrayObject u;
-    private final IntBufferObject r;
+    private RenderMatrix4f modelMatrix;
+    private final FloatBufferObject vertexBufferObject;
+    private IntBuffer indexBuffer;
+    private GlImageTexture texture;
+    private RenderBatchShaderProgram shaderProgram;
+    private float lineWidth;
+    private FloatBuffer vertexBuffer;
+    private int vertexStride = 0;
+    private PrimitiveTopology topology;
+    private final VertexArrayObject vertexArrayObject;
+    private final IntBufferObject indexBufferObject;
 
-    public void m(RenderBatch renderBatch) {
-        this.f = renderBatch.H();
-        for (RenderBatchBuilder renderBatchBuilder : renderBatch.U()) {
-            this.A.put(renderBatchBuilder.y());
-            this.o.put(renderBatchBuilder.R());
+    public void stageBatch(RenderBatch renderBatch) {
+        this.texture = renderBatch.getTexture();
+        for (RenderBatchBuilder renderBatchBuilder : renderBatch.getBuilders()) {
+            this.vertexBuffer.put(renderBatchBuilder.getVertexData());
+            this.indexBuffer.put(renderBatchBuilder.getIndices());
         }
-        this.c = renderBatch.V();
-        this.I = renderBatch.m();
-        this.S = renderBatch.j();
+        this.topology = renderBatch.getTopology();
+        this.modelMatrix = renderBatch.getModelMatrix();
+        this.lineWidth = renderBatch.getLineWidth();
     }
 
-    public void A() {
-        this.u.c();
-        this.k.G();
-        this.r.d();
+    public void deleteResources() {
+        this.vertexArrayObject.delete();
+        this.vertexBufferObject.delete();
+        this.indexBufferObject.delete();
     }
 
-    public int n() {
-        return this.o.capacity();
+    public int getIndexCapacity() {
+        return this.indexBuffer.capacity();
     }
 
-    public void i() {
-        int n = this.A.position();
-        int n2 = this.o.position();
-        if (n == 0 || n2 == 0) {
+    public void draw() {
+        int vertexFloatCount = this.vertexBuffer.position();
+        int indexCount = this.indexBuffer.position();
+        if (vertexFloatCount == 0 || indexCount == 0) {
             throw new IllegalStateException("Number of vertices can't be 0");
         }
-        gg.vape.wrapper.impl.GL20.w(this.z.T, false, this.I.J());
-        if (this.c == PrimitiveTopology.LINES || this.c == PrimitiveTopology.LINES_LOOP) {
-            OpenGlBackendHolder.d.l(2848);
+        gg.vape.wrapper.impl.GL20.w(this.shaderProgram.modelUniformLocation, false, this.modelMatrix.toFloatBuffer());
+        if (this.topology == PrimitiveTopology.LINES || this.topology == PrimitiveTopology.LINES_LOOP) {
+            OpenGlBackendHolder.backend.enableCapability(2848);
         }
-        if (this.c == null) {
+        if (this.topology == null) {
             Vape.debugLog("Drawmode null: something fucked up");
             return;
         }
-        int n3 = GL11.glGetInteger((int)32873);
-        if (this.f != null) {
-            GlTextureUnitState.H();
-            this.f.F();
+        int previousTextureId = GL11.glGetInteger((int)32873);
+        if (this.texture != null) {
+            GlTextureUnitState.saveAndClearTextureUnitZero();
+            this.texture.bind();
         }
-        this.A.flip();
-        this.o.flip();
-        this.k.Q(this.A);
-        this.r.S(this.o);
-        GL11.glDrawElements((int)this.c.Q(), (int)n2, (int)5125, (long)0L);
-        this.N();
-        if (this.f != null) {
-            GlStateManager.bindTexture(n3);
-            GlTextureUnitState.V();
+        this.vertexBuffer.flip();
+        this.indexBuffer.flip();
+        this.vertexBufferObject.upload(this.vertexBuffer);
+        this.indexBufferObject.upload(this.indexBuffer);
+        GL11.glDrawElements((int)this.topology.getOpenGlMode(), (int)indexCount, (int)5125, (long)0L);
+        this.clearStagingBuffers();
+        if (this.texture != null) {
+            GlStateManager.bindTexture(previousTextureId);
+            GlTextureUnitState.restoreTextureUnitZero();
         }
-        if (this.c == PrimitiveTopology.LINES || this.c == PrimitiveTopology.LINES_LOOP) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(2848);
+        if (this.topology == PrimitiveTopology.LINES || this.topology == PrimitiveTopology.LINES_LOOP) {
+            OpenGlBackendHolder.backend.disableCapability(2848);
         }
     }
 
-    public RenderBatchBuffer(RenderBatchShaderProgram renderBatchShaderProgram, int n, VertexAttributeType ... vertexAttributeTypeArray) {
-        VertexAttributeType[] vertexAttributeTypeArray2 = vertexAttributeTypeArray;
-        int n2 = vertexAttributeTypeArray2.length;
-        for (int i = 0; i < n2; ++i) {
-            VertexAttributeType vertexAttributeType = vertexAttributeTypeArray2[i];
-            this.T += vertexAttributeType.count;
+    public RenderBatchBuffer(RenderBatchShaderProgram shaderProgram, int maxVertices, VertexAttributeType ... vertexAttributes) {
+        VertexAttributeType[] attributes = vertexAttributes;
+        int attributeCount = attributes.length;
+        for (int attributeIndex = 0; attributeIndex < attributeCount; ++attributeIndex) {
+            VertexAttributeType vertexAttribute = attributes[attributeIndex];
+            this.vertexStride += vertexAttribute.count;
         }
-        this.z = renderBatchShaderProgram;
-        this.c = null;
-        this.A = BufferUtils.createFloatBuffer((int)(n * this.T * 4));
-        this.o = BufferUtils.createIntBuffer((int)(n * 6));
-        this.u = new VertexArrayObject();
-        this.u.m();
-        this.k = new FloatBufferObject();
-        this.k.w();
-        GL15.glBufferData((int)34962, (long)((long)this.A.capacity() * 4L), (int)35048);
-        int n3 = 0;
-        for (n2 = 0; n2 < vertexAttributeTypeArray.length; ++n2) {
-            VertexAttributeType vertexAttributeType = vertexAttributeTypeArray[n2];
-            GL20.glVertexAttribPointer((int)n2, (int)vertexAttributeType.count, (int)vertexAttributeType.type, (boolean)vertexAttributeType.normalized, (int)(this.T * 4), (long)((long)n3 * 4L));
-            GL20.glEnableVertexAttribArray((int)n2);
-            n3 += vertexAttributeType.count;
+        this.shaderProgram = shaderProgram;
+        this.topology = null;
+        this.vertexBuffer = BufferUtils.createFloatBuffer((int)(maxVertices * this.vertexStride * 4));
+        this.indexBuffer = BufferUtils.createIntBuffer((int)(maxVertices * 6));
+        this.vertexArrayObject = new VertexArrayObject();
+        this.vertexArrayObject.bindAndRememberPrevious();
+        this.vertexBufferObject = new FloatBufferObject();
+        this.vertexBufferObject.bind();
+        GL15.glBufferData((int)34962, (long)((long)this.vertexBuffer.capacity() * 4L), (int)35048);
+        int attributeOffset = 0;
+        for (int attributeIndex = 0; attributeIndex < vertexAttributes.length; ++attributeIndex) {
+            VertexAttributeType vertexAttribute = vertexAttributes[attributeIndex];
+            GL20.glVertexAttribPointer((int)attributeIndex, (int)vertexAttribute.count, (int)vertexAttribute.type, (boolean)vertexAttribute.normalized, (int)(this.vertexStride * 4), (long)((long)attributeOffset * 4L));
+            GL20.glEnableVertexAttribArray((int)attributeIndex);
+            attributeOffset += vertexAttribute.count;
         }
-        this.r = new IntBufferObject();
-        this.r.c();
-        GL15.glBufferData((int)34963, (long)((long)this.o.capacity() * 4L), (int)35048);
-        this.D();
-        this.u.X();
+        this.indexBufferObject = new IntBufferObject();
+        this.indexBufferObject.bind();
+        GL15.glBufferData((int)34963, (long)((long)this.indexBuffer.capacity() * 4L), (int)35048);
+        this.configureTextureSampler();
+        this.vertexArrayObject.restorePreviousBinding();
     }
 
-    public int k() {
-        return this.A.capacity();
+    public int getVertexCapacity() {
+        return this.vertexBuffer.capacity();
     }
 
-    public void z() {
-        this.u.m();
-        this.z.P();
-        this.k.w();
-        this.r.c();
-        gg.vape.wrapper.impl.GL20.w(this.z.m, false, BufferedGuiRenderPrimitives.k.J());
-        gg.vape.wrapper.impl.GL20.w(this.z.B, false, BufferedGuiRenderPrimitives.l.J());
+    public void bindResources() {
+        this.vertexArrayObject.bindAndRememberPrevious();
+        this.shaderProgram.bind();
+        this.vertexBufferObject.bind();
+        this.indexBufferObject.bind();
+        gg.vape.wrapper.impl.GL20.w(this.shaderProgram.projectionUniformLocation, false, BufferedGuiRenderPrimitives.projectionMatrix.toFloatBuffer());
+        gg.vape.wrapper.impl.GL20.w(this.shaderProgram.viewUniformLocation, false, BufferedGuiRenderPrimitives.viewMatrix.toFloatBuffer());
     }
 
-    public int Q() {
-        return this.T;
+    public int getVertexStride() {
+        return this.vertexStride;
     }
 
-    private void D() {
-        int n = GL11.glGetInteger((int)35725);
+    private void configureTextureSampler() {
+        int previousProgramId = GL11.glGetInteger((int)35725);
         try {
-            if (this.z == null || this.z.S <= 0) {
+            if (this.shaderProgram == null || this.shaderProgram.programId <= 0) {
                 throw new IllegalStateException("Universal shader program was not created");
             }
-            GL20.glUseProgram((int)this.z.S);
-            int n2 = GL20.glGetUniformLocation((int)this.z.S, (CharSequence)"imgTexture");
-            if (n2 < 0) {
-                throw new IllegalStateException("Failed to resolve shader uniform 'imgTexture' (location=" + n2 + ")");
+            GL20.glUseProgram((int)this.shaderProgram.programId);
+            int samplerUniformLocation = GL20.glGetUniformLocation((int)this.shaderProgram.programId, (CharSequence)"imgTexture");
+            if (samplerUniformLocation < 0) {
+                throw new IllegalStateException("Failed to resolve shader uniform 'imgTexture' (location=" + samplerUniformLocation + ")");
             }
-            GL20.glUniform1i((int)n2, (int)0);
-            int n3 = GL11.glGetError();
-            if (n3 != 0) {
-                throw new IllegalStateException("OpenGL error " + n3 + " after glUniform1i(imgTexture, 0)");
+            GL20.glUniform1i((int)samplerUniformLocation, (int)0);
+            int openGlError = GL11.glGetError();
+            if (openGlError != 0) {
+                throw new IllegalStateException("OpenGL error " + openGlError + " after glUniform1i(imgTexture, 0)");
             }
         }
         catch (Throwable throwable) {
-            throw RenderBatchManager.I("mesh uniform setup", throwable);
+            throw RenderBatchManager.initializationFailure("mesh uniform setup", throwable);
         }
         finally {
-            GL20.glUseProgram((int)n);
+            GL20.glUseProgram((int)previousProgramId);
         }
     }
 
-    private static Throwable a(Throwable throwable) {
+    private static Throwable propagateThrowable(Throwable throwable) {
         return throwable;
     }
 
-    public void N() {
-        this.o.clear();
-        this.A.clear();
+    public void clearStagingBuffers() {
+        this.indexBuffer.clear();
+        this.vertexBuffer.clear();
     }
 }
-

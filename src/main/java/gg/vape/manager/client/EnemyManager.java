@@ -32,8 +32,8 @@ public class EnemyManager {
         this.z = BooleanValue.create(this, "Use Alias", true);
         this.O = BooleanValue.create(this, "Spoof alias", false, "This will make the enemies name be replaced in chat with their alias.\nApplies on regular Nametags as well");
         this.p = BooleanValue.create(this, "Use color", true, "Re-colors certain render modules to use \"Enemies Color\" on enemies");
-        this.i = ColorValue.L(this, "Enemies Color", new Color(244, 66, 66));
-        this.O.B(this::lambda$new$0);
+        this.i = ColorValue.create(this, "Enemies Color", new Color(244, 66, 66));
+        this.O.addChangeListener(this::lambda$new$0);
     }
 
     public static void x(int[] nArray) {
@@ -45,7 +45,7 @@ public class EnemyManager {
     }
 
     public boolean q(String string) {
-        if (!this.L.L().booleanValue()) {
+        if (!this.L.getEffectiveValue().booleanValue()) {
             return false;
         }
         Enemy enemy = this.A(string);
@@ -66,7 +66,7 @@ public class EnemyManager {
     }
 
     public Enemy f(String string, boolean bl) {
-        if (this.L.L().booleanValue() || !bl) {
+        if (this.L.getEffectiveValue().booleanValue() || !bl) {
             Enemy enemy = this.A(string);
             if (enemy != null) {
                 return null;
@@ -134,7 +134,7 @@ public class EnemyManager {
                 // empty catch block
             }
         }
-        ClientSettings.g(EnemySettingsFrame.class).Q$src$V$1u5tkk5();
+        ClientSettings.getFrame(EnemySettingsFrame.class).Q$src$V$1u5tkk5();
     }
 
     public Enemy A(String string) {

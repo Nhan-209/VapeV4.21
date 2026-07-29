@@ -8,44 +8,44 @@ import java.awt.Color;
 
 public class TwoButtonConfirmationPopupComponent
 extends GuiComponent {
-    private Color I;
-    private static final String v = "CANCEL";
-    private boolean b;
-    private final TextButton a;
-    private final TextButton i;
-    private final SimpleTextLabelComponent K;
+    private Color borderColor;
+    private static final String CANCEL_TEXT = "CANCEL";
+    private boolean borderVisible;
+    private final TextButton cancelButton;
+    private final TextButton confirmButton;
+    private final SimpleTextLabelComponent messageLabel;
 
-    public TwoButtonConfirmationPopupComponent(String string, String string2) {
-        this.I = TwoButtonConfirmationPopupComponent.J.y;
-        this.b = false;
-        this.K = new SimpleTextLabelComponent(string, 0.8f, TwoButtonConfirmationPopupComponent.J.A, false);
-        this.K.o(this.K.h() * (double)0.76f);
-        this.i = new TextButton(string2, 0.65, TwoButtonConfirmationPopupComponent.J.d, TwoButtonConfirmationPopupComponent.J.c, 36.0, 14.0);
-        this.a = new TextButton(v, 0.65, TwoButtonConfirmationPopupComponent.J.d, TwoButtonConfirmationPopupComponent.J.c, 36.0, 14.0);
-        this.d(false);
-        this.T(TwoButtonConfirmationPopupComponent.J.m.brighter());
-        this.i.F(false);
-        this.i.c(true);
-        this.i.o(20.0);
-        this.i.Y(9.0);
-        this.i.m(1.0f);
-        this.i.h(Color.WHITE);
-        this.i.G(Color.WHITE);
-        this.a.c(false);
-        this.a.p(true);
-        this.a.F(false);
-        this.a.o(28.0);
-        this.a.Y(9.0);
-        this.a.u(0.8f);
-        this.a.h(TwoButtonConfirmationPopupComponent.J.Z);
-        this.a.G(TwoButtonConfirmationPopupComponent.J.A);
-        this.a.R(new Color(255, 255, 255, 20));
-        this.a.G(TwoButtonConfirmationPopupComponent.J.t, TwoButtonConfirmationPopupComponent.J.t);
-        this.H(this.K, this.i, this.a);
+    public TwoButtonConfirmationPopupComponent(String message, String confirmText) {
+        this.borderColor = TwoButtonConfirmationPopupComponent.J.y;
+        this.borderVisible = false;
+        this.messageLabel = new SimpleTextLabelComponent(message, 0.8f, TwoButtonConfirmationPopupComponent.J.A, false);
+        this.messageLabel.o(this.messageLabel.getTextWidth() * (double)0.76f);
+        this.confirmButton = new TextButton(confirmText, 0.65, TwoButtonConfirmationPopupComponent.J.d, TwoButtonConfirmationPopupComponent.J.c, 36.0, 14.0);
+        this.cancelButton = new TextButton(CANCEL_TEXT, 0.65, TwoButtonConfirmationPopupComponent.J.d, TwoButtonConfirmationPopupComponent.J.c, 36.0, 14.0);
+        this.setShowDisabledOverlay(false);
+        this.setDisabledOverlayColor(TwoButtonConfirmationPopupComponent.J.m.brighter());
+        this.confirmButton.setDeriveTextColorFromBackground(false);
+        this.confirmButton.setUseAlternateFont(true);
+        this.confirmButton.o(20.0);
+        this.confirmButton.Y(9.0);
+        this.confirmButton.setCornerRadius(1.0f);
+        this.confirmButton.setNormalTextColor(Color.WHITE);
+        this.confirmButton.setHoverTextColor(Color.WHITE);
+        this.cancelButton.setUseAlternateFont(false);
+        this.cancelButton.setAnimateTextColor(true);
+        this.cancelButton.setDeriveTextColorFromBackground(false);
+        this.cancelButton.o(28.0);
+        this.cancelButton.Y(9.0);
+        this.cancelButton.setBorderAlpha(0.8f);
+        this.cancelButton.setNormalTextColor(TwoButtonConfirmationPopupComponent.J.Z);
+        this.cancelButton.setHoverTextColor(TwoButtonConfirmationPopupComponent.J.A);
+        this.cancelButton.setTransparentBackgroundBorder(new Color(255, 255, 255, 20));
+        this.cancelButton.setBackgroundAnimationColors(TwoButtonConfirmationPopupComponent.J.t, TwoButtonConfirmationPopupComponent.J.t);
+        this.addChildren(this.messageLabel, this.confirmButton, this.cancelButton);
     }
 
-    public TextButton N() {
-        return this.i;
+    public TextButton getConfirmButton() {
+        return this.confirmButton;
     }
 
 
@@ -54,44 +54,44 @@ extends GuiComponent {
         return 25.0;
     }
 
-    public boolean q$src$Z$19k2i8l() {
-        return this.b;
+    public boolean isBorderVisible() {
+        return this.borderVisible;
     }
 
-    public Color b$src$Ljava_awt_Color_$14aus4s() {
-        return this.I;
+    public Color getBorderColor() {
+        return this.borderColor;
     }
 
-    public void z(Color color) {
-        this.I = color;
+    public void setBorderColor(Color borderColor) {
+        this.borderColor = borderColor;
     }
 
-    public void O(boolean bl) {
-        this.b = bl;
+    public void setBorderVisible(boolean borderVisible) {
+        this.borderVisible = borderVisible;
     }
 
     @Override
     public double x() {
-        return this.K.A() + 20.0 + this.i.A() + this.a.A() + 8.0;
+        return this.messageLabel.A() + 20.0 + this.confirmButton.A() + this.cancelButton.A() + 8.0;
     }
 
-    public TextButton O$src$Lgg_vape_ui_click_component_gui_TextButton_$1fvjbh() {
-        return this.a;
+    public TextButton getCancelButton() {
+        return this.cancelButton;
     }
 
     @Override
     public void H() {
-        double d = this.L();
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), d, this.d());
-        if (this.b) {
-            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), d, this.I, 2.0f, 1.0f, 1.0f);
+        double height = this.L();
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), height, this.getDisabledOverlayColor());
+        if (this.borderVisible) {
+            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), height, this.borderColor, 2.0f, 1.0f, 1.0f);
         }
-        this.K.K(this.G$src$D$1b2f02a() + 2.0);
-        this.K.S(this.n() + this.L() / 2.0 - this.K.y$src$D$idacv3() / 2.0 - 2.0);
-        this.i.K(this.G$src$D$1b2f02a() + this.A() - (this.i.A() + 5.0));
-        this.i.S(this.n() + this.L() / 2.0 - this.i.L() / 2.0);
-        this.a.K(this.i.G$src$D$1b2f02a() - (this.a.A() + 4.0));
-        this.a.S(this.i.n());
+        this.messageLabel.K(this.G$src$D$1b2f02a() + 2.0);
+        this.messageLabel.S(this.n() + this.L() / 2.0 - this.messageLabel.getTextHeight() / 2.0 - 2.0);
+        this.confirmButton.K(this.G$src$D$1b2f02a() + this.A() - (this.confirmButton.A() + 5.0));
+        this.confirmButton.S(this.n() + this.L() / 2.0 - this.confirmButton.L() / 2.0);
+        this.cancelButton.K(this.confirmButton.G$src$D$1b2f02a() - (this.cancelButton.A() + 4.0));
+        this.cancelButton.S(this.confirmButton.n());
     }
 }
 

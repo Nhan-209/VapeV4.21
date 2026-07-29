@@ -1,6 +1,7 @@
 package gg.vape.module.utility;
 
 import gg.vape.Vape;
+import gg.vape.config.ClientSettings;
 import gg.vape.event.EventHandler;
 import gg.vape.event.impl.EventPrePlayerTick;
 import gg.vape.input.KeyBindingHelper;
@@ -27,16 +28,15 @@ extends Mod {
 
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        boolean movingForward;
+    public void onTick(EventPrePlayerTick event) {
         if (Vape.INSTANCE.getModManager().getState(Freecam.class)) {
             return;
         }
         KeyBinding keyBinding = Minecraft.gameSettings().O();
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
         if (this.jumpPending) {
             if (!this.jumpKeyWasPressed) {
-                KeyBindingHelper.v(keyBinding, false, false);
+                KeyBindingHelper.updateKeyBinding(keyBinding, false, false);
             }
             this.jumpPending = false;
             this.jumpKeyWasPressed = false;
@@ -45,35 +45,36 @@ extends Mod {
         if (keyBinding.isKeyDown()) {
             return;
         }
-        MovementInput movementInput = entityPlayerSP.movementInput();
-        boolean forwardInput = movingForward = movementInput.D() > 0.0f;
-        if (movingForward && entityPlayerSP.b$src$Z$fqlxe4()) {
+        MovementInput movementInput = localPlayer.movementInput();
+        boolean movingForward = movementInput.D() > 0.0f
+                || ClientSettings.B(Minecraft.gameSettings().Y());
+        if (movingForward && localPlayer.b$src$Z$fqlxe4()) {
             AxisAlignedBB boundingBox;
             if (ForgeVersion.MC_1_8_9.d()) {
-                boundingBox = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+                boundingBox = localPlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
             } else {
-                AxisAlignedBB currentBox = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+                AxisAlignedBB currentBox = localPlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
                 boundingBox = currentBox.copy();
             }
             double distance = 0.0;
-            double yaw = entityPlayerSP.J();
+            double yaw = localPlayer.J();
             double yawOffset = 90.0;
             double offsetX = Math.cos(Math.toRadians(yaw + yawOffset)) * distance;
             double offsetZ = Math.sin(Math.toRadians(yaw + yawOffset)) * distance;
             double offsetY = -0.1;
             AxisAlignedBB offsetBox = boundingBox.k(offsetX, offsetY, offsetZ);
-            List nearCollisions = Minecraft.theWorld().i(entityPlayerSP, offsetBox);
+            List<?> nearCollisions = Minecraft.theWorld().i(localPlayer, offsetBox);
             distance = 1.0;
             offsetX = Math.cos(Math.toRadians(yaw + yawOffset)) * distance;
             offsetZ = Math.sin(Math.toRadians(yaw + yawOffset)) * distance;
             offsetY = -0.1;
             offsetBox = boundingBox.k(offsetX, offsetY, offsetZ);
-            List farCollisions = Minecraft.theWorld().i(entityPlayerSP, offsetBox);
+            List<?> farCollisions = Minecraft.theWorld().i(localPlayer, offsetBox);
             int nearCount = nearCollisions.size();
             int farCount = farCollisions.size();
             if (nearCount == 0 && farCount == 0) {
                 this.jumpKeyWasPressed = keyBinding.u();
-                KeyBindingHelper.d(keyBinding, true);
+                KeyBindingHelper.setPressedAndTick(keyBinding, true);
                 this.jumpPending = true;
             }
         }

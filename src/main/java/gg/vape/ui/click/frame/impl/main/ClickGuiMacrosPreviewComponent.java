@@ -6,15 +6,11 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 class ClickGuiMacrosPreviewComponent
 extends GuiComponent {
-    final ClickGuiMacrosSettingsPanel i;
-
     @Override
     public void H() {
-        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), 1.0, ClickGuiMacrosSettingsPanel.N$src$Ljava_awt_Color_$1qg5s8k());
+        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), 1.0, ClickGuiMacrosSettingsPanel.getBorderColor());
     }
 
     ClickGuiMacrosPreviewComponent(ClickGuiMacrosSettingsPanel clickGuiMacrosSettingsPanel) {
-        this.i = clickGuiMacrosSettingsPanel;
     }
 }
-

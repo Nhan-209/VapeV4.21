@@ -18,22 +18,22 @@ extends TextInputComponentBase {
 
     public FrameMacrosAddMacroInputComponent(FrameMacros frameMacros) {
         super("");
-        this.b.W("newnext");
-        this.o(new FrameMacrosAddMacroKeyTypedListener(this, frameMacros));
-        this.b.r(new FrameMacrosAddMacroClickHandler(this, frameMacros));
+        this.actionButton.setIconResource("newnext");
+        this.addKeyTypedListener(new FrameMacrosAddMacroKeyTypedListener(this, frameMacros));
+        this.actionButton.addClickListener(new FrameMacrosAddMacroClickHandler(this, frameMacros));
     }
 
     @Override
-    public void p() {
+    public void submit() {
         if (!this.X1) {
-            if (!this.u$src$Z$wt77ym()) {
-                this.k("");
+            if (!this.hasNonBlankText()) {
+                this.setText("");
                 return;
             }
-            this.XX = this.i$src$Ljava_lang_String_$1n2xf3k();
+            this.XX = this.getText();
         }
         this.X1 = !this.X1;
-        this.a = this.X1 ? FrameMacrosAddMacroInputComponent.J.K : null;
+        this.actionButtonColor = this.X1 ? FrameMacrosAddMacroInputComponent.J.K : null;
     }
 
     static String j(FrameMacrosAddMacroInputComponent frameMacrosAddMacroInputComponent) {
@@ -60,26 +60,26 @@ extends TextInputComponentBase {
         if (this.Xa != null) {
             if (!this.Xa.V$src$Z$1xhop3l()) {
                 this.Xa = null;
-                this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().l$src$V$1mibm4x();
+                this.getParentFrameComponent().l$src$V$1mibm4x();
             } else {
-                this.b.Z(false);
+                this.actionButton.setVisible(false);
                 this.Xa.K(this.G$src$D$1b2f02a());
                 this.Xa.S(this.n());
                 return;
             }
         }
-        this.b.Z(true);
+        this.actionButton.setVisible(true);
         if (this.X1) {
-            this.k("");
-            this.v(FrameMacrosAddMacroInputComponent.J.m);
-            this.b("Press a key to bind");
-            this.b.W("newbind");
-            this.j(false);
+            this.setText("");
+            this.setBackgroundColor(FrameMacrosAddMacroInputComponent.J.m);
+            this.setPlaceholderText("Press a key to bind");
+            this.actionButton.setIconResource("newbind");
+            this.setInputEnabled(false);
         } else {
-            this.v(FrameMacrosAddMacroInputComponent.J.r);
-            this.b("Type item name");
-            this.b.W("newnext");
-            this.j(true);
+            this.setBackgroundColor(FrameMacrosAddMacroInputComponent.J.r);
+            this.setPlaceholderText("Type item name");
+            this.actionButton.setIconResource("newnext");
+            this.setInputEnabled(true);
         }
         super.H();
     }
@@ -89,4 +89,3 @@ extends TextInputComponentBase {
         return 110.0;
     }
 }
-

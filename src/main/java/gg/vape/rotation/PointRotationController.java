@@ -13,61 +13,61 @@ import gg.vape.wrapper.impl.Vec3;
 public class PointRotationController
 extends FixedRotationController
 implements WorldPointRotationTarget {
-    private boolean X = true;
-    private Vec3 O;
+    private boolean normalizeYaw = true;
+    private Vec3 target;
 
-    public RotationAngles N(Vec3 vec3) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        double d = ForgeVersion.MC_1_7_10.Y() ? (double)entityPlayerSP.X() : 0.0;
-        Vec3 vec32 = Vec3.create(vec3.getX(), vec3.getY(), vec3.getZ());
-        Vec3 vec33 = Vec3.create(entityPlayerSP.c(), entityPlayerSP.A() + d, entityPlayerSP.Z());
-        return RotationVectorMath.H(vec33, vec32, this.k(), this.d$src$Z$1lil4j5());
+    public RotationAngles calculateTargetRotation(Vec3 target) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        double legacyEyeOffset = ForgeVersion.MC_1_7_10.Y() ? (double)player.X() : 0.0;
+        Vec3 targetPosition = Vec3.create(target.getX(), target.getY(), target.getZ());
+        Vec3 eyePosition = Vec3.create(player.c(), player.A() + legacyEyeOffset, player.Z());
+        return RotationVectorMath.H(eyePosition, targetPosition, this.getCurrentYaw(), this.isYawNormalized());
     }
 
-    public boolean d$src$Z$1lil4j5() {
-        return this.X;
+    public boolean isYawNormalized() {
+        return this.normalizeYaw;
     }
 
 
-    public void V$src$V$1law04n() {
-        this.b(this.N(this.O));
+    public void updateTargetRotation() {
+        this.setTargetRotation(this.calculateTargetRotation(this.target));
     }
 
-    public void E(boolean bl) {
-        this.X = bl;
+    public void setNormalizeYaw(boolean normalizeYaw) {
+        this.normalizeYaw = normalizeYaw;
     }
 
-    public PointRotationController(double d, double d2, double d3) {
-        this(Vec3.create(d, d2, d3));
-    }
-
-    @Override
-    public Vec3 w() {
-        return this.O;
+    public PointRotationController(double x, double y, double z) {
+        this(Vec3.create(x, y, z));
     }
 
     @Override
-    public void z(double d, double d2, double d3) {
-        this.J(Vec3.create(d, d2, d3));
+    public Vec3 getTarget() {
+        return this.target;
     }
 
-    public PointRotationController(Vec3 vec3) {
+    @Override
+    public void setTarget(double x, double y, double z) {
+        this.setTarget(Vec3.create(x, y, z));
+    }
+
+    public PointRotationController(Vec3 target) {
         super(Minecraft.F().J(), Minecraft.F().V());
-        this.O = vec3;
-        this.b(this.N(vec3));
+        this.target = target;
+        this.setTargetRotation(this.calculateTargetRotation(target));
     }
 
     @Override
-    public void J(Vec3 vec3) {
-        this.O = vec3;
+    public void setTarget(Vec3 target) {
+        this.target = target;
     }
 
     @Override
-    public void J(EntityPlayerSP entityPlayerSP, GuiScreen guiScreen) {
-        if (entityPlayerSP.isNotNull() && guiScreen.isNull()) {
-            this.V$src$V$1law04n();
+    public void update(EntityPlayerSP player, GuiScreen screen) {
+        if (player.isNotNull() && screen.isNull()) {
+            this.updateTargetRotation();
         }
-        super.J(entityPlayerSP, guiScreen);
+        super.update(player, screen);
     }
 }
 

@@ -6,18 +6,18 @@ import gg.vape.ui.click.component.module.ModuleComponent;
 
 class ModuleComponentToggleModEnabledClickHandler
 implements GuiClickListener {
-    final Mod T;
-    final ModuleComponent H;
+    final Mod module;
+    final ModuleComponent owner;
 
 
     @Override
-    public void P() {
-        this.T.K(!this.T.f$src$Z$148d2ux());
+    public void onPrimaryClick() {
+        this.module.K(!this.module.f$src$Z$148d2ux());
     }
 
     ModuleComponentToggleModEnabledClickHandler(ModuleComponent moduleComponent, Mod mod) {
-        this.H = moduleComponent;
-        this.T = mod;
+        this.owner = moduleComponent;
+        this.module = mod;
     }
 }
 

@@ -10,54 +10,53 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractInventoryItemMatcher
 implements InventoryItemMatcher {
     @Nullable
-    private final Comparator<InventoryItemMatchContext> T;
-    private final String A;
-    private final InventoryItemMatcherGroup j;
+    private final Comparator<InventoryItemMatchContext> comparator;
+    private final String id;
+    private final InventoryItemMatcherGroup group;
     @Nullable
-    private final String d;
-    private final String o;
+    private final String iconName;
+    private final String name;
     @Nullable
-    private final String J;
+    private final String description;
 
     @Override
-    public InventoryItemMatcherGroup l() {
-        return this.j;
+    public InventoryItemMatcherGroup getGroup() {
+        return this.group;
     }
 
     @Override
     public String getName() {
-        return this.o;
+        return this.name;
     }
 
     @Override
-    public String E() {
-        return this.J;
+    public String getDescription() {
+        return this.description;
     }
 
     public AbstractInventoryItemMatcher(InventoryItemMatcherBuilderBase<?> inventoryItemMatcherBuilderBase) {
-        this.A = inventoryItemMatcherBuilderBase.h();
-        this.o = inventoryItemMatcherBuilderBase.S();
-        this.J = inventoryItemMatcherBuilderBase.w();
-        this.d = inventoryItemMatcherBuilderBase.A();
-        this.j = inventoryItemMatcherBuilderBase.W();
-        this.T = inventoryItemMatcherBuilderBase.L();
+        this.id = inventoryItemMatcherBuilderBase.getId();
+        this.name = inventoryItemMatcherBuilderBase.getName();
+        this.description = inventoryItemMatcherBuilderBase.getDescription();
+        this.iconName = inventoryItemMatcherBuilderBase.getIconName();
+        this.group = inventoryItemMatcherBuilderBase.getGroup();
+        this.comparator = inventoryItemMatcherBuilderBase.getComparator();
     }
 
     @Override
-    public String k() {
-        return this.A;
-    }
-
-    @Override
-    @Nullable
-    public String Z() {
-        return this.d;
+    public String getId() {
+        return this.id;
     }
 
     @Override
     @Nullable
-    public Comparator<InventoryItemMatchContext> v() {
-        return this.T;
+    public String getIconName() {
+        return this.iconName;
+    }
+
+    @Override
+    @Nullable
+    public Comparator<InventoryItemMatchContext> getComparator() {
+        return this.comparator;
     }
 }
-

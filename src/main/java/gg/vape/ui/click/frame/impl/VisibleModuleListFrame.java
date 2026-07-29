@@ -34,13 +34,13 @@ extends ModuleCategoryFrame {
     }
 
     public static void e() {
-        U2.S();
+        U2.removeMarkedChildren();
         try {
             CopyOnWriteArrayList<Mod> copyOnWriteArrayList = new CopyOnWriteArrayList<Mod>(Vape.INSTANCE.getModuleProfileMetadataCodec().k());
             for (Mod mod : copyOnWriteArrayList) {
                 ModuleComponent moduleComponent = new ModuleComponent(U2, mod);
                 U2.h(moduleComponent, new Object[0]);
-                moduleComponent.d$src$V$m6rlha();
+                moduleComponent.buildValueComponents();
             }
         }
         catch (Exception exception) {
@@ -54,7 +54,7 @@ extends ModuleCategoryFrame {
 
     public static ModuleComponent A(Mod mod) {
         for (GuiComponent guiComponent : U2.f()) {
-            if (!(guiComponent instanceof ModuleComponent) || !((ModuleComponent)guiComponent).N$src$Lgg_vape_module_Mod_$rb0ew8().equals(mod)) continue;
+            if (!(guiComponent instanceof ModuleComponent) || !((ModuleComponent)guiComponent).getModule().equals(mod)) continue;
             return (ModuleComponent)guiComponent;
         }
         return null;

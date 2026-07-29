@@ -24,7 +24,7 @@ extends Mapping {
             String string = b;
             MRenderStateBuilder mRenderStateBuilder = this;
             this.H = mRenderStateBuilder.x(string, bl, clazz, classArray);
-            GuiComponent.D(new GuiComponent[1]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[1]);
             return;
         }
         Class[] classArray = new Class[]{MappedClasses.qE};

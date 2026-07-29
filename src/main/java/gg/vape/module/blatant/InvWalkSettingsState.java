@@ -7,42 +7,42 @@ import gg.vape.wrapper.impl.KeyBinding;
 public class InvWalkSettingsState {
     private static int keyState;
 
-    public static int m() {
-        int n = InvWalkSettingsState.r();
-        if (n == 0) {
+    public static int getInitializationSentinel() {
+        int state = InvWalkSettingsState.getKeyState();
+        if (state == 0) {
             return 116;
         }
         return 0;
     }
 
-    public static void y(int n) {
-        keyState = n;
+    public static void setKeyState(int state) {
+        keyState = state;
     }
 
-    public static boolean S(KeyBinding keyBinding) {
+    public static boolean isPhysicallyPressed(KeyBinding keyBinding) {
         return ClientSettings.B(keyBinding);
     }
 
 
-    public static void C(KeyBinding keyBinding) {
-        if (InvWalkSettingsState.S(keyBinding)) {
-            InvWalkSettingsState.L(keyBinding, true);
+    public static void synchronizeKey(KeyBinding keyBinding) {
+        if (InvWalkSettingsState.isPhysicallyPressed(keyBinding)) {
+            InvWalkSettingsState.setPressed(keyBinding, true);
         } else if (keyBinding.u()) {
-            InvWalkSettingsState.L(keyBinding, false);
+            InvWalkSettingsState.setPressed(keyBinding, false);
         }
     }
 
-    public static void L(KeyBinding keyBinding, boolean bl) {
-        KeyBindingHelper.d(keyBinding, bl);
+    public static void setPressed(KeyBinding keyBinding, boolean pressed) {
+        KeyBindingHelper.setPressedAndTick(keyBinding, pressed);
     }
 
-    public static int r() {
+    public static int getKeyState() {
         return keyState;
     }
 
     static {
-        if (InvWalkSettingsState.m() != 0) {
-            InvWalkSettingsState.y(62);
+        if (InvWalkSettingsState.getInitializationSentinel() != 0) {
+            InvWalkSettingsState.setKeyState(62);
         }
     }
 }

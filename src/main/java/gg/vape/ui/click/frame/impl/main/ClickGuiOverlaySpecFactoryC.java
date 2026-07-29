@@ -8,7 +8,7 @@ import gg.vape.ui.click.frame.impl.online.OnlineConnectionConnectingPageComponen
 
 public final class ClickGuiOverlaySpecFactoryC {
     public static ClickGuiOverlaySpec Z() {
-        return ClickGuiOverlaySpec.q().e("Connecting").C("connecting").N(ClickGuiOverlaySpecFactoryC::D).r(ClickGuiOverlayTransitionMode.REPLACE).w();
+        return ClickGuiOverlaySpec.builder().title("Connecting").sidecarIcon("connecting").initializeContent(ClickGuiOverlaySpecFactoryC::D).transitionMode(ClickGuiOverlayTransitionMode.REPLACE).build();
     }
 
     private static void D(PanelComponent panelComponent) {

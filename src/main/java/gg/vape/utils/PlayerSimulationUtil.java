@@ -288,9 +288,9 @@ public class PlayerSimulationUtil {
         entityPlayer.r(entityPlayer2.t());
         entityPlayer.k(entityPlayer2.q());
         entityPlayer.i(entityPlayer2.T());
-        if (FreeLookHudModule.z() && entityPlayer2.isInstance(MappedClasses.z5)) {
-            entityPlayer.H(FreeLookHudModule.L$src$F$1jnmc2m());
-            entityPlayer.C(FreeLookHudModule.U());
+        if (FreeLookHudModule.isActive() && entityPlayer2.isInstance(MappedClasses.z5)) {
+            entityPlayer.H(FreeLookHudModule.getSavedPitch());
+            entityPlayer.C(FreeLookHudModule.getSavedYaw());
         } else {
             entityPlayer.H(entityPlayer2.J());
             entityPlayer.D(entityPlayer2.j());

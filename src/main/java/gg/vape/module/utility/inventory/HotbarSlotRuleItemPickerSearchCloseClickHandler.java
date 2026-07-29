@@ -10,13 +10,12 @@ implements GuiClickListener {
     final HotbarSlotRuleItemSearchComponent d;
 
     @Override
-    public void P() {
-        ClientSettings.g(HotbarSlotRuleItemPickerFrame.class).Z$src$V$7seznp();
-        ClientSettings.g(HotbarSlotRuleItemPickerFrame.class).N$src$V$7ltgjd();
+    public void onPrimaryClick() {
+        ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class).Z$src$V$7seznp();
+        ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class).N$src$V$7ltgjd();
     }
 
     public HotbarSlotRuleItemPickerSearchCloseClickHandler(HotbarSlotRuleItemSearchComponent hotbarSlotRuleItemSearchComponent) {
         this.d = hotbarSlotRuleItemSearchComponent;
     }
 }
-

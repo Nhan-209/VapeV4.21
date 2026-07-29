@@ -191,12 +191,12 @@ public abstract class PingMarker {
         double d = this.X[0] / (double)f3 / (double)f2 / (double)f;
         double d2 = this.X[1] / (double)f / (double)f3 / (double)f2;
         boolean bl = !this.z.equals(this.X);
-        OpenGlBackendHolder.d.I(d, d2, 0.0);
+        OpenGlBackendHolder.backend.translate(d, d2, 0.0);
         this.K(bl);
         if (bl) {
             this.J();
         }
-        OpenGlBackendHolder.d.I(-d, -d2, 0.0);
+        OpenGlBackendHolder.backend.translate(-d, -d2, 0.0);
     }
 
     public boolean D(double d, double d2, double d3) {
@@ -256,7 +256,7 @@ public abstract class PingMarker {
     }
 
     public void o() {
-        Vape.INSTANCE.getNotificationSoundPlayer().q(NotificationSounds.N);
+        Vape.INSTANCE.getNotificationSoundPlayer().queue(NotificationSounds.PING);
         double d = 0.0;
         for (int i = 0; i < 1; ++i) {
             DoubleAnimation doubleAnimation = new DoubleAnimation(1.0, d, 0.0, 1.0);
@@ -337,7 +337,7 @@ public abstract class PingMarker {
     }
 
     public void b() {
-        Vape.INSTANCE.getNotificationSoundPlayer().q(NotificationSounds.N);
+        Vape.INSTANCE.getNotificationSoundPlayer().queue(NotificationSounds.PING);
         DoubleAnimation doubleAnimation = new DoubleAnimation(1.0, 0.0, 1.0);
         doubleAnimation.c();
         this.G.add(doubleAnimation);

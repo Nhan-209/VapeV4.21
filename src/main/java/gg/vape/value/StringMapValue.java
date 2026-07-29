@@ -10,41 +10,41 @@ import java.util.Set;
 
 public class StringMapValue
 extends Value<Map<String, String>, StringMapValue> {
-    private final String A;
-    private final String l;
-    private final String J;
+    private final String valuePlaceholder;
+    private final String name;
+    private final String keyPlaceholder;
 
-    public StringMapValue K$src$Lgg_vape_value_StringMapValue_$8ovgzy() {
-        return new StringMapValue(null, this.l, this.J, this.A);
+    public StringMapValue copyDefinition() {
+        return new StringMapValue(null, this.name, this.keyPlaceholder, this.valuePlaceholder);
     }
 
     @Override
-    public StringMapValue getALimit() {
-        return this.K$src$Lgg_vape_value_StringMapValue_$8ovgzy();
+    public StringMapValue copyValueDefinition() {
+        return this.copyDefinition();
     }
 
     @Override
-    public JsonObject H(boolean bl) {
-        JsonObject jsonObject = super.H(bl);
-        JsonObject jsonObject2 = new JsonObject();
-        for (Map.Entry<String, String> entry : this.K().entrySet()) {
-            String string = entry.getKey();
-            String string2 = entry.getValue();
-            String string3 = "b64:" + Base64Util.encodeUtf8Base64(string);
-            String string4 = "b64:" + Base64Util.encodeUtf8Base64(string2);
-            jsonObject2.addProperty(string3, string4);
+    public JsonObject toJson(boolean includeValue) {
+        JsonObject jsonObject = super.toJson(includeValue);
+        JsonObject encodedEntries = new JsonObject();
+        for (Map.Entry<String, String> entry : this.getValue().entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            String encodedKey = "b64:" + Base64Util.encodeUtf8Base64(key);
+            String encodedValue = "b64:" + Base64Util.encodeUtf8Base64(value);
+            encodedEntries.addProperty(encodedKey, encodedValue);
         }
-        jsonObject.add("data", (JsonElement)jsonObject2);
+        jsonObject.add("data", (JsonElement)encodedEntries);
         jsonObject.remove("value");
         return jsonObject;
     }
 
-    public static StringMapValue R(Object object, String string, String string2, String string3) {
-        return new StringMapValue(object, string, string2, string3);
+    public static StringMapValue create(Object owner, String name, String keyPlaceholder, String valuePlaceholder) {
+        return new StringMapValue(owner, name, keyPlaceholder, valuePlaceholder);
     }
 
-    public String A() {
-        return this.J;
+    public String getKeyPlaceholder() {
+        return this.keyPlaceholder;
     }
 
     @Override
@@ -52,66 +52,66 @@ extends Value<Map<String, String>, StringMapValue> {
         if (!jsonObject.has("data")) {
             return false;
         }
-        JsonObject jsonObject2 = (JsonObject)jsonObject.get("data");
-        Set<Map.Entry<String, JsonElement>> set = jsonObject2.entrySet();
-        this.K().clear();
-        for (Map.Entry<String, JsonElement> entry : set) {
-            String string = entry.getKey();
-            String string2 = entry.getValue().getAsString();
-            if (string.startsWith("b64:")) {
-                string = Base64Util.decodeUtf8Base64(string.split(":")[1]);
-                string2 = Base64Util.decodeUtf8Base64(string2.split(":")[1]);
+        JsonObject encodedEntries = (JsonObject)jsonObject.get("data");
+        Set<Map.Entry<String, JsonElement>> entries = encodedEntries.entrySet();
+        this.getValue().clear();
+        for (Map.Entry<String, JsonElement> entry : entries) {
+            String key = entry.getKey();
+            String value = entry.getValue().getAsString();
+            if (key.startsWith("b64:")) {
+                key = Base64Util.decodeUtf8Base64(key.split(":")[1]);
+                value = Base64Util.decodeUtf8Base64(value.split(":")[1]);
             }
-            this.E(string, string2);
+            this.putEntry(key, value);
         }
         return true;
     }
 
-    public void E(String string, String string2) {
-        this.K().put(string, string2);
+    public void putEntry(String key, String value) {
+        this.getValue().put(key, value);
     }
 
     @Override
-    public void parse(String string) {
+    public void parse(String serializedValue) {
     }
 
     @Override
-    public void S() {
-        if (this.N$src$Z$1a793rp()) {
-            this.o(new LinkedHashMap());
+    public void reset() {
+        if (this.isResettable()) {
+            this.setValue(new LinkedHashMap());
         }
     }
 
-    public String x() {
-        return this.A;
+    public String getValuePlaceholder() {
+        return this.valuePlaceholder;
     }
 
-    public void E(String string) {
-        this.K().remove(string);
+    public void removeEntry(String key) {
+        this.getValue().remove(key);
     }
 
     @Override
-    public boolean k() {
-        Map<String, String> map = this.K();
-        Map<String, String> map2 = this.P$src$Ljava_lang_Object_$qcpui1();
-        return map.size() == map2.size() && map.equals(map2);
+    public boolean isDefault() {
+        Map<String, String> currentEntries = this.getValue();
+        Map<String, String> defaultEntries = this.getDefaultValue();
+        return currentEntries.size() == defaultEntries.size() && currentEntries.equals(defaultEntries);
     }
 
-    public StringMapValue(Object object, String string, String string2, String string3) {
-        super(object, string, new LinkedHashMap());
-        this.o(new LinkedHashMap());
-        this.l = string;
-        this.J = string2;
-        this.A = string3;
+    public StringMapValue(Object owner, String name, String keyPlaceholder, String valuePlaceholder) {
+        super(owner, name, new LinkedHashMap());
+        this.setValue(new LinkedHashMap());
+        this.name = name;
+        this.keyPlaceholder = keyPlaceholder;
+        this.valuePlaceholder = valuePlaceholder;
     }
 
 
     @Override
-    public String c() {
-        Map<String, String> map = this.K();
-        if (map == null || map.isEmpty()) {
+    public String getDisplayValue() {
+        Map<String, String> entries = this.getValue();
+        if (entries == null || entries.isEmpty()) {
             return "";
         }
-        return map.size() + " entries";
+        return entries.size() + " entries";
     }
 }

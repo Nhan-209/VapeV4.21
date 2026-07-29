@@ -6,9 +6,8 @@ import gg.vape.input.InputEventHandler;
 public class InputFocusGainedHandler
 implements InputEventHandler {
     @Override
-    public boolean handle(long l, long l2) {
+    public boolean handle(long windowHandle, long focusState) {
         InputEventDispatcher.getInstance().getFocusState().markFocused();
         return false;
     }
 }
-

@@ -5,14 +5,14 @@ import gg.vape.input.BindSet;
 
 public class PublicProfileSettingsBindSet
 extends BindSet {
-    final PublicProfileSettings D;
+    final PublicProfileSettings publicProfileSettings;
 
     @Override
-    public void A() {
+    public void onBindActivated() {
     }
 
-    public PublicProfileSettingsBindSet(PublicProfileSettings publicProfileSettings, int n) {
-        super(n);
-        this.D = publicProfileSettings;
+    public PublicProfileSettingsBindSet(PublicProfileSettings publicProfileSettings, int keyCode) {
+        super(keyCode);
+        this.publicProfileSettings = publicProfileSettings;
     }
 }

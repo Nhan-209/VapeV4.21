@@ -23,51 +23,51 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 public class InventoryItemCategoryRegistry {
     private static final Map<String, InventoryItemCategory> categoriesById = new LinkedHashMap<String, InventoryItemCategory>();
-    public static final InventoryItemCategory m = ((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.L().m().X("any_type")).M("First available")).f("First accessible item found in inventory")).G();
+    public static final InventoryItemCategory FIRST_AVAILABLE = ((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.builder().matcherBacked().withId("any_type")).withName("First available")).withDisplayName("First accessible item found in inventory")).build();
 
 
-    public static @UnmodifiableView List<InventoryItemCategory> G() {
+    public static @UnmodifiableView List<InventoryItemCategory> getAll() {
         return new ArrayList<InventoryItemCategory>(categoriesById.values());
     }
 
-    public static List<InventoryItemCategory> Q(ItemFilterSelection itemFilterSelection) {
+    public static List<InventoryItemCategory> findCompatible(ItemFilterSelection itemFilterSelection) {
         ArrayList<InventoryItemCategory> arrayList = new ArrayList<InventoryItemCategory>();
         for (InventoryItemCategory inventoryItemCategory : categoriesById.values()) {
-            if (!inventoryItemCategory.V(itemFilterSelection)) continue;
+            if (!inventoryItemCategory.isCompatible(itemFilterSelection)) continue;
             arrayList.add(inventoryItemCategory);
         }
         return arrayList;
     }
 
     private static InventoryItemCategory register(InventoryItemCategory inventoryItemCategory) {
-        categoriesById.put(inventoryItemCategory.F(), inventoryItemCategory);
+        categoriesById.put(inventoryItemCategory.getId(), inventoryItemCategory);
         return inventoryItemCategory;
     }
 
     @Nullable
-    public static InventoryItemCategory n(String string) {
-        return categoriesById.get(string);
+    public static InventoryItemCategory getById(String id) {
+        return categoriesById.get(id);
     }
 
-    public static void F() {
-        InventoryItemCategoryRegistry.register(m);
-        InventoryItemCategory inventoryItemCategory = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.L().m().X("weapon_damage")).M("Highest attack damage")).f("Highest attack damage weapon")).M(Comparator.comparingDouble(ItemStackScoreUtil::a))).Z(WeaponInventoryItemMatchers.m)).Z(WeaponInventoryItemMatchers.z)).Z(WeaponInventoryItemMatchers.j)).G());
-        InventoryItemCategory inventoryItemCategory2 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.L().m().X("weapon_best")).M("Best overall")).f("Best overall weapon\nWeighed by damage and important enchants")).M(Comparator.comparingDouble(ItemStackScoreUtil::k))).Z(WeaponInventoryItemMatchers.m)).Z(WeaponInventoryItemMatchers.z)).Z(WeaponInventoryItemMatchers.j)).G());
-        WeaponInventoryItemMatchers.m.S(inventoryItemCategory2);
-        WeaponInventoryItemMatchers.z.S(inventoryItemCategory2);
-        WeaponInventoryItemMatchers.j.S(inventoryItemCategory2);
-        InventoryItemCategory inventoryItemCategory3 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.L().m().X("tool_speed")).M("Fastest mining speed")).M(Comparator.comparingDouble(ClientSettings::X))).Z(ToolInventoryItemMatchers.U)).Z(ToolInventoryItemMatchers.a)).Z(ToolInventoryItemMatchers.q)).Z(ToolInventoryItemMatchers.N)).Z(ToolInventoryItemMatchers.r)).G());
-        ToolInventoryItemMatchers.U.S(inventoryItemCategory3);
-        ToolInventoryItemMatchers.a.S(inventoryItemCategory3);
-        ToolInventoryItemMatchers.q.S(inventoryItemCategory3);
-        ToolInventoryItemMatchers.N.S(inventoryItemCategory3);
-        ToolInventoryItemMatchers.r.S(inventoryItemCategory3);
-        InventoryItemCategory inventoryItemCategory4 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.L().m().X("block_hardness")).M("Hardest block")).M(Comparator.comparingDouble(BlockUtil::O))).Z(BlockInventoryItemMatchers.x)).Z(BlockInventoryItemMatchers.f)).G());
-        InventoryItemCategory inventoryItemCategory5 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.L().m().X("block_softness")).M("Softest block")).M(Comparator.comparingDouble(BlockUtil::O).reversed())).Z(BlockInventoryItemMatchers.x)).Z(BlockInventoryItemMatchers.f)).G());
-        InventoryItemCategoryRegistry.register(((StackSizeInventoryItemCategoryBuilder)((StackSizeInventoryItemCategoryBuilder)((StackSizeInventoryItemCategoryBuilder)InventoryItemCategory.L().u().X("max_stack_size")).M("Highest stack size")).M(Comparator.comparingInt(ItemStack::t))).D(2).h(ComparisonOperator.GREATHER_THAN_OR_EQUAL).O());
-        InventoryItemCategory inventoryItemCategory6 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.L().m().X("bow_damage")).M("Highest damage")).f("Highest damage bow")).M(Comparator.comparingDouble(ItemStackScoreUtil::f))).Z(HiddenInventoryItemMatchers.J)).G());
-        InventoryItemCategory inventoryItemCategory7 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.L().m().X("bow_best")).M("Best overall")).f("Best overall bow\nWeighed by damage and important enchants")).M(Comparator.comparingDouble(ItemStackScoreUtil::O))).Z(HiddenInventoryItemMatchers.J)).G());
-        HiddenInventoryItemMatchers.J.S(inventoryItemCategory7);
+    public static void initialize() {
+        InventoryItemCategoryRegistry.register(FIRST_AVAILABLE);
+        InventoryItemCategory inventoryItemCategory = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.builder().matcherBacked().withId("weapon_damage")).withName("Highest attack damage")).withDisplayName("Highest attack damage weapon")).withComparator(Comparator.comparingDouble(ItemStackScoreUtil::a))).addMatcher(WeaponInventoryItemMatchers.m)).addMatcher(WeaponInventoryItemMatchers.z)).addMatcher(WeaponInventoryItemMatchers.j)).build());
+        InventoryItemCategory inventoryItemCategory2 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.builder().matcherBacked().withId("weapon_best")).withName("Best overall")).withDisplayName("Best overall weapon\nWeighed by damage and important enchants")).withComparator(Comparator.comparingDouble(ItemStackScoreUtil::k))).addMatcher(WeaponInventoryItemMatchers.m)).addMatcher(WeaponInventoryItemMatchers.z)).addMatcher(WeaponInventoryItemMatchers.j)).build());
+        WeaponInventoryItemMatchers.m.setCategory(inventoryItemCategory2);
+        WeaponInventoryItemMatchers.z.setCategory(inventoryItemCategory2);
+        WeaponInventoryItemMatchers.j.setCategory(inventoryItemCategory2);
+        InventoryItemCategory inventoryItemCategory3 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.builder().matcherBacked().withId("tool_speed")).withName("Fastest mining speed")).withComparator(Comparator.comparingDouble(ClientSettings::X))).addMatcher(ToolInventoryItemMatchers.U)).addMatcher(ToolInventoryItemMatchers.a)).addMatcher(ToolInventoryItemMatchers.q)).addMatcher(ToolInventoryItemMatchers.N)).addMatcher(ToolInventoryItemMatchers.r)).build());
+        ToolInventoryItemMatchers.U.setCategory(inventoryItemCategory3);
+        ToolInventoryItemMatchers.a.setCategory(inventoryItemCategory3);
+        ToolInventoryItemMatchers.q.setCategory(inventoryItemCategory3);
+        ToolInventoryItemMatchers.N.setCategory(inventoryItemCategory3);
+        ToolInventoryItemMatchers.r.setCategory(inventoryItemCategory3);
+        InventoryItemCategory inventoryItemCategory4 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.builder().matcherBacked().withId("block_hardness")).withName("Hardest block")).withComparator(Comparator.comparingDouble(BlockUtil::O))).addMatcher(BlockInventoryItemMatchers.x)).addMatcher(BlockInventoryItemMatchers.f)).build());
+        InventoryItemCategory inventoryItemCategory5 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.builder().matcherBacked().withId("block_softness")).withName("Softest block")).withComparator(Comparator.comparingDouble(BlockUtil::O).reversed())).addMatcher(BlockInventoryItemMatchers.x)).addMatcher(BlockInventoryItemMatchers.f)).build());
+        InventoryItemCategoryRegistry.register(((StackSizeInventoryItemCategoryBuilder)((StackSizeInventoryItemCategoryBuilder)((StackSizeInventoryItemCategoryBuilder)InventoryItemCategory.builder().stackSize().withId("max_stack_size")).withName("Highest stack size")).withComparator(Comparator.comparingInt(ItemStack::t))).withStackSize(2).withOperator(ComparisonOperator.GREATER_THAN_OR_EQUAL).build());
+        InventoryItemCategory inventoryItemCategory6 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.builder().matcherBacked().withId("bow_damage")).withName("Highest damage")).withDisplayName("Highest damage bow")).withComparator(Comparator.comparingDouble(ItemStackScoreUtil::f))).addMatcher(HiddenInventoryItemMatchers.J)).build());
+        InventoryItemCategory inventoryItemCategory7 = InventoryItemCategoryRegistry.register(((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)((MatcherBackedInventoryItemCategoryBuilder)InventoryItemCategory.builder().matcherBacked().withId("bow_best")).withName("Best overall")).withDisplayName("Best overall bow\nWeighed by damage and important enchants")).withComparator(Comparator.comparingDouble(ItemStackScoreUtil::O))).addMatcher(HiddenInventoryItemMatchers.J)).build());
+        HiddenInventoryItemMatchers.J.setCategory(inventoryItemCategory7);
     }
 }
 

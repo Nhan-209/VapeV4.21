@@ -12,57 +12,57 @@ import java.util.Collections;
 
 class BindCaptureThread
 extends Thread {
-    final BindCaptureTask y;
+    final BindCaptureTask captureTask;
 
-    BindCaptureThread(BindCaptureTask bindCaptureTask, BindCaptureThreadConstructorMarker bindCaptureThreadConstructorMarker) {
+    BindCaptureThread(BindCaptureTask bindCaptureTask, BindCaptureThreadConstructorMarker ignoredMarker) {
         this(bindCaptureTask);
     }
 
     private BindCaptureThread(BindCaptureTask bindCaptureTask) {
-        this.y = bindCaptureTask;
+        this.captureTask = bindCaptureTask;
     }
 
     @Override
     public void run() {
         ClientSettings clientSettings = Vape.INSTANCE.getModManager().getMod(ClientSettings.class);
-        KeyboardInputState keyboardInputState = InputEventDispatcher.getInstance().getKeyboardState();
-        long l = keyboardInputState.getLastChangeTime();
-        long l2 = MouseInput.l$src$J$dk87ei();
-        ArrayList<Integer> arrayList = new ArrayList<Integer>();
-        int n = -1;
-        int n2 = -1;
+        KeyboardInputState keyboardState = InputEventDispatcher.getInstance().getKeyboardState();
+        long lastKeyboardChangeTime = keyboardState.getLastChangeTime();
+        long lastMouseChangeTime = MouseInput.getLastChangeTimeBridge();
+        ArrayList<Integer> capturedInputs = new ArrayList<Integer>();
+        int firstKeyboardKey = -1;
+        int firstMouseButton = -1;
         while (true) {
-            int n3;
+            int inputCode;
             if (Thread.interrupted()) {
-                this.y.p();
+                this.captureTask.finishCapture();
                 return;
             }
-            if (n != -1 && !keyboardInputState.isKeyDown(n) || n2 != -1 && !MouseInput.I(n2) || arrayList.size() >= 3) break;
-            if (l != keyboardInputState.getLastChangeTime() && keyboardInputState.isLastKeyDown()) {
-                l = keyboardInputState.getLastChangeTime();
-                n3 = keyboardInputState.getLastKey();
-                if (arrayList.contains(n3)) continue;
-                arrayList.add(n3);
-                if (n == -1) {
-                    n = n3;
+            if (firstKeyboardKey != -1 && !keyboardState.isKeyDown(firstKeyboardKey) || firstMouseButton != -1 && !MouseInput.isButtonDown(firstMouseButton) || capturedInputs.size() >= 3) break;
+            if (lastKeyboardChangeTime != keyboardState.getLastChangeTime() && keyboardState.isLastKeyDown()) {
+                lastKeyboardChangeTime = keyboardState.getLastChangeTime();
+                inputCode = keyboardState.getLastKey();
+                if (capturedInputs.contains(inputCode)) continue;
+                capturedInputs.add(inputCode);
+                if (firstKeyboardKey == -1) {
+                    firstKeyboardKey = inputCode;
                 }
-                if (!clientSettings.fE.L().booleanValue()) break;
+                if (!clientSettings.multiKeybinding.getEffectiveValue().booleanValue()) break;
                 continue;
             }
-            if (keyboardInputState.isKeyDown(160)) continue;
-            if (l2 != MouseInput.l$src$J$dk87ei() && MouseInput.E()) {
-                l2 = MouseInput.l$src$J$dk87ei();
-                if (MouseInput.l() == 0) {
-                    BindCaptureTask.Z(this.y).c(Collections.emptyList());
+            if (keyboardState.isKeyDown(160)) continue;
+            if (lastMouseChangeTime != MouseInput.getLastChangeTimeBridge() && MouseInput.isLastButtonDown()) {
+                lastMouseChangeTime = MouseInput.getLastChangeTimeBridge();
+                if (MouseInput.getLastButtonBridge() == 0) {
+                    this.captureTask.getBendable().setBoundInputs(Collections.emptyList());
                     break;
                 }
-                n3 = -100 + MouseInput.l();
-                if (n2 == -1) {
-                    n2 = MouseInput.l();
+                inputCode = -100 + MouseInput.getLastButtonBridge();
+                if (firstMouseButton == -1) {
+                    firstMouseButton = MouseInput.getLastButtonBridge();
                 }
-                if (arrayList.contains(n3)) continue;
-                arrayList.add(n3);
-                if (!clientSettings.fE.L().booleanValue()) break;
+                if (capturedInputs.contains(inputCode)) continue;
+                capturedInputs.add(inputCode);
+                if (!clientSettings.multiKeybinding.getEffectiveValue().booleanValue()) break;
                 continue;
             }
             try {
@@ -72,12 +72,11 @@ extends Thread {
                 interruptedException.printStackTrace();
             }
         }
-        BindCaptureTask.Z(this.y).c(arrayList);
-        this.y.p();
+        this.captureTask.getBendable().setBoundInputs(capturedInputs);
+        this.captureTask.finishCapture();
     }
 
-    private static InterruptedException a(InterruptedException interruptedException) {
+    private static InterruptedException identityInterruptedException(InterruptedException interruptedException) {
         return interruptedException;
     }
 }
-

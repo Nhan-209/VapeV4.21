@@ -46,7 +46,7 @@ extends TargetEntry {
     }
 
     public String R() {
-        if (Vape.INSTANCE.getEnemyManager().z.L().booleanValue()) {
+        if (Vape.INSTANCE.getEnemyManager().z.getEffectiveValue().booleanValue()) {
             return this.x();
         }
         return this.n;

@@ -23,7 +23,7 @@ public class ClassNodeCache {
 
     private static ClassNode lambda$getClassNode$0(Class clazz, Class clazz2) {
         Class clazz3 = clazz;
-        byte[] byArray = ClassBytecodeCache.I(clazz3);
+        byte[] byArray = ClassBytecodeCache.getClassBytecode(clazz3);
         ClassReader classReader = new ClassReader(byArray);
         ClassNode classNode = new ClassNode();
         classReader.accept(classNode, 0);

@@ -9,37 +9,36 @@ import java.util.List;
 
 public class ClassInventoryItemMatcherBuilder
 extends InventoryItemMatcherBuilderBase<ClassInventoryItemMatcherBuilder> {
-    private InventoryMatcherListMode X;
-    private final List<Class<?>> U = new ArrayList();
+    private InventoryMatcherListMode listMode;
+    private final List<Class<?>> classes = new ArrayList();
 
     public ClassInventoryItemMatcherBuilder(InventoryItemMatcherBuilderBase qq_12, ClassInventoryItemMatcherBuilderConstructorMarker q0_02) {
         this(qq_12);
     }
 
-    public InventoryMatcherListMode C() {
-        return this.X;
+    public InventoryMatcherListMode getListMode() {
+        return this.listMode;
     }
 
-    public ClassInventoryItemMatcherBuilder p(InventoryMatcherListMode bL) {
-        this.X = bL;
+    public ClassInventoryItemMatcherBuilder withListMode(InventoryMatcherListMode listMode) {
+        this.listMode = listMode;
         return this;
     }
 
-    public ClassInventoryItemMatcherBuilder Q(Class<?> clazz) {
-        this.U.add(clazz);
+    public ClassInventoryItemMatcherBuilder addClass(Class<?> clazz) {
+        this.classes.add(clazz);
         return this;
     }
 
-    public ClassInventoryItemMatcher o() {
+    public ClassInventoryItemMatcher build() {
         return new ClassInventoryItemMatcher(this);
     }
 
-    public List<Class<?>> V() {
-        return this.U;
+    public List<Class<?>> getClasses() {
+        return this.classes;
     }
 
     private ClassInventoryItemMatcherBuilder(InventoryItemMatcherBuilderBase<?> qq_12) {
         super(qq_12);
     }
 }
-

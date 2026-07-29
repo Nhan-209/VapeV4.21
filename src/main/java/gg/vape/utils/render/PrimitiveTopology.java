@@ -9,26 +9,26 @@ public enum PrimitiveTopology {
 
     public final String name;
     public final int verticesCount;
-    private static final PrimitiveTopology[] n;
+    private static final PrimitiveTopology[] DECLARED_VALUES;
     public final int indicesCount;
 
-    private PrimitiveTopology(int n2, int n3, String string2) {
-        this.indicesCount = n2;
-        this.verticesCount = n3;
-        this.name = string2;
+    private PrimitiveTopology(int indicesCount, int verticesCount, String name) {
+        this.indicesCount = indicesCount;
+        this.verticesCount = verticesCount;
+        this.name = name;
     }
 
     static {
-        String[] stringArray = new String[]{"quad", "line", "line", "QUADS", "TRIANGLES", "LINES", "triangle", "LINES_LOOP"};
+        String[] legacyNames = new String[]{"quad", "line", "line", "QUADS", "TRIANGLES", "LINES", "triangle", "LINES_LOOP"};
 
 
 
 
-        n = new PrimitiveTopology[]{LINES, LINES_LOOP, QUADS, TRIANGLES};
+        DECLARED_VALUES = new PrimitiveTopology[]{LINES, LINES_LOOP, QUADS, TRIANGLES};
     }
 
 
-    public int Q() {
+    public int getOpenGlMode() {
         switch (this) {
             case LINES: {
                 return 1;

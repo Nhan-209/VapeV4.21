@@ -2,14 +2,14 @@ package gg.vape.input;
 
 public class InputFocusLostHandlerPayload
 implements InputEventHandler {
-    private static String M;
+    private static String marker;
 
     public static void setMarker(String marker) {
-        M = marker;
+        InputFocusLostHandlerPayload.marker = marker;
     }
 
     public static String getMarker() {
-        return M;
+        return marker;
     }
 
     @Override

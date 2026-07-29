@@ -53,7 +53,7 @@ extends Mapping {
         String string2 = "ORTHOGRAPHIC_Z";
         MTickEventPhase mTickEventPhase2 = this;
         this.h = this.u(string2, bl2, clazz2);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MTickEventPhase.m(new GuiComponent[2]);
         }
     }

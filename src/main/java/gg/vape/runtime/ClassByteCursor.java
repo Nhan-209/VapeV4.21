@@ -1,9 +1,8 @@
 package gg.vape.runtime;
 
 class ClassByteCursor {
-    int G;
+    int offset;
 
     ClassByteCursor() {
     }
 }
-

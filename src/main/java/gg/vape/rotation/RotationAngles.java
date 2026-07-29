@@ -3,75 +3,73 @@ package gg.vape.rotation;
 import gg.vape.utils.MathUtil;
 
 public class RotationAngles {
-    private float L;
-    public static final double y = Math.PI / 180;
-    private static String p;
-    public static final double x = 57.29577951308232;
-    private float b;
+    private float pitch;
+    public static final double DEGREES_TO_RADIANS = Math.PI / 180;
+    private static String controlFlowMarker;
+    public static final double RADIANS_TO_DEGREES = 57.29577951308232;
+    private float yaw;
 
-    public boolean U(RotationAngles rotationAngles) {
-        boolean bl = this.t(rotationAngles) && (double)Math.abs(this.L - rotationAngles.L) < 0.1;
-        return bl;
+    public boolean approximatelyEquals(RotationAngles other) {
+        return this.hasSameYaw(other) && (double)Math.abs(this.pitch - other.pitch) < 0.1;
     }
 
 
-    public boolean h(RotationAngles rotationAngles, float f) {
-        float f2 = Math.abs(MathUtil.wrapAngleTo180(this.b) - MathUtil.wrapAngleTo180(rotationAngles.b));
-        float f3 = Math.abs(this.L - rotationAngles.L);
-        boolean bl = (f2 < f || f2 > 360.0f - f) && f3 < f;
-        return bl;
+    public boolean isWithin(RotationAngles other, float tolerance) {
+        float yawDifference = Math.abs(MathUtil.wrapAngleTo180(this.yaw) - MathUtil.wrapAngleTo180(other.yaw));
+        float pitchDifference = Math.abs(this.pitch - other.pitch);
+        return (yawDifference < tolerance || yawDifference > 360.0f - tolerance)
+                && pitchDifference < tolerance;
     }
 
-    public boolean t(RotationAngles rotationAngles) {
-        float f = Math.abs(MathUtil.wrapAngleTo180(this.b) - MathUtil.wrapAngleTo180(rotationAngles.b));
-        boolean bl = (double)f < 0.1 || (double)f > 359.9;
-        return bl;
+    public boolean hasSameYaw(RotationAngles other) {
+        float difference = Math.abs(MathUtil.wrapAngleTo180(this.yaw) - MathUtil.wrapAngleTo180(other.yaw));
+        return (double)difference < 0.1 || (double)difference > 359.9;
     }
 
-    public static String v() {
-        return p;
+    public static String getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
-    public float N() {
-        return this.L;
+    public float getPitch() {
+        return this.pitch;
     }
 
-    public float z() {
-        return this.b;
+    public float getYaw() {
+        return this.yaw;
     }
 
-    public RotationAngles I(RotationAngles rotationAngles) {
-        return new RotationAngles(this.b - rotationAngles.b, this.L - rotationAngles.L);
+    public RotationAngles subtract(RotationAngles other) {
+        return new RotationAngles(this.yaw - other.yaw, this.pitch - other.pitch);
     }
 
-    public RotationAngles X() {
-        return new RotationAngles(MathUtil.wrapAngleTo180(this.b), this.L);
+    public RotationAngles normalizeYaw() {
+        return new RotationAngles(MathUtil.wrapAngleTo180(this.yaw), this.pitch);
     }
 
-    public double C() {
-        return Math.abs(this.b) + Math.abs(this.L);
+    public double magnitude() {
+        return Math.abs(this.yaw) + Math.abs(this.pitch);
     }
 
-    public RotationAngles(float f, float f2) {
-        this.b = f;
-        this.L = f2;
+    public RotationAngles(float yaw, float pitch) {
+        this.yaw = yaw;
+        this.pitch = pitch;
     }
 
-    public RotationAngles(double d, double d2) {
-        this((float)d, (float)d2);
+    public RotationAngles(double yaw, double pitch) {
+        this((float)yaw, (float)pitch);
     }
 
-    public static void c(String string) {
-        p = string;
+    public static void setControlFlowMarker(String marker) {
+        controlFlowMarker = marker;
     }
 
-    public RotationAngles w(RotationAngles rotationAngles) {
-        return new RotationAngles(this.b + rotationAngles.b, this.L + rotationAngles.L);
+    public RotationAngles add(RotationAngles other) {
+        return new RotationAngles(this.yaw + other.yaw, this.pitch + other.pitch);
     }
 
     static {
-        if (RotationAngles.v() != null) {
-            RotationAngles.c("LPXgA");
+        if (RotationAngles.getControlFlowMarker() != null) {
+            RotationAngles.setControlFlowMarker("LPXgA");
         }
     }
 }

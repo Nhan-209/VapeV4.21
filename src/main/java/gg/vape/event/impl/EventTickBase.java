@@ -46,7 +46,7 @@ extends Event {
     public boolean fire() {
         try {
             if (Vape.INSTANCE.isTickActionPending()) {
-                gg.vape.module.none.ClientSettings.fW.u$src$V$1h4argv();
+                gg.vape.module.none.ClientSettings.INSTANCE.openGui();
                 Vape.INSTANCE.setPendingTickAction(false);
             }
             if (Minecraft.theWorld().isNotNull()) {
@@ -55,7 +55,7 @@ extends Event {
             if ((KeyboardInput.isKeyDown(163) || KeyboardInput.isKeyDown(162) || KeyboardInput.isKeyDown(161)) && KeyboardInput.isKeyDown(36) && this instanceof EventPostTick && Minecraft.currentScreen().isNull()) {
                 Vape.INSTANCE.getModManager().getMod(gg.vape.module.none.ClientSettings.class).F();
             }
-            ShaderProgram.v(-1);
+            ShaderProgram.setCurrentProgramId(-1);
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
@@ -67,4 +67,3 @@ extends Event {
         return b;
     }
 }
-

@@ -1,91 +1,89 @@
 package gg.vape.notification;
 
-import gg.vape.notification.NotificationContent;
-import gg.vape.notification.NotificationType;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.gui.WrappedTextComponent;
 import gg.vape.ui.theme.ThemeColors;
 
 public class TextNotificationContent
 implements NotificationContent {
-    private NotificationType h;
-    private boolean g;
-    private WrappedTextComponent T;
-    private static GuiComponent[] e;
+    private NotificationType type;
+    private boolean emphasized;
+    private WrappedTextComponent textComponent;
+    private static GuiComponent[] controlFlowMarker;
 
     @Override
-    public double C() {
-        return this.T.A() + 4.0;
+    public double getWidth() {
+        return this.textComponent.A() + 4.0;
     }
 
-    public TextNotificationContent(String string) {
-        this(string, NotificationType.INFO, false);
+    public TextNotificationContent(String text) {
+        this(text, NotificationType.INFO, false);
     }
 
-    public static void P(GuiComponent[] guiComponentArray) {
-        e = guiComponentArray;
+    public static void setControlFlowMarker(GuiComponent[] marker) {
+        controlFlowMarker = marker;
     }
 
-    public TextNotificationContent(String string, boolean bl) {
-        this(string, NotificationType.INFO, bl);
+    public TextNotificationContent(String text, boolean emphasized) {
+        this(text, NotificationType.INFO, emphasized);
     }
 
     static {
-        if (TextNotificationContent.N() == null) {
-            TextNotificationContent.P(new GuiComponent[1]);
+        if (TextNotificationContent.getControlFlowMarker() == null) {
+            TextNotificationContent.setControlFlowMarker(new GuiComponent[1]);
         }
     }
 
     @Override
-    public void q(double d, double d2) {
-        this.T.K(d);
-        this.T.S(d2);
-        this.T.c();
+    public void render(double x, double y) {
+        this.textComponent.K(x);
+        this.textComponent.S(y);
+        this.textComponent.c();
     }
 
 
-    public String p() {
-        return this.T.c$src$Ljava_lang_String_$1q00otb();
+    public String getText() {
+        return this.textComponent.getText();
     }
 
-    public TextNotificationContent(String string, NotificationType notificationType) {
-        this(string, notificationType, false);
+    public TextNotificationContent(String text, NotificationType type) {
+        this(text, type, false);
     }
 
-    public void k(String string) {
-        this.T.G(string);
+    public void setText(String text) {
+        this.textComponent.setText(text);
     }
 
-    public NotificationType I$src$Lgg_vape_notification_NotificationType_$1x1s4wm() {
-        return this.h;
+    public NotificationType getType() {
+        return this.type;
     }
 
-    public TextNotificationContent(String string, NotificationType notificationType, boolean bl) {
-        this.T = new WrappedTextComponent(string, 0.9, ThemeColors.J.Z, false);
-        this.T.c(100.0);
-        this.T.K(true);
-        this.h = notificationType;
-        this.g = bl;
+    public TextNotificationContent(String text, NotificationType type, boolean emphasized) {
+        this.textComponent = new WrappedTextComponent(text, 0.9, ThemeColors.J.Z, false);
+        this.textComponent.setWrapWidth(100.0);
+        this.textComponent.setCentered(true);
+        this.type = type;
+        this.emphasized = emphasized;
     }
 
-    public boolean I$src$Z$17jfynu() {
-        return this.g;
+    public boolean isEmphasized() {
+        return this.emphasized;
     }
 
-    public void n(NotificationType notificationType) {
-        this.h = notificationType;
+    public void setType(NotificationType type) {
+        this.type = type;
     }
 
-    public static GuiComponent[] N() {
-        return e;
+    public static GuiComponent[] getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
     @Override
-    public double I() {
-        if (this.T.c$src$Ljava_lang_String_$1q00otb().equals("")) {
+    public double getHeight() {
+        if (this.textComponent.getText().equals("")) {
             return 0.0;
         }
-        return this.T.C() + 4.0;
+        return this.textComponent.C() + 4.0;
     }
 }
 

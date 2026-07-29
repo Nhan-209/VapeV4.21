@@ -8,7 +8,7 @@ implements GuiClickListener {
     final PartyDetailsPanel F;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         PartyDetailsPanel.x(this.F);
     }
 
@@ -16,4 +16,3 @@ implements GuiClickListener {
         this.F = kq_02;
     }
 }
-

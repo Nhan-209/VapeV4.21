@@ -7,49 +7,28 @@ import java.util.List;
 
 public abstract class AbstractInventoryFilterPreset
 implements InventoryFilterPresetData {
-    private static boolean initialized;
-    protected String W;
+    protected String name;
 
-
-    public static void setInitialized(boolean bl) {
-        initialized = bl;
-    }
-
-    public AbstractInventoryFilterPreset(String string) {
-        this.W = string;
-    }
-
-    public static boolean needsInitialization() {
-        boolean bl = AbstractInventoryFilterPreset.isInitialized();
-        return !bl;
+    public AbstractInventoryFilterPreset(String name) {
+        this.name = name;
     }
 
     @Override
-    public boolean x(ItemStack itemStack) {
-        List<InventoryFilterConditionGroup> list = this.z();
-        if (list.isEmpty()) {
+    public boolean matches(ItemStack itemStack) {
+        List<InventoryFilterConditionGroup> conditionGroups = this.getConditionGroups();
+        if (conditionGroups.isEmpty()) {
             return true;
         }
-        for (InventoryFilterConditionGroup inventoryFilterConditionGroup : list) {
-            if (!inventoryFilterConditionGroup.u(itemStack)) continue;
+        for (InventoryFilterConditionGroup conditionGroup : conditionGroups) {
+            if (!conditionGroup.matches(itemStack)) continue;
             return true;
         }
         return false;
     }
 
-    public static boolean isInitialized() {
-        return initialized;
-    }
-
     @Override
     public String getName() {
-        return this.W;
-    }
-
-    static {
-        if (!AbstractInventoryFilterPreset.needsInitialization()) {
-            AbstractInventoryFilterPreset.setInitialized(true);
-        }
+        return this.name;
     }
 }
 

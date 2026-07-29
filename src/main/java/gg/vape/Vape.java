@@ -213,7 +213,7 @@ public class Vape {
             MappingProfileSnapshotRegistry.h();
             this.traceStep(22);
             NativeBridge.su(Minecraft.Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u().M());
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 Vape.setOpaqueState(++opaqueBranch);
             }
             return;
@@ -227,7 +227,7 @@ public class Vape {
         MappingProfileSnapshotRegistry.h();
         this.traceStep(22);
         NativeBridge.su(Minecraft.Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u().M());
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             Vape.setOpaqueState(++opaqueBranch);
         }
     }
@@ -249,7 +249,7 @@ public class Vape {
 
     private void logInitError(String phase, Throwable error) {
         StringBuilder message = new StringBuilder();
-        message.append(RenderBatchManager.i(phase, error));
+        message.append(RenderBatchManager.buildInitializationDiagnostics(phase, error));
         message.append(Vape.formatThrowable(error));
         Vape.logError(message.toString());
         Vape.logThrowable(error);
@@ -273,7 +273,7 @@ public class Vape {
     }
 
     private static boolean lambda$registerListeners$0(IEvent event) {
-        return AttackStrengthTracker.B.g();
+        return AttackStrengthTracker.INSTANCE.isHealthPredictionEnabled();
     }
 
     public SearchManager getSearch() {
@@ -332,11 +332,17 @@ public class Vape {
         ApiAccessTokenProvider.i();
         try {
             ApiResponse<AccountInfoResponse> response = ApiServices.d().G().join();
-            if (!response.t()) {
-                Vape.logError("Failed to initialize account details1: " + response.N());
+            if (response == null || !response.t() || response.T() == null) {
+                String error = response == null ? "empty response" : response.N();
+                Vape.logError("Failed to initialize account details1: " + error);
                 return false;
             }
-            this.accountInfo = AccountInfo.O(response.T());
+            AccountInfo initializedAccount = AccountInfo.O(response.T());
+            if (initializedAccount == null) {
+                Vape.logError("Failed to initialize account details1: empty account data");
+                return false;
+            }
+            this.accountInfo = initializedAccount;
         }
         catch (CancellationException | CompletionException error) {
             Vape.logError("Failed to initialize account details2: " + Vape.formatThrowable(error));
@@ -381,9 +387,9 @@ public class Vape {
         this.initPrimaryMappingTasks();
         this.traceStep(24);
         this.itemStackSemanticResolver = new ItemStackSemanticResolver();
-        this.itemStackSemanticResolver.p();
+        this.itemStackSemanticResolver.loadMappings();
         try {
-            this.itemStackSemanticResolver.Q();
+            this.itemStackSemanticResolver.reportMissingMappings();
         }
         catch (Throwable ignored) {
             // empty catch block
@@ -402,7 +408,7 @@ public class Vape {
             this.getProfilesManager().M();
         }
         if (this.profilesManager.M() != null) {
-            if (Vape.INSTANCE.getPublicProfileSettings().u.L().booleanValue()) {
+            if (Vape.INSTANCE.getPublicProfileSettings().u.getEffectiveValue().booleanValue()) {
                 this.profilesManager.M().r$src$V$1goqkjq();
             }
             this.profilesManager.M().l();
@@ -415,7 +421,7 @@ public class Vape {
         this.initClientListeners();
         this.showLoadCompleteNotification();
         this.syncThread.clearPendingSave();
-        this.getFontSelector().N((FontOption)Vape.INSTANCE.getPublicProfileSettings().k.K());
+        this.getFontSelector().N((FontOption)Vape.INSTANCE.getPublicProfileSettings().k.getValue());
         this.syncThread.start();
         this.traceStep(28);
         NativeBridge.dc();
@@ -524,7 +530,7 @@ public class Vape {
     public void exportFramesConfig(String filePath) {
         try {
             String output = this.modManager.T();
-            for (Frame frame : ClientSettings.G()) {
+            for (Frame frame : ClientSettings.getAllFrames()) {
                 if (frame instanceof FloatingValueDropdownLayer || !frame.J$src$Z$1eqdghz()) continue;
                 String frameLine = "frame." + frame.getName().toLowerCase().replace(" ", "_") + "=" + frame.getName();
                 output = output + frameLine + "\n";
@@ -572,13 +578,13 @@ public class Vape {
     private void registerEventListeners() {
         EventBus.getInstance().registerListener(PacketDispatchGuard.b, new Predicate[0]);
         EventBus.getInstance().registerListener(new BendableInputDispatcher(), new Predicate[0]);
-        EventBus.getInstance().registerListener(AttackPacketTimingTracker.a, new Predicate[0]);
+        EventBus.getInstance().registerListener(AttackPacketTimingTracker.INSTANCE, new Predicate[0]);
         EventBus.getInstance().registerListener(PingManager.B, new Predicate[0]);
-        EventBus.getInstance().registerListener(RotationManager.b, new Predicate[0]);
-        EventBus.getInstance().registerListener(PlayerMovementTaskManager.G, new Predicate[0]);
+        EventBus.getInstance().registerListener(RotationManager.INSTANCE, new Predicate[0]);
+        EventBus.getInstance().registerListener(PlayerMovementTaskManager.INSTANCE, new Predicate[0]);
         EventBus.getInstance().registerListener(OnlineFriendActivityListener.X, new Predicate[0]);
         EventBus.getInstance().registerListener(OnlineActivityPanelOptions.p, new Predicate[0]);
-        EventBus.getInstance().registerListener(AttackStrengthTracker.B, Vape::lambda$registerListeners$0);
+        EventBus.getInstance().registerListener(AttackStrengthTracker.INSTANCE, Vape::lambda$registerListeners$0);
         EventBus.getInstance().registerListener(new ClientSettingsEventForwarder(), new Predicate[0]);
         EventBus.getInstance().registerListener(new WorldChangeEventDispatcher(), new Predicate[0]);
         EventBus.getInstance().registerListener(new RenderEntityContextCacheListener(), new Predicate[0]);
@@ -586,7 +592,7 @@ public class Vape {
         EventBus.getInstance().registerListener(new InventoryCleanerProfileValueRefreshListener(), new Predicate[0]);
         EventBus.getInstance().registerListener(EventTimingOverlayListener.e, Vape::lambda$registerListeners$1);
         EventBus.getInstance().registerListener(new VapeShutdownEventListener(), new Predicate[0]);
-        EventBus.getInstance().registerListener(NameTagsRenderStateTracker.u, new Predicate[0]);
+        EventBus.getInstance().registerListener(NameTagsRenderStateTracker.INSTANCE, new Predicate[0]);
         EventBus.getInstance().registerListener(this.notificationManager, new Predicate[0]);
         EventBus.getInstance().registerListener(new AttackCooldownUtil(), new Predicate[0]);
         EventBus.getInstance().registerListener(this.modManager, new Predicate[0]);
@@ -605,8 +611,8 @@ public class Vape {
 
     private void showLoadCompleteNotification() {
         ClientSettings clientSettingsModule = INSTANCE.getModManager().getMod(ClientSettings.class);
-        if (clientSettingsModule.U.L().booleanValue()) {
-            this.notificationManager.k("Finished Loading", "Press " + clientSettingsModule.a().h() + " to open GUI", 5000L);
+        if (clientSettingsModule.guiBindIndicator.getEffectiveValue().booleanValue()) {
+            this.notificationManager.showInfo("Finished Loading", "Press " + clientSettingsModule.a().getBindText() + " to open GUI", 5000L);
         }
     }
 
@@ -623,10 +629,10 @@ public class Vape {
             return;
         }
         try {
-            OpenGlDeviceInfo.n();
+            OpenGlDeviceInfo.collectDeviceInfo();
             if (GuiRenderPrimitives.d()) {
                 try {
-                    RenderBatchManager.M();
+                    RenderBatchManager.getInstance();
                 }
                 catch (Throwable error) {
                     this.logInitError("RenderEngine initialization", error);
@@ -642,7 +648,7 @@ public class Vape {
                 return;
             }
             try {
-                ImageRenderer.a();
+                ImageRenderer.preloadResources();
             }
             catch (Throwable error) {
                 this.logInitError("DrawTexture pre-cache", error);
@@ -679,7 +685,7 @@ public class Vape {
     }
 
     public static void logTimed(String message) {
-        NativeBridge.p(String.format("[%02d] %s", System.currentTimeMillis(), message + " " + loadTimer.getLastMS()));
+        NativeBridge.printLog(String.format("[%02d] %s", System.currentTimeMillis(), message + " " + loadTimer.getLastMS()));
         loadTimer.reset();
     }
 
@@ -714,9 +720,9 @@ public class Vape {
         this.primaryMappingTaskSet.L();
         this.primaryMappingTaskSet.d();
         int opaqueBranch = opaqueSeed;
-        EventRenderWorldPassExecutorDrain.E.execute(ClientSettings::w$src$V$1h5ecnl);
+        EventRenderWorldPassExecutorDrain.E.execute(ClientSettings::initializeFrames);
         try {
-            while (!ClientSettings.S) {
+            while (!ClientSettings.framesInitialized) {
                 try {
                     Thread.sleep(10L);
                     if (opaqueBranch != 0) return;
@@ -796,9 +802,9 @@ public class Vape {
             this.isLabyModCache = null;
             this.traceStep(17);
             INSTANCE = this;
-            this.nativeAvailable = NativeBridge.iv();
+            this.nativeAvailable = NativeBridge.isForgeAbsent();
             this.directoryCleanupCallback = new ClientDirectoryCleanupCallback();
-            GuiComponent.D(new GuiComponent[4]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[4]);
             return;
         }
         Array.newInstance(Boolean.TYPE, 721);
@@ -816,7 +822,7 @@ public class Vape {
         this.isLabyModCache = null;
         this.traceStep(17);
         INSTANCE = this;
-        this.nativeAvailable = NativeBridge.iv();
+        this.nativeAvailable = NativeBridge.isForgeAbsent();
         this.directoryCleanupCallback = new ClientDirectoryCleanupCallback();
     }
 

@@ -3,20 +3,19 @@ package gg.vape.rotation;
 import gg.vape.wrapper.impl.Vec3;
 
 public interface WorldPointRotationTarget {
-    default public void g(float f, float f2, float f3) {
-        this.J(Vec3.create(f, f2, f3));
+    default void setTarget(float x, float y, float z) {
+        this.setTarget(Vec3.create(x, y, z));
     }
 
-    public void J(Vec3 var1);
+    void setTarget(Vec3 target);
 
-    public Vec3 w();
+    Vec3 getTarget();
 
-    default public void z(double d, double d2, double d3) {
-        this.J(Vec3.create(d, d2, d3));
+    default void setTarget(double x, double y, double z) {
+        this.setTarget(Vec3.create(x, y, z));
     }
 
-    default public void D(int n, int n2, int n3) {
-        this.J(Vec3.create(n, n2, n3));
+    default void setTarget(int x, int y, int z) {
+        this.setTarget(Vec3.create(x, y, z));
     }
 }
-

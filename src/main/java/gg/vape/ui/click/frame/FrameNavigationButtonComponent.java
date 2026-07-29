@@ -54,7 +54,7 @@ extends InteractiveComponent {
 
     public FrameNavigationButtonComponent(String string, String string2, Class clazz) {
         this(string, string2);
-        this.v = ClientSettings.g(clazz);
+        this.v = ClientSettings.getFrame(clazz);
         this.D$src$V$16hz67e();
     }
 
@@ -64,8 +64,8 @@ extends InteractiveComponent {
         this._o = string;
         this._X = string2;
         this.I = d;
-        this.v = ClientSettings.z(string);
-        this.r(new FrameNavigationButtonClickListener(this, string));
+        this.v = ClientSettings.findFrameByName(string);
+        this.addClickListener(new FrameNavigationButtonClickListener(this, string));
         this.D$src$V$16hz67e();
     }
 
@@ -107,7 +107,7 @@ extends InteractiveComponent {
             this.b = false;
         }
         if (this.v == null) {
-            this.v = ClientSettings.z(this._o);
+            this.v = ClientSettings.findFrameByName(this._o);
         }
         if (this.v != null) {
             this.v(this.v);
@@ -126,7 +126,7 @@ extends InteractiveComponent {
     @Override
     public void H() {
         float f = 6.72f;
-        SmoothFontRenderer smoothFontRenderer = this.O(this.I);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(this.I);
         double d = smoothFontRenderer.d(this._o);
         double d2 = this.n() + this.L() / 2.0 - d / 2.0;
         double d3 = this.n() + this.L() / 2.0 - (double)(this._V / 2.0f);
@@ -140,17 +140,17 @@ extends InteractiveComponent {
             color = FrameNavigationButtonComponent.J.m;
             color2 = J.z();
             if (this.b) {
-                color2 = ColorUtil.N(color2, 30.0);
+                color2 = ColorUtil.offsetRgb(color2, 30.0);
             }
         }
         GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), color);
-        ImageRenderer.E(this._J, (float)this.G$src$D$1b2f02a() + (float)this.A() - 5.0f - 5.0f + this.Q.getInterpolatedValue().floatValue(), (float)d3, db, this._V, this._V, false);
+        ImageRenderer.drawImage(this._J, (float)this.G$src$D$1b2f02a() + (float)this.A() - 5.0f - 5.0f + this.Q.getInterpolatedValue().floatValue(), (float)d3, db, this._V, this._V, false);
         if (this._X != null) {
             smoothFontRenderer.d(this._o, this.G$src$D$1b2f02a() + 8.0 + (double)f + 5.0, (int)d2, color2);
-            int n = (int)(ImageRenderer.m(this._X) / (double)3.1f);
-            int n2 = (int)(ImageRenderer.j(this._X) / (double)3.1f);
+            int n = (int)(ImageRenderer.getImageWidth(this._X) / (double)3.1f);
+            int n2 = (int)(ImageRenderer.getImageHeight(this._X) / (double)3.1f);
             int n3 = (int)(d2 + smoothFontRenderer.d(this._o) / 2.0 - (double)((float)n2 / 2.0f));
-            ImageRenderer.E(color2, (int)this.G$src$D$1b2f02a() + 8, n3 += this._T, this._X, n, n2, false);
+            ImageRenderer.drawImage(color2, (int)this.G$src$D$1b2f02a() + 8, n3 += this._T, this._X, n, n2, false);
         } else {
             smoothFontRenderer.d(this._o, this.G$src$D$1b2f02a() + 8.0, d2, color2);
         }
@@ -171,7 +171,7 @@ extends InteractiveComponent {
                 this.K = false;
             }
         } else {
-            this.v = ClientSettings.z(this._o);
+            this.v = ClientSettings.findFrameByName(this._o);
         }
     }
 }

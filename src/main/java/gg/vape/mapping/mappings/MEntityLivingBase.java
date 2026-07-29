@@ -865,7 +865,7 @@ extends Mapping {
                 MEntityLivingBase mEntityLivingBase88 = this;
                 this.VB = this.Y(string88, bl75, clazz94, classArray55);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MEntity.U(++n);
             }
             return;
@@ -1138,7 +1138,7 @@ extends Mapping {
         String string133 = "setAIMoveSpeed";
         MEntityLivingBase mEntityLivingBase133 = this;
         this.VB = this.Y(string133, bl117, clazz145, classArray86);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MEntity.U(++n);
         }
         this.Q = null;

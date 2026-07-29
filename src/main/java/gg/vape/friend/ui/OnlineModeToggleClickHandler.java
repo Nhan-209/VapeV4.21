@@ -8,7 +8,7 @@ implements GuiClickListener {
     final OnlineModeToggleComponent y;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         if (this.y.r$src$Ljava_lang_Boolean_$180i77a().booleanValue()) {
             OnlineModeToggleComponent.w(this.y);
         }

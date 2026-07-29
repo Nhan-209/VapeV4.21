@@ -7,7 +7,7 @@ import gg.vape.module.macro.MacroAction;
 public class CommandMacro
 extends Macro {
     @Override
-    public MacroAction N() {
+    public MacroAction createAction() {
         return new CommandMacroAction(this);
     }
 

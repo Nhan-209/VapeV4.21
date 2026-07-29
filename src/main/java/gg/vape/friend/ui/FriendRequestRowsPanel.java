@@ -32,10 +32,10 @@ extends PanelComponent {
 
     public FriendRequestRowsPanel() {
         super(100.0, 96.0);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.F(FrameScrollbarPlacement.OUTSIDE);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
-        this.Z(true);
+        this.setVisible(true);
         this.t(96.0);
     }
 

@@ -10,9 +10,9 @@ import java.awt.Color;
 
 public class BindValueRowComponent
 extends GuiComponent {
-    private BindableInputComponent b;
-    private boolean o;
-    private String R;
+    private BindableInputComponent bindInput;
+    private boolean unusedState;
+    private String label;
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
@@ -28,40 +28,40 @@ extends GuiComponent {
     }
 
     public BindValueRowComponent(BindValue bindValue) {
-        this(bindValue.getName(), (Bendable)bindValue.K());
+        this(bindValue.getName(), (Bendable)bindValue.getValue());
     }
 
     @Override
     public void H() {
         this.onDisable();
-        SmoothFontRenderer smoothFontRenderer = this.O(0.9);
-        double d = smoothFontRenderer.d(this.R);
-        smoothFontRenderer.d(this.R, this.G$src$D$1b2f02a() + 5.0, this.n() + this.L() / 2.0 - d / 2.0, BindValueRowComponent.J.Z);
-        this.b.Q$src$Lgg_vape_ui_click_component_TruncatedTextCompone$6s53nl().D(this.A() - 12.5);
-        this.b.K(this.G$src$D$1b2f02a() + this.A() - 5.0 - this.b.A());
-        this.b.S(this.n() + 5.0);
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(0.9);
+        double labelHeight = fontRenderer.d(this.label);
+        fontRenderer.d(this.label, this.G$src$D$1b2f02a() + 5.0, this.n() + this.L() / 2.0 - labelHeight / 2.0, BindValueRowComponent.J.Z);
+        this.bindInput.getBindLabel().setMaxWidth(this.A() - 12.5);
+        this.bindInput.K(this.G$src$D$1b2f02a() + this.A() - 5.0 - this.bindInput.A());
+        this.bindInput.S(this.n() + 5.0);
     }
 
     @Override
     public void F() {
     }
 
-    public BindValueRowComponent(String string, Bendable bendable, Color color) {
-        this.R = string;
-        this.b = new BindableInputComponent(bendable, color);
-        this.H(this.b);
+    public BindValueRowComponent(String label, Bendable bendable, Color color) {
+        this.label = label;
+        this.bindInput = new BindableInputComponent(bendable, color);
+        this.addChildren(this.bindInput);
     }
 
     @Override
     public void u() {
     }
 
-    public BindValueRowComponent(String string, Bendable bendable) {
-        this(string, bendable, null);
+    public BindValueRowComponent(String label, Bendable bendable) {
+        this(label, bendable, null);
     }
 
-    public BindableInputComponent K$src$Lgg_vape_ui_click_component_input_BindableInputC$1pa6t6b() {
-        return this.b;
+    public BindableInputComponent getBindInput() {
+        return this.bindInput;
     }
 
     @Override
@@ -69,4 +69,3 @@ extends GuiComponent {
         return 110.0;
     }
 }
-

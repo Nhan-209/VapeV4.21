@@ -8,27 +8,25 @@ import gg.vape.wrapper.impl.EntityPlayer;
 
 public class EntityFixedRotationController
 extends FixedRotationController {
-    final EntityPlayer D;
-    final BlockIn z;
+    private final EntityPlayer player;
 
-    public EntityFixedRotationController(BlockIn blockIn, RotationAngles rotationAngles, EntityPlayer entityPlayer) {
+    public EntityFixedRotationController(RotationAngles rotationAngles, EntityPlayer player) {
         super(rotationAngles);
-        this.z = blockIn;
-        this.D = entityPlayer;
+        this.player = player;
     }
 
     @Override
-    public void w(float f, float f2) {
-        PlayerMouseRotationApplier.L(this.D, f, f2);
+    public void applyMouseDelta(float deltaX, float deltaY) {
+        PlayerMouseRotationApplier.applyMouseDelta(this.player, deltaX, deltaY);
     }
 
     @Override
-    public float d() {
-        return this.D.V();
+    public float getCurrentPitch() {
+        return this.player.V();
     }
 
     @Override
-    public float k() {
-        return this.D.J();
+    public float getCurrentYaw() {
+        return this.player.J();
     }
 }

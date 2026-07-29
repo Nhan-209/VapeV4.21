@@ -30,13 +30,11 @@ extends SubModule<AimAssist> {
     private static final float SNAP_ENTER_THRESHOLD = 5.0f;
     private long lastFrameNanos;
     private double lastGroundEyeY;
-    private float speedScaleY;
     private float lastPlayerPitch;
     private float pitchBias;
     private float pendingYaw;
     private float overshoot;
     private float driftPos;
-    private float randomJitterAmount;
     private double leadY;
     private double leadX;
     private boolean yawSnapped;
@@ -59,10 +57,8 @@ extends SubModule<AimAssist> {
     private float driftTarget;
     @Nullable
     private EntityLivingBase target;
-    private float speedScaleX;
     private float lastYawSign;
     private float driftNoise;
-    private float reactionBias;
     private double predictedX;
     private float lastPlayerYaw;
     private float yawFlickTicks;
@@ -78,441 +74,422 @@ extends SubModule<AimAssist> {
     private boolean initialized;
     private double aimZ;
 
-    public static void c(AimAssistTargetingSubModule aimAssistTargetingSubModule) {
-        aimAssistTargetingSubModule.runTargetLoop();
+    public static void runWorkerTick(AimAssistTargetingSubModule targetingModule) {
+        targetingModule.runTargetLoop();
     }
 
-    private double[] resolveSnapPoint(EntityPlayerSP entityPlayerSP, EntityLivingBase entityLivingBase) {
+    private double[] resolveSnapPoint(EntityPlayerSP player, EntityLivingBase target) {
         AimAssist aimAssist = (AimAssist)this.getParent();
-        double d = entityPlayerSP.A() + (double)entityPlayerSP.X();
-        double d2 = entityLivingBase.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
-        double d3 = entityLivingBase.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMaxY();
-        double d4 = d3 - d2;
-        double d5 = d2 + d4 * 0.65;
-        double d6 = Math.min(0.85, (double)this.airFactor);
-        double d7 = 0.1 + d6;
-        double d8 = Math.max(d2 + 0.01, Math.min(d3 - 0.01, d - d7));
-        double d9 = Math.max(0.0, Math.min(1.0, d6 / 0.55));
-        double d10 = d8 + (d5 - d8) * d9;
-        d10 = Math.max(d2 + 0.01, Math.min(d3 - 0.01, d10));
-        if (aimAssist.F.K() == aimAssist.r) {
-            Vec3d vec3d = RotationUtil.T(entityPlayerSP, entityLivingBase.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
-            double d11 = Math.max(d2 + 0.01, Math.min(d3 - 0.01, vec3d.t() - d7));
-            d11 += (d5 - d11) * d9;
-            d11 = Math.max(d2 + 0.01, Math.min(d3 - 0.01, d11));
-            return new double[]{vec3d.Y(), d11, vec3d.o()};
+        double playerEyeY = player.A() + (double)player.X();
+        double targetMinY = target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
+        double targetMaxY = target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMaxY();
+        double targetHeight = targetMaxY - targetMinY;
+        double targetCenterY = targetMinY + targetHeight * 0.65;
+        double airborneOffset = Math.min(0.85, (double)this.airFactor);
+        double eyeOffset = 0.1 + airborneOffset;
+        double eyeAlignedY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, playerEyeY - eyeOffset));
+        double centerBlend = Math.max(0.0, Math.min(1.0, airborneOffset / 0.55));
+        double targetY = eyeAlignedY + (targetCenterY - eyeAlignedY) * centerBlend;
+        targetY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, targetY));
+        if (aimAssist.targetArea.getValue() == aimAssist.closestAreaMode) {
+            Vec3d closestPoint = RotationUtil.T(player, target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
+            double closestY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, closestPoint.t() - eyeOffset));
+            closestY += (targetCenterY - closestY) * centerBlend;
+            closestY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, closestY));
+            return new double[]{closestPoint.Y(), closestY, closestPoint.o()};
         }
-        return new double[]{entityLivingBase.c(), d10, entityLivingBase.Z()};
+        return new double[]{target.c(), targetY, target.Z()};
     }
 
     private void updateAim() {
-        float f;
-        float f2;
-        float f3;
-        float f4;
-        float f5;
-        float f6;
-        float f7;
-        float f8;
-        float f9;
-        float f10;
-        float f11;
-        float f12;
-        float f13;
-        float f14;
-        float f15;
-        float f16;
-        float f17;
-        double d;
-        double d2;
-        float f18;
-        boolean bl;
         AimAssist aimAssist = (AimAssist)this.getParent();
-        boolean bl2 = ((Double)aimAssist.w$src$Lgg_vape_value_NumberValue_$cwexni().K()).floatValue() > 20.0f;
-        boolean bl3 = aimAssist.U().L() != false && ((Double)aimAssist.F$src$Lgg_vape_value_NumberValue_$cqv0bx().K()).floatValue() > 20.0f;
-        boolean bl4 = bl2 && this.yawSnapped;
-        boolean bl5 = bl = bl3 && this.pitchSnapped;
+        boolean yawSnapEnabled = ((Double)aimAssist.getHorizontalSpeed().getValue()).floatValue() > 20.0f;
+        boolean pitchSnapEnabled = aimAssist.getAimVertically().getEffectiveValue() != false && ((Double)aimAssist.getVerticalSpeed().getValue()).floatValue() > 20.0f;
+        boolean snapYaw = yawSnapEnabled && this.yawSnapped;
+        boolean snapPitch = pitchSnapEnabled && this.pitchSnapped;
         if (this.target == null || this.target.isNull()) {
             this.reset();
             return;
         }
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             this.reset();
             return;
         }
-        long l = System.nanoTime();
+        long nowNanos = System.nanoTime();
+        float deltaTime;
         if (!this.initialized || this.lastFrameNanos == 0L) {
-            f18 = 0.016666668f;
+            deltaTime = 0.016666668f;
         } else {
-            f18 = (float)(l - this.lastFrameNanos) / 1.0E9f;
-            f18 = Math.max(0.008333334f, Math.min(0.12f, f18));
+            deltaTime = (float)(nowNanos - this.lastFrameNanos) / 1.0E9f;
+            deltaTime = Math.max(0.008333334f, Math.min(0.12f, deltaTime));
         }
-        this.lastFrameNanos = l;
-        double[] dArray = this.resolveAimTarget(entityPlayerSP, this.target);
-        double d3 = dArray[0];
-        double d4 = dArray[1];
-        double d5 = dArray[2];
-        double d6 = this.target.t();
-        double d7 = this.target.q();
-        double d8 = this.target.T();
-        double d9 = d6 - entityPlayerSP.t();
-        double d10 = d7 - entityPlayerSP.q();
-        double d11 = d8 - entityPlayerSP.T();
-        double d12 = d6 + d9 * 0.08;
-        double d13 = d7 + d10 * 0.1;
-        double d14 = d8 + d11 * 0.08;
+        this.lastFrameNanos = nowNanos;
+
+        double[] resolvedAimPoint = this.resolveAimTarget(player, this.target);
+        double resolvedAimX = resolvedAimPoint[0];
+        double resolvedAimY = resolvedAimPoint[1];
+        double resolvedAimZ = resolvedAimPoint[2];
+        double targetMotionX = this.target.t();
+        double targetMotionY = this.target.q();
+        double targetMotionZ = this.target.T();
+        double relativeMotionX = targetMotionX - player.t();
+        double relativeMotionY = targetMotionY - player.q();
+        double relativeMotionZ = targetMotionZ - player.T();
+        double targetLeadX = targetMotionX + relativeMotionX * 0.08;
+        double targetLeadY = targetMotionY + relativeMotionY * 0.1;
+        double targetLeadZ = targetMotionZ + relativeMotionZ * 0.08;
         if (!this.aimPointInitialized) {
-            this.aimX = d3;
-            this.aimY = d4;
-            this.aimZ = d5;
-            this.leadX = d12;
-            this.leadY = d13;
-            this.leadZ = d14;
+            this.aimX = resolvedAimX;
+            this.aimY = resolvedAimY;
+            this.aimZ = resolvedAimZ;
+            this.leadX = targetLeadX;
+            this.leadY = targetLeadY;
+            this.leadZ = targetLeadZ;
             this.aimPointInitialized = true;
         }
-        double d15 = Math.sqrt(d6 * d6 + d8 * d8);
-        double d16 = Math.sqrt(d9 * d9 + d11 * d11);
-        double d17 = entityPlayerSP.getDistanceToEntity(this.target);
-        double d18 = aimAssist.F.K() == aimAssist.r ? 0.3 : 0.28;
-        double d19 = d18 + Math.min(0.35, d16 * 0.5);
-        d19 = Math.max(0.08, Math.min(0.75, d19));
-        double d20 = d15 + d16 * 0.25;
-        double d21 = 0.18 + Math.min(0.42, d20 * 0.72);
-        d21 = Math.max(0.12, Math.min(0.68, d21));
-        double d22 = Math.max(0.45, Math.min(2.4, (double)f18 * 60.0));
-        double d23 = 1.0 - Math.pow(1.0 - d19, d22);
-        double d24 = 1.0 - Math.pow(1.0 - d21, d22);
-        this.aimX += (d3 - this.aimX) * d23;
-        this.aimY += (d4 - this.aimY) * d23;
-        this.aimZ += (d5 - this.aimZ) * d23;
-        this.leadX += (d12 - this.leadX) * d24;
-        this.leadY += (d13 - this.leadY) * d24;
-        this.leadZ += (d14 - this.leadZ) * d24;
-        double d25 = d3 - this.aimX;
-        double d26 = d5 - this.aimZ;
-        double d27 = Math.sqrt(d25 * d25 + d26 * d26);
-        if (d27 > (d2 = 0.3 + d15 * 1.3 + d16 * 0.4)) {
-            this.aimX = d3;
-            this.aimY = d4;
-            this.aimZ = d5;
-            this.leadX = d12;
-            this.leadY = d13;
-            this.leadZ = d14;
+        double targetHorizontalSpeed = Math.sqrt(targetMotionX * targetMotionX + targetMotionZ * targetMotionZ);
+        double relativeHorizontalSpeed = Math.sqrt(relativeMotionX * relativeMotionX + relativeMotionZ * relativeMotionZ);
+        double targetDistance = player.getDistanceToEntity(this.target);
+        double baseAimSmoothing = aimAssist.targetArea.getValue() == aimAssist.closestAreaMode ? 0.3 : 0.28;
+        double aimSmoothing = Math.max(0.08, Math.min(0.75, baseAimSmoothing + Math.min(0.35, relativeHorizontalSpeed * 0.5)));
+        double leadMotionScale = targetHorizontalSpeed + relativeHorizontalSpeed * 0.25;
+        double leadSmoothing = Math.max(0.12, Math.min(0.68, 0.18 + Math.min(0.42, leadMotionScale * 0.72)));
+        double frameScale = Math.max(0.45, Math.min(2.4, (double)deltaTime * 60.0));
+        double aimBlend = 1.0 - Math.pow(1.0 - aimSmoothing, frameScale);
+        double leadBlend = 1.0 - Math.pow(1.0 - leadSmoothing, frameScale);
+        this.aimX += (resolvedAimX - this.aimX) * aimBlend;
+        this.aimY += (resolvedAimY - this.aimY) * aimBlend;
+        this.aimZ += (resolvedAimZ - this.aimZ) * aimBlend;
+        this.leadX += (targetLeadX - this.leadX) * leadBlend;
+        this.leadY += (targetLeadY - this.leadY) * leadBlend;
+        this.leadZ += (targetLeadZ - this.leadZ) * leadBlend;
+
+        double aimLagX = resolvedAimX - this.aimX;
+        double aimLagZ = resolvedAimZ - this.aimZ;
+        double horizontalAimLag = Math.sqrt(aimLagX * aimLagX + aimLagZ * aimLagZ);
+        double maximumAimLag = 0.3 + targetHorizontalSpeed * 1.3 + relativeHorizontalSpeed * 0.4;
+        if (horizontalAimLag > maximumAimLag) {
+            this.aimX = resolvedAimX;
+            this.aimY = resolvedAimY;
+            this.aimZ = resolvedAimZ;
+            this.leadX = targetLeadX;
+            this.leadY = targetLeadY;
+            this.leadZ = targetLeadZ;
         }
-        double d28 = 0.35 + d17 * 0.045 + d15 * 0.95 + Math.min(0.18, d16 * 0.12);
-        d28 = Math.max(0.1, Math.min(1.05, d28));
-        double d29 = Math.max(0.0, Math.min(1.0, (d17 - 0.8) / 2.5));
-        d28 *= 0.3 + 0.7 * d29;
-        d28 = Math.max(0.05, d28);
-        double d30 = entityPlayerSP.c();
-        double d31 = entityPlayerSP.Z();
-        double d32 = entityPlayerSP.A() + (double)entityPlayerSP.X();
-        float f19 = 0.0f;
+
+        double leadAmount = 0.35 + targetDistance * 0.045 + targetHorizontalSpeed * 0.95 + Math.min(0.18, relativeHorizontalSpeed * 0.12);
+        leadAmount = Math.max(0.1, Math.min(1.05, leadAmount));
+        double distanceLeadScale = Math.max(0.0, Math.min(1.0, (targetDistance - 0.8) / 2.5));
+        leadAmount *= 0.3 + 0.7 * distanceLeadScale;
+        leadAmount = Math.max(0.05, leadAmount);
+        double playerX = player.c();
+        double playerZ = player.Z();
+        double playerEyeY = player.A() + (double)player.X();
+        float measuredVerticalVelocity = 0.0f;
         if (this.initialized && this.lastEyeY != 0.0) {
-            f19 = (float)((d32 - this.lastEyeY) / (double)f18);
+            measuredVerticalVelocity = (float)((playerEyeY - this.lastEyeY) / (double)deltaTime);
         }
-        this.verticalVelocity += (f19 - this.verticalVelocity) * 0.65f;
-        this.lastEyeY = d32;
-        if (entityPlayerSP.b$src$Z$fqlxe4()) {
-            this.lastGroundEyeY = d32;
+        this.verticalVelocity += (measuredVerticalVelocity - this.verticalVelocity) * 0.65f;
+        this.lastEyeY = playerEyeY;
+        if (player.b$src$Z$fqlxe4()) {
+            this.lastGroundEyeY = playerEyeY;
             this.airFactor *= 0.35f;
         } else {
             if (this.lastGroundEyeY == 0.0) {
-                this.lastGroundEyeY = d32;
+                this.lastGroundEyeY = playerEyeY;
             }
-            d = Math.max(0.0, d32 - this.lastGroundEyeY);
-            float f20 = (float)Math.min(0.7, Math.max(0.0, (double)this.verticalVelocity) * 0.34);
-            float f21 = (float)Math.min(0.82, d * 0.58);
-            this.airFactor = Math.max(this.airFactor * 0.92f, Math.max(f20, f21));
+            double airborneHeight = Math.max(0.0, playerEyeY - this.lastGroundEyeY);
+            float velocityAirFactor = (float)Math.min(0.7, Math.max(0.0, (double)this.verticalVelocity) * 0.34);
+            float heightAirFactor = (float)Math.min(0.82, airborneHeight * 0.58);
+            this.airFactor = Math.max(this.airFactor * 0.92f, Math.max(velocityAirFactor, heightAirFactor));
         }
-        d = this.aimX;
-        double d33 = this.aimZ;
-        double d34 = this.aimY - d32;
-        double d35 = Math.abs(d34);
-        double d36 = Math.max(0.0, Math.min(1.0, d35 / 0.7));
-        double d37 = Math.min(d28, 0.7 + d17 * 0.04);
-        double d38 = 0.28 + 0.52 * d36;
-        double d39 = this.leadY * d37 * d38;
-        double d40 = 0.16 + d17 * 0.055;
-        d39 = Math.max(-d40, Math.min(d40, d39));
-        double d41 = this.aimY + d39;
-        if (bl4) {
-            d = d3;
-            d33 = d5;
+
+        double adjustedAimX = this.aimX;
+        double adjustedAimZ = this.aimZ;
+        double verticalAimDelta = this.aimY - playerEyeY;
+        double verticalOffsetScale = Math.max(0.0, Math.min(1.0, Math.abs(verticalAimDelta) / 0.7));
+        double verticalLeadAmount = Math.min(leadAmount, 0.7 + targetDistance * 0.04);
+        double verticalLeadScale = 0.28 + 0.52 * verticalOffsetScale;
+        double verticalLead = this.leadY * verticalLeadAmount * verticalLeadScale;
+        double verticalLeadLimit = 0.16 + targetDistance * 0.055;
+        verticalLead = Math.max(-verticalLeadLimit, Math.min(verticalLeadLimit, verticalLead));
+        double adjustedAimY = this.aimY + verticalLead;
+        if (snapYaw) {
+            adjustedAimX = resolvedAimX;
+            adjustedAimZ = resolvedAimZ;
         }
-        if (bl) {
-            d41 = d4;
+        if (snapPitch) {
+            adjustedAimY = resolvedAimY;
         }
-        double d42 = d - d30;
-        double d43 = d33 - d31;
-        double d44 = d41 - d32;
-        double d45 = Math.sqrt(d42 * d42 + d43 * d43);
-        float f22 = (float)(Math.toDegrees(Math.atan2(d43, d42)) - 90.0);
-        float f23 = (float)(-Math.toDegrees(Math.atan2(d44, Math.max(d45, 1.0E-4))));
+        double aimDeltaX = adjustedAimX - playerX;
+        double aimDeltaZ = adjustedAimZ - playerZ;
+        double aimDeltaY = adjustedAimY - playerEyeY;
+        double horizontalAimDistance = Math.sqrt(aimDeltaX * aimDeltaX + aimDeltaZ * aimDeltaZ);
+        float targetYaw = (float)(Math.toDegrees(Math.atan2(aimDeltaZ, aimDeltaX)) - 90.0);
+        float targetPitch = (float)(-Math.toDegrees(Math.atan2(aimDeltaY, Math.max(horizontalAimDistance, 1.0E-4))));
         if (this.initialized) {
-            f17 = Math.abs(MathUtil.wrapAngleTo180(f22 - this.lastTargetYaw));
-            f16 = Math.abs(MathUtil.wrapAngleTo180(f23 - this.lastTargetPitch));
-            f15 = aimAssist.F.K() == aimAssist.r ? 20.0f : 12.0f;
-            f14 = Math.max(f17, f16);
-            f13 = Math.max(0.0f, Math.min(1.0f, (f14 - f15) / 50.0f));
-            this.overshoot = Math.max(this.overshoot, f13);
-            if (f13 > 0.3f) {
+            float yawTargetChange = Math.abs(MathUtil.wrapAngleTo180(targetYaw - this.lastTargetYaw));
+            float pitchTargetChange = Math.abs(MathUtil.wrapAngleTo180(targetPitch - this.lastTargetPitch));
+            float abruptChangeThreshold = aimAssist.targetArea.getValue() == aimAssist.closestAreaMode ? 20.0f : 12.0f;
+            float maximumTargetChange = Math.max(yawTargetChange, pitchTargetChange);
+            float abruptChangeFactor = Math.max(0.0f, Math.min(1.0f, (maximumTargetChange - abruptChangeThreshold) / 50.0f));
+            this.overshoot = Math.max(this.overshoot, abruptChangeFactor);
+            if (abruptChangeFactor > 0.3f) {
                 this.aimStrength *= 0.3f;
-                this.aimX = d3;
-                this.aimY = d4;
-                this.aimZ = d5;
+                this.aimX = resolvedAimX;
+                this.aimY = resolvedAimY;
+                this.aimZ = resolvedAimZ;
             }
-            f12 = 1.0f + Math.min(2.0f, f17 / 60.0f);
-            f11 = 1.0f + Math.min(2.0f, f16 / 60.0f);
-            f10 = (120.0f + (float)(d16 * 700.0)) * f12;
-            f9 = (95.0f + (float)(Math.abs(this.leadY) * 550.0)) * f11;
-            f8 = Math.abs(MathUtil.wrapAngleTo180(f22 - RotationManager.s(entityPlayerSP)));
-            f7 = AimAssistTargetingSubModule.smoothStep(10.0f, 35.0f, f8);
-            f10 *= 1.0f + f7 * 1.5f;
-            f10 = Math.max(90.0f, Math.min(1080.0f, f10));
-            f9 = Math.max(70.0f, Math.min(500.0f, f9));
-            f6 = MathUtil.wrapAngleTo180(f22 - this.lastTargetYaw);
-            f5 = MathUtil.wrapAngleTo180(f23 - this.lastTargetPitch);
-            if (!bl4) {
-                f6 = Math.max(-f10 * f18, Math.min(f10 * f18, f6));
+            float yawRateScale = 1.0f + Math.min(2.0f, yawTargetChange / 60.0f);
+            float pitchRateScale = 1.0f + Math.min(2.0f, pitchTargetChange / 60.0f);
+            float maximumYawRate = (120.0f + (float)(relativeHorizontalSpeed * 700.0)) * yawRateScale;
+            float maximumPitchRate = (95.0f + (float)(Math.abs(this.leadY) * 550.0)) * pitchRateScale;
+            float viewYawDifference = Math.abs(MathUtil.wrapAngleTo180(targetYaw - RotationManager.getViewYaw(player)));
+            float wideTurnScale = AimAssistTargetingSubModule.smoothStep(10.0f, 35.0f, viewYawDifference);
+            maximumYawRate *= 1.0f + wideTurnScale * 1.5f;
+            maximumYawRate = Math.max(90.0f, Math.min(1080.0f, maximumYawRate));
+            maximumPitchRate = Math.max(70.0f, Math.min(500.0f, maximumPitchRate));
+            float yawStep = MathUtil.wrapAngleTo180(targetYaw - this.lastTargetYaw);
+            float pitchStep = MathUtil.wrapAngleTo180(targetPitch - this.lastTargetPitch);
+            if (!snapYaw) {
+                yawStep = Math.max(-maximumYawRate * deltaTime, Math.min(maximumYawRate * deltaTime, yawStep));
             }
-            if (!bl) {
-                f5 = Math.max(-f9 * f18, Math.min(f9 * f18, f5));
+            if (!snapPitch) {
+                pitchStep = Math.max(-maximumPitchRate * deltaTime, Math.min(maximumPitchRate * deltaTime, pitchStep));
             }
-            f22 = this.lastTargetYaw + f6;
-            f23 = this.lastTargetPitch + f5;
+            targetYaw = this.lastTargetYaw + yawStep;
+            targetPitch = this.lastTargetPitch + pitchStep;
         }
-        f17 = (float)Math.pow(0.02, f18);
-        this.overshoot *= f17;
+        float overshootDecay = (float)Math.pow(0.02, deltaTime);
+        this.overshoot *= overshootDecay;
         if (this.overshoot < 0.01f) {
             this.overshoot = 0.0f;
         }
-        f16 = 1.0f + 3.0f * this.overshoot;
-        f15 = RotationManager.s(entityPlayerSP);
-        f14 = RotationManager.g(entityPlayerSP);
-        f13 = MathUtil.wrapAngleTo180(f22 - f15);
-        f12 = MathUtil.wrapAngleTo180(f23 - f14);
-        if (!aimAssist.U().L().booleanValue()) {
-            f12 = 0.0f;
+        float overshootMultiplier = 1.0f + 3.0f * this.overshoot;
+        float playerYaw = RotationManager.getViewYaw(player);
+        float playerPitch = RotationManager.getViewPitch(player);
+        float yawError = MathUtil.wrapAngleTo180(targetYaw - playerYaw);
+        float pitchError = MathUtil.wrapAngleTo180(targetPitch - playerPitch);
+        if (!aimAssist.getAimVertically().getEffectiveValue().booleanValue()) {
+            pitchError = 0.0f;
         }
-        f11 = Math.abs(f13);
-        f10 = Math.abs(f12);
-        f9 = (float)Math.sqrt(f11 * f11 + f10 * f10);
-        this.yawSnapped = AimAssistTargetingSubModule.shouldSnap(bl2, this.yawSnapped, f11);
-        this.pitchSnapped = AimAssistTargetingSubModule.shouldSnap(bl3, this.pitchSnapped, f10);
-        bl4 = bl2 && this.yawSnapped;
-        bl = bl3 && this.pitchSnapped;
-        f8 = 1.0f - AimAssistTargetingSubModule.smoothStep(1.5f, 8.0f, f9);
+        float absoluteYawError = Math.abs(yawError);
+        float absolutePitchError = Math.abs(pitchError);
+        float combinedAngleError = (float)Math.sqrt(absoluteYawError * absoluteYawError + absolutePitchError * absolutePitchError);
+        this.yawSnapped = AimAssistTargetingSubModule.shouldSnap(yawSnapEnabled, this.yawSnapped, absoluteYawError);
+        this.pitchSnapped = AimAssistTargetingSubModule.shouldSnap(pitchSnapEnabled, this.pitchSnapped, absolutePitchError);
+        snapYaw = yawSnapEnabled && this.yawSnapped;
+        snapPitch = pitchSnapEnabled && this.pitchSnapped;
+        float desiredAimStrength = 1.0f - AimAssistTargetingSubModule.smoothStep(1.5f, 8.0f, combinedAngleError);
         if (this.initialized) {
-            f7 = -(f11 - Math.abs(this.lastYawDiff)) / f18;
-            f6 = Math.max(-0.3f, Math.min(0.3f, f7 / 20.0f));
-            f8 += f6;
-            f8 = Math.max(0.0f, Math.min(1.0f, f8));
+            float yawClosingSpeed = -(absoluteYawError - Math.abs(this.lastYawDiff)) / deltaTime;
+            float closingAdjustment = Math.max(-0.3f, Math.min(0.3f, yawClosingSpeed / 20.0f));
+            desiredAimStrength += closingAdjustment;
+            desiredAimStrength = Math.max(0.0f, Math.min(1.0f, desiredAimStrength));
         }
-        f7 = f8 > this.aimStrength ? Math.max(0.01f, Math.min(0.25f, f18 * 3.0f)) : Math.max(0.05f, Math.min(0.8f, f18 * 20.0f));
-        this.aimStrength += (f8 - this.aimStrength) * f7;
-        f6 = this.aimStrength;
-        f5 = 0.0f;
-        float f24 = 0.0f;
-        float f25 = 0.0f;
-        float f26 = 0.0f;
+        float aimStrengthBlend = desiredAimStrength > this.aimStrength
+                ? Math.max(0.01f, Math.min(0.25f, deltaTime * 3.0f))
+                : Math.max(0.05f, Math.min(0.8f, deltaTime * 20.0f));
+        this.aimStrength += (desiredAimStrength - this.aimStrength) * aimStrengthBlend;
+        float currentAimStrength = this.aimStrength;
+
+        float smoothedTargetYawRate = 0.0f;
+        float smoothedTargetPitchRate = 0.0f;
+        float playerYawRate = 0.0f;
+        float playerPitchRate = 0.0f;
         if (this.initialized) {
-            f4 = MathUtil.wrapAngleTo180(f22 - this.lastTargetYaw) / f18;
-            f3 = MathUtil.wrapAngleTo180(f23 - this.lastTargetPitch) / f18;
-            f25 = MathUtil.wrapAngleTo180(f15 - this.lastPlayerYaw) / f18;
-            f26 = MathUtil.wrapAngleTo180(f14 - this.lastPlayerPitch) / f18;
-            f2 = Math.max(0.05f, Math.min(0.45f, f18 * 12.0f));
-            this.yawAccel += (f4 - this.yawAccel) * f2;
-            this.pitchAccel += (f3 - this.pitchAccel) * f2;
-            f5 = this.yawAccel;
-            f24 = this.pitchAccel;
+            float targetYawRate = MathUtil.wrapAngleTo180(targetYaw - this.lastTargetYaw) / deltaTime;
+            float targetPitchRate = MathUtil.wrapAngleTo180(targetPitch - this.lastTargetPitch) / deltaTime;
+            playerYawRate = MathUtil.wrapAngleTo180(playerYaw - this.lastPlayerYaw) / deltaTime;
+            playerPitchRate = MathUtil.wrapAngleTo180(playerPitch - this.lastPlayerPitch) / deltaTime;
+            float accelerationBlend = Math.max(0.05f, Math.min(0.45f, deltaTime * 12.0f));
+            this.yawAccel += (targetYawRate - this.yawAccel) * accelerationBlend;
+            this.pitchAccel += (targetPitchRate - this.pitchAccel) * accelerationBlend;
+            smoothedTargetYawRate = this.yawAccel;
+            smoothedTargetPitchRate = this.pitchAccel;
         }
-        f4 = ((Double)aimAssist.w$src$Lgg_vape_value_NumberValue_$cwexni().K()).floatValue() * 0.75f;
-        f3 = ((Double)aimAssist.F$src$Lgg_vape_value_NumberValue_$cqv0bx().K()).floatValue() * 0.75f;
-        f2 = Math.max(0.0f, Math.min(1.0f, (f4 - 10.0f) / 90.0f));
-        float f27 = Math.max(0.0f, Math.min(1.0f, (f3 - 10.0f) / 90.0f));
-        if (Math.signum(f13) != Math.signum(this.lastYawDiff) && Math.abs(f13) > 0.1f && Math.abs(this.lastYawDiff) > 0.1f) {
+        float horizontalSpeed = ((Double)aimAssist.getHorizontalSpeed().getValue()).floatValue() * 0.75f;
+        float verticalSpeed = ((Double)aimAssist.getVerticalSpeed().getValue()).floatValue() * 0.75f;
+        float horizontalSpeedFactor = Math.max(0.0f, Math.min(1.0f, (horizontalSpeed - 10.0f) / 90.0f));
+        float verticalSpeedFactor = Math.max(0.0f, Math.min(1.0f, (verticalSpeed - 10.0f) / 90.0f));
+        if (Math.signum(yawError) != Math.signum(this.lastYawDiff) && Math.abs(yawError) > 0.1f && Math.abs(this.lastYawDiff) > 0.1f) {
             this.yawBias *= 0.3f;
         }
-        if (Math.signum(f12) != Math.signum(this.lastPitchDiff) && Math.abs(f12) > 0.1f && Math.abs(this.lastPitchDiff) > 0.1f) {
+        if (Math.signum(pitchError) != Math.signum(this.lastPitchDiff) && Math.abs(pitchError) > 0.1f && Math.abs(this.lastPitchDiff) > 0.1f) {
             this.pitchBias *= 0.3f;
         }
-        float f28 = f6 * f6;
-        float f29 = 1.0f - f2;
-        float f30 = 1.0f - f27;
-        this.yawBias += f13 * f18 * f28 * f29;
-        this.pitchBias += f12 * f18 * f28 * f30;
-        float f31 = 1.0f - (1.0f - f6) * Math.max(0.0f, Math.min(0.5f, f18 * 5.0f));
-        this.yawBias *= f31;
-        this.pitchBias *= f31;
-        float f32 = 15.0f * (1.0f - f2 * 0.9f);
-        float f33 = 10.0f * (1.0f - f27 * 0.9f);
-        this.yawBias = Math.max(-f32, Math.min(f32, this.yawBias));
-        this.pitchBias = Math.max(-f33, Math.min(f33, this.pitchBias));
-        float f34 = this.initialized ? (f13 - this.lastYawDiff) / f18 : 0.0f;
-        float f35 = this.initialized ? (f12 - this.lastPitchDiff) / f18 : 0.0f;
-        float f36 = 0.15f;
-        this.yawVelocity = this.yawVelocity * (1.0f - f36) + f34 * f36;
-        this.pitchVelocity = this.pitchVelocity * (1.0f - f36) + f35 * f36;
-        float f37 = aimAssist.F.K() == aimAssist.r ? 1.5f : 0.5f;
-        float f38 = Math.signum(f13);
-        this.yawFlickTicks = f38 != this.lastYawSign && Math.abs(f13) > f37 ? Math.min(this.yawFlickTicks + 1.0f, 8.0f) : Math.max(0.0f, this.yawFlickTicks - f18 * 3.0f);
-        this.lastYawSign = f38;
-        float f39 = Math.signum(f12);
-        this.pitchFlickTicks = f39 != this.lastPitchSign && Math.abs(f12) > f37 ? Math.min(this.pitchFlickTicks + 1.0f, 8.0f) : Math.max(0.0f, this.pitchFlickTicks - f18 * 3.0f);
-        this.lastPitchSign = f39;
-        float f40 = Math.max(0.0f, Math.min(1.0f, this.yawFlickTicks / 5.0f));
-        float f41 = Math.max(0.0f, Math.min(1.0f, this.pitchFlickTicks / 5.0f));
-        float f42 = Math.min(f4, 10.0f);
-        float f43 = Math.min(f3, 10.0f);
-        float f44 = (f42 - 1.0f) / 9.0f;
-        float f45 = (f43 - 1.0f) / 9.0f;
-        f44 *= f44;
-        f45 *= f45;
-        float f46 = 0.15f + 0.85f * Math.max(0.0f, Math.min(1.0f, f44));
-        float f47 = 0.15f + 0.85f * Math.max(0.0f, Math.min(1.0f, f45));
-        float f48 = AimAssistTargetingSubModule.lerp(f6, 8.0f, 2.5f + f42 * 0.15f) * f46;
-        float f49 = AimAssistTargetingSubModule.lerp(f6, 7.0f, 2.2f + f43 * 0.13f) * f47;
-        float f50 = AimAssistTargetingSubModule.lerp(f6, 0.15f, 0.8f + f42 * 0.04f) * f46;
-        float f51 = AimAssistTargetingSubModule.lerp(f6, 0.12f, 0.65f + f43 * 0.035f) * f47;
-        float f52 = AimAssistTargetingSubModule.lerp(f6, 0.08f, 0.25f) * f46;
-        float f53 = AimAssistTargetingSubModule.lerp(f6, 0.06f, 0.2f) * f47;
-        float f54 = (0.85f + f42 * 0.015f) * f46;
-        float f55 = (0.82f + f43 * 0.013f) * f47;
-        float f56 = AimAssistTargetingSubModule.lerp(f6, 0.1f, 0.3f);
-        float f57 = AimAssistTargetingSubModule.lerp(f6, 0.08f, 0.25f);
-        float f58 = 1.0f - 0.6f * f40;
-        float f59 = 1.0f + 2.0f * f40;
-        float f60 = 1.0f - 0.6f * f41;
-        float f61 = 1.0f + 2.0f * f41;
-        f49 *= f60;
-        f53 *= f61;
-        float f62 = (f48 *= f58) * f13 + f50 * this.yawBias + (f52 *= f59) * this.yawVelocity + f54 * f5 - f56 * f25;
-        float f63 = 0.0f;
-        if (aimAssist.U().L().booleanValue()) {
-            f63 = f49 * f12 + f51 * this.pitchBias + f53 * this.pitchVelocity + f55 * f24 - f57 * f26;
+        float squaredAimStrength = currentAimStrength * currentAimStrength;
+        this.yawBias += yawError * deltaTime * squaredAimStrength * (1.0f - horizontalSpeedFactor);
+        this.pitchBias += pitchError * deltaTime * squaredAimStrength * (1.0f - verticalSpeedFactor);
+        float biasRetention = 1.0f - (1.0f - currentAimStrength) * Math.max(0.0f, Math.min(0.5f, deltaTime * 5.0f));
+        this.yawBias *= biasRetention;
+        this.pitchBias *= biasRetention;
+        float yawBiasLimit = 15.0f * (1.0f - horizontalSpeedFactor * 0.9f);
+        float pitchBiasLimit = 10.0f * (1.0f - verticalSpeedFactor * 0.9f);
+        this.yawBias = Math.max(-yawBiasLimit, Math.min(yawBiasLimit, this.yawBias));
+        this.pitchBias = Math.max(-pitchBiasLimit, Math.min(pitchBiasLimit, this.pitchBias));
+
+        float yawErrorVelocity = this.initialized ? (yawError - this.lastYawDiff) / deltaTime : 0.0f;
+        float pitchErrorVelocity = this.initialized ? (pitchError - this.lastPitchDiff) / deltaTime : 0.0f;
+        float velocityBlend = 0.15f;
+        this.yawVelocity = this.yawVelocity * (1.0f - velocityBlend) + yawErrorVelocity * velocityBlend;
+        this.pitchVelocity = this.pitchVelocity * (1.0f - velocityBlend) + pitchErrorVelocity * velocityBlend;
+
+        float flickThreshold = aimAssist.targetArea.getValue() == aimAssist.closestAreaMode ? 1.5f : 0.5f;
+        float yawSign = Math.signum(yawError);
+        this.yawFlickTicks = yawSign != this.lastYawSign && Math.abs(yawError) > flickThreshold
+                ? Math.min(this.yawFlickTicks + 1.0f, 8.0f)
+                : Math.max(0.0f, this.yawFlickTicks - deltaTime * 3.0f);
+        this.lastYawSign = yawSign;
+        float pitchSign = Math.signum(pitchError);
+        this.pitchFlickTicks = pitchSign != this.lastPitchSign && Math.abs(pitchError) > flickThreshold
+                ? Math.min(this.pitchFlickTicks + 1.0f, 8.0f)
+                : Math.max(0.0f, this.pitchFlickTicks - deltaTime * 3.0f);
+        this.lastPitchSign = pitchSign;
+        float yawFlickFactor = Math.max(0.0f, Math.min(1.0f, this.yawFlickTicks / 5.0f));
+        float pitchFlickFactor = Math.max(0.0f, Math.min(1.0f, this.pitchFlickTicks / 5.0f));
+
+        float limitedHorizontalSpeed = Math.min(horizontalSpeed, 10.0f);
+        float limitedVerticalSpeed = Math.min(verticalSpeed, 10.0f);
+        float horizontalGainInput = (limitedHorizontalSpeed - 1.0f) / 9.0f;
+        float verticalGainInput = (limitedVerticalSpeed - 1.0f) / 9.0f;
+        horizontalGainInput *= horizontalGainInput;
+        verticalGainInput *= verticalGainInput;
+        float horizontalGainScale = 0.15f + 0.85f * Math.max(0.0f, Math.min(1.0f, horizontalGainInput));
+        float verticalGainScale = 0.15f + 0.85f * Math.max(0.0f, Math.min(1.0f, verticalGainInput));
+        float yawErrorGain = AimAssistTargetingSubModule.lerp(currentAimStrength, 8.0f, 2.5f + limitedHorizontalSpeed * 0.15f) * horizontalGainScale;
+        float pitchErrorGain = AimAssistTargetingSubModule.lerp(currentAimStrength, 7.0f, 2.2f + limitedVerticalSpeed * 0.13f) * verticalGainScale;
+        float yawBiasGain = AimAssistTargetingSubModule.lerp(currentAimStrength, 0.15f, 0.8f + limitedHorizontalSpeed * 0.04f) * horizontalGainScale;
+        float pitchBiasGain = AimAssistTargetingSubModule.lerp(currentAimStrength, 0.12f, 0.65f + limitedVerticalSpeed * 0.035f) * verticalGainScale;
+        float yawVelocityGain = AimAssistTargetingSubModule.lerp(currentAimStrength, 0.08f, 0.25f) * horizontalGainScale;
+        float pitchVelocityGain = AimAssistTargetingSubModule.lerp(currentAimStrength, 0.06f, 0.2f) * verticalGainScale;
+        float targetYawRateGain = (0.85f + limitedHorizontalSpeed * 0.015f) * horizontalGainScale;
+        float targetPitchRateGain = (0.82f + limitedVerticalSpeed * 0.013f) * verticalGainScale;
+        float playerYawCompensation = AimAssistTargetingSubModule.lerp(currentAimStrength, 0.1f, 0.3f);
+        float playerPitchCompensation = AimAssistTargetingSubModule.lerp(currentAimStrength, 0.08f, 0.25f);
+        yawErrorGain *= 1.0f - 0.6f * yawFlickFactor;
+        yawVelocityGain *= 1.0f + 2.0f * yawFlickFactor;
+        pitchErrorGain *= 1.0f - 0.6f * pitchFlickFactor;
+        pitchVelocityGain *= 1.0f + 2.0f * pitchFlickFactor;
+
+        float yawRate = yawErrorGain * yawError + yawBiasGain * this.yawBias + yawVelocityGain * this.yawVelocity
+                + targetYawRateGain * smoothedTargetYawRate - playerYawCompensation * playerYawRate;
+        float pitchRate = 0.0f;
+        if (aimAssist.getAimVertically().getEffectiveValue().booleanValue()) {
+            pitchRate = pitchErrorGain * pitchError + pitchBiasGain * this.pitchBias + pitchVelocityGain * this.pitchVelocity
+                    + targetPitchRateGain * smoothedTargetPitchRate - playerPitchCompensation * playerPitchRate;
         } else {
             this.pitchBias = 0.0f;
             this.pitchVelocity = 0.0f;
         }
-        if (!bl) {
-            f63 += this.computePitchDrift(f14, f18, l);
+        if (!snapPitch) {
+            pitchRate += this.computePitchDrift(playerPitch, deltaTime, nowNanos);
         }
-        if (!aimAssist.U().L().booleanValue() || Math.abs(this.verticalVelocity) > 0.08f) {
-            // empty if block
-        }
-        float f64 = 1.0f;
-        if (aimAssist.R().L().booleanValue() && Math.abs(f = entityPlayerSP.movementInput().T()) > 0.01f) {
-            boolean bl6;
-            boolean bl7 = f13 > 0.0f;
-            boolean bl8 = bl6 = bl7 && f < 0.0f || !bl7 && f > 0.0f;
-            if (bl6) {
-                f64 = 1.15f;
+        float strafeMultiplier = 1.0f;
+        float strafeInput = player.movementInput().T();
+        if (aimAssist.getStrafeIncrease().getEffectiveValue().booleanValue() && Math.abs(strafeInput) > 0.01f) {
+            boolean targetToRight = yawError > 0.0f;
+            boolean strafingAway = targetToRight && strafeInput < 0.0f || !targetToRight && strafeInput > 0.0f;
+            if (strafingAway) {
+                strafeMultiplier = 1.15f;
             }
         }
-        f62 *= f64;
-        f = AimAssistTargetingSubModule.smoothStep(8.0f, 40.0f, f11);
-        float f65 = 1.0f + f * 2.5f;
-        float f66 = (22.0f + f42 * 15.0f) * f46 * f16 * f65;
-        float f67 = (18.0f + f43 * 13.0f) * f47 * f16;
-        float f68 = (Math.abs(f5) * 0.4f + 18.0f) * (0.35f + f46 * 0.65f) * f65;
-        float f69 = (Math.abs(f24) * 0.38f + 14.0f) * (0.35f + f47 * 0.65f);
-        float f70 = Math.min(400.0f * f16 * f65, Math.max(f66, f68));
-        float f71 = Math.min(300.0f * f16, Math.max(f67, f69));
-        f62 = Math.max(-f70, Math.min(f70, f62));
-        f63 = Math.max(-f71, Math.min(f71, f63));
-        float f72 = AimAssistTargetingSubModule.smoothStep(0.5f, 3.0f, (float)d17);
-        float f73 = AimAssistTargetingSubModule.lerp(f, 0.15f, 0.65f);
-        float f74 = AimAssistTargetingSubModule.lerp(f6, f73 + (1.0f - f73) * f72, 0.4f + 0.6f * f72);
-        float f75 = AimAssistTargetingSubModule.lerp(f6, 0.2f + 0.8f * f72, 0.45f + 0.55f * f72);
-        f62 *= f74;
-        f63 *= f75;
-        float f76 = (float)(l - this.noiseStartNanos) / 1.0E9f;
-        float f77 = (float)(Math.sin((double)f76 * 62.83) * 0.4 + Math.sin((double)f76 * 47.12) * 0.25 + Math.sin((double)f76 * 78.54) * 0.15);
-        float f78 = (float)(Math.sin((double)f76 * 56.55 + 1.3) * 0.35 + Math.sin((double)f76 * 43.98 + 0.7) * 0.2 + Math.sin((double)f76 * 72.26 + 2.1) * 0.12);
-        float f79 = (float)(Math.sin((double)f76 * 12.57) * 0.8 + Math.sin((double)f76 * 7.85) * 0.5);
-        float f80 = (float)(Math.sin((double)f76 * 10.47 + 0.9) * 0.6 + Math.sin((double)f76 * 5.65 + 1.8) * 0.4);
-        float f81 = (float)(Math.sin((double)f76 * 1.26) * 0.3);
-        float f82 = (float)(Math.sin((double)f76 * 0.94 + 0.5) * 0.2);
-        float f83 = 0.15f + 0.85f * f6;
-        float f84 = 0.5f + 0.5f * (1.0f - f44);
-        float f85 = (f77 + f79 + f81) * f83 * f84 * 1.5f;
-        float f86 = (f78 + f80 + f82) * f83 * f84 * 1.0f;
-        if (!bl4) {
-            f62 += f85;
+        yawRate *= strafeMultiplier;
+
+        float wideYawScale = AimAssistTargetingSubModule.smoothStep(8.0f, 40.0f, absoluteYawError);
+        float wideTurnMultiplier = 1.0f + wideYawScale * 2.5f;
+        float yawBaseLimit = (22.0f + limitedHorizontalSpeed * 15.0f) * horizontalGainScale * overshootMultiplier * wideTurnMultiplier;
+        float pitchBaseLimit = (18.0f + limitedVerticalSpeed * 13.0f) * verticalGainScale * overshootMultiplier;
+        float yawMotionLimit = (Math.abs(smoothedTargetYawRate) * 0.4f + 18.0f) * (0.35f + horizontalGainScale * 0.65f) * wideTurnMultiplier;
+        float pitchMotionLimit = (Math.abs(smoothedTargetPitchRate) * 0.38f + 14.0f) * (0.35f + verticalGainScale * 0.65f);
+        float maximumYawOutput = Math.min(400.0f * overshootMultiplier * wideTurnMultiplier, Math.max(yawBaseLimit, yawMotionLimit));
+        float maximumPitchOutput = Math.min(300.0f * overshootMultiplier, Math.max(pitchBaseLimit, pitchMotionLimit));
+        yawRate = Math.max(-maximumYawOutput, Math.min(maximumYawOutput, yawRate));
+        pitchRate = Math.max(-maximumPitchOutput, Math.min(maximumPitchOutput, pitchRate));
+
+        float distanceScale = AimAssistTargetingSubModule.smoothStep(0.5f, 3.0f, (float)targetDistance);
+        float wideTurnBaseScale = AimAssistTargetingSubModule.lerp(wideYawScale, 0.15f, 0.65f);
+        float yawDistanceMultiplier = AimAssistTargetingSubModule.lerp(currentAimStrength,
+                wideTurnBaseScale + (1.0f - wideTurnBaseScale) * distanceScale, 0.4f + 0.6f * distanceScale);
+        float pitchDistanceMultiplier = AimAssistTargetingSubModule.lerp(currentAimStrength,
+                0.2f + 0.8f * distanceScale, 0.45f + 0.55f * distanceScale);
+        yawRate *= yawDistanceMultiplier;
+        pitchRate *= pitchDistanceMultiplier;
+        float noiseElapsedSeconds = (float)(nowNanos - this.noiseStartNanos) / 1.0E9f;
+        float highFrequencyYawNoise = (float)(Math.sin((double)noiseElapsedSeconds * 62.83) * 0.4
+                + Math.sin((double)noiseElapsedSeconds * 47.12) * 0.25
+                + Math.sin((double)noiseElapsedSeconds * 78.54) * 0.15);
+        float highFrequencyPitchNoise = (float)(Math.sin((double)noiseElapsedSeconds * 56.55 + 1.3) * 0.35
+                + Math.sin((double)noiseElapsedSeconds * 43.98 + 0.7) * 0.2
+                + Math.sin((double)noiseElapsedSeconds * 72.26 + 2.1) * 0.12);
+        float mediumFrequencyYawNoise = (float)(Math.sin((double)noiseElapsedSeconds * 12.57) * 0.8
+                + Math.sin((double)noiseElapsedSeconds * 7.85) * 0.5);
+        float mediumFrequencyPitchNoise = (float)(Math.sin((double)noiseElapsedSeconds * 10.47 + 0.9) * 0.6
+                + Math.sin((double)noiseElapsedSeconds * 5.65 + 1.8) * 0.4);
+        float lowFrequencyYawNoise = (float)(Math.sin((double)noiseElapsedSeconds * 1.26) * 0.3);
+        float lowFrequencyPitchNoise = (float)(Math.sin((double)noiseElapsedSeconds * 0.94 + 0.5) * 0.2);
+        float noiseStrength = 0.15f + 0.85f * currentAimStrength;
+        float speedNoiseScale = 0.5f + 0.5f * (1.0f - horizontalGainInput);
+        float yawNoise = (highFrequencyYawNoise + mediumFrequencyYawNoise + lowFrequencyYawNoise)
+                * noiseStrength * speedNoiseScale * 1.5f;
+        float pitchNoise = (highFrequencyPitchNoise + mediumFrequencyPitchNoise + lowFrequencyPitchNoise)
+                * noiseStrength * speedNoiseScale;
+        if (!snapYaw) {
+            yawRate += yawNoise;
         }
-        if (aimAssist.U().L().booleanValue() && !bl) {
-            f63 += f86;
+        if (aimAssist.getAimVertically().getEffectiveValue().booleanValue() && !snapPitch) {
+            pitchRate += pitchNoise;
         }
-        float f87 = f62 * f18;
-        float f88 = f63 * f18;
-        float f89 = Minecraft.gameSettings().y();
-        float f90 = f89 * 0.6f + 0.2f;
-        float f91 = f90 * f90 * f90 * 8.0f;
-        float f92 = f91 * 0.15f;
-        if (f92 > 1.0E-5f) {
-            float f93;
-            float f94 = f87 / f92;
-            float f95 = f88 / f92;
-            float f96 = f93 = aimAssist.U().L() != false ? f27 : 0.0f;
-            if (bl4) {
+
+        float yawFrameDelta = yawRate * deltaTime;
+        float pitchFrameDelta = pitchRate * deltaTime;
+        float sensitivity = Minecraft.gameSettings().y();
+        float sensitivityBase = sensitivity * 0.6f + 0.2f;
+        float sensitivityScale = sensitivityBase * sensitivityBase * sensitivityBase * 8.0f;
+        float mouseAngleUnit = sensitivityScale * 0.15f;
+        if (mouseAngleUnit > 1.0E-5f) {
+            float yawVelocityUnits = yawFrameDelta / mouseAngleUnit;
+            float pitchVelocityUnits = pitchFrameDelta / mouseAngleUnit;
+            float pitchBlendFactor = aimAssist.getAimVertically().getEffectiveValue() != false ? verticalSpeedFactor : 0.0f;
+            if (snapYaw) {
                 this.pendingYaw = 0.0f;
             }
-            if (bl) {
+            if (snapPitch) {
                 this.pendingPitch = 0.0f;
             }
-            if (!bl4 && !bl && (f2 > 0.0f || f93 > 0.0f)) {
-                float f97 = f13 / f92;
-                float f98 = f97 - this.pendingYaw;
-                float f99 = f4 * 2.0f;
-                f98 = Math.max(-f99, Math.min(f99, f98));
-                float f100 = aimAssist.U().L() != false ? f12 / f92 : 0.0f;
-                float f101 = f100 - this.pendingPitch;
-                float f102 = f3 * 2.0f;
-                f101 = Math.max(-f102, Math.min(f102, f101));
-                this.pendingYaw += f94 * (1.0f - f2) + f98 * f2;
-                this.pendingPitch += f95 * (1.0f - f93) + f101 * f93;
-            } else if (!bl4 && !bl) {
-                this.pendingYaw += f94;
-                this.pendingPitch += f95;
-            } else {
-                float f103;
-                float f104;
-                float f105;
-                if (!bl4) {
-                    if (f2 > 0.0f) {
-                        f105 = f13 / f92;
-                        f104 = f105 - this.pendingYaw;
-                        f103 = f4 * 2.0f;
-                        f104 = Math.max(-f103, Math.min(f103, f104));
-                        this.pendingYaw += f94 * (1.0f - f2) + f104 * f2;
-                    } else {
-                        this.pendingYaw += f94;
-                    }
+            if (!snapYaw) {
+                if (horizontalSpeedFactor > 0.0f) {
+                    float targetYawUnits = yawError / mouseAngleUnit;
+                    float yawCorrection = targetYawUnits - this.pendingYaw;
+                    float maximumYawCorrection = horizontalSpeed * 2.0f;
+                    yawCorrection = Math.max(-maximumYawCorrection, Math.min(maximumYawCorrection, yawCorrection));
+                    this.pendingYaw += yawVelocityUnits * (1.0f - horizontalSpeedFactor) + yawCorrection * horizontalSpeedFactor;
+                } else {
+                    this.pendingYaw += yawVelocityUnits;
                 }
-                if (!bl) {
-                    if (f93 > 0.0f) {
-                        f105 = aimAssist.U().L() != false ? f12 / f92 : 0.0f;
-                        f104 = f105 - this.pendingPitch;
-                        f103 = f3 * 2.0f;
-                        f104 = Math.max(-f103, Math.min(f103, f104));
-                        this.pendingPitch += f95 * (1.0f - f93) + f104 * f93;
-                    } else {
-                        this.pendingPitch += f95;
-                    }
+            }
+            if (!snapPitch) {
+                if (pitchBlendFactor > 0.0f) {
+                    float targetPitchUnits = aimAssist.getAimVertically().getEffectiveValue() != false ? pitchError / mouseAngleUnit : 0.0f;
+                    float pitchCorrection = targetPitchUnits - this.pendingPitch;
+                    float maximumPitchCorrection = verticalSpeed * 2.0f;
+                    pitchCorrection = Math.max(-maximumPitchCorrection, Math.min(maximumPitchCorrection, pitchCorrection));
+                    this.pendingPitch += pitchVelocityUnits * (1.0f - pitchBlendFactor) + pitchCorrection * pitchBlendFactor;
+                } else {
+                    this.pendingPitch += pitchVelocityUnits;
                 }
             }
         }
         if (!this.initialized) {
             this.initialized = true;
         }
-        this.lastYawDiff = f13;
-        this.lastPitchDiff = f12;
-        this.lastTargetYaw = f22;
-        this.lastTargetPitch = f23;
-        this.lastPlayerYaw = f15;
-        this.lastPlayerPitch = f14;
+        this.lastYawDiff = yawError;
+        this.lastPitchDiff = pitchError;
+        this.lastTargetYaw = targetYaw;
+        this.lastTargetPitch = targetPitch;
+        this.lastPlayerYaw = playerYaw;
+        this.lastPlayerPitch = playerPitch;
     }
 
     @Override
@@ -524,8 +501,8 @@ extends SubModule<AimAssist> {
         }
     }
 
-    private static float lerp(float f, float f2, float f3) {
-        return f2 + f * (f3 - f2);
+    private static float lerp(float factor, float start, float end) {
+        return start + factor * (end - start);
     }
 
     private void runTargetLoop() {
@@ -533,7 +510,7 @@ extends SubModule<AimAssist> {
         if (Minecraft.theWorld().isNull() || Minecraft.thePlayer().isNull()) {
             return;
         }
-        if (!aimAssist.K()) {
+        if (!aimAssist.canAim()) {
             this.reset();
             this.target = null;
             return;
@@ -541,37 +518,37 @@ extends SubModule<AimAssist> {
         if (this.target != null && this.target.isNull()) {
             this.target = null;
         }
-        if (aimAssist.r$src$Lgg_vape_value_BooleanValue_$f5ztnc().L().booleanValue() && !gg.vape.config.ClientSettings.M()) {
+        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && !gg.vape.config.ClientSettings.M()) {
             this.target = null;
             this.reset();
             return;
         }
-        if (this.target != null && (RotationUtil.C(this.target) || (double)Minecraft.thePlayer().getDistanceToEntity(this.target) > (Double)aimAssist.W().K())) {
+        if (this.target != null && (RotationUtil.C(this.target) || (double)Minecraft.thePlayer().getDistanceToEntity(this.target) > (Double)aimAssist.getDistance().getValue())) {
             this.reset();
             this.target = null;
         }
-        if (aimAssist.r$src$Lgg_vape_value_BooleanValue_$f5ztnc().L().booleanValue() && gg.vape.config.ClientSettings.M() && this.target == null || !aimAssist.r$src$Lgg_vape_value_BooleanValue_$f5ztnc().L().booleanValue()) {
-            EntityLivingBase entityLivingBase = aimAssist.M$src$Lgg_vape_wrapper_impl_EntityLivingBase_$1qf3v8a();
-            if (!aimAssist.r$src$Lgg_vape_value_BooleanValue_$f5ztnc().L().booleanValue()) {
+        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && gg.vape.config.ClientSettings.M() && this.target == null || !aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue()) {
+            EntityLivingBase candidateTarget = aimAssist.findBestTarget();
+            if (!aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue()) {
                 ++this.targetSwitchTicks;
                 if (this.targetSwitchTicks > 700 || this.target == null) {
-                    if (this.target == null || !this.target.equals(entityLivingBase)) {
+                    if (this.target == null || !this.target.equals(candidateTarget)) {
                         this.reset();
                     }
-                    this.target = entityLivingBase;
+                    this.target = candidateTarget;
                     this.targetSwitchTicks = 0;
                 }
             } else {
-                if (this.target == null || !this.target.equals(entityLivingBase)) {
+                if (this.target == null || !this.target.equals(candidateTarget)) {
                     this.reset();
                 }
-                this.target = entityLivingBase;
+                this.target = candidateTarget;
             }
         }
         if (Minecraft.theWorld().getObject() == null) {
             return;
         }
-        if (this.target != null && Minecraft.currentScreen().getObject() == null && ClientSettings.fW.P) {
+        if (this.target != null && Minecraft.currentScreen().getObject() == null && ClientSettings.INSTANCE.inputEnabled) {
             this.updateAim();
         } else {
             this.target = null;
@@ -615,10 +592,6 @@ extends SubModule<AimAssist> {
         this.lastGroundEyeY = 0.0;
         this.verticalVelocity = 0.0f;
         this.airFactor = 0.0f;
-        this.randomJitterAmount = 0.15f + this.random.nextFloat() * 0.35f;
-        this.reactionBias = 0.0f;
-        this.speedScaleX = 1.0f;
-        this.speedScaleY = 1.0f;
         this.predictionInitialized = false;
         this.predictedX = 0.0;
         this.predictedY = 0.0;
@@ -633,149 +606,139 @@ extends SubModule<AimAssist> {
 
     @EventHandler
     public void onPreRenderTick(EventPreRenderTick eventPreRenderTick) {
-        boolean bl;
         if (eventPreRenderTick.getWorld().isNull() || this.target == null) {
             return;
         }
         AimAssist aimAssist = (AimAssist)this.getParent();
-        boolean bl2 = ((Double)aimAssist.w$src$Lgg_vape_value_NumberValue_$cwexni().K()).floatValue() > 20.0f;
-        boolean bl3 = aimAssist.U().L() != false && ((Double)aimAssist.F$src$Lgg_vape_value_NumberValue_$cqv0bx().K()).floatValue() > 20.0f;
-        boolean bl4 = bl2 && this.yawSnapped;
-        boolean bl5 = bl3 && this.pitchSnapped;
-        int n = bl4 ? Math.round(this.pendingYaw) : (int)this.pendingYaw;
-        int n2 = bl5 ? Math.round(this.pendingPitch) : (int)this.pendingPitch;
-        float f = bl4 ? 0.0f : this.pendingYaw - (float)n;
-        float f2 = bl5 ? 0.0f : this.pendingPitch - (float)n2;
-        boolean bl6 = Math.abs(n) > 0;
-        boolean bl7 = bl = Math.abs(n2) > 0;
-        if (!bl6) {
-            n = 0;
+        boolean yawSnapEnabled = ((Double)aimAssist.getHorizontalSpeed().getValue()).floatValue() > 20.0f;
+        boolean pitchSnapEnabled = aimAssist.getAimVertically().getEffectiveValue() != false && ((Double)aimAssist.getVerticalSpeed().getValue()).floatValue() > 20.0f;
+        boolean snapYaw = yawSnapEnabled && this.yawSnapped;
+        boolean snapPitch = pitchSnapEnabled && this.pitchSnapped;
+        int yawSteps = snapYaw ? Math.round(this.pendingYaw) : (int)this.pendingYaw;
+        int pitchSteps = snapPitch ? Math.round(this.pendingPitch) : (int)this.pendingPitch;
+        float remainingYaw = snapYaw ? 0.0f : this.pendingYaw - (float)yawSteps;
+        float remainingPitch = snapPitch ? 0.0f : this.pendingPitch - (float)pitchSteps;
+        if (Math.abs(yawSteps) == 0) {
+            yawSteps = 0;
         }
-        if (!bl) {
-            n2 = 0;
+        if (Math.abs(pitchSteps) == 0) {
+            pitchSteps = 0;
         }
-        float f3 = Minecraft.gameSettings().y();
-        float f4 = f3 * 0.6f + 0.2f;
-        float f5 = f4 * f4 * f4 * 8.0f;
-        float f6 = (float)n * f5;
-        float f7 = (float)n2 * f5;
-        float f8 = f6;
-        float f9 = -f7;
-        if ((bl4 || bl5) && Minecraft.thePlayer().isNotNull()) {
-            EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            double[] dArray = this.resolveSnapPoint(entityPlayerSP, this.target);
-            double d = dArray[0] - entityPlayerSP.c();
-            double d2 = dArray[2] - entityPlayerSP.Z();
-            double d3 = dArray[1] - (entityPlayerSP.A() + (double)entityPlayerSP.X());
-            double d4 = Math.sqrt(d * d + d2 * d2);
-            float f10 = (float)(Math.toDegrees(Math.atan2(d2, d)) - 90.0);
-            float f11 = (float)(-Math.toDegrees(Math.atan2(d3, Math.max(d4, 1.0E-4))));
-            if (bl4) {
-                f8 = MathUtil.wrapAngleTo180(f10 - RotationManager.s(entityPlayerSP)) / 0.15f;
+        float sensitivity = Minecraft.gameSettings().y();
+        float sensitivityBase = sensitivity * 0.6f + 0.2f;
+        float sensitivityScale = sensitivityBase * sensitivityBase * sensitivityBase * 8.0f;
+        float mouseDeltaX = (float)yawSteps * sensitivityScale;
+        float mouseDeltaY = -(float)pitchSteps * sensitivityScale;
+        if ((snapYaw || snapPitch) && Minecraft.thePlayer().isNotNull()) {
+            EntityPlayerSP player = Minecraft.thePlayer();
+            double[] snapPoint = this.resolveSnapPoint(player, this.target);
+            double deltaX = snapPoint[0] - player.c();
+            double deltaZ = snapPoint[2] - player.Z();
+            double deltaY = snapPoint[1] - (player.A() + (double)player.X());
+            double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+            float targetYaw = (float)(Math.toDegrees(Math.atan2(deltaZ, deltaX)) - 90.0);
+            float targetPitch = (float)(-Math.toDegrees(Math.atan2(deltaY, Math.max(horizontalDistance, 1.0E-4))));
+            if (snapYaw) {
+                mouseDeltaX = MathUtil.wrapAngleTo180(targetYaw - RotationManager.getViewYaw(player)) / 0.15f;
             }
-            if (bl5) {
-                f9 = -MathUtil.wrapAngleTo180(f11 - RotationManager.g(entityPlayerSP)) / 0.15f;
+            if (snapPitch) {
+                mouseDeltaY = -MathUtil.wrapAngleTo180(targetPitch - RotationManager.getViewPitch(player)) / 0.15f;
             }
         }
-        PlayerMouseRotationApplier.j(f8, f9);
-        this.pendingYaw = f;
-        this.pendingPitch = f2;
+        PlayerMouseRotationApplier.applyTrackedMouseDelta(mouseDeltaX, mouseDeltaY);
+        this.pendingYaw = remainingYaw;
+        this.pendingPitch = remainingPitch;
     }
 
-    private double[] resolveAimTarget(EntityPlayerSP entityPlayerSP, EntityLivingBase entityLivingBase) {
+    private double[] resolveAimTarget(EntityPlayerSP player, EntityLivingBase target) {
         AimAssist aimAssist = (AimAssist)this.getParent();
-        double d = entityPlayerSP.A() + (double)entityPlayerSP.X();
-        double d2 = entityLivingBase.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
-        double d3 = entityLivingBase.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMaxY();
-        double d4 = d3 - d2;
-        double d5 = d2 + d4 * 0.65;
-        double d6 = 0.1;
-        double d7 = Math.min(0.85, (double)this.airFactor);
-        double d8 = d6 + d7;
-        double d9 = Math.max(d2 + 0.01, Math.min(d3 - 0.01, d - d8));
-        double d10 = Math.max(0.0, Math.min(1.0, d7 / 0.55));
-        double d11 = d9 + (d5 - d9) * d10;
-        d11 = Math.max(d2 + 0.01, Math.min(d3 - 0.01, d11));
-        if (aimAssist.F.K() == aimAssist.r) {
-            Vec3d vec3d = RotationUtil.T(entityPlayerSP, entityLivingBase.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
-            double d12 = Math.max(d2 + 0.01, Math.min(d3 - 0.01, vec3d.t() - d8));
-            d12 += (d5 - d12) * d10;
-            d12 = Math.max(d2 + 0.01, Math.min(d3 - 0.01, d12));
-            double d13 = vec3d.Y();
-            double d14 = d12;
-            double d15 = vec3d.o();
+        double playerEyeY = player.A() + (double)player.X();
+        double targetMinY = target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
+        double targetMaxY = target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMaxY();
+        double targetHeight = targetMaxY - targetMinY;
+        double targetCenterY = targetMinY + targetHeight * 0.65;
+        double airborneOffset = Math.min(0.85, (double)this.airFactor);
+        double eyeOffset = 0.1 + airborneOffset;
+        double eyeAlignedY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, playerEyeY - eyeOffset));
+        double centerBlend = Math.max(0.0, Math.min(1.0, airborneOffset / 0.55));
+        double targetY = eyeAlignedY + (targetCenterY - eyeAlignedY) * centerBlend;
+        targetY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, targetY));
+        if (aimAssist.targetArea.getValue() == aimAssist.closestAreaMode) {
+            Vec3d closestPoint = RotationUtil.T(player, target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
+            double closestY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, closestPoint.t() - eyeOffset));
+            closestY += (targetCenterY - closestY) * centerBlend;
+            closestY = Math.max(targetMinY + 0.01, Math.min(targetMaxY - 0.01, closestY));
+            double resolvedX = closestPoint.Y();
+            double resolvedY = closestY;
+            double resolvedZ = closestPoint.o();
             if (this.predictionInitialized) {
-                double d16 = 0.35;
-                d13 = this.predictedX + (d13 - this.predictedX) * d16;
-                d14 = this.predictedY + (d14 - this.predictedY) * d16;
-                d15 = this.predictedZ + (d15 - this.predictedZ) * d16;
+                double smoothingFactor = 0.35;
+                resolvedX = this.predictedX + (resolvedX - this.predictedX) * smoothingFactor;
+                resolvedY = this.predictedY + (resolvedY - this.predictedY) * smoothingFactor;
+                resolvedZ = this.predictedZ + (resolvedZ - this.predictedZ) * smoothingFactor;
             }
-            this.predictedX = d13;
-            this.predictedY = d14;
-            this.predictedZ = d15;
+            this.predictedX = resolvedX;
+            this.predictedY = resolvedY;
+            this.predictedZ = resolvedZ;
             this.predictionInitialized = true;
-            return new double[]{d13, d14, d15};
+            return new double[]{resolvedX, resolvedY, resolvedZ};
         }
-        return new double[]{entityLivingBase.c(), d11, entityLivingBase.Z()};
+        return new double[]{target.c(), targetY, target.Z()};
     }
 
-    private static float smoothStep(float f, float f2, float f3) {
-        float f4 = Math.max(0.0f, Math.min(1.0f, (f3 - f) / (f2 - f)));
-        return f4 * f4 * (3.0f - 2.0f * f4);
+    private static float smoothStep(float edgeStart, float edgeEnd, float value) {
+        float normalized = Math.max(0.0f, Math.min(1.0f, (value - edgeStart) / (edgeEnd - edgeStart)));
+        return normalized * normalized * (3.0f - 2.0f * normalized);
     }
 
 
     @Nullable
-    public EntityLivingBase S$src$Lgg_vape_wrapper_impl_EntityLivingBase_$15eeuu3() {
+    public EntityLivingBase getTarget() {
         return this.target;
     }
 
-    public AimAssistTargetingSubModule(Mod mod, String string) {
-        super(mod, string);
+    public AimAssistTargetingSubModule(Mod parent, String name) {
+        super(parent, name);
     }
 
-    private float computePitchDrift(float f, float f2, long l) {
-        float f3;
-        float f4;
-        float f5 = 0.65f + 0.35f * this.aimStrength;
-        if (this.driftNextNanos == 0L || l >= this.driftNextNanos) {
-            f4 = AimAssistTargetingSubModule.lerp(f5, 0.05f, 0.15f);
-            f3 = f > 22.0f ? -0.18f : (f < -22.0f ? 0.18f : 0.0f);
-            this.driftTarget = (this.random.nextFloat() * 2.0f - 1.0f) * f4 + f3;
+    private float computePitchDrift(float playerPitch, float deltaTime, long nowNanos) {
+        float strength = 0.65f + 0.35f * this.aimStrength;
+        if (this.driftNextNanos == 0L || nowNanos >= this.driftNextNanos) {
+            float randomAmplitude = AimAssistTargetingSubModule.lerp(strength, 0.05f, 0.15f);
+            float pitchCorrection = playerPitch > 22.0f ? -0.18f : (playerPitch < -22.0f ? 0.18f : 0.0f);
+            this.driftTarget = (this.random.nextFloat() * 2.0f - 1.0f) * randomAmplitude + pitchCorrection;
             this.driftTarget = Math.max(-0.5f, Math.min(0.5f, this.driftTarget));
-            long l2 = 300L + (long)this.random.nextInt(420);
-            this.driftNextNanos = l + l2 * 1000000L;
+            long intervalMillis = 300L + (long)this.random.nextInt(420);
+            this.driftNextNanos = nowNanos + intervalMillis * 1000000L;
         }
-        f4 = this.driftTarget;
-        f3 = AimAssistTargetingSubModule.lerp(f5, 2.0f, 5.0f);
-        float f6 = (float)Math.pow(0.04f, f2);
-        this.driftVelocity += (f4 - this.driftPos) * f3 * f2;
-        this.driftVelocity *= f6;
-        this.driftPos += this.driftVelocity * f2;
-        float f7 = AimAssistTargetingSubModule.lerp(f5, 0.45f, 0.8f);
-        if (this.driftPos > f7) {
-            this.driftPos = f7;
+        float springStrength = AimAssistTargetingSubModule.lerp(strength, 2.0f, 5.0f);
+        float damping = (float)Math.pow(0.04f, deltaTime);
+        this.driftVelocity += (this.driftTarget - this.driftPos) * springStrength * deltaTime;
+        this.driftVelocity *= damping;
+        this.driftPos += this.driftVelocity * deltaTime;
+        float positionLimit = AimAssistTargetingSubModule.lerp(strength, 0.45f, 0.8f);
+        if (this.driftPos > positionLimit) {
+            this.driftPos = positionLimit;
             this.driftVelocity = Math.min(0.0f, this.driftVelocity);
-        } else if (this.driftPos < -f7) {
-            this.driftPos = -f7;
+        } else if (this.driftPos < -positionLimit) {
+            this.driftPos = -positionLimit;
             this.driftVelocity = Math.max(0.0f, this.driftVelocity);
         }
-        this.driftNoise += (this.random.nextFloat() * 2.0f - 1.0f - this.driftNoise) * Math.max(0.02f, Math.min(0.18f, f2 * 5.0f));
-        float f8 = (float)(l - this.noiseStartNanos) / 1.0E9f;
-        float f9 = (float)(Math.sin((double)f8 * 8.7 + 0.4) * (double)0.35f + Math.sin((double)f8 * 13.1 + 2.2) * (double)0.22f + Math.sin((double)f8 * 19.6 + 1.1) * (double)0.12f + (double)(this.driftNoise * 0.3f));
-        float f10 = -this.driftPos * AimAssistTargetingSubModule.lerp(f5, 1.4f, 3.0f);
-        float f11 = this.driftVelocity * 0.25f + f10 + f9 * AimAssistTargetingSubModule.lerp(f5, 0.35f, 0.9f);
-        float f12 = 1.0f - 0.85f * AimAssistTargetingSubModule.smoothStep(72.0f, 88.0f, Math.abs(f));
-        float f13 = AimAssistTargetingSubModule.lerp(f5, 0.25f, 0.55f) * f12;
-        f11 = Math.max(-f13, Math.min(f13, f11));
-        return f11;
+        this.driftNoise += (this.random.nextFloat() * 2.0f - 1.0f - this.driftNoise) * Math.max(0.02f, Math.min(0.18f, deltaTime * 5.0f));
+        float elapsedSeconds = (float)(nowNanos - this.noiseStartNanos) / 1.0E9f;
+        float noise = (float)(Math.sin((double)elapsedSeconds * 8.7 + 0.4) * (double)0.35f + Math.sin((double)elapsedSeconds * 13.1 + 2.2) * (double)0.22f + Math.sin((double)elapsedSeconds * 19.6 + 1.1) * (double)0.12f + (double)(this.driftNoise * 0.3f));
+        float restoringForce = -this.driftPos * AimAssistTargetingSubModule.lerp(strength, 1.4f, 3.0f);
+        float output = this.driftVelocity * 0.25f + restoringForce + noise * AimAssistTargetingSubModule.lerp(strength, 0.35f, 0.9f);
+        float pitchLimitScale = 1.0f - 0.85f * AimAssistTargetingSubModule.smoothStep(72.0f, 88.0f, Math.abs(playerPitch));
+        float outputLimit = AimAssistTargetingSubModule.lerp(strength, 0.25f, 0.55f) * pitchLimitScale;
+        return Math.max(-outputLimit, Math.min(outputLimit, output));
     }
 
-    private static boolean shouldSnap(boolean bl, boolean bl2, float f) {
-        if (!bl) {
+    private static boolean shouldSnap(boolean enabled, boolean currentlySnapped, float angleDifference) {
+        if (!enabled) {
             return false;
         }
-        return bl2 ? f <= 7.0f : f <= 5.0f;
+        return currentlySnapped ? angleDifference <= SNAP_EXIT_THRESHOLD : angleDifference <= SNAP_ENTER_THRESHOLD;
     }
 
     @Override
@@ -784,4 +747,3 @@ extends SubModule<AimAssist> {
         this.reset();
     }
 }
-

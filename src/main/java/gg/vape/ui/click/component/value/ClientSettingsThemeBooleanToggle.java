@@ -7,20 +7,20 @@ import java.awt.Color;
 
 public final class ClientSettingsThemeBooleanToggle
 extends BooleanToggleComponent {
-    final ClientSettings d9;
+    final ClientSettings clientSettings;
 
     public ClientSettingsThemeBooleanToggle(BooleanValue booleanValue, ClientSettings clientSettings) {
         super(booleanValue);
-        this.d9 = clientSettings;
+        this.clientSettings = clientSettings;
     }
 
     @Override
     public boolean V$src$Z$1xhop3l() {
-        return this.d9.B.L();
+        return this.clientSettings.healthPrediction.getEffectiveValue();
     }
 
     @Override
-    public Color d() {
+    public Color getDisabledOverlayColor() {
         return ClientSettingsThemeBooleanToggle.J.r;
     }
 }

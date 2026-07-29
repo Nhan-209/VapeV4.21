@@ -2,44 +2,23 @@ package gg.vape.module.utility;
 
 
 public class MLGImpactState {
-    public static final MLGImpactState D = new MLGImpactState(36, 44);
-    private static int callCounter;
-    public static final MLGImpactState S;
-    public static final MLGImpactState i;
-    private final int secondaryValue;
-    private final int primaryValue;
+    public static final MLGImpactState HOTBAR = new MLGImpactState(36, 44);
+    public static final MLGImpactState MAIN_INVENTORY = new MLGImpactState(9, 35);
+    public static final MLGImpactState INVENTORY_AND_HOTBAR = new MLGImpactState(9, 44);
+    private final int lastSlot;
+    private final int firstSlot;
 
-    public MLGImpactState(int n, int n2) {
-        this.primaryValue = n;
-        this.secondaryValue = n2;
+    private MLGImpactState(int firstSlot, int lastSlot) {
+        this.firstSlot = firstSlot;
+        this.lastSlot = lastSlot;
     }
 
-    public static int computeThreshold() {
-        int n = MLGImpactState.getCallCounter();
-        return 23;
+    public int getFirstSlot() {
+        return this.firstSlot;
     }
 
-
-    public static void setCallCounter(int n) {
-        callCounter = n;
-    }
-
-    public int J() {
-        return this.primaryValue;
-    }
-
-    public static int getCallCounter() {
-        return callCounter;
-    }
-
-    public int u() {
-        return this.secondaryValue;
-    }
-
-    static {
-        MLGImpactState.setCallCounter(0);
-        i = new MLGImpactState(9, 35);
-        S = new MLGImpactState(9, 44);
+    public int getLastSlot() {
+        return this.lastSlot;
     }
 }
 

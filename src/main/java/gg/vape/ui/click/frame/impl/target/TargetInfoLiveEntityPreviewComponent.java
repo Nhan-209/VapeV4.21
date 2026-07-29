@@ -6,15 +6,15 @@ import gg.vape.wrapper.impl.EntityLivingBase;
 
 public class TargetInfoLiveEntityPreviewComponent
 extends TargetInfoEntityPreviewComponent {
-    final TargetInfoPreviewComponent i;
+    private final TargetInfoPreviewComponent preview;
 
     public TargetInfoLiveEntityPreviewComponent(TargetInfoPreviewComponent targetInfoPreviewComponent, double d, double d2) {
         super(d, d2);
-        this.i = targetInfoPreviewComponent;
+        this.preview = targetInfoPreviewComponent;
     }
 
     @Override
-    public EntityLivingBase s() {
-        return this.i.h$src$Lgg_vape_wrapper_impl_EntityLivingBase_$1x3oue();
+    public EntityLivingBase getEntity() {
+        return this.preview.getTarget();
     }
 }

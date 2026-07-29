@@ -3,241 +3,240 @@ package gg.vape.unmap;
 import java.awt.Color;
 
 class ColorContrastUtil {
-    private static final int D = 1;
-    private static final double U = 100.0;
-    private static final ThreadLocal<double[]> Y;
-    private static final double n = 108.883;
-    private static final double G = 95.047;
-    private static final double W = 903.3;
-    private static final int P;
-    private static final double k = 0.008856;
+    private static final int MIN_ALPHA_SEARCH_PRECISION = 1;
+    private static final double XYZ_WHITE_REFERENCE_Y = 100.0;
+    private static final ThreadLocal<double[]> TEMPORARY_XYZ_ARRAY;
+    private static final double XYZ_WHITE_REFERENCE_Z = 108.883;
+    private static final double XYZ_WHITE_REFERENCE_X = 95.047;
+    private static final double XYZ_KAPPA = 903.3;
+    private static final int LEGACY_CONSTANT;
+    private static final double XYZ_EPSILON = 0.008856;
 
     static {
-        long l = 8524902361867485194L;
-        P = (int)l;
-        Y = new ThreadLocal();
+        long legacyConstantSeed = 8524902361867485194L;
+        LEGACY_CONSTANT = (int)legacyConstantSeed;
+        TEMPORARY_XYZ_ARRAY = new ThreadLocal();
     }
 
-    private static double V(double d) {
-        return d > 0.008856 ? Math.pow(d, 0.3333333333333333) : (903.3 * d + 16.0) / 116.0;
+    private static double pivotXyzComponent(double component) {
+        return component > XYZ_EPSILON ? Math.pow(component, 0.3333333333333333) : (XYZ_KAPPA * component + 16.0) / 116.0;
     }
 
-    public static void M(int n, double[] dArray) {
-        Color color = new Color(n);
-        ColorContrastUtil.h(color.getRed(), color.getGreen(), color.getBlue(), dArray);
+    public static void colorToLab(int colorRgb, double[] outLab) {
+        Color color = new Color(colorRgb);
+        ColorContrastUtil.rgbToLab(color.getRed(), color.getGreen(), color.getBlue(), outLab);
     }
 
-    public static int t(double d, double d2, double d3) {
-        double d4 = (d * 3.2406 + d2 * -1.5372 + d3 * -0.4986) / 100.0;
-        double d5 = (d * -0.9689 + d2 * 1.8758 + d3 * 0.0415) / 100.0;
-        double d6 = (d * 0.0557 + d2 * -0.204 + d3 * 1.057) / 100.0;
-        d4 = d4 > 0.0031308 ? 1.055 * Math.pow(d4, 0.4166666666666667) - 0.055 : 12.92 * d4;
-        d5 = d5 > 0.0031308 ? 1.055 * Math.pow(d5, 0.4166666666666667) - 0.055 : 12.92 * d5;
-        d6 = d6 > 0.0031308 ? 1.055 * Math.pow(d6, 0.4166666666666667) - 0.055 : 12.92 * d6;
-        return new Color(ColorContrastUtil.w((int)Math.round(d4 * 255.0), 0, 255), ColorContrastUtil.w((int)Math.round(d5 * 255.0), 0, 255), ColorContrastUtil.w((int)Math.round(d6 * 255.0), 0, 255)).getRGB();
+    public static int xyzToColor(double x, double y, double z) {
+        double linearRed = (x * 3.2406 + y * -1.5372 + z * -0.4986) / 100.0;
+        double linearGreen = (x * -0.9689 + y * 1.8758 + z * 0.0415) / 100.0;
+        double linearBlue = (x * 0.0557 + y * -0.204 + z * 1.057) / 100.0;
+        linearRed = linearRed > 0.0031308 ? 1.055 * Math.pow(linearRed, 0.4166666666666667) - 0.055 : 12.92 * linearRed;
+        linearGreen = linearGreen > 0.0031308 ? 1.055 * Math.pow(linearGreen, 0.4166666666666667) - 0.055 : 12.92 * linearGreen;
+        linearBlue = linearBlue > 0.0031308 ? 1.055 * Math.pow(linearBlue, 0.4166666666666667) - 0.055 : 12.92 * linearBlue;
+        return new Color(ColorContrastUtil.clampInt((int)Math.round(linearRed * 255.0), 0, 255), ColorContrastUtil.clampInt((int)Math.round(linearGreen * 255.0), 0, 255), ColorContrastUtil.clampInt((int)Math.round(linearBlue * 255.0), 0, 255)).getRGB();
     }
 
-    public static int g(float[] fArray) {
-        float f = fArray[0];
-        float f2 = fArray[1];
-        float f3 = fArray[2];
-        float f4 = (1.0f - Math.abs(2.0f * f3 - 1.0f)) * f2;
-        float f5 = f3 - 0.5f * f4;
-        float f6 = f4 * (1.0f - Math.abs(f / 60.0f % 2.0f - 1.0f));
-        int n = (int)f / 60;
-        int n2 = 0;
-        int n3 = 0;
-        int n4 = 0;
-        switch (n) {
+    public static int hslToColor(float[] hsl) {
+        float hue = hsl[0];
+        float saturation = hsl[1];
+        float lightness = hsl[2];
+        float chroma = (1.0f - Math.abs(2.0f * lightness - 1.0f)) * saturation;
+        float match = lightness - 0.5f * chroma;
+        float secondComponent = chroma * (1.0f - Math.abs(hue / 60.0f % 2.0f - 1.0f));
+        int hueSector = (int)hue / 60;
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+        switch (hueSector) {
             case 0: {
-                n2 = Math.round(255.0f * (f4 + f5));
-                n3 = Math.round(255.0f * (f6 + f5));
-                n4 = Math.round(255.0f * f5);
+                red = Math.round(255.0f * (chroma + match));
+                green = Math.round(255.0f * (secondComponent + match));
+                blue = Math.round(255.0f * match);
                 break;
             }
             case 1: {
-                n2 = Math.round(255.0f * (f6 + f5));
-                n3 = Math.round(255.0f * (f4 + f5));
-                n4 = Math.round(255.0f * f5);
+                red = Math.round(255.0f * (secondComponent + match));
+                green = Math.round(255.0f * (chroma + match));
+                blue = Math.round(255.0f * match);
                 break;
             }
             case 2: {
-                n2 = Math.round(255.0f * f5);
-                n3 = Math.round(255.0f * (f4 + f5));
-                n4 = Math.round(255.0f * (f6 + f5));
+                red = Math.round(255.0f * match);
+                green = Math.round(255.0f * (chroma + match));
+                blue = Math.round(255.0f * (secondComponent + match));
                 break;
             }
             case 3: {
-                n2 = Math.round(255.0f * f5);
-                n3 = Math.round(255.0f * (f6 + f5));
-                n4 = Math.round(255.0f * (f4 + f5));
+                red = Math.round(255.0f * match);
+                green = Math.round(255.0f * (secondComponent + match));
+                blue = Math.round(255.0f * (chroma + match));
                 break;
             }
             case 4: {
-                n2 = Math.round(255.0f * (f6 + f5));
-                n3 = Math.round(255.0f * f5);
-                n4 = Math.round(255.0f * (f4 + f5));
+                red = Math.round(255.0f * (secondComponent + match));
+                green = Math.round(255.0f * match);
+                blue = Math.round(255.0f * (chroma + match));
                 break;
             }
             case 5: 
             case 6: {
-                n2 = Math.round(255.0f * (f4 + f5));
-                n3 = Math.round(255.0f * f5);
-                n4 = Math.round(255.0f * (f6 + f5));
+                red = Math.round(255.0f * (chroma + match));
+                green = Math.round(255.0f * match);
+                blue = Math.round(255.0f * (secondComponent + match));
             }
         }
-        n2 = ColorContrastUtil.w(n2, 0, 255);
-        n3 = ColorContrastUtil.w(n3, 0, 255);
-        n4 = ColorContrastUtil.w(n4, 0, 255);
-        return new Color(n2, n3, n4).getRGB();
+        red = ColorContrastUtil.clampInt(red, 0, 255);
+        green = ColorContrastUtil.clampInt(green, 0, 255);
+        blue = ColorContrastUtil.clampInt(blue, 0, 255);
+        return new Color(red, green, blue).getRGB();
     }
 
-    public static void H(int n, int n2, int n3, double[] dArray) {
-        if (dArray.length != 3) {
+    public static void rgbToXyz(int redChannel, int greenChannel, int blueChannel, double[] outXyz) {
+        if (outXyz.length != 3) {
             throw new IllegalArgumentException("outXyz must have a length of 3.");
         }
-        double d = (double)n / 255.0;
-        d = d < 0.04045 ? d / 12.92 : Math.pow((d + 0.055) / 1.055, 2.4);
-        double d2 = (double)n2 / 255.0;
-        d2 = d2 < 0.04045 ? d2 / 12.92 : Math.pow((d2 + 0.055) / 1.055, 2.4);
-        double d3 = (double)n3 / 255.0;
-        d3 = d3 < 0.04045 ? d3 / 12.92 : Math.pow((d3 + 0.055) / 1.055, 2.4);
-        dArray[0] = 100.0 * (d * 0.4124 + d2 * 0.3576 + d3 * 0.1805);
-        dArray[1] = 100.0 * (d * 0.2126 + d2 * 0.7152 + d3 * 0.0722);
-        dArray[2] = 100.0 * (d * 0.0193 + d2 * 0.1192 + d3 * 0.9505);
+        double red = (double)redChannel / 255.0;
+        red = red < 0.04045 ? red / 12.92 : Math.pow((red + 0.055) / 1.055, 2.4);
+        double green = (double)greenChannel / 255.0;
+        green = green < 0.04045 ? green / 12.92 : Math.pow((green + 0.055) / 1.055, 2.4);
+        double blue = (double)blueChannel / 255.0;
+        blue = blue < 0.04045 ? blue / 12.92 : Math.pow((blue + 0.055) / 1.055, 2.4);
+        outXyz[0] = 100.0 * (red * 0.4124 + green * 0.3576 + blue * 0.1805);
+        outXyz[1] = 100.0 * (red * 0.2126 + green * 0.7152 + blue * 0.0722);
+        outXyz[2] = 100.0 * (red * 0.0193 + green * 0.1192 + blue * 0.9505);
     }
 
-    private static float S(float f, float f2, float f3) {
-        return f < f2 ? f2 : (f > f3 ? f3 : f);
+    private static float constrain(float value, float min, float max) {
+        return value < min ? min : (value > max ? max : value);
     }
 
-    public static void p(int n, double[] dArray) {
-        Color color = new Color(n);
-        ColorContrastUtil.H(color.getRed(), color.getGreen(), color.getBlue(), dArray);
+    public static void colorToXyz(int colorRgb, double[] outXyz) {
+        Color color = new Color(colorRgb);
+        ColorContrastUtil.rgbToXyz(color.getRed(), color.getGreen(), color.getBlue(), outXyz);
     }
 
     private ColorContrastUtil() {
     }
 
-    public static double V(int n, int n2) {
-        n = ColorContrastUtil.k(n, n2);
-        double d = ColorContrastUtil.K(n) + 0.05;
-        double d2 = ColorContrastUtil.K(n2) + 0.05;
-        return Math.max(d, d2) / Math.min(d, d2);
+    public static double calculateContrast(int foregroundRgb, int backgroundRgb) {
+        foregroundRgb = ColorContrastUtil.compositeColors(foregroundRgb, backgroundRgb);
+        double foregroundLuminance = ColorContrastUtil.calculateLuminance(foregroundRgb) + 0.05;
+        double backgroundLuminance = ColorContrastUtil.calculateLuminance(backgroundRgb) + 0.05;
+        return Math.max(foregroundLuminance, backgroundLuminance) / Math.min(foregroundLuminance, backgroundLuminance);
     }
 
-    private static int w(int n, int n2, int n3) {
-        return n < n2 ? n2 : (n > n3 ? n3 : n);
+    private static int clampInt(int value, int min, int max) {
+        return value < min ? min : (value > max ? max : value);
     }
 
-    public static void j(double d, double d2, double d3, double[] dArray) {
-        if (dArray.length != 3) {
+    public static void xyzToLab(double x, double y, double z, double[] outLab) {
+        if (outLab.length != 3) {
             throw new IllegalArgumentException("outLab must have a length of 3.");
         }
-        d = ColorContrastUtil.V(d / 95.047);
-        d2 = ColorContrastUtil.V(d2 / 100.0);
-        d3 = ColorContrastUtil.V(d3 / 108.883);
-        dArray[0] = Math.max(0.0, 116.0 * d2 - 16.0);
-        dArray[1] = 500.0 * (d - d2);
-        dArray[2] = 200.0 * (d2 - d3);
+        double xComponent = ColorContrastUtil.pivotXyzComponent(x / XYZ_WHITE_REFERENCE_X);
+        double yComponent = ColorContrastUtil.pivotXyzComponent(y / XYZ_WHITE_REFERENCE_Y);
+        double zComponent = ColorContrastUtil.pivotXyzComponent(z / XYZ_WHITE_REFERENCE_Z);
+        outLab[0] = Math.max(0.0, 116.0 * yComponent - 16.0);
+        outLab[1] = 500.0 * (xComponent - yComponent);
+        outLab[2] = 200.0 * (yComponent - zComponent);
     }
 
-    public static void h(int n, int n2, int n3, double[] dArray) {
-        ColorContrastUtil.H(n, n2, n3, dArray);
-        ColorContrastUtil.j(dArray[0], dArray[1], dArray[2], dArray);
+    public static void rgbToLab(int red, int green, int blue, double[] outLab) {
+        ColorContrastUtil.rgbToXyz(red, green, blue, outLab);
+        ColorContrastUtil.xyzToLab(outLab[0], outLab[1], outLab[2], outLab);
     }
 
-    public static void F(int n, float[] fArray) {
-        Color color = new Color(n);
-        ColorContrastUtil.P(color.getRed(), color.getGreen(), color.getBlue(), fArray);
+    public static void colorToHsl(int colorRgb, float[] outHsl) {
+        Color color = new Color(colorRgb);
+        ColorContrastUtil.rgbToHsl(color.getRed(), color.getGreen(), color.getBlue(), outHsl);
     }
 
-    public static void P(int n, int n2, int n3, float[] fArray) {
-        float f;
-        float f2;
-        float f3 = (float)n / 255.0f;
-        float f4 = (float)n2 / 255.0f;
-        float f5 = (float)n3 / 255.0f;
-        float f6 = Math.max(f3, Math.max(f4, f5));
-        float f7 = Math.min(f3, Math.min(f4, f5));
-        float f8 = f6 - f7;
-        float f9 = (f6 + f7) / 2.0f;
-        if (f6 == f7) {
-            f2 = 0.0f;
-            f = 0.0f;
+    public static void rgbToHsl(int redChannel, int greenChannel, int blueChannel, float[] outHsl) {
+        float red = (float)redChannel / 255.0f;
+        float green = (float)greenChannel / 255.0f;
+        float blue = (float)blueChannel / 255.0f;
+        float maxChannel = Math.max(red, Math.max(green, blue));
+        float minChannel = Math.min(red, Math.min(green, blue));
+        float chroma = maxChannel - minChannel;
+        float lightness = (maxChannel + minChannel) / 2.0f;
+        float hue;
+        float saturation;
+        if (maxChannel == minChannel) {
+            saturation = 0.0f;
+            hue = 0.0f;
         } else {
-            f = f6 == f3 ? (f4 - f5) / f8 % 6.0f : (f6 == f4 ? (f5 - f3) / f8 + 2.0f : (f3 - f4) / f8 + 4.0f);
-            f2 = f8 / (1.0f - Math.abs(2.0f * f9 - 1.0f));
+            hue = maxChannel == red ? (green - blue) / chroma % 6.0f : (maxChannel == green ? (blue - red) / chroma + 2.0f : (red - green) / chroma + 4.0f);
+            saturation = chroma / (1.0f - Math.abs(2.0f * lightness - 1.0f));
         }
-        f = f * 60.0f % 360.0f;
-        if (f < 0.0f) {
-            f += 360.0f;
+        hue = hue * 60.0f % 360.0f;
+        if (hue < 0.0f) {
+            hue += 360.0f;
         }
-        fArray[0] = ColorContrastUtil.S(f, 0.0f, 360.0f);
-        fArray[1] = ColorContrastUtil.S(f2, 0.0f, 1.0f);
-        fArray[2] = ColorContrastUtil.S(f9, 0.0f, 1.0f);
+        outHsl[0] = ColorContrastUtil.constrain(hue, 0.0f, 360.0f);
+        outHsl[1] = ColorContrastUtil.constrain(saturation, 0.0f, 1.0f);
+        outHsl[2] = ColorContrastUtil.constrain(lightness, 0.0f, 1.0f);
     }
 
-    public static void G(double d, double d2, double d3, double[] dArray) {
-        double d4 = (d + 16.0) / 116.0;
-        double d5 = d2 / 500.0 + d4;
-        double d6 = d4 - d3 / 200.0;
-        double d7 = Math.pow(d5, 3.0);
-        double d8 = d7 > 0.008856 ? d7 : (116.0 * d5 - 16.0) / 903.3;
-        double d9 = d > 7.9996247999999985 ? Math.pow(d4, 3.0) : d / 903.3;
-        d7 = Math.pow(d6, 3.0);
-        double d10 = d7 > 0.008856 ? d7 : (116.0 * d6 - 16.0) / 903.3;
-        dArray[0] = d8 * 95.047;
-        dArray[1] = d9 * 100.0;
-        dArray[2] = d10 * 108.883;
+    public static void labToXyz(double lightness, double aComponent, double bComponent, double[] outXyz) {
+        double yIntermediate = (lightness + 16.0) / 116.0;
+        double xIntermediate = aComponent / 500.0 + yIntermediate;
+        double zIntermediate = yIntermediate - bComponent / 200.0;
+        double xCube = Math.pow(xIntermediate, 3.0);
+        double x = xCube > XYZ_EPSILON ? xCube : (116.0 * xIntermediate - 16.0) / XYZ_KAPPA;
+        double y = lightness > 7.9996247999999985 ? Math.pow(yIntermediate, 3.0) : lightness / XYZ_KAPPA;
+        double zCube = Math.pow(zIntermediate, 3.0);
+        double z = zCube > XYZ_EPSILON ? zCube : (116.0 * zIntermediate - 16.0) / XYZ_KAPPA;
+        outXyz[0] = x * XYZ_WHITE_REFERENCE_X;
+        outXyz[1] = y * XYZ_WHITE_REFERENCE_Y;
+        outXyz[2] = z * XYZ_WHITE_REFERENCE_Z;
     }
 
-    public static int A(double d, double d2, double d3) {
-        double[] dArray = ColorContrastUtil.q();
-        ColorContrastUtil.G(d, d2, d3, dArray);
-        return ColorContrastUtil.t(dArray[0], dArray[1], dArray[2]);
+    public static int labToColor(double lightness, double aComponent, double bComponent) {
+        double[] xyz = ColorContrastUtil.getTemporaryXyzArray();
+        ColorContrastUtil.labToXyz(lightness, aComponent, bComponent, xyz);
+        return ColorContrastUtil.xyzToColor(xyz[0], xyz[1], xyz[2]);
     }
 
-    private static IllegalArgumentException a(IllegalArgumentException illegalArgumentException) {
+    private static IllegalArgumentException propagateIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
         return illegalArgumentException;
     }
 
-    public static double[] q() {
-        double[] dArray = Y.get();
+    public static double[] getTemporaryXyzArray() {
+        double[] dArray = TEMPORARY_XYZ_ARRAY.get();
         if (dArray == null) {
             dArray = new double[3];
-            Y.set(dArray);
+            TEMPORARY_XYZ_ARRAY.set(dArray);
         }
         return dArray;
     }
 
-    public static int k(int n, int n2) {
-        int n3 = 255;
-        int n4 = 255;
-        int n5 = ColorContrastUtil.Z(n4, n3);
-        Color color = new Color(n);
-        Color color2 = new Color(n2);
-        int n6 = ColorContrastUtil.G(color.getRed(), n4, color2.getRed(), n3, n5);
-        int n7 = ColorContrastUtil.G(color.getGreen(), n4, color2.getGreen(), n3, n5);
-        int n8 = ColorContrastUtil.G(color.getBlue(), n4, color2.getBlue(), n3, n5);
-        return new Color(n6, n7, n8).getRGB();
+    public static int compositeColors(int foregroundRgb, int backgroundRgb) {
+        int foregroundAlpha = 255;
+        int backgroundAlpha = 255;
+        int compositeAlpha = ColorContrastUtil.compositeAlpha(foregroundAlpha, backgroundAlpha);
+        Color color = new Color(foregroundRgb);
+        Color color2 = new Color(backgroundRgb);
+        int red = ColorContrastUtil.compositeComponent(color.getRed(), foregroundAlpha, color2.getRed(), backgroundAlpha, compositeAlpha);
+        int green = ColorContrastUtil.compositeComponent(color.getGreen(), foregroundAlpha, color2.getGreen(), backgroundAlpha, compositeAlpha);
+        int blue = ColorContrastUtil.compositeComponent(color.getBlue(), foregroundAlpha, color2.getBlue(), backgroundAlpha, compositeAlpha);
+        return new Color(red, green, blue).getRGB();
     }
 
-    private static int G(int n, int n2, int n3, int n4, int n5) {
-        if (n5 == 0) {
+    private static int compositeComponent(int foreground, int foregroundAlpha, int background, int backgroundAlpha, int compositeAlpha) {
+        if (compositeAlpha == 0) {
             return 0;
         }
-        return (255 * n * n2 + n3 * n4 * (255 - n2)) / (n5 * 255);
+        return (255 * foreground * foregroundAlpha + background * backgroundAlpha * (255 - foregroundAlpha)) / (compositeAlpha * 255);
     }
 
-    private static int Z(int n, int n2) {
-        return 255 - (255 - n2) * (255 - n) / 255;
+    private static int compositeAlpha(int foregroundAlpha, int backgroundAlpha) {
+        return 255 - (255 - backgroundAlpha) * (255 - foregroundAlpha) / 255;
     }
 
-    public static double K(int n) {
-        double[] dArray = ColorContrastUtil.q();
-        ColorContrastUtil.p(n, dArray);
+    public static double calculateLuminance(int colorRgb) {
+        double[] dArray = ColorContrastUtil.getTemporaryXyzArray();
+        ColorContrastUtil.colorToXyz(colorRgb, dArray);
         return dArray[1] / 100.0;
     }
 }
-

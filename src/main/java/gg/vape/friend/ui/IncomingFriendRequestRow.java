@@ -17,9 +17,9 @@ extends FriendRequestRow {
     public IncomingFriendRequestRow(IncomingFriendRequest incomingFriendRequest) {
         super(incomingFriendRequest, null);
         this.Pm = incomingFriendRequest;
-        this.N$src$Lgg_vape_ui_click_component_gui_TextButton_$8z76vj().r(new IncomingFriendRequestAcceptClickHandler(this));
+        this.N$src$Lgg_vape_ui_click_component_gui_TextButton_$8z76vj().addClickListener(new IncomingFriendRequestAcceptClickHandler(this));
         this.R$src$Lgg_vape_ui_click_component_PanelComponent_$61we3d().h(this.N$src$Lgg_vape_ui_click_component_gui_TextButton_$8z76vj(), new Object[0]);
-        this.N$src$Lgg_vape_ui_click_component_IconButtonComponent_$t1119y().r(new IncomingFriendRequestDeclineClickHandler(this));
+        this.N$src$Lgg_vape_ui_click_component_IconButtonComponent_$t1119y().addClickListener(new IncomingFriendRequestDeclineClickHandler(this));
     }
 
     private void b$src$V$gxwn83() {
@@ -34,4 +34,3 @@ extends FriendRequestRow {
         incomingFriendRequestRow.b$src$V$gxwn83();
     }
 }
-

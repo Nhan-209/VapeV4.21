@@ -23,24 +23,24 @@ implements Cloneable {
     @Nullable
     private transient ItemStack resolvedStack;
 
-    public boolean h(ItemStack itemStack) {
+    public boolean matches(ItemStack itemStack) {
         String name = this.itemName;
         if (name == null) {
             return false;
         }
         InventoryItemMatcher inventoryItemMatcher = this.getMatcher();
-        if (inventoryItemMatcher != null && inventoryItemMatcher.g(itemStack, itemStack.getItem())) {
+        if (inventoryItemMatcher != null && inventoryItemMatcher.matches(itemStack, itemStack.getItem())) {
             return true;
         }
         if (itemStack.isNull()) {
             return false;
         }
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack);
+        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         return itemMappingEntry != null && name.equals(itemMappingEntry.M());
     }
 
     @Nullable
-    public ItemStack E() {
+    public ItemStack getItemStack() {
         this.ensureResolved();
         return this.resolvedStack;
     }
@@ -53,12 +53,12 @@ implements Cloneable {
         if (normalized == null || normalized.isEmpty()) {
             return;
         }
-        this.matcher = InventoryItemMatcherRegistry.z(normalized);
+        this.matcher = InventoryItemMatcherRegistry.getByName(normalized);
         if (this.matcher != null) {
             this.resolvedStack = null;
             return;
         }
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().b(normalized);
+        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().findByName(normalized);
         if (itemMappingEntry != null) {
             this.resolvedStack = itemMappingEntry.Q();
             if (this.resolvedStack == null || this.resolvedStack.isNull()) {
@@ -67,31 +67,31 @@ implements Cloneable {
         }
     }
 
-    public JsonElement Q() {
+    public JsonElement toJson() {
         return this.itemName != null ? new JsonPrimitive(this.itemName) : null;
     }
 
-    public boolean j() {
+    public boolean isEmpty() {
         return this.itemName == null;
     }
 
     @Nullable
-    public String V() {
+    public String getMatcherGroupName() {
         this.ensureResolved();
-        return this.matcher != null ? this.matcher.Z() : null;
+        return this.matcher != null ? this.matcher.getIconName() : null;
     }
 
-    public ItemFilterSelection y() {
+    public ItemFilterSelection copy() {
         ItemFilterSelection itemFilterSelection = new ItemFilterSelection();
         itemFilterSelection.setItemName(this.itemName);
         return itemFilterSelection;
     }
 
-    public boolean i() {
-        if (this.V() != null) {
+    public boolean isUnresolved() {
+        if (this.getMatcherGroupName() != null) {
             return false;
         }
-        ItemStack itemStack = this.E();
+        ItemStack itemStack = this.getItemStack();
         return (itemStack == null || itemStack.isNull()) && this.itemName != null;
     }
 
@@ -100,18 +100,18 @@ implements Cloneable {
     }
 
     @Nullable
-    public InventoryItemMatcher c() {
+    public InventoryItemMatcher getMatcher() {
         this.ensureResolved();
         return this.matcher;
     }
 
-    public void G(@Nullable ItemPickerSelection<String, ItemMappingEntry> itemPickerSelection) {
-        if (itemPickerSelection == null || itemPickerSelection.N() == null && itemPickerSelection.X() == null) {
+    public void setSelection(@Nullable ItemPickerSelection<String, ItemMappingEntry> itemPickerSelection) {
+        if (itemPickerSelection == null || itemPickerSelection.getLeft() == null && itemPickerSelection.getRight() == null) {
             this.setItemName(null);
-        } else if (itemPickerSelection.N() != null) {
-            this.setItemName(itemPickerSelection.N());
-        } else if (itemPickerSelection.X() != null) {
-            this.setItemName(itemPickerSelection.X().M());
+        } else if (itemPickerSelection.getLeft() != null) {
+            this.setItemName(itemPickerSelection.getLeft());
+        } else if (itemPickerSelection.getRight() != null) {
+            this.setItemName(itemPickerSelection.getRight().M());
         }
     }
 
@@ -123,10 +123,6 @@ implements Cloneable {
         if (resolveNow) {
             this.ensureResolved();
         }
-    }
-
-    private static Throwable a(Throwable throwable) {
-        return throwable;
     }
 
     private void ensureResolved() {
@@ -147,7 +143,7 @@ implements Cloneable {
     }
 
     @Nullable
-    public String J() {
+    public String getItemName() {
         return this.itemName;
     }
 
@@ -163,10 +159,5 @@ implements Cloneable {
         }
     }
 
-    @Nullable
-    private InventoryItemMatcher getMatcher() {
-        this.ensureResolved();
-        return this.matcher;
-    }
 }
 

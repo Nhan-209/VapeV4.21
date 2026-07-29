@@ -24,12 +24,12 @@ extends HudSettingsFrameBase {
     @Override
     public void t(JsonObject jsonObject) {
         super.t(jsonObject);
-        ClientSettings.g(QuickActionsFrame.class).N$src$Lgg_vape_ui_click_frame_impl_quickactions_QuickA$1smecqc().h(this.V$src$Z$1xhop3l());
+        ClientSettings.getFrame(QuickActionsFrame.class).N$src$Lgg_vape_ui_click_frame_impl_quickactions_QuickA$1smecqc().setValue(this.V$src$Z$1xhop3l());
     }
 
     @Override
     public void Y() {
-        if (this.SB.W$src$Z$38isfa()) {
+        if (this.SB.isDragging()) {
             if (!this.SI) {
                 this.SI = true;
             }
@@ -58,11 +58,12 @@ extends HudSettingsFrameBase {
         this.SC = new NumberSliderComponent(this.S5.p);
         this.S0 = new NumberSliderComponent(this.S5.W);
         this.S4 = new BooleanToggleComponent(this.S5.A);
-        this.SB.T(OnlinePlayerPreviewSettingsFrame.J.r);
-        this.SC.T(OnlinePlayerPreviewSettingsFrame.J.r);
-        this.S0.T(OnlinePlayerPreviewSettingsFrame.J.r);
-        this.S4.T(OnlinePlayerPreviewSettingsFrame.J.r);
-        this.M(this.SB, this.SC, this.S0, this.S4, new OnlinePlayerPreviewDividerComponent(this, OnlinePlayerPreviewSettingsFrame.J.l));
+        this.SB.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
+        this.SC.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
+        this.S0.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
+        this.S4.setDisabledOverlayColor(OnlinePlayerPreviewSettingsFrame.J.r);
+        this.addSettings(this.SB, this.SC, this.S0, this.S4,
+                new OnlinePlayerPreviewDividerComponent(this, OnlinePlayerPreviewSettingsFrame.J.l));
         this.h(new OnlinePlayerPreviewComponent(this), new Object[0]);
     }
 

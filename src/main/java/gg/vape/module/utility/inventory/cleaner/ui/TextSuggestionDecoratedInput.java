@@ -7,48 +7,48 @@ import gg.vape.ui.click.component.LabeledTextInputComponent;
 
 class TextSuggestionDecoratedInput
 extends LabeledTextInputComponent {
-    final TextSuggestionInputComponent oF;
+    final TextSuggestionInputComponent owner;
 
     @Override
-    public void l$src$V$1mkxjop() {
-        if (this.i$src$Ljava_lang_String_$1n2xf3k().isEmpty()) {
-            this.oF.L$src$V$cciqa9();
+    public void beforeBackspace() {
+        if (this.getText().isEmpty()) {
+            this.owner.removeLastRow();
         }
     }
 
     @Override
-    public float g() {
-        float f = 0.0f;
-        for (GuiComponent guiComponent : TextSuggestionInputComponent.a(this.oF)) {
-            f += (float)guiComponent.A() + 2.0f;
+    public float getRightInset() {
+        float rowsWidth = 0.0f;
+        for (GuiComponent guiComponent : TextSuggestionInputComponent.mutableRows(this.owner)) {
+            rowsWidth += (float)guiComponent.A() + 2.0f;
         }
-        return super.g() + (f + 2.0f);
+        return super.getRightInset() + (rowsWidth + 2.0f);
     }
 
 
-    TextSuggestionDecoratedInput(TextSuggestionInputComponent textSuggestionInputComponent, String string, boolean bl, boolean bl2) {
-        super(string, bl, bl2);
-        this.oF = textSuggestionInputComponent;
+    TextSuggestionDecoratedInput(TextSuggestionInputComponent textSuggestionInputComponent, String placeholder, boolean multiline, boolean editable) {
+        super(placeholder, multiline, editable);
+        this.owner = textSuggestionInputComponent;
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
         super.g(guiMouseEvent);
-        this.oF.g(guiMouseEvent);
+        this.owner.g(guiMouseEvent);
     }
 
     @Override
-    protected void R() {
-        double d = 0.0;
-        double d2 = this.n() + this.L() / 2.0;
-        for (GuiComponent guiComponent : TextSuggestionInputComponent.a(this.oF)) {
-            guiComponent.K(this.G$src$D$1b2f02a() + (double)super.g() + d);
-            guiComponent.S(d2 - guiComponent.L() / 2.0);
+    protected void renderInputDecorations() {
+        double rowOffset = 0.0;
+        double centerY = this.n() + this.L() / 2.0;
+        for (GuiComponent guiComponent : TextSuggestionInputComponent.mutableRows(this.owner)) {
+            guiComponent.K(this.G$src$D$1b2f02a() + (double)super.getRightInset() + rowOffset);
+            guiComponent.S(centerY - guiComponent.L() / 2.0);
             if (guiComponent.t()) {
                 guiComponent.J();
             }
             guiComponent.c();
-            d += guiComponent.A() + 2.0;
+            rowOffset += guiComponent.A() + 2.0;
         }
     }
 }

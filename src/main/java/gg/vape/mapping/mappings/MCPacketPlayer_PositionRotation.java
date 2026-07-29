@@ -53,7 +53,7 @@ extends Mapping {
                 MCPacketPlayer_PositionRotation mCPacketPlayer_PositionRotation = this;
                 this.E = mCPacketPlayer_PositionRotation.Y(string, bl, clazz, classArray);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MPacketIdFactory.x(new GuiComponent[2]);
             }
             return;
@@ -72,7 +72,7 @@ extends Mapping {
         String string = "<init>";
         MCPacketPlayer_PositionRotation mCPacketPlayer_PositionRotation = this;
         this.E = mCPacketPlayer_PositionRotation.Y(string, bl, clazz, classArray); 
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MPacketIdFactory.x(new GuiComponent[2]);
         }
     }

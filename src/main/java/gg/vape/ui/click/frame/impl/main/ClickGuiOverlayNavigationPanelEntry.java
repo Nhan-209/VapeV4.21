@@ -5,8 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ClickGuiOverlayNavigationPanelEntry
 extends ClickGuiOverlayNavigationPanelBase {
-    public ClickGuiOverlayNavigationPanelEntry(@Nullable Runnable runnable) {
-        super(null, null, runnable);
+    public ClickGuiOverlayNavigationPanelEntry(@Nullable Runnable closeAction) {
+        super(null, null, closeAction);
     }
 }
-

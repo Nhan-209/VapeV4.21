@@ -10,214 +10,217 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class FixedRotationController
 extends MouseRotationController {
-    public float I;
-    private boolean a;
-    public float L;
-    private boolean k;
-    private boolean w;
-    private boolean p;
-    private boolean J;
-    private boolean G;
-    public static final float Z = -999.0f;
+    public float targetPitch;
+    private boolean clampStepToRemaining;
+    public float targetYaw;
+    private boolean scaleAxesProportionally;
+    private boolean restoreCapturedRotation;
+    private boolean cubicAcceleration;
+    private boolean linearAcceleration;
+    private boolean angleBasedAcceleration;
+    public static final float UNSET_ROTATION = -999.0f;
 
-    public boolean Y() {
-        return this.k;
+    public boolean isAxisScalingEnabled() {
+        return this.scaleAxesProportionally;
     }
 
-    public void j(boolean bl) {
-        this.w = bl;
+    public void setRestoreCapturedRotation(boolean restoreCapturedRotation) {
+        this.restoreCapturedRotation = restoreCapturedRotation;
     }
 
-    public boolean e() {
-        return this.p;
+    public boolean isCubicAccelerationEnabled() {
+        return this.cubicAcceleration;
     }
 
-    public void A(boolean bl) {
-        this.G = bl;
+    public void setAngleBasedAcceleration(boolean enabled) {
+        this.angleBasedAcceleration = enabled;
     }
 
-    public boolean w$src$Z$15qe9bc() {
-        return this.J;
+    public boolean isLinearAccelerationEnabled() {
+        return this.linearAcceleration;
     }
 
-    public float b() {
-        return this.L;
+    public float getTargetYaw() {
+        return this.targetYaw;
     }
 
     public FixedRotationController(RotationAngles rotationAngles) {
-        this.L = rotationAngles.z();
-        this.I = rotationAngles.N();
+        this.targetYaw = rotationAngles.getYaw();
+        this.targetPitch = rotationAngles.getPitch();
     }
 
-    public void z(boolean bl) {
-        this.p = bl;
+    public void setCubicAcceleration(boolean enabled) {
+        this.cubicAcceleration = enabled;
     }
 
-    public float d() {
+    public float getCurrentPitch() {
         return Minecraft.F().V();
     }
 
-    public void k(boolean bl) {
-        this.a = bl;
+    public void setClampStepToRemaining(boolean enabled) {
+        this.clampStepToRemaining = enabled;
     }
 
-    public boolean T() {
-        return this.w;
+    public boolean shouldRestoreCapturedRotation() {
+        return this.restoreCapturedRotation;
     }
 
     @Override
-    public boolean A() {
-        float f;
-        float f2;
-        float f3;
-        float f4;
-        if (this.L == -999.0f) {
+    public boolean updateYaw() {
+        if (this.targetYaw == UNSET_ROTATION) {
             return true;
         }
-        float f5 = RotationManager.b.E();
-        int n = (int)this.B;
-        int n2 = (int)(-this.y);
-        float f6 = f5 * 0.6f + 0.2f;
-        float f7 = f6 * f6 * f6 * 8.0f;
-        float f8 = (float)n * f7;
-        float f9 = (float)n2 * f7;
-        float f10 = (float)((double)this.k() + (double)f8 * 0.15);
-        float f11 = (float)((double)this.d() - (double)f9 * 0.15);
-        double d = MathUtil.wrapAngleTo180((double)((this.L - f10) % 360.0f));
-        double d2 = MathUtil.wrapAngleTo180((double)((this.I - f11) % 360.0f));
-        double d3 = Math.abs(d);
-        double d4 = Math.abs(d2);
-        double d5 = (double)this.O() * 0.25;
-        double d6 = d3 / d4;
-        if (this.k && d6 < 1.0) {
-            d5 *= d6;
-        }
-        if (Math.round(d3 / (double)(f4 = (float)(0.0 + (double)(f3 = (f2 = (f = RotationManager.b.E()) * 0.6f + 0.2f) * f2 * f2 * 8.0f) * 0.15))) > (long)Math.max(Math.round(this.W / f4), 0)) {
-            if (this.G) {
-                d5 *= (225.0 + d3) / 180.0;
-            } else if (this.J) {
-                d5 += d3 * 0.05;
-            } else if (this.p) {
-                double d7 = d3 / 100.0;
-                double d8 = 0.4;
-                double d9 = 1.0;
-                double d10 = -0.7;
-                double d11 = d9 + 1.0;
-                d5 *= Math.min(Math.max(1.0, d8 + d11 * Math.pow(d7 - d10, 3.0) + d9 * Math.pow(d7 - d10, 2.0)), 4.0);
-            }
-            this.B = this.a ? (d > 0.0 ? (float)((double)this.B + Math.min(d5, d / (double)f4)) : (float)((double)this.B - Math.min(d5, Math.abs(d / (double)f4)))) : (d > 0.0 ? (float)((double)this.B + d5) : (float)((double)this.B - d5));
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void B(EventPreEntityRendererMouseUpdate eventPreEntityRendererMouseUpdate) {
-        if (this.T()) {
-            EntityPlayerSP entityPlayerSP = eventPreEntityRendererMouseUpdate.getThePlayer();
-            if (entityPlayerSP.J() != this.Q) {
-                entityPlayerSP.H(this.Q);
-            }
-            if (entityPlayerSP.j() != this.s) {
-                entityPlayerSP.D(this.s);
-            }
-            if (entityPlayerSP.V() != this.c) {
-                entityPlayerSP.C(this.c);
-            }
-            if (entityPlayerSP.D() != this.S) {
-                entityPlayerSP.l(this.S);
-            }
-        }
-    }
-
-    public void g(float f, float f2) {
-        this.L = f;
-        this.I = f2;
-        this.u(false);
-    }
-
-    @Override
-    public boolean m() {
-        float f;
-        float f2;
-        float f3;
-        float f4;
-        if (this.I == -999.0f) {
+        float mouseScale = this.getMouseScale();
+        float predictedYaw = this.getCurrentYaw() + (float)(int)this.pendingYawDelta * mouseScale * 0.15f;
+        float predictedPitch = this.getCurrentPitch() - (float)(int)(-this.pendingPitchDelta) * mouseScale * 0.15f;
+        double yawError = MathUtil.wrapAngleTo180((this.targetYaw - predictedYaw) % 360.0f);
+        double pitchError = MathUtil.wrapAngleTo180((this.targetPitch - predictedPitch) % 360.0f);
+        double absoluteYawError = Math.abs(yawError);
+        if (!this.isOutsideTolerance(absoluteYawError)) {
             return true;
         }
-        float f5 = this.d();
-        if (f5 == -90.0f) {
-            f5 = -89.99f;
+        double step = this.getSpeed() * 0.25;
+        double axisRatio = absoluteYawError / Math.abs(pitchError);
+        if (this.scaleAxesProportionally && axisRatio < 1.0) {
+            step *= axisRatio;
         }
-        float f6 = RotationManager.b.E();
-        int n = (int)this.B;
-        int n2 = (int)(-this.y);
-        float f7 = f6 * 0.6f + 0.2f;
-        float f8 = f7 * f7 * f7 * 8.0f;
-        float f9 = (float)n * f8;
-        float f10 = (float)n2 * f8;
-        float f11 = (float)((double)this.k() + (double)f9 * 0.15);
-        float f12 = (float)((double)f5 - (double)f10 * 0.15);
-        double d = MathUtil.wrapAngleTo180((this.L - f11) % 360.0f);
-        double d2 = MathUtil.wrapAngleTo180((this.I - f12) % 360.0f);
-        double d3 = Math.abs(d);
-        double d4 = Math.abs(d2);
-        double d5 = (double)this.O() * 0.25;
-        double d6 = d4 / d3;
-        if (this.k && d6 < 1.0) {
-            d5 *= d6;
-        }
-        if (Math.round(d4 / (double)(f4 = (float)(0.0 + (double)(f3 = (f2 = (f = RotationManager.b.E()) * 0.6f + 0.2f) * f2 * f2 * 8.0f) * 0.15))) > (long)Math.max(Math.round(this.W / f4), 0)) {
-            if (this.G) {
-                d5 *= (135.0 + d4) / 90.0;
-            } else if (this.J) {
-                d5 += d4 * 0.05;
-            } else if (this.p) {
-                double d7 = d4 / 75.0;
-                double d8 = 0.4;
-                double d9 = 1.0;
-                double d10 = -0.7;
-                double d11 = d9 + 1.0;
-                d5 *= Math.max(1.0, d8 + d11 * Math.pow(d7 - d10, 3.0) + d9 * Math.pow(d7 - d10, 2.0));
+        step = this.applyYawAcceleration(step, absoluteYawError);
+        this.pendingYawDelta = this.addPendingStep(this.pendingYawDelta, yawError, step);
+        return false;
+    }
+
+    @Override
+    public void onPreMouseUpdate(EventPreEntityRendererMouseUpdate event) {
+        if (this.shouldRestoreCapturedRotation()) {
+            EntityPlayerSP player = event.getThePlayer();
+            if (player.J() != this.savedYaw) {
+                player.H(this.savedYaw);
             }
-            this.y = this.a ? (d2 > 0.0 ? (float)((double)this.y + Math.min(d5, d2 / (double)f4)) : (float)((double)this.y - Math.min(d5, Math.abs(d2 / (double)f4)))) : (d2 > 0.0 ? (float)((double)this.y + d5) : (float)((double)this.y - d5));
-            return false;
+            if (player.j() != this.savedPreviousYaw) {
+                player.D(this.savedPreviousYaw);
+            }
+            if (player.V() != this.savedPitch) {
+                player.C(this.savedPitch);
+            }
+            if (player.D() != this.savedPreviousPitch) {
+                player.l(this.savedPreviousPitch);
+            }
         }
-        return true;
     }
 
-    public void b(RotationAngles rotationAngles) {
-        this.g(rotationAngles.z(), rotationAngles.N());
+    public void setTargetRotation(float yaw, float pitch) {
+        this.targetYaw = yaw;
+        this.targetPitch = pitch;
+        this.setComplete(false);
     }
 
-    public FixedRotationController(float f, float f2) {
-        this.L = f;
-        this.I = f2;
+    @Override
+    public boolean updatePitch() {
+        if (this.targetPitch == UNSET_ROTATION) {
+            return true;
+        }
+        float currentPitch = this.getCurrentPitch() == -90.0f ? -89.99f : this.getCurrentPitch();
+        float mouseScale = this.getMouseScale();
+        float predictedYaw = this.getCurrentYaw() + (float)(int)this.pendingYawDelta * mouseScale * 0.15f;
+        float predictedPitch = currentPitch - (float)(int)(-this.pendingPitchDelta) * mouseScale * 0.15f;
+        double yawError = MathUtil.wrapAngleTo180((this.targetYaw - predictedYaw) % 360.0f);
+        double pitchError = MathUtil.wrapAngleTo180((this.targetPitch - predictedPitch) % 360.0f);
+        double absolutePitchError = Math.abs(pitchError);
+        if (!this.isOutsideTolerance(absolutePitchError)) {
+            return true;
+        }
+        double step = this.getSpeed() * 0.25;
+        double axisRatio = absolutePitchError / Math.abs(yawError);
+        if (this.scaleAxesProportionally && axisRatio < 1.0) {
+            step *= axisRatio;
+        }
+        step = this.applyPitchAcceleration(step, absolutePitchError);
+        this.pendingPitchDelta = this.addPendingStep(this.pendingPitchDelta, pitchError, step);
+        return false;
     }
 
-    public float s$src$F$15o72go() {
-        return this.I;
+    protected float getMouseScale() {
+        float sensitivityBase = RotationManager.INSTANCE.getMouseSensitivity() * 0.6f + 0.2f;
+        return sensitivityBase * sensitivityBase * sensitivityBase * 8.0f;
     }
 
-    public boolean K() {
-        return this.a;
+    protected boolean isOutsideTolerance(double absoluteError) {
+        float rotationPerStep = this.getMouseScale() * 0.15f;
+        return Math.round(absoluteError / rotationPerStep) > Math.max(Math.round(this.tolerance / rotationPerStep), 0L);
     }
 
-    public float k() {
+    protected double applyYawAcceleration(double step, double absoluteError) {
+        if (this.angleBasedAcceleration) {
+            return step * (225.0 + absoluteError) / 180.0;
+        }
+        if (this.linearAcceleration) {
+            return step + absoluteError * 0.05;
+        }
+        if (!this.cubicAcceleration) {
+            return step;
+        }
+        double normalizedError = absoluteError / 100.0;
+        double shiftedError = normalizedError + 0.7;
+        double multiplier = 0.4 + 2.0 * Math.pow(shiftedError, 3.0) + Math.pow(shiftedError, 2.0);
+        return step * Math.min(Math.max(1.0, multiplier), 4.0);
+    }
+
+    protected double applyPitchAcceleration(double step, double absoluteError) {
+        if (this.angleBasedAcceleration) {
+            return step * (135.0 + absoluteError) / 90.0;
+        }
+        if (this.linearAcceleration) {
+            return step + absoluteError * 0.05;
+        }
+        if (!this.cubicAcceleration) {
+            return step;
+        }
+        double normalizedError = absoluteError / 75.0;
+        double shiftedError = normalizedError + 0.7;
+        double multiplier = 0.4 + 2.0 * Math.pow(shiftedError, 3.0) + Math.pow(shiftedError, 2.0);
+        return step * Math.max(1.0, multiplier);
+    }
+
+    protected float addPendingStep(float pendingDelta, double error, double step) {
+        if (!this.clampStepToRemaining) {
+            return (float)(error > 0.0 ? pendingDelta + step : pendingDelta - step);
+        }
+        double remainingSteps = Math.abs(error / (this.getMouseScale() * 0.15f));
+        double appliedStep = Math.min(step, remainingSteps);
+        return (float)(error > 0.0 ? pendingDelta + appliedStep : pendingDelta - appliedStep);
+    }
+
+    public void setTargetRotation(RotationAngles rotationAngles) {
+        this.setTargetRotation(rotationAngles.getYaw(), rotationAngles.getPitch());
+    }
+
+    public FixedRotationController(float yaw, float pitch) {
+        this.targetYaw = yaw;
+        this.targetPitch = pitch;
+    }
+
+    public float getTargetPitch() {
+        return this.targetPitch;
+    }
+
+    public boolean isStepClampedToRemaining() {
+        return this.clampStepToRemaining;
+    }
+
+    public float getCurrentYaw() {
         return Minecraft.F().J();
     }
 
-    public void s(boolean bl) {
-        this.J = bl;
+    public void setLinearAcceleration(boolean enabled) {
+        this.linearAcceleration = enabled;
     }
 
 
-    public void U(boolean bl) {
-        this.k = bl;
+    public void setScaleAxesProportionally(boolean enabled) {
+        this.scaleAxesProportionally = enabled;
     }
 
-    public boolean S() {
-        return this.G;
+    public boolean isAngleBasedAccelerationEnabled() {
+        return this.angleBasedAcceleration;
     }
 }
-

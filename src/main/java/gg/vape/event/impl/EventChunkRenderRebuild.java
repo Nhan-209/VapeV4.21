@@ -15,7 +15,7 @@ extends Event {
         if (xRay == null || !xRay.boolean_r()) {
             return false;
         }
-        xRay.i(this);
+        xRay.onChunkRenderRebuild(this);
         return this.isCanceled();
     }
 

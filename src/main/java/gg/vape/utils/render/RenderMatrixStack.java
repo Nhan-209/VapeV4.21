@@ -5,53 +5,53 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class RenderMatrixStack {
-    private final Deque<RenderMatrix4f> O = new ArrayDeque<RenderMatrix4f>();
+    private final Deque<RenderMatrix4f> matrices = new ArrayDeque<RenderMatrix4f>();
 
-    public void W() {
-        this.c().b();
+    public void resetCurrent() {
+        this.peek().setIdentity();
     }
 
     public RenderMatrixStack() {
-        this.O.push(new RenderMatrix4f().b());
+        this.matrices.push(new RenderMatrix4f().setIdentity());
     }
 
-    public void u(float f, float f2, float f3, float f4, float f5, float f6) {
-        this.c().e(f, f2, f3, f4, f5, f6);
+    public void setOrthographic(float left, float right, float bottom, float top, float nearPlane, float farPlane) {
+        this.peek().setOrthographic(left, right, bottom, top, nearPlane, farPlane);
     }
 
-    public void K(float f, float f2, float f3) {
-        this.c().I(f, f2, f3);
+    public void translate(float x, float y, float z) {
+        this.peek().translate(x, y, z);
     }
 
-    public RenderMatrix4f c() {
-        return this.O.peek();
+    public RenderMatrix4f peek() {
+        return this.matrices.peek();
     }
 
-    public void g(float f, float f2, float f3) {
-        this.c().O(f, f2, f3);
+    public void scale(float x, float y, float z) {
+        this.peek().scale(x, y, z);
     }
 
-    public void z() {
-        if (this.O.size() > 1) {
-            this.O.pop();
+    public void pop() {
+        if (this.matrices.size() > 1) {
+            this.matrices.pop();
         }
     }
 
-    public void a(float f) {
-        this.c().v(f);
+    public void setXRotation(float angleDegrees) {
+        this.peek().setXRotation(angleDegrees);
     }
 
-    public void D() {
-        this.O.push(new RenderMatrix4f().b());
+    public void pushIdentity() {
+        this.matrices.push(new RenderMatrix4f().setIdentity());
     }
 
 
-    public void e(float f, float f2, float f3, float f4) {
-        this.c().d(f, f2, f3, f4);
+    public void rotate(float angleDegrees, float axisX, float axisY, float axisZ) {
+        this.peek().rotate(angleDegrees, axisX, axisY, axisZ);
     }
 
-    public void u(RenderMatrix4f renderMatrix4f) {
-        this.c().u(renderMatrix4f);
+    public void multiply(RenderMatrix4f matrix) {
+        this.peek().multiply(matrix);
     }
 }
 

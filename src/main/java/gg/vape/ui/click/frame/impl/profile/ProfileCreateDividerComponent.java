@@ -13,7 +13,7 @@ extends GuiComponent {
         int n = 6;
         String string = n <= 9 ? Integer.toString(n) : b;
         GuiRenderPrimitives.V(this.G$src$D$1b2f02a(), this.n(), 8.0, 1.0, ProfileCreateDividerComponent.J.d);
-        this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.6).W(string, this.G$src$D$1b2f02a() + 4.0, this.n() + 2.5, ProfileCreateDividerComponent.J.A);
+        this.getAlternateFontRenderer(0.6).W(string, this.G$src$D$1b2f02a() + 4.0, this.n() + 2.5, ProfileCreateDividerComponent.J.A);
     }
 
     @Override

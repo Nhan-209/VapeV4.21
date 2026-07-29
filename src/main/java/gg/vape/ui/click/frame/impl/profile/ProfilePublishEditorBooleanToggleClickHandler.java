@@ -7,16 +7,16 @@ import java.awt.Point;
 
 public class ProfilePublishEditorBooleanToggleClickHandler
 implements GuiMouseListener {
-    final ProfilePublishEditorPanel o;
+    private final ProfilePublishEditorPanel editorPanel;
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        ProfilePublishEditorPanel.m(this.o).Z(!ProfilePublishEditorPanel.m(this.o).V$src$Z$1xhop3l());
+        this.editorPanel.toggleFriendsOnlyVisibility();
     }
 
 
     public ProfilePublishEditorBooleanToggleClickHandler(ProfilePublishEditorPanel profilePublishEditorPanel) {
-        this.o = profilePublishEditorPanel;
+        this.editorPanel = profilePublishEditorPanel;
     }
 }
 

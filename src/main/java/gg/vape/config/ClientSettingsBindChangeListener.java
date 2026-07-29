@@ -6,15 +6,14 @@ import gg.vape.unmap.BindChangeListener;
 
 class ClientSettingsBindChangeListener
 implements BindChangeListener {
-    final ClientSettings C;
+    final ClientSettings clientSettings;
 
     ClientSettingsBindChangeListener(ClientSettings clientSettings) {
-        this.C = clientSettings;
+        this.clientSettings = clientSettings;
     }
 
     @Override
-    public void S() {
+    public void onBindChanged() {
         Vape.INSTANCE.getFriendManager().r();
     }
 }
-

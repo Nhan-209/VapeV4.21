@@ -11,101 +11,101 @@ import org.jetbrains.annotations.Nullable;
 
 public class TargetInfoHealthBarComponent
 extends GuiComponent {
-    private final TimerUtil o = new TimerUtil();
-    private boolean a = false;
-    private HudModuleFrameBase I;
+    private final TimerUtil animationTimer = new TimerUtil();
+    private boolean snapToTargetHealth;
+    private HudModuleFrameBase frame;
     @Nullable
-    private EntityLivingBase R;
-    private float v = 0.0f;
-    private float i = 0.0f;
+    private EntityLivingBase entity;
+    private float targetHealth;
+    private float displayedHealth;
 
-    public void y(HudModuleFrameBase hudModuleFrameBase) {
-        this.I = hudModuleFrameBase;
+    public void setFrame(HudModuleFrameBase frame) {
+        this.frame = frame;
     }
 
     @Override
     public void H() {
-        double d = this.M();
+        double d = this.getHealthFraction();
         if (d == -1.0) {
             return;
         }
-        double d2 = Math.min(this.A() * this.M(), this.A());
+        double d2 = Math.min(this.A() * this.getHealthFraction(), this.A());
         float f = (float)this.L() / 2.0f - 0.5f;
         Color color = new Color(0, 0, 0, 100);
         Color color2 = TargetInfoHealthBarComponent.J.B;
         Color color3 = new Color(0, 0, 0, 100);
-        if (this.I != null) {
-            color = this.I.l(color);
-            color2 = this.I.l(color2);
-            color3 = this.I.l(color3);
+        if (this.frame != null) {
+            color = this.frame.applyDefaultEditorAlpha(color);
+            color2 = this.frame.applyDefaultEditorAlpha(color2);
+            color3 = this.frame.applyDefaultEditorAlpha(color3);
         }
         GuiRenderPrimitives.I(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), color, false, f, 1.0f, 8.0f, color3);
         GuiRenderPrimitives.I(this.G$src$D$1b2f02a(), this.n(), d2, this.L(), color2, true, f, 1.0f, 8.0f, color3);
     }
 
-    private float e() {
+    private float getSmoothedHealth() {
         float f;
-        if (this.a) {
-            return this.v;
+        if (this.snapToTargetHealth) {
+            return this.targetHealth;
         }
-        float f2 = this.v;
-        long l = this.o.getLastMS();
+        float f2 = this.targetHealth;
+        long l = this.animationTimer.getLastMS();
         if ((float)l >= (f = 10.0f)) {
             double d;
-            float f3 = Math.abs(this.i - f2);
-            float f4 = f3 < 0.5f && this.i < 0.5f ? 0.05f * ((float)l / f) : 0.08f * ((float)l / f);
-            if (this.i < f2) {
+            float f3 = Math.abs(this.displayedHealth - f2);
+            float f4 = f3 < 0.5f && this.displayedHealth < 0.5f ? 0.05f * ((float)l / f) : 0.08f * ((float)l / f);
+            if (this.displayedHealth < f2) {
                 d = Math.max(1.0, Math.pow(f3, 0.5));
-                this.i = (float)((double)this.i + (double)f4 * d);
+                this.displayedHealth = (float)((double)this.displayedHealth + (double)f4 * d);
             }
-            if (this.i > f2) {
+            if (this.displayedHealth > f2) {
                 d = Math.max(1.0, Math.pow(f3, 0.5));
-                this.i = (float)((double)this.i - (double)f4 * d);
+                this.displayedHealth = (float)((double)this.displayedHealth - (double)f4 * d);
             }
-            this.i = Math.max(0.0f, Math.min(this.i, 20.0f));
-            if ((double)Math.abs(this.i - f2) < 0.001) {
-                this.i = f2;
+            this.displayedHealth = Math.max(0.0f, Math.min(this.displayedHealth, 20.0f));
+            if ((double)Math.abs(this.displayedHealth - f2) < 0.001) {
+                this.displayedHealth = f2;
             }
-            this.o.reset();
+            this.animationTimer.reset();
         }
-        if (Float.isNaN(this.i) || !Float.isFinite(this.i)) {
-            this.i = f2;
-            this.o.reset();
+        if (Float.isNaN(this.displayedHealth) || !Float.isFinite(this.displayedHealth)) {
+            this.displayedHealth = f2;
+            this.animationTimer.reset();
         }
-        f2 = this.i;
+        f2 = this.displayedHealth;
         f2 = Math.max(f2, 0.0f);
         return f2;
     }
 
     @Override
     public void u() {
-        if (this.R != null) {
-            this.v = RotationUtil.x(this.R);
-            if (this.a) {
-                this.a = false;
-                this.o.reset();
-                this.i = this.v;
+        if (this.entity != null) {
+            this.targetHealth = RotationUtil.x(this.entity);
+            if (this.snapToTargetHealth) {
+                this.snapToTargetHealth = false;
+                this.animationTimer.reset();
+                this.displayedHealth = this.targetHealth;
             }
         } else {
-            this.v = 0.0f;
+            this.targetHealth = 0.0f;
         }
     }
 
-    public double M() {
-        if (this.R == null) {
+    public double getHealthFraction() {
+        if (this.entity == null) {
             return -1.0;
         }
-        float f = this.e();
-        return f / this.R.I$src$F$14vyvep();
+        float f = this.getSmoothedHealth();
+        return f / this.entity.I$src$F$14vyvep();
     }
 
 
-    public void a(@Nullable EntityLivingBase entityLivingBase) {
-        if (entityLivingBase != null && entityLivingBase.isNotNull() && entityLivingBase.equals(this.R)) {
+    public void setEntity(@Nullable EntityLivingBase entityLivingBase) {
+        if (entityLivingBase != null && entityLivingBase.isNotNull() && entityLivingBase.equals(this.entity)) {
             return;
         }
-        this.R = entityLivingBase;
-        this.a = true;
+        this.entity = entityLivingBase;
+        this.snapToTargetHealth = true;
     }
 
     public TargetInfoHealthBarComponent(int n, int n2) {
@@ -113,8 +113,8 @@ extends GuiComponent {
         this.Y(n2);
     }
 
-    public EntityLivingBase P() {
-        return this.R;
+    public EntityLivingBase getEntity() {
+        return this.entity;
     }
 }
 

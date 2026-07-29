@@ -12,12 +12,12 @@ implements GuiKeyTypedListener {
 
 
     @Override
-    public void v(char c, int n) {
-        if (ClientSettingsSearchFrameHeader.b(this.W) != ClientSettingsSearchFrameHeader.j(this.W).i$src$Ljava_lang_String_$1n2xf3k().length()) {
+    public void onKeyTyped(char c, int n) {
+        if (ClientSettingsSearchFrameHeader.b(this.W) != ClientSettingsSearchFrameHeader.j(this.W).getText().length()) {
             this.y.K$src$V$1nbah4f();
-            ClientSettings.V = null;
+            ClientSettings.activeTooltips = null;
         }
-        ClientSettingsSearchFrameHeader.L(this.W, ClientSettingsSearchFrameHeader.j(this.W).i$src$Ljava_lang_String_$1n2xf3k().length());
+        ClientSettingsSearchFrameHeader.L(this.W, ClientSettingsSearchFrameHeader.j(this.W).getText().length());
     }
 
     public ClientSettingsSearchFrameHeaderInputChangeListener(ClientSettingsSearchFrameHeader clientSettingsSearchFrameHeader, ClientSettingsSearchFrame clientSettingsSearchFrame) {
@@ -25,4 +25,3 @@ implements GuiKeyTypedListener {
         this.y = clientSettingsSearchFrame;
     }
 }
-

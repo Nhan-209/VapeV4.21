@@ -82,7 +82,7 @@ public class PublicProfileManager {
     }
 
     public static void M(String string) {
-        Vape.INSTANCE.getNotificationManager().K("Public Profiles", string, NotificationType.INFO, 5000L, true);
+        Vape.INSTANCE.getNotificationManager().show("Public Profiles", string, NotificationType.INFO, 5000L, true);
     }
 
     public void l(Collection<String> collection) {
@@ -122,7 +122,7 @@ public class PublicProfileManager {
     }
 
     public static void b(String string) {
-        Vape.INSTANCE.getNotificationManager().K("Public Profiles", string, NotificationType.WARNING, 5000L, true);
+        Vape.INSTANCE.getNotificationManager().show("Public Profiles", string, NotificationType.WARNING, 5000L, true);
     }
 
     public void j(Collection<PublicProfile> collection) {

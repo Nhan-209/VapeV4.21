@@ -183,11 +183,11 @@ extends Wrapper {
         if (ForgeVersion.MC_1_21_0.d()) {
             Holder holder = Holder.A(this.getObject());
             ITextComponent iTextComponent = new ITextComponent(MEnchantment.O(Enchantment.c.getMappings().RC, holder.getObject(), n));
-            return iTextComponent.C();
+            return iTextComponent.getFormattedText();
         }
         if (ForgeVersion.MC_1_16_5.d()) {
             ITextComponent iTextComponent = new ITextComponent(MEnchantment.J(Enchantment.c.getMappings().RC, this.I, n));
-            return iTextComponent.C();
+            return iTextComponent.getFormattedText();
         }
         return MEnchantment.E(Enchantment.c.getMappings().RC, this.I, n);
     }

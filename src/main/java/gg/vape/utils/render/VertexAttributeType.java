@@ -6,25 +6,24 @@ public enum VertexAttributeType {
     Vec3(3, false, 5126),
     Vec4(4, true, 5126);
 
-    private static final /* synthetic */ VertexAttributeType[] a;
+    private static final /* synthetic */ VertexAttributeType[] DECLARED_VALUES;
     public final int count;
     public final int type;
     public final boolean normalized;
 
-    private VertexAttributeType(int n2, boolean bl, int n3) {
-        this.count = n2;
-        this.normalized = bl;
-        this.type = n3;
+    private VertexAttributeType(int componentCount, boolean normalized, int openGlType) {
+        this.count = componentCount;
+        this.normalized = normalized;
+        this.type = openGlType;
     }
 
     static {
-        String[] stringArray = new String[]{"Vec3", "Vec4", "Vec2", "Float"};
+        String[] legacyNames = new String[]{"Vec3", "Vec4", "Vec2", "Float"};
 
 
 
 
-        a = new VertexAttributeType[]{Float, Vec2, Vec3, Vec4};
+        DECLARED_VALUES = new VertexAttributeType[]{Float, Vec2, Vec3, Vec4};
     }
 
 }
-

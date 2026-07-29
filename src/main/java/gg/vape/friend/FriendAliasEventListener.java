@@ -65,8 +65,8 @@ extends FriendAliasDisplayNameListener {
 
     private Set<TextComponentString> J(ITextComponent t3_02, Set<TextComponentString> set) {
         if (t3_02.isInstance(MappedClasses.ux)) {
-            ChestStealInventoryState tq_22 = new ChestStealInventoryState(t3_02.getObject());
-            for (Object object : tq_22.b()) {
+            ChestStealInventoryState translationComponent = new ChestStealInventoryState(t3_02.getObject());
+            for (Object object : translationComponent.getSiblings()) {
                 ITextComponent t3_03 = new ITextComponent(object);
                 if (t3_03.isNull() || !t3_03.isInstance(MappedClasses.Yr)) continue;
                 this.J(t3_03, set);

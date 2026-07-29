@@ -13,8 +13,8 @@ implements Comparator<Slot> {
     }
     final InventoryManager inventoryManager;
 
-    public int compareBowScore(Slot slot, Slot slot2) {
-        return Double.compare(ClientSettings.X(slot.I()), ClientSettings.X(slot2.I()));
+    public int compareBowScore(Slot first, Slot second) {
+        return Double.compare(ClientSettings.X(first.I()), ClientSettings.X(second.I()));
     }
 
     public BowSlotComparator(InventoryManager inventoryManager) {

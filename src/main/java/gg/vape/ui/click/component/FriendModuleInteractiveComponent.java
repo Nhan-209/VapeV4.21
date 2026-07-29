@@ -15,263 +15,262 @@ import org.jetbrains.annotations.Nullable;
 
 public class FriendModuleInteractiveComponent
 extends InteractiveComponent {
-    private Color Mw;
-    private final ColorAnimation I;
-    private static final double ML = 0.65;
-    private Color Mo;
-    private Color K;
-    private final double MO;
-    private final SimpleTextLabelComponent M8;
-    private static final double MC = 8.0;
-    private static final float Q = 3.0f;
+    private Color normalContentColor;
+    private final ColorAnimation selectionBackgroundAnimation;
+    private static final double BADGE_TEXT_SCALE = 0.65;
+    private Color normalPrimaryColor;
+    private Color badgeColor;
+    private final double trailingIconHeight;
+    private final SimpleTextLabelComponent labelComponent;
+    private static final double BADGE_SIZE = 8.0;
+    private static final float CORNER_RADIUS = 3.0f;
     @Nullable
-    private final Supplier<Integer> MX;
-    private static final double b = 3.0;
-    private Color MQ;
-    private static final double M1 = 0.75;
-    private static final String cb = "selectedSupplier";
-    private Color MV;
-    private final ColorAnimation MR;
-    private static final double Mb = 18.0;
-    private final IconGlyphComponent Ms;
-    private static final double Mu = 6.0;
-    private static final double MD = 6.0;
-    private Color ME;
-    private final Supplier<Boolean> MI;
-    private static final double Mg = 6.0;
-    private Color MW;
-    private final ShapeIconComponent MT;
-    private final IconGlyphComponent Mm;
-    private Color v;
+    private final Supplier<Integer> countSupplier;
+    private static final double TRAILING_ICON_HEIGHT = 3.0;
+    private Color hoverPrimaryColor;
+    private static final double LABEL_SCALE = 0.75;
+    private static final String SELECTED_SUPPLIER_NAME = "selectedSupplier";
+    private Color hoverContentColor;
+    private final ColorAnimation hoverBackgroundAnimation;
+    private static final double COMPONENT_HEIGHT = 18.0;
+    private final IconGlyphComponent trailingIcon;
+    private static final double ICON_SIZE = 6.0;
+    private static final double HORIZONTAL_PADDING = 6.0;
+    private Color selectedPrimaryColor;
+    private final Supplier<Boolean> selectedSupplier;
+    private static final double ITEM_GAP = 6.0;
+    private Color selectedContentColor;
+    private final ShapeIconComponent countBadge;
+    private final IconGlyphComponent leadingIcon;
+    private Color selectedBadgeColor;
 
-    public IconGlyphComponent h() {
-        return this.Ms;
+    public IconGlyphComponent getTrailingIcon() {
+        return this.trailingIcon;
     }
 
-    public SimpleTextLabelComponent J$src$Lgg_vape_ui_click_component_SimpleTextLabelCompo$hscme() {
-        return this.M8;
+    public SimpleTextLabelComponent getLabelComponent() {
+        return this.labelComponent;
     }
 
-    public FriendModuleInteractiveComponent(String string, @Nullable String string2, Supplier<Boolean> supplier, @Nullable Supplier<Integer> supplier2, @Nullable String string3) {
-        this.Mo = this.Mw = new Color(115, 113, 115);
-        this.MQ = this.MV = new Color(209, 209, 209);
-        this.ME = this.MW = Color.WHITE;
-        this.K = Color.WHITE;
-        this.v = Color.WHITE;
+    public FriendModuleInteractiveComponent(String label, @Nullable String leadingIconResource, Supplier<Boolean> selectedSupplier, @Nullable Supplier<Integer> countSupplier, @Nullable String trailingIconResource) {
+        this.normalPrimaryColor = this.normalContentColor = new Color(115, 113, 115);
+        this.hoverPrimaryColor = this.hoverContentColor = new Color(209, 209, 209);
+        this.selectedPrimaryColor = this.selectedContentColor = Color.WHITE;
+        this.badgeColor = Color.WHITE;
+        this.selectedBadgeColor = Color.WHITE;
         this.getClass();
-        this.MR = new ColorAnimation(0.15, FriendModuleInteractiveComponent.J.t, FriendModuleInteractiveComponent.J.E);
+        this.hoverBackgroundAnimation = new ColorAnimation(0.15, FriendModuleInteractiveComponent.J.t, FriendModuleInteractiveComponent.J.E);
         this.getClass();
-        this.I = new ColorAnimation(0.15, new Color(34, 33, 34, 0), new Color(34, 33, 34));
-        this.MI = Objects.requireNonNull(supplier, cb);
-        this.MX = supplier2;
-        this.Y(18.0);
-        this.d(false);
-        this.o(true);
-        this.Mm = new IconGlyphComponent(string2 != null ? string2 : "", 6.0f, 6.0f, this.Mw);
-        if (string2 != null) {
-            this.Mm.r(true);
-            this.H(this.Mm);
+        this.selectionBackgroundAnimation = new ColorAnimation(0.15, new Color(34, 33, 34, 0), new Color(34, 33, 34));
+        this.selectedSupplier = Objects.requireNonNull(selectedSupplier, SELECTED_SUPPLIER_NAME);
+        this.countSupplier = countSupplier;
+        this.Y(COMPONENT_HEIGHT);
+        this.setShowDisabledOverlay(false);
+        this.setPropagateMouseEvents(true);
+        this.leadingIcon = new IconGlyphComponent(leadingIconResource != null ? leadingIconResource : "", (float)ICON_SIZE, (float)ICON_SIZE, this.normalContentColor);
+        if (leadingIconResource != null) {
+            this.leadingIcon.setSnapToPixels(true);
+            this.addChildren(this.leadingIcon);
         } else {
-            this.Mm.Z(false);
+            this.leadingIcon.setVisible(false);
         }
-        this.M8 = new SimpleTextLabelComponent(string, 0.75, this.Mw);
-        this.M8.g(0.0f);
-        this.M8.z(0.0f);
-        this.M8.c(0);
-        this.H(this.M8);
-        this.MT = new ShapeIconComponent(IconShape.CIRCLE, "0", 8.0, 0.0, 0.0, 3.0f, FriendModuleInteractiveComponent.J.d, Color.WHITE, 0.65);
-        if (supplier2 != null) {
-            this.MT.x(supplier2);
-            this.MT.Z(false);
-            this.H(this.MT);
+        this.labelComponent = new SimpleTextLabelComponent(label, LABEL_SCALE, this.normalContentColor);
+        this.labelComponent.setOffsetX(0.0f);
+        this.labelComponent.setOffsetY(0.0f);
+        this.labelComponent.setExtraHeight(0);
+        this.addChildren(this.labelComponent);
+        this.countBadge = new ShapeIconComponent(IconShape.CIRCLE, "0", BADGE_SIZE, 0.0, 0.0, CORNER_RADIUS, FriendModuleInteractiveComponent.J.d, Color.WHITE, BADGE_TEXT_SCALE);
+        if (countSupplier != null) {
+            this.countBadge.setCountSupplier(countSupplier);
+            this.countBadge.setVisible(false);
+            this.addChildren(this.countBadge);
         } else {
-            this.MT.Z(false);
+            this.countBadge.setVisible(false);
         }
-        this.Ms = new IconGlyphComponent(string3, 1.5f, 3.0f, this.Mw);
-        if (string3 != null) {
-            this.Ms.r(true);
-            this.H(this.Ms);
-            this.MO = 3.0;
+        this.trailingIcon = new IconGlyphComponent(trailingIconResource, 1.5f, (float)TRAILING_ICON_HEIGHT, this.normalContentColor);
+        if (trailingIconResource != null) {
+            this.trailingIcon.setSnapToPixels(true);
+            this.addChildren(this.trailingIcon);
+            this.trailingIconHeight = TRAILING_ICON_HEIGHT;
         } else {
-            this.Ms.Z(false);
-            this.MO = 0.0;
+            this.trailingIcon.setVisible(false);
+            this.trailingIconHeight = 0.0;
         }
     }
 
-    public void X(Color color) {
-        this.v = color;
+    public void setSelectedBadgeColor(Color selectedBadgeColor) {
+        this.selectedBadgeColor = selectedBadgeColor;
     }
 
-    public void d(Color color) {
-        this.MV = color;
+    public void setHoverContentColor(Color hoverContentColor) {
+        this.hoverContentColor = hoverContentColor;
     }
 
-    public void m(String string) {
-        this.M8.G(string);
+    public void setLabel(String label) {
+        this.labelComponent.setText(label);
     }
 
-    public Color z() {
-        return this.Mo;
+    public Color getNormalPrimaryColor() {
+        return this.normalPrimaryColor;
     }
 
     @Override
     public void H() {
-        double d;
-        boolean bl = Boolean.TRUE.equals(this.MI.get());
-        boolean bl2 = this.w$src$Z$e457mb();
-        this.MR.u(bl2 && !bl);
-        this.I.u(bl);
-        double d2 = this.G$src$D$1b2f02a();
-        double d3 = this.n();
-        double d4 = this.A();
-        double d5 = this.L();
-        if (bl) {
-            GuiRenderPrimitives.B(d2, d3, d4, d5, this.I.getInterpolatedColor(), 3.0f);
-        } else if (bl2) {
-            GuiRenderPrimitives.B(d2, d3, d4, d5, this.MR.getInterpolatedColor(), 3.0f);
+        boolean selected = Boolean.TRUE.equals(this.selectedSupplier.get());
+        boolean hovered = this.w$src$Z$e457mb();
+        this.hoverBackgroundAnimation.u(hovered && !selected);
+        this.selectionBackgroundAnimation.u(selected);
+        double componentX = this.G$src$D$1b2f02a();
+        double componentY = this.n();
+        double componentWidth = this.A();
+        double componentHeight = this.L();
+        if (selected) {
+            GuiRenderPrimitives.B(componentX, componentY, componentWidth, componentHeight, this.selectionBackgroundAnimation.getInterpolatedColor(), CORNER_RADIUS);
+        } else if (hovered) {
+            GuiRenderPrimitives.B(componentX, componentY, componentWidth, componentHeight, this.hoverBackgroundAnimation.getInterpolatedColor(), CORNER_RADIUS);
         }
-        Color color = this.Mo;
-        Color color2 = this.Mw;
-        if (bl) {
-            color = this.ME;
-            color2 = this.MW;
-        } else if (bl2) {
-            color = this.MQ;
-            color2 = this.MV;
+        Color primaryColor = this.normalPrimaryColor;
+        Color contentColor = this.normalContentColor;
+        if (selected) {
+            primaryColor = this.selectedPrimaryColor;
+            contentColor = this.selectedContentColor;
+        } else if (hovered) {
+            primaryColor = this.hoverPrimaryColor;
+            contentColor = this.hoverContentColor;
         }
-        double d6 = d2 + 6.0;
-        if (this.Mm.V$src$Z$1xhop3l()) {
-            this.Mm.S(color);
-            this.Mm.K(d6);
-            this.Mm.S(d3 + (d5 - 6.0) / 2.0);
-            d6 += 12.0;
+        double contentLeftX = componentX + HORIZONTAL_PADDING;
+        if (this.leadingIcon.V$src$Z$1xhop3l()) {
+            this.leadingIcon.setColor(primaryColor);
+            this.leadingIcon.K(contentLeftX);
+            this.leadingIcon.S(componentY + (componentHeight - ICON_SIZE) / 2.0);
+            contentLeftX += ICON_SIZE + ITEM_GAP;
         }
-        double d7 = d2 + d4 - 6.0;
-        if (this.Ms.V$src$Z$1xhop3l()) {
-            d = d7 - this.MO;
-            this.Ms.S(color2);
-            this.Ms.K(d);
-            this.Ms.S(d3 + (d5 - this.MO) / 2.0);
-            d7 = d - 6.0;
+        double contentRightX = componentX + componentWidth - HORIZONTAL_PADDING;
+        if (this.trailingIcon.V$src$Z$1xhop3l()) {
+            double trailingIconX = contentRightX - this.trailingIconHeight;
+            this.trailingIcon.setColor(contentColor);
+            this.trailingIcon.K(trailingIconX);
+            this.trailingIcon.S(componentY + (componentHeight - this.trailingIconHeight) / 2.0);
+            contentRightX = trailingIconX - ITEM_GAP;
         }
-        if (this.MX != null) {
-            Integer n = this.MX.get();
-            int n2 = Math.max(0, n != null ? n : 0);
-            boolean bl3 = this.k$src$Z$affn7c() && n2 > 0;
-            this.MT.Z(bl3);
-            if (bl3) {
-                Color color3 = bl ? this.v : this.K;
-                double d8 = this.MT.o$src$Lgg_vape_ui_click_component_IconShape_$20egvb() == IconShape.CIRCLE ? 8.0 : 12.0;
-                double d9 = d7 - d8;
-                double d10 = d3 + (d5 - 8.0) / 2.0;
-                d7 = d9 - 6.0;
-                this.MT.K(d9);
-                this.MT.S(d10);
-                this.MT.o(d8);
-                this.MT.Y(8.0);
-                this.MT.O(color3);
-                this.MT.c();
+        if (this.countSupplier != null) {
+            Integer suppliedCount = this.countSupplier.get();
+            int count = Math.max(0, suppliedCount != null ? suppliedCount : 0);
+            boolean showCountBadge = this.shouldShowCountBadge() && count > 0;
+            this.countBadge.setVisible(showCountBadge);
+            if (showCountBadge) {
+                Color resolvedBadgeColor = selected ? this.selectedBadgeColor : this.badgeColor;
+                double badgeWidth = this.countBadge.getShape() == IconShape.CIRCLE ? BADGE_SIZE : 12.0;
+                double badgeX = contentRightX - badgeWidth;
+                double badgeY = componentY + (componentHeight - BADGE_SIZE) / 2.0;
+                contentRightX = badgeX - ITEM_GAP;
+                this.countBadge.K(badgeX);
+                this.countBadge.S(badgeY);
+                this.countBadge.o(badgeWidth);
+                this.countBadge.Y(BADGE_SIZE);
+                this.countBadge.setForegroundColor(resolvedBadgeColor);
+                this.countBadge.c();
             }
         }
-        d = Math.max(0.0, d7 - d6);
-        this.M8.T$src$V$1orl066(color2);
-        this.M8.o(d);
-        this.M8.Y(d5);
-        this.M8.K(d6);
-        this.M8.S(d3);
+        double labelWidth = Math.max(0.0, contentRightX - contentLeftX);
+        this.labelComponent.setTextColor(contentColor);
+        this.labelComponent.o(labelWidth);
+        this.labelComponent.Y(componentHeight);
+        this.labelComponent.K(contentLeftX);
+        this.labelComponent.S(componentY);
     }
 
-    public void r(Color color) {
-        this.Mo = color;
+    public void setNormalPrimaryColor(Color normalPrimaryColor) {
+        this.normalPrimaryColor = normalPrimaryColor;
     }
 
 
-    public void U(Color color) {
-        this.Mw = color;
+    public void setNormalContentColor(Color normalContentColor) {
+        this.normalContentColor = normalContentColor;
     }
 
-    public Supplier<Boolean> K$src$Ljava_util_function_Supplier_$ozx6xa() {
-        return this.MI;
+    public Supplier<Boolean> getSelectedSupplier() {
+        return this.selectedSupplier;
     }
 
-    public ColorAnimation d$src$Lgg_vape_ui_click_animation_ColorAnimation_$dc38du() {
-        return this.I;
+    public ColorAnimation getSelectionBackgroundAnimation() {
+        return this.selectionBackgroundAnimation;
     }
 
     @Nullable
-    public Supplier<Integer> U$src$Ljava_util_function_Supplier_$j0fpso() {
-        return this.MX;
+    public Supplier<Integer> getCountSupplier() {
+        return this.countSupplier;
     }
 
-    public void W(Color color) {
-        this.MW = color;
+    public void setSelectedContentColor(Color selectedContentColor) {
+        this.selectedContentColor = selectedContentColor;
     }
 
-    public Color Q$src$Ljava_awt_Color_$tezaj8() {
-        return this.K;
+    public Color getBadgeColor() {
+        return this.badgeColor;
     }
 
-    private boolean k$src$Z$affn7c() {
-        if (ClientSettings.fW == null || ClientSettings.fW.fc == null) {
+    private boolean shouldShowCountBadge() {
+        if (ClientSettings.INSTANCE == null || ClientSettings.INSTANCE.showEnabledCount == null) {
             return true;
         }
-        return ClientSettings.fW.fc.L();
+        return ClientSettings.INSTANCE.showEnabledCount.getEffectiveValue();
     }
 
-    public double F$src$D$9v38q1() {
-        return this.MO;
+    public double getTrailingIconHeight() {
+        return this.trailingIconHeight;
     }
 
-    public Color q$src$Ljava_awt_Color_$q5er5g() {
-        return this.Mw;
+    public Color getNormalContentColor() {
+        return this.normalContentColor;
     }
 
-    public void M(Color color) {
-        this.ME = color;
+    public void setSelectedPrimaryColor(Color selectedPrimaryColor) {
+        this.selectedPrimaryColor = selectedPrimaryColor;
     }
 
-    public Color W$src$Ljava_awt_Color_$1nvo7ri() {
-        return this.v;
+    public Color getSelectedBadgeColor() {
+        return this.selectedBadgeColor;
     }
 
-    public void z(Color color) {
-        this.K = color;
+    public void setBadgeColor(Color badgeColor) {
+        this.badgeColor = badgeColor;
     }
 
-    public Color E() {
-        return this.MV;
+    public Color getHoverContentColor() {
+        return this.hoverContentColor;
     }
 
-    public void C(Color color) {
-        this.MQ = color;
+    public void setHoverPrimaryColor(Color hoverPrimaryColor) {
+        this.hoverPrimaryColor = hoverPrimaryColor;
     }
 
-    public Color v() {
-        return this.ME;
+    public Color getSelectedPrimaryColor() {
+        return this.selectedPrimaryColor;
     }
 
-    public ColorAnimation B$src$Lgg_vape_ui_click_animation_ColorAnimation_$15kpmz4() {
-        return this.MR;
+    public ColorAnimation getHoverBackgroundAnimation() {
+        return this.hoverBackgroundAnimation;
     }
 
-    public Color g$src$Ljava_awt_Color_$mqbx32() {
-        return this.MW;
+    public Color getSelectedContentColor() {
+        return this.selectedContentColor;
     }
 
-    public ShapeIconComponent Y$src$Lgg_vape_ui_click_component_ShapeIconComponent_$1mbomq8() {
-        return this.MT;
+    public ShapeIconComponent getCountBadge() {
+        return this.countBadge;
     }
 
-    public FriendModuleInteractiveComponent(String string, @Nullable String string2, Supplier<Boolean> supplier) {
-        this(string, string2, supplier, null, null);
+    public FriendModuleInteractiveComponent(String label, @Nullable String leadingIconResource, Supplier<Boolean> selectedSupplier) {
+        this(label, leadingIconResource, selectedSupplier, null, null);
     }
 
-    public IconGlyphComponent W() {
-        return this.Mm;
+    public IconGlyphComponent getLeadingIcon() {
+        return this.leadingIcon;
     }
 
-    public Color Y$src$Ljava_awt_Color_$1acv66k() {
-        return this.MQ;
+    public Color getHoverPrimaryColor() {
+        return this.hoverPrimaryColor;
     }
 }
 

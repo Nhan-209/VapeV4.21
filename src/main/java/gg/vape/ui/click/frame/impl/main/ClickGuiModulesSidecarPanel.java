@@ -11,124 +11,96 @@ import org.jetbrains.annotations.Nullable;
 
 public class ClickGuiModulesSidecarPanel
 extends ClickGuiSidecarPanelBase {
-    private final ShapeIconComponent yB;
-    private final IconGlyphComponent y9;
+    private final ShapeIconComponent toggleButton;
+    private final IconGlyphComponent favoriteIcon;
     @Nullable
-    private Supplier<String> yR;
+    private Supplier<String> toggleLabelSupplier;
     @Nullable
-    private Runnable yQ;
+    private Runnable savedBackAction;
 
     public ClickGuiModulesSidecarPanel(@Nullable Runnable runnable) {
-        this.v().W("moduleback");
-        this.v().Z(true);
-        this.y9 = new IconGlyphComponent("newstar", 6.0f, 6.0f, ClickGuiModulesSidecarPanel.J.W);
-        this.y9.Z(false);
-        this.y9.o(10.0);
-        this.y9.Y(7.0);
-        this.yB = new ShapeIconComponent(IconShape.ROUNDED_RECT, "", 12.0, 12.0, 4.0, 2.0f, ClickGuiModulesSidecarPanel.J.F, ClickGuiModulesSidecarPanel.J.A, 0.6);
-        this.yB.Z(false);
-        this.yB.o(14.0);
-        this.yB.Y(10.0);
-        this.H(this.y9, this.yB);
-        this.e(this.yB);
-        this.e(this.y9);
+        this.getLeadingIcon().setIconResource("moduleback");
+        this.getLeadingIcon().setVisible(true);
+        this.favoriteIcon = new IconGlyphComponent("newstar", 6.0f, 6.0f, ClickGuiModulesSidecarPanel.J.W);
+        this.favoriteIcon.setVisible(false);
+        this.favoriteIcon.o(10.0);
+        this.favoriteIcon.Y(7.0);
+        this.toggleButton = new ShapeIconComponent(IconShape.ROUNDED_RECT, "", 12.0, 12.0, 4.0, 2.0f, ClickGuiModulesSidecarPanel.J.F, ClickGuiModulesSidecarPanel.J.A, 0.6);
+        this.toggleButton.setVisible(false);
+        this.toggleButton.o(14.0);
+        this.toggleButton.Y(10.0);
+        this.addChildren(this.favoriteIcon, this.toggleButton);
+        this.addTrailingComponent(this.toggleButton);
+        this.addTrailingComponent(this.favoriteIcon);
     }
 
-    public void z(boolean bl) {
-        this.y9.S(bl ? ClickGuiModulesSidecarPanel.J.I : ClickGuiModulesSidecarPanel.J.W);
+    public void setFavoriteHighlighted(boolean highlighted) {
+        this.favoriteIcon.setColor(highlighted ? ClickGuiModulesSidecarPanel.J.I : ClickGuiModulesSidecarPanel.J.W);
     }
 
-    public void f(boolean bl) {
-        this.yB.Z(bl);
+    public void setToggleVisible(boolean visible) {
+        this.toggleButton.setVisible(visible);
     }
 
-    public void T(@Nullable Runnable runnable) {
-        this.yB.r$src$V$1x8vu68();
-        if (runnable != null) {
-            this.yB.j(new ClickGuiModulesSidecarPrimaryMouseListener(this, runnable));
+    public void setToggleAction(@Nullable Runnable action) {
+        this.toggleButton.clearMouseListeners();
+        if (action != null) {
+            this.toggleButton.addMouseListener(new ClickGuiModulesSidecarPrimaryMouseListener(action));
         }
     }
 
     @Override
     public void H() {
-        block2: {
-            boolean bl;
-            ShapeIconComponent shapeIconComponent;
-            block5: {
-                block4: {
-                    ShapeIconComponent shapeIconComponent2;
-                    block3: {
-                        String string;
-                        ShapeIconComponent shapeIconComponent3;
-                        if (this.yR == null) break block2;
-                        String string2 = this.yR.get();
-                        ShapeIconComponent shapeIconComponent4 = this.yB;
-                        if (string2 != null) {
-                            shapeIconComponent3 = shapeIconComponent4;
-                            string = string2;
-                        } else {
-                            shapeIconComponent3 = shapeIconComponent4;
-                            string = "";
-                        }
-                        shapeIconComponent3.O(string);
-                        shapeIconComponent2 = this.yB;
-                        if (string2 == null) break block3;
-                        shapeIconComponent = shapeIconComponent2;
-                        if (string2.isEmpty()) break block4;
-                        bl = true;
-                        break block5;
-                    }
-                    shapeIconComponent = shapeIconComponent2;
-                }
-                bl = false;
-            }
-            shapeIconComponent.Z(bl);
+        if (this.toggleLabelSupplier != null) {
+            String label = this.toggleLabelSupplier.get();
+            this.toggleButton.setText(label != null ? label : "");
+            this.toggleButton.setVisible(label != null && !label.isEmpty());
         }
         super.H();
     }
 
     @Override
-    public void B(@Nullable String string) {
+    public void setLeadingIconKey(@Nullable String string) {
     }
 
-    public void J(@Nullable String string) {
-        if (string == null) {
-            string = "";
+    public void setToggleLabel(@Nullable String label) {
+        if (label == null) {
+            label = "";
         }
-        this.yB.O(string);
-        this.yB.Z(!string.isEmpty());
+        this.toggleButton.setText(label);
+        this.toggleButton.setVisible(!label.isEmpty());
     }
 
-    public void q(@Nullable Runnable runnable) {
-        this.y9.r$src$V$1x8vu68();
-        if (runnable != null) {
-            this.y9.j(new ClickGuiModulesSidecarSecondaryMouseListener(this, runnable));
+    public void setFavoriteAction(@Nullable Runnable action) {
+        this.favoriteIcon.clearMouseListeners();
+        if (action != null) {
+            this.favoriteIcon.addMouseListener(new ClickGuiModulesSidecarSecondaryMouseListener(action));
         }
     }
 
-    public void E(@Nullable Supplier<String> supplier) {
-        this.yR = supplier;
+    public void setToggleLabelSupplier(@Nullable Supplier<String> supplier) {
+        this.toggleLabelSupplier = supplier;
         if (supplier == null) {
-            this.J("");
+            this.setToggleLabel("");
         }
     }
 
     @Override
-    public void N(@Nullable Runnable runnable) {
-        if (runnable != null && this.yQ == null) {
-            this.yQ = runnable;
+    public void setBackAction(@Nullable Runnable runnable) {
+        if (runnable != null && this.savedBackAction == null) {
+            this.savedBackAction = runnable;
         }
-        Runnable runnable2 = runnable != null ? runnable : this.yQ;
-        super.N(runnable2);
+        Runnable runnable2 = runnable != null ? runnable : this.savedBackAction;
+        super.setBackAction(runnable2);
         if (runnable2 != null) {
-            this.k().Z(false);
-            this.v().Z(true);
+            this.getCloseButton().setVisible(false);
+            this.getLeadingIcon().setVisible(true);
         }
     }
 
 
-    public void k(boolean bl) {
-        this.y9.Z(bl);
+    public void setFavoriteVisible(boolean visible) {
+        this.favoriteIcon.setVisible(visible);
     }
 }
 

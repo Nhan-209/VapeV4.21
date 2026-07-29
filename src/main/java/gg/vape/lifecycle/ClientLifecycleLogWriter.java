@@ -1,7 +1,6 @@
 package gg.vape.lifecycle;
 
 import gg.vape.Vape;
-import gg.vape.lifecycle.ClientLifecycleCallback;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,47 +10,48 @@ import java.util.Date;
 
 public class ClientLifecycleLogWriter
 implements ClientLifecycleCallback {
-    private File C;
-    private SimpleDateFormat j = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private PrintWriter M;
+    private File logFile;
+    private final SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private PrintWriter logWriter;
 
-    private void lambda$new$0() {
-        this.B();
+    private void closeFromShutdownHook() {
+        this.close();
     }
 
     public ClientLifecycleLogWriter() {
         try {
-            String string;
-            File file;
-            String string2 = System.getenv("APPDATA");
-            if (string2 == null) {
-                string2 = System.getProperty("user.home");
+            String baseDirectoryPath = System.getenv("APPDATA");
+            if (baseDirectoryPath == null) {
+                baseDirectoryPath = System.getProperty("user.home");
             }
-            if (!(file = new File(string = string2 + File.separator + ".vapeclient")).exists()) {
-                file.mkdirs();
+            String clientDirectoryPath = baseDirectoryPath + File.separator + ".vapeclient";
+            File clientDirectory = new File(clientDirectoryPath);
+            if (!clientDirectory.exists()) {
+                clientDirectory.mkdirs();
             }
-            String string3 = string + File.separator + "log-" + this.j.format(new Date()).replace(":", "-") + ".txt";
-            Vape.debugLog("Creating log file at: " + string3);
-            this.C = new File(string3);
-            FileWriter fileWriter = new FileWriter(this.C, false);
-            this.M = new PrintWriter(fileWriter);
-            Runtime.getRuntime().addShutdownHook(new Thread(this::lambda$new$0));
+            String logFilePath = clientDirectoryPath + File.separator + "log-"
+                    + this.timestampFormat.format(new Date()).replace(":", "-") + ".txt";
+            Vape.debugLog("Creating log file at: " + logFilePath);
+            this.logFile = new File(logFilePath);
+            FileWriter fileWriter = new FileWriter(this.logFile, false);
+            this.logWriter = new PrintWriter(fileWriter);
+            Runtime.getRuntime().addShutdownHook(new Thread(this::closeFromShutdownHook));
         }
         catch (IOException iOException) {
             Vape.logThrowable(iOException);
         }
     }
 
-    private static IOException a(IOException iOException) {
-        return iOException;
+    private static IOException propagateIOException(IOException exception) {
+        return exception;
     }
 
     @Override
-    public void s(String string) {
+    public void log(String message) {
         try {
-            String string2 = this.j.format(new Date());
-            this.M.printf("%s: %s%n", string2, string);
-            this.M.flush();
+            String timestamp = this.timestampFormat.format(new Date());
+            this.logWriter.printf("%s: %s%n", timestamp, message);
+            this.logWriter.flush();
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
@@ -59,10 +59,10 @@ implements ClientLifecycleCallback {
     }
 
     @Override
-    public void B() {
+    public void close() {
         try {
-            if (this.M != null) {
-                this.M.close();
+            if (this.logWriter != null) {
+                this.logWriter.close();
             }
         }
         catch (Exception exception) {
@@ -70,4 +70,3 @@ implements ClientLifecycleCallback {
         }
     }
 }
-

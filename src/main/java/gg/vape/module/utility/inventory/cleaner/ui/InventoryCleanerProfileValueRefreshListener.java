@@ -15,20 +15,20 @@ public class InventoryCleanerProfileValueRefreshListener
 implements EventListener {
     @EventHandler
     public void H(ProfileChangeEvent profileChangeEvent) {
-        for (Frame frame : ClientSettings.a.Y()) {
+        for (Frame frame : ClientSettings.mainStack.Y()) {
             if (!(frame instanceof ModuleCategoryFrame)) continue;
             ModuleCategoryFrame moduleCategoryFrame = (ModuleCategoryFrame)frame;
             for (GuiComponent guiComponent : moduleCategoryFrame.f()) {
                 if (!(guiComponent instanceof ModuleComponent)) continue;
                 ModuleComponent moduleComponent = (ModuleComponent)guiComponent;
-                for (GuiComponent guiComponent2 : moduleComponent.K$src$Ljava_util_List_$1hwj5d6()) {
+                for (GuiComponent guiComponent2 : moduleComponent.getValueComponents()) {
                     if (!(guiComponent2 instanceof InventoryCleanerProfileValueComponent)) continue;
                     InventoryCleanerProfileValueComponent inventoryCleanerProfileValueComponent = (InventoryCleanerProfileValueComponent)guiComponent2;
-                    inventoryCleanerProfileValueComponent.b$src$V$18h0koc();
+                    inventoryCleanerProfileValueComponent.populate();
                 }
             }
         }
-        ClientSettings.g(ClientSettingsSearchFrame.class).N$src$V$1ncxuwi();
+        ClientSettings.getFrame(ClientSettingsSearchFrame.class).N$src$V$1ncxuwi();
     }
 
 }

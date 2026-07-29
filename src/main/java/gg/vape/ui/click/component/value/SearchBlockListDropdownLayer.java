@@ -14,20 +14,19 @@ public class SearchBlockListDropdownLayer
 extends FloatingValueDropdownLayer<SearchBlockListComponent> {
     public SearchBlockListDropdownLayer(SearchBlockListComponent searchBlockListComponent) {
         super(searchBlockListComponent);
-        this.Y(new PublicProfilesFrameHeaderActionComponent(this, "allowedicon", searchBlockListComponent.t$src$Ljava_lang_String_$1kbjhi6()).Q(new SearchBlockListDropdownCloseHandler(this, searchBlockListComponent)));
-        this.e();
+        this.Y(new PublicProfilesFrameHeaderActionComponent(this, "allowedicon", searchBlockListComponent.getTitle()).Q(new SearchBlockListDropdownCloseHandler(this, searchBlockListComponent)));
+        this.refreshContents();
     }
 
     @Override
-    public void e() {
-        this.S();
+    public void refreshContents() {
+        this.removeMarkedChildren();
         SearchBlockListAddInputComponent searchBlockListAddInputComponent = new SearchBlockListAddInputComponent("Block name / ID");
         this.h(searchBlockListAddInputComponent, new Object[0]);
-        for (SearchBlock searchBlock : Vape.INSTANCE.getSearch().O()) {
+        for (SearchBlock searchBlock : Vape.INSTANCE.getSearch().getSearchBlocks()) {
             SearchBlockEditorComponent searchBlockEditorComponent = new SearchBlockEditorComponent(searchBlock);
-            searchBlockEditorComponent.g(new SearchBlockRemoveHandler(this, searchBlock));
+            searchBlockEditorComponent.setRemoveClickListener(new SearchBlockRemoveHandler(this, searchBlock));
             this.h(searchBlockEditorComponent, new Object[0]);
         }
     }
 }
-

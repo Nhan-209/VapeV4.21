@@ -32,7 +32,7 @@ public class MouseOverRayTraceUpdater {
     private static Reach t;
 
     public static void s(float f, float f2) {
-        if (SharedModuleControlClaims.a.v$src$Z$1r7ksy2()) {
+        if (SharedModuleControlClaims.mouseOverUpdate.isClaimed()) {
             return;
         }
         if (ForgeVersion.MC_1_20_6.d()) {
@@ -219,9 +219,9 @@ public class MouseOverRayTraceUpdater {
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        if (t.r$src$Z$14eylz9() && !t.S$src$Lgg_vape_value_BooleanValue_$ifrxg2().L().booleanValue() || s.r$src$Z$14eylz9()) {
-            float f = (float)t.e();
-            float f2 = bl ? 0.0f : s.z();
+        if (t.r$src$Z$14eylz9() && !t.getMisplaceSetting().getEffectiveValue().booleanValue() || s.r$src$Z$14eylz9()) {
+            float f = (float)t.getReachDistance();
+            float f2 = bl ? 0.0f : s.getExpansionAmount();
             MouseOverRayTraceUpdater.s(f, f2);
         }
     }

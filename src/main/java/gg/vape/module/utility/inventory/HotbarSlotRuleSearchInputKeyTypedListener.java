@@ -15,8 +15,7 @@ implements GuiKeyTypedListener {
     }
 
     @Override
-    public void v(char c, int n) {
-        this.F.s(HotbarSlotRuleItemSearchComponent.g(this.l).i$src$Z$1n22b4s());
+    public void onKeyTyped(char c, int n) {
+        this.F.s(HotbarSlotRuleItemSearchComponent.g(this.l).isShowEditButton());
     }
 }
-

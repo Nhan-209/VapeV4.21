@@ -7,15 +7,14 @@ import java.awt.Point;
 
 class BooleanToggleComponentClickMouseListener
 implements GuiMouseListener {
-    final BooleanToggleComponent r;
+    private final BooleanToggleComponent toggleComponent;
 
-    BooleanToggleComponentClickMouseListener(BooleanToggleComponent booleanToggleComponent) {
-        this.r = booleanToggleComponent;
+    BooleanToggleComponentClickMouseListener(BooleanToggleComponent toggleComponent) {
+        this.toggleComponent = toggleComponent;
     }
 
     @Override
-    public void g(Point point, MouseClickButton mouseClickButton) {
-        this.r.N();
+    public void g(Point clickPoint, MouseClickButton clickButton) {
+        this.toggleComponent.toggleIfInteractive();
     }
 }
-

@@ -20,7 +20,7 @@ extends Mapping {
     private MTextComponent(int[] nArray) {
         super(MappedClasses.YO);
         if (nArray != null) {
-            GuiComponent.D(new GuiComponent[2]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[2]);
             Class[] classArray = new Class[]{};
             Class<String> clazz = String.class;
             boolean bl = false;

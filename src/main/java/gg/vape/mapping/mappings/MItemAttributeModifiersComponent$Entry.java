@@ -36,7 +36,7 @@ extends Mapping {
         String string2 = "modifier";
         MItemAttributeModifiersComponent$Entry mItemAttributeModifiersComponent$Entry2 = this;
         this.C = this.J(string2, bl2, clazz2);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MItemAttributeModifiersComponent.M(new GuiComponent[5]);
         }
     }

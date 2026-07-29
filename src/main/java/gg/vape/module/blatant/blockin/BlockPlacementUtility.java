@@ -18,7 +18,6 @@ import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.datas.BlockCoordinate;
 import gg.vape.utils.datas.BlockData;
-import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.Block;
 import gg.vape.wrapper.impl.BlockPos;
@@ -42,56 +41,62 @@ import org.jetbrains.annotations.Nullable;
 
 public final class BlockPlacementUtility {
     @Nullable
-    private static ItemMappingEntry W = null;
+    private static ItemMappingEntry cobwebItem;
     @Nullable
-    private static ItemMappingEntry G = null;
+    private static ItemMappingEntry emptyBucketItem;
     @Nullable
-    private static ItemMappingEntry Z = null;
+    private static ItemMappingEntry waterBucketItem;
 
-    public static float u(EntityPlayerSP entityPlayerSP, boolean bl, boolean bl2, BlockPlacementGraph blockPlacementGraph) {
-        if (entityPlayerSP.b$src$Z$fqlxe4()) {
+    public static float getDistanceToGround(EntityPlayerSP player, boolean scanWorld,
+                                            boolean stopAfterFirstLanding, BlockPlacementGraph placementGraph) {
+        if (player.b$src$Z$fqlxe4()) {
             return 0.0f;
         }
-        if (entityPlayerSP.q() == 0.0) {
+        if (player.q() == 0.0) {
             return 0.0f;
         }
-        if (bl) {
-            World world = entityPlayerSP.getWorld();
-            int n = MathUtil.floor(entityPlayerSP.z());
-            int n2 = MathUtil.floor(entityPlayerSP.h());
-            for (int i = MathUtil.floor(entityPlayerSP.N()); i > 0; --i) {
-                Block block = world.getBlockByPos(n, i, n2);
+        if (scanWorld) {
+            World world = player.getWorld();
+            int blockX = MathUtil.floor(player.z());
+            int blockZ = MathUtil.floor(player.h());
+            for (int blockY = MathUtil.floor(player.N()); blockY > 0; --blockY) {
+                Block block = world.getBlockByPos(blockX, blockY, blockZ);
                 if (block.isNull() || BlockUtil.p(block)) continue;
-                return (float)(entityPlayerSP.N() - (double)i);
+                return (float)(player.N() - (double)blockY);
             }
         } else {
-            BlockCoordinate blockCoordinate = BlockPlacementUtility.S(bl2, 50, entityPlayerSP, blockPlacementGraph);
-            if (blockCoordinate != null) {
-                return (float)(entityPlayerSP.N() - (double)(blockCoordinate.E() + 1));
+            BlockCoordinate landingBlock = BlockPlacementUtility.predictLandingBlock(
+                    stopAfterFirstLanding, 50, player, placementGraph);
+            if (landingBlock != null) {
+                return (float)(player.N() - (double)(landingBlock.E() + 1));
             }
         }
         return 100000.0f;
     }
 
-    public static RayTraceResult A(@NotNull ItemMappingEntry itemMappingEntry) {
+    public static RayTraceResult getPlacementRayTrace(@NotNull ItemMappingEntry itemMappingEntry) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            return RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic();
+            return RotationManager.INSTANCE.getNormalReachRayTrace();
         }
-        return itemMappingEntry.equals(BlockPlacementUtility.e()) ? RotationManager.b.D$src$Lgg_vape_wrapper_impl_RayTraceResult_$10z02ic() : RotationManager.b.F(itemMappingEntry.equals(BlockPlacementUtility.U()));
+        return itemMappingEntry.equals(BlockPlacementUtility.getCobwebItem())
+                ? RotationManager.INSTANCE.getNormalReachRayTrace()
+                : RotationManager.INSTANCE.rayTraceUsingManagedRotation(
+                        itemMappingEntry.equals(BlockPlacementUtility.getEmptyBucketItem()));
     }
 
     @Nullable
-    public static ItemMappingEntry l(@Nullable Slot slot) {
-        return slot == null || slot.isNull() || slot.I() == null || slot.I().isNull() ? null : Vape.INSTANCE.getItemStackResolver().j(slot.I());
+    public static ItemMappingEntry getSlotItem(@Nullable Slot slot) {
+        return slot == null || slot.isNull() || slot.I() == null || slot.I().isNull() ? null : Vape.INSTANCE.getItemStackResolver().resolve(slot.I());
     }
 
-    public static boolean R(@Nullable BlockCoordinate blockCoordinate, @NotNull ItemMappingEntry itemMappingEntry) {
-        RayTraceResult rayTraceResult = BlockPlacementUtility.A(itemMappingEntry);
+    public static boolean isLookingAtPlacementTarget(@Nullable BlockCoordinate blockCoordinate,
+                                                     @NotNull ItemMappingEntry itemMappingEntry) {
+        RayTraceResult rayTraceResult = BlockPlacementUtility.getPlacementRayTrace(itemMappingEntry);
         if (rayTraceResult.isNull() || !rayTraceResult.isBlockHit()) {
             return false;
         }
         BlockPos blockPos = rayTraceResult.getBlockPos();
-        if (itemMappingEntry.equals(BlockPlacementUtility.U())) {
+        if (itemMappingEntry.equals(BlockPlacementUtility.getEmptyBucketItem())) {
             Block block = rayTraceResult.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a();
             BlockStatePredicate blockStatePredicate = block.a();
             if (block.isNotNull() && BlockUtil.C(block) && blockStatePredicate.isNotNull() && blockStatePredicate.toString().contains("level=0")) {
@@ -101,110 +106,114 @@ public final class BlockPlacementUtility {
         if (!EnumFacing.F$src$Lgg_vape_wrapper_impl_EnumFacing_$glfxl5().equals(rayTraceResult.getSideHit()) || blockPos.isNull()) {
             return false;
         }
-        return blockCoordinate == null || BlockPlacementUtility.P(blockPos, blockCoordinate, itemMappingEntry);
+        return blockCoordinate == null || BlockPlacementUtility.isNearTarget(blockPos, blockCoordinate, itemMappingEntry);
     }
 
-    private static boolean lambda$createItemPredicate$0(ItemMappingEntry itemMappingEntry, Slot slot) {
-        return slot != null && slot.isNotNull() && slot.I().isNotNull() && itemMappingEntry.equals(Vape.INSTANCE.getItemStackResolver().j(slot.I()));
+    private static boolean slotContainsItem(ItemMappingEntry itemMappingEntry, Slot slot) {
+        return slot != null && slot.isNotNull() && slot.I().isNotNull() && itemMappingEntry.equals(Vape.INSTANCE.getItemStackResolver().resolve(slot.I()));
     }
 
-    public static ItemMappingEntry U() {
-        if (G == null) {
-            G = Vape.INSTANCE.getItemStackResolver().b("minecraft:bucket");
+    public static ItemMappingEntry getEmptyBucketItem() {
+        if (emptyBucketItem == null) {
+            emptyBucketItem = Vape.INSTANCE.getItemStackResolver().findByName("minecraft:bucket");
         }
-        return G;
+        return emptyBucketItem;
     }
 
     @NotNull
-    static Predicate<Slot> F(@NotNull ItemMappingEntry itemMappingEntry) {
-        return arg_0 -> BlockPlacementUtility.lambda$createItemPredicate$0(itemMappingEntry, arg_0);
+    static Predicate<Slot> createItemPredicate(@NotNull ItemMappingEntry itemMappingEntry) {
+        return slot -> BlockPlacementUtility.slotContainsItem(itemMappingEntry, slot);
     }
 
     @Nullable
-    static Slot Z(ItemMappingEntry itemMappingEntry) {
-        return ItemStackActionPredicate.a(BlockPlacementUtility.F(itemMappingEntry), MLGImpactState.D);
+    static Slot findHotbarSlot(ItemMappingEntry itemMappingEntry) {
+        return ItemStackActionPredicate.findSlot(BlockPlacementUtility.createItemPredicate(itemMappingEntry), MLGImpactState.HOTBAR);
     }
 
-    public static float Z(EntityPlayerSP entityPlayerSP, float f) {
-        PotionEffect potionEffect = entityPlayerSP.b(PotionRegistry.Z);
-        float f2 = potionEffect != null && potionEffect.isNotNull() ? (float)(potionEffect.L() + 1) : 0.0f;
-        int n = MathUtil.ceil(f - 3.0f - f2);
-        DamageSource damageSource = ForgeVersion.MC_1_21_4.d() ? entityPlayerSP.B().O() : DamageSource.m$src$Lgg_vape_wrapper_impl_DamageSource_$z0ibym();
-        return RotationUtil.y(entityPlayerSP, damageSource, n, false, false);
+    public static float calculateFallDamage(EntityPlayerSP entityPlayerSP, float fallDistance) {
+        PotionEffect jumpBoost = entityPlayerSP.b(PotionRegistry.Z);
+        float jumpBoostReduction = jumpBoost != null && jumpBoost.isNotNull()
+                ? jumpBoost.L() + 1.0f : 0.0f;
+        int damageDistance = MathUtil.ceil(fallDistance - 3.0f - jumpBoostReduction);
+        DamageSource damageSource = ForgeVersion.MC_1_21_4.d()
+                ? entityPlayerSP.B().O() : DamageSource.m$src$Lgg_vape_wrapper_impl_DamageSource_$z0ibym();
+        return RotationUtil.y(entityPlayerSP, damageSource, damageDistance, false, false);
     }
 
     @Nullable
-    public static BlockCoordinate S(boolean bl, int n, EntityPlayerSP entityPlayerSP, BlockPlacementGraph blockPlacementGraph) {
-        int n2 = ForgeVersion.MC_1_20_6.d() ? entityPlayerSP.getWorld().R() : 0;
-        BlockPathPlanner blockPathPlanner = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, entityPlayerSP.getWorld(), blockPlacementGraph);
-        blockPathPlanner.U(blockPlacementGraph);
-        blockPathPlanner.l();
-        boolean bl2 = blockPlacementGraph.M || blockPlacementGraph.D || blockPlacementGraph.R || blockPlacementGraph.Y;
-        int n3 = bl ? 1 : 3;
-        EntityPlayer entityPlayer = blockPathPlanner.T();
-        World world = entityPlayer.getWorld();
-        int n4 = 0;
-        BlockCoordinate blockCoordinate = null;
-        Vec3 vec3 = Vec3.create(entityPlayer.z(), entityPlayer.N(), entityPlayer.h());
-        boolean bl3 = ForgeVersion.MC_1_12_2.d();
-        for (int i = 0; i <= n; ++i) {
-            boolean bl4;
-            Wrapper wrapper;
-            boolean bl5 = entityPlayer.b$src$Z$fqlxe4();
-            blockPathPlanner.B();
-            vec3.N(entityPlayer.z());
-            vec3.m(entityPlayer.N());
-            vec3.Z(entityPlayer.h());
-            boolean bl6 = entityPlayer.b$src$Z$fqlxe4();
-            int n5 = MathUtil.floor(entityPlayer.z());
-            double d = entityPlayer.z();
-            int n6 = MathUtil.floor(entityPlayer.N() - 0.015625);
-            double d2 = entityPlayer.N() - 0.015625;
-            int n7 = MathUtil.floor(entityPlayer.h());
-            double d3 = entityPlayer.h();
-            AxisAlignedBB axisAlignedBB = entityPlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().expand(0.0, -2.0, 0.0);
-            List list = world.i(entityPlayer, axisAlignedBB);
-            if (!list.isEmpty()) {
-                wrapper = null;
-                for (Object e : list) {
-                    AxisAlignedBB axisAlignedBB2 = new AxisAlignedBB(e);
-                    BlockData blockData = BlockData.P(axisAlignedBB2);
-                    BlockPos blockPos = BlockPos.d(blockData);
-                    if (ForgeVersion.MC_1_16_5.v() && bl3) {
-                        BlockState blockState = world.getBlockState(blockPos);
-                        BlockState blockState2 = world.getBlockState(blockPos.X$src$Lgg_vape_wrapper_impl_BlockPos_$jlnp6b());
-                        boolean bl7 = !world.getBlockState(blockPos).getBlock().X(blockState) && !world.getBlockState(blockPos.X$src$Lgg_vape_wrapper_impl_BlockPos_$jlnp6b()).getBlock().X(blockState2);
-                        if (bl7) continue;
+    public static BlockCoordinate predictLandingBlock(boolean stopAfterFirstLanding, int maxTicks,
+                                                       EntityPlayerSP entityPlayerSP,
+                                                       BlockPlacementGraph blockPlacementGraph) {
+        int minimumWorldY = ForgeVersion.MC_1_20_6.d() ? entityPlayerSP.getWorld().R() : 0;
+        BlockPathPlanner planner = new BlockPathPlanner(
+                entityPlayerSP, entityPlayerSP, entityPlayerSP.getWorld(), blockPlacementGraph);
+        planner.applySnapshot(blockPlacementGraph);
+        planner.restoreSnapshotInput();
+        int requiredGroundTicks = stopAfterFirstLanding ? 1 : 3;
+        EntityPlayer simulatedPlayer = planner.getSimulatedPlayer();
+        World world = simulatedPlayer.getWorld();
+        int consecutiveGroundTicks = 0;
+        BlockCoordinate landingCoordinate = null;
+        boolean legacy1122 = ForgeVersion.MC_1_12_2.d();
+        for (int tick = 0; tick <= maxTicks; ++tick) {
+            planner.simulateTick();
+            boolean onGround = simulatedPlayer.b$src$Z$fqlxe4();
+            int blockX = MathUtil.floor(simulatedPlayer.z());
+            int blockY = MathUtil.floor(simulatedPlayer.N() - 0.015625);
+            int blockZ = MathUtil.floor(simulatedPlayer.h());
+
+            AxisAlignedBB collisionArea = simulatedPlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl()
+                    .expand(0.0, -2.0, 0.0);
+            List collisions = world.i(simulatedPlayer, collisionArea);
+            if (!collisions.isEmpty()) {
+                AxisAlignedBB highestCollision = null;
+                for (Object collisionObject : collisions) {
+                    AxisAlignedBB collision = new AxisAlignedBB(collisionObject);
+                    BlockPos collisionPos = BlockPos.d(BlockData.P(collision));
+                    if (ForgeVersion.MC_1_16_5.v() && legacy1122) {
+                        BlockState state = world.getBlockState(collisionPos);
+                        BlockPos abovePos = collisionPos.X$src$Lgg_vape_wrapper_impl_BlockPos_$jlnp6b();
+                        BlockState aboveState = world.getBlockState(abovePos);
+                        boolean bothNonSolid = !state.getBlock().X(state)
+                                && !aboveState.getBlock().X(aboveState);
+                        if (bothNonSolid) {
+                            continue;
+                        }
                     }
-                    if (wrapper != null && !(axisAlignedBB2.getMaxY() > ((AxisAlignedBB)wrapper).getMaxY())) continue;
-                    wrapper = axisAlignedBB2;
+                    if (highestCollision == null || collision.getMaxY() > highestCollision.getMaxY()) {
+                        highestCollision = collision;
+                    }
                 }
-                if (wrapper != null) {
-                    return new BlockCoordinate(BlockData.P((AxisAlignedBB)wrapper));
+                if (highestCollision != null) {
+                    return new BlockCoordinate(BlockData.P(highestCollision));
                 }
             }
-            boolean bl8 = bl4 = (wrapper = entityPlayerSP.getWorld().getBlockByPos(n5, n6, n7)).isNotNull() && (wrapper.isInstance(MappedClasses.q_) || wrapper.isInstance(MappedClasses.b));
-            if (bl6 || bl4) {
-                ++n4;
-                if (blockCoordinate == null) {
-                    blockCoordinate = new BlockCoordinate(n5, n6, n7);
+
+            Block blockBelow = entityPlayerSP.getWorld().getBlockByPos(blockX, blockY, blockZ);
+            boolean touchesSpecialLandingBlock = blockBelow.isNotNull()
+                    && (blockBelow.isInstance(MappedClasses.q_) || blockBelow.isInstance(MappedClasses.b));
+            if (onGround || touchesSpecialLandingBlock) {
+                ++consecutiveGroundTicks;
+                if (landingCoordinate == null) {
+                    landingCoordinate = new BlockCoordinate(blockX, blockY, blockZ);
                 }
-                if (n4 >= n3 || entityPlayer.e$src$Z$15bd4i1()) {
-                    return blockCoordinate;
+                if (consecutiveGroundTicks >= requiredGroundTicks || simulatedPlayer.e$src$Z$15bd4i1()) {
+                    return landingCoordinate;
                 }
             } else {
-                blockCoordinate = null;
-                n4 = 0;
+                landingCoordinate = null;
+                consecutiveGroundTicks = 0;
             }
-            if (!(blockPathPlanner.T().N() <= (double)n2)) continue;
-            return blockCoordinate;
+            if (simulatedPlayer.N() <= minimumWorldY) {
+                return landingCoordinate;
+            }
         }
         return null;
     }
 
     @Nullable
-    public static BlockPos q(@NotNull ItemMappingEntry itemMappingEntry) {
-        RayTraceResult rayTraceResult = BlockPlacementUtility.A(itemMappingEntry);
+    public static BlockPos getPlacementBlockPos(@NotNull ItemMappingEntry itemMappingEntry) {
+        RayTraceResult rayTraceResult = BlockPlacementUtility.getPlacementRayTrace(itemMappingEntry);
         if (rayTraceResult.isNull() || !rayTraceResult.isBlockHit()) {
             return null;
         }
@@ -216,78 +225,83 @@ public final class BlockPlacementUtility {
         return blockPos.offset(enumFacing);
     }
 
-    public static Vec3 D(BlockCoordinate blockCoordinate, @Nullable ItemMappingEntry itemMappingEntry) {
-        boolean bl = BlockPlacementUtility.U().equals(itemMappingEntry);
-        if (!bl) {
+    public static Vec3 getAimPoint(BlockCoordinate blockCoordinate, @Nullable ItemMappingEntry itemMappingEntry) {
+        boolean isEmptyBucket = BlockPlacementUtility.getEmptyBucketItem().equals(itemMappingEntry);
+        if (!isEmptyBucket) {
             return blockCoordinate.P().addVector(0.5, 1.0, 0.5);
         }
         return blockCoordinate.P().addVector(0.5, 0.5, 0.5);
     }
 
-    public static ItemMappingEntry Y() {
-        if (Z == null) {
-            Z = Vape.INSTANCE.getItemStackResolver().b("minecraft:water_bucket");
+    public static ItemMappingEntry getWaterBucketItem() {
+        if (waterBucketItem == null) {
+            waterBucketItem = Vape.INSTANCE.getItemStackResolver().findByName("minecraft:water_bucket");
         }
-        return Z;
+        return waterBucketItem;
     }
 
-    public static void y(WorldPointRotationTarget worldPointRotationTarget, BlockCoordinate blockCoordinate, ItemMappingEntry itemMappingEntry) {
-        Vec3 vec3;
-        Vec3 vec32 = BlockPlacementUtility.D(blockCoordinate, itemMappingEntry);
-        if (!vec32.equals(vec3 = worldPointRotationTarget.w())) {
-            worldPointRotationTarget.J(vec32);
+    public static void updateRotationTarget(WorldPointRotationTarget worldPointRotationTarget,
+                                            BlockCoordinate blockCoordinate, ItemMappingEntry itemMappingEntry) {
+        Vec3 aimPoint = BlockPlacementUtility.getAimPoint(blockCoordinate, itemMappingEntry);
+        Vec3 currentTarget = worldPointRotationTarget.getTarget();
+        if (!aimPoint.equals(currentTarget)) {
+            worldPointRotationTarget.setTarget(aimPoint);
         }
     }
 
 
-    private static void v(FixedRotationController fixedRotationController, boolean bl, boolean bl2, @Nullable RotationControlClaim rotationControlClaim, @Nullable Mod mod) {
-        if (fixedRotationController == null) {
+    private static void releaseRotation(FixedRotationController controller, boolean releaseClaim,
+                                        boolean finishAdaptiveRotation,
+                                        @Nullable RotationControlClaim rotationControlClaim, @Nullable Mod mod) {
+        if (controller == null) {
             return;
         }
-        if (fixedRotationController.equals(RotationManager.b.w())) {
-            RotationManager.b.v(fixedRotationController);
+        if (controller.equals(RotationManager.INSTANCE.getActiveController())) {
+            RotationManager.INSTANCE.releaseController(controller);
         }
-        fixedRotationController.w(false);
-        if (bl2 && fixedRotationController instanceof AdaptiveRotationController) {
-            ((AdaptiveRotationController)fixedRotationController).b(false);
-            fixedRotationController.u(true);
+        controller.setRetainAfterCompletion(false);
+        if (finishAdaptiveRotation && controller instanceof AdaptiveRotationController) {
+            ((AdaptiveRotationController)controller).setRelativeMode(false);
+            controller.setComplete(true);
         }
-        if (bl && rotationControlClaim != null && mod != null) {
-            rotationControlClaim.X(mod);
+        if (releaseClaim && rotationControlClaim != null && mod != null) {
+            rotationControlClaim.release(mod);
         }
     }
 
-    static ItemMappingEntry e() {
-        if (W == null) {
-            W = Vape.INSTANCE.getItemStackResolver().b("minecraft:cobweb");
+    static ItemMappingEntry getCobwebItem() {
+        if (cobwebItem == null) {
+            cobwebItem = Vape.INSTANCE.getItemStackResolver().findByName("minecraft:cobweb");
         }
-        return W;
+        return cobwebItem;
     }
 
     private BlockPlacementUtility() {
     }
 
-    private static boolean P(@Nullable BlockPos blockPos, @Nullable BlockCoordinate blockCoordinate, @Nullable ItemMappingEntry itemMappingEntry) {
+    private static boolean isNearTarget(@Nullable BlockPos blockPos, @Nullable BlockCoordinate blockCoordinate,
+                                        @Nullable ItemMappingEntry itemMappingEntry) {
         if (blockPos == null || blockCoordinate == null) {
             return false;
         }
-        int n = blockPos.P();
-        int n2 = blockCoordinate.B();
-        int n3 = blockPos.o();
-        int n4 = blockCoordinate.E();
-        int n5 = blockPos.d();
-        int n6 = blockCoordinate.A();
-        int n7 = Math.abs(n - n2);
-        int n8 = Math.abs(n3 - n4);
-        int n9 = Math.abs(n5 - n6);
-        if (itemMappingEntry != null && itemMappingEntry.equals(BlockPlacementUtility.U())) {
-            return (double)n7 <= 0.5 && n8 <= 1 && (double)n9 <= 0.5;
+        int hitX = blockPos.P();
+        int targetX = blockCoordinate.B();
+        int hitY = blockPos.o();
+        int targetY = blockCoordinate.E();
+        int hitZ = blockPos.d();
+        int targetZ = blockCoordinate.A();
+        int deltaX = Math.abs(hitX - targetX);
+        int deltaY = Math.abs(hitY - targetY);
+        int deltaZ = Math.abs(hitZ - targetZ);
+        if (itemMappingEntry != null && itemMappingEntry.equals(BlockPlacementUtility.getEmptyBucketItem())) {
+            return (double)deltaX <= 0.5 && deltaY <= 1 && (double)deltaZ <= 0.5;
         }
-        return n7 <= 1 && n8 <= 1 && n9 <= 1;
+        return deltaX <= 1 && deltaY <= 1 && deltaZ <= 1;
     }
 
-    public static void r(FixedRotationController fixedRotationController, boolean bl, boolean bl2) {
-        BlockPlacementUtility.v(fixedRotationController, bl, bl2, null, null);
+    public static void releaseRotationController(FixedRotationController controller,
+                                                 boolean releaseClaim, boolean finishAdaptiveRotation) {
+        BlockPlacementUtility.releaseRotation(
+                controller, releaseClaim, finishAdaptiveRotation, null, null);
     }
 }
-

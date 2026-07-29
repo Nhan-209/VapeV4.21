@@ -10,39 +10,38 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 public class ModRegistrationBuilder<T extends Mod> {
-    private T D;
+    private T module;
     @NotNull
-    private final List<List<MinecraftVersionConstraint>> T = new ArrayList<List<MinecraftVersionConstraint>>();
+    private final List<List<MinecraftVersionConstraint>> versionConstraints = new ArrayList<List<MinecraftVersionConstraint>>();
 
-    public void e(ModManager modManager) {
-        modManager.d((Mod)this.D, this.T, false);
+    public void registerWith(ModManager modManager) {
+        modManager.registerModule((Mod)this.module, this.versionConstraints, false);
     }
 
-    public ModRegistrationBuilder<T> u(MinecraftVersionConstraint ... gi_1Array) {
-        this.T.add(Arrays.asList(gi_1Array));
+    public ModRegistrationBuilder<T> addVersionConstraints(MinecraftVersionConstraint ... constraints) {
+        this.versionConstraints.add(Arrays.asList(constraints));
         return this;
     }
 
-    public static <T extends Mod> ModRegistrationBuilder<T> X() {
+    public static <T extends Mod> ModRegistrationBuilder<T> create() {
         return new ModRegistrationBuilder<T>();
     }
 
-    public ModRegistrationBuilder<T> k(@NotNull List<MinecraftVersionConstraint> list) {
-        this.T.add(list);
+    public ModRegistrationBuilder<T> addVersionConstraintList(@NotNull List<MinecraftVersionConstraint> constraints) {
+        this.versionConstraints.add(constraints);
         return this;
     }
 
-    public ModRegistrationBuilder<T> O(@NotNull T t) {
-        this.D = t;
+    public ModRegistrationBuilder<T> setModule(@NotNull T module) {
+        this.module = module;
         return this;
     }
 
     ModRegistrationBuilder() {
     }
 
-    public ModRegistrationBuilder<T> H(@NotNull MinecraftVersionConstraint gi_12) {
-        this.T.add(Collections.singletonList(gi_12));
+    public ModRegistrationBuilder<T> addVersionConstraint(@NotNull MinecraftVersionConstraint constraint) {
+        this.versionConstraints.add(Collections.singletonList(constraint));
         return this;
     }
 }
-

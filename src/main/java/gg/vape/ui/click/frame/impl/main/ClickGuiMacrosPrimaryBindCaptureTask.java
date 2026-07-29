@@ -7,20 +7,20 @@ import gg.vape.unmap.Bendable;
 
 class ClickGuiMacrosPrimaryBindCaptureTask
 extends BindCaptureTask {
-    final ClickGuiMacrosSettingsPanel h;
+    final ClickGuiMacrosSettingsPanel settingsPanel;
 
-    public void V$src$V$1ybrqsf() {
-        ClickGuiMacrosSettingsPanel.K(this.h, null);
+    private void completeCapture() {
+        this.settingsPanel.setBindCaptureTask(null);
         Vape.INSTANCE.saveAndStop();
     }
 
     @Override
-    public void void_V() {
-        this.V$src$V$1ybrqsf();
+    public void onCaptureComplete() {
+        this.completeCapture();
     }
 
     ClickGuiMacrosPrimaryBindCaptureTask(ClickGuiMacrosSettingsPanel clickGuiMacrosSettingsPanel, Bendable bendable) {
         super(bendable);
-        this.h = clickGuiMacrosSettingsPanel;
+        this.settingsPanel = clickGuiMacrosSettingsPanel;
     }
 }

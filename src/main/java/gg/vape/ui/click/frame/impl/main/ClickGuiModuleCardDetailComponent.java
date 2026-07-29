@@ -37,7 +37,7 @@ extends GuiComponent {
         if (this.i.isEmpty()) {
             return;
         }
-        SmoothFontRenderer smoothFontRenderer = this.O(this.K);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(this.K);
         double d = smoothFontRenderer.N("...");
         double d2 = smoothFontRenderer.d("A");
         double d3 = this.G$src$D$1b2f02a();

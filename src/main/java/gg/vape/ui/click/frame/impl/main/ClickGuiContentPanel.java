@@ -6,42 +6,42 @@ import gg.vape.ui.click.layout.ClickGuiContentLayout;
 
 public class ClickGuiContentPanel
 extends PanelComponent {
-    private final ClickGuiContentLayout qM = new ClickGuiContentLayout(this);
-    private static final String eb = "wrap, widthwrap";
+    private static final String DEFAULT_LAYOUT = "wrap, widthwrap";
+    private final ClickGuiContentLayout contentLayout = new ClickGuiContentLayout(this);
 
     @Override
     public double x() {
         return 0.0;
     }
 
-    public ClickGuiContentLayout E() {
-        return this.qM;
+    public ClickGuiContentLayout getContentLayout() {
+        return this.contentLayout;
     }
 
-    public void u(boolean bl) {
-        this.qM.C(bl);
+    public void setResponsiveWidthEnabled(boolean enabled) {
+        this.contentLayout.C(enabled);
     }
 
     @Override
     public void Y(double d) {
         if (d != this.L()) {
-            super.u(d);
+            super.setExplicitHeight(d);
             this.H(true);
         }
     }
 
-    public void x(String string) {
-        this.qM.M(string);
+    public void setLayoutMode(String layoutMode) {
+        this.contentLayout.M(layoutMode);
     }
 
     @Override
-    public void S() {
-        super.S();
-        this.qM.E();
+    public void removeMarkedChildren() {
+        super.removeMarkedChildren();
+        this.contentLayout.E();
     }
 
-    public boolean C$src$Z$1fo1jr4() {
-        return this.qM.K();
+    public boolean isResponsiveWidthEnabled() {
+        return this.contentLayout.K();
     }
 
     @Override
@@ -55,13 +55,13 @@ extends PanelComponent {
 
     public ClickGuiContentPanel(double d, double d2) {
         super(d, d2);
-        this.qM.t(false);
-        this.qM.M(false);
-        this.qM.U(false);
-        this.qM.I(false);
-        this.qM.u(false);
-        this.qM.M(eb);
-        this.N(this.qM);
+        this.contentLayout.t(false);
+        this.contentLayout.M(false);
+        this.contentLayout.U(false);
+        this.contentLayout.I(false);
+        this.contentLayout.u(false);
+        this.contentLayout.M(DEFAULT_LAYOUT);
+        this.N(this.contentLayout);
     }
 
     @Override
@@ -76,7 +76,7 @@ extends PanelComponent {
     @Override
     public void o(double d) {
         if (d != this.A()) {
-            super.q(d);
+            super.setExplicitWidth(d);
             this.H(true);
         }
     }

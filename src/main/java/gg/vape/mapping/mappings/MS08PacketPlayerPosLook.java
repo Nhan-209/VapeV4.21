@@ -35,7 +35,7 @@ extends Mapping {
         String string3 = "xRot";
         MS08PacketPlayerPosLook mS08PacketPlayerPosLook3 = this;
         this.K = this.J(string3, bl3, clazz3);
-        GuiComponent.D(new GuiComponent[1]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[1]);
     }
 
     public static String[] c() {

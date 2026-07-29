@@ -8,25 +8,25 @@ import java.util.List;
 
 public abstract class ConditionalValue<K, T extends ConditionalValue<K, T>>
 extends Value<K, T> {
-    private final List<Value> g = new ArrayList<Value>();
-    private static String[] w;
+    private final List<Value> dependentValues = new ArrayList<Value>();
+    private static String[] legacyState;
 
-    public ValueCondition a(K k) {
-        return new ValueCondition().t(this, arg_0 -> ConditionalValue.lambda$condNotEquals$0(k, arg_0));
+    public ValueCondition whenNotEqualTo(K value) {
+        return new ValueCondition().require(this, candidate -> ConditionalValue.isNotEqual(value, candidate));
     }
 
-    public static void M(String[] stringArray) {
-        w = stringArray;
+    public static void setLegacyState(String[] state) {
+        legacyState = state;
     }
 
-    public abstract boolean P();
+    public abstract boolean hasActiveDependentBranch();
 
-    public List<Value> q$src$Ljava_util_List_$fyau59() {
-        return this.g;
+    public List<Value> getDependentValues() {
+        return this.dependentValues;
     }
 
-    public static String[] o$src$ALjava_lang_String_$17s942p() {
-        return w;
+    public static String[] getConditionalLegacyState() {
+        return legacyState;
     }
 
     public ConditionalValue(Object object, String string, K k) {
@@ -35,41 +35,41 @@ extends Value<K, T> {
 
 
     static {
-        if (ConditionalValue.o$src$ALjava_lang_String_$17s942p() != null) {
-            ConditionalValue.M(new String[3]);
+        if (ConditionalValue.getConditionalLegacyState() != null) {
+            ConditionalValue.setLegacyState(new String[3]);
         }
     }
 
-    public T K(Value<?, ?> ... valueArray) {
-        for (Value<?, ?> value : valueArray) {
+    public T addDependentValues(Value<?, ?> ... values) {
+        for (Value<?, ?> value : values) {
             value.setParent(this);
-            value.L(this);
+            value.addConditionalValue(this);
         }
-        this.g.addAll(Arrays.asList(valueArray));
+        this.dependentValues.addAll(Arrays.asList(values));
         return (T)this;
     }
 
-    public ValueCondition U(K k) {
-        return new ValueCondition().z(this, k);
+    public ValueCondition whenEqualTo(K value) {
+        return new ValueCondition().requireEqual(this, value);
     }
 
-    private static boolean lambda$condNotEquals$0(Object object, Object object2) {
-        return !object2.equals(object);
+    private static boolean isNotEqual(Object expected, Object candidate) {
+        return !candidate.equals(expected);
     }
 
-    public abstract boolean q(Value var1);
+    public abstract boolean isDependentValueActive(Value value);
 
-    public Value G() {
-        for (Value value : this.q$src$Ljava_util_List_$fyau59()) {
-            if (!value.equals(this.q$src$Ljava_util_List_$fyau59().get(this.q$src$Ljava_util_List_$fyau59().size() - 1))) continue;
+    public Value getTerminalDependentValue() {
+        for (Value value : this.getDependentValues()) {
+            if (!value.equals(this.getDependentValues().get(this.getDependentValues().size() - 1))) continue;
             if (value instanceof ConditionalValue) {
                 ConditionalValue conditionalValue = (ConditionalValue)value;
-                if (!conditionalValue.q$src$Ljava_util_List_$fyau59().isEmpty() && conditionalValue.P()) {
-                    Value value2 = (Value)conditionalValue.q$src$Ljava_util_List_$fyau59().get(conditionalValue.q$src$Ljava_util_List_$fyau59().size() - 1);
-                    if (!conditionalValue.q$src$Ljava_util_List_$fyau59().isEmpty()) {
-                        return conditionalValue.G();
+                if (!conditionalValue.getDependentValues().isEmpty() && conditionalValue.hasActiveDependentBranch()) {
+                    Value terminalValue = (Value)conditionalValue.getDependentValues().get(conditionalValue.getDependentValues().size() - 1);
+                    if (!conditionalValue.getDependentValues().isEmpty()) {
+                        return conditionalValue.getTerminalDependentValue();
                     }
-                    return value2;
+                    return terminalValue;
                 }
                 return value;
             }

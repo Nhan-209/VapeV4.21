@@ -12,45 +12,40 @@ DescribedOption {
     HAS("Has", "Whether the item has the enchantment."),
     LEVEL("Level", "The level of the enchantment.");
 
-    private final String Y;
-    private static final EnchantmentFilterMode[] C;
+    private final String description;
     public static final List<EnchantmentFilterMode> VALUES;
-    private final String M;
+    private final String name;
 
-    public static EnchantmentFilterMode V(String string) {
-        return EnchantmentFilterMode.G(string, HAS);
+    public static EnchantmentFilterMode fromName(String string) {
+        return EnchantmentFilterMode.fromNameOrDefault(string, HAS);
     }
 
     @Override
     public String getName() {
-        return this.M;
+        return this.name;
     }
 
     @Override
-    public String E() {
-        return this.Y;
+    public String getDescription() {
+        return this.description;
     }
 
     static {
-        String[] stringArray = new String[]{"HAS", "Whether the item has the enchantment.", "Has", "The level of the enchantment.", "Level", "LEVEL"};
-
-
-        C = new EnchantmentFilterMode[]{HAS, LEVEL};
         VALUES = Arrays.asList(EnchantmentFilterMode.values());
     }
 
     private EnchantmentFilterMode(String string2, String string3) {
-        this.M = string2;
-        this.Y = string3;
+        this.name = string2;
+        this.description = string3;
     }
 
-    public static EnchantmentFilterMode G(String string, EnchantmentFilterMode enchantmentFilterMode) {
-        EnchantmentFilterMode enchantmentFilterMode2 = EnchantmentFilterMode.Y(string);
+    public static EnchantmentFilterMode fromNameOrDefault(String string, EnchantmentFilterMode enchantmentFilterMode) {
+        EnchantmentFilterMode enchantmentFilterMode2 = EnchantmentFilterMode.findByName(string);
         return enchantmentFilterMode2 == null ? enchantmentFilterMode : enchantmentFilterMode2;
     }
 
     @Nullable
-    public static EnchantmentFilterMode Y(String string) {
+    public static EnchantmentFilterMode findByName(String string) {
         for (EnchantmentFilterMode enchantmentFilterMode : VALUES) {
             if (!enchantmentFilterMode.getName().equalsIgnoreCase(string)) continue;
             return enchantmentFilterMode;

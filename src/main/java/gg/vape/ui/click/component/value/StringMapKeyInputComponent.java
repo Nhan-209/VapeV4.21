@@ -6,11 +6,11 @@ import gg.vape.ui.click.component.value.StringMapValueComponent;
 
 class StringMapKeyInputComponent
 extends TextInputComponentBase {
-    final StringMapValueComponent v_;
+    final StringMapValueComponent owner;
 
     @Override
-    public void p() {
-        ClientSettings.fT = StringMapValueComponent.r(this.v_);
+    public void submit() {
+        ClientSettings.activeComponent = StringMapValueComponent.getValueInputCompat(this.owner);
     }
 
     @Override
@@ -23,8 +23,8 @@ extends TextInputComponentBase {
         return 18.0;
     }
 
-    StringMapKeyInputComponent(StringMapValueComponent stringMapValueComponent, String string) {
-        super(string);
-        this.v_ = stringMapValueComponent;
+    StringMapKeyInputComponent(StringMapValueComponent owner, String placeholder) {
+        super(placeholder);
+        this.owner = owner;
     }
 }

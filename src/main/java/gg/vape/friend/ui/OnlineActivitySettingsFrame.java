@@ -34,14 +34,14 @@ extends HudSettingsFrameBase {
 
     @Override
     public void Y() {
-        if (this.N$src$Z$1ad1ggw()) {
+        if (this.isManagedByClickGui()) {
             return;
         }
-        GuiRenderPrimitives.e(this.G$src$D$1b2f02a(), this.n(), this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().A(), this.q() ? 18.0 : 109.0, this.d(), this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null, 2.0f, 1.0f);
+        GuiRenderPrimitives.e(this.G$src$D$1b2f02a(), this.n(), this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().A(), this.q() ? 18.0 : 109.0, this.getDisabledOverlayColor(), this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null, 2.0f, 1.0f);
     }
 
     @Override
-    protected void o$src$V$7f79jo() {
+    protected void renderHudModeBorder() {
     }
 
     @Override
@@ -55,24 +55,24 @@ extends HudSettingsFrameBase {
 
 
     private boolean X(Bendable bendable) {
-        if (bendable.L().isEmpty()) {
+        if (bendable.getBoundInputs().isEmpty()) {
             return false;
         }
         int n = 0;
-        for (int n2 : bendable.L()) {
+        for (int n2 : bendable.getBoundInputs()) {
             if (!KeyBoardUtil.m(n2)) continue;
             ++n;
         }
-        return n == bendable.L().size();
+        return n == bendable.getBoundInputs().size();
     }
 
     @Override
     public void u() {
         boolean bl;
         Bendable bendable = OnlineConnectionManager.T.S().k();
-        boolean bl2 = Minecraft.currentScreen().isNotNull() && ClientSettings.fW.v();
-        boolean bl3 = !bl2 && !(ClientSettings.fT instanceof TextInputComponentBase) && this.X(bendable);
-        boolean bl4 = bl = this.ys.j$src$Ljava_lang_Object_$an7bt2() == null || this.ys.j$src$Ljava_lang_Object_$an7bt2().equals(OnlineConnectionManager.T.S().r());
+        boolean bl2 = Minecraft.currentScreen().isNotNull() && ClientSettings.INSTANCE.isInputEnabled();
+        boolean bl3 = !bl2 && !(ClientSettings.activeComponent instanceof TextInputComponentBase) && this.X(bendable);
+        boolean bl4 = bl = this.ys.getSelectedValue() == null || this.ys.getSelectedValue().equals(OnlineConnectionManager.T.S().r());
         if (bl) {
             this.g$src$Lgg_vape_friend_ui_PartyActivityListPanel_$1w1i13j().L(bl3);
         } else {
@@ -105,14 +105,14 @@ extends HudSettingsFrameBase {
         componentLayout.I(false);
         componentLayout.u(false);
         componentLayout.M("wrap");
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         BindValueRowComponent bindValueRowComponent = new BindValueRowComponent("Show inventory bind", OnlineConnectionManager.T.S().k(), OnlineActivitySettingsFrame.J.Z);
         bindValueRowComponent.w("Keybind to show inventory of party members");
-        bindValueRowComponent.K$src$Lgg_vape_ui_click_component_input_BindableInputC$1pa6t6b().g(20);
+        bindValueRowComponent.getBindInput().setActiveAlpha(20);
         this.yK = OnlineActivityPanelOptions.p;
         BooleanToggleComponent booleanToggleComponent = new BooleanToggleComponent(this.yK.P());
         BooleanToggleComponent booleanToggleComponent2 = new BooleanToggleComponent(OnlineConnectionManager.T.S().j$src$Lgg_vape_value_BooleanValue_$1co7xi6());
-        booleanToggleComponent2.j(new OnlineActivityPanelRefreshClickHandler(this));
+        booleanToggleComponent2.addMouseListener(new OnlineActivityPanelRefreshClickHandler(this));
         BooleanToggleComponent booleanToggleComponent3 = new BooleanToggleComponent(this.yK.i());
         booleanToggleComponent2.o(110.0);
         booleanToggleComponent.o(110.0);
@@ -120,10 +120,11 @@ extends HudSettingsFrameBase {
         this.ys.o(110.0);
         bindValueRowComponent.o(110.0);
         this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().o(110.0);
-        this.M(bindValueRowComponent, this.ys, booleanToggleComponent2, booleanToggleComponent, booleanToggleComponent3);
+        this.addSettings(bindValueRowComponent, this.ys, booleanToggleComponent2,
+                booleanToggleComponent, booleanToggleComponent3);
         this.h(new SpacerComponent(1.0, 4.0), new Object[0]);
         this.yD = new PartyActivityListPanel();
-        this.H(this.yD);
+        this.addChildren(this.yD);
     }
 }
 

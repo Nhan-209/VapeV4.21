@@ -9,47 +9,48 @@ import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.ServerData;
 
 public class NativePresenceUpdater {
-    private final TimerUtil D = new TimerUtil();
-    private static GuiComponent[] R;
-    private String Q;
-    private String o;
+    private final TimerUtil updateTimer = new TimerUtil();
+    private static GuiComponent[] controlFlowMarker;
+    private String lastServerDescription;
+    private String lastClientDescription;
 
-    public void X(boolean bl) {
-        String string;
-        if (!this.D.hasTimeElapsed(1000L)) {
+    public void updatePresence(boolean enabled) {
+        if (!this.updateTimer.hasTimeElapsed(1000L)) {
             return;
         }
-        this.D.reset();
-        if (!bl) {
+        this.updateTimer.reset();
+        if (!enabled) {
             NativeBridge.updc(null, null);
             return;
         }
         ServerData serverData = Minecraft.H();
-        String string2 = "Not in a server";
+        String serverDescription = "Not in a server";
         if (serverData.isNotNull()) {
-            string2 = "Playing legit on " + serverData.f();
+            serverDescription = "Playing legit on " + serverData.f();
         }
-        if ((string = Vape.INSTANCE.getModManager().getMod(TextGuiSettings.class).z()).length() >= 128) {
-            string = string.substring(0, 128);
+        String clientDescription = Vape.INSTANCE.getModManager().getMod(TextGuiSettings.class).getEnabledModuleNames();
+        if (clientDescription.length() >= 128) {
+            clientDescription = clientDescription.substring(0, 128);
         }
-        if (!string2.equals(this.Q) || !this.o.equals(string)) {
-            NativeBridge.updc(string2, string);
+        if (!serverDescription.equals(this.lastServerDescription)
+                || !this.lastClientDescription.equals(clientDescription)) {
+            NativeBridge.updc(serverDescription, clientDescription);
         }
-        this.Q = string2;
-        this.o = string;
+        this.lastServerDescription = serverDescription;
+        this.lastClientDescription = clientDescription;
     }
 
     static {
-        NativePresenceUpdater.U(new GuiComponent[5]);
+        NativePresenceUpdater.setControlFlowMarker(new GuiComponent[5]);
     }
 
 
-    public static void U(GuiComponent[] guiComponentArray) {
-        R = guiComponentArray;
+    public static void setControlFlowMarker(GuiComponent[] marker) {
+        controlFlowMarker = marker;
     }
 
-    public static GuiComponent[] F() {
-        return R;
+    public static GuiComponent[] getControlFlowMarker() {
+        return controlFlowMarker;
     }
 }
 

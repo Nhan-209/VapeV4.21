@@ -9,12 +9,12 @@ import java.util.Comparator;
 public class EntityAngleComparator
 implements Comparator<Entity> {
     @Override
-    public int compare(Entity entity, Entity entity2) {
-        return this.d(entity, entity2);
+    public int compare(Entity firstEntity, Entity secondEntity) {
+        return this.compareByAngle(firstEntity, secondEntity);
     }
 
-    public int d(Entity entity, Entity entity2) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        return Integer.compare(RotationUtil.a(entityPlayerSP, entity), RotationUtil.a(entityPlayerSP, entity2));
+    public int compareByAngle(Entity firstEntity, Entity secondEntity) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        return Integer.compare(RotationUtil.a(player, firstEntity), RotationUtil.a(player, secondEntity));
     }
 }

@@ -7,20 +7,20 @@ import java.awt.Color;
 
 public final class ClientSettingsEntityCheckDependentToggleComponent
 extends BooleanToggleComponent {
-    final ClientSettings IC;
+    final ClientSettings clientSettings;
 
     @Override
     public boolean V$src$Z$1xhop3l() {
-        return this.IC.B.L();
+        return this.clientSettings.healthPrediction.getEffectiveValue();
     }
 
     public ClientSettingsEntityCheckDependentToggleComponent(BooleanValue booleanValue, ClientSettings clientSettings) {
         super(booleanValue);
-        this.IC = clientSettings;
+        this.clientSettings = clientSettings;
     }
 
     @Override
-    public Color d() {
+    public Color getDisabledOverlayColor() {
         return ClientSettingsEntityCheckDependentToggleComponent.J.r;
     }
 }

@@ -9,83 +9,83 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public abstract class FloatingValueDropdownLayer<T extends AbstractListValueComponent>
 extends Frame {
-    private double Fr;
-    private boolean FF;
-    private T F3;
-    private double Fp;
+    private double lastSourceX;
+    private boolean visibleLastTick;
+    private T sourceComponent;
+    private double lastSourceY;
 
     @Override
     public boolean V$src$Z$1xhop3l() {
-        return this.F3 != null && ((GuiComponent)this.F3).V$src$Z$1xhop3l() && ((GuiComponent)this.F3).B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb() != null && ((GuiComponent)this.F3).B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().V$src$Z$1xhop3l() && ((AbstractListValueComponent)this.F3).P$src$Z$og01j6();
+        return this.sourceComponent != null && ((GuiComponent)this.sourceComponent).V$src$Z$1xhop3l() && ((GuiComponent)this.sourceComponent).getParentFrameComponent() != null && ((GuiComponent)this.sourceComponent).getParentFrameComponent().V$src$Z$1xhop3l() && ((AbstractListValueComponent)this.sourceComponent).isExpanded();
     }
 
     @Override
     public void u() {
         super.u();
-        boolean bl = this.V$src$Z$1xhop3l();
-        if (bl && !this.FF) {
-            this.e();
+        boolean visible = this.V$src$Z$1xhop3l();
+        if (visible && !this.visibleLastTick) {
+            this.refreshContents();
         }
-        this.FF = bl;
+        this.visibleLastTick = visible;
     }
 
     @Override
     public void v() {
     }
 
-    public void h() {
-        if (this.F3 == null || ((GuiComponent)this.F3).B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb() == null) {
+    public void updatePosition() {
+        if (this.sourceComponent == null || ((GuiComponent)this.sourceComponent).getParentFrameComponent() == null) {
             return;
         }
-        double d = ((GuiComponent)this.F3).L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().G$src$D$1b2f02a() + ((GuiComponent)this.F3).L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().A() + 1.0;
-        if (d != this.Fr || ((GuiComponent)this.F3).n() != this.Fp) {
-            double d2 = ((GuiComponent)this.F3).n();
-            FrameComponent frameComponent = ((GuiComponent)this.F3).B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb();
+        double preferredX = ((GuiComponent)this.sourceComponent).L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().G$src$D$1b2f02a() + ((GuiComponent)this.sourceComponent).L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().A() + 1.0;
+        if (preferredX != this.lastSourceX || ((GuiComponent)this.sourceComponent).n() != this.lastSourceY) {
+            double targetY = ((GuiComponent)this.sourceComponent).n();
+            FrameComponent frameComponent = ((GuiComponent)this.sourceComponent).getParentFrameComponent();
             if (frameComponent.k$src$Z$if6xeb()) {
-                d2 = Math.min(d2, frameComponent.n() + frameComponent.d$src$D$ibccpu() - ((GuiComponent)this.F3).L());
-                d2 = Math.max(d2, frameComponent.n() + (frameComponent.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null ? frameComponent.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() : 0.0));
+                targetY = Math.min(targetY, frameComponent.n() + frameComponent.d$src$D$ibccpu() - ((GuiComponent)this.sourceComponent).L());
+                targetY = Math.max(targetY, frameComponent.n() + (frameComponent.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null ? frameComponent.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() : 0.0));
             }
-            double d3 = Minecraft.J() / 2;
-            if (d + this.A() / 2.0 > d3) {
-                this.M(d - ((GuiComponent)this.F3).L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().A() - this.A() - 2.0, d2);
+            double screenCenterX = Minecraft.J() / 2;
+            if (preferredX + this.A() / 2.0 > screenCenterX) {
+                this.M(preferredX - ((GuiComponent)this.sourceComponent).L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().A() - this.A() - 2.0, targetY);
             } else {
-                this.M(d, d2);
+                this.M(preferredX, targetY);
             }
-            this.Fr = ((GuiComponent)this.F3).G$src$D$1b2f02a();
-            this.Fp = ((GuiComponent)this.F3).n();
+            this.lastSourceX = ((GuiComponent)this.sourceComponent).G$src$D$1b2f02a();
+            this.lastSourceY = ((GuiComponent)this.sourceComponent).n();
         }
     }
 
     @Override
     public void Y() {
-        if (this.F3 == null || ((GuiComponent)this.F3).B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb() == null) {
+        if (this.sourceComponent == null || ((GuiComponent)this.sourceComponent).getParentFrameComponent() == null) {
             return;
         }
-        ClientSettings.fW.N(((GuiComponent)this.F3).B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), this);
+        ClientSettings.INSTANCE.replaceFrame(((GuiComponent)this.sourceComponent).getParentFrameComponent().L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), this);
     }
 
 
-    public abstract void e();
+    public abstract void refreshContents();
 
-    public T C$src$Lgg_vape_ui_click_component_value_AbstractListVa$13qpumn() {
-        return this.F3;
+    public T getSourceComponent() {
+        return this.sourceComponent;
     }
 
     @Override
     public String getName() {
-        if (this.F3 == null) {
+        if (this.sourceComponent == null) {
             return "sidecar_" + this.hashCode();
         }
-        return "sidecar_" + this.F3.hashCode();
+        return "sidecar_" + this.sourceComponent.hashCode();
     }
 
-    public FloatingValueDropdownLayer(T t) {
-        this.T(FloatingValueDropdownLayer.J.i);
+    public FloatingValueDropdownLayer(T sourceComponent) {
+        this.setDisabledOverlayColor(FloatingValueDropdownLayer.J.i);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.K(300.0);
         this.S(100.0);
-        this.F3 = t;
+        this.sourceComponent = sourceComponent;
         this.Y(false);
         this.L(false, false);
     }

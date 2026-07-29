@@ -37,8 +37,8 @@ extends GuiComponent {
 
     public ClientSettingsActionButtonRowComponent(String string, GuiClickListener guiClickListener) {
         this.b = new AnimatedCenteredTextLabelComponent(string, ClientSettingsActionButtonRowComponent.J.l);
-        this.b.r(guiClickListener);
-        this.H(this.b);
+        this.b.addClickListener(guiClickListener);
+        this.addChildren(this.b);
     }
 
     @Override
@@ -49,4 +49,3 @@ extends GuiComponent {
         this.b.Y(this.L() - 2.0);
     }
 }
-

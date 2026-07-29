@@ -10,44 +10,44 @@ import java.util.ArrayList;
 
 public class BendableInputDispatcher
 implements EventListener {
-    private static final ArrayList<Bendable> b = new ArrayList();
-    private static GuiComponent[] E;
+    private static final ArrayList<Bendable> registeredBindings = new ArrayList();
+    private static GuiComponent[] legacyComponents;
 
     @EventHandler
-    public void C(EventKeyPress eventKeyPress) {
-        if (!eventKeyPress.isDown()) {
+    public void onKeyPress(EventKeyPress event) {
+        if (!event.isDown()) {
             return;
         }
-        for (Bendable bendable : b) {
-            bendable.f(eventKeyPress.getKey());
+        for (Bendable binding : registeredBindings) {
+            binding.activateIfMatched(event.getKey());
         }
     }
 
-    public static void H(Bendable bendable) {
-        b.add(bendable);
+    public static void register(Bendable binding) {
+        registeredBindings.add(binding);
     }
 
     @EventHandler
-    public void Z(EventMouseButton eventMouseButton) {
-        if (!eventMouseButton.getButtonState()) {
+    public void onMouseButton(EventMouseButton event) {
+        if (!event.getButtonState()) {
             return;
         }
-        for (Bendable bendable : b) {
-            bendable.f(-100 + eventMouseButton.getButton());
+        for (Bendable binding : registeredBindings) {
+            binding.activateIfMatched(-100 + event.getButton());
         }
     }
 
-    public static GuiComponent[] G() {
-        return E;
+    public static GuiComponent[] getLegacyComponents() {
+        return legacyComponents;
     }
 
-    public static void T(GuiComponent[] upArray) {
-        E = upArray;
+    public static void setLegacyComponents(GuiComponent[] components) {
+        legacyComponents = components;
     }
 
 
     static {
-        BendableInputDispatcher.T(new GuiComponent[1]);
+        BendableInputDispatcher.setLegacyComponents(new GuiComponent[1]);
     }
 }
 

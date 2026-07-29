@@ -12,7 +12,7 @@ import gg.vape.wrapper.impl.Minecraft;
 public class SafeWalk
 extends Mod {
     private boolean sneakCancelled;
-    private static final long k = -5388886013077358019L;
+    private static final long MODULE_ID = -5388886013077358019L;
     private final BooleanValue directionCheck = BooleanValue.create(this, "Direction Check", true, "Checks if you're walking forwards and it'll allow you to walk off the edge");
 
 
@@ -23,25 +23,25 @@ extends Mod {
 
     @EventHandler
     public void onPostMove(EventPostMove eventPostMove) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        entityPlayerSP.movementInput().setCancelled(this.sneakCancelled);
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        localPlayer.movementInput().setCancelled(this.sneakCancelled);
     }
 
     @EventHandler
     public void onPreMove(EventPreMove eventPreMove) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        this.sneakCancelled = entityPlayerSP.movementInput().D$src$Z$v5d6e8();
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        this.sneakCancelled = localPlayer.movementInput().D$src$Z$v5d6e8();
         boolean shouldSafeWalk = true;
-        if (this.directionCheck.L().booleanValue() && !entityPlayerSP.P() && entityPlayerSP.F() > 0.0f && entityPlayerSP.N$src$F$14ypudi() == 0.0f) {
+        if (this.directionCheck.getEffectiveValue().booleanValue() && !localPlayer.P() && localPlayer.F() > 0.0f && localPlayer.N$src$F$14ypudi() == 0.0f) {
             shouldSafeWalk = false;
         }
         if (shouldSafeWalk) {
-            entityPlayerSP.movementInput().setCancelled(true);
+            localPlayer.movementInput().setCancelled(true);
         }
     }
 
     public SafeWalk() {
-        super("SafeWalk", (int)k, Category.m, "Helps you from falling off the edge.");
+        super("SafeWalk", (int)MODULE_ID, Category.m, "Helps you from falling off the edge.");
         this.addValue(this.directionCheck);
     }
 }

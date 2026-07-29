@@ -37,7 +37,7 @@ extends Mapping {
             String string2 = "ITEMS";
             MResourceLocationConstantsBridge mResourceLocationConstantsBridge2 = this;
             this.i = this.u(string2, bl2, clazz2);
-            GuiComponent.D(new GuiComponent[5]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[5]);
             return;
         }
         Class clazz = MappedClasses.zC;

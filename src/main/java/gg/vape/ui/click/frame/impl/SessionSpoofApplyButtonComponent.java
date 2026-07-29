@@ -24,7 +24,7 @@ extends TextButton {
         MinecraftSessionWrapper minecraftSessionWrapper;
         super.u();
         if (SessionSpoofFrame.t(this.X_) == null && (minecraftSessionWrapper = Minecraft.Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u()).isNotNull()) {
-            SessionSpoofFrame.i(this.X_).d(cb + minecraftSessionWrapper.M() + ")");
+            SessionSpoofFrame.i(this.X_).setLabelText(cb + minecraftSessionWrapper.M() + ")");
         }
     }
 

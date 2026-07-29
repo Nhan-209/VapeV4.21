@@ -11,68 +11,80 @@ import org.jetbrains.annotations.Nullable;
 
 public class RemoteProfileData {
     @Nullable
-    private final ProfileRemoteMetadata L;
-    private final UUID g;
-    private final String K;
-    private final Map<String, Object> c;
-    private final UUID v;
-    private final String h;
+    private final ProfileRemoteMetadata metadata;
+    private final UUID ownerUuid;
+    private final String vapeVersion;
+    private final Map<String, Object> data;
+    private final UUID profileId;
+    private final String name;
 
-    RemoteProfileData(UUID uUID, UUID uUID2, String string, String string2, Map<String, Object> map, @Nullable ProfileRemoteMetadata profileRemoteMetadata) {
-        this.g = uUID;
-        this.v = uUID2;
-        this.h = string;
-        this.K = string2;
-        this.c = map;
-        this.L = profileRemoteMetadata;
+    RemoteProfileData(UUID ownerUuid, UUID profileId, String name, String vapeVersion,
+            Map<String, Object> data, @Nullable ProfileRemoteMetadata metadata) {
+        this.ownerUuid = ownerUuid;
+        this.profileId = profileId;
+        this.name = name;
+        this.vapeVersion = vapeVersion;
+        this.data = data;
+        this.metadata = metadata;
     }
 
-    public Map<String, Object> U() {
-        return this.c;
+    public Map<String, Object> getData() {
+        return this.data;
     }
 
-    public String i() {
-        return this.h;
+    public String getName() {
+        return this.name;
     }
 
-    public String v() {
-        return this.K;
+    public String getVapeVersion() {
+        return this.vapeVersion;
     }
 
     @Nullable
-    public ProfileRemoteMetadata r() {
-        return this.L;
+    public ProfileRemoteMetadata getMetadata() {
+        return this.metadata;
     }
 
     public String toString() {
-        return "PrivateProfile{uuid=" + this.g + "profileId=" + this.v + ", name='" + this.h + '\'' + ", data=" + this.c + ", metadata=" + this.L + '}';
+        return "PrivateProfile{uuid=" + this.ownerUuid + "profileId=" + this.profileId
+                + ", name='" + this.name + '\'' + ", data=" + this.data
+                + ", metadata=" + this.metadata + '}';
     }
 
-    public JsonObject G() {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("uuid", this.g != null ? this.g.toString() : null);
-        jsonObject.addProperty("profileId", this.v != null ? this.v.toString() : null);
-        jsonObject.addProperty("name", this.h);
-        jsonObject.addProperty("vapeVersion", this.K);
-        jsonObject.add("data", this.c != null ? ApiHttpClient.Z.toJsonTree(this.c) : null);
-        jsonObject.add("metadata", this.L != null ? this.L.i() : null);
-        return jsonObject;
+    public JsonObject toJson() {
+        JsonObject json = new JsonObject();
+        json.addProperty("uuid", this.ownerUuid != null ? this.ownerUuid.toString() : null);
+        json.addProperty("profileId", this.profileId != null ? this.profileId.toString() : null);
+        json.addProperty("name", this.name);
+        json.addProperty("vapeVersion", this.vapeVersion);
+        json.add("data", this.data != null ? ApiHttpClient.Z.toJsonTree(this.data) : null);
+        json.add("metadata", this.metadata != null ? this.metadata.i() : null);
+        return json;
     }
 
-    public UUID d() {
-        return this.v;
+    public UUID getProfileId() {
+        return this.profileId;
     }
 
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")
-    public static RemoteProfileData q(@Nullable JsonElement jsonElement) {
-        if (jsonElement == null || jsonElement.isJsonNull()) {
+    public static RemoteProfileData fromJson(@Nullable JsonElement element) {
+        if (element == null || element.isJsonNull()) {
             return null;
         }
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-        JsonElement jsonElement2 = jsonObject.get("uuid");
-        return new RemoteProfileData(jsonElement2 == null || jsonElement2.isJsonNull() ? null : UUID.fromString(jsonElement2.getAsString()), UUID.fromString(jsonObject.get("profileId").getAsString()), jsonObject.get("name").getAsString(), jsonObject.get("vapeVersion").getAsString(), (Map)ApiHttpClient.Z.fromJson(jsonObject.get("data"), Map.class), ProfileRemoteMetadata.s(jsonObject.get("metadata")));
+        JsonObject json = element.getAsJsonObject();
+        JsonElement ownerUuidElement = json.get("uuid");
+        UUID ownerUuid = ownerUuidElement == null || ownerUuidElement.isJsonNull()
+                ? null
+                : UUID.fromString(ownerUuidElement.getAsString());
+        return new RemoteProfileData(
+                ownerUuid,
+                UUID.fromString(json.get("profileId").getAsString()),
+                json.get("name").getAsString(),
+                json.get("vapeVersion").getAsString(),
+                (Map<String, Object>)ApiHttpClient.Z.fromJson(json.get("data"), Map.class),
+                ProfileRemoteMetadata.s(json.get("metadata")));
     }
 }
 

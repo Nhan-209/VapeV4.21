@@ -16,25 +16,25 @@ extends ModBendable {
     }
 
     @Override
-    public boolean Y() {
+    public boolean usesOwnKeybindStorage() {
         return false;
     }
 
     @Override
-    public boolean A$src$Z$jg36ch() {
+    public boolean supportsActivationMode() {
         return false;
     }
 
     @Override
-    public List<Integer> L() {
-        return ImmutableList.copyOf(((BindSet)Vape.INSTANCE.getPublicProfileSettings().Y.K()).L());
+    public List<Integer> getBoundInputs() {
+        return ImmutableList.copyOf(((BindSet)Vape.INSTANCE.getPublicProfileSettings().Y.getValue()).getBoundInputs());
     }
 
     @Override
-    public void c(List<Integer> list) {
-        ((BindSet)Vape.INSTANCE.getPublicProfileSettings().Y.K()).c(list);
-        if (!this.y$src$Z$r0tfl8()) {
-            this.c(Collections.singletonList(161));
+    public void setBoundInputs(List<Integer> inputCodes) {
+        ((BindSet)Vape.INSTANCE.getPublicProfileSettings().Y.getValue()).setBoundInputs(inputCodes);
+        if (!this.hasValidBinding()) {
+            this.setBoundInputs(Collections.singletonList(161));
         }
     }
 }

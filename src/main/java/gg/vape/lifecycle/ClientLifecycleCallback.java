@@ -1,8 +1,7 @@
 package gg.vape.lifecycle;
 
 public interface ClientLifecycleCallback {
-    public void s(String var1);
+    void log(String message);
 
-    public void B();
+    void close();
 }
-

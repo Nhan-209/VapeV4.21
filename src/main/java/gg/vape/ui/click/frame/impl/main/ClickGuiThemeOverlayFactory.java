@@ -15,20 +15,20 @@ import java.util.Map;
 
 public final class ClickGuiThemeOverlayFactory {
     private static void lambda$null$1(String string, ClickGuiSidecarPanelBase clickGuiSidecarPanelBase) {
-        clickGuiSidecarPanelBase.B(string != null ? string : "newsettings");
+        clickGuiSidecarPanelBase.setLeadingIconKey(string != null ? string : "newsettings");
     }
 
     private static void lambda$buildContent$3(ThemeComponentGroupKey themeComponentGroupKey, String string, String string2, ClickGuiMainFrame clickGuiMainFrame) {
         LinkedHashMap<ThemeComponentGroupKey, GuiComponent[]> linkedHashMap = ThemeComponentGroupFactory.R(ThemeColors.J);
         GuiComponent[] guiComponentArray = linkedHashMap.get(themeComponentGroupKey);
-        ClickGuiOverlaySpec clickGuiOverlaySpec = ClickGuiOverlaySpec.q().e(string).D(arg_0 -> ClickGuiThemeOverlayFactory.lambda$null$1(string2, arg_0)).N(arg_0 -> ClickGuiThemeOverlayFactory.lambda$null$2(guiComponentArray, arg_0)).r(ClickGuiOverlayTransitionMode.PUSH).w();
+        ClickGuiOverlaySpec clickGuiOverlaySpec = ClickGuiOverlaySpec.builder().title(string).initializeSidecar(arg_0 -> ClickGuiThemeOverlayFactory.lambda$null$1(string2, arg_0)).initializeContent(arg_0 -> ClickGuiThemeOverlayFactory.lambda$null$2(guiComponentArray, arg_0)).transitionMode(ClickGuiOverlayTransitionMode.PUSH).build();
         if (clickGuiMainFrame != null) {
-            clickGuiMainFrame.Z(clickGuiOverlaySpec);
+            clickGuiMainFrame.showOverlay(clickGuiOverlaySpec);
         }
     }
 
     public static ClickGuiOverlaySpec m(ClickGuiMainFrame clickGuiMainFrame) {
-        return ClickGuiOverlaySpec.q().e("Friends Settings").C("newsettings").N(arg_0 -> ClickGuiThemeOverlayFactory.lambda$createConfig$0(clickGuiMainFrame, arg_0)).r(ClickGuiOverlayTransitionMode.REPLACE).w();
+        return ClickGuiOverlaySpec.builder().title("Friends Settings").sidecarIcon("newsettings").initializeContent(arg_0 -> ClickGuiThemeOverlayFactory.lambda$createConfig$0(clickGuiMainFrame, arg_0)).transitionMode(ClickGuiOverlayTransitionMode.REPLACE).build();
     }
 
     private static void lambda$null$2(GuiComponent[] guiComponentArray, PanelComponent panelComponent) {
@@ -36,7 +36,7 @@ public final class ClickGuiThemeOverlayFactory {
             double d = Math.max(0.0, panelComponent.A());
             for (GuiComponent guiComponent : guiComponentArray) {
                 guiComponent.o(d);
-                guiComponent.q(d);
+                guiComponent.setExplicitWidth(d);
                 panelComponent.h(guiComponent, new Object[0]);
             }
         }
@@ -59,16 +59,16 @@ public final class ClickGuiThemeOverlayFactory {
             ClientSettingsFrameSectionLabelComponent clientSettingsFrameSectionLabelComponent = new ClientSettingsFrameSectionLabelComponent(object);
             double guiComponent = Math.max(0.0, panelComponent.A());
             clientSettingsFrameSectionLabelComponent.o(guiComponent);
-            clientSettingsFrameSectionLabelComponent.q(guiComponent);
+            clientSettingsFrameSectionLabelComponent.setExplicitWidth(guiComponent);
             clientSettingsFrameSectionLabelComponent.Y(18.0);
-            clientSettingsFrameSectionLabelComponent.r(() -> ClickGuiThemeOverlayFactory.lambda$buildContent$3(themeComponentGroupKey, object, string, clickGuiMainFrame));
+            clientSettingsFrameSectionLabelComponent.addClickListener(() -> ClickGuiThemeOverlayFactory.lambda$buildContent$3(themeComponentGroupKey, object, string, clickGuiMainFrame));
             panelComponent.h(clientSettingsFrameSectionLabelComponent, new Object[0]);
         }
         GuiComponent[] guiComponentArray = ThemeComponentGroupFactory.E(ThemeColors.J);
         double d = Math.max(0.0, panelComponent.A());
         for (GuiComponent guiComponent : guiComponentArray) {
             guiComponent.o(d);
-            guiComponent.q(d);
+            guiComponent.setExplicitWidth(d);
             panelComponent.h(guiComponent, new Object[0]);
         }
     }

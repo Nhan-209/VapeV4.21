@@ -15,10 +15,9 @@ implements GuiClickListener {
     }
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         ModuleCategoryFrameHeader.e(this.d).G(this.E);
-        ModuleCategoryFrameHeader.e(this.d).W(this.E).K$src$V$lt0qn9();
+        ModuleCategoryFrameHeader.e(this.d).W(this.E).expandValueComponents();
         ModuleCategoryFrameHeader.e(this.d).l$src$V$1mibm4x();
     }
 }
-

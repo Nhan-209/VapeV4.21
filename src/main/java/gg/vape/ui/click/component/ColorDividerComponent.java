@@ -7,14 +7,14 @@ import java.awt.Color;
 
 public class ColorDividerComponent
 extends GuiComponent {
-    private double K;
-    private static int[] G;
-    private Color v;
-    double I = 110.0;
+    private double dividerHeight;
+    private static int[] legacyState;
+    private Color color;
+    double dividerWidth = 110.0;
 
     @Override
     public void I() {
-        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.v);
+        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.color);
     }
 
     public ColorDividerComponent(Color color) {
@@ -23,22 +23,22 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.v);
+        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.color);
     }
 
-    public ColorDividerComponent(Color color, double d, double d2) {
-        this.v = color;
-        this.K = d;
-        this.I = d2;
+    public ColorDividerComponent(Color color, double height, double width) {
+        this.color = color;
+        this.dividerHeight = height;
+        this.dividerWidth = width;
     }
 
     @Override
     public double x() {
-        return this.I;
+        return this.dividerWidth;
     }
 
-    public static void y(int[] nArray) {
-        G = nArray;
+    public static void setLegacyState(int[] legacyState) {
+        ColorDividerComponent.legacyState = legacyState;
     }
 
     @Override
@@ -47,12 +47,12 @@ extends GuiComponent {
     }
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
+    public void g(GuiMouseEvent mouseEvent) {
     }
 
     static {
-        if (ColorDividerComponent.j$src$AI$1b2e8rh() != null) {
-            ColorDividerComponent.y(new int[5]);
+        if (ColorDividerComponent.getLegacyState() != null) {
+            ColorDividerComponent.setLegacyState(new int[5]);
         }
     }
 
@@ -60,13 +60,13 @@ extends GuiComponent {
     public void F() {
     }
 
-    public static int[] j$src$AI$1b2e8rh() {
-        return G;
+    public static int[] getLegacyState() {
+        return legacyState;
     }
 
-    public ColorDividerComponent(Color color, double d) {
-        this.v = color;
-        this.K = d;
+    public ColorDividerComponent(Color color, double height) {
+        this.color = color;
+        this.dividerHeight = height;
     }
 
     @Override
@@ -75,7 +75,6 @@ extends GuiComponent {
 
     @Override
     public double C() {
-        return this.K;
+        return this.dividerHeight;
     }
 }
-

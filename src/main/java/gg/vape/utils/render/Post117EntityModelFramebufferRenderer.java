@@ -32,138 +32,137 @@ import org.lwjgl.opengl.GL30;
 
 public class Post117EntityModelFramebufferRenderer
 implements EntityModelRenderBackend {
-    private static final String b = "[CachedFace] Exception during capture: ";
-    GlFramebuffer G;
-    private boolean X = false;
+    private static final String CAPTURE_ERROR_PREFIX = "[CachedFace] Exception during capture: ";
+    GlFramebuffer framebuffer;
+    private boolean fallbackAttempted = false;
 
-    private void w() {
-        if (this.G != null && this.G.l > 0 || this.X) {
+    private void captureDefaultTextureFallback() {
+        if (this.framebuffer != null && this.framebuffer.colorTextureId > 0 || this.fallbackAttempted) {
             return;
         }
-        this.X = true;
-        this.R(EntityModelRenderCache.M());
+        this.fallbackAttempted = true;
+        this.captureTextureInternal(EntityModelRenderCache.getDefaultSkinTexture());
     }
 
-    private void R(ResourceLocation resourceLocation) {
-        int n = 32;
-        int n2 = 32;
+    private void captureTextureInternal(ResourceLocation texture) {
+        int textureWidth = 32;
+        int textureHeight = 32;
         try {
-            RenderBatchManager renderBatchManager = RenderBatchManager.M();
-            renderBatchManager.G(0.0f);
-            int n3 = GL11.glGetInteger((int)34229);
-            int n4 = GL11.glGetInteger((int)35725);
-            int n5 = GL11.glGetInteger((int)32873);
-            int n6 = GL11.glGetInteger((int)36006);
-            int n7 = GL11.glGetInteger((int)34964);
-            int n8 = GL11.glGetInteger((int)34965);
-            boolean bl = GL11.glIsEnabled((int)3089);
-            if (bl) {
+            RenderBatchManager batchManager = RenderBatchManager.getInstance();
+            batchManager.flushGuiBatches(0.0f);
+            int previousVertexArrayId = GL11.glGetInteger((int)34229);
+            int previousShaderProgramId = GL11.glGetInteger((int)35725);
+            int previousTextureId = GL11.glGetInteger((int)32873);
+            int previousFramebufferId = GL11.glGetInteger((int)36006);
+            int previousArrayBufferId = GL11.glGetInteger((int)34964);
+            int previousElementArrayBufferId = GL11.glGetInteger((int)34965);
+            boolean scissorEnabled = GL11.glIsEnabled((int)3089);
+            if (scissorEnabled) {
                 GL11.glDisable((int)3089);
             }
-            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(64);
-            byteBuffer.order(ByteOrder.nativeOrder());
-            IntBuffer intBuffer = byteBuffer.asIntBuffer();
-            gg.vape.wrapper.impl.GL11.X(2978, intBuffer);
-            this.G = new GlFramebuffer(n, n2, true);
-            this.G.f(true);
+            ByteBuffer viewportBytes = ByteBuffer.allocateDirect(64);
+            viewportBytes.order(ByteOrder.nativeOrder());
+            IntBuffer viewport = viewportBytes.asIntBuffer();
+            gg.vape.wrapper.impl.GL11.X(2978, viewport);
+            this.framebuffer = new GlFramebuffer(textureWidth, textureHeight, true);
+            this.framebuffer.bind(true);
             GlStateManager.enableBlend();
             GlStateManager.Y(770, 771);
             GL11.glClearColor((float)0.0f, (float)0.0f, (float)0.0f, (float)0.0f);
             GL11.glClear((int)16640);
             TextureManager textureManager = Minecraft.Z();
-            TextureObject textureObject = textureManager.G(resourceLocation);
+            TextureObject textureObject = textureManager.G(texture);
             if (textureObject == null || textureObject.isNull() || textureObject.h() <= 0) {
-                this.G.o();
-                GL11.glViewport((int)intBuffer.get(0), (int)intBuffer.get(1), (int)intBuffer.get(2), (int)intBuffer.get(3));
-                GL30.glBindFramebuffer((int)36160, (int)n6);
-                GlStateManager.bindTexture(n5);
-                if (bl) {
+                this.framebuffer.unbind();
+                GL11.glViewport((int)viewport.get(0), (int)viewport.get(1), (int)viewport.get(2), (int)viewport.get(3));
+                GL30.glBindFramebuffer((int)36160, (int)previousFramebufferId);
+                GlStateManager.bindTexture(previousTextureId);
+                if (scissorEnabled) {
                     GL11.glEnable((int)3089);
                 }
-                this.w();
+                this.captureDefaultTextureFallback();
                 return;
             }
-            float f = 0.00390625f;
-            float f2 = 0.00390625f;
-            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder().o(new GlImageTexture(textureObject.h())).e(0.0f, 0.0f, 32.0f, 32.0f, n, n2, 32.0f * f, (float)(32 + n2) * f2, (float)(32 + n) * f, 32.0f * f2, Color.WHITE);
-            RenderMatrix4f renderMatrix4f = BufferedGuiRenderPrimitives.k;
-            RenderMatrix4f renderMatrix4f2 = BufferedGuiRenderPrimitives.l;
-            RenderMatrixStack renderMatrixStack = BufferedGuiRenderPrimitives.X;
-            BufferedGuiRenderPrimitives.k = new RenderMatrix4f().b().e(0.0f, n, n2, 0.0f, -21000.0f, 21000.0f);
-            BufferedGuiRenderPrimitives.l = new RenderMatrix4f().b();
-            BufferedGuiRenderPrimitives.X = new RenderMatrixStack();
-            int n9 = textureObject.h();
-            GL11.glBindTexture((int)3553, (int)n9);
-            int n10 = GL11.glGetTexParameteri((int)3553, (int)10241);
-            int n11 = GL11.glGetTexParameteri((int)3553, (int)10240);
+            float textureScaleU = 0.00390625f;
+            float textureScaleV = 0.00390625f;
+            RenderBatchBuilder batchBuilder = new RenderBatchBuilder().setTexture(new GlImageTexture(textureObject.h())).addTexturedRect(0.0f, 0.0f, 32.0f, 32.0f, textureWidth, textureHeight, 32.0f * textureScaleU, (float)(32 + textureHeight) * textureScaleV, (float)(32 + textureWidth) * textureScaleU, 32.0f * textureScaleV, Color.WHITE);
+            RenderMatrix4f previousProjectionMatrix = BufferedGuiRenderPrimitives.projectionMatrix;
+            RenderMatrix4f previousViewMatrix = BufferedGuiRenderPrimitives.viewMatrix;
+            RenderMatrixStack previousMatrixStack = BufferedGuiRenderPrimitives.matrixStack;
+            BufferedGuiRenderPrimitives.projectionMatrix = new RenderMatrix4f().setIdentity().setOrthographic(0.0f, textureWidth, textureHeight, 0.0f, -21000.0f, 21000.0f);
+            BufferedGuiRenderPrimitives.viewMatrix = new RenderMatrix4f().setIdentity();
+            BufferedGuiRenderPrimitives.matrixStack = new RenderMatrixStack();
+            int textureId = textureObject.h();
+            GL11.glBindTexture((int)3553, (int)textureId);
+            int previousMinFilter = GL11.glGetTexParameteri((int)3553, (int)10241);
+            int previousMagFilter = GL11.glGetTexParameteri((int)3553, (int)10240);
             GL11.glTexParameteri((int)3553, (int)10241, (int)9728);
             GL11.glTexParameteri((int)3553, (int)10240, (int)9728);
-            RenderBatchBuffer renderBatchBuffer = renderBatchManager.s();
-            RenderBatch renderBatch = new RenderBatch(renderBatchBuilder);
-            renderBatchBuffer.z();
-            renderBatchBuffer.m(renderBatch);
-            renderBatchBuffer.i();
+            RenderBatchBuffer batchBuffer = batchManager.getBatchBuffer();
+            RenderBatch batch = new RenderBatch(batchBuilder);
+            batchBuffer.bindResources();
+            batchBuffer.stageBatch(batch);
+            batchBuffer.draw();
             GL30.glBindVertexArray((int)0);
-            GL11.glBindTexture((int)3553, (int)n9);
-            GL11.glTexParameteri((int)3553, (int)10241, (int)n10);
-            GL11.glTexParameteri((int)3553, (int)10240, (int)n11);
-            BufferedGuiRenderPrimitives.k = renderMatrix4f;
-            BufferedGuiRenderPrimitives.l = renderMatrix4f2;
-            BufferedGuiRenderPrimitives.X = renderMatrixStack;
-            this.G.o();
-            GL11.glViewport((int)intBuffer.get(0), (int)intBuffer.get(1), (int)intBuffer.get(2), (int)intBuffer.get(3));
-            GL30.glBindVertexArray((int)n3);
-            GL20.glUseProgram((int)n4);
-            GL11.glBindTexture((int)3553, (int)n5);
-            GL30.glBindFramebuffer((int)36160, (int)n6);
-            GL15.glBindBuffer((int)34962, (int)n7);
-            GL15.glBindBuffer((int)34963, (int)n8);
-            if (bl) {
+            GL11.glBindTexture((int)3553, (int)textureId);
+            GL11.glTexParameteri((int)3553, (int)10241, (int)previousMinFilter);
+            GL11.glTexParameteri((int)3553, (int)10240, (int)previousMagFilter);
+            BufferedGuiRenderPrimitives.projectionMatrix = previousProjectionMatrix;
+            BufferedGuiRenderPrimitives.viewMatrix = previousViewMatrix;
+            BufferedGuiRenderPrimitives.matrixStack = previousMatrixStack;
+            this.framebuffer.unbind();
+            GL11.glViewport((int)viewport.get(0), (int)viewport.get(1), (int)viewport.get(2), (int)viewport.get(3));
+            GL30.glBindVertexArray((int)previousVertexArrayId);
+            GL20.glUseProgram((int)previousShaderProgramId);
+            GL11.glBindTexture((int)3553, (int)previousTextureId);
+            GL30.glBindFramebuffer((int)36160, (int)previousFramebufferId);
+            GL15.glBindBuffer((int)34962, (int)previousArrayBufferId);
+            GL15.glBindBuffer((int)34963, (int)previousElementArrayBufferId);
+            if (scissorEnabled) {
                 GL11.glEnable((int)3089);
             }
         }
         catch (Exception exception) {
-            Vape.debugLog(b + exception.getMessage());
+            Vape.debugLog(CAPTURE_ERROR_PREFIX + exception.getMessage());
             Vape.logThrowable(exception);
         }
     }
 
     @Override
-    public void g(float f, float f2, int n, int n2, Color color, float f3) {
-        if (this.G == null || this.G.l <= 0) {
+    public void render(float x, float y, int width, int height, Color color, float cornerRadius) {
+        if (this.framebuffer == null || this.framebuffer.colorTextureId <= 0) {
             return;
         }
-        BufferedGuiRenderPrimitives.c(f, f2, (float)n, (float)n2, f3, 1.0f, color, new GlImageTexture(this.G.l));
+        BufferedGuiRenderPrimitives.drawRoundedTexturedRect(x, y, (float)width, (float)height, cornerRadius, 1.0f, color, new GlImageTexture(this.framebuffer.colorTextureId));
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception identityException(Exception exception) {
         return exception;
     }
 
     @Override
-    public void y(ResourceLocation resourceLocation) {
-        this.R(resourceLocation);
+    public void captureTexture(ResourceLocation texture) {
+        this.captureTextureInternal(texture);
     }
 
     @Override
-    public void F() {
-        this.G.x();
-        this.G = null;
+    public void dispose() {
+        this.framebuffer.delete();
+        this.framebuffer = null;
     }
 
     @Override
-    public void y(EntityLivingBase entityLivingBase) {
-        ResourceLocation resourceLocation = EntityModelRenderCache.M();
-        if (entityLivingBase != null) {
-            if (entityLivingBase.isInstance(MappedClasses.zt)) {
-                AbstractClientPlayer abstractClientPlayer = new AbstractClientPlayer(entityLivingBase);
-                resourceLocation = abstractClientPlayer.O();
+    public void captureEntity(EntityLivingBase entity) {
+        ResourceLocation texture = EntityModelRenderCache.getDefaultSkinTexture();
+        if (entity != null) {
+            if (entity.isInstance(MappedClasses.zt)) {
+                AbstractClientPlayer clientPlayer = new AbstractClientPlayer(entity);
+                texture = clientPlayer.O();
             } else {
-                Render render = Minecraft.D().getEntityRenderObject(entityLivingBase);
-                resourceLocation = render.getEntityTexture(entityLivingBase);
+                Render entityRenderer = Minecraft.D().getEntityRenderObject(entity);
+                texture = entityRenderer.getEntityTexture(entity);
             }
         }
-        this.R(resourceLocation);
+        this.captureTextureInternal(texture);
     }
 }
-

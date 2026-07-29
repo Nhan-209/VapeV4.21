@@ -8,24 +8,18 @@ import gg.vape.ui.click.frame.impl.profile.ProfilesSettingsFrame;
 
 public class ProfileListEntryContainer
 extends GuiComponent {
-    private final ProfilesSettingsFrame R;
-    private final Profile v;
-    private final ProfileListEntryMetadataComponent G;
-    private final ProfileListEntryOpenButtonComponent a;
+    private final ProfileListEntryMetadataComponent metadata;
+    private final ProfileListEntryOpenButtonComponent openButton;
 
     public ProfileListEntryContainer(ProfilesSettingsFrame profilesSettingsFrame, Profile profile) {
-        this.R = profilesSettingsFrame;
-        this.v = profile;
-        double d = this.A();
-        this.getClass();
-        double d2 = (d - (double)(5.0f * 4.0f) - 1.0) / 4.0;
-        this.a = new ProfileListEntryOpenButtonComponent(profile, profilesSettingsFrame::N$src$V$66cfbp);
-        this.a.o(d2 * 1.0);
-        this.a.Y(16.0);
-        this.G = new ProfileListEntryMetadataComponent(profile);
-        this.G.o(d2 * 3.0);
-        this.G.Y(16.0);
-        this.H(this.G, this.a);
+        double columnWidth = (this.A() - 21.0) / 4.0;
+        this.openButton = new ProfileListEntryOpenButtonComponent(profile, profilesSettingsFrame::closePopupAndDiscardDraft);
+        this.openButton.o(columnWidth);
+        this.openButton.Y(16.0);
+        this.metadata = new ProfileListEntryMetadataComponent(profile);
+        this.metadata.o(columnWidth * 3.0);
+        this.metadata.Y(16.0);
+        this.addChildren(this.metadata, this.openButton);
     }
 
     @Override
@@ -40,12 +34,11 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        double d = this.G$src$D$1b2f02a() + 10.0;
-        double d2 = this.n() + 5.0;
-        this.G.K(d);
-        this.G.S(d2);
-        this.a.K(d += 2.0 + this.G.A());
-        this.a.S(d2);
+        double contentX = this.G$src$D$1b2f02a() + 10.0;
+        double contentY = this.n() + 5.0;
+        this.metadata.K(contentX);
+        this.metadata.S(contentY);
+        this.openButton.K(contentX + 2.0 + this.metadata.A());
+        this.openButton.S(contentY);
     }
 }
-

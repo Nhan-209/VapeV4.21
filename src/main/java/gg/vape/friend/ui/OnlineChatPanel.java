@@ -19,10 +19,10 @@ extends PanelComponent {
     public void c() {
         super.c();
         double d = this.QF.L() + this.Qg.L();
-        this.u(d);
+        this.setExplicitHeight(d);
         this.Y(d);
         this.t(d + 1.0);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
     }
 
     public PartyMemberListPanel z() {
@@ -33,7 +33,7 @@ extends PanelComponent {
         super(99.0, 100.0);
         this.Qg = new OnlineChatInputComponent(this, onlineChatSender);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
-        this.H(this.QF, this.Qg);
+        this.addChildren(this.QF, this.Qg);
     }
 }
 

@@ -14,7 +14,7 @@ implements InsertedEventCallback {
 
     private ITextComponent grabDisplayName(EntityPlayer entityPlayer) {
         s = true;
-        ITextComponent iTextComponent = RenderEntityContextCache.g(entityPlayer);
+        ITextComponent iTextComponent = RenderEntityContextCache.getDisplayName(entityPlayer);
         s = false;
         return iTextComponent;
     }
@@ -26,7 +26,7 @@ implements InsertedEventCallback {
             return false;
         }
         EntityPlayer entityPlayer = new EntityPlayer(this.U);
-        ITextComponent iTextComponent = RenderEntityContextCache.I(entityPlayer);
+        ITextComponent iTextComponent = RenderEntityContextCache.getCustomName(entityPlayer);
         if (iTextComponent != null) {
             this.I = iTextComponent;
         } else {
@@ -35,7 +35,7 @@ implements InsertedEventCallback {
             EventNameFormat eventNameFormat = new EventNameFormat(entityPlayer, this.I);
             eventNameFormat.fire();
             this.I = eventNameFormat.getDisplayName();
-            RenderEntityContextCache.G(entityPlayer, this.I);
+            RenderEntityContextCache.setCustomName(entityPlayer, this.I);
         }
         return true;
     }

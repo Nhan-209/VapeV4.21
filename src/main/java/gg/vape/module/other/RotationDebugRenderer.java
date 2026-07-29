@@ -10,28 +10,24 @@ public class RotationDebugRenderer {
     private String entityName;
     private final int packetId;
 
-    public RotationDebugRenderer(int n, Entity entity, String string) {
-        this.packetId = n;
+    public RotationDebugRenderer(int packetId, Entity entity, String action) {
+        this.packetId = packetId;
         this.entityName = entity.getName();
         this.entityId = entity.S();
-        this.action = string;
+        this.action = action;
     }
 
-    public static String S(RotationDebugRenderer rotationDebugRenderer) {
-        return rotationDebugRenderer.buildDebugString();
-    }
-
-    private String buildDebugString() {
-        String string = String.format("[C02 | %d], Entity: %s (ID: %d), Action: %s", this.packetId, this.entityName, this.entityId, this.action);
+    @Override
+    public String toString() {
+        String message = String.format("[C02 | %d], Entity: %s (ID: %d), Action: %s", this.packetId, this.entityName, this.entityId, this.action);
         if (this.hitVec != null) {
-            string = string + ", HitVec: [" + this.hitVec.Y() + " " + this.hitVec.t() + " " + this.hitVec.o() + "]";
+            message = message + ", HitVec: [" + this.hitVec.Y() + " " + this.hitVec.t() + " " + this.hitVec.o() + "]";
         }
-        return string;
+        return message;
     }
 
-    public static Vec3d G(RotationDebugRenderer rotationDebugRenderer, Vec3d vec3d) {
-        rotationDebugRenderer.hitVec = vec3d;
-        return rotationDebugRenderer.hitVec;
+    public void setHitVector(Vec3d hitVector) {
+        this.hitVec = hitVector;
     }
 }
 

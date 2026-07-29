@@ -4,22 +4,21 @@ import gg.vape.runtime.model.DetachedStringTreeNode;
 import java.util.List;
 
 public class DetachedStringTree {
-    private String m;
-    List<DetachedStringTreeNode> u;
-    private static int[] C;
+    private String rootValue;
+    List<DetachedStringTreeNode> nodes;
+    private static int[] controlFlowMarker;
 
-    public static int[] c() {
-        return C;
+    public static int[] getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
-    public static void W(int[] nArray) {
-        C = nArray;
+    public static void setControlFlowMarker(int[] marker) {
+        controlFlowMarker = marker;
     }
 
     static {
-        if (DetachedStringTree.c() == null) {
-            DetachedStringTree.W(new int[4]);
+        if (DetachedStringTree.getControlFlowMarker() == null) {
+            DetachedStringTree.setControlFlowMarker(new int[4]);
         }
     }
 }
-

@@ -6,11 +6,11 @@ import java.util.List;
 
 class DetachedStringTreeListEntry
 extends DetachedStringTreeEntry {
-    final DetachedStringTreeNode B;
-    List<String> L;
+    final DetachedStringTreeNode listOwnerNode;
+    List<String> values;
 
-    DetachedStringTreeListEntry(DetachedStringTreeNode detachedStringTreeNode) {
-        super(detachedStringTreeNode);
-        this.B = detachedStringTreeNode;
+    DetachedStringTreeListEntry(DetachedStringTreeNode ownerNode) {
+        super(ownerNode);
+        this.listOwnerNode = ownerNode;
     }
 }

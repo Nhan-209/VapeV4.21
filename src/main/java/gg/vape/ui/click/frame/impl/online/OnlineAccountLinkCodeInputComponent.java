@@ -7,17 +7,17 @@ import gg.vape.ui.notification.NotificationType;
 
 class OnlineAccountLinkCodeInputComponent
 extends DebouncedTextInputComponent {
-    final OnlineAccountLinkCodePageComponent we;
+    final OnlineAccountLinkCodePageComponent linkCodePage;
     private static final String lb = "You are on cooldown!";
 
     @Override
-    public void j() {
+    public void handleSubmitCooldown() {
         OnlineFriendUiHelper.w(NotificationType.WARNING, lb);
     }
 
-    OnlineAccountLinkCodeInputComponent(OnlineAccountLinkCodePageComponent onlineAccountLinkCodePageComponent, String string, long l) {
-        super(string, l);
-        this.we = onlineAccountLinkCodePageComponent;
+    OnlineAccountLinkCodeInputComponent(OnlineAccountLinkCodePageComponent linkCodePage, String text, long cooldownMillis) {
+        super(text, cooldownMillis);
+        this.linkCodePage = linkCodePage;
     }
 
     @Override
@@ -31,7 +31,7 @@ extends DebouncedTextInputComponent {
     }
 
     @Override
-    public void U$src$V$1pxrzte() {
-        OnlineAccountLinkCodePageComponent.r(this.we);
+    public void handleSubmitReady() {
+        OnlineAccountLinkCodePageComponent.r(this.linkCodePage);
     }
 }

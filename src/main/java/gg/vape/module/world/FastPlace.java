@@ -37,24 +37,23 @@ extends Mod {
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        ItemStack itemStack;
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if (entityPlayerSP.isNull()) {
             return;
         }
-        if (SharedModuleControlClaims.x.v$src$Z$1r7ksy2()) {
+        if (SharedModuleControlClaims.rightClickUse.isClaimed()) {
             return;
         }
-        ItemStack itemStack2 = entityPlayerSP.getHeldItemHand();
-        ItemStack itemStack3 = itemStack = ForgeVersion.MC_1_12_2.d() ? entityPlayerSP.i(EnumHand.p()) : new ItemStack(null);
-        if (this.heldItemMode.K() == this.blocksOption && !this.isBlock(itemStack2) && !this.isBlock(itemStack)) {
+        ItemStack mainHandStack = entityPlayerSP.getHeldItemHand();
+        ItemStack offHandStack = ForgeVersion.MC_1_12_2.d() ? entityPlayerSP.i(EnumHand.p()) : new ItemStack(null);
+        if (this.heldItemMode.getValue() == this.blocksOption && !this.isBlock(mainHandStack) && !this.isBlock(offHandStack)) {
             return;
         }
-        if (this.heldItemMode.K() == this.projectilesOption && !this.isProjectile(itemStack2) && !this.isProjectile(itemStack)) {
+        if (this.heldItemMode.getValue() == this.projectilesOption && !this.isProjectile(mainHandStack) && !this.isProjectile(offHandStack)) {
             return;
         }
-        if ((double)Minecraft.w() > (Double)this.delayValue.K()) {
-            Minecraft.E(((Double)this.delayValue.K()).intValue());
+        if ((double)Minecraft.w() > (Double)this.delayValue.getValue()) {
+            Minecraft.E(((Double)this.delayValue.getValue()).intValue());
         }
     }
 

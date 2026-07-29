@@ -15,214 +15,214 @@ import gg.vape.wrapper.impl.GuiScreen;
 import java.util.Random;
 
 public abstract class MouseRotationController {
-    private int l;
-    private boolean m;
-    public float W = 3.0f;
-    private int U;
-    private TimerUtil e;
-    public float Q;
-    public float y;
-    private boolean Y;
-    float S;
-    float s;
-    public float c;
-    private int t;
-    public float n;
-    private int f;
-    private int V;
-    private boolean x;
-    public float B;
-    public float o;
-    public float b = 1.0f;
-    private final Random v = new Random();
-    private static String A;
-    private static Freecam N;
+    private int yawJitterDirection;
+    private boolean randomizeMovement;
+    public float tolerance = 3.0f;
+    private int jitterTicks;
+    private TimerUtil jitterTimer;
+    public float savedYaw;
+    public float pendingPitchDelta;
+    private boolean complete;
+    float savedPreviousPitch;
+    float savedPreviousYaw;
+    public float savedPitch;
+    private int yawJitter;
+    public float pitchDistance;
+    private int pitchJitterDirection;
+    private int pitchJitter;
+    private boolean retainAfterCompletion;
+    public float pendingYawDelta;
+    public float yawDistance;
+    public float speed = 1.0f;
+    private final Random random = new Random();
+    private static String controlFlowMarker;
+    private static Freecam freecam;
 
 
-    public boolean V$src$Z$lb4tvc() {
-        return this.Y;
+    public boolean isComplete() {
+        return this.complete;
     }
 
-    public float N() {
-        return this.o;
+    public float getYawDistance() {
+        return this.yawDistance;
     }
 
-    public void R(EventPostRenderTick eventPostRenderTick) {
+    public void onPostRenderTick(EventPostRenderTick event) {
     }
 
-    public void B(EventPreEntityRendererMouseUpdate eventPreEntityRendererMouseUpdate) {
+    public void onPreMouseUpdate(EventPreEntityRendererMouseUpdate event) {
     }
 
-    public void w(float f, float f2) {
-        PlayerMouseRotationApplier.j(f, f2);
+    public void applyMouseDelta(float yawDelta, float pitchDelta) {
+        PlayerMouseRotationApplier.applyTrackedMouseDelta(yawDelta, pitchDelta);
     }
 
-    public void D(boolean bl) {
-        this.m = bl;
+    public void setRandomizeMovement(boolean randomizeMovement) {
+        this.randomizeMovement = randomizeMovement;
     }
 
-    public MouseRotationController t(float f) {
-        this.W = f;
+    public MouseRotationController setTolerance(float tolerance) {
+        this.tolerance = tolerance;
         return this;
     }
 
-    public void w(boolean bl) {
-        this.x = bl;
+    public void setRetainAfterCompletion(boolean retainAfterCompletion) {
+        this.retainAfterCompletion = retainAfterCompletion;
     }
 
-    public void Q(EventPreRenderTick eventPreRenderTick) {
-        EntityPlayerSP entityPlayerSP = eventPreRenderTick.getThePlayer();
-        this.Q = entityPlayerSP.J();
-        this.c = entityPlayerSP.V();
-        this.s = entityPlayerSP.j();
-        this.S = entityPlayerSP.D();
+    public void capturePlayerRotation(EventPreRenderTick event) {
+        EntityPlayerSP player = event.getThePlayer();
+        this.savedYaw = player.J();
+        this.savedPitch = player.V();
+        this.savedPreviousYaw = player.j();
+        this.savedPreviousPitch = player.D();
     }
 
-    public float O() {
-        return this.b;
+    public float getSpeed() {
+        return this.speed;
     }
 
-    public abstract boolean A();
+    public abstract boolean updateYaw();
 
-    public float V() {
-        return this.n;
+    public float getPitchDistance() {
+        return this.pitchDistance;
     }
 
-    public boolean f() {
-        return this.m;
+    public boolean isMovementRandomized() {
+        return this.randomizeMovement;
     }
 
-    public float u() {
-        return this.y;
+    public float getPendingPitchDelta() {
+        return this.pendingPitchDelta;
     }
 
-    public void J(EntityPlayerSP entityPlayerSP, GuiScreen guiScreen) {
-        if (entityPlayerSP.isNull() || guiScreen.isNotNull()) {
+    public void update(EntityPlayerSP player, GuiScreen screen) {
+        if (player.isNull() || screen.isNotNull()) {
             return;
         }
-        boolean bl = this.A();
-        boolean bl2 = this.m();
-        if (bl && bl2 && Math.abs(this.B) < 1.0f && Math.abs(this.y) < 1.0f) {
-            this.Y = true;
+        boolean yawComplete = this.updateYaw();
+        boolean pitchComplete = this.updatePitch();
+        if (yawComplete && pitchComplete && Math.abs(this.pendingYawDelta) < 1.0f
+                && Math.abs(this.pendingPitchDelta) < 1.0f) {
+            this.complete = true;
         }
     }
 
-    public boolean g(long l) {
-        int n = 0;
-        while (!this.V$src$Z$lb4tvc()) {
+    public boolean waitUntilComplete(long timeoutMillis) {
+        int attempts = 0;
+        while (!this.isComplete()) {
             SleepUtil.sleep(10L);
-            if ((long)(++n) <= l / 10L) continue;
+            if ((long)(++attempts) <= timeoutMillis / 10L) continue;
             return true;
         }
         return false;
     }
 
-    public abstract boolean m();
+    public abstract boolean updatePitch();
 
-    public boolean v() {
-        return this.x;
+    public boolean shouldRetainAfterCompletion() {
+        return this.retainAfterCompletion;
     }
 
-    public static String y$src$Ljava_lang_String_$6sg99z() {
-        return A;
+    public static String getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
-    public MouseRotationController Y(float f) {
-        this.b = f;
+    public MouseRotationController setSpeed(float speed) {
+        this.speed = speed;
         return this;
     }
 
-    public static void W(String string) {
-        A = string;
+    public static void setControlFlowMarker(String marker) {
+        controlFlowMarker = marker;
     }
 
-    public void u(boolean bl) {
-        this.Y = bl;
+    public void setComplete(boolean complete) {
+        this.complete = complete;
     }
 
-    private void r() {
-        ++this.U;
-        if (this.U >= 250 + this.v.nextInt(50)) {
-            this.U = MathUtil.randomExclusiveUpper(this.v, -100, -50);
-            this.l = MathUtil.randomExclusiveUpper(this.v, -1, 2);
-            this.f = -MathUtil.randomExclusiveUpper(this.v, -1, 2);
+    private void updateJitter() {
+        ++this.jitterTicks;
+        if (this.jitterTicks >= 250 + this.random.nextInt(50)) {
+            this.jitterTicks = MathUtil.randomExclusiveUpper(this.random, -100, -50);
+            this.yawJitterDirection = MathUtil.randomExclusiveUpper(this.random, -1, 2);
+            this.pitchJitterDirection = -MathUtil.randomExclusiveUpper(this.random, -1, 2);
         }
-        int n = this.l;
-        int n2 = this.f;
-        if (this.v.nextInt(10) < 2) {
-            n = 0;
+        int yawStep = this.yawJitterDirection;
+        int pitchStep = this.pitchJitterDirection;
+        if (this.random.nextInt(10) < 2) {
+            yawStep = 0;
         }
-        if (this.v.nextInt(10) < 2) {
-            n2 = 0;
+        if (this.random.nextInt(10) < 2) {
+            pitchStep = 0;
         }
-        if (this.U < 0) {
-            n = 0;
-            n2 = 0;
+        if (this.jitterTicks < 0) {
+            yawStep = 0;
+            pitchStep = 0;
         }
-        if (this.v.nextInt(20) == 1) {
-            this.t += n;
-            this.V += n2;
+        if (this.random.nextInt(20) == 1) {
+            this.yawJitter += yawStep;
+            this.pitchJitter += pitchStep;
         }
-        if (this.B > 0.0f && this.t < 0 || this.B < 0.0f && this.t > 0) {
-            this.t = 0;
+        if (this.pendingYawDelta > 0.0f && this.yawJitter < 0
+                || this.pendingYawDelta < 0.0f && this.yawJitter > 0) {
+            this.yawJitter = 0;
         }
     }
 
-    public void o(GuiScreen guiScreen) {
-        boolean bl;
-        if (this.m) {
-            if (this.e == null) {
-                this.e = new TimerUtil();
-                this.e.x(-1L);
+    public void applyPendingMovement(GuiScreen screen) {
+        if (this.randomizeMovement) {
+            if (this.jitterTimer == null) {
+                this.jitterTimer = new TimerUtil();
+                this.jitterTimer.x(-1L);
             }
-            long l = this.e.getLastMS();
-            this.e.reset();
-            while (l-- > 0L) {
-                this.r();
+            long elapsedMillis = this.jitterTimer.getLastMS();
+            this.jitterTimer.reset();
+            while (elapsedMillis-- > 0L) {
+                this.updateJitter();
             }
-            this.B += (float)this.t;
-            this.y += (float)this.V;
+            this.pendingYawDelta += (float)this.yawJitter;
+            this.pendingPitchDelta += (float)this.pitchJitter;
         }
-        int n = (int)this.B;
-        int n2 = (int)this.y;
-        float f = this.B - (float)n;
-        float f2 = this.y - (float)n2;
-        boolean bl2 = Math.abs(n) > 0;
-        boolean bl3 = bl = Math.abs(n2) > 0;
-        if (!bl2) {
-            n = 0;
+        int yawSteps = (int)this.pendingYawDelta;
+        int pitchSteps = (int)this.pendingPitchDelta;
+        float remainingYaw = this.pendingYawDelta - (float)yawSteps;
+        float remainingPitch = this.pendingPitchDelta - (float)pitchSteps;
+        boolean hasYawMovement = Math.abs(yawSteps) > 0;
+        boolean hasPitchMovement = Math.abs(pitchSteps) > 0;
+        if (!hasYawMovement) {
+            yawSteps = 0;
         }
-        if (!bl) {
-            n2 = 0;
+        if (!hasPitchMovement) {
+            pitchSteps = 0;
         }
-        float f3 = RotationManager.b.E();
-        float f4 = f3 * 0.6f + 0.2f;
-        float f5 = f4 * f4 * f4 * 8.0f;
-        float f6 = (float)n * f5;
-        float f7 = (float)n2 * f5;
-        int n3 = -1;
-        if (N == null) {
-            N = Vape.INSTANCE.getModManager().getMod(Freecam.class);
+        float sensitivity = RotationManager.INSTANCE.getMouseSensitivity();
+        float sensitivityBase = sensitivity * 0.6f + 0.2f;
+        float mouseScale = sensitivityBase * sensitivityBase * sensitivityBase * 8.0f;
+        float yawDelta = (float)yawSteps * mouseScale;
+        float pitchDelta = (float)pitchSteps * mouseScale;
+        int pitchDirection = -1;
+        if (freecam == null) {
+            freecam = Vape.INSTANCE.getModManager().getMod(Freecam.class);
         }
-        if ((N == null || !N.r$src$Z$14eylz9()) && guiScreen.isNull()) {
-            this.w(f6, f7 * (float)n3);
+        if ((freecam == null || !freecam.r$src$Z$14eylz9()) && screen.isNull()) {
+            this.applyMouseDelta(yawDelta, pitchDelta * (float)pitchDirection);
         }
-        this.o = (float)((double)this.o + Math.abs((double)f6 * 0.15));
-        this.n = (float)((double)this.n + Math.abs((double)f7 * 0.15));
-        this.B = f;
-        this.y = f2;
-        this.t = 0;
-        this.V = 0;
+        this.yawDistance = (float)((double)this.yawDistance + Math.abs((double)yawDelta * 0.15));
+        this.pitchDistance = (float)((double)this.pitchDistance + Math.abs((double)pitchDelta * 0.15));
+        this.pendingYawDelta = remainingYaw;
+        this.pendingPitchDelta = remainingPitch;
+        this.yawJitter = 0;
+        this.pitchJitter = 0;
     }
 
     static {
-        if (MouseRotationController.y$src$Ljava_lang_String_$6sg99z() == null) {
-            MouseRotationController.W("YmWxEb");
+        if (MouseRotationController.getControlFlowMarker() == null) {
+            MouseRotationController.setControlFlowMarker("YmWxEb");
         }
     }
 
-    public float G() {
-        return this.B;
+    public float getPendingYawDelta() {
+        return this.pendingYawDelta;
     }
 }
-

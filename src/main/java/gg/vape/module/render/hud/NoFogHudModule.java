@@ -11,23 +11,23 @@ import gg.vape.wrapper.impl.Minecraft;
 public class NoFogHudModule
 extends HudModule {
     @EventHandler
-    public void j(EventFogDensity eventFogDensity) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+    public void onFogDensity(EventFogDensity event) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return;
         }
-        if (!entityPlayerSP.h$src$Z$ftwoya()) {
+        if (!player.h$src$Z$ftwoya()) {
             return;
         }
-        eventFogDensity.setCancelled(true);
+        event.setCancelled(true);
         if (ForgeVersion.MC_1_16_5.d()) {
-            eventFogDensity.setDensity(0.01f);
+            event.setDensity(0.01f);
         }
     }
 
 
     public NoFogHudModule() {
-        super("Clear Water", HudModuleGroup.T, "clearwater");
+        super("Clear Water", HudModuleGroup.GAME, "clearwater");
         this.setSuffix("Makes water clear when under water");
     }
 }

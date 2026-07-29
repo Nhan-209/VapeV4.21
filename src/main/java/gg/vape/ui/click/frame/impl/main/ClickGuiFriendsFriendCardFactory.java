@@ -12,30 +12,16 @@ import gg.vape.ui.click.frame.impl.profile.PublicProfileUserAvatarComponent;
 import gg.vape.ui.theme.ThemeColors;
 
 public final class ClickGuiFriendsFriendCardFactory {
-    private static int[] r;
-
-    public static ClickGuiOverlaySpec T() {
-        return ClickGuiFriendsFriendCardFactory.Y(null);
+    public static ClickGuiOverlaySpec createLocalUserOverlay() {
+        return ClickGuiFriendsFriendCardFactory.createOverlay(null);
     }
 
-    static {
-        ClickGuiFriendsFriendCardFactory.G(new int[4]);
-    }
-
-    public static int[] m() {
-        return r;
-    }
-
-    public static void G(int[] nArray) {
-        r = nArray;
-    }
-
-    public static ClickGuiOverlaySpec Y(OnlineFriend onlineFriend) {
+    public static ClickGuiOverlaySpec createOverlay(OnlineFriend onlineFriend) {
         String string = onlineFriend != null && onlineFriend.C() != null ? onlineFriend.C() : "Vape Online User";
-        return ClickGuiOverlaySpec.q().e(string).C("user").N(arg_0 -> ClickGuiFriendsFriendCardFactory.lambda$createConfig$0(onlineFriend, arg_0)).r(ClickGuiOverlayTransitionMode.REPLACE).w();
+        return ClickGuiOverlaySpec.builder().title(string).sidecarIcon("user").initializeContent(panel -> ClickGuiFriendsFriendCardFactory.populate(panel, onlineFriend)).transitionMode(ClickGuiOverlayTransitionMode.REPLACE).build();
     }
 
-    private static void n(PanelComponent panelComponent, OnlineFriend onlineFriend) {
+    private static void populate(PanelComponent panelComponent, OnlineFriend onlineFriend) {
         long l = Vape.INSTANCE.getAccountInfo() != null ? Vape.INSTANCE.getAccountInfo().i() : -1L;
         String string = "Username";
         String string2 = "Offline";
@@ -47,7 +33,7 @@ public final class ClickGuiFriendsFriendCardFactory {
             string2 = onlineFriend.F() != null ? onlineFriend.F().f() : string2;
         }
         PublicProfileUserAvatarComponent publicProfileUserAvatarComponent = new PublicProfileUserAvatarComponent(l, 28.0, 28.0);
-        publicProfileUserAvatarComponent.q(true);
+        publicProfileUserAvatarComponent.setShowBorder(true);
         PaddedComponent paddedComponent = new PaddedComponent(6.0, publicProfileUserAvatarComponent);
         SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent(string, 1.0, ThemeColors.J.A, true);
         SimpleTextLabelComponent simpleTextLabelComponent2 = new SimpleTextLabelComponent(string2, 0.75, ThemeColors.J.C);
@@ -55,19 +41,11 @@ public final class ClickGuiFriendsFriendCardFactory {
         GlyphIconComponent glyphIconComponent2 = new GlyphIconComponent("add friends@2x", 6.0, 6.0, 40.0, 14.0, ThemeColors.J.B, ThemeColors.J.B, ThemeColors.J.l);
         PanelComponent panelComponent2 = new PanelComponent(panelComponent.A(), 0.0);
         panelComponent2.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        panelComponent2.H(paddedComponent, simpleTextLabelComponent, simpleTextLabelComponent2);
+        panelComponent2.addChildren(paddedComponent, simpleTextLabelComponent, simpleTextLabelComponent2);
         PanelComponent panelComponent3 = new PanelComponent(panelComponent.A(), 0.0);
         panelComponent3.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        panelComponent3.H(new PaddedComponent(2.0, glyphIconComponent), new PaddedComponent(2.0, glyphIconComponent2));
-        panelComponent.H(new PaddedComponent(6.0, panelComponent2), new PaddedComponent(8.0, panelComponent3));
-    }
-
-    private static void lambda$createConfig$0(OnlineFriend onlineFriend, PanelComponent panelComponent) {
-        ClickGuiFriendsFriendCardFactory.n(panelComponent, onlineFriend);
-    }
-
-    private static UnsupportedOperationException a(UnsupportedOperationException unsupportedOperationException) {
-        return unsupportedOperationException;
+        panelComponent3.addChildren(new PaddedComponent(2.0, glyphIconComponent), new PaddedComponent(2.0, glyphIconComponent2));
+        panelComponent.addChildren(new PaddedComponent(6.0, panelComponent2), new PaddedComponent(8.0, panelComponent3));
     }
 
     private ClickGuiFriendsFriendCardFactory() {

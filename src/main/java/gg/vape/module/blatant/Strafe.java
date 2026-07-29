@@ -46,12 +46,12 @@ extends Mod {
         GameSettings settings = Minecraft.a_w3_0_S();
         KeyBinding sprintKey = settings.s();
         boolean physicallyDown = ClientSettings.B(sprintKey);
-        KeyBindingHelper.d(Minecraft.a_w3_0_S().s(), physicallyDown);
+        KeyBindingHelper.setPressedAndTick(Minecraft.a_w3_0_S().s(), physicallyDown);
         double distanceValue = (Double)this.distance.java_lang_Object_K();
         double speedValue = (Double)this.speed.java_lang_Object_K() / 5.0;
         speedValue *= 0.1;
-        boolean hasTarget = this.aimAssist.boolean_r() && this.aimAssist.a_xa_0_q() != null;
-        EntityLivingBase target = new EntityLivingBase(this.aimAssist.a_xa_0_q());
+        boolean hasTarget = this.aimAssist.boolean_r() && this.aimAssist.getCurrentTarget() != null;
+        EntityLivingBase target = new EntityLivingBase(this.aimAssist.getCurrentTarget());
         if (target.isNull()) {
             return;
         }
@@ -91,7 +91,7 @@ extends Mod {
     }
 
     @Override
-    public void q() {
+    public void onScheduledAction() {
         this.applyStrafe();
     }
 }

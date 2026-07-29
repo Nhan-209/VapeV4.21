@@ -18,7 +18,7 @@ extends Frame {
     public void Y() {
         this.l$src$V$1mibm4x();
         Vape.INSTANCE.getTutorialManager().P();
-        ClientSettings.q(this);
+        ClientSettings.queueFrameOpen(this);
     }
 
     public static void n(GuiComponent[] guiComponentArray) {

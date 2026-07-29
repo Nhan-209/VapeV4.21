@@ -36,13 +36,13 @@ extends Frame {
     private gg.vape.config.ClientSettings r1;
     private ClientSettingsColorValueEditorComponent rV;
     private HashMap<String, GuiComponent[]> r2;
-    private ClientSettings rX = ClientSettings.fW;
+    private ClientSettings rX = ClientSettings.INSTANCE;
     private PublicProfileSettings rh;
 
     @Override
     public void u() {
-        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.g(ClientSettingsSearchFrame.class);
-        ClientSettingsSectionFrame clientSettingsSectionFrame = ClientSettings.g(ClientSettingsSectionFrame.class);
+        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.getFrame(ClientSettingsSearchFrame.class);
+        ClientSettingsSectionFrame clientSettingsSectionFrame = ClientSettings.getFrame(ClientSettingsSectionFrame.class);
         if (clientSettingsSectionFrame.V$src$Z$1xhop3l() || clientSettingsSearchFrame.V$src$Z$1xhop3l()) {
             if (this.V$src$Z$1xhop3l() && clientSettingsSectionFrame.V$src$Z$1xhop3l()) {
                 this.t(false, false);
@@ -72,7 +72,7 @@ extends Frame {
 
     private void z(String string, GuiComponent ... guiComponentArray) {
         this.r2.put(string, guiComponentArray);
-        this.h(new ClientSettingsFrameSectionLabelComponent(string).r(new ClientSettingsFrameSectionOpenClickHandler(this, string)), new Object[0]);
+        this.h(new ClientSettingsFrameSectionLabelComponent(string).addClickListener(new ClientSettingsFrameSectionOpenClickHandler(this, string)), new Object[0]);
     }
 
     private static int lambda$sortGui$1(Frame frame, Frame frame2) {
@@ -112,12 +112,12 @@ extends Frame {
             String string = ((ThemeComponentGroupKey)entry.getKey()).h();
             GuiComponent[] guiComponentArray = (GuiComponent[])entry.getValue();
             this.r2.put(string, guiComponentArray);
-            this.h(new ClientSettingsFrameSectionLabelComponent(string).r(new ClientSettingsFrameActionClickHandler(this, string)), new Object[0]);
+            this.h(new ClientSettingsFrameSectionLabelComponent(string).addClickListener(new ClientSettingsFrameActionClickHandler(this, string)), new Object[0]);
         }
     }
 
     public void d$src$V$16knweo() {
-        this.rV.j$src$V$104url0();
+        this.rV.resetPaletteSlider();
     }
 
     @Override
@@ -155,31 +155,31 @@ extends Frame {
 
     private void k$src$V$16oigk7() {
         int n = 10;
-        for (Frame frame : ClientSettings.G()) {
+        for (Frame frame : ClientSettings.getAllFrames()) {
             if (frame instanceof ClientSettingsSearchFrame) {
                 frame.M(10.0, 20.0);
                 continue;
             }
             if (!frame.J$src$Z$1eqdghz() || frame.n$src$Z$1fa61uz()) continue;
-            frame.M(ClientSettings.g(ClientSettingsSearchFrame.class).A() + 10.0, n += 22);
+            frame.M(ClientSettings.getFrame(ClientSettingsSearchFrame.class).A() + 10.0, n += 22);
         }
-        for (Frame frame : ClientSettings.G()) {
+        for (Frame frame : ClientSettings.getAllFrames()) {
             if (frame.n$src$Z$1fa61uz() || !frame.J$src$Z$1eqdghz()) continue;
-            frame.Z(frame instanceof ClientSettingsSearchFrame);
+            frame.setVisible(frame instanceof ClientSettingsSearchFrame);
         }
-        ClientSettings.h$src$V$1gx5fr6();
+        ClientSettings.clearPositionedFrames();
     }
 
     private ClientSettingsSectionFrame A(String string) {
-        ClientSettingsSectionFrame clientSettingsSectionFrame = ClientSettings.g(ClientSettingsSectionFrame.class).z(string);
+        ClientSettingsSectionFrame clientSettingsSectionFrame = ClientSettings.getFrame(ClientSettingsSectionFrame.class).z(string);
         clientSettingsSectionFrame.s$src$V$yca8r0();
         this.v(clientSettingsSectionFrame);
-        clientSettingsSectionFrame.S();
+        clientSettingsSectionFrame.removeMarkedChildren();
         return clientSettingsSectionFrame;
     }
 
     private void Z$src$V$16f5yh2() {
-        ArrayList<Frame> arrayList = new ArrayList<Frame>(ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().Y());
+        ArrayList<Frame> arrayList = new ArrayList<Frame>(ClientSettings.INSTANCE.getActiveStack().Y());
         arrayList.removeIf(ClientSettingsFrame::lambda$sortGui$0);
         try {
             arrayList.sort(ClientSettingsFrame::lambda$sortGui$1);
@@ -225,10 +225,10 @@ extends Frame {
         this.r1 = Vape.INSTANCE.getClientSettings();
         this.rh = Vape.INSTANCE.getPublicProfileSettings();
         this.r2 = new HashMap();
-        this.T(ClientSettingsFrame.J.r);
+        this.setDisabledOverlayColor(ClientSettingsFrame.J.r);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.g(ClientSettingsSearchFrame.class);
+        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.getFrame(ClientSettingsSearchFrame.class);
         this.Y(clientSettingsSearchFrame.L());
         this.o(clientSettingsSearchFrame.A());
         SettingsFrameHeaderComponent settingsFrameHeaderComponent = new SettingsFrameHeaderComponent(this, "Settings");
@@ -245,10 +245,9 @@ extends Frame {
             }
             this.h(guiComponent, new Object[0]);
         }
-        this.Z(false);
+        this.setVisible(false);
         this.L(false, false);
-        this.Z(false);
+        this.setVisible(false);
         this.L(false, false);
     }
 }
-

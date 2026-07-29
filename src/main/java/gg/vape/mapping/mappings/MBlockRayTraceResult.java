@@ -51,7 +51,7 @@ extends Mapping {
             String string2 = "inside";
             MBlockRayTraceResult mBlockRayTraceResult2 = this;
             this.o = this.T(string2, clazz2).z();
-            GuiComponent.D(new GuiComponent[4]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[4]);
             return;
         }
         Class<Boolean> clazz3 = Boolean.TYPE;

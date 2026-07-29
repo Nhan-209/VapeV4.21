@@ -53,7 +53,7 @@ extends Mapping {
     private MDataComponentMap(boolean bl) {
         super(MappedClasses.zD);
         if (bl) {
-            GuiComponent.D(new GuiComponent[5]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[5]);
             Class[] classArray = new Class[]{MappedClasses.Fz};
             Class<Object> clazz = Object.class;
             boolean bl2 = true;

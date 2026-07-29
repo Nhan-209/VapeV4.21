@@ -1,19 +1,14 @@
 package gg.vape.module.macro;
 
-import gg.vape.module.Macro;
-
 public interface MacroAction {
-    public boolean h();
+    boolean isFinished();
 
-    default public void N() {
+    default void cancel() {
     }
 
-    default public void Z() {
+    default void tick() {
     }
 
-    public Macro g();
-
-    default public void J(MacroAction macroAction) {
+    default void inheritState(MacroAction previousAction) {
     }
 }
-

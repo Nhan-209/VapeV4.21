@@ -9,19 +9,10 @@ import gg.vape.wrapper.impl.ItemStack;
 public class QuantityFilterCondition
 implements NumericFilterCondition<QuantityFilterCondition> {
     @Override
-    public QuantityFilterCondition Q(String string) throws NumberFormatException {
+    public QuantityFilterCondition parseValue(String string) throws NumberFormatException {
         return this.parseAmount(string);
     }
 
-    @Override
-    public QuantityFilterCondition J(ComparisonOperator operator) {
-        return this.withOperator(operator);
-    }
-
-    @Override
-    public QuantityFilterCondition w() {
-        return this.copy();
-    }
     private int amount = 1;
     private ComparisonOperator operator = ComparisonOperator.EQUALS;
 
@@ -35,11 +26,11 @@ implements NumericFilterCondition<QuantityFilterCondition> {
     }
 
     @Override
-    public boolean g(ItemStack itemStack) {
+    public boolean matches(ItemStack itemStack) {
         if (itemStack.isNull()) {
             return false;
         }
-        return this.operator.p(itemStack.t(), this.amount);
+        return this.operator.compare(itemStack.t(), this.amount);
     }
 
     public QuantityFilterCondition() {
@@ -56,22 +47,18 @@ implements NumericFilterCondition<QuantityFilterCondition> {
     }
 
     @Override
-    public ComparisonOperator p() {
+    public ComparisonOperator getOperator() {
         return this.operator;
     }
 
     @Override
-    public InventoryFilterConditionType K() {
+    public InventoryFilterConditionType getType() {
         return InventoryFilterConditionType.QUANTITY;
     }
 
-    private static NumberFormatException passthrough(NumberFormatException numberFormatException) {
-        return numberFormatException;
-    }
-
     @Override
-    public JsonObject L() {
-        JsonObject jsonObject = NumericFilterCondition.super.L();
+    public JsonObject toJson() {
+        JsonObject jsonObject = NumericFilterCondition.super.toJson();
         jsonObject.addProperty("amount", (Number)this.amount);
         return jsonObject;
     }
@@ -83,7 +70,7 @@ implements NumericFilterCondition<QuantityFilterCondition> {
 
     public QuantityFilterCondition(JsonObject jsonObject) {
         this.amount = jsonObject.get("amount").getAsInt();
-        this.operator = ComparisonOperator.a(jsonObject.get("operator").getAsString());
+        this.operator = ComparisonOperator.fromName(jsonObject.get("operator").getAsString());
     }
 
     public QuantityFilterCondition copy() {
@@ -91,7 +78,7 @@ implements NumericFilterCondition<QuantityFilterCondition> {
     }
 
     @Override
-    public String k() {
+    public String getValueText() {
         return String.valueOf(this.amount);
     }
 }

@@ -5,17 +5,17 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class SpacerComponent
 extends GuiComponent {
-    private double I;
-    private double G;
-    private static int Q;
+    private double spacerHeight;
+    private double spacerWidth;
+    private static int legacyState;
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
+    public void g(GuiMouseEvent mouseEvent) {
     }
 
-    public static int S$src$I$17xdg2d() {
-        int n = SpacerComponent.w$src$I$18h61fd();
-        if (n == 0) {
+    public static int getLegacyCompatibilityValue() {
+        int legacyState = SpacerComponent.getLegacyState();
+        if (legacyState == 0) {
             return 41;
         }
         return 0;
@@ -23,17 +23,17 @@ extends GuiComponent {
 
     @Override
     public double C() {
-        return this.I;
+        return this.spacerHeight;
     }
 
     @Override
-    public void o(double d) {
-        super.o(d);
+    public void o(double width) {
+        super.o(width);
     }
 
     static {
-        if (SpacerComponent.S$src$I$17xdg2d() != 0) {
-            SpacerComponent.M(56);
+        if (SpacerComponent.getLegacyCompatibilityValue() != 0) {
+            SpacerComponent.setLegacyState(56);
         }
     }
 
@@ -41,15 +41,15 @@ extends GuiComponent {
     public void I() {
     }
 
-    public static int w$src$I$18h61fd() {
-        return Q;
+    public static int getLegacyState() {
+        return legacyState;
     }
 
-    public SpacerComponent(double d, double d2) {
-        this.G = d;
-        this.I = d2;
-        this.o(d);
-        this.Y(d2);
+    public SpacerComponent(double width, double height) {
+        this.spacerWidth = width;
+        this.spacerHeight = height;
+        this.o(width);
+        this.Y(height);
     }
 
     @Override
@@ -58,7 +58,7 @@ extends GuiComponent {
 
     @Override
     public double x() {
-        return this.G;
+        return this.spacerWidth;
     }
 
     @Override
@@ -66,22 +66,22 @@ extends GuiComponent {
     }
 
 
-    public static void M(int n) {
-        Q = n;
+    public static void setLegacyState(int legacyState) {
+        SpacerComponent.legacyState = legacyState;
     }
 
     @Override
-    public void Y(double d) {
-        super.Y(d);
-        this.u(d);
-        this.I = d;
+    public void Y(double height) {
+        super.Y(height);
+        this.setExplicitHeight(height);
+        this.spacerHeight = height;
     }
 
     @Override
     public void F() {
     }
 
-    public /* synthetic */ void void_H() {
+    public /* synthetic */ void renderSpacer() {
         this.H();
     }
 }

@@ -7,50 +7,50 @@ import gg.vape.ui.font.SmoothFontRenderer;
 import java.util.LinkedHashMap;
 
 public class TextTruncationIndexCache {
-    private final LinkedHashMap<Integer, Integer> U = new TextTruncationIndexLruCache(this, 16, 0.75f, true);
-    private static final int F;
-    public static TextTruncationIndexCache J;
+    private final LinkedHashMap<Integer, Integer> indicesBySpecHash = new TextTruncationIndexLruCache(this, 16, 0.75f, true);
+    private static final int LEGACY_CACHE_MARKER;
+    public static TextTruncationIndexCache INSTANCE;
 
 
-    public int b() {
-        return this.U.size();
+    public int getCacheSize() {
+        return this.indicesBySpecHash.size();
     }
 
     static {
         long l2 = -8931204442707983872L;
-        F = (int)l2;
-        J = new TextTruncationIndexCache();
+        LEGACY_CACHE_MARKER = (int)l2;
+        INSTANCE = new TextTruncationIndexCache();
     }
 
-    public int d(TruncatedTextSpec truncatedTextSpec) {
-        Integer n = this.U.get(truncatedTextSpec.hashCode());
-        if (n != null) {
-            return n;
+    public int getTruncationIndex(TruncatedTextSpec textSpec) {
+        Integer cachedIndex = this.indicesBySpecHash.get(textSpec.hashCode());
+        if (cachedIndex != null) {
+            return cachedIndex;
         }
-        SmoothFontRenderer smoothFontRenderer = truncatedTextSpec.q() ? Vape.INSTANCE.getFontManager().W(truncatedTextSpec.N(), false) : Vape.INSTANCE.getFontManager().Y(truncatedTextSpec.N());
-        int n2 = -2;
-        if (smoothFontRenderer.N(truncatedTextSpec.g()) <= truncatedTextSpec.y()) {
-            n2 = truncatedTextSpec.g().length() - 1;
+        SmoothFontRenderer fontRenderer = textSpec.isBold() ? Vape.INSTANCE.getFontManager().W(textSpec.getFontScale(), false) : Vape.INSTANCE.getFontManager().Y(textSpec.getFontScale());
+        int truncationIndex = -2;
+        if (fontRenderer.N(textSpec.getText()) <= textSpec.getMaxWidth()) {
+            truncationIndex = textSpec.getText().length() - 1;
         } else {
-            int n3 = (int)Math.ceil(truncatedTextSpec.g().length() / 2) - 1;
-            boolean bl = false;
-            while (n3 >= 0 && n3 < truncatedTextSpec.g().length()) {
-                double d = smoothFontRenderer.N(truncatedTextSpec.g().substring(0, n3));
-                if (d > truncatedTextSpec.y()) {
-                    bl = true;
-                    --n3;
+            int candidateIndex = (int)Math.ceil(textSpec.getText().length() / 2) - 1;
+            boolean exceededMaxWidth = false;
+            while (candidateIndex >= 0 && candidateIndex < textSpec.getText().length()) {
+                double candidateWidth = fontRenderer.N(textSpec.getText().substring(0, candidateIndex));
+                if (candidateWidth > textSpec.getMaxWidth()) {
+                    exceededMaxWidth = true;
+                    --candidateIndex;
                     continue;
                 }
-                if (bl || n3 == truncatedTextSpec.g().length() - 1) break;
-                ++n3;
+                if (exceededMaxWidth || candidateIndex == textSpec.getText().length() - 1) break;
+                ++candidateIndex;
             }
-            n2 = n3;
+            truncationIndex = candidateIndex;
         }
-        if (n2 == -1) {
-            --n2;
+        if (truncationIndex == -1) {
+            --truncationIndex;
         }
-        this.U.put(truncatedTextSpec.hashCode(), n2);
-        return n2;
+        this.indicesBySpecHash.put(textSpec.hashCode(), truncationIndex);
+        return truncationIndex;
     }
 }
 

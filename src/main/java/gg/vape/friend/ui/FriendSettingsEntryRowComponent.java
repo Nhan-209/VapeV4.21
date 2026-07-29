@@ -6,36 +6,36 @@ import gg.vape.ui.click.component.SelectableTextRowComponent;
 
 public class FriendSettingsEntryRowComponent
 extends SelectableTextRowComponent {
-    private FriendEntry dc;
+    private final FriendEntry friendEntry;
 
     @Override
-    public boolean l() {
-        return this.dc.c();
+    public boolean isSelected() {
+        return this.friendEntry.c();
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        this.dc.k(!this.dc.c());
+        this.friendEntry.k(!this.friendEntry.c());
     }
 
     @Override
     public void H() {
-        String string = this.dc.s();
-        if (!this.dc.o().equals(this.dc.s()) && !this.u$src$Z$1dafklf()) {
-            string = "*" + this.dc.E();
+        String text = this.friendEntry.s();
+        if (!this.friendEntry.o().equals(this.friendEntry.s()) && !this.isHovered()) {
+            text = "*" + this.friendEntry.E();
         }
-        this.n(string);
+        this.setText(text);
         super.H();
     }
 
 
     public FriendSettingsEntryRowComponent(FriendEntry friendEntry) {
         super(FriendSettingsEntryRowComponent.J.B, friendEntry.s());
-        this.dc = friendEntry;
+        this.friendEntry = friendEntry;
     }
 
-    public FriendEntry g$src$Lgg_vape_friend_FriendEntry_$1l55ugb() {
-        return this.dc;
+    public FriendEntry getFriendEntry() {
+        return this.friendEntry;
     }
 }
 

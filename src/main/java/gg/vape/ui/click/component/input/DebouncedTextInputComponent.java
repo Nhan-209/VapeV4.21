@@ -6,14 +6,14 @@ import gg.vape.ui.click.component.TextInputComponentBase;
 
 public class DebouncedTextInputComponent
 extends TextInputComponentBase {
-    private static final String jb = "Unhandled cooldown fail ";
-    ClickCooldownState Py = new ClickCooldownState();
+    private static final String UNHANDLED_COOLDOWN_MESSAGE = "Unhandled cooldown fail ";
+    private final ClickCooldownState cooldown = new ClickCooldownState();
 
-    public ClickCooldownState I$src$Lgg_vape_ui_click_component_ClickCooldownState_$54kj38() {
-        return this.Py;
+    public ClickCooldownState getCooldown() {
+        return this.cooldown;
     }
 
-    public void U$src$V$1pxrzte() {
+    public void handleSubmitReady() {
     }
 
     @Override
@@ -22,22 +22,22 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public void p() {
-        if (this.Py.t()) {
-            this.j();
+    public void submit() {
+        if (this.cooldown.isCoolingDown()) {
+            this.handleSubmitCooldown();
             return;
         }
-        this.U$src$V$1pxrzte();
-        this.Py.j(true);
+        this.handleSubmitReady();
+        this.cooldown.setActive(true);
     }
 
-    public DebouncedTextInputComponent(String string, long l) {
-        super(string);
-        this.Py.I(l);
+    public DebouncedTextInputComponent(String text, long cooldownMillis) {
+        super(text);
+        this.cooldown.setCooldownMillis(cooldownMillis);
     }
 
-    public void j() {
-        Vape.debugLog(jb + this);
+    public void handleSubmitCooldown() {
+        Vape.debugLog(UNHANDLED_COOLDOWN_MESSAGE + this);
     }
 
     @Override
@@ -46,4 +46,3 @@ extends TextInputComponentBase {
     }
 
 }
-

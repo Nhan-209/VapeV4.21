@@ -1,20 +1,19 @@
 package gg.vape.runtime.state;
 
 public class GlobalStringState {
-    private static String D;
+    private static String value;
 
-    public static void v(String string) {
-        D = string;
+    public static void setValue(String newValue) {
+        value = newValue;
     }
 
-    public static String J() {
-        return D;
+    public static String getValue() {
+        return value;
     }
 
     static {
-        if (GlobalStringState.J() != null) {
-            GlobalStringState.v("IfADt");
+        if (GlobalStringState.getValue() != null) {
+            GlobalStringState.setValue("IfADt");
         }
     }
 }
-

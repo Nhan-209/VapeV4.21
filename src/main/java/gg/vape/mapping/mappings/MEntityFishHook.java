@@ -30,12 +30,12 @@ extends Mapping {
         MEntityFishHook mEntityFishHook2 = this;
         this.w = this.Y(string2, bl3, clazz2, classArray2);
         if (bl) {
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MCaughtEntityActionBridge.h(false);
             }
             return;
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MCaughtEntityActionBridge.h(true);
         }
     }

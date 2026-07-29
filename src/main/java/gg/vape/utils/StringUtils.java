@@ -79,7 +79,7 @@ public class StringUtils {
 
     public static String Y(int n) {
         if (n >= 0) {
-            return KeyboardCodeUtil.c(n);
+            return KeyboardCodeUtil.getVirtualKeyName(n);
         }
         return "M" + (101 + n);
     }
@@ -135,4 +135,3 @@ public class StringUtils {
         return illegalArgumentException;
     }
 }
-

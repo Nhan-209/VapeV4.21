@@ -24,29 +24,29 @@ import java.math.RoundingMode;
 
 public class ColorChannelSliderComponent
 extends SliderComponentBase {
-    private DoubleAnimation ZT = new DoubleAnimation(0.0, 0.0, 0.0);
-    private double Zf = 255.0;
-    private TextLabel Zw;
-    private Color ZI;
-    private double Z8 = 0.0;
-    private ColorValue v;
-    private final float Zv;
-    private RectData Z3;
-    private long a;
-    private boolean ZU;
-    protected DoubleAnimation Zz = new DoubleAnimation(0.15, 7.0, 8.0);
-    private double K;
-    private double Zl;
-    private double ZR = 0.75;
-    private GuiComponent Zb;
-    private Double O;
-    private ColorChannelType Zh;
-    private static final String cb = "RESET";
-    private double Zm = -1.0;
-    private double R;
+    private DoubleAnimation handlePositionAnimation = new DoubleAnimation(0.0, 0.0, 0.0);
+    private double maximum = 255.0;
+    private TextLabel resetLabel;
+    private Color labelColor;
+    private double labelWidth = 0.0;
+    private ColorValue colorValue;
+    private final float valueScale;
+    private RectData handleBounds;
+    private long lastClickTimestamp;
+    private boolean hovered;
+    protected DoubleAnimation handleHoverAnimation = new DoubleAnimation(0.15, 7.0, 8.0);
+    private double step;
+    private double valuePerPercent;
+    private double fontScale = 0.75;
+    private GuiComponent fallbackColorComponent;
+    private Double legacyDragValueSentinel;
+    private ColorChannelType channelType;
+    private static final String RESET_TEXT = "RESET";
+    private double lastNormalizedValue = -1.0;
+    private double minimum;
 
-    public void L(double d) {
-        this.R = d;
+    public void setMinimum(double minimum) {
+        this.minimum = minimum;
     }
 
     @Override
@@ -54,119 +54,119 @@ extends SliderComponentBase {
         return 110.0;
     }
 
-    private void lambda$new$0(ColorValue colorValue) {
-        this.Z$src$V$30xmgs();
+    private void handleColorValueChanged(ColorValue changedValue) {
+        this.synchronizeHandlePosition();
     }
 
-    private float[] y(double d, double d2) {
-        float f = (float)(d / d2);
-        switch (this.Zh) {
+    private float[] createGradientStop(double trackOffset, double trackWidth) {
+        float channelRatio = (float)(trackOffset / trackWidth);
+        switch (this.channelType) {
             case BLOCK_CHILD: 
             case RAINBOW: {
-                return new float[]{f, 1.0f, 1.0f, 1.0f};
+                return new float[]{channelRatio, 1.0f, 1.0f, 1.0f};
             }
             case SATURATION: {
-                return new float[]{this.v.q(), f, this.v.n(), 1.0f};
+                return new float[]{this.colorValue.getHueRatio(), channelRatio, this.colorValue.getBrightnessRatio(), 1.0f};
             }
             case VIBRANCE: {
-                return new float[]{this.v.q(), this.v.r(), f, 1.0f};
+                return new float[]{this.colorValue.getHueRatio(), this.colorValue.getSaturationRatio(), channelRatio, 1.0f};
             }
             case OPACITY: {
-                return new float[]{this.v.q(), this.v.r(), this.v.n(), f};
+                return new float[]{this.colorValue.getHueRatio(), this.colorValue.getSaturationRatio(), this.colorValue.getBrightnessRatio(), channelRatio};
             }
         }
         return new float[]{0.0f, 0.0f, 0.0f, 1.0f};
     }
 
-    public void E(double d) {
-        this.K = d;
+    public void setStep(double step) {
+        this.step = step;
     }
 
     @Override
     public void u() {
-        if (this.ZU && !this.w$src$Z$e457mb()) {
-            this.Zz.J();
-            this.ZU = false;
+        if (this.hovered && !this.w$src$Z$e457mb()) {
+            this.handleHoverAnimation.J();
+            this.hovered = false;
         }
-        if (this.v.g()) {
-            this.v.O();
+        if (this.colorValue.isRainbowEnabled()) {
+            this.colorValue.advanceRainbowHue();
         }
     }
 
-    private void j$src$V$39qbyk() {
-        if (this.I) {
-            if (!MouseInput.I(MouseButton.LEFT_CLICK.ordinal())) {
-                this.I = false;
+    private void updateDraggingValue() {
+        if (this.dragging) {
+            if (!MouseInput.isButtonDown(MouseButton.LEFT_CLICK.ordinal())) {
+                this.dragging = false;
                 return;
             }
-            double d = this.A() - 10.0 - this.Z3.e();
-            double d2 = (double)this.o.O - this.G$src$D$1b2f02a() + this.P$src$D$34o7qt() - 5.0 - this.Z3.e() / 2.0;
-            double d3 = this.G$src$D$1b2f02a() + 5.0 + this.Z3.e() / 2.0;
-            double d4 = this.G$src$D$1b2f02a() + this.A() - 5.0 - this.Z3.e() / 2.0;
-            double d5 = this.h(this.R, this.Zf, d3, d4, this.K, d2);
-            d5 = new BigDecimal("" + d5).setScale(3, RoundingMode.HALF_UP).doubleValue();
-            if (this.v != null) {
-                switch (this.Zh) {
+            double trackWidth = this.A() - 10.0 - this.handleBounds.e();
+            double trackOffset = (double)this.dragStartMousePosition.O - this.G$src$D$1b2f02a() + this.getMouseDeltaX() - 5.0 - this.handleBounds.e() / 2.0;
+            double trackStart = this.G$src$D$1b2f02a() + 5.0 + this.handleBounds.e() / 2.0;
+            double trackEnd = this.G$src$D$1b2f02a() + this.A() - 5.0 - this.handleBounds.e() / 2.0;
+            double updatedValue = this.mapTrackOffsetToValue(this.minimum, this.maximum, trackStart, trackEnd, this.step, trackOffset);
+            updatedValue = new BigDecimal("" + updatedValue).setScale(3, RoundingMode.HALF_UP).doubleValue();
+            if (this.colorValue != null) {
+                switch (this.channelType) {
                     case BLOCK_CHILD: 
                     case RAINBOW: {
-                        if (((Double)this.v.C$src$Lgg_vape_value_NumberValue_$z6u28w().K()).equals(this.O)) {
+                        if (((Double)this.colorValue.getHueValue().getValue()).equals(this.legacyDragValueSentinel)) {
                             return;
                         }
-                        this.v.C$src$Lgg_vape_value_NumberValue_$z6u28w().A(d5);
+                        this.colorValue.getHueValue().setValue(updatedValue);
                         break;
                     }
                     case SATURATION: {
-                        if (((Double)this.v.G().K()).equals(this.O)) {
+                        if (((Double)this.colorValue.getSaturationValue().getValue()).equals(this.legacyDragValueSentinel)) {
                             return;
                         }
-                        this.v.G().A(d5);
+                        this.colorValue.getSaturationValue().setValue(updatedValue);
                         break;
                     }
                     case VIBRANCE: {
-                        if (((Double)this.v.C$src$Lgg_vape_value_NumberValue_$z6u28w().K()).equals(this.O)) {
+                        if (((Double)this.colorValue.getHueValue().getValue()).equals(this.legacyDragValueSentinel)) {
                             return;
                         }
-                        this.v.y().A(d5);
+                        this.colorValue.getBrightnessValue().setValue(updatedValue);
                         break;
                     }
                     case OPACITY: {
-                        if (((Double)this.v.x$src$Lgg_vape_value_NumberValue_$1mjtff9().K()).equals(this.O)) {
+                        if (((Double)this.colorValue.getAlphaValue().getValue()).equals(this.legacyDragValueSentinel)) {
                             return;
                         }
-                        this.v.x$src$Lgg_vape_value_NumberValue_$1mjtff9().A(d5);
+                        this.colorValue.getAlphaValue().setValue(updatedValue);
                     }
                 }
             }
         }
     }
 
-    public void s(double d) {
-        this.Zf = d;
+    public void setMaximum(double maximum) {
+        this.maximum = maximum;
     }
 
-    public double c$src$D$35vrdj() {
-        return this.Z8;
+    public double getLabelWidth() {
+        return this.labelWidth;
     }
 
-    public double b$src$D$35bys6() {
-        return this.K;
+    public double getStep() {
+        return this.step;
     }
 
-    public Color k(double d, double d2) {
-        switch (this.Zh) {
+    public Color getChannelColor(double channelValue, double maximumValue) {
+        switch (this.channelType) {
             case BLOCK_CHILD: 
             case RAINBOW: {
-                return new Color(Color.HSBtoRGB((float)(d / d2), 1.0f, 1.0f));
+                return new Color(Color.HSBtoRGB((float)(channelValue / maximumValue), 1.0f, 1.0f));
             }
             case SATURATION: {
-                return new Color(Color.HSBtoRGB(this.v.q(), (float)(d / d2), this.v.n()));
+                return new Color(Color.HSBtoRGB(this.colorValue.getHueRatio(), (float)(channelValue / maximumValue), this.colorValue.getBrightnessRatio()));
             }
             case VIBRANCE: {
-                return new Color(Color.HSBtoRGB(this.v.q(), this.v.r(), (float)(d / d2)));
+                return new Color(Color.HSBtoRGB(this.colorValue.getHueRatio(), this.colorValue.getSaturationRatio(), (float)(channelValue / maximumValue)));
             }
             case OPACITY: {
-                MutableColor mutableColor = new MutableColor(Color.HSBtoRGB(this.v.q(), this.v.r(), this.v.n()));
-                mutableColor.withAlpha((int)(255.0 * (d / d2)));
+                MutableColor mutableColor = new MutableColor(Color.HSBtoRGB(this.colorValue.getHueRatio(), this.colorValue.getSaturationRatio(), this.colorValue.getBrightnessRatio()));
+                mutableColor.withAlpha((int)(255.0 * (channelValue / maximumValue)));
                 return mutableColor;
             }
         }
@@ -175,109 +175,109 @@ extends SliderComponentBase {
 
     @Override
     public void H() {
-        Object object;
-        double d;
-        double d2;
-        double d3;
-        double d4;
-        this.j$src$V$39qbyk();
-        if (!this.d().equals(Color.WHITE)) {
+        Object resolvedBackgroundColor;
+        double rightTrackOffset;
+        double rightTrackWidth;
+        double handleTrackPadding;
+        double resetLabelWidth;
+        this.updateDraggingValue();
+        if (!this.getDisabledOverlayColor().equals(Color.WHITE)) {
             this.onDisable();
         }
-        double d5 = 0.0;
-        switch (this.Zh) {
+        double normalizedValue = 0.0;
+        switch (this.channelType) {
             case BLOCK_CHILD: 
             case RAINBOW: {
-                d5 = (Double)this.v.C$src$Lgg_vape_value_NumberValue_$z6u28w().K() / this.Zf;
+                normalizedValue = (Double)this.colorValue.getHueValue().getValue() / this.maximum;
                 break;
             }
             case SATURATION: {
-                d5 = (Double)this.v.G().K() / this.Zf;
+                normalizedValue = (Double)this.colorValue.getSaturationValue().getValue() / this.maximum;
                 break;
             }
             case VIBRANCE: {
-                d5 = (Double)this.v.y().K() / this.Zf;
+                normalizedValue = (Double)this.colorValue.getBrightnessValue().getValue() / this.maximum;
                 break;
             }
             case OPACITY: {
-                d5 = (Double)this.v.x$src$Lgg_vape_value_NumberValue_$1mjtff9().K() / this.Zf;
+                normalizedValue = (Double)this.colorValue.getAlphaValue().getValue() / this.maximum;
             }
         }
-        if ((d5 *= (double)this.Zv) != this.O) {
-            this.Z$src$V$30xmgs();
+        if ((normalizedValue *= (double)this.valueScale) != this.legacyDragValueSentinel) {
+            this.synchronizeHandlePosition();
         }
-        SmoothFontRenderer smoothFontRenderer = this.O(this.ZR);
-        String string = this.Zh.equals((Object)ColorChannelType.RAINBOW) ? this.W$src$Ljava_lang_String_$24bvf0() : this.Zh.T();
-        double d6 = smoothFontRenderer.d(string);
-        this.Z8 = smoothFontRenderer.N(this.W$src$Ljava_lang_String_$24bvf0());
-        double d7 = this.n() + 12.5 + d6;
-        double d8 = this.A() - 10.0;
-        double d9 = this.G$src$D$1b2f02a() + this.ZT.getInterpolatedValue();
-        if (this.Zh.equals((Object)ColorChannelType.RAINBOW)) {
-            smoothFontRenderer.d(this.W$src$Ljava_lang_String_$24bvf0(), this.G$src$D$1b2f02a() + 5.0, this.n() + 5.0, this.ZI);
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(this.fontScale);
+        String displayLabel = this.channelType.equals((Object)ColorChannelType.RAINBOW) ? this.getLabel() : this.channelType.getDisplayName();
+        double labelHeight = fontRenderer.d(displayLabel);
+        this.labelWidth = fontRenderer.N(this.getLabel());
+        double trackY = this.n() + 12.5 + labelHeight;
+        double trackWidth = this.A() - 10.0;
+        double handleCenterX = this.G$src$D$1b2f02a() + this.handlePositionAnimation.getInterpolatedValue();
+        if (this.channelType.equals((Object)ColorChannelType.RAINBOW)) {
+            fontRenderer.d(this.getLabel(), this.G$src$D$1b2f02a() + 5.0, this.n() + 5.0, this.labelColor);
         } else {
-            smoothFontRenderer.d(this.Zh.T(), this.G$src$D$1b2f02a() + 5.0, this.n() + 5.0, this.ZI);
+            fontRenderer.d(this.channelType.getDisplayName(), this.G$src$D$1b2f02a() + 5.0, this.n() + 5.0, this.labelColor);
         }
-        if (this.Zw != null) {
-            d4 = smoothFontRenderer.N(this.Zw.L$src$Ljava_lang_String_$1ncdwqb());
-            this.Zw.K(this.G$src$D$1b2f02a() + this.A() - 5.0 - d4 - 2.0);
-            this.Zw.S(this.n() + 2.0);
-            this.Zw.Y(10.0);
-            this.Zw.o(d4);
-            this.Zw.y(0.8);
+        if (this.resetLabel != null) {
+            resetLabelWidth = fontRenderer.N(this.resetLabel.getText());
+            this.resetLabel.K(this.G$src$D$1b2f02a() + this.A() - 5.0 - resetLabelWidth - 2.0);
+            this.resetLabel.S(this.n() + 2.0);
+            this.resetLabel.Y(10.0);
+            this.resetLabel.o(resetLabelWidth);
+            this.resetLabel.setFontScale(0.8);
         }
-        this.Z3 = this.L(d9, d7 + 0.5, this.Zz.getEndValue() / 2.0);
-        d4 = 5.0;
-        double d10 = this.A() - d4 * 2.0;
-        double d11 = this.G$src$D$1b2f02a() + d4;
-        double d12 = d9 - d11 - (d3 = this.Zz.getEndValue() / 2.0 + 0.5);
-        if (d12 >= 2.0) {
-            float[] fArray = this.y(0.0, d10);
-            float[] fArray2 = this.y(d12, d10);
-            GuiRenderPrimitives.F(d11, d7, d12, 2.0, fArray, fArray2);
+        this.handleBounds = this.createHandleBounds(handleCenterX, trackY + 0.5, this.handleHoverAnimation.getEndValue() / 2.0);
+        resetLabelWidth = 5.0;
+        double usableTrackWidth = this.A() - resetLabelWidth * 2.0;
+        double trackStartX = this.G$src$D$1b2f02a() + resetLabelWidth;
+        double leftTrackWidth = handleCenterX - trackStartX - (handleTrackPadding = this.handleHoverAnimation.getEndValue() / 2.0 + 0.5);
+        if (leftTrackWidth >= 2.0) {
+            float[] leftGradientStart = this.createGradientStop(0.0, usableTrackWidth);
+            float[] leftGradientEnd = this.createGradientStop(leftTrackWidth, usableTrackWidth);
+            GuiRenderPrimitives.F(trackStartX, trackY, leftTrackWidth, 2.0, leftGradientStart, leftGradientEnd);
         }
-        if ((d2 = d10 - (d = d9 - d11 + d3)) >= 2.0) {
-            float[] gradientStart = this.y(d, d10);
-            float[] fArray = this.y(d10, d10);
-            GuiRenderPrimitives.F(d11 + d, d7, d2, 2.0, gradientStart, fArray);
+        if ((rightTrackWidth = usableTrackWidth - (rightTrackOffset = handleCenterX - trackStartX + handleTrackPadding)) >= 2.0) {
+            float[] gradientStart = this.createGradientStop(rightTrackOffset, usableTrackWidth);
+            float[] gradientEnd = this.createGradientStop(usableTrackWidth, usableTrackWidth);
+            GuiRenderPrimitives.F(trackStartX + rightTrackOffset, trackY, rightTrackWidth, 2.0, gradientStart, gradientEnd);
         }
-        object = this.d().equals(Color.WHITE) ? this.Zb.d() : this.d();
-        double d13 = this.Zz.getInterpolatedValue();
-        GuiRenderPrimitives.Y((float)(this.Z3.o() + this.Z3.e() / 2.0 - d13 / 2.0), (float)(this.Z3.W() + this.Z3.R() / 2.0 - d13 / 2.0), (float)d13, (float)(0.8 / Vape.INSTANCE.getClientSettings().s()), ColorChannelSliderComponent.J.A, 0.0, null);
+        resolvedBackgroundColor = this.getDisabledOverlayColor().equals(Color.WHITE) ? this.fallbackColorComponent.getDisabledOverlayColor() : this.getDisabledOverlayColor();
+        double handleSize = this.handleHoverAnimation.getInterpolatedValue();
+        GuiRenderPrimitives.Y((float)(this.handleBounds.o() + this.handleBounds.e() / 2.0 - handleSize / 2.0), (float)(this.handleBounds.W() + this.handleBounds.R() / 2.0 - handleSize / 2.0), (float)handleSize, (float)(0.8 / Vape.INSTANCE.getClientSettings().s()), ColorChannelSliderComponent.J.A, 0.0, null);
     }
 
-    public ColorChannelSliderComponent(ColorChannelType colorChannelType, ColorValue colorValue) {
-        this(colorChannelType, colorValue, colorValue.getName(), 1.0);
-        this.C(colorValue);
-        colorValue.B(this::lambda$new$0);
-        this.Z$src$V$30xmgs();
+    public ColorChannelSliderComponent(ColorChannelType channelType, ColorValue colorValue) {
+        this(channelType, colorValue, colorValue.getName(), 1.0);
+        this.bindValue(colorValue);
+        colorValue.addChangeListener(this::handleColorValueChanged);
+        this.synchronizeHandlePosition();
     }
 
     @Override
     public void F() {
-        if (!this.ZU) {
-            this.Zz.J();
+        if (!this.hovered) {
+            this.handleHoverAnimation.J();
         }
-        this.ZU = true;
+        this.hovered = true;
     }
 
-    public ColorChannelSliderComponent(ColorChannelType colorChannelType, ColorValue colorValue, String string, double d) {
-        super(string);
-        this.Z3 = new RectData(0.0, 0.0, 0.0, 0.0);
-        this.ZI = ColorChannelSliderComponent.J.Z;
-        this.O = -1.0;
-        this.v = colorValue;
-        this.Zh = colorChannelType;
-        this.K = d;
-        this.Zl = (this.Zf - this.R) / 100.0;
-        if (colorChannelType.equals((Object)ColorChannelType.RAINBOW)) {
+    public ColorChannelSliderComponent(ColorChannelType channelType, ColorValue colorValue, String label, double step) {
+        super(label);
+        this.handleBounds = new RectData(0.0, 0.0, 0.0, 0.0);
+        this.labelColor = ColorChannelSliderComponent.J.Z;
+        this.legacyDragValueSentinel = -1.0;
+        this.colorValue = colorValue;
+        this.channelType = channelType;
+        this.step = step;
+        this.valuePerPercent = (this.maximum - this.minimum) / 100.0;
+        if (channelType.equals((Object)ColorChannelType.RAINBOW)) {
             // empty if block
         }
-        this.Zv = (float)(this.Zf / colorValue.Q$src$D$1rauh53());
+        this.valueScale = (float)(this.maximum / colorValue.getHueMaximum());
     }
 
-    public double g$src$D$382xqz() {
-        return this.Zf;
+    public double getMaximum() {
+        return this.maximum;
     }
 
     @Override
@@ -285,78 +285,78 @@ extends SliderComponentBase {
         return 25.0;
     }
 
-    private void Z$src$V$30xmgs() {
-        double d = this.A() - 10.0;
-        double d2 = 0.0;
-        switch (this.Zh) {
+    private void synchronizeHandlePosition() {
+        double trackWidth = this.A() - 10.0;
+        double normalizedValue = 0.0;
+        switch (this.channelType) {
             case BLOCK_CHILD: 
             case RAINBOW: {
-                d2 = (Double)this.v.C$src$Lgg_vape_value_NumberValue_$z6u28w().K() / this.Zf;
+                normalizedValue = (Double)this.colorValue.getHueValue().getValue() / this.maximum;
                 break;
             }
             case SATURATION: {
-                d2 = (Double)this.v.G().K() / this.Zf;
+                normalizedValue = (Double)this.colorValue.getSaturationValue().getValue() / this.maximum;
                 break;
             }
             case VIBRANCE: {
-                d2 = (Double)this.v.y().K() / this.Zf;
+                normalizedValue = (Double)this.colorValue.getBrightnessValue().getValue() / this.maximum;
                 break;
             }
             case OPACITY: {
-                d2 = (Double)this.v.x$src$Lgg_vape_value_NumberValue_$1mjtff9().K() / this.Zf;
+                normalizedValue = (Double)this.colorValue.getAlphaValue().getValue() / this.maximum;
             }
         }
-        double d3 = (d - this.Zz.getEndValue()) * (d2 *= (double)this.Zv) + 5.0 + this.Zz.getEndValue() / 2.0;
-        double d4 = this.ZT.getInterpolatedValue();
-        double d5 = 0.05;
-        if (this.Zh == ColorChannelType.BLOCK_CHILD || this.Zh == ColorChannelType.RAINBOW) {
-            if (this.v.g() && d2 == 0.0) {
-                d5 = 0.0;
+        double targetHandleX = (trackWidth - this.handleHoverAnimation.getEndValue()) * (normalizedValue *= (double)this.valueScale) + 5.0 + this.handleHoverAnimation.getEndValue() / 2.0;
+        double currentHandleX = this.handlePositionAnimation.getInterpolatedValue();
+        double animationDuration = 0.05;
+        if (this.channelType == ColorChannelType.BLOCK_CHILD || this.channelType == ColorChannelType.RAINBOW) {
+            if (this.colorValue.isRainbowEnabled() && normalizedValue == 0.0) {
+                animationDuration = 0.0;
             }
-        } else if (this.v.g() && this.v.I()) {
-            d5 = 1.0;
+        } else if (this.colorValue.isRainbowEnabled() && this.colorValue.isColorTransformEnabled()) {
+            animationDuration = 1.0;
         }
-        this.ZT = new DoubleAnimation(d5, d4, d3);
-        this.Zm = d2;
-        this.ZT.c();
+        this.handlePositionAnimation = new DoubleAnimation(animationDuration, currentHandleX, targetHandleX);
+        this.lastNormalizedValue = normalizedValue;
+        this.handlePositionAnimation.c();
     }
 
-    public void H(GuiComponent guiComponent) {
-        this.Zb = guiComponent;
+    public void setFallbackColorComponent(GuiComponent fallbackColorComponent) {
+        this.fallbackColorComponent = fallbackColorComponent;
     }
 
-    public double Q$src$D$2vzgp1() {
-        return this.R;
+    public double getMinimum() {
+        return this.minimum;
     }
 
 
-    public ColorChannelSliderComponent(ColorPaletteSliderComponent colorPaletteSliderComponent) {
-        this(ColorChannelType.BLOCK_CHILD, colorPaletteSliderComponent.Z$src$Lgg_vape_value_ColorValue_$1er4i1l());
-        this.Zw = new TextLabel(cb);
-        this.Zw.r(new ColorPaletteRefreshClickListener(this, colorPaletteSliderComponent));
-        this.H(new GuiComponent[]{this.Zw});
+    public ColorChannelSliderComponent(ColorPaletteSliderComponent paletteSlider) {
+        this(ColorChannelType.BLOCK_CHILD, paletteSlider.getColorValue());
+        this.resetLabel = new TextLabel(RESET_TEXT);
+        this.resetLabel.addClickListener(new ColorPaletteRefreshClickListener(this, paletteSlider));
+        this.addChildren(new GuiComponent[]{this.resetLabel});
     }
 
-    public RectData g$src$Lfunc_skidline_RectData_$3hcqur() {
-        return this.Z3;
+    public RectData getHandleBounds() {
+        return this.handleBounds;
     }
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
-        RectData rectData;
-        String string = ColorValueEditorComponent.P();
-        if ((this.Zh.equals((Object)ColorChannelType.RAINBOW) || this.Zh.equals((Object)ColorChannelType.BLOCK_CHILD)) && this.a + 300L > System.currentTimeMillis()) {
-            this.v.Y(!this.v.g());
+    public void g(GuiMouseEvent mouseEvent) {
+        RectData interactionBounds;
+        String legacyInteractionMarker = ColorValueEditorComponent.getLegacyInteractionMarker();
+        if ((this.channelType.equals((Object)ColorChannelType.RAINBOW) || this.channelType.equals((Object)ColorChannelType.BLOCK_CHILD)) && this.lastClickTimestamp + 300L > System.currentTimeMillis()) {
+            this.colorValue.setRainbowEnabled(!this.colorValue.isRainbowEnabled());
         }
         /* Timebomb here (disabled): forces a color to transparent black on interaction after 2027-05-03 (epoch ms 1809594154878L)
         if (System.currentTimeMillis() > 1809594154878L) {
-            this.v.Z(new Color(0, 0, 0, 0));
+            this.colorValue.Z(new Color(0, 0, 0, 0));
         }
         */
-        if ((rectData = new RectData(this.G$src$D$1b2f02a(), this.Z3.W(), this.A(), this.Z3.R())).J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
-            this.o = RenderUtils.h();
-            this.I = true;
+        if ((interactionBounds = new RectData(this.G$src$D$1b2f02a(), this.handleBounds.W(), this.A(), this.handleBounds.R())).J(mouseEvent.getX(), mouseEvent.getY())) {
+            this.dragStartMousePosition = RenderUtils.h();
+            this.dragging = true;
         }
-        this.a = System.currentTimeMillis();
+        this.lastClickTimestamp = System.currentTimeMillis();
     }
 }

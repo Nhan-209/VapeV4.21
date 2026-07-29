@@ -8,7 +8,7 @@ implements GuiClickListener {
     final QuickActionsFrame u;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         QuickActionsFrame.Y(this.u, 3);
     }
 
@@ -16,4 +16,3 @@ implements GuiClickListener {
         this.u = sz_02;
     }
 }
-

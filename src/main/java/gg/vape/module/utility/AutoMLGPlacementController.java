@@ -26,126 +26,119 @@ public class AutoMLGPlacementController {
     private final AutoMLG autoMLG;
 
     @Nullable
-    private FixedRotationController prepareRotation(@Nullable BlockCoordinate blockCoordinate, @Nullable FixedRotationController fixedRotationController, ItemMappingEntry itemMappingEntry) {
-        FixedRotationController fixedRotationController2 = fixedRotationController;
-        if (blockCoordinate == null) {
-            return fixedRotationController2;
+    private FixedRotationController prepareRotation(@Nullable BlockCoordinate targetCoordinate, @Nullable FixedRotationController currentController, ItemMappingEntry itemMappingEntry) {
+        FixedRotationController preparedController = currentController;
+        if (targetCoordinate == null) {
+            return preparedController;
         }
-        if (fixedRotationController2 != null && !(fixedRotationController2 instanceof AdaptiveRotationController) && !(fixedRotationController2 instanceof PointRotationController)) {
-            BlockPlacementUtility.r(fixedRotationController2, false, true);
-            fixedRotationController2 = this.V(blockCoordinate, itemMappingEntry);
+        if (preparedController != null && !(preparedController instanceof AdaptiveRotationController) && !(preparedController instanceof PointRotationController)) {
+            BlockPlacementUtility.releaseRotationController(preparedController, false, true);
+            preparedController = this.createRotationController(targetCoordinate, itemMappingEntry);
         }
-        if (fixedRotationController2 instanceof PointRotationController || fixedRotationController2 instanceof AdaptiveRotationController) {
-            BlockPlacementUtility.y((WorldPointRotationTarget)((Object)fixedRotationController2), blockCoordinate, itemMappingEntry);
+        if (preparedController instanceof PointRotationController || preparedController instanceof AdaptiveRotationController) {
+            BlockPlacementUtility.updateRotationTarget((WorldPointRotationTarget)((Object)preparedController), targetCoordinate, itemMappingEntry);
         }
-        if (this.autoMLG.A() && fixedRotationController2 != null && !fixedRotationController2.equals(RotationManager.b.w())) {
-            RotationManager.b.S(fixedRotationController2);
+        if (this.autoMLG.acquireRotationControl() && preparedController != null && !preparedController.equals(RotationManager.INSTANCE.getActiveController())) {
+            RotationManager.INSTANCE.setController(preparedController);
         }
-        return fixedRotationController2;
+        return preparedController;
     }
 
     @NotNull
-    public HotbarSlotResolution t(@NotNull ItemMappingEntry itemMappingEntry, @Nullable BlockCoordinate blockCoordinate, @Nullable FixedRotationController fixedRotationController, boolean bl) {
-        FixedRotationController fixedRotationController2 = this.prepareRotation(blockCoordinate, fixedRotationController, itemMappingEntry);
-        if (fixedRotationController2 != null) {
-            if (!fixedRotationController2.equals(fixedRotationController)) {
-                if (bl) {
-                    this.autoMLG.V = fixedRotationController2;
+    public HotbarSlotResolution aimAtTarget(@NotNull ItemMappingEntry itemMappingEntry, @Nullable BlockCoordinate targetCoordinate, @Nullable FixedRotationController currentController, boolean pickupWater) {
+        FixedRotationController preparedController = this.prepareRotation(targetCoordinate, currentController, itemMappingEntry);
+        if (preparedController != null) {
+            if (!preparedController.equals(currentController)) {
+                if (pickupWater) {
+                    this.autoMLG.pickupRotation = preparedController;
                 } else {
-                    this.autoMLG.C = fixedRotationController2;
+                    this.autoMLG.placementRotation = preparedController;
                 }
             }
-            if (BlockPlacementUtility.R(blockCoordinate, itemMappingEntry)) {
-                return HotbarSlotResolution.j("AimJob completed by looking at valid block");
+            if (BlockPlacementUtility.isLookingAtPlacementTarget(targetCoordinate, itemMappingEntry)) {
+                return HotbarSlotResolution.success("AimJob completed by looking at valid block");
             }
-            if (fixedRotationController2.V$src$Z$lb4tvc()) {
-                return HotbarSlotResolution.j("AimJob was already completed");
+            if (preparedController.isComplete()) {
+                return HotbarSlotResolution.success("AimJob was already completed");
             }
-            if (!fixedRotationController2.equals(RotationManager.b.w())) {
-                if (this.autoMLG.A()) {
-                    RotationManager.b.S(fixedRotationController2);
-                    return HotbarSlotResolution.J("AimJob set as current job");
+            if (!preparedController.equals(RotationManager.INSTANCE.getActiveController())) {
+                if (this.autoMLG.acquireRotationControl()) {
+                    RotationManager.INSTANCE.setController(preparedController);
+                    return HotbarSlotResolution.pending("AimJob set as current job");
                 }
-                return HotbarSlotResolution.J("AimJob is not current job");
+                return HotbarSlotResolution.pending("AimJob is not current job");
             }
-            return HotbarSlotResolution.J("Waiting for AimJob to complete");
+            return HotbarSlotResolution.pending("Waiting for AimJob to complete");
         }
-        if (BlockPlacementUtility.R(blockCoordinate, itemMappingEntry)) {
-            return HotbarSlotResolution.j("AimJob completed by looking at valid block");
+        if (BlockPlacementUtility.isLookingAtPlacementTarget(targetCoordinate, itemMappingEntry)) {
+            return HotbarSlotResolution.success("AimJob completed by looking at valid block");
         }
-        return HotbarSlotResolution.W("AimJob is null").A();
+        return HotbarSlotResolution.failure("AimJob is null").force();
     }
 
     public AutoMLGPlacementController(AutoMLG autoMLG) {
         this.autoMLG = autoMLG;
     }
 
-    private <T extends FixedRotationController> T configureController(T t) {
-        t.k(true);
-        t.t(0.1f);
-        t.A(true);
-        t.U(true);
-        t.w(true);
-        t.z(true);
-        t.s(true);
-        t.Y(((Double)this.autoMLG.c.K()).floatValue());
-        t.D(true);
-        if (t instanceof AdaptiveRotationController) {
-            ((AdaptiveRotationController)t).b(false);
+    private <T extends FixedRotationController> T configureController(T controller) {
+        controller.setClampStepToRemaining(true);
+        controller.setTolerance(0.1f);
+        controller.setAngleBasedAcceleration(true);
+        controller.setScaleAxesProportionally(true);
+        controller.setRetainAfterCompletion(true);
+        controller.setCubicAcceleration(true);
+        controller.setLinearAcceleration(true);
+        controller.setSpeed(((Double)this.autoMLG.aimSpeed.getValue()).floatValue());
+        controller.setRandomizeMovement(true);
+        if (controller instanceof AdaptiveRotationController) {
+            ((AdaptiveRotationController)controller).setRelativeMode(false);
         }
-        return t;
+        return controller;
     }
 
 
-    public HotbarSlotResolutionWithValue<BlockPos> D(@NotNull ItemMappingEntry itemMappingEntry, @Nullable BlockCoordinate blockCoordinate, @Nullable TimerUtil timerUtil) {
-        HotbarSlotResolution hotbarSlotResolution;
-        HotbarSlotResolutionWithValue hotbarSlotResolutionWithValue = new HotbarSlotResolutionWithValue();
-        if (timerUtil != null && timerUtil.hasTimeElapsed(1000L)) {
-            return (HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.Q("Timed out while trying to place item");
+    public HotbarSlotResolutionWithValue<BlockPos> placeItem(@NotNull ItemMappingEntry itemMappingEntry, @Nullable BlockCoordinate targetCoordinate, @Nullable TimerUtil timeoutTimer) {
+        HotbarSlotResolutionWithValue<BlockPos> result = new HotbarSlotResolutionWithValue<>();
+        if (timeoutTimer != null && timeoutTimer.hasTimeElapsed(1000L)) {
+            return (HotbarSlotResolutionWithValue)result.markFailure("Timed out while trying to place item");
         }
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
-            return (HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.f("Player is unavailable");
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (localPlayer.isNull()) {
+            return (HotbarSlotResolutionWithValue)result.markPending("Player is unavailable");
         }
-        if (blockCoordinate != null) {
-            // empty if block
+        HotbarSlotResolution closeResult = this.autoMLG.closeInventory();
+        if (closeResult.isFailure()) {
+            return result.markFailure("Failed to close GUI due to: " + closeResult.getMessage()).setForced(closeResult.canContinue());
         }
-        if ((hotbarSlotResolution = this.autoMLG.f$src$Lgg_vape_module_blatant_blockin_HotbarSlotResolu$1985fcl()).h()) {
-            return (HotbarSlotResolutionWithValue)((HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.Q("Failed to close GUI due to: " + hotbarSlotResolution.b())).i(hotbarSlotResolution.B());
+        if (closeResult.isPending()) {
+            return (HotbarSlotResolutionWithValue)result.markPending("Waiting to close GUI");
         }
-        if (hotbarSlotResolution.Q()) {
-            return (HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.f("Waiting to close GUI");
-        }
-        RayTraceResult rayTraceResult = BlockPlacementUtility.A(itemMappingEntry);
+        RayTraceResult rayTraceResult = BlockPlacementUtility.getPlacementRayTrace(itemMappingEntry);
         if (rayTraceResult.isNull()) {
-            return (HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.f("Waiting for mouse over to not be null");
+            return (HotbarSlotResolutionWithValue)result.markPending("Waiting for mouse over to not be null");
         }
         if (!rayTraceResult.isBlockHit()) {
-            return (HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.f("Waiting for mouse over to be a block");
+            return (HotbarSlotResolutionWithValue)result.markPending("Waiting for mouse over to be a block");
         }
-        if (!BlockPlacementUtility.R(blockCoordinate, itemMappingEntry)) {
-            return (HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.f("Waiting to look at valid block");
+        if (!BlockPlacementUtility.isLookingAtPlacementTarget(targetCoordinate, itemMappingEntry)) {
+            return (HotbarSlotResolutionWithValue)result.markPending("Waiting to look at valid block");
         }
-        BlockPos blockPos = BlockPlacementUtility.q(itemMappingEntry);
+        BlockPos blockPos = BlockPlacementUtility.getPlacementBlockPos(itemMappingEntry);
         KeyBinding keyBinding = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
-        KeyBindingHelper.d(keyBinding, true);
-        KeyBindingHelper.v(keyBinding, false, false);
-        if (blockPos != null) {
-            // empty if block
-        }
-        return ((HotbarSlotResolutionWithValue)hotbarSlotResolutionWithValue.m("Placed MLG Item")).q(blockPos);
+        KeyBindingHelper.setPressedAndTick(keyBinding, true);
+        KeyBindingHelper.updateKeyBinding(keyBinding, false, false);
+        return result.markSuccess("Placed MLG Item").setValue(blockPos);
     }
 
     @NotNull
-    public FixedRotationController V(@Nullable BlockCoordinate blockCoordinate, @Nullable ItemMappingEntry itemMappingEntry) {
-        FixedRotationController fixedRotationController;
-        if (blockCoordinate == null) {
-            fixedRotationController = this.autoMLG.F.L() != false ? new AdaptiveRotationController(-999.0f, 90.0f) : new FixedRotationController(-999.0f, 90.0f);
+    public FixedRotationController createRotationController(@Nullable BlockCoordinate targetCoordinate, @Nullable ItemMappingEntry itemMappingEntry) {
+        FixedRotationController controller;
+        if (targetCoordinate == null) {
+            controller = this.autoMLG.silentAim.getEffectiveValue() != false ? new AdaptiveRotationController(-999.0f, 90.0f) : new FixedRotationController(-999.0f, 90.0f);
         } else {
-            Vec3 vec3 = BlockPlacementUtility.D(blockCoordinate, itemMappingEntry);
-            fixedRotationController = this.autoMLG.F.L() != false ? new AdaptiveRotationController(vec3) : new PointRotationController(vec3);
+            Vec3 aimPoint = BlockPlacementUtility.getAimPoint(targetCoordinate, itemMappingEntry);
+            controller = this.autoMLG.silentAim.getEffectiveValue() != false ? new AdaptiveRotationController(aimPoint) : new PointRotationController(aimPoint);
         }
-        return this.configureController(fixedRotationController);
+        return this.configureController(controller);
     }
 }
-

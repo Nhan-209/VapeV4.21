@@ -1,31 +1,25 @@
 package gg.vape.module.macro;
 
-import gg.vape.module.Macro;
 import gg.vape.module.macro.CommandMacro;
 import gg.vape.module.macro.MacroAction;
 import gg.vape.wrapper.impl.Minecraft;
 
 class CommandMacroAction
 implements MacroAction {
-    final CommandMacro r;
+    private final CommandMacro macro;
 
     CommandMacroAction(CommandMacro commandMacro) {
-        this.r = commandMacro;
+        this.macro = commandMacro;
     }
 
     @Override
-    public boolean h() {
+    public boolean isFinished() {
         return true;
     }
 
     @Override
-    public Macro g() {
-        return this.r;
-    }
-
-    @Override
-    public void Z() {
-        Minecraft.a_xH_J().sendChatMessage(this.r.getName());
+    public void tick() {
+        Minecraft.a_xH_J().sendChatMessage(this.macro.getName());
     }
 }
 

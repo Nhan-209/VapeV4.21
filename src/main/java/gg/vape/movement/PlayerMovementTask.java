@@ -2,7 +2,6 @@ package gg.vape.movement;
 
 import gg.vape.config.ClientSettings;
 import gg.vape.event.impl.EventTickBase;
-import gg.vape.movement.MovementInputHelper;
 import gg.vape.utils.SleepUtil;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.KeyBinding;
@@ -10,169 +9,168 @@ import gg.vape.wrapper.impl.Minecraft;
 import java.util.ArrayList;
 
 public abstract class PlayerMovementTask {
-    public double T;
-    private boolean E = false;
-    private static String[] y;
-    private boolean r = false;
-    private ArrayList<KeyBinding> F = new ArrayList();
-    private boolean u = false;
-    private boolean q;
-    public double s = 0.0;
-    private boolean m = true;
-    private double L = 0.2;
-    private boolean U = false;
-    private boolean n = false;
-    private boolean i = false;
+    public double remainingX;
+    private boolean requireSupportedMovement;
+    private static String[] controlFlowMarker;
+    private boolean targetReached;
+    private ArrayList<KeyBinding> excludedKeys = new ArrayList<KeyBinding>();
+    private boolean ignoreZ;
+    private boolean completed;
+    public double remainingZ;
+    private boolean restoreInputOnCompletion = true;
+    private double completionTolerance = 0.2;
+    private boolean ignoreX;
+    private boolean sneakNearTarget;
+    private boolean waitForGroundAfterArrival;
 
-    public boolean n() {
-        return this.m;
+    public boolean shouldRestoreInputOnCompletion() {
+        return this.restoreInputOnCompletion;
     }
 
-    public void r() {
+    public void updateCompletion() {
         if (Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return;
         }
-        boolean bl = this.z();
-        if (bl) {
-            if (!this.r) {
-                this.r = true;
+        boolean reachedTarget = this.hasReachedTarget();
+        if (reachedTarget) {
+            if (!this.targetReached) {
+                this.targetReached = true;
             }
-            this.s(true);
+            this.setCompleted(true);
             return;
         }
-        if (!this.r) {
-            // empty if block
-        }
-        if (this.r && (!this.i || entityPlayerSP.b$src$Z$fqlxe4())) {
-            this.s(true);
+        if (this.targetReached && (!this.waitForGroundAfterArrival || player.b$src$Z$fqlxe4())) {
+            this.setCompleted(true);
         }
     }
 
-    public static void M(String[] stringArray) {
-        y = stringArray;
+    public static void setControlFlowMarker(String[] marker) {
+        controlFlowMarker = marker;
     }
 
-    public void v(double d) {
-        this.L = d;
+    public void setCompletionTolerance(double tolerance) {
+        this.completionTolerance = tolerance;
     }
 
-    public void v(boolean bl) {
-        this.i = bl;
+    public void setWaitForGroundAfterArrival(boolean waitForGround) {
+        this.waitForGroundAfterArrival = waitForGround;
     }
 
-    public boolean G(long l) {
-        int n = 0;
-        while (!this.q$src$Z$naak2i()) {
+    public boolean waitUntilComplete(long timeoutMillis) {
+        int attempts = 0;
+        while (!this.isCompleted()) {
             SleepUtil.sleep(10L);
-            if ((long)(++n) <= l / 10L) continue;
+            if ((long)(++attempts) <= timeoutMillis / 10L) continue;
             return true;
         }
         return false;
     }
 
-    public void d(ArrayList<KeyBinding> arrayList) {
-        this.F = arrayList;
+    public void setExcludedKeys(ArrayList<KeyBinding> excludedKeys) {
+        this.excludedKeys = excludedKeys;
     }
 
     static {
-        if (PlayerMovementTask.G() != null) {
-            PlayerMovementTask.M(new String[5]);
+        if (PlayerMovementTask.getControlFlowMarker() != null) {
+            PlayerMovementTask.setControlFlowMarker(new String[5]);
         }
     }
 
-    public static String[] G() {
-        return y;
+    public static String[] getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
-    public double q() {
-        return this.s;
+    public double getRemainingZ() {
+        return this.remainingZ;
     }
 
 
-    public boolean b() {
-        return this.U;
+    public boolean shouldIgnoreX() {
+        return this.ignoreX;
     }
 
-    public abstract boolean z();
+    public abstract boolean hasReachedTarget();
 
-    public void g(boolean bl) {
-        this.m = bl;
+    public void setRestoreInputOnCompletion(boolean restoreInput) {
+        this.restoreInputOnCompletion = restoreInput;
     }
 
-    public boolean T() {
-        return this.i;
+    public boolean shouldWaitForGroundAfterArrival() {
+        return this.waitForGroundAfterArrival;
     }
 
-    public double g() {
-        return this.T;
+    public double getRemainingX() {
+        return this.remainingX;
     }
 
-    public ArrayList<KeyBinding> s() {
-        return this.F;
+    public ArrayList<KeyBinding> getExcludedKeys() {
+        return this.excludedKeys;
     }
 
-    public boolean I() {
-        return this.E;
+    public boolean shouldRequireSupportedMovement() {
+        return this.requireSupportedMovement;
     }
 
-    public void c(boolean bl) {
-        this.n = bl;
+    public void setSneakNearTarget(boolean sneakNearTarget) {
+        this.sneakNearTarget = sneakNearTarget;
     }
 
-    public boolean q$src$Z$naak2i() {
-        return this.q;
+    public boolean isCompleted() {
+        return this.completed;
     }
 
-    public void i(EventTickBase eventTickBase) {
-        if (eventTickBase.getThePlayer().isNull() || eventTickBase.getWorld().isNull()) {
+    public void applyMovementInput(EventTickBase event) {
+        if (event.getThePlayer().isNull() || event.getWorld().isNull()) {
             return;
         }
-        if (this.T != 0.0 || this.s != 0.0) {
-            KeyBinding keyBinding = Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
-            if (this.H() && Math.abs(this.T) < 2.0 && Math.abs(this.s) < 2.0) {
-                MovementInputHelper.w(keyBinding, true);
+        if (this.remainingX != 0.0 || this.remainingZ != 0.0) {
+            KeyBinding sneakKey = Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
+            if (this.shouldSneakNearTarget() && Math.abs(this.remainingX) < 2.0
+                    && Math.abs(this.remainingZ) < 2.0) {
+                MovementInputHelper.setKeyPressed(sneakKey, true);
             } else {
-                boolean bl = ClientSettings.B(keyBinding);
-                if (bl) {
-                    MovementInputHelper.w(keyBinding, true);
+                boolean physicallyPressed = ClientSettings.B(sneakKey);
+                if (physicallyPressed) {
+                    MovementInputHelper.setKeyPressed(sneakKey, true);
                 } else {
-                    MovementInputHelper.w(keyBinding, false);
+                    MovementInputHelper.setKeyPressed(sneakKey, false);
                 }
             }
-            MovementInputHelper.j(this.T, this.s, this.F, this.E);
+            MovementInputHelper.applyMovementToward(this.remainingX, this.remainingZ,
+                    this.excludedKeys, this.requireSupportedMovement);
         }
     }
 
-    public boolean H() {
-        return this.n;
+    public boolean shouldSneakNearTarget() {
+        return this.sneakNearTarget;
     }
 
-    public void x(boolean bl) {
-        this.u = bl;
+    public void setIgnoreZ(boolean ignoreZ) {
+        this.ignoreZ = ignoreZ;
     }
 
-    public boolean B() {
-        return this.u;
+    public boolean shouldIgnoreZ() {
+        return this.ignoreZ;
     }
 
-    public void s(boolean bl) {
-        this.q = bl;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
-    public double Y() {
-        return this.L;
+    public double getCompletionTolerance() {
+        return this.completionTolerance;
     }
 
-    public void P(boolean bl) {
-        this.U = bl;
+    public void setIgnoreX(boolean ignoreX) {
+        this.ignoreX = ignoreX;
     }
 
-    public void l(boolean bl) {
-        this.E = bl;
+    public void setRequireSupportedMovement(boolean requireSupportedMovement) {
+        this.requireSupportedMovement = requireSupportedMovement;
     }
 }
 

@@ -8,7 +8,7 @@ public class EventPreRenderTick
 extends EventRenderTickBase {
     @Override
     public boolean fire() {
-        ShaderProgram.v(-1);
+        ShaderProgram.setCurrentProgramId(-1);
         return super.fire();
     }
 
@@ -20,4 +20,3 @@ extends EventRenderTickBase {
         super(f);
     }
 }
-

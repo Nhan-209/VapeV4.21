@@ -13,15 +13,15 @@ extends Frame {
     private String mR = "Settings";
 
     public ClientSettingsSectionFrame() {
-        this.T(ClientSettingsSectionFrame.J.i);
+        this.setDisabledOverlayColor(ClientSettingsSectionFrame.J.i);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.g(ClientSettingsSearchFrame.class);
+        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.getFrame(ClientSettingsSearchFrame.class);
         this.Y(clientSettingsSearchFrame.L());
         this.o(clientSettingsSearchFrame.A());
         this.s$src$V$yca8r0();
-        this.H(new ColorDividerComponent(ClientSettingsSectionFrame.J.l));
-        this.Z(false);
+        this.addChildren(new ColorDividerComponent(ClientSettingsSectionFrame.J.l));
+        this.setVisible(false);
         this.L(false, false);
     }
 
@@ -47,7 +47,7 @@ extends Frame {
 
     public void s$src$V$yca8r0() {
         if (this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null) {
-            this.I(this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc());
+            this.removeChild(this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc());
         }
         SettingsFrameHeaderComponent settingsFrameHeaderComponent = new SettingsFrameHeaderComponent(this, this.mR);
         settingsFrameHeaderComponent.n(new ClientSettingsSectionFrameCloseSettingsClickHandler(this));

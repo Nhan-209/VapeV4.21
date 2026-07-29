@@ -13,7 +13,7 @@ extends TutorialTargetSelector<ModuleComponent> {
     final ModulesTutorialPage x;
 
     public boolean J(ModuleComponent moduleComponent) {
-        if (moduleComponent.N$src$Lgg_vape_module_Mod_$rb0ew8().getName().equals(b)) {
+        if (moduleComponent.getModule().getName().equals(b)) {
             this.n = moduleComponent;
             return true;
         }
@@ -37,7 +37,7 @@ extends TutorialTargetSelector<ModuleComponent> {
         if (this.o().isInstance(guiComponent)) {
             ArrayList<GuiComponent> arrayList = super.v(guiComponent);
             if (arrayList != null && this.n != null) {
-                return new ArrayList<GuiComponent>(this.n.K$src$Ljava_util_List_$1hwj5d6());
+                return new ArrayList<GuiComponent>(this.n.getValueComponents());
             }
             return arrayList;
         }

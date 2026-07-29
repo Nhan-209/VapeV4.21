@@ -12,12 +12,12 @@ import gg.vape.wrapper.impl.ScaledResolution;
 
 public class HudModuleToggleComponent
 extends GuiComponent {
-    private float o;
-    private String G;
-    private boolean a;
-    private HudModule O;
-    private boolean b;
-    private Frame i = null;
+    private final float iconScale;
+    private final String iconKey;
+    private boolean hovered;
+    private final HudModule module;
+    private boolean enabled;
+    private Frame configFrame;
 
     @Override
     public double x() {
@@ -26,15 +26,15 @@ extends GuiComponent {
 
     @Override
     public void F() {
-        this.a = true;
+        this.hovered = true;
     }
 
     @Override
     public void u() {
-        if (this.a && !this.w$src$Z$e457mb()) {
-            this.a = false;
+        if (this.hovered && !this.w$src$Z$e457mb()) {
+            this.hovered = false;
         }
-        this.d$src$V$1o6ea79();
+        this.syncEnabledState();
     }
 
     @Override
@@ -43,8 +43,8 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0, this.n(), this.A() - 3.0, this.L() - 3.0, this.b ? J.z() : (this.a ? HudModuleToggleComponent.J.l : HudModuleToggleComponent.J.m));
-        GuiRenderPrimitives.F(this.G, this.G$src$D$1b2f02a() + this.A() / 2.0 + 3.0, this.n() + this.L() / 2.0 - 2.0, (double)(8.0f * this.o), 8.0f * this.o, this.b || this.a ? HudModuleToggleComponent.J.f : HudModuleToggleComponent.J.W);
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0, this.n(), this.A() - 3.0, this.L() - 3.0, this.enabled ? J.z() : (this.hovered ? HudModuleToggleComponent.J.l : HudModuleToggleComponent.J.m));
+        GuiRenderPrimitives.F(this.iconKey, this.G$src$D$1b2f02a() + this.A() / 2.0 + 3.0, this.n() + this.L() / 2.0 - 2.0, (double)(8.0f * this.iconScale), 8.0f * this.iconScale, this.enabled || this.hovered ? HudModuleToggleComponent.J.f : HudModuleToggleComponent.J.W);
     }
 
     @Override
@@ -52,24 +52,24 @@ extends GuiComponent {
         return 26.0;
     }
 
-    private void Y$src$V$1o0cjoa() {
-        this.b = !this.b;
-        this.O.Y(this.b);
-        if (this.i != null) {
-            this.w$src$V$1ogudh4();
+    private void toggleEnabled() {
+        this.enabled = !this.enabled;
+        this.module.Y(this.enabled);
+        if (this.configFrame != null) {
+            this.applyConfigFrameState();
         }
     }
 
-    private void d$src$V$1o6ea79() {
-        if (this.O.r$src$Z$14eylz9() != this.b) {
-            this.Y$src$V$1o0cjoa();
+    private void syncEnabledState() {
+        if (this.module.r$src$Z$14eylz9() != this.enabled) {
+            this.toggleEnabled();
         }
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
         if (guiMouseEvent.getAction().equals((Object)MouseButton.LEFT_CLICK)) {
-            this.Y$src$V$1o0cjoa();
+            this.toggleEnabled();
         }
     }
 
@@ -78,36 +78,36 @@ extends GuiComponent {
         this(hudModule, 1.0f);
     }
 
-    public HudModuleToggleComponent y(Frame frame) {
-        this.i = frame;
+    public HudModuleToggleComponent setConfigFrame(Frame frame) {
+        this.configFrame = frame;
         return this;
     }
 
     public HudModuleToggleComponent(HudModule hudModule, float f) {
-        this.O = hudModule;
-        this.G = hudModule.s$src$Ljava_lang_String_$pdppcm();
-        this.b = hudModule.r$src$Z$14eylz9();
-        this.o = f;
+        this.module = hudModule;
+        this.iconKey = hudModule.getKey();
+        this.enabled = hudModule.r$src$Z$14eylz9();
+        this.iconScale = f;
     }
 
-    public void w$src$V$1ogudh4() {
-        if (this.i == null) {
+    public void applyConfigFrameState() {
+        if (this.configFrame == null) {
             return;
         }
-        this.i.Z(this.b);
-        this.i.c(true);
-        this.i.U();
+        this.configFrame.setVisible(this.enabled);
+        this.configFrame.c(true);
+        this.configFrame.U();
         ScaledResolution scaledResolution = Minecraft.G();
-        if (this.i.n() > (double)scaledResolution.G() || this.i.n() < 0.0) {
-            this.i.S((double)(scaledResolution.G() / 2));
+        if (this.configFrame.n() > (double)scaledResolution.G() || this.configFrame.n() < 0.0) {
+            this.configFrame.S((double)(scaledResolution.G() / 2));
         }
-        if (this.i.G$src$D$1b2f02a() > (double)scaledResolution.T() || this.i.G$src$D$1b2f02a() < 0.0) {
-            this.i.K(scaledResolution.T() / 2);
+        if (this.configFrame.G$src$D$1b2f02a() > (double)scaledResolution.T() || this.configFrame.G$src$D$1b2f02a() < 0.0) {
+            this.configFrame.K(scaledResolution.T() / 2);
         }
-        if (this.i instanceof HudModuleConfigFrameBase) {
-            HudModuleConfigFrameBase hudModuleConfigFrameBase = (HudModuleConfigFrameBase)this.i;
-            hudModuleConfigFrameBase.w$src$V$1ttpy5n();
-            hudModuleConfigFrameBase.Z$src$Lgg_vape_ui_click_frame_impl_hud_AnchoredHudModu$1jkbe02().Z(false);
+        if (this.configFrame instanceof HudModuleConfigFrameBase) {
+            HudModuleConfigFrameBase hudModuleConfigFrameBase = (HudModuleConfigFrameBase)this.configFrame;
+            hudModuleConfigFrameBase.closeAllHudSettings();
+            hudModuleConfigFrameBase.getAnchoredSettingsFrame().setVisible(false);
         }
     }
 }

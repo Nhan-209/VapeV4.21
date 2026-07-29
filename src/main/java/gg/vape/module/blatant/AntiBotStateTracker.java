@@ -12,80 +12,82 @@ import java.util.Map;
 import java.util.UUID;
 
 public class AntiBotStateTracker {
-    private final Map<ModeOption, Character> modeChars;
-    public static final char f;
+    public static final char UNKNOWN_COLOR_CODE = '\u00ff';
 
-    public char s(EntityPlayer entityPlayer) {
-        char c = this.S(entityPlayer);
-        if (c == '\u00ff') {
-            c = this.E(entityPlayer);
+    private final Map<ModeOption, Character> colorCodeByOption;
+
+    public AntiBotStateTracker(Map<ModeOption, Character> colorCodeByOption) {
+        this.colorCodeByOption = colorCodeByOption;
+    }
+
+    public char detectColorCode(EntityPlayer player) {
+        char colorCode = this.getDisplayNameColorCode(player);
+        if (colorCode == UNKNOWN_COLOR_CODE) {
+            colorCode = this.getTeamColorCode(player);
         }
-        return c;
+        return colorCode;
     }
 
-
-    public AntiBotStateTracker(Map<ModeOption, Character> map) {
-        this.modeChars = map;
-    }
-
-    static {
-        long l2 = 4935014296091361535L;
-        f = (char)l2;
-    }
-
-    public ModeOption c(char c) {
-        for (ModeOption modeOption : this.modeChars.keySet()) {
-            if (this.modeChars.get(modeOption).charValue() != c) continue;
-            return modeOption;
+    public ModeOption findOptionByColorCode(char colorCode) {
+        for (ModeOption option : this.colorCodeByOption.keySet()) {
+            if (this.colorCodeByOption.get(option) == colorCode) {
+                return option;
+            }
         }
         return null;
     }
 
-    public char S(EntityPlayer entityPlayer) {
-        String string = entityPlayer.Q().C();
-        String string2 = entityPlayer.getName();
-        return this.S(string2, string);
+    public char getDisplayNameColorCode(EntityPlayer player) {
+        return this.findColorCodeBeforeName(player.getName(), player.Q().getFormattedText());
     }
 
-    public char E(EntityPlayer entityPlayer) {
+    public char getTeamColorCode(EntityPlayer player) {
         if (ForgeVersion.MC_1_8_9.A()) {
-            return '\u00ff';
+            return UNKNOWN_COLOR_CODE;
         }
-        GameProfile gameProfile = entityPlayer.c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937();
-        UUID uUID = gameProfile.getUUID();
-        for (Object e : Minecraft.N().getPlayerInfoMap()) {
-            String string;
-            ScorePlayerTeam scorePlayerTeam;
-            PlayerInfo playerInfo = new PlayerInfo(e);
-            GameProfile gameProfile2 = playerInfo.v();
-            if (!gameProfile2.getUUID().equals(uUID) || !(scorePlayerTeam = playerInfo.X()).isNotNull() || !(string = scorePlayerTeam.A()).contains(ClientSettings.F)) continue;
-            for (int i = string.length(); i > 0; --i) {
-                char c;
-                String string2 = String.valueOf(string.charAt(i - 1));
-                if (!string2.equals(ClientSettings.F) || (c = string.charAt(i)) > 'f') continue;
-                return c;
+        UUID playerId = player.c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937().getUUID();
+        for (Object playerInfoObject : Minecraft.N().getPlayerInfoMap()) {
+            PlayerInfo playerInfo = new PlayerInfo(playerInfoObject);
+            GameProfile profile = playerInfo.v();
+            ScorePlayerTeam team = playerInfo.X();
+            if (!profile.getUUID().equals(playerId) || !team.isNotNull()) {
+                continue;
+            }
+            String teamPrefix = team.A();
+            if (!teamPrefix.contains(ClientSettings.F)) {
+                continue;
+            }
+            for (int index = teamPrefix.length(); index > 0; --index) {
+                String character = String.valueOf(teamPrefix.charAt(index - 1));
+                if (character.equals(ClientSettings.F)) {
+                    char colorCode = teamPrefix.charAt(index);
+                    if (colorCode <= 'f') {
+                        return colorCode;
+                    }
+                }
             }
         }
-        return '\u00ff';
+        return UNKNOWN_COLOR_CODE;
     }
 
-    public char S(String string, String string2) {
-        int n;
-        if (string2.contains(ClientSettings.F) && (n = string2.indexOf(string)) > 0) {
-            for (int i = n - 1; i >= 0; --i) {
-                char c;
-                String string3 = String.valueOf(string2.charAt(i));
-                if (!string3.equals(ClientSettings.F) || (c = string2.charAt(i + 1)) > 'f') continue;
-                return c;
+    public char findColorCodeBeforeName(String playerName, String formattedName) {
+        int nameIndex;
+        if (formattedName.contains(ClientSettings.F)
+                && (nameIndex = formattedName.indexOf(playerName)) > 0) {
+            for (int index = nameIndex - 1; index >= 0; --index) {
+                String character = String.valueOf(formattedName.charAt(index));
+                if (character.equals(ClientSettings.F)) {
+                    char colorCode = formattedName.charAt(index + 1);
+                    if (colorCode <= 'f') {
+                        return colorCode;
+                    }
+                }
             }
         }
-        return '\u00ff';
+        return UNKNOWN_COLOR_CODE;
     }
 
-    public boolean A(ModeOption modeOption, EntityPlayer entityPlayer) {
-        char c;
-        char c2 = this.modeChars.get(modeOption).charValue();
-        return c2 == (c = this.S(entityPlayer));
+    public boolean matchesOption(ModeOption option, EntityPlayer player) {
+        return this.colorCodeByOption.get(option) == this.detectColorCode(player);
     }
 }
-

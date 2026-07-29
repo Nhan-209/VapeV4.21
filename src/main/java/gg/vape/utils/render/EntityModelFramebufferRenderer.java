@@ -24,35 +24,35 @@ import org.lwjgl.opengl.GL30;
 
 public class EntityModelFramebufferRenderer
 implements EntityModelRenderBackend {
-    GlFramebuffer b;
+    GlFramebuffer framebuffer;
 
     @Override
-    public void F() {
-        this.b.x();
-        this.b = null;
+    public void dispose() {
+        this.framebuffer.delete();
+        this.framebuffer = null;
     }
 
-    private void E(ResourceLocation resourceLocation) {
-        int n = 32;
-        int n2 = 32;
-        int n3 = ForgeVersion.MC_1_7_10.L() ? 32 : 0;
-        int n4 = GL11.glGetInteger((int)36006);
-        int n5 = GL11.glGetInteger((int)32873);
-        boolean bl = GL11.glIsEnabled((int)3089);
-        boolean bl2 = GL11.glIsEnabled((int)3553);
-        if (bl) {
+    private void captureTextureInternal(ResourceLocation texture) {
+        int textureWidth = 32;
+        int textureHeight = 32;
+        int legacyVerticalOffset = ForgeVersion.MC_1_7_10.L() ? 32 : 0;
+        int previousFramebufferId = GL11.glGetInteger((int)36006);
+        int previousTextureId = GL11.glGetInteger((int)32873);
+        boolean scissorEnabled = GL11.glIsEnabled((int)3089);
+        boolean textureEnabled = GL11.glIsEnabled((int)3553);
+        if (scissorEnabled) {
             GL11.glDisable((int)3089);
         }
-        if (!bl2) {
+        if (!textureEnabled) {
             GlStateManager.enableTexture2D();
         }
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(64);
-        byteBuffer.order(ByteOrder.nativeOrder());
-        IntBuffer intBuffer = byteBuffer.asIntBuffer();
-        gg.vape.wrapper.impl.GL11.X(2978, intBuffer);
-        OpenGlBackendHolder.d.m();
-        this.b = new GlFramebuffer(n, n2, true);
-        this.b.f(true);
+        ByteBuffer viewportBytes = ByteBuffer.allocateDirect(64);
+        viewportBytes.order(ByteOrder.nativeOrder());
+        IntBuffer viewport = viewportBytes.asIntBuffer();
+        gg.vape.wrapper.impl.GL11.X(2978, viewport);
+        OpenGlBackendHolder.backend.pushMatrix();
+        this.framebuffer = new GlFramebuffer(textureWidth, textureHeight, true);
+        this.framebuffer.bind(true);
         GlStateManager.enableDepth();
         GlStateManager.enableBlend();
         GL11.glEnable((int)2929);
@@ -61,11 +61,11 @@ implements EntityModelRenderBackend {
         GL11.glClear((int)16384);
         GL11.glClear((int)256);
         GL11.glMatrixMode((int)5889);
-        OpenGlBackendHolder.d.m();
+        OpenGlBackendHolder.backend.pushMatrix();
         GL11.glLoadIdentity();
-        GL11.glOrtho((double)0.0, (double)32.0, (double)(32 + n3), (double)0.0, (double)-1000.0, (double)3000.0);
+        GL11.glOrtho((double)0.0, (double)32.0, (double)(32 + legacyVerticalOffset), (double)0.0, (double)-1000.0, (double)3000.0);
         GL11.glMatrixMode((int)5888);
-        OpenGlBackendHolder.d.m();
+        OpenGlBackendHolder.backend.pushMatrix();
         GL11.glLoadIdentity();
         GL11.glTranslatef((float)0.0f, (float)0.0f, (float)-2000.0f);
         RenderHelper.e();
@@ -73,94 +73,94 @@ implements EntityModelRenderBackend {
         GL11.glEnable((int)32826);
         GL11.glPushMatrix();
         GlStateManager.disableBlend();
-        int n6 = 32;
-        int n7 = 32 + n3;
-        Minecraft.Z().G(resourceLocation);
-        Minecraft.Z().g(resourceLocation);
-        RenderUtils.R(0, 0, n6, n7, 32, 32 + n3);
+        int faceWidth = 32;
+        int faceHeight = 32 + legacyVerticalOffset;
+        Minecraft.Z().G(texture);
+        Minecraft.Z().g(texture);
+        RenderUtils.R(0, 0, faceWidth, faceHeight, 32, 32 + legacyVerticalOffset);
         GL11.glPopMatrix();
         GL11.glMatrixMode((int)5888);
         GL11.glPopMatrix();
-        this.b.S();
+        this.framebuffer.bindColorTexture();
         GL11.glMatrixMode((int)5889);
         GL11.glPopMatrix();
         GL11.glMatrixMode((int)5888);
         RenderHelper.s();
         GL11.glDisable((int)32826);
-        this.b.S();
-        this.b.o();
+        this.framebuffer.bindColorTexture();
+        this.framebuffer.unbind();
         GL11.glPopMatrix();
-        GL11.glViewport((int)intBuffer.get(0), (int)intBuffer.get(1), (int)intBuffer.get(2), (int)intBuffer.get(3));
-        GL30.glBindFramebuffer((int)36160, (int)n4);
-        GlStateManager.bindTexture(n5);
-        if (bl) {
+        GL11.glViewport((int)viewport.get(0), (int)viewport.get(1), (int)viewport.get(2), (int)viewport.get(3));
+        GL30.glBindFramebuffer((int)36160, (int)previousFramebufferId);
+        GlStateManager.bindTexture(previousTextureId);
+        if (scissorEnabled) {
             GL11.glEnable((int)3089);
         }
-        if (!bl2) {
+        if (!textureEnabled) {
             GlStateManager.disableTexture2D();
         }
     }
 
     @Override
-    public void y(ResourceLocation resourceLocation) {
-        this.E(resourceLocation);
+    public void captureTexture(ResourceLocation texture) {
+        this.captureTextureInternal(texture);
     }
 
     @Override
-    public void g(float f, float f2, int n, int n2, Color color, float f3) {
+    public void render(float x, float y, int width, int height, Color color, float cornerRadius) {
         GL11.glEnable((int)2903);
-        boolean bl = GL11.glIsEnabled((int)3553);
-        boolean bl2 = GL11.glIsEnabled((int)2896);
-        boolean bl3 = GL11.glIsEnabled((int)3008);
-        boolean bl4 = GL11.glIsEnabled((int)3042);
-        if (!bl) {
+        boolean textureEnabled = GL11.glIsEnabled((int)3553);
+        boolean lightingEnabled = GL11.glIsEnabled((int)2896);
+        boolean alphaTestEnabled = GL11.glIsEnabled((int)3008);
+        boolean blendEnabled = GL11.glIsEnabled((int)3042);
+        if (!textureEnabled) {
             GlStateManager.enableTexture2D();
         }
-        if (bl2) {
+        if (lightingEnabled) {
             GlStateManager.disableLighting();
         }
-        if (bl2) {
+        if (lightingEnabled) {
             GlStateManager.disableLighting();
         }
-        if (!bl3) {
+        if (!alphaTestEnabled) {
             GlStateManager.enableAlpha();
         }
-        if (!bl4) {
+        if (!blendEnabled) {
             GlStateManager.enableBlend();
         }
-        int n3 = GL11.glGetInteger((int)32873);
-        this.b.S();
+        int previousTextureId = GL11.glGetInteger((int)32873);
+        this.framebuffer.bindColorTexture();
         RenderUtils.w(color);
-        GuiRenderPrimitives.a(f, f2, n, n2, f3, 1.0f);
-        this.b.M();
-        GlStateManager.bindTexture(n3);
-        if (!bl) {
+        GuiRenderPrimitives.a(x, y, width, height, cornerRadius, 1.0f);
+        this.framebuffer.restorePreviousTexture();
+        GlStateManager.bindTexture(previousTextureId);
+        if (!textureEnabled) {
             GlStateManager.disableTexture2D();
         }
-        if (bl2) {
+        if (lightingEnabled) {
             GlStateManager.enableLighting();
         }
-        if (bl3) {
+        if (alphaTestEnabled) {
             GlStateManager.enableAlpha();
         }
-        if (bl4) {
+        if (blendEnabled) {
             GlStateManager.enableBlend();
         }
     }
 
     @Override
-    public void y(EntityLivingBase entityLivingBase) {
-        ResourceLocation resourceLocation = EntityModelRenderCache.M();
-        if (entityLivingBase != null) {
-            if (entityLivingBase.isInstance(MappedClasses.zt)) {
-                AbstractClientPlayer abstractClientPlayer = new AbstractClientPlayer(entityLivingBase);
-                resourceLocation = abstractClientPlayer.O();
+    public void captureEntity(EntityLivingBase entity) {
+        ResourceLocation texture = EntityModelRenderCache.getDefaultSkinTexture();
+        if (entity != null) {
+            if (entity.isInstance(MappedClasses.zt)) {
+                AbstractClientPlayer clientPlayer = new AbstractClientPlayer(entity);
+                texture = clientPlayer.O();
             } else {
-                Render render = Minecraft.D().getEntityRenderObject(entityLivingBase);
-                resourceLocation = render.getEntityTexture(entityLivingBase);
+                Render entityRenderer = Minecraft.D().getEntityRenderObject(entity);
+                texture = entityRenderer.getEntityTexture(entity);
             }
         }
-        this.E(resourceLocation);
+        this.captureTextureInternal(texture);
     }
 
 

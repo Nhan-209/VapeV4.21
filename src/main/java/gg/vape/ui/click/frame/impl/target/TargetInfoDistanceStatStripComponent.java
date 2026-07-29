@@ -7,14 +7,14 @@ import java.awt.Color;
 
 public class TargetInfoDistanceStatStripComponent
 extends TargetInfoStatStripComponent {
-    private int v = 0;
+    private int comparisonValue;
 
     public TargetInfoDistanceStatStripComponent() {
         super(16, 10);
     }
 
-    public void c(int n) {
-        this.v = n;
+    public void setComparisonValue(int comparisonValue) {
+        this.comparisonValue = comparisonValue;
     }
 
 
@@ -23,20 +23,20 @@ extends TargetInfoStatStripComponent {
         String string;
         super.H();
         Color color = new Color(255, 255, 255, 180);
-        String string2 = string = this.v >= 0 ? "+" + String.valueOf(this.v) : String.valueOf(this.v);
-        if (this.v >= 9) {
+        String string2 = string = this.comparisonValue >= 0 ? "+" + String.valueOf(this.comparisonValue) : String.valueOf(this.comparisonValue);
+        if (this.comparisonValue >= 9) {
             string = "9+";
-        } else if (this.v <= -9) {
+        } else if (this.comparisonValue <= -9) {
             string = "-9";
         }
-        if (this.v > 0) {
-            this.T(new Color(31, 124, 85));
-        } else if (this.v < 0) {
-            this.T(TargetInfoDistanceStatStripComponent.J.d);
+        if (this.comparisonValue > 0) {
+            this.setDisabledOverlayColor(new Color(31, 124, 85));
+        } else if (this.comparisonValue < 0) {
+            this.setDisabledOverlayColor(TargetInfoDistanceStatStripComponent.J.d);
         } else {
-            this.T(TargetInfoDistanceStatStripComponent.J.r);
+            this.setDisabledOverlayColor(TargetInfoDistanceStatStripComponent.J.r);
         }
-        Color color2 = this.O != null ? this.O.l(color) : color;
+        Color color2 = this.frame != null ? this.frame.applyDefaultEditorAlpha(color) : color;
         SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().K(0.9f, true);
         smoothFontRenderer.d(string, (double)((float)this.G$src$D$1b2f02a()) + this.A() - smoothFontRenderer.N(string) - 5.0, (float)this.n() + 1.0f, color2);
     }

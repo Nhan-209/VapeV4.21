@@ -6,24 +6,24 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class OnlinePlayerPreviewRenderContext
 extends OffscreenRenderContext {
-    private boolean k = false;
+    private boolean levelView;
 
     public OnlinePlayerPreviewRenderContext() {
         super(true);
     }
 
     @Override
-    public void b() {
+    public void renderOffscreenFrame() {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        this.S(entityPlayerSP);
-        this.i = entityPlayerSP.J() + 180.0f;
-        this.K = this.k ? 0.0f : -entityPlayerSP.V();
-        super.b();
+        this.captureInterpolatedCameraPosition(entityPlayerSP);
+        this.cameraYaw = entityPlayerSP.J() + 180.0f;
+        this.cameraPitch = this.levelView ? 0.0f : -entityPlayerSP.V();
+        super.renderOffscreenFrame();
     }
 
 
-    public void d(boolean bl) {
-        this.k = bl;
+    public void setLevelView(boolean levelView) {
+        this.levelView = levelView;
     }
 }
 

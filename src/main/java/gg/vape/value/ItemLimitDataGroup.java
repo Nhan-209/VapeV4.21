@@ -6,25 +6,28 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ItemLimitDataGroup {
-    private boolean Y = false;
-    private final List<ItemLimitData> U;
+    private boolean expanded = false;
+    private final List<ItemLimitData> entries;
 
-    public boolean O() {
-        return this.Y;
+    public boolean isExpanded() {
+        return this.expanded;
     }
 
-    public void s(boolean bl) {
-        this.Y = bl;
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
     }
 
-    public ItemLimitDataGroup(ItemLimitData ... itemLimitDataArray) {
-        this.Y = itemLimitDataArray.length > 4;
-        this.U = new ArrayList<ItemLimitData>(Arrays.asList(itemLimitDataArray));
+    public ItemLimitDataGroup(ItemLimitData ... entries) {
+        this.expanded = entries.length > 4;
+        this.entries = new ArrayList<ItemLimitData>(Arrays.asList(entries));
     }
 
-    public ItemLimitDataGroup(List<ItemLimitData> list) {
-        this.Y = list.size() > 4;
-        this.U = list;
+    public ItemLimitDataGroup(List<ItemLimitData> entries) {
+        this.expanded = entries.size() > 4;
+        this.entries = entries;
+    }
+
+    public List<ItemLimitData> getEntries() {
+        return this.entries;
     }
 }
-

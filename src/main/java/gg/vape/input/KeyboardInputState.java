@@ -6,63 +6,63 @@ import gg.vape.wrapper.impl.Minecraft;
 import java.util.HashMap;
 
 public class KeyboardInputState {
-    private int M;
-    private boolean P;
-    private long A;
-    private HashMap<Integer, Boolean> m = new HashMap();
-    private boolean f;
+    private int lastKey;
+    private boolean lastKeyDown;
+    private long lastChangeTime;
+    private HashMap<Integer, Boolean> keyStates = new HashMap();
+    private boolean canceled;
 
     public boolean isLastKeyDown() {
-        return this.P;
+        return this.lastKeyDown;
     }
 
     public long getLastChangeTime() {
-        return this.A;
+        return this.lastChangeTime;
     }
 
-    public boolean isKeyDown(int n) {
-        return this.m.getOrDefault(n, false);
+    public boolean isKeyDown(int keyCode) {
+        return this.keyStates.getOrDefault(keyCode, false);
     }
 
     public boolean isCanceled() {
-        return this.f;
+        return this.canceled;
     }
 
-    private void dispatchChange(int n, boolean bl) {
-        this.A = System.nanoTime();
-        this.P = bl;
-        this.M = n;
-        EventKeyPress eventKeyPress = new EventKeyPress(n, bl);
-        eventKeyPress.fire();
-        this.f = eventKeyPress.isCanceled();
-        if (!gg.vape.module.none.ClientSettings.fW.P) {
-            int n2 = ClientSettings.H(Minecraft.gameSettings().y$src$Lgg_vape_wrapper_impl_KeyBinding_$1hvjjoh());
-            if (n == n2) {
+    private void dispatchChange(int keyCode, boolean keyDown) {
+        this.lastChangeTime = System.nanoTime();
+        this.lastKeyDown = keyDown;
+        this.lastKey = keyCode;
+        EventKeyPress event = new EventKeyPress(keyCode, keyDown);
+        event.fire();
+        this.canceled = event.isCanceled();
+        if (!gg.vape.module.none.ClientSettings.INSTANCE.inputEnabled) {
+            int inventoryKeyCode = ClientSettings.H(Minecraft.gameSettings().y$src$Lgg_vape_wrapper_impl_KeyBinding_$1hvjjoh());
+            if (keyCode == inventoryKeyCode) {
                 return;
             }
-            this.f = true;
+            this.canceled = true;
         }
     }
 
     public int getLastKey() {
-        return this.M;
+        return this.lastKey;
     }
 
     public KeyboardInputState() {
-        this.A = System.nanoTime();
+        this.lastChangeTime = System.nanoTime();
     }
 
 
-    public void setKeyState(int n, boolean bl) {
-        boolean bl2 = this.m.getOrDefault(n, false);
-        if (bl2 != bl) {
-            this.dispatchChange(n, bl);
+    public void setKeyState(int keyCode, boolean keyDown) {
+        boolean previousState = this.keyStates.getOrDefault(keyCode, false);
+        if (previousState != keyDown) {
+            this.dispatchChange(keyCode, keyDown);
         }
-        this.m.put(n, bl);
+        this.keyStates.put(keyCode, keyDown);
     }
 
-    public void releaseKey(int n) {
-        this.m.put(n, false);
+    public void releaseKey(int keyCode) {
+        this.keyStates.put(keyCode, false);
     }
 }
 

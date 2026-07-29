@@ -7,72 +7,72 @@ import gg.vape.value.ToggleableListEntry;
 
 public class OptionalLimitEntry
 implements ToggleableListEntry {
-    private boolean X = true;
-    private String t;
-    private static GuiComponent[] i;
+    private boolean enabled = true;
+    private String value;
+    private static GuiComponent[] legacyComponents;
 
     @Override
-    public boolean q() {
-        return this.X;
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
     @Override
-    public void z() {
-        this.X = !this.X;
+    public void toggleEnabled() {
+        this.enabled = !this.enabled;
     }
 
 
-    public static void O(GuiComponent[] guiComponentArray) {
-        i = guiComponentArray;
+    public static void setLegacyComponents(GuiComponent[] components) {
+        legacyComponents = components;
     }
 
-    public boolean h() {
-        return this.X;
+    public boolean isEntryEnabled() {
+        return this.enabled;
     }
 
-    public OptionalLimitEntry(String string) {
-        this.t = string;
+    public OptionalLimitEntry(String value) {
+        this.value = value;
     }
 
-    public static GuiComponent[] L() {
-        return i;
+    public static GuiComponent[] getLegacyComponents() {
+        return legacyComponents;
     }
 
-    public void s(JsonObject jsonObject) {
+    public void loadJson(JsonObject jsonObject) {
         if (jsonObject.get("item-id") != null) {
-            this.t = jsonObject.get("item-id").getAsString();
-            if (this.t.startsWith("b64:")) {
-                this.t = Base64Util.decodeUtf8Base64(this.t.split(":")[1]);
+            this.value = jsonObject.get("item-id").getAsString();
+            if (this.value.startsWith("b64:")) {
+                this.value = Base64Util.decodeUtf8Base64(this.value.split(":")[1]);
             }
         }
         if (jsonObject.get("enabled") != null) {
-            this.X = jsonObject.get("enabled").getAsBoolean();
+            this.enabled = jsonObject.get("enabled").getAsBoolean();
         }
     }
 
-    public String r() {
-        return this.t;
+    public String getValue() {
+        return this.value;
     }
 
-    public JsonObject l() {
+    public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
-        String string = "b64:" + Base64Util.encodeUtf8Base64(this.t);
-        jsonObject.addProperty("item-id", string);
-        jsonObject.addProperty("enabled", Boolean.valueOf(this.X));
+        String encodedValue = "b64:" + Base64Util.encodeUtf8Base64(this.value);
+        jsonObject.addProperty("item-id", encodedValue);
+        jsonObject.addProperty("enabled", Boolean.valueOf(this.enabled));
         return jsonObject;
     }
 
     public String toString() {
-        return this.t;
+        return this.value;
     }
 
     static {
-        OptionalLimitEntry.O(new GuiComponent[3]);
+        OptionalLimitEntry.setLegacyComponents(new GuiComponent[3]);
     }
 
     @Override
-    public void x(boolean bl) {
-        this.X = bl;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
 

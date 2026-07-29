@@ -34,12 +34,12 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        GlImageTexture glImageTexture = RemoteImageTextureManager.e().r(this.O.I(), 32);
+        GlImageTexture glImageTexture = RemoteImageTextureManager.getInstance().getTexture(this.O.I(), 32);
         if (glImageTexture != null) {
             GuiRenderPrimitives.u((float)this.G$src$D$1b2f02a(), (float)this.n(), (float)this.A(), 1.0f, Color.WHITE, glImageTexture);
             PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
             if (partyState != null && partyState.r().equals(this.O)) {
-                ImageRenderer.E(Color.WHITE, (float)this.G$src$D$1b2f02a() + 1.5f, (float)this.n() - 4.5f, b, 3.0f, 3.0f, false);
+                ImageRenderer.drawImage(Color.WHITE, (float)this.G$src$D$1b2f02a() + 1.5f, (float)this.n() - 4.5f, b, 3.0f, 3.0f, false);
             }
         }
     }

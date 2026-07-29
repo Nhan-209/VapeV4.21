@@ -5,19 +5,7 @@ public enum AutoPearlState {
     ACQUIRING_AIMLOCK,
     PENDING_AIMJOB,
     PENDING_THROW,
-    PENDING_RESET;
-
-    private static final AutoPearlState[] VALUES;
-
-    static {
-        String[] stringArray = new String[]{"ACQUIRING_PEARL", "PENDING_RESET", "PENDING_THROW", "PENDING_AIMJOB", "ACQUIRING_AIMLOCK"};
-
-
-
-
-
-        VALUES = new AutoPearlState[]{ACQUIRING_PEARL, ACQUIRING_AIMLOCK, PENDING_AIMJOB, PENDING_THROW, PENDING_RESET};
-    }
+    PENDING_RESET
 
 }
 

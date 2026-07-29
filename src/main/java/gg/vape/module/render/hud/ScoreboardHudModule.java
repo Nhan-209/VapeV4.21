@@ -1,6 +1,5 @@
 package gg.vape.module.render.hud;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import gg.vape.event.impl.EventScoreboardScores;
@@ -31,19 +30,19 @@ import org.lwjgl.opengl.GL11;
 
 public class ScoreboardHudModule
 extends HudModule {
-    TimerUtil F = new TimerUtil();
-    public final BooleanValue t = BooleanValue.create(this, "Show score numbers", false);
-    public final StringMapValue c = (StringMapValue)StringMapValue.R(this, "Replace scoreboard text", "Find text", "Replace with").W(true);
-    ScoreObjective H = null;
+    private final TimerUtil objectiveTimer = new TimerUtil();
+    public final BooleanValue showScoreNumbers = BooleanValue.create(this, "Show score numbers", false);
+    public final StringMapValue textReplacements = (StringMapValue)StringMapValue.create(this, "Replace scoreboard text", "Find text", "Replace with").setBase64Encoded(true);
+    private ScoreObjective objective;
 
     @Override
     public void onEnable() {
         EventScoreboardScores.setLocked(true);
     }
 
-    public void Y(ScoreObjective scoreObjective) {
-        this.H = scoreObjective;
-        this.F.reset();
+    public void updateObjective(ScoreObjective objective) {
+        this.objective = objective;
+        this.objectiveTimer.reset();
     }
 
     @Override
@@ -52,155 +51,169 @@ extends HudModule {
     }
 
     public ScoreboardHudModule() {
-        super("Scoreboard", HudModuleGroup.f, "scoreboard", ScoreboardHudFrame.class);
-        this.addValue(this.t, this.c);
+        super("Scoreboard", HudModuleGroup.HUD, "scoreboard", ScoreboardHudFrame.class);
+        this.addValue(this.showScoreNumbers, this.textReplacements);
         this.setSuffix("Allows you to edit the Minecraft scoreboard");
     }
 
 
-    private String replaceScoreText(String string, String string2, String string3) {
-        String string4 = string2;
-        char[] cArray = string2.toCharArray();
-        String string5 = "";
-        for (int i = 0; i < cArray.length; ++i) {
-            char c = cArray[i];
-            if (c == '\u00a7') {
-                ++i;
+    private String replaceScoreText(String searchText, String formattedText, String replacement) {
+        String originalText = formattedText;
+        char[] formattedCharacters = formattedText.toCharArray();
+        StringBuilder visibleTextBuilder = new StringBuilder();
+        for (int index = 0; index < formattedCharacters.length; ++index) {
+            char character = formattedCharacters[index];
+            if (character == '\u00a7') {
+                ++index;
                 continue;
             }
-            if (Integer.valueOf(c) > 1000) continue;
-            string5 = string5 + String.valueOf(c);
+            if (character > 1000) {
+                continue;
+            }
+            visibleTextBuilder.append(character);
         }
-        string5 = string5.toLowerCase();
-        string2 = string2.toLowerCase();
-        if (string5.contains(string = string.toLowerCase())) {
-            int n;
-            char[] cArray2 = string.toCharArray();
-            char[] cArray3 = string2.toCharArray();
-            int n2 = 0;
-            int n3 = -1;
-            int n4 = -1;
-            int n5 = cArray2.length;
-            for (int i = 0; i < cArray3.length; ++i) {
-                if (n2 > cArray2.length - 1) continue;
-                n = cArray3[i];
-                if (n == cArray2[n2]) {
-                    if (n3 == -1) {
-                        n3 = i;
-                    }
-                    if (++n2 != n5) continue;
-                    n4 = i;
+        String visibleText = visibleTextBuilder.toString().toLowerCase();
+        String lowercaseFormattedText = formattedText.toLowerCase();
+        String lowercaseSearchText = searchText.toLowerCase();
+        if (visibleText.contains(lowercaseSearchText)) {
+            char[] searchCharacters = lowercaseSearchText.toCharArray();
+            char[] textCharacters = lowercaseFormattedText.toCharArray();
+            int matchedCharacters = 0;
+            int matchStart = -1;
+            int matchEnd = -1;
+            for (int index = 0; index < textCharacters.length; ++index) {
+                if (matchedCharacters > searchCharacters.length - 1) {
                     continue;
                 }
-                if (n3 == -1 || n != 167) continue;
-                ++i;
-            }
-            if (n3 != -1 && n4 != -1 && n4 > n3) {
-                String string6 = "";
-                for (n = 0; n < cArray3.length; ++n) {
-                    if (n < n3 || n > n4) {
-                        string6 = string6 + cArray3[n];
+                char character = textCharacters[index];
+                if (character == searchCharacters[matchedCharacters]) {
+                    if (matchStart == -1) {
+                        matchStart = index;
                     }
-                    if (n != n3) continue;
-                    string6 = string6 + string3;
+                    if (++matchedCharacters == searchCharacters.length) {
+                        matchEnd = index;
+                    }
+                    continue;
                 }
-                string4 = string6;
+                if (matchStart != -1 && character == '\u00a7') {
+                    ++index;
+                }
+            }
+            if (matchStart != -1 && matchEnd > matchStart) {
+                StringBuilder replacedText = new StringBuilder();
+                for (int index = 0; index < textCharacters.length; ++index) {
+                    if (index < matchStart || index > matchEnd) {
+                        replacedText.append(textCharacters[index]);
+                    }
+                    if (index == matchStart) {
+                        replacedText.append(replacement);
+                    }
+                }
+                return replacedText.toString();
             }
         }
-        return string4;
+        return originalText;
     }
 
-    public Vec3d K(double d, double d2, boolean bl) {
-        boolean bl2 = false;
+    public Vec3d renderScoreboard(double x, double y, boolean drawBackground) {
+        boolean gamePaused = false;
         if (Minecraft.i() != null) {
-            bl2 = Minecraft.V();
+            gamePaused = Minecraft.V();
         }
-        if (this.H == null) {
+        if (this.objective == null) {
             return new Vec3d(0.0, 0.0, 0.0);
         }
-        if (bl2 || this.F.hasTimeElapsed(10000L)) {
-            this.H = null;
+        if (gamePaused || this.objectiveTimer.hasTimeElapsed(10000L)) {
+            this.objective = null;
             return new Vec3d(0.0, 0.0, 0.0);
         }
-        boolean bl3 = GL11.glIsEnabled((int)3042);
-        if (bl3) {
+        boolean blendWasEnabled = GL11.glIsEnabled(3042);
+        if (blendWasEnabled) {
             GlStateManager.disableBlend();
         }
-        boolean bl4 = this.t.L();
+        boolean includeScoreNumbers = this.showScoreNumbers.getEffectiveValue();
         FontRenderer fontRenderer = Minecraft.getFontRenderer();
-        Scoreboard scoreboard = this.H.P();
+        Scoreboard scoreboard = this.objective.P();
         EventScoreboardScores.setLocked(false);
-        Collection<Score> arrayList = scoreboard.p(this.H);
+        Collection<Score> scores = scoreboard.p(this.objective);
         EventScoreboardScores.setLocked(true);
-        ArrayList<Score> arrayList2 = Lists.newArrayList(Iterables.filter(arrayList, new ScoreboardVisibleScorePredicate(this)));
-        arrayList = arrayList2.size() > 15 ? Lists.newArrayList(Iterables.skip(arrayList2, arrayList.size() - 15)) : arrayList2;
-        int n = fontRenderer.getStringWidth(this.H.h());
-        for (Score score : arrayList) {
-            ScorePlayerTeam scorePlayerTeam = scoreboard.l(score.P());
-            String string = ScorePlayerTeam.o(scorePlayerTeam, score.P()) + ":";
-            if (bl4) {
-                string = string + " \u00a7c" + score.j();
+        ArrayList<Score> visibleScores = Lists.newArrayList(
+                Iterables.filter(scores, new ScoreboardVisibleScorePredicate()));
+        scores = visibleScores.size() > 15
+                ? Lists.newArrayList(Iterables.skip(visibleScores, scores.size() - 15))
+                : visibleScores;
+        int scoreboardWidth = fontRenderer.getStringWidth(this.objective.h());
+        for (Score score : scores) {
+            ScorePlayerTeam team = scoreboard.l(score.P());
+            String scoreLine = ScorePlayerTeam.o(team, score.P()) + ":";
+            if (includeScoreNumbers) {
+                scoreLine += " \u00a7c" + score.j();
             }
-            n = Math.max(n, fontRenderer.getStringWidth(string));
+            scoreboardWidth = Math.max(scoreboardWidth, fontRenderer.getStringWidth(scoreLine));
         }
-        int n2 = arrayList.size() * fontRenderer.getFontHeight();
-        int n3 = (int)(d2 + (double)n2) + 8;
-        int n4 = 3;
-        int n5 = (int)d + 1;
-        int n6 = 0;
-        double d3 = n;
-        double d4 = 0.0;
-        Map<String, String> map = this.c.K();
-        for (Score score : arrayList) {
-            ++n6;
-            ScorePlayerTeam scorePlayerTeam = scoreboard.l(score.P());
-            String string = ScorePlayerTeam.o(scorePlayerTeam, score.P());
-            for (String string2 : map.keySet()) {
-                String string3 = map.get(string2);
-                string = this.replaceScoreText(string2, string, string3);
+        int contentHeight = scores.size() * fontRenderer.getFontHeight();
+        int bottom = (int)(y + contentHeight) + 8;
+        int left = (int)x + 1;
+        int rowIndex = 0;
+        double renderedHeight = 0.0;
+        Map<String, String> replacements = this.textReplacements.getValue();
+        for (Score score : scores) {
+            ++rowIndex;
+            ScorePlayerTeam team = scoreboard.l(score.P());
+            String playerName = ScorePlayerTeam.o(team, score.P());
+            for (Map.Entry<String, String> replacement : replacements.entrySet()) {
+                playerName = this.replaceScoreText(
+                        replacement.getKey(), playerName, replacement.getValue());
             }
-            String string4 = "\u00a7c" + score.j();
-            int n7 = n3 - n6 * fontRenderer.getFontHeight();
-            if (bl) {
-                float f = n5 - 2;
-                float f2 = n7;
-                float f3 = (float)((double)n5 + d3);
-                float f4 = n7 + fontRenderer.getFontHeight();
-                float f5 = f3 - f;
-                float f6 = f4 - f2;
-                GuiRenderPrimitives.y(f, f2, f5, f6, new Color(0x50000000, true));
+            String scoreText = "\u00a7c" + score.j();
+            int rowY = bottom - rowIndex * fontRenderer.getFontHeight();
+            if (drawBackground) {
+                float backgroundX = left - 2;
+                float backgroundY = rowY;
+                float backgroundWidth = (float)(left + scoreboardWidth) - backgroundX;
+                float backgroundHeight = fontRenderer.getFontHeight();
+                GuiRenderPrimitives.y(backgroundX, backgroundY, backgroundWidth,
+                        backgroundHeight, new Color(0x50000000, true));
             }
-            d4 += (double)fontRenderer.getFontHeight();
+            renderedHeight += fontRenderer.getFontHeight();
             if (ForgeVersion.MC_1_16_5.d()) {
-                fontRenderer.J(MatrixStack.A(), new TextComponent(scorePlayerTeam, score.P()), n5, n7, -1);
+                fontRenderer.J(MatrixStack.A(), new TextComponent(team, score.P()), left, rowY, -1);
             } else {
-                fontRenderer.drawString(string, (double)n5, (double)n7, 0x20FFFFFF);
+                fontRenderer.drawString(playerName, left, rowY, 0x20FFFFFF);
             }
-            if (bl4) {
-                fontRenderer.drawString(string4, (double)n5 + d3 - (double)fontRenderer.getStringWidth(string4), (double)n7, 3648127);
+            if (includeScoreNumbers) {
+                fontRenderer.drawString(scoreText,
+                        left + scoreboardWidth - fontRenderer.getStringWidth(scoreText), rowY, 3648127);
             }
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-            if (n6 == arrayList.size()) {
-                String string5 = this.H.h();
-                for (String string6 : map.keySet()) {
-                    String string7 = map.get(string6);
-                    string5 = this.replaceScoreText(string6, string5, string7);
+            if (rowIndex == scores.size()) {
+                String title = this.objective.h();
+                for (Map.Entry<String, String> replacement : replacements.entrySet()) {
+                    title = this.replaceScoreText(
+                            replacement.getKey(), title, replacement.getValue());
                 }
-                if (bl) {
-                    GuiRenderPrimitives.C(n5 - 2, n7 - fontRenderer.getFontHeight() - 1, d3 + 2.0, fontRenderer.getFontHeight(), new Color(0x60000000, true));
-                    GuiRenderPrimitives.C(n5 - 2, n7 - 1, d3 + 2.0, 1.0, new Color(0x50000000, true));
+                if (drawBackground) {
+                    GuiRenderPrimitives.C(left - 2, rowY - fontRenderer.getFontHeight() - 1,
+                            scoreboardWidth + 2.0, fontRenderer.getFontHeight(),
+                            new Color(0x60000000, true));
+                    GuiRenderPrimitives.C(left - 2, rowY - 1, scoreboardWidth + 2.0, 1.0,
+                            new Color(0x50000000, true));
                 }
                 if (ForgeVersion.MC_1_16_5.d()) {
-                    fontRenderer.J(MatrixStack.A(), this.H.i(), n5 + n / 2 - fontRenderer.getStringWidth(string5) / 2, n7 - fontRenderer.getFontHeight(), -1);
+                    fontRenderer.J(MatrixStack.A(), this.objective.i(),
+                            left + scoreboardWidth / 2 - fontRenderer.getStringWidth(title) / 2,
+                            rowY - fontRenderer.getFontHeight(), -1);
                 } else {
-                    fontRenderer.drawString(string5, (double)(n5 + n / 2 - fontRenderer.getStringWidth(string5) / 2), (double)(n7 - fontRenderer.getFontHeight()), 0x20FFFFFF);
+                    fontRenderer.drawString(title,
+                            left + scoreboardWidth / 2 - fontRenderer.getStringWidth(title) / 2,
+                            rowY - fontRenderer.getFontHeight(), 0x20FFFFFF);
                 }
             }
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
         }
-        if (bl3) {
+        if (blendWasEnabled) {
             GlStateManager.enableBlend();
         }
-        return new Vec3d(d3, d4 + 5.0, 0.0);
+        return new Vec3d(scoreboardWidth, renderedHeight + 5.0, 0.0);
     }
 }

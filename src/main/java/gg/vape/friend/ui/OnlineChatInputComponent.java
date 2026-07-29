@@ -29,8 +29,8 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public float g() {
-        return super.g();
+    public float getRightInset() {
+        return super.getRightInset();
     }
 
     @Override
@@ -43,10 +43,10 @@ extends TextInputComponentBase {
     public void c() {
         super.c();
         GuiRenderPrimitives.L(this.G$src$D$1b2f02a(), this.n() + 1.0, this.A(), OnlineChatInputComponent.J.l);
-        if (this.n$src$Z$1rnxqrn()) {
-            this.I(OnlineChatInputComponent.J.A);
+        if (this.isFocused()) {
+            this.setTextColor(OnlineChatInputComponent.J.A);
         } else {
-            this.I(new Color(255, 255, 255, 102));
+            this.setTextColor(new Color(255, 255, 255, 102));
         }
     }
 
@@ -59,35 +59,34 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public void j(boolean bl) {
-        super.j(bl);
-        this.b(bl ? "Type message..." : "User is offline");
-        this.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().Z(bl);
+    public void setInputEnabled(boolean inputEnabled) {
+        super.setInputEnabled(inputEnabled);
+        this.setPlaceholderText(inputEnabled ? "Type message..." : "User is offline");
+        this.getActionButton().setVisible(inputEnabled);
     }
 
     @Override
-    public void p() {
-        String string = this.i$src$Ljava_lang_String_$1n2xf3k();
+    public void submit() {
+        String string = this.getText();
         if (string.isEmpty()) {
             return;
         }
-        this.k("");
+        this.setText("");
         this.oI.W(string, OnlineChatInputComponent::lambda$onEnter$0);
     }
 
     @Override
-    public float y() {
+    public float getLeftInset() {
         return 0.0f;
     }
 
     public OnlineChatInputComponent(OnlineChatPanel onlineChatPanel, OnlineChatSender onlineChatSender) {
         super("Type message...");
-        this.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().W("newnext");
-        this.e(false);
+        this.getActionButton().setIconResource("newnext");
+        this.setBackgroundVisible(false);
         this.ow = onlineChatPanel;
         this.oI = onlineChatSender;
-        this.n(255);
-        this.t(OnlineChatInputComponent.J.B);
+        this.setMaxLength(255);
+        this.setActionButtonColor(OnlineChatInputComponent.J.B);
     }
 }
-

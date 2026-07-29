@@ -20,70 +20,64 @@ import java.awt.Color;
 
 public class HudModuleListEntry
 extends GuiComponent {
-    private float CH;
-    private HudModule o;
-    private float Q;
-    private ColorAnimation I;
-    protected Color Co;
-    private String R;
-    private float CJ;
-    private float C1;
-    private ThemeColorAnimation G;
-    private Frame a;
-    protected Color i;
-    private IconButtonComponent b;
-    private Color v;
-    private boolean K;
-    private String CN;
-    private boolean CS;
-    private float Cx;
-    private static int[] Cz;
-    private DoubleAnimation O;
-
-    public static int[] a$src$AI$dby6px() {
-        return Cz;
-    }
+    private final float iconScale;
+    private final HudModule module;
+    private final float toggleDotSize;
+    private final ColorAnimation inactiveColorAnimation;
+    private final String moduleName;
+    private final float toggleInset;
+    private final float toggleWidth;
+    private final ThemeColorAnimation activeColorAnimation;
+    private Frame configFrame;
+    private final IconButtonComponent settingsButton;
+    private final Color toggleDotColor;
+    private boolean hovered;
+    private final String iconKey;
+    private boolean enabled;
+    private final float toggleHeight;
+    private final DoubleAnimation togglePositionAnimation;
 
     @Override
     public void F() {
-        this.K = true;
+        this.hovered = true;
     }
 
-    public boolean r$src$Z$1suh9lm() {
-        return this.O.I$src$Z$c48gtw();
+    public boolean isAnimationShowingEnabled() {
+        return this.togglePositionAnimation.I$src$Z$c48gtw();
     }
 
     @Override
     public void I() {
     }
 
-    protected void Y$src$V$1sgqeo5() {
-        if (this.o.r$src$Z$14eylz9() != this.CS || this.CS != this.r$src$Z$1suh9lm() && !this.y$src$Z$1sybtr5()) {
-            this.h();
+    protected void syncEnabledState() {
+        if (this.module.r$src$Z$14eylz9() != this.enabled || this.enabled != this.isAnimationShowingEnabled() && !this.isToggleAnimating()) {
+            this.toggleModule();
         }
     }
 
 
-    public void h() {
-        if (this.CS == this.r$src$Z$1suh9lm()) {
-            this.CS = !this.CS;
-            this.G.J();
-            this.O.J();
-            this.O$src$V$1sb8gqj();
-            if (this.o.r$src$Z$14eylz9() != this.CS) {
-                this.o.Y(this.CS);
+    public void toggleModule() {
+        if (this.enabled == this.isAnimationShowingEnabled()) {
+            this.enabled = !this.enabled;
+            this.activeColorAnimation.J();
+            this.togglePositionAnimation.J();
+            this.applyConfigFrameState();
+            if (this.module.r$src$Z$14eylz9() != this.enabled) {
+                this.module.Y(this.enabled);
             }
-        } else if (this.CS) {
-            this.G.C();
-            this.O.C();
+        } else if (this.enabled) {
+            this.activeColorAnimation.C();
+            this.togglePositionAnimation.C();
         } else {
-            this.G.O();
-            this.O.O();
+            this.activeColorAnimation.O();
+            this.togglePositionAnimation.O();
         }
     }
 
-    public boolean y$src$Z$1sybtr5() {
-        return !this.O.getInterpolatedValue().equals(this.O.getStartValue()) && !this.O.getInterpolatedValue().equals(this.O.getEndValue());
+    public boolean isToggleAnimating() {
+        return !this.togglePositionAnimation.getInterpolatedValue().equals(this.togglePositionAnimation.getStartValue())
+                && !this.togglePositionAnimation.getInterpolatedValue().equals(this.togglePositionAnimation.getEndValue());
     }
 
     public HudModuleListEntry(HudModule hudModule) {
@@ -95,72 +89,64 @@ extends GuiComponent {
         return 84.5;
     }
 
-    public HudModule l$src$Lgg_vape_module_render_hud_HudModule_$jeyvjw() {
-        return this.o;
+    public HudModule getModule() {
+        return this.module;
     }
 
-    private void a$src$V$1sl4rf1() {
-        SmoothFontRenderer smoothFontRenderer = this.O(0.9);
-        double d = smoothFontRenderer.d(this.R);
-        double d2 = this.n() + (this.L() - 15.0) - d / 2.0;
-        Color color = this.CS ? Color.WHITE : HudModuleListEntry.J.Z;
-        smoothFontRenderer.d(this.R, this.G$src$D$1b2f02a() + 10.0, d2, color);
+    private void renderModuleName() {
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.9);
+        double textHeight = smoothFontRenderer.d(this.moduleName);
+        double textY = this.n() + (this.L() - 15.0) - textHeight / 2.0;
+        Color color = this.enabled ? Color.WHITE : HudModuleListEntry.J.Z;
+        smoothFontRenderer.d(this.moduleName, this.G$src$D$1b2f02a() + 10.0, textY, color);
     }
 
-    public void O$src$V$1sb8gqj() {
-        if (this.a == null) {
+    public void applyConfigFrameState() {
+        if (this.configFrame == null) {
             return;
         }
-        this.a.Z(this.CS);
-        this.a.c(true);
-        if (HudModuleConfigFrameBase.h$src$Z$1tlh1co()) {
-            this.a.U();
+        this.configFrame.setVisible(this.enabled);
+        this.configFrame.c(true);
+        if (HudModuleConfigFrameBase.isHudEditorContext()) {
+            this.configFrame.U();
         }
-        double d = Minecraft.J();
-        double d2 = Minecraft.h();
-        if (this.a.n() > d2 || this.a.n() < 0.0) {
-            this.a.S(d2 / 2.0);
+        double screenWidth = Minecraft.J();
+        double screenHeight = Minecraft.h();
+        if (this.configFrame.n() > screenHeight || this.configFrame.n() < 0.0) {
+            this.configFrame.S(screenHeight / 2.0);
         }
-        if (this.a.G$src$D$1b2f02a() > d || this.a.G$src$D$1b2f02a() < 0.0) {
-            this.a.K(d / 2.0);
+        if (this.configFrame.G$src$D$1b2f02a() > screenWidth || this.configFrame.G$src$D$1b2f02a() < 0.0) {
+            this.configFrame.K(screenWidth / 2.0);
         }
-        if (this.a instanceof HudModuleConfigFrameBase) {
-            HudModuleConfigFrameBase hudModuleConfigFrameBase = (HudModuleConfigFrameBase)this.a;
-            hudModuleConfigFrameBase.w$src$V$1ttpy5n();
-            hudModuleConfigFrameBase.Z$src$Lgg_vape_ui_click_frame_impl_hud_AnchoredHudModu$1jkbe02().Z(false);
+        if (this.configFrame instanceof HudModuleConfigFrameBase) {
+            HudModuleConfigFrameBase hudModuleConfigFrameBase = (HudModuleConfigFrameBase)this.configFrame;
+            hudModuleConfigFrameBase.closeAllHudSettings();
+            hudModuleConfigFrameBase.getAnchoredSettingsFrame().setVisible(false);
         }
     }
 
-    static {
-        HudModuleListEntry.X(null);
-    }
-
-    public static void X(int[] nArray) {
-        Cz = nArray;
-    }
-
-    private void D$src$V$1s56q7k() {
+    private void renderToggle() {
         Color color;
-        double d = this.G$src$D$1b2f02a() + this.A() - (double)(this.C1 * 2.0f) - 17.5;
-        double d2 = this.n() + 10.0 - 3.0;
-        Color color2 = color = this.G.q() > 0.0 ? this.G.getInterpolatedColor() : this.I.getInterpolatedColor();
-        if (this.K && this.G.q() > 0.0) {
-            color = ColorUtil.N(color, 30.0);
+        double toggleX = this.G$src$D$1b2f02a() + this.A() - (double)(this.toggleWidth * 2.0f) - 17.5;
+        double toggleY = this.n() + 10.0 - 3.0;
+        color = this.activeColorAnimation.q() > 0.0 ? this.activeColorAnimation.getInterpolatedColor() : this.inactiveColorAnimation.getInterpolatedColor();
+        if (this.hovered && this.activeColorAnimation.q() > 0.0) {
+            color = ColorUtil.offsetRgb(color, 30.0);
         }
-        ImageRenderer.E(color, (float)d, (float)d2, "togglebg", this.C1, this.Cx, false);
-        ImageRenderer.E(this.v, (float)d + this.CJ + (float)this.O.getInterpolatedValue().doubleValue(), (float)d2 + this.CJ, "toggledot", this.Q, this.Q, false);
+        ImageRenderer.drawImage(color, (float)toggleX, (float)toggleY, "togglebg", this.toggleWidth, this.toggleHeight, false);
+        ImageRenderer.drawImage(this.toggleDotColor, (float)toggleX + this.toggleInset + (float)this.togglePositionAnimation.getInterpolatedValue().doubleValue(), (float)toggleY + this.toggleInset, "toggledot", this.toggleDotSize, this.toggleDotSize, false);
     }
 
     @Override
     public void u() {
-        if (this.K && !this.w$src$Z$e457mb()) {
-            this.K = false;
+        if (this.hovered && !this.w$src$Z$e457mb()) {
+            this.hovered = false;
         }
-        this.Y$src$V$1sgqeo5();
+        this.syncEnabledState();
     }
 
-    public HudModuleListEntry U(Frame frame) {
-        this.a = frame;
+    public HudModuleListEntry setConfigFrame(Frame frame) {
+        this.configFrame = frame;
         return this;
     }
 
@@ -170,48 +156,42 @@ extends GuiComponent {
     }
 
     public HudModuleListEntry(HudModule hudModule, float f) {
-        this.i = HudModuleListEntry.J.Z;
-        this.Co = HudModuleListEntry.J.h;
-        this.b = new IconButtonComponent("settingdots", 0.8);
-        this.C1 = 6.0f;
-        this.Cx = 6.0f;
-        this.Q = 4.0f;
-        this.CJ = 1.0f;
-        this.I = new ColorAnimation(0.15, HudModuleListEntry.J.K, HudModuleListEntry.J.W);
-        this.G = new ThemeColorAnimation(0.15, HudModuleListEntry.J.W);
-        this.O = new DoubleAnimation(0.15, 0.0, this.C1 - this.CJ);
-        this.v = HudModuleListEntry.J.r;
-        this.a = null;
-        this.o = hudModule;
-        this.R = hudModule.getName();
-        this.CN = hudModule.s$src$Ljava_lang_String_$pdppcm();
-        this.CS = hudModule.r$src$Z$14eylz9();
-        this.CH = f;
+        this.settingsButton = new IconButtonComponent("settingdots", 0.8);
+        this.toggleWidth = 6.0f;
+        this.toggleHeight = 6.0f;
+        this.toggleDotSize = 4.0f;
+        this.toggleInset = 1.0f;
+        this.inactiveColorAnimation = new ColorAnimation(0.15, HudModuleListEntry.J.K, HudModuleListEntry.J.W);
+        this.activeColorAnimation = new ThemeColorAnimation(0.15, HudModuleListEntry.J.W);
+        this.togglePositionAnimation = new DoubleAnimation(0.15, 0.0, this.toggleWidth - this.toggleInset);
+        this.toggleDotColor = HudModuleListEntry.J.r;
+        this.module = hudModule;
+        this.moduleName = hudModule.getName();
+        this.iconKey = hudModule.getKey();
+        this.enabled = hudModule.r$src$Z$14eylz9();
+        this.iconScale = f;
         if (hudModule.n() != null) {
             this.w(hudModule.n());
         }
-        this.b.r(new HudModuleListEntryToggleClickListener(this, hudModule));
-        this.H(this.b);
+        this.settingsButton.addClickListener(new HudModuleListEntryToggleClickListener(this, hudModule));
+        this.addChildren(this.settingsButton);
     }
 
     @Override
     public void H() {
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 2.0, this.n(), this.A() - 3.0, this.L() - 3.0, this.K || this.CS ? HudModuleListEntry.J.l : HudModuleListEntry.J.m);
-        GuiRenderPrimitives.F(this.CN, this.G$src$D$1b2f02a() + 10.0 + 3.0, this.n() + 10.0, (double)(8.0f * this.CH), 8.0f * this.CH, this.CS ? J.z() : (this.K ? HudModuleListEntry.J.f : HudModuleListEntry.J.W));
-        this.b.K(this.G$src$D$1b2f02a() + this.A() - 15.0);
-        this.b.S(this.n() + 10.0 - 4.5);
-        this.b.Y(9.0);
-        if (this.o.j$src$Ljava_lang_Class_$wxgaiy() != null) {
-            // empty if block
-        }
-        this.D$src$V$1s56q7k();
-        this.a$src$V$1sl4rf1();
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 2.0, this.n(), this.A() - 3.0, this.L() - 3.0, this.hovered || this.enabled ? HudModuleListEntry.J.l : HudModuleListEntry.J.m);
+        GuiRenderPrimitives.F(this.iconKey, this.G$src$D$1b2f02a() + 10.0 + 3.0, this.n() + 10.0, (double)(8.0f * this.iconScale), 8.0f * this.iconScale, this.enabled ? J.z() : (this.hovered ? HudModuleListEntry.J.f : HudModuleListEntry.J.W));
+        this.settingsButton.K(this.G$src$D$1b2f02a() + this.A() - 15.0);
+        this.settingsButton.S(this.n() + 10.0 - 4.5);
+        this.settingsButton.Y(9.0);
+        this.renderToggle();
+        this.renderModuleName();
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
         if (guiMouseEvent.getAction().equals((Object)MouseButton.LEFT_CLICK)) {
-            this.h();
+            this.toggleModule();
         }
     }
 
@@ -220,8 +200,8 @@ extends GuiComponent {
         super.c();
     }
 
-    public static IconButtonComponent x(HudModuleListEntry hudModuleListEntry) {
-        return hudModuleListEntry.b;
+    public IconButtonComponent getSettingsButton() {
+        return this.settingsButton;
     }
 }
 

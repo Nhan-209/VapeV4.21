@@ -12,7 +12,6 @@ implements INamed {
     IS_NOT_IN("is not in");
 
     private final String label;
-    private static final MembershipMode[] k;
     public static final @UnmodifiableView List<MembershipMode> VALUES;
 
     public boolean matchesAny(String string, List<String> list) {
@@ -23,7 +22,7 @@ implements INamed {
         return false;
     }
 
-    public static MembershipMode N(String string) {
+    public static MembershipMode fromName(String string) {
         return MembershipMode.fromNameOrDefault(string, IS_IN);
     }
 
@@ -52,20 +51,16 @@ implements INamed {
     }
 
     public static MembershipMode fromNameOrDefault(String string, MembershipMode membershipMode) {
-        MembershipMode membershipMode2 = MembershipMode.fromName(string);
+        MembershipMode membershipMode2 = MembershipMode.findByName(string);
         return membershipMode2 == null ? membershipMode : membershipMode2;
     }
 
     static {
-        String[] stringArray = new String[]{"is in", "IS_IN", "is not in", "IS_NOT_IN"};
-
-
-        k = new MembershipMode[]{IS_IN, IS_NOT_IN};
         VALUES = Arrays.asList(MembershipMode.values());
     }
 
     @Nullable
-    public static MembershipMode fromName(String string) {
+    public static MembershipMode findByName(String string) {
         for (MembershipMode membershipMode : VALUES) {
             if (!membershipMode.getName().equalsIgnoreCase(string)) continue;
             return membershipMode;

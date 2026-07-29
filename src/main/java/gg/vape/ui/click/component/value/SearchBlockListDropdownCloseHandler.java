@@ -6,17 +6,16 @@ import gg.vape.ui.click.component.value.SearchBlockListDropdownLayer;
 
 class SearchBlockListDropdownCloseHandler
 implements GuiClickListener {
-    final SearchBlockListDropdownLayer V;
-    final SearchBlockListComponent C;
+    final SearchBlockListDropdownLayer dropdownLayer;
+    final SearchBlockListComponent component;
 
     SearchBlockListDropdownCloseHandler(SearchBlockListDropdownLayer searchBlockListDropdownLayer, SearchBlockListComponent searchBlockListComponent) {
-        this.V = searchBlockListDropdownLayer;
-        this.C = searchBlockListComponent;
+        this.dropdownLayer = searchBlockListDropdownLayer;
+        this.component = searchBlockListComponent;
     }
 
     @Override
-    public void P() {
-        this.C.a(false);
+    public void onPrimaryClick() {
+        this.component.setExpanded(false);
     }
 }
-

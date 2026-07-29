@@ -10,18 +10,18 @@ import gg.vape.render.ShaderGroupRenderStateManager;
 public class InventoryBlurHudModule
 extends HudModule {
     public InventoryBlurHudModule() {
-        super("Inventory Blur", HudModuleGroup.T, "inventory_blur");
+        super("Inventory Blur", HudModuleGroup.GAME, "inventory_blur");
         this.setSuffix("Blurs the background while in an inventory");
     }
 
 
     @EventHandler
-    public void d(EventGuiOpen eventGuiOpen) {
-        if (eventGuiOpen.getGuiScreen().isNull() || eventGuiOpen.getGuiScreen().isInstance(MappedClasses.qo) || eventGuiOpen.getGuiScreen().isInstance(MappedClasses.Fl) || MappedClasses.zL != null && eventGuiOpen.getGuiScreen().isInstance(MappedClasses.zL)) {
-            ShaderGroupRenderStateManager.Q().f();
+    public void onGuiOpen(EventGuiOpen event) {
+        if (event.getGuiScreen().isNull() || event.getGuiScreen().isInstance(MappedClasses.qo) || event.getGuiScreen().isInstance(MappedClasses.Fl) || MappedClasses.zL != null && event.getGuiScreen().isInstance(MappedClasses.zL)) {
+            ShaderGroupRenderStateManager.getInstance().disable();
             return;
         }
-        ShaderGroupRenderStateManager.Q().K();
+        ShaderGroupRenderStateManager.getInstance().enable();
     }
 }
 

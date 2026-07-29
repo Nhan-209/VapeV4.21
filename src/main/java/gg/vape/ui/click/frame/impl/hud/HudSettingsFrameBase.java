@@ -20,263 +20,266 @@ import java.util.List;
 public abstract class HudSettingsFrameBase
 extends HudModuleFrameBase
 implements CollapsibleFrame {
-    private static final String qb = "wrap";
-    private boolean TJ = true;
-    List<GuiComponent> Tj = new ArrayList<GuiComponent>();
-    private boolean T3 = false;
+    private static final String WRAP_LAYOUT = "wrap";
+    private boolean collapsed = true;
+    private final List<GuiComponent> settingComponents = new ArrayList<GuiComponent>();
+    private boolean headerHiddenForHudMode;
 
     @Override
     public boolean q() {
-        return this.TJ;
+        return this.collapsed;
     }
 
     @Override
-    public double v$src$D$1l3l1d1() {
-        return super.v$src$D$1l3l1d1() - 1.0;
+    public double getMaximumY() {
+        return super.getMaximumY() - 1.0;
     }
 
-    private void wr() {
-        boolean bl = this.N$src$Z$1ad1ggw() && !this.L$src$Z$1v7qi9z();
-        this.P(bl);
-        this.W(bl);
+    private void updateInteractionState() {
+        boolean interactive = this.isManagedByClickGui() && !this.isPublicProfilePreview();
+        this.setUseExplicitWidth(interactive);
+        this.setUseExplicitHeight(interactive);
     }
 
-    public List<GuiComponent> x$src$Ljava_util_List_$vc8bfc() {
-        return this.Tj;
+    public List<GuiComponent> getSettingComponents() {
+        return this.settingComponents;
     }
 
     @Override
-    protected void k() {
-        AnchoredHudModuleConfigFrame<AnimatedIconButtonComponent> anchoredHudModuleConfigFrame = this.r$src$Lgg_vape_ui_click_frame_impl_hud_AnchoredHudModu$9c1t7s();
-        this.w8();
-        anchoredHudModuleConfigFrame.S();
-        for (GuiComponent guiComponent : this.x$src$Ljava_util_List_$vc8bfc()) {
-            if (guiComponent.r$src$Lgg_vape_value_Value_$fdf20y() == null) continue;
-            this.I(guiComponent);
-            guiComponent.Z(true);
+    protected void openAnchoredSettings() {
+        AnchoredHudModuleConfigFrame<AnimatedIconButtonComponent> anchoredHudModuleConfigFrame = this.getAnchoredSettingsFrameInternal();
+        this.restoreSettingComponents();
+        anchoredHudModuleConfigFrame.removeMarkedChildren();
+        for (GuiComponent guiComponent : this.getSettingComponents()) {
+            if (guiComponent.getBoundValue() == null) continue;
+            this.removeChild(guiComponent);
+            guiComponent.setVisible(true);
             anchoredHudModuleConfigFrame.h(guiComponent, new Object[0]);
         }
-        anchoredHudModuleConfigFrame.Z(true);
+        anchoredHudModuleConfigFrame.setVisible(true);
         anchoredHudModuleConfigFrame.t(170.0);
         anchoredHudModuleConfigFrame.H(true);
-        if (!ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().Y().contains(anchoredHudModuleConfigFrame)) {
-            ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().q(anchoredHudModuleConfigFrame);
+        if (!ClientSettings.INSTANCE.getActiveStack().Y().contains(anchoredHudModuleConfigFrame)) {
+            ClientSettings.INSTANCE.getActiveStack().q(anchoredHudModuleConfigFrame);
         }
     }
 
     @Override
     public void w() {
-        this.TJ = !this.TJ;
-        this.w2();
+        this.collapsed = !this.collapsed;
+        this.updateSettingVisibility();
     }
 
 
-    public void M(GuiComponent ... guiComponentArray) {
-        Collections.addAll(this.x$src$Ljava_util_List_$vc8bfc(), guiComponentArray);
-        this.H(guiComponentArray);
-        this.w2();
+    public void addSettings(GuiComponent ... guiComponentArray) {
+        Collections.addAll(this.getSettingComponents(), guiComponentArray);
+        this.addChildren(guiComponentArray);
+        this.updateSettingVisibility();
     }
 
     @Override
-    public double U$src$D$muzvq3() {
-        double d = super.U$src$D$muzvq3();
+    public double getComponentHeight() {
+        double totalHeight = super.getComponentHeight();
         if (this.q()) {
-            return d;
+            return totalHeight;
         }
-        double d2 = 0.0;
+        double excludedHeight = 0.0;
         for (GuiComponent guiComponent : this.f()) {
-            if (!guiComponent.V$src$Z$1xhop3l() || this.Tj.contains(guiComponent) || guiComponent.equals(this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc())) continue;
-            d2 += guiComponent.L();
+            if (!guiComponent.V$src$Z$1xhop3l()
+                    || this.settingComponents.contains(guiComponent)
+                    || guiComponent.equals(this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc())) continue;
+            excludedHeight += guiComponent.L();
         }
-        return d - d2;
+        return totalHeight - excludedHeight;
     }
 
-    public AnchoredHudModuleConfigFrame<AnimatedIconButtonComponent> j$src$Lgg_vape_ui_click_frame_impl_hud_AnchoredHudModu$1mjj2p3() {
-        return this.r$src$Lgg_vape_ui_click_frame_impl_hud_AnchoredHudModu$9c1t7s();
+    public AnchoredHudModuleConfigFrame<AnimatedIconButtonComponent> getAnchoredSettingsFrame() {
+        return this.getAnchoredSettingsFrameInternal();
     }
 
-    public void Q$src$V$1vahh5c() {
+    public void onPublicProfileContextChanged() {
     }
 
     @Override
-    public RectData Q() {
-        if (this.N$src$Z$1ad1ggw()) {
-            return this.i$src$Lfunc_skidline_RectData_$1ykrzel();
+    public RectData getBounds() {
+        if (this.isManagedByClickGui()) {
+            return this.getEditorBounds();
         }
-        return super.Q();
+        return super.getBounds();
     }
 
-    private void e() {
-        if (!this.T3 && this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null) {
-            this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().Z(false);
-            this.T3 = true;
-            this.w2();
+    private void hideHeaderForHudMode() {
+        if (!this.headerHiddenForHudMode
+                && this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null) {
+            this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().setVisible(false);
+            this.headerHiddenForHudMode = true;
+            this.updateSettingVisibility();
         }
     }
 
-    public HudSettingsFrameBase(String string, String string2) {
-        super(string2);
-        this.T(HudSettingsFrameBase.J.i);
+    public HudSettingsFrameBase(String title, String frameId) {
+        super(frameId);
+        this.setDisabledOverlayColor(HudSettingsFrameBase.J.i);
         this.K(300.0);
         this.S(100.0);
-        this.Z(false);
+        this.setVisible(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
-        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(qb);
-        this.Y(new SettingsFrameHeaderComponent(this, string, string2));
-        this.W();
-        this.r$src$Lgg_vape_ui_click_frame_impl_hud_AnchoredHudModu$9c1t7s().j(this.getName());
+        this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(WRAP_LAYOUT);
+        this.Y(new SettingsFrameHeaderComponent(this, title, frameId));
+        this.initializeEditorControls();
+        this.getAnchoredSettingsFrameInternal().setTitle(this.getName());
     }
 
-    public boolean P$src$Z$1v9xonf() {
-        return this.L$src$Z$1v7qi9z();
+    public boolean isPublicProfilePreviewActive() {
+        return this.isPublicProfilePreview();
     }
 
-    protected boolean L$src$Z$1v7qi9z() {
-        return this.N$src$Z$1ad1ggw() && Vape.INSTANCE.getPublicProfileSettings().P.o();
+    protected boolean isPublicProfilePreview() {
+        return this.isManagedByClickGui() && Vape.INSTANCE.getPublicProfileSettings().P.isSelected();
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        if (this.N$src$Z$1ad1ggw()) {
-            this.F(guiMouseEvent);
+        if (this.isManagedByClickGui()) {
+            this.handleEditorMousePress(guiMouseEvent);
             return;
         }
         super.g(guiMouseEvent);
     }
 
-    private void wx() {
-        this.s$src$V$1axdubt();
+    private void renderHudBackground() {
+        this.updateEditorControls();
     }
 
-    private void wP() {
-        if (this.T3 && this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null) {
-            this.w8();
-            this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().Z(true);
-            this.T3 = false;
-            this.i(false);
-            this.M$src$Lgg_vape_ui_click_component_AnimatedIconButtonCo$12x9cix().Z(false);
-            this.d$src$Lgg_vape_ui_click_component_AnimatedIconButtonCo$69zuia().Z(false);
-            if (this.r$src$Lgg_vape_ui_click_frame_impl_hud_AnchoredHudModu$9c1t7s().V$src$Z$1xhop3l()) {
-                this.r$src$Lgg_vape_ui_click_frame_impl_hud_AnchoredHudModu$9c1t7s().Z(false);
+    private void restoreHeaderOutsideHudMode() {
+        if (this.headerHiddenForHudMode
+                && this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null) {
+            this.restoreSettingComponents();
+            this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().setVisible(true);
+            this.headerHiddenForHudMode = false;
+            this.setHudEditorSelected(false);
+            this.getCloseButton().setVisible(false);
+            this.getSettingsButton().setVisible(false);
+            if (this.getAnchoredSettingsFrameInternal().V$src$Z$1xhop3l()) {
+                this.getAnchoredSettingsFrameInternal().setVisible(false);
             }
-            this.w2();
+            this.updateSettingVisibility();
         }
     }
 
     @Override
     public double L() {
-        if (this.N$src$Z$1ad1ggw()) {
+        if (this.isManagedByClickGui()) {
             return Math.max(26.0, super.L());
         }
         return this.q() ? this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() : super.L();
     }
 
     @Override
-    public float r$src$F$35g3yx() {
-        if (!this.N$src$Z$1ad1ggw()) {
+    public float getEditorOpacity() {
+        if (!this.isManagedByClickGui()) {
             return 1.0f;
         }
-        return super.r$src$F$35g3yx();
+        return super.getEditorOpacity();
     }
 
-    protected void o$src$V$7f79jo() {
-        if (this.p$src$Z$1avqgn6()) {
+    protected void renderHudModeBorder() {
+        if (this.isHudEditorSelected()) {
             return;
         }
-        GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.b$src$Ljava_awt_Color_$t24dz2(), 1.5f, 1.0f, 1.0f);
+        GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.getEditorBackgroundColor(), 1.5f, 1.0f, 1.0f);
     }
 
-    private void w2() {
-        for (GuiComponent guiComponent : this.x$src$Ljava_util_List_$vc8bfc()) {
-            boolean bl;
-            boolean bl2 = bl = !this.TJ;
-            if (this.N$src$Z$1ad1ggw() && guiComponent.r$src$Lgg_vape_value_Value_$fdf20y() != null) {
-                bl = false;
+    private void updateSettingVisibility() {
+        for (GuiComponent guiComponent : this.getSettingComponents()) {
+            boolean visible = !this.collapsed;
+            if (this.isManagedByClickGui() && guiComponent.getBoundValue() != null) {
+                visible = false;
             }
-            guiComponent.Z(bl);
-            guiComponent.T(HudSettingsFrameBase.J.r);
-            Value value = guiComponent.r$src$Lgg_vape_value_Value_$fdf20y();
+            guiComponent.setVisible(visible);
+            guiComponent.setDisabledOverlayColor(HudSettingsFrameBase.J.r);
+            Value value = guiComponent.getBoundValue();
             if (value == null || value.getParent() == null) continue;
-            Color color = value.q$src$Ljava_awt_Color_$1ibcet6() == null ? HudSettingsFrameBase.J.r.darker() : value.q$src$Ljava_awt_Color_$1ibcet6();
-            guiComponent.T(color);
+            Color color = value.getOverrideColor() == null ? HudSettingsFrameBase.J.r.darker() : value.getOverrideColor();
+            guiComponent.setDisabledOverlayColor(color);
         }
         this.l$src$V$1mibm4x();
     }
 
     @Override
-    public Color R(Color color, int n) {
-        if (!this.N$src$Z$1ad1ggw()) {
+    public Color applyEditorAlpha(Color color, int amount) {
+        if (!this.isManagedByClickGui()) {
             return color;
         }
-        return super.R(color, n);
+        return super.applyEditorAlpha(color, amount);
     }
 
     @Override
-    public void H(boolean bl) {
-        this.wr();
-        super.H(bl);
+    public void H(boolean active) {
+        this.updateInteractionState();
+        super.H(active);
     }
 
     @Override
-    public void D(GuiMouseEvent guiMouseEvent) {
-        if (this.N$src$Z$1ad1ggw()) {
-            this.I(guiMouseEvent);
+    public void dispatchMouseEvent(GuiMouseEvent guiMouseEvent) {
+        if (this.isManagedByClickGui()) {
+            this.dispatchEditorMouseEvent(guiMouseEvent);
             return;
         }
-        super.D(guiMouseEvent);
+        super.dispatchMouseEvent(guiMouseEvent);
     }
 
     @Override
-    protected void h() {
-        this.w8();
-        this.i(false);
-        this.Z(false);
+    protected void closeHudFrame() {
+        this.restoreSettingComponents();
+        this.setHudEditorSelected(false);
+        this.setVisible(false);
     }
 
     @Override
-    public boolean Z$src$Z$16e8vsp() {
-        if (this.N$src$Z$1ad1ggw()) {
+    public boolean isShowDisabledOverlay() {
+        if (this.isManagedByClickGui()) {
             return false;
         }
-        return super.Z$src$Z$16e8vsp();
+        return super.isShowDisabledOverlay();
     }
 
     @Override
-    public double i$src$D$uqmc0b() {
-        return super.i$src$D$uqmc0b() + 1.0;
+    public double getMaximumX() {
+        return super.getMaximumX() + 1.0;
     }
 
     @Override
     public void H() {
-        this.wr();
-        if (this.N$src$Z$1ad1ggw()) {
-            this.e();
-            this.o$src$V$7f79jo();
-            this.wx();
-            this.p$src$V$1avqgjq();
-            if (this.w$src$Z$e457mb() || this.p$src$Z$1avqgn6() || this.r$src$Z$1awu1tw()) {
-                this.Z$src$V$1ajmzhs();
+        this.updateInteractionState();
+        if (this.isManagedByClickGui()) {
+            this.hideHeaderForHudMode();
+            this.renderHudModeBorder();
+            this.renderHudBackground();
+            this.renderFrontmostOverlayOutline();
+            if (this.w$src$Z$e457mb() || this.isHudEditorSelected() || this.isFrontmostOverlay()) {
+                this.renderEditorLabel();
             }
         } else {
-            this.wP();
+            this.restoreHeaderOutsideHudMode();
         }
         super.H();
     }
 
-    private void w8() {
-        AnchoredHudModuleConfigFrame<AnimatedIconButtonComponent> anchoredHudModuleConfigFrame = this.r$src$Lgg_vape_ui_click_frame_impl_hud_AnchoredHudModu$9c1t7s();
-        for (GuiComponent guiComponent : this.x$src$Ljava_util_List_$vc8bfc()) {
-            if (guiComponent.r$src$Lgg_vape_value_Value_$fdf20y() == null || guiComponent.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb() != anchoredHudModuleConfigFrame) continue;
-            anchoredHudModuleConfigFrame.I(guiComponent);
+    private void restoreSettingComponents() {
+        AnchoredHudModuleConfigFrame<AnimatedIconButtonComponent> anchoredHudModuleConfigFrame = this.getAnchoredSettingsFrameInternal();
+        for (GuiComponent guiComponent : this.getSettingComponents()) {
+            if (guiComponent.getBoundValue() == null || guiComponent.getParentFrameComponent() != anchoredHudModuleConfigFrame) continue;
+            anchoredHudModuleConfigFrame.removeChild(guiComponent);
             this.h(guiComponent, new Object[0]);
         }
-        this.w2();
+        this.updateSettingVisibility();
     }
 
     @Override
-    public void N$src$V$bhucvl() {
-        this.w8();
-        super.N$src$V$bhucvl();
+    public void hideEditorControls() {
+        this.restoreSettingComponents();
+        super.hideEditorControls();
     }
 }
 

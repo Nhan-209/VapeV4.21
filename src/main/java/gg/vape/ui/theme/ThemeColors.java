@@ -100,7 +100,7 @@ public class ThemeColors {
     }
 
     public Color z() {
-        return ClientSettings.fW.O$src$Ljava_awt_Color_$19t4jn1();
+        return ClientSettings.INSTANCE.getAccentColor();
     }
 
     static {
@@ -108,14 +108,14 @@ public class ThemeColors {
     }
 
     public Color B() {
-        if (Vape.INSTANCE.getClientSettings().w.g()) {
+        if (Vape.INSTANCE.getClientSettings().w.isRainbowEnabled()) {
             return new Color(45, 45, 45);
         }
         if (this.z().equals(this.x)) {
             return this.G;
         }
         this.x = this.z();
-        this.G = ColorUtil.r(this.x, 45, 240);
+        this.G = ColorUtil.getContrastingGray(this.x, 45, 240);
         return this.G;
     }
 

@@ -19,7 +19,7 @@ public final class OnlineConnectionStatusConfigFactory {
     }
 
     public static ClickGuiOverlaySpec T() {
-        return ClickGuiOverlaySpec.q().e("Welcome Back").C("welcome").N(OnlineConnectionStatusConfigFactory::b).r(ClickGuiOverlayTransitionMode.REPLACE).w();
+        return ClickGuiOverlaySpec.builder().title("Welcome Back").sidecarIcon("welcome").initializeContent(OnlineConnectionStatusConfigFactory::b).transitionMode(ClickGuiOverlayTransitionMode.REPLACE).build();
     }
 }
 

@@ -12,21 +12,21 @@ import java.util.List;
 
 public class OptionalLimitValue
 extends ListValue<OptionalLimitEntry, OptionalLimitValue> {
-    public static final Color r = new Color(0, 170, 0);
-    public static final Color G;
-    private final Color g;
-    public static final Color O;
+    public static final Color ALLOW_LIST_COLOR = new Color(0, 170, 0);
+    public static final Color BLOCK_LIST_COLOR;
+    private final Color accentColor;
+    public static final Color NEUTRAL_LIST_COLOR;
 
-    public List<String> D() {
-        ArrayList<String> arrayList = new ArrayList<String>();
-        for (OptionalLimitEntry optionalLimitEntry : this.K()) {
-            if (!optionalLimitEntry.h()) continue;
-            arrayList.add(optionalLimitEntry.r());
+    public List<String> getEnabledValues() {
+        ArrayList<String> enabledValues = new ArrayList<String>();
+        for (OptionalLimitEntry entry : this.getValue()) {
+            if (!entry.isEntryEnabled()) continue;
+            enabledValues.add(entry.getValue());
         }
-        return arrayList;
+        return enabledValues;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 
@@ -34,64 +34,64 @@ extends ListValue<OptionalLimitEntry, OptionalLimitValue> {
     public void parse(String string) {
     }
 
-    public OptionalLimitValue Y() {
-        return new OptionalLimitValue(null, this.P$src$Ljava_lang_String_$1ijjhmj(), this.getName(), this.O());
+    public OptionalLimitValue copyDefinition() {
+        return new OptionalLimitValue(null, this.getId(), this.getName(), this.getAccentColor());
     }
 
     @Override
-    public OptionalLimitEntry j(String string, int n) {
-        return this.N(string, n);
+    public OptionalLimitEntry createEntry(String value, int legacyIndex) {
+        return this.addEntry(value, legacyIndex);
     }
 
-    private OptionalLimitValue(Object object, String string, String string2, Color color) {
-        super(object, string, string2);
-        this.g = color;
-    }
-
-    @Override
-    public void o(List<OptionalLimitEntry> list) {
-        this.Y(list);
+    private OptionalLimitValue(Object owner, String id, String name, Color accentColor) {
+        super(owner, id, name);
+        this.accentColor = accentColor;
     }
 
     @Override
-    public OptionalLimitValue getALimit() {
-        return this.Y();
+    public void setValue(List<OptionalLimitEntry> entries) {
+        this.replaceEntries(entries);
     }
 
     @Override
-    public JsonObject H(boolean bl) {
+    public OptionalLimitValue copyValueDefinition() {
+        return this.copyDefinition();
+    }
+
+    @Override
+    public JsonObject toJson(boolean bl) {
         JsonObject jsonObject = this.toJson();
         JsonArray jsonArray = new JsonArray();
-        for (OptionalLimitEntry optionalLimitEntry : this.K()) {
-            jsonArray.add(optionalLimitEntry.l());
+        for (OptionalLimitEntry entry : this.getValue()) {
+            jsonArray.add(entry.toJson());
         }
         jsonObject.add("value", (JsonElement)jsonArray);
         return jsonObject;
     }
 
-    public OptionalLimitEntry k(String string) {
-        OptionalLimitEntry optionalLimitEntry = new OptionalLimitEntry(string);
-        this.K().add(optionalLimitEntry);
-        return optionalLimitEntry;
+    public OptionalLimitEntry addEntry(String value) {
+        OptionalLimitEntry entry = new OptionalLimitEntry(value);
+        this.getValue().add(entry);
+        return entry;
     }
 
-    public OptionalLimitEntry N(String string, int n) {
-        return this.k(string);
+    public OptionalLimitEntry addEntry(String value, int legacyIndex) {
+        return this.addEntry(value);
     }
 
     @Override
     public boolean loadJson(JsonObject jsonObject) {
-        if (jsonObject.get("id").getAsString().equalsIgnoreCase(this.P$src$Ljava_lang_String_$1ijjhmj())) {
+        if (jsonObject.get("id").getAsString().equalsIgnoreCase(this.getId())) {
             if (jsonObject.get("value").isJsonArray()) {
                 JsonArray jsonArray = jsonObject.get("value").getAsJsonArray();
-                ArrayList<OptionalLimitEntry> arrayList = new ArrayList<OptionalLimitEntry>(this.K());
-                for (OptionalLimitEntry optionalLimitEntry : arrayList) {
-                    this.b(optionalLimitEntry);
+                ArrayList<OptionalLimitEntry> existingEntries = new ArrayList<OptionalLimitEntry>(this.getValue());
+                for (OptionalLimitEntry entry : existingEntries) {
+                    this.removeEntry(entry);
                 }
                 for (JsonElement jsonElement : jsonArray) {
                     try {
-                        OptionalLimitEntry optionalLimitEntry2 = this.k("");
-                        optionalLimitEntry2.s(jsonElement.getAsJsonObject());
+                        OptionalLimitEntry entry = this.addEntry("");
+                        entry.loadJson(jsonElement.getAsJsonObject());
                     }
                     catch (Exception exception) {}
                 }
@@ -101,50 +101,50 @@ extends ListValue<OptionalLimitEntry, OptionalLimitValue> {
         return super.loadJson(jsonObject);
     }
 
-    public void Y(List<OptionalLimitEntry> list) {
-        ArrayList<OptionalLimitEntry> arrayList = new ArrayList<OptionalLimitEntry>(list);
-        ArrayList<OptionalLimitEntry> arrayList2 = new ArrayList<OptionalLimitEntry>(this.K());
-        this.K().clear();
-        for (OptionalLimitEntry optionalLimitEntry : arrayList2) {
-            this.b(optionalLimitEntry);
+    public void replaceEntries(List<OptionalLimitEntry> entries) {
+        ArrayList<OptionalLimitEntry> replacementEntries = new ArrayList<OptionalLimitEntry>(entries);
+        ArrayList<OptionalLimitEntry> existingEntries = new ArrayList<OptionalLimitEntry>(this.getValue());
+        this.getValue().clear();
+        for (OptionalLimitEntry entry : existingEntries) {
+            this.removeEntry(entry);
         }
-        for (OptionalLimitEntry optionalLimitEntry : arrayList) {
-            this.k(optionalLimitEntry.r());
+        for (OptionalLimitEntry entry : replacementEntries) {
+            this.addEntry(entry.getValue());
         }
     }
 
-    public boolean w(String string, boolean bl) {
-        if (this.K().isEmpty()) {
-            return bl;
+    public boolean matches(String value, boolean defaultWhenEmpty) {
+        if (this.getValue().isEmpty()) {
+            return defaultWhenEmpty;
         }
-        for (OptionalLimitEntry optionalLimitEntry : this.K()) {
-            if (!optionalLimitEntry.h() || !optionalLimitEntry.r().equalsIgnoreCase(string)) continue;
+        for (OptionalLimitEntry entry : this.getValue()) {
+            if (!entry.isEntryEnabled() || !entry.getValue().equalsIgnoreCase(value)) continue;
             return true;
         }
         return false;
     }
 
     static {
-        O = new Color(170, 170, 170);
-        G = new Color(170, 0, 0);
+        NEUTRAL_LIST_COLOR = new Color(170, 170, 170);
+        BLOCK_LIST_COLOR = new Color(170, 0, 0);
     }
 
-    public static OptionalLimitValue Q(Object object, String string, String string2, String string3, Color color, List<String> list) {
-        OptionalLimitValue optionalLimitValue = new OptionalLimitValue(object, string, string2, color);
-        for (String string4 : list) {
-            optionalLimitValue.k(string4);
+    public static OptionalLimitValue createWithDescription(Object owner, String id, String name, String description, Color accentColor, List<String> values) {
+        OptionalLimitValue optionalLimitValue = new OptionalLimitValue(owner, id, name, accentColor);
+        for (String value : values) {
+            optionalLimitValue.addEntry(value);
         }
-        optionalLimitValue.A(new ArrayList<OptionalLimitEntry>(optionalLimitValue.K()));
-        return (OptionalLimitValue)optionalLimitValue.Z$src$Lgg_vape_value_Value_$16i62fx(string3);
+        optionalLimitValue.setDefaultValue(new ArrayList<OptionalLimitEntry>(optionalLimitValue.getValue()));
+        return (OptionalLimitValue)optionalLimitValue.setDescription(description);
     }
 
-    public static OptionalLimitValue l(Object object, String string, String string2, Color color, String ... stringArray) {
-        return OptionalLimitValue.Q(object, string, string2, "List of Names/Strings", color, Arrays.asList(stringArray));
+    public static OptionalLimitValue create(Object owner, String id, String name, Color accentColor, String ... values) {
+        return OptionalLimitValue.createWithDescription(owner, id, name, "List of Names/Strings", accentColor, Arrays.asList(values));
     }
 
-    public void b(OptionalLimitEntry optionalLimitEntry) {
+    public void removeEntry(OptionalLimitEntry entry) {
         try {
-            this.K().remove(optionalLimitEntry);
+            this.getValue().remove(entry);
         }
         catch (Exception exception) {
             // empty catch block
@@ -152,18 +152,18 @@ extends ListValue<OptionalLimitEntry, OptionalLimitValue> {
     }
 
     @Override
-    public String c() {
-        List<OptionalLimitEntry> list = this.K();
+    public String getDisplayValue() {
+        List<OptionalLimitEntry> list = this.getValue();
         if (list.isEmpty()) {
             return "None";
         }
         if (list.size() == 1) {
-            return ((OptionalLimitEntry)list.get(0)).r();
+            return ((OptionalLimitEntry)list.get(0)).getValue();
         }
-        return ((OptionalLimitEntry)list.get(0)).r() + " +" + (list.size() - 1);
+        return ((OptionalLimitEntry)list.get(0)).getValue() + " +" + (list.size() - 1);
     }
 
-    public Color O() {
-        return this.g;
+    public Color getAccentColor() {
+        return this.accentColor;
     }
 }

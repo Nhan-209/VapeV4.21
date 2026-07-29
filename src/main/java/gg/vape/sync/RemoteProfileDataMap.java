@@ -2,7 +2,6 @@ package gg.vape.sync;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import gg.vape.sync.RemoteProfileData;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -10,36 +9,36 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 public class RemoteProfileDataMap {
-    private final Map<UUID, RemoteProfileData> Q;
-    private static final String b = "PrivateProfilesResponse{profiles=";
+    private final Map<UUID, RemoteProfileData> profiles;
+    private static final String TO_STRING_PREFIX = "PrivateProfilesResponse{profiles=";
 
-    RemoteProfileDataMap(Map<UUID, RemoteProfileData> map) {
-        this.Q = map;
+    RemoteProfileDataMap(Map<UUID, RemoteProfileData> profiles) {
+        this.profiles = profiles;
     }
 
 
     @Nullable
     @Contract(value="!null -> !null; null -> null")
-    public static RemoteProfileDataMap U(@Nullable JsonElement jsonElement) {
-        if (jsonElement == null || jsonElement.isJsonNull()) {
+    public static RemoteProfileDataMap fromJson(@Nullable JsonElement element) {
+        if (element == null || element.isJsonNull()) {
             return null;
         }
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-        LinkedHashMap<UUID, RemoteProfileData> linkedHashMap = new LinkedHashMap<UUID, RemoteProfileData>();
-        for (Map.Entry entry : jsonObject.entrySet()) {
-            RemoteProfileData remoteProfileData = RemoteProfileData.q((JsonElement)entry.getValue());
-            if (remoteProfileData == null) continue;
-            linkedHashMap.put(UUID.fromString((String)entry.getKey()), remoteProfileData);
+        JsonObject json = element.getAsJsonObject();
+        LinkedHashMap<UUID, RemoteProfileData> profiles = new LinkedHashMap<UUID, RemoteProfileData>();
+        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+            RemoteProfileData profile = RemoteProfileData.fromJson(entry.getValue());
+            if (profile == null) continue;
+            profiles.put(UUID.fromString(entry.getKey()), profile);
         }
-        return new RemoteProfileDataMap(linkedHashMap);
+        return new RemoteProfileDataMap(profiles);
     }
 
     public String toString() {
-        return b + this.Q + '}';
+        return TO_STRING_PREFIX + this.profiles + '}';
     }
 
-    public Map<UUID, RemoteProfileData> S() {
-        return this.Q;
+    public Map<UUID, RemoteProfileData> getProfiles() {
+        return this.profiles;
     }
 }
 

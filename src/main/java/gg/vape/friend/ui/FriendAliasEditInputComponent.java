@@ -25,19 +25,19 @@ extends TrailingActionTextInputComponent {
 
 
     @Override
-    public void p() {
-        super.p();
-        ClickGuiFriendsPage.d(this.pC, this.p4, this.i$src$Ljava_lang_String_$1n2xf3k());
-        this.pU[0] = this.i$src$Ljava_lang_String_$1n2xf3k();
-        this.pg.Z(false);
-        this.pr.Z(false);
+    public void submit() {
+        super.submit();
+        ClickGuiFriendsPage.updateFriendAlias(this.pC, this.p4, this.getText());
+        this.pU[0] = this.getText();
+        this.pg.setVisible(false);
+        this.pr.setVisible(false);
     }
 
     @Override
-    public void k(String string) {
-        super.k(string);
-        boolean bl = !string.equals(this.pU[0]);
-        this.pg.Z(bl);
-        this.pr.Z(bl);
+    public void setText(String text) {
+        super.setText(text);
+        boolean bl = !text.equals(this.pU[0]);
+        this.pg.setVisible(bl);
+        this.pr.setVisible(bl);
     }
 }

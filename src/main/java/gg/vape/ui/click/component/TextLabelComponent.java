@@ -12,177 +12,177 @@ import java.awt.Color;
 
 public class TextLabelComponent
 extends GuiComponent {
-    private boolean b;
-    private Color a;
-    private FadingTruncatedTextComponent R;
-    private GuiComponent i;
-    private TruncatedTextComponent I;
-    private boolean O;
-    private TextLabelFitSpec o;
+    private boolean drawShadow;
+    private Color textColor;
+    private FadingTruncatedTextComponent fadingText;
+    private GuiComponent associatedComponent;
+    private TruncatedTextComponent truncatedText;
+    private boolean fadeWhenTruncated;
+    private TextLabelFitSpec fitSpec;
 
-    public boolean u$src$Z$18fsepf() {
-        return this.b;
+    public boolean isShadowEnabled() {
+        return this.drawShadow;
     }
 
-    public boolean z() {
-        return this.O;
+    public boolean isFadeWhenTruncated() {
+        return this.fadeWhenTruncated;
     }
 
-    public void a(TextLabelFitSpec textLabelFitSpec) {
-        this.o = textLabelFitSpec;
+    public void setFitSpec(TextLabelFitSpec fitSpec) {
+        this.fitSpec = fitSpec;
     }
 
-    public void F(boolean bl) {
-        this.b = bl;
+    public void setShadowEnabled(boolean drawShadow) {
+        this.drawShadow = drawShadow;
     }
 
-    public boolean r$src$Z$18e50xc() {
-        return this.o.x();
+    public boolean isBold() {
+        return this.fitSpec.isBold();
     }
 
     @Override
     public double x() {
-        return this.k();
+        return this.getRenderedWidth();
     }
 
-    public TextLabelComponent(String string, double d, double d2, double d3, double d4, boolean bl, boolean bl2, Color color) {
-        this(string, d, d2, d3, d4, bl, bl2, color, null);
+    public TextLabelComponent(String text, double minScale, double maxScale, double scaleIncrement, double maxWidth, boolean bold, boolean drawShadow, Color textColor) {
+        this(text, minScale, maxScale, scaleIncrement, maxWidth, bold, drawShadow, textColor, null);
     }
 
-    public void N(double d) {
-        this.o.Y(d);
+    public void setMaxWidth(double maxWidth) {
+        this.fitSpec.setMaxWidth(maxWidth);
     }
 
     @Override
     public void H() {
-        this.R(this.G$src$D$1b2f02a(), this.n() + this.C() / 2.0);
+        this.renderAt(this.G$src$D$1b2f02a(), this.n() + this.C() / 2.0);
     }
 
     @Override
     public void u() {
     }
 
-    public void f(double d) {
-        this.o.k(d);
+    public void setMaxScale(double maxScale) {
+        this.fitSpec.setMaxScale(maxScale);
     }
 
-    public double v() {
-        if (this.I != null) {
-            return this.I.f$src$D$ldt7xy();
+    public double getTextHeight() {
+        if (this.truncatedText != null) {
+            return this.truncatedText.getTextHeight();
         }
-        if (this.R != null) {
-            return this.R.f$src$D$ldt7xy();
+        if (this.fadingText != null) {
+            return this.fadingText.getTextHeight();
         }
-        double d = TextLabelFitScaleCache.m.T(this.o);
-        return this.o.x() ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(d).d(this.o.o()) : this.O(d).d(this.o.o());
+        double fittedScale = TextLabelFitScaleCache.INSTANCE.getFittedScale(this.fitSpec);
+        return this.fitSpec.isBold() ? this.getAlternateFontRenderer(fittedScale).d(this.fitSpec.getText()) : this.getFontRenderer(fittedScale).d(this.fitSpec.getText());
     }
 
-    public GuiComponent q$src$Lgg_vape_ui_click_component_GuiComponent_$1sqrlko() {
-        return this.i;
+    public GuiComponent getAssociatedComponent() {
+        return this.associatedComponent;
     }
 
     @Override
     public double C() {
-        return this.v();
+        return this.getTextHeight();
     }
 
-    public double k() {
-        if (this.I != null) {
-            return this.I.u$src$D$ivbecn();
+    public double getRenderedWidth() {
+        if (this.truncatedText != null) {
+            return this.truncatedText.getRenderedWidth();
         }
-        if (this.R != null) {
-            return this.R.u$src$D$ivbecn();
+        if (this.fadingText != null) {
+            return this.fadingText.getRenderedWidth();
         }
-        double d = TextLabelFitScaleCache.m.T(this.o);
-        return this.o.x() ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(d).N(this.o.o()) : this.O(d).N(this.o.o());
+        double fittedScale = TextLabelFitScaleCache.INSTANCE.getFittedScale(this.fitSpec);
+        return this.fitSpec.isBold() ? this.getAlternateFontRenderer(fittedScale).N(this.fitSpec.getText()) : this.getFontRenderer(fittedScale).N(this.fitSpec.getText());
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 
-    public TextLabelComponent(String string, double d, double d2, double d3, double d4, boolean bl, boolean bl2, Color color, GuiComponent guiComponent) {
-        this(string, d, d2, d3, d4, bl, bl2, color, guiComponent, false);
+    public TextLabelComponent(String text, double minScale, double maxScale, double scaleIncrement, double maxWidth, boolean bold, boolean drawShadow, Color textColor, GuiComponent associatedComponent) {
+        this(text, minScale, maxScale, scaleIncrement, maxWidth, bold, drawShadow, textColor, associatedComponent, false);
     }
 
-    public void J(boolean bl) {
-        this.O = bl;
+    public void setFadeWhenTruncated(boolean fadeWhenTruncated) {
+        this.fadeWhenTruncated = fadeWhenTruncated;
     }
 
     @Override
     public void I() {
     }
 
-    public TextLabelComponent(String string, double d, double d2, double d3, double d4, boolean bl, boolean bl2, Color color, GuiComponent guiComponent, boolean bl3) {
-        this.o = new TextLabelFitSpec(string, d, d2, d3, d4, bl);
-        this.a = color;
-        this.b = bl2;
-        this.i = guiComponent;
-        this.O = bl3;
+    public TextLabelComponent(String text, double minScale, double maxScale, double scaleIncrement, double maxWidth, boolean bold, boolean drawShadow, Color textColor, GuiComponent associatedComponent, boolean fadeWhenTruncated) {
+        this.fitSpec = new TextLabelFitSpec(text, minScale, maxScale, scaleIncrement, maxWidth, bold);
+        this.textColor = textColor;
+        this.drawShadow = drawShadow;
+        this.associatedComponent = associatedComponent;
+        this.fadeWhenTruncated = fadeWhenTruncated;
     }
 
-    public void R(double d, double d2) {
-        double d3 = TextLabelFitScaleCache.m.T(this.o);
-        if (d3 >= this.o.g()) {
-            SmoothFontRenderer smoothFontRenderer;
-            SmoothFontRenderer smoothFontRenderer2 = smoothFontRenderer = this.o.x() ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(d3) : this.O(d3);
-            if (this.b) {
-                smoothFontRenderer.v(this.o.o(), d, d2 - smoothFontRenderer.d(this.o.o()) / 2.0, this.a);
+    public void renderAt(double x, double centerY) {
+        double fittedScale = TextLabelFitScaleCache.INSTANCE.getFittedScale(this.fitSpec);
+        if (fittedScale >= this.fitSpec.getMinScale()) {
+            SmoothFontRenderer fontRenderer = this.fitSpec.isBold() ? this.getAlternateFontRenderer(fittedScale) : this.getFontRenderer(fittedScale);
+            double textY = centerY - fontRenderer.d(this.fitSpec.getText()) / 2.0;
+            if (this.drawShadow) {
+                fontRenderer.v(this.fitSpec.getText(), x, textY, this.textColor);
             } else {
-                smoothFontRenderer.d(this.o.o(), d, d2 - smoothFontRenderer.d(this.o.o()) / 2.0, this.a);
+                fontRenderer.d(this.fitSpec.getText(), x, textY, this.textColor);
             }
-            this.M(null);
-            this.I = null;
-        } else if (this.O) {
-            if (this.R == null) {
-                this.R = new FadingTruncatedTextComponent(this.o.o(), this.o.T(), this.o.g(), this.a, null, this.r$src$Z$18e50xc(), this.b);
+            this.setToolTips(null);
+            this.truncatedText = null;
+        } else if (this.fadeWhenTruncated) {
+            if (this.fadingText == null) {
+                this.fadingText = new FadingTruncatedTextComponent(this.fitSpec.getText(), this.fitSpec.getMaxWidth(), this.fitSpec.getMinScale(), this.textColor, null, this.isBold(), this.drawShadow);
             }
-            this.e();
-            this.R.V(d, d2 - this.v() / 2.0);
-            this.M(this.R.J$src$Lgg_vape_ui_click_component_ToolTips_$bb9snf());
+            this.synchronizeFadingText();
+            this.fadingText.renderAt(x, centerY - this.getTextHeight() / 2.0);
+            this.setToolTips(this.fadingText.getToolTips());
         } else {
-            if (this.I == null) {
-                this.I = new TruncatedTextComponent(this.o.o(), "...", this.o.T(), this.o.g(), this.a, this.r$src$Z$18e50xc(), this.b);
+            if (this.truncatedText == null) {
+                this.truncatedText = new TruncatedTextComponent(this.fitSpec.getText(), "...", this.fitSpec.getMaxWidth(), this.fitSpec.getMinScale(), this.textColor, this.isBold(), this.drawShadow);
             }
-            this.W();
-            this.I.V(d, d2 - this.v() / 2.0);
-            this.M(this.I.J$src$Lgg_vape_ui_click_component_ToolTips_$bb9snf());
+            this.synchronizeTruncatedText();
+            this.truncatedText.renderAt(x, centerY - this.getTextHeight() / 2.0);
+            this.setToolTips(this.truncatedText.getToolTips());
         }
     }
 
-    public double s() {
-        return this.o.g();
+    public double getMinScale() {
+        return this.fitSpec.getMinScale();
     }
 
-    public Color a$src$Ljava_awt_Color_$9fqh83() {
-        return this.a;
+    public Color getTextColor() {
+        return this.textColor;
     }
 
-    public void U(String string) {
-        this.o.N(string);
+    public void setText(String text) {
+        this.fitSpec.setText(text);
     }
 
-    public TextLabelFitSpec d$src$Lgg_vape_ui_click_text_TextLabelFitSpec_$1sd3ps() {
-        return this.o;
+    public TextLabelFitSpec getFitSpec() {
+        return this.fitSpec;
     }
 
-    public String H$src$Ljava_lang_String_$1kzmics() {
-        return this.o.o();
+    public String getText() {
+        return this.fitSpec.getText();
     }
 
-    private void e() {
-        this.R.t(new TruncatedTextSpec(this.o.o(), "", this.o.T(), this.o.g(), this.o.x()));
-        this.R.R(this.a$src$Ljava_awt_Color_$9fqh83());
-        this.R.K(this.u$src$Z$18fsepf());
+    private void synchronizeFadingText() {
+        this.fadingText.setTextSpec(new TruncatedTextSpec(this.fitSpec.getText(), "", this.fitSpec.getMaxWidth(), this.fitSpec.getMinScale(), this.fitSpec.isBold()));
+        this.fadingText.setTextColor(this.getTextColor());
+        this.fadingText.setShadowEnabled(this.isShadowEnabled());
     }
 
-    public void T(boolean bl) {
-        this.o.Q(bl);
+    public void setBold(boolean bold) {
+        this.fitSpec.setBold(bold);
     }
 
-    public void b(Color color) {
-        if (this.R != null) {
-            this.R.C(color);
+    public void setFadeColor(Color fadeColor) {
+        if (this.fadingText != null) {
+            this.fadingText.setFadeColor(fadeColor);
         }
     }
 
@@ -191,43 +191,43 @@ extends GuiComponent {
         super.S(d);
     }
 
-    public double o$src$D$18chmmb() {
-        return this.o.h();
+    public double getScaleIncrement() {
+        return this.fitSpec.getScaleIncrement();
     }
 
-    public void d(double d) {
-        this.o.u(d);
+    public void setScaleIncrement(double scaleIncrement) {
+        this.fitSpec.setScaleIncrement(scaleIncrement);
     }
 
-    public void Q(double d) {
-        this.o.W(d);
+    public void setMinScale(double minScale) {
+        this.fitSpec.setMinScale(minScale);
     }
 
-    public double D$src$D$17ouh3s() {
-        return this.o.u();
+    public double getMaxScale() {
+        return this.fitSpec.getMaxScale();
     }
 
 
-    public void o(GuiComponent guiComponent) {
-        this.i = guiComponent;
+    public void setAssociatedComponent(GuiComponent associatedComponent) {
+        this.associatedComponent = associatedComponent;
     }
 
     @Override
     public void F() {
     }
 
-    private void W() {
-        this.I.t(new TruncatedTextSpec(this.o.o(), "...", this.o.T(), this.o.g(), this.o.x()));
-        this.I.R(this.a$src$Ljava_awt_Color_$9fqh83());
-        this.I.K(this.u$src$Z$18fsepf());
+    private void synchronizeTruncatedText() {
+        this.truncatedText.setTextSpec(new TruncatedTextSpec(this.fitSpec.getText(), "...", this.fitSpec.getMaxWidth(), this.fitSpec.getMinScale(), this.fitSpec.isBold()));
+        this.truncatedText.setTextColor(this.getTextColor());
+        this.truncatedText.setShadowEnabled(this.isShadowEnabled());
     }
 
-    public void a(Color color) {
-        this.a = color;
+    public void setTextColor(Color textColor) {
+        this.textColor = textColor;
     }
 
-    public double B$src$D$17nqvx2() {
-        return this.o.T();
+    public double getMaxWidth() {
+        return this.fitSpec.getMaxWidth();
     }
 }
 

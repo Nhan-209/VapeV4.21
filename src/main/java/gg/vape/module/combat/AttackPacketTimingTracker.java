@@ -20,15 +20,15 @@ import java.util.List;
 public class AttackPacketTimingTracker
 implements EventListener {
     private final List<Long> hitDelays = new ArrayList<Long>();
-    public static final AttackPacketTimingTracker a = new AttackPacketTimingTracker();
+    public static final AttackPacketTimingTracker INSTANCE = new AttackPacketTimingTracker();
     private long lastHitTime;
     private static boolean initialized;
     private int targetId;
     private long lastAttackTime;
 
-    public static Entity U(SPacketEntityStatus sPacketEntityStatus) {
-        if (sPacketEntityStatus.o() == 2) {
-            return Minecraft.theWorld().V(sPacketEntityStatus.X());
+    public static Entity getEntityFromStatusPacket(SPacketEntityStatus packet) {
+        if (packet.o() == 2) {
+            return Minecraft.theWorld().V(packet.X());
         }
         return null;
     }
@@ -39,58 +39,50 @@ implements EventListener {
     }
 
     private void recordHitDelay() {
-        block5: {
-            long l;
-            block4: {
-                long delay = System.currentTimeMillis() - this.lastHitTime;
-                boolean bl = AttackPacketTimingTracker.v();
-                long diff = delay - 500L;
-                l = diff == 0L ? 0 : (diff < 0L ? -1 : 1);
-                if (!bl) break block4;
-                if (l >= 0) break block5;
-                this.hitDelays.add(delay);
-                l = this.hitDelays.size();
-            }
-            if (l == 20) {
-                this.hitDelays.remove(0);
-            }
+        if (!initialized) {
+            return;
+        }
+        long delay = System.currentTimeMillis() - this.lastHitTime;
+        if (delay >= 500L) {
+            return;
+        }
+        this.hitDelays.add(delay);
+        if (this.hitDelays.size() == 20) {
+            this.hitDelays.remove(0);
         }
     }
 
-    public static boolean v() {
-        boolean bl = AttackPacketTimingTracker.d();
+    public static boolean isTrackingEnabled() {
         return true;
     }
 
-    public List<Long> n() {
+    public List<Long> getHitDelays() {
         return this.hitDelays;
     }
 
-    public static Entity F(Packet packet) {
+    public static Entity getVelocityPacketEntity(Packet packet) {
         if (packet.isInstance(MappedClasses.YX)) {
-            SPacketEntityVelocity sPacketEntityVelocity = new SPacketEntityVelocity(packet);
-            return Minecraft.theWorld().V(sPacketEntityVelocity.getEntityId());
+            SPacketEntityVelocity velocityPacket = new SPacketEntityVelocity(packet);
+            return Minecraft.theWorld().V(velocityPacket.getEntityId());
         }
         return null;
     }
 
-    public static Entity V(Packet packet) {
+    public static Entity getDamagePacketEntity(Packet packet) {
         if (packet.isInstance(MappedClasses.lU)) {
-            SPacketEntityStatus sPacketEntityStatus = new SPacketEntityStatus(packet);
-            return AttackPacketTimingTracker.U(sPacketEntityStatus);
+            return AttackPacketTimingTracker.getEntityFromStatusPacket(new SPacketEntityStatus(packet));
         }
         if (packet.isInstance(MappedClasses.ZQ)) {
-            SPacketAnimation sPacketAnimation = new SPacketAnimation(packet);
-            return AttackPacketTimingTracker.f(sPacketAnimation);
+            return AttackPacketTimingTracker.getEntityFromAnimationPacket(new SPacketAnimation(packet));
         }
         return null;
     }
 
-    public static boolean d() {
+    public static boolean isInitialized() {
         return initialized;
     }
 
-    public long h() {
+    public long getLastHitTime() {
         return this.lastHitTime;
     }
 
@@ -98,62 +90,54 @@ implements EventListener {
     public void onPacketSend(EventPacketSend eventPacketSend) {
         Packet packet = eventPacketSend.getPacket();
         if (UseEntityPacketBridge.h(packet)) {
-            UseEntityPacketBridge useEntityPacketBridge;
-            UseEntityPacketBridge useEntityPacketBridge2 = useEntityPacketBridge = new UseEntityPacketBridge(packet);
-            AttackPacketTimingTracker attackPacketTimingTracker = this;
-            attackPacketTimingTracker.recordAttack(useEntityPacketBridge2);
+            this.recordAttack(new UseEntityPacketBridge(packet));
         }
     }
 
     @EventHandler
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
-        Entity entity = AttackPacketTimingTracker.V(eventPacketReceive.getPacket());
+        Entity entity = AttackPacketTimingTracker.getDamagePacketEntity(eventPacketReceive.getPacket());
         if (entity != null && entity.isNotNull() && entity.S() == this.targetId) {
-            AttackPacketTimingTracker attackPacketTimingTracker = this;
-            attackPacketTimingTracker.recordHitDelay();
+            this.recordHitDelay();
         }
     }
 
-    public int Z() {
-        AttackPacketTimingTracker attackPacketTimingTracker = this;
-        return (int)Math.floor((double)attackPacketTimingTracker.Y() / 50.0);
+    public int getExpectedHurtTimeTicks() {
+        return (int)Math.floor((double)this.getAverageHitDelay() / 50.0);
     }
 
-    public long a() {
+    public long getLastAttackTime() {
         return this.lastAttackTime;
     }
 
-    public static void L(boolean bl) {
-        initialized = bl;
+    public static void setInitialized(boolean initializedState) {
+        initialized = initializedState;
     }
 
-    public static Entity f(SPacketAnimation sPacketAnimation) {
-        if (sPacketAnimation.x() == 1) {
-            return Minecraft.theWorld().V(sPacketAnimation.K());
+    public static Entity getEntityFromAnimationPacket(SPacketAnimation packet) {
+        if (packet.x() == 1) {
+            return Minecraft.theWorld().V(packet.K());
         }
         return null;
     }
 
-    public long Y() {
-        long l = 0L;
-        boolean bl = AttackPacketTimingTracker.d();
+    public long getAverageHitDelay() {
+        long totalDelay = 0L;
         if (!this.hitDelays.isEmpty()) {
-            for (long l2 : this.hitDelays) {
-                l += l2;
+            for (long delay : this.hitDelays) {
+                totalDelay += delay;
             }
-            l /= (long)this.hitDelays.size();
+            totalDelay /= (long)this.hitDelays.size();
         }
-        return l;
+        return totalDelay;
     }
 
-    private void recordAttack(UseEntityPacketBridge useEntityPacketBridge) {
+    private void recordAttack(UseEntityPacketBridge attackPacket) {
         Entity entity;
-        boolean bl = AttackPacketTimingTracker.d();
-        if (useEntityPacketBridge.S() && (entity = Minecraft.theWorld().V(useEntityPacketBridge.w())).isInstance(MappedClasses.zm)) {
-            EntityLivingBase entityLivingBase = new EntityLivingBase(entity);
-            if (entityLivingBase.c$src$I$15a9iwo() == 0 && System.currentTimeMillis() - this.lastHitTime > 400L) {
-                AttackPacketTimingTracker attackPacketTimingTracker = this;
-                if (System.currentTimeMillis() - this.lastAttackTime > attackPacketTimingTracker.Y() * 2L) {
+        if (attackPacket.S() && (entity = Minecraft.theWorld().V(attackPacket.w())).isInstance(MappedClasses.zm)) {
+            EntityLivingBase target = new EntityLivingBase(entity);
+            if (target.c$src$I$15a9iwo() == 0 && System.currentTimeMillis() - this.lastHitTime > 400L) {
+                if (System.currentTimeMillis() - this.lastAttackTime > this.getAverageHitDelay() * 2L) {
                     this.lastHitTime = System.currentTimeMillis();
                 }
             }
@@ -162,12 +146,12 @@ implements EventListener {
     }
 
 
-    public int r() {
+    public int getTargetId() {
         return this.targetId;
     }
 
     static {
-        AttackPacketTimingTracker.L(false);
+        AttackPacketTimingTracker.setInitialized(false);
     }
 }
 

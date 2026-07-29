@@ -13,9 +13,9 @@ extends LabeledTextInputComponent {
     }
 
     @Override
-    public void k(String string) {
-        super.k(string);
-        ClickGuiModulesPage.m(this.J7, string);
-        ClickGuiModulesPage.h(this.J7, ClickGuiModulesPage.d(this.J7), true);
+    public void setText(String text) {
+        super.setText(text);
+        ClickGuiModulesPage.setLegitSearchQuery(this.J7, text);
+        ClickGuiModulesPage.rebuildModuleCards(this.J7, ClickGuiModulesPage.getLegitContent(this.J7), true);
     }
 }

@@ -1,24 +1,20 @@
 package gg.vape.inventory;
 
-import gg.vape.inventory.InventoryClickBuildStage;
-import gg.vape.inventory.InventoryClickSlotStage;
-
 public interface InventoryClickOptionsStage
 extends InventoryClickSlotStage {
-    public InventoryClickBuildStage b();
+    InventoryClickBuildStage swapWithFirstHotbarSlot();
 
-    public InventoryClickBuildStage I(boolean var1);
+    InventoryClickBuildStage throwItem(boolean entireStack);
 
-    public InventoryClickBuildStage O(boolean var1);
+    InventoryClickBuildStage pickupAll(boolean rightButton);
 
-    public InventoryClickBuildStage D(int var1);
+    InventoryClickBuildStage swapWithHotbarSlot(int hotbarSlot);
 
-    public InventoryClickBuildStage U();
+    InventoryClickBuildStage quickMove();
 
-    public InventoryClickBuildStage w();
+    InventoryClickBuildStage pickup();
 
-    public InventoryClickBuildStage E(int var1);
+    InventoryClickBuildStage quickCraft(int dragEvent);
 
-    public InventoryClickBuildStage O();
+    InventoryClickBuildStage cloneStack();
 }
-

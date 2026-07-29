@@ -1,10 +1,9 @@
 package gg.vape.notification;
 
 public interface NotificationContent {
-    public double I();
+    double getHeight();
 
-    public double C();
+    double getWidth();
 
-    public void q(double var1, double var3);
+    void render(double x, double y);
 }
-

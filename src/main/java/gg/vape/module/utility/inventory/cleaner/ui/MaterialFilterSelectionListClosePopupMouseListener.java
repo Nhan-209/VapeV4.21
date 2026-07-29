@@ -9,18 +9,16 @@ import java.awt.Point;
 
 class MaterialFilterSelectionListClosePopupMouseListener
 implements GuiMouseListener {
-    final MaterialFilterSelectionList H;
-    final AnchoredPopupFrame D;
+    final AnchoredPopupFrame popup;
 
     MaterialFilterSelectionListClosePopupMouseListener(MaterialFilterSelectionList materialFilterSelectionList, AnchoredPopupFrame anchoredPopupFrame) {
-        this.H = materialFilterSelectionList;
-        this.D = anchoredPopupFrame;
+        this.popup = anchoredPopupFrame;
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        if (!this.D.w$src$Z$e457mb() && !this.D.D$src$Lgg_vape_ui_click_component_GuiComponent_$srx612().w$src$Z$e457mb()) {
-            ClientSettings.K(this.D);
+        if (!this.popup.w$src$Z$e457mb() && !this.popup.D$src$Lgg_vape_ui_click_component_GuiComponent_$srx612().w$src$Z$e457mb()) {
+            ClientSettings.removePopup(this.popup);
         }
     }
 

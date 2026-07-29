@@ -10,7 +10,6 @@ import gg.vape.module.utility.inventory.cleaner.InventoryFilterConditionType;
 import gg.vape.module.utility.inventory.cleaner.ItemFilterSelection;
 import gg.vape.module.utility.inventory.cleaner.MembershipMode;
 import gg.vape.module.utility.inventory.cleaner.ui.ItemPickerSelection;
-import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +18,10 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 public class MaterialFilterCondition
 implements InventoryFilterCondition<MaterialFilterCondition> {
-    @Override
-    public MaterialFilterCondition w() {
-        return this.copy();
-    }
     private final List<ItemFilterSelection> selections = new ArrayList<ItemFilterSelection>();
-    private static GuiComponent[] cachedComponents;
     private MembershipMode membershipMode = MembershipMode.IS_IN;
 
-    public MembershipMode x() {
+    public MembershipMode getMembershipMode() {
         return this.membershipMode;
     }
 
@@ -36,17 +30,17 @@ implements InventoryFilterCondition<MaterialFilterCondition> {
     }
 
     @Override
-    public boolean g(ItemStack itemStack) {
+    public boolean matches(ItemStack itemStack) {
         boolean isIn = this.membershipMode.equals(MembershipMode.IS_IN);
         for (ItemFilterSelection itemFilterSelection : this.selections) {
-            if (!itemFilterSelection.h(itemStack)) continue;
+            if (!itemFilterSelection.matches(itemStack)) continue;
             return isIn;
         }
         return !isIn;
     }
 
     public MaterialFilterCondition(JsonObject jsonObject) {
-        this.membershipMode = MembershipMode.N(jsonObject.get("operator").getAsString());
+        this.membershipMode = MembershipMode.fromName(jsonObject.get("operator").getAsString());
         JsonArray jsonArray = ConfigJsonUtils.q(jsonObject, "items");
         if (jsonArray != null) {
             for (int i = 0; i < jsonArray.size(); ++i) {
@@ -57,66 +51,55 @@ implements InventoryFilterCondition<MaterialFilterCondition> {
         }
     }
 
-    public void A(ItemFilterSelection itemFilterSelection) {
-        this.selections.remove(itemFilterSelection);
+    public void removeSelection(ItemFilterSelection selection) {
+        this.selections.remove(selection);
     }
 
     public MaterialFilterCondition() {
     }
 
-    public void X(ItemPickerSelection<String, ItemMappingEntry> itemPickerSelection) {
-        ItemFilterSelection itemFilterSelection = new ItemFilterSelection();
-        itemFilterSelection.G(itemPickerSelection);
-        this.b(itemFilterSelection);
+    public void addSelection(ItemPickerSelection<String, ItemMappingEntry> pickerSelection) {
+        ItemFilterSelection selection = new ItemFilterSelection();
+        selection.setSelection(pickerSelection);
+        this.addSelection(selection);
     }
 
     @Override
-    public InventoryFilterConditionType K() {
+    public InventoryFilterConditionType getType() {
         return InventoryFilterConditionType.MATERIAL;
-    }
-
-    public static GuiComponent[] H() {
-        return cachedComponents;
-    }
-
-    public static void C(GuiComponent[] guiComponentArray) {
-        cachedComponents = guiComponentArray;
     }
 
     public MaterialFilterCondition(List<ItemFilterSelection> list, MembershipMode membershipMode) {
         for (ItemFilterSelection itemFilterSelection : list) {
-            this.selections.add(itemFilterSelection.y());
+            this.selections.add(itemFilterSelection.copy());
         }
         this.membershipMode = membershipMode;
     }
 
-    static {
-        MaterialFilterCondition.C(null);
-    }
-
-    public void j(MembershipMode membershipMode) {
+    public void setMembershipMode(MembershipMode membershipMode) {
         this.membershipMode = membershipMode;
     }
 
 
-    public void b(ItemFilterSelection itemFilterSelection) {
-        this.selections.add(itemFilterSelection);
+    public void addSelection(ItemFilterSelection selection) {
+        this.selections.add(selection);
     }
 
+    @Override
     public MaterialFilterCondition copy() {
         return new MaterialFilterCondition(this.selections, this.membershipMode);
     }
 
-    public @UnmodifiableView List<ItemFilterSelection> U() {
+    public @UnmodifiableView List<ItemFilterSelection> getSelections() {
         return this.selections;
     }
 
     @Override
-    public JsonObject L() {
-        JsonObject jsonObject = InventoryFilterCondition.super.L();
+    public JsonObject toJson() {
+        JsonObject jsonObject = InventoryFilterCondition.super.toJson();
         JsonArray jsonArray = new JsonArray();
         for (ItemFilterSelection itemFilterSelection : this.selections) {
-            jsonArray.add(itemFilterSelection.Q());
+            jsonArray.add(itemFilterSelection.toJson());
         }
         jsonObject.addProperty("operator", this.membershipMode.getName());
         if (jsonArray.size() > 0) {
@@ -126,9 +109,9 @@ implements InventoryFilterCondition<MaterialFilterCondition> {
     }
 
     @Nullable
-    public ItemFilterSelection t(String string) {
+    public ItemFilterSelection findSelectionById(String string) {
         for (ItemFilterSelection itemFilterSelection : this.selections) {
-            if (itemFilterSelection.J() == null || !itemFilterSelection.J().equalsIgnoreCase(string)) continue;
+            if (itemFilterSelection.getItemName() == null || !itemFilterSelection.getItemName().equalsIgnoreCase(string)) continue;
             return itemFilterSelection;
         }
         return null;

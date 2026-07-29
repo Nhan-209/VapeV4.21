@@ -7,63 +7,47 @@ import gg.vape.rotation.RotationManager;
 
 public class RotationControlClaim
 extends ModuleControlClaim {
-    private static String Y;
-
-    static {
-        if (RotationControlClaim.S() != null) {
-            RotationControlClaim.g("xwxdz");
-        }
+    public boolean isClaimed() {
+        return super.isClaimed();
     }
 
-    public static String S() {
-        return Y;
-    }
-
-    public boolean T() {
-        return this.v$src$Z$1r7ksy2();
-    }
-
-    public boolean e(Mod mod) {
-        boolean bl = false;
-        if (this.v$src$Z$1r7ksy2() && !this.l(mod) && !this.r(mod)) {
-            bl = true;
+    public boolean isBlockedFor(Mod mod) {
+        boolean blocked = false;
+        if (this.isClaimed() && !this.isCurrentOwner(mod) && !this.hasHigherPriorityThanCurrent(mod)) {
+            blocked = true;
         }
-        if (this.X() && !this.W(mod) && this.r(this.S)) {
-            bl = true;
+        if (this.hasPendingOwner() && !this.isPendingOwner(mod) && this.hasHigherPriorityThanCurrent(this.pendingOwner)) {
+            blocked = true;
         }
-        return bl;
+        return blocked;
     }
 
     public RotationControlClaim() {
         super(true);
     }
 
-    public boolean X(Mod mod) {
-        return this.s(mod);
+    public boolean release(Mod mod) {
+        return super.release(mod);
     }
 
-    public static void g(String string) {
-        Y = string;
+    public boolean isOwnedBy(Mod mod) {
+        return this.isClaimed() && this.isCurrentOwner(mod) && !this.hasPendingOwner();
     }
 
-    public boolean U(Mod mod) {
-        return this.v$src$Z$1r7ksy2() && this.l(mod) && !this.X();
-    }
-
-    public boolean d(Mod mod) {
-        return this.h(mod, false);
+    public boolean acquire(Mod mod) {
+        return this.acquire(mod, false);
     }
 
 
-    public boolean h(Mod mod, boolean bl) {
-        if (bl && this.v$src$Z$1r7ksy2() && !this.l(mod) && RotationManager.b.u()) {
-            AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)RotationManager.b.w();
-            if (this.r(mod) || adaptiveRotationController.O$src$Z$1lvi05g()) {
-                this.v();
-                this.X(this.v);
+    public boolean acquire(Mod mod, boolean allowPreemption) {
+        if (allowPreemption && this.isClaimed() && !this.isCurrentOwner(mod) && RotationManager.INSTANCE.hasAdaptiveController()) {
+            AdaptiveRotationController controller = (AdaptiveRotationController)RotationManager.INSTANCE.getActiveController();
+            if (this.hasHigherPriorityThanCurrent(mod) || controller.isRelativeMode()) {
+                Mod previousOwner = this.owner;
+                this.clearPendingOwner();
+                this.release(previousOwner);
             }
         }
-        return this.w(mod);
+        return this.tryAcquire(mod);
     }
 }
-

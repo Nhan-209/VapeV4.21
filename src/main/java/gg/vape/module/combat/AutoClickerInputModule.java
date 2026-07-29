@@ -33,20 +33,18 @@ extends Mod {
 
     @EventHandler
     public final void onPreRenderTick(EventPreRenderTick eventPreRenderTick) {
-        if (!KeyBindingInputState.l()) {
+        if (!KeyBindingInputState.isLeftButtonDown()) {
             return;
         }
-        this.timingState.Z((int)((Double)this.cpsValue.K() - 1.0), (int)((Double)this.cpsValue.K() + 1.0));
-        if (!this.clickTimer.hasTimeElapsed(this.timingState.Y()) && (Double)this.cpsValue.K() < 20.0) {
+        this.timingState.configureCpsRange((int)((Double)this.cpsValue.getValue() - 1.0), (int)((Double)this.cpsValue.getValue() + 1.0));
+        if (!this.clickTimer.hasTimeElapsed(this.timingState.getNextDelayMillis()) && (Double)this.cpsValue.getValue() < 20.0) {
             return;
         }
         GuiScreen guiScreen = Minecraft.currentScreen();
-        boolean bl = guiScreen.isInstance(MappedClasses.Ft);
-        boolean bl2 = guiScreen.isNull();
-        if (bl && !bl2) {
-            boolean bl3;
-            boolean bl4 = bl3 = KeyboardInput.isKeyDown(160) || KeyboardInput.isKeyDown(161);
-            if (bl3 && guiScreen.isNotNull()) {
+        boolean isContainerScreen = guiScreen.isInstance(MappedClasses.Ft);
+        if (isContainerScreen) {
+            boolean isShiftHeld = KeyboardInput.isKeyDown(160) || KeyboardInput.isKeyDown(161);
+            if (isShiftHeld && guiScreen.isNotNull()) {
                 GuiContainer guiContainer = new GuiContainer(guiScreen);
                 this.clickHoveredSlot(guiContainer);
             }
@@ -64,8 +62,8 @@ extends Mod {
         ItemStack heldItem;
         boolean outsideBounds;
         int hoveredSlotIndex = -1;
-        int mouseX = MouseInput.N() * guiContainer.g() / Minecraft.J();
-        int mouseY = guiContainer.k() - MouseInput.u() * guiContainer.k() / Minecraft.h() - 1;
+        int mouseX = MouseInput.getMouseX() * guiContainer.g() / Minecraft.J();
+        int mouseY = guiContainer.k() - MouseInput.getInvertedMouseY() * guiContainer.k() / Minecraft.h() - 1;
         Slot slot = guiContainer.getSlotAtPosition(mouseX, mouseY);
         int guiLeft = guiContainer.p();
         int guiTop = guiContainer.v();
@@ -77,8 +75,8 @@ extends Mod {
             hoveredSlotIndex = -1;
         }
         if (hoveredSlotIndex >= 0 && (heldItem = RotationUtil.Z()).isNull() && this.lastClickedSlot != hoveredSlotIndex) {
-            KeyBindingInputState.k();
-            KeyBindingInputState.r();
+            KeyBindingInputState.sendLeftButtonDown();
+            KeyBindingInputState.sendLeftButtonUp();
             if (this.rollChance(0.8)) {
                 this.lastClickedSlot = hoveredSlotIndex;
             }

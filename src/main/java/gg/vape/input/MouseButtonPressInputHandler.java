@@ -5,15 +5,14 @@ import gg.vape.input.InputEventHandler;
 
 public class MouseButtonPressInputHandler
 implements InputEventHandler {
-    int x;
+    int button;
 
-    public MouseButtonPressInputHandler(int n) {
-        this.x = n;
+    public MouseButtonPressInputHandler(int button) {
+        this.button = button;
     }
 
     @Override
-    public boolean handle(long l, long l2) {
-        return InputEventDispatcher.getInstance().getMouseState().setButtonState(this.x, true);
+    public boolean handle(long firstArgument, long secondArgument) {
+        return InputEventDispatcher.getInstance().getMouseState().setButtonState(this.button, true);
     }
 }
-

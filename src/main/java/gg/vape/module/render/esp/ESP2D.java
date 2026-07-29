@@ -23,7 +23,6 @@ import gg.vape.utils.render.RenderUtils;
 import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityLivingBase;
-import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.GlStateManager;
 import gg.vape.wrapper.impl.RenderWorldLastEvent;
 import java.awt.Color;
@@ -38,184 +37,170 @@ extends SubModule<ESP> {
     private static final String NON_ASCII_PATTERN = "[^\u00a7^\\x00-\\x7F]";
 
     @EventHandler
-    public void onRender2D(EventRender2D eventRender2D) {
-        if (OffscreenRenderContext.W()) {
+    public void onRender2D(EventRender2D event) {
+        if (OffscreenRenderContext.isRenderingOffscreen()) {
             return;
         }
-        SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().W(0.9, true);
-        OpenGlBackendHolder.d.m();
-        float f = 1.0f;
-        float f2 = 2.0f;
-        OpenGlBackendHolder.d.H(f, f, f);
+        SmoothFontRenderer fontRenderer = Vape.INSTANCE.getFontManager().W(0.9, true);
+        OpenGlBackendHolder.backend.pushMatrix();
+        float renderScale = 1.0f;
+        float coordinateScale = 2.0f;
+        OpenGlBackendHolder.backend.scale(renderScale, renderScale, renderScale);
         GlStateManager.enableAlpha();
-        float f3 = RenderWorldLastEvent.getPartialTicks();
-        boolean bl = GL11.glIsEnabled((int)3042);
+        float partialTicks = RenderWorldLastEvent.getPartialTicks();
+        boolean blendEnabled = GL11.glIsEnabled((int)3042);
         RenderUtils.g();
         for (ProjectedEntityBounds projectedEntityBounds : this.pendingBounds) {
-            double d;
-            boolean bl2;
-            float f4;
-            if (ForgeVersion.MC_1_16_5.d()) {
-                f4 = eventRender2D.getRenderManager().getPlayerViewX();
-                float f5 = eventRender2D.getRenderManager().getPlayerViewY();
-            }
-            f4 = eventRender2D.getDisplayHeight();
-            double d2 = projectedEntityBounds.r / (double)f2 / (double)f / (double)f3;
-            double d3 = projectedEntityBounds.V / (double)f2 / (double)f / (double)f3;
-            double d4 = ((double)f4 - projectedEntityBounds.g / (double)f3) / (double)f2 / (double)f;
-            double d5 = ((double)f4 - projectedEntityBounds.I / (double)f3) / (double)f2 / (double)f;
+            double textWidth;
+            float displayHeight = event.getDisplayHeight();
+            double left = projectedEntityBounds.minX / (double)coordinateScale / (double)renderScale / (double)partialTicks;
+            double right = projectedEntityBounds.maxX / (double)coordinateScale / (double)renderScale / (double)partialTicks;
+            double top = ((double)displayHeight - projectedEntityBounds.maxY / (double)partialTicks) / (double)coordinateScale / (double)renderScale;
+            double bottom = ((double)displayHeight - projectedEntityBounds.minY / (double)partialTicks) / (double)coordinateScale / (double)renderScale;
             GlStateManager.disableTexture2D();
-            OpenGlBackendHolder.d.r(1.0f);
+            OpenGlBackendHolder.backend.setLineWidth(1.0f);
             GlStateManager.enableBlend();
-            String string = projectedEntityBounds.c.k();
-            boolean bl3 = projectedEntityBounds.c.K$src$Z$1xmao67();
-            boolean bl4 = projectedEntityBounds.c.f();
-            boolean bl5 = bl2 = bl4 || bl3;
-            if (this.parentEsp.c.L().booleanValue() && (!this.parentEsp.D.L().booleanValue() || bl2)) {
-                float f6 = (float)projectedEntityBounds.U.getAlpha() / 255.0f;
+            boolean friend = projectedEntityBounds.context.isFriend();
+            boolean enemy = projectedEntityBounds.context.isEnemy();
+            boolean priorityTarget = enemy || friend;
+            if (this.parentEsp.showBoundingBox.getEffectiveValue().booleanValue() && (!this.parentEsp.priorityOnly.getEffectiveValue().booleanValue() || priorityTarget)) {
+                float boxAlpha = (float)projectedEntityBounds.color.getAlpha() / 255.0f;
                 if (GuiRenderPrimitives.d()) {
-                    double d6 = d5 - d4;
-                    d = d3 - d2;
-                    double d7 = 1.0;
-                    BufferedGuiRenderPrimitives.V(d2, d4, d, d7, new Color(0.0f, 0.0f, 0.0f, 0.4f * f6));
-                    BufferedGuiRenderPrimitives.V(d2, d4, d7, d6, new Color(0.0f, 0.0f, 0.0f, 0.4f * f6));
-                    BufferedGuiRenderPrimitives.V(d3, d5, -d7, -d6, new Color(0.0f, 0.0f, 0.0f, 0.4f * f6));
-                    BufferedGuiRenderPrimitives.V(d3, d5, -d, -d7, new Color(0.0f, 0.0f, 0.0f, 0.4f * f6));
-                    d6 = (d5 -= 1.0) - (d4 += 1.0);
-                    d = (d3 -= 1.0) - (d2 += 1.0);
-                    BufferedGuiRenderPrimitives.V(d2, d4, d, d7, new Color(0.0f, 0.0f, 0.0f, 0.4f * f6));
-                    BufferedGuiRenderPrimitives.V(d2, d4, d7, d6, new Color(0.0f, 0.0f, 0.0f, 0.4f * f6));
-                    BufferedGuiRenderPrimitives.V(d3, d5, -d7, -d6, new Color(0.0f, 0.0f, 0.0f, 0.4f * f6));
-                    BufferedGuiRenderPrimitives.V(d3, d5, -d, -d7, new Color(0.0f, 0.0f, 0.0f, 0.4f * f6));
-                    d6 = (d5 += 0.5) - (d4 -= 0.5);
-                    d = (d3 += 0.5) - (d2 -= 0.5);
-                    BufferedGuiRenderPrimitives.V(d2, d4, d, d7, projectedEntityBounds.U);
-                    BufferedGuiRenderPrimitives.V(d2, d4, d7, d6, projectedEntityBounds.U);
-                    BufferedGuiRenderPrimitives.V(d3, d5, -d7, -d6, projectedEntityBounds.U);
-                    BufferedGuiRenderPrimitives.V(d3, d5, -d, -d7, projectedEntityBounds.U);
+                    double boxHeight = bottom - top;
+                    double boxWidth = right - left;
+                    double borderWidth = 1.0;
+                    Color borderColor = new Color(0.0f, 0.0f, 0.0f, 0.4f * boxAlpha);
+                    BufferedGuiRenderPrimitives.fillRect(left, top, boxWidth, borderWidth, borderColor);
+                    BufferedGuiRenderPrimitives.fillRect(left, top, borderWidth, boxHeight, borderColor);
+                    BufferedGuiRenderPrimitives.fillRect(right, bottom, -borderWidth, -boxHeight, borderColor);
+                    BufferedGuiRenderPrimitives.fillRect(right, bottom, -boxWidth, -borderWidth, borderColor);
+                    boxHeight = (bottom -= 1.0) - (top += 1.0);
+                    boxWidth = (right -= 1.0) - (left += 1.0);
+                    BufferedGuiRenderPrimitives.fillRect(left, top, boxWidth, borderWidth, borderColor);
+                    BufferedGuiRenderPrimitives.fillRect(left, top, borderWidth, boxHeight, borderColor);
+                    BufferedGuiRenderPrimitives.fillRect(right, bottom, -borderWidth, -boxHeight, borderColor);
+                    BufferedGuiRenderPrimitives.fillRect(right, bottom, -boxWidth, -borderWidth, borderColor);
+                    boxHeight = (bottom += 0.5) - (top -= 0.5);
+                    boxWidth = (right += 0.5) - (left -= 0.5);
+                    BufferedGuiRenderPrimitives.fillRect(left, top, boxWidth, borderWidth, projectedEntityBounds.color);
+                    BufferedGuiRenderPrimitives.fillRect(left, top, borderWidth, boxHeight, projectedEntityBounds.color);
+                    BufferedGuiRenderPrimitives.fillRect(right, bottom, -borderWidth, -boxHeight, projectedEntityBounds.color);
+                    BufferedGuiRenderPrimitives.fillRect(right, bottom, -boxWidth, -borderWidth, projectedEntityBounds.color);
                 } else {
-                    OpenGlBackendHolder.d.k(0.0, 0.0, 0.0, 0.4 * (double)f6);
+                    OpenGlBackendHolder.backend.setColor(0.0, 0.0, 0.0, 0.4 * (double)boxAlpha);
                     GL11.glBegin((int)2);
-                    GL11.glVertex2d((double)d2, (double)d4);
-                    GL11.glVertex2d((double)d3, (double)d4);
-                    GL11.glVertex2d((double)d3, (double)d5);
-                    GL11.glVertex2d((double)d2, (double)d5);
+                    GL11.glVertex2d((double)left, (double)top);
+                    GL11.glVertex2d((double)right, (double)top);
+                    GL11.glVertex2d((double)right, (double)bottom);
+                    GL11.glVertex2d((double)left, (double)bottom);
                     GL11.glEnd();
                     GL11.glBegin((int)2);
-                    GL11.glVertex2d((double)(d2 + 1.0), (double)(d4 + 1.0));
-                    GL11.glVertex2d((double)(d3 - 1.0), (double)(d4 + 1.0));
-                    GL11.glVertex2d((double)(d3 - 1.0), (double)(d5 - 1.0));
-                    GL11.glVertex2d((double)(d2 + 1.0), (double)(d5 - 1.0));
+                    GL11.glVertex2d((double)(left + 1.0), (double)(top + 1.0));
+                    GL11.glVertex2d((double)(right - 1.0), (double)(top + 1.0));
+                    GL11.glVertex2d((double)(right - 1.0), (double)(bottom - 1.0));
+                    GL11.glVertex2d((double)(left + 1.0), (double)(bottom - 1.0));
                     GL11.glEnd();
                     GlStateManager.enableBlend();
-                    RenderUtils.w(projectedEntityBounds.U);
+                    RenderUtils.w(projectedEntityBounds.color);
                     GL11.glBegin((int)2);
-                    GL11.glVertex2d((double)(d2 + 0.5), (double)(d4 + 0.5));
-                    GL11.glVertex2d((double)(d3 - 0.5), (double)(d4 + 0.5));
-                    GL11.glVertex2d((double)(d3 - 0.5), (double)(d5 - 0.5));
-                    GL11.glVertex2d((double)(d2 + 0.5), (double)(d5 - 0.5));
+                    GL11.glVertex2d((double)(left + 0.5), (double)(top + 0.5));
+                    GL11.glVertex2d((double)(right - 0.5), (double)(top + 0.5));
+                    GL11.glVertex2d((double)(right - 0.5), (double)(bottom - 0.5));
+                    GL11.glVertex2d((double)(left + 0.5), (double)(bottom - 0.5));
                     GL11.glEnd();
                     GlStateManager.disableBlend();
                 }
             }
-            if (projectedEntityBounds.y.isInstance(MappedClasses.zm)) {
-                EntityLivingBase entityLivingBase = new EntityLivingBase(projectedEntityBounds.y.getObject());
-                float f7 = projectedEntityBounds.c.t();
-                if (this.parentEsp.J.L().booleanValue() && f7 >= 0.0f && projectedEntityBounds.c.y() >= 0.0f) {
-                    double d8 = Math.min(1.0f, f7 / projectedEntityBounds.c.y());
+            if (projectedEntityBounds.entity.isInstance(MappedClasses.zm)) {
+                EntityLivingBase entityLivingBase = new EntityLivingBase(projectedEntityBounds.entity.getObject());
+                float effectiveHealth = projectedEntityBounds.context.getEffectiveHealth();
+                if (this.parentEsp.healthBar.getEffectiveValue().booleanValue() && effectiveHealth >= 0.0f && projectedEntityBounds.context.getMaxHealth() >= 0.0f) {
+                    double healthFraction = Math.min(1.0f, effectiveHealth / projectedEntityBounds.context.getMaxHealth());
                     if (GuiRenderPrimitives.d()) {
-                        BufferedGuiRenderPrimitives.r(d2 - 2.0, d5 - 0.5, d2 - 2.0, d4 + 0.5, d2 - 4.0, d4 + 0.5, d2 - 4.0, d5 - 0.5, new Color(0.0f, 0.0f, 0.0f, 0.4f));
+                        BufferedGuiRenderPrimitives.fillQuad(left - 2.0, bottom - 0.5, left - 2.0, top + 0.5, left - 4.0, top + 0.5, left - 4.0, bottom - 0.5, new Color(0.0f, 0.0f, 0.0f, 0.4f));
                     } else {
                         GlStateManager.enableBlend();
-                        OpenGlBackendHolder.d.k(0.0, 0.0, 0.0, 0.4);
+                        OpenGlBackendHolder.backend.setColor(0.0, 0.0, 0.0, 0.4);
                         GL11.glBegin((int)7);
-                        GL11.glVertex2d((double)(d2 - 2.0), (double)(d5 - 0.5));
-                        GL11.glVertex2d((double)(d2 - 2.0), (double)(d4 + 0.5));
-                        GL11.glVertex2d((double)(d2 - 4.0), (double)(d4 + 0.5));
-                        GL11.glVertex2d((double)(d2 - 4.0), (double)(d5 - 0.5));
+                        GL11.glVertex2d((double)(left - 2.0), (double)(bottom - 0.5));
+                        GL11.glVertex2d((double)(left - 2.0), (double)(top + 0.5));
+                        GL11.glVertex2d((double)(left - 4.0), (double)(top + 0.5));
+                        GL11.glVertex2d((double)(left - 4.0), (double)(bottom - 0.5));
                         GL11.glEnd();
                     }
-                    double d9 = d5 - d4 - 1.0;
-                    double d10 = d4 + d9 * d8;
-                    double d11 = 0.0;
-                    double d12 = 0.0;
-                    double d13 = 0.0;
-                    double d14 = 0.0;
-                    if (d8 >= 0.9) {
-                        d11 = 0.0;
-                        d12 = 1.0;
-                        d13 = 0.0;
-                        d14 = 1.0;
-                    } else if (d8 >= 0.75) {
-                        d11 = 0.9;
-                        d12 = 1.0;
-                        d13 = 0.0;
-                        d14 = 1.0;
-                    } else if (d8 >= 0.5) {
-                        d11 = 1.0;
-                        d12 = 1.0;
-                        d13 = 0.0;
-                        d14 = 1.0;
-                    } else if (d8 >= 0.25) {
-                        d11 = 1.0;
-                        d12 = 0.5;
-                        d13 = 0.0;
-                        d14 = 1.0;
-                    } else if (d8 >= 0.0) {
-                        d11 = 1.0;
-                        d12 = 0.0;
-                        d13 = 0.0;
-                        d14 = 1.0;
+                    double healthBarHeight = bottom - top - 1.0;
+                    double healthBarTop = top + healthBarHeight * healthFraction;
+                    double red = 0.0;
+                    double green = 0.0;
+                    double blue = 0.0;
+                    double alpha = 0.0;
+                    if (healthFraction >= 0.9) {
+                        green = 1.0;
+                        alpha = 1.0;
+                    } else if (healthFraction >= 0.75) {
+                        red = 0.9;
+                        green = 1.0;
+                        alpha = 1.0;
+                    } else if (healthFraction >= 0.5) {
+                        red = 1.0;
+                        green = 1.0;
+                        alpha = 1.0;
+                    } else if (healthFraction >= 0.25) {
+                        red = 1.0;
+                        green = 0.5;
+                        alpha = 1.0;
+                    } else if (healthFraction >= 0.0) {
+                        red = 1.0;
+                        alpha = 1.0;
                     }
                     if (GuiRenderPrimitives.d()) {
-                        BufferedGuiRenderPrimitives.r(d2 - 2.5, d10, d2 - 2.5, d4 + 1.0, d2 - 3.5, d4 + 1.0, d2 - 3.5, d10, new Color((int)(d11 * 255.0), (int)(d12 * 255.0), (int)(d13 * 255.0), (int)(d14 * 255.0)));
+                        BufferedGuiRenderPrimitives.fillQuad(left - 2.5, healthBarTop, left - 2.5, top + 1.0, left - 3.5, top + 1.0, left - 3.5, healthBarTop, new Color((int)(red * 255.0), (int)(green * 255.0), (int)(blue * 255.0), (int)(alpha * 255.0)));
                     } else {
-                        GL11.glColor4d((double)d11, (double)d12, (double)d13, (double)d14);
+                        GL11.glColor4d((double)red, (double)green, (double)blue, (double)alpha);
                         GL11.glBegin((int)7);
-                        GL11.glVertex2d((double)(d2 - 2.5), (double)d10);
-                        GL11.glVertex2d((double)(d2 - 2.5), (double)(d4 + 1.0));
-                        GL11.glVertex2d((double)(d2 - 3.5), (double)(d4 + 1.0));
-                        GL11.glVertex2d((double)(d2 - 3.5), (double)d10);
+                        GL11.glVertex2d((double)(left - 2.5), (double)healthBarTop);
+                        GL11.glVertex2d((double)(left - 2.5), (double)(top + 1.0));
+                        GL11.glVertex2d((double)(left - 3.5), (double)(top + 1.0));
+                        GL11.glVertex2d((double)(left - 3.5), (double)healthBarTop);
                         GL11.glEnd();
                     }
                 }
-                if (this.parentEsp.U.L().booleanValue()) {
+                if (this.parentEsp.showName.getEffectiveValue().booleanValue()) {
                     FriendEntry friendEntry;
-                    String string2;
-                    String string3 = string2 = this.parentEsp.I.L() == false || bl2 ? projectedEntityBounds.c.k() : projectedEntityBounds.c.o();
-                    if (this.parentEsp.I.L().booleanValue()) {
-                        string2 = string2.replaceAll(NON_ASCII_PATTERN, "");
+                    String displayName = this.parentEsp.useDisplayName.getEffectiveValue() == false || priorityTarget ? projectedEntityBounds.context.getName() : projectedEntityBounds.context.getTypeName();
+                    if (this.parentEsp.useDisplayName.getEffectiveValue().booleanValue()) {
+                        displayName = displayName.replaceAll(NON_ASCII_PATTERN, "");
                     }
-                    if (bl3 && (friendEntry = Vape.INSTANCE.getFriendManager().O(projectedEntityBounds.c.k())) != null) {
-                        string2 = friendEntry.o();
+                    if (friend && (friendEntry = Vape.INSTANCE.getFriendManager().O(projectedEntityBounds.context.getName())) != null) {
+                        displayName = friendEntry.o();
                     }
-                    d = smoothFontRenderer.N(string2);
-                    if (this.parentEsp.a.L().booleanValue()) {
-                        Color color = bl2 ? projectedEntityBounds.U : new Color(0, 0, 0, 95);
+                    textWidth = fontRenderer.N(displayName);
+                    if (this.parentEsp.showNameBackground.getEffectiveValue().booleanValue()) {
+                        Color backgroundColor = priorityTarget ? projectedEntityBounds.color : new Color(0, 0, 0, 95);
                         GlStateManager.disableTexture2D();
-                        boolean bl6 = entityLivingBase.P();
-                        double d15 = bl6 ? 1.5 : 0.5;
-                        Color color2 = bl6 ? new Color(255, 0, 0, 200) : new Color(0, 0, 0, 102);
-                        float f8 = (float)(d3 + (d2 - d3) / 2.0 - d / 2.0 - 1.5);
-                        float f9 = (float)(d4 - 10.0);
-                        float f10 = (float)(d3 + (d2 - d3) / 2.0 + d / 2.0 + 1.5);
-                        float f11 = (float)(d4 - 1.0);
+                        boolean entityHighlighted = entityLivingBase.P();
+                        double borderWidth = entityHighlighted ? 1.5 : 0.5;
+                        Color borderColor = entityHighlighted ? new Color(255, 0, 0, 200) : new Color(0, 0, 0, 102);
+                        float backgroundLeft = (float)(right + (left - right) / 2.0 - textWidth / 2.0 - 1.5);
+                        float backgroundTop = (float)(top - 10.0);
+                        float backgroundRight = (float)(right + (left - right) / 2.0 + textWidth / 2.0 + 1.5);
+                        float backgroundBottom = (float)(top - 1.0);
                         if (GuiRenderPrimitives.d()) {
-                            BufferedGuiRenderPrimitives.t(f8, f9 + 1.0f, f10 - f8, f11 - f9 + 1.0f, d15, color, color2);
+                            BufferedGuiRenderPrimitives.fillBorderAdjustedRect(backgroundLeft, backgroundTop + 1.0f, backgroundRight - backgroundLeft, backgroundBottom - backgroundTop + 1.0f, borderWidth, backgroundColor, borderColor);
                         } else {
-                            RenderUtils.M(f8, f9, f10, f11, d15, color, color2);
+                            RenderUtils.M(backgroundLeft, backgroundTop, backgroundRight, backgroundBottom, borderWidth, backgroundColor, borderColor);
                         }
                         GlStateManager.enableTexture2D();
                     }
-                    smoothFontRenderer.g(string2, d3 + (d2 - d3) / 2.0 - d / 2.0, d4 - 8.0, bl2 ? -1 : projectedEntityBounds.U.getRGB());
+                    fontRenderer.g(displayName, right + (left - right) / 2.0 - textWidth / 2.0, top - 8.0, priorityTarget ? -1 : projectedEntityBounds.color.getRGB());
                 }
             }
-            OpenGlBackendHolder.d.q(1.0f, 1.0f, 1.0f, 1.0f);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2848);
+            OpenGlBackendHolder.backend.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+            OpenGlBackendHolder.backend.disableCapability(2848);
             GlStateManager.enableTexture2D();
         }
         RenderUtils.f();
-        if (bl) {
+        if (blendEnabled) {
             GlStateManager.enableBlend();
         } else {
             GlStateManager.disableBlend();
@@ -226,36 +211,36 @@ extends SubModule<ESP> {
 
 
     @EventHandler
-    public void S(EventPreRenderLiving eventPreRenderLiving) {
-        if (eventPreRenderLiving.getWorld().isNull()) {
+    public void onPreRenderLiving(EventPreRenderLiving event) {
+        if (event.getWorld().isNull()) {
             return;
         }
-        Entity entity = eventPreRenderLiving.getEntity();
-        double d = eventPreRenderLiving.getX();
-        double d2 = eventPreRenderLiving.getY();
-        double d3 = eventPreRenderLiving.getZ();
-        MutableColor mutableColor = this.parentEsp.J(eventPreRenderLiving.getThePlayer(), entity.getObject());
-        if (mutableColor == null) {
+        Entity entity = event.getEntity();
+        double renderX = event.getX();
+        double renderY = event.getY();
+        double renderZ = event.getZ();
+        MutableColor color = this.parentEsp.resolveEntityColor(event.getThePlayer(), entity.getObject());
+        if (color == null) {
             return;
         }
         EntityLivingBase entityLivingBase = new EntityLivingBase(entity.getObject());
         RenderUtil.d();
-        float f = entity.b();
-        AxisAlignedBB axisAlignedBB = entity.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().expand(f, f, f);
-        AxisAlignedBB axisAlignedBB2 = AxisAlignedBB.create(axisAlignedBB.getMinX() - entity.z(), axisAlignedBB.getMinY() - entity.N(), axisAlignedBB.getMinZ() - entity.h(), axisAlignedBB.getMaxX() - entity.z(), axisAlignedBB.getMaxY() - entity.N(), axisAlignedBB.getMaxZ() - entity.h());
-        RenderEntityContext renderEntityContext = RenderEntityContextCache.V(entityLivingBase, eventPreRenderLiving.getThePlayer());
-        ProjectedEntityBounds projectedEntityBounds = new ProjectedEntityBounds(d, d2, d3, axisAlignedBB2, entity, renderEntityContext, mutableColor);
-        if (projectedEntityBounds.L) {
+        float expansion = entity.b();
+        AxisAlignedBB worldBounds = entity.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().expand(expansion, expansion, expansion);
+        AxisAlignedBB relativeBounds = AxisAlignedBB.create(worldBounds.getMinX() - entity.z(), worldBounds.getMinY() - entity.N(), worldBounds.getMinZ() - entity.h(), worldBounds.getMaxX() - entity.z(), worldBounds.getMaxY() - entity.N(), worldBounds.getMaxZ() - entity.h());
+        RenderEntityContext renderEntityContext = RenderEntityContextCache.getOrCreate(entityLivingBase, event.getThePlayer());
+        ProjectedEntityBounds projectedEntityBounds = new ProjectedEntityBounds(renderX, renderY, renderZ, relativeBounds, entity, renderEntityContext, color);
+        if (projectedEntityBounds.onScreen) {
             this.pendingBounds.add(projectedEntityBounds);
-            if (this.parentEsp.U.L().booleanValue()) {
-                eventPreRenderLiving.setCancelled(true);
+            if (this.parentEsp.showName.getEffectiveValue().booleanValue()) {
+                event.setCancelled(true);
             }
         }
         RenderUtil.Y();
     }
 
-    public ESP2D(Mod mod, String string) {
-        super(mod, string);
+    public ESP2D(Mod parent, String name) {
+        super(parent, name);
         this.pendingBounds = new ArrayList<ProjectedEntityBounds>();
     }
 }

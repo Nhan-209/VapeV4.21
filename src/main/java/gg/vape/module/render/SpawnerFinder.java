@@ -33,7 +33,7 @@ extends Mod {
     public SpawnerFinder() {
         super("SpawnerFinder", (int)moduleId, Category.k);
         this.showDistance = BooleanValue.create(this, "Show distance", true);
-        this.spawnerWhitelist = OptionalLimitValue.l(this, "Spawner names-whitelist", "Spawners", OptionalLimitValue.r, "Zombie", "Skeleton", "Creeper", "Spider");
+        this.spawnerWhitelist = OptionalLimitValue.create(this, "Spawner names-whitelist", "Spawners", OptionalLimitValue.ALLOW_LIST_COLOR, "Zombie", "Skeleton", "Creeper", "Spider");
         this.addValue(this.scale, this.showDistance, this.spawnerWhitelist);
     }
 
@@ -44,9 +44,9 @@ extends Mod {
             Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().B(1.0);
             RenderUtil.d();
             GL11.glBlendFunc((int)770, (int)771);
-            OpenGlBackendHolder.d.r(1.5f);
-            OpenGlBackendHolder.d.l(2848);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2929);
+            OpenGlBackendHolder.backend.setLineWidth(1.5f);
+            OpenGlBackendHolder.backend.enableCapability(2848);
+            OpenGlBackendHolder.backend.disableCapability(2929);
             GL11.glDepthMask((boolean)false);
             double d = RenderManager.getInterpolatedRenderPosX();
             double d2 = RenderManager.getInterpolatedRenderPosY();
@@ -56,30 +56,30 @@ extends Mod {
             for (Object e : Minecraft.theWorld().R$src$Ljava_util_List_$1ycbpra()) {
                 TileEntityMobSpawner tileEntityMobSpawner;
                 String string;
-                if (!MappedClasses.uO.isInstance(e) || !this.spawnerWhitelist.w(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
+                if (!MappedClasses.uO.isInstance(e) || !this.spawnerWhitelist.matches(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
                 String string2 = "";
-                if (this.showDistance.L().booleanValue()) {
+                if (this.showDistance.getEffectiveValue().booleanValue()) {
                     String string3 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)entityPlayerSP.i((double)tileEntityMobSpawner.getX(), (double)tileEntityMobSpawner.getY(), (double)tileEntityMobSpawner.getZ()) + ClientSettings.F + "a]" + ClientSettings.F + "r";
                     string2 = string2 + string3 + " ";
                 }
                 string2 = string2 + string + " spawner";
-                RenderUtil.U(string2, (double)tileEntityMobSpawner.getX() - d + 0.5, (double)tileEntityMobSpawner.getY() - d2 - 1.0, (double)tileEntityMobSpawner.getZ() - d3 + 0.5, (Double)this.scale.K(), RotationUtil.p(entityPlayerSP, tileEntityMobSpawner.getX(), tileEntityMobSpawner.getY(), tileEntityMobSpawner.getZ()), -1, this.backgroundColor, 1.4, matrixStack);
+                RenderUtil.U(string2, (double)tileEntityMobSpawner.getX() - d + 0.5, (double)tileEntityMobSpawner.getY() - d2 - 1.0, (double)tileEntityMobSpawner.getZ() - d3 + 0.5, (Double)this.scale.getValue(), RotationUtil.p(entityPlayerSP, tileEntityMobSpawner.getX(), tileEntityMobSpawner.getY(), tileEntityMobSpawner.getZ()), -1, this.backgroundColor, 1.4, matrixStack);
             }
             GL11.glDepthMask((boolean)true);
-            OpenGlBackendHolder.d.l(2929);
-            OpenGlBackendHolder.d.l(3553);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2848);
-            OpenGlBackendHolder.d.F();
+            OpenGlBackendHolder.backend.enableCapability(2929);
+            OpenGlBackendHolder.backend.enableCapability(3553);
+            OpenGlBackendHolder.backend.disableCapability(2848);
+            OpenGlBackendHolder.backend.popMatrix();
             Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
             return;
         }
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().B(1.0);
         RenderUtil.d();
-        OpenGlBackendHolder.d.l(3042);
+        OpenGlBackendHolder.backend.enableCapability(3042);
         GL11.glBlendFunc((int)770, (int)771);
-        OpenGlBackendHolder.d.r(1.5f);
-        OpenGlBackendHolder.d.l(2848);
-        OpenGlBackendHolder.d.u$src$V$hntn98(2929);
+        OpenGlBackendHolder.backend.setLineWidth(1.5f);
+        OpenGlBackendHolder.backend.enableCapability(2848);
+        OpenGlBackendHolder.backend.disableCapability(2929);
         GL11.glDepthMask((boolean)false);
         double d = RenderManager.getInterpolatedRenderPosX();
         double d4 = RenderManager.getInterpolatedRenderPosY();
@@ -89,21 +89,21 @@ extends Mod {
         for (Object e : Minecraft.theWorld().R$src$Ljava_util_List_$1ycbpra()) {
             TileEntityMobSpawner tileEntityMobSpawner;
             String string;
-            if (!MappedClasses.uO.isInstance(e) || !this.spawnerWhitelist.w(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
+            if (!MappedClasses.uO.isInstance(e) || !this.spawnerWhitelist.matches(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
             String string4 = "";
-            if (this.showDistance.L().booleanValue()) {
+            if (this.showDistance.getEffectiveValue().booleanValue()) {
                 String string5 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)entityPlayerSP.i((double)tileEntityMobSpawner.getX(), (double)tileEntityMobSpawner.getY(), (double)tileEntityMobSpawner.getZ()) + ClientSettings.F + "a]" + ClientSettings.F + "r";
                 string4 = string4 + string5 + " ";
             }
             string4 = string4 + string + " spawner";
-            RenderUtil.U(string4, (double)tileEntityMobSpawner.getX() - d + 0.5, (double)tileEntityMobSpawner.getY() - d4 - 1.0, (double)tileEntityMobSpawner.getZ() - d5 + 0.5, (Double)this.scale.K(), RotationUtil.p(entityPlayerSP, tileEntityMobSpawner.getX(), tileEntityMobSpawner.getY(), tileEntityMobSpawner.getZ()), -1, this.backgroundColor, 1.4, matrixStack);
+            RenderUtil.U(string4, (double)tileEntityMobSpawner.getX() - d + 0.5, (double)tileEntityMobSpawner.getY() - d4 - 1.0, (double)tileEntityMobSpawner.getZ() - d5 + 0.5, (Double)this.scale.getValue(), RotationUtil.p(entityPlayerSP, tileEntityMobSpawner.getX(), tileEntityMobSpawner.getY(), tileEntityMobSpawner.getZ()), -1, this.backgroundColor, 1.4, matrixStack);
         }
         GL11.glDepthMask((boolean)true);
-        OpenGlBackendHolder.d.l(2929);
-        OpenGlBackendHolder.d.l(3553);
-        OpenGlBackendHolder.d.u$src$V$hntn98(2848);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3042);
-        OpenGlBackendHolder.d.F();
+        OpenGlBackendHolder.backend.enableCapability(2929);
+        OpenGlBackendHolder.backend.enableCapability(3553);
+        OpenGlBackendHolder.backend.disableCapability(2848);
+        OpenGlBackendHolder.backend.disableCapability(3042);
+        OpenGlBackendHolder.backend.popMatrix();
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
     }
 }

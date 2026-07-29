@@ -4,26 +4,26 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class MouseClickRateTracker {
-    private static Queue<Long> m = new LinkedList<Long>();
+    private static Queue<Long> clickExpirations = new LinkedList<Long>();
 
-    public static int m() {
-        long l = System.currentTimeMillis();
-        while (!m.isEmpty() && m.peek() < l) {
-            m.remove();
+    public static int getClicksPerSecond() {
+        long now = System.currentTimeMillis();
+        while (!clickExpirations.isEmpty() && clickExpirations.peek() < now) {
+            clickExpirations.remove();
         }
-        return m.size();
+        return clickExpirations.size();
     }
 
-    public static String w(int n) {
-        if (n < 0) {
-            n += 100;
+    public static String formatMouseButton(int button) {
+        if (button < 0) {
+            button += 100;
         }
-        return "M" + (n + 1);
+        return "M" + (button + 1);
     }
 
 
-    public static void j() {
-        m.add(System.currentTimeMillis() + 1000L);
+    public static void recordClick() {
+        clickExpirations.add(System.currentTimeMillis() + 1000L);
     }
 }
 

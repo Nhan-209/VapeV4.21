@@ -28,73 +28,73 @@ extends Mod {
     private final OptionalLimitValue messages;
     private final TimerUtil calloutTimer;
     private Object trackedWorld;
-    private final Queue<String> pendingMessages = new ConcurrentLinkedQueue<String>();
+    private final Queue<String> pendingMessages = new ConcurrentLinkedQueue<>();
     private final BooleanValue callout;
     private final NumberValue delay;
     private final LimitValue murdererItems;
-    private final List<Integer> murdererIds = new ArrayList<Integer>();
+    private final List<Integer> murdererIds = new ArrayList<>();
 
 
-    public boolean P(EntityLivingBase entityLivingBase) {
+    public boolean isMurderer(EntityLivingBase entity) {
         if (!this.r$src$Z$14eylz9()) {
             return false;
         }
-        if (!entityLivingBase.isInstance(MappedClasses.Yl)) {
+        if (!entity.isInstance(MappedClasses.Yl)) {
             return false;
         }
-        return this.murdererIds.contains(entityLivingBase.S());
+        return this.murdererIds.contains(entity.S());
     }
 
     @EventHandler
-    public void onRender2D(EventRender2D eventRender2D) {
+    public void onRender2D(EventRender2D event) {
         if (!this.murdererIds.isEmpty()) {
             ScaledResolution scaledResolution = new ScaledResolution();
-            int n = 25;
-            FontRenderer fontRenderer = eventRender2D.getFontRenderer();
+            int textY = 25;
+            FontRenderer fontRenderer = event.getFontRenderer();
             fontRenderer.drawStringWithShadow("\u00a7nMurderer List", (double)(scaledResolution.T() / 2 - 20), 15.0, -1);
             for (Object e : Minecraft.theWorld().z()) {
                 EntityPlayer entityPlayer;
                 if (!MappedClasses.Yl.isAssignableFrom(e.getClass()) || MappedClasses.z5.isAssignableFrom(e.getClass()) || !this.murdererIds.contains((entityPlayer = new EntityPlayer(e)).S())) continue;
-                fontRenderer.drawStringWithShadow(entityPlayer.getName(), (double)(scaledResolution.T() / 2 - 20), (double)n, -1);
-                n += 10;
+                fontRenderer.drawStringWithShadow(entityPlayer.getName(), (double)(scaledResolution.T() / 2 - 20), (double)textY, -1);
+                textY += 10;
             }
         }
     }
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
+    public void onTick(EventPrePlayerTick event) {
         if (this.trackedWorld == null || !Minecraft.theWorld().getObject().equals(this.trackedWorld)) {
             this.murdererIds.clear();
             this.pendingMessages.clear();
             this.trackedWorld = Minecraft.theWorld().getObject();
         }
-        if (this.pendingMessages.size() > 0 && this.calloutTimer.hasTimeElapsed(((Double)this.delay.K()).longValue())) {
+        if (this.pendingMessages.size() > 0 && this.calloutTimer.hasTimeElapsed(((Double)this.delay.getValue()).longValue())) {
             Minecraft.thePlayer().sendChatMessage(this.pendingMessages.poll());
             this.calloutTimer.reset();
         }
         for (Object e : Minecraft.theWorld().z()) {
             EntityPlayer entityPlayer;
-            if (!MappedClasses.Yl.isAssignableFrom(e.getClass()) || MappedClasses.z5.isAssignableFrom(e.getClass()) || this.murdererIds.contains((entityPlayer = new EntityPlayer(e)).S()) || !entityPlayer.getHeldItemHand().isNotNull() || !this.murdererItems.A(entityPlayer.getHeldItemHand())) continue;
+            if (!MappedClasses.Yl.isAssignableFrom(e.getClass()) || MappedClasses.z5.isAssignableFrom(e.getClass()) || this.murdererIds.contains((entityPlayer = new EntityPlayer(e)).S()) || !entityPlayer.getHeldItemHand().isNotNull() || !this.murdererItems.matches(entityPlayer.getHeldItemHand())) continue;
             this.murdererIds.add(entityPlayer.S());
-            if (!this.callout.L().booleanValue()) continue;
-            List<String> list = this.messages.D();
-            int n = (int)Math.round((double)list.size() * Math.random());
-            if (n >= list.size()) {
-                n = list.size() - 1;
+            if (!this.callout.getEffectiveValue().booleanValue()) continue;
+            List<String> messageTemplates = this.messages.getEnabledValues();
+            int messageIndex = (int)Math.round((double)messageTemplates.size() * Math.random());
+            if (messageIndex >= messageTemplates.size()) {
+                messageIndex = messageTemplates.size() - 1;
             }
-            String string = list.get(n).replace("%s", entityPlayer.getName());
-            this.pendingMessages.add(string);
+            String message = messageTemplates.get(messageIndex).replace("%s", entityPlayer.getName());
+            this.pendingMessages.add(message);
         }
     }
 
     public MurderMystery() {
         super("MurdererFinder", -11859, Category.m, "Shows a list of suspected Murderers.");
         this.callout = BooleanValue.create(this, "Callout", false, "Calls out who the suspected murderer is in chat.");
-        this.messages = OptionalLimitValue.Q(this, "murder-messages", "Messages", "Use %s to use the murderer's name", OptionalLimitValue.O, Arrays.asList("%s is the murderer!", "i saw that %s!"));
-        this.delay = NumberValue.E(this, "Delay", "#", "ms", 0.0, 3100.0, 5000.0, "Delay between murderer callouts.");
-        this.murdererItems = LimitValue.n(this, "murderer-items", "Murderer Items", LimitValue.G, Arrays.asList(new ItemLimitData("swords"), new ItemLimitData("shovels"), new ItemLimitData("axes"), new ItemLimitData("pickaxes"), new ItemLimitData(288), new ItemLimitData(396), new ItemLimitData(421), new ItemLimitData(398), new ItemLimitData(369), new ItemLimitData(75), new ItemLimitData(50), new ItemLimitData(352)));
+        this.messages = OptionalLimitValue.createWithDescription(this, "murder-messages", "Messages", "Use %s to use the murderer's name", OptionalLimitValue.NEUTRAL_LIST_COLOR, Arrays.asList("%s is the murderer!", "i saw that %s!"));
+        this.delay = NumberValue.createWithDescription(this, "Delay", "#", "ms", 0.0, 3100.0, 5000.0, "Delay between murderer callouts.");
+        this.murdererItems = LimitValue.create(this, "murderer-items", "Murderer Items", LimitValue.BLOCK_LIST_COLOR, Arrays.asList(new ItemLimitData("swords"), new ItemLimitData("shovels"), new ItemLimitData("axes"), new ItemLimitData("pickaxes"), new ItemLimitData(288), new ItemLimitData(396), new ItemLimitData(421), new ItemLimitData(398), new ItemLimitData(369), new ItemLimitData(75), new ItemLimitData(50), new ItemLimitData(352)));
         this.calloutTimer = new TimerUtil();
-        this.callout.K(this.delay, this.messages);
+        this.callout.addDependentValues(this.delay, this.messages);
         this.addValue(this.callout, this.delay, this.messages, this.murdererItems);
     }
 }

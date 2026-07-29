@@ -12,7 +12,7 @@ extends Entity {
         if (ForgeVersion.MC_1_16_5.v()) {
             return new EntityPlayer(MEntityPlayerMacroBridge.F(EntityPlayerMacroBridge.c.getMappings().Da, this.I));
         }
-        return new EnderPearlProjectileBridge(this.getObject()).C();
+        return new EnderPearlProjectileBridge(this.getObject()).getOwnerEntity();
     }
 
     public Entity r$src$Lgg_vape_wrapper_impl_Entity_$18p7x3h() {

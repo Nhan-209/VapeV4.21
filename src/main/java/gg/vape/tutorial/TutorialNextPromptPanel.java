@@ -23,7 +23,7 @@ extends TutorialOverlayPanelBase {
 
     @Override
     public void H() {
-        this.T(new Color(26, 26, 26, 255));
+        this.setDisabledOverlayColor(new Color(26, 26, 26, 255));
         GuiRenderPrimitives.P(this.G$src$D$1b2f02a() - 1.0, this.n() - 1.0, this.A() + 2.0, this.L() + 2.0 + 2.0, new Color(38, 38, 38, 255), 1.0f, 2.0f, 1.0f);
         super.H();
     }
@@ -37,9 +37,9 @@ extends TutorialOverlayPanelBase {
         this.h(new SimpleTextLabelComponent("Completed:\n" + string + " tutorial", 1.0, TutorialNextPromptPanel.J.Z, true), "offsetY 10, offsetX 10");
         AnimatedUnderlinedTextLabel animatedUnderlinedTextLabel = new AnimatedUnderlinedTextLabel("Next: " + string2, 0.9, TutorialNextPromptPanel.J.Z, TutorialNextPromptPanel.J.h);
         this.h(animatedUnderlinedTextLabel, "spanwidth, offsetX 15, offsetY 45");
-        animatedUnderlinedTextLabel.s(new TutorialNextPromptStartNextClickHandler(this));
+        animatedUnderlinedTextLabel.setClickListener(new TutorialNextPromptStartNextClickHandler(this));
         SquareIconButtonComponent squareIconButtonComponent = new SquareIconButtonComponent("newclose", 1.3, TutorialNextPromptPanel.J.l, TutorialNextPromptPanel.J.l.brighter(), 7.0, 7.0);
-        squareIconButtonComponent.r(new TutorialNextPromptSkipAllClickHandler(this));
+        squareIconButtonComponent.addClickListener(new TutorialNextPromptSkipAllClickHandler(this));
         this.h(squareIconButtonComponent, "offsetX 107, offsetY 5");
     }
 
@@ -48,4 +48,3 @@ extends TutorialOverlayPanelBase {
         super.c();
     }
 }
-

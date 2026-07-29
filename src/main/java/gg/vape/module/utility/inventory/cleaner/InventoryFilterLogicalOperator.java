@@ -10,15 +10,10 @@ implements INamed {
     AND("And"),
     OR("Or");
 
-    private static final /* synthetic */ InventoryFilterLogicalOperator[] valuesArray;
     private final String displayName;
     public static final List<InventoryFilterLogicalOperator> VALUES;
 
     static {
-        String[] stringArray = new String[]{"AND", "OR", "And", "Or"};
-
-
-        valuesArray = new InventoryFilterLogicalOperator[]{AND, OR};
         VALUES = Arrays.asList(InventoryFilterLogicalOperator.values());
     }
 
@@ -32,7 +27,7 @@ implements INamed {
     }
 
     @Nullable
-    public static InventoryFilterLogicalOperator J(String string) {
+    public static InventoryFilterLogicalOperator findByName(String string) {
         for (InventoryFilterLogicalOperator inventoryFilterLogicalOperator : VALUES) {
             if (!inventoryFilterLogicalOperator.getName().equalsIgnoreCase(string)) continue;
             return inventoryFilterLogicalOperator;

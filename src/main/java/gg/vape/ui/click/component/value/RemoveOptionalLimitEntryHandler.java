@@ -7,19 +7,18 @@ import gg.vape.value.OptionalLimitValue;
 
 class RemoveOptionalLimitEntryHandler
 implements GuiClickListener {
-    final ListValueOptionsPanel b;
-    final OptionalLimitEntry A;
+    final ListValueOptionsPanel optionsPanel;
+    final OptionalLimitEntry entry;
 
     @Override
-    public void P() {
-        ((OptionalLimitValue)ListValueOptionsPanel.I(this.b)).b(this.A);
-        ListValueOptionsPanel.I(this.b).g$src$V$1akzyia();
-        this.b.k$src$V$admw0a();
+    public void onPrimaryClick() {
+        ((OptionalLimitValue)ListValueOptionsPanel.getListValueCompat(this.optionsPanel)).removeEntry(this.entry);
+        ListValueOptionsPanel.getListValueCompat(this.optionsPanel).notifyChanged();
+        this.optionsPanel.refreshEntries();
     }
 
     RemoveOptionalLimitEntryHandler(ListValueOptionsPanel listValueOptionsPanel, OptionalLimitEntry optionalLimitEntry) {
-        this.b = listValueOptionsPanel;
-        this.A = optionalLimitEntry;
+        this.optionsPanel = listValueOptionsPanel;
+        this.entry = optionalLimitEntry;
     }
 }
-

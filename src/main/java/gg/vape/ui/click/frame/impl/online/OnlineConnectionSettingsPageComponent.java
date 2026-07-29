@@ -26,7 +26,7 @@ extends FlowLayoutComponent {
     public OnlineConnectionSettingsPageComponent() {
         super(104.0);
         this.o(104.0);
-        this.T(OnlineConnectionSettingsPageComponent.J.t);
+        this.setDisabledOverlayColor(OnlineConnectionSettingsPageComponent.J.t);
     }
 
     public static boolean a$src$Z$1qtr9tq() {

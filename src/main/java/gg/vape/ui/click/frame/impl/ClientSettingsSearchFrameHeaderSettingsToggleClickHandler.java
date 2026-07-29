@@ -12,9 +12,9 @@ implements GuiClickListener {
     final ClientSettingsSearchFrameHeader x;
 
     @Override
-    public void P() {
-        ClientSettingsFrame clientSettingsFrame = ClientSettings.g(ClientSettingsFrame.class);
-        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.g(ClientSettingsSearchFrame.class);
+    public void onPrimaryClick() {
+        ClientSettingsFrame clientSettingsFrame = ClientSettings.getFrame(ClientSettingsFrame.class);
+        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.getFrame(ClientSettingsSearchFrame.class);
         if (clientSettingsFrame == null || clientSettingsSearchFrame == null) {
             return;
         }

@@ -12,57 +12,53 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockPlacementPathSegmentState {
     private static final String DEBUG_PREFIX = "isFirst: ";
-    public EnumFacing W;
-    public Vector<PlacementTarget> M;
-    private int expectedCount;
-    public HashSet<Long> R;
 
-    public boolean E(BlockData blockData) {
-        return this.R.contains(this.posKeyFromData(blockData));
+    public EnumFacing placementFacing;
+    public Vector<PlacementTarget> pendingTargets;
+    private int expectedCount;
+    public HashSet<Long> targetPositionKeys;
+
+    public BlockPlacementPathSegmentState(@NotNull EnumFacing placementFacing,
+                                          @NotNull Vector<PlacementTarget> pendingTargets) {
+        this.placementFacing = placementFacing;
+        this.pendingTargets = pendingTargets;
+        this.targetPositionKeys = new HashSet<>();
+        for (PlacementTarget target : pendingTargets) {
+            this.targetPositionKeys.add(this.positionKey(target.getPlacedBlock()));
+        }
+        this.expectedCount = pendingTargets.size();
     }
 
-    private long posKeyFromData(BlockData blockData) {
+    public boolean contains(BlockData blockData) {
+        return this.targetPositionKeys.contains(this.positionKey(blockData));
+    }
+
+    private long positionKey(BlockData blockData) {
         return BlockPos.f(blockData.D(), blockData.B(), blockData.G());
     }
 
-    public void Z(@NotNull Collection<PlacementTarget> collection) {
-        this.M.addAll(collection);
-        for (PlacementTarget placementTarget : collection) {
-            this.R.add(this.posKeyFromData(placementTarget.s()));
+    public void addTargets(@NotNull Collection<PlacementTarget> targets) {
+        this.pendingTargets.addAll(targets);
+        for (PlacementTarget target : targets) {
+            this.targetPositionKeys.add(this.positionKey(target.getPlacedBlock()));
         }
-        this.expectedCount += collection.size();
+        this.expectedCount += targets.size();
     }
 
-    public void A() {
-        this.M.clear();
+    public void clearPendingTargets() {
+        this.pendingTargets.clear();
     }
 
-    public BlockPlacementPathSegmentState(@NotNull EnumFacing enumFacing, @NotNull Vector<PlacementTarget> vector) {
-        this.W = enumFacing;
-        this.M = vector;
-        this.R = new HashSet();
-        for (PlacementTarget placementTarget : vector) {
-            this.R.add(this.posKeyFromData(placementTarget.s()));
-        }
-        this.expectedCount = vector.size();
+    public boolean isComplete() {
+        Vape.debugLog(DEBUG_PREFIX + this.pendingTargets.size() + " " + this.expectedCount);
+        return this.pendingTargets.size() == this.expectedCount;
     }
 
-    public boolean C() {
-        Vape.debugLog(DEBUG_PREFIX + this.M.size() + " " + this.expectedCount);
-        return this.M.size() == this.expectedCount;
+    public boolean containsPosition(int x, int y, int z) {
+        return this.targetPositionKeys.contains(BlockPos.f(x, y, z));
     }
 
-
-    private long posKeyFromCoords(int n, int n2, int n3) {
-        return BlockPos.f(n, n2, n3);
-    }
-
-    public boolean X(int n, int n2, int n3) {
-        return this.R.contains(this.posKeyFromCoords(n, n2, n3));
-    }
-
-    public int T() {
+    public int getExpectedCount() {
         return this.expectedCount;
     }
 }
-

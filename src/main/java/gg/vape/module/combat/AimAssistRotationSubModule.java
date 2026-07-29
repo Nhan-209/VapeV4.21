@@ -26,43 +26,41 @@ extends SubModule<AimAssist> {
     private boolean farFromTarget;
     private float pitchBoost = 0.0f;
     private int randomOffsetY;
-    private float yawAccumulator;
-    private float pitchVelocity;
+    private float verticalMouseAccumulator;
+    private float horizontalVelocity;
     private double prevTargetZ;
-    private float pitchAccumulator;
+    private float horizontalMouseAccumulator;
     @Nullable
     private EntityLivingBase target = null;
-    double targetY;
+    private double targetY;
     private boolean prevOnLeft;
     private double lastAngleDiff;
     private boolean prevAbove;
     private boolean threadStarted;
-    private float yawVelocity;
-    private float yawVelocityBuffer;
+    private float verticalVelocity;
+    private float verticalVelocityBuffer;
     private int retargetCounter;
     private float yawBoost = 0.0f;
     private final Random random;
     private double driftTimer;
-    double targetZ;
+    private double targetZ;
     private int driftY;
-    private float pitchVelocityBuffer;
+    private float horizontalVelocityBuffer;
     private int sampleCounter;
     private int driftX;
-    double targetX;
+    private double targetX;
     private final Random sharedRandom = new Random();
     private double prevTargetX;
 
     private void computeTargetOffset() {
-        Vec3d vec3d = RotationUtil.T(Minecraft.thePlayer(), this.target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
-        double d = this.target.z() - this.target.f();
-        double d2 = this.target.h() - this.target.R();
-        double d3 = vec3d.Y() - d;
-        double d4 = vec3d.o() - d2;
-        float f = Minecraft.getTimer().renderPartialTicks();
-        double d5 = d3 + (vec3d.Y() - d3) * (double)f;
-        double d6 = d4 + (vec3d.o() - d4) * (double)f;
-        this.targetX = d5;
-        this.targetZ = d6;
+        Vec3d closestPoint = RotationUtil.T(Minecraft.thePlayer(), this.target.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl(), 0.0, 0.0, 0.0);
+        double targetMotionX = this.target.z() - this.target.f();
+        double targetMotionZ = this.target.h() - this.target.R();
+        double previousClosestX = closestPoint.Y() - targetMotionX;
+        double previousClosestZ = closestPoint.o() - targetMotionZ;
+        float partialTicks = Minecraft.getTimer().renderPartialTicks();
+        this.targetX = previousClosestX + (closestPoint.Y() - previousClosestX) * (double)partialTicks;
+        this.targetZ = previousClosestZ + (closestPoint.o() - previousClosestZ) * (double)partialTicks;
     }
 
     private void updateDrift() {
@@ -72,8 +70,8 @@ extends SubModule<AimAssist> {
             this.randomOffsetX = MathUtil.randomExclusiveUpper(this.random, -1, 2);
             this.randomOffsetY = MathUtil.randomExclusiveUpper(this.random, -1, 2);
         }
-        int n = this.randomOffsetX;
-        int n2 = this.randomOffsetY;
+        int horizontalStep = this.randomOffsetX;
+        int verticalStep = this.randomOffsetY;
         if (this.random.nextInt(10) < 2) {
             // empty if block
         }
@@ -81,111 +79,105 @@ extends SubModule<AimAssist> {
             // empty if block
         }
         if (this.random.nextInt(10) < 2) {
-            n = 0;
+            horizontalStep = 0;
         }
         if (this.random.nextInt(10) < 2) {
-            n2 = 0;
+            verticalStep = 0;
         }
         if (this.driftTimer < 0.0) {
-            n = 0;
-            n2 = 0;
+            horizontalStep = 0;
+            verticalStep = 0;
         }
         if (this.random.nextInt(20) == 1) {
-            this.driftX += n;
-            this.driftY += n2;
+            this.driftX += horizontalStep;
+            this.driftY += verticalStep;
         }
-        if (this.pitchAccumulator > 0.0f && this.driftX < 0 || this.pitchAccumulator < 0.0f && this.driftX > 0) {
+        if (this.horizontalMouseAccumulator > 0.0f && this.driftX < 0 || this.horizontalMouseAccumulator < 0.0f && this.driftX > 0) {
             this.driftX = 0;
         }
     }
 
     @EventHandler
     public void onPreRenderTick(EventPreRenderTick eventPreRenderTick) {
-        boolean bl;
         if (eventPreRenderTick.getWorld().isNull()) {
             return;
         }
         if (this.target == null) {
             return;
         }
-        this.pitchAccumulator += (float)this.driftX;
-        this.yawAccumulator += (float)this.driftY;
-        int n = (int)this.pitchAccumulator;
-        int n2 = (int)this.yawAccumulator;
-        float f = this.pitchAccumulator - (float)n;
-        float f2 = this.yawAccumulator - (float)n2;
-        boolean bl2 = Math.abs(n) > 0;
-        boolean bl3 = bl = Math.abs(n2) > 0;
-        if (!bl2) {
-            n = 0;
+        this.horizontalMouseAccumulator += (float)this.driftX;
+        this.verticalMouseAccumulator += (float)this.driftY;
+        int horizontalMouseSteps = (int)this.horizontalMouseAccumulator;
+        int verticalMouseSteps = (int)this.verticalMouseAccumulator;
+        float remainingHorizontalDelta = this.horizontalMouseAccumulator - (float)horizontalMouseSteps;
+        float remainingVerticalDelta = this.verticalMouseAccumulator - (float)verticalMouseSteps;
+        if (Math.abs(horizontalMouseSteps) == 0) {
+            horizontalMouseSteps = 0;
         }
-        if (!bl) {
-            n2 = 0;
+        if (Math.abs(verticalMouseSteps) == 0) {
+            verticalMouseSteps = 0;
         }
-        float f3 = Minecraft.gameSettings().y();
-        float f4 = f3 * 0.6f + 0.2f;
-        float f5 = f4 * f4 * f4 * 8.0f;
-        float f6 = (float)n * f5;
-        float f7 = (float)n2 * f5;
-        int n3 = -1;
-        PlayerMouseRotationApplier.j(f6, f7 * (float)n3);
-        this.pitchAccumulator = f;
-        this.yawAccumulator = f2;
+        float sensitivity = Minecraft.gameSettings().y();
+        float sensitivityBase = sensitivity * 0.6f + 0.2f;
+        float sensitivityScale = sensitivityBase * sensitivityBase * sensitivityBase * 8.0f;
+        float horizontalDelta = (float)horizontalMouseSteps * sensitivityScale;
+        float verticalDelta = (float)verticalMouseSteps * sensitivityScale;
+        PlayerMouseRotationApplier.applyTrackedMouseDelta(horizontalDelta, -verticalDelta);
+        this.horizontalMouseAccumulator = remainingHorizontalDelta;
+        this.verticalMouseAccumulator = remainingVerticalDelta;
         this.driftX = 0;
         this.driftY = 0;
     }
 
-    public static void n(AimAssistRotationSubModule aimAssistRotationSubModule) {
-        aimAssistRotationSubModule.tick();
+    public static void runWorkerTick(AimAssistRotationSubModule rotationModule) {
+        rotationModule.tick();
     }
 
-    void applyYaw(float f, float f2) {
+    void queueVerticalAdjustment(float adjustment, float angleDifference) {
         AimAssist aimAssist = (AimAssist)this.getParent();
-        if (f != 0.0f) {
-            f *= 5.0f;
-            float f3 = ((Double)aimAssist.F$src$Lgg_vape_value_NumberValue_$cqv0bx().K()).floatValue();
-            if (f2 <= 10.0f) {
-                this.yawBoost = f3;
+        if (adjustment != 0.0f) {
+            adjustment *= 5.0f;
+            float speed = ((Double)aimAssist.getVerticalSpeed().getValue()).floatValue();
+            if (angleDifference <= 10.0f) {
+                this.yawBoost = speed;
             }
             if (this.yawBoost > 0.0f) {
-                f3 -= this.yawBoost / 3.0f;
-                this.yawBoost -= f2 / 200.0f;
+                speed -= this.yawBoost / 3.0f;
+                this.yawBoost -= angleDifference / 200.0f;
             }
-            float f4 = 1.0f * f3 * f;
-            this.yawAccumulator += f4;
+            this.verticalMouseAccumulator += speed * adjustment;
         } else {
-            this.yawAccumulator = 0.0f;
+            this.verticalMouseAccumulator = 0.0f;
         }
     }
 
-    void applyPitch(float f) {
+    void queueHorizontalAdjustment(float adjustment) {
         AimAssist aimAssist = (AimAssist)this.getParent();
-        if (f != 0.0f) {
-            f *= 5.0f;
-            float f2 = ((Double)aimAssist.w$src$Lgg_vape_value_NumberValue_$cwexni().K()).floatValue();
-            float f3 = RotationUtil.a(Minecraft.thePlayer(), this.target);
-            if (f3 <= 10.0f) {
-                this.pitchBoost = f2;
+        if (adjustment != 0.0f) {
+            adjustment *= 5.0f;
+            float speed = ((Double)aimAssist.getHorizontalSpeed().getValue()).floatValue();
+            float angleDifference = RotationUtil.a(Minecraft.thePlayer(), this.target);
+            if (angleDifference <= 10.0f) {
+                this.pitchBoost = speed;
             }
             if (this.pitchBoost > 0.0f) {
-                f2 -= this.pitchBoost / 3.0f;
-                this.pitchBoost -= f3 / 200.0f;
+                speed -= this.pitchBoost / 3.0f;
+                this.pitchBoost -= angleDifference / 200.0f;
             }
-            float f4 = 1.0f * f2 * f;
-            this.pitchAccumulator += f4;
+            this.horizontalMouseAccumulator += speed * adjustment;
         } else {
-            this.pitchAccumulator = 0.0f;
+            this.horizontalMouseAccumulator = 0.0f;
         }
     }
 
-    public AimAssistRotationSubModule(Mod mod, String string) {
-        super(mod, string);
+    public AimAssistRotationSubModule(Mod parent, String name) {
+        super(parent, name);
         this.random = new Random();
     }
 
-    void V$src$V$1u3xaau() {
-        this.pitchAccumulator = 0.0f;
-        this.yawAccumulator = 0.0f;
+    void resetRotationState() {
+        this.horizontalMouseAccumulator = 0.0f;
+        this.verticalMouseAccumulator = 0.0f;
         this.randomOffsetX = 0;
         this.randomOffsetY = 0;
         this.driftX = 0;
@@ -197,53 +189,52 @@ extends SubModule<AimAssist> {
         if (Minecraft.theWorld().isNull() || Minecraft.thePlayer().isNull()) {
             return;
         }
-        if (!aimAssist.K()) {
-            this.V$src$V$1u3xaau();
+        if (!aimAssist.canAim()) {
+            this.resetRotationState();
             return;
         }
         if (this.target != null && this.target.isNull()) {
             this.target = null;
         }
-        if (aimAssist.r$src$Lgg_vape_value_BooleanValue_$f5ztnc().L().booleanValue() && !gg.vape.config.ClientSettings.M()) {
+        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && !gg.vape.config.ClientSettings.M()) {
             this.target = null;
-            this.V$src$V$1u3xaau();
+            this.resetRotationState();
             return;
         }
-        if (this.target != null && (RotationUtil.C(this.target) || (double)Minecraft.thePlayer().getDistanceToEntity(this.target) > (Double)aimAssist.W().K())) {
-            this.V$src$V$1u3xaau();
+        if (this.target != null && (RotationUtil.C(this.target) || (double)Minecraft.thePlayer().getDistanceToEntity(this.target) > (Double)aimAssist.getDistance().getValue())) {
+            this.resetRotationState();
             this.target = null;
         }
-        if (aimAssist.r$src$Lgg_vape_value_BooleanValue_$f5ztnc().L().booleanValue() && gg.vape.config.ClientSettings.M() && this.target == null || !aimAssist.r$src$Lgg_vape_value_BooleanValue_$f5ztnc().L().booleanValue()) {
-            EntityLivingBase entityLivingBase = aimAssist.M$src$Lgg_vape_wrapper_impl_EntityLivingBase_$1qf3v8a();
-            if (!aimAssist.r$src$Lgg_vape_value_BooleanValue_$f5ztnc().L().booleanValue()) {
+        if (aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue() && gg.vape.config.ClientSettings.M() && this.target == null || !aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue()) {
+            EntityLivingBase candidateTarget = aimAssist.findBestTarget();
+            if (!aimAssist.getRequireMouseDown().getEffectiveValue().booleanValue()) {
                 ++this.retargetCounter;
-                if (this.retargetCounter > 700 || this.target == null || !aimAssist.o(this.target)) {
-                    this.target = entityLivingBase;
+                if (this.retargetCounter > 700 || this.target == null || !aimAssist.isValidTarget(this.target)) {
+                    this.target = candidateTarget;
                     this.retargetCounter = 0;
                 }
             } else {
-                this.target = entityLivingBase;
+                this.target = candidateTarget;
             }
         }
         if (Minecraft.theWorld().getObject() == null) {
             return;
         }
-        if (this.target != null && Minecraft.currentScreen().getObject() == null && ClientSettings.fW.P) {
-            this.swapVelocityBuffers(this.farFromTarget);
+        if (this.target != null && Minecraft.currentScreen().getObject() == null && ClientSettings.INSTANCE.inputEnabled) {
+            this.updateVelocityBuffers();
             this.applyRotation();
         } else {
-            this.V$src$V$1u3xaau();
+            this.resetRotationState();
         }
     }
 
     @Override
     public void onDisable() {
         this.target = null;
-        this.V$src$V$1u3xaau();
+        this.resetRotationState();
     }
 
     private void applyRotation() {
-        float f;
         AimAssist aimAssist = (AimAssist)this.getParent();
         this.updateDrift();
         this.targetX = this.target.c();
@@ -252,196 +243,124 @@ extends SubModule<AimAssist> {
         if (ForgeVersion.MC_1_7_10.L()) {
             this.targetY += (double)this.target.X();
         }
-        if (aimAssist.F.K() == aimAssist.r) {
+        if (aimAssist.targetArea.getValue() == aimAssist.closestAreaMode) {
             this.computeTargetOffset();
         }
-        double d = this.targetX - this.prevTargetX;
-        double d2 = this.targetZ - this.prevTargetZ;
+
+        double targetMotionX = this.targetX - this.prevTargetX;
+        double targetMotionZ = this.targetZ - this.prevTargetZ;
         this.prevTargetX = this.targetX;
         this.prevTargetZ = this.targetZ;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        float f2 = RotationManager.s(entityPlayerSP);
-        double d3 = 1.7;
-        double d4 = RotationUtil.C(entityPlayerSP.c(), entityPlayerSP.Z(), f2, this.targetX + d * d3, this.targetZ + d2 * d3);
-        boolean bl = RotationUtil.p(entityPlayerSP.c(), entityPlayerSP.Z(), f2, this.targetX + d * d3, this.targetZ + d2 * d3);
-        if (bl) {
-            float f3;
-            int n = RotationUtil.H(entityPlayerSP, this.targetX, this.targetY, this.targetZ);
-            boolean bl2 = n < 0;
-            int n2 = Math.abs(n) - 10;
-            float f4 = 1.0f;
-            float f5 = 1.0f;
-            f4 = (float)((double)f4 + MathUtil.randomRange(this.sharedRandom, 0.0, 2.0));
-            f4 = (float)((double)f4 + d4 / 50.0);
-            f5 = (float)((double)f5 + MathUtil.randomRange(this.sharedRandom, 0.0, 2.0));
-            f5 += (float)Math.abs(n2) / 50.0f;
-            if (Math.abs(d4 - this.lastAngleDiff) > 6.0) {
-                f4 = (float)((double)f4 + d4 / 35.0);
+
+        EntityPlayerSP player = Minecraft.thePlayer();
+        float viewYaw = RotationManager.getViewYaw(player);
+        double predictionFactor = 1.7;
+        double predictedTargetX = this.targetX + targetMotionX * predictionFactor;
+        double predictedTargetZ = this.targetZ + targetMotionZ * predictionFactor;
+        double horizontalAngleDifference = RotationUtil.C(player.c(), player.Z(), viewYaw, predictedTargetX, predictedTargetZ);
+        boolean targetOnLeft = RotationUtil.p(player.c(), player.Z(), viewYaw, predictedTargetX, predictedTargetZ);
+        int verticalAngleDifference = RotationUtil.H(player, this.targetX, this.targetY, this.targetZ);
+        boolean targetAbove = verticalAngleDifference < 0;
+        int verticalDeadZoneDistance = Math.abs(verticalAngleDifference) - 10;
+
+        float horizontalForce = 1.0f;
+        float verticalForce = 1.0f;
+        horizontalForce = (float)((double)horizontalForce + MathUtil.randomRange(this.sharedRandom, 0.0, 2.0));
+        horizontalForce = (float)((double)horizontalForce + horizontalAngleDifference / 50.0);
+        verticalForce = (float)((double)verticalForce + MathUtil.randomRange(this.sharedRandom, 0.0, 2.0));
+        verticalForce += (float)Math.abs(verticalDeadZoneDistance) / 50.0f;
+        if (Math.abs(horizontalAngleDifference - this.lastAngleDiff) > 6.0) {
+            horizontalForce = (float)((double)horizontalForce + horizontalAngleDifference / 35.0);
+        }
+        double proximityBoost = Math.max(0.0, (9.0f - player.getDistanceToEntity(this.target)) / 2.5f - 2.0f);
+        horizontalForce = (float)((double)horizontalForce + proximityBoost);
+
+        float strafeInput = player.movementInput().T();
+        boolean strafingAway = targetOnLeft ? strafeInput < 0.0f : strafeInput > 0.0f;
+        if (aimAssist.getStrafeIncrease().getEffectiveValue().booleanValue() && strafingAway) {
+            horizontalForce = (float)((double)horizontalForce * 1.6);
+        }
+        if (player.getDistanceToEntity(this.target) < 0.5f) {
+            horizontalForce /= 5.0f;
+        }
+
+        float horizontalAcceleration = horizontalForce / 90.0f * (targetOnLeft ? -1.0f : 1.0f);
+        float verticalAcceleration = targetAbove ? verticalForce : -(verticalForce / 90.0f);
+        if (horizontalAngleDifference < 5.0) {
+            horizontalAcceleration = 0.0f;
+            this.horizontalVelocity *= 0.7f;
+            boolean strafingToward = targetOnLeft ? strafeInput > 0.0f : strafeInput < 0.0f;
+            if (strafingToward) {
+                this.horizontalVelocity *= 0.5f;
             }
-            double d5 = (9.0f - entityPlayerSP.getDistanceToEntity(this.target)) / 2.5f - 2.0f;
-            d5 = Math.max(0.0, d5);
-            f4 = (float)((double)f4 + d5);
-            if (aimAssist.R().L().booleanValue() && entityPlayerSP.movementInput().T() < 0.0f) {
-                f4 = (float)((double)f4 * 1.6);
-            }
-            if (entityPlayerSP.getDistanceToEntity(this.target) < 0.5f) {
-                f4 /= 5.0f;
-            }
-            float f6 = -(f4 /= 90.0f);
-            float f7 = f3 = bl2 ? f5 : -(f5 /= 90.0f);
-            if (d4 < 5.0) {
-                f6 = 0.0f;
-                this.pitchVelocity *= 0.7f;
-                if (entityPlayerSP.movementInput().T() > 0.0f) {
-                    this.pitchVelocity *= 0.5f;
-                }
-            }
-            if (bl != this.prevOnLeft) {
-                this.pitchVelocity = -this.pitchVelocity;
-                this.pitchVelocityBuffer = -this.pitchVelocityBuffer;
-                this.pitchAccumulator = 0.0f;
-            }
-            if (bl2 != this.prevAbove) {
-                this.yawVelocityBuffer = -this.yawVelocityBuffer;
-                this.yawVelocity = -this.yawVelocity;
-                this.yawAccumulator = 0.0f;
-            }
-            if (n2 < 5) {
-                f3 = 0.0f;
-                this.yawVelocityBuffer *= 0.7f;
-            }
-            this.pitchVelocityBuffer += f6;
-            this.yawVelocity += f3;
-            f6 = this.pitchVelocity;
-            f3 = this.yawVelocityBuffer;
-            if (Math.abs(f6) > 10.0f) {
-                this.pitchVelocityBuffer = 0.0f;
-                this.pitchVelocity = 0.0f;
-                return;
-            }
-            float f8 = f6 * 0.15f;
-            if (d4 <= 9.0) {
-                f8 = (float)((double)f8 / (10.0 - d4));
-            }
-            boolean bl3 = this.farFromTarget = d4 > 5.0;
-            if (Float.isNaN(f8)) {
-                this.pitchVelocityBuffer = 0.0f;
-                this.pitchVelocity = 0.0f;
-                return;
-            }
-            this.applyPitch(f8);
-            if (aimAssist.U().L().booleanValue()) {
-                float f9 = (float)((double)f3 * 0.15);
-                if (Float.isNaN(f9)) {
-                    this.yawVelocity = 0.0f;
-                    this.yawVelocityBuffer = 0.0f;
-                    return;
-                }
-                this.applyYaw(f9, n);
-            }
-            this.prevAbove = bl2;
-            this.prevOnLeft = bl;
-            ++this.sampleCounter;
-            if (this.sampleCounter > 10) {
-                this.lastAngleDiff = d4;
-                this.sampleCounter = 0;
-            }
+        }
+        if (targetOnLeft != this.prevOnLeft) {
+            this.horizontalVelocity = -this.horizontalVelocity;
+            this.horizontalVelocityBuffer = -this.horizontalVelocityBuffer;
+            this.horizontalMouseAccumulator = 0.0f;
+        }
+        if (targetAbove != this.prevAbove) {
+            this.verticalVelocityBuffer = -this.verticalVelocityBuffer;
+            this.verticalVelocity = -this.verticalVelocity;
+            this.verticalMouseAccumulator = 0.0f;
+        }
+        if (verticalDeadZoneDistance < 5) {
+            verticalAcceleration = 0.0f;
+            this.verticalVelocityBuffer *= 0.7f;
+        }
+
+        this.horizontalVelocityBuffer += horizontalAcceleration;
+        this.verticalVelocity += verticalAcceleration;
+        float smoothedHorizontalVelocity = this.horizontalVelocity;
+        float smoothedVerticalVelocity = this.verticalVelocityBuffer;
+        if (Math.abs(smoothedHorizontalVelocity) > 10.0f) {
+            this.horizontalVelocityBuffer = 0.0f;
+            this.horizontalVelocity = 0.0f;
             return;
         }
-        int n = RotationUtil.H(entityPlayerSP, this.targetX, this.targetY, this.targetZ);
-        boolean bl4 = n < 0;
-        int n3 = Math.abs(n) - 10;
-        float f10 = 1.0f;
-        float f11 = 1.0f;
-        f10 = (float)((double)f10 + MathUtil.randomRange(this.sharedRandom, 0.0, 2.0));
-        f10 = (float)((double)f10 + d4 / 50.0);
-        f11 = (float)((double)f11 + MathUtil.randomRange(this.sharedRandom, 0.0, 2.0));
-        f11 += (float)Math.abs(n3) / 50.0f;
-        if (Math.abs(d4 - this.lastAngleDiff) > 6.0) {
-            f10 = (float)((double)f10 + d4 / 35.0);
+
+        float horizontalAdjustment = smoothedHorizontalVelocity * 0.15f;
+        if (horizontalAngleDifference <= 9.0) {
+            horizontalAdjustment = (float)((double)horizontalAdjustment / (10.0 - horizontalAngleDifference));
         }
-        double d6 = (9.0f - entityPlayerSP.getDistanceToEntity(this.target)) / 2.5f - 2.0f;
-        d6 = Math.max(0.0, d6);
-        f10 = (float)((double)f10 + d6);
-        if (aimAssist.R().L().booleanValue() && entityPlayerSP.movementInput().T() > 0.0f) {
-            f10 = (float)((double)f10 * 1.6);
-        }
-        if (entityPlayerSP.getDistanceToEntity(this.target) < 0.5f) {
-            f10 /= 5.0f;
-        }
-        float f12 = f10 /= 90.0f;
-        float f13 = f = bl4 ? f11 : -(f11 /= 90.0f);
-        if (d4 < 5.0) {
-            f12 = 0.0f;
-            this.pitchVelocity *= 0.7f;
-            if (entityPlayerSP.movementInput().T() < 0.0f) {
-                this.pitchVelocity *= 0.5f;
-            }
-        }
-        if (bl != this.prevOnLeft) {
-            this.pitchVelocity = -this.pitchVelocity;
-            this.pitchVelocityBuffer = -this.pitchVelocityBuffer;
-            this.pitchAccumulator = 0.0f;
-        }
-        if (bl4 != this.prevAbove) {
-            this.yawVelocityBuffer = -this.yawVelocityBuffer;
-            this.yawVelocity = -this.yawVelocity;
-            this.yawAccumulator = 0.0f;
-        }
-        if (n3 < 5) {
-            f = 0.0f;
-            this.yawVelocityBuffer *= 0.7f;
-        }
-        this.pitchVelocityBuffer += f12;
-        this.yawVelocity += f;
-        f12 = this.pitchVelocity;
-        f = this.yawVelocityBuffer;
-        if (Math.abs(f12) > 10.0f) {
-            this.pitchVelocityBuffer = 0.0f;
-            this.pitchVelocity = 0.0f;
+        this.farFromTarget = horizontalAngleDifference > 5.0;
+        if (Float.isNaN(horizontalAdjustment)) {
+            this.horizontalVelocityBuffer = 0.0f;
+            this.horizontalVelocity = 0.0f;
             return;
         }
-        float f14 = f12 * 0.15f;
-        if (d4 <= 9.0) {
-            f14 = (float)((double)f14 / (10.0 - d4));
-        }
-        boolean bl5 = this.farFromTarget = d4 > 5.0;
-        if (Float.isNaN(f14)) {
-            this.pitchVelocityBuffer = 0.0f;
-            this.pitchVelocity = 0.0f;
-            return;
-        }
-        this.applyPitch(f14);
-        if (aimAssist.U().L().booleanValue()) {
-            float f15 = (float)((double)f * 0.15);
-            if (Float.isNaN(f15)) {
-                this.yawVelocity = 0.0f;
-                this.yawVelocityBuffer = 0.0f;
+        this.queueHorizontalAdjustment(horizontalAdjustment);
+
+        if (aimAssist.getAimVertically().getEffectiveValue().booleanValue()) {
+            float verticalAdjustment = (float)((double)smoothedVerticalVelocity * 0.15);
+            if (Float.isNaN(verticalAdjustment)) {
+                this.verticalVelocity = 0.0f;
+                this.verticalVelocityBuffer = 0.0f;
                 return;
             }
-            this.applyYaw(f15, n);
+            this.queueVerticalAdjustment(verticalAdjustment, verticalAngleDifference);
         }
-        this.prevAbove = bl4;
-        this.prevOnLeft = bl;
+        this.prevAbove = targetAbove;
+        this.prevOnLeft = targetOnLeft;
         ++this.sampleCounter;
         if (this.sampleCounter > 10) {
-            this.lastAngleDiff = d4;
+            this.lastAngleDiff = horizontalAngleDifference;
             this.sampleCounter = 0;
         }
     }
 
     @Nullable
-    public EntityLivingBase v() {
+    public EntityLivingBase getTarget() {
         return this.target;
     }
 
-    void swapVelocityBuffers(boolean bl) {
+    void updateVelocityBuffers() {
         ++this.swapTickCounter;
         if (this.swapTickCounter > 10) {
-            this.yawVelocityBuffer = this.yawVelocity;
-            this.pitchVelocity = this.pitchVelocityBuffer;
-            this.pitchVelocityBuffer = 0.0f;
-            this.yawVelocity = 0.0f;
+            this.verticalVelocityBuffer = this.verticalVelocity;
+            this.horizontalVelocity = this.horizontalVelocityBuffer;
+            this.horizontalVelocityBuffer = 0.0f;
+            this.verticalVelocity = 0.0f;
             this.swapTickCounter = 0;
         }
     }
@@ -455,4 +374,3 @@ extends SubModule<AimAssist> {
     }
 
 }
-

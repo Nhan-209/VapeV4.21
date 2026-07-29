@@ -6,51 +6,51 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TextureAtlasRegistry {
-    private static final String b = "Unable to retrieve Texture Atlas id: ";
-    private final Map<String, TextureAtlas> M = new HashMap<String, TextureAtlas>();
-    private TextureAtlas f;
-    private static TextureAtlasRegistry A;
+    private static final String MISSING_ATLAS_MESSAGE = "Unable to retrieve Texture Atlas id: ";
+    private final Map<String, TextureAtlas> atlases = new HashMap<String, TextureAtlas>();
+    private TextureAtlas activeAtlas;
+    private static TextureAtlasRegistry instance;
 
     private TextureAtlasRegistry() {
     }
 
-    public TextureAtlas r() {
-        return this.f;
+    public TextureAtlas getActiveAtlas() {
+        return this.activeAtlas;
     }
 
 
-    public void s(String string) {
-        if (!this.M.containsKey(string)) {
+    public void remove(String atlasId) {
+        if (!this.atlases.containsKey(atlasId)) {
             return;
         }
-        this.M.get(string).d().O();
-        this.M.remove(string);
+        this.atlases.get(atlasId).getTexture().delete();
+        this.atlases.remove(atlasId);
     }
 
-    public static TextureAtlasRegistry w() {
-        if (A == null) {
-            A = new TextureAtlasRegistry();
+    public static TextureAtlasRegistry getInstance() {
+        if (instance == null) {
+            instance = new TextureAtlasRegistry();
         }
-        return A;
+        return instance;
     }
 
-    public TextureAtlas U(String string) {
-        if (!this.M.containsKey(string)) {
-            this.M.put(string, new TextureAtlas());
+    public TextureAtlas getOrCreate(String atlasId) {
+        if (!this.atlases.containsKey(atlasId)) {
+            this.atlases.put(atlasId, new TextureAtlas());
         }
-        return this.M.get(string);
+        return this.atlases.get(atlasId);
     }
 
-    public void U(TextureAtlas textureAtlas) {
-        this.f = textureAtlas;
+    public void setActiveAtlas(TextureAtlas activeAtlas) {
+        this.activeAtlas = activeAtlas;
     }
 
-    public TextureAtlas m(String string) {
-        if (!this.M.containsKey(string)) {
-            Vape.debugLog(b + string);
+    public TextureAtlas get(String atlasId) {
+        if (!this.atlases.containsKey(atlasId)) {
+            Vape.debugLog(MISSING_ATLAS_MESSAGE + atlasId);
             return null;
         }
-        return this.M.get(string);
+        return this.atlases.get(atlasId);
     }
 }
 

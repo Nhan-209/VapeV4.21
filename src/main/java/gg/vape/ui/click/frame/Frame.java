@@ -80,7 +80,7 @@ implements FrameStateSerializable {
     public void a() {
         ArrayList<PopupFrame> arrayList = new ArrayList<PopupFrame>(this.IO);
         for (PopupFrame popupFrame : arrayList) {
-            ClientSettings.K(popupFrame);
+            ClientSettings.removePopup(popupFrame);
         }
     }
 
@@ -147,7 +147,7 @@ implements FrameStateSerializable {
             Boolean bl2 = ConfigJsonUtils.t(jsonObject, "visible");
             if (bl2 != null) {
                 this.t(jsonObject.get("visible").getAsBoolean(), false);
-                ClientSettings.P(this);
+                ClientSettings.markFramePositioned(this);
             }
         } else {
             this.t(this.IR, false);
@@ -202,7 +202,7 @@ implements FrameStateSerializable {
     }
 
     @Override
-    public void Z(boolean bl) {
+    public void setVisible(boolean bl) {
         this.t(bl, true);
     }
 
@@ -233,9 +233,9 @@ implements FrameStateSerializable {
             Vape.INSTANCE.saveAndStop();
         }
         if (bl && bl2) {
-            ClientSettings.x(this);
+            ClientSettings.positionFrameIfNeeded(this);
         }
-        super.Z(bl);
+        super.setVisible(bl);
         this.IU = false;
         if (this.n$src$Z$1fa61uz()) {
             this.b$src$V$1f3kin7();
@@ -292,7 +292,7 @@ implements FrameStateSerializable {
         this.n$src$V$1fa61rj();
         super.H();
         if (this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null && this.IS.V$src$Z$1xhop3l()) {
-            this.IS.d(this.getName());
+            this.IS.setLabelText(this.getName());
             this.IS.o(this.IS.A() + 10.0 + 6.0);
             this.IS.Y(12.0);
             this.IS.K(this.y$src$D$1fg7rv0() - this.IS.A() / 4.0);
@@ -315,9 +315,9 @@ implements FrameStateSerializable {
     }
 
     public Frame() {
-        this.IS = new TextButton("Frame", Frame.J.i, Frame.J.i.brighter()).l(Frame.J.l, Frame.J.i);
+        this.IS = new TextButton("Frame", Frame.J.i, Frame.J.i.brighter()).setBorderAndBackgroundColor(Frame.J.l, Frame.J.i);
         this.IO = new ArrayList();
-        this.IS.r(new FrameCloseButtonClickHandler(this));
+        this.IS.addClickListener(new FrameCloseButtonClickHandler(this));
         this.IS.Y(10.0);
     }
 
@@ -329,7 +329,7 @@ implements FrameStateSerializable {
     }
 
     public boolean i$src$Z$1f7f2w6() {
-        return ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().Y().contains(this);
+        return ClientSettings.INSTANCE.getActiveStack().Y().contains(this);
     }
 
     public boolean l$src$Z$193vdc5() {
@@ -371,7 +371,7 @@ implements FrameStateSerializable {
         if (!this.IU || !this.I2) {
             return;
         }
-        boolean bl = MouseInput.I(MouseButton.LEFT_CLICK.ordinal());
+        boolean bl = MouseInput.isButtonDown(MouseButton.LEFT_CLICK.ordinal());
         if (!bl) {
             this.IU = false;
             this.N(true);
@@ -387,7 +387,7 @@ implements FrameStateSerializable {
     }
 
     public void U() {
-        ClientSettings.q(this);
+        ClientSettings.queueFrameOpen(this);
     }
 
     @Override

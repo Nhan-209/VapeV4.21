@@ -24,7 +24,7 @@ extends TutorialTargetSelector<ProfileCreatePanelComponent> {
     public ArrayList<GuiComponent> v(GuiComponent guiComponent) {
         if (this.o().isInstance(guiComponent)) {
             ProfileCreatePanelComponent profileCreatePanelComponent = (ProfileCreatePanelComponent)guiComponent;
-            return new ArrayList<GuiComponent>(Arrays.asList(profileCreatePanelComponent.x$src$Lgg_vape_ui_click_frame_impl_profile_ProfileCrea$1re7zmm()));
+            return new ArrayList<GuiComponent>(Arrays.asList(profileCreatePanelComponent.getNameInput()));
         }
         return null;
     }

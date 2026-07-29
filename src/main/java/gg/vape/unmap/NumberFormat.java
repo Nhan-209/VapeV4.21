@@ -1,45 +1,44 @@
 package gg.vape.unmap;
 
 public class NumberFormat {
-    private final int h;
+    private final int precision;
 
-    public NumberFormat(int n) {
-        if (n <= 0) {
-            n = -1;
+    public NumberFormat(int precision) {
+        if (precision <= 0) {
+            precision = -1;
         }
-        this.h = n;
+        this.precision = precision;
     }
 
-    public NumberFormat(String string) {
-        this(string.length() - (string.indexOf(".") + 1));
+    public NumberFormat(String pattern) {
+        this(pattern.length() - (pattern.indexOf(".") + 1));
     }
 
-    public double truncate(Double d) {
-        return this.truncate((double)d);
+    public double truncate(Double value) {
+        return this.truncate((double)value);
     }
 
-    public double truncate(double d) {
-        return Double.valueOf(this.format(d));
+    public double truncate(double value) {
+        return Double.valueOf(this.format(value));
     }
 
-    public String format(Double d) {
-        return this.format((double)d);
+    public String format(Double value) {
+        return this.format((double)value);
     }
 
-    public String format(double d) {
-        String string = String.valueOf(d).replaceAll(",", ".");
-        if (string.contains("E")) {
-            return string;
+    public String format(double value) {
+        String text = String.valueOf(value).replaceAll(",", ".");
+        if (text.contains("E")) {
+            return text;
         }
-        if (string.contains(".")) {
-            int n = Math.min(string.indexOf(46) + this.h + 1, string.length());
-            return string.substring(0, n);
+        if (text.contains(".")) {
+            int endIndex = Math.min(text.indexOf(46) + this.precision + 1, text.length());
+            return text.substring(0, endIndex);
         }
-        return string;
+        return text;
     }
 
     public int getPrecision() {
-        return this.h;
+        return this.precision;
     }
 }
-

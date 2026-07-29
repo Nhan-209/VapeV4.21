@@ -1,20 +1,18 @@
 package gg.vape.input;
 
-import gg.vape.module.Mod;
 import gg.vape.module.control.ModuleControlClaim;
 
 public class MouseButtonInputLock
 extends ModuleControlClaim {
-    public void Q(Mod mod) {
-        this.Q();
+    public void unlock() {
+        this.clearClaimed();
     }
 
-    public void S(Mod mod) {
-        this.c();
+    public void lock() {
+        this.markClaimed();
     }
 
-    public boolean I() {
-        return this.boolean_v();
+    public boolean isLocked() {
+        return this.isClaimed();
     }
 }
-

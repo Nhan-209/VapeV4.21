@@ -34,160 +34,162 @@ import org.lwjgl.opengl.GL11;
 
 public class Chams
 extends Mod {
-    private boolean H;
-    private EntityLivingBase D;
-    private final ColorValue r;
-    private final ColorValue I;
-    private final BooleanValue a;
-    private final BooleanValue c;
-    private final BooleanValue A = BooleanValue.create(this, "Hide Bots", false, "Doesn't apply chams on bots.");
-    private int J;
+    private static final int PASS_NONE = -1;
+    private static final int PASS_OCCLUDED = 1;
+    private static final int PASS_VISIBLE = 2;
+    private static final int PASS_LEGACY = 3;
+    private boolean renderingChamsPass;
+    private EntityLivingBase temporarilyInvisiblePlayer;
+    private final ColorValue occludedColor;
+    private final ColorValue visibleColor;
+    private final BooleanValue colored;
+    private final BooleanValue colorBehindWalls;
+    private final BooleanValue hideBots = BooleanValue.create(this, "Hide Bots", false, "Doesn't apply chams on bots.");
+    private int renderPass = PASS_NONE;
 
-    private static Exception a(Exception exception) {
-        return exception;
+    @EventHandler
+    public void onPreRenderLiving(EventPreRenderLiving event) {
+        if (!this.renderingChamsPass) {
+            return;
+        }
+        if (event.getWorld().isNull()) {
+            return;
+        }
+        EntityPlayerSP viewer = event.getThePlayer();
+        Entity entity = event.getEntity();
+        if (entity.equals(viewer)) {
+            return;
+        }
+        event.setCancelled(true);
     }
 
     @EventHandler
-    public void J(EventPreRenderLiving eventPreRenderLiving) {
-        if (!this.H) {
-            return;
-        }
-        if (eventPreRenderLiving.getWorld().isNull()) {
-            return;
-        }
-        EntityPlayerSP entityPlayerSP = eventPreRenderLiving.getThePlayer();
-        Entity entity = eventPreRenderLiving.getEntity();
-        if (entity.equals(entityPlayerSP)) {
-            return;
-        }
-        eventPreRenderLiving.setCancelled(true);
-    }
-
-    @EventHandler
-    public void K(EventPreRenderEntity eventPreRenderEntity) {
-        if (eventPreRenderEntity.getEntity().isInstance(MappedClasses.Yl) && !eventPreRenderEntity.getEntity().isInstance(MappedClasses.z5) && this.a.L().booleanValue() && this.H) {
-            if (this.J == 1) {
-                RenderUtils.w(this.c.L() != false ? this.r.q$src$Lgg_vape_utils_MutableColor_$1dowyd3() : this.I.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
+    public void onPreRenderEntity(EventPreRenderEntity event) {
+        if (event.getEntity().isInstance(MappedClasses.Yl) && !event.getEntity().isInstance(MappedClasses.z5) && this.colored.getEffectiveValue().booleanValue() && this.renderingChamsPass) {
+            if (this.renderPass == PASS_OCCLUDED) {
+                RenderUtils.w(this.colorBehindWalls.getEffectiveValue() != false ? this.occludedColor.getMutableColor() : this.visibleColor.getMutableColor());
             }
-            if (this.J == 2) {
-                RenderUtils.w(this.I.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
+            if (this.renderPass == PASS_VISIBLE) {
+                RenderUtils.w(this.visibleColor.getMutableColor());
             }
         }
     }
 
     @EventHandler
-    public void s(EventRenderPlayerPost eventRenderPlayerPost) {
-        if (Vape.INSTANCE.getClientSettings().J(eventRenderPlayerPost.getEntityPlayer()) && this.A.L().booleanValue()) {
+    public void onRenderPlayerPost(EventRenderPlayerPost event) {
+        if (Vape.INSTANCE.getClientSettings().J(event.getEntityPlayer()) && this.hideBots.getEffectiveValue().booleanValue()) {
             return;
         }
-        if (this.a.L().booleanValue()) {
-            if (this.D != null) {
-                EntityPlayer entityPlayer = eventRenderPlayerPost.getEntityPlayer();
-                entityPlayer.q(false);
-                this.D = null;
+        if (this.colored.getEffectiveValue().booleanValue()) {
+            if (this.temporarilyInvisiblePlayer != null) {
+                EntityPlayer player = event.getEntityPlayer();
+                player.q(false);
+                this.temporarilyInvisiblePlayer = null;
             }
             return;
         }
-        if (eventRenderPlayerPost.getEntityPlayer().isInstance(MappedClasses.Yl) && !eventRenderPlayerPost.getEntityPlayer().isInstance(MappedClasses.z5)) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(32823);
+        if (event.getEntityPlayer().isInstance(MappedClasses.Yl) && !event.getEntityPlayer().isInstance(MappedClasses.z5)) {
+            OpenGlBackendHolder.backend.disableCapability(32823);
             GL11.glPolygonOffset((float)1.0f, (float)2500000.0f);
         }
     }
 
     @EventHandler
-    public void onSpecPreRenderLiving(EventPreRenderPlayerSpec eventPreRenderPlayerSpec) {
-        if (eventPreRenderPlayerSpec.getClientPlayer().isInstance(MappedClasses.z5)) {
+    public void onPreRenderPlayerSpec(EventPreRenderPlayerSpec event) {
+        if (event.getClientPlayer().isInstance(MappedClasses.z5)) {
             return;
         }
-        if (!this.H) {
+        if (!this.renderingChamsPass) {
             return;
         }
         if (Minecraft.theWorld().isNull()) {
             return;
         }
-        eventPreRenderPlayerSpec.setCancelled(true);
+        event.setCancelled(true);
     }
 
     @EventHandler
-    public void R(EventRenderPlayerPre eventRenderPlayerPre) {
-        if (this.A.L().booleanValue() && Vape.INSTANCE.getClientSettings().J(eventRenderPlayerPre.getEntityPlayer())) {
+    public void onRenderPlayerPre(EventRenderPlayerPre event) {
+        if (this.hideBots.getEffectiveValue().booleanValue() && Vape.INSTANCE.getClientSettings().J(event.getEntityPlayer())) {
             return;
         }
-        if (ClientSettings.E(eventRenderPlayerPre.getEntityPlayer())) {
+        if (ClientSettings.E(event.getEntityPlayer())) {
             return;
         }
-        ESP eSP = Vape.INSTANCE.getModManager().getMod(ESP.class);
-        if (this.H || this.J == 3 || eSP.r$src$Z$14eylz9() && eSP.c()) {
+        ESP esp = Vape.INSTANCE.getModManager().getMod(ESP.class);
+        if (this.renderingChamsPass || this.renderPass == PASS_LEGACY || esp.r$src$Z$14eylz9() && esp.isOutlineModeActive()) {
             return;
         }
-        if (!this.a.L().booleanValue()) {
-            if (eventRenderPlayerPre.getEntityPlayer().isInstance(MappedClasses.Yl) && !eventRenderPlayerPre.getEntityPlayer().isInstance(MappedClasses.z5)) {
-                OpenGlBackendHolder.d.l(32823);
+        if (!this.colored.getEffectiveValue().booleanValue()) {
+            if (event.getEntityPlayer().isInstance(MappedClasses.Yl) && !event.getEntityPlayer().isInstance(MappedClasses.z5)) {
+                OpenGlBackendHolder.backend.enableCapability(32823);
                 GL11.glPolygonOffset((float)1.0f, (float)-2500000.0f);
             }
-        } else if (eventRenderPlayerPre.getEntityPlayer().isNotNull() && eventRenderPlayerPre.getRenderer().isNotNull() && !eventRenderPlayerPre.getEntityPlayer().isInstance(MappedClasses.z5)) {
+        } else if (event.getEntityPlayer().isNotNull() && event.getRenderer().isNotNull() && !event.getEntityPlayer().isInstance(MappedClasses.z5)) {
             if (ForgeVersion.MC_1_7_10.L()) {
-                eventRenderPlayerPre.setCancelled(true);
+                event.setCancelled(true);
             }
-            EntityPlayer entityPlayer = eventRenderPlayerPre.getEntityPlayer();
-            double d = eventRenderPlayerPre.getX();
-            double d2 = eventRenderPlayerPre.getY();
-            double d3 = eventRenderPlayerPre.getZ();
-            float f = entityPlayer.j() + (entityPlayer.J() - entityPlayer.j()) * eventRenderPlayerPre.getPartialTicks();
+            EntityPlayer player = event.getEntityPlayer();
+            double renderX = event.getX();
+            double renderY = event.getY();
+            double renderZ = event.getZ();
+            float interpolatedYaw = player.j() + (player.J() - player.j()) * event.getPartialTicks();
             RenderUtil.d();
             RenderUtils.g();
-            OpenGlBackendHolder.d.u$src$V$hntn98(2929);
-            OpenGlBackendHolder.d.u$src$V$hntn98(3553);
+            OpenGlBackendHolder.backend.disableCapability(2929);
+            OpenGlBackendHolder.backend.disableCapability(3553);
             GlStateManager.disableLighting();
-            RenderUtils.w(this.c.L() != false ? this.r.q$src$Lgg_vape_utils_MutableColor_$1dowyd3() : this.I.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
-            ArrayList arrayList = null;
+            RenderUtils.w(this.colorBehindWalls.getEffectiveValue() != false ? this.occludedColor.getMutableColor() : this.visibleColor.getMutableColor());
+            ArrayList<Object> savedLayerRenderers = null;
             if (ForgeVersion.MC_1_7_10.Y()) {
-                arrayList = Lists.newArrayList(eventRenderPlayerPre.getRenderer().getLayerRenderers());
-                eventRenderPlayerPre.getRenderer().getLayerRenderers().clear();
+                savedLayerRenderers = Lists.newArrayList(event.getRenderer().getLayerRenderers());
+                event.getRenderer().getLayerRenderers().clear();
             }
             try {
-                this.H = true;
-                this.J = 1;
-                eventRenderPlayerPre.getRenderer().doRender(entityPlayer, d, d2, d3, f, eventRenderPlayerPre.getPartialTicks());
+                this.renderingChamsPass = true;
+                this.renderPass = PASS_OCCLUDED;
+                event.getRenderer().doRender(player, renderX, renderY, renderZ, interpolatedYaw, event.getPartialTicks());
             }
             catch (Exception exception) {
                 // empty catch block
             }
-            this.H = false;
-            OpenGlBackendHolder.d.l(2929);
-            OpenGlBackendHolder.d.l(3553);
+            this.renderingChamsPass = false;
+            OpenGlBackendHolder.backend.enableCapability(2929);
+            OpenGlBackendHolder.backend.enableCapability(3553);
             if (ForgeVersion.MC_1_7_10.L()) {
-                this.J = 3;
+                this.renderPass = PASS_LEGACY;
                 GL11.glPushMatrix();
-                OpenGlBackendHolder.d.l(2896);
-                eventRenderPlayerPre.getRenderer().doRender(entityPlayer, d, d2, d3, f, eventRenderPlayerPre.getPartialTicks());
+                OpenGlBackendHolder.backend.enableCapability(2896);
+                event.getRenderer().doRender(player, renderX, renderY, renderZ, interpolatedYaw, event.getPartialTicks());
                 GL11.glDepthMask((boolean)false);
-                OpenGlBackendHolder.d.u$src$V$hntn98(2896);
+                OpenGlBackendHolder.backend.disableCapability(2896);
                 GL11.glPopMatrix();
             }
-            this.H = true;
-            RenderUtils.w(this.I.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
-            OpenGlBackendHolder.d.u$src$V$hntn98(3553);
+            this.renderingChamsPass = true;
+            RenderUtils.w(this.visibleColor.getMutableColor());
+            OpenGlBackendHolder.backend.disableCapability(3553);
             try {
-                this.J = 2;
-                eventRenderPlayerPre.getRenderer().doRender(entityPlayer, d, d2, d3, f, eventRenderPlayerPre.getPartialTicks());
-                this.H = false;
+                this.renderPass = PASS_VISIBLE;
+                event.getRenderer().doRender(player, renderX, renderY, renderZ, interpolatedYaw, event.getPartialTicks());
             }
             catch (Exception exception) {
                 // empty catch block
             }
-            if (ForgeVersion.MC_1_7_10.Y()) {
-                eventRenderPlayerPre.getRenderer().setLayerRenderers(arrayList);
+            finally {
+                this.renderingChamsPass = false;
             }
-            OpenGlBackendHolder.d.l(3553);
+            if (ForgeVersion.MC_1_7_10.Y()) {
+                event.getRenderer().setLayerRenderers(savedLayerRenderers);
+            }
+            OpenGlBackendHolder.backend.enableCapability(3553);
             GL11.glColor4f((float)1.0f, (float)1.0f, (float)1.0f, (float)1.0f);
             GlStateManager.enableLighting();
             RenderUtils.f();
             GL11.glPopMatrix();
-            this.J = -1;
-            if (!entityPlayer.J$src$Z$fdev5g()) {
-                this.D = entityPlayer;
-                entityPlayer.q(true);
+            this.renderPass = PASS_NONE;
+            if (!player.J$src$Z$fdev5g()) {
+                this.temporarilyInvisiblePlayer = player;
+                player.q(true);
             }
             if (ForgeVersion.MC_1_16_5.d()) {
                 Tessellator.getInstance().getWorldRenderer().Q(false);
@@ -197,22 +199,21 @@ extends Mod {
 
     public Chams() {
         super("Chams", -16711936, Category.k, "Render players through walls.");
-        this.a = BooleanValue.create(this, "Colored", false, "Colors entities.");
-        this.I = ColorValue.L(this, "Visible Color", new Color(255, 0, 0));
-        this.c = BooleanValue.create(this, "Color Behind Walls", true, "Renders a different color when\nplayers are behind walls.");
-        this.r = ColorValue.L(this, "Invisible Color", new Color(255, 255, 0));
-        this.addValue(new Value[]{this.A, this.a.K(new Value[]{this.I, this.c.K(this.r)}), this.I, this.c, this.r});
+        this.colored = BooleanValue.create(this, "Colored", false, "Colors entities.");
+        this.visibleColor = ColorValue.create(this, "Visible Color", new Color(255, 0, 0));
+        this.colorBehindWalls = BooleanValue.create(this, "Color Behind Walls", true, "Renders a different color when\nplayers are behind walls.");
+        this.occludedColor = ColorValue.create(this, "Invisible Color", new Color(255, 255, 0));
+        this.addValue(new Value[]{this.hideBots, this.colored.addDependentValues(new Value[]{this.visibleColor, this.colorBehindWalls.addDependentValues(this.occludedColor)}), this.visibleColor, this.colorBehindWalls, this.occludedColor});
     }
 
     @EventHandler
-    public void onSetArmor(EventSetArmorModel eventSetArmorModel) {
-        if (this.H) {
+    public void onSetArmorModel(EventSetArmorModel event) {
+        if (this.renderingChamsPass) {
             if (Minecraft.theWorld().isNull()) {
                 return;
             }
-            eventSetArmorModel.setResult(0);
-            eventSetArmorModel.setCancelled(true);
+            event.setResult(0);
+            event.setCancelled(true);
         }
     }
 }
-

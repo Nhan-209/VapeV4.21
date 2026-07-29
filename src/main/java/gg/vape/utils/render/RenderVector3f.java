@@ -1,45 +1,44 @@
 package gg.vape.utils.render;
 
 public class RenderVector3f {
-    public float n;
+    public float y;
+    public float z;
     public float x;
-    public float t;
 
-    public RenderVector3f R(RenderVector3f renderVector3f) {
-        float f = this.n * renderVector3f.x - this.x * renderVector3f.n;
-        float f2 = this.x * renderVector3f.t - this.t * renderVector3f.x;
-        float f3 = this.t * renderVector3f.n - this.n * renderVector3f.t;
-        return new RenderVector3f(f, f2, f3);
+    public RenderVector3f cross(RenderVector3f other) {
+        float crossX = this.y * other.z - this.z * other.y;
+        float crossY = this.z * other.x - this.x * other.z;
+        float crossZ = this.x * other.y - this.y * other.x;
+        return new RenderVector3f(crossX, crossY, crossZ);
     }
 
-    public RenderVector3f T(RenderVector3f renderVector3f) {
-        return new RenderVector3f(this.t - renderVector3f.t, this.n - renderVector3f.n, this.x - renderVector3f.x);
+    public RenderVector3f subtract(RenderVector3f other) {
+        return new RenderVector3f(this.x - other.x, this.y - other.y, this.z - other.z);
     }
 
-    public RenderVector3f H() {
-        this.t = -this.t;
-        this.n = -this.n;
+    public RenderVector3f negate() {
         this.x = -this.x;
+        this.y = -this.y;
+        this.z = -this.z;
         return this;
     }
 
-    public float B(RenderVector3f renderVector3f) {
-        return this.t * renderVector3f.t + this.n * renderVector3f.n + this.x * renderVector3f.x;
+    public float dot(RenderVector3f other) {
+        return this.x * other.x + this.y * other.y + this.z * other.z;
     }
 
-    public RenderVector3f(float f, float f2, float f3) {
-        this.t = f;
-        this.n = f2;
-        this.x = f3;
+    public RenderVector3f(float x, float y, float z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public String toString() {
-        return "Vec3{x=" + this.t + ", y=" + this.n + ", z=" + this.x + '}';
+        return "Vec3{x=" + this.x + ", y=" + this.y + ", z=" + this.z + '}';
     }
 
-    public RenderVector3f W() {
-        float f = (float)Math.sqrt(this.t * this.t + this.n * this.n + this.x * this.x);
-        return new RenderVector3f(this.t / f, this.n / f, this.x / f);
+    public RenderVector3f normalize() {
+        float length = (float)Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+        return new RenderVector3f(this.x / length, this.y / length, this.z / length);
     }
 }
-

@@ -14,34 +14,30 @@ extends AutoPearlTrackedPearl {
     private Vec3 landingPos = null;
     private final FixedRotationController rotationController;
 
-    public Vec3 b() {
+    public Vec3 getLandingPosition() {
         return this.landingPos;
     }
 
-    public FixedRotationController r() {
+    public FixedRotationController getRotationController() {
         return this.rotationController;
     }
 
-    public AutoPearlAimLock(EntityEnderPearl entityEnderPearl, EntityPlayer entityPlayer, FixedRotationController fixedRotationController, Vec3 vec3, AutoPearlRotationController autoPearlRotationController) {
-        this(entityEnderPearl, entityPlayer, fixedRotationController, vec3);
+    public AutoPearlAimLock(EntityEnderPearl pearl, EntityPlayer owner, FixedRotationController rotationController, Vec3 landingPosition, AutoPearlRotationController ignoredController) {
+        this(pearl, owner, rotationController, landingPosition);
     }
 
-    public static FixedRotationController E(AutoPearlAimLock autoPearlAimLock) {
-        return autoPearlAimLock.rotationController;
+    public void setLandingPosition(Vec3 landingPosition) {
+        this.landingPos = landingPosition;
     }
 
-    public void b(Vec3 vec3) {
-        this.landingPos = vec3;
+    private AutoPearlAimLock(EntityEnderPearl pearl, EntityPlayer owner, FixedRotationController rotationController, Vec3 landingPosition) {
+        this(pearl, owner, rotationController);
+        this.setLandingPosition(landingPosition);
     }
 
-    private AutoPearlAimLock(EntityEnderPearl entityEnderPearl, EntityPlayer entityPlayer, FixedRotationController fixedRotationController, Vec3 vec3) {
-        this(entityEnderPearl, entityPlayer, fixedRotationController);
-        this.b(vec3);
-    }
-
-    private AutoPearlAimLock(EntityEnderPearl entityEnderPearl, EntityPlayer entityPlayer, FixedRotationController fixedRotationController) {
-        super(entityEnderPearl, entityPlayer, null);
-        this.rotationController = fixedRotationController;
+    private AutoPearlAimLock(EntityEnderPearl pearl, EntityPlayer owner, FixedRotationController rotationController) {
+        super(pearl, owner, null);
+        this.rotationController = rotationController;
     }
 }
 

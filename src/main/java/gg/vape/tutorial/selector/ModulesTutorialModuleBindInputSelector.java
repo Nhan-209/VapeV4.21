@@ -14,7 +14,7 @@ extends TutorialTargetSelector<ModuleComponent> {
     ModuleComponent E;
 
     public boolean g(ModuleComponent moduleComponent) {
-        if (moduleComponent.N$src$Lgg_vape_module_Mod_$rb0ew8().getName().equals(b)) {
+        if (moduleComponent.getModule().getName().equals(b)) {
             this.E = moduleComponent;
             return true;
         }
@@ -38,7 +38,7 @@ extends TutorialTargetSelector<ModuleComponent> {
         if (this.o().isInstance(guiComponent)) {
             ArrayList<GuiComponent> arrayList = super.v(guiComponent);
             if (arrayList != null && this.E != null && this.E.equals(guiComponent)) {
-                return new ArrayList<GuiComponent>(Arrays.asList(this.E.C$src$Lgg_vape_ui_click_component_input_BindableInputC$4yzyz3()));
+                return new ArrayList<GuiComponent>(Arrays.asList(this.E.getBindInput()));
             }
             return arrayList;
         }

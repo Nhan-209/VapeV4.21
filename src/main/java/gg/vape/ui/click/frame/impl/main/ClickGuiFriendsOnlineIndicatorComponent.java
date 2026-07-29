@@ -8,7 +8,7 @@ import java.awt.Color;
 
 final class ClickGuiFriendsOnlineIndicatorComponent
 extends GuiComponent {
-    final ClickGuiFriendsFriendListComponent a;
+    final ClickGuiFriendsFriendListComponent owner;
 
     @Override
     public double x() {
@@ -16,9 +16,9 @@ extends GuiComponent {
     }
 
     private ClickGuiFriendsOnlineIndicatorComponent(ClickGuiFriendsFriendListComponent clickGuiFriendsFriendListComponent) {
-        this.a = clickGuiFriendsFriendListComponent;
-        this.S(false);
-        this.d(false);
+        this.owner = clickGuiFriendsFriendListComponent;
+        this.setAcceptsMouseInput(false);
+        this.setShowDisabledOverlay(false);
     }
 
     @Override
@@ -30,9 +30,9 @@ extends GuiComponent {
         GuiRenderPrimitives.P(d, d2, 6.0, 6.0, ClickGuiFriendsOnlineIndicatorComponent.J.y, 1.5f, 0.8f, 1.0f);
         double d3 = d + 1.5;
         double d4 = 3.0;
-        GuiRenderPrimitives.C(d3, d2 + 1.5, 3.0, 1.0, ClickGuiFriendsFriendListComponent.g$src$Ljava_awt_Color_$1lgjsp9());
-        GuiRenderPrimitives.C(d3, d2 + 3.0, 3.0, 1.0, ClickGuiFriendsFriendListComponent.g$src$Ljava_awt_Color_$1lgjsp9());
-        GuiRenderPrimitives.C(d3, d2 + 4.5, 3.0, 1.0, ClickGuiFriendsFriendListComponent.g$src$Ljava_awt_Color_$1lgjsp9());
+        GuiRenderPrimitives.C(d3, d2 + 1.5, 3.0, 1.0, ClickGuiFriendsFriendListComponent.getIndicatorLineColor());
+        GuiRenderPrimitives.C(d3, d2 + 3.0, 3.0, 1.0, ClickGuiFriendsFriendListComponent.getIndicatorLineColor());
+        GuiRenderPrimitives.C(d3, d2 + 4.5, 3.0, 1.0, ClickGuiFriendsFriendListComponent.getIndicatorLineColor());
     }
 
     @Override
@@ -44,4 +44,3 @@ extends GuiComponent {
         this(clickGuiFriendsFriendListComponent);
     }
 }
-

@@ -26,7 +26,7 @@ extends Mapping {
         if (nArray != null) {
             return;
         }
-        GuiComponent.D(new GuiComponent[5]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 
     private String J(Object object) {

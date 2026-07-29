@@ -10,19 +10,18 @@ import java.awt.Point;
 
 class QuickActionRowClickListener
 implements GuiMouseListener {
-    final Class O;
-    final QuickActionRowComponent K;
+    private final Class targetFrameClass;
+    private final QuickActionRowComponent actionRow;
 
-    QuickActionRowClickListener(QuickActionRowComponent quickActionRowComponent, Class clazz) {
-        this.K = quickActionRowComponent;
-        this.O = clazz;
+    QuickActionRowClickListener(QuickActionRowComponent actionRow, Class targetFrameClass) {
+        this.actionRow = actionRow;
+        this.targetFrameClass = targetFrameClass;
     }
 
     @Override
-    public void g(Point point, MouseClickButton uA) {
-        Object t = ClientSettings.g(this.O);
-        ClientSettings.T(this.O);
-        ((Frame)ClientSettings.g(this.O)).c(((GuiComponent)t).V$src$Z$1xhop3l());
+    public void g(Point clickPoint, MouseClickButton clickButton) {
+        Object previousFrame = ClientSettings.getFrame(this.targetFrameClass);
+        ClientSettings.showFrame(this.targetFrameClass);
+        ((Frame)ClientSettings.getFrame(this.targetFrameClass)).c(((GuiComponent)previousFrame).V$src$Z$1xhop3l());
     }
 }
-

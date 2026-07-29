@@ -1,51 +1,48 @@
 package gg.vape.notification;
 
-import gg.vape.notification.SoundClip;
-
 public class NotificationSounds {
-    public static final SoundClip P;
-    public static final SoundClip F;
-    public static final SoundClip N;
+    public static final SoundClip PARTY_INVITE;
+    public static final SoundClip MESSAGE_RECEIVED;
+    public static final SoundClip PING;
 
-    private static String a(byte[] byArray) {
-        int n = 0;
-        int n2 = byArray.length;
-        char[] cArray = new char[n2];
-        for (int i = 0; i < n2; ++i) {
-            char c;
-            int n3 = 0xFF & byArray[i];
-            if (n3 < 192) {
-                cArray[n++] = (char)n3;
+    private static String decodeUtf8(byte[] bytes) {
+        int outputIndex = 0;
+        int length = bytes.length;
+        char[] characters = new char[length];
+        for (int inputIndex = 0; inputIndex < length; ++inputIndex) {
+            char decoded;
+            int value = 0xFF & bytes[inputIndex];
+            if (value < 192) {
+                characters[outputIndex++] = (char)value;
                 continue;
             }
-            if (n3 < 224) {
-                c = (char)((char)(n3 & 0x1F) << 6);
-                n3 = byArray[++i];
-                c = (char)(c | (char)(n3 & 0x3F));
-                cArray[n++] = c;
+            if (value < 224) {
+                decoded = (char)((char)(value & 0x1F) << 6);
+                value = bytes[++inputIndex];
+                decoded = (char)(decoded | (char)(value & 0x3F));
+                characters[outputIndex++] = decoded;
                 continue;
             }
-            if (i >= n2 - 2) continue;
-            c = (char)((char)(n3 & 0xF) << 12);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F) << 6);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F));
-            cArray[n++] = c;
+            if (inputIndex >= length - 2) continue;
+            decoded = (char)((char)(value & 0xF) << 12);
+            value = bytes[++inputIndex];
+            decoded = (char)(decoded | (char)(value & 0x3F) << 6);
+            value = bytes[++inputIndex];
+            decoded = (char)(decoded | (char)(value & 0x3F));
+            characters[outputIndex++] = decoded;
         }
-        return new String(cArray, 0, n);
+        return new String(characters, 0, outputIndex);
     }
 
     static {
         try {
-            String[] stringArray = new String[]{"party_invite", "ping", "message_rec"};
-            N = new SoundClip(stringArray[1]);
-            P = new SoundClip(stringArray[0]);
-            F = new SoundClip(stringArray[2]);
+            String[] resourceNames = new String[]{"party_invite", "ping", "message_rec"};
+            PING = new SoundClip(resourceNames[1]);
+            PARTY_INVITE = new SoundClip(resourceNames[0]);
+            MESSAGE_RECEIVED = new SoundClip(resourceNames[2]);
         }
         catch (Exception exception) {
             throw new ExceptionInInitializerError(exception);
         }
     }
 }
-

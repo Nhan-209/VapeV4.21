@@ -1,7 +1,6 @@
 package gg.vape.combat;
 
 import gg.vape.Vape;
-import gg.vape.combat.TrackedPlayerAttackState;
 import gg.vape.event.EventHandler;
 import gg.vape.event.EventListener;
 import gg.vape.event.impl.EventEntityJoinWorld;
@@ -33,214 +32,207 @@ import java.util.Map;
 
 public class AttackStrengthTracker
 implements EventListener {
-    private HashMap<Integer, TrackedPlayerAttackState> w = new HashMap();
-    private Object i;
-    public static AttackStrengthTracker B = new AttackStrengthTracker();
-    private static int[] e;
-    private List<EntityPotion> I = new ArrayList<EntityPotion>();
+    private final HashMap<Integer, TrackedPlayerAttackState> playerStates = new HashMap();
+    private Object trackedWorldHandle;
+    public static final AttackStrengthTracker INSTANCE = new AttackStrengthTracker();
+    private static int[] controlFlowMarker;
+    private final List<EntityPotion> healingPotions = new ArrayList<EntityPotion>();
 
-    private static float e(ItemStack itemStack, EntityPlayer entityPlayer, boolean bl, boolean bl2) {
-        ItemAttributeModifiers itemAttributeModifiers;
-        float f = 1.0f;
-        if (itemStack.isNotNull() && (itemAttributeModifiers = itemStack.o()).i() > 0) {
-            int n = ForgeVersion.MC_1_12_2.L() ? 1 : 0;
-            AttributeModifier attributeModifier = new AttributeModifier(itemAttributeModifiers.f().toArray()[n]);
-            f += (float)attributeModifier.getAmount();
-        }
-        float f2 = 0.0f;
-        f2 = EnchantmentHelper.C(itemStack, EnumCreatureAttribute.R());
-        if (f > 0.0f || f2 > 0.0f) {
-            if (bl2 && f > 0.0f) {
-                f *= 1.5f;
+    static float calculateAttackDamage(ItemStack itemStack, EntityPlayer player,
+            boolean targetWasBlocking, boolean criticalHit) {
+        float baseDamage = 1.0f;
+        if (itemStack.isNotNull()) {
+            ItemAttributeModifiers modifiers = itemStack.o();
+            if (modifiers.i() > 0) {
+                int attackDamageModifierIndex = ForgeVersion.MC_1_12_2.L() ? 1 : 0;
+                AttributeModifier attackDamageModifier = new AttributeModifier(
+                        modifiers.f().toArray()[attackDamageModifierIndex]);
+                baseDamage += (float)attackDamageModifier.getAmount();
             }
-            float f3 = AttackStrengthTracker.y(entityPlayer, bl, f += f2);
-            return f3;
+        }
+        float enchantmentDamage = EnchantmentHelper.C(itemStack, EnumCreatureAttribute.R());
+        if (baseDamage > 0.0f || enchantmentDamage > 0.0f) {
+            if (criticalHit && baseDamage > 0.0f) {
+                baseDamage *= 1.5f;
+            }
+            return applyDamageReductions(player, targetWasBlocking, baseDamage + enchantmentDamage);
         }
         return 0.0f;
     }
 
     @EventHandler
     public void onUpdate(EventLivingUpdate eventLivingUpdate) {
-        TrackedPlayerAttackState trackedPlayerAttackState;
-        if (eventLivingUpdate.getEntity().isInstance(MappedClasses.Yl) && Minecraft.thePlayer().getDistanceToEntity(eventLivingUpdate.getEntity()) < 6.0f && (trackedPlayerAttackState = (TrackedPlayerAttackState)this.w.getOrDefault(eventLivingUpdate.getEntity().S(), null)) != null) {
-            TrackedPlayerAttackState.W(trackedPlayerAttackState, true);
+        if (eventLivingUpdate.getEntity().isInstance(MappedClasses.Yl)
+                && Minecraft.thePlayer().getDistanceToEntity(eventLivingUpdate.getEntity()) < 6.0f) {
+            TrackedPlayerAttackState state = this.playerStates.get(eventLivingUpdate.getEntity().S());
+            if (state != null) {
+                state.markLivingUpdate();
+            }
         }
     }
 
     @EventHandler
-    public void L(EventEntityJoinWorld eventEntityJoinWorld) {
-        if (eventEntityJoinWorld.getEntity().isInstance(MappedClasses.Yl)) {
-            TrackedPlayerAttackState trackedPlayerAttackState = this.w.getOrDefault(eventEntityJoinWorld.getEntity().S(), new TrackedPlayerAttackState(new EntityPlayer(eventEntityJoinWorld.getEntity())));
-            if (trackedPlayerAttackState != null) {
-                TrackedPlayerAttackState.n(trackedPlayerAttackState, new EntityPlayer(eventEntityJoinWorld.getEntity().getObject()));
-                if (TrackedPlayerAttackState.H(trackedPlayerAttackState).hasTimeElapsed(10000L)) {
-                    TrackedPlayerAttackState.j(trackedPlayerAttackState, 20.0f);
-                    TrackedPlayerAttackState.h(trackedPlayerAttackState, 20);
-                    TrackedPlayerAttackState.R(trackedPlayerAttackState, 0);
-                    TrackedPlayerAttackState.T(trackedPlayerAttackState, 0.0f);
-                    TrackedPlayerAttackState.C(trackedPlayerAttackState, 5.0f);
-                    TrackedPlayerAttackState.V(trackedPlayerAttackState, null);
-                    TrackedPlayerAttackState.D(trackedPlayerAttackState, false);
-                    TrackedPlayerAttackState.H(trackedPlayerAttackState).reset();
+    public void onEntityJoinWorld(EventEntityJoinWorld event) {
+        if (event.getEntity().isInstance(MappedClasses.Yl)) {
+            TrackedPlayerAttackState state = this.playerStates.getOrDefault(
+                    event.getEntity().S(), new TrackedPlayerAttackState(new EntityPlayer(event.getEntity())));
+            if (state != null) {
+                state.updatePlayer(new EntityPlayer(event.getEntity().getObject()));
+                if (state.getInactivityTimer().hasTimeElapsed(10000L)) {
+                    state.resetPrediction();
                 }
             }
             return;
         }
-        if (!eventEntityJoinWorld.getEntity().isInstance(MappedClasses.Zf)) {
+        if (!event.getEntity().isInstance(MappedClasses.Zf)) {
             return;
         }
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        EntityPotion entityPotion = new EntityPotion(eventEntityJoinWorld.getEntity());
+        EntityPotion entityPotion = new EntityPotion(event.getEntity());
         if (entityPotion.getPotion().isNull()) {
             return;
         }
-        boolean bl = ItemStackScoreUtil.i(entityPotion.getPotion());
-        if (!bl) {
+        boolean isHealingPotion = ItemStackScoreUtil.i(entityPotion.getPotion());
+        if (!isHealingPotion) {
             return;
         }
-        this.I.add(new EntityPotion(eventEntityJoinWorld.getEntity().getObject()));
+        this.healingPotions.add(new EntityPotion(event.getEntity().getObject()));
     }
 
     @EventHandler
-    public void J(EventPreAttack eventPreAttack) {
-        TrackedPlayerAttackState trackedPlayerAttackState;
-        if (eventPreAttack.getTarget().isInstance(MappedClasses.Yl) && (trackedPlayerAttackState = (TrackedPlayerAttackState)this.w.getOrDefault(eventPreAttack.getTarget().S(), null)) != null) {
-            TrackedPlayerAttackState.m(trackedPlayerAttackState, new EntityPlayer(eventPreAttack.getTarget().getObject()).o$src$Z$1iprrmi());
-            TrackedPlayerAttackState.L(trackedPlayerAttackState, 0);
-            TrackedPlayerAttackState.D(trackedPlayerAttackState, true);
-            TrackedPlayerAttackState.V(trackedPlayerAttackState, Minecraft.thePlayer().B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt());
+    public void onPreAttack(EventPreAttack event) {
+        if (event.getTarget().isInstance(MappedClasses.Yl)) {
+            TrackedPlayerAttackState state = this.playerStates.get(event.getTarget().S());
+            if (state != null) {
+                EntityPlayer target = new EntityPlayer(event.getTarget().getObject());
+                state.recordAttack(target.o$src$Z$1iprrmi(),
+                        Minecraft.thePlayer().B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt());
+            }
         }
     }
 
-    static float r(EntityPlayer entityPlayer, boolean bl, float f) {
-        return AttackStrengthTracker.y(entityPlayer, bl, f);
+    static float applyDamageReductions(EntityPlayer player, boolean blocking, float damage) {
+        if (blocking && damage > 0.0f) {
+            damage = (1.0f + damage) * 0.5f;
+        }
+        damage = RotationUtil.m(player, damage);
+        return RotationUtil.j((EntityLivingBase)player, damage);
     }
 
     static {
-        AttackStrengthTracker.k(new int[3]);
+        AttackStrengthTracker.setControlFlowMarker(new int[3]);
     }
 
-    private static double V(Entity entity, double d, double d2, double d3) {
-        double d4 = entity.z() - d;
-        double d5 = entity.N() - d2;
-        double d6 = entity.h() - d3;
-        return d4 * d4 + d5 * d5 + d6 * d6;
+    private static double squaredDistance(Entity entity, double x, double y, double z) {
+        double deltaX = entity.z() - x;
+        double deltaY = entity.N() - y;
+        double deltaZ = entity.h() - z;
+        return deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
     }
 
-    private static float m(int n, double d) {
-        return (int)(d * (double)(4 << n) + 0.5);
+    private static float calculateInstantHealthAmount(int amplifier, double intensity) {
+        return (int)(intensity * (double)(4 << amplifier) + 0.5);
     }
 
-    public boolean g() {
-        return Vape.INSTANCE.getClientSettings().B.L();
+    public boolean isHealthPredictionEnabled() {
+        return Vape.INSTANCE.getClientSettings().healthPrediction.getEffectiveValue();
     }
 
-    public boolean v() {
-        return Vape.INSTANCE.getClientSettings().J.L();
+    public boolean shouldEstimateFoodHealing() {
+        return Vape.INSTANCE.getClientSettings().estimateFoodHealing.getEffectiveValue();
     }
 
-    private static float y(EntityPlayer entityPlayer, ItemStack itemStack, double d, double d2, double d3, boolean bl) {
-        ItemSplashPotion itemSplashPotion;
-        double d4 = AttackStrengthTracker.V(entityPlayer, d, d2, d3);
-        int n = 0;
-        if (itemStack.getItem().isInstance(MappedClasses.Di) && (itemSplashPotion = new ItemSplashPotion(itemStack.getItem().getObject())).getRawPotionEffects(itemStack) != null && ItemSplashPotion.isSplashPotion(itemStack)) {
-            for (PotionEffect potionEffect : itemSplashPotion.getPotionEffects(itemStack)) {
+    private static float calculateInstantHealthFromPotion(EntityPlayer player, ItemStack potionStack,
+            double x, double y, double z, boolean directHit) {
+        double distanceSquared = squaredDistance(player, x, y, z);
+        int amplifier = 0;
+        if (potionStack.getItem().isInstance(MappedClasses.Di)) {
+            ItemSplashPotion splashPotion = new ItemSplashPotion(potionStack.getItem().getObject());
+            if (splashPotion.getRawPotionEffects(potionStack) != null
+                    && ItemSplashPotion.isSplashPotion(potionStack)) {
+                for (PotionEffect potionEffect : splashPotion.getPotionEffects(potionStack)) {
                 if (potionEffect.C() != 6) continue;
-                n = potionEffect.L();
+                    amplifier = potionEffect.L();
+                }
             }
         }
-        if (d4 < 16.0) {
-            double d5 = 1.0 - Math.sqrt(d4) / 4.0;
-            if (bl) {
-                d5 = 1.0;
+        if (distanceSquared < 16.0) {
+            double intensity = 1.0 - Math.sqrt(distanceSquared) / 4.0;
+            if (directHit) {
+                intensity = 1.0;
             }
-            return AttackStrengthTracker.m(n, d5);
+            return calculateInstantHealthAmount(amplifier, intensity);
         }
         return 0.0f;
     }
 
-    static float j(ItemStack itemStack, EntityPlayer entityPlayer, boolean bl, boolean bl2) {
-        return AttackStrengthTracker.e(itemStack, entityPlayer, bl, bl2);
-    }
-
     @EventHandler
-    public void f(EventPostTick eventPostTick) {
-        WorldClient worldClient = Minecraft.theWorld();
-        if (worldClient.isNull()) {
+    public void onPostTick(EventPostTick event) {
+        WorldClient world = Minecraft.theWorld();
+        if (world.isNull()) {
             return;
         }
-        if (this.i == null) {
-            this.i = worldClient.getObject();
+        if (this.trackedWorldHandle == null) {
+            this.trackedWorldHandle = world.getObject();
         }
-        if (!worldClient.getObject().equals(this.i)) {
-            this.I.clear();
-            this.w.clear();
-            this.i = worldClient.getObject();
+        if (!world.getObject().equals(this.trackedWorldHandle)) {
+            this.healingPotions.clear();
+            this.playerStates.clear();
+            this.trackedWorldHandle = world.getObject();
         }
-        for (Object object : worldClient.z()) {
-            if (!MappedClasses.Yl.isAssignableFrom(object.getClass()) || MappedClasses.z5.isAssignableFrom(object.getClass())) continue;
-            EntityPlayer entity = new EntityPlayer(object);
-            if (this.w.containsKey(entity.S())) {
-                TrackedPlayerAttackState trackedPlayerAttackState = this.w.get(entity.S());
-                trackedPlayerAttackState.u();
+        for (Object entityHandle : world.z()) {
+            if (!MappedClasses.Yl.isAssignableFrom(entityHandle.getClass())
+                    || MappedClasses.z5.isAssignableFrom(entityHandle.getClass())) continue;
+            EntityPlayer player = new EntityPlayer(entityHandle);
+            if (this.playerStates.containsKey(player.S())) {
+                this.playerStates.get(player.S()).update();
                 continue;
             }
-            this.w.put(entity.S(), new TrackedPlayerAttackState(entity));
+            this.playerStates.put(player.S(), new TrackedPlayerAttackState(player));
         }
-        ArrayList arrayList = new ArrayList();
-        for (EntityPotion entityPotion : this.I) {
-            if (worldClient.z().contains(entityPotion.getObject())) continue;
-            double d = entityPotion.z();
-            double d2 = entityPotion.N();
-            double d3 = entityPotion.h();
-            for (Map.Entry<Integer, TrackedPlayerAttackState> entry : this.w.entrySet()) {
-                Entity entity = ((World)worldClient).V(entry.getKey());
+        ArrayList<EntityPotion> expiredPotions = new ArrayList<EntityPotion>();
+        for (EntityPotion potion : this.healingPotions) {
+            if (world.z().contains(potion.getObject())) continue;
+            double potionX = potion.z();
+            double potionY = potion.N();
+            double potionZ = potion.h();
+            for (Map.Entry<Integer, TrackedPlayerAttackState> entry : this.playerStates.entrySet()) {
+                Entity entity = ((World)world).V(entry.getKey());
                 if (!entity.isNotNull() || !entity.isInstance(MappedClasses.Yl)) continue;
-                boolean bl = false;
-                if (entityPotion.N() > entity.N() + 0.5 && (double)entity.getDistanceToEntity(entityPotion) < 2.2 && entityPotion.l() >= 5) {
-                    bl = true;
-                }
-                float f = AttackStrengthTracker.y(new EntityPlayer(entity.getObject()), entityPotion.getPotion(), d, d2, d3, bl);
-                TrackedPlayerAttackState trackedPlayerAttackState = entry.getValue();
-                TrackedPlayerAttackState.j(trackedPlayerAttackState, TrackedPlayerAttackState.J(trackedPlayerAttackState) + f);
+                boolean directHit = potion.N() > entity.N() + 0.5
+                        && entity.getDistanceToEntity(potion) < 2.2f && potion.l() >= 5;
+                float healing = calculateInstantHealthFromPotion(new EntityPlayer(entity.getObject()),
+                        potion.getPotion(), potionX, potionY, potionZ, directHit);
+                entry.getValue().addEstimatedHealth(healing);
             }
-            arrayList.add(entityPotion);
+            expiredPotions.add(potion);
         }
-        if (arrayList.size() > 0) {
-            this.I.removeAll(arrayList);
+        if (!expiredPotions.isEmpty()) {
+            this.healingPotions.removeAll(expiredPotions);
         }
     }
 
-    public float S(EntityPlayer entityPlayer) {
-        if (!this.g()) {
-            return entityPlayer.w$src$F$15l9epb();
+    public float getEstimatedHealth(EntityPlayer player) {
+        if (!this.isHealthPredictionEnabled()) {
+            return player.w$src$F$15l9epb();
         }
-        TrackedPlayerAttackState trackedPlayerAttackState = this.w.get(entityPlayer.S());
-        return trackedPlayerAttackState != null ? TrackedPlayerAttackState.J(trackedPlayerAttackState) : entityPlayer.w$src$F$15l9epb();
+        TrackedPlayerAttackState state = this.playerStates.get(player.S());
+        return state != null ? state.getEstimatedHealth() : player.w$src$F$15l9epb();
     }
 
-    private static float y(EntityPlayer entityPlayer, boolean bl, float f) {
-        if (bl && f > 0.0f) {
-            f = (1.0f + f) * 0.5f;
-        }
-        f = RotationUtil.m(entityPlayer, f);
-        f = RotationUtil.j((EntityLivingBase)entityPlayer, f);
-        return f;
+    public static void setControlFlowMarker(int[] marker) {
+        controlFlowMarker = marker;
     }
 
-    public static void k(int[] nArray) {
-        e = nArray;
-    }
-
-    public static int[] Y() {
-        return e;
+    public static int[] getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
 
-    public boolean s() {
-        return Vape.INSTANCE.getClientSettings().I.L();
+    public boolean shouldEstimateFallDamage() {
+        return Vape.INSTANCE.getClientSettings().estimateFallDamage.getEffectiveValue();
     }
 }
 

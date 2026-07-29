@@ -45,8 +45,7 @@ extends Mod {
     private final BooleanValue refillRods;
     private final BooleanValue recastGround;
     private final TimerUtil stationaryTimer;
-    private static final int RECAST_GROUND_DELAY_MS;
-    private static final boolean DEBUG = false;
+    private static final int RECAST_GROUND_DELAY_MS = 3000;
     private boolean biteDetected = false;
     private static final double VELOCITY_THRESHOLD = 0.05;
     private final Queue<InventoryClick> clickQueue;
@@ -56,12 +55,9 @@ extends Mod {
     private final TimerUtil castTimer;
     private double accumulatedMotionY = 0.0;
     private final TimerUtil clickTimer;
-    private static final int STATIONARY_DELAY_MS;
-    private final RandomValue clickDelay = RandomValue.G(this, "Click delay", "#", "ms", 50.0, 75.0, 125.0, 200.0, 5.0, "How long to wait between clicks in the inventory");
+    private static final int STATIONARY_DELAY_MS = 1000;
+    private final RandomValue clickDelay = RandomValue.createWithDescription(this, "Click delay", "#", "ms", 50.0, 75.0, 125.0, 200.0, 5.0, "How long to wait between clicks in the inventory");
     private boolean refillPending = false;
-    private static final boolean UNUSED_FLAG_A = false;
-    private static final boolean UNUSED_FLAG_B = true;
-    private static final boolean UNUSED_FLAG_C = false;
     private final ArrayDeque<KeyBinding> queuedKeys;
     private final BooleanValue recastCaught;
     private final TimerUtil groundTimer;
@@ -70,42 +66,34 @@ extends Mod {
         if (this.refillPending) {
             this.clickQueue.clear();
             this.refillPending = false;
-            return ItemStackActionPredicate.f();
+            return ItemStackActionPredicate.closeCurrentScreen();
         }
         return false;
     }
 
 
     private boolean pumpKeyPresses() {
-        KeyBinding keyBinding;
-        boolean bl = false;
-        KeyBinding keyBinding2 = this.pressedKeys.poll();
-        if (keyBinding2 != null && keyBinding2.isNotNull()) {
-            KeyBindingHelper.v(keyBinding2, false, false);
-            bl = true;
+        boolean processedKey = false;
+        KeyBinding pressedKey = this.pressedKeys.poll();
+        if (pressedKey != null && pressedKey.isNotNull()) {
+            KeyBindingHelper.updateKeyBinding(pressedKey, false, false);
+            processedKey = true;
         }
-        if ((keyBinding = this.queuedKeys.poll()) != null && keyBinding.isNotNull()) {
-            KeyBindingHelper.v(keyBinding, true, true);
-            bl = true;
-            this.pressedKeys.add(keyBinding);
+        KeyBinding queuedKey = this.queuedKeys.poll();
+        if (queuedKey != null && queuedKey.isNotNull()) {
+            KeyBindingHelper.updateKeyBinding(queuedKey, true, true);
+            processedKey = true;
+            this.pressedKeys.add(queuedKey);
         }
-        return bl;
+        return processedKey;
     }
 
-    static {
-        STATIONARY_DELAY_MS = 1000;
-        RECAST_GROUND_DELAY_MS = 3000;
-    }
-
-    private void logDebug(String string, Object ... objectArray) {
-    }
-
-    private boolean hasWaterBelow(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
-        double d = entityPlayerMacroBridge.z();
-        double d2 = entityPlayerMacroBridge.N();
-        double d3 = entityPlayerMacroBridge.h();
-        for (double d4 = d2; d4 >= 0.0 && d4 >= d2 - 3.0; d4 -= 1.0) {
-            Block block = worldClient.getBlock(d, d4, d3);
+    private boolean hasWaterBelow(EntityPlayerMacroBridge fishHook, WorldClient world) {
+        double hookX = fishHook.z();
+        double hookY = fishHook.N();
+        double hookZ = fishHook.h();
+        for (double scanY = hookY; scanY >= 0.0 && scanY >= hookY - 3.0; scanY -= 1.0) {
+            Block block = world.getBlock(hookX, scanY, hookZ);
             if (block == null || !block.isNotNull()) continue;
             if (BlockUtil.C(block)) {
                 return true;
@@ -116,52 +104,49 @@ extends Mod {
         return false;
     }
 
-    private void log(String string) {
-    }
-
     private boolean beginRefill() {
         this.refillPending = true;
-        return ItemStackActionPredicate.V();
+        return ItemStackActionPredicate.openInventory();
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
-        EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();
-        WorldClient worldClient = eventPreTick.getWorld();
+    public void onTick(EventPreTick event) {
+        EntityPlayerSP localPlayer = event.getThePlayer();
+        WorldClient world = event.getWorld();
         if (!this.isHoldingRod()) {
-            InventoryClick inventoryClick;
-            Slot slot = ItemStackActionPredicate.K(MappedClasses.Yi, MLGImpactState.D);
-            if (slot != null && slot.isNotNull()) {
-                int n;
-                if (ItemStackActionPredicate.L()) {
+            InventoryClick pendingClick;
+            Slot hotbarRodSlot = ItemStackActionPredicate.findSlotByItemClass(MappedClasses.Yi, MLGImpactState.HOTBAR);
+            if (hotbarRodSlot != null && hotbarRodSlot.isNotNull()) {
+                if (ItemStackActionPredicate.isAnyScreenOpen()) {
                     if (this.refillPending) {
                         this.cancelRefill();
                     }
                     return;
                 }
-                InventoryPlayer inventoryPlayer = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
+                InventoryPlayer inventoryPlayer = localPlayer.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
                 if (inventoryPlayer.isNull()) {
                     return;
                 }
-                int n2 = inventoryPlayer.v();
-                if (n2 == (n = slot.g() - 36)) {
+                int rodHotbarIndex = hotbarRodSlot.g() - 36;
+                int selectedHotbarSlot = inventoryPlayer.v();
+                if (selectedHotbarSlot == rodHotbarIndex) {
                     return;
                 }
-                inventoryPlayer.g(n);
+                inventoryPlayer.g(rodHotbarIndex);
                 return;
             }
-            if (!this.refillRods.L().booleanValue()) {
+            if (!this.refillRods.getEffectiveValue().booleanValue()) {
                 this.Y(false);
                 return;
             }
-            Slot slot2 = ItemStackActionPredicate.K(MappedClasses.Yi, MLGImpactState.i);
-            if (slot2 == null || slot2.isNull()) {
+            Slot inventoryRodSlot = ItemStackActionPredicate.findSlotByItemClass(MappedClasses.Yi, MLGImpactState.MAIN_INVENTORY);
+            if (inventoryRodSlot == null || inventoryRodSlot.isNull()) {
                 this.Y(false);
                 return;
             }
-            int n = slot2.g();
-            if (!ItemStackActionPredicate.o()) {
-                if (ItemStackActionPredicate.L()) {
+            int inventorySlot = inventoryRodSlot.g();
+            if (!ItemStackActionPredicate.isInventoryScreenOpen()) {
+                if (ItemStackActionPredicate.isAnyScreenOpen()) {
                     if (this.refillPending) {
                         this.cancelRefill();
                     }
@@ -171,17 +156,17 @@ extends Mod {
                 return;
             }
             GuiContainer guiContainer = new GuiContainer(Minecraft.currentScreen().getObject());
-            int n3 = guiContainer.getInventorySlots().getWindowId();
+            int windowId = guiContainer.getInventorySlots().getWindowId();
             if (this.clickQueue.isEmpty()) {
-                this.clickQueue.add(new InventoryClick(n3, n, 0, 2));
+                this.clickQueue.add(new InventoryClick(windowId, inventorySlot, 0, 2));
                 return;
             }
-            if (this.clickTimer.hasTimeElapsed((long)this.clickDelay.B()) && (inventoryClick = this.clickQueue.poll()) != null) {
-                this.performClick(inventoryClick, n3);
+            if (this.clickTimer.hasTimeElapsed((long)this.clickDelay.getRandomValue()) && (pendingClick = this.clickQueue.poll()) != null) {
+                this.performClick(pendingClick, windowId);
             }
             return;
         }
-        if (ItemStackActionPredicate.L()) {
+        if (ItemStackActionPredicate.isAnyScreenOpen()) {
             if (this.refillPending) {
                 this.cancelRefill();
             }
@@ -190,34 +175,34 @@ extends Mod {
         if (this.pumpKeyPresses()) {
             return;
         }
-        EntityPlayerMacroBridge entityPlayerMacroBridge = this.getFishHook();
-        if (entityPlayerMacroBridge == null || entityPlayerMacroBridge.isNull()) {
+        EntityPlayerMacroBridge fishHook = this.getFishHook();
+        if (fishHook == null || fishHook.isNull()) {
             this.recast();
             return;
         }
-        Entity entity = entityPlayerMacroBridge.r$src$Lgg_vape_wrapper_impl_Entity_$18p7x3h();
-        if (entity != null && entity.isNotNull()) {
-            if (this.recastCaught.L().booleanValue()) {
+        Entity caughtEntity = fishHook.r$src$Lgg_vape_wrapper_impl_Entity_$18p7x3h();
+        if (caughtEntity != null && caughtEntity.isNotNull()) {
+            if (this.recastCaught.getEffectiveValue().booleanValue()) {
                 this.recast();
             } else {
                 this.Y(false);
             }
             return;
         }
-        if (!this.isHookInLiquid(entityPlayerMacroBridge, worldClient)) {
-            if (this.recastGround.L().booleanValue() && this.groundTimer.hasTimeElapsed(3000L)) {
+        if (!this.isHookInLiquid(fishHook, world)) {
+            if (this.recastGround.getEffectiveValue().booleanValue() && this.groundTimer.hasTimeElapsed(RECAST_GROUND_DELAY_MS)) {
                 this.recast();
             }
             return;
         }
         this.groundTimer.reset();
-        double d = entityPlayerMacroBridge.q();
+        double motionY = fishHook.q();
         if (!this.biteDetected) {
-            double d2 = entityPlayerMacroBridge.t();
-            double d3 = entityPlayerMacroBridge.T();
-            double d4 = Math.abs(d2) + Math.abs(d) + Math.abs(d3);
-            if (d4 <= 0.05) {
-                if (this.stationaryTimer.hasTimeElapsed(1000L)) {
+            double motionX = fishHook.t();
+            double motionZ = fishHook.T();
+            double totalMotion = Math.abs(motionX) + Math.abs(motionY) + Math.abs(motionZ);
+            if (totalMotion <= VELOCITY_THRESHOLD) {
+                if (this.stationaryTimer.hasTimeElapsed(STATIONARY_DELAY_MS)) {
                     this.biteDetected = true;
                 }
             } else {
@@ -225,84 +210,79 @@ extends Mod {
             }
             return;
         }
-        this.accumulatedMotionY = d <= -0.1 ? (this.accumulatedMotionY += d) : 0.0;
-        if (this.accumulatedMotionY <= -0.05 || this.velocityBite) {
-            if (this.accumulatedMotionY <= -0.05) {
-                // empty if block
-            }
+        this.accumulatedMotionY = motionY <= -0.1 ? (this.accumulatedMotionY += motionY) : 0.0;
+        if (this.accumulatedMotionY <= -VELOCITY_THRESHOLD || this.velocityBite) {
             this.recast();
             this.castTimer.reset();
             this.stationaryTimer.reset();
             this.groundTimer.reset();
             this.biteDetected = false;
             this.velocityBite = false;
-        } else if (Math.abs(d) > 0.001) {
-            // empty if block
         }
     }
 
     @Nullable
     private EntityPlayerMacroBridge getFishHook() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (localPlayer.isNull()) {
             return null;
         }
-        EntityPlayerMacroBridge entityPlayerMacroBridge = entityPlayerSP.K$src$Lgg_vape_wrapper_impl_EntityPlayerMacroBridge_$1agjn9();
-        if (entityPlayerMacroBridge.isNotNull()) {
-            return entityPlayerMacroBridge;
+        EntityPlayerMacroBridge attachedHook = localPlayer.K$src$Lgg_vape_wrapper_impl_EntityPlayerMacroBridge_$1agjn9();
+        if (attachedHook.isNotNull()) {
+            return attachedHook;
         }
-        World world = entityPlayerSP.getWorld();
+        World world = localPlayer.getWorld();
         if (world.isNull()) {
             return null;
         }
-        ArrayList<EntityPlayerMacroBridge> arrayList = new ArrayList<EntityPlayerMacroBridge>();
-        for (Object e : world.z()) {
-            EntityPlayerMacroBridge entityPlayerMacroBridge2;
-            Entity entity = new Entity(e);
-            if (!entity.isInstance(MappedClasses.lM) || !entityPlayerSP.equals((entityPlayerMacroBridge2 = new EntityPlayerMacroBridge(entity.getObject())).A$src$Lgg_vape_wrapper_impl_Entity_$12ijiu4())) continue;
-            arrayList.add(entityPlayerMacroBridge2);
+        ArrayList<EntityPlayerMacroBridge> ownedHooks = new ArrayList<>();
+        for (Object handle : world.z()) {
+            Entity entity = new Entity(handle);
+            if (!entity.isInstance(MappedClasses.lM)) continue;
+            EntityPlayerMacroBridge hook = new EntityPlayerMacroBridge(entity.getObject());
+            if (!localPlayer.equals(hook.A$src$Lgg_vape_wrapper_impl_Entity_$12ijiu4())) continue;
+            ownedHooks.add(hook);
         }
-        switch (arrayList.size()) {
+        switch (ownedHooks.size()) {
             case 0: {
                 return null;
             }
             case 1: {
-                return (EntityPlayerMacroBridge)arrayList.get(0);
+                return ownedHooks.get(0);
             }
         }
         return null;
     }
 
-    private boolean isHookInBlock(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
-        BlockPos blockPos = entityPlayerMacroBridge.J$src$Lgg_vape_wrapper_impl_BlockPos_$kv8a0x();
-        BlockStateWorldBridge blockStateWorldBridge = worldClient.o(blockPos);
-        float f = 0.0f;
-        if (blockStateWorldBridge.o(MLGBlockWrapper.t())) {
-            f = blockStateWorldBridge.i(worldClient, blockPos);
+    private boolean isHookInBlock(EntityPlayerMacroBridge fishHook, WorldClient world) {
+        BlockPos blockPos = fishHook.J$src$Lgg_vape_wrapper_impl_BlockPos_$kv8a0x();
+        BlockStateWorldBridge blockState = world.o(blockPos);
+        float fluidHeight = 0.0f;
+        if (blockState.o(MLGBlockWrapper.getWaterBlock())) {
+            fluidHeight = blockState.i(world, blockPos);
         }
-        return f > 0.0f;
+        return fluidHeight > 0.0f;
     }
 
-    private boolean isHookInWater(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
-        int n = 5;
-        double d = 0.0;
-        for (int i = 0; i < n; ++i) {
-            AxisAlignedBB axisAlignedBB = entityPlayerMacroBridge.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu();
-            double d2 = axisAlignedBB.getMaxY() - axisAlignedBB.getMinY();
-            double d3 = axisAlignedBB.getMinY() + d2 * (double)i / (double)n;
-            double d4 = axisAlignedBB.getMinY() + d2 * (double)(i + 1) / (double)n;
-            AxisAlignedBB axisAlignedBB2 = AxisAlignedBB.create(axisAlignedBB.getMinX(), d3, axisAlignedBB.getMinZ(), axisAlignedBB.getMaxX(), d4, axisAlignedBB.getMaxZ());
-            if (!entityPlayerMacroBridge.getWorld().h(axisAlignedBB2, Material.f())) continue;
-            d += 1.0 / (double)n;
+    private boolean isHookInWater(EntityPlayerMacroBridge fishHook, WorldClient world) {
+        int sampleCount = 5;
+        double submergedFraction = 0.0;
+        for (int sample = 0; sample < sampleCount; ++sample) {
+            AxisAlignedBB hookBounds = fishHook.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu();
+            double height = hookBounds.getMaxY() - hookBounds.getMinY();
+            double sampleMinY = hookBounds.getMinY() + height * (double)sample / (double)sampleCount;
+            double sampleMaxY = hookBounds.getMinY() + height * (double)(sample + 1) / (double)sampleCount;
+            AxisAlignedBB sampleBounds = AxisAlignedBB.create(hookBounds.getMinX(), sampleMinY, hookBounds.getMinZ(), hookBounds.getMaxX(), sampleMaxY, hookBounds.getMaxZ());
+            if (!fishHook.getWorld().h(sampleBounds, Material.f())) continue;
+            submergedFraction += 1.0 / (double)sampleCount;
         }
-        return d > 0.0;
+        return submergedFraction > 0.0;
     }
 
     private void recast() {
-        boolean bl;
-        EntityPlayerMacroBridge entityPlayerMacroBridge = this.getFishHook();
-        boolean bl2 = bl = entityPlayerMacroBridge != null && entityPlayerMacroBridge.isNotNull();
-        if (bl || !this.hasCast || this.castTimer.hasTimeElapsed(1000L)) {
+        EntityPlayerMacroBridge fishHook = this.getFishHook();
+        boolean hasActiveHook = fishHook != null && fishHook.isNotNull();
+        if (hasActiveHook || !this.hasCast || this.castTimer.hasTimeElapsed(1000L)) {
             this.pressUseKey(Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362());
             this.castTimer.reset();
             this.groundTimer.reset();
@@ -313,7 +293,7 @@ extends Mod {
     }
 
     private void pressUseKey(KeyBinding keyBinding) {
-        KeyBindingHelper.v(keyBinding, true, true);
+        KeyBindingHelper.updateKeyBinding(keyBinding, true, true);
         this.pressedKeys.add(keyBinding);
     }
 
@@ -329,28 +309,28 @@ extends Mod {
         this.stationaryTimer = new TimerUtil();
         this.groundTimer = new TimerUtil();
         this.refillRods = BooleanValue.create(this, "Refill rods", true, "Automatically replaces broken rods with rods from your inventory.");
-        this.refillRods.K(this.clickDelay);
+        this.refillRods.addDependentValues(this.clickDelay);
         this.addValue(this.recastGround, this.recastCaught, this.refillRods, this.clickDelay);
     }
 
-    private boolean isHookInLiquid(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
-        if (entityPlayerMacroBridge.h$src$Z$ftwoya()) {
+    private boolean isHookInLiquid(EntityPlayerMacroBridge fishHook, WorldClient world) {
+        if (fishHook.h$src$Z$ftwoya()) {
             return true;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.isHookInBlock(entityPlayerMacroBridge, worldClient);
+            return this.isHookInBlock(fishHook, world);
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return this.hasWaterBelow1122(entityPlayerMacroBridge, worldClient);
+            return this.hasWaterBelow1122(fishHook, world);
         }
-        return this.isHookInWater(entityPlayerMacroBridge, worldClient) || this.hasWaterBelow(entityPlayerMacroBridge, worldClient);
+        return this.isHookInWater(fishHook, world) || this.hasWaterBelow(fishHook, world);
     }
 
-    private void performClick(InventoryClick inventoryClick, int n) {
+    private void performClick(InventoryClick inventoryClick, int currentWindowId) {
         this.clickTimer.reset();
-        int n2 = inventoryClick.t();
-        if (n == n2) {
-            inventoryClick.k();
+        int clickWindowId = inventoryClick.getWindowId();
+        if (currentWindowId == clickWindowId) {
+            inventoryClick.execute();
         }
     }
 
@@ -380,22 +360,20 @@ extends Mod {
         if (!this.biteDetected) {
             return;
         }
-        EntityPlayerMacroBridge entityPlayerMacroBridge = this.getFishHook();
-        if (entityPlayerMacroBridge == null || entityPlayerMacroBridge.isNull()) {
+        EntityPlayerMacroBridge fishHook = this.getFishHook();
+        if (fishHook == null || fishHook.isNull()) {
             return;
         }
         Packet packet = eventPacketReceive.getPacket();
-        WorldClient worldClient = eventPacketReceive.getWorld();
-        EntityPlayerSP entityPlayerSP = eventPacketReceive.getThePlayer();
         if (packet.isInstance(MappedClasses.YX)) {
-            SPacketEntityVelocity sPacketEntityVelocity = new SPacketEntityVelocity(packet);
-            if (sPacketEntityVelocity.getEntityId() != entityPlayerMacroBridge.S()) {
+            SPacketEntityVelocity velocityPacket = new SPacketEntityVelocity(packet);
+            if (velocityPacket.getEntityId() != fishHook.S()) {
                 return;
             }
-            int n = sPacketEntityVelocity.getMotionX();
-            int n2 = sPacketEntityVelocity.getMotionZ();
-            double d = (double)sPacketEntityVelocity.getMotionY() / 8000.0;
-            if (n == 0 && n2 == 0 && d <= -0.05) {
+            int motionX = velocityPacket.getMotionX();
+            int motionZ = velocityPacket.getMotionZ();
+            double motionY = (double)velocityPacket.getMotionY() / 8000.0;
+            if (motionX == 0 && motionZ == 0 && motionY <= -VELOCITY_THRESHOLD) {
                 this.velocityBite = true;
             }
             return;
@@ -408,16 +386,16 @@ extends Mod {
         }
     }
 
-    private boolean hasWaterBelow1122(EntityPlayerMacroBridge entityPlayerMacroBridge, WorldClient worldClient) {
-        return this.hasWaterBelow(entityPlayerMacroBridge, worldClient);
+    private boolean hasWaterBelow1122(EntityPlayerMacroBridge fishHook, WorldClient world) {
+        return this.hasWaterBelow(fishHook, world);
     }
 
     private boolean isHoldingRod() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (localPlayer.isNull()) {
             return false;
         }
-        ItemStack itemStack = entityPlayerSP.getHeldItemHand();
+        ItemStack itemStack = localPlayer.getHeldItemHand();
         return !itemStack.isNull() && itemStack.getItem().isInstance(MappedClasses.Yi);
     }
 }

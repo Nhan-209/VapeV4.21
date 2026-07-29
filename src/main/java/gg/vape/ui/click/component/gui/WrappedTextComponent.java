@@ -10,142 +10,142 @@ import java.util.List;
 
 public class WrappedTextComponent
 extends SimpleTextLabelComponent {
-    private double Df;
-    private boolean o = true;
-    private boolean Dd;
-    private double Di = 0.0;
-    private double b;
-    private List<String> Dy;
-    private double DM = 0.0;
-    private boolean DY = false;
+    private double measuredWidth;
+    private boolean wrappingEnabled = true;
+    private boolean bold;
+    private double textOffsetX = 0.0;
+    private double wrapWidth;
+    private List<String> wrappedLines;
+    private double measuredHeight = 0.0;
+    private boolean centered = false;
 
     @Override
-    public void l(boolean bl) {
-        this.Dd = bl;
+    public void setBold(boolean bold) {
+        this.bold = bold;
     }
 
-    public void c(double d) {
-        this.b = d;
+    public void setWrapWidth(double wrapWidth) {
+        this.wrapWidth = wrapWidth;
     }
 
-    private void z() {
-        SmoothFontRenderer smoothFontRenderer = this.Dd ? Vape.INSTANCE.getFontManager().W(this.G, false) : Vape.INSTANCE.getFontManager().E(this.G, false);
-        double d = this.n();
-        for (String string : this.Q$src$Ljava_util_List_$1gv03oz()) {
-            if (this.DY) {
-                smoothFontRenderer.v(string, this.G$src$D$1b2f02a() + this.Di, d, this.G$src$Ljava_awt_Color_$11jgid7());
+    private void renderWrappedLines() {
+        SmoothFontRenderer fontRenderer = this.bold ? Vape.INSTANCE.getFontManager().W(this.fontScale, false) : Vape.INSTANCE.getFontManager().E(this.fontScale, false);
+        double currentY = this.n();
+        for (String line : this.getWrappedLines()) {
+            if (this.centered) {
+                fontRenderer.v(line, this.G$src$D$1b2f02a() + this.textOffsetX, currentY, this.getTextColor());
             } else {
-                smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + this.Di, d, this.G$src$Ljava_awt_Color_$11jgid7());
+                fontRenderer.d(line, this.G$src$D$1b2f02a() + this.textOffsetX, currentY, this.getTextColor());
             }
-            d += smoothFontRenderer.d(string);
-            double d2 = smoothFontRenderer.N(string);
-            if (!(d2 > this.Df)) continue;
-            this.Df = d2;
+            currentY += fontRenderer.d(line);
+            double lineWidth = fontRenderer.N(line);
+            if (!(lineWidth > this.measuredWidth)) continue;
+            this.measuredWidth = lineWidth;
         }
-        this.DM = d - this.n();
+        this.measuredHeight = currentY - this.n();
     }
 
-    public List<String> Q$src$Ljava_util_List_$1gv03oz() {
-        if (this.Dy == null) {
-            SmoothFontRenderer smoothFontRenderer = this.Dd ? Vape.INSTANCE.getFontManager().W(this.G, false) : Vape.INSTANCE.getFontManager().E(this.G, false);
-            this.Dy = this.A(Arrays.asList(this.O.split("\n")), smoothFontRenderer);
+    public List<String> getWrappedLines() {
+        if (this.wrappedLines == null) {
+            SmoothFontRenderer fontRenderer = this.bold ? Vape.INSTANCE.getFontManager().W(this.fontScale, false) : Vape.INSTANCE.getFontManager().E(this.fontScale, false);
+            this.wrappedLines = this.wrapLines(Arrays.asList(this.text.split("\n")), fontRenderer);
         }
-        return this.Dy;
+        return this.wrappedLines;
     }
 
-    private ArrayList<String> A(List<String> list, SmoothFontRenderer smoothFontRenderer) {
-        ArrayList<String> arrayList = new ArrayList<String>();
-        boolean bl = false;
-        for (String string : list) {
-            String[] stringArray = string.split(" ");
-            String string2 = "";
-            for (int i = 0; i < stringArray.length; ++i) {
-                String string3 = stringArray[i];
-                double d = smoothFontRenderer.N(string3);
-                if (d > this.W()) {
-                    bl = true;
-                    double d2 = this.W() / d;
-                    int n = (int)((double)string3.length() * d2);
-                    String string4 = string3.substring(0, n);
-                    String string5 = string3.substring(n, string3.length() - 1);
-                    arrayList.add(string4);
-                    arrayList.add(string5);
+    private ArrayList<String> wrapLines(List<String> sourceLines, SmoothFontRenderer fontRenderer) {
+        ArrayList<String> wrappedResult = new ArrayList<String>();
+        boolean splitOversizedWord = false;
+        for (String sourceLine : sourceLines) {
+            String[] words = sourceLine.split(" ");
+            String currentLine = "";
+            for (int wordIndex = 0; wordIndex < words.length; ++wordIndex) {
+                String word = words[wordIndex];
+                double wordWidth = fontRenderer.N(word);
+                if (wordWidth > this.getWrapWidth()) {
+                    splitOversizedWord = true;
+                    double fittingRatio = this.getWrapWidth() / wordWidth;
+                    int splitIndex = (int)((double)word.length() * fittingRatio);
+                    String firstPart = word.substring(0, splitIndex);
+                    String secondPart = word.substring(splitIndex, word.length() - 1);
+                    wrappedResult.add(firstPart);
+                    wrappedResult.add(secondPart);
                     continue;
                 }
-                if (i < stringArray.length - 1) {
-                    String string6 = stringArray[i + 1];
-                    double d3 = smoothFontRenderer.N(string6);
-                    if (d + smoothFontRenderer.N(string2) + d3 < this.W()) {
-                        string2 = string2 + string3 + " ";
+                if (wordIndex < words.length - 1) {
+                    String nextWord = words[wordIndex + 1];
+                    double nextWordWidth = fontRenderer.N(nextWord);
+                    if (wordWidth + fontRenderer.N(currentLine) + nextWordWidth < this.getWrapWidth()) {
+                        currentLine = currentLine + word + " ";
                         continue;
                     }
-                    string2 = string2 + string3;
-                    string2 = string2.trim();
-                    arrayList.add(string2);
-                    string2 = "";
+                    currentLine = currentLine + word;
+                    currentLine = currentLine.trim();
+                    wrappedResult.add(currentLine);
+                    currentLine = "";
                     continue;
                 }
-                string2 = string2 + string3;
-                arrayList.add(string2);
+                currentLine = currentLine + word;
+                wrappedResult.add(currentLine);
             }
         }
-        return bl ? this.A(arrayList, smoothFontRenderer) : arrayList;
+        return splitOversizedWord ? this.wrapLines(wrappedResult, fontRenderer) : wrappedResult;
     }
 
-    public void u(boolean bl) {
-        this.o = bl;
+    public void setWrappingEnabled(boolean wrappingEnabled) {
+        this.wrappingEnabled = wrappingEnabled;
     }
 
     @Override
-    public void G(String string) {
-        super.G(string);
-        this.Dy = null;
+    public void setText(String text) {
+        super.setText(text);
+        this.wrappedLines = null;
     }
 
     @Override
     public void c() {
         super.c();
-        this.z();
+        this.renderWrappedLines();
     }
 
-    public WrappedTextComponent(String string, double d, Color color, boolean bl, double d2) {
-        super(string, d);
-        this.T$src$V$1orl066(color);
-        this.Dd = bl;
-        this.Di = d2;
+    public WrappedTextComponent(String text, double fontScale, Color color, boolean bold, double textOffsetX) {
+        super(text, fontScale);
+        this.setTextColor(color);
+        this.bold = bold;
+        this.textOffsetX = textOffsetX;
     }
 
 
     @Override
     public double A() {
-        return this.Df;
+        return this.measuredWidth;
     }
 
     @Override
     public double C() {
-        return this.DM;
+        return this.measuredHeight;
     }
 
-    public WrappedTextComponent(String string, double d, Color color, boolean bl) {
-        super(string, d);
-        this.T$src$V$1orl066(color);
-        this.Dd = bl;
+    public WrappedTextComponent(String text, double fontScale, Color color, boolean bold) {
+        super(text, fontScale);
+        this.setTextColor(color);
+        this.bold = bold;
     }
 
     @Override
     public void H() {
     }
 
-    public void K(boolean bl) {
-        this.DY = bl;
+    public void setCentered(boolean centered) {
+        this.centered = centered;
     }
 
-    public double W() {
-        return this.b;
+    public double getWrapWidth() {
+        return this.wrapWidth;
     }
 
-    public WrappedTextComponent(String string, double d) {
-        super(string, d);
+    public WrappedTextComponent(String text, double fontScale) {
+        super(text, fontScale);
     }
 }
 

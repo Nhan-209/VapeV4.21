@@ -5,7 +5,6 @@ import gg.vape.config.ClientSettings;
 import gg.vape.event.EventHandler;
 import gg.vape.event.EventPriority;
 import gg.vape.event.PacketSendDispatchGuardCallback;
-import gg.vape.event.impl.EventPacketReceive;
 import gg.vape.event.impl.EventPacketSend;
 import gg.vape.event.impl.EventPreTick;
 import gg.vape.event.impl.EventRender3D;
@@ -47,7 +46,6 @@ extends Mod {
     private EntityOtherPlayerMP fakePlayer;
     private boolean stopped;
     private boolean threadRunning = false;
-    public RenderManager L;
     private final Queue<PacketSendDispatchGuardCallback> pendingCallbacks;
     private static final long MODULE_ID = -5919086810783803073L;
     private int fakePlayerEntityId;
@@ -55,7 +53,6 @@ extends Mod {
     private final BooleanValue breadcrumbs;
     private final BooleanValue autoSend;
     private final List<Vec3d> breadcrumbTrail;
-    private final TimerUtil packetTimer;
     private final TimerUtil fakePlayerTimer;
     private final PacketDispatchGuard dispatchGuard;
     private final ModeOption biDirectionalMode;
@@ -63,20 +60,20 @@ extends Mod {
     private final Runnable fakePlayerTask;
     private final BooleanValue spawnFake;
     private final ModeOption outgoingOnlyMode = new ModeOption("Outgoing only");
-    int H = 0;
+    private int chokeCount = 0;
 
     @Override
-    public void s(boolean bl, boolean bl2) {
-        if (!bl) {
+    public void setEnabled(boolean enabled, boolean bypassVisibilityCheck) {
+        if (!enabled) {
             this.stopped = true;
             this.pendingReEnable = true;
         } else {
-            super.s(true, bl2);
+            super.setEnabled(true, bypassVisibilityCheck);
         }
     }
 
     private int getChokeCount() {
-        return this.H;
+        return this.chokeCount;
     }
 
     @Override
@@ -102,15 +99,11 @@ extends Mod {
         }
     }
 
-    @EventHandler
-    public void onPacketReceive(EventPacketReceive eventPacketReceive) {
-    }
-
     private void flushPackets() {
         this.threadRunning = false;
         this.fakePlayerTimer.reset();
         this.stopped = false;
-        this.H = 0;
+        this.chokeCount = 0;
         for (PacketSendDispatchGuardCallback packetSendDispatchGuardCallback : this.pendingCallbacks) {
             try {
                 packetSendDispatchGuardCallback.O(this.dispatchGuard);
@@ -121,50 +114,50 @@ extends Mod {
         }
         this.pendingCallbacks.clear();
         if (this.pendingReEnable) {
-            super.s(false, true);
+            super.setEnabled(false, true);
             this.pendingReEnable = false;
         }
     }
 
     private boolean isMoving() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        return entityPlayerSP.t() != 0.0 || entityPlayerSP.T() != 0.0;
+        EntityPlayerSP player = Minecraft.thePlayer();
+        return player.t() != 0.0 || player.T() != 0.0;
     }
 
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {
-        if (!this.breadcrumbs.L().booleanValue() || this.breadcrumbTrail.isEmpty()) {
+        if (!this.breadcrumbs.getEffectiveValue().booleanValue() || this.breadcrumbTrail.isEmpty()) {
             return;
         }
         eventRender3D.getEntityRenderer().B(1.0);
         RenderUtil.d();
         if (!GuiRenderPrimitives.d()) {
-            OpenGlBackendHolder.d.l(3042);
+            OpenGlBackendHolder.backend.enableCapability(3042);
             GL11.glBlendFunc((int)770, (int)771);
             GL11.glLineWidth((float)1.5f);
-            OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-            OpenGlBackendHolder.d.l(2848);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2929);
+            OpenGlBackendHolder.backend.disableCapability(3553);
+            OpenGlBackendHolder.backend.enableCapability(2848);
+            OpenGlBackendHolder.backend.disableCapability(2929);
             GL11.glDepthMask((boolean)false);
         }
-        double d = RenderManager.getInterpolatedRenderPosX();
-        double d2 = RenderManager.getInterpolatedRenderPosY();
-        double d3 = RenderManager.getInterpolatedRenderPosZ();
-        boolean bl = true;
-        for (Vec3d vec3d : this.breadcrumbTrail) {
+        double renderX = RenderManager.getInterpolatedRenderPosX();
+        double renderY = RenderManager.getInterpolatedRenderPosY();
+        double renderZ = RenderManager.getInterpolatedRenderPosZ();
+        boolean firstBreadcrumb = true;
+        for (Vec3d breadcrumb : this.breadcrumbTrail) {
             Color color = Color.RED;
-            if (bl) {
+            if (firstBreadcrumb) {
                 color = Color.YELLOW;
-                bl = false;
+                firstBreadcrumb = false;
             }
-            RenderUtil.u(vec3d.H - 0.1, vec3d.B, vec3d.i - 0.1, 0.2, 0.0, 0.2, 1.0, Color.BLACK, color, d, d2, d3);
+            RenderUtil.u(breadcrumb.H - 0.1, breadcrumb.B, breadcrumb.i - 0.1, 0.2, 0.0, 0.2, 1.0, Color.BLACK, color, renderX, renderY, renderZ);
         }
         if (!GuiRenderPrimitives.d()) {
             GL11.glDepthMask((boolean)true);
-            OpenGlBackendHolder.d.l(2929);
-            OpenGlBackendHolder.d.l(3553);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2848);
-            OpenGlBackendHolder.d.u$src$V$hntn98(3042);
+            OpenGlBackendHolder.backend.enableCapability(2929);
+            OpenGlBackendHolder.backend.enableCapability(3553);
+            OpenGlBackendHolder.backend.disableCapability(2848);
+            OpenGlBackendHolder.backend.disableCapability(3042);
         }
         RenderUtil.Y();
         eventRender3D.getEntityRenderer().O(1.0);
@@ -172,35 +165,35 @@ extends Mod {
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
-        GuiScreen guiScreen;
-        int n;
-        EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();
-        String[] stringArray = ConditionalValue.o$src$ALjava_lang_String_$17s942p();
-        if (entityPlayerSP.isNull() || Minecraft.theWorld().isNull()) {
+        EntityPlayerSP player = eventPreTick.getThePlayer();
+        ConditionalValue.getConditionalLegacyState();
+        if (player.isNull() || Minecraft.theWorld().isNull()) {
             this.threadRunning = false;
             this.pendingCallbacks.clear();
             this.breadcrumbTrail.clear();
-            this.H = 0;
+            this.chokeCount = 0;
             this.stopped = false;
             this.pendingReEnable = false;
-            super.s(false, true);
+            super.setEnabled(false, true);
             return;
         }
-        if (((ModeSelection)this.directionMode.K()).equals(this.biDirectionalMode) && this.fakePlayerTimer.hasTimeElapsed(50L) && !this.threadRunning && entityPlayerSP.isNotNull()) {
+        if (((ModeSelection)this.directionMode.getValue()).equals(this.biDirectionalMode) && this.fakePlayerTimer.hasTimeElapsed(50L) && !this.threadRunning && player.isNotNull()) {
             this.fakePlayerTimer.reset();
             this.threadRunning = true;
-            entityPlayerSP.sendQueue().a().B().D().F(this.fakePlayerTask);
+            player.sendQueue().a().B().D().F(this.fakePlayerTask);
         }
-        if (!this.stopped && this.autoSend.L().booleanValue() && (Double)this.sendThreshold.K() > 0.0 && (double)(n = this.getChokeCount()) >= (Double)this.sendThreshold.K()) {
+        int currentChokeCount = this.getChokeCount();
+        if (!this.stopped && this.autoSend.getEffectiveValue().booleanValue() && (Double)this.sendThreshold.getValue() > 0.0 && (double)currentChokeCount >= (Double)this.sendThreshold.getValue()) {
             if (this.fakePlayer != null && this.fakePlayer.isNotNull()) {
-                this.fakePlayer.t(entityPlayerSP.z(), ClientSettings.H ? entityPlayerSP.N() : entityPlayerSP.N() - 1.5, entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
-                this.fakePlayer.z(entityPlayerSP.s());
+                this.fakePlayer.t(player.z(), ClientSettings.H ? player.N() : player.N() - 1.5, player.h(), player.J(), player.V());
+                this.fakePlayer.z(player.s());
             }
             this.breadcrumbTrail.clear();
             this.stopped = true;
             this.pendingReEnable = false;
         }
-        if ((guiScreen = Minecraft.currentScreen()).isInstance(MappedClasses.u5) || guiScreen.isInstance(MappedClasses.D6) || guiScreen.isInstance(MappedClasses.F_) || Minecraft.thePlayer().isNull()) {
+        GuiScreen currentScreen = Minecraft.currentScreen();
+        if (currentScreen.isInstance(MappedClasses.u5) || currentScreen.isInstance(MappedClasses.D6) || currentScreen.isInstance(MappedClasses.F_) || Minecraft.thePlayer().isNull()) {
             this.stopped = true;
         }
         if (this.stopped) {
@@ -219,17 +212,14 @@ extends Mod {
         this.dispatchGuard = PacketDispatchGuard.b;
         this.pendingCallbacks = new ConcurrentLinkedQueue<PacketSendDispatchGuardCallback>();
         this.breadcrumbTrail = new CopyOnWriteArrayList<Vec3d>();
-        this.packetTimer = new TimerUtil();
         this.fakePlayerTimer = new TimerUtil();
         this.fakePlayerTask = this::fakePlayerLoop;
-        this.autoSend.K(this.sendThreshold);
+        this.autoSend.addDependentValues(this.sendThreshold);
         this.addValue(this.directionMode, this.breadcrumbs, this.spawnFake, this.autoSend, this.sendThreshold);
     }
 
     @EventHandler(A=EventPriority.LOWEREST)
     public void onPacketSend(EventPacketSend eventPacketSend) {
-        int n;
-        this.packetTimer.reset();
         if (!Thread.currentThread().equals(EventTickBase.S.getOwnerThread())) {
             return;
         }
@@ -240,33 +230,14 @@ extends Mod {
         if (this.dispatchGuard.R(packet)) {
             return;
         }
-        ++this.H;
-        if (packet.isInstance(MappedClasses.qD) && this.isMoving() && (n = this.getChokeCount()) % 5 == 0) {
-            int n2;
-            double d;
-            int n3;
-            double d2;
-            EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            boolean bl = n % 2 == 0;
-            double d3 = 0.2;
-            if (bl) {
-                d2 = d3;
-                n3 = -1;
-            } else {
-                d2 = d3;
-                n3 = 1;
-            }
-            double d4 = d2 * (double)n3 * Math.cos(Math.toRadians(entityPlayerSP.J()));
-            double d5 = 0.2;
-            if (bl) {
-                d = d5;
-                n2 = -1;
-            } else {
-                d = d5;
-                n2 = 1;
-            }
-            double d6 = d * (double)n2 * Math.sin(Math.toRadians(entityPlayerSP.J()));
-            this.breadcrumbTrail.add(new Vec3d(entityPlayerSP.z() + d4, entityPlayerSP.N(), entityPlayerSP.h() + d6));
+        ++this.chokeCount;
+        int currentChokeCount = this.getChokeCount();
+        if (packet.isInstance(MappedClasses.qD) && this.isMoving() && currentChokeCount % 5 == 0) {
+            EntityPlayerSP player = Minecraft.thePlayer();
+            int offsetSign = currentChokeCount % 2 == 0 ? -1 : 1;
+            double offsetX = 0.2 * (double)offsetSign * Math.cos(Math.toRadians(player.J()));
+            double offsetZ = 0.2 * (double)offsetSign * Math.sin(Math.toRadians(player.J()));
+            this.breadcrumbTrail.add(new Vec3d(player.z() + offsetX, player.N(), player.h() + offsetZ));
         }
         this.pendingCallbacks.add(new PacketSendDispatchGuardCallback(eventPacketSend));
         eventPacketSend.setCancelled(true);
@@ -274,46 +245,42 @@ extends Mod {
 
     @Override
     public void onEnable() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
-            super.s(false, true);
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
+            super.setEnabled(false, true);
             return;
         }
-        if (this.spawnFake.L().booleanValue()) {
+        if (this.spawnFake.getEffectiveValue().booleanValue()) {
             this.fakePlayer = EntityOtherPlayerMP.create(Minecraft.theWorld(), Minecraft.thePlayer().c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937());
             this.fakePlayerEntityId = ClientSettings.f();
-            this.fakePlayer.M(entityPlayerSP, true);
+            this.fakePlayer.M(player, true);
             if (ForgeVersion.MC_1_17.d()) {
                 this.fakePlayer.Q(this.fakePlayerEntityId);
-                UUID uUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + entityPlayerSP.getName()).getBytes(StandardCharsets.UTF_8));
-                this.fakePlayer.y(uUID);
+                UUID offlineUuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + player.getName()).getBytes(StandardCharsets.UTF_8));
+                this.fakePlayer.y(offlineUuid);
             }
             this.updateFakePlayerPosition();
-            this.fakePlayer.z(entityPlayerSP.s());
+            this.fakePlayer.z(player.s());
             Minecraft.theWorld().D(this.fakePlayerEntityId, this.fakePlayer);
         }
     }
 
     private void updateFakePlayerPosition() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull() || this.fakePlayer.isNull() || !this.spawnFake.L().booleanValue()) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull() || this.fakePlayer.isNull() || !this.spawnFake.getEffectiveValue().booleanValue()) {
             return;
         }
-        this.fakePlayer.t(entityPlayerSP.z(), ClientSettings.H ? entityPlayerSP.N() : entityPlayerSP.N() - 1.5, entityPlayerSP.h(), entityPlayerSP.J(), entityPlayerSP.V());
-        this.fakePlayer.z(entityPlayerSP.s());
-    }
-
-    private static Exception passException(Exception exception) {
-        return exception;
+        this.fakePlayer.t(player.z(), ClientSettings.H ? player.N() : player.N() - 1.5, player.h(), player.J(), player.V());
+        this.fakePlayer.z(player.s());
     }
 
     @Override
-    public String E() {
-        int n = this.getChokeCount();
-        if (n == 0) {
+    public String getSimpleSuffix() {
+        int chokeCount = this.getChokeCount();
+        if (chokeCount == 0) {
             return "";
         }
-        return String.valueOf(n);
+        return String.valueOf(chokeCount);
     }
 }
 

@@ -32,7 +32,7 @@ extends PanelComponent {
     @Override
     public void c() {
         super.c();
-        this.IP.q(this.I6.V$src$Z$1xhop3l() ? 18.0 : 6.0);
+        this.IP.setExplicitWidth(this.I6.V$src$Z$1xhop3l() ? 18.0 : 6.0);
     }
 
     @Override
@@ -51,34 +51,34 @@ extends PanelComponent {
 
     public PartyMemberRow(OnlineFriend onlineFriend, PartyMemberStatusComponent partyMemberStatusComponent, boolean bl) {
         super(0.0, 0.0);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.Iz = partyMemberStatusComponent;
         this.IV = onlineFriend instanceof LocalOnlineFriend;
         this.IX = onlineFriend;
         this.IW = new PartyMemberNameTextComponent(this, onlineFriend.C(), "...", 74.0, 0.75, PartyMemberRow.J.h, false);
         this.Ie.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.Ie.d(false);
-        this.q(partyMemberStatusComponent.A());
-        this.u(partyMemberStatusComponent.H$src$D$1wlsgtk());
+        this.Ie.setShowDisabledOverlay(false);
+        this.setExplicitWidth(partyMemberStatusComponent.A());
+        this.setExplicitHeight(partyMemberStatusComponent.getExplicitHeight());
         this.I6 = new OnlineFriendAvatarComponent(onlineFriend, 8.0, 8.0);
-        this.IP.d(false);
+        this.IP.setShowDisabledOverlay(false);
         if (this.IV) {
-            partyMemberStatusComponent.T(PartyMemberRow.J.B);
+            partyMemberStatusComponent.setDisabledOverlayColor(PartyMemberRow.J.B);
             partyMemberStatusComponent.J(true);
             this.Ie.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("alignright, wrap");
-            this.IP.H(new SpacerComponent(3.0, 1.0), this.I6);
-            this.H(this.Ie, this.IP);
+            this.IP.addChildren(new SpacerComponent(3.0, 1.0), this.I6);
+            this.addChildren(this.Ie, this.IP);
         } else {
-            partyMemberStatusComponent.T(PartyMemberRow.J.g);
-            this.IP.H(new SpacerComponent(6.0, 1.0), this.I6);
-            this.H(this.IP, this.Ie);
+            partyMemberStatusComponent.setDisabledOverlayColor(PartyMemberRow.J.g);
+            this.IP.addChildren(new SpacerComponent(6.0, 1.0), this.I6);
+            this.addChildren(this.IP, this.Ie);
         }
         if (bl) {
-            this.Ie.H(this.D$src$Z$qb6a9o() ? new SpacerComponent(1.0, 8.0) : this.IW);
+            this.Ie.addChildren(this.D$src$Z$qb6a9o() ? new SpacerComponent(1.0, 8.0) : this.IW);
         }
         this.Ie.h(partyMemberStatusComponent, new Object[0]);
         if (!partyMemberStatusComponent.I$src$Z$19lcktz()) {
-            this.IP.Z(false);
+            this.IP.setVisible(false);
         }
     }
 

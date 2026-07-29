@@ -24,14 +24,14 @@ extends PanelComponent {
 
     public OnlineFriendEntriesPanel() {
         super(100.0, 20.0);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.F(FrameScrollbarPlacement.OUTSIDE);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
         this.t(90.0);
     }
 
     public void W() {
-        this.S();
+        this.removeMarkedChildren();
         this.h(new SpacerComponent(1.0, 1.0), new Object[0]);
         ArrayList<OnlineFriend> arrayList = new ArrayList<OnlineFriend>(Vape.INSTANCE.getOnlineFriendManager().g());
         arrayList.sort(Comparator.comparingInt(OnlineFriendEntriesPanel::lambda$refreshList$0).thenComparing(OnlineFriend::C));
@@ -72,7 +72,7 @@ extends PanelComponent {
             d += guiComponent.L();
         }
         this.Iw = d;
-        this.u(this.Iw);
+        this.setExplicitHeight(this.Iw);
     }
 
     @Override

@@ -8,7 +8,7 @@ implements GuiClickListener {
     final OnlineFriendsFrame d;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         if (OnlineFriendsFrame.c(this.d) != null) {
             OnlineFriendsFrame.c$src$V$11veyie(this.d);
         }

@@ -14,9 +14,8 @@ implements GuiClickListener {
     }
 
     @Override
-    public void P() {
-        ClientSettings.f(ClientSettingsFrame.class, false);
+    public void onPrimaryClick() {
+        ClientSettings.setFrameVisibility(ClientSettingsFrame.class, false);
         this.J.t(false, false);
     }
 }
-

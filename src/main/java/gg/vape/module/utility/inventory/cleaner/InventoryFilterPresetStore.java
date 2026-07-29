@@ -11,31 +11,31 @@ public class InventoryFilterPresetStore {
     private final List<SharedInventoryFilterPreset> presets = new ArrayList<SharedInventoryFilterPreset>();
 
     @Nullable
-    public SharedInventoryFilterPreset l(UUID uUID) {
+    public SharedInventoryFilterPreset getById(UUID uUID) {
         for (SharedInventoryFilterPreset preset : this.presets) {
-            if (!preset.j().equals(uUID)) continue;
+            if (!preset.getId().equals(uUID)) continue;
             return preset;
         }
         return null;
     }
 
-    public void r(SharedInventoryFilterPreset preset) {
+    public void remove(SharedInventoryFilterPreset preset) {
         this.presets.remove(preset);
     }
 
-    public @UnmodifiableView List<SharedInventoryFilterPreset> M() {
+    public @UnmodifiableView List<SharedInventoryFilterPreset> getAll() {
         return this.presets;
     }
 
-    public void u(@Nullable SharedInventoryFilterPreset oldPreset, SharedInventoryFilterPreset newPreset) {
+    public void replace(@Nullable SharedInventoryFilterPreset oldPreset, SharedInventoryFilterPreset newPreset) {
         if (oldPreset != null) {
-            this.r(oldPreset);
+            this.remove(oldPreset);
         }
-        this.n(newPreset);
+        this.add(newPreset);
     }
 
 
-    public void n(SharedInventoryFilterPreset preset) {
+    public void add(SharedInventoryFilterPreset preset) {
         this.presets.add(preset);
     }
 }

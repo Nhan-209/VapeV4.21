@@ -183,7 +183,7 @@ extends Mapping {
             String string14 = "SWIFT_SNEAK";
             MEnchantments mEnchantments13 = this;
             this.X = this.u(string14, bl13, clazz13);
-            GuiComponent.D(new GuiComponent[3]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[3]);
             return;
         }
         Class clazz14 = MappedClasses.qB;

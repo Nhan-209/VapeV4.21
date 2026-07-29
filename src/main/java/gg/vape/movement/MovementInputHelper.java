@@ -2,8 +2,6 @@ package gg.vape.movement;
 
 import gg.vape.Vape;
 import gg.vape.config.ClientSettings;
-import gg.vape.rotation.FixedRotationController;
-import gg.vape.rotation.RotationManager;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.RotationUtil;
 import gg.vape.wrapper.impl.AxisAlignedBB;
@@ -19,90 +17,86 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MovementInputHelper {
-    public static void r() {
-        MovementInputHelper.I(true);
+    public static void releaseAllInput() {
+        releaseInput(true);
     }
 
-    public static void g(double d, double d2, ArrayList<KeyBinding> arrayList) {
-        double d3;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        FixedRotationController fixedRotationController = (FixedRotationController)RotationManager.b.w();
-        float f = RotationUtil.c();
-        float f2 = (float)Math.toDegrees(Math.atan2(d2, d)) - 90.0f;
-        float f3 = MathUtil.wrapAngleTo180(MathUtil.wrapAngleTo180(f2) - f);
-        float f4 = f3 * ((float)Math.PI / 180);
-        float f5 = (float)Math.cos(f4);
-        float f6 = (float)Math.sin(f4);
-        boolean bl = f5 >= 0.0f;
-        boolean bl2 = f6 >= 0.0f;
-        boolean bl3 = f6 <= 0.0f;
-        boolean bl4 = f5 <= 0.0f;
-        GameSettings gameSettings = Minecraft.gameSettings();
-        double d4 = 0.2;
-        if (entityPlayerSP.P() && entityPlayerSP.b$src$Z$fqlxe4()) {
-            d4 = 0.06;
-        } else if (entityPlayerSP.B$src$Z$f90iek() && bl) {
-            d4 = 0.3;
+    public static void applyDirectionalMovement(double targetOffsetX, double targetOffsetZ,
+            ArrayList<KeyBinding> excludedKeys) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        float movementYaw = RotationUtil.c();
+        float targetYaw = (float)Math.toDegrees(Math.atan2(targetOffsetZ, targetOffsetX)) - 90.0f;
+        float relativeYaw = MathUtil.wrapAngleTo180(MathUtil.wrapAngleTo180(targetYaw) - movementYaw);
+        float relativeYawRadians = relativeYaw * ((float)Math.PI / 180.0f);
+        float forwardFactor = (float)Math.cos(relativeYawRadians);
+        float strafeFactor = (float)Math.sin(relativeYawRadians);
+        boolean moveForward = forwardFactor >= 0.0f;
+        boolean moveRight = strafeFactor >= 0.0f;
+        boolean moveLeft = strafeFactor <= 0.0f;
+        boolean moveBackward = forwardFactor <= 0.0f;
+        GameSettings settings = Minecraft.gameSettings();
+        double movementStep = getMovementStep(player, settings.Y());
+
+        double forwardInput = moveForward ? 1.0 : (moveBackward ? -1.0 : 0.0);
+        double strafeInput = moveRight ? -1.0 : (moveLeft ? 1.0 : 0.0);
+        float targetSin = MathUtil.sin(targetYaw * (float)Math.PI / 180.0f);
+        float targetCos = MathUtil.cos(targetYaw * (float)Math.PI / 180.0f);
+        double[] forwardDelta = new double[]{
+                -((double)forwardFactor * forwardInput * movementStep) * targetSin,
+                (double)forwardFactor * forwardInput * movementStep * targetCos
+        };
+        double[] projectedPosition = new double[]{player.z() + player.t(), player.h() + player.T()};
+        double currentDistance = distanceToTargetAfterMove(player, projectedPosition,
+                new double[]{0.0, 0.0}, targetOffsetX, targetOffsetZ);
+        double forwardDistance = distanceToTargetAfterMove(player, projectedPosition,
+                forwardDelta, targetOffsetX, targetOffsetZ);
+        if (forwardDistance < currentDistance) {
+            settings.Y().setPressed(moveForward && !excludedKeys.contains(settings.Y()));
+            settings.s().setPressed(moveBackward && !excludedKeys.contains(settings.s()));
         }
-        if (!entityPlayerSP.b$src$Z$fqlxe4()) {
-            d4 *= 0.02;
-        }
-        double d5 = d3 = bl ? 1.0 : (bl4 ? -1.0 : 0.0);
-        double d6 = bl2 ? -1.0 : (bl3 ? 1.0 : 0.0);
-        double d7 = d4;
-        float f7 = MathUtil.sin(f2 * (float)Math.PI / 180.0f);
-        float f8 = MathUtil.cos(f2 * (float)Math.PI / 180.0f);
-        double d8 = -((double)f5 * d3 * d4) * (double)f7;
-        double d9 = (double)f5 * d3 * d4 * (double)f8;
-        double[] dArray = new double[]{d8, d9};
-        double[] dArray2 = new double[]{entityPlayerSP.z() + entityPlayerSP.t(), entityPlayerSP.h() + entityPlayerSP.T()};
-        double d10 = MovementInputHelper.F(entityPlayerSP, dArray2, new double[]{0.0, 0.0}, d, d2);
-        double d11 = MovementInputHelper.F(entityPlayerSP, dArray2, dArray, d, d2);
-        if (d11 < d10) {
-            gameSettings.Y().setPressed(bl && !arrayList.contains(gameSettings.Y()));
-            gameSettings.s().setPressed(bl4 && !arrayList.contains(gameSettings.s()));
-        }
-        f7 = MathUtil.sin((f2 + 90.0f) * (float)Math.PI / 180.0f);
-        f8 = MathUtil.cos((f2 + 90.0f) * (float)Math.PI / 180.0f);
-        d8 = (double)f6 * d6 * d4 * (double)f8;
-        d9 = -((double)f6 * d6 * d4) * (double)f7;
-        dArray = new double[]{d8, d9};
-        dArray2 = new double[]{entityPlayerSP.z() + entityPlayerSP.t(), entityPlayerSP.h() + entityPlayerSP.T()};
-        d10 = MovementInputHelper.F(entityPlayerSP, dArray2, new double[]{0.0, 0.0}, d, d2);
-        d11 = MovementInputHelper.F(entityPlayerSP, dArray2, dArray, d, d2);
-        Vape.debugLog("Vector " + dArray[0] + " " + dArray[1] + " | Potential Dist: " + d11 + " | Final Dist: " + d10 + " | " + f3 + " " + f2 + " " + EnumFacing.p(f2) + " " + f5 + " " + f6);
-        if (d11 < d10) {
-            gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg().setPressed(bl3 && !arrayList.contains(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()));
-            gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3().setPressed(bl2 && !arrayList.contains(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3()));
+
+        float strafeSin = MathUtil.sin((targetYaw + 90.0f) * (float)Math.PI / 180.0f);
+        float strafeCos = MathUtil.cos((targetYaw + 90.0f) * (float)Math.PI / 180.0f);
+        double[] strafeDelta = new double[]{
+                (double)strafeFactor * strafeInput * movementStep * strafeCos,
+                -((double)strafeFactor * strafeInput * movementStep) * strafeSin
+        };
+        double strafeDistance = distanceToTargetAfterMove(player, projectedPosition,
+                strafeDelta, targetOffsetX, targetOffsetZ);
+        Vape.debugLog("Vector " + strafeDelta[0] + " " + strafeDelta[1]
+                + " | Potential Dist: " + strafeDistance + " | Final Dist: " + currentDistance
+                + " | " + relativeYaw + " " + targetYaw + " " + EnumFacing.p(targetYaw)
+                + " " + forwardFactor + " " + strafeFactor);
+        if (strafeDistance < currentDistance) {
+            KeyBinding leftKey = settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg();
+            KeyBinding rightKey = settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3();
+            leftKey.setPressed(moveLeft && !excludedKeys.contains(leftKey));
+            rightKey.setPressed(moveRight && !excludedKeys.contains(rightKey));
         }
     }
 
-
-    public static void A(boolean bl) {
-        MovementInputHelper.P(Minecraft.gameSettings().O(), bl);
+    public static void setJumpPressed(boolean pressed) {
+        synchronizeKeyState(Minecraft.gameSettings().O(), pressed);
     }
 
-    public static void P(KeyBinding keyBinding, boolean bl) {
-        if (bl) {
+    public static void synchronizeKeyState(KeyBinding keyBinding, boolean pressed) {
+        if (pressed) {
             if (!keyBinding.isKeyDown()) {
-                MovementInputHelper.w(keyBinding, true);
+                setKeyPressed(keyBinding, true);
             }
         } else if (keyBinding.isKeyDown() || keyBinding.V() > 0) {
-            MovementInputHelper.w(keyBinding, false);
+            setKeyPressed(keyBinding, false);
         }
     }
 
-    public static void w(KeyBinding keyBinding, boolean bl) {
+    public static void setKeyPressed(KeyBinding keyBinding, boolean pressed) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            KeyBinding.setKeyBindState(keyBinding, bl);
+            KeyBinding.setKeyBindState(keyBinding, pressed);
             keyBinding.onTick(1);
-            if (bl) {
+            if (pressed) {
                 KeyBinding.onTick(keyBinding);
             }
-            if (keyBinding.equals(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg())) {
-                // empty if block
-            }
-        } else if (bl) {
+        } else if (pressed) {
             KeyBinding.setKeyBindState(keyBinding, true);
             KeyBinding.onTick(keyBinding);
         } else {
@@ -110,184 +104,179 @@ public class MovementInputHelper {
         }
     }
 
-    public static void j(double d, double d2, ArrayList<KeyBinding> arrayList, boolean bl) {
-        double d3;
-        int n;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        FixedRotationController fixedRotationController = (FixedRotationController)RotationManager.b.w();
-        double d4 = RotationUtil.c();
-        ArrayList<Double> arrayList2 = new ArrayList<Double>(Arrays.asList(d4, (d4 + 90.0) % 360.0, (d4 + 180.0) % 360.0, (d4 + 270.0) % 360.0));
-        ArrayList<KeyBinding> arrayList3 = new ArrayList<KeyBinding>(Arrays.asList(Minecraft.gameSettings().Y(), Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), Minecraft.gameSettings().s(), Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()));
-        ArrayList<Boolean> arrayList4 = new ArrayList<Boolean>();
-        for (KeyBinding keyBinding : arrayList) {
-            arrayList2.remove(arrayList3.indexOf(keyBinding));
-            arrayList3.remove(keyBinding);
+    public static void applyMovementToward(double targetOffsetX, double targetOffsetZ,
+            ArrayList<KeyBinding> excludedKeys, boolean requireSupportedMovement) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        double movementYaw = RotationUtil.c();
+        ArrayList<Double> candidateHeadings = new ArrayList<Double>(Arrays.asList(
+                movementYaw, (movementYaw + 90.0) % 360.0,
+                (movementYaw + 180.0) % 360.0, (movementYaw + 270.0) % 360.0));
+        ArrayList<KeyBinding> candidateKeys = new ArrayList<KeyBinding>(Arrays.asList(
+                Minecraft.gameSettings().Y(),
+                Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(),
+                Minecraft.gameSettings().s(),
+                Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()));
+        ArrayList<Boolean> selectedKeys = new ArrayList<Boolean>();
+        for (KeyBinding excludedKey : excludedKeys) {
+            candidateHeadings.remove(candidateKeys.indexOf(excludedKey));
+            candidateKeys.remove(excludedKey);
         }
-        double[] position = new double[]{entityPlayerSP.z() + entityPlayerSP.t(), entityPlayerSP.h() + entityPlayerSP.T()};
-        double d5 = MovementInputHelper.F(entityPlayerSP, position, new double[]{0.0, 0.0}, d, d2);
-        for (n = 0; n < arrayList2.size(); ++n) {
-            double[] dArray = MovementInputHelper.p(entityPlayerSP, arrayList2.get(n), arrayList3.get(n));
-            d3 = MovementInputHelper.F(entityPlayerSP, position, dArray, d, d2);
-            if (d3 < d5) {
-                arrayList4.add(true);
-                position = new double[]{position[0] + dArray[0], position[1] + dArray[1]};
-                d5 = d3;
-                continue;
-            }
-            arrayList4.add(false);
-        }
-        if (bl) {
-            AxisAlignedBB axisAlignedBB;
-            double d6 = entityPlayerSP.z();
-            d3 = entityPlayerSP.h();
-            entityPlayerSP.H(position[0]);
-            entityPlayerSP.l(position[1]);
-            if (ForgeVersion.MC_1_8_9.d()) {
-                axisAlignedBB = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+
+        double[] projectedPosition = new double[]{player.z() + player.t(), player.h() + player.T()};
+        double bestDistance = distanceToTargetAfterMove(player, projectedPosition,
+                new double[]{0.0, 0.0}, targetOffsetX, targetOffsetZ);
+        for (int index = 0; index < candidateHeadings.size(); ++index) {
+            double[] movementDelta = calculateMovementVector(player,
+                    candidateHeadings.get(index), candidateKeys.get(index));
+            double candidateDistance = distanceToTargetAfterMove(player, projectedPosition,
+                    movementDelta, targetOffsetX, targetOffsetZ);
+            if (candidateDistance < bestDistance) {
+                selectedKeys.add(true);
+                projectedPosition = new double[]{
+                        projectedPosition[0] + movementDelta[0],
+                        projectedPosition[1] + movementDelta[1]
+                };
+                bestDistance = candidateDistance;
             } else {
-                AxisAlignedBB axisAlignedBB2 = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
-                axisAlignedBB = axisAlignedBB2.copy();
+                selectedKeys.add(false);
             }
-            double d7 = entityPlayerSP.t();
-            double d8 = ForgeVersion.MC_1_20_6.d() ? 1.0 : -1.0;
-            double d9 = entityPlayerSP.T();
-            AxisAlignedBB axisAlignedBB3 = axisAlignedBB.expand(-0.15, 0.0, -0.15).k(d7, d8, d9);
-            int n2 = Minecraft.theWorld().i(entityPlayerSP, axisAlignedBB3).size();
-            if (n2 == 0) {
-                for (int i = 0; i < arrayList4.size(); ++i) {
-                    arrayList4.set(i, false);
-                }
+        }
+
+        if (requireSupportedMovement && !hasSupportingCollision(player, projectedPosition)) {
+            for (int index = 0; index < selectedKeys.size(); ++index) {
+                selectedKeys.set(index, false);
             }
-            entityPlayerSP.H(d6);
-            entityPlayerSP.l(d3);
         }
-        for (n = 0; n < arrayList4.size(); ++n) {
-            if (((Boolean)arrayList4.get(n)).booleanValue()) {
-                if (arrayList3.get(n).isKeyDown()) continue;
-                MovementInputHelper.w(arrayList3.get(n), true);
-                continue;
+
+        for (int index = 0; index < selectedKeys.size(); ++index) {
+            KeyBinding key = candidateKeys.get(index);
+            boolean shouldPress = selectedKeys.get(index);
+            if (shouldPress && !key.isKeyDown()) {
+                setKeyPressed(key, true);
+            } else if (!shouldPress && key.isKeyDown()) {
+                setKeyPressed(key, false);
             }
-            if (!arrayList3.get(n).isKeyDown()) continue;
-            MovementInputHelper.w(arrayList3.get(n), false);
         }
     }
 
-    public static boolean k() {
-        return ClientSettings.B(Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg()) || ClientSettings.B(Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3()) || ClientSettings.B(Minecraft.gameSettings().Y()) || ClientSettings.B(Minecraft.gameSettings().s());
+    private static boolean hasSupportingCollision(EntityPlayerSP player, double[] projectedPosition) {
+        double originalX = player.z();
+        double originalZ = player.h();
+        player.H(projectedPosition[0]);
+        player.l(projectedPosition[1]);
+        AxisAlignedBB bounds = ForgeVersion.MC_1_8_9.d()
+                ? player.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl()
+                : player.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().copy();
+        double verticalOffset = ForgeVersion.MC_1_20_6.d() ? 1.0 : -1.0;
+        AxisAlignedBB supportBounds = bounds.expand(-0.15, 0.0, -0.15)
+                .k(player.t(), verticalOffset, player.T());
+        boolean supported = !Minecraft.theWorld().i(player, supportBounds).isEmpty();
+        player.H(originalX);
+        player.l(originalZ);
+        return supported;
     }
 
-    public static void i() {
-        KeyBinding keyBinding = Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg();
-        KeyBinding keyBinding2 = Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3();
-        KeyBinding keyBinding3 = Minecraft.gameSettings().Y();
-        KeyBinding keyBinding4 = Minecraft.gameSettings().s();
-        MovementInputHelper.w(keyBinding, false);
-        MovementInputHelper.w(keyBinding2, false);
-        MovementInputHelper.w(keyBinding3, false);
-        MovementInputHelper.w(keyBinding4, false);
+    public static boolean isPhysicalMovementInputActive() {
+        GameSettings settings = Minecraft.gameSettings();
+        return ClientSettings.B(settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg())
+                || ClientSettings.B(settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3())
+                || ClientSettings.B(settings.Y()) || ClientSettings.B(settings.s());
     }
 
-    public static void Q(boolean bl, boolean bl2, boolean bl3, boolean bl4) {
-        GameSettings gameSettings = Minecraft.gameSettings();
-        KeyBinding keyBinding = gameSettings.Y();
-        KeyBinding keyBinding2 = gameSettings.s();
-        KeyBinding keyBinding3 = gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg();
-        KeyBinding keyBinding4 = gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3();
-        ArrayList<KeyBinding> arrayList = new ArrayList<KeyBinding>(Arrays.asList(keyBinding, keyBinding2, keyBinding3, keyBinding4));
-        ArrayList<Boolean> arrayList2 = new ArrayList<Boolean>();
-        arrayList2.add(bl);
-        arrayList2.add(bl2);
-        arrayList2.add(bl3);
-        arrayList2.add(bl4);
-        for (int i = 0; i < arrayList2.size(); ++i) {
-            MovementInputHelper.P(arrayList.get(i), (Boolean)arrayList2.get(i));
+    public static void releaseMovementKeys() {
+        GameSettings settings = Minecraft.gameSettings();
+        setKeyPressed(settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), false);
+        setKeyPressed(settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), false);
+        setKeyPressed(settings.Y(), false);
+        setKeyPressed(settings.s(), false);
+    }
+
+    public static void synchronizeDirectionalInput(boolean forward, boolean backward,
+            boolean left, boolean right) {
+        GameSettings settings = Minecraft.gameSettings();
+        ArrayList<KeyBinding> keys = new ArrayList<KeyBinding>(Arrays.asList(
+                settings.Y(), settings.s(),
+                settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(),
+                settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3()));
+        ArrayList<Boolean> states = new ArrayList<Boolean>(Arrays.asList(forward, backward, left, right));
+        for (int index = 0; index < states.size(); ++index) {
+            synchronizeKeyState(keys.get(index), states.get(index));
         }
     }
 
-    public static void q() {
-        MovementInputHelper.D(true);
+    public static void restorePhysicalInput() {
+        restorePhysicalInput(true);
     }
 
-    public static void D(boolean bl) {
-        KeyBinding keyBinding = Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg();
-        KeyBinding keyBinding2 = Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3();
-        KeyBinding keyBinding3 = Minecraft.gameSettings().Y();
-        KeyBinding keyBinding4 = Minecraft.gameSettings().s();
-        KeyBinding keyBinding5 = Minecraft.gameSettings().r();
-        KeyBinding keyBinding6 = Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
-        KeyBinding keyBinding7 = Minecraft.gameSettings().O();
-        boolean bl2 = ClientSettings.B(keyBinding);
-        boolean bl3 = ClientSettings.B(keyBinding2);
-        boolean bl4 = ClientSettings.B(keyBinding3);
-        boolean bl5 = ClientSettings.B(keyBinding4);
-        boolean bl6 = ClientSettings.B(keyBinding5);
-        boolean bl7 = ClientSettings.B(keyBinding6);
-        boolean bl8 = ClientSettings.B(keyBinding7);
-        MovementInputHelper.w(keyBinding, bl2);
-        MovementInputHelper.w(keyBinding2, bl3);
-        MovementInputHelper.w(keyBinding3, bl4);
-        MovementInputHelper.w(keyBinding4, bl5);
-        if (bl) {
-            MovementInputHelper.w(keyBinding5, bl6);
+    public static void restorePhysicalInput(boolean includeSprint) {
+        GameSettings settings = Minecraft.gameSettings();
+        KeyBinding leftKey = settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg();
+        KeyBinding rightKey = settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3();
+        KeyBinding forwardKey = settings.Y();
+        KeyBinding backwardKey = settings.s();
+        KeyBinding sprintKey = settings.r();
+        KeyBinding sneakKey = settings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
+        KeyBinding jumpKey = settings.O();
+        setKeyPressed(leftKey, ClientSettings.B(leftKey));
+        setKeyPressed(rightKey, ClientSettings.B(rightKey));
+        setKeyPressed(forwardKey, ClientSettings.B(forwardKey));
+        setKeyPressed(backwardKey, ClientSettings.B(backwardKey));
+        if (includeSprint) {
+            setKeyPressed(sprintKey, ClientSettings.B(sprintKey));
         }
-        MovementInputHelper.w(keyBinding6, bl7);
-        MovementInputHelper.w(keyBinding7, bl8);
+        setKeyPressed(sneakKey, ClientSettings.B(sneakKey));
+        setKeyPressed(jumpKey, ClientSettings.B(jumpKey));
     }
 
-    public static float U(EntityPlayer entityPlayer) {
-        double d = entityPlayer.t();
-        double d2 = entityPlayer.T();
-        double d3 = Math.toDegrees(Math.atan2(d2, d));
-        if (d != 0.0 || d2 != 0.0) {
-            d3 = MathUtil.wrapAngleTo180(d3 - 90.0);
+    public static float getMovementYaw(EntityPlayer player) {
+        double motionX = player.t();
+        double motionZ = player.T();
+        double yaw = Math.toDegrees(Math.atan2(motionZ, motionX));
+        if (motionX != 0.0 || motionZ != 0.0) {
+            yaw = MathUtil.wrapAngleTo180(yaw - 90.0);
         }
-        double d4 = d3 - 180.0;
-        return (float)d4;
+        return (float)(yaw - 180.0);
     }
 
-    public static double[] p(EntityPlayerSP entityPlayerSP, double d, KeyBinding keyBinding) {
-        double d2 = MovementInputHelper.y(entityPlayerSP, keyBinding);
-        double d3 = Math.toRadians(d);
-        double[] dArray = new double[]{d2 * -Math.sin(d3), d2 * Math.cos(d3)};
-        return dArray;
+    public static double[] calculateMovementVector(EntityPlayerSP player, double heading,
+            KeyBinding keyBinding) {
+        double step = getMovementStep(player, keyBinding);
+        double radians = Math.toRadians(heading);
+        return new double[]{step * -Math.sin(radians), step * Math.cos(radians)};
     }
 
-    public static double F(Entity entity, double[] dArray, double[] dArray2, double d, double d2) {
-        double[] dArray3 = new double[]{entity.z() + d, entity.h() + d2};
-        double[] dArray4 = new double[]{dArray[0] + dArray2[0], dArray[1] + dArray2[1]};
-        double d3 = RotationUtil.y(dArray3[0], 0.0, dArray3[1], dArray4[0], 0.0, dArray4[1]);
-        return d3;
+    public static double distanceToTargetAfterMove(Entity entity, double[] currentPosition,
+            double[] movementDelta, double targetOffsetX, double targetOffsetZ) {
+        double targetX = entity.z() + targetOffsetX;
+        double targetZ = entity.h() + targetOffsetZ;
+        double candidateX = currentPosition[0] + movementDelta[0];
+        double candidateZ = currentPosition[1] + movementDelta[1];
+        return RotationUtil.y(targetX, 0.0, targetZ, candidateX, 0.0, candidateZ);
     }
 
-    private static double y(Entity entity, KeyBinding keyBinding) {
-        double d = 0.2;
+    private static double getMovementStep(Entity entity, KeyBinding keyBinding) {
+        double step = 0.2;
         if (entity.P() && entity.b$src$Z$fqlxe4()) {
-            d = 0.06;
+            step = 0.06;
         } else if (entity.B$src$Z$f90iek() && keyBinding.equals(Minecraft.gameSettings().Y())) {
-            d = 0.3;
+            step = 0.3;
         }
         if (!entity.b$src$Z$fqlxe4()) {
-            d *= 0.02;
+            step *= 0.02;
         }
-        return d;
+        return step;
     }
 
-    public static void I(boolean bl) {
-        KeyBinding keyBinding = Minecraft.gameSettings().x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg();
-        KeyBinding keyBinding2 = Minecraft.gameSettings().g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3();
-        KeyBinding keyBinding3 = Minecraft.gameSettings().Y();
-        KeyBinding keyBinding4 = Minecraft.gameSettings().s();
-        KeyBinding keyBinding5 = Minecraft.gameSettings().r();
-        KeyBinding keyBinding6 = Minecraft.gameSettings().d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0();
-        KeyBinding keyBinding7 = Minecraft.gameSettings().O();
-        MovementInputHelper.w(keyBinding, false);
-        MovementInputHelper.w(keyBinding2, false);
-        MovementInputHelper.w(keyBinding3, false);
-        MovementInputHelper.w(keyBinding4, false);
-        if (bl) {
-            MovementInputHelper.w(keyBinding5, false);
+    public static void releaseInput(boolean includeSprint) {
+        GameSettings settings = Minecraft.gameSettings();
+        setKeyPressed(settings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), false);
+        setKeyPressed(settings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), false);
+        setKeyPressed(settings.Y(), false);
+        setKeyPressed(settings.s(), false);
+        if (includeSprint) {
+            setKeyPressed(settings.r(), false);
         }
-        MovementInputHelper.w(keyBinding6, false);
-        MovementInputHelper.w(keyBinding7, false);
+        setKeyPressed(settings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0(), false);
+        setKeyPressed(settings.O(), false);
     }
 }

@@ -11,9 +11,9 @@ implements GuiClickListener {
     final String k;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         ClientSettingsSectionFrame clientSettingsSectionFrame = ClientSettingsFrame.m(this.p, this.k);
-        clientSettingsSectionFrame.H((GuiComponent[])ClientSettingsFrame.t(this.p).get(this.k));
+        clientSettingsSectionFrame.addChildren((GuiComponent[])ClientSettingsFrame.t(this.p).get(this.k));
     }
 
     public ClientSettingsFrameActionClickHandler(ClientSettingsFrame sG2, String string) {
@@ -21,4 +21,3 @@ implements GuiClickListener {
         this.k = string;
     }
 }
-

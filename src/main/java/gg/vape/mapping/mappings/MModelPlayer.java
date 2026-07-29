@@ -133,7 +133,7 @@ extends Mapping {
                 MModelPlayer mModelPlayer11 = this;
                 this.P = this.Y(string11, bl11, clazz11, classArray6);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MModelPlayer.W("m4zzKb");
             }
             return;
@@ -162,7 +162,7 @@ extends Mapping {
         MModelPlayer mModelPlayer15 = this;
         this.P = this.Y(string15, bl15, clazz15, classArray9);
         this.x = null;
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MModelPlayer.W("m4zzKb");
         }
     }

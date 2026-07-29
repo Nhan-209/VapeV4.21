@@ -1,27 +1,26 @@
 package gg.vape.utils.render;
 
 public class RenderVector4f {
+    public float y;
+    public float x;
     public float w;
-    public float N;
-    public float J;
-    public float Y;
+    public float z;
 
-    public RenderVector4f(float f, float f2, float f3, float f4) {
-        this.N = f;
-        this.w = f2;
-        this.Y = f3;
-        this.J = f4;
+    public RenderVector4f(float x, float y, float z, float w) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
     }
 
-    public RenderVector4f(double d, double d2, double d3, double d4) {
-        this.N = (float)d;
-        this.w = (float)d2;
-        this.Y = (float)d3;
-        this.J = (float)d4;
+    public RenderVector4f(double x, double y, double z, double w) {
+        this.x = (float)x;
+        this.y = (float)y;
+        this.z = (float)z;
+        this.w = (float)w;
     }
 
     public String toString() {
-        return "Vec4{x=" + this.N + ", y=" + this.w + ", z=" + this.Y + ", w=" + this.J + '}';
+        return "Vec4{x=" + this.x + ", y=" + this.y + ", z=" + this.z + ", w=" + this.w + '}';
     }
 }
-

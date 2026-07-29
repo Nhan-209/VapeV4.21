@@ -1,20 +1,32 @@
 package gg.vape.module.render;
 
 public class PacketLatencySample {
-    public long S;
-    public int N;
-    public int G;
-    public int R;
+    private final long captureCount;
+    private final int lowestFps;
+    private final int highestFps;
+    private final int fpsSum;
 
-    public double K() {
-        return (long)this.R / this.S;
+    public double getAverageFps() {
+        return (long)this.fpsSum / this.captureCount;
     }
 
-    public PacketLatencySample(long timestamp, int size, int sequence, int id) {
-        this.R = size;
-        this.S = timestamp;
-        this.G = sequence;
-        this.N = id;
+    public PacketLatencySample(long captureCount, int fpsSum, int highestFps, int lowestFps) {
+        this.fpsSum = fpsSum;
+        this.captureCount = captureCount;
+        this.highestFps = highestFps;
+        this.lowestFps = lowestFps;
+    }
+
+    public long getCaptureCount() {
+        return this.captureCount;
+    }
+
+    public int getLowestFps() {
+        return this.lowestFps;
+    }
+
+    public int getHighestFps() {
+        return this.highestFps;
     }
 }
 

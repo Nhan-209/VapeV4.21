@@ -52,7 +52,7 @@ extends Mapping {
                 MGL20 mGL203 = this;
                 this.h = this.x(string3, bl5, clazz3, classArray3);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MGlStateManagerTexGenState.d(false);
             }
             return;
@@ -63,7 +63,7 @@ extends Mapping {
         String string = "glUniformMatrix4fv";
         MGL20 mGL20 = this;
         this.h = mGL20.x(string, bl6, clazz, classArray); 
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MGlStateManagerTexGenState.d(true);
         }
     }

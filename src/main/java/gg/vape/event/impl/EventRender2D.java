@@ -27,7 +27,7 @@ extends Event {
         q = Minecraft.h();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GuiRenderPrimitives.o(A, q);
-        Vape.INSTANCE.getModManager().getMod(ClientSettings.class).l();
+        Vape.INSTANCE.getModManager().getMod(ClientSettings.class).renderHudOverlay();
         EventRender2D eventRender2D = new EventRender2D();
         eventRender2D.fire();
         GuiRenderPrimitives.L(A, q);

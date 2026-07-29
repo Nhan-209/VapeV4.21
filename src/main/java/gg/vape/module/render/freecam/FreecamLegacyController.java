@@ -27,170 +27,170 @@ import gg.vape.wrapper.impl.SPacketEntityVelocity;
 public class FreecamLegacyController
 extends FreecamController<Freecam> {
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
+    public void onTick(EventPreTick event) {
         if (Minecraft.theWorld().isNull() || Minecraft.thePlayer().isNull() || Minecraft.thePlayer().w$src$F$15l9epb() <= 0.0f) {
-            ((Freecam)this.n).s(false, false);
+            this.module.setEnabled(false, false);
         }
-        if (((Freecam)this.n).C) {
-            ((Freecam)this.n).M$src$V$nre1v6();
+        if (this.module.disableRequested) {
+            this.module.completeDisable();
             return;
         }
-        ((Freecam)this.n).c.d(this.n);
-        if (((Freecam)this.n).S) {
-            ((Freecam)this.n).k$src$V$o7vvo0();
-            ((Freecam)this.n).S = false;
+        this.module.rotationClaim.acquire(this.module);
+        if (this.module.initializationPending) {
+            this.module.spawnLegacyFakePlayer();
+            this.module.initializationPending = false;
         }
-        ((Freecam)this.n).X$src$V$nxfse5();
+        this.module.updateLegacyFakePlayerMovement();
     }
 
 
     private CPacketPlayerPosition buildPositionPacket() {
         if (ForgeVersion.MC_1_7_10.L()) {
-            return CPacketPlayerPosition.newInstance(((Freecam)this.n).Z.z(), ((Freecam)this.n).Z.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY(), ((Freecam)this.n).Z.N(), ((Freecam)this.n).Z.h(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
+            return CPacketPlayerPosition.newInstance(this.module.fakePlayer.z(), this.module.fakePlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY(), this.module.fakePlayer.N(), this.module.fakePlayer.h(), this.module.fakePlayer.b$src$Z$fqlxe4());
         }
-        return CPacketPlayerPosition.newInstance(((Freecam)this.n).Z.z(), ((Freecam)this.n).Z.N(), ((Freecam)this.n).Z.h(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
+        return CPacketPlayerPosition.newInstance(this.module.fakePlayer.z(), this.module.fakePlayer.N(), this.module.fakePlayer.h(), this.module.fakePlayer.b$src$Z$fqlxe4());
     }
 
     @EventHandler(A=EventPriority.LOWEST)
-    public void onPacketSend(EventPacketSend eventPacketSend) {
-        if (((Freecam)this.n).Z == null) {
+    public void onPacketSend(EventPacketSend event) {
+        if (this.module.fakePlayer == null) {
             return;
         }
-        if (((Freecam)this.n).P != null && eventPacketSend.getPacketInstance().equals(((Freecam)this.n).P)) {
-            ((Freecam)this.n).P = null;
+        if (this.module.bypassPacket != null && event.getPacketInstance().equals(this.module.bypassPacket)) {
+            this.module.bypassPacket = null;
             return;
         }
         if (Minecraft.theWorld().isNull()) {
             return;
         }
-        if (((Freecam)this.n).c(eventPacketSend.getPacket())) {
-            eventPacketSend.setCancelled(true);
+        if (this.module.shouldCancelPacket(event.getPacket())) {
+            event.setCancelled(true);
             return;
         }
-        if (!eventPacketSend.getPacket().isInstance(MappedClasses.qD)) {
+        if (!event.getPacket().isInstance(MappedClasses.qD)) {
             return;
         }
-        eventPacketSend.setPacket(this.buildMovementPacket());
-        Minecraft.thePlayer().E(((Freecam)this.n).I);
+        event.setPacket(this.buildMovementPacket());
+        Minecraft.thePlayer().E(this.module.positionUpdateTicks);
     }
 
     private C06PacketPlayerPositionLook buildPositionLookPacket() {
         if (ForgeVersion.MC_1_7_10.L()) {
-            return C06PacketPlayerPositionLook.create(((Freecam)this.n).Z.z(), ((Freecam)this.n).Z.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY(), ((Freecam)this.n).Z.N(), ((Freecam)this.n).Z.h(), ((Freecam)this.n).Z.J(), ((Freecam)this.n).Z.V(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
+            return C06PacketPlayerPositionLook.create(this.module.fakePlayer.z(), this.module.fakePlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY(), this.module.fakePlayer.N(), this.module.fakePlayer.h(), this.module.fakePlayer.J(), this.module.fakePlayer.V(), this.module.fakePlayer.b$src$Z$fqlxe4());
         }
-        return C06PacketPlayerPositionLook.create(((Freecam)this.n).Z.z(), ((Freecam)this.n).Z.N(), ((Freecam)this.n).Z.h(), ((Freecam)this.n).Z.J(), ((Freecam)this.n).Z.V(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
+        return C06PacketPlayerPositionLook.create(this.module.fakePlayer.z(), this.module.fakePlayer.N(), this.module.fakePlayer.h(), this.module.fakePlayer.J(), this.module.fakePlayer.V(), this.module.fakePlayer.b$src$Z$fqlxe4());
     }
 
-    private void applyGhostPositionLookLater(PlayerPositionLookPacketModern playerPositionLookPacketModern) {
-        this.applyGhostPositionLook(playerPositionLookPacketModern);
+    private void applyGhostPositionLookLater(PlayerPositionLookPacketModern packet) {
+        this.applyGhostPositionLook(packet);
     }
 
     private C06PacketPlayerPositionLook buildLookOnlyPacket() {
         if (ForgeVersion.MC_1_7_10.L()) {
-            return C06PacketPlayerPositionLook.create(((Freecam)this.n).Z.t(), -999.0, -999.0, ((Freecam)this.n).Z.T(), ((Freecam)this.n).Z.J(), ((Freecam)this.n).Z.V(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
+            return C06PacketPlayerPositionLook.create(this.module.fakePlayer.t(), -999.0, -999.0, this.module.fakePlayer.T(), this.module.fakePlayer.J(), this.module.fakePlayer.V(), this.module.fakePlayer.b$src$Z$fqlxe4());
         }
-        return C06PacketPlayerPositionLook.create(((Freecam)this.n).Z.t(), -999.0, ((Freecam)this.n).Z.T(), ((Freecam)this.n).Z.J(), ((Freecam)this.n).Z.V(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
+        return C06PacketPlayerPositionLook.create(this.module.fakePlayer.t(), -999.0, this.module.fakePlayer.T(), this.module.fakePlayer.J(), this.module.fakePlayer.V(), this.module.fakePlayer.b$src$Z$fqlxe4());
     }
 
-    private void applyGhostPositionLook(PlayerPositionLookPacketModern playerPositionLookPacketModern) {
-        if (playerPositionLookPacketModern == null || playerPositionLookPacketModern.isNull()) {
+    private void applyGhostPositionLook(PlayerPositionLookPacketModern packet) {
+        if (packet == null || packet.isNull()) {
             return;
         }
-        EntityOtherPlayerMP entityOtherPlayerMP = ((Freecam)this.n).Z;
-        double d = playerPositionLookPacketModern.S();
-        double d2 = playerPositionLookPacketModern.H();
-        double d3 = playerPositionLookPacketModern.e();
-        float f = playerPositionLookPacketModern.f();
-        float f2 = playerPositionLookPacketModern.M();
+        EntityOtherPlayerMP fakePlayer = this.module.fakePlayer;
+        double x = packet.S();
+        double y = packet.H();
+        double z = packet.e();
+        float yaw = packet.f();
+        float pitch = packet.M();
         if (ForgeVersion.MC_1_7_10.Y()) {
-            if (playerPositionLookPacketModern.W().contains(PlayerInteractEventAction.z().getObject())) {
-                d += entityOtherPlayerMP.z();
+            if (packet.W().contains(PlayerInteractEventAction.z().getObject())) {
+                x += fakePlayer.z();
             } else {
-                entityOtherPlayerMP.r(0.0);
+                fakePlayer.r(0.0);
             }
-            if (playerPositionLookPacketModern.W().contains(PlayerInteractEventAction.t$src$Lgg_vape_wrapper_impl_PlayerInteractEventAction_$1n8jtc5().getObject())) {
-                d2 += entityOtherPlayerMP.N();
+            if (packet.W().contains(PlayerInteractEventAction.t$src$Lgg_vape_wrapper_impl_PlayerInteractEventAction_$1n8jtc5().getObject())) {
+                y += fakePlayer.N();
             } else {
-                entityOtherPlayerMP.k(0.0);
+                fakePlayer.k(0.0);
             }
-            if (playerPositionLookPacketModern.W().contains(PlayerInteractEventAction.a().getObject())) {
-                d3 += entityOtherPlayerMP.h();
+            if (packet.W().contains(PlayerInteractEventAction.a().getObject())) {
+                z += fakePlayer.h();
             } else {
-                entityOtherPlayerMP.i(0.0);
+                fakePlayer.i(0.0);
             }
-            if (playerPositionLookPacketModern.W().contains(PlayerInteractEventAction.b().getObject())) {
-                f2 += entityOtherPlayerMP.V();
+            if (packet.W().contains(PlayerInteractEventAction.b().getObject())) {
+                pitch += fakePlayer.V();
             }
-            if (playerPositionLookPacketModern.W().contains(PlayerInteractEventAction.m$src$Lgg_vape_wrapper_impl_PlayerInteractEventAction_$1581zn0().getObject())) {
-                f += entityOtherPlayerMP.J();
+            if (packet.W().contains(PlayerInteractEventAction.m$src$Lgg_vape_wrapper_impl_PlayerInteractEventAction_$1581zn0().getObject())) {
+                yaw += fakePlayer.J();
             }
-            entityOtherPlayerMP.t(d, d2, d3, f, f2);
-            entityOtherPlayerMP.H(f);
-            C06PacketPlayerPositionLook c06PacketPlayerPositionLook = C06PacketPlayerPositionLook.create(entityOtherPlayerMP.z(), entityOtherPlayerMP.N(), entityOtherPlayerMP.h(), entityOtherPlayerMP.J(), entityOtherPlayerMP.V(), false);
-            ((Freecam)this.n).P = c06PacketPlayerPositionLook.getObject();
-            ((Freecam)this.n).K.G(c06PacketPlayerPositionLook);
+            fakePlayer.t(x, y, z, yaw, pitch);
+            fakePlayer.H(yaw);
+            C06PacketPlayerPositionLook responsePacket = C06PacketPlayerPositionLook.create(fakePlayer.z(), fakePlayer.N(), fakePlayer.h(), fakePlayer.J(), fakePlayer.V(), false);
+            this.module.bypassPacket = responsePacket.getObject();
+            this.module.networkManager.G(responsePacket);
         }
     }
 
     @EventHandler
-    public void onPacketReceive(EventPacketReceive eventPacketReceive) {
-        if (((Freecam)this.n).Z == null) {
+    public void onPacketReceive(EventPacketReceive event) {
+        if (this.module.fakePlayer == null) {
             return;
         }
-        Packet packet = eventPacketReceive.getPacket();
+        Packet packet = event.getPacket();
         if (packet.isInstance(MappedClasses.zw)) {
-            ((Freecam)this.n).K = eventPacketReceive.getNetworkManager();
-            PlayerPositionLookPacketModern playerPositionLookPacketModern = new PlayerPositionLookPacketModern(packet.getObject());
-            eventPacketReceive.setCancelled(true);
+            this.module.networkManager = event.getNetworkManager();
+            PlayerPositionLookPacketModern positionLookPacket = new PlayerPositionLookPacketModern(packet.getObject());
+            event.setCancelled(true);
             if (ForgeVersion.MC_1_8_9.d()) {
-                Minecraft.v(() -> this.applyGhostPositionLookLater(playerPositionLookPacketModern));
+                Minecraft.v(() -> this.applyGhostPositionLookLater(positionLookPacket));
             } else {
-                this.applyGhostPositionLook(playerPositionLookPacketModern);
+                this.applyGhostPositionLook(positionLookPacket);
             }
             return;
         }
         if (packet.isInstance(MappedClasses.YX)) {
-            SPacketEntityVelocity sPacketEntityVelocity = new SPacketEntityVelocity(packet.getObject());
-            if (sPacketEntityVelocity.getEntityId() == Minecraft.thePlayer().S()) {
-                ((Freecam)this.n).Z.E((double)sPacketEntityVelocity.getMotionX() / 8000.0, (double)sPacketEntityVelocity.getMotionY() / 8000.0, (double)sPacketEntityVelocity.getMotionZ() / 8000.0);
+            SPacketEntityVelocity velocityPacket = new SPacketEntityVelocity(packet.getObject());
+            if (velocityPacket.getEntityId() == Minecraft.thePlayer().S()) {
+                this.module.fakePlayer.E((double)velocityPacket.getMotionX() / 8000.0, (double)velocityPacket.getMotionY() / 8000.0, (double)velocityPacket.getMotionZ() / 8000.0);
             }
         } else if (packet.isInstance(MappedClasses.qe)) {
-            PacketVelocityBridge packetVelocityBridge = new PacketVelocityBridge(packet.getObject());
-            ((Freecam)this.n).Z.r(((Freecam)this.n).Z.t() + (double)packetVelocityBridge.getMotionX());
-            ((Freecam)this.n).Z.k(((Freecam)this.n).Z.q() + (double)packetVelocityBridge.getMotionY());
-            ((Freecam)this.n).Z.i(((Freecam)this.n).Z.T() + (double)packetVelocityBridge.getMotionZ());
+            PacketVelocityBridge velocityPacket = new PacketVelocityBridge(packet.getObject());
+            this.module.fakePlayer.r(this.module.fakePlayer.t() + (double)velocityPacket.getMotionX());
+            this.module.fakePlayer.k(this.module.fakePlayer.q() + (double)velocityPacket.getMotionY());
+            this.module.fakePlayer.i(this.module.fakePlayer.T() + (double)velocityPacket.getMotionZ());
         }
     }
 
     @EventHandler
-    public void h(EventPreLivingTravel eventPreLivingTravel) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        double d = (Double)((Freecam)this.n).Y.K() / 5.0 * (ClientSettings.B(Minecraft.gameSettings().r()) ? 2.0 : 1.0);
-        double d2 = (Double)((Freecam)this.n).v.K() / 5.0 * (ClientSettings.B(Minecraft.gameSettings().r()) ? 2.0 : 1.0);
-        entityPlayerSP.z(true);
-        float f = entityPlayerSP.movementInput().G() ? 1.0f : (entityPlayerSP.movementInput().D$src$Z$v5d6e8() ? -1.0f : 0.0f);
-        double d3 = (double)(f * 0.42f) * d2;
-        entityPlayerSP.k(d3);
+    public void onPreLivingTravel(EventPreLivingTravel event) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        double horizontalSpeed = (Double)this.module.horizontalSpeed.getValue() / 5.0 * (ClientSettings.B(Minecraft.gameSettings().r()) ? 2.0 : 1.0);
+        double verticalSpeed = (Double)this.module.verticalSpeed.getValue() / 5.0 * (ClientSettings.B(Minecraft.gameSettings().r()) ? 2.0 : 1.0);
+        player.z(true);
+        float verticalDirection = player.movementInput().G() ? 1.0f : (player.movementInput().D$src$Z$v5d6e8() ? -1.0f : 0.0f);
+        double verticalMotion = (double)(verticalDirection * 0.42f) * verticalSpeed;
+        player.k(verticalMotion);
         Minecraft.thePlayer().movementInput().setCancelled(false);
-        entityPlayerSP.R(false);
-        double d4 = entityPlayerSP.movementInput().D();
-        double d5 = entityPlayerSP.movementInput().T();
-        float f2 = entityPlayerSP.J();
-        if (d4 == 0.0 && d5 == 0.0) {
-            entityPlayerSP.r(0.0);
-            entityPlayerSP.i(0.0);
+        player.R(false);
+        double strafe = player.movementInput().D();
+        double forward = player.movementInput().T();
+        float yaw = player.J();
+        if (strafe == 0.0 && forward == 0.0) {
+            player.r(0.0);
+            player.i(0.0);
         } else {
-            if (d4 != 0.0) {
-                if (d5 > 0.0) {
-                    f2 += (float)(d4 > 0.0 ? -45 : 45);
-                } else if (d5 < 0.0) {
-                    f2 += (float)(d4 > 0.0 ? 45 : -45);
+            if (strafe != 0.0) {
+                if (forward > 0.0) {
+                    yaw += (float)(strafe > 0.0 ? -45 : 45);
+                } else if (forward < 0.0) {
+                    yaw += (float)(strafe > 0.0 ? 45 : -45);
                 }
-                d5 = 0.0;
-                d4 = d4 > 0.0 ? 1.0 : -1.0;
+                forward = 0.0;
+                strafe = strafe > 0.0 ? 1.0 : -1.0;
             }
-            entityPlayerSP.r(d4 * d * Math.cos(Math.toRadians(f2 + 90.0f)) + d5 * d * Math.sin(Math.toRadians(f2 + 90.0f)));
-            entityPlayerSP.i(d4 * d * Math.sin(Math.toRadians(f2 + 90.0f)) - d5 * d * Math.cos(Math.toRadians(f2 + 90.0f)));
+            player.r(strafe * horizontalSpeed * Math.cos(Math.toRadians(yaw + 90.0f)) + forward * horizontalSpeed * Math.sin(Math.toRadians(yaw + 90.0f)));
+            player.i(strafe * horizontalSpeed * Math.sin(Math.toRadians(yaw + 90.0f)) - forward * horizontalSpeed * Math.cos(Math.toRadians(yaw + 90.0f)));
         }
     }
 
@@ -199,51 +199,36 @@ extends FreecamController<Freecam> {
     }
 
     private C03PacketPlayer buildMovementPacket() {
-        boolean bl;
-        double d = ((Freecam)this.n).Z.z() - ((Freecam)this.n).J;
-        double d2 = (ClientSettings.H ? ((Freecam)this.n).Z.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinY() : ((Freecam)this.n).Z.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY()) - ((Freecam)this.n).s;
-        double d3 = ((Freecam)this.n).Z.h() - ((Freecam)this.n).a;
-        double d4 = ((Freecam)this.n).Z.J() - ((Freecam)this.n).F;
-        double d5 = ((Freecam)this.n).Z.V() - ((Freecam)this.n).O;
-        boolean bl2 = d * d + d2 * d2 + d3 * d3 > 9.0E-4 || ((Freecam)this.n).I >= 20;
-        boolean bl3 = bl = d4 != 0.0 || d5 != 0.0;
-        if (bl) {
-            C03PacketPlayer c03PacketPlayer = null;
-            if (((Freecam)this.n).Z.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12().isNull()) {
-                c03PacketPlayer = bl2 ? this.buildPositionLookPacket() : CPacketPlayer_Rotation.create(((Freecam)this.n).Z.J(), ((Freecam)this.n).Z.V(), ((Freecam)this.n).Z.b$src$Z$fqlxe4());
-            } else {
-                c03PacketPlayer = this.buildLookOnlyPacket();
-                bl2 = false;
-            }
-            ++((Freecam)this.n).I;
-            if (bl2) {
-                ((Freecam)this.n).J = ((Freecam)this.n).Z.z();
-                ((Freecam)this.n).s = ClientSettings.H ? ((Freecam)this.n).Z.N() : ((Freecam)this.n).Z.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
-                ((Freecam)this.n).a = ((Freecam)this.n).Z.h();
-                ((Freecam)this.n).I = 0;
-            }
-            ((Freecam)this.n).F = ((Freecam)this.n).Z.J();
-            ((Freecam)this.n).O = ((Freecam)this.n).Z.V();
-            return c03PacketPlayer;
-        }
-        C03PacketPlayer c03PacketPlayer = null;
-        if (((Freecam)this.n).Z.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12().isNull()) {
-            if (bl2) {
-                // empty if block
-            }
-            c03PacketPlayer = bl2 ? this.buildPositionPacket() : C03PacketPlayer.newInstance(((Freecam)this.n).Z.b$src$Z$fqlxe4());
+        EntityOtherPlayerMP fakePlayer = this.module.fakePlayer;
+        double deltaX = fakePlayer.z() - this.module.lastReportedX;
+        double reportedY = ClientSettings.H ? fakePlayer.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinY() : fakePlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
+        double deltaY = reportedY - this.module.lastReportedY;
+        double deltaZ = fakePlayer.h() - this.module.lastReportedZ;
+        double deltaYaw = fakePlayer.J() - this.module.lastReportedYaw;
+        double deltaPitch = fakePlayer.V() - this.module.lastReportedPitch;
+        boolean positionChanged = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ > 9.0E-4 || this.module.positionUpdateTicks >= 20;
+        boolean rotationChanged = deltaYaw != 0.0 || deltaPitch != 0.0;
+        C03PacketPlayer movementPacket;
+        if (fakePlayer.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12().isNotNull()) {
+            movementPacket = this.buildLookOnlyPacket();
+            positionChanged = false;
+        } else if (rotationChanged) {
+            movementPacket = positionChanged ? this.buildPositionLookPacket() : CPacketPlayer_Rotation.create(fakePlayer.J(), fakePlayer.V(), fakePlayer.b$src$Z$fqlxe4());
         } else {
-            c03PacketPlayer = this.buildLookOnlyPacket();
-            bl2 = false;
+            movementPacket = positionChanged ? this.buildPositionPacket() : C03PacketPlayer.newInstance(fakePlayer.b$src$Z$fqlxe4());
         }
-        ++((Freecam)this.n).I;
-        if (bl2) {
-            ((Freecam)this.n).J = ((Freecam)this.n).Z.z();
-            ((Freecam)this.n).s = ClientSettings.H ? ((Freecam)this.n).Z.N() : ((Freecam)this.n).Z.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
-            ((Freecam)this.n).a = ((Freecam)this.n).Z.h();
-            ((Freecam)this.n).I = 0;
+        ++this.module.positionUpdateTicks;
+        if (positionChanged) {
+            this.module.lastReportedX = fakePlayer.z();
+            this.module.lastReportedY = ClientSettings.H ? fakePlayer.N() : fakePlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY();
+            this.module.lastReportedZ = fakePlayer.h();
+            this.module.positionUpdateTicks = 0;
         }
-        return c03PacketPlayer;
+        if (rotationChanged) {
+            this.module.lastReportedYaw = fakePlayer.J();
+            this.module.lastReportedPitch = fakePlayer.V();
+        }
+        return movementPacket;
     }
 }
 

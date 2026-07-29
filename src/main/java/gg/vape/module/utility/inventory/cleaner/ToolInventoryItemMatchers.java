@@ -28,20 +28,20 @@ public class ToolInventoryItemMatchers {
     }
 
     static void r() {
-        InventoryItemMatcherRegistry.R(U);
-        InventoryItemMatcherRegistry.R(q);
-        InventoryItemMatcherRegistry.R(a);
-        InventoryItemMatcherRegistry.R(N);
-        InventoryItemMatcherRegistry.R(r);
+        InventoryItemMatcherRegistry.register(U);
+        InventoryItemMatcherRegistry.register(q);
+        InventoryItemMatcherRegistry.register(a);
+        InventoryItemMatcherRegistry.register(N);
+        InventoryItemMatcherRegistry.register(r);
     }
 
     static {
         String[] labels = new String[]{"Any type of pickaxe", "Any type of axe", "hoe-hover@2x", "Any tool", "axe-tool", "Pickaxe", "Any type of hoe", "Axe", "Shovel", "Any type of shovel", "axe-hover@2x", "any-tool", "Any type of tool", "pickaxe-hover@2x", "hoe", "shovel", "Hoe", "tools", "shovel-hover@2x", "pickaxe"};
-        U = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(labels[11])).m(labels[3])).M(labels[12])).H(labels[17])).A(InventoryItemMatcherGroup.HIDDEN)).t(ToolInventoryItemMatchers::matchesAnyTool).q();
-        a = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(labels[19])).m(labels[5])).M(labels[0])).H(labels[13])).A(InventoryItemMatcherGroup.TOOLS)).t(ToolInventoryItemMatchers::matchesAxe).N(Comparator.comparingDouble(ToolInventoryItemMatchers::axeSortScore))).q();
-        q = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(labels[4])).m(labels[7])).M(labels[1])).H(labels[10])).A(InventoryItemMatcherGroup.TOOLS)).t(ToolInventoryItemMatchers::matchesPickaxe).N(a.v())).q();
-        N = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(labels[15])).m(labels[8])).M(labels[9])).H(labels[18])).A(InventoryItemMatcherGroup.TOOLS)).t(ToolInventoryItemMatchers::matchesShovel).N(a.v())).q();
-        r = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(labels[14])).m(labels[16])).M(labels[6])).H(labels[2])).A(InventoryItemMatcherGroup.TOOLS)).t(ToolInventoryItemMatchers::matchesHoe).q();
+        U = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.builder().composite().withId(labels[11])).withName(labels[3])).withDescription(labels[12])).withIconName(labels[17])).withGroup(InventoryItemMatcherGroup.HIDDEN)).withPredicate(ToolInventoryItemMatchers::matchesAnyTool).build();
+        a = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.builder().composite().withId(labels[19])).withName(labels[5])).withDescription(labels[0])).withIconName(labels[13])).withGroup(InventoryItemMatcherGroup.TOOLS)).withPredicate(ToolInventoryItemMatchers::matchesAxe).withComparator(Comparator.comparingDouble(ToolInventoryItemMatchers::axeSortScore))).build();
+        q = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.builder().composite().withId(labels[4])).withName(labels[7])).withDescription(labels[1])).withIconName(labels[10])).withGroup(InventoryItemMatcherGroup.TOOLS)).withPredicate(ToolInventoryItemMatchers::matchesPickaxe).withComparator(a.getComparator())).build();
+        N = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.builder().composite().withId(labels[15])).withName(labels[8])).withDescription(labels[9])).withIconName(labels[18])).withGroup(InventoryItemMatcherGroup.TOOLS)).withPredicate(ToolInventoryItemMatchers::matchesShovel).withComparator(a.getComparator())).build();
+        r = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.builder().composite().withId(labels[14])).withName(labels[16])).withDescription(labels[6])).withIconName(labels[2])).withGroup(InventoryItemMatcherGroup.TOOLS)).withPredicate(ToolInventoryItemMatchers::matchesHoe).build();
     }
 
     private static boolean matchesAnyTool(ItemStack itemStack, Item item) {
@@ -49,7 +49,7 @@ public class ToolInventoryItemMatchers {
     }
 
     private static double axeSortScore(InventoryItemMatchContext inventoryItemMatchContext) {
-        return ClientSettings.X(inventoryItemMatchContext.v());
+        return ClientSettings.X(inventoryItemMatchContext.getItemStack());
     }
 
     private static boolean matchesAxe(ItemStack itemStack, Item item) {

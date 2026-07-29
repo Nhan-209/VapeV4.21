@@ -14,7 +14,7 @@ extends TutorialTargetSelector<ModuleComponent> {
     final ModulesTutorialPage T;
 
     public boolean K(ModuleComponent moduleComponent) {
-        if (moduleComponent.N$src$Lgg_vape_module_Mod_$rb0ew8().getName().equals(b)) {
+        if (moduleComponent.getModule().getName().equals(b)) {
             this.e = moduleComponent;
             return true;
         }
@@ -31,7 +31,7 @@ extends TutorialTargetSelector<ModuleComponent> {
         if (this.o().isInstance(guiComponent)) {
             ArrayList<GuiComponent> arrayList = super.v(guiComponent);
             if (arrayList != null && this.e != null && this.e.equals(guiComponent)) {
-                return new ArrayList<GuiComponent>(Arrays.asList(this.e.t$src$Lgg_vape_ui_click_component_IconButtonComponent_$1y7qa0x()));
+                return new ArrayList<GuiComponent>(Arrays.asList(this.e.getSettingsButton()));
             }
             return arrayList;
         }

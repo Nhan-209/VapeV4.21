@@ -11,53 +11,55 @@ public class CrystalAuraActionCandidate {
     private CrystalAuraAction action;
     private final Vec3 position;
     private final ExplosionType explosionType;
-    public boolean H;
+    public boolean requiresObsidianPlacement;
     private final double secondaryValue;
     private final double damage;
-    public DirectionalPosition s;
+    public DirectionalPosition directionalPosition;
 
-    public void J(Entity entity) {
-        this.targetEntity = entity;
+    public void setTargetEntity(Entity targetEntity) {
+        this.targetEntity = targetEntity;
     }
 
-    public double Y() {
+    public double getSecondaryValue() {
         return this.secondaryValue;
     }
 
-    public ExplosionType n() {
+    public ExplosionType getExplosionType() {
         return this.explosionType;
     }
 
-    public CrystalAuraAction R() {
+    public CrystalAuraAction getAction() {
         return this.action;
     }
 
-    public CrystalAuraActionCandidate(ExplosionType ih_12, DirectionalPosition da_12, Vec3 vec3, double d, double d2) {
-        this.explosionType = ih_12;
-        this.s = da_12;
-        this.position = vec3;
-        this.damage = d;
-        this.secondaryValue = d2;
+    public CrystalAuraActionCandidate(ExplosionType explosionType,
+                                      DirectionalPosition directionalPosition,
+                                      Vec3 position, double damage, double secondaryValue) {
+        this.explosionType = explosionType;
+        this.directionalPosition = directionalPosition;
+        this.position = position;
+        this.damage = damage;
+        this.secondaryValue = secondaryValue;
         this.action = CrystalAuraAction.PLACING_CRYSTAL;
     }
 
-    public Entity A() {
+    public Entity getTargetEntity() {
         return this.targetEntity;
     }
 
-    public void D(CrystalAuraAction do_12) {
-        this.action = do_12;
+    public void setAction(CrystalAuraAction action) {
+        this.action = action;
     }
 
-    public DirectionalPosition a() {
-        return this.s;
+    public DirectionalPosition getDirectionalPosition() {
+        return this.directionalPosition;
     }
 
-    public double Q() {
+    public double getDamage() {
         return this.damage;
     }
 
-    public Vec3 U() {
+    public Vec3 getPosition() {
         return this.position;
     }
 }

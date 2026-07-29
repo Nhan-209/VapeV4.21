@@ -8,17 +8,16 @@ import java.awt.Point;
 
 public class SearchBlockEditorEnabledSyncMouseListener
 implements GuiMouseListener {
-    final SearchBlock R;
-    final SearchBlockEditorComponent L;
+    final SearchBlock searchBlock;
+    final SearchBlockEditorComponent editor;
 
     public SearchBlockEditorEnabledSyncMouseListener(SearchBlockEditorComponent searchBlockEditorComponent, SearchBlock searchBlock) {
-        this.L = searchBlockEditorComponent;
-        this.R = searchBlock;
+        this.editor = searchBlockEditorComponent;
+        this.searchBlock = searchBlock;
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        this.R.M(SearchBlockEditorComponent.S(this.L).java_lang_Boolean_L());
+        this.searchBlock.M(SearchBlockEditorComponent.getEnabledValueCompat(this.editor).getEffectiveValueCompat());
     }
 }
-

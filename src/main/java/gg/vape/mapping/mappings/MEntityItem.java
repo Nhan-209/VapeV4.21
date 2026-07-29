@@ -44,7 +44,7 @@ extends Mapping {
             }
             return;
         }
-        GuiComponent.D(new GuiComponent[4]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[4]);
         Class[] classArray = new Class[]{};
         Class clazz = MappedClasses.VK;
         boolean bl = true;

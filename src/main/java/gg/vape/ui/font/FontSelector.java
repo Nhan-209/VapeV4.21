@@ -23,7 +23,7 @@ public class FontSelector {
 
     public void N(FontOption fontOption) {
         this.r = fontOption;
-        ClientSettings.fW.m();
+        ClientSettings.INSTANCE.requestFrameLayoutRefresh();
     }
 
     static {

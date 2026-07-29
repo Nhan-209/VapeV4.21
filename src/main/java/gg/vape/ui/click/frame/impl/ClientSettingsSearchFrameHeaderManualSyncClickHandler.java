@@ -9,9 +9,9 @@ implements GuiClickListener {
     final ClientSettingsSearchFrameHeader z;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         Vape.INSTANCE.getSyncThread().requestSave();
-        ClientSettingsSearchFrameHeader.F(this.z).Z(false);
+        ClientSettingsSearchFrameHeader.F(this.z).setVisible(false);
     }
 
     ClientSettingsSearchFrameHeaderManualSyncClickHandler(ClientSettingsSearchFrameHeader clientSettingsSearchFrameHeader) {

@@ -12,36 +12,36 @@ import java.util.List;
 
 public class ClassInventoryItemMatcher
 extends AbstractInventoryItemMatcher {
-    private final List<Class<?>> Y = new ArrayList();
-    private InventoryItemCategory m;
-    private final InventoryMatcherListMode E;
+    private final List<Class<?>> classes = new ArrayList();
+    private InventoryItemCategory category;
+    private final InventoryMatcherListMode listMode;
 
     @Override
-    public InventoryItemCategory G() {
-        return this.m;
+    public InventoryItemCategory getCategory() {
+        return this.category;
     }
 
     @Override
-    public boolean g(ItemStack itemStack, Item item) {
-        if (this.E == InventoryMatcherListMode.WHITELIST) {
-            return this.Y.stream().anyMatch(item::isInstance);
+    public boolean matches(ItemStack itemStack, Item item) {
+        if (this.listMode == InventoryMatcherListMode.WHITELIST) {
+            return this.classes.stream().anyMatch(item::isInstance);
         }
-        return this.Y.stream().noneMatch(item::isInstance);
+        return this.classes.stream().noneMatch(item::isInstance);
     }
 
-    public static ClassInventoryItemMatcherBuilder J(InventoryItemMatcherBuilderBase<?> inventoryItemMatcherBuilderBase) {
+    public static ClassInventoryItemMatcherBuilder builderFrom(InventoryItemMatcherBuilderBase<?> inventoryItemMatcherBuilderBase) {
         return new ClassInventoryItemMatcherBuilder(inventoryItemMatcherBuilderBase, null);
     }
 
     public ClassInventoryItemMatcher(ClassInventoryItemMatcherBuilder classInventoryItemMatcherBuilder) {
         super(classInventoryItemMatcherBuilder);
-        this.Y.addAll(classInventoryItemMatcherBuilder.V());
-        this.E = classInventoryItemMatcherBuilder.C();
+        this.classes.addAll(classInventoryItemMatcherBuilder.getClasses());
+        this.listMode = classInventoryItemMatcherBuilder.getListMode();
     }
 
     @Override
-    public void S(InventoryItemCategory inventoryItemCategory) {
-        this.m = inventoryItemCategory;
+    public void setCategory(InventoryItemCategory category) {
+        this.category = category;
     }
 
 }

@@ -57,7 +57,7 @@ extends Mapping {
         String string4 = "set";
         MGameSettingsValue mGameSettingsValue4 = this;
         this.d = this.Y(string4, bl5, clazz4, classArray3);
-        GuiComponent.D(new GuiComponent[4]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[4]);
     }
 
 

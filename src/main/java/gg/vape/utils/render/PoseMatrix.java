@@ -1,23 +1,23 @@
 package gg.vape.utils.render;
 
 public class PoseMatrix {
-    public int h;
-    public int X;
-    public int v;
-    public int K;
+    public int component0;
+    public int component3;
+    public int component2;
+    public int component1;
 
-    public PoseMatrix(int n, int n2, int n3, int n4) {
-        this.h = n;
-        this.K = n2;
-        this.v = n3;
-        this.X = n4;
+    public PoseMatrix(int component0, int component1, int component2, int component3) {
+        this.component0 = component0;
+        this.component1 = component1;
+        this.component2 = component2;
+        this.component3 = component3;
     }
 
-    public void set(int n, int n2, int n3, int n4) {
-        this.h = n;
-        this.K = n2;
-        this.v = n3;
-        this.X = n4;
+    public void set(int component0, int component1, int component2, int component3) {
+        this.component0 = component0;
+        this.component1 = component1;
+        this.component2 = component2;
+        this.component3 = component3;
     }
 
     public boolean equals(Object object) {
@@ -25,16 +25,15 @@ public class PoseMatrix {
             return false;
         }
         PoseMatrix poseMatrix = (PoseMatrix)object;
-        return this.h == poseMatrix.h && this.K == poseMatrix.K && this.v == poseMatrix.v && this.X == poseMatrix.X;
+        return this.component0 == poseMatrix.component0 && this.component1 == poseMatrix.component1 && this.component2 == poseMatrix.component2 && this.component3 == poseMatrix.component3;
     }
 
     public int hashCode() {
-        int n = this.K + this.v;
-        int n2 = this.X + this.h;
-        int n3 = n * (n + 1) / 2 + this.K;
-        int n4 = n2 * (n2 + 1) / 2 + this.h;
-        int n5 = n3 + n4;
-        return n5 * (n5 + 1) / 2 + n4;
+        int middlePairSum = this.component1 + this.component2;
+        int outerPairSum = this.component3 + this.component0;
+        int middlePairHash = middlePairSum * (middlePairSum + 1) / 2 + this.component1;
+        int outerPairHash = outerPairSum * (outerPairSum + 1) / 2 + this.component0;
+        int combinedPairSum = middlePairHash + outerPairHash;
+        return combinedPairSum * (combinedPairSum + 1) / 2 + outerPairHash;
     }
 }
-

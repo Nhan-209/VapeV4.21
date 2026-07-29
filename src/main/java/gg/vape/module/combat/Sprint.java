@@ -25,24 +25,25 @@ extends Mod {
 
 
     @EventHandler
-    public void onPreEntityUpdate(EventPreEntityUpdate eventPreEntityUpdate) {
-        boolean bl;
+    public void onPreEntityUpdate(EventPreEntityUpdate event) {
         if (this.scaffold == null) {
             this.scaffold = Vape.INSTANCE.getModManager().getMod(Scaffold.class);
         }
         if (!Minecraft.currentScreen().isNull()) {
             return;
         }
-        if (SharedModuleControlClaims.l.s()) {
+        if (SharedModuleControlClaims.movementInput.isLocked()) {
             return;
         }
-        if (this.cancelInvis.L().booleanValue() && Minecraft.thePlayer().i(PotionRegistry.R) && !Minecraft.thePlayer().C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().H()) {
+        if (this.cancelInvis.getEffectiveValue() && Minecraft.thePlayer().i(PotionRegistry.R)
+                && !Minecraft.thePlayer().C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().H()) {
             return;
         }
-        KeyBinding keyBinding = Minecraft.gameSettings().r();
-        boolean bl2 = bl = !this.scaffold.o$src$Z$dv6vsx() && !Minecraft.thePlayer().B$src$Z$f90iek() && !Minecraft.thePlayer().r();
-        if (!keyBinding.isKeyDown() && bl) {
-            KeyBinding.setKeyBindState(keyBinding, true);
+        KeyBinding sprintKey = Minecraft.gameSettings().r();
+        boolean shouldStartSprinting = !this.scaffold.isActivelyScaffolding()
+                && !Minecraft.thePlayer().B$src$Z$f90iek() && !Minecraft.thePlayer().r();
+        if (!sprintKey.isKeyDown() && shouldStartSprinting) {
+            KeyBinding.setKeyBindState(sprintKey, true);
         }
     }
 

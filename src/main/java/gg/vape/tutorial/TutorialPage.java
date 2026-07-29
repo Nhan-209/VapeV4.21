@@ -23,8 +23,8 @@ public class TutorialPage {
 
     public void i(TutorialAction tutorialAction) {
         this.A.add(tutorialAction);
-        tutorialAction.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().s(new TutorialActionNextClickHandler(this));
-        tutorialAction.I().c$src$Lgg_vape_ui_click_component_gui_UnderlinedTextLa$npxkh1().s(new TutorialActionFinishClickHandler(this));
+        tutorialAction.I().G$src$Lgg_vape_ui_click_component_gui_TextButton_$82emrx().setClickListener(new TutorialActionNextClickHandler(this));
+        tutorialAction.I().c$src$Lgg_vape_ui_click_component_gui_UnderlinedTextLa$npxkh1().setClickListener(new TutorialActionFinishClickHandler(this));
         tutorialAction.G(this);
     }
 

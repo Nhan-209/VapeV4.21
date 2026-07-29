@@ -53,7 +53,7 @@ extends ModeSelection {
     }
 
     @Override
-    public String z() {
+    public String getSerializedName() {
         return this.j;
     }
 

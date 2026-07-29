@@ -5,51 +5,43 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class HudSnapCandidate {
-    private Map<HudSnapEdge, Double> V = new EnumMap<HudSnapEdge, Double>(HudSnapEdge.class);
-    private HudSnapEdge q;
-    private double n;
-    private HudSnapEdge T;
+    private final Map<HudSnapEdge, Double> bounds = new EnumMap<HudSnapEdge, Double>(HudSnapEdge.class);
+    private final HudSnapEdge sourceEdge;
+    private final double offset;
+    private final HudSnapEdge targetEdge;
 
-    public HudSnapEdge a_fq_0_n() {
-        return this.T;
+    public HudSnapEdge getTargetEdge() {
+        return this.targetEdge;
     }
 
-    public Map<HudSnapEdge, Double> m() {
-        return this.V;
+    public Map<HudSnapEdge, Double> getBounds() {
+        return this.bounds;
     }
 
-    public HudSnapCandidate(double d, double d2, double d3, double d4, HudSnapEdge hudSnapEdge, HudSnapEdge hudSnapEdge2, double d5) {
-        this.V.put(HudSnapEdge.LEFT, d);
-        this.V.put(HudSnapEdge.TOP, d2);
-        this.V.put(HudSnapEdge.RIGHT, d3);
-        this.V.put(HudSnapEdge.BOTTOM, d4);
-        this.q = hudSnapEdge;
-        this.T = hudSnapEdge2;
-        this.n = d5;
+    public HudSnapCandidate(double left, double top, double right, double bottom,
+            HudSnapEdge sourceEdge, HudSnapEdge targetEdge, double offset) {
+        this.bounds.put(HudSnapEdge.LEFT, left);
+        this.bounds.put(HudSnapEdge.TOP, top);
+        this.bounds.put(HudSnapEdge.RIGHT, right);
+        this.bounds.put(HudSnapEdge.BOTTOM, bottom);
+        this.sourceEdge = sourceEdge;
+        this.targetEdge = targetEdge;
+        this.offset = offset;
     }
 
-    public double M() {
-        return this.V.get((Object)HudSnapEdge.RIGHT) - this.V.get((Object)HudSnapEdge.LEFT);
+    public double getWidth() {
+        return this.bounds.get(HudSnapEdge.RIGHT) - this.bounds.get(HudSnapEdge.LEFT);
     }
 
-    public double T() {
-        return this.n;
+    public double getOffset() {
+        return this.offset;
     }
 
-    public double double_n() {
-        return this.V.get((Object)HudSnapEdge.BOTTOM) - this.V.get((Object)HudSnapEdge.TOP);
+    public double getHeight() {
+        return this.bounds.get(HudSnapEdge.BOTTOM) - this.bounds.get(HudSnapEdge.TOP);
     }
 
-    public HudSnapEdge b() {
-        return this.q;
-    }
-
-    public /* synthetic */ double n() {
-        return this.double_n();
-    }
-
-    public /* synthetic */ HudSnapEdge n$src$Lgg_vape_ui_click_frame_impl_hud_HudSnapEdge_$8n1nf9() {
-        return this.a_fq_0_n();
+    public HudSnapEdge getSourceEdge() {
+        return this.sourceEdge;
     }
 }
-

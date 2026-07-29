@@ -12,7 +12,7 @@ implements GuiClickListener {
 
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         if (this.V instanceof CollapsibleFrame) {
             ((CollapsibleFrame)((Object)this.V)).w();
         }

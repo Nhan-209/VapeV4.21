@@ -13,145 +13,145 @@ import gg.vape.wrapper.impl.ItemStack;
 import java.util.HashMap;
 
 public class ItemIconRenderer {
-    private static String[] W;
-    static HashMap<ItemIconKey, ItemIconRenderBackend> y;
+    private static String[] legacyMarkers;
+    static HashMap<ItemIconKey, ItemIconRenderBackend> cache;
 
-    public static void j(ItemStack itemStack) {
+    public static void precache(ItemStack itemStack) {
         Item item = itemStack.getItem();
-        ItemIconRenderer.c(item.P(), ItemIconRenderer.u(itemStack, item), 1.0f);
+        ItemIconRenderer.cacheItem(item.P(), ItemIconRenderer.resolveMetadata(itemStack, item), 1.0f);
     }
 
-    public static String[] S() {
-        return W;
+    public static String[] getLegacyMarkers() {
+        return legacyMarkers;
     }
 
-    public static void m(int n, int n2, float f, float f2, int n3, int n4) {
-        ItemIconRenderer.q(n, n2, f, f2, n3, n4, 1.0f, 1.0f, false);
+    public static void renderItem(int itemId, int metadata, float x, float y, int width, int height) {
+        ItemIconRenderer.renderItem(itemId, metadata, x, y, width, height, 1.0f, 1.0f, false);
     }
 
-    private static ItemIconKey i(int n, int n2, float f, ItemStack itemStack) {
+    private static ItemIconKey createKey(int itemId, int metadata, float scale, ItemStack itemStack) {
         Item item;
-        ItemIconKey itemIconKey = new ItemIconKey(n, n2, f);
+        ItemIconKey cacheKey = new ItemIconKey(itemId, metadata, scale);
         if (itemStack != null && ItemStackScoreUtil.R(item = itemStack.getItem()) && ForgeVersion.MC_1_8_9.B()) {
-            ItemArmor itemArmor = new ItemArmor(item.getObject());
-            itemIconKey.a(itemArmor.Y(itemStack));
+            ItemArmor armorItem = new ItemArmor(item.getObject());
+            cacheKey.setArmorColor(armorItem.Y(itemStack));
         }
-        return itemIconKey;
+        return cacheKey;
     }
 
-    public static void Q(int n, int n2, float f, float f2, int n3, int n4, float f3) {
-        ItemIconRenderer.q(n, n2, f, f2, n3, n4, f3, 1.0f, false);
+    public static void renderItem(int itemId, int metadata, float x, float y, int width, int height, float opacity) {
+        ItemIconRenderer.renderItem(itemId, metadata, x, y, width, height, opacity, 1.0f, false);
     }
 
-    public static void d(ItemStack itemStack, float f, float f2, int n, int n2, float f3, float f4) {
-        ItemIconRenderer.j(itemStack, null, f, f2, n, n2, f3, f4, false);
+    public static void renderItemStack(ItemStack itemStack, float x, float y, int width, int height, float opacity, float scale) {
+        ItemIconRenderer.renderItemStack(itemStack, null, x, y, width, height, opacity, scale, false);
     }
 
-    public static void m(int n, int n2, float f, float f2, int n3, int n4, float f3, boolean bl) {
-        ItemIconRenderer.q(n, n2, f, f2, n3, n4, f3, 1.0f, bl);
+    public static void renderItem(int itemId, int metadata, float x, float y, int width, int height, float opacity, boolean worldSpace) {
+        ItemIconRenderer.renderItem(itemId, metadata, x, y, width, height, opacity, 1.0f, worldSpace);
     }
 
-    public static void C(ItemStack itemStack, float f, float f2, int n, int n2, float f3, boolean bl) {
-        ItemIconRenderer.j(itemStack, null, f, f2, n, n2, f3, 1.0f, bl);
+    public static void renderItemStack(ItemStack itemStack, float x, float y, int width, int height, float opacity, boolean worldSpace) {
+        ItemIconRenderer.renderItemStack(itemStack, null, x, y, width, height, opacity, 1.0f, worldSpace);
     }
 
 
-    public static void R(ItemStack itemStack, float f, float f2, int n, int n2) {
-        ItemIconRenderer.j(itemStack, null, f, f2, n, n2, 1.0f, 1.0f, false);
+    public static void renderItemStack(ItemStack itemStack, float x, float y, int width, int height) {
+        ItemIconRenderer.renderItemStack(itemStack, null, x, y, width, height, 1.0f, 1.0f, false);
     }
 
-    public static void q(int n, int n2, float f, float f2, int n3, int n4, float f3, float f4, boolean bl) {
-        ItemStack itemStack = ItemStack.S(Item.T(n));
-        itemStack.s(n2);
-        ItemIconRenderer.l(n, n2, itemStack, f, f2, n3, n4, f3, f4, bl);
+    public static void renderItem(int itemId, int metadata, float x, float y, int width, int height, float opacity, float scale, boolean worldSpace) {
+        ItemStack itemStack = ItemStack.S(Item.T(itemId));
+        itemStack.s(metadata);
+        ItemIconRenderer.renderCached(itemId, metadata, itemStack, x, y, width, height, opacity, scale, worldSpace);
     }
 
-    public static void t() {
-        for (ItemIconRenderBackend itemIconRenderBackend : y.values()) {
-            itemIconRenderBackend.e();
+    public static void clear() {
+        for (ItemIconRenderBackend renderer : cache.values()) {
+            renderer.dispose();
         }
-        y.clear();
+        cache.clear();
     }
 
-    private static ItemIconRenderBackend F(ItemStack itemStack, ItemIconKey itemIconKey) {
-        ItemIconRenderBackend itemIconRenderBackend = GuiRenderPrimitives.d() ? new Post117ItemIconFramebufferRenderer() : new ItemIcon();
-        itemIconRenderBackend.N(itemStack, itemIconKey.w());
-        y.put(itemIconKey, itemIconRenderBackend);
-        return itemIconRenderBackend;
+    private static ItemIconRenderBackend createRenderer(ItemStack itemStack, ItemIconKey cacheKey) {
+        ItemIconRenderBackend renderer = GuiRenderPrimitives.d() ? new Post117ItemIconFramebufferRenderer() : new ItemIcon();
+        renderer.capture(itemStack, cacheKey.getScale());
+        cache.put(cacheKey, renderer);
+        return renderer;
     }
 
-    public static void C(ItemStack itemStack, float f, float f2, int n, int n2, float f3) {
-        ItemIconRenderer.j(itemStack, null, f, f2, n, n2, f3, 1.0f, false);
+    public static void renderItemStack(ItemStack itemStack, float x, float y, int width, int height, float opacity) {
+        ItemIconRenderer.renderItemStack(itemStack, null, x, y, width, height, opacity, 1.0f, false);
     }
 
-    private static int u(ItemStack itemStack, Item item) {
+    private static int resolveMetadata(ItemStack itemStack, Item item) {
         if (ItemStackScoreUtil.I(item) || ItemStackScoreUtil.R(item)) {
             return 0;
         }
         return itemStack.L();
     }
 
-    public static void K(String[] stringArray) {
-        W = stringArray;
+    public static void setLegacyMarkers(String[] legacyMarkers) {
+        ItemIconRenderer.legacyMarkers = legacyMarkers;
     }
 
-    public static ItemIconRenderBackend C(ItemIconKey itemIconKey, ItemStack itemStack) {
-        if (!y.containsKey(itemIconKey)) {
-            return ItemIconRenderer.F(itemStack, itemIconKey);
+    public static ItemIconRenderBackend createIfAbsent(ItemIconKey cacheKey, ItemStack itemStack) {
+        if (!cache.containsKey(cacheKey)) {
+            return ItemIconRenderer.createRenderer(itemStack, cacheKey);
         }
         return null;
     }
 
-    public static void j(ItemStack itemStack, Item item, float f, float f2, int n, int n2, float f3, float f4, boolean bl) {
+    public static void renderItemStack(ItemStack itemStack, Item item, float x, float y, int width, int height, float opacity, float scale, boolean worldSpace) {
         if (itemStack == null) {
             return;
         }
         if (item == null) {
             item = itemStack.getItem();
         }
-        int n3 = item.P();
-        int n4 = ItemIconRenderer.u(itemStack, item);
-        ItemIconRenderer.l(n3, n4, itemStack, f, f2, n, n2, f3, f4, bl);
+        int itemId = item.P();
+        int metadata = ItemIconRenderer.resolveMetadata(itemStack, item);
+        ItemIconRenderer.renderCached(itemId, metadata, itemStack, x, y, width, height, opacity, scale, worldSpace);
     }
 
-    public static void k(int n, int n2) {
-        ItemIconRenderer.c(n, n2, 1.0f);
+    public static void precache(int itemId, int metadata) {
+        ItemIconRenderer.cacheItem(itemId, metadata, 1.0f);
     }
 
-    public static ItemIconRenderBackend c(int n, int n2, float f) {
-        ItemIconKey itemIconKey = new ItemIconKey(n, n2, f);
-        if (!y.containsKey(itemIconKey)) {
-            Item item = Item.T(n);
+    public static ItemIconRenderBackend cacheItem(int itemId, int metadata, float scale) {
+        ItemIconKey cacheKey = new ItemIconKey(itemId, metadata, scale);
+        if (!cache.containsKey(cacheKey)) {
+            Item item = Item.T(itemId);
             if (item.isNull()) {
                 return null;
             }
             ItemStack itemStack = ItemStack.S(item);
-            itemStack.s(n2);
-            return ItemIconRenderer.F(itemStack, itemIconKey);
+            itemStack.s(metadata);
+            return ItemIconRenderer.createRenderer(itemStack, cacheKey);
         }
         return null;
     }
 
-    public static void x(int n, int n2, float f, float f2, int n3, int n4, boolean bl) {
-        ItemIconRenderer.q(n, n2, f, f2, n3, n4, 1.0f, 1.0f, bl);
+    public static void renderItem(int itemId, int metadata, float x, float y, int width, int height, boolean worldSpace) {
+        ItemIconRenderer.renderItem(itemId, metadata, x, y, width, height, 1.0f, 1.0f, worldSpace);
     }
 
-    private static void l(int n, int n2, ItemStack itemStack, float f, float f2, int n3, int n4, float f3, float f4, boolean bl) {
-        ItemIconKey itemIconKey = ItemIconRenderer.i(n, n2, f4, itemStack);
-        ItemIconRenderBackend itemIconRenderBackend = y.get(itemIconKey);
-        if (itemIconRenderBackend != null) {
-            itemIconRenderBackend.s(f, f2, n3, n4, f3, bl);
+    private static void renderCached(int itemId, int metadata, ItemStack itemStack, float x, float y, int width, int height, float opacity, float scale, boolean worldSpace) {
+        ItemIconKey cacheKey = ItemIconRenderer.createKey(itemId, metadata, scale, itemStack);
+        ItemIconRenderBackend renderer = cache.get(cacheKey);
+        if (renderer != null) {
+            renderer.renderQueued(x, y, width, height, opacity, worldSpace);
             return;
         }
-        ItemIconRenderBackend itemIconRenderBackend2 = ItemIconRenderer.C(itemIconKey, itemStack);
-        if (itemIconRenderBackend2 != null) {
-            itemIconRenderBackend2.s(f, f2, n3, n4, f3, bl);
+        ItemIconRenderBackend createdRenderer = ItemIconRenderer.createIfAbsent(cacheKey, itemStack);
+        if (createdRenderer != null) {
+            createdRenderer.renderQueued(x, y, width, height, opacity, worldSpace);
         }
     }
 
     static {
-        y = new HashMap();
-        ItemIconRenderer.K(new String[5]);
+        cache = new HashMap();
+        ItemIconRenderer.setLegacyMarkers(new String[5]);
     }
 }
 

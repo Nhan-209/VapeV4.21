@@ -16,142 +16,141 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class InteractiveComponent
 extends GuiComponent {
-    private static boolean R;
-    private Color G;
-    private ClickCooldownState i = new ClickCooldownState();
-    private Color O;
-    private boolean o = false;
-    private List<GuiClickListener> a = new ArrayList<GuiClickListener>();
+    private static boolean legacyState;
+    private Color hoverColor;
+    private ClickCooldownState clickCooldown = new ClickCooldownState();
+    private Color normalColor;
+    private boolean interactionDisabled = false;
+    private List<GuiClickListener> clickListeners = new ArrayList<GuiClickListener>();
 
-    public static boolean h$src$Z$ql1ynz() {
-        return R;
+    public static boolean isLegacyStateEnabled() {
+        return legacyState;
     }
 
-    public void o(Color color) {
-        this.O = color;
+    public void setNormalColor(Color normalColor) {
+        this.normalColor = normalColor;
     }
 
-    public void s() {
-        for (GuiClickListener guiClickListener : new ArrayList<GuiClickListener>(this.a)) {
-            guiClickListener.G();
+    public void dispatchSecondaryClick() {
+        for (GuiClickListener clickListener : new ArrayList<GuiClickListener>(this.clickListeners)) {
+            clickListener.onSecondaryClick();
         }
     }
 
-    public void k$src$V$qmpccm() {
-        this.a.clear();
+    public void clearClickListeners() {
+        this.clickListeners.clear();
     }
 
-    public Color e$src$Ljava_awt_Color_$1yl68fq() {
-        return this.O;
+    public Color getNormalColor() {
+        return this.normalColor;
     }
 
-    public InteractiveComponent e(Supplier<@Nullable CompletableFuture<?>> supplier) {
-        AtomicBoolean atomicBoolean = new AtomicBoolean(true);
-        this.s(() -> InteractiveComponent.lambda$setSingleFutureListener$1(atomicBoolean, supplier));
+    public InteractiveComponent setSingleFutureClickListener(Supplier<@Nullable CompletableFuture<?>> futureSupplier) {
+        AtomicBoolean ready = new AtomicBoolean(true);
+        this.setClickListener(() -> InteractiveComponent.runSingleFutureClick(ready, futureSupplier));
         return this;
     }
 
-    public List<GuiClickListener> l$src$Ljava_util_List_$7yhdmw() {
-        return this.a;
+    public List<GuiClickListener> getClickListeners() {
+        return this.clickListeners;
     }
 
-    public void G(GuiClickListener guiClickListener) {
-        this.a.remove(guiClickListener);
+    public void removeClickListener(GuiClickListener clickListener) {
+        this.clickListeners.remove(clickListener);
     }
 
-    public void P$src$V$q7uwbv() {
-        for (GuiClickListener guiClickListener : new ArrayList<GuiClickListener>(this.a)) {
-            guiClickListener.P();
+    public void dispatchPrimaryClick() {
+        for (GuiClickListener clickListener : new ArrayList<GuiClickListener>(this.clickListeners)) {
+            clickListener.onPrimaryClick();
         }
     }
 
-    private static void lambda$setSingleFutureListener$1(AtomicBoolean atomicBoolean, Supplier<@Nullable CompletableFuture<?>> supplier) {
-        if (!atomicBoolean.get()) {
+    private static void runSingleFutureClick(AtomicBoolean ready, Supplier<@Nullable CompletableFuture<?>> futureSupplier) {
+        if (!ready.get()) {
             return;
         }
-        CompletableFuture<?> completableFuture = supplier.get();
-        if (completableFuture == null) {
+        CompletableFuture<?> future = futureSupplier.get();
+        if (future == null) {
             return;
         }
-        atomicBoolean.set(false);
-        completableFuture.whenCompleteAsync((arg_0, arg_1) -> InteractiveComponent.lambda$null$0(atomicBoolean, arg_0, arg_1));
+        ready.set(false);
+        future.whenCompleteAsync((result, throwable) -> InteractiveComponent.handleFutureCompletion(ready, result, throwable));
     }
 
-    public Color N() {
-        return this.G;
+    public Color getHoverColor() {
+        return this.hoverColor;
     }
 
-    public InteractiveComponent r(GuiClickListener guiClickListener) {
-        this.a.add(guiClickListener);
+    public InteractiveComponent addClickListener(GuiClickListener clickListener) {
+        this.clickListeners.add(clickListener);
         return this;
     }
 
-    private static void lambda$null$0(AtomicBoolean atomicBoolean, Object object, Throwable throwable) {
-        atomicBoolean.set(true);
+    private static void handleFutureCompletion(AtomicBoolean ready, Object result, Throwable throwable) {
+        ready.set(true);
         if (throwable != null) {
             Vape.logThrowable(throwable);
         }
     }
 
-    public void P(Color color) {
-        this.G = color;
+    public void setHoverColor(Color hoverColor) {
+        this.hoverColor = hoverColor;
     }
 
-    public static void Y(boolean bl) {
-        R = bl;
+    public static void setLegacyStateEnabled(boolean enabled) {
+        legacyState = enabled;
     }
 
-    public ClickCooldownState X$src$Lgg_vape_ui_click_component_ClickCooldownState_$1wl74z8() {
-        return this.i;
+    public ClickCooldownState getClickCooldown() {
+        return this.clickCooldown;
     }
 
 
-    public static boolean f$src$Z$qjydh9() {
-        boolean bl = InteractiveComponent.h$src$Z$ql1ynz();
-        return !bl;
+    public static boolean isLegacyStateDisabled() {
+        return !InteractiveComponent.isLegacyStateEnabled();
     }
 
-    public void k(boolean bl) {
-        this.o = bl;
+    public void setInteractionDisabled(boolean interactionDisabled) {
+        this.interactionDisabled = interactionDisabled;
     }
 
     static {
-        if (InteractiveComponent.f$src$Z$qjydh9()) {
-            InteractiveComponent.Y(true);
+        if (InteractiveComponent.isLegacyStateDisabled()) {
+            InteractiveComponent.setLegacyStateEnabled(true);
         }
     }
 
     @Override
     public boolean w$src$Z$e457mb() {
-        if (this.o) {
+        if (this.interactionDisabled) {
             return false;
         }
         return super.w$src$Z$e457mb();
     }
 
-    public void s(@Nullable GuiClickListener guiClickListener) {
-        this.a = new ArrayList<GuiClickListener>();
-        if (guiClickListener != null) {
-            this.a.add(guiClickListener);
+    public void setClickListener(@Nullable GuiClickListener clickListener) {
+        this.clickListeners = new ArrayList<GuiClickListener>();
+        if (clickListener != null) {
+            this.clickListeners.add(clickListener);
         }
     }
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
-        if (this.i.t()) {
+    public void g(GuiMouseEvent mouseEvent) {
+        if (this.clickCooldown.isCoolingDown()) {
             return;
         }
-        if (this.o) {
+        if (this.interactionDisabled) {
             return;
         }
         if (this.V$src$Z$1xhop3l()) {
-            if (guiMouseEvent.getAction().equals((Object)MouseButton.LEFT_CLICK)) {
-                this.P$src$V$q7uwbv();
+            if (mouseEvent.getAction().equals((Object)MouseButton.LEFT_CLICK)) {
+                this.dispatchPrimaryClick();
             }
-            if (guiMouseEvent.getAction().equals((Object)MouseButton.RIGHT_CLICK)) {
-                this.s();
+            if (mouseEvent.getAction().equals((Object)MouseButton.RIGHT_CLICK)) {
+                this.dispatchSecondaryClick();
             }
         }
-        this.i.j(true);
+        this.clickCooldown.setActive(true);
     }
 }

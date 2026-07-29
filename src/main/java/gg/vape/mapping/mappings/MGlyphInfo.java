@@ -87,7 +87,7 @@ extends Mapping {
             String string11 = "info";
             MGlyphInfo mGlyphInfo11 = this;
             this.Z = this.Y(string11, bl11, clazz11, classArray);
-            GuiComponent.D(new GuiComponent[3]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[3]);
             return;
         }
         Class<Float> clazz12 = Float.TYPE;

@@ -19,18 +19,13 @@ import org.jetbrains.annotations.Nullable;
 public class PotionEffectFilterCondition
 implements NumericFilterCondition<PotionEffectFilterCondition> {
     @Override
-    public PotionEffectFilterCondition Q(String string) throws NumberFormatException {
+    public PotionEffectFilterCondition parseValue(String string) throws NumberFormatException {
         return this.parseLevel(string);
     }
 
     @Override
-    public PotionEffectFilterCondition J(ComparisonOperator operator) {
-        return this.withOperator(operator);
-    }
-
-    @Override
-    public PotionEffectFilterCondition w() {
-        return this.p$src$Lgg_vape_module_utility_inventory_cleaner_Potion$1axgq5l();
+    public PotionEffectFilterCondition copy() {
+        return new PotionEffectFilterCondition(this.mode, this.potionId, this.level, this.operator);
     }
     private Short potionId;
     private ComparisonOperator operator;
@@ -38,27 +33,23 @@ implements NumericFilterCondition<PotionEffectFilterCondition> {
     private int level = 1;
 
     @Override
-    public InventoryFilterConditionType K() {
+    public InventoryFilterConditionType getType() {
         return InventoryFilterConditionType.POTION_EFFECT;
     }
 
-    private static NumberFormatException a(NumberFormatException numberFormatException) {
-        return numberFormatException;
-    }
-
     @Override
-    public ComparisonOperator p() {
+    public ComparisonOperator getOperator() {
         return this.operator;
     }
 
-    public PotionEffectFilterCondition m(Short s) {
-        this.potionId = s;
+    public PotionEffectFilterCondition withPotionId(Short potionId) {
+        this.potionId = potionId;
         return this;
     }
 
     @Override
-    public JsonObject L() {
-        JsonObject jsonObject = NumericFilterCondition.super.L();
+    public JsonObject toJson() {
+        JsonObject jsonObject = NumericFilterCondition.super.toJson();
         jsonObject.addProperty("mode", this.mode.getName());
         jsonObject.addProperty("potionId", (Number)this.potionId);
         jsonObject.addProperty("level", (Number)this.level);
@@ -66,19 +57,19 @@ implements NumericFilterCondition<PotionEffectFilterCondition> {
     }
 
     @Nullable
-    public PotionEntry z() {
+    public PotionEntry getPotionEntry() {
         if (this.potionId == null) {
             return null;
         }
         return PotionRegistry.A(this.potionId);
     }
 
-    public PotionEffectFilterMode K$src$Lgg_vape_module_utility_inventory_cleaner_Potion$q09io() {
+    public PotionEffectFilterMode getMode() {
         return this.mode;
     }
 
     @Override
-    public boolean g(ItemStack itemStack) {
+    public boolean matches(ItemStack itemStack) {
         if (this.potionId == null) {
             return false;
         }
@@ -99,10 +90,10 @@ implements NumericFilterCondition<PotionEffectFilterCondition> {
                     return true;
                 }
                 case LEVEL: {
-                    return this.operator.p(potionEffect.L(), this.level);
+                    return this.operator.compare(potionEffect.L(), this.level);
                 }
                 case DURATION: {
-                    return this.operator.p(potionEffect.k(), this.level);
+                    return this.operator.compare(potionEffect.k(), this.level);
                 }
             }
         }
@@ -126,27 +117,27 @@ implements NumericFilterCondition<PotionEffectFilterCondition> {
         return this.potionId;
     }
 
-    public PotionEffectFilterCondition O(PotionEffectFilterMode potionEffectFilterMode) {
-        this.mode = potionEffectFilterMode;
+    public PotionEffectFilterCondition withMode(PotionEffectFilterMode mode) {
+        this.mode = mode;
         return this;
     }
 
     @Override
-    public String k() {
+    public String getValueText() {
         return String.valueOf(this.level);
     }
 
     public PotionEffectFilterCondition(JsonObject jsonObject) {
         this.operator = ComparisonOperator.EQUALS;
-        this.mode = PotionEffectFilterMode.r(ConfigJsonUtils.P(jsonObject, "mode"));
+        this.mode = PotionEffectFilterMode.fromName(ConfigJsonUtils.P(jsonObject, "mode"));
         this.potionId = ConfigJsonUtils.f(jsonObject, "potionId");
         Integer n = ConfigJsonUtils.r(jsonObject, "level");
         this.level = n != null ? n : 1;
-        this.operator = ComparisonOperator.a(jsonObject.get("operator").getAsString());
+        this.operator = ComparisonOperator.fromName(jsonObject.get("operator").getAsString());
     }
 
-    public PotionEffectFilterCondition N(int n) {
-        this.level = n;
+    public PotionEffectFilterCondition withLevel(int level) {
+        this.level = level;
         return this;
     }
 
@@ -163,7 +154,4 @@ implements NumericFilterCondition<PotionEffectFilterCondition> {
         return this;
     }
 
-    public PotionEffectFilterCondition p$src$Lgg_vape_module_utility_inventory_cleaner_Potion$1axgq5l() {
-        return new PotionEffectFilterCondition(this.mode, this.potionId, this.level, this.operator);
-    }
 }

@@ -3,20 +3,19 @@ package gg.vape.ui.click.component;
 import gg.vape.ui.click.component.GuiComponent;
 
 public class GuiComponentArrayState {
-    private static GuiComponent[] w;
+    private static GuiComponent[] components;
 
-    public static GuiComponent[] d() {
-        return w;
+    public static GuiComponent[] getComponents() {
+        return components;
     }
 
-    public static void W(GuiComponent[] upArray) {
-        w = upArray;
+    public static void setComponents(GuiComponent[] components) {
+        GuiComponentArrayState.components = components;
     }
 
     static {
-        if (GuiComponentArrayState.d() != null) {
-            GuiComponentArrayState.W(new GuiComponent[4]);
+        if (GuiComponentArrayState.getComponents() != null) {
+            GuiComponentArrayState.setComponents(new GuiComponent[4]);
         }
     }
 }
-

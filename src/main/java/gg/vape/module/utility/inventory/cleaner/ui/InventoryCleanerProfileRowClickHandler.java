@@ -13,38 +13,36 @@ import java.awt.Point;
 
 public class InventoryCleanerProfileRowClickHandler
 implements GuiMouseListener {
-    final InventoryCleanerProfile v;
-    final InventoryCleanerProfileValue r;
-    final Runnable J;
-    final InventoryCleanerProfileRow O;
+    final InventoryCleanerProfile profile;
+    final InventoryCleanerProfileValue profileValue;
+    final Runnable onClose;
 
-    private static void lambda$onClick$0(Runnable runnable) {
-        ClientSettings.f6.execute(runnable);
+    private static void runCloseCallback(Runnable runnable) {
+        ClientSettings.UI_EXECUTOR.execute(runnable);
     }
 
     public InventoryCleanerProfileRowClickHandler(InventoryCleanerProfileRow inventoryCleanerProfileRow, InventoryCleanerProfile inventoryCleanerProfile, InventoryCleanerProfileValue inventoryCleanerProfileValue, Runnable runnable) {
-        this.O = inventoryCleanerProfileRow;
-        this.v = inventoryCleanerProfile;
-        this.r = inventoryCleanerProfileValue;
-        this.J = runnable;
+        this.profile = inventoryCleanerProfile;
+        this.profileValue = inventoryCleanerProfileValue;
+        this.onClose = runnable;
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        if (this.v.equals(this.r.K())) {
-            InventoryCleanerPopupFrame inventoryCleanerPopupFrame = ClientSettings.g(InventoryCleanerPopupFrame.class);
-            inventoryCleanerPopupFrame.t(this.r, this.v, () -> InventoryCleanerProfileRowClickHandler.lambda$onClick$0(this.J));
-            inventoryCleanerPopupFrame.Z$src$V$zty34m();
-            if (ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v() instanceof ClickGuiFrameManager) {
-                ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v();
-                inventoryCleanerPopupFrame.d(clickGuiFrameManager);
-                clickGuiFrameManager.K(inventoryCleanerPopupFrame);
+        if (this.profile.equals(this.profileValue.getValue())) {
+            InventoryCleanerPopupFrame inventoryCleanerPopupFrame = ClientSettings.getFrame(InventoryCleanerPopupFrame.class);
+            inventoryCleanerPopupFrame.editProfile(this.profileValue, this.profile, () -> InventoryCleanerProfileRowClickHandler.runCloseCallback(this.onClose));
+            InventoryCleanerPopupFrame.returnToProfileEditor();
+            if (ClientSettings.INSTANCE.getActiveStack() instanceof ClickGuiFrameManager) {
+                ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)ClientSettings.INSTANCE.getActiveStack();
+                inventoryCleanerPopupFrame.setParentStack(clickGuiFrameManager);
+                clickGuiFrameManager.setSidecarFrame(inventoryCleanerPopupFrame);
             } else {
-                inventoryCleanerPopupFrame.d((FrameStackManager)null);
-                ClientSettings.fW.I(ClientSettings.p);
+                inventoryCleanerPopupFrame.setParentStack(null);
+                ClientSettings.INSTANCE.switchFrameStack(ClientSettings.inventoryCleanerStack);
             }
         } else {
-            this.r.o(this.v);
+            this.profileValue.setValue(this.profile);
         }
     }
 }

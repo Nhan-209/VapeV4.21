@@ -123,7 +123,7 @@ extends GuiComponent {
             if (!(guiComponent instanceof FrameComponent)) continue;
             FrameComponent frameComponent = (FrameComponent)guiComponent;
             frameComponent.z$src$V$infu7a();
-            if (frameComponent.K$src$Z$1wnfv4l() && !bl) continue;
+            if (frameComponent.isChildRenderingSuppressed() && !bl) continue;
             frameComponent.H(bl);
         }
     }
@@ -183,7 +183,7 @@ extends GuiComponent {
     }
 
     public boolean G(double d, double d2) {
-        return this.Q().J(d, d2);
+        return this.getBounds().J(d, d2);
     }
 
     public void F(boolean bl) {
@@ -209,14 +209,14 @@ extends GuiComponent {
             if (!(guiComponent2 instanceof FrameComponent)) continue;
             FrameComponent frameComponent = (FrameComponent)guiComponent2;
             frameComponent.z$src$V$infu7a();
-            if (frameComponent.K$src$Z$1wnfv4l() && !bl) continue;
+            if (frameComponent.isChildRenderingSuppressed() && !bl) continue;
             frameComponent.H(bl);
             this.l(frameComponent, bl);
         }
     }
 
     @Override
-    public void H(GuiComponent ... guiComponentArray) {
+    public void addChildren(GuiComponent ... guiComponentArray) {
         for (GuiComponent guiComponent : guiComponentArray) {
             this.h(guiComponent, new Object[0]);
         }
@@ -239,11 +239,11 @@ extends GuiComponent {
     }
 
     @Override
-    public void S() {
+    public void removeMarkedChildren() {
         CopyOnWriteArrayList<GuiComponent> copyOnWriteArrayList = new CopyOnWriteArrayList<GuiComponent>(this.f());
         for (GuiComponent guiComponent : copyOnWriteArrayList) {
-            if (!guiComponent.j$src$Z$dapde9()) continue;
-            this.I(guiComponent);
+            if (!guiComponent.isRemovable()) continue;
+            this.removeChild(guiComponent);
         }
     }
 
@@ -264,7 +264,7 @@ extends GuiComponent {
         if (!this.Nk) {
             return;
         }
-        if (!MouseInput.I(MouseButton.LEFT_CLICK.ordinal())) {
+        if (!MouseInput.isButtonDown(MouseButton.LEFT_CLICK.ordinal())) {
             this.Nk = false;
             return;
         }
@@ -294,7 +294,7 @@ extends GuiComponent {
 
     private void O$src$V$hzsoor() {
         if (this.NW) {
-            Color color = this.d();
+            Color color = this.getDisabledOverlayColor();
             Color color2 = color.darker();
             Color color3 = color.brighter();
             this.Nn = new ColorAnimation(0.15, new Color(Math.min(color.getRed(), 255), Math.min(color.getGreen(), 255), Math.min(color.getBlue(), 255), 0), color2);
@@ -335,7 +335,7 @@ extends GuiComponent {
     }
 
     @Override
-    public void D(GuiMouseEvent guiMouseEvent) {
+    public void dispatchMouseEvent(GuiMouseEvent guiMouseEvent) {
         if (this.No.J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
             this.NA = RenderUtils.h();
             this.Nk = true;
@@ -346,7 +346,7 @@ extends GuiComponent {
             this.Nk = true;
             return;
         }
-        super.D(guiMouseEvent);
+        super.dispatchMouseEvent(guiMouseEvent);
     }
 
     public void h(RectData rectData) {
@@ -354,7 +354,7 @@ extends GuiComponent {
     }
 
     @Override
-    public RectData Q() {
+    public RectData getBounds() {
         if (this.NS) {
             return new RectData(this.G$src$D$1b2f02a(), this.n(), this.A(), this.d$src$D$ibccpu());
         }
@@ -445,7 +445,7 @@ extends GuiComponent {
 
     public void z(boolean bl) {
         double d = this.R ? 2.0 : 0.0;
-        GuiRenderPrimitives.p(this.G$src$D$1b2f02a(), this.n(), this.A(), bl ? this.K + d : this.U$src$D$muzvq3() + d, this.d(), this.Q && this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null, 1.5f, 1.0f, 8.0f, FrameComponent.J.u, this.NZ);
+        GuiRenderPrimitives.p(this.G$src$D$1b2f02a(), this.n(), this.A(), bl ? this.K + d : this.getComponentHeight() + d, this.getDisabledOverlayColor(), this.Q && this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() != null, 1.5f, 1.0f, 8.0f, FrameComponent.J.u, this.NZ);
     }
 
     public abstract void V();
@@ -455,17 +455,17 @@ extends GuiComponent {
     }
 
     public void h(GuiComponent guiComponent, Object ... objectArray) {
-        guiComponent.s(this);
+        guiComponent.setParentFrameComponent(this);
         this.NI.o(guiComponent, objectArray);
         this.l$src$V$1mibm4x();
     }
 
     public void z$src$V$infu7a() {
         for (GuiComponent guiComponent : this.f()) {
-            if (guiComponent instanceof FrameHeaderComponent || guiComponent.o$src$Z$1x78ghl()) continue;
+            if (guiComponent instanceof FrameHeaderComponent || guiComponent.isIgnoreFrameClipping()) continue;
             double d = guiComponent.n();
             boolean bl = d + guiComponent.L() < this.n() || d > this.n() + this.K;
-            guiComponent.B(bl && this.NU);
+            guiComponent.setChildRenderingSuppressed(bl && this.NU);
         }
     }
 
@@ -533,7 +533,7 @@ extends GuiComponent {
     public void J() {
         if (this.NS) {
             MousePosition mousePosition;
-            int n = MouseInput.m();
+            int n = MouseInput.getScrollDelta();
             if (n != 0) {
                 this.W(this.J$src$D$hx1pag() + (double)(n / 15));
             }
@@ -566,7 +566,7 @@ extends GuiComponent {
         }
         this.D$src$V$htqy5s();
         this.H();
-        if (this.N7 == null && this.Z$src$Z$16e8vsp()) {
+        if (this.N7 == null && this.isShowDisabledOverlay()) {
             this.z(this.NS);
         }
         int n2 = n = this.NS && this.N5 != null ? 3 : 0;
@@ -595,12 +595,12 @@ extends GuiComponent {
             bl = true;
         }
         try {
-            if (this.N7 != null && this.Z$src$Z$16e8vsp()) {
+            if (this.N7 != null && this.isShowDisabledOverlay()) {
                 this.z(this.NS);
             }
             this.z$src$V$infu7a();
             for (GuiComponent guiComponent : this.f()) {
-                if (!guiComponent.V$src$Z$1xhop3l() || guiComponent.K$src$Z$1wnfv4l()) continue;
+                if (!guiComponent.V$src$Z$1xhop3l() || guiComponent.isChildRenderingSuppressed()) continue;
                 try {
                     guiComponent.c();
                 }
@@ -609,8 +609,8 @@ extends GuiComponent {
                 }
             }
             if (this.J$src$D$hx1pag() != 0.0 && this.NS && this.N5 != null) {
-                GuiRenderPrimitives.d(this.N5.G$src$D$1b2f02a(), this.N5.n() + (double)n, this.N5.A(), this.N5.L() - (double)n, this.d());
-                GuiRenderPrimitives.C(this.N5.G$src$D$1b2f02a(), this.N5.n(), this.N5.A(), this.N5.L(), this.d());
+                GuiRenderPrimitives.d(this.N5.G$src$D$1b2f02a(), this.N5.n() + (double)n, this.N5.A(), this.N5.L() - (double)n, this.getDisabledOverlayColor());
+                GuiRenderPrimitives.C(this.N5.G$src$D$1b2f02a(), this.N5.n(), this.N5.A(), this.N5.L(), this.getDisabledOverlayColor());
                 this.N5.c();
                 this.I.K(this.G$src$D$1b2f02a());
                 this.I.S(this.N5.n() + this.N5.L());
@@ -648,12 +648,12 @@ extends GuiComponent {
             this.R$src$V$i1g2gu();
         }
         if (this.O) {
-            GuiRenderPrimitives.P(this.G$src$D$1b2f02a() - 0.5, this.n() - 0.5, this.A() + 1.0, (bl ? this.K + 1.0 : this.L() + 1.0) + 2.0, this.d().brighter(), 2.0f, 1.0f, 1.0f);
+            GuiRenderPrimitives.P(this.G$src$D$1b2f02a() - 0.5, this.n() - 0.5, this.A() + 1.0, (bl ? this.K + 1.0 : this.L() + 1.0) + 2.0, this.getDisabledOverlayColor().brighter(), 2.0f, 1.0f, 1.0f);
         }
     }
 
     @Override
-    public void I(GuiComponent guiComponent) {
+    public void removeChild(GuiComponent guiComponent) {
         this.NI.g(guiComponent);
         this.l$src$V$1mibm4x();
     }
@@ -670,13 +670,13 @@ extends GuiComponent {
     public void t$src$V$zbu1jn() {
         CopyOnWriteArrayList<GuiComponent> copyOnWriteArrayList = new CopyOnWriteArrayList<GuiComponent>(this.f());
         for (GuiComponent guiComponent : copyOnWriteArrayList) {
-            this.I(guiComponent);
+            this.removeChild(guiComponent);
         }
     }
 
     public void W(double d) {
         double d2 = this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y();
-        if (ClientSettings.fT != null || d2 < this.K || !this.NU) {
+        if (ClientSettings.activeComponent != null || d2 < this.K || !this.NU) {
             // empty if block
         }
         this.b(d);
@@ -686,8 +686,8 @@ extends GuiComponent {
     }
 
     @Override
-    public GuiComponent T(Color color) {
-        GuiComponent guiComponent = super.T(color);
+    public GuiComponent setDisabledOverlayColor(Color color) {
+        GuiComponent guiComponent = super.setDisabledOverlayColor(color);
         this.O$src$V$hzsoor();
         return guiComponent;
     }

@@ -15,22 +15,22 @@ implements GuiClickListener {
 
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         if (FrameMacrosAddMacroInputComponent.p$src$Z$xrofzd(this.P)) {
-            this.P.p();
+            this.P.submit();
             if (FrameMacrosAddMacroInputComponent.j(this.P) != null) {
                 Macro macro = Macro.create(FrameMacrosAddMacroInputComponent.j(this.P));
                 if (Vape.INSTANCE.getMacrosManager().getMacro(FrameMacrosAddMacroInputComponent.j(this.P)) != null) {
-                    this.P.k("");
-                    ClientSettings.fT = null;
+                    this.P.setText("");
+                    ClientSettings.activeComponent = null;
                     return;
                 }
-                ClientSettings.fT = null;
+                ClientSettings.activeComponent = null;
                 FrameMacrosAddMacroInputComponent.w(this.P, new FrameMacrosEditor(this.D, macro));
                 FrameMacrosAddMacroInputComponent.p(this.P).N$src$V$13y6z98();
-                this.P.H(FrameMacrosAddMacroInputComponent.p(this.P));
+                this.P.addChildren(FrameMacrosAddMacroInputComponent.p(this.P));
             }
-            this.P.k("");
+            this.P.setText("");
         }
     }
 

@@ -1,4 +1,5 @@
 #include "vape421_native.h"
+#include "loader_bootstrap.h"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -366,6 +367,11 @@ static DWORD WINAPI bootstrap_thread(LPVOID parameter) {
     HMODULE worker_module = (HMODULE)parameter;
     DWORD exit_code = 1;
 
+    if (!vape_loader_bootstrap_initialize()) {
+        vape_log(L"Loader token bootstrap is invalid");
+        exit_code = 6;
+        goto cleanup;
+    }
     Sleep(150);
     if (InterlockedCompareExchange(&g_loaded_by_jni, 0, 0) != 0) {
         return 0;
@@ -446,11 +452,18 @@ static DWORD WINAPI bootstrap_thread(LPVOID parameter) {
     if (!call_bridge_start(env, bridge_class)) {
         goto cleanup;
     }
+    vape_loader_report_completed();
     vape_log(L"NativeBridge.start completed; injection is active");
     completed = 1;
     exit_code = 0;
 
 cleanup:
+    if (!completed) {
+        char failure[96];
+        _snprintf_s(failure, sizeof(failure), _TRUNCATE,
+                "Native bootstrap failed with code %lu", exit_code);
+        vape_loader_report_failure(failure);
+    }
     if (attached) {
         (*vm)->DetachCurrentThread(vm);
     }
@@ -469,6 +482,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     jclass bridge_class;
     (void)reserved;
     InterlockedExchange(&g_loaded_by_jni, 1);
+    if (!vape_loader_bootstrap_initialize()) {
+        return JNI_ERR;
+    }
     if ((*vm)->GetEnv(vm, (void **)&env, JNI_VERSION_1_8) != JNI_OK
             || env == NULL) {
         return JNI_ERR;
@@ -492,6 +508,7 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM *vm, void *reserved) {
     if ((*vm)->GetEnv(vm, (void **)&env, JNI_VERSION_1_8) == JNI_OK) {
         vape_release_native_bridge(env);
     }
+    vape_loader_bootstrap_clear();
 }
 
 BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved) {
@@ -504,6 +521,8 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved) {
         if (thread != NULL) {
             CloseHandle(thread);
         }
+    } else if (reason == DLL_PROCESS_DETACH) {
+        vape_loader_bootstrap_clear();
     }
     return TRUE;
 }

@@ -16,8 +16,8 @@ implements CollapsibleFrame {
     public void w() {
         this.Kk = !this.Kk;
         for (GuiComponent guiComponent : this.f()) {
-            if (!guiComponent.j$src$Z$dapde9()) continue;
-            guiComponent.Z(!this.Kk);
+            if (!guiComponent.isRemovable()) continue;
+            guiComponent.setVisible(!this.Kk);
         }
         if (this.Kk) {
             this.KG.L(false);
@@ -32,10 +32,10 @@ implements CollapsibleFrame {
     }
 
     public FriendEnemySettingsFrameBase(String string, String string2, double d) {
-        this.T(FriendEnemySettingsFrameBase.J.i);
+        this.setDisabledOverlayColor(FriendEnemySettingsFrameBase.J.i);
         this.K(300.0);
         this.S(100.0);
-        this.Z(false);
+        this.setVisible(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(eb);
         this.KG = new ToggleableFrameHeaderComponent(this, string, string2, d);

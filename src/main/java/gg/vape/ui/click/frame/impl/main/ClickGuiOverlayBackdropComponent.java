@@ -12,51 +12,50 @@ import java.util.function.Supplier;
 
 public class ClickGuiOverlayBackdropComponent
 extends GuiComponent {
-    private static final int a;
-    private final DoubleSupplier K;
-    private final Runnable o;
-    private final Supplier<ClickGuiOverlayPlacement> Q;
-    private boolean I = true;
-    private final ClickGuiMainFrame G;
+    private final DoubleSupplier opacitySupplier;
+    private final Runnable closeAction;
+    private final Supplier<ClickGuiOverlayPlacement> placementSupplier;
+    private boolean interactive = true;
+    private final ClickGuiMainFrame frame;
 
     public ClickGuiOverlayBackdropComponent(ClickGuiMainFrame clickGuiMainFrame, DoubleSupplier doubleSupplier, Supplier<ClickGuiOverlayPlacement> supplier, Runnable runnable) {
-        this.G = clickGuiMainFrame;
-        this.K = doubleSupplier;
-        this.Q = supplier;
-        this.o = runnable;
-        this.Z(false);
+        this.frame = clickGuiMainFrame;
+        this.opacitySupplier = doubleSupplier;
+        this.placementSupplier = supplier;
+        this.closeAction = runnable;
+        this.setVisible(false);
     }
 
 
-    public boolean P() {
-        return this.I;
+    public boolean isInteractive() {
+        return this.interactive;
     }
 
-    public void G(boolean bl) {
-        this.I = bl;
+    public void setInteractive(boolean interactive) {
+        this.interactive = interactive;
     }
 
     @Override
     public void H() {
         ClickGuiOverlayPlacement clickGuiOverlayPlacement;
-        double d = Math.max(0.0, Math.min(1.0, this.K.getAsDouble()));
+        double d = Math.max(0.0, Math.min(1.0, this.opacitySupplier.getAsDouble()));
         if (d <= 0.0) {
             return;
         }
-        ClickGuiOverlayPlacement clickGuiOverlayPlacement2 = clickGuiOverlayPlacement = this.Q != null ? this.Q.get() : ClickGuiOverlayPlacement.OVERLAY;
+        ClickGuiOverlayPlacement clickGuiOverlayPlacement2 = clickGuiOverlayPlacement = this.placementSupplier != null ? this.placementSupplier.get() : ClickGuiOverlayPlacement.OVERLAY;
         if (clickGuiOverlayPlacement == null) {
             clickGuiOverlayPlacement = ClickGuiOverlayPlacement.OVERLAY;
         }
-        double d2 = this.G.G$src$D$1b2f02a();
-        double d3 = this.G.n();
-        double d4 = this.G.A();
-        double d5 = this.G.L();
+        double d2 = this.frame.G$src$D$1b2f02a();
+        double d3 = this.frame.n();
+        double d4 = this.frame.A();
+        double d5 = this.frame.L();
         double d6 = d3;
         double d7 = d5;
         boolean bl = true;
         if (clickGuiOverlayPlacement == ClickGuiOverlayPlacement.DOCKED || clickGuiOverlayPlacement == ClickGuiOverlayPlacement.DOCKED_SHIFT) {
             bl = false;
-            double d8 = this.G.f$src$D$17a38m();
+            double d8 = this.frame.getHeaderHeight();
             d6 = d3 + d8;
             d7 = Math.max(0.0, d5 - d8);
         }
@@ -67,7 +66,7 @@ extends GuiComponent {
         this.S(d6);
         this.o(d4);
         this.Y(d7);
-        this.S(this.I);
+        this.setAcceptsMouseInput(this.interactive);
         int n = (int)(d * 140.0);
         Color color = new Color(0, 0, 0, Math.min(255, Math.max(0, n)));
         if (bl) {
@@ -77,15 +76,10 @@ extends GuiComponent {
         }
     }
 
-    static {
-        long l2 = -2320619047542800124L;
-        a = (int)l2;
-    }
-
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        if (guiMouseEvent.getAction() == MouseButton.LEFT_CLICK && this.w$src$Z$e457mb() && this.o != null) {
-            this.o.run();
+        if (guiMouseEvent.getAction() == MouseButton.LEFT_CLICK && this.w$src$Z$e457mb() && this.closeAction != null) {
+            this.closeAction.run();
         }
     }
 }

@@ -12,7 +12,7 @@ import java.awt.Color;
 
 public class HealthDisplay
 extends Mod {
-    private final NumberFormat S = new NumberFormat("#.#");
+    private final NumberFormat healthFormat = new NumberFormat("#.#");
 
 
     public HealthDisplay() {
@@ -22,39 +22,39 @@ extends Mod {
     @Override
     public void onEnable() {
         super.onEnable();
-        ClientSettings.g(ActiveModuleStackFrame.class).c(this);
+        ClientSettings.getFrame(ActiveModuleStackFrame.class).addModule(this);
     }
 
     @Override
     public ModDisplayInfo J() {
-        String string;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        String heartColorCode;
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return null;
         }
-        double d = (double)entityPlayerSP.w$src$F$15l9epb() / 2.0;
-        if (entityPlayerSP.p() > 0.0f) {
-            string = "\u00a76";
-            d += (double)entityPlayerSP.p() / 2.0;
+        double healthHearts = (double)player.w$src$F$15l9epb() / 2.0;
+        if (player.p() > 0.0f) {
+            heartColorCode = "\u00a76";
+            healthHearts += (double)player.p() / 2.0;
         } else {
-            string = "\u00a7c";
+            heartColorCode = "\u00a7c";
         }
-        string = string + "\u2764";
-        String string2 = this.S.format(Math.floor((d + 0.25) / 0.5) * 0.5).replace(".0", "");
-        String string3 = string2 + " " + string;
-        Color color = new Color(255, 20, 20);
-        if (d >= 7.0) {
-            color = new Color(2, 190, 58);
-        } else if (d > 4.0) {
-            color = new Color(255, 249, 18);
+        String heartText = heartColorCode + "\u2764";
+        String healthText = this.healthFormat.format(Math.floor((healthHearts + 0.25) / 0.5) * 0.5).replace(".0", "");
+        String displayText = healthText + " " + heartText;
+        Color displayColor = new Color(255, 20, 20);
+        if (healthHearts >= 7.0) {
+            displayColor = new Color(2, 190, 58);
+        } else if (healthHearts > 4.0) {
+            displayColor = new Color(255, 249, 18);
         }
-        return new ModDisplayInfo(string3, color, string2, null);
+        return new ModDisplayInfo(displayText, displayColor, healthText, null);
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
-        ClientSettings.g(ActiveModuleStackFrame.class).w(this);
+        ClientSettings.getFrame(ActiveModuleStackFrame.class).removeModule(this);
     }
 }
 

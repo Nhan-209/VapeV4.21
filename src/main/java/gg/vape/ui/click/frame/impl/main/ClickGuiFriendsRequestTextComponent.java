@@ -9,28 +9,26 @@ import java.awt.Color;
 
 final class ClickGuiFriendsRequestTextComponent
 extends GuiComponent {
-    final ClickGuiFriendsFriendRequestComponent a;
-    private String I;
-    private Color i;
-    private static final double o = 5.0;
-    private static final String v = "synced@2x";
+    private static final String SYNCED_ASSET = "synced@2x";
+    final ClickGuiFriendsFriendRequestComponent owner;
+    private String iconKey;
+    private Color color;
 
     private ClickGuiFriendsRequestTextComponent(ClickGuiFriendsFriendRequestComponent clickGuiFriendsFriendRequestComponent) {
-        this.a = clickGuiFriendsFriendRequestComponent;
-        this.i = ClickGuiFriendsRequestTextComponent.J.B;
+        this.owner = clickGuiFriendsFriendRequestComponent;
+        this.color = ClickGuiFriendsRequestTextComponent.J.B;
         this.o(6.0);
         this.Y(6.0);
-        this.d(false);
-        this.S(false);
+        this.setShowDisabledOverlay(false);
+        this.setAcceptsMouseInput(false);
     }
 
-    private void A$src$V$l00tpt() {
-        this.i = ClickGuiFriendsRequestTextComponent.J.B;
-        this.I = null;
-        if (ClickGuiFriendsFriendRequestComponent.w(this.a) instanceof ExternalFriend) {
-            ExternalFriend externalFriend = (ExternalFriend)ClickGuiFriendsFriendRequestComponent.w(this.a);
-            this.I = v;
-            this.i = ClickGuiFriendsRequestTextComponent.J.T;
+    void updateStyle() {
+        this.color = ClickGuiFriendsRequestTextComponent.J.B;
+        this.iconKey = null;
+        if (this.owner.getFriendEntry() instanceof ExternalFriend) {
+            this.iconKey = SYNCED_ASSET;
+            this.color = ClickGuiFriendsRequestTextComponent.J.T;
         }
     }
 
@@ -47,14 +45,14 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        if (this.a.isBlatantMod()) {
-            if (this.I != null) {
-                GuiRenderPrimitives.F(this.I, this.G$src$D$1b2f02a() + 2.5, this.n() + 2.5, 5.0, 5.0, this.i);
+        if (this.owner.isBlatantMod()) {
+            if (this.iconKey != null) {
+                GuiRenderPrimitives.F(this.iconKey, this.G$src$D$1b2f02a() + 2.5, this.n() + 2.5, 5.0, 5.0, this.color);
             } else {
-                GuiRenderPrimitives.V((float)this.G$src$D$1b2f02a(), (float)this.n(), 5.0, 0.5, this.i);
+                GuiRenderPrimitives.V((float)this.G$src$D$1b2f02a(), (float)this.n(), 5.0, 0.5, this.color);
             }
-        } else if (this.I != null) {
-            GuiRenderPrimitives.F(this.I, this.G$src$D$1b2f02a() + 2.5, this.n() + 2.5, 5.0, 5.0, ClickGuiFriendsRequestTextComponent.J.W);
+        } else if (this.iconKey != null) {
+            GuiRenderPrimitives.F(this.iconKey, this.G$src$D$1b2f02a() + 2.5, this.n() + 2.5, 5.0, 5.0, ClickGuiFriendsRequestTextComponent.J.W);
         } else {
             GuiRenderPrimitives.m((float)this.G$src$D$1b2f02a(), (float)this.n(), 5.0f, 1.0f, 0.5f, ClickGuiFriendsRequestTextComponent.J.W);
         }
@@ -64,8 +62,5 @@ extends GuiComponent {
         this(clickGuiFriendsFriendRequestComponent);
     }
 
-    static void q(ClickGuiFriendsRequestTextComponent clickGuiFriendsRequestTextComponent) {
-        clickGuiFriendsRequestTextComponent.A$src$V$l00tpt();
-    }
 }
 

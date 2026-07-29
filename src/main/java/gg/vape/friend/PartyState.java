@@ -36,7 +36,7 @@ public class PartyState {
             this.T = new LinkedHashMap();
             this.T.put(GroupOption.OPEN_INVITES, this.u);
             for (Map.Entry<GroupOption, Value<?, ?>> entry : this.T.entrySet()) {
-                ((Value)entry.getValue()).o(entry.getKey().z());
+                ((Value)entry.getValue()).setValue(entry.getKey().z());
             }
         }
         return this.T;
@@ -158,7 +158,7 @@ public class PartyState {
     }
 
     public boolean t() {
-        if (this.u.L().booleanValue()) {
+        if (this.u.getEffectiveValue().booleanValue()) {
             return true;
         }
         return this.r().equals(Vape.INSTANCE.getOnlineManager().r());

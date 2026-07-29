@@ -7,52 +7,52 @@ import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
 public class RemoteImageTextureLoader {
-    private static String B;
+    private static String legacyMarker;
 
-    public static void l(String string) {
-        B = string;
+    public static void setLegacyMarker(String legacyMarker) {
+        RemoteImageTextureLoader.legacyMarker = legacyMarker;
     }
 
-    public static String w() {
-        return B;
+    public static String getLegacyMarker() {
+        return legacyMarker;
     }
 
-    public static byte[] L(String string) {
+    public static byte[] download(String urlString) {
         try {
-            URL url = new URL(string);
-            HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-            httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-            httpURLConnection.setRequestProperty("Accept-Encoding", "gzip");
-            httpURLConnection.setConnectTimeout(10000);
-            httpURLConnection.setReadTimeout(10000);
-            int n = httpURLConnection.getResponseCode();
-            switch (n) {
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            connection.setRequestProperty("Accept-Encoding", "gzip");
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
+            int responseCode = connection.getResponseCode();
+            switch (responseCode) {
                 case 301:
                 case 302:
                 case 303:
                 case 307:
                 case 308: {
-                    String string2 = httpURLConnection.getHeaderField("Location");
-                    httpURLConnection.disconnect();
-                    return RemoteImageTextureLoader.L(string2);
+                    String redirectLocation = connection.getHeaderField("Location");
+                    connection.disconnect();
+                    return RemoteImageTextureLoader.download(redirectLocation);
                 }
             }
             try {
-                try (InputStream inputStream = httpURLConnection.getInputStream()) {
-                    try (InputStream inputStream2 = "gzip".equalsIgnoreCase(httpURLConnection.getContentEncoding()) ? new GZIPInputStream(inputStream) : inputStream) {
-                        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-                            byte[] byArray = new byte[8192];
-                            int n2;
-                            while ((n2 = inputStream2.read(byArray)) != -1) {
-                                byteArrayOutputStream.write(byArray, 0, n2);
+                try (InputStream responseStream = connection.getInputStream()) {
+                    try (InputStream decodedStream = "gzip".equalsIgnoreCase(connection.getContentEncoding()) ? new GZIPInputStream(responseStream) : responseStream) {
+                        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                            byte[] buffer = new byte[8192];
+                            int bytesRead;
+                            while ((bytesRead = decodedStream.read(buffer)) != -1) {
+                                output.write(buffer, 0, bytesRead);
                             }
-                            return byteArrayOutputStream.toByteArray();
+                            return output.toByteArray();
                         }
                     }
                 }
             }
             finally {
-                httpURLConnection.disconnect();
+                connection.disconnect();
             }
         }
         catch (Throwable throwable) {
@@ -60,11 +60,11 @@ public class RemoteImageTextureLoader {
         }
     }
 
-    private static Throwable a(Throwable throwable) {
+    private static Throwable identityThrowable(Throwable throwable) {
         return throwable;
     }
 
     static {
-        RemoteImageTextureLoader.l("Gazrnb");
+        RemoteImageTextureLoader.setLegacyMarker("Gazrnb");
     }
 }

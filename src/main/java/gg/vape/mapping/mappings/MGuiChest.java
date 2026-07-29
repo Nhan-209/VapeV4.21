@@ -40,7 +40,7 @@ extends Mapping {
                 MGuiChest mGuiChest = this;
                 this.f = mGuiChest.J(string, bl, clazz);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MGuiContainer.r(new String[4]);
             }
             return;
@@ -50,7 +50,7 @@ extends Mapping {
         String string = "lowerChestInventory";
         MGuiChest mGuiChest = this;
         this.f = mGuiChest.J(string, bl, clazz); 
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MGuiContainer.r(new String[4]);
         }
     }

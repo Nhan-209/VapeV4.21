@@ -13,19 +13,23 @@ import org.jetbrains.annotations.Nullable;
 public class PublicProfileOverlayPanelBase
 extends SplitPanelComponent {
     @Nullable
-    private PublicProfileOverlayCloseButton gK;
-    protected final PublicProfilesFrame gc;
+    private PublicProfileOverlayCloseButton closeButton;
+    protected final PublicProfilesFrame profilesFrame;
     @Nullable
-    private PopupFrame gj;
-    private static int gE;
+    private PopupFrame popupFrame;
+    private static int staticState;
     @Nullable
-    private CompletableFuture<?> gI;
-    protected PanelComponent gb;
-    protected PanelComponent gg;
-    protected boolean gZ = true;
+    private CompletableFuture<?> pendingRequest;
+    protected PanelComponent headerPanel;
+    protected PanelComponent contentPanel;
+    protected boolean showHeader = true;
+    /** Compatibility aliases retained for subclasses compiled against the recovered hierarchy. */
+    @Deprecated protected PanelComponent gb;
+    @Deprecated protected PanelComponent gg;
+    @Deprecated protected boolean gZ = true;
 
     public void d$src$V$15t6q4y() {
-        CompletableFuture<?> completableFuture = this.gI;
+        CompletableFuture<?> completableFuture = this.pendingRequest;
         if (completableFuture != null && !completableFuture.isCancelled() && !completableFuture.isCompletedExceptionally()) {
             completableFuture.cancel(true);
         }
@@ -33,50 +37,50 @@ extends SplitPanelComponent {
 
     @Nullable
     public PopupFrame E() {
-        return this.gj;
+        return this.popupFrame;
     }
 
     public void S(@Nullable PopupFrame popupFrame) {
-        this.gj = popupFrame;
+        this.popupFrame = popupFrame;
     }
 
     public void T(@Nullable CompletableFuture<?> completableFuture) {
-        this.gI = completableFuture;
+        this.pendingRequest = completableFuture;
     }
 
     public void n$src$V$s6msm2() {
-        this.X$src$Lgg_vape_ui_click_component_PanelComponent_$ylzx2j().l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.X$src$Lgg_vape_ui_click_component_PanelComponent_$ylzx2j().d(false);
-        this.X$src$Lgg_vape_ui_click_component_PanelComponent_$ylzx2j().S();
+        this.getLeftPanel().l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.getLeftPanel().setShowDisabledOverlay(false);
+        this.getLeftPanel().removeMarkedChildren();
     }
 
     public static void r(int n) {
-        gE = n;
+        staticState = n;
     }
 
     public void s$src$V$1l7a8uk() {
-        this.gb.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.gb.d(false);
-        this.gb.S();
+        this.headerPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.headerPanel.setShowDisabledOverlay(false);
+        this.headerPanel.removeMarkedChildren();
     }
 
     @Nullable
     public PublicProfileOverlayCloseButton s$src$Lgg_vape_ui_click_frame_impl_profile_PublicProfi$urrnyv() {
-        return this.gK;
+        return this.closeButton;
     }
 
     public static int S$src$I$rrsca4() {
-        return gE;
+        return staticState;
     }
 
     public void b$src$V$s019hq() {
-        this.gg.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.gg.S();
+        this.contentPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.contentPanel.removeMarkedChildren();
     }
 
     public PublicProfileOverlayPanelBase(PublicProfilesFrame publicProfilesFrame) {
         super(-1.0, -1.0, new PanelComponent(-1.0, -1.0), new PanelComponent(-1.0, -1.0));
-        this.gc = publicProfilesFrame;
+        this.profilesFrame = publicProfilesFrame;
         this.e();
     }
 
@@ -90,47 +94,49 @@ extends SplitPanelComponent {
     }
 
     public void K(@Nullable PublicProfileOverlayCloseButton publicProfileOverlayCloseButton) {
-        if (this.gK != null) {
-            this.gK.X(false);
+        if (this.closeButton != null) {
+            this.closeButton.setExpanded(false);
         }
-        this.gK = publicProfileOverlayCloseButton;
+        this.closeButton = publicProfileOverlayCloseButton;
     }
 
     protected void e() {
-        this.d(false);
-        this.X$src$Lgg_vape_ui_click_component_PanelComponent_$ylzx2j().t$src$V$zbu1jn();
-        this.X$src$Lgg_vape_ui_click_component_PanelComponent_$ylzx2j().d(false);
-        this.K$src$Lgg_vape_ui_click_component_PanelComponent_$111vavy().t$src$V$zbu1jn();
-        this.K$src$Lgg_vape_ui_click_component_PanelComponent_$111vavy().d(false);
+        this.setShowDisabledOverlay(false);
+        this.getLeftPanel().t$src$V$zbu1jn();
+        this.getLeftPanel().setShowDisabledOverlay(false);
+        this.getRightPanel().t$src$V$zbu1jn();
+        this.getRightPanel().setShowDisabledOverlay(false);
         this.getClass();
         double d = 5.0f * 4.0f;
-        this.o(this.gc.A() - d);
-        double d2 = this.gc.L() - this.gc.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() - 2.0 - d;
+        this.o(this.profilesFrame.A() - d);
+        double d2 = this.profilesFrame.L() - this.profilesFrame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L() - 2.0 - d;
         this.getClass();
         this.Y(d2 - 5.0);
-        PanelComponent panelComponent = this.K$src$Lgg_vape_ui_click_component_PanelComponent_$111vavy();
-        this.K$src$Lgg_vape_ui_click_component_PanelComponent_$111vavy().N(false);
-        this.K$src$Lgg_vape_ui_click_component_PanelComponent_$111vavy().l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.K$src$Lgg_vape_ui_click_component_PanelComponent_$111vavy().t(this.K$src$Lgg_vape_ui_click_component_PanelComponent_$111vavy().L());
+        PanelComponent panelComponent = this.getRightPanel();
+        this.getRightPanel().N(false);
+        this.getRightPanel().l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.getRightPanel().t(this.getRightPanel().L());
         this.h(panelComponent, new Object[0]);
-        this.gb = new PanelComponent(panelComponent.A(), 30.0);
-        this.gb.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
-        this.gb.d(false);
-        this.gg = this.gZ ? new PanelComponent(panelComponent.A() - 1.0, panelComponent.L() - this.gb.L()) : new PanelComponent(panelComponent.A() - 1.0, panelComponent.L());
-        this.gg.t(this.gg.L() + 2.0);
-        this.gg.d(false);
-        this.gg.T(Color.MAGENTA);
-        panelComponent.h(this.gg, new Object[0]);
-        if (this.gZ) {
-            panelComponent.h(this.gb, new Object[0]);
-            InsetFilledSpacerComponent insetFilledSpacerComponent = new InsetFilledSpacerComponent(this.gb.A(), 1.0, 1.0, 0.0, PublicProfileOverlayPanelBase.J.h);
-            insetFilledSpacerComponent.Q(false);
+        this.headerPanel = new PanelComponent(panelComponent.A(), 30.0);
+        this.gb = this.headerPanel;
+        this.headerPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
+        this.headerPanel.setShowDisabledOverlay(false);
+        this.contentPanel = this.showHeader ? new PanelComponent(panelComponent.A() - 1.0, panelComponent.L() - this.headerPanel.L()) : new PanelComponent(panelComponent.A() - 1.0, panelComponent.L());
+        this.gg = this.contentPanel;
+        this.contentPanel.t(this.contentPanel.L() + 2.0);
+        this.contentPanel.setShowDisabledOverlay(false);
+        this.contentPanel.setDisabledOverlayColor(Color.MAGENTA);
+        panelComponent.h(this.contentPanel, new Object[0]);
+        if (this.showHeader) {
+            panelComponent.h(this.headerPanel, new Object[0]);
+            InsetFilledSpacerComponent insetFilledSpacerComponent = new InsetFilledSpacerComponent(this.headerPanel.A(), 1.0, 1.0, 0.0, PublicProfileOverlayPanelBase.J.h);
+            insetFilledSpacerComponent.setRemovable(false);
         }
     }
 
     @Nullable
     public CompletableFuture<?> R$src$Ljava_util_concurrent_CompletableFuture_$1ccqvok() {
-        return this.gI;
+        return this.pendingRequest;
     }
 
 }

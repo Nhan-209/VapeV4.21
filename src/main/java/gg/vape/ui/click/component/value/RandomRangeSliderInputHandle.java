@@ -9,78 +9,77 @@ import gg.vape.utils.render.GuiRenderPrimitives;
 
 public class RandomRangeSliderInputHandle
 extends SliderInputHandle {
-    private RangeEndpoint no;
-    private RandomRangeSliderComponent n0;
+    private RangeEndpoint endpoint;
+    private RandomRangeSliderComponent rangeSlider;
 
-    private static Exception a(Exception exception) {
+    private static Exception passthroughException(Exception exception) {
         return exception;
     }
 
-    public RandomRangeSliderInputHandle(RandomRangeSliderComponent randomRangeSliderComponent, RangeEndpoint rangeEndpoint) {
-        this.n0 = randomRangeSliderComponent;
-        this.no = rangeEndpoint;
-        this.b.Z(false);
+    public RandomRangeSliderInputHandle(RandomRangeSliderComponent rangeSlider, RangeEndpoint endpoint) {
+        this.rangeSlider = rangeSlider;
+        this.endpoint = endpoint;
+        this.actionButton.setVisible(false);
     }
 
     @Override
     public void H() {
-        SmoothFontRenderer smoothFontRenderer = this.O(0.75);
-        String string = this.W() ? this.i$src$Ljava_lang_String_$1n2xf3k() : this.M();
-        smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + (this.r() - smoothFontRenderer.N(string)), this.n(), RandomRangeSliderInputHandle.J.Z);
-        if (this.n$src$Z$1rnxqrn()) {
-            this.x2 = string.length();
-            this.S(smoothFontRenderer, this.G$src$D$1b2f02a() + this.r(), this.n());
+        SmoothFontRenderer fontRenderer = this.getFontRenderer(0.75);
+        String displayText = this.isEditing() ? this.getText() : this.getFormattedEndpointValue();
+        fontRenderer.d(displayText, this.G$src$D$1b2f02a() + (this.getAvailableTextWidth() - fontRenderer.N(displayText)), this.n(), RandomRangeSliderInputHandle.J.Z);
+        if (this.isFocused()) {
+            this.cursorPosition = displayText.length();
+            this.renderCaret(fontRenderer, this.G$src$D$1b2f02a() + this.getAvailableTextWidth(), this.n());
         }
-        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n() + 5.0 + 2.0, this.A(), 1.0, this.C$src$Ljava_awt_Color_$13eqlq4());
+        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n() + 5.0 + 2.0, this.A(), 1.0, this.getUnderlineColor());
     }
 
     @Override
-    public void p() {
+    public void submit() {
         try {
-            String string = this.i$src$Ljava_lang_String_$1n2xf3k().replace(this.n0.W().y$src$Ljava_text_DecimalFormat_$bdq2sj().getDecimalFormatSymbols().getDecimalSeparator(), '.');
-            double d = Double.parseDouble(string);
-            switch (this.no) {
+            String normalizedText = this.getText().replace(this.rangeSlider.getRandomValue().getEndpointFormat().getDecimalFormatSymbols().getDecimalSeparator(), '.');
+            double value = Double.parseDouble(normalizedText);
+            switch (this.endpoint) {
                 case MINIMUM: {
-                    if (d > this.n0.W().M()) {
-                        this.n0.W().a(this.n0.W().M());
-                        this.n0.W().Q(d);
+                    if (value > this.rangeSlider.getRandomValue().getMaximumValue()) {
+                        this.rangeSlider.getRandomValue().setMinimumValue(this.rangeSlider.getRandomValue().getMaximumValue());
+                        this.rangeSlider.getRandomValue().setMaximumValue(value);
                         break;
                     }
-                    this.n0.W().a(d);
+                    this.rangeSlider.getRandomValue().setMinimumValue(value);
                     break;
                 }
                 case MAXIMUM: {
-                    if (d < this.n0.W().q$src$D$vgz097()) {
-                        this.n0.W().Q(this.n0.W().q$src$D$vgz097());
-                        this.n0.W().a(d);
+                    if (value < this.rangeSlider.getRandomValue().getMinimumValue()) {
+                        this.rangeSlider.getRandomValue().setMaximumValue(this.rangeSlider.getRandomValue().getMinimumValue());
+                        this.rangeSlider.getRandomValue().setMinimumValue(value);
                         break;
                     }
-                    this.n0.W().Q(d);
+                    this.rangeSlider.getRandomValue().setMaximumValue(value);
                 }
             }
         }
         catch (Exception exception) {
             // empty catch block
         }
-        this.n0.W().j(new double[]{this.n0.W().q$src$D$vgz097(), this.n0.W().M()});
-        ClientSettings.fT = null;
+        this.rangeSlider.getRandomValue().setRange(new double[]{this.rangeSlider.getRandomValue().getMinimumValue(), this.rangeSlider.getRandomValue().getMaximumValue()});
+        ClientSettings.activeComponent = null;
     }
 
     @Override
-    public void Y$src$V$npqhoj() {
-        this.k(this.M());
+    public void loadCurrentValueForEditing() {
+        this.setText(this.getFormattedEndpointValue());
     }
 
-    public String M() {
-        switch (this.no) {
+    public String getFormattedEndpointValue() {
+        switch (this.endpoint) {
             case MINIMUM: {
-                return this.n0.W().y$src$Ljava_lang_String_$1nuhg7p();
+                return this.rangeSlider.getRandomValue().getFormattedMinimum();
             }
             case MAXIMUM: {
-                return this.n0.W().E();
+                return this.rangeSlider.getRandomValue().getFormattedMaximum();
             }
         }
         return null;
     }
 }
-

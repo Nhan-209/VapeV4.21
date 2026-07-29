@@ -269,7 +269,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     public void p(long l) {
-        NoopLogger.Q("Started using public profile " + l);
+        NoopLogger.info("Started using public profile " + l);
         this.V(new ClientProfileIdPacket(l));
     }
 
@@ -548,7 +548,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     public void Y() {
-        boolean bl = OnlineConnectionManager.T.S().O().L();
+        boolean bl = OnlineConnectionManager.T.S().O().getEffectiveValue();
         this.V(new ShowUsernamePacket(bl));
     }
 
@@ -582,7 +582,7 @@ extends SimpleChannelInboundHandler<ZeusSerializablePacket> {
     }
 
     public void M() {
-        NoopLogger.Q("Stopped using public profile");
+        NoopLogger.info("Stopped using public profile");
         this.V(new ZeusClientReadyPacket());
     }
 

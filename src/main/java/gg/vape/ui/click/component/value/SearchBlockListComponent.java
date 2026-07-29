@@ -26,117 +26,117 @@ import java.awt.Color;
 
 public class SearchBlockListComponent
 extends AbstractListValueComponent {
-    private ValueComponentMode I;
-    private String K;
-    SearchManager Lf = Vape.INSTANCE.getSearch();
-    private SearchBlockListDropdownLayer Lt;
+    private ValueComponentMode mode;
+    private String title;
+    SearchManager searchManager = Vape.INSTANCE.getSearch();
+    private SearchBlockListDropdownLayer dropdownLayer;
 
     @Override
     public double C() {
-        if (this.I == ValueComponentMode.STANDALONE) {
+        if (this.mode == ValueComponentMode.STANDALONE) {
             return 23.0;
         }
         return super.C();
     }
 
-    private void Z$src$V$7bx6v2() {
+    private void openEditor() {
         Frame frame;
-        if (this.I == ValueComponentMode.STANDALONE && this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb() != null && (frame = this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa()) instanceof ClickGuiMainFrame) {
+        if (this.mode == ValueComponentMode.STANDALONE && this.getParentFrameComponent() != null && (frame = this.getParentFrameComponent().L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa()) instanceof ClickGuiMainFrame) {
             ClickGuiMainFrame clickGuiMainFrame = (ClickGuiMainFrame)frame;
             ClickGuiModulesSidecarPanel clickGuiModulesSidecarPanel = new ClickGuiModulesSidecarPanel(null);
-            clickGuiModulesSidecarPanel.k(false);
-            clickGuiModulesSidecarPanel.f(false);
-            ClickGuiOverlaySpec clickGuiOverlaySpec = ClickGuiOverlaySpec.q().e(this.K).C("newallowed").v(clickGuiModulesSidecarPanel).n(ClickGuiOverlayPlacement.DOCKED_SHIFT).r(ClickGuiOverlayTransitionMode.PUSH).D(SearchBlockListComponent::lambda$onButtonClick$0).N(this::lambda$onButtonClick$1).w();
-            clickGuiMainFrame.Z(clickGuiOverlaySpec);
+            clickGuiModulesSidecarPanel.setFavoriteVisible(false);
+            clickGuiModulesSidecarPanel.setToggleVisible(false);
+            ClickGuiOverlaySpec clickGuiOverlaySpec = ClickGuiOverlaySpec.builder().title(this.title).sidecarIcon("newallowed").sidecar(clickGuiModulesSidecarPanel).placement(ClickGuiOverlayPlacement.DOCKED_SHIFT).transitionMode(ClickGuiOverlayTransitionMode.PUSH).initializeSidecar(SearchBlockListComponent::hideSidecarDivider).initializeContent(this::populateEditorContent).build();
+            clickGuiMainFrame.showOverlay(clickGuiOverlaySpec);
             return;
         }
-        this.a(!this.P$src$Z$og01j6());
-        if (this.P$src$Z$og01j6()) {
-            this.Lt.e();
+        this.setExpanded(!this.isExpanded());
+        if (this.isExpanded()) {
+            this.dropdownLayer.refreshContents();
         }
     }
 
-    private String Q(SmoothFontRenderer smoothFontRenderer, String string, double d) {
-        if (string.isEmpty() || smoothFontRenderer.N(string) <= d) {
-            return string;
+    private String truncateToWidth(SmoothFontRenderer fontRenderer, String text, double maximumWidth) {
+        if (text.isEmpty() || fontRenderer.N(text) <= maximumWidth) {
+            return text;
         }
-        int n = 0;
-        int n2 = string.length();
-        int n3 = 0;
-        while (n <= n2) {
-            int n4 = (n + n2) / 2;
-            String string2 = string.substring(0, n4);
-            if (smoothFontRenderer.N(string2) <= d) {
-                n3 = n4;
-                n = n4 + 1;
+        int lowerBound = 0;
+        int upperBound = text.length();
+        int bestLength = 0;
+        while (lowerBound <= upperBound) {
+            int midpoint = (lowerBound + upperBound) / 2;
+            String candidate = text.substring(0, midpoint);
+            if (fontRenderer.N(candidate) <= maximumWidth) {
+                bestLength = midpoint;
+                lowerBound = midpoint + 1;
                 continue;
             }
-            n2 = n4 - 1;
+            upperBound = midpoint - 1;
         }
-        return string.substring(0, n3);
+        return text.substring(0, bestLength);
     }
 
-    private static void lambda$onButtonClick$0(ClickGuiSidecarPanelBase clickGuiSidecarPanelBase) {
-        clickGuiSidecarPanelBase.c(false);
+    private static void hideSidecarDivider(ClickGuiSidecarPanelBase clickGuiSidecarPanelBase) {
+        clickGuiSidecarPanelBase.setDividerVisible(false);
     }
 
-    public String t$src$Ljava_lang_String_$1kbjhi6() {
-        return this.K;
+    public String getTitle() {
+        return this.title;
     }
 
-    private void T(PanelComponent panelComponent) {
-        panelComponent.S();
-        Runnable runnable = () -> this.lambda$renderStandaloneContent$2(panelComponent);
-        SearchBlockListAddInputComponent searchBlockListAddInputComponent = new SearchBlockListAddInputComponent("Block name / ID", runnable);
-        searchBlockListAddInputComponent.q(panelComponent.A() - 1.0);
+    private void populateEditorContent(PanelComponent panelComponent) {
+        panelComponent.removeMarkedChildren();
+        Runnable refreshContent = () -> this.refreshEditorContent(panelComponent);
+        SearchBlockListAddInputComponent searchBlockListAddInputComponent = new SearchBlockListAddInputComponent("Block name / ID", refreshContent);
+        searchBlockListAddInputComponent.setExplicitWidth(panelComponent.A() - 1.0);
         panelComponent.h(searchBlockListAddInputComponent, new Object[0]);
-        for (SearchBlock searchBlock : this.Lf.O()) {
+        for (SearchBlock searchBlock : this.searchManager.getSearchBlocks()) {
             SearchBlockEditorComponent searchBlockEditorComponent = new SearchBlockEditorComponent(searchBlock);
-            searchBlockEditorComponent.q(panelComponent.A() - 1.0);
-            searchBlockEditorComponent.g(new SearchBlockRemoveClickListener(this, searchBlock, runnable));
+            searchBlockEditorComponent.setExplicitWidth(panelComponent.A() - 1.0);
+            searchBlockEditorComponent.setRemoveClickListener(new SearchBlockRemoveClickListener(this, searchBlock, refreshContent));
             panelComponent.h(searchBlockEditorComponent, new Object[0]);
         }
     }
 
-    private void Y$src$V$7bde9p() {
+    private void renderStandalone() {
         this.onDisable();
-        SmoothFontRenderer smoothFontRenderer = this.O(0.85);
-        SmoothFontRenderer smoothFontRenderer2 = this.O(0.7);
-        SmoothFontRenderer smoothFontRenderer3 = this.O(0.68);
-        double d = this.G$src$D$1b2f02a() + 5.0;
-        double d2 = this.n() + 0.5;
-        double d3 = this.A() - 10.0;
-        double d4 = this.L() - 1.0;
-        Color color = this.d$src$Z$oqzxee() ? SearchBlockListComponent.J.a : SearchBlockListComponent.J.S;
-        Color color2 = this.d$src$Z$oqzxee() ? SearchBlockListComponent.J.A : SearchBlockListComponent.J.Z;
-        Color color3 = SearchBlockListComponent.J.h;
-        double d5 = d2 + 3.0;
-        double d6 = d5 + smoothFontRenderer.d(this.K) + 1.0;
-        double d7 = smoothFontRenderer3.N("" + this.T$src$I$78mezp());
-        double d8 = Math.max(11.0, d7 + 6.0);
-        double d9 = 10.0;
-        double d10 = d + d3 - 4.0 - d8;
-        double d11 = d2 + 3.0;
-        float f = 6.0f;
-        float f2 = (float)(d + 6.0);
-        float f3 = (float)(d2 + (d4 - (double)f) / 2.0);
-        double d12 = d + 17.0;
-        double d13 = Math.max(0.0, d10 - d12 - 4.0);
-        GuiRenderPrimitives.B(d, d2, d3, d4, color, 3.0f);
-        GuiRenderPrimitives.B(d10, d11, d8, d9, this.d$src$Z$oqzxee() ? SearchBlockListComponent.J.F : SearchBlockListComponent.J.a, 2.4f);
-        smoothFontRenderer.d(this.K, d12, d5, color2);
-        smoothFontRenderer2.d(this.g(smoothFontRenderer2, d13), d12, d6, color3);
-        smoothFontRenderer3.d("" + this.T$src$I$78mezp(), d10 + (d8 - d7) / 2.0, d11 + 1.5, color2);
-        ImageRenderer.E(color2, f2 + 0.5f, f3, "newallowedlist", f, f, false);
-        ImageRenderer.E(SearchBlockListComponent.J.B, f2 + 0.5f, f3, "newallowed", f, f, false);
+        SmoothFontRenderer titleFont = this.getFontRenderer(0.85);
+        SmoothFontRenderer summaryFont = this.getFontRenderer(0.7);
+        SmoothFontRenderer countFont = this.getFontRenderer(0.68);
+        double left = this.G$src$D$1b2f02a() + 5.0;
+        double top = this.n() + 0.5;
+        double width = this.A() - 10.0;
+        double height = this.L() - 1.0;
+        Color backgroundColor = this.isHovered() ? SearchBlockListComponent.J.a : SearchBlockListComponent.J.S;
+        Color primaryColor = this.isHovered() ? SearchBlockListComponent.J.A : SearchBlockListComponent.J.Z;
+        Color secondaryColor = SearchBlockListComponent.J.h;
+        double titleY = top + 3.0;
+        double summaryY = titleY + titleFont.d(this.title) + 1.0;
+        double countTextWidth = countFont.N("" + this.getEnabledCount());
+        double countBadgeWidth = Math.max(11.0, countTextWidth + 6.0);
+        double countBadgeHeight = 10.0;
+        double countBadgeX = left + width - 4.0 - countBadgeWidth;
+        double countBadgeY = top + 3.0;
+        float iconSize = 6.0f;
+        float iconX = (float)(left + 6.0);
+        float iconY = (float)(top + (height - (double)iconSize) / 2.0);
+        double textX = left + 17.0;
+        double summaryWidth = Math.max(0.0, countBadgeX - textX - 4.0);
+        GuiRenderPrimitives.B(left, top, width, height, backgroundColor, 3.0f);
+        GuiRenderPrimitives.B(countBadgeX, countBadgeY, countBadgeWidth, countBadgeHeight, this.isHovered() ? SearchBlockListComponent.J.F : SearchBlockListComponent.J.a, 2.4f);
+        titleFont.d(this.title, textX, titleY, primaryColor);
+        summaryFont.d(this.buildEnabledSummary(summaryFont, summaryWidth), textX, summaryY, secondaryColor);
+        countFont.d("" + this.getEnabledCount(), countBadgeX + (countBadgeWidth - countTextWidth) / 2.0, countBadgeY + 1.5, primaryColor);
+        ImageRenderer.drawImage(primaryColor, iconX + 0.5f, iconY, "newallowedlist", iconSize, iconSize, false);
+        ImageRenderer.drawImage(SearchBlockListComponent.J.B, iconX + 0.5f, iconY, "newallowed", iconSize, iconSize, false);
     }
 
     @Override
     public void H() {
-        if (this.I == ValueComponentMode.STANDALONE) {
-            this.Y$src$V$7bde9p();
+        if (this.mode == ValueComponentMode.STANDALONE) {
+            this.renderStandalone();
         } else {
-            this.e$src$V$7hyxe1();
+            this.renderDropdown();
         }
     }
 
@@ -145,87 +145,82 @@ extends AbstractListValueComponent {
     }
 
 
-    public static void e(SearchBlockListComponent searchBlockListComponent) {
-        searchBlockListComponent.Z$src$V$7bx6v2();
+    public static void openEditorCompat(SearchBlockListComponent component) {
+        component.openEditor();
     }
 
-    private void e$src$V$7hyxe1() {
+    private void renderDropdown() {
         this.onDisable();
-        this.Lt.h();
-        SmoothFontRenderer smoothFontRenderer = this.O(0.9);
-        SmoothFontRenderer smoothFontRenderer2 = this.O(0.75);
-        Color color = SearchBlockListComponent.J.i;
-        Color color2 = this.d$src$Z$oqzxee() ? SearchBlockListComponent.J.A : (this.P$src$Z$og01j6() ? SearchBlockListComponent.J.A : SearchBlockListComponent.J.Z);
-        Color color3 = SearchBlockListComponent.J.h;
-        float f = (float)(this.n() + this.L() / 2.0) - 3.0f;
-        double d = smoothFontRenderer.d(this.K);
-        double d2 = this.n() + this.L() / 2.0 - d / 2.0 - 2.5;
-        double d3 = d2 + 7.5;
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0, this.n() + 2.5, this.A() - 10.0, this.L() - 5.0, this.P$src$Z$og01j6() ? J.z() : this.K$src$Lgg_vape_ui_click_animation_ColorAnimation_$la4la().getInterpolatedColor());
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0 + 0.5, this.n() + 2.5 + 0.5, this.A() - 10.0 - 1.0, this.L() - 5.0 - 1.0, color);
-        smoothFontRenderer.d(this.K, this.G$src$D$1b2f02a() + 15.0 + 8.0, d2, color2);
-        smoothFontRenderer.d("" + this.T$src$I$78mezp(), this.G$src$D$1b2f02a() + this.A() - 10.0 - smoothFontRenderer.N("10"), d2, color2);
-        smoothFontRenderer2.d(this.g(smoothFontRenderer2, this.A() - 35.0), this.G$src$D$1b2f02a() + 15.0 + 8.0, d3, color3);
-        ImageRenderer.E(color2, (float)this.G$src$D$1b2f02a() + 10.0f + 0.5f, f, "newallowedlist", 6.0f, 6.0f, false);
-        ImageRenderer.E(SearchBlockListComponent.J.B, (float)this.G$src$D$1b2f02a() + 10.0f + 0.5f, f, "newallowed", 6.0f, 6.0f, false);
+        this.dropdownLayer.updatePosition();
+        SmoothFontRenderer titleFont = this.getFontRenderer(0.9);
+        SmoothFontRenderer summaryFont = this.getFontRenderer(0.75);
+        Color panelColor = SearchBlockListComponent.J.i;
+        Color primaryColor = this.isHovered() ? SearchBlockListComponent.J.A : (this.isExpanded() ? SearchBlockListComponent.J.A : SearchBlockListComponent.J.Z);
+        Color secondaryColor = SearchBlockListComponent.J.h;
+        float iconY = (float)(this.n() + this.L() / 2.0) - 3.0f;
+        double titleHeight = titleFont.d(this.title);
+        double titleY = this.n() + this.L() / 2.0 - titleHeight / 2.0 - 2.5;
+        double summaryY = titleY + 7.5;
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0, this.n() + 2.5, this.A() - 10.0, this.L() - 5.0, this.isExpanded() ? J.z() : this.getHoverAnimation().getInterpolatedColor());
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0 + 0.5, this.n() + 2.5 + 0.5, this.A() - 10.0 - 1.0, this.L() - 5.0 - 1.0, panelColor);
+        titleFont.d(this.title, this.G$src$D$1b2f02a() + 15.0 + 8.0, titleY, primaryColor);
+        titleFont.d("" + this.getEnabledCount(), this.G$src$D$1b2f02a() + this.A() - 10.0 - titleFont.N("10"), titleY, primaryColor);
+        summaryFont.d(this.buildEnabledSummary(summaryFont, this.A() - 35.0), this.G$src$D$1b2f02a() + 15.0 + 8.0, summaryY, secondaryColor);
+        ImageRenderer.drawImage(primaryColor, (float)this.G$src$D$1b2f02a() + 10.0f + 0.5f, iconY, "newallowedlist", 6.0f, 6.0f, false);
+        ImageRenderer.drawImage(SearchBlockListComponent.J.B, (float)this.G$src$D$1b2f02a() + 10.0f + 0.5f, iconY, "newallowed", 6.0f, 6.0f, false);
     }
 
-    private void lambda$renderStandaloneContent$2(PanelComponent panelComponent) {
-        this.T(panelComponent);
+    private void refreshEditorContent(PanelComponent panelComponent) {
+        this.populateEditorContent(panelComponent);
     }
 
-    private int T$src$I$78mezp() {
-        int n = 0;
-        for (SearchBlock searchBlock : this.Lf.O()) {
+    private int getEnabledCount() {
+        int enabledCount = 0;
+        for (SearchBlock searchBlock : this.searchManager.getSearchBlocks()) {
             if (!searchBlock.T()) continue;
-            ++n;
+            ++enabledCount;
         }
-        return n;
+        return enabledCount;
     }
 
-    public void a(ValueComponentMode valueComponentMode) {
-        this.I = valueComponentMode;
+    public void setMode(ValueComponentMode mode) {
+        this.mode = mode;
     }
 
-    private String g(SmoothFontRenderer smoothFontRenderer, double d) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (SearchBlock searchBlock : this.Lf.O()) {
+    private String buildEnabledSummary(SmoothFontRenderer fontRenderer, double maximumWidth) {
+        StringBuilder summary = new StringBuilder();
+        for (SearchBlock searchBlock : this.searchManager.getSearchBlocks()) {
             if (!searchBlock.T()) continue;
-            String string = searchBlock.d();
-            String string2 = stringBuilder.length() == 0 ? string : ", " + string;
-            StringBuilder stringBuilder2 = new StringBuilder();
-            if (smoothFontRenderer.N(stringBuilder2.append((Object)stringBuilder).append(string2).toString()) <= d) {
-                stringBuilder.append(string2);
+            String blockName = searchBlock.d();
+            String nextEntry = summary.length() == 0 ? blockName : ", " + blockName;
+            if (fontRenderer.N(new StringBuilder().append((Object)summary).append(nextEntry).toString()) <= maximumWidth) {
+                summary.append(nextEntry);
                 continue;
             }
-            stringBuilder.append(string2);
-            double d2 = Math.max(0.0, d - smoothFontRenderer.N("..."));
-            String string3 = this.Q(smoothFontRenderer, stringBuilder.toString(), d2);
-            return string3 + "...";
+            summary.append(nextEntry);
+            double textWidth = Math.max(0.0, maximumWidth - fontRenderer.N("..."));
+            return this.truncateToWidth(fontRenderer, summary.toString(), textWidth) + "...";
         }
-        if (stringBuilder.length() == 0) {
+        if (summary.length() == 0) {
             return "None";
         }
-        return stringBuilder.toString();
+        return summary.toString();
     }
 
     public SearchBlockListComponent(ValueComponentMode valueComponentMode) {
-        this.I = ValueComponentMode.MAIN;
-        this.I = valueComponentMode;
-        this.K = "Search blocks";
-        this.r(new SearchBlockListOpenClickListener(this));
+        this.mode = ValueComponentMode.MAIN;
+        this.mode = valueComponentMode;
+        this.title = "Search blocks";
+        this.addClickListener(new SearchBlockListOpenClickListener(this));
         if (valueComponentMode != ValueComponentMode.STANDALONE) {
-            this.Lt = new SearchBlockListDropdownLayer(this);
-            ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().q(this.Lt);
+            this.dropdownLayer = new SearchBlockListDropdownLayer(this);
+            ClientSettings.INSTANCE.getActiveStack().q(this.dropdownLayer);
         }
     }
 
-    public ValueComponentMode o$src$Lgg_vape_ui_click_component_value_ValueComponent$rfgo77() {
-        return this.I;
+    public ValueComponentMode getMode() {
+        return this.mode;
     }
 
-    private void lambda$onButtonClick$1(PanelComponent panelComponent) {
-        this.T(panelComponent);
-    }
 }
 

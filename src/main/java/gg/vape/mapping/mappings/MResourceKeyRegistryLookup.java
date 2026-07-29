@@ -40,7 +40,7 @@ extends Mapping {
         MResourceKeyRegistryLookup mResourceKeyRegistryLookup2 = this;
         this.J = this.Y(string3, bl2, clazz2, classArray2);
         String string4 = string;
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MRegistryAccess.l("Th1Gp");
         }
     }

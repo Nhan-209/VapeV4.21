@@ -100,7 +100,7 @@ implements MappingTask {
         this.serializeClassNode();
         byte[] byArray = this.C;
         Class clazz = this.G;
-        int n = ClassBytecodeCache.C(clazz, byArray);
+        int n = ClassBytecodeCache.setClassBytecode(clazz, byArray);
         if (n == 0) {
             this.e = true;
         }
@@ -115,7 +115,7 @@ implements MappingTask {
 
     @Override
     public void K() {
-        this.E = ClassBytecodeCache.U(this.G, true);
+        this.E = ClassBytecodeCache.getClassBytecode(this.G, true);
         this.C = new byte[this.E.length];
         System.arraycopy(this.E, 0, this.C, 0, this.E.length);
         ClassReader classReader = new ClassReader(this.E);
@@ -133,7 +133,7 @@ implements MappingTask {
     public void O() {
         byte[] byArray = this.E;
         Class clazz = this.G;
-        ClassBytecodeCache.C(clazz, byArray);
+        ClassBytecodeCache.setClassBytecode(clazz, byArray);
     }
 
     public void serializeClassNode() {
@@ -146,4 +146,3 @@ implements MappingTask {
         this.C = transformClassWriter.toByteArray();
     }
 }
-

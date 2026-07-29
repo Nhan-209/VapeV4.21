@@ -18,7 +18,7 @@ implements GuiMouseListener {
 
     @Override
     public boolean Q(Point point) {
-        if (this.I.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().Q().R(point) && !this.v.Q().R(point)) {
+        if (this.I.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa().getBounds().R(point) && !this.v.getBounds().R(point)) {
             return true;
         }
         return GuiMouseListener.super.Q(point);

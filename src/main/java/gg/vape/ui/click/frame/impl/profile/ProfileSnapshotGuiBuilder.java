@@ -24,154 +24,144 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ProfileSnapshotGuiBuilder {
-    private static final String b = "reset_circle";
-    private final HashMap<Value<?, ?>, Value<?, ?>> O;
-    private final HashMap<ProfileModuleSnapshot, List<GuiComponent>> Z;
-    private static int U;
-    private final ProfileSnapshot D;
-    private final HashMap<Value<?, ?>, ValueSnapshot<?, ?>> M;
-    private final HashMap<Value<?, ?>, Value<?, ?>> H;
-    private Color u = new Color(54, 53, 54, 128);
-    private final HashMap<Value<?, ?>, GuiComponent> g;
+    private static final String RESET_ICON = "reset_circle";
+    private static final int SETTING_ROW_WIDTH = 210;
+    private final HashMap<Value<?, ?>, Value<?, ?>> parentByProxyValue;
+    private final HashMap<ProfileModuleSnapshot, List<GuiComponent>> componentsByModule;
+    private final ProfileSnapshot snapshot;
+    private final HashMap<Value<?, ?>, ValueSnapshot<?, ?>> snapshotByProxyValue;
+    private final HashMap<Value<?, ?>, Value<?, ?>> proxyBySourceValue;
+    private final Color resetButtonColor = new Color(54, 53, 54, 128);
+    private final HashMap<Value<?, ?>, GuiComponent> componentByProxyValue;
 
     public ProfileSnapshotGuiBuilder(ProfileSnapshot profileSnapshot) {
-        this.H = new HashMap();
-        this.M = new HashMap();
-        this.O = new HashMap();
-        this.g = new HashMap();
-        this.Z = new HashMap();
-        this.D = profileSnapshot;
-        this.P();
+        this.proxyBySourceValue = new HashMap<>();
+        this.snapshotByProxyValue = new HashMap<>();
+        this.parentByProxyValue = new HashMap<>();
+        this.componentByProxyValue = new HashMap<>();
+        this.componentsByModule = new HashMap<>();
+        this.snapshot = profileSnapshot;
+        this.buildComponents();
     }
 
-    public void v(Value<?, ?> value) {
-        Value<?, ?> value2 = this.H.get(value);
-        if (value2 == null) {
+    public void resetValue(Value<?, ?> sourceValue) {
+        Value<?, ?> proxyValue = this.proxyBySourceValue.get(sourceValue);
+        if (proxyValue == null) {
             return;
         }
-        ValueSnapshot<?, ?> valueSnapshot = this.M.get(value2);
+        ValueSnapshot<?, ?> valueSnapshot = this.snapshotByProxyValue.get(proxyValue);
         if (valueSnapshot == null) {
             return;
         }
-        value2.S();
-        valueSnapshot.s(value2.K());
-        value.g$src$V$1akzyia();
-        value2.g$src$V$1akzyia();
-        if (value instanceof ConditionalValue) {
-            ConditionalValue conditionalValue = (ConditionalValue)value;
-            List<Value> list = conditionalValue.q$src$Ljava_util_List_$fyau59();
-            for (Value value3 : list) {
-                Value<?, ?> value4 = this.H.get(value3);
-                GuiComponent guiComponent = this.g.get(value4);
+        proxyValue.reset();
+        valueSnapshot.setValue(proxyValue.getValue());
+        sourceValue.notifyChanged();
+        proxyValue.notifyChanged();
+        if (sourceValue instanceof ConditionalValue) {
+            ConditionalValue conditionalValue = (ConditionalValue)sourceValue;
+            List<Value> list = conditionalValue.getDependentValues();
+            for (Value childValue : list) {
+                Value<?, ?> childProxyValue = this.proxyBySourceValue.get(childValue);
+                GuiComponent guiComponent = this.componentByProxyValue.get(childProxyValue);
                 if (guiComponent != null) continue;
-                this.v(value3);
+                this.resetValue(childValue);
             }
         }
     }
 
-    static {
-        long l = -7615482920005795630L;
-        U = (int)l;
+    public List<GuiComponent> getModuleComponents(ProfileModuleSnapshot moduleSnapshot) {
+        return this.componentsByModule.get(moduleSnapshot);
     }
 
-    public List<GuiComponent> E(ProfileModuleSnapshot profileModuleSnapshot) {
-        return this.Z.get(profileModuleSnapshot);
-    }
-
-    private void P() {
-        for (ProfileModuleSnapshot profileModuleSnapshot : this.D.L()) {
+    private void buildComponents() {
+        for (ProfileModuleSnapshot profileModuleSnapshot : this.snapshot.getAllModules()) {
             Object object;
             Object object2;
             Value<?, ?> value;
             Value<?, ?> value2;
             ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
-            this.Z.put(profileModuleSnapshot, arrayList);
-            for (ValueSnapshot<?, ?> valueSnapshot : profileModuleSnapshot.z()) {
-                Value<?, ?> snapshotValue = ValueComponentFactory.e(valueSnapshot);
-                this.i(snapshotValue);
-                GuiComponent valueComponent = ValueComponentFactory.v(snapshotValue, true);
+            this.componentsByModule.put(profileModuleSnapshot, arrayList);
+            for (ValueSnapshot<?, ?> valueSnapshot : profileModuleSnapshot.getValueSnapshots()) {
+                Value<?, ?> snapshotValue = ValueComponentFactory.createSnapshotProxyValue(valueSnapshot);
+                this.registerSubModuleValues(snapshotValue);
+                GuiComponent valueComponent = ValueComponentFactory.createMainValueComponent(snapshotValue, true);
                 if (valueComponent == null) continue;
                 boolean bl = true;
-                if (valueSnapshot.W() instanceof ListValue && ((Value)(object2 = (ListValue)valueSnapshot.W())).getParent() instanceof BooleanValue && ((BooleanValue)(object = (BooleanValue)((Value)object2).getParent())).G() != null && ((BooleanValue)object).G().equals(object2)) {
+                if (valueSnapshot.getSourceValue() instanceof ListValue && ((Value)(object2 = (ListValue)valueSnapshot.getSourceValue())).getParent() instanceof BooleanValue && ((BooleanValue)(object = (BooleanValue)((Value)object2).getParent())).getTerminalDependentValue() != null && ((BooleanValue)object).getTerminalDependentValue().equals(object2)) {
                     bl = false;
                 }
-                valueComponent.P(true);
-                valueComponent.q(182.0);
-                valueComponent.C(0.0);
-                FlowLayoutComponent flowLayoutComponent = new FlowLayoutComponent(U);
+                valueComponent.setUseExplicitWidth(true);
+                valueComponent.setExplicitWidth(182.0);
+                valueComponent.setHorizontalInset(0.0);
+                FlowLayoutComponent flowLayoutComponent = new FlowLayoutComponent(SETTING_ROW_WIDTH);
                 flowLayoutComponent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-                ProfileSnapshotValueResetButtonComponent resetButton = new ProfileSnapshotValueResetButtonComponent(this, b, this.u, 0.75, 11.0, 11.0, valueComponent, valueSnapshot);
-                resetButton.Z(!snapshotValue.k());
-                ((InteractiveComponent)resetButton).s(() -> this.lambda$createProxyValues$0(valueSnapshot));
+                ProfileSnapshotValueResetButtonComponent resetButton = new ProfileSnapshotValueResetButtonComponent(RESET_ICON, this.resetButtonColor, 0.75, 11.0, 11.0, valueComponent, valueSnapshot);
+                resetButton.setVisible(!snapshotValue.isDefault());
+                ((InteractiveComponent)resetButton).setClickListener(() -> this.resetValue((Value<?, ?>)valueSnapshot.getSourceValue()));
                 if (bl) {
                     flowLayoutComponent.h(valueComponent, new Object[0]);
                     flowLayoutComponent.h(resetButton, new Object[0]);
                     arrayList.add(flowLayoutComponent);
                 }
-                this.H.put((Value<?, ?>)valueSnapshot.W(), snapshotValue);
-                if (((Value)valueSnapshot.W()).getParent() != null) {
-                    this.O.put(snapshotValue, ((Value)valueSnapshot.W()).getParent());
+                this.proxyBySourceValue.put((Value<?, ?>)valueSnapshot.getSourceValue(), snapshotValue);
+                if (((Value)valueSnapshot.getSourceValue()).getParent() != null) {
+                    this.parentByProxyValue.put(snapshotValue, ((Value)valueSnapshot.getSourceValue()).getParent());
                 }
-                this.M.put(snapshotValue, valueSnapshot);
+                this.snapshotByProxyValue.put(snapshotValue, valueSnapshot);
                 if (!bl) continue;
-                this.g.put(snapshotValue, valueComponent);
+                this.componentByProxyValue.put(snapshotValue, valueComponent);
             }
-            for (Value value3 : this.O.keySet()) {
+            for (Value value3 : this.parentByProxyValue.keySet()) {
                 ConditionalValue conditionalValue;
-                value2 = this.O.get(value3);
+                value2 = this.parentByProxyValue.get(value3);
                 if (value2 == null) continue;
-                value = this.H.get(value2);
+                value = this.proxyBySourceValue.get(value2);
                 if (value instanceof ConditionalValue) {
                     conditionalValue = (ConditionalValue)value;
-                    conditionalValue.K(value3);
+                    conditionalValue.addDependentValues(value3);
                 }
                 if (!(value3 instanceof ListValue) || !(value instanceof BooleanValue)) continue;
                 conditionalValue = (BooleanValue)value;
                 object2 = (ListValue)value3;
-                ((BooleanValue)conditionalValue).l((ListValue)object2);
-                object = this.g.get(conditionalValue);
+                ((BooleanValue)conditionalValue).setCompactListValue((ListValue)object2);
+                object = this.componentByProxyValue.get(conditionalValue);
                 if (!(object instanceof BooleanToggleComponent)) continue;
                 BooleanToggleComponent booleanToggleComponent = (BooleanToggleComponent)object;
-                booleanToggleComponent.Z$src$V$1e3oa11();
-                booleanToggleComponent.G$src$Lgg_vape_ui_click_component_value_CompactListVal$1o8zcka().X(true);
+                booleanToggleComponent.initializeCompactListComponent();
+                booleanToggleComponent.getCompactListComponent().setUseAnchoredPopup(true);
             }
         }
     }
 
-    private void O(ModeValue modeValue) {
+    private void registerSubModuleValues(ModeValue modeValue) {
         for (ModeSelection modeSelection : modeValue.getModes()) {
             if (!(modeSelection instanceof SubModuleValue)) continue;
             SubModuleValue subModuleValue = (SubModuleValue)modeSelection;
             for (Value<?, ?> value : ((Mod)subModuleValue.getInstance()).V()) {
-                Value<?, ?> value2 = this.H.get(value);
+                Value<?, ?> value2 = this.proxyBySourceValue.get(value);
                 if (value2 == null) continue;
-                modeValue.L(value2, subModuleValue);
+                modeValue.addActiveMode(value2, subModuleValue);
             }
         }
     }
 
-    private void lambda$createProxyValues$0(ValueSnapshot valueSnapshot) {
-        this.v((Value<?, ?>)valueSnapshot.W());
-    }
-
-
-    public void G(ProfileModuleSnapshot profileModuleSnapshot) {
-        for (ValueSnapshot<?, ?> valueSnapshot : profileModuleSnapshot.z()) {
-            this.v((Value<?, ?>)valueSnapshot.W());
+    public void resetModule(ProfileModuleSnapshot moduleSnapshot) {
+        for (ValueSnapshot<?, ?> valueSnapshot : moduleSnapshot.getValueSnapshots()) {
+            this.resetValue((Value<?, ?>)valueSnapshot.getSourceValue());
         }
-        profileModuleSnapshot.T();
-        profileModuleSnapshot.L(false);
+        moduleSnapshot.resetBind();
+        moduleSnapshot.setEnabled(false);
     }
 
-    public void H() {
-        for (ProfileModuleSnapshot profileModuleSnapshot : this.D.L()) {
-            this.G(profileModuleSnapshot);
+    public void resetAllModules() {
+        for (ProfileModuleSnapshot moduleSnapshot : this.snapshot.getAllModules()) {
+            this.resetModule(moduleSnapshot);
         }
     }
 
-    private void i(Value<?, ?> value) {
+    private void registerSubModuleValues(Value<?, ?> value) {
         if (value instanceof ModeValue) {
-            this.O((ModeValue)value);
+            this.registerSubModuleValues((ModeValue)value);
         }
     }
 }

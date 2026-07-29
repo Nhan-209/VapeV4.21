@@ -28,13 +28,14 @@ import org.lwjgl.opengl.GL11;
 
 public class BlockInRenderModule
 extends Mod {
-    private BlockPlacementGraph J;
-    private EntityPlayer j;
-    private BlockPathPlanner c;
-    private static final long t = 4400050581515796479L;
-    private final Color r;
-    private BlockPlacementGraph o;
-    private final Color p = new Color(0, 0, 0, 150);
+    private static final long MODULE_ID = 4400050581515796479L;
+
+    private BlockPlacementGraph expectedPreUpdateSnapshot;
+    private EntityPlayer simulatedPlayer;
+    private BlockPathPlanner planner;
+    private final Color outlineColor;
+    private BlockPlacementGraph actualPreUpdateSnapshot;
+    private final Color fillColor = new Color(0, 0, 0, 150);
 
     @Override
     public void onEnable() {
@@ -42,58 +43,56 @@ extends Mod {
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void f(EventPreEntityUpdate eventPreEntityUpdate) {
+    public void onPreEntityUpdate(EventPreEntityUpdate eventPreEntityUpdate) {
         GameSettings gameSettings = eventPreEntityUpdate.getGameSettings();
         EntityPlayerSP entityPlayerSP = eventPreEntityUpdate.getThePlayer();
         World world = entityPlayerSP.getWorld();
         if (entityPlayerSP.isNull() || world.isNull()) {
             return;
         }
-        this.o = new BlockPlacementGraph(entityPlayerSP);
-        if (this.c == null) {
-            this.c = new BlockPathPlanner(entityPlayerSP, entityPlayerSP, world, this.o);
-            this.c.U(this.o);
-            this.j = this.c.T();
-            MouseRotationController mouseRotationController = this.N(entityPlayerSP);
+        this.actualPreUpdateSnapshot = new BlockPlacementGraph(entityPlayerSP);
+        if (this.planner == null) {
+            this.planner = new BlockPathPlanner(
+                    entityPlayerSP, entityPlayerSP, world, this.actualPreUpdateSnapshot);
+            this.planner.applySnapshot(this.actualPreUpdateSnapshot);
+            this.simulatedPlayer = this.planner.getSimulatedPlayer();
+            MouseRotationController mouseRotationController = this.copyAdaptiveRotationController(entityPlayerSP);
             if (mouseRotationController != null) {
-                this.c.y(mouseRotationController);
+                this.planner.setRotationController(mouseRotationController);
             }
         }
-        this.j.H(entityPlayerSP.J());
-        this.j.l(entityPlayerSP.D());
-        this.j.C(entityPlayerSP.V());
-        this.j.D(entityPlayerSP.j());
-        this.j.z(entityPlayerSP.s());
-        this.j.o(entityPlayerSP.P$src$F$14ztfk8());
-        boolean bl = gameSettings.Y().u();
-        boolean bl2 = gameSettings.s().u();
-        boolean bl3 = gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg().u();
-        boolean bl4 = gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3().u();
-        boolean bl5 = gameSettings.O().u();
-        boolean bl6 = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0().u();
-        boolean bl7 = gameSettings.r().u();
-        this.c.e(bl, bl2, bl3, bl4, bl5, bl6);
-        this.c.r(bl7);
-        this.J = new BlockPlacementGraph(this.c);
-        this.c.I(false);
+        this.simulatedPlayer.H(entityPlayerSP.J());
+        this.simulatedPlayer.l(entityPlayerSP.D());
+        this.simulatedPlayer.C(entityPlayerSP.V());
+        this.simulatedPlayer.D(entityPlayerSP.j());
+        this.simulatedPlayer.z(entityPlayerSP.s());
+        this.simulatedPlayer.o(entityPlayerSP.P$src$F$14ztfk8());
+        boolean forward = gameSettings.Y().u();
+        boolean backward = gameSettings.s().u();
+        boolean left = gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg().u();
+        boolean right = gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3().u();
+        boolean jump = gameSettings.O().u();
+        boolean sneak = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0().u();
+        boolean sprint = gameSettings.r().u();
+        this.planner.setInput(forward, backward, left, right, jump, sneak);
+        this.planner.setSprintKeyDown(sprint);
+        this.expectedPreUpdateSnapshot = new BlockPlacementGraph(this.planner);
+        this.planner.simulateTick(false);
     }
 
     @EventHandler(A=EventPriority.HIGHEST)
-    public void U(EventPostEntityUpdate eventPostEntityUpdate) {
+    public void onPostEntityUpdate(EventPostEntityUpdate eventPostEntityUpdate) {
         EntityPlayerSP entityPlayerSP = eventPostEntityUpdate.getThePlayer();
-        if (entityPlayerSP.isNull() || this.c == null) {
+        if (entityPlayerSP.isNull() || this.planner == null) {
             return;
         }
-        BlockPlacementGraph blockPlacementGraph = new BlockPlacementGraph(entityPlayerSP);
-        BlockPlacementGraph blockPlacementGraph2 = new BlockPlacementGraph(this.c);
-        this.c.d();
-        boolean bl = false;
-        if (!this.o.Q(this.J)) {
-            bl = true;
+        BlockPlacementGraph actualPostUpdateSnapshot = new BlockPlacementGraph(entityPlayerSP);
+        BlockPlacementGraph simulatedPostUpdateSnapshot = new BlockPlacementGraph(this.planner);
+        this.planner.updateRotation();
+        if (!this.actualPreUpdateSnapshot.matchesSimulationState(this.expectedPreUpdateSnapshot)) {
             Vape.debugLog("PRE UPDATE SNAPSHOT IS OFF");
         }
-        if (!blockPlacementGraph.Q(blockPlacementGraph2)) {
-            bl = true;
+        if (!actualPostUpdateSnapshot.matchesSimulationState(simulatedPostUpdateSnapshot)) {
             Vape.debugLog("POST UPDATE SNAPSHOT IS OFF");
         }
     }
@@ -102,26 +101,26 @@ extends Mod {
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {
         EntityPlayerSP entityPlayerSP = eventRender3D.getThePlayer();
-        if (entityPlayerSP.isNull() || this.c == null) {
+        if (entityPlayerSP.isNull() || this.planner == null) {
             return;
         }
-        this.K(eventRender3D);
+        this.renderSimulatedPlayer();
     }
 
     public BlockInRenderModule() {
-        super("Simulation", (int)t, Category.Y);
-        this.r = new Color(255, 255, 255, 150);
+        super("Simulation", (int)MODULE_ID, Category.Y);
+        this.outlineColor = new Color(255, 255, 255, 150);
     }
 
-    public MouseRotationController N(EntityPlayer entityPlayer) {
-        MouseRotationController mouseRotationController = RotationManager.b.w();
+    private MouseRotationController copyAdaptiveRotationController(EntityPlayer entityPlayer) {
+        MouseRotationController mouseRotationController = RotationManager.INSTANCE.getActiveController();
         if (mouseRotationController == null) {
             return null;
         }
         if (mouseRotationController instanceof AdaptiveRotationController) {
             AdaptiveRotationController adaptiveRotationController = (AdaptiveRotationController)mouseRotationController;
             AdaptiveRotationController adaptiveRotationController2 = new AdaptiveRotationController(entityPlayer);
-            adaptiveRotationController2.I(adaptiveRotationController);
+            adaptiveRotationController2.copyFrom(adaptiveRotationController);
             return adaptiveRotationController2;
         }
         return null;
@@ -129,59 +128,61 @@ extends Mod {
 
     @Override
     public void onDisable() {
-        if (this.c != null) {
-            this.c = null;
-            this.j = null;
+        if (this.planner != null) {
+            this.planner = null;
+            this.simulatedPlayer = null;
             Vape.debugLog("\n\nSimulation test module disabled, simulator reset.\n");
         }
     }
 
-    private void K(EventRender3D eventRender3D) {
-        double d;
-        double d2;
-        double d3;
-        double d4 = this.j.z();
-        double d5 = this.j.N();
-        double d6 = this.j.h();
-        double d7 = this.j.f();
-        double d8 = this.j.H();
-        double d9 = this.j.R();
-        float f = Minecraft.getTimer().renderPartialTicks();
-        float f2 = this.j.j() + (this.j.J() - this.j.j()) * f;
-        double d10 = d7 + (d4 - d7) * (double)f;
-        double d11 = d8 + (d5 - d8) * (double)f;
-        double d12 = d9 + (d6 - d9) * (double)f;
+    private void renderSimulatedPlayer() {
+        double currentX = this.simulatedPlayer.z();
+        double currentY = this.simulatedPlayer.N();
+        double currentZ = this.simulatedPlayer.h();
+        double previousX = this.simulatedPlayer.f();
+        double previousY = this.simulatedPlayer.H();
+        double previousZ = this.simulatedPlayer.R();
+        float partialTicks = Minecraft.getTimer().renderPartialTicks();
+        double renderX = previousX + (currentX - previousX) * partialTicks;
+        double renderY = previousY + (currentY - previousY) * partialTicks;
+        double renderZ = previousZ + (currentZ - previousZ) * partialTicks;
         RenderUtil.d();
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().B(1.0);
         RenderUtils.g();
-        OpenGlBackendHolder.d.l(3042);
+        OpenGlBackendHolder.backend.enableCapability(3042);
         GL11.glBlendFunc((int)770, (int)771);
-        OpenGlBackendHolder.d.r(1.5f);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-        OpenGlBackendHolder.d.l(2848);
-        OpenGlBackendHolder.d.u$src$V$hntn98(2929);
+        OpenGlBackendHolder.backend.setLineWidth(1.5f);
+        OpenGlBackendHolder.backend.disableCapability(3553);
+        OpenGlBackendHolder.backend.enableCapability(2848);
+        OpenGlBackendHolder.backend.disableCapability(2929);
         GL11.glDepthMask((boolean)false);
+        double renderCameraX;
+        double renderCameraY;
+        double renderCameraZ;
         if (ForgeVersion.MC_1_20_6.d()) {
-            d3 = RenderManager.getInterpolatedRenderPosX();
-            d2 = RenderManager.getInterpolatedRenderPosY();
-            d = RenderManager.getInterpolatedRenderPosZ();
+            renderCameraX = RenderManager.getInterpolatedRenderPosX();
+            renderCameraY = RenderManager.getInterpolatedRenderPosY();
+            renderCameraZ = RenderManager.getInterpolatedRenderPosZ();
         } else {
             RenderManager renderManager = Minecraft.D();
-            d3 = renderManager.getRenderPosX();
-            d2 = renderManager.getRenderPosY();
-            d = renderManager.getRenderPosZ();
+            renderCameraX = renderManager.getRenderPosX();
+            renderCameraY = renderManager.getRenderPosY();
+            renderCameraZ = renderManager.getRenderPosZ();
         }
-        double d13 = this.j.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMaxX() - this.j.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinX() + (double)this.j.b();
-        double d14 = d13 / 2.0;
-        RenderUtil.u(d10 - d14, d11, d12 - d14, d13, this.j.Y(), d13, 1.5, this.p, this.r, d3, d2, d);
+        double width = this.simulatedPlayer.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMaxX()
+                - this.simulatedPlayer.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().getMinX()
+                + this.simulatedPlayer.b();
+        double halfWidth = width / 2.0;
+        RenderUtil.u(renderX - halfWidth, renderY, renderZ - halfWidth,
+                width, this.simulatedPlayer.Y(), width, 1.5,
+                this.fillColor, this.outlineColor, renderCameraX, renderCameraY, renderCameraZ);
         GL11.glDepthMask((boolean)true);
-        OpenGlBackendHolder.d.l(2929);
-        OpenGlBackendHolder.d.l(3553);
-        OpenGlBackendHolder.d.u$src$V$hntn98(2848);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3042);
+        OpenGlBackendHolder.backend.enableCapability(2929);
+        OpenGlBackendHolder.backend.enableCapability(3553);
+        OpenGlBackendHolder.backend.disableCapability(2848);
+        OpenGlBackendHolder.backend.disableCapability(3042);
         RenderUtils.f();
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
         RenderUtil.Y();
     }
 }
-

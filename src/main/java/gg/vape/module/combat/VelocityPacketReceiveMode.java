@@ -21,7 +21,6 @@ import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.Packet;
 import gg.vape.wrapper.impl.PotionRegistry;
 import gg.vape.wrapper.impl.SPacketEntityVelocity;
-import gg.vape.wrapper.impl.World;
 import java.util.Random;
 
 public class VelocityPacketReceiveMode
@@ -40,7 +39,6 @@ extends Mod {
     private final Random random = new Random();
 
     private boolean shouldReduce() {
-        int roll;
         if (this.jumping) {
             return false;
         }
@@ -50,31 +48,32 @@ extends Mod {
         if (this.isInWater()) {
             return false;
         }
-        if (this.onlyWhenTargeting.L().booleanValue()) {
-            EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            boolean facingYaw = RotationUtil.H(entityPlayerSP);
-            boolean facingPitch = RotationUtil.F(entityPlayerSP);
+        if (this.onlyWhenTargeting.getEffectiveValue().booleanValue()) {
+            EntityPlayerSP player = Minecraft.thePlayer();
+            boolean facingYaw = RotationUtil.H(player);
+            boolean facingPitch = RotationUtil.F(player);
             if (!facingYaw || !facingPitch) {
                 return false;
             }
         }
-        return (double)(roll = MathUtil.randomExclusiveUpper(this.random, 0, 100)) >= 100.0 - (Double)this.chance.K();
+        int roll = MathUtil.randomExclusiveUpper(this.random, 0, 100);
+        return roll >= 100.0 - (Double)this.chance.getValue();
     }
 
     @EventHandler
-    public void onPacketReceive(EventPacketReceive eventPacketReceive) {
+    public void onPacketReceive(EventPacketReceive event) {
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        Packet packet = eventPacketReceive.getPacket();
+        Packet packet = event.getPacket();
         Packet.n(packet, this::handleVelocityPacket);
     }
 
     @EventHandler
-    public void onPlayerTick(EventPostPlayerTick eventPostPlayerTick) {
+    public void onPlayerTick(EventPostPlayerTick event) {
         if (this.jumping) {
-            KeyBinding keyBinding = Minecraft.gameSettings().O();
-            ClientSettings.b(keyBinding, false);
+            KeyBinding jumpKey = Minecraft.gameSettings().O();
+            ClientSettings.b(jumpKey, false);
             Minecraft.gameSettings().O().setPressed(false);
             if (ForgeVersion.MC_1_21_4.v()) {
                 Minecraft.thePlayer().movementInput().V(false);
@@ -84,18 +83,17 @@ extends Mod {
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        int[] nArray = World.a();
-        if (entityPlayerSP.isNull()) {
+    public void onTick(EventPreTick event) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return;
         }
         if (!this.waitingForReset) {
             return;
         }
-        double posX = MathUtil.roundToScale(entityPlayerSP.t(), 3);
-        double posY = MathUtil.roundToScale(entityPlayerSP.q(), 3);
-        double posZ = MathUtil.roundToScale(entityPlayerSP.T(), 3);
+        double posX = MathUtil.roundToScale(player.t(), 3);
+        double posY = MathUtil.roundToScale(player.q(), 3);
+        double posZ = MathUtil.roundToScale(player.T(), 3);
         double expectedX = MathUtil.roundToScale(this.motionX, 3);
         double expectedY = MathUtil.roundToScale(this.motionY, 3);
         double expectedZ = MathUtil.roundToScale(this.motionZ, 3);
@@ -111,24 +109,24 @@ extends Mod {
     }
 
     public boolean isInWater() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return true;
         }
-        return this.waterCheck.L() != false && entityPlayerSP.h$src$Z$ftwoya();
+        return this.waterCheck.getEffectiveValue() && player.h$src$Z$ftwoya();
     }
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
+    public void onTick(EventPrePlayerTick event) {
         if (this.shouldJump) {
-            double accuracyChance;
             float roll = MathUtil.randomExclusiveUpper(this.random, 0, 100);
-            if ((double)roll < 100.0 - (accuracyChance = this.accuracy.B())) {
+            double accuracyChance = this.accuracy.getRandomValue();
+            if (roll < 100.0 - accuracyChance) {
                 return;
             }
-            KeyBinding keyBinding = Minecraft.gameSettings().O();
-            ClientSettings.b(keyBinding, true);
-            keyBinding.setPressed(true);
+            KeyBinding jumpKey = Minecraft.gameSettings().O();
+            ClientSettings.b(jumpKey, true);
+            jumpKey.setPressed(true);
             if (ForgeVersion.MC_1_21_4.v()) {
                 Minecraft.thePlayer().movementInput().V(true);
             }
@@ -138,32 +136,36 @@ extends Mod {
     }
 
     private void handleVelocityPacket(Packet packet) {
-        SPacketEntityVelocity sPacketEntityVelocity;
-        if (packet.isInstance(MappedClasses.YX) && (sPacketEntityVelocity = new SPacketEntityVelocity(packet)).getEntityId() == Minecraft.thePlayer().S()) {
-            boolean upward;
-            boolean upwardFlag = upward = sPacketEntityVelocity.getMotionX() == 0 && sPacketEntityVelocity.getMotionZ() == 0 || sPacketEntityVelocity.getMotionY() < 0;
-            if (!upward && this.shouldReduce()) {
-                this.motionX = (double)sPacketEntityVelocity.getMotionX() / 8000.0;
-                this.motionY = (double)sPacketEntityVelocity.getMotionY() / 8000.0;
-                this.motionZ = (double)sPacketEntityVelocity.getMotionZ() / 8000.0;
-                this.waitingForReset = true;
-            }
+        if (!packet.isInstance(MappedClasses.YX)) {
+            return;
+        }
+        SPacketEntityVelocity velocityPacket = new SPacketEntityVelocity(packet);
+        if (velocityPacket.getEntityId() != Minecraft.thePlayer().S()) {
+            return;
+        }
+        boolean unsuitableVelocity = velocityPacket.getMotionX() == 0 && velocityPacket.getMotionZ() == 0
+                || velocityPacket.getMotionY() < 0;
+        if (!unsuitableVelocity && this.shouldReduce()) {
+            this.motionX = velocityPacket.getMotionX() / 8000.0;
+            this.motionY = velocityPacket.getMotionY() / 8000.0;
+            this.motionZ = velocityPacket.getMotionZ() / 8000.0;
+            this.waitingForReset = true;
         }
     }
 
     @Override
-    public String r() {
-        return this.chance.c() + "%";
+    public String getDetailedSuffix() {
+        return this.chance.getDisplayValue() + "%";
     }
 
     public VelocityPacketReceiveMode() {
         super("JumpReset", (int)MODULE_ID, Category.g, "Reduces knockback taken by jumping when hit");
         this.onlyWhenTargeting = BooleanValue.create(this, "Only when targeting", false, "Only reduce knockback while being face to face with opponent");
-        this.accuracy = RandomValue.G(this, "Accuracy", "#", "%", 0.0, 40.0, 60.0, 100.0, 1.0, "If you will jump, this is the chance that you will actually land a perfect jump reset on time");
-        this.chance = NumberValue.E(this, "Chance", "#", "%", 0.0, 40.0, 100.0, "Chance of reducing knockback");
+        this.accuracy = RandomValue.createWithDescription(this, "Accuracy", "#", "%", 0.0, 40.0, 60.0, 100.0, 1.0, "If you will jump, this is the chance that you will actually land a perfect jump reset on time");
+        this.chance = NumberValue.createWithDescription(this, "Chance", "#", "%", 0.0, 40.0, 100.0, "Chance of reducing knockback");
         this.waterCheck = BooleanValue.create(this, "Water check", false, "Won't reduce knockback if in water");
         this.addValue(this.chance, this.accuracy, this.onlyWhenTargeting, this.waterCheck);
-        this.chance.C(0);
+        this.chance.setMaximumFractionDigits(0);
     }
 
 }

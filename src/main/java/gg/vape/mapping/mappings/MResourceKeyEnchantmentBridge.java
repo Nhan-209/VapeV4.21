@@ -42,7 +42,7 @@ extends Mapping {
         MResourceKeyEnchantmentBridge mResourceKeyEnchantmentBridge = this;
         this.O = this.u(string, bl, clazz);
         if (MResourceKeyEnchantmentBridge.O()) {
-            GuiComponent.D(new GuiComponent[1]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[1]);
             return;
         }
     }

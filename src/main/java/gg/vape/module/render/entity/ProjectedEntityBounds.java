@@ -7,22 +7,20 @@ import gg.vape.wrapper.impl.Entity;
 import java.awt.Color;
 
 public class ProjectedEntityBounds {
-    public double r = -100.0;
-    public double I = -100.0;
-    public double g = -100.0;
-    public double V = -100.0;
-    public final Entity y;
-    public double H = -100.0;
-    public final Color U;
-    public final RenderEntityContext c;
-    public final boolean L;
-    public double m = -100.0;
+    public double minX = -100.0;
+    public double minY = -100.0;
+    public double maxY = -100.0;
+    public double maxX = -100.0;
+    public final Entity entity;
+    public final Color color;
+    public final RenderEntityContext context;
+    public final boolean onScreen;
 
 
     public ProjectedEntityBounds(double offsetX, double offsetY, double offsetZ, AxisAlignedBB axisAlignedBB, Entity entity, RenderEntityContext renderEntityContext, Color color) {
-        this.y = entity;
-        this.c = renderEntityContext;
-        this.U = color;
+        this.entity = entity;
+        this.context = renderEntityContext;
+        this.color = color;
         double[] corner0 = RenderUtil.W(offsetX + axisAlignedBB.getMinX(), offsetY + axisAlignedBB.getMinY(), offsetZ + axisAlignedBB.getMinZ());
         double[] corner1 = RenderUtil.W(offsetX + axisAlignedBB.getMaxX(), offsetY + axisAlignedBB.getMinY(), offsetZ + axisAlignedBB.getMinZ());
         double[] corner2 = RenderUtil.W(offsetX + axisAlignedBB.getMaxX(), offsetY + axisAlignedBB.getMinY(), offsetZ + axisAlignedBB.getMaxZ());
@@ -31,8 +29,8 @@ public class ProjectedEntityBounds {
         double[] corner5 = RenderUtil.W(offsetX + axisAlignedBB.getMaxX(), offsetY + axisAlignedBB.getMaxY(), offsetZ + axisAlignedBB.getMinZ());
         double[] corner6 = RenderUtil.W(offsetX + axisAlignedBB.getMaxX(), offsetY + axisAlignedBB.getMaxY(), offsetZ + axisAlignedBB.getMaxZ());
         double[] corner7 = RenderUtil.W(offsetX + axisAlignedBB.getMinX(), offsetY + axisAlignedBB.getMaxY(), offsetZ + axisAlignedBB.getMaxZ());
-        boolean onScreen = this.L = corner0 != null && corner0[2] >= 0.0 && corner0[2] < 1.0 && corner1[2] >= 0.0 && corner1[2] < 1.0 && corner2[2] >= 0.0 && corner2[2] < 1.0 && corner3[2] >= 0.0 && corner3[2] < 1.0 && corner4[2] >= 0.0 && corner4[2] < 1.0 && corner5[2] >= 0.0 && corner5[2] < 1.0 && corner6[2] >= 0.0 && corner6[2] < 1.0 && corner7[2] >= 0.0 && corner7[2] < 1.0;
-        if (!this.L) {
+        this.onScreen = corner0 != null && corner0[2] >= 0.0 && corner0[2] < 1.0 && corner1[2] >= 0.0 && corner1[2] < 1.0 && corner2[2] >= 0.0 && corner2[2] < 1.0 && corner3[2] >= 0.0 && corner3[2] < 1.0 && corner4[2] >= 0.0 && corner4[2] < 1.0 && corner5[2] >= 0.0 && corner5[2] < 1.0 && corner6[2] >= 0.0 && corner6[2] < 1.0 && corner7[2] >= 0.0 && corner7[2] < 1.0;
+        if (!this.onScreen) {
             return;
         }
         double minX = corner0[0];
@@ -57,10 +55,10 @@ public class ProjectedEntityBounds {
             if (!(y > maxY)) continue;
             maxY = y;
         }
-        this.r = minX;
-        this.I = minY;
-        this.V = maxX;
-        this.g = maxY;
+        this.minX = minX;
+        this.minY = minY;
+        this.maxX = maxX;
+        this.maxY = maxY;
     }
 }
 

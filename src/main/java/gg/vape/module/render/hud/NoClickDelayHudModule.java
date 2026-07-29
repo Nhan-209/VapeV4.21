@@ -11,12 +11,12 @@ import gg.vape.wrapper.impl.Minecraft;
 public class NoClickDelayHudModule
 extends HudModule {
     public NoClickDelayHudModule() {
-        super("NoClickDelay", HudModuleGroup.T, "no_click_delay2");
+        super("NoClickDelay", HudModuleGroup.GAME, "no_click_delay2");
         this.setSuffix("Removes the click delay that normally occurs after missing an attack");
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
+    public void onTick(EventPreTick event) {
         if (ForgeVersion.MC_1_8_9.d() && ClientSettings.M() && Minecraft.currentScreen().isNull()) {
             Minecraft.r(0);
         }

@@ -54,12 +54,12 @@ extends GuiComponent {
     }
 
     private Color R(Mod mod) {
-        ModeSelection modeSelection = (ModeSelection)this.i.v.K();
-        if (modeSelection.equals(this.i.r)) {
+        ModeSelection modeSelection = (ModeSelection)this.i.colorMode.getValue();
+        if (modeSelection.equals(this.i.matchGuiColor)) {
             return J.z();
         }
-        if (modeSelection.equals(this.i.F)) {
-            return this.i.k.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+        if (modeSelection.equals(this.i.customColor)) {
+            return this.i.textGuiColor.getMutableColor();
         }
         return new Color(mod.h());
     }
@@ -93,7 +93,7 @@ extends GuiComponent {
             textGuiModuleRenderState.f(1.0f);
             this.O.put(mod, textGuiModuleRenderState);
         }
-        if (!this.Q.hasTimeElapsed(10L) && this.i.I.L().booleanValue()) {
+        if (!this.Q.hasTimeElapsed(10L) && this.i.animations.getEffectiveValue().booleanValue()) {
             return;
         }
         this.Q.reset();
@@ -101,7 +101,7 @@ extends GuiComponent {
             TextGuiModuleRenderState textGuiModuleRenderState2;
             textGuiModuleRenderState = this.O.get(mod);
             if (TextGuiModuleRenderState.h(textGuiModuleRenderState)) continue;
-            if (!this.i.I.L().booleanValue()) {
+            if (!this.i.animations.getEffectiveValue().booleanValue()) {
                 if (TextGuiModuleRenderState.a(textGuiModuleRenderState)) {
                     TextGuiModuleRenderState.f(textGuiModuleRenderState, 1.0f);
                     textGuiModuleRenderState.T(true);
@@ -139,25 +139,25 @@ extends GuiComponent {
         this.Q = new TimerUtil();
         this.BY = new TextGuiModuleComparator(this);
         this.v = textGuiSettingsFrame;
-        this.P(true);
-        this.W(true);
+        this.setUseExplicitWidth(true);
+        this.setUseExplicitHeight(true);
     }
 
     @Override
     public double C() {
         int n = this.R();
-        if (n == 0 && !ClientSettings.fW.P && HudModuleConfigFrameBase.h$src$Z$1tlh1co()) {
+        if (n == 0 && !ClientSettings.INSTANCE.inputEnabled && HudModuleConfigFrameBase.isHudEditorContext()) {
             return this.o(3);
         }
         return this.o(n);
     }
 
     private void f(List<Mod> list) {
-        float f = ((Double)this.i.A.K()).floatValue();
+        float f = ((Double)this.i.scale.getValue()).floatValue();
         this.b = this.w((int)(16.0f * f));
         int n = !this.q$src$Z$emgut() ? 14 : 16;
         this.K = this.w((int)((float)n * f));
-        switch (((ModeSelection)this.i.s.K()).getName()) {
+        switch (((ModeSelection)this.i.sortMode.getValue()).getName()) {
             case "Alphabetical": {
                 list.sort(new NameComparator());
                 break;
@@ -178,14 +178,14 @@ extends GuiComponent {
 
     @Override
     public double x() {
-        float f = ((Double)this.i.A.K()).floatValue();
+        float f = ((Double)this.i.scale.getValue()).floatValue();
         return this.G + (double)(7.0f * f) + 2.0;
     }
 
     private int R() {
         int n = 0;
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-            if (!mod.r$src$Z$14eylz9() || mod.h() == 0 || !mod.q$src$Z$12h8h4c() || this.i.c.L().booleanValue() && this.i.O.w(mod.getName(), false)) continue;
+            if (!mod.r$src$Z$14eylz9() || mod.h() == 0 || !mod.q$src$Z$12h8h4c() || this.i.hideModules.getEffectiveValue().booleanValue() && this.i.hiddenModules.matches(mod.getName(), false)) continue;
             ++n;
         }
         for (Mod mod : this.O.keySet()) {
@@ -199,7 +199,7 @@ extends GuiComponent {
     @Override
     public void e(GuiMouseEvent guiMouseEvent) {
         super.e(guiMouseEvent);
-        if (!this.i.J.L().booleanValue() || ClientSettings.fW.P) {
+        if (!this.i.clickDisable.getEffectiveValue().booleanValue() || ClientSettings.INSTANCE.inputEnabled) {
             return;
         }
         for (Mod mod : this.O.keySet()) {
@@ -219,7 +219,7 @@ extends GuiComponent {
     }
 
     private boolean q$src$Z$emgut() {
-        return this.i.S.L() == false;
+        return this.i.smoothFont.getEffectiveValue() == false;
     }
 
     private void L(boolean bl) {
@@ -228,13 +228,13 @@ extends GuiComponent {
         int n;
         boolean bl2;
         MousePosition mousePosition = RenderUtils.h();
-        float f2 = ((Double)this.i.A.K()).floatValue();
+        float f2 = ((Double)this.i.scale.getValue()).floatValue();
         double d = Vape.INSTANCE.getClientSettings().s();
         f2 = (float)((double)f2 * d);
         SmoothFontRenderer smoothFontRenderer = this.w((int)(16.0f * f2));
         int n2 = !this.q$src$Z$emgut() ? 14 : 16;
         SmoothFontRenderer smoothFontRenderer2 = this.w((int)((float)n2 * f2));
-        float f3 = this.v.N$src$Z$1ad1ggw() ? (float)this.n() : (bl ? (float)(this.n() - this.v.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L()) : (float)(this.n() + 4.0));
+        float f3 = this.v.isManagedByClickGui() ? (float)this.n() : (bl ? (float)(this.n() - this.v.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L()) : (float)(this.n() + 4.0));
         float f4 = f3;
         double d2 = this.v.A();
         boolean bl3 = bl2 = this.G$src$D$1b2f02a() + d2 / 2.0 >= (double)(Minecraft.J() / 4) / Vape.INSTANCE.getClientSettings().s();
@@ -242,11 +242,11 @@ extends GuiComponent {
             float f5;
             Object object2;
             int n3;
-            boolean bl4 = Vape.INSTANCE.getClientSettings().w.g();
+            boolean bl4 = Vape.INSTANCE.getClientSettings().w.isRainbowEnabled();
             double d3 = 10.0;
             CopyOnWriteArrayList<Mod> copyOnWriteArrayList = new CopyOnWriteArrayList<Mod>();
             for (Mod object5 : Vape.INSTANCE.getModManager().collectMods()) {
-                if (!object5.r$src$Z$14eylz9() || object5.h() == 0 || !object5.q$src$Z$12h8h4c() || this.i.c.L().booleanValue() && this.i.O.w(object5.getName(), false)) continue;
+                if (!object5.r$src$Z$14eylz9() || object5.h() == 0 || !object5.q$src$Z$12h8h4c() || this.i.hideModules.getEffectiveValue().booleanValue() && this.i.hiddenModules.matches(object5.getName(), false)) continue;
                 copyOnWriteArrayList.add(object5);
             }
             this.l(copyOnWriteArrayList);
@@ -277,11 +277,11 @@ extends GuiComponent {
             for (Mod mod : copyOnWriteArrayList) {
                 arrayList.add(mod);
                 String string = mod.getName();
-                String string2 = mod.c(this.i.v());
+                String string2 = mod.getSuffixForMode(this.i.getSuffixModeIndex());
                 double d4 = this.o(smoothFontRenderer, smoothFontRenderer2, string, string2, f2, bl2);
                 d3 = Math.max(d3, d4);
             }
-            boolean bl5 = arrayList.isEmpty() && !ClientSettings.fW.P && HudModuleConfigFrameBase.h$src$Z$1tlh1co();
+            boolean bl5 = arrayList.isEmpty() && !ClientSettings.INSTANCE.inputEnabled && HudModuleConfigFrameBase.isHudEditorContext();
             String[] stringArray = new String[]{"Example 1", "Example 2", "Example 3"};
             int n4 = n3 = bl5 ? stringArray.length : arrayList.size();
             if (bl5) {
@@ -289,37 +289,37 @@ extends GuiComponent {
                     d3 = Math.max(d3, smoothFontRenderer.Y(string, this.q$src$Z$emgut()));
                 }
             }
-            if (this.i.Z.L().booleanValue()) {
+            if (this.i.watermark.getEffectiveValue().booleanValue()) {
                 d3 = Math.max(d3, 60.0);
             }
-            if (this.i.C.L().booleanValue() && ((String)this.i.t.K()).length() > 0) {
-                String string = ((String)this.i.t.K()).replace("&", "\u00a7");
+            if (this.i.addCustomText.getEffectiveValue().booleanValue() && ((String)this.i.customText.getValue()).length() > 0) {
+                String string = ((String)this.i.customText.getValue()).replace("&", "\u00a7");
                 SmoothFontRenderer smoothFontRenderer3 = Vape.INSTANCE.getFontManager().n(FontFamily.PROXIMA, (int)(22.0f * f2), true);
                 double d5 = smoothFontRenderer3.Y(string, this.q$src$Z$emgut());
                 d3 = Math.max(d3, d5);
             }
             this.G = d3;
             double d6 = this.G$src$D$1b2f02a() + d2 - d3;
-            ClientSettings.fW.D();
-            if (this.i.Z.L().booleanValue()) {
+            ClientSettings.INSTANCE.syncRainbowHue();
+            if (this.i.watermark.getEffectiveValue().booleanValue()) {
                 float f6 = (float)(d6 + d3 - (double)(58.0f * f2));
                 float f7 = f6 + 40.0f * f2;
                 float f8 = 12.0f * f2;
-                object2 = this.v.l(J.z());
-                boolean bl6 = this.i.j.L() != false && ((Color)object2).getAlpha() == 255;
-                ImageRenderer.E((Color)object2, f6, f3, "vapelogo", f8, f8, bl6);
-                ImageRenderer.E(this.v.l(Color.WHITE), f7, f3, "v4", f8, f8, bl6);
+                object2 = this.v.applyDefaultEditorAlpha(J.z());
+                boolean bl6 = this.i.shadow.getEffectiveValue() != false && ((Color)object2).getAlpha() == 255;
+                ImageRenderer.drawImage((Color)object2, f6, f3, "vapelogo", f8, f8, bl6);
+                ImageRenderer.drawImage(this.v.applyDefaultEditorAlpha(Color.WHITE), f7, f3, "v4", f8, f8, bl6);
                 f3 += 15.0f * f2;
             }
-            if (this.i.C.L().booleanValue() && ((String)this.i.t.K()).length() > 0) {
-                String string = ((String)this.i.t.K()).replace("&", "\u00a7");
+            if (this.i.addCustomText.getEffectiveValue().booleanValue() && ((String)this.i.customText.getValue()).length() > 0) {
+                String string = ((String)this.i.customText.getValue()).replace("&", "\u00a7");
                 SmoothFontRenderer smoothFontRenderer4 = Vape.INSTANCE.getFontManager().n(FontFamily.PROXIMA, (int)(22.0f * f2), true);
                 double d7 = smoothFontRenderer4.Y(string, this.q$src$Z$emgut());
                 f5 = (float)(this.G$src$D$1b2f02a() + d2 - 4.0 - d7);
-                if (this.i.j.L().booleanValue()) {
-                    smoothFontRenderer4.V(string, f5, f3, this.v.l(this.i.o.L() != false && !Vape.INSTANCE.getClientSettings().w.g() ? this.i.Y.q$src$Lgg_vape_utils_MutableColor_$1dowyd3() : J.z()), this.q$src$Z$emgut());
+                if (this.i.shadow.getEffectiveValue().booleanValue()) {
+                    smoothFontRenderer4.V(string, f5, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().w.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
                 } else {
-                    smoothFontRenderer4.E(string, f5, f3, this.v.l(this.i.o.L() != false && !Vape.INSTANCE.getClientSettings().w.g() ? this.i.Y.q$src$Lgg_vape_utils_MutableColor_$1dowyd3() : J.z()), this.q$src$Z$emgut());
+                    smoothFontRenderer4.E(string, f5, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().w.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
                 }
                 f3 = (float)((double)f3 + (smoothFontRenderer4.R(string, this.q$src$Z$emgut()) + (double)(4.0f * f2)));
             }
@@ -328,8 +328,8 @@ extends GuiComponent {
                 return;
             }
             Color color = J.z();
-            Color color2 = this.v.l(new Color(20, 20, 20, 160));
-            boolean bl7 = this.i.a.L();
+            Color color2 = this.v.applyDefaultEditorAlpha(new Color(20, 20, 20, 160));
+            boolean bl7 = this.i.renderBackground.getEffectiveValue();
             float[] hsbColor = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), new float[3]);
             float hue = hsbColor[0];
             int n5 = -1;
@@ -356,22 +356,22 @@ extends GuiComponent {
                 if (bl5) {
                     string3 = stringArray[i];
                     string = "";
-                    mutableColor = new MutableColor(this.v.l(J.z()));
+                    mutableColor = new MutableColor(this.v.applyDefaultEditorAlpha(J.z()));
                     bl9 = false;
                 } else {
                     bl9 = this.I.contains(mod);
                     string3 = mod.getName();
-                    string = mod.c(this.i.v());
+                    string = mod.getSuffixForMode(this.i.getSuffixModeIndex());
                     if (bl9) {
                         string = "\u00a77| Disabled";
                     }
-                    mutableColor = new MutableColor(this.v.l(this.R(mod)));
+                    mutableColor = new MutableColor(this.v.applyDefaultEditorAlpha(this.R(mod)));
                     if (bl4) {
                         if ((hue -= 0.025f) <= 0.0f) {
                             hue = 1.0f;
                         }
                         hsbColor[0] = hue;
-                        mutableColor = new MutableColor(this.v.l(ColorUtil.l(hue, hsbColor[1], hsbColor[2], 4)));
+                        mutableColor = new MutableColor(this.v.applyDefaultEditorAlpha(ColorUtil.createReadableHsbColor(hue, hsbColor[1], hsbColor[2], 4)));
                     }
                 }
                 double d12 = this.o(smoothFontRenderer, smoothFontRenderer2, string3, string, f2, bl2);
@@ -390,7 +390,7 @@ extends GuiComponent {
                     n10 = n5;
                 }
                 boolean bl10 = false;
-                if (!bl5 && this.i.J.L().booleanValue() && this.O.containsKey(mod)) {
+                if (!bl5 && this.i.clickDisable.getEffectiveValue().booleanValue() && this.O.containsKey(mod)) {
                     TextGuiModuleRenderState textGuiModuleRenderState = this.O.get(mod);
                     textGuiModuleRenderState.a(d15, n10, d16, n11);
                     if (TextGuiModuleRenderState.J(textGuiModuleRenderState).Z(mousePosition)) {
@@ -398,7 +398,7 @@ extends GuiComponent {
                     }
                 }
                 if (bl10) {
-                    int n12 = ColorUtil.B(mutableColor);
+                    int n12 = ColorUtil.calculatePerceivedBrightness(mutableColor);
                     if (n12 > 200) {
                         mutableColor.blend(new Color(100, 100, 100, 100), 0.1f);
                     } else {
@@ -485,7 +485,7 @@ extends GuiComponent {
                     n13 |= n9;
                 }
                 Color color3 = color2;
-                Color mutableColor2 = bl9 ? this.v.l(new Color(20, 20, 20, 100)) : mutableColor;
+                Color mutableColor2 = bl9 ? this.v.applyDefaultEditorAlpha(new Color(20, 20, 20, 100)) : mutableColor;
                 float f10 = 1.5f * f2;
                 double d18 = d15;
                 double d19 = d16 - (double)f10;
@@ -511,7 +511,7 @@ extends GuiComponent {
                     }
                     if (bl13) {
                         float f11 = 1.0f * f2;
-                        GuiRenderPrimitives.a(d18, (float)(n10 + n11) - f11 / 2.0f, d19, f11, this.v.l(new Color(30, 30, 30, 40)));
+                        GuiRenderPrimitives.a(d18, (float)(n10 + n11) - f11 / 2.0f, d19, f11, this.v.applyDefaultEditorAlpha(new Color(30, 30, 30, 40)));
                     }
                     if (GuiRenderPrimitives.d() && this.q$src$Z$emgut()) {
                         int n14;
@@ -680,17 +680,17 @@ extends GuiComponent {
                 }
                 double d52 = (double)(n10 + n11 / 2) - (smoothFontRenderer.R("A", this.q$src$Z$emgut()) + (double)(this.q$src$Z$emgut() ? 0.0f : 2.0f * f2)) / 2.0;
                 if (bl9) {
-                    mutableColor = bl10 ? new MutableColor(this.v.l(new Color(200, 200, 200, 255))) : new MutableColor(this.v.l(new Color(175, 175, 175, 255)));
+                    mutableColor = bl10 ? new MutableColor(this.v.applyDefaultEditorAlpha(new Color(200, 200, 200, 255))) : new MutableColor(this.v.applyDefaultEditorAlpha(new Color(175, 175, 175, 255)));
                 }
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                if (this.i.j.L().booleanValue()) {
-                    MutableColor mutableColor14 = new MutableColor(this.v.l(new Color(0, 0, 0, bl7 ? 80 : 170)));
+                if (this.i.shadow.getEffectiveValue().booleanValue()) {
+                    MutableColor mutableColor14 = new MutableColor(this.v.applyDefaultEditorAlpha(new Color(0, 0, 0, bl7 ? 80 : 170)));
                     if (mutableColor.equals(Color.BLACK)) {
                         mutableColor = new MutableColor(1, 1, 1, 255);
                     }
-                    OpenGlBackendHolder.d.q(1.0f, 1.0f, 1.0f, 1.0f);
+                    OpenGlBackendHolder.backend.setColor(1.0f, 1.0f, 1.0f, 1.0f);
                     smoothFontRenderer.t(string3, f5, d52, mutableColor, mutableColor14, this.q$src$Z$emgut());
-                    OpenGlBackendHolder.d.q(1.0f, 1.0f, 1.0f, 1.0f);
+                    OpenGlBackendHolder.backend.setColor(1.0f, 1.0f, 1.0f, 1.0f);
                 } else {
                     smoothFontRenderer.E(string3, f5, d52, mutableColor, this.q$src$Z$emgut());
                 }
@@ -698,10 +698,10 @@ extends GuiComponent {
                     double d53 = smoothFontRenderer.R("A", this.q$src$Z$emgut());
                     double d54 = smoothFontRenderer2.R("A", this.q$src$Z$emgut());
                     double d55 = d53 - d54;
-                    if (bl7 || !this.i.j.L().booleanValue()) {
-                        smoothFontRenderer2.E(string, (double)f5 + smoothFontRenderer.Y(string3, this.q$src$Z$emgut()) + smoothFontRenderer.N(" "), d52 + d55, this.v.l(new Color(150, 150, 150, 255)), this.q$src$Z$emgut());
+                    if (bl7 || !this.i.shadow.getEffectiveValue().booleanValue()) {
+                        smoothFontRenderer2.E(string, (double)f5 + smoothFontRenderer.Y(string3, this.q$src$Z$emgut()) + smoothFontRenderer.N(" "), d52 + d55, this.v.applyDefaultEditorAlpha(new Color(150, 150, 150, 255)), this.q$src$Z$emgut());
                     } else {
-                        smoothFontRenderer2.V(string, (double)f5 + smoothFontRenderer.Y(string3, this.q$src$Z$emgut()) + smoothFontRenderer.N(" "), d52 + d55, this.v.l(new Color(150, 150, 150, 255)), this.q$src$Z$emgut());
+                        smoothFontRenderer2.V(string, (double)f5 + smoothFontRenderer.Y(string3, this.q$src$Z$emgut()) + smoothFontRenderer.N(" "), d52 + d55, this.v.applyDefaultEditorAlpha(new Color(150, 150, 150, 255)), this.q$src$Z$emgut());
                     }
                 }
                 RenderUtils.T();
@@ -709,14 +709,14 @@ extends GuiComponent {
             }
             this.o = f3 - f4;
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-            OpenGlBackendHolder.d.q(1.0f, 1.0f, 1.0f, 1.0f);
+            OpenGlBackendHolder.backend.setColor(1.0f, 1.0f, 1.0f, 1.0f);
             return;
         }
-        boolean bl20 = Vape.INSTANCE.getClientSettings().w.g();
+        boolean bl20 = Vape.INSTANCE.getClientSettings().w.isRainbowEnabled();
         double d56 = 10.0;
         CopyOnWriteArrayList<Mod> copyOnWriteArrayList = new CopyOnWriteArrayList<Mod>();
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-            if (!mod.r$src$Z$14eylz9() || mod.h() == 0 || !mod.q$src$Z$12h8h4c() || this.i.c.L().booleanValue() && this.i.O.w(mod.getName(), false)) continue;
+            if (!mod.r$src$Z$14eylz9() || mod.h() == 0 || !mod.q$src$Z$12h8h4c() || this.i.hideModules.getEffectiveValue().booleanValue() && this.i.hiddenModules.matches(mod.getName(), false)) continue;
             copyOnWriteArrayList.add(mod);
         }
         this.l(copyOnWriteArrayList);
@@ -747,11 +747,11 @@ extends GuiComponent {
         for (Mod mod : copyOnWriteArrayList) {
             arrayList.add(mod);
             String string = mod.getName();
-            String string4 = mod.c(this.i.v());
+            String string4 = mod.getSuffixForMode(this.i.getSuffixModeIndex());
             double d57 = this.o(smoothFontRenderer, smoothFontRenderer2, string, string4, f2, bl2);
             d56 = Math.max(d56, d57);
         }
-        boolean bl21 = arrayList.isEmpty() && !ClientSettings.fW.P && HudModuleConfigFrameBase.h$src$Z$1tlh1co();
+        boolean bl21 = arrayList.isEmpty() && !ClientSettings.INSTANCE.inputEnabled && HudModuleConfigFrameBase.isHudEditorContext();
         String[] stringArray = new String[]{"Example 1", "Example 2", "Example 3"};
         int n23 = n = bl21 ? stringArray.length : arrayList.size();
         if (bl21) {
@@ -759,37 +759,37 @@ extends GuiComponent {
                 d56 = Math.max(d56, smoothFontRenderer.Y(string, this.q$src$Z$emgut()));
             }
         }
-        if (this.i.Z.L().booleanValue()) {
+        if (this.i.watermark.getEffectiveValue().booleanValue()) {
             d56 = Math.max(d56, 60.0);
         }
-        if (this.i.C.L().booleanValue() && ((String)this.i.t.K()).length() > 0) {
-            String string = ((String)this.i.t.K()).replace("&", "\u00a7");
+        if (this.i.addCustomText.getEffectiveValue().booleanValue() && ((String)this.i.customText.getValue()).length() > 0) {
+            String string = ((String)this.i.customText.getValue()).replace("&", "\u00a7");
             SmoothFontRenderer smoothFontRenderer5 = Vape.INSTANCE.getFontManager().n(FontFamily.PROXIMA, (int)(22.0f * f2), true);
             double d58 = smoothFontRenderer5.Y(string, this.q$src$Z$emgut());
             d56 = Math.max(d56, d58);
         }
         this.G = d56;
         double d59 = this.G$src$D$1b2f02a();
-        ClientSettings.fW.D();
-        if (this.i.Z.L().booleanValue()) {
+        ClientSettings.INSTANCE.syncRainbowHue();
+        if (this.i.watermark.getEffectiveValue().booleanValue()) {
             float f30 = (float)d59;
             float f31 = f30 + 40.0f * f2;
             float f32 = 12.0f * f2;
-            object = this.v.l(J.z());
-            boolean bl22 = this.i.j.L() != false && ((Color)object).getAlpha() == 255;
-            ImageRenderer.E((Color)object, f30, f3, "vapelogo", f32, f32, bl22);
-            ImageRenderer.E(this.v.l(Color.WHITE), f31, f3, "v4", f32, f32, bl22);
+            object = this.v.applyDefaultEditorAlpha(J.z());
+            boolean bl22 = this.i.shadow.getEffectiveValue() != false && ((Color)object).getAlpha() == 255;
+            ImageRenderer.drawImage((Color)object, f30, f3, "vapelogo", f32, f32, bl22);
+            ImageRenderer.drawImage(this.v.applyDefaultEditorAlpha(Color.WHITE), f31, f3, "v4", f32, f32, bl22);
             f3 += 15.0f * f2;
         }
-        if (this.i.C.L().booleanValue() && ((String)this.i.t.K()).length() > 0) {
-            String string = ((String)this.i.t.K()).replace("&", "\u00a7");
+        if (this.i.addCustomText.getEffectiveValue().booleanValue() && ((String)this.i.customText.getValue()).length() > 0) {
+            String string = ((String)this.i.customText.getValue()).replace("&", "\u00a7");
             SmoothFontRenderer smoothFontRenderer6 = Vape.INSTANCE.getFontManager().n(FontFamily.PROXIMA, (int)(22.0f * f2), true);
             double d60 = smoothFontRenderer6.Y(string, this.q$src$Z$emgut());
             f = (float)(this.G$src$D$1b2f02a() + 2.0);
-            if (this.i.j.L().booleanValue()) {
-                smoothFontRenderer6.V(string, f, f3, this.v.l(this.i.o.L() != false && !Vape.INSTANCE.getClientSettings().w.g() ? this.i.Y.q$src$Lgg_vape_utils_MutableColor_$1dowyd3() : J.z()), this.q$src$Z$emgut());
+            if (this.i.shadow.getEffectiveValue().booleanValue()) {
+                smoothFontRenderer6.V(string, f, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().w.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
             } else {
-                smoothFontRenderer6.E(string, f, f3, this.v.l(this.i.o.L() != false && !Vape.INSTANCE.getClientSettings().w.g() ? this.i.Y.q$src$Lgg_vape_utils_MutableColor_$1dowyd3() : J.z()), this.q$src$Z$emgut());
+                smoothFontRenderer6.E(string, f, f3, this.v.applyDefaultEditorAlpha(this.i.customTextColorEnabled.getEffectiveValue() != false && !Vape.INSTANCE.getClientSettings().w.isRainbowEnabled() ? this.i.customTextColor.getMutableColor() : J.z()), this.q$src$Z$emgut());
             }
             f3 = (float)((double)f3 + (smoothFontRenderer6.R(string, this.q$src$Z$emgut()) + (double)(4.0f * f2)));
         }
@@ -798,8 +798,8 @@ extends GuiComponent {
             return;
         }
         Color color = J.z();
-        Color color15 = this.v.l(new Color(20, 20, 20, 160));
-        boolean bl23 = this.i.a.L();
+        Color color15 = this.v.applyDefaultEditorAlpha(new Color(20, 20, 20, 160));
+        boolean bl23 = this.i.renderBackground.getEffectiveValue();
         float[] hsbColor = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), new float[3]);
         float hue = hsbColor[0];
         int n24 = -1;
@@ -822,22 +822,22 @@ extends GuiComponent {
             if (bl21) {
                 string5 = stringArray[i];
                 string = "";
-                mutableColor = new MutableColor(this.v.l(J.z()));
+                mutableColor = new MutableColor(this.v.applyDefaultEditorAlpha(J.z()));
                 bl25 = false;
             } else {
                 bl25 = this.I.contains(mod);
                 string5 = mod.getName();
-                string = mod.c(this.i.v());
+                string = mod.getSuffixForMode(this.i.getSuffixModeIndex());
                 if (bl25) {
                     string = "\u00a77| Disabled";
                 }
-                mutableColor = new MutableColor(this.v.l(this.R(mod)));
+                mutableColor = new MutableColor(this.v.applyDefaultEditorAlpha(this.R(mod)));
                 if (bl20) {
                     if ((hue -= 0.025f) <= 0.0f) {
                         hue = 1.0f;
                     }
                     hsbColor[0] = hue;
-                    mutableColor = new MutableColor(this.v.l(ColorUtil.l(hue, hsbColor[1], hsbColor[2], 4)));
+                    mutableColor = new MutableColor(this.v.applyDefaultEditorAlpha(ColorUtil.createReadableHsbColor(hue, hsbColor[1], hsbColor[2], 4)));
                 }
             }
             double d61 = this.o(smoothFontRenderer, smoothFontRenderer2, string5, string, f2, bl2);
@@ -855,7 +855,7 @@ extends GuiComponent {
                 n29 = n24;
             }
             boolean bl26 = false;
-            if (!bl21 && this.i.J.L().booleanValue() && this.O.containsKey(mod)) {
+            if (!bl21 && this.i.clickDisable.getEffectiveValue().booleanValue() && this.O.containsKey(mod)) {
                 TextGuiModuleRenderState textGuiModuleRenderState = this.O.get(mod);
                 textGuiModuleRenderState.a(d64, n29, d65, n30);
                 if (TextGuiModuleRenderState.J(textGuiModuleRenderState).Z(mousePosition)) {
@@ -863,7 +863,7 @@ extends GuiComponent {
                 }
             }
             if (bl26) {
-                int n31 = ColorUtil.B(mutableColor);
+                int n31 = ColorUtil.calculatePerceivedBrightness(mutableColor);
                 if (n31 > 200) {
                     mutableColor.blend(new Color(100, 100, 100, 100), 0.1f);
                 } else {
@@ -949,7 +949,7 @@ extends GuiComponent {
                 n32 |= n28;
             }
             Color color16 = color15;
-            Color mutableColor15 = bl25 ? this.v.l(new Color(20, 20, 20, 100)) : mutableColor;
+            Color mutableColor15 = bl25 ? this.v.applyDefaultEditorAlpha(new Color(20, 20, 20, 100)) : mutableColor;
             float f34 = 1.5f * f2;
             double d76 = d64;
             double d77 = d65 - (double)f34;
@@ -975,7 +975,7 @@ extends GuiComponent {
                 }
                 if (bl29) {
                     float f35 = 1.0f * f2;
-                    GuiRenderPrimitives.a(d76, (float)(n29 + n30) - f35 / 2.0f, d77, f35, this.v.l(new Color(30, 30, 30, 40)));
+                    GuiRenderPrimitives.a(d76, (float)(n29 + n30) - f35 / 2.0f, d77, f35, this.v.applyDefaultEditorAlpha(new Color(30, 30, 30, 40)));
                 }
                 if (GuiRenderPrimitives.d() && this.q$src$Z$emgut()) {
                     int n33;
@@ -1143,17 +1143,17 @@ extends GuiComponent {
             }
             double d110 = (double)(n29 + n30 / 2) - (smoothFontRenderer.R("A", this.q$src$Z$emgut()) + (double)(this.q$src$Z$emgut() ? 0.0f : 2.0f * f2)) / 2.0;
             if (bl25) {
-                mutableColor = bl26 ? new MutableColor(this.v.l(new Color(200, 200, 200, 255))) : new MutableColor(this.v.l(new Color(175, 175, 175, 255)));
+                mutableColor = bl26 ? new MutableColor(this.v.applyDefaultEditorAlpha(new Color(200, 200, 200, 255))) : new MutableColor(this.v.applyDefaultEditorAlpha(new Color(175, 175, 175, 255)));
             }
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-            if (this.i.j.L().booleanValue()) {
-                MutableColor mutableColor27 = new MutableColor(this.v.l(new Color(0, 0, 0, bl23 ? 80 : 170)));
+            if (this.i.shadow.getEffectiveValue().booleanValue()) {
+                MutableColor mutableColor27 = new MutableColor(this.v.applyDefaultEditorAlpha(new Color(0, 0, 0, bl23 ? 80 : 170)));
                 if (mutableColor.equals(Color.BLACK)) {
                     mutableColor = new MutableColor(1, 1, 1, 255);
                 }
-                OpenGlBackendHolder.d.q(1.0f, 1.0f, 1.0f, 1.0f);
+                OpenGlBackendHolder.backend.setColor(1.0f, 1.0f, 1.0f, 1.0f);
                 smoothFontRenderer.t(string5, f, d110, mutableColor, mutableColor27, this.q$src$Z$emgut());
-                OpenGlBackendHolder.d.q(1.0f, 1.0f, 1.0f, 1.0f);
+                OpenGlBackendHolder.backend.setColor(1.0f, 1.0f, 1.0f, 1.0f);
             } else {
                 smoothFontRenderer.E(string5, f, d110, mutableColor, this.q$src$Z$emgut());
             }
@@ -1161,10 +1161,10 @@ extends GuiComponent {
                 double d111 = smoothFontRenderer.R("A", this.q$src$Z$emgut());
                 double d112 = smoothFontRenderer2.R("A", this.q$src$Z$emgut());
                 double d113 = d111 - d112;
-                if (bl23 || !this.i.j.L().booleanValue()) {
-                    smoothFontRenderer2.E(string, (double)f + smoothFontRenderer.Y(string5, this.q$src$Z$emgut()) + smoothFontRenderer.N(" "), d110 + d113, this.v.l(new Color(150, 150, 150, 255)), this.q$src$Z$emgut());
+                if (bl23 || !this.i.shadow.getEffectiveValue().booleanValue()) {
+                    smoothFontRenderer2.E(string, (double)f + smoothFontRenderer.Y(string5, this.q$src$Z$emgut()) + smoothFontRenderer.N(" "), d110 + d113, this.v.applyDefaultEditorAlpha(new Color(150, 150, 150, 255)), this.q$src$Z$emgut());
                 } else {
-                    smoothFontRenderer2.V(string, (double)f + smoothFontRenderer.Y(string5, this.q$src$Z$emgut()) + smoothFontRenderer.N(" "), d110 + d113, this.v.l(new Color(150, 150, 150, 255)), this.q$src$Z$emgut());
+                    smoothFontRenderer2.V(string, (double)f + smoothFontRenderer.Y(string5, this.q$src$Z$emgut()) + smoothFontRenderer.N(" "), d110 + d113, this.v.applyDefaultEditorAlpha(new Color(150, 150, 150, 255)), this.q$src$Z$emgut());
                 }
             }
             RenderUtils.T();
@@ -1172,7 +1172,7 @@ extends GuiComponent {
         }
         this.o = f3 - f4;
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-        OpenGlBackendHolder.d.q(1.0f, 1.0f, 1.0f, 1.0f);
+        OpenGlBackendHolder.backend.setColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     private double o(SmoothFontRenderer smoothFontRenderer, SmoothFontRenderer smoothFontRenderer2, String string, String string2, float f, boolean bl) {
@@ -1202,7 +1202,7 @@ extends GuiComponent {
 
     @Override
     public void u() {
-        if (ClientSettings.fW.P || !this.i.J.L().booleanValue()) {
+        if (ClientSettings.INSTANCE.inputEnabled || !this.i.clickDisable.getEffectiveValue().booleanValue()) {
             this.I.clear();
         }
         for (Mod mod : this.O.keySet()) {
@@ -1217,7 +1217,7 @@ extends GuiComponent {
     }
 
     private double o(int n) {
-        float f = ((Double)this.i.A.K()).floatValue();
+        float f = ((Double)this.i.scale.getValue()).floatValue();
         double d = Vape.INSTANCE.getClientSettings().s();
         f = (float)((double)f * d);
         SmoothFontRenderer smoothFontRenderer = this.w((int)(16.0f * f));
@@ -1225,11 +1225,11 @@ extends GuiComponent {
         int n2 = (int)(d2 + 2.0);
         n2 = (int)((float)n2 + 1.0f * f);
         double d3 = 0.0;
-        if (this.i.Z.L().booleanValue()) {
+        if (this.i.watermark.getEffectiveValue().booleanValue()) {
             d3 += (double)(15.0f * f);
         }
-        if (this.i.C.L().booleanValue() && ((String)this.i.t.K()).length() > 0) {
-            String string = ((String)this.i.t.K()).replace("&", "\u00a7");
+        if (this.i.addCustomText.getEffectiveValue().booleanValue() && ((String)this.i.customText.getValue()).length() > 0) {
+            String string = ((String)this.i.customText.getValue()).replace("&", "\u00a7");
             SmoothFontRenderer smoothFontRenderer2 = Vape.INSTANCE.getFontManager().n(FontFamily.PROXIMA, (int)(22.0f * f), true);
             d3 += smoothFontRenderer2.R(string, this.q$src$Z$emgut()) + (double)(4.0f * f);
         }

@@ -31,7 +31,7 @@ extends Mapping {
         if (MItemCameraTransformType.A()) {
             return;
         }
-        GuiComponent.D(new GuiComponent[2]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[2]);
     }
 
     public Object z(Object object) {

@@ -8,7 +8,7 @@ implements GuiClickListener {
     final OnlineFriendListEntry B;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         OnlineFriendListEntry.d(this.B);
     }
 
@@ -16,4 +16,3 @@ implements GuiClickListener {
         this.B = mz_22;
     }
 }
-

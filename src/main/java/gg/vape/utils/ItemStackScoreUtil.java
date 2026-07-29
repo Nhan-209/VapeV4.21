@@ -327,8 +327,8 @@ public class ItemStackScoreUtil {
 
     private static int lambda$populateItems$0(ItemStack itemStack, ItemStack itemStack2) {
         int n;
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack);
-        ItemMappingEntry itemMappingEntry2 = Vape.INSTANCE.getItemStackResolver().j(itemStack2);
+        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
+        ItemMappingEntry itemMappingEntry2 = Vape.INSTANCE.getItemStackResolver().resolve(itemStack2);
         int n2 = itemMappingEntry != null && itemMappingEntry.s() != null ? itemMappingEntry.s().intValue() : itemStack.getItem().P();
         int n3 = n = itemMappingEntry2 != null && itemMappingEntry2.s() != null ? itemMappingEntry2.s().intValue() : itemStack2.getItem().P();
         if (n2 == n) {

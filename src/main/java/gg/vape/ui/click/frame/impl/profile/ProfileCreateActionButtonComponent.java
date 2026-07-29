@@ -1,7 +1,5 @@
 package gg.vape.ui.click.frame.impl.profile;
 
-import gg.vape.ui.click.animation.Animation;
-import gg.vape.ui.click.animation.ThemeColorAnimation;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -9,51 +7,51 @@ import java.awt.Color;
 
 public class ProfileCreateActionButtonComponent
 extends InteractiveComponent {
-    private double d0;
-    private boolean dO;
-    private Color d4;
-    private boolean d3;
-    private Color dn;
-    private boolean d9;
-    private double dC;
-    private String I;
-    private boolean b;
-    private String v;
-    private boolean dF = true;
-    private double d8;
-    private Animation<Color> K = new ThemeColorAnimation(0.15, new Color(0, 0, 0, 0));
-    private Color Q;
+    private double iconOffset;
+    private boolean dynamicTextColor;
+    private Color borderColor;
+    private boolean uppercase;
+    private Color iconColor;
+    private boolean dynamicIconColor;
+    private double iconScale;
+    private String iconKey;
+    private boolean useSmoothFont;
+    private String label;
+    private boolean hoverBackgroundVisible = true;
+    private double textScale;
+    private Color textColor;
 
     @Override
     public void H() {
-        Color color;
-        SmoothFontRenderer smoothFontRenderer = this.b ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.d8) : this.O(this.d8);
-        float f = 8.0f * (float)this.dC;
-        double d = this.G$src$D$1b2f02a() + (double)(f / 2.0f) + 5.0 + this.d0 + this.Z$src$D$1wvori2() - 5.0;
-        if (this.w$src$Z$e457mb() && this.dF) {
+        SmoothFontRenderer font = this.useSmoothFont
+            ? this.getAlternateFontRenderer(this.textScale)
+            : this.getFontRenderer(this.textScale);
+        float iconSize = 8.0f * (float)this.iconScale;
+        double contentX = this.G$src$D$1b2f02a() + iconSize / 2.0f + this.iconOffset + this.getHorizontalInset();
+        boolean hovered = this.w$src$Z$e457mb();
+        if (hovered && this.hoverBackgroundVisible) {
             GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), J.z());
         }
-        Color color2 = color = this.w$src$Z$e457mb() ? J.B() : (this.d9 ? J.z() : this.dn);
-        if (!this.dF) {
-            color = this.w$src$Z$e457mb() ? this.dn.brighter() : this.dn;
+        Color renderedIconColor = hovered ? J.B() : (this.dynamicIconColor ? J.z() : this.iconColor);
+        if (!this.hoverBackgroundVisible) {
+            renderedIconColor = hovered ? this.iconColor.brighter() : this.iconColor;
         }
-        GuiRenderPrimitives.F(this.I, d, this.n() + this.L() / 2.0, (double)f, f, color);
-        d += 3.3333333333333335 + (double)(f / 2.0f);
-        if (this.Q != null) {
-            Color color3;
-            Color color4 = color3 = this.w$src$Z$e457mb() ? J.B() : (this.dO ? J.z() : this.Q);
-            if (!this.dF) {
-                color3 = this.w$src$Z$e457mb() ? this.Q.brighter() : this.Q;
+        GuiRenderPrimitives.F(this.iconKey, contentX, this.n() + this.L() / 2.0, iconSize, iconSize, renderedIconColor);
+        contentX += 3.3333333333333335 + iconSize / 2.0f;
+        if (this.textColor != null) {
+            Color renderedTextColor = hovered ? J.B() : (this.dynamicTextColor ? J.z() : this.textColor);
+            if (!this.hoverBackgroundVisible) {
+                renderedTextColor = hovered ? this.textColor.brighter() : this.textColor;
             }
-            this.Z(smoothFontRenderer, d, color3);
+            this.renderLabel(font, contentX, renderedTextColor);
         }
-        if (this.d4 != null) {
-            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.w$src$Z$e457mb() ? this.d4.brighter() : this.d4, 1.5f, 0.75f, 1.0f);
+        if (this.borderColor != null) {
+            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), hovered ? this.borderColor.brighter() : this.borderColor, 1.5f, 0.75f, 1.0f);
         }
     }
 
-    public void J(double d) {
-        this.dC = d;
+    public void setIconScale(double iconScale) {
+        this.iconScale = iconScale;
     }
 
 
@@ -67,68 +65,57 @@ extends InteractiveComponent {
         return 0.0;
     }
 
-    public void n(double d) {
-        this.d0 = d;
-    }
-
-    @Override
-    public void F() {
-        if (!this.w$src$Z$e457mb()) {
-            this.K.J();
-        }
-        super.F();
-    }
-
-    @Override
-    public void onEnable() {
-        this.K.J();
-        super.onEnable();
+    public void setIconOffset(double iconOffset) {
+        this.iconOffset = iconOffset;
     }
 
     @Override
     public void u() {
         if (this.A() <= 0.0) {
-            this.o(8.0 * this.dC + (this.b ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.d8) : this.O(this.d8)).N(this.d3 ? this.v.toUpperCase() : this.v) + 13.75);
+            SmoothFontRenderer font = this.useSmoothFont
+                ? this.getAlternateFontRenderer(this.textScale)
+                : this.getFontRenderer(this.textScale);
+            String renderedLabel = this.uppercase ? this.label.toUpperCase() : this.label;
+            this.o(8.0 * this.iconScale + font.N(renderedLabel) + 13.75);
         }
     }
 
-    private void Z(SmoothFontRenderer smoothFontRenderer, double d, Color color) {
-        String string = this.d3 ? this.v.toUpperCase() : this.v;
-        double d2 = smoothFontRenderer.d(string);
-        double d3 = this.n() + this.L() / 2.0 - d2 / 2.0;
-        smoothFontRenderer.d(string, d, d3, color);
+    private void renderLabel(SmoothFontRenderer font, double x, Color color) {
+        String renderedLabel = this.uppercase ? this.label.toUpperCase() : this.label;
+        double y = this.n() + this.L() / 2.0 - font.d(renderedLabel) / 2.0;
+        font.d(renderedLabel, x, y, color);
     }
 
-    public ProfileCreateActionButtonComponent(String string, boolean bl, boolean bl2, double d, Color color, String string2, double d2, Color color2, Color color3) {
-        this.v = string;
-        this.d3 = bl;
-        this.b = bl2;
-        this.d8 = d;
-        this.Q = color;
-        if (color == null) {
-            this.Q = ProfileCreateActionButtonComponent.J.Z;
+    public ProfileCreateActionButtonComponent(String label, boolean uppercase, boolean useSmoothFont, double textScale, Color textColor, String iconKey, double iconScale, Color iconColor, Color borderColor) {
+        this.label = label;
+        this.uppercase = uppercase;
+        this.useSmoothFont = useSmoothFont;
+        this.textScale = textScale;
+        this.textColor = textColor;
+        if (textColor == null) {
+            this.textColor = ProfileCreateActionButtonComponent.J.Z;
         }
-        if (this.Q.equals(J.z())) {
-            this.dO = true;
+        if (this.textColor.equals(J.z())) {
+            this.dynamicTextColor = true;
         }
-        this.I = string2;
-        this.dC = d2;
-        this.dn = color2;
-        if (color2 == null) {
-            this.dn = ProfileCreateActionButtonComponent.J.W;
+        this.iconKey = iconKey;
+        this.iconScale = iconScale;
+        this.iconColor = iconColor;
+        if (iconColor == null) {
+            this.iconColor = ProfileCreateActionButtonComponent.J.W;
         }
-        if (this.dn.equals(J.z())) {
-            this.d9 = true;
+        if (this.iconColor.equals(J.z())) {
+            this.dynamicIconColor = true;
         }
-        this.d4 = color3;
+        this.borderColor = borderColor;
         this.Y(20.0);
     }
 
-    public void J(boolean bl) {
-        this.dF = bl;
+    public void setHoverBackgroundVisible(boolean visible) {
+        this.hoverBackgroundVisible = visible;
     }
 
-    public void p(double d) {
-        this.d8 = d;
+    public void setTextScale(double textScale) {
+        this.textScale = textScale;
     }
 }

@@ -11,85 +11,76 @@ import org.jetbrains.annotations.Nullable;
 
 public final class ClickGuiOverlaySpec {
     @Nullable
-    private final String c;
-    private final String d;
-    private final Consumer<PanelComponent> B;
+    private final String sidecarIcon;
+    private final String title;
+    private final Consumer<PanelComponent> contentInitializer;
     @Nullable
-    private final Double v;
+    private final Double width;
     @Nullable
-    private final Consumer<ClickGuiSidecarPanelBase> L;
+    private final Consumer<ClickGuiSidecarPanelBase> sidecarInitializer;
     @Nullable
-    private final ClickGuiSidecarPanelBase k;
-    private final ClickGuiOverlayTransitionMode b;
-    private final boolean j;
-    private final ClickGuiOverlayPlacement i;
+    private final ClickGuiSidecarPanelBase sidecar;
+    private final ClickGuiOverlayTransitionMode transitionMode;
+    private final boolean backdropEnabled;
+    private final ClickGuiOverlayPlacement placement;
 
     @Nullable
-    public String java_lang_String_O() {
-        return this.c;
+    public String getSidecarIcon() {
+        return this.sidecarIcon;
     }
 
     @Nullable
-    public Double B() {
-        return this.v;
+    public Double getWidth() {
+        return this.width;
     }
 
-    public Consumer<PanelComponent> n() {
-        return this.B;
+    public Consumer<PanelComponent> getContentInitializer() {
+        return this.contentInitializer;
     }
 
-    public ClickGuiOverlayPlacement a_oc_0_O() {
-        return this.i;
+    public ClickGuiOverlayPlacement getPlacement() {
+        return this.placement;
     }
 
     @Nullable
-    public ClickGuiSidecarPanelBase o() {
-        return this.k;
+    public ClickGuiSidecarPanelBase getSidecar() {
+        return this.sidecar;
     }
 
     ClickGuiOverlaySpec(String string, ClickGuiSidecarPanelBase clickGuiSidecarPanelBase, String string2, Consumer consumer, Consumer consumer2, ClickGuiOverlayPlacement clickGuiOverlayPlacement, boolean bl, ClickGuiOverlayTransitionMode clickGuiOverlayTransitionMode, Double d, ClickGuiOverlaySpecEntry clickGuiOverlaySpecEntry) {
         this(string, clickGuiSidecarPanelBase, string2, consumer, consumer2, clickGuiOverlayPlacement, bl, clickGuiOverlayTransitionMode, d);
     }
 
-    public String p() {
-        return this.d;
+    public String getTitle() {
+        return this.title;
     }
 
     @Nullable
-    public Consumer<ClickGuiSidecarPanelBase> t() {
-        return this.L;
+    public Consumer<ClickGuiSidecarPanelBase> getSidecarInitializer() {
+        return this.sidecarInitializer;
     }
 
-    public boolean R() {
-        return this.j;
+    public boolean isBackdropEnabled() {
+        return this.backdropEnabled;
     }
 
-    public ClickGuiOverlayTransitionMode y() {
-        return this.b;
+    public ClickGuiOverlayTransitionMode getTransitionMode() {
+        return this.transitionMode;
     }
 
-    public static ClickGuiOverlaySpecBuilder q() {
+    public static ClickGuiOverlaySpecBuilder builder() {
         return new ClickGuiOverlaySpecBuilder(null);
     }
 
     private ClickGuiOverlaySpec(String string, @Nullable ClickGuiSidecarPanelBase clickGuiSidecarPanelBase, @Nullable String string2, Consumer<PanelComponent> consumer, @Nullable Consumer<ClickGuiSidecarPanelBase> consumer2, ClickGuiOverlayPlacement clickGuiOverlayPlacement, boolean bl, ClickGuiOverlayTransitionMode clickGuiOverlayTransitionMode, @Nullable Double d) {
-        this.d = string;
-        this.k = clickGuiSidecarPanelBase;
-        this.c = string2;
-        this.B = consumer;
-        this.L = consumer2;
-        this.i = clickGuiOverlayPlacement;
-        this.j = bl;
-        this.b = clickGuiOverlayTransitionMode;
-        this.v = d;
-    }
-
-    public /* synthetic */ ClickGuiOverlayPlacement O() {
-        return this.a_oc_0_O();
-    }
-
-    public /* synthetic */ String O$src$Ljava_lang_String_$vd7j9e() {
-        return this.java_lang_String_O();
+        this.title = string;
+        this.sidecar = clickGuiSidecarPanelBase;
+        this.sidecarIcon = string2;
+        this.contentInitializer = consumer;
+        this.sidecarInitializer = consumer2;
+        this.placement = clickGuiOverlayPlacement;
+        this.backdropEnabled = bl;
+        this.transitionMode = clickGuiOverlayTransitionMode;
+        this.width = d;
     }
 }
-

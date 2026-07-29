@@ -11,40 +11,40 @@ import org.jetbrains.annotations.Nullable;
 
 public class PaddedComponent
 extends FrameComponent {
-    private final double Y5;
-    private static final String eb = "wrap";
-    private final double Yh;
-    private double Yc;
-    private final SpacerComponent Ya;
-    private final FrameComponent YB = new PanelComponent(0.0, 0.0);
-    private final double YO;
-    private final SpacerComponent Yn;
-    private final GuiComponent YL;
+    private final double leftPadding;
+    private static final String WRAP_LAYOUT = "wrap";
+    private final double bottomPadding;
+    private double topPadding;
+    private final SpacerComponent leftSpacer;
+    private final FrameComponent contentPanel = new PanelComponent(0.0, 0.0);
+    private final double rightPadding;
+    private final SpacerComponent topSpacer;
+    private final GuiComponent content;
 
     public FrameComponent z$src$Lgg_vape_ui_click_frame_FrameComponent_$s47o9d() {
-        return this.YB;
+        return this.contentPanel;
     }
 
     @Override
     public double x() {
-        return this.YB.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().C() + this.YO;
+        return this.contentPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().C() + this.rightPadding;
     }
 
     @Override
     public void C$src$V$nadrmg() {
         super.C$src$V$nadrmg();
-        this.YB.C$src$V$nadrmg();
+        this.contentPanel.C$src$V$nadrmg();
     }
 
     public GuiComponent H$src$Lgg_vape_ui_click_component_GuiComponent_$kfnvup() {
-        return this.YL;
+        return this.content;
     }
 
     @Override
     public double C() {
-        this.YB.Y(this.YB.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y());
-        this.YB.o(this.YB.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().C());
-        return this.YB.L() + this.Yc + this.Yh;
+        this.contentPanel.Y(this.contentPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y());
+        this.contentPanel.o(this.contentPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().C());
+        return this.contentPanel.L() + this.topPadding + this.bottomPadding;
     }
 
     @Override
@@ -56,32 +56,32 @@ extends FrameComponent {
     }
 
     public PaddedComponent(double d, double d2, double d3, double d4, GuiComponent guiComponent) {
-        this.Yc = d;
-        this.Yh = d2;
-        this.Y5 = d3;
-        this.YO = d4;
-        this.YL = guiComponent;
+        this.topPadding = d;
+        this.bottomPadding = d2;
+        this.leftPadding = d3;
+        this.rightPadding = d4;
+        this.content = guiComponent;
         ComponentLayout componentLayout = this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij();
         componentLayout.t(false);
         componentLayout.M(false);
         componentLayout.U(false);
         componentLayout.I(false);
         componentLayout.u(false);
-        componentLayout.M(eb);
-        this.Yn = new SpacerComponent(0.0, d);
-        this.Ya = new SpacerComponent(d3, 0.0);
-        this.YB.H(this.Ya, guiComponent);
-        this.H(this.Yn, this.YB);
-        this.YB.d(false);
-        this.d(false);
+        componentLayout.M(WRAP_LAYOUT);
+        this.topSpacer = new SpacerComponent(0.0, d);
+        this.leftSpacer = new SpacerComponent(d3, 0.0);
+        this.contentPanel.addChildren(this.leftSpacer, guiComponent);
+        this.addChildren(this.topSpacer, this.contentPanel);
+        this.contentPanel.setShowDisabledOverlay(false);
+        this.setShowDisabledOverlay(false);
     }
 
     public double o$src$D$1nnrfcl() {
-        return this.YO;
+        return this.rightPadding;
     }
 
     public double h() {
-        return this.Yh;
+        return this.bottomPadding;
     }
 
     @Override
@@ -89,14 +89,14 @@ extends FrameComponent {
     }
 
     public void N(double d) {
-        this.Yc = d;
-        this.Yn.Y(d);
-        this.Yn.d(true);
-        this.Yn.T(Color.magenta);
+        this.topPadding = d;
+        this.topSpacer.Y(d);
+        this.topSpacer.setShowDisabledOverlay(true);
+        this.topSpacer.setDisabledOverlayColor(Color.magenta);
     }
 
     public double c$src$D$1nh5w89() {
-        return this.Y5;
+        return this.leftPadding;
     }
 
 
@@ -106,7 +106,7 @@ extends FrameComponent {
 
     @Nullable
     public <T extends GuiComponent> T t(Class<T> clazz) {
-        return (T)(clazz.isInstance(this.YL) ? (GuiComponent)clazz.cast(this.YL) : null);
+        return (T)(clazz.isInstance(this.content) ? (GuiComponent)clazz.cast(this.content) : null);
     }
 
     @Override

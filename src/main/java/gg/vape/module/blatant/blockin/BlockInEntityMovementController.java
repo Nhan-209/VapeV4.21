@@ -5,7 +5,6 @@ import gg.vape.module.blatant.blockin.AbstractBlockInMovementController;
 import gg.vape.module.blatant.blockin.BlockPlacementGraph;
 import gg.vape.module.utility.MLGBlockWrapper;
 import gg.vape.utils.math.NumericMathUtil;
-import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.AttributeInstance;
 import gg.vape.wrapper.impl.AttributeModifier;
 import gg.vape.wrapper.impl.AxisAlignedBB;
@@ -24,7 +23,6 @@ import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.EntitySelectors;
 import gg.vape.wrapper.impl.EnumFacing;
 import gg.vape.wrapper.impl.ITooltipFlag;
-import gg.vape.wrapper.impl.ModelPlayer;
 import gg.vape.wrapper.impl.MonsterAttributesBridge;
 import gg.vape.wrapper.impl.MoverType;
 import gg.vape.wrapper.impl.PotionEffect;
@@ -37,695 +35,672 @@ import java.util.List;
 
 public class BlockInEntityMovementController
 extends AbstractBlockInMovementController {
-    private boolean h;
-
-    private void l$src$V$muqk5b() {
-        this.W = this.E;
-        this.b = this.A;
-        this.d = BlockInEntityMovementController.M(this.g, this.M);
-        this.Z = BlockInEntityMovementController.M(this.r, this.R);
+    private void updateMovementInput() {
+        this.jumpInput = this.jumpKeyDown;
+        this.sneakInput = this.sneakKeyDown;
+        this.moveForward = BlockInEntityMovementController.getAxisInput(this.forwardKeyDown, this.backwardKeyDown);
+        this.moveStrafe = BlockInEntityMovementController.getAxisInput(this.leftKeyDown, this.rightKeyDown);
     }
 
 
-    private void J() {
-        if (this.D.s$src$Z$1iryxzy()) {
-            this.R$src$V$mgfwpx();
+    private void tickIfPlayerActive() {
+        if (this.localPlayer.s$src$Z$1iryxzy()) {
+            this.simulatePlayerTick();
         }
     }
 
-    protected boolean e(Vec3 vec3) {
-        float f = this.p.J() * ((float)Math.PI / 180);
-        double d = NumericMathUtil.X(f);
-        double d2 = NumericMathUtil.y(f);
-        double d3 = (double)this.p.N$src$F$14ypudi() * d2 - (double)this.p.F() * d;
-        double d4 = (double)this.p.F() * d2 + (double)this.p.N$src$F$14ypudi() * d;
-        double d5 = NumericMathUtil.X(d3) + NumericMathUtil.X(d4);
-        double d6 = NumericMathUtil.X(vec3.getX()) + NumericMathUtil.X(vec3.getZ());
-        if (!(d5 < (double)1.0E-5f) && !(d6 < (double)1.0E-5f)) {
-            double d7 = d3 * vec3.getX() + d4 * vec3.getZ();
-            double d8 = Math.acos(d7 / Math.sqrt(d5 * d6));
-            return d8 < 0.13962633907794952;
+    private boolean isMovingToward(Vec3 movement) {
+        float yawRadians = this.simulatedPlayer.J() * ((float)Math.PI / 180);
+        double sinYaw = NumericMathUtil.sin(yawRadians);
+        double cosYaw = NumericMathUtil.cos(yawRadians);
+        double inputX = this.simulatedPlayer.N$src$F$14ypudi() * cosYaw
+                - this.simulatedPlayer.F() * sinYaw;
+        double inputZ = this.simulatedPlayer.F() * cosYaw
+                + this.simulatedPlayer.N$src$F$14ypudi() * sinYaw;
+        double inputLengthSquared = NumericMathUtil.square(inputX) + NumericMathUtil.square(inputZ);
+        double movementLengthSquared = NumericMathUtil.square(movement.getX())
+                + NumericMathUtil.square(movement.getZ());
+        if (inputLengthSquared >= 1.0E-5f && movementLengthSquared >= 1.0E-5f) {
+            double dotProduct = inputX * movement.getX() + inputZ * movement.getZ();
+            double angle = Math.acos(dotProduct
+                    / Math.sqrt(inputLengthSquared * movementLengthSquared));
+            return angle < 0.13962633907794952;
         }
         return false;
     }
 
-    public boolean A() {
-        return this.p.N$src$Z$1i7mk1l();
+    private boolean isSwimming() {
+        return this.simulatedPlayer.N$src$Z$1i7mk1l();
     }
 
-    private void I() {
-        this.p.k$src$V$5315b7(this.Z);
-        this.p.M(this.d);
-        this.p.b(this.E);
+    private void applyMovementInputToPlayer() {
+        this.simulatedPlayer.k$src$V$5315b7(this.moveStrafe);
+        this.simulatedPlayer.M(this.moveForward);
+        this.simulatedPlayer.b(this.jumpKeyDown);
     }
 
-    private void s() {
-        this.p.h(this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().addVector(0.0, -0.04f, 0.0));
+    private void applySneakDownwardMotion() {
+        this.simulatedPlayer.h(this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().addVector(0.0, -0.04f, 0.0));
     }
 
-    public BlockInEntityMovementController(EntityPlayer entityPlayer, EntityPlayerSP entityPlayerSP, EntityPlayer entityPlayer2, World world) {
-        super(entityPlayer, entityPlayerSP, entityPlayer2, world);
-    }
-
-    @Override
-    public void N() {
-        this.J();
-    }
-
-    private void x() {
-        Vec3 vec3 = this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
-        this.p.h(this.C(vec3));
-        this.J(MoverType.X(), this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi());
-    }
-
-    private void L() {
-        boolean bl;
-        boolean bl2;
-        if (this.U > 0) {
-            --this.U;
-        }
-        boolean bl3 = this.W;
-        boolean bl4 = this.b;
-        if (bl4) {
-            boolean bl5;
-            boolean bl6 = this.U();
-            ModelPlayer modelPlayer = this.p.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86();
-            this.l$src$V$muqk5b();
-            if (this.V()) {
-                this.p.R(false);
-            }
-            if (this.L$src$Z$md5597()) {
-                float f = (float)this.p.o(MonsterAttributesBridge.D());
-                this.Z *= f;
-                this.d *= f;
-            }
-            if (!this.p.d()) {
-                double d = this.p.z();
-                double d2 = this.p.h();
-                float f = this.p.f$src$F$fst3ac();
-                this.D(d - (double)f * 0.35, d2 + (double)f * 0.35);
-                this.D(d - (double)f * 0.35, d2 - (double)f * 0.35);
-                this.D(d + (double)f * 0.35, d2 - (double)f * 0.35);
-                this.D(d + (double)f * 0.35, d2 + (double)f * 0.35);
-            }
-            this.U = 0;
-            boolean bl7 = this.O();
-            boolean bl8 = this.p.f$src$Z$fst3rk() ? this.p.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12().b$src$Z$fqlxe4() : this.p.b$src$Z$fqlxe4();
-            boolean bl9 = false;
-            if (bl8 || this.p.N$src$Z$1i7mk1l()) {
-                // empty if block
-            }
-            if ((!this.p.h$src$Z$ftwoya() || this.p.N$src$Z$1i7mk1l()) && bl7 && this.f) {
-                this.p.R(true);
-            }
-            if (this.p.B$src$Z$f90iek()) {
-                boolean bl10;
-                bl5 = !this.i() || !this.E();
-                boolean bl11 = bl10 = bl5 || this.p.r() && !this.p.m$src$Z$fwnnx3() || this.p.h$src$Z$ftwoya() && !this.p.N$src$Z$1i7mk1l();
-                if (this.p.X$src$Z$1id4hz7()) {
-                    if (!this.p.b$src$Z$fqlxe4() && !this.A && bl5 || !this.p.h$src$Z$ftwoya()) {
-                        this.p.R(false);
-                    }
-                } else if (bl10) {
-                    this.p.R(false);
-                }
-            }
-            bl5 = false;
-            if (this.p.h$src$Z$ftwoya() && this.A && this.p.y$src$Z$1iv9pk4()) {
-                this.s();
-            }
-            this.C();
-            return;
-        }
-        boolean bl12 = this.U();
-        ModelPlayer modelPlayer = this.p.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86();
-        this.l$src$V$muqk5b();
-        if (this.V()) {
-            this.p.R(false);
-        }
-        if (this.L$src$Z$md5597()) {
-            float f = (float)this.p.o(MonsterAttributesBridge.D());
-            this.Z *= f;
-            this.d *= f;
-        }
-        if (!this.p.d()) {
-            double d = this.p.z();
-            double d3 = this.p.h();
-            float f = this.p.f$src$F$fst3ac();
-            this.D(d - (double)f * 0.35, d3 + (double)f * 0.35);
-            this.D(d - (double)f * 0.35, d3 - (double)f * 0.35);
-            this.D(d + (double)f * 0.35, d3 - (double)f * 0.35);
-            this.D(d + (double)f * 0.35, d3 + (double)f * 0.35);
-        }
-        boolean bl13 = this.O();
-        boolean bl14 = this.p.f$src$Z$fst3rk() ? this.p.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12().b$src$Z$fqlxe4() : this.p.b$src$Z$fqlxe4();
-        boolean bl15 = bl2 = !bl12;
-        if ((bl14 || this.p.N$src$Z$1i7mk1l()) && bl2 && bl13) {
-            if (this.U <= 0 && !this.f) {
-                this.U = 7;
-            } else {
-                this.p.R(true);
-            }
-        }
-        if ((!this.p.h$src$Z$ftwoya() || this.p.N$src$Z$1i7mk1l()) && bl13 && this.f) {
-            this.p.R(true);
-        }
-        if (this.p.B$src$Z$f90iek()) {
-            boolean bl16;
-            bl = !this.i() || !this.E();
-            boolean bl17 = bl16 = bl || this.p.r() && !this.p.m$src$Z$fwnnx3() || this.p.h$src$Z$ftwoya() && !this.p.N$src$Z$1i7mk1l();
-            if (this.p.X$src$Z$1id4hz7()) {
-                if (!this.p.b$src$Z$fqlxe4() && !this.A && bl || !this.p.h$src$Z$ftwoya()) {
-                    this.p.R(false);
-                }
-            } else if (bl16) {
-                this.p.R(false);
-            }
-        }
-        bl = false;
-        if (this.p.h$src$Z$ftwoya() && this.A && this.p.y$src$Z$1iv9pk4()) {
-            this.s();
-        }
-        this.C();
-    }
-
-    private void D(double d, double d2) {
-        BlockPos blockPos = BlockPos.D(d, this.p.N(), d2);
-        if (this.K(blockPos)) {
-            double d3 = d - (double)blockPos.P();
-            double d4 = d2 - (double)blockPos.d();
-            Direction direction = null;
-            double d5 = Double.MAX_VALUE;
-            EnumFacing[] enumFacingArray = new EnumFacing[]{Direction.X(), Direction.g$src$Lgg_vape_wrapper_impl_EnumFacing_$1ii8mzu(), Direction.w(), Direction.M()};
-            for (EnumFacing enumFacing : enumFacingArray) {
-                double d6;
-                Direction direction2 = new Direction(enumFacing.getObject());
-                double d7 = direction2.n().W(d3, 0.0, d4);
-                double d8 = d6 = direction2.Q$src$Lgg_vape_wrapper_impl_DirectionVector_$l2h44r().equals(DirectionVector.m$src$Lgg_vape_wrapper_impl_DirectionVector_$1h73psc()) ? 1.0 - d7 : d7;
-                if (!(d6 < d5) || this.K(blockPos.offset(direction2))) continue;
-                d5 = d6;
-                direction = direction2;
-            }
-            if (direction != null) {
-                Vec3 vec3 = this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
-                if (direction.n().equals(DirectionAxis.j())) {
-                    this.p.F(0.1 * (double)direction.S(), vec3.getY(), vec3.getZ());
-                } else {
-                    this.p.F(vec3.getX(), vec3.getY(), 0.1 * (double)direction.F());
-                }
-            }
-        }
-    }
-
-    private boolean V() {
-        return this.p.k$src$Z$15enw27() || this.h() || this.L$src$Z$md5597() || this.p.f$src$Z$fst3rk();
+    public BlockInEntityMovementController(EntityPlayer simulatedPlayer, EntityPlayerSP localPlayer,
+                                           EntityPlayer sourcePlayer, World world) {
+        super(simulatedPlayer, localPlayer, sourcePlayer, world);
     }
 
     @Override
-    public void X(BlockPlacementGraph blockPlacementGraph) {
-        this.U = blockPlacementGraph.S;
-        this.d = blockPlacementGraph.p;
-        this.Z = blockPlacementGraph.s;
-        this.W = blockPlacementGraph.l;
-        this.b = blockPlacementGraph.c;
-        this.p.H(blockPlacementGraph.k);
-        this.p.u(blockPlacementGraph.v);
-        this.p.l(blockPlacementGraph.P);
-        this.p.n(blockPlacementGraph.Z);
-        this.p.w(blockPlacementGraph.j);
-        this.p.A(blockPlacementGraph.x);
-        Vec3 vec3 = Vec3.create(blockPlacementGraph.I, blockPlacementGraph.H, blockPlacementGraph.t);
-        this.p.h(vec3);
-        this.p.H(blockPlacementGraph.Q);
-        this.p.C(blockPlacementGraph.n);
-        this.p.D(blockPlacementGraph.g);
-        this.p.l(blockPlacementGraph.L);
-        this.p.U(blockPlacementGraph.U);
-        this.p.F(blockPlacementGraph.V);
-        this.p.R(blockPlacementGraph.K);
-        this.p.L(blockPlacementGraph.G);
-        this.p.t(blockPlacementGraph.E);
-        this.p.I(blockPlacementGraph.B);
-        AttributeInstance attributeInstance = this.p.t(MonsterAttributesBridge.U());
-        attributeInstance.J();
-        for (Object e : blockPlacementGraph.f) {
-            attributeInstance.applyModifier(new AttributeModifier(e));
+    public void tick() {
+        this.tickIfPlayerActive();
+    }
+
+    private void travelGliding() {
+        Vec3 motion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
+        this.simulatedPlayer.h(this.applyGlidingPhysics(motion));
+        this.moveEntity(MoverType.X(), this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi());
+    }
+
+    private void updateMovementAndSprinting() {
+        if (this.sprintToggleTimer > 0) {
+            --this.sprintToggleTimer;
         }
-        this.g = blockPlacementGraph.M;
-        this.M = blockPlacementGraph.D;
-        this.r = blockPlacementGraph.R;
-        this.R = blockPlacementGraph.Y;
-        this.A = blockPlacementGraph.y;
-        this.E = blockPlacementGraph.A;
-        this.f = blockPlacementGraph.N;
-    }
 
-    private void y() {
-        this.p.h(this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().addVector(0.0, 0.04f, 0.0));
-    }
+        boolean wasSneaking = this.sneakInput;
+        boolean hadEnoughForwardInput = this.hasEnoughForwardInput();
+        this.updateMovementInput();
 
-    private void R$src$V$mgfwpx() {
-        this.Q();
-    }
-
-    @Override
-    public void b(boolean bl, boolean bl2, boolean bl3, boolean bl4, boolean bl5, boolean bl6) {
-        this.g = bl;
-        this.M = bl2;
-        this.r = bl3;
-        this.R = bl4;
-        this.E = bl5;
-        this.A = bl6;
-    }
-
-    private boolean R$src$Z$mgfwtd() {
-        return this.A() ? this.e() : (double)this.d >= 0.8;
-    }
-
-    public boolean j() {
-        return this.p.I$src$Z$fcv2k3() && !this.p.h$src$Z$ftwoya();
-    }
-
-    private Vec3 O(Vec3 vec3, float f) {
-        this.p.i(this.p.b(f), vec3);
-        this.p.h(this.p.n(this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi()));
-        this.J(MoverType.X(), this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi());
-        Vec3 vec32 = this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
-        if ((this.p.r() || this.p.e$src$Z$15bd4i1()) && (this.p.S$src$Z$151gttj() || this.p.y().w(Blocks.h()) && Block.r(this.p))) {
-            vec32 = Vec3.create(vec32.getX(), 0.2, vec32.getZ());
+        if (this.shouldCancelSprintForMovementState()) {
+            this.simulatedPlayer.R(false);
         }
-        return vec32;
-    }
-
-
-    private void u() {
-        this.p.U(null);
-        this.p.p(this.p.E$src$Z$fanw6n());
-        this.p.g(false);
-        this.p.x$src$Z$g2peg2();
-        this.p.n();
-        this.p.V$src$V$1ic0wp1();
-        if (this.p.Q$src$Z$fh9faz()) {
-            this.p.U(this.p.M$src$F$ff28gb() * 0.5f);
+        if (this.shouldSlowMovementInput()) {
+            float slowdownFactor = (float)this.simulatedPlayer.o(MonsterAttributesBridge.D());
+            this.moveStrafe *= slowdownFactor;
+            this.moveForward *= slowdownFactor;
         }
-        this.p.A$src$V$f8gppr();
-    }
+        if (!this.simulatedPlayer.d()) {
+            double positionX = this.simulatedPlayer.z();
+            double positionZ = this.simulatedPlayer.h();
+            double collisionOffset = this.simulatedPlayer.f$src$F$fst3ac() * 0.35;
+            this.pushOutOfBlocks(positionX - collisionOffset, positionZ + collisionOffset);
+            this.pushOutOfBlocks(positionX - collisionOffset, positionZ - collisionOffset);
+            this.pushOutOfBlocks(positionX + collisionOffset, positionZ - collisionOffset);
+            this.pushOutOfBlocks(positionX + collisionOffset, positionZ + collisionOffset);
+        }
 
-    private float R() {
-        return (float)this.p.o(MonsterAttributesBridge.U());
-    }
-
-    public boolean m() {
-        return this.p.P() || this.p.I$src$Z$fcv2k3();
-    }
-
-    public boolean e() {
-        return this.d > 1.0E-5f;
-    }
-
-    private void D(Vec3 vec3) {
-        boolean bl = this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().getY() <= 0.0;
-        double d = this.p.N();
-        double d2 = this.p.J$src$D$14winyc();
-        if (this.p.h$src$Z$ftwoya()) {
-            float f = this.p.B$src$Z$f90iek() ? 0.9f : this.p.m$src$F$15frgrp();
-            float f2 = 0.02f;
-            float f3 = (float)this.p.o(MonsterAttributesBridge.g());
-            if (!this.p.b$src$Z$fqlxe4()) {
-                f3 *= 0.5f;
-            }
-            if (f3 > 0.0f) {
-                f += (0.54600006f - f) * f3;
-                f2 += (this.R() - f2) * f3;
-            }
-            if (this.p.i(PotionRegistry.H)) {
-                f = 0.96f;
-            }
-            this.p.i(f2, vec3);
-            this.J(MoverType.X(), this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi());
-            Vec3 vec32 = this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
-            if (this.p.r() && this.p.S$src$Z$151gttj()) {
-                vec32 = Vec3.create(vec32.getX(), 0.2, vec32.getZ());
-            }
-            vec32 = vec32.G(f, 0.8f, f);
-            this.p.h(this.p.G(d2, bl, vec32));
+        if (wasSneaking) {
+            this.sprintToggleTimer = 0;
         } else {
-            this.p.i(0.02f, vec3);
-            this.J(MoverType.X(), this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi());
-            if (this.p.Z(MLGBlockWrapper.f()) <= this.F()) {
-                this.p.h(this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().G(0.5, 0.8f, 0.5));
-                Vec3 vec33 = this.p.G(d2, bl, this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi());
-                this.p.h(vec33);
+            boolean onGround = this.simulatedPlayer.f$src$Z$fst3rk()
+                    ? this.simulatedPlayer.S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12()
+                            .b$src$Z$fqlxe4()
+                    : this.simulatedPlayer.b$src$Z$fqlxe4();
+            if ((onGround || this.simulatedPlayer.N$src$Z$1i7mk1l())
+                    && !hadEnoughForwardInput && this.canStartSprinting()) {
+                if (this.sprintToggleTimer <= 0 && !this.sprintKeyDown) {
+                    this.sprintToggleTimer = 7;
+                } else {
+                    this.simulatedPlayer.R(true);
+                }
+            }
+        }
+
+        if ((!this.simulatedPlayer.h$src$Z$ftwoya()
+                || this.simulatedPlayer.N$src$Z$1i7mk1l())
+                && this.canStartSprinting() && this.sprintKeyDown) {
+            this.simulatedPlayer.R(true);
+        }
+
+        if (this.simulatedPlayer.B$src$Z$f90iek()) {
+            boolean lacksForwardInput = !this.hasForwardInput() || !this.hasEnoughFoodToSprint();
+            boolean shouldStopSprinting = lacksForwardInput
+                    || this.simulatedPlayer.r() && !this.simulatedPlayer.m$src$Z$fwnnx3()
+                    || this.simulatedPlayer.h$src$Z$ftwoya()
+                            && !this.simulatedPlayer.N$src$Z$1i7mk1l();
+            if (this.simulatedPlayer.X$src$Z$1id4hz7()) {
+                if (!this.simulatedPlayer.b$src$Z$fqlxe4()
+                        && !this.sneakKeyDown && lacksForwardInput
+                        || !this.simulatedPlayer.h$src$Z$ftwoya()) {
+                    this.simulatedPlayer.R(false);
+                }
+            } else if (shouldStopSprinting) {
+                this.simulatedPlayer.R(false);
+            }
+        }
+
+        if (this.simulatedPlayer.h$src$Z$ftwoya() && this.sneakKeyDown
+                && this.simulatedPlayer.y$src$Z$1iv9pk4()) {
+            this.applySneakDownwardMotion();
+        }
+        this.updateLivingMotion();
+    }
+    private void pushOutOfBlocks(double positionX, double positionZ) {
+        BlockPos blockPos = BlockPos.D(positionX, this.simulatedPlayer.N(), positionZ);
+        if (this.isPositionClear(blockPos)) {
+            double localX = positionX - blockPos.P();
+            double localZ = positionZ - blockPos.d();
+            Direction nearestDirection = null;
+            double nearestDistance = Double.MAX_VALUE;
+            EnumFacing[] horizontalFacings = new EnumFacing[]{Direction.X(),
+                    Direction.g$src$Lgg_vape_wrapper_impl_EnumFacing_$1ii8mzu(),
+                    Direction.w(), Direction.M()};
+            for (EnumFacing facing : horizontalFacings) {
+                Direction direction = new Direction(facing.getObject());
+                double axisPosition = direction.n().W(localX, 0.0, localZ);
+                double edgeDistance = direction.Q$src$Lgg_vape_wrapper_impl_DirectionVector_$l2h44r()
+                        .equals(DirectionVector.m$src$Lgg_vape_wrapper_impl_DirectionVector_$1h73psc())
+                        ? 1.0 - axisPosition : axisPosition;
+                if (edgeDistance >= nearestDistance
+                        || this.isPositionClear(blockPos.offset(direction))) {
+                    continue;
+                }
+                nearestDistance = edgeDistance;
+                nearestDirection = direction;
+            }
+            if (nearestDirection != null) {
+                Vec3 motion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
+                if (nearestDirection.n().equals(DirectionAxis.j())) {
+                    this.simulatedPlayer.F(0.1 * nearestDirection.S(), motion.getY(), motion.getZ());
+                } else {
+                    this.simulatedPlayer.F(motion.getX(), motion.getY(), 0.1 * nearestDirection.F());
+                }
+            }
+        }
+    }
+
+    private boolean shouldCancelSprintForMovementState() {
+        return this.simulatedPlayer.k$src$Z$15enw27() || this.hasBlindness() || this.shouldSlowMovementInput() || this.simulatedPlayer.f$src$Z$fst3rk();
+    }
+
+    @Override
+    public void applySnapshot(BlockPlacementGraph blockPlacementGraph) {
+        this.sprintToggleTimer = blockPlacementGraph.sprintToggleTimer;
+        this.moveForward = blockPlacementGraph.moveForward;
+        this.moveStrafe = blockPlacementGraph.moveStrafe;
+        this.jumpInput = blockPlacementGraph.jumpInput;
+        this.sneakInput = blockPlacementGraph.sneakInput;
+        this.simulatedPlayer.H(blockPlacementGraph.positionX);
+        this.simulatedPlayer.u(blockPlacementGraph.positionY);
+        this.simulatedPlayer.l(blockPlacementGraph.positionZ);
+        this.simulatedPlayer.n(blockPlacementGraph.previousPositionX);
+        this.simulatedPlayer.w(blockPlacementGraph.previousPositionY);
+        this.simulatedPlayer.A(blockPlacementGraph.previousPositionZ);
+        Vec3 motion = Vec3.create(
+                blockPlacementGraph.motionX, blockPlacementGraph.motionY, blockPlacementGraph.motionZ);
+        this.simulatedPlayer.h(motion);
+        this.simulatedPlayer.H(blockPlacementGraph.yaw);
+        this.simulatedPlayer.C(blockPlacementGraph.pitch);
+        this.simulatedPlayer.D(blockPlacementGraph.previousYaw);
+        this.simulatedPlayer.l(blockPlacementGraph.previousPitch);
+        this.simulatedPlayer.U(blockPlacementGraph.onGround);
+        this.simulatedPlayer.F(blockPlacementGraph.sneaking);
+        this.simulatedPlayer.R(blockPlacementGraph.sprinting);
+        this.simulatedPlayer.L(blockPlacementGraph.jumpTicks);
+        this.simulatedPlayer.t(blockPlacementGraph.jumpMovementFactor);
+        this.simulatedPlayer.I(blockPlacementGraph.aiMoveSpeed);
+        AttributeInstance movementSpeed = this.simulatedPlayer.t(MonsterAttributesBridge.U());
+        movementSpeed.J();
+        for (Object modifier : blockPlacementGraph.movementSpeedModifiers) {
+            movementSpeed.applyModifier(new AttributeModifier(modifier));
+        }
+        this.forwardKeyDown = blockPlacementGraph.forwardKeyDown;
+        this.backwardKeyDown = blockPlacementGraph.backwardKeyDown;
+        this.leftKeyDown = blockPlacementGraph.leftKeyDown;
+        this.rightKeyDown = blockPlacementGraph.rightKeyDown;
+        this.sneakKeyDown = blockPlacementGraph.sneakKeyDown;
+        this.jumpKeyDown = blockPlacementGraph.jumpKeyDown;
+        this.sprintKeyDown = blockPlacementGraph.sprintKeyDown;
+    }
+
+    private void swimUp() {
+        this.simulatedPlayer.h(this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().addVector(0.0, 0.04f, 0.0));
+    }
+
+    private void simulatePlayerTick() {
+        this.tickPlayer();
+    }
+
+    @Override
+    public void setInput(boolean forward, boolean backward, boolean left, boolean right, boolean jump, boolean sneak) {
+        this.forwardKeyDown = forward;
+        this.backwardKeyDown = backward;
+        this.leftKeyDown = left;
+        this.rightKeyDown = right;
+        this.jumpKeyDown = jump;
+        this.sneakKeyDown = sneak;
+    }
+
+    private boolean isCrouchingOutOfWater() {
+        return this.simulatedPlayer.I$src$Z$fcv2k3() && !this.simulatedPlayer.h$src$Z$ftwoya();
+    }
+
+    private Vec3 applyGroundMovement(Vec3 movementInput, float slipperiness) {
+        this.simulatedPlayer.i(this.simulatedPlayer.b(slipperiness), movementInput);
+        this.simulatedPlayer.h(this.simulatedPlayer.n(this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi()));
+        this.moveEntity(MoverType.X(), this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi());
+        Vec3 resultingMotion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
+        if ((this.simulatedPlayer.r() || this.simulatedPlayer.e$src$Z$15bd4i1()) && (this.simulatedPlayer.S$src$Z$151gttj() || this.simulatedPlayer.y().w(Blocks.h()) && Block.r(this.simulatedPlayer))) {
+            resultingMotion = Vec3.create(resultingMotion.getX(), 0.2, resultingMotion.getZ());
+        }
+        return resultingMotion;
+    }
+
+
+    private void updatePreviousState() {
+        this.simulatedPlayer.U(null);
+        this.simulatedPlayer.p(this.simulatedPlayer.E$src$Z$fanw6n());
+        this.simulatedPlayer.g(false);
+        this.simulatedPlayer.x$src$Z$g2peg2();
+        this.simulatedPlayer.n();
+        this.simulatedPlayer.V$src$V$1ic0wp1();
+        if (this.simulatedPlayer.Q$src$Z$fh9faz()) {
+            this.simulatedPlayer.U(this.simulatedPlayer.M$src$F$ff28gb() * 0.5f);
+        }
+        this.simulatedPlayer.A$src$V$f8gppr();
+    }
+
+    private float getMovementSpeedAttribute() {
+        return (float)this.simulatedPlayer.o(MonsterAttributesBridge.U());
+    }
+
+    private void travelInFluid(Vec3 movementInput) {
+        boolean descending = this.simulatedPlayer
+                .C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().getY() <= 0.0;
+        double previousY = this.simulatedPlayer.N();
+        double gravity = this.simulatedPlayer.J$src$D$14winyc();
+        if (this.simulatedPlayer.h$src$Z$ftwoya()) {
+            float waterDrag = this.simulatedPlayer.B$src$Z$f90iek()
+                    ? 0.9f : this.simulatedPlayer.m$src$F$15frgrp();
+            float waterAcceleration = 0.02f;
+            float fluidEfficiency = (float)this.simulatedPlayer.o(MonsterAttributesBridge.g());
+            if (!this.simulatedPlayer.b$src$Z$fqlxe4()) {
+                fluidEfficiency *= 0.5f;
+            }
+            if (fluidEfficiency > 0.0f) {
+                waterDrag += (0.54600006f - waterDrag) * fluidEfficiency;
+                waterAcceleration += (this.getMovementSpeedAttribute() - waterAcceleration)
+                        * fluidEfficiency;
+            }
+            if (this.simulatedPlayer.i(PotionRegistry.H)) {
+                waterDrag = 0.96f;
+            }
+            this.simulatedPlayer.i(waterAcceleration, movementInput);
+            this.moveEntity(MoverType.X(),
+                    this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi());
+            Vec3 motion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
+            if (this.simulatedPlayer.r() && this.simulatedPlayer.S$src$Z$151gttj()) {
+                motion = Vec3.create(motion.getX(), 0.2, motion.getZ());
+            }
+            motion = motion.G(waterDrag, 0.8f, waterDrag);
+            this.simulatedPlayer.h(this.simulatedPlayer.G(gravity, descending, motion));
+        } else {
+            this.simulatedPlayer.i(0.02f, movementInput);
+            this.moveEntity(MoverType.X(),
+                    this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi());
+            if (this.simulatedPlayer.Z(MLGBlockWrapper.getLavaBlock()) <= this.getFluidJumpThreshold()) {
+                this.simulatedPlayer.h(this.simulatedPlayer
+                        .C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().G(0.5, 0.8f, 0.5));
+                Vec3 adjustedMotion = this.simulatedPlayer.G(gravity, descending,
+                        this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi());
+                this.simulatedPlayer.h(adjustedMotion);
             } else {
-                this.p.h(this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().r(0.5));
+                this.simulatedPlayer.h(this.simulatedPlayer
+                        .C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().r(0.5));
             }
-            if (d2 != 0.0) {
-                this.p.h(this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().addVector(0.0, -d2 / 4.0, 0.0));
+            if (gravity != 0.0) {
+                this.simulatedPlayer.h(this.simulatedPlayer
+                        .C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi()
+                        .addVector(0.0, -gravity / 4.0, 0.0));
             }
         }
-        Vec3 vec34 = this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
-        if (this.p.r() && this.p.i$src$Z$avhpwd(vec34.getX(), vec34.getY() + (double)0.6f - this.p.N() + d, vec34.getZ())) {
-            this.p.F(vec34.getX(), 0.3f, vec34.getZ());
+        Vec3 motion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
+        if (this.simulatedPlayer.r() && this.simulatedPlayer.i$src$Z$avhpwd(
+                motion.getX(), motion.getY() + 0.6f - this.simulatedPlayer.N() + previousY,
+                motion.getZ())) {
+            this.simulatedPlayer.F(motion.getX(), 0.3f, motion.getZ());
         }
     }
-
-    private boolean L$src$Z$md5597() {
-        return this.p.P() || this.j();
+    private boolean shouldSlowMovementInput() {
+        return this.simulatedPlayer.P() || this.isCrouchingOutOfWater();
     }
 
-    private void Q() {
-        this.p.z(false);
-        if (this.p.O$src$Z$fg5u49() || this.p.f$src$Z$fst3rk()) {
-            this.p.U(false);
+    private void tickPlayer() {
+        this.simulatedPlayer.z(false);
+        if (this.simulatedPlayer.O$src$Z$fg5u49() || this.simulatedPlayer.f$src$Z$fst3rk()) {
+            this.simulatedPlayer.U(false);
         }
-        this.p.i$src$Z$1imh02c();
-        this.o();
-        int n = 29999999;
-        double d = NumericMathUtil.W(this.p.z(), -2.9999999E7, 2.9999999E7);
-        double d2 = NumericMathUtil.W(this.p.h(), -2.9999999E7, 2.9999999E7);
-        if (d != this.p.z() || d2 != this.p.h()) {
-            this.p.B(d, this.p.N(), d2);
+        this.simulatedPlayer.i$src$Z$1imh02c();
+        this.updatePlayer();
+        double clampedX = NumericMathUtil.clamp(this.simulatedPlayer.z(), -2.9999999E7, 2.9999999E7);
+        double clampedZ = NumericMathUtil.clamp(this.simulatedPlayer.h(), -2.9999999E7, 2.9999999E7);
+        if (clampedX != this.simulatedPlayer.z() || clampedZ != this.simulatedPlayer.h()) {
+            this.simulatedPlayer.B(clampedX, this.simulatedPlayer.N(), clampedZ);
         }
-        this.p.d$src$V$1ijq103();
+        this.simulatedPlayer.d$src$V$1ijq103();
     }
 
-    private Vec3 C(Vec3 vec3) {
-        double d;
-        double d2;
-        Vec3 vec32 = this.p.E$src$Lgg_vape_wrapper_impl_Vec3_$2tp8us();
-        float f = this.p.V() * ((float)Math.PI / 180);
-        double d3 = vec32.Q();
-        double d4 = vec3.Q();
-        double d5 = this.p.J$src$D$14winyc();
-        if ((vec3 = vec3.addVector(0.0, d5 * (-1.0 + (d2 = NumericMathUtil.X(Math.cos(f))) * 0.75), 0.0)).getY() < 0.0 && d3 > 0.0) {
-            d = vec3.getY() * -0.1 * d2;
-            vec3 = vec3.addVector(vec32.getX() * d / d3, d, vec32.getZ() * d / d3);
+    private Vec3 applyGlidingPhysics(Vec3 motion) {
+        Vec3 lookVector = this.simulatedPlayer.E$src$Lgg_vape_wrapper_impl_Vec3_$2tp8us();
+        float pitchRadians = this.simulatedPlayer.V() * ((float)Math.PI / 180);
+        double horizontalLookLength = lookVector.Q();
+        double horizontalMotionLength = motion.Q();
+        double gravity = this.simulatedPlayer.J$src$D$14winyc();
+        double pitchFactor = NumericMathUtil.square(Math.cos(pitchRadians));
+        motion = motion.addVector(0.0, gravity * (-1.0 + pitchFactor * 0.75), 0.0);
+
+        if (motion.getY() < 0.0 && horizontalLookLength > 0.0) {
+            double diveLift = motion.getY() * -0.1 * pitchFactor;
+            motion = motion.addVector(
+                    lookVector.getX() * diveLift / horizontalLookLength,
+                    diveLift,
+                    lookVector.getZ() * diveLift / horizontalLookLength);
         }
-        if (f < 0.0f && d3 > 0.0) {
-            d = d4 * (double)(-NumericMathUtil.X(f)) * 0.04;
-            vec3 = vec3.addVector(-vec32.getX() * d / d3, d * 3.2, -vec32.getZ() * d / d3);
+        if (pitchRadians < 0.0f && horizontalLookLength > 0.0) {
+            double climbLift = horizontalMotionLength
+                    * -NumericMathUtil.sin(pitchRadians) * 0.04;
+            motion = motion.addVector(
+                    -lookVector.getX() * climbLift / horizontalLookLength,
+                    climbLift * 3.2,
+                    -lookVector.getZ() * climbLift / horizontalLookLength);
         }
-        if (d3 > 0.0) {
-            vec3 = vec3.addVector((vec32.getX() / d3 * d4 - vec3.getX()) * 0.1, 0.0, (vec32.getZ() / d3 * d4 - vec3.getZ()) * 0.1);
+        if (horizontalLookLength > 0.0) {
+            motion = motion.addVector(
+                    (lookVector.getX() / horizontalLookLength * horizontalMotionLength
+                            - motion.getX()) * 0.1,
+                    0.0,
+                    (lookVector.getZ() / horizontalLookLength * horizontalMotionLength
+                            - motion.getZ()) * 0.1);
         }
-        return vec3.G(0.99f, 0.98f, 0.99f);
+        return motion.G(0.99f, 0.98f, 0.99f);
+    }
+    private boolean hasForwardInput() {
+        return this.moveForward > 1.0E-5f;
     }
 
-    private boolean i() {
-        return this.d > 1.0E-5f;
+    private boolean isPositionClear(BlockPos blockPos) {
+        AxisAlignedBB playerBounds = this.simulatedPlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+        AxisAlignedBB blockColumn = AxisAlignedBB.create(blockPos.P(), playerBounds.getMinY(), blockPos.d(),
+                blockPos.P() + 1.0, playerBounds.getMaxY(), blockPos.d() + 1.0).v(1.0E-7);
+        return this.world.M(this.simulatedPlayer, blockColumn);
     }
 
-    private boolean K(BlockPos blockPos) {
-        AxisAlignedBB axisAlignedBB = this.p.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
-        AxisAlignedBB axisAlignedBB2 = AxisAlignedBB.create(blockPos.P(), axisAlignedBB.getMinY(), blockPos.d(), (double)blockPos.P() + 1.0, axisAlignedBB.getMaxY(), (double)blockPos.d() + 1.0).v(1.0E-7);
-        return this.P.M(this.p, axisAlignedBB2);
-    }
-
-    private static float M(boolean bl, boolean bl2) {
-        if (bl == bl2) {
+    private static float getAxisInput(boolean positive, boolean negative) {
+        if (positive == negative) {
             return 0.0f;
         }
-        return bl ? 1.0f : -1.0f;
+        return positive ? 1.0f : -1.0f;
     }
 
-    private void G() {
-        if (this.p.B$src$I$14s4bbr() > 0) {
-            this.p.L(this.p.B$src$I$14s4bbr() - 1);
+    private void updateMovementPhysics() {
+        if (this.simulatedPlayer.B$src$I$14s4bbr() > 0) {
+            this.simulatedPlayer.L(this.simulatedPlayer.B$src$I$14s4bbr() - 1);
         }
-        Vec3 vec3 = this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
-        double d = vec3.getX();
-        double d2 = vec3.getY();
-        double d3 = vec3.getZ();
-        if (Math.abs(vec3.getX()) < 0.003) {
-            d = 0.0;
-        }
-        if (Math.abs(vec3.getY()) < 0.003) {
-            d2 = 0.0;
-        }
-        if (Math.abs(vec3.getZ()) < 0.003) {
-            d3 = 0.0;
-        }
-        this.p.F(d, d2, d3);
-        if (this.p.p$src$Z$15hev10()) {
-            this.p.b(false);
-            this.p.k$src$V$5315b7(0.0f);
-            this.p.M(0.0f);
+
+        Vec3 motion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
+        double motionX = Math.abs(motion.getX()) < 0.003 ? 0.0 : motion.getX();
+        double motionY = Math.abs(motion.getY()) < 0.003 ? 0.0 : motion.getY();
+        double motionZ = Math.abs(motion.getZ()) < 0.003 ? 0.0 : motion.getZ();
+        this.simulatedPlayer.F(motionX, motionY, motionZ);
+
+        if (this.simulatedPlayer.p$src$Z$15hev10()) {
+            this.simulatedPlayer.b(false);
+            this.simulatedPlayer.k$src$V$5315b7(0.0f);
+            this.simulatedPlayer.M(0.0f);
         } else {
-            this.I();
+            this.applyMovementInputToPlayer();
         }
-        if (this.p.e$src$Z$15bd4i1() && this.p.y$src$Z$1iv9pk4()) {
-            double d4 = this.p.Q$src$Z$fh9faz() ? this.p.Z(MLGBlockWrapper.f()) : this.p.Z(MLGBlockWrapper.t());
-            boolean bl = this.p.h$src$Z$ftwoya() && d4 > 0.0;
-            double d5 = this.F();
-            if (!bl || this.p.b$src$Z$fqlxe4() && !(d4 > d5)) {
-                if (!this.p.Q$src$Z$fh9faz() || this.p.b$src$Z$fqlxe4() && !(d4 > d5)) {
-                    if ((this.p.b$src$Z$fqlxe4() || bl && d4 <= d5) && this.p.B$src$I$14s4bbr() == 0) {
-                        this.p.t$src$V$15jm1b0();
-                        this.p.L(10);
+
+        if (this.simulatedPlayer.e$src$Z$15bd4i1()
+                && this.simulatedPlayer.y$src$Z$1iv9pk4()) {
+            double fluidHeight = this.simulatedPlayer.Q$src$Z$fh9faz()
+                    ? this.simulatedPlayer.Z(MLGBlockWrapper.getLavaBlock())
+                    : this.simulatedPlayer.Z(MLGBlockWrapper.getWaterBlock());
+            boolean submergedInWater = this.simulatedPlayer.h$src$Z$ftwoya()
+                    && fluidHeight > 0.0;
+            double jumpThreshold = this.getFluidJumpThreshold();
+            if (!submergedInWater
+                    || this.simulatedPlayer.b$src$Z$fqlxe4()
+                            && fluidHeight <= jumpThreshold) {
+                if (!this.simulatedPlayer.Q$src$Z$fh9faz()
+                        || this.simulatedPlayer.b$src$Z$fqlxe4()
+                                && fluidHeight <= jumpThreshold) {
+                    if ((this.simulatedPlayer.b$src$Z$fqlxe4()
+                            || submergedInWater && fluidHeight <= jumpThreshold)
+                            && this.simulatedPlayer.B$src$I$14s4bbr() == 0) {
+                        this.simulatedPlayer.t$src$V$15jm1b0();
+                        this.simulatedPlayer.L(10);
                     }
                 } else {
-                    this.y();
+                    this.swimUp();
                 }
             } else {
-                this.y();
+                this.swimUp();
             }
         } else {
-            this.p.L(0);
+            this.simulatedPlayer.L(0);
         }
-        this.p.k$src$V$5315b7(this.p.N$src$F$14ypudi() * 0.98f);
-        this.p.M(this.p.F() * 0.98f);
-        AxisAlignedBB axisAlignedBB = this.p.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
-        Vec3 vec32 = Vec3.create(this.p.N$src$F$14ypudi(), 0.0, this.p.F());
-        this.B(vec32);
-        if (!this.P.I()) {
-            // empty if block
-        }
-        this.p.B$src$V$14s4bmy();
-        this.p.R$src$V$150x14q();
-        this.t();
+
+        this.simulatedPlayer.k$src$V$5315b7(
+                this.simulatedPlayer.N$src$F$14ypudi() * 0.98f);
+        this.simulatedPlayer.M(this.simulatedPlayer.F() * 0.98f);
+        Vec3 movementInput = Vec3.create(
+                this.simulatedPlayer.N$src$F$14ypudi(), 0.0, this.simulatedPlayer.F());
+        this.travelWithFlightHandling(movementInput);
+        this.simulatedPlayer.B$src$V$14s4bmy();
+        this.simulatedPlayer.R$src$V$150x14q();
+        this.pushNearbyEntities();
+    }
+    private boolean hasEnoughForwardInput() {
+        return this.simulatedPlayer.N$src$Z$1i7mk1l()
+                ? this.hasForwardInput() : this.moveForward >= 0.8f;
     }
 
-    private boolean U() {
-        double d = 0.8;
-        return this.p.N$src$Z$1i7mk1l() ? this.i() : (double)this.d >= 0.8;
+    private void updateLivingMotion() {
+        this.updateMovementPhysics();
+        this.simulatedPlayer.t((float)this.simulatedPlayer.o(MonsterAttributesBridge.U()));
     }
 
-    private void C() {
-        this.G();
-        this.p.t((float)this.p.o(MonsterAttributesBridge.U()));
-    }
-
-    private void v(Vec3 vec3) {
-        BlockPos blockPos = this.p.x$src$Lgg_vape_wrapper_impl_BlockPos_$1izbb73();
-        float f = this.p.b$src$Z$fqlxe4() ? this.P.getBlockState(blockPos).getBlock().c() : 1.0f;
-        float f2 = f * 0.91f;
-        Vec3 vec32 = this.O(vec3, f);
-        double d = vec32.getY();
-        if (this.p.i(PotionRegistry.h)) {
-            PotionEffect potionEffect = this.p.b(PotionRegistry.h);
-            d += (0.05 * (double)(potionEffect.L() + 1) - vec32.getY()) * 0.2;
+    private void travelOnGround(Vec3 movementInput) {
+        BlockPos groundPos = this.simulatedPlayer.x$src$Lgg_vape_wrapper_impl_BlockPos_$1izbb73();
+        float slipperiness = this.simulatedPlayer.b$src$Z$fqlxe4()
+                ? this.world.getBlockState(groundPos).getBlock().c() : 1.0f;
+        float horizontalDrag = slipperiness * 0.91f;
+        Vec3 resultingMotion = this.applyGroundMovement(movementInput, slipperiness);
+        double verticalMotion = resultingMotion.getY();
+        if (this.simulatedPlayer.i(PotionRegistry.h)) {
+            PotionEffect levitation = this.simulatedPlayer.b(PotionRegistry.h);
+            verticalMotion += (0.05 * (levitation.L() + 1)
+                    - resultingMotion.getY()) * 0.2;
         } else {
-            d -= this.p.J$src$D$14winyc();
+            verticalMotion -= this.simulatedPlayer.J$src$D$14winyc();
         }
-        if (this.p.V$src$Z$15347lm()) {
-            this.p.F(vec32.getX(), d, vec32.getZ());
+        if (this.simulatedPlayer.V$src$Z$15347lm()) {
+            this.simulatedPlayer.F(
+                    resultingMotion.getX(), verticalMotion, resultingMotion.getZ());
         } else {
-            float f3 = 0.98f;
-            this.p.F(vec32.getX() * (double)f2, d * (double)f3, vec32.getZ() * (double)f2);
+            this.simulatedPlayer.F(
+                    resultingMotion.getX() * horizontalDrag,
+                    verticalMotion * 0.98f,
+                    resultingMotion.getZ() * horizontalDrag);
         }
     }
 
-    private boolean E() {
-        return this.p.f$src$Z$fst3rk() || (float)this.p.Y$src$Lgg_vape_wrapper_impl_FoodStats_$fakh1z().getFoodLevel() > 6.0f || this.p.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().H();
+    private boolean hasEnoughFoodToSprint() {
+        return this.simulatedPlayer.f$src$Z$fst3rk() || (float)this.simulatedPlayer.Y$src$Lgg_vape_wrapper_impl_FoodStats_$fakh1z().getFoodLevel() > 6.0f || this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().H();
     }
 
     @Override
-    public void B() {
-        this.U = this.D.L$src$I$1tmeeo5();
-        AttributeInstance attributeInstance = this.O.t(MonsterAttributesBridge.U());
-        AttributeInstance attributeInstance2 = this.p.t(MonsterAttributesBridge.U());
-        attributeInstance2.J();
-        for (Object e : attributeInstance.I()) {
-            attributeInstance2.applyModifier(new AttributeModifier(e));
+    public void initialize() {
+        this.sprintToggleTimer = this.localPlayer.L$src$I$1tmeeo5();
+        AttributeInstance sourceMovementSpeed = this.sourcePlayer.t(MonsterAttributesBridge.U());
+        AttributeInstance simulatedMovementSpeed = this.simulatedPlayer.t(MonsterAttributesBridge.U());
+        simulatedMovementSpeed.J();
+        for (Object modifier : sourceMovementSpeed.I()) {
+            simulatedMovementSpeed.applyModifier(new AttributeModifier(modifier));
         }
     }
 
-    public void J(MoverType moverType, Vec3 vec3) {
-        block14: {
-            Wrapper wrapper;
-            boolean bl;
-            EntityPlayer entityPlayer;
-            boolean bl2;
-            boolean bl3;
-            Vec3 vec32;
-            block18: {
-                EntityPlayer entityPlayer2;
-                block16: {
-                    block17: {
-                        EntityPlayer entityPlayer3;
-                        block15: {
-                            double d;
-                            block13: {
-                                if (!this.p.d()) break block13;
-                                this.p.B(this.p.z() + vec3.getX(), this.p.N() + vec3.getY(), this.p.h() + vec3.getZ());
-                                break block14;
-                            }
-                            if (moverType.equals(MoverType.E()) && (vec3 = this.p.y(vec3)).equals(Vec3.H())) {
-                                return;
-                            }
-                            if (this.p.G$src$Lgg_vape_wrapper_impl_Vec3_$efeys6().j() > 1.0E-7) {
-                                vec3 = vec3.N(this.p.G$src$Lgg_vape_wrapper_impl_Vec3_$efeys6());
-                                this.p.Z(Vec3.H());
-                                this.p.h(Vec3.H());
-                            }
-                            if ((d = (vec32 = this.p.K(vec3 = this.p.m(vec3, moverType))).j()) > 1.0E-7 || vec3.j() - d < 1.0E-7) {
-                                BlockRayTraceResult blockRayTraceResult;
-                                if (this.p.M$src$F$ff28gb() != 0.0f && d >= 1.0 && !(blockRayTraceResult = this.P.r(RayTraceContextFactory.v(this.p.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk(), this.p.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk().add(vec32), ChestType.e(), ITooltipFlag.n(), this.p))).getTypeOfHit().equals(RayTraceResult_type.miss())) {
-                                    this.p.U(0.0f);
-                                }
-                                this.p.B(this.p.z() + vec32.getX(), this.p.N() + vec32.getY(), this.p.h() + vec32.getZ());
-                            }
-                            bl3 = !NumericMathUtil.F(vec3.getX(), vec32.getX());
-                            bl2 = !NumericMathUtil.F(vec3.getZ(), vec32.getZ());
-                            entityPlayer3 = this.p;
-                            if (bl3) break block15;
-                            entityPlayer2 = entityPlayer3;
-                            if (!bl2) break block16;
-                            entityPlayer = entityPlayer2;
-                            break block17;
-                        }
-                        entityPlayer = entityPlayer3;
-                    }
-                    bl = true;
-                    break block18;
-                }
-                entityPlayer = entityPlayer2;
-                bl = false;
-            }
-            entityPlayer.T(bl);
-            if (Math.abs(vec3.getY()) > 0.0) {
-                this.p.t(vec3.getY() != vec32.getY());
-                this.p.h(this.p.u$src$Z$g120nz() && vec3.getY() < 0.0);
-                this.p.X(this.p.q$src$Z$fyuuaj(), this.p.r(), vec32);
-            }
-            if (this.p.r()) {
-                this.p.K(this.e(vec32));
-            } else {
-                this.p.K(false);
-            }
-            if (this.p.r()) {
-                double d;
-                double d2;
-                double d3;
-                EntityPlayer entityPlayer4;
-                double d4;
-                EntityPlayer entityPlayer5;
-                wrapper = this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
-                EntityPlayer entityPlayer6 = this.p;
-                if (bl3) {
-                    entityPlayer5 = entityPlayer6;
-                    d4 = 0.0;
-                } else {
-                    entityPlayer5 = entityPlayer6;
-                    d4 = ((Vec3)wrapper).getX();
-                }
-                double d5 = ((Vec3)wrapper).getY();
-                double d6 = d4;
-                EntityPlayer entityPlayer7 = entityPlayer5;
-                if (bl2) {
-                    entityPlayer4 = entityPlayer7;
-                    d3 = d6;
-                    d2 = d5;
-                    d = 0.0;
-                } else {
-                    entityPlayer4 = entityPlayer7;
-                    d3 = d6;
-                    d2 = d5;
-                    d = ((Vec3)wrapper).getZ();
-                }
-                entityPlayer4.F(d3, d2, d);
-            }
-            wrapper = this.p.C$src$Lgg_vape_wrapper_impl_BlockPos_$y7f4vu();
-            Block block = this.P.getBlockState((BlockPos)wrapper).getBlock();
-            if (vec3.getY() != vec32.getY()) {
-                block.r(this.P, this.p);
-            }
-            float f = this.p.i$src$F$1imgzl4();
-            this.p.h(this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().G(f, 1.0, f));
+    private void moveEntity(MoverType moverType, Vec3 requestedMovement) {
+        if (this.simulatedPlayer.d()) {
+            this.simulatedPlayer.B(
+                    this.simulatedPlayer.z() + requestedMovement.getX(),
+                    this.simulatedPlayer.N() + requestedMovement.getY(),
+                    this.simulatedPlayer.h() + requestedMovement.getZ());
+            return;
         }
+
+        if (moverType.equals(MoverType.E())) {
+            requestedMovement = this.simulatedPlayer.y(requestedMovement);
+            if (requestedMovement.equals(Vec3.H())) {
+                return;
+            }
+        }
+        if (this.simulatedPlayer.G$src$Lgg_vape_wrapper_impl_Vec3_$efeys6().j() > 1.0E-7) {
+            requestedMovement = requestedMovement.N(
+                    this.simulatedPlayer.G$src$Lgg_vape_wrapper_impl_Vec3_$efeys6());
+            this.simulatedPlayer.Z(Vec3.H());
+            this.simulatedPlayer.h(Vec3.H());
+        }
+
+        requestedMovement = this.simulatedPlayer.m(requestedMovement, moverType);
+        Vec3 adjustedMovement = this.simulatedPlayer.K(requestedMovement);
+        double adjustedLengthSquared = adjustedMovement.j();
+        if (adjustedLengthSquared > 1.0E-7
+                || requestedMovement.j() - adjustedLengthSquared < 1.0E-7) {
+            if (this.simulatedPlayer.M$src$F$ff28gb() != 0.0f
+                    && adjustedLengthSquared >= 1.0) {
+                BlockRayTraceResult rayTrace = this.world.r(RayTraceContextFactory.v(
+                        this.simulatedPlayer.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk(),
+                        this.simulatedPlayer.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk()
+                                .add(adjustedMovement),
+                        ChestType.e(), ITooltipFlag.n(), this.simulatedPlayer));
+                if (!rayTrace.getTypeOfHit().equals(RayTraceResult_type.miss())) {
+                    this.simulatedPlayer.U(0.0f);
+                }
+            }
+            this.simulatedPlayer.B(
+                    this.simulatedPlayer.z() + adjustedMovement.getX(),
+                    this.simulatedPlayer.N() + adjustedMovement.getY(),
+                    this.simulatedPlayer.h() + adjustedMovement.getZ());
+        }
+
+        boolean collidedX = !NumericMathUtil.approximatelyEqual(
+                requestedMovement.getX(), adjustedMovement.getX());
+        boolean collidedZ = !NumericMathUtil.approximatelyEqual(
+                requestedMovement.getZ(), adjustedMovement.getZ());
+        this.simulatedPlayer.T(collidedX || collidedZ);
+
+        if (Math.abs(requestedMovement.getY()) > 0.0) {
+            this.simulatedPlayer.t(requestedMovement.getY() != adjustedMovement.getY());
+            this.simulatedPlayer.h(
+                    this.simulatedPlayer.u$src$Z$g120nz() && requestedMovement.getY() < 0.0);
+            this.simulatedPlayer.X(
+                    this.simulatedPlayer.q$src$Z$fyuuaj(),
+                    this.simulatedPlayer.r(), adjustedMovement);
+        }
+        this.simulatedPlayer.K(
+                this.simulatedPlayer.r() && this.isMovingToward(adjustedMovement));
+
+        if (this.simulatedPlayer.r()) {
+            Vec3 motion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
+            this.simulatedPlayer.F(
+                    collidedX ? 0.0 : motion.getX(),
+                    motion.getY(),
+                    collidedZ ? 0.0 : motion.getZ());
+        }
+
+        BlockPos landingPos = this.simulatedPlayer
+                .C$src$Lgg_vape_wrapper_impl_BlockPos_$y7f4vu();
+        Block landingBlock = this.world.getBlockState(landingPos).getBlock();
+        if (requestedMovement.getY() != adjustedMovement.getY()) {
+            landingBlock.r(this.world, this.simulatedPlayer);
+        }
+        float velocityMultiplier = this.simulatedPlayer.i$src$F$1imgzl4();
+        this.simulatedPlayer.h(this.simulatedPlayer
+                .C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi()
+                .G(velocityMultiplier, 1.0, velocityMultiplier));
+    }
+    private double getFluidJumpThreshold() {
+        return (double)this.simulatedPlayer.X() < 0.4 ? 0.0 : 0.4;
     }
 
-    public double F() {
-        return (double)this.p.X() < 0.4 ? 0.0 : 0.4;
-    }
-
-    public void f(Vec3 vec3) {
-        BlockStateWorldBridge blockStateWorldBridge = this.P.o(this.p.J$src$Lgg_vape_wrapper_impl_BlockPos_$kv8a0x());
-        if ((this.p.h$src$Z$ftwoya() || this.p.Q$src$Z$fh9faz()) && this.p.y$src$Z$1iv9pk4() && !this.p.l(blockStateWorldBridge)) {
-            this.D(vec3);
-        } else if (this.p.k$src$Z$15enw27()) {
-            this.x();
+    private void travel(Vec3 movementInput) {
+        BlockStateWorldBridge blockStateWorldBridge = this.world.o(this.simulatedPlayer.J$src$Lgg_vape_wrapper_impl_BlockPos_$kv8a0x());
+        if ((this.simulatedPlayer.h$src$Z$ftwoya() || this.simulatedPlayer.Q$src$Z$fh9faz()) && this.simulatedPlayer.y$src$Z$1iv9pk4() && !this.simulatedPlayer.l(blockStateWorldBridge)) {
+            this.travelInFluid(movementInput);
+        } else if (this.simulatedPlayer.k$src$Z$15enw27()) {
+            this.travelGliding();
         } else {
-            this.v(vec3);
+            this.travelOnGround(movementInput);
         }
     }
 
-    private void o() {
-        float f;
-        this.u();
-        if (!this.p.M$src$Z$ff28xj()) {
-            this.L();
+    private void updatePlayer() {
+        float poseHeight;
+        this.updatePreviousState();
+        if (!this.simulatedPlayer.M$src$Z$ff28xj()) {
+            this.updateMovementAndSprinting();
         }
-        if (this.p.k$src$Z$15enw27()) {
+        if (this.simulatedPlayer.k$src$Z$15enw27()) {
             // empty if block
         }
-        if (this.p.w$src$Z$1iu64de()) {
-            this.p.C(0.0f);
+        if (this.simulatedPlayer.w$src$Z$1iu64de()) {
+            this.simulatedPlayer.C(0.0f);
         }
-        if ((f = this.p.e()) != this.p.K()) {
-            this.p.j(f);
-            this.p.O$src$V$fg5u0t();
+        if ((poseHeight = this.simulatedPlayer.e()) != this.simulatedPlayer.K()) {
+            this.simulatedPlayer.j(poseHeight);
+            this.simulatedPlayer.O$src$V$fg5u0t();
         }
     }
 
-    private boolean O() {
-        return !this.p.B$src$Z$f90iek() && this.U() && this.E() && !this.h() && !this.p.f$src$Z$fst3rk() && !this.p.k$src$Z$15enw27() && (!this.L$src$Z$md5597() || this.p.N$src$Z$1i7mk1l());
+    private boolean canStartSprinting() {
+        return !this.simulatedPlayer.B$src$Z$f90iek() && this.hasEnoughForwardInput() && this.hasEnoughFoodToSprint() && !this.hasBlindness() && !this.simulatedPlayer.f$src$Z$fst3rk() && !this.simulatedPlayer.k$src$Z$15enw27() && (!this.shouldSlowMovementInput() || this.simulatedPlayer.N$src$Z$1i7mk1l());
     }
 
-    private void t() {
-        List list = this.P.i(this.p, this.p.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu(), EntitySelectors.Z(this.D));
-        if (!list.isEmpty()) {
-            for (Object e : list) {
-                if (MappedClasses.z5.isInstance(e) || e == this.p.getObject() || e == this.O.getObject()) continue;
-                this.p.z(new Entity(e));
+    private void pushNearbyEntities() {
+        List nearbyEntities = this.world.i(this.simulatedPlayer,
+                this.simulatedPlayer.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu(),
+                EntitySelectors.Z(this.localPlayer));
+        if (!nearbyEntities.isEmpty()) {
+            for (Object entityObject : nearbyEntities) {
+                if (MappedClasses.z5.isInstance(entityObject)
+                        || entityObject == this.simulatedPlayer.getObject()
+                        || entityObject == this.sourcePlayer.getObject()) {
+                    continue;
+                }
+                this.simulatedPlayer.z(new Entity(entityObject));
             }
         }
     }
 
-    private boolean h() {
-        return this.p.i(PotionRegistry.K);
+    private boolean hasBlindness() {
+        return this.simulatedPlayer.i(PotionRegistry.K);
     }
 
-    private void B(Vec3 vec3) {
-        if (this.p.f$src$Z$fst3rk()) {
-            this.f(vec3);
+    private void travelWithFlightHandling(Vec3 movementInput) {
+        if (this.simulatedPlayer.f$src$Z$fst3rk()) {
+            this.travel(movementInput);
         } else {
-            double d;
-            if (this.p.X$src$Z$1id4hz7()) {
-                double d2;
-                d = this.p.E$src$Lgg_vape_wrapper_impl_Vec3_$2tp8us().getY();
-                double d3 = d2 = d < -0.2 ? 0.085 : 0.06;
-                if (d <= 0.0 || this.p.e$src$Z$15bd4i1() || !this.P.o(BlockPos.D(this.p.z(), this.p.N() + 1.0 - 0.1, this.p.h())).x()) {
-                    Vec3 vec32 = this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
-                    this.p.h(vec32.addVector(0.0, (d - vec32.getY()) * d2, 0.0));
+            if (this.simulatedPlayer.X$src$Z$1id4hz7()) {
+                double targetVerticalMotion = this.simulatedPlayer
+                        .E$src$Lgg_vape_wrapper_impl_Vec3_$2tp8us().getY();
+                double interpolationRate = targetVerticalMotion < -0.2 ? 0.085 : 0.06;
+                BlockPos headBlock = BlockPos.D(this.simulatedPlayer.z(),
+                        this.simulatedPlayer.N() + 0.9, this.simulatedPlayer.h());
+                if (targetVerticalMotion <= 0.0 || this.simulatedPlayer.e$src$Z$15bd4i1()
+                        || !this.world.o(headBlock).x()) {
+                    Vec3 motion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
+                    this.simulatedPlayer.h(motion.addVector(0.0,
+                            (targetVerticalMotion - motion.getY()) * interpolationRate, 0.0));
                 }
             }
-            if (this.p.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying()) {
-                d = this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().getY();
-                this.f(vec3);
-                this.p.h(this.p.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().i(DirectionAxis.T(), d * 0.6));
+            if (this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isFlying()) {
+                double previousVerticalMotion = this.simulatedPlayer
+                        .C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi().getY();
+                this.travel(movementInput);
+                this.simulatedPlayer.h(this.simulatedPlayer
+                        .C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi()
+                        .i(DirectionAxis.T(), previousVerticalMotion * 0.6));
             } else {
-                this.f(vec3);
+                this.travel(movementInput);
             }
         }
     }

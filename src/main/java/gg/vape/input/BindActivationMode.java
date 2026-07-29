@@ -5,27 +5,27 @@ public enum BindActivationMode {
     TOGGLE("Toggle"),
     HELD("Enable while held");
 
-    private static final /* synthetic */ BindActivationMode[] V;
-    private final String l;
+    private static final /* synthetic */ BindActivationMode[] legacyValues;
+    private final String displayName;
 
 
-    public String b() {
-        return this.l;
+    public String getDisplayName() {
+        return this.displayName;
     }
 
-    public BindActivationMode I() {
+    public BindActivationMode toggle() {
         return this == TOGGLE ? HELD : TOGGLE;
     }
 
     static {
-        String[] stringArray = new String[]{"Toggle", "TOGGLE", "HELD", "Enable while held"};
+        String[] legacyNames = new String[]{"Toggle", "TOGGLE", "HELD", "Enable while held"};
 
 
-        V = new BindActivationMode[]{TOGGLE, HELD};
+        legacyValues = new BindActivationMode[]{TOGGLE, HELD};
     }
 
-    private BindActivationMode(String string2) {
-        this.l = string2;
+    private BindActivationMode(String displayName) {
+        this.displayName = displayName;
     }
 }
 

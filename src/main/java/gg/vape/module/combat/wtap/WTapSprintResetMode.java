@@ -39,7 +39,7 @@ extends SubModule<HitSelect> {
         super(mod, string);
         this.criticalHitsOption = new ModeOption("Critical hits");
         this.preference = ModeValue.create((Object)this, "Preference", this.kbReductionOption, this.kbReductionOption, this.criticalHitsOption);
-        this.preference.Z$src$Lgg_vape_value_Value_$16i62fx("KB reduction: Favors knockback reduction\nCritical hits: Favors critical hit frequency");
+        this.preference.setDescription("KB reduction: Favors knockback reduction\nCritical hits: Favors critical hit frequency");
         this.addValue(this.preference);
     }
 
@@ -51,10 +51,10 @@ extends SubModule<HitSelect> {
     }
 
     private boolean isMovingTowardTarget(Entity entity) {
-        double d = entity.z() - Minecraft.thePlayer().z();
-        double d2 = entity.h() - Minecraft.thePlayer().h();
-        String[] stringArray = BooleanValue.H();
-        return d < 0.0 == Minecraft.thePlayer().t() < 0.0 && d2 < 0.0 == Minecraft.thePlayer().T() < 0.0;
+        double deltaX = entity.z() - Minecraft.thePlayer().z();
+        double deltaZ = entity.h() - Minecraft.thePlayer().h();
+        return deltaX < 0.0 == Minecraft.thePlayer().t() < 0.0
+                && deltaZ < 0.0 == Minecraft.thePlayer().T() < 0.0;
     }
 
     @EventHandler
@@ -66,7 +66,7 @@ extends SubModule<HitSelect> {
 
     @EventHandler
     public void onPacketReceive(EventPacketReceive eventPacketReceive) {
-        SPacketEntityVelocity sPacketEntityVelocity;
+        SPacketEntityVelocity velocityPacket;
         if (eventPacketReceive.getPacketInstance() == null) {
             return;
         }
@@ -74,69 +74,67 @@ extends SubModule<HitSelect> {
             return;
         }
         Packet packet = eventPacketReceive.getPacket();
-        boolean bl = false;
+        boolean velocityReceived = false;
         if (packet.isInstance(MappedClasses.qe)) {
-            bl = true;
-        } else if (packet.isInstance(MappedClasses.YX) && (sPacketEntityVelocity = new SPacketEntityVelocity(packet)).getEntityId() == Minecraft.thePlayer().S()) {
-            bl = true;
+            velocityReceived = true;
+        } else if (packet.isInstance(MappedClasses.YX)
+                && (velocityPacket = new SPacketEntityVelocity(packet)).getEntityId() == Minecraft.thePlayer().S()) {
+            velocityReceived = true;
         }
-        if (bl) {
+        if (velocityReceived) {
             this.velocityTicks = (int)VELOCITY_RESET_TICKS;
         }
     }
 
-    private boolean S$src$Z$s2br6w() {
-        return this.preference.K() == this.kbReductionOption;
+    private boolean prefersKnockbackReduction() {
+        return this.preference.getValue() == this.kbReductionOption;
     }
 
     @EventHandler
     public void onClickMouse(EventClickMouse eventClickMouse) {
-        RayTraceResult rayTraceResult;
-        String[] stringArray = BooleanValue.H();
-        if (!((HitSelect)this.getParent()).a$src$Z$1npvv6h()) {
+        RayTraceResult rayTrace;
+        if (!((HitSelect)this.getParent()).shouldTrigger()) {
             return;
         }
-        boolean bl = false;
+        boolean airborneAfterVelocity = false;
         if (this.velocityTicks > 0) {
             --this.velocityTicks;
             if (eventClickMouse.getThePlayer().b$src$Z$fqlxe4()) {
                 this.velocityTicks = 0;
             }
-            if (this.S$src$Z$s2br6w()) {
+            if (this.prefersKnockbackReduction()) {
                 return;
             }
             if (eventClickMouse.getThePlayer().q() > 0.0) {
-                bl = true;
+                airborneAfterVelocity = true;
             } else if (!eventClickMouse.getThePlayer().b$src$Z$fqlxe4()) {
                 return;
             }
         }
-        if ((rayTraceResult = RotationManager.b.n()).isNotNull() && rayTraceResult.getEntity().isInstance(MappedClasses.zm)) {
-            WTapSprintResetMode wTapSprintResetMode = this;
-            EntityLivingBase entityLivingBase = new EntityLivingBase(rayTraceResult.getEntity());
-            EntityLivingBase entityLivingBase2 = entityLivingBase;
-            if (!wTapSprintResetMode.isMovingTowardTarget(entityLivingBase2)) {
+        if ((rayTrace = RotationManager.INSTANCE.getExtendedReachRayTrace()).isNotNull()
+                && rayTrace.getEntity().isInstance(MappedClasses.zm)) {
+            EntityLivingBase target = new EntityLivingBase(rayTrace.getEntity());
+            if (!this.isMovingTowardTarget(target)) {
                 return;
             }
-            if (!bl) {
-                AttackPacketTimingTracker attackPacketTimingTracker = AttackPacketTimingTracker.a;
-                int n = attackPacketTimingTracker.Z();
-                int n2 = attackPacketTimingTracker.Z() + 1;
-                if (entityLivingBase.c$src$I$15a9iwo() <= n) {
-                    AttackPacketTimingTracker attackPacketTimingTracker2 = attackPacketTimingTracker;
-                    if (System.currentTimeMillis() - this.lastResetTime >= attackPacketTimingTracker2.Y() * 2L) {
+            if (!airborneAfterVelocity) {
+                AttackPacketTimingTracker timingTracker = AttackPacketTimingTracker.INSTANCE;
+                int expectedHurtTime = timingTracker.getExpectedHurtTimeTicks();
+                int upperHurtTime = expectedHurtTime + 1;
+                if (target.c$src$I$15a9iwo() <= expectedHurtTime) {
+                    if (System.currentTimeMillis() - this.lastResetTime >= timingTracker.getAverageHitDelay() * 2L) {
                         this.pendingTimestampUpdate = true;
                         return;
                     }
                 }
-                if (entityLivingBase.c$src$I$15a9iwo() > n && entityLivingBase.c$src$I$15a9iwo() <= n2) {
+                if (target.c$src$I$15a9iwo() > expectedHurtTime
+                        && target.c$src$I$15a9iwo() <= upperHurtTime) {
                     return;
                 }
             }
             eventClickMouse.setCancelled(true);
             this.cancelUse = true;
-            EntityLivingBase entityLivingBase3 = entityLivingBase;
-            ClientSettings.D(entityLivingBase3);
+            ClientSettings.D(target);
         }
     }
 
@@ -157,4 +155,3 @@ extends SubModule<HitSelect> {
     }
 
 }
-

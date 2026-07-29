@@ -26,11 +26,11 @@ extends EntityLivingBase {
 
     public void j(double d) {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return;
             }
-            freecamPlayerBridge.J(d);
+            freecamPlayerBridge.setPreviousCloakY(d);
             return;
         }
         MEntityPlayer.r(EntityPlayer.c.getMappings().hd, this.I, d);
@@ -51,11 +51,11 @@ extends EntityLivingBase {
 
     public void G(double d) {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return;
             }
-            freecamPlayerBridge.B(d);
+            freecamPlayerBridge.setPreviousCloakX(d);
             return;
         }
         MEntityPlayer.U(EntityPlayer.c.getMappings().hd, this.I, d);
@@ -85,11 +85,11 @@ extends EntityLivingBase {
 
     public double F$src$D$1i386rr() {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return -1.0;
             }
-            return freecamPlayerBridge.L();
+            return freecamPlayerBridge.getPreviousCloakY();
         }
         return MEntityPlayer.F(EntityPlayer.c.getMappings().hd, this.I);
     }
@@ -106,11 +106,11 @@ extends EntityLivingBase {
 
     public void S(double d) {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return;
             }
-            freecamPlayerBridge.y(d);
+            freecamPlayerBridge.setCloakX(d);
             return;
         }
         MEntityPlayer.O(EntityPlayer.c.getMappings().hd, this.I, d);
@@ -122,11 +122,11 @@ extends EntityLivingBase {
 
     public double L$src$D$1i6iybx() {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return -1.0;
             }
-            return freecamPlayerBridge.A();
+            return freecamPlayerBridge.getCloakY();
         }
         return MEntityPlayer.q(EntityPlayer.c.getMappings().hd, this.I);
     }
@@ -139,10 +139,10 @@ extends EntityLivingBase {
         MEntityPlayer.p$src$V$19rwqod(EntityPlayer.c.getMappings().hd, this.I);
     }
 
-    private FreecamPlayerBridge M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm() {
+    private FreecamPlayerBridge getFreecamPlayerBridge() {
         if (ForgeVersion.MC_1_21_10.d() && this.isInstance(MappedClasses.zt)) {
             AbstractClientPlayer abstractClientPlayer = new AbstractClientPlayer(this.I);
-            return abstractClientPlayer.E();
+            return abstractClientPlayer.getFreecamPlayerBridge();
         }
         return null;
     }
@@ -165,11 +165,11 @@ extends EntityLivingBase {
 
     public void c(double d) {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return;
             }
-            freecamPlayerBridge.G(d);
+            freecamPlayerBridge.setCloakZ(d);
             return;
         }
         MEntityPlayer.J(EntityPlayer.c.getMappings().hd, this.I, d);
@@ -177,11 +177,11 @@ extends EntityLivingBase {
 
     public void P(double d) {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return;
             }
-            freecamPlayerBridge.m(d);
+            freecamPlayerBridge.setCloakY(d);
             return;
         }
         MEntityPlayer.B(EntityPlayer.c.getMappings().hd, this.I, d);
@@ -193,11 +193,11 @@ extends EntityLivingBase {
 
     public void p(double d) {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return;
             }
-            freecamPlayerBridge.i(d);
+            freecamPlayerBridge.setPreviousCloakZ(d);
             return;
         }
         MEntityPlayer.g(EntityPlayer.c.getMappings().hd, this.I, d);
@@ -213,11 +213,11 @@ extends EntityLivingBase {
 
     public double s$src$D$1iryxh0() {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return -1.0;
             }
-            return freecamPlayerBridge.A();
+            return freecamPlayerBridge.getCloakY();
         }
         return MEntityPlayer.S(EntityPlayer.c.getMappings().hd, this.I);
     }
@@ -248,11 +248,11 @@ extends EntityLivingBase {
 
     public double C$src$D$1i1kszo() {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return -1.0;
             }
-            return freecamPlayerBridge.j();
+            return freecamPlayerBridge.getCloakX();
         }
         return MEntityPlayer.v(EntityPlayer.c.getMappings().hd, this.I);
     }
@@ -271,11 +271,11 @@ extends EntityLivingBase {
 
     public double a$src$D$1ii2msi() {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return -1.0;
             }
-            return freecamPlayerBridge.X();
+            return freecamPlayerBridge.getCloakZ();
         }
         return MEntityPlayer.l(EntityPlayer.c.getMappings().hd, this.I);
     }
@@ -310,11 +310,11 @@ extends EntityLivingBase {
 
     public double G$src$D$1i3rzd4() {
         if (ForgeVersion.MC_1_21_10.d()) {
-            FreecamPlayerBridge freecamPlayerBridge = this.M$src$Lgg_vape_module_render_freecam_FreecamPlayerBrid$1gqqowm();
+            FreecamPlayerBridge freecamPlayerBridge = this.getFreecamPlayerBridge();
             if (freecamPlayerBridge == null) {
                 return -1.0;
             }
-            return freecamPlayerBridge.H();
+            return freecamPlayerBridge.getPreviousCloakZ();
         }
         return MEntityPlayer.s(EntityPlayer.c.getMappings().hd, this.I);
     }

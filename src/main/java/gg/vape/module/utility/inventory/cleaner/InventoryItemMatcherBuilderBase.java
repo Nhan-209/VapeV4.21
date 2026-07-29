@@ -8,98 +8,80 @@ import org.jetbrains.annotations.Nullable;
 public class InventoryItemMatcherBuilderBase<T extends InventoryItemMatcherBuilderBase<T>> {
     @Nullable
     private Comparator<InventoryItemMatchContext> comparator;
-    private String labelF;
+    private String name;
     private InventoryItemMatcherGroup group;
-    private static boolean flagT;
-    private String labelL;
-    private String labelA;
+    private String id;
+    private String iconName;
     @Nullable
-    private String labelJ;
+    private String description;
 
-    public T A(InventoryItemMatcherGroup wn_02) {
-        this.group = wn_02;
+    public T withGroup(InventoryItemMatcherGroup group) {
+        this.group = group;
         return (T)this;
     }
 
-    public T m(String string) {
-        this.labelF = string;
+    public T withName(String name) {
+        this.name = name;
         return (T)this;
     }
 
-    public static boolean y$src$Z$1hilr0k() {
-        return flagT;
-    }
-
     @Nullable
-    public Comparator<InventoryItemMatchContext> L() {
+    public Comparator<InventoryItemMatchContext> getComparator() {
         return this.comparator;
     }
 
-    public InventoryItemMatcherGroup W() {
+    public InventoryItemMatcherGroup getGroup() {
         return this.group;
     }
 
-    public String S() {
-        return this.labelF;
+    public String getName() {
+        return this.name;
     }
 
-    public String A() {
-        return this.labelA;
+    public String getIconName() {
+        return this.iconName;
     }
 
-    public String w() {
-        return this.labelJ;
+    public String getDescription() {
+        return this.description;
     }
 
 
     protected InventoryItemMatcherBuilderBase(InventoryItemMatcherBuilderBase<?> qq_12) {
-        this.labelL = qq_12.h();
-        this.labelF = qq_12.S();
-        this.labelA = qq_12.A();
-        this.group = qq_12.W();
-        this.comparator = qq_12.L();
+        this.id = qq_12.getId();
+        this.name = qq_12.getName();
+        this.iconName = qq_12.getIconName();
+        this.description = qq_12.getDescription();
+        this.group = qq_12.getGroup();
+        this.comparator = qq_12.getComparator();
     }
 
-    public T n(String string) {
-        this.labelL = string;
+    public T withId(String id) {
+        this.id = id;
         return (T)this;
     }
 
-    public T N(@Nullable Comparator<InventoryItemMatchContext> comparatorArg) {
+    public T withComparator(@Nullable Comparator<InventoryItemMatchContext> comparatorArg) {
         this.comparator = comparatorArg;
         return (T)this;
     }
 
-    public T H(String string) {
-        this.labelA = string;
+    public T withIconName(String iconName) {
+        this.iconName = iconName;
         return (T)this;
-    }
-
-    public static boolean Q() {
-        boolean bl = InventoryItemMatcherBuilderBase.y$src$Z$1hilr0k();
-        return true;
     }
 
     protected InventoryItemMatcherBuilderBase() {
     }
 
-    public String h() {
-        return this.labelL;
+    public String getId() {
+        return this.id;
     }
 
-    public T M(String string) {
-        this.labelJ = string;
+    public T withDescription(String description) {
+        this.description = description;
         return (T)this;
     }
 
-    public static void S(boolean bl) {
-        flagT = bl;
-    }
-
-    static {
-        if (InventoryItemMatcherBuilderBase.y$src$Z$1hilr0k()) {
-            InventoryItemMatcherBuilderBase.S(true);
-        }
-    }
 }
 

@@ -40,9 +40,9 @@ public class AimAssist
 extends Mod {
     private int blockBreakCooldown = 0;
     private final BooleanValue strafeIncrease;
-    public ModeValue F;
+    public ModeValue targetArea;
     protected final ModeValue mode;
-    public final ModeOption r;
+    public final ModeOption closestAreaMode;
     public final ModeOption centerMode;
     private final AimAssistTargetingSubModule adaptiveTargeting;
     public final ModeOption yawMode;
@@ -66,91 +66,95 @@ extends Mod {
     private final NumberValue distance;
 
     @Nullable
-    public EntityLivingBase M$src$Lgg_vape_wrapper_impl_EntityLivingBase_$1qf3v8a() {
+    public EntityLivingBase findBestTarget() {
         WorldClient worldClient = Minecraft.theWorld();
         if (worldClient.isNull()) {
             return null;
         }
-        ArrayList<Entity> arrayList = new ArrayList<Entity>();
-        ArrayList arrayList2 = new ArrayList(Minecraft.theWorld().z());
-        for (Object e : arrayList2) {
-            EntityLivingBase entityLivingBase;
-            Entity entity = new Entity(e);
-            if (ClientSettings.H && entity.isInstance(MappedClasses.FT) || !entity.isInstance(MappedClasses.zm) || !this.o(entityLivingBase = new EntityLivingBase(e))) continue;
-            arrayList.add(entityLivingBase);
+        ArrayList<EntityLivingBase> targets = new ArrayList<EntityLivingBase>();
+        ArrayList<?> loadedEntities = new ArrayList<Object>(worldClient.z());
+        for (Object entityObject : loadedEntities) {
+            Entity entity = new Entity(entityObject);
+            EntityLivingBase livingEntity;
+            if (ClientSettings.H && entity.isInstance(MappedClasses.FT)
+                    || !entity.isInstance(MappedClasses.zm)
+                    || !this.isValidTarget(livingEntity = new EntityLivingBase(entityObject))) {
+                continue;
+            }
+            targets.add(livingEntity);
         }
-        if (this.targetMode.K() == this.yawMode) {
-            arrayList.sort(new EntityAngleComparator());
-        } else if (this.targetMode.K() == this.distanceMode) {
-            arrayList.sort(new EntityDistanceComparator());
-        } else if (this.targetMode.K() == this.threatMode) {
-            arrayList.sort(new EntityArmorValueComparator());
-        } else if (this.targetMode.K() == this.armorMode) {
-            arrayList.sort(new EntityEquipmentValueComparator());
-        } else if (this.targetMode.K() == this.healthMode) {
-            arrayList.sort(new EntityHealthComparator());
+        if (this.targetMode.getValue() == this.yawMode) {
+            targets.sort(new EntityAngleComparator());
+        } else if (this.targetMode.getValue() == this.distanceMode) {
+            targets.sort(new EntityDistanceComparator());
+        } else if (this.targetMode.getValue() == this.threatMode) {
+            targets.sort(new EntityArmorValueComparator());
+        } else if (this.targetMode.getValue() == this.armorMode) {
+            targets.sort(new EntityEquipmentValueComparator());
+        } else if (this.targetMode.getValue() == this.healthMode) {
+            targets.sort(new EntityHealthComparator());
         }
-        if (!arrayList.isEmpty()) {
-            return (EntityLivingBase)arrayList.get(0);
+        if (!targets.isEmpty()) {
+            return targets.get(0);
         }
         return null;
     }
 
-    private boolean passesItemFilter(EntityLivingBase entityLivingBase) {
-        if (this.limitToItems.L().booleanValue()) {
+    private boolean passesItemFilter(EntityLivingBase target) {
+        if (this.limitToItems.getEffectiveValue().booleanValue()) {
             ItemStack itemStack = Minecraft.thePlayer().getHeldItemHand();
             if (!this.allowedItems.isValid(itemStack, false)) {
                 return false;
             }
-            return this.targetFilter.c(entityLivingBase);
+            return this.targetFilter.isValidTarget(target);
         }
-        return this.targetFilter.c(entityLivingBase);
+        return this.targetFilter.isValidTarget(target);
     }
 
-    public BooleanValue R() {
+    public BooleanValue getStrafeIncrease() {
         return this.strafeIncrease;
     }
 
-    public BooleanValue r$src$Lgg_vape_value_BooleanValue_$f5ztnc() {
+    public BooleanValue getRequireMouseDown() {
         return this.requireMouseDown;
     }
 
-    public NumberValue F$src$Lgg_vape_value_NumberValue_$cqv0bx() {
+    public NumberValue getVerticalSpeed() {
         return this.verticalSpeed;
     }
 
-    public boolean o(EntityLivingBase entityLivingBase) {
-        if (entityLivingBase.isNull()) {
+    public boolean isValidTarget(EntityLivingBase target) {
+        if (target.isNull()) {
             return false;
         }
-        if (entityLivingBase.equals(Minecraft.thePlayer())) {
+        if (target.equals(Minecraft.thePlayer())) {
             return false;
         }
-        if (entityLivingBase.w$src$F$15l9epb() <= 0.0f || entityLivingBase.M$src$Z$ff28xj()) {
+        if (target.w$src$F$15l9epb() <= 0.0f || target.M$src$Z$ff28xj()) {
             return false;
         }
-        if (Minecraft.thePlayer().getDistanceToEntity(entityLivingBase) >= (float)((Double)this.distance.K()).intValue()) {
+        if (Minecraft.thePlayer().getDistanceToEntity(target) >= (float)((Double)this.distance.getValue()).intValue()) {
             return false;
         }
-        if (RotationUtil.a(Minecraft.thePlayer(), entityLivingBase) > ((Double)this.maxAngle.K()).intValue() / 2) {
+        if (RotationUtil.a(Minecraft.thePlayer(), target) > ((Double)this.maxAngle.getValue()).intValue() / 2) {
             return false;
         }
-        if (Vape.INSTANCE.getFriendManager().isFriend(entityLivingBase)) {
+        if (Vape.INSTANCE.getFriendManager().isFriend(target)) {
             return false;
         }
-        if (entityLivingBase.equals(Minecraft.thePlayer().S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12())) {
+        if (target.equals(Minecraft.thePlayer().S$src$Lgg_vape_wrapper_impl_Entity_$dgzs12())) {
             return false;
         }
-        return this.passesItemFilter(entityLivingBase);
+        return this.passesItemFilter(target);
     }
 
 
-    public NumberValue w$src$Lgg_vape_value_NumberValue_$cwexni() {
+    public NumberValue getHorizontalSpeed() {
         return this.horizontalSpeed;
     }
 
     private boolean hasRequiredItem() {
-        if (!this.limitToItems.L().booleanValue()) {
+        if (!this.limitToItems.getEffectiveValue().booleanValue()) {
             return true;
         }
         ItemStack itemStack = Minecraft.thePlayer().getHeldItemHand();
@@ -161,15 +165,15 @@ extends Mod {
         super("AimAssist", -327674, Category.g, "Smoothly aims to closest valid target");
         this.adaptiveTargeting = new AimAssistTargetingSubModule(this, "Adaptive");
         this.mode = ModeValue.create((Object)this, "Mode", "Simple - Lightweight smooth aiming\nAdaptive - Advanced tracking with adaptive behavior", (ModeSelection)this.simpleRotation.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.simpleRotation.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx(), this.adaptiveTargeting.r$src$Lgg_vape_value_SubModuleValue_$1rfa4wx());
-        this.targetFilter = EntityTargetFilterValue.W(this);
+        this.targetFilter = EntityTargetFilterValue.createForModule(this);
         this.requireMouseDown = BooleanValue.create(this, "Require mouse down", true, "Only aim while mouse is down");
         this.aimVertically = BooleanValue.create(this, "Aim vertically", false, "Aims up and down as well");
         this.strafeIncrease = BooleanValue.create(this, "Strafe increase", false, "Increase speed while strafing away from target");
         this.checkBlockBreak = BooleanValue.create(this, "Check block break", false, "Prevents from aiming while breaking blocks");
         this.breakBlocksWhitelist = BooleanValue.create(this, "Break blocks whitelist", false);
-        this.blockBreakItems = LimitValue.n(this, "aimassist-blockbreak-items", "Items", LimitValue.r, Arrays.asList(new ItemLimitData("pickaxes"), new ItemLimitData("shovels")));
+        this.blockBreakItems = LimitValue.create(this, "aimassist-blockbreak-items", "Items", LimitValue.ALLOW_LIST_COLOR, Arrays.asList(new ItemLimitData("pickaxes"), new ItemLimitData("shovels")));
         this.limitToItems = BooleanValue.create(this, "Limit to items", false, "AimAssist functions only while holding selected items");
-        this.allowedItems = LimitValue.N(this, "aimassist-alloweditems", "Allowed Items", LimitValue.r, new ItemLimitData("swords"));
+        this.allowedItems = LimitValue.create(this, "aimassist-alloweditems", "Allowed Items", LimitValue.ALLOW_LIST_COLOR, new ItemLimitData("swords"));
         this.verticalSpeed = NumberValue.create(this, "Vertical speed", "#.#", "", 1.0, 5.0, 10.0);
         this.horizontalSpeed = NumberValue.create(this, "Horizontal speed", "#.#", "", 1.0, 5.0, 10.0);
         this.maxAngle = NumberValue.create(this, "Max angle", "#", "", 1.0, 180.0, 360.0, 1.0, "Maximum allowed angle to still aim at target");
@@ -181,64 +185,63 @@ extends Mod {
         this.healthMode = new ModeOption("Health");
         this.targetMode = ModeValue.create((Object)this, "Target mode", "How Aimassist should prioritize targets\nArmor/Threat will default to Distance for non player targets", (ModeSelection)this.yawMode, this.yawMode, this.distanceMode, this.armorMode, this.threatMode, this.healthMode);
         this.centerMode = new ModeOption("Center");
-        this.r = new ModeOption("Closest");
-        this.F = ModeValue.create((Object)this, "Target area", "Where Aimassist will aim towards\nCenter: Center of entity\nClosest: Closest position on entity hitbox", (ModeSelection)this.centerMode, this.centerMode, this.r);
-        this.aimVertically.K(this.verticalSpeed);
-        this.limitToItems.K(this.allowedItems);
-        this.limitToItems.l(this.allowedItems);
-        this.breakBlocksWhitelist.l(this.blockBreakItems);
-        this.breakBlocksWhitelist.K(this.blockBreakItems);
-        this.checkBlockBreak.K(this.breakBlocksWhitelist);
-        this.addValue(this.mode, this.targetFilter, this.requireMouseDown, this.strafeIncrease, this.checkBlockBreak, this.breakBlocksWhitelist, this.blockBreakItems, this.aimVertically, this.verticalSpeed, this.horizontalSpeed, this.maxAngle, this.distance, this.limitToItems, this.allowedItems, this.F, this.targetMode);
-        this.horizontalSpeed.C(0);
+        this.closestAreaMode = new ModeOption("Closest");
+        this.targetArea = ModeValue.create((Object)this, "Target area", "Where Aimassist will aim towards\nCenter: Center of entity\nClosest: Closest position on entity hitbox", (ModeSelection)this.centerMode, this.centerMode, this.closestAreaMode);
+        this.aimVertically.addDependentValues(this.verticalSpeed);
+        this.limitToItems.addDependentValues(this.allowedItems);
+        this.limitToItems.setCompactListValue(this.allowedItems);
+        this.breakBlocksWhitelist.setCompactListValue(this.blockBreakItems);
+        this.breakBlocksWhitelist.addDependentValues(this.blockBreakItems);
+        this.checkBlockBreak.addDependentValues(this.breakBlocksWhitelist);
+        this.addValue(this.mode, this.targetFilter, this.requireMouseDown, this.strafeIncrease, this.checkBlockBreak, this.breakBlocksWhitelist, this.blockBreakItems, this.aimVertically, this.verticalSpeed, this.horizontalSpeed, this.maxAngle, this.distance, this.limitToItems, this.allowedItems, this.targetArea, this.targetMode);
+        this.horizontalSpeed.setMaximumFractionDigits(0);
     }
 
-    public BooleanValue U() {
+    public BooleanValue getAimVertically() {
         return this.aimVertically;
     }
 
     @Override
-    public String r() {
-        return this.horizontalSpeed.c();
+    public String getDetailedSuffix() {
+        return this.horizontalSpeed.getDisplayValue();
     }
 
     @Nullable
-    public EntityLivingBase q$src$Lgg_vape_wrapper_impl_EntityLivingBase_$8dbhmm() {
+    public EntityLivingBase getCurrentTarget() {
         if (this.simpleRotation.J$src$Z$gcqtyf()) {
-            return this.simpleRotation.v();
+            return this.simpleRotation.getTarget();
         }
         if (this.adaptiveTargeting.J$src$Z$gcqtyf()) {
-            return this.adaptiveTargeting.S$src$Lgg_vape_wrapper_impl_EntityLivingBase_$15eeuu3();
+            return this.adaptiveTargeting.getTarget();
         }
         return null;
     }
 
-    public NumberValue Q$src$Lgg_vape_value_NumberValue_$5j6eyg() {
+    public NumberValue getMaxAngle() {
         return this.maxAngle;
     }
 
-    public NumberValue W() {
+    public NumberValue getDistance() {
         return this.distance;
     }
 
-    public boolean K() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        PlayerControllerMP playerControllerMP = Minecraft.playerController();
-        if (entityPlayerSP.isNull() || playerControllerMP.isNull()) {
+    public boolean canAim() {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        PlayerControllerMP playerController = Minecraft.playerController();
+        if (player.isNull() || playerController.isNull()) {
             return false;
         }
-        if (SharedModuleControlClaims.l.s()) {
+        if (SharedModuleControlClaims.movementInput.isLocked()) {
             return false;
         }
-        boolean bl = this.checkBlockBreak.L();
-        if (bl && this.breakBlocksWhitelist.L().booleanValue()) {
-            bl = this.blockBreakItems.A(entityPlayerSP.getHeldItemHand());
+        boolean checkCurrentBlock = this.checkBlockBreak.getEffectiveValue();
+        if (checkCurrentBlock && this.breakBlocksWhitelist.getEffectiveValue().booleanValue()) {
+            checkCurrentBlock = this.blockBreakItems.matches(player.getHeldItemHand());
         }
-        if (bl) {
-            boolean bl2;
-            RayTraceResult rayTraceResult = RayTraceUtil.o();
-            boolean bl3 = bl2 = rayTraceResult.isNotNull() && rayTraceResult.getTypeOfHit().equals(RayTraceResult_type.block());
-            if (bl2) {
+        if (checkCurrentBlock) {
+            RayTraceResult mouseOver = RayTraceUtil.o();
+            boolean aimingAtBlock = mouseOver.isNotNull() && mouseOver.getTypeOfHit().equals(RayTraceResult_type.block());
+            if (aimingAtBlock) {
                 this.blockBreakCooldown = 250;
                 return false;
             }
@@ -252,8 +255,5 @@ extends Mod {
         return this.hasRequiredItem();
     }
 
-    public EntityLivingBase a_xa_0_q() {
-        return this.q$src$Lgg_vape_wrapper_impl_EntityLivingBase_$8dbhmm();
-    }
 }
 

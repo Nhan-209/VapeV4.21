@@ -51,7 +51,7 @@ extends FrameHeaderComponent {
 
     @Override
     public void H() {
-        SmoothFontRenderer smoothFontRenderer = this.O(0.9);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.9);
         this.getClass();
         float f = 8.0f * (float)this.v * 0.9f;
         Color color = CloseableFrameHeaderComponent.J.A;
@@ -59,18 +59,18 @@ extends FrameHeaderComponent {
         double d2 = this.n() + this.L() / 2.0 - d / 2.0;
         double d3 = this.n() + this.L() / 2.0 - (double)(f / 2.0f);
         double d4 = this.G$src$D$1b2f02a() + 6.0;
-        double d5 = 32.0 * ((double)f / (ImageRenderer.m(this.I) * this.v));
+        double d5 = 32.0 * ((double)f / (ImageRenderer.getImageWidth(this.I) * this.v));
         smoothFontRenderer.d(this.O, d4 + d5 + 2.0, d2, color);
         if (this.G) {
-            ImageRenderer.E(color, (float)d4, (float)d3, this.I, f, f, false);
+            ImageRenderer.drawImage(color, (float)d4, (float)d3, this.I, f, f, false);
         }
-        this.R.G(this.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0().y$src$Z$1f55jvh() ? CloseableFrameHeaderComponent.J.f : null);
+        this.R.setOverrideColor(this.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0().y$src$Z$1f55jvh() ? CloseableFrameHeaderComponent.J.f : null);
         double d6 = this.G$src$D$1b2f02a() + this.A() - 7.5;
         this.getClass();
         this.R.K(d6 - 8.0);
         this.R.S(this.n());
         this.R.Y(this.L());
-        this.R.H(this.K ? "downexpand" : "upcollapse");
+        this.R.setIconResource(this.K ? "downexpand" : "upcollapse");
     }
 
     public static int[] A$src$AI$cq4488() {
@@ -92,8 +92,8 @@ extends FrameHeaderComponent {
         this.v = d;
         this.K = ((CollapsibleFrame)((Object)frame)).q();
         this.R = new IconButtonComponent(this.K ? "downexpand" : "upcollapse", 0.3);
-        this.R.r(new FrameHeaderCloseToggleClickHandler(this, frame));
-        this.H(this.R);
+        this.R.addClickListener(new FrameHeaderCloseToggleClickHandler(this, frame));
+        this.addChildren(this.R);
     }
 
 }

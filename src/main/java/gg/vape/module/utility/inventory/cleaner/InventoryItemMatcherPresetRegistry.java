@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class InventoryItemMatcherPresetRegistry {
     private static final Map<String, InventoryItemMatcherPreset> presetsByName;
-    public static InventoryItemMatcherPreset L;
+    public static final InventoryItemMatcherPreset NO_RULE;
 
 
     @Nullable
@@ -24,10 +24,10 @@ public class InventoryItemMatcherPresetRegistry {
 
     public static List<InventoryFilterPresetData> findMatchingPresets(InventoryFilterRule inventoryFilterRule) {
         ArrayList<InventoryFilterPresetData> arrayList = new ArrayList<InventoryFilterPresetData>();
-        InventoryItemMatcher inventoryItemMatcher = inventoryFilterRule.q().c();
-        ItemStack itemStack = inventoryFilterRule.q().E();
+        InventoryItemMatcher inventoryItemMatcher = inventoryFilterRule.getItemSelection().getMatcher();
+        ItemStack itemStack = inventoryFilterRule.getItemSelection().getItemStack();
         for (InventoryItemMatcherPreset inventoryItemMatcherPreset : presetsByName.values()) {
-            if (!inventoryItemMatcherPreset.U().isEmpty() && (inventoryItemMatcher != null && !inventoryItemMatcherPreset.U().contains(inventoryItemMatcher) || itemStack != null && inventoryItemMatcherPreset.U().stream().noneMatch(arg_0 -> InventoryItemMatcherPresetRegistry.matcherAcceptsStack(itemStack, arg_0)))) continue;
+            if (!inventoryItemMatcherPreset.getMatchers().isEmpty() && (inventoryItemMatcher != null && !inventoryItemMatcherPreset.getMatchers().contains(inventoryItemMatcher) || itemStack != null && inventoryItemMatcherPreset.getMatchers().stream().noneMatch(arg_0 -> InventoryItemMatcherPresetRegistry.matcherAcceptsStack(itemStack, arg_0)))) continue;
             arrayList.add(inventoryItemMatcherPreset);
         }
         return arrayList;
@@ -37,48 +37,15 @@ public class InventoryItemMatcherPresetRegistry {
         presetsByName.put(inventoryItemMatcherPreset.getName(), inventoryItemMatcherPreset);
     }
 
-    private static String decodeUtf8(byte[] byArray) {
-        int n = 0;
-        int n2 = byArray.length;
-        char[] cArray = new char[n2];
-        for (int i = 0; i < n2; ++i) {
-            char c;
-            int n3 = 0xFF & byArray[i];
-            if (n3 < 192) {
-                cArray[n++] = (char)n3;
-                continue;
-            }
-            if (n3 < 224) {
-                c = (char)((char)(n3 & 0x1F) << 6);
-                n3 = byArray[++i];
-                c = (char)(c | (char)(n3 & 0x3F));
-                cArray[n++] = c;
-                continue;
-            }
-            if (i >= n2 - 2) continue;
-            c = (char)((char)(n3 & 0xF) << 12);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F) << 6);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F));
-            cArray[n++] = c;
-        }
-        return new String(cArray, 0, n);
-    }
-
-    private static void registerFromBuilder(InventoryItemMatcherPresetBuilder inventoryItemMatcherPresetBuilder) {
-        InventoryItemMatcherPresetRegistry.register(inventoryItemMatcherPresetBuilder.build());
-    }
-
     private static boolean matcherAcceptsStack(ItemStack itemStack, InventoryItemMatcher inventoryItemMatcher) {
-        return inventoryItemMatcher.g(itemStack, itemStack.getItem());
+        return inventoryItemMatcher.matches(itemStack, itemStack.getItem());
     }
 
     static {
         String string = "No rule";
         presetsByName = new LinkedHashMap<String, InventoryItemMatcherPreset>();
-        L = InventoryItemMatcherPreset.J().name(string).build();
-        InventoryItemMatcherPresetRegistry.register(L);
+        NO_RULE = InventoryItemMatcherPreset.builder().name(string).build();
+        InventoryItemMatcherPresetRegistry.register(NO_RULE);
     }
 }
 

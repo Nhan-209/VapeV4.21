@@ -7,17 +7,14 @@ import java.awt.Point;
 
 class ClickGuiModulesSidecarSecondaryMouseListener
 implements GuiMouseListener {
-    final ClickGuiModulesSidecarPanel Y;
-    final Runnable w;
+    private final Runnable action;
 
     @Override
-    public void g(Point point, MouseClickButton uA) {
-        this.w.run();
+    public void g(Point point, MouseClickButton button) {
+        this.action.run();
     }
 
-    ClickGuiModulesSidecarSecondaryMouseListener(ClickGuiModulesSidecarPanel yy_12, Runnable runnable) {
-        this.Y = yy_12;
-        this.w = runnable;
+    ClickGuiModulesSidecarSecondaryMouseListener(Runnable action) {
+        this.action = action;
     }
 }
-

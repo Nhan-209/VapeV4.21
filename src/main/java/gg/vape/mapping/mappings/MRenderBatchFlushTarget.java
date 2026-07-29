@@ -44,7 +44,7 @@ extends Mapping {
         String string = b;
         MRenderBatchFlushTarget mRenderBatchFlushTarget = this;
         this.i = mRenderBatchFlushTarget.Y(string, bl, clazz, classArray);
-        GuiComponent.D(new GuiComponent[3]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[3]);
     }
 
     static {

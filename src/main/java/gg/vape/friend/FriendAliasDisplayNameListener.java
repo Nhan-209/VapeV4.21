@@ -34,7 +34,7 @@ implements EventListener {
     }
 
     public boolean u() {
-        return this.g().C.L();
+        return this.g().C.getEffectiveValue();
     }
 
     private Set<FriendEntry> D() {
@@ -83,7 +83,7 @@ implements EventListener {
     }
 
     public boolean N() {
-        return this.g().J.L();
+        return this.g().J.getEffectiveValue();
     }
 }
 

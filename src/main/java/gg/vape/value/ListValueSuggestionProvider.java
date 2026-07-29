@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public interface ListValueSuggestionProvider {
-    public void setComparator(@Nullable Comparator<String> var1);
+    public void setComparator(@Nullable Comparator<String> comparator);
 
     public @UnmodifiableView List<String> getValues();
 
@@ -15,10 +15,9 @@ public interface ListValueSuggestionProvider {
     @Nullable
     public Comparator<String> getComparator();
 
-    public void updateFilter(String var1);
+    public void updateFilter(String query);
 
-    public void setIncludeAllWhenEmpty(boolean var1);
+    public void setIncludeAllWhenEmpty(boolean includeAllWhenEmpty);
 
     public boolean isIncludeAllWhenEmpty();
 }
-

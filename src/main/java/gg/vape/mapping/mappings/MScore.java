@@ -56,7 +56,7 @@ extends Mapping {
             this.K = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)mScore.u(string, clazz, classArray).A(ForgeVersion.MC_1_20_6.n(), "value")).A(ForgeVersion.MC_1_16_5.n(), "getScore")).Q(ForgeVersion.MC_1_21_4.n(), MappedClasses.VN)).s();
             return;
         }
-        GuiComponent.D(new GuiComponent[3]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[3]);
         Class[] classArray = new Class[]{};
         Class<String> clazz = String.class;
         boolean bl = true;

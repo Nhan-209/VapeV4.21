@@ -13,7 +13,7 @@ public class RandomUtil {
     }
 
     public static int i(RandomValue randomValue) {
-        return RandomUtil.Y(randomValue.int_s(), randomValue.int_y());
+        return RandomUtil.Y(randomValue.getMinimumIntCompat(), randomValue.getMaximumIntCompat());
     }
 
 }

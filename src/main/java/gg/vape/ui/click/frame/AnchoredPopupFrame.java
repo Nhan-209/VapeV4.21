@@ -119,7 +119,7 @@ extends PopupFrame {
         double d4 = this.Tu + (double)(this.Tl ? 3 : -3);
         double d5 = d + 4.0;
         double d6 = d3;
-        GuiRenderPrimitives.U(d2, d3, d, d4, d5, d6, this.Ti.d());
+        GuiRenderPrimitives.U(d2, d3, d, d4, d5, d6, this.Ti.getDisabledOverlayColor());
     }
 
     private void d$src$V$5xual1() {
@@ -161,13 +161,13 @@ extends PopupFrame {
         this.Ti = guiComponent2;
         this.TL = (PanelComponent)this.D$src$Lgg_vape_ui_click_component_GuiComponent_$srx612();
         this.TL.h(guiComponent2, new Object[0]);
-        this.TL.T(new Color(0, 0, 0, 130));
-        this.TL.d(true);
+        this.TL.setDisabledOverlayColor(new Color(0, 0, 0, 130));
+        this.TL.setShowDisabledOverlay(true);
         this.TL.C$src$V$nadrmg();
-        this.TL.q(this.X$src$Lgg_vape_ui_click_frame_Frame_$1aw5qf9().A());
-        this.TL.u(this.X$src$Lgg_vape_ui_click_frame_Frame_$1aw5qf9().L() + (double)(this.X$src$Lgg_vape_ui_click_frame_Frame_$1aw5qf9().g$src$Z$iczr0v() ? 2 : 0));
-        this.TL.j(new AnchoredPopupFrameCloseMouseListener(this));
-        this.Z(new AnchoredPopupFrameOutsideCloseMouseListener(this, guiComponent2));
+        this.TL.setExplicitWidth(this.X$src$Lgg_vape_ui_click_frame_Frame_$1aw5qf9().A());
+        this.TL.setExplicitHeight(this.X$src$Lgg_vape_ui_click_frame_Frame_$1aw5qf9().L() + (double)(this.X$src$Lgg_vape_ui_click_frame_Frame_$1aw5qf9().g$src$Z$iczr0v() ? 2 : 0));
+        this.TL.addMouseListener(new AnchoredPopupFrameCloseMouseListener(this));
+        this.addGlobalMouseListener(new AnchoredPopupFrameOutsideCloseMouseListener(this, guiComponent2));
     }
 
     public void O(boolean bl) {

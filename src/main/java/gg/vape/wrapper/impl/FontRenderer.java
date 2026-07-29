@@ -44,15 +44,15 @@ extends Wrapper {
 
     public int B(String string, double d, double d2, int n, boolean bl, RenderMatrix4f renderMatrix4f, SharedMonsterAttributes sharedMonsterAttributes, GlScissorRect glScissorRect) {
         if (renderMatrix4f == null) {
-            renderMatrix4f = new RenderMatrix4f().b();
-            renderMatrix4f.u(BufferedGuiRenderPrimitives.l);
-            renderMatrix4f.u(BufferedGuiRenderPrimitives.X.c());
+            renderMatrix4f = new RenderMatrix4f().setIdentity();
+            renderMatrix4f.multiply(BufferedGuiRenderPrimitives.viewMatrix);
+            renderMatrix4f.multiply(BufferedGuiRenderPrimitives.matrixStack.peek());
         }
         if (ForgeVersion.MC_1_21_6.d()) {
             RenderItemTextBridge renderItemTextBridge = RenderItemTextBridge.l(Matrix4fHandle.b(16));
             Matrix4fHandle matrix4fHandle = renderItemTextBridge.F();
             matrix4fHandle.o();
-            float[] fArray = renderMatrix4f.e;
+            float[] fArray = renderMatrix4f.elements;
             matrix4fHandle.K(fArray[0]);
             matrix4fHandle.m(fArray[1]);
             matrix4fHandle.z(fArray[4]);
@@ -60,7 +60,7 @@ extends Wrapper {
             matrix4fHandle.p(fArray[12]);
             matrix4fHandle.T(fArray[13]);
             if (glScissorRect != null) {
-                renderItemTextBridge.a(glScissorRect.v, glScissorRect.F, glScissorRect.v + glScissorRect.I, glScissorRect.F + glScissorRect.f);
+                renderItemTextBridge.a(glScissorRect.x, glScissorRect.y, glScissorRect.x + glScissorRect.width, glScissorRect.y + glScissorRect.height);
             }
             renderItemTextBridge.P(Minecraft.getFontRenderer(), string, (int)d, (int)d2, n, bl);
             if (glScissorRect != null) {
@@ -70,7 +70,7 @@ extends Wrapper {
             return 0;
         }
         RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
-        int n2 = this.p(string, (float)d, (float)d2, n, bl, renderMatrix4f.u(), renderItemFontBridge, sharedMonsterAttributes, 0, 15728880);
+        int n2 = this.p(string, (float)d, (float)d2, n, bl, renderMatrix4f.toMinecraftMatrix(), renderItemFontBridge, sharedMonsterAttributes, 0, 15728880);
         renderItemFontBridge.q();
         return n2;
     }
@@ -187,7 +187,7 @@ extends Wrapper {
     private Void lambda$drawString3D$0(String string, double d, double d2, int n, boolean bl, RenderMatrix4f renderMatrix4f, SharedMonsterAttributes sharedMonsterAttributes) {
         RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
         GlStateManager.disableDepth();
-        this.p(string, (float)d, (float)d2, n, bl, renderMatrix4f.u(), renderItemFontBridge, sharedMonsterAttributes, 0, 15728880);
+        this.p(string, (float)d, (float)d2, n, bl, renderMatrix4f.toMinecraftMatrix(), renderItemFontBridge, sharedMonsterAttributes, 0, 15728880);
         renderItemFontBridge.q();
         GlStateManager.enableDepth();
         return null;
@@ -217,9 +217,9 @@ extends Wrapper {
 
     public int X(String string, double d, double d2, int n, double d3, MatrixStack matrixStack) {
         double d4 = 1.0 / d3;
-        OpenGlBackendHolder.d.G(d3, d3, d3);
+        OpenGlBackendHolder.backend.scale(d3, d3, d3);
         int n2 = this.s(string, d * d4, d2 * d4, n, matrixStack);
-        OpenGlBackendHolder.d.G(d4, d4, d4);
+        OpenGlBackendHolder.backend.scale(d4, d4, d4);
         return n2;
     }
 
@@ -253,14 +253,14 @@ extends Wrapper {
 
     public int h(String string, double d, double d2, int n, boolean bl, RenderMatrix4f renderMatrix4f, SharedMonsterAttributes sharedMonsterAttributes) {
         if (renderMatrix4f == null) {
-            renderMatrix4f = new RenderMatrix4f().b();
-            renderMatrix4f.u(BufferedGuiRenderPrimitives.l);
-            renderMatrix4f.u(BufferedGuiRenderPrimitives.X.c());
+            renderMatrix4f = new RenderMatrix4f().setIdentity();
+            renderMatrix4f.multiply(BufferedGuiRenderPrimitives.viewMatrix);
+            renderMatrix4f.multiply(BufferedGuiRenderPrimitives.matrixStack.peek());
         }
         RenderMatrix4f renderMatrix4f2 = renderMatrix4f;
         Supplier<Void> supplier = () -> this.lambda$drawString3D$0(string, d, d2, n, bl, renderMatrix4f2, sharedMonsterAttributes);
-        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.MINECRAFT, true).b(supplier);
-        RenderBatchManager.M().c(renderBatchBuilder);
+        RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(4, VertexCoordinateMode.MINECRAFT, true).setStandaloneRenderCallback(supplier);
+        RenderBatchManager.getInstance().queueWorldBatch(renderBatchBuilder);
         return 0;
     }
 

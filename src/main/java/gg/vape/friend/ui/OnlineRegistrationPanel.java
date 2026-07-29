@@ -44,7 +44,7 @@ extends GuiComponent {
         try {
             OnlineConnectionManager.T.E();
             if (OnlineConnectionManager.T.j() != OnlineAccountState.REGISTRATION_OFFLINE) {
-                ClientSettings.g(OnlineFriendsFrame.class).Q$src$V$v8j9by();
+                ClientSettings.getFrame(OnlineFriendsFrame.class).Q$src$V$v8j9by();
                 this.i = -1L;
             }
         }
@@ -61,15 +61,15 @@ extends GuiComponent {
         this.v = new WrappedTextComponent("", 0.8, OnlineRegistrationPanel.J.Z, false);
         this.I = false;
         this.i = -1L;
-        this.H(this.v, this.O, this.G);
+        this.addChildren(this.v, this.O, this.G);
         this.G.o(32.0);
         this.G.Y(10.0);
-        this.G.r(this::n$src$V$1mt462c);
-        this.v.i(0.9);
-        this.v.c(90.0);
-        this.O.F(false);
-        this.O.h(OnlineRegistrationPanel.J.A);
-        this.O.r(this::C$src$V$1m5h0jt);
+        this.G.addClickListener(this::n$src$V$1mt462c);
+        this.v.setFontScale(0.9);
+        this.v.setWrapWidth(90.0);
+        this.O.setDeriveTextColorFromBackground(false);
+        this.O.setNormalTextColor(OnlineRegistrationPanel.J.A);
+        this.O.addClickListener(this::C$src$V$1m5h0jt);
     }
 
     @Override
@@ -78,12 +78,12 @@ extends GuiComponent {
     }
 
     private void n$src$V$1mt462c() {
-        OnlineFriendsFrame onlineFriendsFrame = ClientSettings.g(OnlineFriendsFrame.class);
+        OnlineFriendsFrame onlineFriendsFrame = ClientSettings.getFrame(OnlineFriendsFrame.class);
         onlineFriendsFrame.Q$src$V$v8j9by();
         onlineFriendsFrame.p$src$Lgg_vape_friend_ui_OnlineModeToggleComponent_$u0bbsl().u(false);
-        for (GuiComponent guiComponent : ClientSettings.g(OnlineFriendsFrame.class).h()) {
+        for (GuiComponent guiComponent : ClientSettings.getFrame(OnlineFriendsFrame.class).h()) {
             if (!(guiComponent instanceof SettingsSectionComponent) || !((SettingsSectionComponent)guiComponent).A$src$Ljava_lang_String_$9tmd4u().equals("Online Settings")) continue;
-            guiComponent.Z(false);
+            guiComponent.setVisible(false);
         }
     }
 
@@ -114,28 +114,28 @@ extends GuiComponent {
 
     @Override
     public void c() {
-        this.O.h(Color.white);
+        this.O.setNormalTextColor(Color.white);
         double d = 8.0;
         this.v.K(this.G$src$D$1b2f02a() + d);
         this.v.S(this.n() + 30.0);
         this.O.K(this.G$src$D$1b2f02a() + d * 1.0);
         this.O.S(this.n() + 45.0);
-        this.O.q(this.A() - d * 2.0);
+        this.O.setExplicitWidth(this.A() - d * 2.0);
         this.O.o(this.A() - d * 2.0);
         this.O.Y(14.0);
         if (OnlineConnectionManager.T.j() == OnlineAccountState.CONNECTING) {
-            this.O.Z(false);
-            this.v.G("Checking Account");
+            this.O.setVisible(false);
+            this.v.setText("Checking Account");
         } else {
-            this.O.Z(true);
-            this.v.G("Authentication Error");
+            this.O.setVisible(true);
+            this.v.setText("Authentication Error");
             if (this.i != -1L) {
                 int n = (int)((this.i - System.currentTimeMillis()) / 1000L);
                 if (n >= 0) {
-                    this.O.d("Reattempt in " + n + " second" + (n == 1 ? "" : "s") + "...");
+                    this.O.setLabelText("Reattempt in " + n + " second" + (n == 1 ? "" : "s") + "...");
                 } else {
                     this.i = -1L;
-                    this.O.d("Reattempt");
+                    this.O.setLabelText("Reattempt");
                 }
             }
         }
@@ -145,4 +145,3 @@ extends GuiComponent {
         GuiRenderPrimitives.L(this.G$src$D$1b2f02a() + this.A() - this.G.A() - d, this.n() + this.L() - 10.0, this.G.A(), OnlineRegistrationPanel.J.Z);
     }
 }
-

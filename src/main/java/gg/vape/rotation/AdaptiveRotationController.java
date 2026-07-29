@@ -23,510 +23,456 @@ import java.util.Random;
 public class AdaptiveRotationController
 extends FixedRotationController
 implements WorldPointRotationTarget {
-    private boolean T;
-    private long R;
-    private boolean Yw;
-    private double z;
-    private RotationAngles r;
-    private float u;
-    private float q;
-    private float M;
-    private MutableColor i;
-    private boolean C;
-    private MutableColor d;
-    private float E;
-    private final Random Yq;
-    private Float X;
-    private Vec3 F;
-    private float P;
-    private float g;
-    private float h;
-    private boolean O;
-    private float K;
-    private EntityLivingBase j;
-    private static final RotationAngles H;
-    private float D;
+    private boolean blockWhenScreenOpen;
+    private long lastJitterUpdateTime;
+    private boolean normalizeTargetYaw;
+    private double renderLineWidth;
+    private RotationAngles fixedTargetRotation;
+    private float yawOffset;
+    private float pitchJitterPhase;
+    private float yawJitterAmplitude;
+    private MutableColor primaryColor;
+    private boolean relativeMode;
+    private MutableColor secondaryColor;
+    private float yawJitterPhase;
+    private final Random random;
+    private Float referenceYawOverride;
+    private Vec3 target;
+    private float currentYaw;
+    private float currentPitch;
+    private float pitchJitterAmplitude;
+    private boolean useSecondaryColor;
+    private float yawJitterSpeed;
+    private EntityLivingBase referenceEntity;
+    private static final RotationAngles ZERO_ROTATION;
+    private float pitchJitterSpeed;
 
-    public float v$src$F$1mgxytb() {
-        EntityLivingBase entityLivingBase;
-        EntityLivingBase entityLivingBase2 = entityLivingBase = this.j != null ? this.j : Minecraft.F();
-        return this.X != null ? this.X.floatValue() : (FreeLookHudModule.z() ? FreeLookHudModule.L$src$F$1jnmc2m() : entityLivingBase.J());
+    public float getReferenceYaw() {
+        EntityLivingBase reference = this.referenceEntity != null ? this.referenceEntity : Minecraft.F();
+        return this.referenceYawOverride != null
+                ? this.referenceYawOverride.floatValue()
+                : (FreeLookHudModule.isActive() ? FreeLookHudModule.getSavedPitch() : reference.J());
     }
 
-    public float P() {
-        return this.u;
+    public float getYawOffset() {
+        return this.yawOffset;
     }
 
     @Override
-    public boolean m() {
-        float f;
-        float f2;
-        float f3;
-        float f4;
-        if (this.I == -999.0f) {
+    public boolean updatePitch() {
+        if (this.targetPitch == UNSET_ROTATION) {
             return true;
         }
-        float f5 = this.d();
-        if (f5 == -90.0f) {
-            f5 = -89.99f;
+        float currentPitch = this.getCurrentPitch() == -90.0f ? -89.99f : this.getCurrentPitch();
+        float mouseScale = this.getMouseScale();
+        float predictedYaw = this.getCurrentYaw() + (float)(int)this.pendingYawDelta * mouseScale * 0.15f;
+        float predictedPitch = currentPitch - (float)(int)(-this.pendingPitchDelta) * mouseScale * 0.15f;
+        double yawError = MathUtil.wrapAngleTo180((this.targetYaw - predictedYaw) % 360.0f);
+        double pitchError = MathUtil.wrapAngleTo180((this.targetPitch - predictedPitch) % 360.0f);
+        double absolutePitchError = Math.abs(pitchError);
+        if (!this.isOutsideTolerance(absolutePitchError)) {
+            return true;
         }
-        float f6 = RotationManager.b.E();
-        int n = (int)this.B;
-        int n2 = (int)(-this.y);
-        float f7 = f6 * 0.6f + 0.2f;
-        float f8 = f7 * f7 * f7 * 8.0f;
-        float f9 = (float)n * f8;
-        float f10 = (float)n2 * f8;
-        float f11 = (float)((double)this.k() + (double)f9 * 0.15);
-        float f12 = (float)((double)f5 - (double)f10 * 0.15);
-        double d = MathUtil.wrapAngleTo180((this.L - f11) % 360.0f);
-        double d2 = MathUtil.wrapAngleTo180((this.I - f12) % 360.0f);
-        double d3 = Math.abs(d);
-        double d4 = Math.abs(d2);
-        double d5 = (double)this.O() * 0.25;
-        double d6 = d4 / d3;
-        boolean bl = this.Y();
-        boolean bl2 = this.S();
-        boolean bl3 = this.K();
-        boolean bl4 = this.w$src$Z$15qe9bc();
-        boolean bl5 = this.e();
-        if (bl && d6 < 1.0) {
-            d5 *= d6;
+        double step = this.getSpeed() * 0.25;
+        double axisRatio = absolutePitchError / Math.abs(yawError);
+        if (this.isAxisScalingEnabled() && axisRatio < 1.0) {
+            step *= axisRatio;
         }
-        if (Math.round(d4 / (double)(f4 = (float)(0.0 + (double)(f3 = (f2 = (f = RotationManager.b.E()) * 0.6f + 0.2f) * f2 * f2 * 8.0f) * 0.15))) > (long)Math.max(Math.round(this.W / f4), 0)) {
-            if (bl2) {
-                d5 *= (135.0 + d4) / 90.0;
-            } else if (bl4) {
-                d5 += d4 * 0.05;
-            } else if (bl5) {
-                double d7 = d4 / 75.0;
-                double d8 = 0.4;
-                double d9 = 1.0;
-                double d10 = -0.7;
-                double d11 = d9 + 1.0;
-                d5 *= Math.max(1.0, d8 + d11 * Math.pow(d7 - d10, 3.0) + d9 * Math.pow(d7 - d10, 2.0));
-            }
-            this.y = bl3 ? (d2 > 0.0 ? (float)((double)this.y + Math.min(d5, d2 / (double)f4)) : (float)((double)this.y - Math.min(d5, Math.abs(d2 / (double)f4)))) : (d2 > 0.0 ? (float)((double)this.y + d5) : (float)((double)this.y - d5));
-            return false;
-        }
-        return true;
+        step = this.applyPitchAcceleration(step, absolutePitchError);
+        this.pendingPitchDelta = this.addPendingStep(this.pendingPitchDelta, pitchError, step);
+        return false;
     }
 
-    public void T(MutableColor mutableColor) {
-        this.d = mutableColor;
+    public void setSecondaryColor(MutableColor color) {
+        this.secondaryColor = color;
     }
 
-    public void x(double d) {
-        this.z = d;
+    public void setRenderLineWidth(double renderLineWidth) {
+        this.renderLineWidth = renderLineWidth;
     }
 
     @Override
-    public void B(EventPreEntityRendererMouseUpdate eventPreEntityRendererMouseUpdate) {
+    public void onPreMouseUpdate(EventPreEntityRendererMouseUpdate event) {
     }
 
-    public AdaptiveRotationController(EntityPlayer entityPlayer) {
-        super(entityPlayer.J(), entityPlayer.V());
-        this.T = false;
-        this.Yw = true;
-        this.X = null;
-        this.i = new MutableColor(0xFFFFFF);
-        this.d = new MutableColor(16756275);
-        this.u = 0.0f;
-        this.Yq = new Random();
-        this.E = 0.0f;
-        this.q = 0.0f;
-        this.K = 0.0f;
-        this.D = 0.0f;
-        this.M = 0.0f;
-        this.h = 0.0f;
-        this.R = 0L;
-        this.j = entityPlayer;
-        this.P = this.L;
-        this.g = this.I;
-        this.z = 3.0;
+    public AdaptiveRotationController(EntityPlayer referencePlayer) {
+        super(referencePlayer.J(), referencePlayer.V());
+        this.blockWhenScreenOpen = false;
+        this.normalizeTargetYaw = true;
+        this.referenceYawOverride = null;
+        this.primaryColor = new MutableColor(0xFFFFFF);
+        this.secondaryColor = new MutableColor(16756275);
+        this.yawOffset = 0.0f;
+        this.random = new Random();
+        this.yawJitterPhase = 0.0f;
+        this.pitchJitterPhase = 0.0f;
+        this.yawJitterSpeed = 0.0f;
+        this.pitchJitterSpeed = 0.0f;
+        this.yawJitterAmplitude = 0.0f;
+        this.pitchJitterAmplitude = 0.0f;
+        this.lastJitterUpdateTime = 0L;
+        this.referenceEntity = referencePlayer;
+        this.currentYaw = this.targetYaw;
+        this.currentPitch = this.targetPitch;
+        this.renderLineWidth = 3.0;
     }
 
-    public boolean O$src$Z$1lvi05g() {
-        return this.C;
+    public boolean isRelativeMode() {
+        return this.relativeMode;
     }
 
-    private float y$src$F$1milcle() {
-        float f = (float)(Math.sin(this.E) * (double)this.M);
-        float f2 = (float)(Math.sin(this.E * 2.7f + 1.3f) * (double)this.M * (double)0.3f);
-        return f + f2;
+    private float calculateYawJitter() {
+        float primaryWave = (float)(Math.sin(this.yawJitterPhase) * (double)this.yawJitterAmplitude);
+        float secondaryWave = (float)(Math.sin(this.yawJitterPhase * 2.7f + 1.3f)
+                * (double)this.yawJitterAmplitude * 0.3);
+        return primaryWave + secondaryWave;
     }
 
-    public double s() {
-        return this.z;
+    public double getRenderLineWidth() {
+        return this.renderLineWidth;
     }
 
-    public void c() {
-        if (this.C) {
-            this.b(H);
+    public void refreshTargetRotation() {
+        if (this.relativeMode) {
+            this.setTargetRotation(ZERO_ROTATION);
         } else {
-            RotationAngles rotationAngles = null;
-            if (this.F != null) {
-                rotationAngles = this.j(this.F);
-            } else if (this.r != null) {
-                rotationAngles = this.r;
+            RotationAngles targetRotation = null;
+            if (this.target != null) {
+                targetRotation = this.calculateRotation(this.target);
+            } else if (this.fixedTargetRotation != null) {
+                targetRotation = this.fixedTargetRotation;
             }
-            if (rotationAngles != null) {
-                if (this.u != 0.0f) {
-                    this.g(rotationAngles.z() + this.u, rotationAngles.N());
+            if (targetRotation != null) {
+                if (this.yawOffset != 0.0f) {
+                    this.setTargetRotation(targetRotation.getYaw() + this.yawOffset, targetRotation.getPitch());
                 } else {
-                    this.b(rotationAngles);
+                    this.setTargetRotation(targetRotation);
                 }
             }
         }
     }
 
     public AdaptiveRotationController() {
-        super(RotationManager.b.V(), RotationManager.b.x());
-        this.T = false;
-        this.Yw = true;
-        this.X = null;
-        this.i = new MutableColor(0xFFFFFF);
-        this.d = new MutableColor(16756275);
-        this.u = 0.0f;
-        this.Yq = new Random();
-        this.E = 0.0f;
-        this.q = 0.0f;
-        this.K = 0.0f;
-        this.D = 0.0f;
-        this.M = 0.0f;
-        this.h = 0.0f;
-        this.R = 0L;
-        this.P = this.L;
-        this.g = this.I;
-        this.z = 3.0;
+        super(RotationManager.INSTANCE.getManagedYaw(), RotationManager.INSTANCE.getManagedPitch());
+        this.blockWhenScreenOpen = false;
+        this.normalizeTargetYaw = true;
+        this.referenceYawOverride = null;
+        this.primaryColor = new MutableColor(0xFFFFFF);
+        this.secondaryColor = new MutableColor(16756275);
+        this.yawOffset = 0.0f;
+        this.random = new Random();
+        this.yawJitterPhase = 0.0f;
+        this.pitchJitterPhase = 0.0f;
+        this.yawJitterSpeed = 0.0f;
+        this.pitchJitterSpeed = 0.0f;
+        this.yawJitterAmplitude = 0.0f;
+        this.pitchJitterAmplitude = 0.0f;
+        this.lastJitterUpdateTime = 0L;
+        this.currentYaw = this.targetYaw;
+        this.currentPitch = this.targetPitch;
+        this.renderLineWidth = 3.0;
     }
 
-    public RotationAngles j(Vec3 vec3) {
-        EntityLivingBase entityLivingBase = this.j != null ? this.j : Minecraft.F();
-        double d = ForgeVersion.MC_1_7_10.Y() ? (double)entityLivingBase.X() : 0.0;
-        Vec3 vec32 = Vec3.create(vec3.getX(), vec3.getY(), vec3.getZ());
-        Vec3 vec33 = Vec3.create(entityLivingBase.c(), entityLivingBase.A() + d, entityLivingBase.Z());
-        return RotationVectorMath.H(vec33, vec32, this.k(), false);
+    public RotationAngles calculateRotation(Vec3 target) {
+        EntityLivingBase reference = this.referenceEntity != null ? this.referenceEntity : Minecraft.F();
+        double eyeHeight = ForgeVersion.MC_1_7_10.Y() ? (double)reference.X() : 0.0;
+        Vec3 targetPosition = Vec3.create(target.getX(), target.getY(), target.getZ());
+        Vec3 eyePosition = Vec3.create(reference.c(), reference.A() + eyeHeight, reference.Z());
+        return RotationVectorMath.H(eyePosition, targetPosition, this.getCurrentYaw(), false);
     }
 
-    private void P$src$V$1lw1snd() {
-        long l = System.currentTimeMillis();
-        if (l - this.R > (long)(200 + this.Yq.nextInt(300))) {
-            this.R = l;
-            this.K = 0.05f + this.Yq.nextFloat() * 0.15f;
-            this.D = 0.04f + this.Yq.nextFloat() * 0.12f;
-            this.M = 0.15f + this.Yq.nextFloat() * 0.25f;
-            this.h = 0.1f + this.Yq.nextFloat() * 0.2f;
+    private void updateJitter() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - this.lastJitterUpdateTime > (long)(200 + this.random.nextInt(300))) {
+            this.lastJitterUpdateTime = currentTime;
+            this.yawJitterSpeed = 0.05f + this.random.nextFloat() * 0.15f;
+            this.pitchJitterSpeed = 0.04f + this.random.nextFloat() * 0.12f;
+            this.yawJitterAmplitude = 0.15f + this.random.nextFloat() * 0.25f;
+            this.pitchJitterAmplitude = 0.1f + this.random.nextFloat() * 0.2f;
         }
-        this.E += this.K;
-        this.q += this.D;
-        if ((double)this.E > Math.PI * 2) {
-            this.E -= (float)Math.PI * 2;
+        this.yawJitterPhase += this.yawJitterSpeed;
+        this.pitchJitterPhase += this.pitchJitterSpeed;
+        if ((double)this.yawJitterPhase > Math.PI * 2) {
+            this.yawJitterPhase -= (float)Math.PI * 2;
         }
-        if ((double)this.q > Math.PI * 2) {
-            this.q -= (float)Math.PI * 2;
+        if ((double)this.pitchJitterPhase > Math.PI * 2) {
+            this.pitchJitterPhase -= (float)Math.PI * 2;
         }
     }
 
-    public void d(boolean bl) {
-        this.Yw = bl;
+    public void setNormalizeTargetYaw(boolean normalizeTargetYaw) {
+        this.normalizeTargetYaw = normalizeTargetYaw;
     }
 
-    public void t(boolean bl) {
-        this.T = bl;
+    public void setBlockWhenScreenOpen(boolean blockWhenScreenOpen) {
+        this.blockWhenScreenOpen = blockWhenScreenOpen;
     }
 
-    public void I(AdaptiveRotationController adaptiveRotationController) {
-        this.P = adaptiveRotationController.P;
-        this.g = adaptiveRotationController.g;
-        this.L = adaptiveRotationController.L;
-        this.I = adaptiveRotationController.I;
-        this.z = adaptiveRotationController.z;
-        this.B = adaptiveRotationController.B;
-        this.y = adaptiveRotationController.y;
-        this.o = adaptiveRotationController.o;
-        this.n = adaptiveRotationController.n;
-        this.j(adaptiveRotationController.T());
-        this.k(adaptiveRotationController.K());
-        this.U(adaptiveRotationController.Y());
-        this.A(adaptiveRotationController.S());
-        this.s(adaptiveRotationController.w$src$Z$15qe9bc());
-        this.z(adaptiveRotationController.e());
-        this.w(adaptiveRotationController.v());
-        this.u(adaptiveRotationController.V$src$Z$lb4tvc());
-        this.b = adaptiveRotationController.b;
-        this.W = adaptiveRotationController.W;
-        this.C = adaptiveRotationController.C;
-        this.X = adaptiveRotationController.X;
+    public void copyFrom(AdaptiveRotationController source) {
+        this.currentYaw = source.currentYaw;
+        this.currentPitch = source.currentPitch;
+        this.targetYaw = source.targetYaw;
+        this.targetPitch = source.targetPitch;
+        this.renderLineWidth = source.renderLineWidth;
+        this.pendingYawDelta = source.pendingYawDelta;
+        this.pendingPitchDelta = source.pendingPitchDelta;
+        this.yawDistance = source.yawDistance;
+        this.pitchDistance = source.pitchDistance;
+        this.setRestoreCapturedRotation(source.shouldRestoreCapturedRotation());
+        this.setClampStepToRemaining(source.isStepClampedToRemaining());
+        this.setScaleAxesProportionally(source.isAxisScalingEnabled());
+        this.setAngleBasedAcceleration(source.isAngleBasedAccelerationEnabled());
+        this.setLinearAcceleration(source.isLinearAccelerationEnabled());
+        this.setCubicAcceleration(source.isCubicAccelerationEnabled());
+        this.setRetainAfterCompletion(source.shouldRetainAfterCompletion());
+        this.setComplete(source.isComplete());
+        this.speed = source.speed;
+        this.tolerance = source.tolerance;
+        this.relativeMode = source.relativeMode;
+        this.referenceYawOverride = source.referenceYawOverride;
     }
 
 
-    public AdaptiveRotationController(float f, float f2) {
-        super(f, f2);
-        this.T = false;
-        this.Yw = true;
-        this.X = null;
-        this.i = new MutableColor(0xFFFFFF);
-        this.d = new MutableColor(16756275);
-        this.u = 0.0f;
-        this.Yq = new Random();
-        this.E = 0.0f;
-        this.q = 0.0f;
-        this.K = 0.0f;
-        this.D = 0.0f;
-        this.M = 0.0f;
-        this.h = 0.0f;
-        this.R = 0L;
-        this.P = Minecraft.F().J();
-        this.g = Minecraft.F().V();
-        this.z = 3.0;
+    public AdaptiveRotationController(float yaw, float pitch) {
+        super(yaw, pitch);
+        this.blockWhenScreenOpen = false;
+        this.normalizeTargetYaw = true;
+        this.referenceYawOverride = null;
+        this.primaryColor = new MutableColor(0xFFFFFF);
+        this.secondaryColor = new MutableColor(16756275);
+        this.yawOffset = 0.0f;
+        this.random = new Random();
+        this.yawJitterPhase = 0.0f;
+        this.pitchJitterPhase = 0.0f;
+        this.yawJitterSpeed = 0.0f;
+        this.pitchJitterSpeed = 0.0f;
+        this.yawJitterAmplitude = 0.0f;
+        this.pitchJitterAmplitude = 0.0f;
+        this.lastJitterUpdateTime = 0L;
+        this.currentYaw = Minecraft.F().J();
+        this.currentPitch = Minecraft.F().V();
+        this.renderLineWidth = 3.0;
     }
 
-    public MutableColor y() {
-        return this.i;
+    public MutableColor getPrimaryColor() {
+        return this.primaryColor;
     }
 
     @Override
-    public void w(float f, float f2) {
-        this.P = (float)((double)this.P + (double)f * 0.15);
-        this.g = (float)((double)this.g - (double)f2 * 0.15);
-        this.g = MathUtil.clamp(this.g, -90.0f, 90.0f);
+    public void applyMouseDelta(float yawDelta, float pitchDelta) {
+        this.currentYaw = (float)((double)this.currentYaw + (double)yawDelta * 0.15);
+        this.currentPitch = (float)((double)this.currentPitch - (double)pitchDelta * 0.15);
+        this.currentPitch = MathUtil.clamp(this.currentPitch, -90.0f, 90.0f);
     }
 
-    public void s(EntityLivingBase entityLivingBase) {
-        this.j = entityLivingBase;
+    public void setReferenceEntity(EntityLivingBase referenceEntity) {
+        this.referenceEntity = referenceEntity;
     }
 
-    public void x(float f) {
-        this.u = f;
+    public void setYawOffset(float yawOffset) {
+        this.yawOffset = yawOffset;
     }
 
     static {
-        H = new RotationAngles(0.0f, 0.0f);
+        ZERO_ROTATION = new RotationAngles(0.0f, 0.0f);
     }
 
     @Override
-    public void z(double d, double d2, double d3) {
-        this.J(Vec3.create(d, d2, d3));
+    public void setTarget(double x, double y, double z) {
+        this.setTarget(Vec3.create(x, y, z));
     }
 
     @Override
-    public boolean v() {
-        return !this.C;
+    public boolean shouldRetainAfterCompletion() {
+        return !this.relativeMode;
     }
 
     @Override
-    public float d() {
-        return this.g;
+    public float getCurrentPitch() {
+        return this.currentPitch;
     }
 
-    public void z(MutableColor mutableColor) {
-        this.i = mutableColor;
+    public void setPrimaryColor(MutableColor color) {
+        this.primaryColor = color;
     }
 
-    public MutableColor C() {
-        return this.d;
+    public MutableColor getSecondaryColor() {
+        return this.secondaryColor;
     }
 
     @Override
-    public void J(EntityPlayerSP entityPlayerSP, GuiScreen guiScreen) {
-        boolean bl;
-        if (entityPlayerSP.isNull() || this.T && guiScreen.isNotNull()) {
+    public void update(EntityPlayerSP player, GuiScreen screen) {
+        if (player.isNull() || this.blockWhenScreenOpen && screen.isNotNull()) {
             return;
         }
-        this.c();
-        boolean bl2 = this.A();
-        boolean bl3 = this.m();
-        boolean bl4 = bl = bl2 && bl3 && Math.abs(this.B) < 1.0f && Math.abs(this.y) < 1.0f;
-        if (!this.C && bl && !this.v()) {
-            this.b(true);
+        this.refreshTargetRotation();
+        boolean yawComplete = this.updateYaw();
+        boolean pitchComplete = this.updatePitch();
+        boolean rotationComplete = yawComplete && pitchComplete
+                && Math.abs(this.pendingYawDelta) < 1.0f
+                && Math.abs(this.pendingPitchDelta) < 1.0f;
+        if (!this.relativeMode && rotationComplete && !this.shouldRetainAfterCompletion()) {
+            this.setRelativeMode(true);
         } else {
-            this.u(bl);
+            this.setComplete(rotationComplete);
         }
     }
 
-    private float i() {
-        float f = (float)(Math.sin(this.q) * (double)this.h);
-        float f2 = (float)(Math.sin(this.q * 3.1f + 0.7f) * (double)this.h * 0.25);
-        return f + f2;
+    private float calculatePitchJitter() {
+        float primaryWave = (float)(Math.sin(this.pitchJitterPhase) * (double)this.pitchJitterAmplitude);
+        float secondaryWave = (float)(Math.sin(this.pitchJitterPhase * 3.1f + 0.7f)
+                * (double)this.pitchJitterAmplitude * 0.25);
+        return primaryWave + secondaryWave;
     }
 
-    public AdaptiveRotationController(Vec3 vec3) {
+    public AdaptiveRotationController(Vec3 target) {
         this(0.0f, 0.0f);
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        double d = ForgeVersion.MC_1_7_10.Y() ? (double)entityPlayerSP.X() : 0.0;
-        Vec3 vec32 = Vec3.create(vec3.getX(), vec3.getY(), vec3.getZ());
-        Vec3 vec33 = Vec3.create(entityPlayerSP.c(), entityPlayerSP.A() + d, entityPlayerSP.Z());
-        RotationAngles rotationAngles = RotationVectorMath.H(vec33, vec32, this.k(), this.c$src$Z$1m6hw0o());
-        this.L = rotationAngles.z();
-        this.I = rotationAngles.N();
+        EntityPlayerSP player = Minecraft.thePlayer();
+        double eyeHeight = ForgeVersion.MC_1_7_10.Y() ? (double)player.X() : 0.0;
+        Vec3 targetPosition = Vec3.create(target.getX(), target.getY(), target.getZ());
+        Vec3 eyePosition = Vec3.create(player.c(), player.A() + eyeHeight, player.Z());
+        RotationAngles rotationAngles = RotationVectorMath.H(
+                eyePosition, targetPosition, this.getCurrentYaw(), this.isNormalizeTargetYaw());
+        this.targetYaw = rotationAngles.getYaw();
+        this.targetPitch = rotationAngles.getPitch();
     }
 
     @Override
-    public void J(Vec3 vec3) {
-        this.r = null;
-        this.F = vec3;
+    public void setTarget(Vec3 target) {
+        this.fixedTargetRotation = null;
+        this.target = target;
     }
 
     @Override
-    public boolean A() {
-        float f;
-        float f2;
-        float f3;
-        float f4;
-        if (this.L == -999.0f) {
+    public boolean updateYaw() {
+        if (this.targetYaw == UNSET_ROTATION) {
             return true;
         }
-        float f5 = RotationManager.b.E();
-        int n = (int)this.B;
-        int n2 = (int)(-this.y);
-        float f6 = f5 * 0.6f + 0.2f;
-        float f7 = f6 * f6 * f6 * 8.0f;
-        float f8 = (float)n * f7;
-        float f9 = (float)n2 * f7;
-        float f10 = (float)((double)this.k() + (double)f8 * 0.15);
-        float f11 = (float)((double)this.d() - (double)f9 * 0.15);
-        double d = MathUtil.wrapAngleTo180((double)((this.L - f10) % 360.0f));
-        double d2 = MathUtil.wrapAngleTo180((double)((this.I - f11) % 360.0f));
-        double d3 = Math.abs(d);
-        double d4 = Math.abs(d2);
-        double d5 = (double)this.O() * 0.25;
-        double d6 = d3 / d4;
-        boolean bl = this.Y();
-        boolean bl2 = this.S();
-        boolean bl3 = this.K();
-        boolean bl4 = this.w$src$Z$15qe9bc();
-        boolean bl5 = this.e();
-        if (bl && d6 < 1.0) {
-            d5 *= d6;
+        float mouseScale = this.getMouseScale();
+        float predictedYaw = this.getCurrentYaw() + (float)(int)this.pendingYawDelta * mouseScale * 0.15f;
+        float predictedPitch = this.getCurrentPitch() - (float)(int)(-this.pendingPitchDelta) * mouseScale * 0.15f;
+        double yawError = MathUtil.wrapAngleTo180((this.targetYaw - predictedYaw) % 360.0f);
+        double pitchError = MathUtil.wrapAngleTo180((this.targetPitch - predictedPitch) % 360.0f);
+        double absoluteYawError = Math.abs(yawError);
+        if (!this.isOutsideTolerance(absoluteYawError)) {
+            return true;
         }
-        if (Math.round(d3 / (double)(f4 = (float)(0.0 + (double)(f3 = (f2 = (f = RotationManager.b.E()) * 0.6f + 0.2f) * f2 * f2 * 8.0f) * 0.15))) > (long)Math.max(Math.round(this.W / f4), 0)) {
-            if (bl2) {
-                d5 *= (225.0 + d3) / 180.0;
-            } else if (bl4) {
-                d5 += d3 * 0.05;
-            } else if (bl5) {
-                double d7 = d3 / 100.0;
-                double d8 = 0.4;
-                double d9 = 1.0;
-                double d10 = -0.7;
-                double d11 = d9 + 1.0;
-                d5 *= Math.min(Math.max(1.0, d8 + d11 * Math.pow(d7 - d10, 3.0) + d9 * Math.pow(d7 - d10, 2.0)), 4.0);
-            }
-            this.B = bl3 ? (d > 0.0 ? (float)((double)this.B + Math.min(d5, d / (double)f4)) : (float)((double)this.B - Math.min(d5, Math.abs(d / (double)f4)))) : (d > 0.0 ? (float)((double)this.B + d5) : (float)((double)this.B - d5));
-            return false;
+        double step = this.getSpeed() * 0.25;
+        double axisRatio = absoluteYawError / Math.abs(pitchError);
+        if (this.isAxisScalingEnabled() && axisRatio < 1.0) {
+            step *= axisRatio;
         }
-        return true;
+        step = this.applyYawAcceleration(step, absoluteYawError);
+        this.pendingYawDelta = this.addPendingStep(this.pendingYawDelta, yawError, step);
+        return false;
     }
 
-    public float X() {
-        EntityLivingBase entityLivingBase = this.j != null ? this.j : Minecraft.F();
-        float f = this.C ? entityLivingBase.V() + this.g : this.g;
-        return MathUtil.clamp(f, -90.0f, 90.0f);
+    public float getRenderedPitch() {
+        EntityLivingBase reference = this.referenceEntity != null ? this.referenceEntity : Minecraft.F();
+        float renderedPitch = this.relativeMode ? reference.V() + this.currentPitch : this.currentPitch;
+        return MathUtil.clamp(renderedPitch, -90.0f, 90.0f);
     }
 
-    public void L(boolean bl) {
-        this.O = bl;
+    public void setUseSecondaryColor(boolean useSecondaryColor) {
+        this.useSecondaryColor = useSecondaryColor;
     }
 
-    public boolean r() {
-        return this.T;
+    public boolean blocksWhenScreenOpen() {
+        return this.blockWhenScreenOpen;
     }
 
-    public void C(Float f) {
-        this.X = f;
+    public void setReferenceYawOverride(Float yawOverride) {
+        this.referenceYawOverride = yawOverride;
     }
 
     @Override
-    public void R(EventPostRenderTick eventPostRenderTick) {
-        if (this.C && this.j == null) {
-            float f;
-            float f2 = eventPostRenderTick.getThePlayer().J() - this.Q;
-            float f3 = eventPostRenderTick.getThePlayer().V() - this.c;
-            float f4 = Math.abs(this.P - f2);
-            if (f4 < Math.abs(this.P)) {
-                this.P -= f2;
+    public void onPostRenderTick(EventPostRenderTick event) {
+        if (this.relativeMode && this.referenceEntity == null) {
+            float playerYawDelta = event.getThePlayer().J() - this.savedYaw;
+            float playerPitchDelta = event.getThePlayer().V() - this.savedPitch;
+            float remainingYaw = Math.abs(this.currentYaw - playerYawDelta);
+            if (remainingYaw < Math.abs(this.currentYaw)) {
+                this.currentYaw -= playerYawDelta;
             }
-            if ((f = Math.abs(this.g - f3)) < Math.abs(this.g)) {
-                this.g -= f3;
+            float remainingPitch = Math.abs(this.currentPitch - playerPitchDelta);
+            if (remainingPitch < Math.abs(this.currentPitch)) {
+                this.currentPitch -= playerPitchDelta;
             }
         }
     }
 
     @Override
-    public Vec3 w() {
-        return this.F;
+    public Vec3 getTarget() {
+        return this.target;
     }
 
-    public float J() {
-        EntityLivingBase entityLivingBase;
-        EntityLivingBase entityLivingBase2 = entityLivingBase = this.j != null ? this.j : Minecraft.F();
-        if (this.C) {
-            return entityLivingBase.J() + this.P;
+    public float getRenderedYaw() {
+        EntityLivingBase reference = this.referenceEntity != null ? this.referenceEntity : Minecraft.F();
+        if (this.relativeMode) {
+            return reference.J() + this.currentYaw;
         }
-        return this.P;
+        return this.currentYaw;
     }
 
     @Override
-    public float k() {
-        return this.P;
+    public float getCurrentYaw() {
+        return this.currentYaw;
     }
 
-    public boolean M() {
-        return this.O;
+    public boolean usesSecondaryColor() {
+        return this.useSecondaryColor;
     }
 
     @Override
-    public void g(float f, float f2) {
-        this.F = null;
-        super.g(f, f2);
+    public void setTargetRotation(float yaw, float pitch) {
+        this.target = null;
+        super.setTargetRotation(yaw, pitch);
     }
 
-    public void a(float f) {
-        this.g = f;
+    public void setCurrentPitch(float pitch) {
+        this.currentPitch = pitch;
     }
 
-    public boolean c$src$Z$1m6hw0o() {
-        return this.Yw;
+    public boolean isNormalizeTargetYaw() {
+        return this.normalizeTargetYaw;
     }
 
-    public void T(float f) {
-        this.P = f;
+    public void setCurrentYaw(float yaw) {
+        this.currentYaw = yaw;
     }
 
-    public void b(boolean bl) {
-        if (this.C != bl) {
-            EntityLivingBase entityLivingBase;
-            EntityLivingBase entityLivingBase2 = entityLivingBase = this.j != null ? this.j : Minecraft.F();
-            if (bl) {
-                this.C(null);
-                float f = entityLivingBase.J() - this.P;
-                float f2 = entityLivingBase.V() - this.g;
-                float f3 = 0.0f;
-                while (f + f3 > 180.0f) {
-                    f3 -= 360.0f;
+    public void setRelativeMode(boolean relativeMode) {
+        if (this.relativeMode != relativeMode) {
+            EntityLivingBase reference = this.referenceEntity != null ? this.referenceEntity : Minecraft.F();
+            if (relativeMode) {
+                this.setReferenceYawOverride(null);
+                float yawDifference = reference.J() - this.currentYaw;
+                float pitchDifference = reference.V() - this.currentPitch;
+                float yawNormalizationOffset = 0.0f;
+                while (yawDifference + yawNormalizationOffset > 180.0f) {
+                    yawNormalizationOffset -= 360.0f;
                 }
-                while (f + f3 < -180.0f) {
-                    f3 += 360.0f;
+                while (yawDifference + yawNormalizationOffset < -180.0f) {
+                    yawNormalizationOffset += 360.0f;
                 }
-                if (f3 != 0.0f) {
-                    entityLivingBase.H(entityLivingBase.J() + f3);
-                    entityLivingBase.z(entityLivingBase.s() + f3);
-                    entityLivingBase.D(entityLivingBase.j() + f3);
-                    if (entityLivingBase.isInstance(MappedClasses.z5)) {
-                        EntityPlayerSP entityPlayerSP = new EntityPlayerSP(entityLivingBase);
-                        entityPlayerSP.F(entityPlayerSP.q$src$F$1u6qsjx() + f3);
+                if (yawNormalizationOffset != 0.0f) {
+                    reference.H(reference.J() + yawNormalizationOffset);
+                    reference.z(reference.s() + yawNormalizationOffset);
+                    reference.D(reference.j() + yawNormalizationOffset);
+                    if (reference.isInstance(MappedClasses.z5)) {
+                        EntityPlayerSP player = new EntityPlayerSP(reference);
+                        player.F(player.q$src$F$1u6qsjx() + yawNormalizationOffset);
                     }
                 }
-                this.P = MathUtil.wrapAngleTo180(-f);
-                this.g = MathUtil.clamp(-f2, -90.0f, 90.0f);
+                this.currentYaw = MathUtil.wrapAngleTo180(-yawDifference);
+                this.currentPitch = MathUtil.clamp(-pitchDifference, -90.0f, 90.0f);
             } else {
-                this.P += entityLivingBase.J();
-                this.g += entityLivingBase.V();
-                this.g = MathUtil.clamp(this.g, -90.0f, 90.0f);
+                this.currentYaw += reference.J();
+                this.currentPitch += reference.V();
+                this.currentPitch = MathUtil.clamp(this.currentPitch, -90.0f, 90.0f);
             }
-            this.u(false);
+            this.setComplete(false);
         }
-        this.C = bl;
+        this.relativeMode = relativeMode;
     }
 }

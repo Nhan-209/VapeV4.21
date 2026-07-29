@@ -7,9 +7,8 @@ import gg.vape.config.ConfigJsonUtils;
 import gg.vape.input.KeyboardCodeUtil;
 import gg.vape.module.macro.CommandMacro;
 import gg.vape.module.macro.ItemMacro;
-import gg.vape.module.macro.ItemMacroActionState;
+import gg.vape.module.macro.FishingRodMacro;
 import gg.vape.module.macro.MacroAction;
-import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.unmap.Bendable;
 import gg.vape.utils.Base64Util;
 import gg.vape.value.BooleanValue;
@@ -18,115 +17,98 @@ import java.util.Collections;
 
 public abstract class Macro
 extends Bendable {
-    private RandomValue Z = RandomValue.C(this, "Delay", "#", "", 1.0, 100.0, 200.0, 1000.0, 1.0);
-    private BooleanValue N = BooleanValue.create(this, "Double Click", false);
-    private static GuiComponent[] e;
-    private RandomValue G = RandomValue.create(this, "Double Click Delay", "#", "", 1.0, 100.0, 200.0, 1000.0);
-    private String b;
+    private final RandomValue delay = RandomValue.createWithIncrement(this, "Delay", "#", "", 1.0, 100.0, 200.0, 1000.0, 1.0);
+    private final BooleanValue doubleClick = BooleanValue.create(this, "Double Click", false);
+    private final RandomValue doubleClickDelay = RandomValue.create(this, "Double Click Delay", "#", "", 1.0, 100.0, 200.0, 1000.0);
+    private String name;
 
     public BooleanValue getDoubleClick() {
-        return this.N;
+        return this.doubleClick;
     }
 
     public Macro loadJson(JsonObject jsonObject) {
         if (jsonObject.has("name")) {
-            this.b = ConfigJsonUtils.c(jsonObject, "name");
+            this.name = ConfigJsonUtils.c(jsonObject, "name");
         }
         if (jsonObject.get("keybinds") != null && jsonObject.get("keybinds").isJsonArray()) {
             try {
-                this.O(jsonObject.getAsJsonArray("keybinds"), false);
+                this.loadBoundInputs(jsonObject.getAsJsonArray("keybinds"), false);
             }
             catch (Exception exception) {}
         } else if (jsonObject.get("key_2") != null && !jsonObject.get("key_2").isJsonNull()) {
-            this.c(Collections.singletonList(jsonObject.get("key_2").getAsInt()));
+            this.setBoundInputs(Collections.singletonList(jsonObject.get("key_2").getAsInt()));
         } else if (jsonObject.get("key") != null && !jsonObject.get("key").isJsonNull()) {
-            int n = jsonObject.get("key").getAsInt();
-            if (n > 0) {
-                n = KeyboardCodeUtil.m(n);
+            int legacyKey = jsonObject.get("key").getAsInt();
+            if (legacyKey > 0) {
+                legacyKey = KeyboardCodeUtil.convertLegacyKeyCode(legacyKey);
             }
-            this.c(Collections.singletonList(n));
+            this.setBoundInputs(Collections.singletonList(legacyKey));
         } else {
-            this.L().clear();
+            this.getBoundInputs().clear();
         }
         if (jsonObject.get("double_click_enabled") != null && !jsonObject.get("double_click_enabled").isJsonNull()) {
-            this.N.loadJson(jsonObject.get("double_click_enabled").getAsJsonObject());
+            this.doubleClick.loadJson(jsonObject.get("double_click_enabled").getAsJsonObject());
         }
         if (jsonObject.get("double_click") != null && !jsonObject.get("delay").isJsonNull()) {
-            this.Z.loadJson(jsonObject.get("delay").getAsJsonObject());
+            this.delay.loadJson(jsonObject.get("delay").getAsJsonObject());
         }
         if (jsonObject.get("double_click") != null && !jsonObject.get("double_click").isJsonNull()) {
-            this.G.loadJson(jsonObject.get("double_click").getAsJsonObject());
+            this.doubleClickDelay.loadJson(jsonObject.get("double_click").getAsJsonObject());
         }
         return this;
     }
 
-    protected Macro(String string) {
-        this.b = string;
-        this.N.q$src$Ljava_util_List_$fyau59().add(this.G);
+    protected Macro(String name) {
+        this.name = name;
+        this.doubleClick.getDependentValues().add(this.doubleClickDelay);
     }
 
-    static {
-        Macro.A(null);
-    }
-
-    public abstract MacroAction N();
-
-    public static void A(GuiComponent[] guiComponentArray) {
-        e = guiComponentArray;
-    }
+    public abstract MacroAction createAction();
 
     @Override
-    public String y() {
-        return String.format(" %s7[%sr%s%s7]%sr %s", ClientSettings.F, ClientSettings.F, this.h(), ClientSettings.F, ClientSettings.F, this.getName());
+    public String getDisplayText() {
+        return String.format(" %s7[%sr%s%s7]%sr %s", ClientSettings.F, ClientSettings.F, this.getBindText(), ClientSettings.F, ClientSettings.F, this.getName());
     }
 
     public String getName() {
-        return this.b;
+        return this.name;
     }
 
-    public static GuiComponent[] r() {
-        return e;
-    }
-
-    public static Macro create(String string) {
-        if (string.startsWith("fishing rod")) {
-            return new ItemMacroActionState();
+    public static Macro create(String name) {
+        if (name.startsWith("fishing rod")) {
+            return new FishingRodMacro();
         }
-        if (string.startsWith("/")) {
-            return new CommandMacro(string);
+        if (name.startsWith("/")) {
+            return new CommandMacro(name);
         }
-        return new ItemMacro(string);
+        return new ItemMacro(name);
     }
 
     @Override
-    public void A() {
+    public void onBindActivated() {
     }
 
     public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
-        String string = "b64:" + Base64Util.encodeUtf8Base64(this.b);
-        jsonObject.addProperty("name", string);
-        jsonObject.add("keybinds", (JsonElement)this.toJson$src$Lcom_google_gson_JsonArray_$13cfbto());
-        jsonObject.add("delay", (JsonElement)this.Z.H(false));
-        jsonObject.add("double_click_enabled", (JsonElement)this.N.H(false));
-        jsonObject.add("double_click", (JsonElement)this.G.H(false));
+        String encodedName = "b64:" + Base64Util.encodeUtf8Base64(this.name);
+        jsonObject.addProperty("name", encodedName);
+        jsonObject.add("keybinds", (JsonElement)this.serializeBoundInputs());
+        jsonObject.add("delay", (JsonElement)this.delay.toJson(false));
+        jsonObject.add("double_click_enabled", (JsonElement)this.doubleClick.toJson(false));
+        jsonObject.add("double_click", (JsonElement)this.doubleClickDelay.toJson(false));
         return jsonObject;
     }
 
-    private static Exception a(Exception exception) {
-        return exception;
-    }
-
     public RandomValue getDelay() {
-        return this.Z;
+        return this.delay;
     }
 
     public RandomValue getDoubleClickDelay() {
-        return this.G;
+        return this.doubleClickDelay;
     }
 
     @Override
-    public boolean m() {
+    public boolean isActive() {
         return false;
     }
 }

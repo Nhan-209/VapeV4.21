@@ -6,46 +6,42 @@ import gg.vape.wrapper.impl.KeyBinding;
 import java.awt.Color;
 
 class KeystrokesKeyComponent {
-    boolean k;
-    final KeystrokesHudFrame S;
-    public ColorAnimation R;
-    KeyBinding p;
-    public ColorAnimation h;
-    boolean C;
+    boolean released;
+    public final ColorAnimation textColorAnimation;
+    final KeyBinding keyBinding;
+    public final ColorAnimation backgroundColorAnimation;
+    boolean pressed;
 
     KeystrokesKeyComponent(KeystrokesHudFrame keystrokesHudFrame, KeyBinding keyBinding) {
-        this.S = keystrokesHudFrame;
-        this.h = new ColorAnimation(0.05, new Color(20, 20, 20, 180), new Color(255, 255, 255, 255));
-        this.R = new ColorAnimation(0.05, new Color(255, 255, 255, 255), new Color(20, 20, 20, 255));
-        this.k = true;
-        this.p = keyBinding;
+        this.backgroundColorAnimation = new ColorAnimation(0.05,
+                new Color(20, 20, 20, 180), new Color(255, 255, 255, 255));
+        this.textColorAnimation = new ColorAnimation(0.05,
+                new Color(255, 255, 255, 255), new Color(20, 20, 20, 255));
+        this.released = true;
+        this.keyBinding = keyBinding;
     }
 
-    public ColorAnimation j() {
-        return this.h;
+    public ColorAnimation getBackgroundColorAnimation() {
+        return this.backgroundColorAnimation;
     }
 
-    public void a() {
-        this.h.J();
-        this.R.J();
-        this.k = false;
+    public void press() {
+        this.backgroundColorAnimation.J();
+        this.textColorAnimation.J();
+        this.released = false;
     }
 
-    public ColorAnimation D() {
-        return this.R;
+    public ColorAnimation getTextColorAnimation() {
+        return this.textColorAnimation;
     }
 
-    public void c() {
+    public void release() {
+        this.backgroundColorAnimation.Z();
+        this.textColorAnimation.Z();
+        this.released = true;
     }
 
-    public void t() {
-        this.h.Z();
-        this.R.Z();
-        this.k = true;
-    }
-
-    public boolean R() {
-        return this.k;
+    public boolean isReleased() {
+        return this.released;
     }
 }
-

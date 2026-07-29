@@ -119,7 +119,7 @@ extends ComponentLayout {
             double d5 = layoutConstraints != null && layoutConstraints.K() ? layoutConstraints.G() : 1.0;
             double d6 = d5 / d3 * d;
             guiComponent.K(d4);
-            guiComponent.P(true);
+            guiComponent.setUseExplicitWidth(true);
             this.N(guiComponent, d6);
             d4 += d6;
         }
@@ -272,11 +272,11 @@ extends ComponentLayout {
         PaddedComponent paddedComponent;
         GuiComponent guiComponent2;
         guiComponent.o(d);
-        guiComponent.q(d);
+        guiComponent.setExplicitWidth(d);
         if (guiComponent instanceof PaddedComponent && (guiComponent2 = (paddedComponent = (PaddedComponent)guiComponent).t(GuiComponent.class)) != null) {
             double d2 = d - paddedComponent.c$src$D$1nh5w89() - paddedComponent.o$src$D$1nnrfcl();
             guiComponent2.o(d2);
-            guiComponent2.q(d2);
+            guiComponent2.setExplicitWidth(d2);
         }
     }
 }

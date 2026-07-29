@@ -6,37 +6,36 @@ import org.jetbrains.annotations.Nullable;
 
 class ItemMatchRule<T> {
     @Nullable
-    private Class[] y;
-    private Predicate<T> T;
-    private final String[] z;
+    private Class[] acceptedClasses;
+    private Predicate<T> predicate;
+    private final String[] aliases;
 
-    private ItemMatchRule(String ... stringArray) {
-        this.z = stringArray;
+    private ItemMatchRule(String ... aliases) {
+        this.aliases = aliases;
     }
 
     public Predicate<T> getPredicate() {
-        return this.T;
+        return this.predicate;
     }
 
     public String[] getAliases() {
-        return this.z;
+        return this.aliases;
     }
 
-    ItemMatchRule(String[] stringArray, ItemMatchRuleConstructorMarker itemMatchRuleConstructorMarker) {
-        this(stringArray);
+    ItemMatchRule(String[] aliases, ItemMatchRuleConstructorMarker constructorMarker) {
+        this(aliases);
     }
 
     @Nullable
     public Class[] getAcceptedClasses() {
-        return this.y;
+        return this.acceptedClasses;
     }
 
     public void setPredicate(Predicate<T> predicate) {
-        this.T = predicate;
+        this.predicate = predicate;
     }
 
-    public void setAcceptedClasses(Class[] classArray) {
-        this.y = classArray;
+    public void setAcceptedClasses(Class[] acceptedClasses) {
+        this.acceptedClasses = acceptedClasses;
     }
 }
-

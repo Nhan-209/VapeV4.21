@@ -19,7 +19,7 @@ extends Mapping {
     private MStringTextComponentBridge(boolean bl) {
         super(MappedClasses.DE);
         if (bl) {
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MTextComponentTranslationBridge.n(false);
             }
             return;
@@ -36,7 +36,7 @@ extends Mapping {
         String string = "itemStackRenderState";
         MStringTextComponentBridge mStringTextComponentBridge = this;
         this.g = mStringTextComponentBridge.J(string, bl3, clazz);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MTextComponentTranslationBridge.n(true);
         }
     }

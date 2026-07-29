@@ -16,51 +16,45 @@ import java.util.function.Consumer;
 
 public class TextSuggestionInputComponent
 extends FlowLayoutComponent {
-    private static final String eb;
-    private SquareIconButtonComponent p_;
-    private final LabeledTextInputComponent pi;
-    private static String[] p1;
-    private final List<TextSuggestionRow> pB = new ArrayList<TextSuggestionRow>();
-    private final Consumer<TextSuggestionRow> pk;
+    private static final String CLOSE_ICON = "newclose";
+    private SquareIconButtonComponent removeButton;
+    private final LabeledTextInputComponent input;
+    private final List<TextSuggestionRow> rows = new ArrayList<TextSuggestionRow>();
+    private final Consumer<TextSuggestionRow> onRemove;
 
-    static {
-        TextSuggestionInputComponent.n(null);
-        eb = "newclose";
-    }
-
-    public TextSuggestionInputComponent(String string, Consumer<TextSuggestionRow> consumer, double d, double d2, boolean bl, boolean bl2) {
-        super(d);
-        this.pk = consumer;
+    public TextSuggestionInputComponent(String placeholder, Consumer<TextSuggestionRow> onRemove, double width, double height, boolean multiline, boolean editable) {
+        super(width);
+        this.onRemove = onRemove;
         FixedStringListSuggestionProvider fixedStringListSuggestionProvider = new FixedStringListSuggestionProvider();
         fixedStringListSuggestionProvider.setComparator(null);
-        this.pi = new TextSuggestionDecoratedInput(this, string, bl, bl2);
-        this.pi.E(fixedStringListSuggestionProvider);
-        this.pi.v$src$Lgg_vape_ui_click_component_IconButtonComponent_$9khxxe().Z(false);
-        this.p_ = new SquareIconButtonComponent(eb, 1.0);
-        this.p_.Z(false);
-        this.p_.o(10.0);
-        this.p_.Y(10.0);
-        this.pi.o(d);
-        this.pi.Y(d2);
-        this.pi.d(false);
-        this.pi.e(false);
-        this.pi.C(0.0);
-        this.pi.H(0.0f);
-        this.pi.O(0.0f);
-        this.pi.d(false);
-        this.pi.e(false);
-        this.pi.T(Color.RED);
-        this.pi.W(Color.BLUE);
-        this.d(false);
-        this.pi.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().Z(false);
-        this.pi.A(TextSuggestionInputComponent.J.h);
-        this.h(this.pi, new Object[0]);
+        this.input = new TextSuggestionDecoratedInput(this, placeholder, multiline, editable);
+        this.input.setSuggestionProvider(fixedStringListSuggestionProvider);
+        this.input.getSearchIcon().setVisible(false);
+        this.removeButton = new SquareIconButtonComponent(CLOSE_ICON, 1.0);
+        this.removeButton.setVisible(false);
+        this.removeButton.o(10.0);
+        this.removeButton.Y(10.0);
+        this.input.o(width);
+        this.input.Y(height);
+        this.input.setShowDisabledOverlay(false);
+        this.input.setBackgroundVisible(false);
+        this.input.setHorizontalInset(0.0);
+        this.input.setLeftInset(0.0f);
+        this.input.setVerticalInset(0.0f);
+        this.input.setShowDisabledOverlay(false);
+        this.input.setBackgroundVisible(false);
+        this.input.setDisabledOverlayColor(Color.RED);
+        this.input.setBackgroundColorOrNull(Color.BLUE);
+        this.setShowDisabledOverlay(false);
+        this.input.getActionButton().setVisible(false);
+        this.input.setPlaceholderColor(TextSuggestionInputComponent.J.h);
+        this.h(this.input, new Object[0]);
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        this.pi.j(new TextSuggestionClickListener(this, atomicBoolean, consumer));
+        this.input.addMouseListener(new TextSuggestionClickListener(this, atomicBoolean, onRemove));
     }
 
-    public TextInputComponentBase Q$src$Lgg_vape_ui_click_component_TextInputComponentBa$1qaiwh6() {
-        return this.pi;
+    public TextInputComponentBase getInput() {
+        return this.input;
     }
 
     @Override
@@ -68,27 +62,19 @@ extends FlowLayoutComponent {
         return super.x();
     }
 
-    public List<TextSuggestionRow> s$src$Ljava_util_List_$1i440fr() {
-        return this.pB;
+    public List<TextSuggestionRow> getRows() {
+        return this.rows;
     }
 
-    public static String[] f$src$ALjava_lang_String_$1b1orlo() {
-        return p1;
-    }
-
-    public static void n(String[] stringArray) {
-        p1 = stringArray;
-    }
-
-    public void L$src$V$cciqa9() {
+    public void removeLastRow() {
         TextSuggestionRow textSuggestionRow;
-        if (!this.pB.isEmpty() && (textSuggestionRow = this.pB.remove(this.pB.size() - 1)) != null) {
-            this.pk.accept(textSuggestionRow);
+        if (!this.rows.isEmpty() && (textSuggestionRow = this.rows.remove(this.rows.size() - 1)) != null) {
+            this.onRemove.accept(textSuggestionRow);
         }
     }
 
-    static List<TextSuggestionRow> a(TextSuggestionInputComponent textSuggestionInputComponent) {
-        return textSuggestionInputComponent.pB;
+    static List<TextSuggestionRow> mutableRows(TextSuggestionInputComponent component) {
+        return component.rows;
     }
 
     @Override
@@ -96,16 +82,16 @@ extends FlowLayoutComponent {
         return super.C();
     }
 
-    public void W() {
-        if (!this.pi.i$src$Ljava_lang_String_$1n2xf3k().isEmpty() || !this.pB.isEmpty()) {
-            this.pi.k("");
-            this.pB.clear();
+    public void clear() {
+        if (!this.input.getText().isEmpty() || !this.rows.isEmpty()) {
+            this.input.setText("");
+            this.rows.clear();
         }
     }
 
-    public boolean J(String string) {
-        for (TextSuggestionRow textSuggestionRow : this.pB) {
-            if (!textSuggestionRow.x$src$Ljava_lang_String_$1m64ofa().equalsIgnoreCase(string)) continue;
+    public boolean contains(String text) {
+        for (TextSuggestionRow textSuggestionRow : this.rows) {
+            if (!textSuggestionRow.getText().equalsIgnoreCase(text)) continue;
             return true;
         }
         return false;
@@ -116,24 +102,24 @@ extends FlowLayoutComponent {
         super.H();
     }
 
-    public SquareIconButtonComponent t$src$Lgg_vape_ui_click_component_SquareIconButtonComp$a4ih09() {
-        return this.p_;
+    public SquareIconButtonComponent getRemoveButton() {
+        return this.removeButton;
     }
 
-    public List<String> K$src$Ljava_util_List_$14fso67() {
+    public List<String> getValues() {
         ArrayList<String> arrayList = new ArrayList<String>();
-        for (TextSuggestionRow textSuggestionRow : this.pB) {
-            arrayList.add(textSuggestionRow.x$src$Ljava_lang_String_$1m64ofa());
+        for (TextSuggestionRow textSuggestionRow : this.rows) {
+            arrayList.add(textSuggestionRow.getText());
         }
         return arrayList;
     }
 
-    public void z(TextSuggestionRow textSuggestionRow) {
-        this.pB.add(textSuggestionRow);
+    public void addRow(TextSuggestionRow row) {
+        this.rows.add(row);
     }
 
-    public void Q(TextSuggestionRow textSuggestionRow) {
-        this.pB.remove(textSuggestionRow);
+    public void removeRow(TextSuggestionRow row) {
+        this.rows.remove(row);
     }
 
 }

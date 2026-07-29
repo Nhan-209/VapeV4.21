@@ -1,24 +1,23 @@
 package gg.vape.utils.render;
 
 public class TextureAtlasRegion {
-    public final int q;
-    public final int g;
-    public float d;
-    public float n;
-    public final int p;
-    public final int N;
-    public float X;
-    public float s;
+    public final int width;
+    public final int height;
+    public float minU;
+    public float maxV;
+    public final int y;
+    public final int x;
+    public float maxU;
+    public float minV;
 
-    public TextureAtlasRegion(int n, int n2, int n3, int n4, float f, float f2, float f3, float f4) {
-        this.N = n;
-        this.p = n2;
-        this.q = n3;
-        this.g = n4;
-        this.d = f;
-        this.s = f2;
-        this.X = f3;
-        this.n = f4;
+    public TextureAtlasRegion(int x, int y, int width, int height, float minU, float minV, float maxU, float maxV) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.minU = minU;
+        this.minV = minV;
+        this.maxU = maxU;
+        this.maxV = maxV;
     }
 }
-

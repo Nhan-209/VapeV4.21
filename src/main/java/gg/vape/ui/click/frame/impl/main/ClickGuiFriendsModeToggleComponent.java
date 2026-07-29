@@ -3,37 +3,34 @@ package gg.vape.ui.click.frame.impl.main;
 import gg.vape.friend.FriendEntry;
 import gg.vape.friend.ui.OnlineFriendUiHelper;
 import gg.vape.ui.click.component.value.BooleanToggleComponent;
-import gg.vape.ui.click.frame.impl.main.ClickGuiFriendsPage;
 
 public class ClickGuiFriendsModeToggleComponent
 extends BooleanToggleComponent {
-    final FriendEntry mF;
-    final ClickGuiFriendsPage mf;
+    final FriendEntry friendEntry;
 
-    public ClickGuiFriendsModeToggleComponent(ClickGuiFriendsPage clickGuiFriendsPage, String string, double d, FriendEntry friendEntry) {
-        super(string, d);
-        this.mf = clickGuiFriendsPage;
-        this.mF = friendEntry;
+    public ClickGuiFriendsModeToggleComponent(String label, double width, FriendEntry friendEntry) {
+        super(label, width);
+        this.friendEntry = friendEntry;
     }
 
     @Override
-    public void Q$src$V$11xzx98() {
-        if (this.mF.c()) {
-            this.n$src$Lgg_vape_ui_click_animation_DoubleAnimation_$12lr9ge().C();
+    public void synchronizeAnimationsImmediately() {
+        if (this.friendEntry.c()) {
+            this.getKnobPositionAnimation().C();
         } else {
-            this.n$src$Lgg_vape_ui_click_animation_DoubleAnimation_$12lr9ge().O();
+            this.getKnobPositionAnimation().O();
         }
     }
 
     @Override
-    public boolean i$src$Z$1d37ezg() {
-        return this.mF.c();
+    public boolean isOn() {
+        return this.friendEntry.c();
     }
 
     @Override
-    public void k$src$V$5mynh8() {
-        this.mF.k(!this.mF.c());
-        this.Q$src$V$11xzx98();
+    public void toggle() {
+        this.friendEntry.k(!this.friendEntry.c());
+        this.synchronizeAnimationsImmediately();
         OnlineFriendUiHelper.U();
     }
 

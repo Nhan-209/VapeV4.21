@@ -6,14 +6,13 @@ import gg.vape.module.render.Animations;
 
 public abstract class AnimationsMode
 extends SubModule<Animations> {
-    public boolean i() {
+    public boolean shouldBlock() {
         return false;
     }
 
-    public abstract boolean M();
+    public abstract boolean isBlocking();
 
-    public AnimationsMode(Mod mod, String string) {
-        super(mod, string);
+    public AnimationsMode(Mod parent, String name) {
+        super(parent, name);
     }
 }
-

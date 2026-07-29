@@ -21,8 +21,8 @@ extends Mod {
 
     @EventHandler
     public void onPacketSend(EventPacketSend eventPacketSend) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNotNull() && !entityPlayerSP.B$src$Ljava_util_Collection_$1uxz2f9().isEmpty() && !this.isMoving(entityPlayerSP) && (entityPlayerSP.b$src$Z$fqlxe4() || entityPlayerSP.u$src$Z$g120nz())) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (localPlayer.isNotNull() && !localPlayer.B$src$Ljava_util_Collection_$1uxz2f9().isEmpty() && !this.isMoving(localPlayer) && (localPlayer.b$src$Z$fqlxe4() || localPlayer.u$src$Z$g120nz())) {
             if (eventPacketSend.getPacket().isInstance(MappedClasses.qD)) {
                 this.savingPotion = true;
                 eventPacketSend.setCancelled(true);
@@ -34,11 +34,11 @@ extends Mod {
 
     @Override
     public int h() {
-        return this.savingPotion ? -256 : ColorUtil.U(160);
+        return this.savingPotion ? -256 : ColorUtil.packGray(160);
     }
 
-    private boolean isMoving(EntityPlayerSP entityPlayerSP) {
-        return entityPlayerSP.t() != 0.0 || entityPlayerSP.T() != 0.0;
+    private boolean isMoving(EntityPlayerSP player) {
+        return player.t() != 0.0 || player.T() != 0.0;
     }
 
     public PotionSaver() {

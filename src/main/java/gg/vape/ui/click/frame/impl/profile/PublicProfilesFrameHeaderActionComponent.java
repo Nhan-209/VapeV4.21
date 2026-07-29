@@ -13,65 +13,65 @@ import org.jetbrains.annotations.Nullable;
 public class PublicProfilesFrameHeaderActionComponent
 extends FrameHeaderComponent {
     @Nullable
-    private String G;
-    private static final String Q = "newclose";
+    private String iconResource;
+    private static final String CLOSE_ICON_RESOURCE = "newclose";
     @Nullable
-    private GuiClickListener R;
-    private float K;
-    private String I;
-    private SquareIconButtonComponent v = new SquareIconButtonComponent(Q, 1.5);
+    private GuiClickListener clickListener;
+    private float iconScale;
+    private String title;
+    private SquareIconButtonComponent closeButton = new SquareIconButtonComponent(CLOSE_ICON_RESOURCE, 1.5);
 
     public PublicProfilesFrameHeaderActionComponent(Frame frame, String string, String string2) {
         this(frame, string, string2, 1.0);
     }
 
     public SquareIconButtonComponent O$src$Lgg_vape_ui_click_component_SquareIconButtonComp$z3cp96() {
-        return this.v;
+        return this.closeButton;
     }
 
     public PublicProfilesFrameHeaderActionComponent Q(@Nullable GuiClickListener guiClickListener) {
-        this.R = guiClickListener;
+        this.clickListener = guiClickListener;
         return this;
     }
 
 
     public String K$src$Ljava_lang_String_$bvh3j6() {
-        return this.I;
+        return this.title;
     }
 
     public void j(String string) {
-        this.I = string;
+        this.title = string;
     }
 
     @Override
     public void H() {
-        SmoothFontRenderer smoothFontRenderer = this.O(0.9);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.9);
         Color color = PublicProfilesFrameHeaderActionComponent.J.A;
-        double d = smoothFontRenderer.d(this.I);
+        double d = smoothFontRenderer.d(this.title);
         double d2 = this.n() + this.L() / 2.0 - d / 2.0;
-        if (this.G != null) {
-            double d3 = this.n() + this.L() / 2.0 - (double)(8.0f * this.K / 2.0f);
-            smoothFontRenderer.d(this.I, this.G$src$D$1b2f02a() + 10.0 + 8.0, d2, color);
-            ImageRenderer.E(color, (float)this.G$src$D$1b2f02a() + 5.0f, (float)d3, this.G, 8.0f * this.K, 8.0f * this.K, false);
+        if (this.iconResource != null) {
+            double d3 = this.n() + this.L() / 2.0 - (double)(8.0f * this.iconScale / 2.0f);
+            smoothFontRenderer.d(this.title, this.G$src$D$1b2f02a() + 10.0 + 8.0, d2, color);
+            ImageRenderer.drawImage(color, (float)this.G$src$D$1b2f02a() + 5.0f, (float)d3, this.iconResource, 8.0f * this.iconScale, 8.0f * this.iconScale, false);
         } else {
-            smoothFontRenderer.d(this.I, this.G$src$D$1b2f02a() + 5.0, d2, color);
+            smoothFontRenderer.d(this.title, this.G$src$D$1b2f02a() + 5.0, d2, color);
         }
-        this.v.K(this.G$src$D$1b2f02a() + this.A() - 7.5 - 8.0);
-        this.v.S(this.n());
-        this.v.Y(this.L());
+        this.closeButton.K(this.G$src$D$1b2f02a() + this.A() - 7.5 - 8.0);
+        this.closeButton.S(this.n());
+        this.closeButton.Y(this.L());
     }
 
     public PublicProfilesFrameHeaderActionComponent(Frame frame, @Nullable String string, String string2, double d) {
         super(frame);
-        this.K = (float)d;
-        this.G = string;
-        this.I = string2;
-        this.v.r(() -> {
-            if (this.R != null) {
-                this.R.P();
+        this.iconScale = (float)d;
+        this.iconResource = string;
+        this.title = string2;
+        this.closeButton.addClickListener(() -> {
+            if (this.clickListener != null) {
+                this.clickListener.onPrimaryClick();
             }
-            ClientSettings.f(frame.getClass(), false);
+            ClientSettings.setFrameVisibility(frame.getClass(), false);
         });
-        this.H(this.v);
+        this.addChildren(this.closeButton);
     }
 }

@@ -24,12 +24,12 @@ extends Mod {
     private final BooleanValue removeSlowness = BooleanValue.create(this, "Remove Slowness", true);
 
     @EventHandler
-    public void w(EventPostRenderTick eventPostRenderTick) {
+    public void onPostRenderTick(EventPostRenderTick event) {
         this.duringRenderTick = false;
     }
 
     @EventHandler
-    public void F(EventPreRenderTick eventPreRenderTick) {
+    public void onPreRenderTick(EventPreRenderTick event) {
         this.duringRenderTick = true;
     }
 
@@ -42,44 +42,41 @@ extends Mod {
 
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        EntityPlayerSP entityPlayerSP = eventPrePlayerTick.getThePlayer();
-        if (this.removeNausea.L().booleanValue()) {
-            entityPlayerSP.q(PotionRegistry.X.D());
+    public void onTick(EventPrePlayerTick event) {
+        EntityPlayerSP player = event.getThePlayer();
+        if (this.removeNausea.getEffectiveValue().booleanValue()) {
+            player.q(PotionRegistry.X.D());
         }
-        if (this.removeBlindness.L().booleanValue() && this.removeEffects.L().booleanValue()) {
-            entityPlayerSP.q(PotionRegistry.K.D());
+        if (this.removeBlindness.getEffectiveValue().booleanValue() && this.removeEffects.getEffectiveValue().booleanValue()) {
+            player.q(PotionRegistry.K.D());
         }
-        if (this.removeSlowness.L().booleanValue() && this.removeEffects.L().booleanValue()) {
-            PotionEntry potionEntry = PotionRegistry.o;
+        if (this.removeSlowness.getEffectiveValue().booleanValue() && this.removeEffects.getEffectiveValue().booleanValue()) {
+            PotionEntry slowness = PotionRegistry.o;
             if (ForgeVersion.MC_1_16_5.v()) {
-                PotionEffect potionEffect = entityPlayerSP.b(potionEntry);
-                if (potionEffect.isNotNull()) {
-                    potionEntry.t(entityPlayerSP, entityPlayerSP.z$src$Ljava_lang_Object_$1k68ls2(), potionEffect.L());
+                PotionEffect slownessEffect = player.b(slowness);
+                if (slownessEffect.isNotNull()) {
+                    slowness.t(player, player.z$src$Ljava_lang_Object_$1k68ls2(), slownessEffect.L());
                 }
             } else {
-                potionEntry.t(entityPlayerSP, entityPlayerSP.z$src$Ljava_lang_Object_$1k68ls2(), 0);
+                slowness.t(player, player.z$src$Ljava_lang_Object_$1k68ls2(), 0);
             }
-            entityPlayerSP.q(potionEntry.D());
+            player.q(slowness.D());
         }
     }
 
     @EventHandler
-    public void i(EventPotionEffectCheck eventPotionEffectCheck) {
+    public void onPotionEffectCheck(EventPotionEffectCheck event) {
         if (!this.duringRenderTick) {
             return;
         }
-        if (!eventPotionEffectCheck.getEntity().equals(eventPotionEffectCheck.getThePlayer())) {
+        if (!event.getEntity().equals(event.getThePlayer())) {
             return;
         }
-        Potion potion = eventPotionEffectCheck.getPotion();
-        boolean bl = false;
-        if (this.removeBlindness.L().booleanValue() && PotionRegistry.K.q(potion)) {
-            bl = true;
-        }
-        if (bl) {
-            eventPotionEffectCheck.setActive(false);
-            eventPotionEffectCheck.setCancelled(true);
+        Potion potion = event.getPotion();
+        boolean suppressBlindness = this.removeBlindness.getEffectiveValue().booleanValue() && PotionRegistry.K.q(potion);
+        if (suppressBlindness) {
+            event.setActive(false);
+            event.setCancelled(true);
         }
     }
 }

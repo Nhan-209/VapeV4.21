@@ -32,9 +32,9 @@ extends PanelComponent {
     public FriendRequestsPanel() {
         super(105.0, 150.0);
         this.LG = new FriendRequestUsernameInputComponent(this, "Add Vape friend...");
-        this.T(FriendRequestsPanel.J.i);
+        this.setDisabledOverlayColor(FriendRequestsPanel.J.i);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.LG.Z(true);
+        this.LG.setVisible(true);
         this.h(this.L6, new Object[0]);
         this.h(new SpacerComponent(1.0, 2.0), new Object[0]);
         this.h(this.LG, new Object[0]);

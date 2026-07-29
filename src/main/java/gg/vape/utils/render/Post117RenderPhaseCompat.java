@@ -7,7 +7,7 @@ import gg.vape.wrapper.impl.TickEvent_Phase;
 
 public class Post117RenderPhaseCompat {
 
-    public static void P() {
+    public static void applyRenderPhaseCompat() {
         if (ForgeVersion.MC_1_21_6.v()) {
             return;
         }

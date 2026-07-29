@@ -1380,7 +1380,7 @@ public class MappedClasses {
         if (ForgeVersion.MC_1_21_4.v()) {
             z = MappedClasses.m("net/minecraft/item/ItemSoup");
         }
-        if (!NativeBridge.iv()) {
+        if (!NativeBridge.isForgeAbsent()) {
             DC = MappedClasses.m("net/minecraftforge/client/GuiIngameForge");
         }
         if (ForgeVersion.MC_1_12_2.d()) {

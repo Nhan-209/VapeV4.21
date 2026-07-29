@@ -20,7 +20,7 @@ public class NoSlow
 extends Mod {
     private boolean pendingVelocity;
     private final BooleanValue limitItems = BooleanValue.create(this, "Limit Items", false, "Limits to whitelisted items only.");
-    private final LimitValue whitelist = LimitValue.N(this, "noslowdown-whitelist", "Whitelisted", LimitValue.r, new ItemLimitData("swords"));
+    private final LimitValue whitelist = LimitValue.create(this, "noslowdown-whitelist", "Whitelisted", LimitValue.ALLOW_LIST_COLOR, new ItemLimitData("swords"));
     private static final long MOD_ID = -7214429765927550220L;
 
     @Override
@@ -30,7 +30,7 @@ extends Mod {
 
     public NoSlow() {
         super("NoSlowdown", (int)MOD_ID, Category.A, "Prevents slowing down when\nblocking or using items.");
-        this.limitItems.K(this.whitelist);
+        this.limitItems.addDependentValues(this.whitelist);
         this.addValue(this.limitItems, this.whitelist);
     }
 
@@ -41,9 +41,9 @@ extends Mod {
             this.pendingVelocity = true;
         }
         if (packet.isInstance(MappedClasses.YX)) {
-            SPacketEntityVelocity sPacketEntityVelocity = new SPacketEntityVelocity(packet);
-            EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            if (entityPlayerSP.isNotNull() && sPacketEntityVelocity.getEntityId() == entityPlayerSP.S()) {
+            SPacketEntityVelocity velocityPacket = new SPacketEntityVelocity(packet);
+            EntityPlayerSP localPlayer = Minecraft.thePlayer();
+            if (localPlayer.isNotNull() && velocityPacket.getEntityId() == localPlayer.S()) {
                 this.pendingVelocity = true;
             }
         }
@@ -51,43 +51,43 @@ extends Mod {
 
     @EventHandler
     public void onMotionUpdate(EventPreMotion eventPreMotion) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
         if (this.pendingVelocity) {
-            if (entityPlayerSP.b$src$Z$fqlxe4()) {
+            if (localPlayer.b$src$Z$fqlxe4()) {
                 this.pendingVelocity = false;
             }
             return;
         }
-        if (entityPlayerSP.h$src$Z$ftwoya()) {
+        if (localPlayer.h$src$Z$ftwoya()) {
             return;
         }
-        double d = entityPlayerSP.movementInput().D();
-        double d2 = entityPlayerSP.movementInput().T();
-        float f = entityPlayerSP.J();
-        if (!(!entityPlayerSP.l$src$Z$1io4duf() || this.limitItems.L().booleanValue() && !this.whitelist.A(entityPlayerSP.getHeldItemHand()) || Math.abs(d2) != (double)0.2f && Math.abs(d) != (double)0.2f)) {
+        double forwardInput = localPlayer.movementInput().D();
+        double strafeInput = localPlayer.movementInput().T();
+        float yaw = localPlayer.J();
+        if (!(!localPlayer.l$src$Z$1io4duf() || this.limitItems.getEffectiveValue().booleanValue() && !this.whitelist.matches(localPlayer.getHeldItemHand()) || Math.abs(strafeInput) != (double)0.2f && Math.abs(forwardInput) != (double)0.2f)) {
             if (Vape.INSTANCE.getModManager().getState(Sprint.class)) {
-                entityPlayerSP.R(true);
+                localPlayer.R(true);
             }
-            if (Math.abs(d2) == (double)0.2f) {
-                if (d2 > 0.0) {
-                    entityPlayerSP.movementInput().M(1.0f);
-                } else if (d2 < 0.0) {
-                    entityPlayerSP.movementInput().M(-1.0f);
+            if (Math.abs(strafeInput) == (double)0.2f) {
+                if (strafeInput > 0.0) {
+                    localPlayer.movementInput().M(1.0f);
+                } else if (strafeInput < 0.0) {
+                    localPlayer.movementInput().M(-1.0f);
                 }
             }
-            if (Math.abs(d) == (double)0.2f) {
-                if (d > 0.0) {
-                    entityPlayerSP.movementInput().B(1.0f);
-                } else if (d < 0.0) {
-                    entityPlayerSP.movementInput().B(-1.0f);
+            if (Math.abs(forwardInput) == (double)0.2f) {
+                if (forwardInput > 0.0) {
+                    localPlayer.movementInput().B(1.0f);
+                } else if (forwardInput < 0.0) {
+                    localPlayer.movementInput().B(-1.0f);
                 }
             }
-            if (Math.abs(entityPlayerSP.movementInput().T()) != 1.0f && d > 0.0) {
-                d *= entityPlayerSP.B$src$Z$f90iek() ? (double)1.3f : 1.0;
+            if (Math.abs(localPlayer.movementInput().T()) != 1.0f && forwardInput > 0.0) {
+                forwardInput *= localPlayer.B$src$Z$f90iek() ? (double)1.3f : 1.0;
             }
-            d2 = d != 0.0 ? (d2 *= 0.5) : (d2 *= 0.85);
-            entityPlayerSP.r(d * Math.cos(Math.toRadians(f + 90.0f)) + d2 * Math.sin(Math.toRadians(f + 90.0f)));
-            entityPlayerSP.i(d * Math.sin(Math.toRadians(f + 90.0f)) - d2 * Math.cos(Math.toRadians(f + 90.0f)));
+            strafeInput *= forwardInput != 0.0 ? 0.5 : 0.85;
+            localPlayer.r(forwardInput * Math.cos(Math.toRadians(yaw + 90.0f)) + strafeInput * Math.sin(Math.toRadians(yaw + 90.0f)));
+            localPlayer.i(forwardInput * Math.sin(Math.toRadians(yaw + 90.0f)) - strafeInput * Math.cos(Math.toRadians(yaw + 90.0f)));
         }
     }
 

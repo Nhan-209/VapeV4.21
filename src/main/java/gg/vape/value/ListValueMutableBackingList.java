@@ -6,11 +6,11 @@ import java.util.Collection;
 
 class ListValueMutableBackingList<C>
 extends ArrayList<C> {
-    final ListValue E;
+    final ListValue owner;
 
     ListValueMutableBackingList(ListValue listValue, Collection<? extends C> collection) {
         super(collection);
-        this.E = listValue;
+        this.owner = listValue;
     }
 
     @Override
@@ -28,4 +28,3 @@ extends ArrayList<C> {
         return super.remove(object);
     }
 }
-

@@ -56,8 +56,8 @@ extends UtilityMod {
             return;
         }
         if (!this.active && this.collectHealingItems()) {
-            InventoryPlayer inventoryPlayer = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
-            this.savedSlot = inventoryPlayer.v();
+            InventoryPlayer inventory = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
+            this.savedSlot = inventory.v();
             this.active = true;
             this.v(0L, false);
         } else {
@@ -67,79 +67,77 @@ extends UtilityMod {
     }
 
     private boolean collectHealingItems() {
-        ArrayList<Integer> arrayList = new ArrayList<Integer>();
-        for (int i = 0; i < 9; ++i) {
-            arrayList.add(i);
+        ArrayList<Integer> hotbarSlots = new ArrayList<Integer>();
+        for (int hotbarSlot = 0; hotbarSlot < 9; ++hotbarSlot) {
+            hotbarSlots.add(hotbarSlot);
         }
-        if (this.randomValue.L().booleanValue()) {
-            Collections.shuffle(arrayList);
+        if (this.randomValue.getEffectiveValue().booleanValue()) {
+            Collections.shuffle(hotbarSlots);
         }
-        Object[] objectArray = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().M();
-        int n = 0;
-        for (Integer n2 : arrayList) {
-            PotionEffect potionEffect;
-            int n3;
-            boolean bl;
+        Object[] hotbarContents = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().M();
+        int queuedHealing = 0;
+        for (Integer hotbarSlot : hotbarSlots) {
             Item item;
-            ItemStack itemStack = new ItemStack(objectArray[n2]);
+            ItemStack itemStack = new ItemStack(hotbarContents[hotbarSlot]);
             if (itemStack.isNull() || (item = itemStack.getItem()).isNull()) continue;
-            boolean soupEnabled = ((ModeSelection)this.typeValue.K()).equals(this.soupOption) || ((ModeSelection)this.typeValue.K()).equals(this.bothOption);
-            boolean potsEnabled = bl = ((ModeSelection)this.typeValue.K()).equals(this.potsOption) || ((ModeSelection)this.typeValue.K()).equals(this.bothOption);
+            boolean soupEnabled = ((ModeSelection)this.typeValue.getValue()).equals(this.soupOption) || ((ModeSelection)this.typeValue.getValue()).equals(this.bothOption);
+            boolean potsEnabled = ((ModeSelection)this.typeValue.getValue()).equals(this.potsOption) || ((ModeSelection)this.typeValue.getValue()).equals(this.bothOption);
             if (ItemStackScoreUtil.v(item) && soupEnabled) {
-                if (((ModeSelection)this.modeValue.K()).equals(this.singleOption)) {
-                    this.itemsToThrow.add(new ItemStackData(n2, itemStack));
+                if (((ModeSelection)this.modeValue.getValue()).equals(this.singleOption)) {
+                    this.itemsToThrow.add(new ItemStackData(hotbarSlot, itemStack));
                     break;
                 }
-                int n4 = 8;
-                if ((double)(n + n4) + Math.floor(Minecraft.thePlayer().w$src$F$15l9epb()) > (double)Minecraft.thePlayer().I$src$F$14vyvep()) continue;
-                n += n4;
-                this.itemsToThrow.add(new ItemStackData(n2, itemStack));
+                int soupHealing = 8;
+                if ((double)(queuedHealing + soupHealing) + Math.floor(Minecraft.thePlayer().w$src$F$15l9epb()) > (double)Minecraft.thePlayer().I$src$F$14vyvep()) continue;
+                queuedHealing += soupHealing;
+                this.itemsToThrow.add(new ItemStackData(hotbarSlot, itemStack));
             }
-            if (!MappedClasses.Di.isInstance(item.getObject()) || !bl || !ItemSplashPotion.isSplashPotion(itemStack)) continue;
-            if (((ModeSelection)this.modeValue.K()).equals(this.singleOption) && ItemStackScoreUtil.i(itemStack)) {
-                this.itemsToThrow.add(new ItemStackData(n2, itemStack));
+            if (!MappedClasses.Di.isInstance(item.getObject()) || !potsEnabled || !ItemSplashPotion.isSplashPotion(itemStack)) continue;
+            if (((ModeSelection)this.modeValue.getValue()).equals(this.singleOption) && ItemStackScoreUtil.i(itemStack)) {
+                this.itemsToThrow.add(new ItemStackData(hotbarSlot, itemStack));
                 break;
             }
-            ItemSplashPotion itemSplashPotion = new ItemSplashPotion(item.getObject());
-            if (!ItemStackScoreUtil.i(itemStack) || (double)(n + (n3 = 4 * ((potionEffect = new PotionEffect(itemSplashPotion.getRawPotionEffects(itemStack).get(0))).L() + 1))) + Math.floor(Minecraft.thePlayer().w$src$F$15l9epb()) > (double)Minecraft.thePlayer().I$src$F$14vyvep()) continue;
-            n += n3;
-            this.itemsToThrow.add(new ItemStackData(n2, itemStack));
+            ItemSplashPotion splashPotion = new ItemSplashPotion(item.getObject());
+            PotionEffect potionEffect = new PotionEffect(splashPotion.getRawPotionEffects(itemStack).get(0));
+            int potionHealing = 4 * (potionEffect.L() + 1);
+            if (!ItemStackScoreUtil.i(itemStack) || (double)(queuedHealing + potionHealing) + Math.floor(Minecraft.thePlayer().w$src$F$15l9epb()) > (double)Minecraft.thePlayer().I$src$F$14vyvep()) continue;
+            queuedHealing += potionHealing;
+            this.itemsToThrow.add(new ItemStackData(hotbarSlot, itemStack));
         }
         return !this.itemsToThrow.isEmpty();
     }
 
     @Override
-    public void q() {
+    public void onScheduledAction() {
         if (!this.active) {
             return;
         }
         try {
             GameSettings gameSettings = Minecraft.gameSettings();
-            KeyBinding keyBinding = gameSettings.b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
-            KeyBinding keyBinding2 = gameSettings.b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
-            KeyBinding keyBinding3 = gameSettings.v$src$Lgg_vape_wrapper_impl_KeyBinding_$11ijh0e();
+            KeyBinding useKey = gameSettings.b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
+            KeyBinding dropKey = gameSettings.v$src$Lgg_vape_wrapper_impl_KeyBinding_$11ijh0e();
             this.itemsToThrow.sort(new ItemDataComparator(this.savedSlot));
-            boolean bl = false;
-            for (ItemStackData itemStackData : this.itemsToThrow) {
-                this.selectHotbarSlot(itemStackData.Y());
-                if (keyBinding.isKeyDown() && ItemStackScoreUtil.v(itemStackData.w().getItem())) {
-                    KeyBindingHelper.v(keyBinding2, false, false);
+            boolean restoreUseKey = false;
+            for (ItemStackData itemToThrow : this.itemsToThrow) {
+                this.selectHotbarSlot(itemToThrow.Y());
+                if (useKey.isKeyDown() && ItemStackScoreUtil.v(itemToThrow.w().getItem())) {
+                    KeyBindingHelper.updateKeyBinding(useKey, false, false);
                     Thread.sleep(51L);
-                    bl = true;
+                    restoreUseKey = true;
                 }
-                KeyBindingHelper.d(keyBinding2, true);
+                KeyBindingHelper.setPressedAndTick(useKey, true);
                 Thread.sleep(51L);
-                KeyBindingHelper.v(keyBinding2, false, false);
-                if (this.throwBowls.L().booleanValue() && ItemStackScoreUtil.v(itemStackData.w().getItem())) {
-                    KeyBindingHelper.d(keyBinding3, true);
+                KeyBindingHelper.updateKeyBinding(useKey, false, false);
+                if (this.throwBowls.getEffectiveValue().booleanValue() && ItemStackScoreUtil.v(itemToThrow.w().getItem())) {
+                    KeyBindingHelper.setPressedAndTick(dropKey, true);
                     Thread.sleep(51L);
-                    KeyBindingHelper.v(keyBinding3, false, false);
+                    KeyBindingHelper.updateKeyBinding(dropKey, false, false);
                 }
-                Thread.sleep((long)this.delayValue.B());
+                Thread.sleep((long)this.delayValue.getRandomValue());
             }
             this.selectHotbarSlot(this.savedSlot);
-            if (bl) {
-                KeyBindingHelper.d(keyBinding2, true);
+            if (restoreUseKey) {
+                KeyBindingHelper.setPressedAndTick(useKey, true);
             }
         }
         catch (Exception exception) {
@@ -150,37 +148,32 @@ extends UtilityMod {
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
+    public void onTick(EventPreTick event) {
         if (!this.active && this.r$src$Z$14eylz9()) {
             this.Y(false);
         }
     }
 
-    private void selectHotbarSlot(int n) {
-        if (!this.scrollValue.L().booleanValue()) {
-            Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n);
+    private void selectHotbarSlot(int targetSlot) {
+        if (!this.scrollValue.getEffectiveValue().booleanValue()) {
+            Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(targetSlot);
             return;
         }
-        int n2 = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+        int currentSlot = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
         while (true) {
-            Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n2);
+            Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(currentSlot);
             try {
-                Thread.sleep(((Double)this.scrollDelay.K()).longValue());
+                Thread.sleep(((Double)this.scrollDelay.getValue()).longValue());
             }
-            catch (InterruptedException interruptedException) {
-                // empty catch block
+            catch (InterruptedException ignored) {
             }
-            if (n > n2) {
-                ++n2;
+            if (targetSlot > currentSlot) {
+                ++currentSlot;
                 continue;
             }
-            if (n >= n2) break;
-            --n2;
+            if (targetSlot >= currentSlot) break;
+            --currentSlot;
         }
-    }
-
-    private static Exception passThrough(Exception exception) {
-        return exception;
     }
 
     public Throwpot() {
@@ -192,12 +185,12 @@ extends UtilityMod {
         this.singleOption = new ModeOption("Single");
         this.modeValue = ModeValue.create((Object)this, "Mode", "Dynamic - uses only as many items as needed to heal as much as possible without over-healing\nSingle - Always uses one item, regardless of health", (ModeSelection)this.dynamicOption, this.dynamicOption, this.singleOption);
         this.scrollDelay = NumberValue.create(this, "Scroll delay", "#", "ms", 0.0, 100.0, 200.0);
-        this.delayValue = RandomValue.C(this, "Delay", "#", "ms", 0.0, 80.0, 115.0, 200.0, 1.0);
+        this.delayValue = RandomValue.createWithIncrement(this, "Delay", "#", "ms", 0.0, 80.0, 115.0, 200.0, 1.0);
         this.scrollValue = BooleanValue.create(this, "Scroll", false);
         this.randomValue = BooleanValue.create(this, "Random", false);
         this.throwBowls = BooleanValue.create(this, "Throw bowls", true, "Throws soup bowls after consuming");
-        this.itemsToThrow = new CopyOnWriteArrayList();
-        this.scrollValue.K(this.scrollDelay);
+        this.itemsToThrow = new CopyOnWriteArrayList<ItemStackData>();
+        this.scrollValue.addDependentValues(this.scrollDelay);
         this.addValue(this.typeValue, this.modeValue, this.delayValue, this.scrollValue, this.scrollDelay, this.randomValue, this.throwBowls);
     }
 

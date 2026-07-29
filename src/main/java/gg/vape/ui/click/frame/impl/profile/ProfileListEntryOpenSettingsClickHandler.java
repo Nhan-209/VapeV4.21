@@ -7,20 +7,20 @@ import gg.vape.ui.click.frame.impl.profile.ProfileListEntryComponent;
 
 class ProfileListEntryOpenSettingsClickHandler
 implements GuiClickListener {
-    final ProfileListEntryComponent T;
-    final Profile t;
+    private final ProfileListEntryComponent entry;
+    private final Profile profile;
 
-    ProfileListEntryOpenSettingsClickHandler(ProfileListEntryComponent profileListEntryComponent, Profile profile) {
-        this.T = profileListEntryComponent;
-        this.t = profile;
+    ProfileListEntryOpenSettingsClickHandler(ProfileListEntryComponent entry, Profile profile) {
+        this.entry = entry;
+        this.profile = profile;
     }
 
     @Override
-    public void P() {
-        if (Vape.INSTANCE.getProfilesManager().M().equals(this.t)) {
-            this.t.a();
+    public void onPrimaryClick() {
+        if (Vape.INSTANCE.getProfilesManager().M().equals(this.profile)) {
+            this.profile.a();
         }
-        this.T.e$src$V$kjgqji();
+        this.entry.openSettings();
     }
 
 }

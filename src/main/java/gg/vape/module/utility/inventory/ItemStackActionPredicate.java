@@ -12,57 +12,57 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemStackActionPredicate {
     @Nullable
-    public static Slot K(Class clazz, MLGImpactState mLGImpactState) {
-        return ItemStackActionPredicate.a(arg_0 -> ItemStackActionPredicate.lambda$findSlot$0(clazz, arg_0), mLGImpactState);
+    public static Slot findSlotByItemClass(Class<?> itemClass, MLGImpactState searchRange) {
+        return ItemStackActionPredicate.findSlot(slot -> isItemClass(slot, itemClass), searchRange);
     }
 
-    private static boolean lambda$findSlot$0(Class clazz, Slot slot) {
-        return slot.isNotNull() && slot.I().isNotNull() && slot.I().getItem().isInstance(clazz);
+    private static boolean isItemClass(Slot slot, Class<?> itemClass) {
+        return slot.isNotNull() && slot.I().isNotNull() && slot.I().getItem().isInstance(itemClass);
     }
 
     @Nullable
-    public static Slot a(Predicate<Slot> predicate, MLGImpactState mLGImpactState) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+    public static Slot findSlot(Predicate<Slot> predicate, MLGImpactState searchRange) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (localPlayer.isNull()) {
             return null;
         }
-        Container container = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm();
+        Container container = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm();
         if (container.isNull()) {
             return null;
         }
-        return ItemStackActionPredicate.c(container, predicate, mLGImpactState.J(), mLGImpactState.u());
+        return ItemStackActionPredicate.findSlot(container, predicate, searchRange.getFirstSlot(), searchRange.getLastSlot());
     }
 
-    public static boolean o() {
+    public static boolean isInventoryScreenOpen() {
         return Minecraft.currentScreen().isInstance(MappedClasses.YS);
     }
 
-    public static boolean V() {
-        if (!ItemStackActionPredicate.o()) {
-            KeyBindingHelper.v(Minecraft.gameSettings().j(), true, true);
-            KeyBindingHelper.v(Minecraft.gameSettings().j(), false, false);
+    public static boolean openInventory() {
+        if (!ItemStackActionPredicate.isInventoryScreenOpen()) {
+            KeyBindingHelper.updateKeyBinding(Minecraft.gameSettings().j(), true, true);
+            KeyBindingHelper.updateKeyBinding(Minecraft.gameSettings().j(), false, false);
             return true;
         }
         return false;
     }
 
 
-    public static boolean L() {
+    public static boolean isAnyScreenOpen() {
         return Minecraft.currentScreen().isNotNull();
     }
 
     @Nullable
-    public static Slot c(Container container, Predicate<Slot> predicate, int n, int n2) {
+    public static Slot findSlot(Container container, Predicate<Slot> predicate, int firstSlot, int lastSlot) {
         for (Slot slot : container.getInventorySlots()) {
-            int n3 = slot.g();
-            if (n3 < n || n3 > n2 || !predicate.test(slot)) continue;
+            int slotIndex = slot.g();
+            if (slotIndex < firstSlot || slotIndex > lastSlot || !predicate.test(slot)) continue;
             return slot;
         }
         return null;
     }
 
-    public static boolean f() {
-        if (ItemStackActionPredicate.L()) {
+    public static boolean closeCurrentScreen() {
+        if (ItemStackActionPredicate.isAnyScreenOpen()) {
             if (Minecraft.currentScreen().isInstance(MappedClasses.D2)) {
                 return false;
             }

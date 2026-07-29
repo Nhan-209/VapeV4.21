@@ -30,7 +30,7 @@ extends Mapping {
             String string = b;
             MWorldCollisionConsumerBridge mWorldCollisionConsumerBridge = this;
             this.d = mWorldCollisionConsumerBridge.Y(string, bl, clazz, classArray);
-            GuiComponent.D(new GuiComponent[2]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[2]);
             return;
         }
         Class[] classArray = new Class[]{MappedClasses.uk, Consumer.class};

@@ -2,16 +2,16 @@ package gg.vape.utils.render;
 
 
 public class GlScissorRect {
-    public int I;
-    public int F;
-    public int f;
-    public int v;
+    public int width;
+    public int y;
+    public int height;
+    public int x;
 
-    public GlScissorRect(int n, int n2, int n3, int n4) {
-        this.v = n;
-        this.F = n2;
-        this.I = n3;
-        this.f = n4;
+    public GlScissorRect(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
 
@@ -23,11 +23,11 @@ public class GlScissorRect {
             return false;
         }
         GlScissorRect glScissorRect = (GlScissorRect)object;
-        return this.v == glScissorRect.v && this.F == glScissorRect.F && this.I == glScissorRect.I && this.f == glScissorRect.f;
+        return this.x == glScissorRect.x && this.y == glScissorRect.y && this.width == glScissorRect.width && this.height == glScissorRect.height;
     }
 
     public String toString() {
-        return "ScissorCoords{x=" + this.v + ", y=" + this.F + ", w=" + this.I + ", h=" + this.f + '}';
+        return "ScissorCoords{x=" + this.x + ", y=" + this.y + ", w=" + this.width + ", h=" + this.height + '}';
     }
 }
 

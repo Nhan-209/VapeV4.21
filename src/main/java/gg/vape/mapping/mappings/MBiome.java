@@ -32,7 +32,7 @@ extends Mapping {
             MBiome mBiome = this;
             this.g = mBiome.J(string, bl, clazz); 
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MBiomeRegistrySwitch.R(new int[1]);
         }
     }

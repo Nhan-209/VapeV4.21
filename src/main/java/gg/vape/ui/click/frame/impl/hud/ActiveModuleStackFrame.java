@@ -18,7 +18,7 @@ import java.util.LinkedHashSet;
 
 public class ActiveModuleStackFrame
 extends Frame {
-    private final LinkedHashSet<Mod> Ko = new LinkedHashSet();
+    private final LinkedHashSet<Mod> activeModules = new LinkedHashSet();
 
     @Override
     public double C() {
@@ -46,25 +46,25 @@ extends Frame {
 
     @Override
     public void u() {
-        boolean bl;
-        boolean bl2 = bl = (ClientSettings.fW.v() || ClientSettings.fW.l$src$Z$1gzcm82()) && !this.Ko.isEmpty();
-        if (bl != this.V$src$Z$1xhop3l()) {
-            this.Z(bl);
+        boolean shouldBeVisible = (ClientSettings.INSTANCE.isInputEnabled()
+                || ClientSettings.INSTANCE.isMainGuiStack()) && !this.activeModules.isEmpty();
+        if (shouldBeVisible != this.V$src$Z$1xhop3l()) {
+            this.setVisible(shouldBeVisible);
         }
     }
 
     public ActiveModuleStackFrame() {
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.c(true);
     }
 
-    public void c(Mod mod) {
-        this.Ko.add(mod);
+    public void addModule(Mod module) {
+        this.activeModules.add(module);
     }
 
     @Override
     public void I() {
-        this.h();
+        this.renderStack();
     }
 
     @Override
@@ -73,7 +73,7 @@ extends Frame {
 
     @Override
     public void H() {
-        this.h();
+        this.renderStack();
     }
 
 
@@ -81,13 +81,13 @@ extends Frame {
     public void Y() {
     }
 
-    public void w(Mod mod) {
-        this.Ko.remove(mod);
+    public void removeModule(Mod module) {
+        this.activeModules.remove(module);
     }
 
-    public void h() {
-        double d;
-        double d2;
+    public void renderStack() {
+        double centerY;
+        double centerX;
         ScaledResolution scaledResolution = Minecraft.G();
         SmoothFontRenderer smoothFontRenderer = null;
         FontRenderer fontRenderer = null;
@@ -97,41 +97,42 @@ extends Frame {
             fontRenderer = Minecraft.getFontRenderer();
         }
         if (ForgeVersion.MC_26_1.d() || ForgeVersion.MC_1_21_4.v()) {
-            d2 = (float)Minecraft.J() / 4.0f;
-            d = Minecraft.h() / 4;
-            d2 /= Vape.INSTANCE.getClientSettings().s();
-            d /= Vape.INSTANCE.getClientSettings().s();
-            d += 10.0;
+            centerX = (float)Minecraft.J() / 4.0f;
+            centerY = Minecraft.h() / 4;
+            centerX /= Vape.INSTANCE.getClientSettings().s();
+            centerY /= Vape.INSTANCE.getClientSettings().s();
+            centerY += 10.0;
         } else {
-            d2 = (float)scaledResolution.T() / 2.0f;
-            d = (double)(scaledResolution.G() / 2) + 10.0;
+            centerX = (float)scaledResolution.T() / 2.0f;
+            centerY = (double)(scaledResolution.G() / 2) + 10.0;
         }
-        ArrayList<ActiveModuleStackEntry> arrayList = new ArrayList<ActiveModuleStackEntry>();
-        for (Mod object : this.Ko) {
-            ModDisplayInfo modDisplayInfo = object.J();
+        ArrayList<ActiveModuleStackEntry> entries = new ArrayList<ActiveModuleStackEntry>();
+        for (Mod module : this.activeModules) {
+            ModDisplayInfo modDisplayInfo = module.J();
             if (modDisplayInfo == null) continue;
-            arrayList.add(new ActiveModuleStackEntry(object, modDisplayInfo));
+            entries.add(new ActiveModuleStackEntry(module, modDisplayInfo));
         }
-        boolean bl = arrayList.size() > 1;
-        for (ActiveModuleStackEntry activeModuleStackEntry : arrayList) {
-            String string = activeModuleStackEntry.E.P();
-            String string2 = activeModuleStackEntry.E.z() != null ? activeModuleStackEntry.E.z() : string;
-            double d3 = smoothFontRenderer != null ? smoothFontRenderer.N(string2) : (double)fontRenderer.getStringWidth(string2);
-            double d4 = d2 - (double)MathUtil.ceil(d3 / 2.0);
-            if (bl) {
-                String string3 = activeModuleStackEntry.E.u();
-                if (string3 == null) {
-                    string3 = " \u00a77(" + activeModuleStackEntry.G.getName() + ")";
+        boolean showModuleName = entries.size() > 1;
+        for (ActiveModuleStackEntry entry : entries) {
+            String text = entry.displayInfo.P();
+            String widthText = entry.displayInfo.z() != null ? entry.displayInfo.z() : text;
+            double textWidth = smoothFontRenderer != null
+                    ? smoothFontRenderer.N(widthText) : (double)fontRenderer.getStringWidth(widthText);
+            double textX = centerX - (double)MathUtil.ceil(textWidth / 2.0);
+            if (showModuleName) {
+                String moduleSuffix = entry.displayInfo.u();
+                if (moduleSuffix == null) {
+                    moduleSuffix = " \u00a77(" + entry.module.getName() + ")";
                 }
-                string = string + string3;
+                text += moduleSuffix;
             }
             if (smoothFontRenderer != null) {
-                smoothFontRenderer.v(string, d4 + 1.0, d, activeModuleStackEntry.E.g());
-                d += smoothFontRenderer.d(string) + 4.0;
+                smoothFontRenderer.v(text, textX + 1.0, centerY, entry.displayInfo.g());
+                centerY += smoothFontRenderer.d(text) + 4.0;
                 continue;
             }
-            fontRenderer.drawStringWithShadow(string, d4 + 1.0, d, activeModuleStackEntry.E.g());
-            d += (double)(fontRenderer.FONT_HEIGHT(string) + 4);
+            fontRenderer.drawStringWithShadow(text, textX + 1.0, centerY, entry.displayInfo.g());
+            centerY += (double)(fontRenderer.FONT_HEIGHT(text) + 4);
         }
     }
 }

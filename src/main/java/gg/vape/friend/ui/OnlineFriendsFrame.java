@@ -94,7 +94,7 @@ extends SettingsSubpageFrame {
         this.Or = new OnlineFriendsEmptyStatePanel();
         this.Og = new OnlineConnectionStatusPanel();
         this.OJ = new OnlineFriendsFramePopupOutsideClickListener(this);
-        this.Z(false);
+        this.setVisible(false);
         this.o(103.0);
         this.N(false);
         this.D(true);
@@ -105,8 +105,8 @@ extends SettingsSubpageFrame {
         this.Oh.w("Add Vape friends");
         this.OP.u("", "");
         this.Oy = new NotificationToastOverlay(this);
-        this.j(this.OJ);
-        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().x(0.8f);
+        this.addMouseListener(this.OJ);
+        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().setDefaultIconScale(0.8f);
     }
 
     @Override
@@ -117,11 +117,11 @@ extends SettingsSubpageFrame {
         }
         int n = Vape.INSTANCE.getOnlineManager().D().I().size();
         if (n > 0) {
-            this.Oh.H("add friends notification@2x");
+            this.Oh.setIconResource("add friends notification@2x");
         } else {
-            this.Oh.H("add friends@2x");
+            this.Oh.setIconResource("add friends@2x");
         }
-        this.Oh.Z(false);
+        this.Oh.setVisible(false);
         if (this.OP.r$src$Ljava_lang_Boolean_$180i77a().booleanValue()) {
             if (OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE)) {
                 if (Vape.INSTANCE.getOnlineFriendManager().g().size() > 0 || Vape.INSTANCE.getOnlineManager().y().j() != null) {
@@ -129,24 +129,24 @@ extends SettingsSubpageFrame {
                 } else {
                     this.w(this.Or);
                 }
-                this.Oh.Z(true);
+                this.Oh.setVisible(true);
             } else {
                 this.w(this.Og);
             }
             if (this.Od != null) {
-                this.OI.Z(false);
+                this.OI.setVisible(false);
             } else if (this.OI != null) {
-                this.OI.Z(true);
+                this.OI.setVisible(true);
             }
         } else {
             if (this.OI != null) {
-                this.OI.Z(false);
+                this.OI.setVisible(false);
             }
             if (!this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().V$src$Z$1xhop3l()) {
-                this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().Z(true);
+                this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().setVisible(true);
             }
             if (OnlineConnectionManager.T.n().equals((Object)OnlineConnectionState.ONLINE)) {
-                this.Oh.Z(true);
+                this.Oh.setVisible(true);
             }
         }
     }
@@ -175,7 +175,7 @@ extends SettingsSubpageFrame {
                 this.Of = this.A(this.OQ, this.Ot, CenteredPopupFrame.class);
             }
         } else if (this.Of != null) {
-            ClientSettings.K(this.Of);
+            ClientSettings.removePopup(this.Of);
             this.Of = null;
         }
     }
@@ -187,9 +187,9 @@ extends SettingsSubpageFrame {
     }
 
     private void C6() {
-        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().Q(this.Oh);
-        this.Oh.r(new OnlineFriendsFramePopupCloseClickHandler(this));
-        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().r$src$Lgg_vape_ui_click_component_IconButtonComponent_$86hdsq().r(new OnlineFriendsFrameConditionalPopupCloseClickHandler(this));
+        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().addAction(this.Oh);
+        this.Oh.addClickListener(new OnlineFriendsFramePopupCloseClickHandler(this));
+        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().getNavigationButton().addClickListener(new OnlineFriendsFrameConditionalPopupCloseClickHandler(this));
     }
 
     public static NotificationToastOverlay e(OnlineFriendsFrame onlineFriendsFrame) {
@@ -203,11 +203,11 @@ extends SettingsSubpageFrame {
     private void CM() {
         if (this.Ok == null) {
             this.Ok = this.A(this.On, this.Oz, CenteredPopupFrame.class);
-            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().I("Friend requests", false);
+            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().showBackNavigation("Friend requests", false);
         } else {
-            ClientSettings.K(this.Ok);
+            ClientSettings.removePopup(this.Ok);
             this.Ok = null;
-            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().h();
+            this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().restoreDefaultNavigation();
         }
     }
 
@@ -237,8 +237,8 @@ extends SettingsSubpageFrame {
             this.OU = new OnlineRegistrationPanel();
         }
         this.Od = this.A(this.On, this.OU, CenteredPopupFrame.class);
-        this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().Z(false);
-        this.Oh.Z(false);
+        this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().setVisible(false);
+        this.Oh.setVisible(false);
     }
 
     public PanelComponent L$src$Lgg_vape_ui_click_component_PanelComponent_$1c87g2d() {
@@ -254,8 +254,8 @@ extends SettingsSubpageFrame {
     }
 
     public PopupFrame A(GuiComponent guiComponent, GuiComponent guiComponent2, Class<? extends PopupFrame> clazz) {
-        PopupFrame popupFrame = ClientSettings.g(guiComponent, guiComponent2, clazz);
-        popupFrame.j(this.OJ);
+        PopupFrame popupFrame = ClientSettings.createPopup(guiComponent, guiComponent2, clazz);
+        popupFrame.addMouseListener(this.OJ);
         return popupFrame;
     }
 
@@ -282,11 +282,11 @@ extends SettingsSubpageFrame {
         if (this.Od == null) {
             return;
         }
-        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().h();
-        ClientSettings.K(this.Od);
+        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().restoreDefaultNavigation();
+        ClientSettings.removePopup(this.Od);
         this.Od = null;
-        this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().Z(true);
-        this.Oh.Z(true);
+        this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().setVisible(true);
+        this.Oh.setVisible(true);
     }
 
     public FriendEntriesPanel R$src$Lgg_vape_friend_ui_FriendEntriesPanel_$19ux45q() {
@@ -329,8 +329,8 @@ extends SettingsSubpageFrame {
     }
 
     public void o$src$V$vp134s() {
-        ClientSettings.g(OnlineFriendsFrame.class).p$src$Lgg_vape_friend_ui_OnlineModeToggleComponent_$u0bbsl().u(false);
-        this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().Z(true);
+        ClientSettings.getFrame(OnlineFriendsFrame.class).p$src$Lgg_vape_friend_ui_OnlineModeToggleComponent_$u0bbsl().u(false);
+        this.q$src$Lgg_vape_ui_click_component_IconButtonComponent_$1bvowkh().setVisible(true);
     }
 
     private void w(PanelComponent panelComponent) {
@@ -353,11 +353,11 @@ extends SettingsSubpageFrame {
                     SettingsSectionComponent settingsSectionComponent = (SettingsSectionComponent)guiComponent;
                     String string = settingsSectionComponent.A$src$Ljava_lang_String_$9tmd4u();
                     if (!"Notification Settings".equals(string) && !"Party Settings".equals(string)) continue;
-                    settingsSectionComponent.Z(bl);
+                    settingsSectionComponent.setVisible(bl);
                     continue;
                 }
                 if (!(guiComponent instanceof BindValueRowComponent)) continue;
-                guiComponent.Z(bl);
+                guiComponent.setVisible(bl);
             }
         }
         super.p();
@@ -375,12 +375,12 @@ extends SettingsSubpageFrame {
     }
 
     public void k$src$V$vmtwrc() {
-        ClientSettings.p(this);
+        ClientSettings.removeFramePopups(this);
         this.Od = null;
         this.Of = null;
         this.Ok = null;
         this.OL = null;
-        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().h();
+        this.i$src$Lgg_vape_ui_click_frame_FrameToolbarComponent_$gnpgc6().restoreDefaultNavigation();
     }
 }
 

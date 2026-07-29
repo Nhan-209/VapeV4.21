@@ -25,7 +25,7 @@ public class InventoryItemMatcherRegistry {
     private static final Map<String, InventoryItemMatcher> matchersByName = new LinkedHashMap<String, InventoryItemMatcher>();
     private static final Map<InventoryItemMatcherGroup, List<InventoryItemMatcher>> matchersByGroup = new LinkedHashMap<InventoryItemMatcherGroup, List<InventoryItemMatcher>>();
 
-    public static @UnmodifiableView Collection<InventoryItemMatcher> Y() {
+    public static @UnmodifiableView Collection<InventoryItemMatcher> getAll() {
         return matchersByName.values();
     }
 
@@ -34,21 +34,21 @@ public class InventoryItemMatcherRegistry {
     }
 
     @Nullable
-    public static InventoryItemMatcher z(String string) {
-        return matchersByName.get(string);
+    public static InventoryItemMatcher getByName(String name) {
+        return matchersByName.get(name);
     }
 
-    public static void R(InventoryItemMatcher inventoryItemMatcher) {
-        matchersByName.put(inventoryItemMatcher.k(), inventoryItemMatcher);
-        matchersByGroup.computeIfAbsent(inventoryItemMatcher.l(), InventoryItemMatcherRegistry::createGroupList).add(inventoryItemMatcher);
+    public static void register(InventoryItemMatcher matcher) {
+        matchersByName.put(matcher.getId(), matcher);
+        matchersByGroup.computeIfAbsent(matcher.getGroup(), InventoryItemMatcherRegistry::createGroupList).add(matcher);
     }
 
-    public static @UnmodifiableView List<InventoryItemMatcher> N(InventoryItemMatcherGroup inventoryItemMatcherGroup) {
-        return matchersByGroup.get(inventoryItemMatcherGroup);
+    public static @UnmodifiableView List<InventoryItemMatcher> getByGroup(InventoryItemMatcherGroup group) {
+        return matchersByGroup.get(group);
     }
 
     @Nullable
-    public static InventoryItemMatcher S(ItemStack itemStack) {
+    public static InventoryItemMatcher findBestMatch(ItemStack itemStack) {
         if (itemStack.isNull()) {
             return EmptySlotInventoryItemMatcher.a;
         }
@@ -58,7 +58,7 @@ public class InventoryItemMatcherRegistry {
         }
         ArrayList<InventoryItemMatcher> arrayList = new ArrayList<InventoryItemMatcher>();
         for (InventoryItemMatcher inventoryItemMatcher : matchersByName.values()) {
-            if (!inventoryItemMatcher.g(itemStack, itemStack.getItem())) continue;
+            if (!inventoryItemMatcher.matches(itemStack, itemStack.getItem())) continue;
             arrayList.add(inventoryItemMatcher);
         }
         arrayList.sort(InventoryItemMatcherRegistry::compareByPriority);
@@ -68,20 +68,20 @@ public class InventoryItemMatcherRegistry {
     }
 
     private static int compareByPriority(InventoryItemMatcher inventoryItemMatcher, InventoryItemMatcher inventoryItemMatcher2) {
-        boolean hasPriorityFirst = inventoryItemMatcher.v() != null;
-        boolean hasPrioritySecond = inventoryItemMatcher2.v() != null;
+        boolean hasPriorityFirst = inventoryItemMatcher.getComparator() != null;
+        boolean hasPrioritySecond = inventoryItemMatcher2.getComparator() != null;
         return Boolean.compare(hasPriorityFirst, hasPrioritySecond);
     }
 
 
     static {
-        HiddenInventoryItemMatchers.D();
-        WeaponInventoryItemMatchers.K();
+        HiddenInventoryItemMatchers.initialize();
+        WeaponInventoryItemMatchers.initialize();
         ToolInventoryItemMatchers.r();
-        FoodInventoryItemMatchers.j();
-        BlockInventoryItemMatchers.C();
+        FoodInventoryItemMatchers.initialize();
+        BlockInventoryItemMatchers.initialize();
         ArmorInventoryItemMatchers.v();
-        InventoryItemCategoryRegistry.F();
+        InventoryItemCategoryRegistry.initialize();
     }
 }
 

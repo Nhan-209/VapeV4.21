@@ -6,31 +6,30 @@ import gg.vape.notification.TextNotificationContent;
 
 public class ReusableTextNotification
 extends Notification {
-    private long k;
+    private long defaultDurationMillis;
 
-    public ReusableTextNotification(NotificationType notificationType, String string, String string2, long l) {
-        super(notificationType, string, new TextNotificationContent(string2), 0.0, 0.0, l);
-        this.k = l;
+    public ReusableTextNotification(NotificationType type, String title, String message, long durationMillis) {
+        super(type, title, new TextNotificationContent(message), 0.0, 0.0, durationMillis);
+        this.defaultDurationMillis = durationMillis;
     }
 
-    public ReusableTextNotification S(String string) {
-        this.T(string);
+    public ReusableTextNotification withTitle(String title) {
+        this.setTitle(title);
         return this;
     }
 
-    public void p(long l) {
-        this.k = l;
+    public void setDefaultDuration(long durationMillis) {
+        this.defaultDurationMillis = durationMillis;
     }
 
-    public ReusableTextNotification m(String string) {
-        ((TextNotificationContent)super.X$src$Lgg_vape_notification_NotificationContent_$1gg6y56()).k(string);
+    public ReusableTextNotification withMessage(String message) {
+        ((TextNotificationContent)super.getContent()).setText(message);
         return this;
     }
 
-    public ReusableTextNotification B() {
-        this.d(this.k);
-        this.T(-this.X());
+    public ReusableTextNotification reset() {
+        this.setDuration(this.defaultDurationMillis);
+        this.setTargetX(-this.getWidth());
         return this;
     }
 }
-

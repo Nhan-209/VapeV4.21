@@ -13,77 +13,81 @@ import java.awt.Color;
 import java.util.HashMap;
 
 public class EntityModelRenderCache {
-    private static boolean I;
-    static HashMap<EntityModelRenderCacheKey, EntityModelRenderBackend> B;
+    private static boolean enabled;
+    static HashMap<EntityModelRenderCacheKey, EntityModelRenderBackend> renderers;
 
-    public static void E(boolean bl) {
-        I = bl;
+    public static void setEnabled(boolean enabled) {
+        EntityModelRenderCache.enabled = enabled;
     }
 
-    public static void d(EntityLivingBase entityLivingBase, float f, float f2, int n, int n2, Color color, float f3) {
+    public static void renderEntity(EntityLivingBase entity, float x, float y, int width, int height, Color color, float cornerRadius) {
         try {
-            EntityModelRenderCacheKey entityModelRenderCacheKey = new EntityModelRenderCacheKey(entityLivingBase);
-            EntityModelRenderCache.m(entityLivingBase);
-            B.get(entityModelRenderCacheKey).g(f, f2, n, n2, color, f3);
+            EntityModelRenderCacheKey cacheKey = new EntityModelRenderCacheKey(entity);
+            EntityModelRenderCache.ensureEntityCached(entity);
+            renderers.get(cacheKey).render(x, y, width, height, color, cornerRadius);
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
         }
     }
 
-    public static void s(ResourceLocation resourceLocation, String string) {
-        EntityModelRenderCacheKey entityModelRenderCacheKey = new EntityModelRenderCacheKey(string);
-        if (!B.containsKey(entityModelRenderCacheKey)) {
-            EntityModelRenderCache.F(resourceLocation, entityModelRenderCacheKey);
+    public static void ensureTextureCached(ResourceLocation texture, String identifier) {
+        EntityModelRenderCacheKey cacheKey = new EntityModelRenderCacheKey(identifier);
+        if (!renderers.containsKey(cacheKey)) {
+            EntityModelRenderCache.cacheTexture(texture, cacheKey);
         }
     }
 
-    private static void F(ResourceLocation resourceLocation, EntityModelRenderCacheKey entityModelRenderCacheKey) {
-        EntityModelRenderBackend entityModelRenderBackend = GuiRenderPrimitives.d() ? new Post117EntityModelFramebufferRenderer() : new EntityModelFramebufferRenderer();
-        entityModelRenderBackend.y(resourceLocation);
-        B.put(entityModelRenderCacheKey, entityModelRenderBackend);
+    private static void cacheTexture(ResourceLocation texture, EntityModelRenderCacheKey cacheKey) {
+        EntityModelRenderBackend renderer = createRenderer();
+        renderer.captureTexture(texture);
+        renderers.put(cacheKey, renderer);
     }
 
-    public static void m(EntityLivingBase entityLivingBase) {
-        EntityModelRenderCacheKey entityModelRenderCacheKey = new EntityModelRenderCacheKey(entityLivingBase);
-        if (!B.containsKey(entityModelRenderCacheKey)) {
-            EntityModelRenderCache.y(entityLivingBase, entityModelRenderCacheKey);
+    public static void ensureEntityCached(EntityLivingBase entity) {
+        EntityModelRenderCacheKey cacheKey = new EntityModelRenderCacheKey(entity);
+        if (!renderers.containsKey(cacheKey)) {
+            EntityModelRenderCache.cacheEntity(entity, cacheKey);
         }
     }
 
-    public static void F() {
-        for (EntityModelRenderBackend entityModelRenderBackend : B.values()) {
-            entityModelRenderBackend.F();
+    public static void clear() {
+        for (EntityModelRenderBackend renderer : renderers.values()) {
+            renderer.dispose();
         }
-        B.clear();
+        renderers.clear();
     }
 
-    public static boolean W() {
-        return I;
+    public static boolean isEnabled() {
+        return enabled;
     }
 
-    public static boolean Q() {
-        boolean bl = EntityModelRenderCache.W();
+    public static boolean isSupported() {
+        boolean cacheEnabled = EntityModelRenderCache.isEnabled();
         return true;
     }
 
-    public static ResourceLocation M() {
-        String string = ForgeVersion.MC_1_21_4.d() ? "textures/entity/player/wide/steve.png" : "textures/entity/steve.png";
-        return ResourceLocation.create(string);
+    public static ResourceLocation getDefaultSkinTexture() {
+        String texturePath = ForgeVersion.MC_1_21_4.d() ? "textures/entity/player/wide/steve.png" : "textures/entity/steve.png";
+        return ResourceLocation.create(texturePath);
     }
 
 
-    private static void y(EntityLivingBase entityLivingBase, EntityModelRenderCacheKey entityModelRenderCacheKey) {
-        EntityModelRenderBackend entityModelRenderBackend = GuiRenderPrimitives.d() ? new Post117EntityModelFramebufferRenderer() : new EntityModelFramebufferRenderer();
-        entityModelRenderBackend.y(entityLivingBase);
-        B.put(entityModelRenderCacheKey, entityModelRenderBackend);
+    private static void cacheEntity(EntityLivingBase entity, EntityModelRenderCacheKey cacheKey) {
+        EntityModelRenderBackend renderer = createRenderer();
+        renderer.captureEntity(entity);
+        renderers.put(cacheKey, renderer);
     }
 
-    public static void N(ResourceLocation resourceLocation, String string, float f, float f2, int n, int n2, Color color, float f3) {
+    private static EntityModelRenderBackend createRenderer() {
+        return GuiRenderPrimitives.d() ? new Post117EntityModelFramebufferRenderer() : new EntityModelFramebufferRenderer();
+    }
+
+    public static void renderTexture(ResourceLocation texture, String identifier, float x, float y, int width, int height, Color color, float cornerRadius) {
         try {
-            EntityModelRenderCacheKey entityModelRenderCacheKey = new EntityModelRenderCacheKey(string);
-            EntityModelRenderCache.s(resourceLocation, string);
-            B.get(entityModelRenderCacheKey).g(f, f2, n, n2, color, f3);
+            EntityModelRenderCacheKey cacheKey = new EntityModelRenderCacheKey(identifier);
+            EntityModelRenderCache.ensureTextureCached(texture, identifier);
+            renderers.get(cacheKey).render(x, y, width, height, color, cornerRadius);
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
@@ -91,8 +95,8 @@ public class EntityModelRenderCache {
     }
 
     static {
-        EntityModelRenderCache.E(false);
-        B = new HashMap();
+        EntityModelRenderCache.setEnabled(false);
+        renderers = new HashMap();
     }
 }
 

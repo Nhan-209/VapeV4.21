@@ -9,7 +9,7 @@ implements GuiClickListener {
 
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         if (SessionSpoofFrame.t(this.P) != null) {
             SessionSpoofFrame.M(this.P);
         }

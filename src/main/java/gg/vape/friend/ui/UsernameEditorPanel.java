@@ -49,14 +49,14 @@ extends PanelComponent {
 
     private void s$src$V$fb5sbm() {
         if (this.kM.V$src$Z$1xhop3l()) {
-            this.kM.Z(false);
-            this.kv.Z(true);
+            this.kM.setVisible(false);
+            this.kv.setVisible(true);
             LocalOnlineFriend localOnlineFriend = Vape.INSTANCE.getOnlineManager().r();
             String string = localOnlineFriend.C();
-            this.kw.k(string);
+            this.kw.setText(string);
         } else {
-            this.kM.Z(true);
-            this.kv.Z(false);
+            this.kM.setVisible(true);
+            this.kv.setVisible(false);
         }
     }
 
@@ -101,16 +101,16 @@ extends PanelComponent {
     @Override
     public void c() {
         this.kH.Y(17.0);
-        this.kH.q(8.0);
+        this.kH.setExplicitWidth(8.0);
         GuiRenderPrimitives.C(this.G$src$D$1b2f02a() - 3.0, this.n(), this.A() + 7.0, this.L(), new Color(255, 255, 255, 10));
         super.c();
         if (this.kv.V$src$Z$1xhop3l()) {
             GuiRenderPrimitives.a(this.kw.G$src$D$1b2f02a() + 4.0, this.kw.n() + 13.0, this.kw.A() - 20.0, 1.0f, UsernameEditorPanel.J.y);
         } else {
-            this.kq.U(Vape.INSTANCE.getOnlineManager().r().C());
-            this.kq.N(this.w$src$Z$e457mb() ? this.A() - 36.0 : this.A() - 26.0);
+            this.kq.setText(Vape.INSTANCE.getOnlineManager().r().C());
+            this.kq.setMaxWidth(this.w$src$Z$e457mb() ? this.A() - 36.0 : this.A() - 26.0);
         }
-        this.kL.o(this.w$src$Z$e457mb() ? UsernameEditorPanel.J.W : UsernameEditorPanel.J.t);
+        this.kL.setNormalColor(this.w$src$Z$e457mb() ? UsernameEditorPanel.J.W : UsernameEditorPanel.J.t);
     }
 
     private static void lambda$inputOnEnter$0(Consumer consumer, Consumer consumer2, UserDisplayNameResponsePacket userDisplayNameResponsePacket) {
@@ -153,46 +153,46 @@ extends PanelComponent {
         this.kw = new UsernameEditorTextInputComponent(this, "Enter username", 10000L);
         this.k4 = new TextLabel("Cancel", 0.8, false, UsernameEditorPanel.J.l);
         this.kH.Y(16.0);
-        this.kH.o(Color.WHITE);
-        this.kH.P(Color.WHITE);
+        this.kH.setNormalColor(Color.WHITE);
+        this.kH.setHoverColor(Color.WHITE);
         this.kq = new UsernameEditorCurrentNameLabel(this, "", 0.6, 0.8, 0.1, this.w$src$Z$e457mb() ? this.A() - 36.0 : this.A() - 26.0, true, false, UsernameEditorPanel.J.h, this);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.t(16.0);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-        this.kw.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().W("newnext");
-        this.kI.d(false);
-        this.kQ.q(10.0);
-        this.kQ.u(10.0);
-        this.kL.q(10.0);
-        this.kL.u(10.0);
-        this.kQ.l(UsernameEditorPanel.J.y);
+        this.kw.getActionButton().setIconResource("newnext");
+        this.kI.setShowDisabledOverlay(false);
+        this.kQ.setExplicitWidth(10.0);
+        this.kQ.setExplicitHeight(10.0);
+        this.kL.setExplicitWidth(10.0);
+        this.kL.setExplicitHeight(10.0);
+        this.kQ.setBorderColor(UsernameEditorPanel.J.y);
         this.ka.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-        this.ka.d(false);
-        this.ka.q(25.0);
-        this.kI.H(new SpacerComponent(2.0, 1.0), this.kH, this.kq);
-        this.ka.H(this.kL);
-        this.ka.H(new SpacerComponent(2.0, 1.0));
-        this.ka.H(this.kQ);
+        this.ka.setShowDisabledOverlay(false);
+        this.ka.setExplicitWidth(25.0);
+        this.kI.addChildren(new SpacerComponent(2.0, 1.0), this.kH, this.kq);
+        this.ka.addChildren(this.kL);
+        this.ka.addChildren(new SpacerComponent(2.0, 1.0));
+        this.ka.addChildren(this.kQ);
         this.kM.h(this.kI, new Object[0]);
         this.kM.h(this.ka, "alignright");
-        this.kM.d(false);
+        this.kM.setShowDisabledOverlay(false);
         this.kv.h(this.kw, new Object[0]);
         this.kv.h(this.k4, new Object[0]);
-        this.kv.Z(false);
-        this.kv.d(false);
-        this.kw.e(false);
-        this.kw.n(16);
-        this.kL.l(UsernameEditorPanel.J.t);
-        this.k4.u(10.0);
-        this.k4.q(22.0);
+        this.kv.setVisible(false);
+        this.kv.setShowDisabledOverlay(false);
+        this.kw.setBackgroundVisible(false);
+        this.kw.setMaxLength(16);
+        this.kL.setBorderColor(UsernameEditorPanel.J.t);
+        this.k4.setExplicitHeight(10.0);
+        this.k4.setExplicitWidth(22.0);
         this.kv.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
         this.kL.w("Edit display name");
         this.kQ.w("Copy display name");
         this.h(this.kM, new Object[0]);
         this.h(this.kv, new Object[0]);
-        this.kQ.r(new UsernameCopyClickHandler(this));
-        this.kL.r(new UsernameEditorEditButtonClickHandler(this));
-        this.k4.r(new UsernameEditorEditModeToggleClickHandler(this));
+        this.kQ.addClickListener(new UsernameCopyClickHandler(this));
+        this.kL.addClickListener(new UsernameEditorEditButtonClickHandler(this));
+        this.k4.addClickListener(new UsernameEditorEditModeToggleClickHandler(this));
     }
 
     public static GuiComponent[] C$src$ALgg_vape_ui_click_component_GuiComponent_$15ojrbs() {
@@ -203,4 +203,3 @@ extends PanelComponent {
         atomicBoolean.set(false);
     }
 }
-

@@ -15,69 +15,69 @@ import org.jetbrains.annotations.Nullable;
 
 public class ActionButtonGroupComponent
 extends GuiComponent {
-    private final List<InteractiveComponent> O;
-    private final PanelComponent K = new PanelComponent(this.A(), this.L());
+    private final List<InteractiveComponent> buttons;
+    private final PanelComponent buttonPanel = new PanelComponent(this.A(), this.L());
     @Nullable
-    private Color R;
-    private final float b = 1.5f;
-    private int Q = -1;
-    private double i = 1.0;
-    private final float I = 1.0f;
+    private Color borderColor;
+    private final float borderRadius = 1.5f;
+    private int renderedButtonCount = -1;
+    private double padding = 1.0;
+    private final float borderAlpha = 1.0f;
 
 
-    public double V$src$D$3dpaje() {
-        return this.i;
+    public double getPadding() {
+        return this.padding;
     }
 
-    public void T(double d) {
-        this.i = d;
+    public void setPadding(double padding) {
+        this.padding = padding;
     }
 
     @Override
     public void H() {
-        if (this.Z$src$Z$16e8vsp()) {
-            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.R != null ? this.R : ActionButtonGroupComponent.J.l, this.b, this.I, 1.0f);
+        if (this.isShowDisabledOverlay()) {
+            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.borderColor != null ? this.borderColor : ActionButtonGroupComponent.J.l, this.borderRadius, this.borderAlpha, 1.0f);
         }
-        this.K.K(this.G$src$D$1b2f02a());
-        this.K.S(this.n());
-        this.K.o(this.A());
-        this.K.Y(this.L());
-        List<InteractiveComponent> list = this.R$src$Ljava_util_List_$14uldez();
-        if (this.Q != list.size()) {
-            this.K.S();
-            this.K.k(true);
-            double d = (this.K.A() - this.i * 2.0) / (double)list.size();
-            double d2 = (this.K.L() - this.i * 2.0) / 2.0;
-            this.K.h(new SpacerComponent(0.0, this.K.L() / 2.0 - d2 / 2.0), "wrap");
-            for (int i = 0; i < list.size(); ++i) {
-                InteractiveComponent interactiveComponent = list.get(i);
-                interactiveComponent.P(true);
-                interactiveComponent.W(true);
-                interactiveComponent.q(d);
-                interactiveComponent.u(d2);
-                this.K.h(interactiveComponent, new Object[0]);
-                if (i == list.size() - 1) continue;
-                this.K.H(new FilledSpacerComponent(1.0, d2, ActionButtonGroupComponent.J.l));
+        this.buttonPanel.K(this.G$src$D$1b2f02a());
+        this.buttonPanel.S(this.n());
+        this.buttonPanel.o(this.A());
+        this.buttonPanel.Y(this.L());
+        List<InteractiveComponent> visibleButtons = this.getVisibleButtons();
+        if (this.renderedButtonCount != visibleButtons.size()) {
+            this.buttonPanel.removeMarkedChildren();
+            this.buttonPanel.k(true);
+            double buttonWidth = (this.buttonPanel.A() - this.padding * 2.0) / (double)visibleButtons.size();
+            double buttonHeight = (this.buttonPanel.L() - this.padding * 2.0) / 2.0;
+            this.buttonPanel.h(new SpacerComponent(0.0, this.buttonPanel.L() / 2.0 - buttonHeight / 2.0), "wrap");
+            for (int buttonIndex = 0; buttonIndex < visibleButtons.size(); ++buttonIndex) {
+                InteractiveComponent button = visibleButtons.get(buttonIndex);
+                button.setUseExplicitWidth(true);
+                button.setUseExplicitHeight(true);
+                button.setExplicitWidth(buttonWidth);
+                button.setExplicitHeight(buttonHeight);
+                this.buttonPanel.h(button, new Object[0]);
+                if (buttonIndex == visibleButtons.size() - 1) continue;
+                this.buttonPanel.addChildren(new FilledSpacerComponent(1.0, buttonHeight, ActionButtonGroupComponent.J.l));
             }
-            this.Q = list.size();
+            this.renderedButtonCount = visibleButtons.size();
         }
     }
 
-    public List<InteractiveComponent> R$src$Ljava_util_List_$14uldez() {
-        ArrayList<InteractiveComponent> arrayList = new ArrayList<InteractiveComponent>();
-        for (InteractiveComponent interactiveComponent : this.O) {
-            if (!interactiveComponent.V$src$Z$1xhop3l()) continue;
-            arrayList.add(interactiveComponent);
+    public List<InteractiveComponent> getVisibleButtons() {
+        ArrayList<InteractiveComponent> visibleButtons = new ArrayList<InteractiveComponent>();
+        for (InteractiveComponent button : this.buttons) {
+            if (!button.V$src$Z$1xhop3l()) continue;
+            visibleButtons.add(button);
         }
-        return arrayList;
+        return visibleButtons;
     }
 
-    public ActionButtonGroupComponent(InteractiveComponent ... interactiveComponentArray) {
-        this(Arrays.asList(interactiveComponentArray));
+    public ActionButtonGroupComponent(InteractiveComponent ... buttons) {
+        this(Arrays.asList(buttons));
     }
 
-    public Color M() {
-        return this.R;
+    public Color getBorderColor() {
+        return this.borderColor;
     }
 
     @Override
@@ -85,19 +85,19 @@ extends GuiComponent {
         return 0.0;
     }
 
-    public ActionButtonGroupComponent(List<InteractiveComponent> list) {
-        this.K.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
-        this.K.d(false);
-        this.O = list;
-        this.H(this.K);
+    public ActionButtonGroupComponent(List<InteractiveComponent> buttons) {
+        this.buttonPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
+        this.buttonPanel.setShowDisabledOverlay(false);
+        this.buttons = buttons;
+        this.addChildren(this.buttonPanel);
     }
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
+    public void g(GuiMouseEvent mouseEvent) {
     }
 
-    public List<InteractiveComponent> a$src$Ljava_util_List_$agnlj0() {
-        return this.O;
+    public List<InteractiveComponent> getButtons() {
+        return this.buttons;
     }
 
     @Override
@@ -109,24 +109,24 @@ extends GuiComponent {
     public void F() {
     }
 
-    public void M(Color color) {
-        this.R = color;
+    public void setBorderColor(Color borderColor) {
+        this.borderColor = borderColor;
     }
 
     @Override
     public void u() {
     }
 
-    public float X$src$F$3esvru() {
-        return this.b;
+    public float getBorderRadius() {
+        return this.borderRadius;
     }
 
     @Override
     public void I() {
     }
 
-    public float R() {
-        return this.I;
+    public float getBorderAlpha() {
+        return this.borderAlpha;
     }
 }
 

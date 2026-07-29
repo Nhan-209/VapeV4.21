@@ -7,47 +7,47 @@ import gg.vape.wrapper.impl.Minecraft;
 import java.util.HashMap;
 
 public class CachedTextTextureRegistry {
-    private static String H;
-    static HashMap<CachedTextTextureKey, CachedTextTexture> e;
+    private static String legacyMarker;
+    static HashMap<CachedTextTextureKey, CachedTextTexture> cache;
 
-    public static String N() {
-        return H;
+    public static String getLegacyMarker() {
+        return legacyMarker;
     }
 
-    private static void P(CachedTextTextureKey cachedTextTextureKey) {
-        CachedTextTexture cachedTextTexture = new CachedTextTexture();
-        cachedTextTexture.D(cachedTextTextureKey.O, cachedTextTextureKey.H());
-        e.put(cachedTextTextureKey, cachedTextTexture);
+    private static void createTexture(CachedTextTextureKey cacheKey) {
+        CachedTextTexture texture = new CachedTextTexture();
+        texture.build(cacheKey.getText(), cacheKey.getColor());
+        cache.put(cacheKey, texture);
     }
 
 
-    public static void f(String string) {
-        H = string;
+    public static void setLegacyMarker(String legacyMarker) {
+        CachedTextTextureRegistry.legacyMarker = legacyMarker;
     }
 
-    public static void I(String string, float f, float f2, int n) {
+    public static void renderText(String text, float x, float y, int color) {
         try {
-            CachedTextTextureKey cachedTextTextureKey = new CachedTextTextureKey(string, n);
-            CachedTextTextureRegistry.m(string, n);
-            int n2 = Minecraft.getFontRenderer().getStringWidth(string);
-            int n3 = Minecraft.getFontRenderer().FONT_HEIGHT(string);
-            e.get(cachedTextTextureKey).O(f, f2, n2, n3);
+            CachedTextTextureKey cacheKey = new CachedTextTextureKey(text, color);
+            CachedTextTextureRegistry.ensureCached(text, color);
+            int textWidth = Minecraft.getFontRenderer().getStringWidth(text);
+            int textHeight = Minecraft.getFontRenderer().FONT_HEIGHT(text);
+            cache.get(cacheKey).render(x, y, textWidth, textHeight);
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
         }
     }
 
-    public static void m(String string, int n) {
-        CachedTextTextureKey cachedTextTextureKey = new CachedTextTextureKey(string, n);
-        if (!e.containsKey(cachedTextTextureKey)) {
-            CachedTextTextureRegistry.P(cachedTextTextureKey);
+    public static void ensureCached(String text, int color) {
+        CachedTextTextureKey cacheKey = new CachedTextTextureKey(text, color);
+        if (!cache.containsKey(cacheKey)) {
+            CachedTextTextureRegistry.createTexture(cacheKey);
         }
     }
 
     static {
-        e = new HashMap();
-        CachedTextTextureRegistry.f(null);
+        cache = new HashMap();
+        CachedTextTextureRegistry.setLegacyMarker(null);
     }
 }
 

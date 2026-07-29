@@ -29,7 +29,7 @@ extends Mapping {
         MLegacyEntityRenderPreHook mLegacyEntityRenderPreHook = this;
         this.v = this.Y(string, bl, clazz, classArray);
         if (MLegacyEntityRenderPreHook.N() != null) {
-            GuiComponent.D(new GuiComponent[4]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[4]);
             return;
         }
     }

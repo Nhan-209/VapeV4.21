@@ -8,67 +8,67 @@ import org.jetbrains.annotations.NotNull;
 
 public class ThreadBoundExecutor
 implements Executor {
-    private final Queue<Runnable> V = new ArrayDeque<Runnable>();
-    private static GuiComponent[] T;
-    private Runnable h;
-    private Thread P;
+    private final Queue<Runnable> pendingTasks = new ArrayDeque<Runnable>();
+    private static GuiComponent[] controlFlowMarker;
+    private Runnable currentTask;
+    private Thread ownerThread;
 
-    public static void G(GuiComponent[] upArray) {
-        T = upArray;
+    public static void setControlFlowMarker(GuiComponent[] marker) {
+        controlFlowMarker = marker;
     }
 
-    private static Throwable a(Throwable throwable) {
-        return throwable;
+    private static Throwable propagateThrowable(Throwable error) {
+        return error;
     }
 
     public synchronized void runPending() {
         try {
-            if (this.P == null) {
-                this.P = Thread.currentThread();
+            if (this.ownerThread == null) {
+                this.ownerThread = Thread.currentThread();
             }
         }
-        catch (Throwable throwable) {
-            throw ThreadBoundExecutor.sneakyThrow(ThreadBoundExecutor.a(throwable));
+        catch (Throwable error) {
+            throw ThreadBoundExecutor.sneakyThrow(ThreadBoundExecutor.propagateThrowable(error));
         }
-        while ((this.h = this.V.poll()) != null) {
+        while ((this.currentTask = this.pendingTasks.poll()) != null) {
             try {
-                this.h.run();
+                this.currentTask.run();
             }
-            catch (Throwable throwable) {}
+            catch (Throwable ignored) {}
         }
     }
 
     public Thread getOwnerThread() {
-        return this.P;
+        return this.ownerThread;
     }
 
-    public static GuiComponent[] J() {
-        return T;
+    public static GuiComponent[] getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
     @Override
     public synchronized void execute(@NotNull Runnable runnable) {
-        boolean onOwnerThread = this.P != null && Thread.currentThread().equals(this.P);
+        boolean onOwnerThread = this.ownerThread != null && Thread.currentThread().equals(this.ownerThread);
         if (onOwnerThread) {
             runnable.run();
             return;
         }
-        this.V.offer(runnable);
+        this.pendingTasks.offer(runnable);
     }
 
-    private static RuntimeException sneakyThrow(Throwable throwable) {
-        ThreadBoundExecutor.throwUnchecked(throwable);
+    private static RuntimeException sneakyThrow(Throwable error) {
+        ThreadBoundExecutor.throwUnchecked(error);
         throw new AssertionError((Object)"unreachable");
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Throwable> void throwUnchecked(Throwable throwable) throws T {
-        throw (T)throwable;
+    private static <T extends Throwable> void throwUnchecked(Throwable error) throws T {
+        throw (T)error;
     }
 
     static {
-        if (ThreadBoundExecutor.J() != null) {
-            ThreadBoundExecutor.G(new GuiComponent[1]);
+        if (ThreadBoundExecutor.getControlFlowMarker() != null) {
+            ThreadBoundExecutor.setControlFlowMarker(new GuiComponent[1]);
         }
     }
 }

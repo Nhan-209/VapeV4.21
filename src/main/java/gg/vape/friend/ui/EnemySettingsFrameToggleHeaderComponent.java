@@ -15,12 +15,12 @@ extends ToggleableFrameHeaderComponent {
 
     @Override
     public void R() {
-        EnemySettingsFrame.Q(this.Ug).Z(this.I$src$Z$f74e2a());
-        EnemySettingsFrame.N(this.Ug).Z(this.I$src$Z$f74e2a());
-        EnemySettingsFrame.W(this.Ug).Z(this.I$src$Z$f74e2a());
-        EnemySettingsFrame.B(this.Ug).Z(this.I$src$Z$f74e2a());
-        EnemySettingsFrame.a(this.Ug).Z(this.I$src$Z$f74e2a());
-        EnemySettingsFrame.g(this.Ug).Z(this.I$src$Z$f74e2a());
+        EnemySettingsFrame.Q(this.Ug).setVisible(this.I$src$Z$f74e2a());
+        EnemySettingsFrame.N(this.Ug).setVisible(this.I$src$Z$f74e2a());
+        EnemySettingsFrame.W(this.Ug).setVisible(this.I$src$Z$f74e2a());
+        EnemySettingsFrame.B(this.Ug).setVisible(this.I$src$Z$f74e2a());
+        EnemySettingsFrame.a(this.Ug).setVisible(this.I$src$Z$f74e2a());
+        EnemySettingsFrame.g(this.Ug).setVisible(this.I$src$Z$f74e2a());
         this.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0().l$src$V$1mibm4x();
     }
 }

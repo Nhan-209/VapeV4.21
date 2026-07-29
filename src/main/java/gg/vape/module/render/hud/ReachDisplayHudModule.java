@@ -16,69 +16,72 @@ import gg.vape.wrapper.impl.Vec3;
 
 public class ReachDisplayHudModule
 extends HudModule {
-    float k;
-    private long K;
-    float p;
-    private float b;
+    private float savedPitch;
+    private long lastAttackTime;
+    private float savedYaw;
+    private float lastReach;
 
-    public float p() {
-        if (System.currentTimeMillis() - this.K >= 5000L) {
-            this.b = 0.0f;
-            this.K = 0L;
+    public float getLastReach() {
+        if (System.currentTimeMillis() - this.lastAttackTime >= 5000L) {
+            this.lastReach = 0.0f;
+            this.lastAttackTime = 0L;
         }
-        return this.b;
+        return this.lastReach;
     }
 
-    private void O$src$V$12sgcml() {
-        RotationManager rotationManager = RotationManager.b;
-        if (rotationManager.u()) {
+    private void restorePlayerRotation() {
+        RotationManager rotationManager = RotationManager.INSTANCE;
+        if (rotationManager.hasAdaptiveController()) {
             EntityLivingBase entityLivingBase = Minecraft.F();
-            entityLivingBase.H(this.p);
-            entityLivingBase.C(this.k);
+            entityLivingBase.H(this.savedYaw);
+            entityLivingBase.C(this.savedPitch);
         }
     }
 
     @EventHandler
-    public void M(EventPostAttack eventPostAttack) {
-        if (eventPostAttack.getTarget().isInstance(MappedClasses.zm) && !eventPostAttack.getTarget().isInstance(MappedClasses.FT) && Minecraft.p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0().isNotNull()) {
+    public void onPostAttack(EventPostAttack event) {
+        if (event.getTarget().isInstance(MappedClasses.zm) && !event.getTarget().isInstance(MappedClasses.FT) && Minecraft.p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0().isNotNull()) {
             Entity entity = Minecraft.p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0().getEntity();
             if (entity.isNull()) {
                 return;
             }
-            EntityLivingBase entityLivingBase = Minecraft.F();
-            double d = Minecraft.playerController().N();
-            this.K();
-            Vec3 vec3 = entityLivingBase.O(1.0f);
-            Vec3 vec32 = entityLivingBase.J(1.0f);
-            this.O$src$V$12sgcml();
-            Vec3 vec33 = vec3.addVector(vec32.getX() * d, vec32.getY() * d, vec32.getZ() * d);
-            float f = entity.b();
-            AxisAlignedBB axisAlignedBB = entity.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().expand(f, f, f);
-            RayTraceResult rayTraceResult = axisAlignedBB.calculateIntercept(vec3, vec33);
-            if (rayTraceResult.isNull()) {
+            EntityLivingBase player = Minecraft.F();
+            double reachDistance = Minecraft.playerController().N();
+            this.applyManagedRotation();
+            Vec3 eyePosition = player.O(1.0f);
+            Vec3 lookDirection = player.J(1.0f);
+            this.restorePlayerRotation();
+            Vec3 rayEnd = eyePosition.addVector(
+                    lookDirection.getX() * reachDistance,
+                    lookDirection.getY() * reachDistance,
+                    lookDirection.getZ() * reachDistance);
+            float collisionBorder = entity.b();
+            AxisAlignedBB targetBounds = entity.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl()
+                    .expand(collisionBorder, collisionBorder, collisionBorder);
+            RayTraceResult intercept = targetBounds.calculateIntercept(eyePosition, rayEnd);
+            if (intercept.isNull()) {
                 return;
             }
-            double d2 = vec3.distanceTo(rayTraceResult.getHitVec());
-            this.b = (float)d2;
-            this.K = System.currentTimeMillis();
+            double attackDistance = eyePosition.distanceTo(intercept.getHitVec());
+            this.lastReach = (float)attackDistance;
+            this.lastAttackTime = System.currentTimeMillis();
         }
     }
 
     public ReachDisplayHudModule() {
-        super("Reach Display", HudModuleGroup.f, "reach_display", ReachDisplayHudFrame.class);
+        super("Reach Display", HudModuleGroup.HUD, "reach_display", ReachDisplayHudFrame.class);
         this.setSuffix("Shows how far away your last attack was");
     }
 
 
-    private void K() {
-        RotationManager rotationManager = RotationManager.b;
-        if (rotationManager.u()) {
+    private void applyManagedRotation() {
+        RotationManager rotationManager = RotationManager.INSTANCE;
+        if (rotationManager.hasAdaptiveController()) {
             EntityLivingBase entityLivingBase = Minecraft.F();
-            this.p = entityLivingBase.J();
-            this.k = entityLivingBase.V();
-            entityLivingBase.H(rotationManager.V());
-            entityLivingBase.C(rotationManager.x());
+            this.savedYaw = entityLivingBase.J();
+            this.savedPitch = entityLivingBase.V();
+            entityLivingBase.H(rotationManager.getManagedYaw());
+            entityLivingBase.C(rotationManager.getManagedPitch());
         }
     }
 }
-

@@ -12,78 +12,73 @@ import java.util.List;
 
 public class ProfileSnapshotModuleDetailsPanel
 extends PanelComponent {
-    private final SimpleTextLabelComponent Cr;
-    private final PanelComponent C0 = new PanelComponent(192.0, 10.0);
-    private final TextButton CT;
-    private static int CP;
-    private final BindableInputComponent CN;
-    private ProfileModuleSnapshot Cl;
-    private final TextButton C2;
-    private final PanelComponent CH = new PanelComponent(CP, 144.0);
-    private ProfileSnapshot Ce;
+    private static final int PANEL_WIDTH = 206;
+    private final SimpleTextLabelComponent moduleNameLabel;
+    private final PanelComponent headerPanel = new PanelComponent(192.0, 10.0);
+    private final TextButton enabledButton;
+    private final BindableInputComponent bindInput;
+    private ProfileModuleSnapshot selectedModule;
+    private final TextButton resetButton;
+    private final PanelComponent settingsPanel = new PanelComponent(PANEL_WIDTH, 144.0);
+    private ProfileSnapshot snapshot;
 
 
     public ProfileSnapshotModuleDetailsPanel() {
-        super(CP, 170.0);
-        this.Cr = new SimpleTextLabelComponent("Module Name");
-        this.CT = new TextButton("ON", 0.633, ProfileSnapshotModuleDetailsPanel.J.l, ProfileSnapshotModuleDetailsPanel.J.l, 16.0, 10.0);
-        this.CN = new BindableInputComponent(null, ProfileSnapshotModuleDetailsPanel.J.A);
-        this.C2 = new TextButton("RESET THIS MODULE", 0.633, ProfileSnapshotModuleDetailsPanel.J.i, ProfileSnapshotModuleDetailsPanel.J.i, 52.0, 10.0);
-        this.CH.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.CH.t(144.0);
+        super(PANEL_WIDTH, 170.0);
+        this.moduleNameLabel = new SimpleTextLabelComponent("Module Name");
+        this.enabledButton = new TextButton("ON", 0.633, ProfileSnapshotModuleDetailsPanel.J.l, ProfileSnapshotModuleDetailsPanel.J.l, 16.0, 10.0);
+        this.bindInput = new BindableInputComponent(null, ProfileSnapshotModuleDetailsPanel.J.A);
+        this.resetButton = new TextButton("RESET THIS MODULE", 0.633, ProfileSnapshotModuleDetailsPanel.J.i, ProfileSnapshotModuleDetailsPanel.J.i, 52.0, 10.0);
+        this.settingsPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.settingsPanel.t(144.0);
         SimpleTextLabelComponent simpleTextLabelComponent = new SimpleTextLabelComponent("SETTINGS");
-        simpleTextLabelComponent.T$src$V$1orl066(ProfileSnapshotModuleDetailsPanel.J.h);
-        simpleTextLabelComponent.l(true);
-        this.C2.R(ProfileSnapshotModuleDetailsPanel.J.l);
-        this.C2.d(false);
-        this.C2.u(0.75f);
-        this.Cr.T$src$V$1orl066(ProfileSnapshotModuleDetailsPanel.J.A);
-        this.Cr.g(0.0f);
-        this.Cr.i(1.0);
-        this.CN.Z(false);
-        simpleTextLabelComponent.g(0.0f);
-        this.C0.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-        this.C0.h(this.Cr, new Object[0]);
-        this.C0.h(new SpacerComponent(3.0, 0.0), new Object[0]);
-        this.C0.h(this.CT, new Object[0]);
-        this.C0.h(new SpacerComponent(3.0, 0.0), new Object[0]);
-        this.C0.h(this.CN, new Object[0]);
-        this.C0.h(this.C2, "alignright");
+        simpleTextLabelComponent.setTextColor(ProfileSnapshotModuleDetailsPanel.J.h);
+        simpleTextLabelComponent.setBold(true);
+        this.resetButton.setTransparentBackgroundBorder(ProfileSnapshotModuleDetailsPanel.J.l);
+        this.resetButton.setShowDisabledOverlay(false);
+        this.resetButton.setBorderAlpha(0.75f);
+        this.moduleNameLabel.setTextColor(ProfileSnapshotModuleDetailsPanel.J.A);
+        this.moduleNameLabel.setOffsetX(0.0f);
+        this.moduleNameLabel.setFontScale(1.0);
+        this.bindInput.setVisible(false);
+        simpleTextLabelComponent.setOffsetX(0.0f);
+        this.headerPanel.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
+        this.headerPanel.h(this.moduleNameLabel, new Object[0]);
+        this.headerPanel.h(new SpacerComponent(3.0, 0.0), new Object[0]);
+        this.headerPanel.h(this.enabledButton, new Object[0]);
+        this.headerPanel.h(new SpacerComponent(3.0, 0.0), new Object[0]);
+        this.headerPanel.h(this.bindInput, new Object[0]);
+        this.headerPanel.h(this.resetButton, "alignright");
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.h(this.C0, new Object[0]);
+        this.h(this.headerPanel, new Object[0]);
         this.h(new SpacerComponent(0.0, 4.0), new Object[0]);
         this.h(simpleTextLabelComponent, new Object[0]);
-        this.h(this.CH, new Object[0]);
-        this.C2.r(this::lambda$new$0);
+        this.h(this.settingsPanel, new Object[0]);
+        this.resetButton.addClickListener(this::resetSelectedModule);
     }
 
-    public void N(ProfileSnapshot profileSnapshot) {
-        this.Ce = profileSnapshot;
+    public void setSnapshot(ProfileSnapshot snapshot) {
+        this.snapshot = snapshot;
     }
 
-    private void lambda$new$0() {
-        this.Ce.C().G(this.Cl);
+    private void resetSelectedModule() {
+        this.snapshot.getGuiBuilder().resetModule(this.selectedModule);
     }
 
-    static {
-        long l = 2560396271919562958L;
-        CP = (int)l;
-    }
-
-    public void K(ProfileModuleSnapshot profileModuleSnapshot) {
-        this.Cl = profileModuleSnapshot;
-        this.Cr.G(profileModuleSnapshot.getName());
-        this.CT.d(profileModuleSnapshot.Q() ? "ON" : "OFF");
-        if (profileModuleSnapshot.n()) {
-            this.CN.Z(true);
-            this.CN.r(profileModuleSnapshot.O().J());
+    public void setSelectedModule(ProfileModuleSnapshot moduleSnapshot) {
+        this.selectedModule = moduleSnapshot;
+        this.moduleNameLabel.setText(moduleSnapshot.getName());
+        this.enabledButton.setLabelText(moduleSnapshot.isEnabled() ? "ON" : "OFF");
+        if (moduleSnapshot.hasBind()) {
+            this.bindInput.setVisible(true);
+            this.bindInput.setBendable(moduleSnapshot.getBindSnapshot().getValue());
         } else {
-            this.CN.Z(false);
+            this.bindInput.setVisible(false);
         }
-        this.CH.S();
-        List<GuiComponent> list = this.Ce.C().E(profileModuleSnapshot);
-        for (GuiComponent guiComponent : list) {
-            this.CH.h(guiComponent, new Object[0]);
+        this.settingsPanel.removeMarkedChildren();
+        List<GuiComponent> settingComponents = this.snapshot.getGuiBuilder().getModuleComponents(moduleSnapshot);
+        for (GuiComponent settingComponent : settingComponents) {
+            this.settingsPanel.h(settingComponent, new Object[0]);
         }
         this.H(true);
     }

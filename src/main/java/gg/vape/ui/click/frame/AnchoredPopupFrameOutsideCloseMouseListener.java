@@ -15,7 +15,7 @@ implements GuiMouseListener {
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
         if (!this.q.w$src$Z$e457mb() && !this.J.w$src$Z$e457mb()) {
-            ClientSettings.K(this.q);
+            ClientSettings.removePopup(this.q);
             Runnable runnable = AnchoredPopupFrame.b(this.q);
             if (runnable != null) {
                 runnable.run();

@@ -5,7 +5,7 @@ import gg.vape.ui.click.component.GuiComponentContract;
 import java.awt.Color;
 
 public enum FriendRelationColorState {
-    FRIEND(ClientSettings.fW.O$src$Ljava_awt_Color_$19t4jn1()),
+    FRIEND(ClientSettings.INSTANCE.getAccentColor()),
     SYNCED(GuiComponentContract.J.T),
     ENEMY(GuiComponentContract.J.d);
 

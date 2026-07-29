@@ -8,8 +8,8 @@ import gg.vape.unmap.NumberFormat;
 
 public class ReachDisplayHudFrame
 extends HudModuleConfigFrameBase {
-    private NumberFormat JR = new NumberFormat("0.00");
-    private ReachDisplayHudModule JO = (ReachDisplayHudModule)this.l$src$Lgg_vape_module_render_hud_HudModule_$v08nt0();
+    private final NumberFormat distanceFormat = new NumberFormat("0.00");
+    private final ReachDisplayHudModule reachDisplay = (ReachDisplayHudModule)this.getModule();
 
     @Override
     public String getName() {
@@ -17,14 +17,15 @@ extends HudModuleConfigFrameBase {
     }
 
     @Override
-    public void o() {
+    public void renderHudContent() {
         SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().K(1.0, true);
-        String string = this.JR.format(this.JO.p());
-        if (this.JO.p() == 0.0f) {
-            string = "0.00";
+        String distanceText = this.distanceFormat.format(this.reachDisplay.getLastReach());
+        if (this.reachDisplay.getLastReach() == 0.0f) {
+            distanceText = "0.00";
         }
-        string = string + " blocks";
-        smoothFontRenderer.d(string, this.G$src$D$1b2f02a() + 5.0, this.n() + 5.5, this.m$src$Ljava_awt_Color_$ppsp8z());
+        distanceText += " blocks";
+        smoothFontRenderer.d(distanceText, this.G$src$D$1b2f02a() + 5.0,
+                this.n() + 5.5, this.getEditorForegroundColor());
     }
 
     @Override
@@ -41,4 +42,3 @@ extends HudModuleConfigFrameBase {
         super(ReachDisplayHudModule.class);
     }
 }
-

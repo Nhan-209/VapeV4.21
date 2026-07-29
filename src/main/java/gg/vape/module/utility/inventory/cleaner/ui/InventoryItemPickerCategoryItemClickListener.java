@@ -9,17 +9,16 @@ import java.awt.Point;
 
 public class InventoryItemPickerCategoryItemClickListener
 implements GuiMouseListener {
-    final ItemMappingEntry Q;
-    final InventoryItemPickerPanel O;
+    final ItemMappingEntry mappingEntry;
+    final InventoryItemPickerPanel panel;
 
     public InventoryItemPickerCategoryItemClickListener(InventoryItemPickerPanel inventoryItemPickerPanel, ItemMappingEntry itemMappingEntry) {
-        this.O = inventoryItemPickerPanel;
-        this.Q = itemMappingEntry;
+        this.panel = inventoryItemPickerPanel;
+        this.mappingEntry = itemMappingEntry;
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        InventoryItemPickerPanel.U(this.O, ItemPickerSelection.D(this.Q));
+        InventoryItemPickerPanel.select(this.panel, ItemPickerSelection.ofRight(this.mappingEntry));
     }
 }
-

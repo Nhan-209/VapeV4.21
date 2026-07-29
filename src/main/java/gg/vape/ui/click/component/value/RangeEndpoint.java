@@ -4,14 +4,13 @@ public enum RangeEndpoint {
     MINIMUM,
     MAXIMUM;
 
-    private static final RangeEndpoint[] B;
+    private static final RangeEndpoint[] LEGACY_VALUES;
 
     static {
-        String[] stringArray = new String[]{"MINIMUM", "MAXIMUM"};
+        String[] legacyNames = new String[]{"MINIMUM", "MAXIMUM"};
 
 
-        B = new RangeEndpoint[]{MINIMUM, MAXIMUM};
+        LEGACY_VALUES = new RangeEndpoint[]{MINIMUM, MAXIMUM};
     }
 
 }
-

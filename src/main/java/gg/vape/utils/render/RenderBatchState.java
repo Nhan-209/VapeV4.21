@@ -16,134 +16,134 @@ import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL33;
 
 public class RenderBatchState {
-    private FloatBuffer o = BufferUtils.createFloatBuffer((int)(this.B * 7));
-    private int q;
-    private int E;
-    private static RenderBatchState y;
-    private int G;
-    private int m;
-    private int b;
-    private int J;
-    private int w;
-    private int B = 4096;
-    private static final int u;
-    private int L;
-    private int A;
-    private boolean H = false;
-    private int Y;
-    private static final int a;
+    private FloatBuffer instanceDataBuffer = BufferUtils.createFloatBuffer((int)(this.instanceCapacity * INSTANCE_FLOAT_COUNT));
+    private int cubeVertexBufferId;
+    private int instanceBufferId;
+    private static RenderBatchState instance;
+    private int vertexArrayId;
+    private int cubeIndexBufferId;
+    private int previousFramebufferId;
+    private int instanceCount;
+    private int previousElementArrayBufferId;
+    private int instanceCapacity = 4096;
+    private static final int INSTANCE_FLOAT_COUNT;
+    private int previousArrayBufferId;
+    private int previousVertexArrayId;
+    private boolean initialized = false;
+    private int previousProgramId;
+    private static final int CUBE_INDEX_COUNT;
 
-    public void G() {
-        if (!this.H) {
+    public void cleanup() {
+        if (!this.initialized) {
             return;
         }
-        GL15.glDeleteBuffers((int)this.q);
-        GL15.glDeleteBuffers((int)this.E);
-        GL15.glDeleteBuffers((int)this.m);
-        GL30.glDeleteVertexArrays((int)this.G);
-        this.H = false;
+        GL15.glDeleteBuffers((int)this.cubeVertexBufferId);
+        GL15.glDeleteBuffers((int)this.instanceBufferId);
+        GL15.glDeleteBuffers((int)this.cubeIndexBufferId);
+        GL30.glDeleteVertexArrays((int)this.vertexArrayId);
+        this.initialized = false;
         Vape.debugLog("InstancedBlockRenderer cleaned up");
     }
 
-    private void b() {
-        GL30.glBindVertexArray((int)this.A);
-        GL20.glUseProgram((int)this.Y);
-        GL15.glBindBuffer((int)34962, (int)this.L);
-        GL15.glBindBuffer((int)34963, (int)this.w);
-        GL30.glBindFramebuffer((int)36160, (int)this.b);
+    private void restoreGlBindings() {
+        GL30.glBindVertexArray((int)this.previousVertexArrayId);
+        GL20.glUseProgram((int)this.previousProgramId);
+        GL15.glBindBuffer((int)34962, (int)this.previousArrayBufferId);
+        GL15.glBindBuffer((int)34963, (int)this.previousElementArrayBufferId);
+        GL30.glBindFramebuffer((int)36160, (int)this.previousFramebufferId);
     }
 
-    public void D(float f, float f2, float f3, float f4, float f5, float f6, float f7) {
-        if (this.J >= this.B) {
-            this.u();
+    public void addInstance(float x, float y, float z, float red, float green, float blue, float alpha) {
+        if (this.instanceCount >= this.instanceCapacity) {
+            this.growInstanceCapacity();
         }
-        this.o.put(f);
-        this.o.put(f2);
-        this.o.put(f3);
-        this.o.put(f4);
-        this.o.put(f5);
-        this.o.put(f6);
-        this.o.put(f7);
-        ++this.J;
+        this.instanceDataBuffer.put(x);
+        this.instanceDataBuffer.put(y);
+        this.instanceDataBuffer.put(z);
+        this.instanceDataBuffer.put(red);
+        this.instanceDataBuffer.put(green);
+        this.instanceDataBuffer.put(blue);
+        this.instanceDataBuffer.put(alpha);
+        ++this.instanceCount;
     }
 
-    public void K(RenderMatrix4f renderMatrix4f, RenderMatrix4f renderMatrix4f2, RenderMatrix4f renderMatrix4f3) {
-        boolean bl;
-        if (this.J == 0 || !this.H) {
+    public void render(RenderMatrix4f projectionMatrix, RenderMatrix4f viewMatrix, RenderMatrix4f modelMatrix) {
+        boolean cullFaceEnabled;
+        if (this.instanceCount == 0 || !this.initialized) {
             return;
         }
-        RenderBatchShaderProgram renderBatchShaderProgram = InvWalkKeyLayout.p;
-        if (renderBatchShaderProgram == null) {
+        RenderBatchShaderProgram shaderProgram = InvWalkKeyLayout.blockEspShader;
+        if (shaderProgram == null) {
             return;
         }
-        this.a();
-        int n = RenderBatchManager.M().E();
-        if (n != -1) {
-            GL30.glBindFramebuffer((int)36160, (int)n);
+        this.captureGlBindings();
+        int targetFramebufferId = RenderBatchManager.getInstance().getTargetFramebufferId();
+        if (targetFramebufferId != -1) {
+            GL30.glBindFramebuffer((int)36160, (int)targetFramebufferId);
         }
-        if (bl = GL11.glIsEnabled((int)2884)) {
+        if (cullFaceEnabled = GL11.glIsEnabled((int)2884)) {
             GL11.glDisable((int)2884);
-            GL30.glBindVertexArray((int)this.G);
-            renderBatchShaderProgram.P();
-            FloatBuffer floatBuffer = renderMatrix4f.J();
-            FloatBuffer floatBuffer2 = renderMatrix4f2.J();
-            FloatBuffer floatBuffer3 = renderMatrix4f3.J();
-            gg.vape.wrapper.impl.GL20.w(renderBatchShaderProgram.m, false, floatBuffer);
-            gg.vape.wrapper.impl.GL20.w(renderBatchShaderProgram.B, false, floatBuffer2);
-            gg.vape.wrapper.impl.GL20.w(renderBatchShaderProgram.T, false, floatBuffer3);
-            this.o.flip();
-            GL15.glBindBuffer((int)34962, (int)this.E);
-            GL15.glBufferSubData((int)34962, (long)0L, (FloatBuffer)this.o);
-            GL31.glDrawElementsInstanced((int)1, (int)24, (int)5125, (long)0L, (int)this.J);
+            GL30.glBindVertexArray((int)this.vertexArrayId);
+            shaderProgram.bind();
+            FloatBuffer projectionBuffer = projectionMatrix.toFloatBuffer();
+            FloatBuffer viewBuffer = viewMatrix.toFloatBuffer();
+            FloatBuffer modelBuffer = modelMatrix.toFloatBuffer();
+            gg.vape.wrapper.impl.GL20.w(shaderProgram.projectionUniformLocation, false, projectionBuffer);
+            gg.vape.wrapper.impl.GL20.w(shaderProgram.viewUniformLocation, false, viewBuffer);
+            gg.vape.wrapper.impl.GL20.w(shaderProgram.modelUniformLocation, false, modelBuffer);
+            this.instanceDataBuffer.flip();
+            GL15.glBindBuffer((int)34962, (int)this.instanceBufferId);
+            GL15.glBufferSubData((int)34962, (long)0L, (FloatBuffer)this.instanceDataBuffer);
+            GL31.glDrawElementsInstanced((int)1, (int)CUBE_INDEX_COUNT, (int)5125, (long)0L, (int)this.instanceCount);
             GL11.glEnable((int)2884);
-            this.b();
+            this.restoreGlBindings();
             return;
         }
-        GL30.glBindVertexArray((int)this.G);
-        renderBatchShaderProgram.P();
-        FloatBuffer floatBuffer = renderMatrix4f.J();
-        FloatBuffer floatBuffer4 = renderMatrix4f2.J();
-        FloatBuffer floatBuffer5 = renderMatrix4f3.J();
-        gg.vape.wrapper.impl.GL20.w(renderBatchShaderProgram.m, false, floatBuffer);
-        gg.vape.wrapper.impl.GL20.w(renderBatchShaderProgram.B, false, floatBuffer4);
-        gg.vape.wrapper.impl.GL20.w(renderBatchShaderProgram.T, false, floatBuffer5);
-        this.o.flip();
-        GL15.glBindBuffer((int)34962, (int)this.E);
-        GL15.glBufferSubData((int)34962, (long)0L, (FloatBuffer)this.o);
-        GL31.glDrawElementsInstanced((int)1, (int)24, (int)5125, (long)0L, (int)this.J);
-        this.b();
+        GL30.glBindVertexArray((int)this.vertexArrayId);
+        shaderProgram.bind();
+        FloatBuffer projectionBuffer = projectionMatrix.toFloatBuffer();
+        FloatBuffer viewBuffer = viewMatrix.toFloatBuffer();
+        FloatBuffer modelBuffer = modelMatrix.toFloatBuffer();
+        gg.vape.wrapper.impl.GL20.w(shaderProgram.projectionUniformLocation, false, projectionBuffer);
+        gg.vape.wrapper.impl.GL20.w(shaderProgram.viewUniformLocation, false, viewBuffer);
+        gg.vape.wrapper.impl.GL20.w(shaderProgram.modelUniformLocation, false, modelBuffer);
+        this.instanceDataBuffer.flip();
+        GL15.glBindBuffer((int)34962, (int)this.instanceBufferId);
+        GL15.glBufferSubData((int)34962, (long)0L, (FloatBuffer)this.instanceDataBuffer);
+        GL31.glDrawElementsInstanced((int)1, (int)CUBE_INDEX_COUNT, (int)5125, (long)0L, (int)this.instanceCount);
+        this.restoreGlBindings();
     }
 
-    public boolean G$src$Z$1js1tb7() {
-        return this.H;
+    public boolean isInitialized() {
+        return this.initialized;
     }
 
-    private void s() {
-        if (this.H) {
+    private void initialize() {
+        if (this.initialized) {
             return;
         }
-        if (InvWalkKeyLayout.p == null) {
-            InvWalkKeyLayout.y();
+        if (InvWalkKeyLayout.blockEspShader == null) {
+            InvWalkKeyLayout.initializeShaders();
         }
-        this.G = GL30.glGenVertexArrays();
-        GL30.glBindVertexArray((int)this.G);
-        float[] fArray = new float[]{0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
-        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer((int)fArray.length);
-        floatBuffer.put(fArray).flip();
-        this.q = GL15.glGenBuffers();
-        GL15.glBindBuffer((int)34962, (int)this.q);
-        GL15.glBufferData((int)34962, (FloatBuffer)floatBuffer, (int)35044);
+        this.vertexArrayId = GL30.glGenVertexArrays();
+        GL30.glBindVertexArray((int)this.vertexArrayId);
+        float[] cubeVertices = new float[]{0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f};
+        FloatBuffer cubeVertexBuffer = BufferUtils.createFloatBuffer((int)cubeVertices.length);
+        cubeVertexBuffer.put(cubeVertices).flip();
+        this.cubeVertexBufferId = GL15.glGenBuffers();
+        GL15.glBindBuffer((int)34962, (int)this.cubeVertexBufferId);
+        GL15.glBufferData((int)34962, (FloatBuffer)cubeVertexBuffer, (int)35044);
         GL20.glVertexAttribPointer((int)0, (int)3, (int)5126, (boolean)false, (int)12, (long)0L);
         GL20.glEnableVertexAttribArray((int)0);
-        int[] nArray = new int[]{0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7};
-        IntBuffer intBuffer = BufferUtils.createIntBuffer((int)nArray.length);
-        intBuffer.put(nArray).flip();
-        this.m = GL15.glGenBuffers();
-        GL15.glBindBuffer((int)34963, (int)this.m);
-        GL15.glBufferData((int)34963, (IntBuffer)intBuffer, (int)35044);
-        this.E = GL15.glGenBuffers();
-        GL15.glBindBuffer((int)34962, (int)this.E);
-        GL15.glBufferData((int)34962, (long)((long)this.B * 7L * 4L), (int)35048);
+        int[] cubeIndices = new int[]{0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7};
+        IntBuffer cubeIndexBuffer = BufferUtils.createIntBuffer((int)cubeIndices.length);
+        cubeIndexBuffer.put(cubeIndices).flip();
+        this.cubeIndexBufferId = GL15.glGenBuffers();
+        GL15.glBindBuffer((int)34963, (int)this.cubeIndexBufferId);
+        GL15.glBufferData((int)34963, (IntBuffer)cubeIndexBuffer, (int)35044);
+        this.instanceBufferId = GL15.glGenBuffers();
+        GL15.glBindBuffer((int)34962, (int)this.instanceBufferId);
+        GL15.glBufferData((int)34962, (long)((long)this.instanceCapacity * (long)INSTANCE_FLOAT_COUNT * 4L), (int)35048);
         GL20.glVertexAttribPointer((int)1, (int)3, (int)5126, (boolean)false, (int)28, (long)0L);
         GL20.glEnableVertexAttribArray((int)1);
         GL33.glVertexAttribDivisor((int)1, (int)1);
@@ -151,62 +151,62 @@ public class RenderBatchState {
         GL20.glEnableVertexAttribArray((int)2);
         GL33.glVertexAttribDivisor((int)2, (int)1);
         GL30.glBindVertexArray((int)0);
-        this.H = true;
-        Vape.debugLog("InstancedBlockRenderer initialized (capacity: " + this.B + " blocks)");
+        this.initialized = true;
+        Vape.debugLog("InstancedBlockRenderer initialized (capacity: " + this.instanceCapacity + " blocks)");
     }
 
-    private void u() {
-        int n = this.B * 2;
-        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer((int)(n * 7));
-        this.o.flip();
-        floatBuffer.put(this.o);
-        this.o = floatBuffer;
-        GL15.glBindBuffer((int)34962, (int)this.E);
-        GL15.glBufferData((int)34962, (long)((long)n * 7L * 4L), (int)35048);
-        this.B = n;
+    private void growInstanceCapacity() {
+        int newCapacity = this.instanceCapacity * 2;
+        FloatBuffer expandedBuffer = BufferUtils.createFloatBuffer((int)(newCapacity * INSTANCE_FLOAT_COUNT));
+        this.instanceDataBuffer.flip();
+        expandedBuffer.put(this.instanceDataBuffer);
+        this.instanceDataBuffer = expandedBuffer;
+        GL15.glBindBuffer((int)34962, (int)this.instanceBufferId);
+        GL15.glBufferData((int)34962, (long)((long)newCapacity * (long)INSTANCE_FLOAT_COUNT * 4L), (int)35048);
+        this.instanceCapacity = newCapacity;
     }
 
     private RenderBatchState() {
     }
 
-    public static void r() {
-        if (y != null) {
-            y.G();
-            y = null;
+    public static void cleanupInstance() {
+        if (instance != null) {
+            instance.cleanup();
+            instance = null;
         }
     }
 
-    public static RenderBatchState E() {
-        if (y == null) {
-            y = new RenderBatchState();
+    public static RenderBatchState getInstance() {
+        if (instance == null) {
+            instance = new RenderBatchState();
         }
-        return y;
+        return instance;
     }
 
-    public int F() {
-        return this.J;
+    public int getInstanceCount() {
+        return this.instanceCount;
     }
 
-    public void f() {
-        if (!this.H) {
-            this.s();
+    public void beginBatch() {
+        if (!this.initialized) {
+            this.initialize();
         }
-        this.o.clear();
-        this.J = 0;
+        this.instanceDataBuffer.clear();
+        this.instanceCount = 0;
     }
 
     static {
-        a = 24;
-        u = 7;
+        CUBE_INDEX_COUNT = 24;
+        INSTANCE_FLOAT_COUNT = 7;
     }
 
 
-    private void a() {
-        this.A = GL11.glGetInteger((int)34229);
-        this.Y = GL11.glGetInteger((int)35725);
-        this.L = GL11.glGetInteger((int)34964);
-        this.w = GL11.glGetInteger((int)34965);
-        this.b = GL11.glGetInteger((int)36006);
+    private void captureGlBindings() {
+        this.previousVertexArrayId = GL11.glGetInteger((int)34229);
+        this.previousProgramId = GL11.glGetInteger((int)35725);
+        this.previousArrayBufferId = GL11.glGetInteger((int)34964);
+        this.previousElementArrayBufferId = GL11.glGetInteger((int)34965);
+        this.previousFramebufferId = GL11.glGetInteger((int)36006);
     }
 }
 

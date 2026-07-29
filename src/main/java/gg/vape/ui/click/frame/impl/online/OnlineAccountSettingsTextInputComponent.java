@@ -8,19 +8,19 @@ import gg.vape.ui.click.frame.impl.online.OnlineAccountSettingsPageComponent;
 
 public class OnlineAccountSettingsTextInputComponent
 extends DebouncedTextInputComponent {
-    final OnlineAccountSettingsPageComponent T2;
+    final OnlineAccountSettingsPageComponent settingsPage;
 
     private static void lambda$enterEvent$1(String string) {
-        Vape.INSTANCE.getNotificationManager().t("Username Change", string, NotificationType.WARNING, 5000L);
+        Vape.INSTANCE.getNotificationManager().show("Username Change", string, NotificationType.WARNING, 5000L);
     }
 
-    public OnlineAccountSettingsTextInputComponent(OnlineAccountSettingsPageComponent onlineAccountSettingsPageComponent, String string, long l) {
-        super(string, l);
-        this.T2 = onlineAccountSettingsPageComponent;
+    public OnlineAccountSettingsTextInputComponent(OnlineAccountSettingsPageComponent settingsPage, String text, long cooldownMillis) {
+        super(text, cooldownMillis);
+        this.settingsPage = settingsPage;
     }
 
     @Override
-    public float O() {
+    public float getVerticalInset() {
         return 0.0f;
     }
 
@@ -30,23 +30,23 @@ extends DebouncedTextInputComponent {
     }
 
     @Override
-    public float y() {
+    public float getLeftInset() {
         return 0.0f;
     }
 
     private void lambda$enterEvent$0(String string) {
-        OnlineAccountSettingsPageComponent.H(this.T2);
-        Vape.INSTANCE.getNotificationManager().t("Username Change", "Username changed to " + string, NotificationType.INFO, 5000L);
+        OnlineAccountSettingsPageComponent.H(this.settingsPage);
+        Vape.INSTANCE.getNotificationManager().show("Username Change", "Username changed to " + string, NotificationType.INFO, 5000L);
     }
 
     @Override
-    public void j() {
-        Vape.INSTANCE.getNotificationManager().t("Error", "You are on cooldown!", NotificationType.WARNING, 5000L);
+    public void handleSubmitCooldown() {
+        Vape.INSTANCE.getNotificationManager().show("Error", "You are on cooldown!", NotificationType.WARNING, 5000L);
     }
 
     @Override
-    public void U$src$V$1pxrzte() {
-        UsernameEditorPanel.o(this.T2.fe, this.i$src$Ljava_lang_String_$1n2xf3k(), this::lambda$enterEvent$0, OnlineAccountSettingsTextInputComponent::lambda$enterEvent$1);
+    public void handleSubmitReady() {
+        UsernameEditorPanel.o(this.settingsPage.fe, this.getText(), this::lambda$enterEvent$0, OnlineAccountSettingsTextInputComponent::lambda$enterEvent$1);
     }
 
     @Override
@@ -55,7 +55,7 @@ extends DebouncedTextInputComponent {
     }
 
     @Override
-    public float g() {
-        return super.g();
+    public float getRightInset() {
+        return super.getRightInset();
     }
 }

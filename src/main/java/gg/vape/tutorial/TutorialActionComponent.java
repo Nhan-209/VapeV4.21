@@ -26,7 +26,7 @@ extends FrameComponent {
     }
 
     public void H(String string) {
-        this._v.G(string);
+        this._v.setText(string);
     }
 
     @Override
@@ -34,7 +34,7 @@ extends FrameComponent {
     }
 
     public void e(String string) {
-        this._W.G(string);
+        this._W.setText(string);
     }
 
     public UnderlinedTextLabel c$src$Lgg_vape_ui_click_component_gui_UnderlinedTextLa$npxkh1() {
@@ -48,15 +48,15 @@ extends FrameComponent {
         this._W.S(this._v.n() + this._v.L() + 2.0);
         this._i.Y(12.0);
         this._i.o(40.0);
-        this._i.y(0.7);
-        this._i.l(new Color(90, 90, 90, 255));
+        this._i.setFontScale(0.7);
+        this._i.setTextColor(new Color(90, 90, 90, 255));
         this._i.S(this.n() + this.L() - this._i.L());
         this._J.Y(12.0);
         this._J.o(32.0);
         this._J.K(this.G$src$D$1b2f02a() + this.A() - this._J.A() - 6.0);
         this._J.S(this.n() + this.L() - this._J.L() - 2.0);
-        if (!this._J.d().equals(ClientSettings.fW.O$src$Ljava_awt_Color_$19t4jn1())) {
-            this._J.G(ClientSettings.fW.O$src$Ljava_awt_Color_$19t4jn1(), ClientSettings.fW.O$src$Ljava_awt_Color_$19t4jn1().brighter());
+        if (!this._J.getDisabledOverlayColor().equals(ClientSettings.INSTANCE.getAccentColor())) {
+            this._J.setBackgroundAnimationColors(ClientSettings.INSTANCE.getAccentColor(), ClientSettings.INSTANCE.getAccentColor().brighter());
         }
     }
 
@@ -71,7 +71,7 @@ extends FrameComponent {
     @Override
     public double C() {
         double d = 16.0;
-        if (this._W.c$src$Ljava_lang_String_$1q00otb().equals("")) {
+        if (this._W.getText().equals("")) {
             d = 12.0;
         }
         return this._v.L() + this._W.C() + d;
@@ -86,19 +86,19 @@ extends FrameComponent {
         this._J = new TextButton("Ok", Color.BLACK);
         this._i.o(20.0);
         this._i.Y(20.0);
-        this._i.d(true);
-        this._i.T(Color.RED);
+        this._i.setShowDisabledOverlay(true);
+        this._i.setDisabledOverlayColor(Color.RED);
         this._J.o(20.0);
         this._J.Y(20.0);
-        this._J.d(true);
-        this._J.T(Color.RED);
+        this._J.setShowDisabledOverlay(true);
+        this._J.setDisabledOverlayColor(Color.RED);
         this.o(120.0);
-        this._v.P(true);
+        this._v.setUseExplicitWidth(true);
         this._v.o(120.0);
-        this._W.P(true);
+        this._W.setUseExplicitWidth(true);
         this._W.o(120.0);
         this._W.Y(0.0);
-        this.H(this._v, this._W, this._i, this._J);
+        this.addChildren(this._v, this._W, this._i, this._J);
         this.l$src$V$1mibm4x();
     }
 }

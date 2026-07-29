@@ -10,14 +10,13 @@ import gg.vape.wrapper.impl.Minecraft;
 public class NoHurtDelayHudModule
 extends HudModule {
     public NoHurtDelayHudModule() {
-        super("NoJumpDelay", HudModuleGroup.T, "no_jump_delay");
+        super("NoJumpDelay", HudModuleGroup.GAME, "no_jump_delay");
         this.setSuffix("Removes the delay between jumps when hitting a block above you");
     }
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        entityPlayerSP.L(0);
+    public void onTick(EventPrePlayerTick event) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        player.L(0);
     }
 }
-

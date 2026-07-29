@@ -22,8 +22,8 @@ extends PanelComponent {
         this.jv = new OnlineFriendActionPanel(onlineFriend);
         this.jO = onlineFriendCard;
         this.j9 = new OnlineChatPanel(new DirectFriendChatSender(onlineFriend));
-        this.d(false);
-        this.H(this.jv);
+        this.setShowDisabledOverlay(false);
+        this.addChildren(this.jv);
     }
 
     public OnlineChatPanel o$src$Lgg_vape_friend_ui_OnlineChatPanel_$15yewwy() {
@@ -43,24 +43,24 @@ extends PanelComponent {
     public void c() {
         super.c();
         if (this.jx.F() == OnlineStatus.ONLINE) {
-            this.j9.g$src$Lgg_vape_friend_ui_OnlineChatInputComponent_$1pydg2z().j(true);
+            this.j9.g$src$Lgg_vape_friend_ui_OnlineChatInputComponent_$1pydg2z().setInputEnabled(true);
         } else {
-            this.j9.g$src$Lgg_vape_friend_ui_OnlineChatInputComponent_$1pydg2z().j(false);
+            this.j9.g$src$Lgg_vape_friend_ui_OnlineChatInputComponent_$1pydg2z().setInputEnabled(false);
         }
     }
 
 
     public void N$src$V$16a20lf() {
         this.jB = true;
-        this.I(this.jv);
-        this.H(this.j9);
+        this.removeChild(this.jv);
+        this.addChildren(this.j9);
         this.H(true);
     }
 
     public void K$src$V$168emtc() {
         this.jB = false;
-        this.I(this.j9);
-        this.H(this.jv);
+        this.removeChild(this.j9);
+        this.addChildren(this.jv);
         this.H(true);
     }
 }

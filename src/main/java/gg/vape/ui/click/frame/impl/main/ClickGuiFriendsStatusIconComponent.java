@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 final class ClickGuiFriendsStatusIconComponent
 extends GuiComponent {
-    private boolean O;
-    private double i;
-    private static final String b = "avatar offline@2x";
-    final ClickGuiFriendsFriendListComponent v;
+    private static final String OFFLINE_AVATAR_ASSET = "avatar offline@2x";
+    private boolean emphasized;
+    private double statusDotSize;
+    final ClickGuiFriendsFriendListComponent owner;
 
     @Override
     public double x() {
@@ -24,47 +24,47 @@ extends GuiComponent {
     }
 
     @Nullable
-    private GlImageTexture N() {
-        if (!ClickGuiFriendsFriendListComponent.H(this.v).u()) {
+    private GlImageTexture loadAvatarTexture() {
+        if (!this.owner.getFriend().u()) {
             return null;
         }
-        String string = ClickGuiFriendsFriendListComponent.H(this.v).I();
+        String string = this.owner.getFriend().I();
         if (string == null || string.isEmpty()) {
             return null;
         }
-        if (ClickGuiFriendsFriendListComponent.H(this.v).F() == OnlineStatus.OFFLINE) {
+        if (this.owner.getFriend().F() == OnlineStatus.OFFLINE) {
             return null;
         }
-        return RemoteImageTextureManager.e().r(string, 32);
+        return RemoteImageTextureManager.getInstance().getTexture(string, 32);
     }
 
     @Override
     public void H() {
         double d = this.G$src$D$1b2f02a();
         double d2 = this.n();
-        GlImageTexture glImageTexture = this.N();
+        GlImageTexture glImageTexture = this.loadAvatarTexture();
         GuiRenderPrimitives.B(d, d2, 10.0, 10.0, ClickGuiFriendsStatusIconComponent.J.m, 5.0f);
         if (glImageTexture != null) {
             GuiRenderPrimitives.u((float)d, (float)d2, 10.0f, 0.8f, Color.WHITE, glImageTexture);
         } else {
-            ImageRenderer.E(Color.WHITE, (float)d, (float)d2, b, 10.0f, 10.0f, false);
+            ImageRenderer.drawImage(Color.WHITE, (float)d, (float)d2, OFFLINE_AVATAR_ASSET, 10.0f, 10.0f, false);
         }
         double d3 = 10.0;
-        Color color = this.O ? ClickGuiFriendsStatusIconComponent.J.M : ClickGuiFriendsStatusIconComponent.J.E;
+        Color color = this.emphasized ? ClickGuiFriendsStatusIconComponent.J.M : ClickGuiFriendsStatusIconComponent.J.E;
         GuiRenderPrimitives.m((float)d, (float)d2, 10.0f, 1.0f, 0.8f, color);
-        OnlineStatus onlineStatus = ClickGuiFriendsFriendListComponent.H(this.v).F();
+        OnlineStatus onlineStatus = this.owner.getFriend().F();
         if (onlineStatus != null) {
             Color color2 = onlineStatus.P();
-            double d4 = d + 10.0 - this.i;
-            double d5 = d2 + 10.0 - this.i;
-            GuiRenderPrimitives.V((float)(d4 - 1.0), (float)(d5 - 1.0), (float)(this.i + 2.0), 0.8f, ClickGuiFriendsStatusIconComponent.J.m);
-            GuiRenderPrimitives.V((float)d4, (float)d5, (float)this.i, 0.8f, color2);
+            double d4 = d + 10.0 - this.statusDotSize;
+            double d5 = d2 + 10.0 - this.statusDotSize;
+            GuiRenderPrimitives.V((float)(d4 - 1.0), (float)(d5 - 1.0), (float)(this.statusDotSize + 2.0), 0.8f, ClickGuiFriendsStatusIconComponent.J.m);
+            GuiRenderPrimitives.V((float)d4, (float)d5, (float)this.statusDotSize, 0.8f, color2);
         }
     }
 
     @Override
-    public void n(boolean bl) {
-        this.O = bl;
+    public void setHovered(boolean bl) {
+        this.emphasized = bl;
     }
 
 
@@ -78,14 +78,14 @@ extends GuiComponent {
     }
 
     private ClickGuiFriendsStatusIconComponent(ClickGuiFriendsFriendListComponent clickGuiFriendsFriendListComponent) {
-        this.v = clickGuiFriendsFriendListComponent;
-        this.i = 5.0;
-        this.S(false);
-        this.d(false);
+        this.owner = clickGuiFriendsFriendListComponent;
+        this.statusDotSize = 5.0;
+        this.setAcceptsMouseInput(false);
+        this.setShowDisabledOverlay(false);
     }
 
-    public void H(double d) {
-        this.i = d;
+    public void setStatusDotSize(double size) {
+        this.statusDotSize = size;
     }
 }
 

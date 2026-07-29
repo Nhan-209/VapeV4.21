@@ -7,68 +7,68 @@ import gg.vape.utils.render.RemoteImageTextureCacheUpdateThread;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RemoteImageTextureManager {
-    private ConcurrentHashMap<Integer, RemoteImageTextureCache> n = new ConcurrentHashMap();
-    private static final String b;
-    private static RemoteImageTextureManager i;
+    private ConcurrentHashMap<Integer, RemoteImageTextureCache> cachesBySize = new ConcurrentHashMap();
+    private static final String DEFAULT_AVATAR_RESOURCE;
+    private static RemoteImageTextureManager instance;
 
-    private static String a(byte[] byArray) {
-        int n = 0;
-        int n2 = byArray.length;
-        char[] cArray = new char[n2];
-        for (int i = 0; i < n2; ++i) {
-            char c;
-            int n3 = 0xFF & byArray[i];
-            if (n3 < 192) {
-                cArray[n++] = (char)n3;
+    private static String decodeUtf8(byte[] bytes) {
+        int characterCount = 0;
+        int byteCount = bytes.length;
+        char[] characters = new char[byteCount];
+        for (int byteIndex = 0; byteIndex < byteCount; ++byteIndex) {
+            char character;
+            int currentByte = 0xFF & bytes[byteIndex];
+            if (currentByte < 192) {
+                characters[characterCount++] = (char)currentByte;
                 continue;
             }
-            if (n3 < 224) {
-                c = (char)((char)(n3 & 0x1F) << 6);
-                n3 = byArray[++i];
-                c = (char)(c | (char)(n3 & 0x3F));
-                cArray[n++] = c;
+            if (currentByte < 224) {
+                character = (char)((char)(currentByte & 0x1F) << 6);
+                currentByte = bytes[++byteIndex];
+                character = (char)(character | (char)(currentByte & 0x3F));
+                characters[characterCount++] = character;
                 continue;
             }
-            if (i >= n2 - 2) continue;
-            c = (char)((char)(n3 & 0xF) << 12);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F) << 6);
-            n3 = byArray[++i];
-            c = (char)(c | (char)(n3 & 0x3F));
-            cArray[n++] = c;
+            if (byteIndex >= byteCount - 2) continue;
+            character = (char)((char)(currentByte & 0xF) << 12);
+            currentByte = bytes[++byteIndex];
+            character = (char)(character | (char)(currentByte & 0x3F) << 6);
+            currentByte = bytes[++byteIndex];
+            character = (char)(character | (char)(currentByte & 0x3F));
+            characters[characterCount++] = character;
         }
-        return new String(cArray, 0, n);
+        return new String(characters, 0, characterCount);
     }
 
-    static ConcurrentHashMap<Integer, RemoteImageTextureCache> L(RemoteImageTextureManager remoteImageTextureManager) {
-        return remoteImageTextureManager.n;
+    static ConcurrentHashMap<Integer, RemoteImageTextureCache> getCaches(RemoteImageTextureManager manager) {
+        return manager.cachesBySize;
     }
 
-    public GlImageTexture r(String string, int n) {
-        if (this.n.containsKey(n)) {
-            GlImageTexture glImageTexture = this.n.get(n).g(string);
-            if (glImageTexture == null) {
-                return ImageRenderer.loadResource(b, false, false);
+    public GlImageTexture getTexture(String username, int size) {
+        if (this.cachesBySize.containsKey(size)) {
+            GlImageTexture texture = this.cachesBySize.get(size).getTexture(username);
+            if (texture == null) {
+                return ImageRenderer.loadResource(DEFAULT_AVATAR_RESOURCE, false, false);
             }
-            return glImageTexture;
+            return texture;
         }
         return null;
     }
 
-    public static RemoteImageTextureManager e() {
-        return i;
+    public static RemoteImageTextureManager getInstance() {
+        return instance;
     }
 
 
     public RemoteImageTextureManager() {
         new RemoteImageTextureCacheUpdateThread(this).start();
-        this.n.put(32, new RemoteImageTextureCache(32));
+        this.cachesBySize.put(32, new RemoteImageTextureCache(32));
     }
 
     static {
         try {
-            b = "default_user";
-            i = new RemoteImageTextureManager();
+            DEFAULT_AVATAR_RESOURCE = "default_user";
+            instance = new RemoteImageTextureManager();
         }
         catch (Exception exception) {
             throw new ExceptionInInitializerError(exception);

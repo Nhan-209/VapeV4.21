@@ -201,7 +201,7 @@ extends Mapping {
             String string13 = "CAN_BREAK";
             MDataComponents mDataComponents13 = this;
             this.y = this.u(string13, bl13, clazz13);
-            GuiComponent.D(new GuiComponent[1]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[1]);
             return;
         }
         Class clazz14 = MappedClasses.Fz;

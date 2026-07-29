@@ -6,23 +6,23 @@ import gg.vape.ui.click.frame.impl.hud.HudModuleSelectorFrame;
 
 class HudModuleGroupTabClickHandler
 implements GuiClickListener {
-    final HudModuleSelectorFrame b;
-    final HudModuleGroup Z;
+    private final HudModuleSelectorFrame selectorFrame;
+    private final HudModuleGroup group;
 
     @Override
-    public void P() {
-        if (HudModuleSelectorFrame.n(this.b) == this.Z) {
+    public void onPrimaryClick() {
+        if (this.selectorFrame.getSelectedGroup() == this.group) {
             return;
         }
-        HudModuleSelectorFrame.M(this.b, this.Z);
-        HudModuleSelectorFrame.WN.N$src$V$wrn2a4();
-        this.b.d$src$V$b5ssve();
+        this.selectorFrame.selectGroup(this.group);
+        this.selectorFrame.getModuleListPanel().refreshModules();
+        this.selectorFrame.queueForDisplay();
     }
 
 
     HudModuleGroupTabClickHandler(HudModuleSelectorFrame hudModuleSelectorFrame, HudModuleGroup hudModuleGroup) {
-        this.b = hudModuleSelectorFrame;
-        this.Z = hudModuleGroup;
+        this.selectorFrame = hudModuleSelectorFrame;
+        this.group = hudModuleGroup;
     }
 }
 

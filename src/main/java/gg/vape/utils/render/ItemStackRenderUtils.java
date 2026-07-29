@@ -10,40 +10,39 @@ import gg.vape.wrapper.impl.RenderItem;
 import gg.vape.wrapper.impl.RenderItemTextBridge;
 
 public class ItemStackRenderUtils {
-    private static String u;
+    private static String legacyStatus;
 
-    public static void O(RenderItemTextBridge renderItemTextBridge, ItemStack itemStack, int n, int n2) {
-        Vape.INSTANCE.getMappingsMapperCompat().DI.M(renderItemTextBridge.getObject(), itemStack.getObject(), n, n2);
+    public static void renderItemOverlay(RenderItemTextBridge renderItemTextBridge, ItemStack itemStack, int x, int y) {
+        Vape.INSTANCE.getMappingsMapperCompat().DI.M(renderItemTextBridge.getObject(), itemStack.getObject(), x, y);
     }
 
-    public static void g(ItemStack itemStack, int n, int n2) {
+    public static void renderItemOverlay(ItemStack itemStack, int x, int y) {
         if (ForgeVersion.MC_1_20_6.d()) {
             MatrixStack matrixStack = MatrixStack.A();
             matrixStack.H();
-            matrixStack.i(BufferedGuiRenderPrimitives.X.c().u());
+            matrixStack.i(BufferedGuiRenderPrimitives.matrixStack.peek().toMinecraftMatrix());
             RenderItemTextBridge renderItemTextBridge = RenderItemTextBridge.t(matrixStack);
-            ItemStackRenderUtils.O(renderItemTextBridge, itemStack, n, n2);
+            ItemStackRenderUtils.renderItemOverlay(renderItemTextBridge, itemStack, x, y);
         } else if (ForgeVersion.MC_1_7_10.L()) {
             RenderItem renderItem = RenderItem.d();
-            renderItem.c(Minecraft.getFontRenderer(), Minecraft.Z(), itemStack, n, n2);
+            renderItem.c(Minecraft.getFontRenderer(), Minecraft.Z(), itemStack, x, y);
         } else {
             RenderItem renderItem = Minecraft.v();
-            renderItem.c(Minecraft.getFontRenderer(), Minecraft.Z(), itemStack, n, n2);
+            renderItem.c(Minecraft.getFontRenderer(), Minecraft.Z(), itemStack, x, y);
         }
     }
 
-    public static String E() {
-        return u;
+    public static String getLegacyStatus() {
+        return legacyStatus;
     }
 
-    public static void V(String string) {
-        u = string;
+    public static void setLegacyStatus(String status) {
+        legacyStatus = status;
     }
 
     static {
-        if (ItemStackRenderUtils.E() != null) {
-            ItemStackRenderUtils.V("kN9BPb");
+        if (ItemStackRenderUtils.getLegacyStatus() != null) {
+            ItemStackRenderUtils.setLegacyStatus("kN9BPb");
         }
     }
 }
-

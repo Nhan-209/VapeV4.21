@@ -7,19 +7,19 @@ import gg.vape.unmap.Bendable;
 
 public class BindableInputComponentSavingBindCaptureTask
 extends BindCaptureTask {
-    final BindableInputComponent H;
+    final BindableInputComponent owner;
 
     public BindableInputComponentSavingBindCaptureTask(BindableInputComponent bindableInputComponent, Bendable bendable) {
         super(bendable);
-        this.H = bindableInputComponent;
+        this.owner = bindableInputComponent;
     }
 
-    public void V() {
+    public void saveSettings() {
         Vape.INSTANCE.saveAndStop();
     }
 
     @Override
-    public void void_V() {
-        this.V();
+    public void onCaptureComplete() {
+        this.saveSettings();
     }
 }

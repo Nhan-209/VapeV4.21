@@ -8,18 +8,18 @@ public interface NumericFilterCondition<T extends InventoryFilterCondition<T>>
 extends InventoryFilterCondition<T> {
     public static final String OPERATOR_KEY = "operator";
 
-    public T J(ComparisonOperator var1);
+    public T withOperator(ComparisonOperator operator);
 
-    public ComparisonOperator p();
+    public ComparisonOperator getOperator();
 
-    public T Q(String var1) throws NumberFormatException;
+    public T parseValue(String value) throws NumberFormatException;
 
-    public String k();
+    public String getValueText();
 
     @Override
-    default public JsonObject L() {
-        JsonObject jsonObject = InventoryFilterCondition.super.L();
-        jsonObject.addProperty(OPERATOR_KEY, this.p().getName());
+    default public JsonObject toJson() {
+        JsonObject jsonObject = InventoryFilterCondition.super.toJson();
+        jsonObject.addProperty(OPERATOR_KEY, this.getOperator().getName());
         return jsonObject;
     }
 }

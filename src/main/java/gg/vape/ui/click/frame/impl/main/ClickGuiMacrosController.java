@@ -25,17 +25,17 @@ import java.awt.Color;
 import org.jetbrains.annotations.Nullable;
 
 public class ClickGuiMacrosController {
-    private String M = "";
-    private LabeledTextInputComponent U;
-    private final ClickGuiModulesPage s;
-    private ClickGuiContentPanel m;
+    private String searchQuery = "";
+    private LabeledTextInputComponent searchInput;
+    private final ClickGuiModulesPage modulesPage;
+    private ClickGuiContentPanel macroContent;
 
-    private void lambda$null$3() {
-        this.s.wN.K$src$V$sfnnd();
-        this.S();
+    private void closeOverlayAndRefresh() {
+        this.modulesPage.mainFrame.closeActiveOverlay();
+        this.rebuildMacroCards();
     }
 
-    private static void lambda$filterMacroButtons$2() {
+    private static void openMacroDocumentation() {
         try {
             Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start", "https://docs.vape.gg/features/misc/Macros"});
         }
@@ -44,199 +44,169 @@ public class ClickGuiMacrosController {
         }
     }
 
-    public static String b(ClickGuiMacrosController clickGuiMacrosController, String string) {
-        clickGuiMacrosController.M = string;
-        return clickGuiMacrosController.M;
+    public static String setSearchQuery(ClickGuiMacrosController controller, String query) {
+        controller.searchQuery = query;
+        return controller.searchQuery;
     }
 
-    private void lambda$null$10() {
-        this.s.wN.K$src$V$sfnnd();
-        this.S();
+    private void handleMacroCard(MacroCardComponent macroCardComponent) {
+        this.updateSelectedCard(macroCardComponent);
     }
 
-    private void lambda$filterMacroButtons$1(MacroCardComponent macroCardComponent) {
-        this.L(macroCardComponent);
+    private void configureCreateMacroSidecar(ClickGuiSidecarPanelBase clickGuiSidecarPanelBase) {
+        clickGuiSidecarPanelBase.setDividerVisible(false);
+        clickGuiSidecarPanelBase.getCloseButton().setVisible(false);
+        clickGuiSidecarPanelBase.setBackAction(this::closeOverlayAndRefresh);
     }
 
-    private void lambda$openCreateMacroSidecar$13(ClickGuiSidecarPanelBase clickGuiSidecarPanelBase) {
-        clickGuiSidecarPanelBase.c(false);
-        clickGuiSidecarPanelBase.k().Z(false);
-        clickGuiSidecarPanelBase.N(this::lambda$null$12);
+    void openMacroSettings(Macro macro) {
+        this.modulesPage.mainFrame.showOverlay(ClickGuiOverlaySpec.builder().title(macro.getName()).placement(ClickGuiOverlayPlacement.DOCKED_SHIFT).backdropEnabled(false).initializeContent(panel -> this.populateMacroSettings(macro, panel)).initializeSidecar(sidecar -> this.configureMacroSidecar(macro, sidecar)).build());
     }
 
-    void O(Macro macro) {
-        this.s.wN.Z(ClickGuiOverlaySpec.q().e(macro.getName()).n(ClickGuiOverlayPlacement.DOCKED_SHIFT).x(false).N(arg_0 -> this.lambda$openMacroSettings$5(macro, arg_0)).D(arg_0 -> this.lambda$openMacroSettings$8(macro, arg_0)).w());
-    }
-
-    private void lambda$null$12() {
-        this.s.wN.K$src$V$sfnnd();
-        this.S();
-    }
-
-    private void lambda$null$7(Macro macro) {
+    private void deleteMacro(Macro macro) {
         Vape.INSTANCE.getMacrosManager().removeMacro(macro);
-        this.s.wN.K$src$V$sfnnd();
-        this.S();
+        this.modulesPage.mainFrame.closeActiveOverlay();
+        this.rebuildMacroCards();
     }
 
     public ClickGuiMacrosController(ClickGuiModulesPage clickGuiModulesPage) {
-        this.s = clickGuiModulesPage;
+        this.modulesPage = clickGuiModulesPage;
     }
 
-    private void lambda$openMacroSettings$5(Macro macro, PanelComponent panelComponent) {
-        ClickGuiMacrosSettingsPanel clickGuiMacrosSettingsPanel = new ClickGuiMacrosSettingsPanel(panelComponent.A(), panelComponent.L(), macro, false, this::lambda$null$3, this::lambda$null$4);
+    private void populateMacroSettings(Macro macro, PanelComponent panelComponent) {
+        ClickGuiMacrosSettingsPanel clickGuiMacrosSettingsPanel = new ClickGuiMacrosSettingsPanel(panelComponent.A(), panelComponent.L(), macro, false, this::closeOverlayAndRefresh, this::closeOverlayAndRefresh);
         panelComponent.h(clickGuiMacrosSettingsPanel, new Object[0]);
     }
 
-    private void lambda$openMacroSettings$8(Macro macro, ClickGuiSidecarPanelBase clickGuiSidecarPanelBase) {
-        clickGuiSidecarPanelBase.c(false);
-        clickGuiSidecarPanelBase.k().Z(false);
-        clickGuiSidecarPanelBase.N(this::lambda$null$6);
+    private void configureMacroSidecar(Macro macro, ClickGuiSidecarPanelBase clickGuiSidecarPanelBase) {
+        clickGuiSidecarPanelBase.setDividerVisible(false);
+        clickGuiSidecarPanelBase.getCloseButton().setVisible(false);
+        clickGuiSidecarPanelBase.setBackAction(this::closeOverlayAndRefresh);
         GlyphIconComponent glyphIconComponent = new GlyphIconComponent("newtrash", 5.0, 5.0, 8.0, 8.0, ClickGuiModulesPage.J.h, ClickGuiModulesPage.J.d, null);
-        glyphIconComponent.r(() -> this.lambda$null$7(macro));
-        clickGuiSidecarPanelBase.e(glyphIconComponent);
+        glyphIconComponent.addClickListener(() -> this.deleteMacro(macro));
+        clickGuiSidecarPanelBase.addTrailingComponent(glyphIconComponent);
     }
 
-    private void lambda$openCreateMacroSidecar$11(Macro macro, PanelComponent panelComponent) {
-        ClickGuiMacrosSettingsPanel clickGuiMacrosSettingsPanel = new ClickGuiMacrosSettingsPanel(panelComponent.A(), panelComponent.L(), macro, true, this::lambda$null$9, this::lambda$null$10);
+    private void populateCreateMacroSettings(Macro macro, PanelComponent panelComponent) {
+        ClickGuiMacrosSettingsPanel clickGuiMacrosSettingsPanel = new ClickGuiMacrosSettingsPanel(panelComponent.A(), panelComponent.L(), macro, true, this::closeOverlayAndRefresh, this::closeOverlayAndRefresh);
         panelComponent.h(clickGuiMacrosSettingsPanel, new Object[0]);
     }
 
-    private void lambda$null$9() {
-        this.s.wN.K$src$V$sfnnd();
-        this.S();
-    }
-
-    private void lambda$null$4() {
-        this.s.wN.K$src$V$sfnnd();
-        this.S();
-    }
-
-    void K() {
+    void openCreateMacro() {
         Macro macro = Macro.create("New Macro");
-        this.s.wN.Z(ClickGuiOverlaySpec.q().e("Add new Macro").n(ClickGuiOverlayPlacement.DOCKED_SHIFT).N(arg_0 -> this.lambda$openCreateMacroSidecar$11(macro, arg_0)).D(this::lambda$openCreateMacroSidecar$13).w());
+        this.modulesPage.mainFrame.showOverlay(ClickGuiOverlaySpec.builder().title("Add new Macro").placement(ClickGuiOverlayPlacement.DOCKED_SHIFT).initializeContent(panel -> this.populateCreateMacroSettings(macro, panel)).initializeSidecar(this::configureCreateMacroSidecar).build());
     }
 
-    public void D(MacroCardComponent macroCardComponent) {
-        this.L(macroCardComponent);
-    }
-
-    private void lambda$filterMacroButtons$0(MacroCardComponent macroCardComponent) {
-        this.L(macroCardComponent);
+    public void selectMacroCard(MacroCardComponent macroCardComponent) {
+        this.updateSelectedCard(macroCardComponent);
     }
 
 
-    private void L(@Nullable MacroCardComponent macroCardComponent) {
-        if (this.m == null) {
+    private void updateSelectedCard(@Nullable MacroCardComponent macroCardComponent) {
+        if (this.macroContent == null) {
             return;
         }
         if (macroCardComponent != null) {
-            if (macroCardComponent.Q$src$Z$jxpu9m()) {
-                this.s.wN.K$src$V$sfnnd();
-                macroCardComponent.I(false);
+            if (macroCardComponent.isSelected()) {
+                this.modulesPage.mainFrame.closeActiveOverlay();
+                macroCardComponent.setSelected(false);
                 macroCardComponent = null;
             } else {
-                this.O(macroCardComponent.j$src$Lgg_vape_module_Macro_$1ed9en7());
+                this.openMacroSettings(macroCardComponent.getMacro());
             }
         }
-        for (GuiComponent guiComponent : this.m.f()) {
+        for (GuiComponent guiComponent : this.macroContent.f()) {
             MacroCardComponent macroCardComponent2;
             if (!(guiComponent instanceof PaddedComponent) || (macroCardComponent2 = ((PaddedComponent)guiComponent).t(MacroCardComponent.class)) == null) continue;
-            boolean bl = macroCardComponent2 == macroCardComponent;
-            macroCardComponent2.I(bl);
-            macroCardComponent2.l(!bl && macroCardComponent != null);
+            boolean selected = macroCardComponent2 == macroCardComponent;
+            macroCardComponent2.setSelected(selected);
+            macroCardComponent2.setDimmed(!selected && macroCardComponent != null);
         }
     }
 
-    public void i() {
-        double d = this.s.Q$src$D$yixn83();
-        this.U = new ClickGuiMacrosLabelInput(this, "Search macros...");
-        this.U.a(false);
+    public void renderMacroView() {
+        double availableWidth = this.modulesPage.getAvailableContentWidth();
+        this.searchInput = new ClickGuiMacrosLabelInput(this, "Search macros...");
+        this.searchInput.setSearchIconTrailing(false);
         TextButton textButton = new TextButton("NEW MACRO", 0.625, ClickGuiModulesPage.J.z(), ClickGuiModulesPage.J.z().brighter(), null, 2.0f, 1.0f, 51.0, 16.0);
-        textButton.T("newadd");
-        textButton.i(6.0f);
-        textButton.c(true);
-        textButton.a(true);
-        textButton.F(false);
-        textButton.h(Color.WHITE);
-        textButton.m(true);
-        textButton.r(this::K);
-        this.U.o(Math.max(0.0, d - textButton.A() - 4.0));
-        this.U.H(0.0f);
-        this.U.C(0.0);
-        this.U.V(0.0f);
-        this.U.O(0.0f);
-        this.U.W(true);
-        this.U.Y(16.0);
-        this.U.D(0.75f);
-        this.U.I(4.0f);
-        this.U.s(ColorAnimation.Y(ThemeColors.J.s));
-        this.U.W(null);
-        this.s.f$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$o6l04().u(true);
-        this.s.I$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$89xfjr().h(this.U, "widthwrap");
-        this.s.I$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$89xfjr().h(new PaddedComponent(0.0, 0.0, 4.0, 0.0, textButton), new Object[0]);
-        this.s.I$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$89xfjr().h(new SpacerComponent(0.0, 5.0), new Object[0]);
-        double d2 = this.s.I$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$89xfjr().L() - this.s.I$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$89xfjr().l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y() - 1.0;
-        if (d2 < 0.0) {
-            d2 = 0.0;
+        textButton.setIconResource("newadd");
+        textButton.setIconSize(6.0f);
+        textButton.setUseAlternateFont(true);
+        textButton.setUppercase(true);
+        textButton.setDeriveTextColorFromBackground(false);
+        textButton.setNormalTextColor(Color.WHITE);
+        textButton.setUseThemeBackground(true);
+        textButton.addClickListener(this::openCreateMacro);
+        this.searchInput.o(Math.max(0.0, availableWidth - textButton.A() - 4.0));
+        this.searchInput.setLeftInset(0.0f);
+        this.searchInput.setHorizontalInset(0.0);
+        this.searchInput.setRightInset(0.0f);
+        this.searchInput.setVerticalInset(0.0f);
+        this.searchInput.setUseExplicitHeight(true);
+        this.searchInput.Y(16.0);
+        this.searchInput.setBorderThickness(0.75f);
+        this.searchInput.setCornerRadius(4.0f);
+        this.searchInput.setBorderAnimation(ColorAnimation.Y(ThemeColors.J.s));
+        this.searchInput.setBackgroundColorOrNull(null);
+        this.modulesPage.getMainContainer().setResponsiveWidthEnabled(true);
+        this.modulesPage.getMainContent().h(this.searchInput, "widthwrap");
+        this.modulesPage.getMainContent().h(new PaddedComponent(0.0, 0.0, 4.0, 0.0, textButton), new Object[0]);
+        this.modulesPage.getMainContent().h(new SpacerComponent(0.0, 5.0), new Object[0]);
+        double contentHeight = this.modulesPage.getMainContent().L() - this.modulesPage.getMainContent().l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().y() - 1.0;
+        if (contentHeight < 0.0) {
+            contentHeight = 0.0;
         }
-        this.m = new ClickGuiContentPanel(d, d2);
-        this.m.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.m.d(false);
-        this.m.t(this.m.L());
-        this.m.F(FrameScrollbarPlacement.OUTSIDE);
-        this.m.E(true);
-        this.s.I$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiConten$89xfjr().h(this.m, new Object[0]);
-        if (this.M != null && !this.M.isEmpty()) {
-            this.U.k(this.M);
+        this.macroContent = new ClickGuiContentPanel(availableWidth, contentHeight);
+        this.macroContent.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.macroContent.setShowDisabledOverlay(false);
+        this.macroContent.t(this.macroContent.L());
+        this.macroContent.F(FrameScrollbarPlacement.OUTSIDE);
+        this.macroContent.E(true);
+        this.modulesPage.getMainContent().h(this.macroContent, new Object[0]);
+        if (this.searchQuery != null && !this.searchQuery.isEmpty()) {
+            this.searchInput.setText(this.searchQuery);
         } else {
-            this.S();
+            this.rebuildMacroCards();
         }
     }
 
-    public void S() {
-        boolean bl;
-        if (this.m == null) {
+    public void rebuildMacroCards() {
+        if (this.macroContent == null) {
             return;
         }
-        this.m.S();
-        String string = this.U != null ? this.U.i$src$Ljava_lang_String_$1n2xf3k() : "";
-        String string2 = string == null ? "" : string.trim().toLowerCase();
-        boolean bl2 = bl = !string2.isEmpty();
-        if (bl) {
+        this.macroContent.removeMarkedChildren();
+        String searchText = this.searchInput != null ? this.searchInput.getText() : "";
+        String normalizedQuery = searchText == null ? "" : searchText.trim().toLowerCase();
+        boolean hasSearchQuery = !normalizedQuery.isEmpty();
+        if (hasSearchQuery) {
             for (Macro macro : Vape.INSTANCE.getMacrosManager().getMacros()) {
-                if (!macro.getName().toLowerCase().contains(string2)) continue;
+                if (!macro.getName().toLowerCase().contains(normalizedQuery)) continue;
                 MacroCardComponent macroCardComponent = new MacroCardComponent(macro);
-                macroCardComponent.o(this.m.A());
-                macroCardComponent.k(() -> this.lambda$filterMacroButtons$0(macroCardComponent));
-                macroCardComponent.Z(() -> this.lambda$filterMacroButtons$1(macroCardComponent));
-                this.m.h(new PaddedComponent(0.0, 3.0, 0.0, 0.0, macroCardComponent), new Object[0]);
+                macroCardComponent.o(this.macroContent.A());
+                macroCardComponent.setSettingsAction(() -> this.handleMacroCard(macroCardComponent));
+                macroCardComponent.setCardAction(() -> this.handleMacroCard(macroCardComponent));
+                this.macroContent.h(new PaddedComponent(0.0, 3.0, 0.0, 0.0, macroCardComponent), new Object[0]);
             }
-            if (this.m.f().isEmpty()) {
+            if (this.macroContent.f().isEmpty()) {
                 // empty if block
             }
-            this.m.H(true);
+            this.macroContent.H(true);
             return;
         }
         for (Macro macro : Vape.INSTANCE.getMacrosManager().getMacros()) {
             MacroCardComponent macroCardComponent = new MacroCardComponent(macro);
-            macroCardComponent.o(this.m.A());
-            macroCardComponent.k(() -> this.lambda$filterMacroButtons$0(macroCardComponent));
-            macroCardComponent.Z(() -> this.lambda$filterMacroButtons$1(macroCardComponent));
-            this.m.h(new PaddedComponent(0.0, 3.0, 0.0, 0.0, macroCardComponent), new Object[0]);
+            macroCardComponent.o(this.macroContent.A());
+            macroCardComponent.setSettingsAction(() -> this.handleMacroCard(macroCardComponent));
+            macroCardComponent.setCardAction(() -> this.handleMacroCard(macroCardComponent));
+            this.macroContent.h(new PaddedComponent(0.0, 3.0, 0.0, 0.0, macroCardComponent), new Object[0]);
         }
-        if (this.m.f().isEmpty()) {
+        if (this.macroContent.f().isEmpty()) {
             MultilineTextBlockComponent multilineTextBlockComponent = new MultilineTextBlockComponent("INFO", "Click NEW MACRO to add a macro.\n\nFor more info on macros, read the docs");
-            multilineTextBlockComponent.k(this.m.A());
-            multilineTextBlockComponent.N("read the docs", ClickGuiMacrosController::lambda$filterMacroButtons$2);
-            this.m.h(new PaddedComponent(3.0, 3.0, 0.0, 0.0, multilineTextBlockComponent), new Object[0]);
+            multilineTextBlockComponent.setWidth(this.macroContent.A());
+            multilineTextBlockComponent.setLink("read the docs", ClickGuiMacrosController::openMacroDocumentation);
+            this.macroContent.h(new PaddedComponent(3.0, 3.0, 0.0, 0.0, multilineTextBlockComponent), new Object[0]);
         }
-        this.m.H(true);
+        this.macroContent.H(true);
     }
 
-    private void lambda$null$6() {
-        this.s.wN.K$src$V$sfnnd();
-        this.S();
-    }
 }
-

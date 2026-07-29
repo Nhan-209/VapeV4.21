@@ -28,15 +28,15 @@ extends PanelComponent {
         this.previousGroup = inventoryFilterConditionGroup2;
         this.onChanged = runnable;
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.N(false);
         this.t(Double.MAX_VALUE);
         this.p();
     }
 
     private void onConditionRemoved() {
-        if (this.group.c().isEmpty()) {
-            this.preset.F(this.group);
+        if (this.group.getConditions().isEmpty()) {
+            this.preset.removeConditionGroup(this.group);
             this.onChanged.run();
         } else {
             this.p();
@@ -55,11 +55,11 @@ extends PanelComponent {
             this.h(new SpacerComponent(8.0, 0.0), "widthwrap");
             this.h(new InventoryFilterLogicalOperatorDividerComponent(InventoryFilterLogicalOperator.OR), new Object[0]);
         }
-        for (int i = 0; i < this.group.c().size(); ++i) {
-            InventoryFilterCondition<?> inventoryFilterCondition = this.group.c().get(i);
+        for (int i = 0; i < this.group.getConditions().size(); ++i) {
+            InventoryFilterCondition<?> inventoryFilterCondition = this.group.getConditions().get(i);
             InventoryFilterConditionEditor inventoryFilterConditionEditor = new InventoryFilterConditionEditor(this.A() - 5.0, this.rule, this.group, inventoryFilterCondition, this::onConditionRemoved);
             this.h(inventoryFilterConditionEditor, new Object[0]);
-            if (i == this.group.c().size() - 1) continue;
+            if (i == this.group.getConditions().size() - 1) continue;
             this.h(new SpacerComponent(8.0, 0.0), "widthwrap");
             this.h(new InventoryFilterLogicalOperatorDividerComponent(InventoryFilterLogicalOperator.AND), new Object[0]);
         }

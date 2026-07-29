@@ -20,26 +20,26 @@ extends InteractiveComponent {
         return this.blatantMod;
     }
 
-    public void g(boolean bl) {
-        this.blatantMod = bl;
+    public void setBlatantMod(boolean blatantMod) {
+        this.blatantMod = blatantMod;
     }
 
-    public GlyphIconComponent m$src$Lgg_vape_ui_click_component_GlyphIconComponent_$1ecfqwu() {
+    public GlyphIconComponent getEditIcon() {
         return this.editIcon;
     }
 
-    InventoryFilterPresetOptionComponent(InventoryFilterPresetData inventoryFilterPresetData, boolean bl) {
+    InventoryFilterPresetOptionComponent(InventoryFilterPresetData inventoryFilterPresetData, boolean blatantMod) {
         this.hoverAnimation = new ColorAnimation(0.15, InventoryFilterPresetOptionComponent.J.B, InventoryFilterPresetOptionComponent.J.O);
         this.presetData = inventoryFilterPresetData;
-        this.blatantMod = bl;
-        this.o(true);
+        this.blatantMod = blatantMod;
+        this.setPropagateMouseEvents(true);
         this.nameText = new TruncatedTextComponent(inventoryFilterPresetData == null ? "No rule" : inventoryFilterPresetData.getName(), "...", 30.0, 0.8, InventoryFilterPresetOptionComponent.J.A, true);
         if (inventoryFilterPresetData != null) {
             this.editIcon = new GlyphIconComponent("newedit", 5.0, 5.0, 8.0, 8.0, InventoryFilterPresetOptionComponent.J.A, InventoryFilterPresetOptionComponent.J.f, null);
         }
-        this.H(this.nameText);
+        this.addChildren(this.nameText);
         if (inventoryFilterPresetData != null) {
-            this.H(this.editIcon);
+            this.addChildren(this.editIcon);
         }
     }
 
@@ -50,12 +50,12 @@ extends InteractiveComponent {
         this.nameText.S(this.n());
         this.nameText.o(this.A() - 15.0);
         this.nameText.Y(this.L());
-        this.nameText.D(this.nameText.A());
+        this.nameText.setMaxWidth(this.nameText.A());
         if (this.editIcon != null) {
             this.editIcon.K(this.G$src$D$1b2f02a() + this.A() - this.editIcon.A() - 5.0);
             this.editIcon.S(this.n() + 3.5);
             this.editIcon.Y(this.L());
-            this.editIcon.Z(!this.editIcon.l$src$Ljava_util_List_$7yhdmw().isEmpty() && this.w$src$Z$e457mb());
+            this.editIcon.setVisible(!this.editIcon.getClickListeners().isEmpty() && this.w$src$Z$e457mb());
         }
         this.hoverAnimation.u(this.w$src$Z$e457mb());
         super.c();

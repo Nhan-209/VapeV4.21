@@ -13,16 +13,11 @@ DescribedOption {
     PERCENTAGE("Percentage", "The durability of the item as a percentage"),
     VALUE("Value", "The durability of the item as the direct value");
 
-    private static final DurabilityValueMode[] valuesCache;
     private final String description;
     public static final @UnmodifiableView List<DurabilityValueMode> VALUES;
     private final String name;
 
     static {
-        String[] stringArray = new String[]{"Value", "The durability of the item as a percentage", "VALUE", "The durability of the item as the direct value", "Percentage", "PERCENTAGE"};
-
-
-        valuesCache = new DurabilityValueMode[]{PERCENTAGE, VALUE};
         VALUES = Arrays.asList(DurabilityValueMode.values());
     }
 
@@ -38,17 +33,17 @@ DescribedOption {
     }
 
     @Override
-    public String E() {
+    public String getDescription() {
         return this.description;
     }
 
-    public static DurabilityValueMode B(String string, DurabilityValueMode durabilityValueMode) {
-        DurabilityValueMode durabilityValueMode2 = DurabilityValueMode.C(string);
+    public static DurabilityValueMode fromNameOrDefault(String string, DurabilityValueMode durabilityValueMode) {
+        DurabilityValueMode durabilityValueMode2 = DurabilityValueMode.findByName(string);
         return durabilityValueMode2 == null ? durabilityValueMode : durabilityValueMode2;
     }
 
     @Nullable
-    public static DurabilityValueMode C(String string) {
+    public static DurabilityValueMode findByName(String string) {
         for (DurabilityValueMode durabilityValueMode : VALUES) {
             if (!durabilityValueMode.getName().equalsIgnoreCase(string)) continue;
             return durabilityValueMode;
@@ -56,8 +51,8 @@ DescribedOption {
         return null;
     }
 
-    public static DurabilityValueMode i(String string) {
-        return DurabilityValueMode.B(string, PERCENTAGE);
+    public static DurabilityValueMode fromName(String string) {
+        return DurabilityValueMode.fromNameOrDefault(string, PERCENTAGE);
     }
 }
 

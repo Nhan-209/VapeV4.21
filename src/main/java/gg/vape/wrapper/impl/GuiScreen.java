@@ -33,7 +33,7 @@ extends Screen {
 
     @Override
     public boolean isNull() {
-        if (!ClientSettings.fW.P) {
+        if (!ClientSettings.INSTANCE.inputEnabled) {
             return false;
         }
         return super.isNull();

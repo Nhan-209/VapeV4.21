@@ -11,8 +11,8 @@ import java.awt.Color;
 
 public class ProfileSnapshotModuleRowComponent
 extends InteractiveComponent {
-    private boolean I;
-    private final ProfileModuleSnapshot b;
+    private boolean selected;
+    private final ProfileModuleSnapshot snapshot;
 
     @Override
     public double x() {
@@ -24,17 +24,17 @@ extends InteractiveComponent {
         super.c();
     }
 
-    public void g(boolean bl) {
-        this.I = bl;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
 
     public ProfileSnapshotModuleRowComponent(ProfileModuleSnapshot profileModuleSnapshot) {
-        this.b = profileModuleSnapshot;
+        this.snapshot = profileModuleSnapshot;
     }
 
-    public ProfileModuleSnapshot b$src$Lgg_vape_config_ProfileModuleSnapshot_$6v7veg() {
-        return this.b;
+    public ProfileModuleSnapshot getSnapshot() {
+        return this.snapshot;
     }
 
     @Override
@@ -42,7 +42,7 @@ extends InteractiveComponent {
         double d;
         String string;
         SmoothFontRenderer smoothFontRenderer;
-        if (this.I) {
+        if (this.selected) {
             GuiRenderPrimitives.B(this.G$src$D$1b2f02a(), this.n() + 1.0, this.A(), this.L() - 2.0, ProfileSnapshotModuleRowComponent.J.m, 2.0f);
             GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n() + 1.0, this.A(), this.L() - 2.0, ProfileSnapshotModuleRowComponent.J.l, 2.0f, 0.9f, 1.0f);
         }
@@ -50,12 +50,12 @@ extends InteractiveComponent {
             GuiRenderPrimitives.B(this.G$src$D$1b2f02a(), this.n() + 1.0, this.A(), this.L() - 2.0, new Color(255, 255, 255, 7), 2.0f);
         }
         float f = (float)(this.G$src$D$1b2f02a() + this.A() - 8.0);
-        ImageRenderer.E(this.I ? ProfileSnapshotModuleRowComponent.J.A : ProfileSnapshotModuleRowComponent.J.Z, f, (float)this.n() + 7.0f, "expandarrow", 4.0f, 4.0f, false);
+        ImageRenderer.drawImage(this.selected ? ProfileSnapshotModuleRowComponent.J.A : ProfileSnapshotModuleRowComponent.J.Z, f, (float)this.n() + 7.0f, "expandarrow", 4.0f, 4.0f, false);
         double d2 = -1.0;
         double d3 = f - 10.0f;
-        if (this.b.n()) {
-            smoothFontRenderer = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.633);
-            string = this.b.I();
+        if (this.snapshot.hasBind()) {
+            smoothFontRenderer = this.getAlternateFontRenderer(0.633);
+            string = this.snapshot.getBindDisplayText();
             d = smoothFontRenderer.N(string);
             double d4 = Math.max(8.0, d) + 6.0;
             double d5 = d4 - d;
@@ -63,21 +63,21 @@ extends InteractiveComponent {
             GuiRenderPrimitives.B(d2, this.n() + 5.0, d4, 8.0, ProfileSnapshotModuleRowComponent.J.l, 2.0f);
             smoothFontRenderer.d(string, d2 + d5 / 2.0, this.n() + 7.0, ProfileSnapshotModuleRowComponent.J.Z);
         }
-        if (this.b.Q()) {
-            smoothFontRenderer = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.633);
+        if (this.snapshot.isEnabled()) {
+            smoothFontRenderer = this.getAlternateFontRenderer(0.633);
             string = "ON";
             d = 14.0;
             d2 = d2 == -1.0 ? d3 - 8.0 : (d2 -= d + 2.0);
             GuiRenderPrimitives.B(d2, this.n() + 5.0, d, 8.0, J.z(), 2.0f);
-            smoothFontRenderer.d(string, d2 + 3.0, this.n() + 7.0, ColorUtil.j());
+            smoothFontRenderer.d(string, d2 + 3.0, this.n() + 7.0, ColorUtil.getAccentTextColor());
         }
         double d6 = this.G$src$D$1b2f02a() + 6.0;
         d = this.A() - 8.0;
         if (d2 != -1.0) {
             d = d2 - d6 - 4.0;
         }
-        TruncatedTextComponent truncatedTextComponent = new TruncatedTextComponent(this.b.getName(), "...", d, 0.95, this.I ? ProfileSnapshotModuleRowComponent.J.A : ProfileSnapshotModuleRowComponent.J.Z, false);
-        truncatedTextComponent.V(d6, this.n() + 5.0);
+        TruncatedTextComponent truncatedTextComponent = new TruncatedTextComponent(this.snapshot.getName(), "...", d, 0.95, this.selected ? ProfileSnapshotModuleRowComponent.J.A : ProfileSnapshotModuleRowComponent.J.Z, false);
+        truncatedTextComponent.renderAt(d6, this.n() + 5.0);
     }
 
     @Override

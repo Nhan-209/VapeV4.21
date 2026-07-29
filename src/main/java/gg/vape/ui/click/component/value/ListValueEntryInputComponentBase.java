@@ -4,16 +4,16 @@ import gg.vape.ui.click.component.TextInputComponentBase;
 
 public class ListValueEntryInputComponentBase
 extends TextInputComponentBase {
-    private int jY;
-    private boolean jW;
+    private int legacyIndex;
+    private boolean legacyMode;
 
     @Override
-    public double r() {
+    public double getAvailableTextWidth() {
         return this.A() - 35.0;
     }
 
-    public int w$src$I$1yeostt() {
-        return this.jY;
+    public int getLegacyIndex() {
+        return this.legacyIndex;
     }
 
     @Override
@@ -21,22 +21,22 @@ extends TextInputComponentBase {
         return 20.0;
     }
 
-    public ListValueEntryInputComponentBase(boolean bl, String string) {
-        this(bl, string, false);
+    public ListValueEntryInputComponentBase(boolean highlighted, String placeholder) {
+        this(highlighted, placeholder, false);
     }
 
-    public boolean N() {
-        return this.jW;
+    public boolean isLegacyMode() {
+        return this.legacyMode;
     }
 
-    public ListValueEntryInputComponentBase(boolean bl, String string, boolean bl2) {
-        super(string);
-        this.jW = bl2;
-        this.a = bl ? ListValueEntryInputComponentBase.J.d : ListValueEntryInputComponentBase.J.B;
+    public ListValueEntryInputComponentBase(boolean highlighted, String placeholder, boolean legacyMode) {
+        super(placeholder);
+        this.legacyMode = legacyMode;
+        this.actionButtonColor = highlighted ? ListValueEntryInputComponentBase.J.d : ListValueEntryInputComponentBase.J.B;
     }
 
     @Override
-    public void p() {
+    public void submit() {
     }
 
     @Override
@@ -44,4 +44,3 @@ extends TextInputComponentBase {
         return 110.0;
     }
 }
-

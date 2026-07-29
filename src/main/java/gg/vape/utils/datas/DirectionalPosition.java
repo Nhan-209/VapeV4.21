@@ -6,34 +6,34 @@ import java.util.Objects;
 
 public class DirectionalPosition
 extends BlockCoordinate {
-    private int C;
+    private int facingIndex;
 
-    public DirectionalPosition(BlockCoordinate blockCoordinate, int n) {
-        this(blockCoordinate.B(), blockCoordinate.E(), blockCoordinate.A(), n);
+    public DirectionalPosition(BlockCoordinate blockCoordinate, int facingIndex) {
+        this(blockCoordinate.B(), blockCoordinate.E(), blockCoordinate.A(), facingIndex);
     }
 
-    public DirectionalPosition(double d, double d2, double d3, int n) {
-        super(d, d2, d3);
-        this.C = n;
+    public DirectionalPosition(double x, double y, double z, int facingIndex) {
+        super(x, y, z);
+        this.facingIndex = facingIndex;
     }
 
-    public DirectionalPosition(int n, int n2, int n3, int n4) {
-        super(n, n2, n3);
-        this.C = n4;
+    public DirectionalPosition(int x, int y, int z, int facingIndex) {
+        super(x, y, z);
+        this.facingIndex = facingIndex;
     }
 
     @Override
     public String toString() {
-        return "BlockLocation.SideHit{x=" + this.B() + ", y=" + this.E() + ", z=" + this.A() + ", sideHit=" + this.C + '}';
+        return "BlockLocation.SideHit{x=" + this.B() + ", y=" + this.E() + ", z=" + this.A() + ", sideHit=" + this.facingIndex + '}';
     }
 
-    public EnumFacing L() {
-        return this.C == -1 ? null : EnumFacing.T(this.C);
+    public EnumFacing getFacing() {
+        return this.facingIndex == -1 ? null : EnumFacing.T(this.facingIndex);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), this.C);
+        return Objects.hash(super.hashCode(), this.facingIndex);
     }
 
     @Override
@@ -48,12 +48,12 @@ extends BlockCoordinate {
             return false;
         }
         DirectionalPosition directionalPosition = (DirectionalPosition)object;
-        return this.C == directionalPosition.C;
+        return this.facingIndex == directionalPosition.facingIndex;
     }
 
 
-    public int X() {
-        return this.C;
+    public int getFacingIndex() {
+        return this.facingIndex;
     }
 }
 

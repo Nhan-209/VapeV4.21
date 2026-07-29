@@ -35,8 +35,8 @@ extends PanelComponent {
             if (!(friendRequestRow.y$src$Lgg_vape_friend_FriendRequest_$kilm25() instanceof OutgoingFriendRequest)) continue;
             arrayList2.add(friendRequestRow);
         }
-        this.lr.S();
-        this.lr.H(arrayList2.toArray(new GuiComponent[0]));
+        this.lr.removeMarkedChildren();
+        this.lr.addChildren(arrayList2.toArray(new GuiComponent[0]));
     }
 
     @Override
@@ -71,12 +71,12 @@ extends PanelComponent {
         this.ln = new HashMap();
         this.lr = new FriendRequestRowsPanel();
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.d(false);
-        this.lT.d(false);
+        this.setShowDisabledOverlay(false);
+        this.lT.setShowDisabledOverlay(false);
         this.lT.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
         this.l2.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.l2.H(new SpacerComponent(1.0, 2.0), this.lr);
-        this.H(this.lT, this.l2);
+        this.l2.addChildren(new SpacerComponent(1.0, 2.0), this.lr);
+        this.addChildren(this.lT, this.l2);
     }
 
     @Override
@@ -87,7 +87,7 @@ extends PanelComponent {
     @Override
     public void c() {
         super.c();
-        SmoothFontRenderer smoothFontRenderer = this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(0.7);
+        SmoothFontRenderer smoothFontRenderer = this.getAlternateFontRenderer(0.7);
         String string = this.lr.Z$src$I$1nljwqr() + " ";
         String string2 = "PENDING REQUESTS";
         double d = smoothFontRenderer.N(string) + 1.0;

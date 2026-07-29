@@ -115,31 +115,31 @@ extends Mod {
         double d3 = 1.0 / d;
         boolean bl = GL11.glIsEnabled((int)2896);
         if (bl) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(2896);
-            OpenGlBackendHolder.d.G(d, d, d);
+            OpenGlBackendHolder.backend.disableCapability(2896);
+            OpenGlBackendHolder.backend.scale(d, d, d);
             fontRenderer.drawStringWithShadow(string, (double)n, (double)n2, n3);
-            OpenGlBackendHolder.d.G(d3, d3, d3);
-            OpenGlBackendHolder.d.l(2896);
+            OpenGlBackendHolder.backend.scale(d3, d3, d3);
+            OpenGlBackendHolder.backend.enableCapability(2896);
             return;
         }
-        OpenGlBackendHolder.d.G(d, d, d);
+        OpenGlBackendHolder.backend.scale(d, d, d);
         fontRenderer.drawStringWithShadow(string, (double)n, (double)n2, n3);
-        OpenGlBackendHolder.d.G(d3, d3, d3);
+        OpenGlBackendHolder.backend.scale(d3, d3, d3);
     }
 
     private void renderEquipment(RenderManager renderManager, EntityRenderer entityRenderer, FontRenderer fontRenderer, EntityLivingBase entityLivingBase, float f, float f2, RenderEntityContext renderEntityContext, double d, MatrixStack matrixStack, @Nullable ItemStack itemStack, @Nullable ItemStack itemStack2, @Nullable ArrayList<ItemStack> arrayList) {
         double d2 = 1.1;
         double d3 = 1.0 / d2;
         if (ForgeVersion.MC_1_16_5.d()) {
-            OpenGlBackendHolder.d.X(f + 180.0f, 0.0f, -1.0f, 0.0f);
-            OpenGlBackendHolder.d.X(f2, -1.0f, 0.0f, 0.0f);
+            OpenGlBackendHolder.backend.rotate(f + 180.0f, 0.0f, -1.0f, 0.0f);
+            OpenGlBackendHolder.backend.rotate(f2, -1.0f, 0.0f, 0.0f);
         }
-        OpenGlBackendHolder.d.G(d2, d2, d2);
+        OpenGlBackendHolder.backend.scale(d2, d2, d2);
         boolean bl = ForgeVersion.MC_1_21_10.v();
         if (bl) {
             EntityPlayer entityPlayer;
             NameTagsNameState nameTagsNameState;
-            if (entityLivingBase.isInstance(MappedClasses.Yl) && (nameTagsNameState = NameTagsRenderStateTracker.u.B(entityPlayer = new EntityPlayer(entityLivingBase.getObject()))) != null) {
+            if (entityLivingBase.isInstance(MappedClasses.Yl) && (nameTagsNameState = NameTagsRenderStateTracker.INSTANCE.getOrSchedule(entityPlayer = new EntityPlayer(entityLivingBase.getObject()))) != null) {
                 int n = 0;
                 if (itemStack != null && itemStack.P() > 1 && itemStack.t() > 1) {
                     n = itemStack.t();
@@ -154,7 +154,7 @@ extends Mod {
                 if (itemStack2 != null) {
                     dArray[dArray.length - 1] = this.U(itemStack2);
                 }
-                nameTagsNameState.M(-nameTagsNameState.t() / 2.0, -26.0, n, dArray, matrixStack, renderManager, true);
+                nameTagsNameState.render(-nameTagsNameState.getWidth() / 2.0, -26.0, n, dArray, matrixStack, renderManager, true);
             }
         } else {
             ItemStack itemStack3;
@@ -180,7 +180,7 @@ extends Mod {
                     // empty if block
                 }
                 if (((Wrapper)(object = itemStack.getItem())).isNotNull()) {
-                    ItemIconRenderer.j(itemStack, (Item)object, n, n2, 16, 16, (float)d, 1.0f, true);
+                    ItemIconRenderer.renderItemStack(itemStack, (Item)object, n, n2, 16, 16, (float)d, 1.0f, true);
                     this.drawItemOverlay(fontRenderer, itemStack, (Item)object, n, n2, d);
                     if (itemStack.P() > 1) {
                         fontRenderer.drawStringWithShadow(String.valueOf(itemStack.t()), (double)(n + 8), (double)(n2 + 8), -1);
@@ -193,7 +193,7 @@ extends Mod {
                     if (itemStack3 == null) continue;
                     ItemStack itemStack4 = ItemStack.S(itemStack3.getItem());
                     Item item = itemStack4.getItem();
-                    ItemIconRenderer.j(itemStack4, item, n += 16, n2, 16, 16, (float)d, 1.0f, true);
+                    ItemIconRenderer.renderItemStack(itemStack4, item, n += 16, n2, 16, 16, (float)d, 1.0f, true);
                     this.drawItemOverlay(fontRenderer, itemStack3, item, n, n2, d);
                 }
             }
@@ -201,7 +201,7 @@ extends Mod {
                 n += 16;
                 Item item = itemStack2.getItem();
                 if (item.isNotNull()) {
-                    ItemIconRenderer.j(itemStack2, item, n, n2, 16, 16, (float)d, 1.0f, true);
+                    ItemIconRenderer.renderItemStack(itemStack2, item, n, n2, 16, 16, (float)d, 1.0f, true);
                     this.drawItemOverlay(fontRenderer, itemStack2, item, n, n2, d);
                     if (itemStack2.P() > 1) {
                         fontRenderer.drawStringWithShadow(String.valueOf(itemStack2.t()), (double)(n + 8), (double)(n2 + 8), -1);
@@ -209,11 +209,11 @@ extends Mod {
                 }
             }
         }
-        OpenGlBackendHolder.d.G(d3, d3, d3);
+        OpenGlBackendHolder.backend.scale(d3, d3, d3);
     }
 
     private static int lambda$onRenderWorldLast$0(OnlineRadarPreviewState onlineRadarPreviewState, OnlineRadarPreviewState onlineRadarPreviewState2) {
-        return Double.compare(((RenderEntityContext)onlineRadarPreviewState2.R()).e(), ((RenderEntityContext)onlineRadarPreviewState.R()).e());
+        return Double.compare(((RenderEntityContext)onlineRadarPreviewState2.R()).getDistance(), ((RenderEntityContext)onlineRadarPreviewState.R()).getDistance());
     }
 
     @EventHandler(b=true)
@@ -246,8 +246,8 @@ extends Mod {
         boolean bl7;
         double d4;
         block32: {
-            d4 = (Double)this.opacity.K();
-            if (renderEntityContext.Y()) {
+            d4 = (Double)this.opacity.getValue();
+            if (renderEntityContext.canViewerSee()) {
                 d4 = 1.0;
             }
             bl7 = entityLivingBase.isInstance(MappedClasses.Yl);
@@ -259,7 +259,7 @@ extends Mod {
                 try {
                     if (entityLivingBase == null || !entityLivingBase.isNotNull()) break block32;
                     try {
-                        itemStack = renderEntityContext.c();
+                        itemStack = renderEntityContext.getHeldItem();
                     }
                     catch (Exception exception) {
                         itemStack = null;
@@ -293,7 +293,7 @@ extends Mod {
             this.nameCache.put(entityLivingBase.S(), this.buildNameString(entityLivingBase, renderEntityContext, bl2, bl, bl4, bl5));
         }
         object2 = this.nameCache.get(entityLivingBase.S());
-        MutableColor mutableColor = new MutableColor(renderEntityContext.A() ? this.enemyBackgroundColor : this.backgroundColor);
+        MutableColor mutableColor = new MutableColor(renderEntityContext.isSneaking() ? this.enemyBackgroundColor : this.backgroundColor);
         MutableColor mutableColor2 = new MutableColor(mutableColor);
         int n = this.computeNameColor(entityLivingBase, renderEntityContext, mutableColor, mutableColor2, d4);
         mutableColor.withAlpha((int)((double)mutableColor.getAlpha() * d4));
@@ -301,43 +301,43 @@ extends Mod {
         MutableColor mutableColor3 = new MutableColor(n);
         mutableColor3.withAlpha((int)((double)mutableColor3.getAlpha() * d4));
         n = mutableColor3.l();
-        float f4 = (float)(0.03333335 * (Double)this.scale.K());
-        if (this.autoScale.L().booleanValue()) {
+        float f4 = (float)(0.03333335 * (Double)this.scale.getValue());
+        if (this.autoScale.getEffectiveValue().booleanValue()) {
             float f5 = f3;
             float f6 = (double)f5 / 5.0 <= 2.0 ? 2.0f : (float)((double)f5 / 5.0);
-            f4 = (float)(0.01666666753590107 * ((double)f6 * (Double)this.scale.K()));
+            f4 = (float)(0.01666666753590107 * ((double)f6 * (Double)this.scale.getValue()));
         }
         int n2 = fontRenderer.getStringWidth((String)object2) / 2;
         int n3 = -(fontRenderer.FONT_HEIGHT((String)object2) - 1);
         if (ForgeVersion.MC_1_16_5.d()) {
             RenderUtil.f(renderManager);
             if (gameSettings.x() == 0) {
-                OpenGlBackendHolder.d.I(d, d2 + (double)renderEntityContext.U() + 0.2, d3);
-                OpenGlBackendHolder.d.F(0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(-f, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(-f2, -1.0f, 0.0f, 0.0f);
+                OpenGlBackendHolder.backend.translate(d, d2 + (double)renderEntityContext.getHeight() + 0.2, d3);
+                OpenGlBackendHolder.backend.setNormal(0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-f, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-f2, -1.0f, 0.0f, 0.0f);
             } else {
                 object = entityRenderer.l();
                 double d5 = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosX() - ((ActiveRenderInfo)object).o().getX();
                 double d6 = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosY() - ((ActiveRenderInfo)object).o().getY();
                 double d7 = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosZ() - ((ActiveRenderInfo)object).o().getZ();
-                OpenGlBackendHolder.d.I(d + d5, d2 + d6 + (double)renderEntityContext.U() + (double)0.4f, d3 + d7);
-                OpenGlBackendHolder.d.F(0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(-f, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(f2, 1.0f, 0.0f, 0.0f);
+                OpenGlBackendHolder.backend.translate(d + d5, d2 + d6 + (double)renderEntityContext.getHeight() + (double)0.4f, d3 + d7);
+                OpenGlBackendHolder.backend.setNormal(0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-f, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(f2, 1.0f, 0.0f, 0.0f);
             }
         } else {
-            OpenGlBackendHolder.d.P((float)(d + 0.0), (float)(d2 + (double)renderEntityContext.U() + 0.5), (float)d3);
-            OpenGlBackendHolder.d.F(0.0f, 1.0f, 0.0f);
+            OpenGlBackendHolder.backend.translate((float)(d + 0.0), (float)(d2 + (double)renderEntityContext.getHeight() + 0.5), (float)d3);
+            OpenGlBackendHolder.backend.setNormal(0.0f, 1.0f, 0.0f);
             if (gameSettings.x() == 2) {
-                OpenGlBackendHolder.d.X(-f, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(f2, -1.0f, 0.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-f, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(f2, -1.0f, 0.0f, 0.0f);
             } else {
-                OpenGlBackendHolder.d.X(-f, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(f2, 1.0f, 0.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-f, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(f2, 1.0f, 0.0f, 0.0f);
             }
         }
-        OpenGlBackendHolder.d.H(-f4, -f4, f4);
+        OpenGlBackendHolder.backend.scale(-f4, -f4, f4);
         GlStateManager.disableLighting();
         GlStateManager.depthMask(false);
         GlStateManager.disableDepth();
@@ -352,16 +352,16 @@ extends Mod {
             matrixStack = MatrixStack.A();
         }
         if (GuiRenderPrimitives.d()) {
-            object = new RenderMatrix4f().b();
-            ((RenderMatrix4f)object).u(BufferedGuiRenderPrimitives.l);
-            ((RenderMatrix4f)object).u(BufferedGuiRenderPrimitives.X.c());
+            object = new RenderMatrix4f().setIdentity();
+            ((RenderMatrix4f)object).multiply(BufferedGuiRenderPrimitives.viewMatrix);
+            ((RenderMatrix4f)object).multiply(BufferedGuiRenderPrimitives.matrixStack.peek());
             if (ForgeVersion.MC_1_20_6.d()) {
                 fontRenderer.h((String)object2, -n2, n3 + 2, n, false, (RenderMatrix4f)object, SharedMonsterAttributes.V());
             } else {
                 int n4 = 0xF000F0;
                 renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
                 ScorePlayerTeamTextComponent scorePlayerTeamTextComponent = ScorePlayerTeamTextComponent.B((String)object2);
-                fontRenderer.Z(scorePlayerTeamTextComponent, -n2, n3 + 2, n, false, ((RenderMatrix4f)object).u(), renderItemFontBridge, true, 0, n4);
+                fontRenderer.Z(scorePlayerTeamTextComponent, -n2, n3 + 2, n, false, ((RenderMatrix4f)object).toMinecraftMatrix(), renderItemFontBridge, true, 0, n4);
                 renderItemFontBridge.q();
             }
         } else if (ForgeVersion.MC_1_16_5.d()) {
@@ -381,30 +381,30 @@ extends Mod {
         }
         boolean bl8 = false;
         if (bl5) {
-            List<PotionEffect> list = renderEntityContext.A(entityLivingBase);
+            List<PotionEffect> list = renderEntityContext.getPotionEffects();
             int n6 = -(list.size() * 10) - 5;
             for (PotionEffect potionEffect : list) {
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
                 Minecraft.Z().g(GuiContainer.m$src$Lgg_vape_wrapper_impl_ResourceLocation_$1fc62cj());
-                OpenGlBackendHolder.d.G(0.5, 0.5, 0.5);
+                OpenGlBackendHolder.backend.scale(0.5, 0.5, 0.5);
                 if (ForgeVersion.MC_1_16_5.d()) {
                     matrixStack.H();
                     matrixStack.i(renderManager.getCameraOrientation());
                 }
-                PotionEffectIconRenderer.f(potionEffect, n6 + 6, n3 - 30, 18, 18, 1.0f, true);
+                PotionEffectIconRenderer.render(potionEffect, n6 + 6, n3 - 30, 18, 18, 1.0f, true);
                 fontRenderer.V(RomanNumeralUtil.toRoman(potionEffect.L() + 1), n6 + 6, n3 - 30, -1, matrixStack);
                 n6 += 20;
                 bl8 = true;
                 if (ForgeVersion.MC_1_16_5.d()) {
                     matrixStack.U();
                 }
-                OpenGlBackendHolder.d.G(2.0, 2.0, 2.0);
+                OpenGlBackendHolder.backend.scale(2.0, 2.0, 2.0);
             }
         }
         if (bl3 && bl7 && bl6) {
             RenderUtil.f(renderManager);
             if (bl8) {
-                OpenGlBackendHolder.d.I(0.0, -8.0, 0.0);
+                OpenGlBackendHolder.backend.translate(0.0, -8.0, 0.0);
             }
             this.renderEquipment(renderManager, entityRenderer, fontRenderer, entityLivingBase, f, f2, renderEntityContext, d4, matrixStack, itemStack, (ItemStack)object3, arrayList);
         }
@@ -442,10 +442,10 @@ extends Mod {
         this.numberFormat = new NumberFormat(1);
         this.displayedEnchantments = new Enchantment[]{Enchantment.protection(), Enchantment.unbreaking(), Enchantment.sharpness(), Enchantment.fireAspect(), Enchantment.efficiency(), Enchantment.featherFalling(), Enchantment.power(), Enchantment.flame(), Enchantment.punch(), Enchantment.fortune(), Enchantment.infinity(), Enchantment.thorns(), Enchantment.knockback()};
         this.nameCache = new ConcurrentHashMap();
-        this.renderPlayers.K(this.playersHealth, this.playersDistance, this.playersEffects, this.playersMaxDistance, this.equipment, this.strengthIndicator);
-        this.renderAnimals.K(this.animalsHealth, this.animalsDistance, this.animalsEffects, this.animalsMaxDistance);
-        this.renderMobs.K(this.mobsHealth, this.mobsDistance, this.mobsEffects, this.mobsMaxDistance);
-        this.strengthIndicator.K(this.calculateEffects);
+        this.renderPlayers.addDependentValues(this.playersHealth, this.playersDistance, this.playersEffects, this.playersMaxDistance, this.equipment, this.strengthIndicator);
+        this.renderAnimals.addDependentValues(this.animalsHealth, this.animalsDistance, this.animalsEffects, this.animalsMaxDistance);
+        this.renderMobs.addDependentValues(this.mobsHealth, this.mobsDistance, this.mobsEffects, this.mobsMaxDistance);
+        this.strengthIndicator.addDependentValues(this.calculateEffects);
         this.addValue(this.ignoreInvisibles, this.autoScale, this.scale, this.hideBots, this.renderPlayers, this.playersHealth, this.playersDistance, this.playersEffects, this.playersMaxDistance, this.equipment, this.strengthIndicator, this.calculateEffects, this.renderAnimals, this.animalsHealth, this.animalsDistance, this.animalsEffects, this.animalsMaxDistance, this.renderMobs, this.mobsHealth, this.mobsDistance, this.mobsEffects, this.mobsMaxDistance);
     }
 
@@ -455,7 +455,7 @@ extends Mod {
         float f2;
         double d2;
         double d3;
-        String string = renderEntityContext.o();
+        String string = renderEntityContext.getTypeName();
         String string2 = ClientSettings.F + "a" + ClientSettings.F + "r" + string;
         boolean bl5 = entityLivingBase.isInstance(MappedClasses.Yl);
         if (bl5) {
@@ -464,10 +464,10 @@ extends Mod {
             float f4;
             double d5;
             double d6;
-            FriendEntry friendEntry = Vape.INSTANCE.getFriendManager().O(renderEntityContext.k());
+            FriendEntry friendEntry = Vape.INSTANCE.getFriendManager().O(renderEntityContext.getName());
             if (friendEntry != null) {
                 string2 = friendEntry.o();
-                if (!Vape.INSTANCE.getFriendManager().q.L().booleanValue() && !Vape.INSTANCE.getFriendManager().q.L().booleanValue()) {
+                if (!Vape.INSTANCE.getFriendManager().q.getEffectiveValue().booleanValue() && !Vape.INSTANCE.getFriendManager().q.getEffectiveValue().booleanValue()) {
                     int n;
                     char[] cArray = string.toCharArray();
                     for (int i = n = string.indexOf(string2); i > 0; --i) {
@@ -481,9 +481,9 @@ extends Mod {
                 }
             }
             if (bl) {
-                string2 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)renderEntityContext.e() + ClientSettings.F + "a]" + ClientSettings.F + "r " + string2;
+                string2 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)renderEntityContext.getDistance() + ClientSettings.F + "a]" + ClientSettings.F + "r " + string2;
             }
-            if (renderEntityContext.z().isCreativeMode()) {
+            if (renderEntityContext.getModelPlayer().isCreativeMode()) {
                 string2 = ClientSettings.F + "a[C] " + ClientSettings.F + "r" + string2;
             }
             String string4 = (d6 = 100.0 * ((d5 = (double)((f4 = entityLivingBase.w$src$F$15l9epb()) / 2.0f)) / (d4 = (double)(entityLivingBase.I$src$F$14vyvep() / 2.0f)))) > 75.0 ? "2" : (d6 > 50.0 ? "e" : (d6 > 25.0 ? "6" : "4"));
@@ -491,29 +491,29 @@ extends Mod {
             if (bl2) {
                 string2 = String.format("%s %s%s%s", string2, ClientSettings.F, string4, string5);
             }
-            if (bl4 && (f3 = renderEntityContext.I()) > 0.0f) {
+            if (bl4 && (f3 = renderEntityContext.getHealth()) > 0.0f) {
                 String string6 = this.numberFormat.format(Math.floor(((double)f3 + 0.25) / 0.5) * 0.5);
                 string2 = String.format("%s %s%s%s", string2, ClientSettings.F, "6", string6);
             }
             if (bl3) {
-                string2 = String.format("%s %s", string2, renderEntityContext.K());
+                string2 = String.format("%s %s", string2, renderEntityContext.getNameTag());
             }
             return string2;
         }
         if (bl) {
-            string2 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)renderEntityContext.e() + ClientSettings.F + "a]" + ClientSettings.F + "r " + string2;
+            string2 = ClientSettings.F + "a[" + ClientSettings.F + "f" + (int)renderEntityContext.getDistance() + ClientSettings.F + "a]" + ClientSettings.F + "r " + string2;
         }
         String string7 = (d3 = 100.0 * ((d2 = (double)((f2 = entityLivingBase.w$src$F$15l9epb()) / 2.0f)) / (d = (double)(entityLivingBase.I$src$F$14vyvep() / 2.0f)))) > 75.0 ? "2" : (d3 > 50.0 ? "e" : (d3 > 25.0 ? "6" : "4"));
         String string8 = this.numberFormat.format(Math.floor((d2 + 0.25) / 0.5) * 0.5);
         if (bl2) {
             string2 = String.format("%s %s%s%s", string2, ClientSettings.F, string7, string8);
         }
-        if (bl4 && (f = renderEntityContext.I()) > 0.0f) {
+        if (bl4 && (f = renderEntityContext.getHealth()) > 0.0f) {
             String string9 = this.numberFormat.format(Math.floor(((double)f + 0.25) / 0.5) * 0.5);
             string2 = String.format("%s %s%s%s", string2, ClientSettings.F, "6", string9);
         }
         if (bl3) {
-            string2 = String.format("%s %s", string2, renderEntityContext.K());
+            string2 = String.format("%s %s", string2, renderEntityContext.getNameTag());
         }
         return string2;
     }
@@ -523,7 +523,7 @@ extends Mod {
         if (eventRender3D.getWorld().isNull() || eventRender3D.getThePlayer().isNull()) {
             return;
         }
-        boolean bl = OpenGlBackendHolder.d.L(2884);
+        boolean bl = OpenGlBackendHolder.backend.isCapabilityEnabled(2884);
         EntityPlayerSP entityPlayerSP = eventRender3D.getThePlayer();
         WorldClient worldClient = eventRender3D.getWorld();
         double d = RenderManager.getInterpolatedRenderPosX();
@@ -537,13 +537,13 @@ extends Mod {
             Entity entity = new Entity(e);
             if (!this.shouldRender(entity, worldClient, entityPlayerSP)) continue;
             EntityLivingBase entityLivingBase = new EntityLivingBase(entity);
-            RenderEntityContext object = RenderEntityContextCache.V(entityLivingBase, entityPlayerSP);
+            RenderEntityContext object = RenderEntityContextCache.getOrCreate(entityLivingBase, entityPlayerSP);
             arrayList.add(OnlineRadarPreviewState.l(entityLivingBase, object));
         }
         arrayList.sort(NameTags::lambda$onRenderWorldLast$0);
         GameSettings gameSettings = Minecraft.gameSettings();
-        float f = FreeLookHudModule.z() ? FreeLookHudModule.w$src$F$1kb9hl5() : eventRender3D.getRenderManager().getPlayerViewX();
-        float f2 = FreeLookHudModule.z() ? FreeLookHudModule.c() : eventRender3D.getRenderManager().getPlayerViewY();
+        float f = FreeLookHudModule.isActive() ? FreeLookHudModule.getRenderPitch() : eventRender3D.getRenderManager().getPlayerViewX();
+        float f2 = FreeLookHudModule.isActive() ? FreeLookHudModule.getRenderYaw() : eventRender3D.getRenderManager().getPlayerViewY();
         GuiRenderPrimitives.U = true;
         for (OnlineRadarPreviewState onlineRadarPreviewState : arrayList) {
             EntityLivingBase entityLivingBase = (EntityLivingBase)onlineRadarPreviewState.P();
@@ -555,20 +555,20 @@ extends Mod {
             double d11 = d8 + (entityLivingBase.N() - d8) * (double)eventRender3D.getTicks() - d2;
             double d12 = d9 + (entityLivingBase.h() - d9) * (double)eventRender3D.getTicks() - d3;
             float f3 = (float)RotationUtil.y(d10, d11, d12, d4, d5, d6);
-            OpenGlBackendHolder.d.m();
+            OpenGlBackendHolder.backend.pushMatrix();
             try {
-                if (entityLivingBase.isInstance(MappedClasses.Yl) && this.renderPlayers.L().booleanValue()) {
-                    this.renderNameTag(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.playersHealth.L(), this.playersDistance.L(), this.equipment.L(), this.strengthIndicator.L(), this.playersEffects.L(), eventRender3D.getMatrixStack());
-                } else if (RotationUtil.m(entityLivingBase) && this.renderAnimals.L().booleanValue()) {
-                    this.renderNameTag(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.animalsHealth.L(), this.animalsDistance.L(), false, false, this.animalsEffects.L(), eventRender3D.getMatrixStack());
-                } else if (RotationUtil.W(entityLivingBase) && this.renderMobs.L().booleanValue()) {
-                    this.renderNameTag(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.mobsHealth.L(), this.mobsDistance.L(), false, false, this.mobsEffects.L(), eventRender3D.getMatrixStack());
+                if (entityLivingBase.isInstance(MappedClasses.Yl) && this.renderPlayers.getEffectiveValue().booleanValue()) {
+                    this.renderNameTag(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.playersHealth.getEffectiveValue(), this.playersDistance.getEffectiveValue(), this.equipment.getEffectiveValue(), this.strengthIndicator.getEffectiveValue(), this.playersEffects.getEffectiveValue(), eventRender3D.getMatrixStack());
+                } else if (RotationUtil.m(entityLivingBase) && this.renderAnimals.getEffectiveValue().booleanValue()) {
+                    this.renderNameTag(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.animalsHealth.getEffectiveValue(), this.animalsDistance.getEffectiveValue(), false, false, this.animalsEffects.getEffectiveValue(), eventRender3D.getMatrixStack());
+                } else if (RotationUtil.W(entityLivingBase) && this.renderMobs.getEffectiveValue().booleanValue()) {
+                    this.renderNameTag(eventRender3D.getRenderManager(), eventRender3D.getEntityRenderer(), eventRender3D.getFontRenderer(), entityPlayerSP, f, f2, gameSettings, entityLivingBase, renderEntityContext, d10, d11, d12, f3, this.mobsHealth.getEffectiveValue(), this.mobsDistance.getEffectiveValue(), false, false, this.mobsEffects.getEffectiveValue(), eventRender3D.getMatrixStack());
                 }
             }
             catch (Exception exception) {
                 // empty catch block
             }
-            OpenGlBackendHolder.d.F();
+            OpenGlBackendHolder.backend.popMatrix();
         }
         if (bl) {
             GlStateManager.L();
@@ -578,16 +578,16 @@ extends Mod {
 
     private int computeNameColor(EntityLivingBase entityLivingBase, RenderEntityContext renderEntityContext, MutableColor mutableColor, MutableColor mutableColor2, double d) {
         int n = 0xFFFFFF;
-        if (Vape.INSTANCE.getFriendManager().q.L().booleanValue()) {
-            boolean bl = renderEntityContext.K$src$Z$1xmao67();
-            if (renderEntityContext.R() || bl) {
+        if (Vape.INSTANCE.getFriendManager().q.getEffectiveValue().booleanValue()) {
+            boolean bl = renderEntityContext.isFriend();
+            if (renderEntityContext.isAttackable() || bl) {
                 n = -12417292;
                 mutableColor2.setRed(36);
                 mutableColor2.setGreen(255);
                 mutableColor2.setBlue(255);
                 mutableColor2.withAlpha((int)(64.0 * d));
             }
-            if (renderEntityContext.f()) {
+            if (renderEntityContext.isEnemy()) {
                 n = -12417292;
                 mutableColor2.setRed(255);
                 mutableColor2.setGreen(29);
@@ -595,14 +595,14 @@ extends Mod {
                 mutableColor2.withAlpha((int)(128.0 * d));
             }
             if (bl) {
-                n = Vape.INSTANCE.getFriendManager().R.HSBtoRGB();
-                mutableColor2.setColor(Vape.INSTANCE.getFriendManager().R.q$src$Lgg_vape_utils_MutableColor_$1dowyd3());
+                n = Vape.INSTANCE.getFriendManager().R.toRgb();
+                mutableColor2.setColor(Vape.INSTANCE.getFriendManager().R.getMutableColor());
             }
         }
-        if (Vape.INSTANCE.getModManager().getMod(MurderMystery.class).P(entityLivingBase)) {
+        if (Vape.INSTANCE.getModManager().getMod(MurderMystery.class).isMurderer(entityLivingBase)) {
             n = -59882;
         }
-        if (renderEntityContext.g()) {
+        if (renderEntityContext.isInvisible()) {
             n = 65530;
         }
         return n;
@@ -638,9 +638,9 @@ extends Mod {
             GuiRenderPrimitives.U = false;
             n4 = (int)Math.round(255.0 - d2 * 255.0);
             if (GuiRenderPrimitives.d()) {
-                BufferedRenderPrimitives.G(n + 2, n2 + 13, 13.0f, 2.0f, Color.BLACK);
-                BufferedRenderPrimitives.G(n + 2, n2 + 13, 12.0f, 1.0f, new Color((255 - n4) / 4, 64, 0, 255));
-                BufferedRenderPrimitives.G(n + 2, n2 + 13, (float)(13.0 * d3), 1.0f, RenderUtils.S((float)d3));
+                BufferedRenderPrimitives.fillRect(n + 2, n2 + 13, 13.0f, 2.0f, Color.BLACK);
+                BufferedRenderPrimitives.fillRect(n + 2, n2 + 13, 12.0f, 1.0f, new Color((255 - n4) / 4, 64, 0, 255));
+                BufferedRenderPrimitives.fillRect(n + 2, n2 + 13, (float)(13.0 * d3), 1.0f, RenderUtils.S((float)d3));
             } else {
                 GuiRenderPrimitives.y(n + 2, n2 + 13, 13.0f, 2.0f, Color.BLACK);
                 GuiRenderPrimitives.y(n + 2, n2 + 13, 12.0f, 1.0f, new Color((255 - n4) / 4, 64, 0, 255));
@@ -708,37 +708,37 @@ extends Mod {
             return false;
         }
         EntityLivingBase entityLivingBase = new EntityLivingBase(entity);
-        RenderEntityContext renderEntityContext = RenderEntityContextCache.V(entityLivingBase, entityPlayerSP);
-        if (renderEntityContext.P()) {
+        RenderEntityContext renderEntityContext = RenderEntityContextCache.getOrCreate(entityLivingBase, entityPlayerSP);
+        if (renderEntityContext.isSyntheticEntity()) {
             return false;
         }
-        if (this.hideBots.L().booleanValue() && renderEntityContext.D()) {
+        if (this.hideBots.getEffectiveValue().booleanValue() && renderEntityContext.isBot()) {
             return false;
         }
-        if (this.ignoreInvisibles.L().booleanValue() && renderEntityContext.g()) {
+        if (this.ignoreInvisibles.getEffectiveValue().booleanValue() && renderEntityContext.isInvisible()) {
             return false;
         }
         if (entity.isInstance(MappedClasses.Yl)) {
-            if (!this.renderPlayers.L().booleanValue()) {
+            if (!this.renderPlayers.getEffectiveValue().booleanValue()) {
                 return false;
             }
-            if ((Double)this.playersMaxDistance.K() != 0.0 && renderEntityContext.e() > (Double)this.playersMaxDistance.K()) {
+            if ((Double)this.playersMaxDistance.getValue() != 0.0 && renderEntityContext.getDistance() > (Double)this.playersMaxDistance.getValue()) {
                 return false;
             }
         }
         if (RotationUtil.m(entity)) {
-            if (!this.renderAnimals.L().booleanValue()) {
+            if (!this.renderAnimals.getEffectiveValue().booleanValue()) {
                 return false;
             }
-            if ((Double)this.animalsMaxDistance.K() != 0.0 && renderEntityContext.e() > (Double)this.animalsMaxDistance.K()) {
+            if ((Double)this.animalsMaxDistance.getValue() != 0.0 && renderEntityContext.getDistance() > (Double)this.animalsMaxDistance.getValue()) {
                 return false;
             }
         }
         if (RotationUtil.W(entity)) {
-            if (!this.renderMobs.L().booleanValue()) {
+            if (!this.renderMobs.getEffectiveValue().booleanValue()) {
                 return false;
             }
-            return (Double)this.mobsMaxDistance.K() == 0.0 || !(renderEntityContext.e() > (Double)this.mobsMaxDistance.K());
+            return (Double)this.mobsMaxDistance.getValue() == 0.0 || !(renderEntityContext.getDistance() > (Double)this.mobsMaxDistance.getValue());
         }
         return true;
     }
@@ -759,7 +759,7 @@ extends Mod {
     public String Q(EntityPlayerSP entityPlayerSP, RenderEntityContext renderEntityContext, EntityPlayer entityPlayer) {
         PotionEffect potionEffect;
         String string = EQUAL_DAMAGE_LABEL;
-        ItemStack itemStack = renderEntityContext.e$src$Lgg_vape_wrapper_impl_ItemStack_$hhijkm();
+        ItemStack itemStack = renderEntityContext.getBestWeapon();
         float f = 0.0f;
         if (itemStack != null && itemStack.isNotNull()) {
             Object object2;
@@ -772,7 +772,7 @@ extends Mod {
             f = (float)((double)f + ItemStackScoreUtil.L(object3));
         }
         float f2 = ItemStackScoreUtil.O(entityPlayerSP);
-        if (this.calculateEffects.L().booleanValue() && entityPlayerSP.i(PotionRegistry.t) && (potionEffect = entityPlayerSP.b(PotionRegistry.t)).k() > 0) {
+        if (this.calculateEffects.getEffectiveValue().booleanValue() && entityPlayerSP.i(PotionRegistry.t) && (potionEffect = entityPlayerSP.b(PotionRegistry.t)).k() > 0) {
             f2 = (float)((double)f2 * (1.375 * (double)potionEffect.L()));
         }
         for (ItemStack itemStack2 : this.collectEquipment(entityPlayerSP)) {

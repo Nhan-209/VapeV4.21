@@ -1,16 +1,30 @@
 package gg.vape.module.world.cheststeal;
 
-import gg.vape.module.world.cheststeal.ChestStealBestSlotTracker;
-
 public class ChestStealSlotScore {
-    public double D;
-    public int W;
-    final ChestStealBestSlotTracker e;
+    private double score;
+    private int slotIndex;
 
-    public ChestStealSlotScore(ChestStealBestSlotTracker chestStealBestSlotTracker, int n, double d) {
-        this.e = chestStealBestSlotTracker;
-        this.W = n;
-        this.D = d;
+    public ChestStealSlotScore() {
+        this.reset();
+    }
+
+    public void updateIfHigher(int slotIndex, double score) {
+        if (score > this.score) {
+            this.slotIndex = slotIndex;
+            this.score = score;
+        }
+    }
+
+    public boolean hasSlot() {
+        return this.slotIndex != -1;
+    }
+
+    public int getSlotIndex() {
+        return this.slotIndex;
+    }
+
+    public void reset() {
+        this.slotIndex = -1;
+        this.score = -1.0;
     }
 }
-

@@ -50,7 +50,7 @@ extends Mapping {
                 MVisGraph mVisGraph3 = this;
                 this.o = this.Y(string4, bl3, clazz3, classArray3);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MVisGraph.b("K5b3Uc");
             }
             return;
@@ -69,7 +69,7 @@ extends Mapping {
             MVisGraph mVisGraph4 = this;
             this.o = this.Y(string6, bl4, clazz4, classArray4);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MVisGraph.b("K5b3Uc");
         }
     }

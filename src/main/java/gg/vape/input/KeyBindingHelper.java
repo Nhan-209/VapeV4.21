@@ -12,58 +12,57 @@ import java.util.Collections;
 import java.util.List;
 
 public class KeyBindingHelper {
-    public static void v(KeyBinding keyBinding, boolean bl, boolean bl2) {
-        KeyBinding.setKeyBindState(keyBinding, bl);
-        if (bl2) {
+    public static void updateKeyBinding(KeyBinding keyBinding, boolean pressed, boolean triggerTick) {
+        KeyBinding.setKeyBindState(keyBinding, pressed);
+        if (triggerTick) {
             KeyBinding.onTick(keyBinding);
         }
     }
 
-    public static void a(KeyBinding keyBinding) {
+    public static void incrementPressTime(KeyBinding keyBinding) {
         keyBinding.onTick(1);
     }
 
-    public static BlockData Y() {
-        AxisAlignedBB axisAlignedBB;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+    public static BlockData findSupportingBlock() {
+        AxisAlignedBB playerBounds;
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return null;
         }
         if (ForgeVersion.MC_1_8_9.d()) {
-            axisAlignedBB = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+            playerBounds = player.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
         } else {
-            AxisAlignedBB axisAlignedBB2 = entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
-            axisAlignedBB = axisAlignedBB2.copy();
+            AxisAlignedBB currentBounds = player.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
+            playerBounds = currentBounds.copy();
         }
-        double d = ForgeVersion.MC_1_20_6.d() ? 1.0 : -1.0;
-        AxisAlignedBB axisAlignedBB3 = axisAlignedBB.k(0.0, d, 0.0);
-        List list = Minecraft.theWorld().i(entityPlayerSP, axisAlignedBB3);
-        ArrayList<AxisAlignedBB> arrayList = new ArrayList<AxisAlignedBB>();
-        for (Object e : list) {
-            arrayList.add(new AxisAlignedBB(e));
+        double verticalOffset = ForgeVersion.MC_1_20_6.d() ? 1.0 : -1.0;
+        AxisAlignedBB supportSearchBounds = playerBounds.k(0.0, verticalOffset, 0.0);
+        List collisions = Minecraft.theWorld().i(player, supportSearchBounds);
+        ArrayList<AxisAlignedBB> collisionBounds = new ArrayList<AxisAlignedBB>();
+        for (Object collision : collisions) {
+            collisionBounds.add(new AxisAlignedBB(collision));
         }
-        if (arrayList.size() == 0) {
+        if (collisionBounds.size() == 0) {
             return null;
         }
-        if (arrayList.size() == 1) {
-            AxisAlignedBB axisAlignedBB4 = (AxisAlignedBB)arrayList.get(0);
-            return BlockData.P(axisAlignedBB4);
+        if (collisionBounds.size() == 1) {
+            return BlockData.P(collisionBounds.get(0));
         }
-        Collections.sort(arrayList, new AxisAlignedBBDistanceComparator(entityPlayerSP));
-        return BlockData.P((AxisAlignedBB)arrayList.get(0));
+        Collections.sort(collisionBounds, new AxisAlignedBBDistanceComparator(player));
+        return BlockData.P(collisionBounds.get(0));
     }
 
-    public static void d(KeyBinding keyBinding, boolean bl) {
-        KeyBindingHelper.v(keyBinding, bl, true);
+    public static void setPressedAndTick(KeyBinding keyBinding, boolean pressed) {
+        KeyBindingHelper.updateKeyBinding(keyBinding, pressed, true);
     }
 
 
-    public static void k(KeyBinding keyBinding, boolean bl) {
+    public static void sendKeyBindingState(KeyBinding keyBinding, boolean pressed) {
         if (ForgeVersion.MC_1_21_4.v()) {
-            KeyBindingHelper.v(keyBinding, bl, bl);
+            KeyBindingHelper.updateKeyBinding(keyBinding, pressed, pressed);
             return;
         }
-        Minecraft.s().L(Minecraft.p().e$src$J$14hgru1(), keyBinding.getKeyCode(), bl);
+        Minecraft.s().L(Minecraft.p().e$src$J$14hgru1(), keyBinding.getKeyCode(), pressed);
     }
 }
 

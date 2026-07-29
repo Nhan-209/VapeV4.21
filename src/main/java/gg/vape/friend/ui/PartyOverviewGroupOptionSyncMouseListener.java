@@ -22,14 +22,14 @@ implements GuiMouseListener {
         this.P = booleanValue;
         this.z = groupOption;
         this.N = value;
-        this.G = this.P.L();
+        this.G = this.P.getEffectiveValue();
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        if (this.G != this.P.L()) {
-            this.G = this.P.L();
-            ZeusConnectionManager.T().u().Y(this.z, this.N.K());
+        if (this.G != this.P.getEffectiveValue()) {
+            this.G = this.P.getEffectiveValue();
+            ZeusConnectionManager.T().u().Y(this.z, this.N.getValue());
         }
     }
 

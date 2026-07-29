@@ -6,16 +6,15 @@ import gg.vape.wrapper.impl.SPacketDestroyEntities;
 
 public class BacktrackPacketReplayState
 extends Packet {
-    public BacktrackPacketReplayState(Object object) {
-        super(object);
+    public BacktrackPacketReplayState(Object handle) {
+        super(handle);
     }
 
-    public int[] n() {
+    public int[] getDestroyedEntityIds() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            SPacketDestroyEntities p5_02 = new SPacketDestroyEntities(BacktrackPacketReplayState.c.getMappingsMapperCompat().Rt.M(this.I));
-            return p5_02.W();
+            SPacketDestroyEntities destroyPacket = new SPacketDestroyEntities(BacktrackPacketReplayState.c.getMappingsMapperCompat().Rt.M(this.I));
+            return destroyPacket.W();
         }
         return BacktrackPacketReplayState.c.getMappingsMapperCompat().Rt.Y(this.I);
     }
 }
-

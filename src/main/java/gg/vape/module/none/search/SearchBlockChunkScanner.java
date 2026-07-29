@@ -26,13 +26,13 @@ public class SearchBlockChunkScanner {
         if (searchBlockRenderEntry == null) {
             searchBlockRenderEntry = new SearchBlockRenderEntry(blockId, metadata, worldX, worldY, worldZ);
         } else {
-            searchBlockRenderEntry.L(blockId, metadata, worldX, worldY, worldZ);
+            searchBlockRenderEntry.reset(blockId, metadata, worldX, worldY, worldZ);
         }
         return searchBlockRenderEntry;
     }
 
 
-    public static void q(SearchBlockRenderEntry searchBlockRenderEntry) {
+    public static void recycle(SearchBlockRenderEntry searchBlockRenderEntry) {
         entryPool.offer(searchBlockRenderEntry);
     }
 
@@ -85,7 +85,7 @@ public class SearchBlockChunkScanner {
         return false;
     }
 
-    public static ArrayList<SearchBlockRenderEntry> f(List<SearchBlock> list, int maxDistance, boolean onlyCaves) {
+    public static ArrayList<SearchBlockRenderEntry> scanLoadedChunks(List<SearchBlock> searchBlocks, int maxDistance, boolean onlyCaves) {
         int chunkZ;
         int chunkX;
         ArrayList<SearchBlockRenderEntry> results = new ArrayList<SearchBlockRenderEntry>();
@@ -95,7 +95,6 @@ public class SearchBlockChunkScanner {
         List<Chunk> loadedChunks = clientChunkProvider.L();
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         double playerX = entityPlayerSP.z();
-        double playerY = entityPlayerSP.N();
         double playerZ = entityPlayerSP.h();
         if (onlyCaves) {
             for (Chunk chunk : loadedChunks) {
@@ -111,7 +110,7 @@ public class SearchBlockChunkScanner {
                 }
             }
         }
-        SearchBlock[] targets = list.toArray(new SearchBlock[0]);
+        SearchBlock[] targets = searchBlocks.toArray(new SearchBlock[0]);
         for (Chunk chunk : loadedChunks) {
             List<ChunkSection> sections = chunk.U();
             for (ChunkSection chunkSection : sections) {
@@ -125,13 +124,6 @@ public class SearchBlockChunkScanner {
             }
         }
         return results;
-    }
-
-    private static int[] unpackPosition(long packed) {
-        int x = (int)(packed >> 43 & 0x1FFFFFL);
-        int z = (int)(packed >> 22 & 0x1FFFFFL);
-        int y = (int)(packed & 0xFFFL);
-        return new int[]{x, y, z};
     }
 
     private static void markAirBlocks(char[] blockStates, int chunkX, int sectionBaseY, int chunkZ, Set<Long> airPositions) {

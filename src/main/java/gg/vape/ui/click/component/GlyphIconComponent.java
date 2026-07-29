@@ -9,57 +9,57 @@ import org.jetbrains.annotations.Nullable;
 
 public class GlyphIconComponent
 extends InteractiveComponent {
-    private double o1;
-    private double o6;
-    private double K;
-    private ColorAnimation o0 = null;
+    private double offsetY;
+    private double iconWidth;
+    private double offsetX;
+    private ColorAnimation backgroundAnimation = null;
     @Nullable
-    private Color I;
-    private float b = 2.0f;
-    private float Q = 0.8f;
-    private boolean v = false;
-    private double oh;
-    private String o8;
-    private boolean oS = false;
+    private Color outlineColor;
+    private float cornerRadius = 2.0f;
+    private float outlineAlpha = 0.8f;
+    private boolean centerHorizontally = false;
+    private double iconHeight;
+    private String iconResource;
+    private boolean centerVertically = false;
 
-    public boolean E() {
-        return this.v;
+    public boolean isCenterHorizontally() {
+        return this.centerHorizontally;
     }
 
-    public ColorAnimation z$src$Lgg_vape_ui_click_animation_ColorAnimation_$om4cxn() {
-        return this.o0;
+    public ColorAnimation getBackgroundAnimation() {
+        return this.backgroundAnimation;
     }
 
-    public String D$src$Ljava_lang_String_$gcdtym() {
-        return this.o8;
+    public String getIconResource() {
+        return this.iconResource;
     }
 
-    public void A(double d) {
-        this.K = d;
+    public void setOffsetX(double offsetX) {
+        this.offsetX = offsetX;
     }
 
-    public void R(boolean bl) {
-        this.oS = bl;
+    public void setCenterVertically(boolean centerVertically) {
+        this.centerVertically = centerVertically;
     }
 
-    public boolean r$src$Z$1tc3woi() {
-        return this.oS;
+    public boolean isCenterVertically() {
+        return this.centerVertically;
     }
 
 
-    public GlyphIconComponent(String string, double d, double d2, double d3, double d4, @Nullable Color color, @Nullable Color color2, @Nullable Color color3) {
-        this.o8 = string;
-        this.o(d3);
-        this.Y(d4);
-        this.o6 = d;
-        this.oh = d2;
-        this.o(color != null ? color : GlyphIconComponent.J.W);
-        this.P(color2 != null ? color2 : GlyphIconComponent.J.f);
-        this.I = color3;
+    public GlyphIconComponent(String iconResource, double iconWidth, double iconHeight, double width, double height, @Nullable Color color, @Nullable Color hoverColor, @Nullable Color outlineColor) {
+        this.iconResource = iconResource;
+        this.o(width);
+        this.Y(height);
+        this.iconWidth = iconWidth;
+        this.iconHeight = iconHeight;
+        this.setNormalColor(color != null ? color : GlyphIconComponent.J.W);
+        this.setHoverColor(hoverColor != null ? hoverColor : GlyphIconComponent.J.f);
+        this.outlineColor = outlineColor;
     }
 
-    public void p(ColorAnimation colorAnimation) {
-        this.o0 = colorAnimation;
+    public void setBackgroundAnimation(ColorAnimation backgroundAnimation) {
+        this.backgroundAnimation = backgroundAnimation;
     }
 
     @Override
@@ -67,17 +67,17 @@ extends InteractiveComponent {
         return 0.0;
     }
 
-    public void W(String string) {
-        this.o8 = string;
+    public void setIconResource(String iconResource) {
+        this.iconResource = iconResource;
     }
 
-    public void E(Color color, Color color2) {
-        if (color2 == null) {
-            this.o0 = null;
+    public void setBackgroundAnimationColors(Color color, Color hoverColor) {
+        if (hoverColor == null) {
+            this.backgroundAnimation = null;
             return;
         }
         this.getClass();
-        this.o0 = new ColorAnimation(0.15, color, color2);
+        this.backgroundAnimation = new ColorAnimation(0.15, color, hoverColor);
     }
 
     @Override
@@ -85,91 +85,91 @@ extends InteractiveComponent {
         return 0.0;
     }
 
-    public void j(@Nullable Color color) {
-        this.I = color;
+    public void setOutlineColor(@Nullable Color outlineColor) {
+        this.outlineColor = outlineColor;
     }
 
-    public double J$src$D$1sq44f4() {
-        return this.o1;
+    public double getOffsetY() {
+        return this.offsetY;
     }
 
-    public void U(double d) {
-        this.oh = d;
+    public void setIconHeight(double iconHeight) {
+        this.iconHeight = iconHeight;
     }
 
-    public double p() {
-        return this.K;
+    public double getOffsetX() {
+        return this.offsetX;
     }
 
-    public float B$src$F$1slprpy() {
-        return this.b;
+    public float getCornerRadius() {
+        return this.cornerRadius;
     }
 
-    public void i(float f) {
-        this.b = f;
+    public void setCornerRadius(float cornerRadius) {
+        this.cornerRadius = cornerRadius;
     }
 
     @Override
     public void H() {
-        double d = this.G$src$D$1b2f02a();
-        double d2 = this.n();
-        if (this.v) {
-            d += this.A() / 2.0 - this.o6 / 2.0;
+        double iconX = this.G$src$D$1b2f02a();
+        double iconY = this.n();
+        if (this.centerHorizontally) {
+            iconX += this.A() / 2.0 - this.iconWidth / 2.0;
         }
-        d += this.K;
-        if (this.oS) {
-            d2 += this.L() / 2.0 - this.oh / 2.0;
+        iconX += this.offsetX;
+        if (this.centerVertically) {
+            iconY += this.L() / 2.0 - this.iconHeight / 2.0;
         }
-        d2 += this.o1;
-        if (this.o0 != null) {
-            this.o0.u(this.w$src$Z$e457mb());
-            if ((double)this.b == this.A() / 2.0 && (double)this.b == this.L() / 2.0) {
-                GuiRenderPrimitives.V(this.G$src$D$1b2f02a(), this.n(), this.b * 2.0f, 1.0, this.o0.getInterpolatedColor());
+        iconY += this.offsetY;
+        if (this.backgroundAnimation != null) {
+            this.backgroundAnimation.u(this.w$src$Z$e457mb());
+            if ((double)this.cornerRadius == this.A() / 2.0 && (double)this.cornerRadius == this.L() / 2.0) {
+                GuiRenderPrimitives.V(this.G$src$D$1b2f02a(), this.n(), this.cornerRadius * 2.0f, 1.0, this.backgroundAnimation.getInterpolatedColor());
             } else {
-                GuiRenderPrimitives.e(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.o0.getInterpolatedColor(), false, this.b, 1.0f);
+                GuiRenderPrimitives.e(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.backgroundAnimation.getInterpolatedColor(), false, this.cornerRadius, 1.0f);
             }
         }
-        Color color = this.e$src$Ljava_awt_Color_$1yl68fq();
-        if (this.N() != null && this.w$src$Z$e457mb()) {
-            color = this.N();
+        Color renderedColor = this.getNormalColor();
+        if (this.getHoverColor() != null && this.w$src$Z$e457mb()) {
+            renderedColor = this.getHoverColor();
         }
-        ImageRenderer.E(color, (int)d, (int)d2, this.o8, (float)this.o6, (float)this.oh, false);
-        if (this.I != null) {
-            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.w$src$Z$e457mb() ? this.I.brighter() : this.I, this.b, this.Q, 1.0f);
+        ImageRenderer.drawImage(renderedColor, (int)iconX, (int)iconY, this.iconResource, (float)this.iconWidth, (float)this.iconHeight, false);
+        if (this.outlineColor != null) {
+            GuiRenderPrimitives.P(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.w$src$Z$e457mb() ? this.outlineColor.brighter() : this.outlineColor, this.cornerRadius, this.outlineAlpha, 1.0f);
         }
     }
 
-    public void Z(float f) {
-        this.Q = f;
+    public void setOutlineAlpha(float outlineAlpha) {
+        this.outlineAlpha = outlineAlpha;
     }
 
-    public void q(boolean bl) {
-        this.v = bl;
+    public void setCenterHorizontally(boolean centerHorizontally) {
+        this.centerHorizontally = centerHorizontally;
     }
 
-    public double v() {
-        return this.oh;
+    public double getIconHeight() {
+        return this.iconHeight;
     }
 
     @Nullable
-    public Color I$src$Ljava_awt_Color_$18e48cp() {
-        return this.I;
+    public Color getOutlineColor() {
+        return this.outlineColor;
     }
 
-    public double Y$src$D$1syd1bj() {
-        return this.o6;
+    public double getIconWidth() {
+        return this.iconWidth;
     }
 
-    public void d(double d) {
-        this.o6 = d;
+    public void setIconWidth(double iconWidth) {
+        this.iconWidth = iconWidth;
     }
 
-    public void w(double d) {
-        this.o1 = d;
+    public void setOffsetY(double offsetY) {
+        this.offsetY = offsetY;
     }
 
-    public float z() {
-        return this.Q;
+    public float getOutlineAlpha() {
+        return this.outlineAlpha;
     }
 }
 

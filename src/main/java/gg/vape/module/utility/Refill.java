@@ -7,7 +7,6 @@ import gg.vape.inventory.InventoryClick;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.UtilityMod;
-import gg.vape.module.utility.RefillInventoryState;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.ItemStackScoreUtil;
@@ -27,13 +26,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
-import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Refill
 extends UtilityMod
-implements RefillInventoryState {
-    private final Random random;
+{
     private final TimerUtil delayTimer;
     private final ModeValue typeMode;
     private final ModeOption bothMode = new ModeOption("Both");
@@ -49,41 +46,40 @@ implements RefillInventoryState {
     private final ModeOption potsMode = new ModeOption("Pots");
 
     private boolean hasHealingInInventory() {
-        boolean bl = false;
-        for (int i = 9; i < 36; ++i) {
+        for (int inventorySlot = 9; inventorySlot < 36; ++inventorySlot) {
             Item item;
-            ItemStack itemStack = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(i);
-            if (itemStack.isNull() || (item = itemStack.getItem()).isNull() || !ItemStackScoreUtil.o(itemStack, ((ModeSelection)this.typeMode.K()).equals(this.soupMode) || ((ModeSelection)this.typeMode.K()).equals(this.bothMode))) continue;
-            bl = true;
+            ItemStack itemStack = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(inventorySlot);
+            if (itemStack.isNull() || (item = itemStack.getItem()).isNull() || !ItemStackScoreUtil.o(itemStack, ((ModeSelection)this.typeMode.getValue()).equals(this.soupMode) || ((ModeSelection)this.typeMode.getValue()).equals(this.bothMode))) continue;
+            return true;
         }
-        return bl;
+        return false;
     }
 
     private void processClickQueue() {
-        if (this.delay.M() == 0.0) {
+        if (this.delay.getMaximumValue() == 0.0) {
             while (!this.clickQueue.isEmpty()) {
-                InventoryClick inventoryClick = this.clickQueue.poll();
-                inventoryClick.k();
+                InventoryClick pendingClick = this.clickQueue.poll();
+                pendingClick.execute();
             }
             return;
         }
-        if (this.delayTimer.hasTimeElapsed((long)this.delay.B())) {
-            InventoryClick inventoryClick = this.clickQueue.poll();
-            inventoryClick.k();
+        if (this.delayTimer.hasTimeElapsed((long)this.delay.getRandomValue())) {
+            InventoryClick pendingClick = this.clickQueue.poll();
+            pendingClick.execute();
             this.delayTimer.reset();
         }
     }
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
+    public void onTick(EventPrePlayerTick event) {
         if (!this.opened) {
             if (!Minecraft.currentScreen().isInstance(MappedClasses.Ft)) {
                 KeyBinding keyBinding = Minecraft.gameSettings().j();
                 if (ForgeVersion.MC_1_16_5.d()) {
-                    KeyBindingHelper.a(keyBinding);
+                    KeyBindingHelper.incrementPressTime(keyBinding);
                 } else {
-                    KeyBindingHelper.d(keyBinding, true);
-                    KeyBindingHelper.v(keyBinding, false, false);
+                    KeyBindingHelper.setPressedAndTick(keyBinding, true);
+                    KeyBindingHelper.updateKeyBinding(keyBinding, false, false);
                 }
             } else {
                 this.opened = true;
@@ -113,13 +109,13 @@ implements RefillInventoryState {
         }
     }
 
-    private boolean isJunk(Item item, ItemStack itemStack, List<ItemStack> list) {
-        if (ItemStackScoreUtil.o(itemStack, ((ModeSelection)this.typeMode.K()).equals(this.soupMode) || ((ModeSelection)this.typeMode.K()).equals(this.bothMode))) {
+    private boolean isJunk(ItemStack itemStack, List<ItemStack> retainedItems) {
+        if (ItemStackScoreUtil.o(itemStack, ((ModeSelection)this.typeMode.getValue()).equals(this.soupMode) || ((ModeSelection)this.typeMode.getValue()).equals(this.bothMode))) {
             return false;
         }
         if (this.allowedItems.isValid(itemStack, true)) {
-            if (!this.hasDuplicate(itemStack, list)) {
-                list.add(itemStack);
+            if (!this.hasDuplicate(itemStack, retainedItems)) {
+                retainedItems.add(itemStack);
                 return false;
             }
             return true;
@@ -127,23 +123,22 @@ implements RefillInventoryState {
         return true;
     }
 
-    private void queueClick(int n, int n2, int n3, int n4) {
-        this.clickQueue.add(new InventoryClick(n, n2, n3, n4));
+    private void queueClick(int windowId, int slot, int mouseButton, int clickType) {
+        this.clickQueue.add(new InventoryClick(windowId, slot, mouseButton, clickType));
     }
 
     public Refill() {
         super("Refill", Category.M, "Refills your hotbar with healing items.");
         this.soupMode = new ModeOption("Soup");
         this.typeMode = ModeValue.create((Object)this, "Type", this.bothMode, this.bothMode, this.potsMode, this.soupMode);
-        this.allowedItems = LimitValue.n(this, "refill-alloweditems", "Non Junk Items", LimitValue.r, Collections.emptyList());
+        this.allowedItems = LimitValue.create(this, "refill-alloweditems", "Non Junk Items", LimitValue.ALLOW_LIST_COLOR, Collections.emptyList());
         this.vertical = BooleanValue.create(this, "Vertical", false);
         this.scatter = BooleanValue.create(this, "Scatter", false);
         this.hotbarClear = BooleanValue.create(this, "Hotbar clear", false, "Clears junk from your hotbar to refill.\nWhitelisted items will not be considered junk\nOnly one stack of each non-junk item is kept");
-        this.delay = RandomValue.C(this, "Delay", "#", "ms", 50.0, 75.0, 125.0, 200.0, 5.0);
+        this.delay = RandomValue.createWithIncrement(this, "Delay", "#", "ms", 50.0, 75.0, 125.0, 200.0, 5.0);
         this.clickQueue = new ConcurrentLinkedQueue<InventoryClick>();
-        this.random = new Random();
         this.delayTimer = new TimerUtil();
-        this.hotbarClear.K(this.allowedItems);
+        this.hotbarClear.addDependentValues(this.allowedItems);
         this.addValue(this.vertical, this.scatter, this.hotbarClear, this.allowedItems, this.delay, this.typeMode);
     }
 
@@ -151,98 +146,98 @@ implements RefillInventoryState {
         return this.chance(0.2);
     }
 
-    private boolean hasDuplicate(ItemStack itemStack, List<ItemStack> list) {
-        for (ItemStack itemStack2 : list) {
-            if (itemStack.equals(itemStack2) || !itemStack.f().equals(itemStack2.f())) continue;
+    private boolean hasDuplicate(ItemStack candidate, List<ItemStack> retainedItems) {
+        for (ItemStack retainedItem : retainedItems) {
+            if (candidate.equals(retainedItem) || !candidate.f().equals(retainedItem.f())) continue;
             return true;
         }
         return false;
     }
 
-    private boolean chance(double d) {
-        double d2 = Math.max(Math.min(d, 1.0), 0.0);
-        return Math.random() <= d2;
+    private boolean chance(double probability) {
+        double boundedProbability = Math.max(Math.min(probability, 1.0), 0.0);
+        return Math.random() <= boundedProbability;
     }
 
     private void buildRefillClicks() {
-        GuiContainer guiContainer = new GuiContainer(Minecraft.currentScreen().getObject());
-        ArrayList<Integer> arrayList = new ArrayList<Integer>();
-        ArrayList arrayList2 = new ArrayList();
-        int n = 0;
-        List<Integer> list = this.findJunkHotbarSlots();
-        int n2 = 9;
-        while (n2 < 36) {
+        GuiContainer inventoryScreen = new GuiContainer(Minecraft.currentScreen().getObject());
+        ArrayList<Integer> healingSlots = new ArrayList<Integer>();
+        ArrayList<Integer> selectedHealingSlots = new ArrayList<Integer>();
+        int verticalRow = 0;
+        List<Integer> targetHotbarSlots = this.findJunkHotbarSlots();
+        int inventorySlot = 9;
+        while (inventorySlot < 36) {
             Item item;
-            Slot slot = guiContainer.getInventorySlots().getInventorySlots().get(n2);
-            Object object = slot.I();
-            if (!((ItemStack)object).isNull() && !(item = ((ItemStack)object).getItem()).isNull() && ItemStackScoreUtil.o((ItemStack)object, ((ModeSelection)this.typeMode.K()).equals(this.soupMode) || ((ModeSelection)this.typeMode.K()).equals(this.bothMode))) {
-                arrayList.add(n2);
+            Slot slot = inventoryScreen.getInventorySlots().getInventorySlots().get(inventorySlot);
+            ItemStack itemStack = slot.I();
+            if (!itemStack.isNull() && !(item = itemStack.getItem()).isNull() && ItemStackScoreUtil.o(itemStack, ((ModeSelection)this.typeMode.getValue()).equals(this.soupMode) || ((ModeSelection)this.typeMode.getValue()).equals(this.bothMode))) {
+                healingSlots.add(inventorySlot);
             }
-            if (this.vertical.L().booleanValue()) {
-                n2 += 9;
-                if (++n != 3) continue;
-                ++n2;
-                n2 -= 27;
-                n = 0;
+            if (this.vertical.getEffectiveValue().booleanValue()) {
+                inventorySlot += 9;
+                if (++verticalRow != 3) continue;
+                ++inventorySlot;
+                inventorySlot -= 27;
+                verticalRow = 0;
                 continue;
             }
-            ++n2;
+            ++inventorySlot;
         }
-        if (arrayList.isEmpty()) {
+        if (healingSlots.isEmpty()) {
             this.finished = true;
             return;
         }
-        if (this.scatter.L().booleanValue()) {
-            Collections.shuffle(arrayList);
+        if (this.scatter.getEffectiveValue().booleanValue()) {
+            Collections.shuffle(healingSlots);
         }
-        for (n2 = 0; n2 < list.size() && n2 < arrayList.size(); ++n2) {
-            arrayList2.add(arrayList.get(n2));
+        for (int selectionIndex = 0; selectionIndex < targetHotbarSlots.size() && selectionIndex < healingSlots.size(); ++selectionIndex) {
+            selectedHealingSlots.add(healingSlots.get(selectionIndex));
         }
-        n2 = 0;
-        for (Object object : arrayList2) {
-            boolean bl = false;
-            int n3 = 0;
-            if (this.hotbarClear.L().booleanValue()) {
+        int targetIndex = 0;
+        for (Integer healingSlot : selectedHealingSlots) {
+            boolean targetOccupied = false;
+            int hotbarSlot = 0;
+            if (this.hotbarClear.getEffectiveValue().booleanValue()) {
                 Item item;
-                n3 = list.get(n2);
-                ItemStack itemStack = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(n3);
+                hotbarSlot = targetHotbarSlots.get(targetIndex);
+                ItemStack itemStack = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().c(hotbarSlot);
                 if (itemStack.isNotNull() && (item = itemStack.getItem()).isNotNull()) {
-                    bl = true;
+                    targetOccupied = true;
                 }
             }
-            if (bl) {
-                this.queueClick(guiContainer.getInventorySlots().getWindowId(), (Integer)object, 0, 0);
-                this.queueClick(guiContainer.getInventorySlots().getWindowId(), 36 + n3, 0, 0);
-                this.queueClick(guiContainer.getInventorySlots().getWindowId(), (Integer)object, 0, 0);
+            if (targetOccupied) {
+                this.queueClick(inventoryScreen.getInventorySlots().getWindowId(), healingSlot, 0, 0);
+                this.queueClick(inventoryScreen.getInventorySlots().getWindowId(), 36 + hotbarSlot, 0, 0);
+                this.queueClick(inventoryScreen.getInventorySlots().getWindowId(), healingSlot, 0, 0);
             } else {
-                this.queueClick(guiContainer.getInventorySlots().getWindowId(), (Integer)object, 0, 1);
+                this.queueClick(inventoryScreen.getInventorySlots().getWindowId(), healingSlot, 0, 1);
                 if (this.shouldDoubleClick()) {
-                    this.queueClick(guiContainer.getInventorySlots().getWindowId(), (Integer)object, 0, 1);
+                    this.queueClick(inventoryScreen.getInventorySlots().getWindowId(), healingSlot, 0, 1);
                 }
             }
-            ++n2;
+            ++targetIndex;
         }
     }
 
     private List<Integer> findJunkHotbarSlots() {
-        ArrayList<ItemStack> arrayList = new ArrayList<ItemStack>();
-        ArrayList<Integer> arrayList2 = new ArrayList<Integer>();
-        Object[] objectArray = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().M();
-        for (int i = 0; i < 9; ++i) {
-            ItemStack itemStack = new ItemStack(objectArray[i]);
+        ArrayList<ItemStack> retainedItems = new ArrayList<ItemStack>();
+        ArrayList<Integer> availableSlots = new ArrayList<Integer>();
+        Object[] hotbarContents = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().M();
+        for (int hotbarSlot = 0; hotbarSlot < 9; ++hotbarSlot) {
+            ItemStack itemStack = new ItemStack(hotbarContents[hotbarSlot]);
             if (itemStack.isNull()) {
-                arrayList2.add(i);
+                availableSlots.add(hotbarSlot);
                 continue;
             }
-            if (this.hotbarClear.L().booleanValue()) {
-                if (!this.isJunk(itemStack.getItem(), itemStack, arrayList)) continue;
-                arrayList2.add(i);
+            if (this.hotbarClear.getEffectiveValue().booleanValue()) {
+                if (!this.isJunk(itemStack, retainedItems)) continue;
+                availableSlots.add(hotbarSlot);
                 continue;
             }
             if (!itemStack.toString().contains("tile.air")) continue;
-            arrayList2.add(i);
+            availableSlots.add(hotbarSlot);
         }
-        return arrayList2;
+        return availableSlots;
     }
 
 
@@ -252,7 +247,7 @@ implements RefillInventoryState {
             this.Y(false);
             return;
         }
-        if (this.findJunkHotbarSlots().size() == 0) {
+        if (this.findJunkHotbarSlots().isEmpty()) {
             this.Y(false);
             return;
         }

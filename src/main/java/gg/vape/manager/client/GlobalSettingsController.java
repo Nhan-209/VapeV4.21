@@ -21,7 +21,7 @@ public class GlobalSettingsController {
     }
 
     public void i() {
-        this.W.J(this.k.L());
+        this.W.J(this.k.getEffectiveValue());
         this.W.h(false);
         try {
             ApiServices.d().v().u(SettingsDataType.GLOBAL, this.W);
@@ -47,11 +47,10 @@ public class GlobalSettingsController {
             this.j = true;
         }
         this.n = this.W.c();
-        this.k.o(this.W.C());
+        this.k.setValue(this.W.C());
     }
 
     private static Exception a(Exception exception) {
         return exception;
     }
 }
-

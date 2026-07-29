@@ -41,7 +41,7 @@ extends Wrapper {
         if (ForgeVersion.MC_1_16_5.d()) {
             try {
                 ITextComponent iTextComponent = new ITextComponent(MItemStack.c(ItemStack.c.getMappings().q8, this.I));
-                return iTextComponent.C();
+                return iTextComponent.getFormattedText();
             }
             catch (Throwable throwable) {
                 Item item = this.getItem();
@@ -317,4 +317,3 @@ extends Wrapper {
         return ItemStack.c.getMappings().q8.F(this.getObject());
     }
 }
-

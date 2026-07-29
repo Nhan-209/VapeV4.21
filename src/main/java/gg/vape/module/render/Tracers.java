@@ -38,263 +38,259 @@ import org.lwjgl.opengl.GL11;
 
 public class Tracers
 extends Mod {
-    private final BooleanValue H;
-    private final RandomValue L;
-    private double k;
-    private final BooleanValue V;
-    private final BooleanValue K;
-    private static final long P = 6957373267435107050L;
-    private final BooleanValue r;
-    private final BooleanValue t;
-    private final Map<EntityLivingBase, RenderEntityContextEntry> O;
-    private final ColorValue Z;
-    private final RandomValue D;
-    private final BooleanValue p;
-    private final ColorValue a;
-    private final BooleanValue J;
-    private final BooleanValue b;
-    private final BooleanValue F = BooleanValue.create(this, "Enemy Only", false);
-    private final BooleanValue j = BooleanValue.create(this, "Enemies List Only", false);
-    private final RandomValue A;
-    private List<EntityLivingBase> S;
-    private final ColorValue c;
-    private final BooleanValue I;
+    private final BooleanValue showInvisibles;
+    private final RandomValue animalDistance;
+    private double medianDistance;
+    private final BooleanValue highlightFocusing;
+    private final BooleanValue colorByDistance;
+    private static final long MODULE_COLOR = 6957373267435107050L;
+    private final BooleanValue mobDistanceCheck;
+    private final BooleanValue renderAnimals;
+    private final Map<EntityLivingBase, RenderEntityContextEntry> entries;
+    private final ColorValue playerColor;
+    private final RandomValue mobDistance;
+    private final BooleanValue animalDistanceCheck;
+    private final ColorValue mobColor;
+    private final BooleanValue renderPlayers;
+    private final BooleanValue renderMobs;
+    private final BooleanValue enemyOnly = BooleanValue.create(this, "Enemy Only", false);
+    private final BooleanValue enemyListOnly = BooleanValue.create(this, "Enemies List Only", false);
+    private final RandomValue playerDistance;
+    private List<EntityLivingBase> sortedEntities;
+    private final ColorValue animalColor;
+    private final BooleanValue playerDistanceCheck;
 
-    private static int lambda$getMedianDistance$0(EntityPlayerSP entityPlayerSP, EntityLivingBase entityLivingBase, EntityLivingBase entityLivingBase2) {
-        double d;
-        double d2 = RenderEntityContextCache.V(entityLivingBase, entityPlayerSP).e();
-        if (d2 == (d = RenderEntityContextCache.V(entityLivingBase2, entityPlayerSP).e())) {
-            return 0;
-        }
-        return d2 > d ? 1 : -1;
+    private static int compareDistance(EntityPlayerSP player, EntityLivingBase first, EntityLivingBase second) {
+        double firstDistance = RenderEntityContextCache.getOrCreate(first, player).getDistance();
+        double secondDistance = RenderEntityContextCache.getOrCreate(second, player).getDistance();
+        return Double.compare(firstDistance, secondDistance);
     }
 
-    private void updateMedianDistance(EntityPlayerSP entityPlayerSP) {
-        this.S.sort((arg_0, arg_1) -> Tracers.lambda$getMedianDistance$0(entityPlayerSP, arg_0, arg_1));
-        ArrayList<Double> arrayList = new ArrayList<Double>();
-        for (Map.Entry<EntityLivingBase, RenderEntityContextEntry> entry : this.O.entrySet()) {
-            arrayList.add(entry.getValue().Y().e());
+    private void updateMedianDistance(EntityPlayerSP player) {
+        this.sortedEntities.sort((first, second) -> Tracers.compareDistance(player, first, second));
+        ArrayList<Double> distances = new ArrayList<Double>();
+        for (Map.Entry<EntityLivingBase, RenderEntityContextEntry> entry : this.entries.entrySet()) {
+            distances.add(entry.getValue().getContext().getDistance());
         }
-        Collections.sort(arrayList);
-        this.k = (Double)arrayList.get(arrayList.size() / 2);
+        Collections.sort(distances);
+        this.medianDistance = distances.get(distances.size() / 2);
     }
 
-    private void collectEntities(EntityPlayerSP entityPlayerSP, WorldClient worldClient) {
-        for (Object e : worldClient.z()) {
-            EntityLivingBase entityLivingBase;
-            RenderEntityContext renderEntityContext;
-            Entity entity = new Entity(e);
-            if (!entity.isInstance(MappedClasses.zm) || entity.equals(entityPlayerSP) || (renderEntityContext = RenderEntityContextCache.V(entityLivingBase = new EntityLivingBase(entity), entityPlayerSP)).P() || !this.H.L().booleanValue() && renderEntityContext.o$src$Z$1y639j7() || renderEntityContext.D() || this.F.L().booleanValue() && (this.j.L() != false ? !renderEntityContext.f() : !Vape.INSTANCE.getClientSettings().g(entity, false))) continue;
-            float f = (float)renderEntityContext.e();
+    private void collectEntities(EntityPlayerSP player, WorldClient world) {
+        for (Object entityHandle : world.z()) {
+            Entity entity = new Entity(entityHandle);
+            if (!entity.isInstance(MappedClasses.zm) || entity.equals(player)) continue;
+            EntityLivingBase livingEntity = new EntityLivingBase(entity);
+            RenderEntityContext context = RenderEntityContextCache.getOrCreate(livingEntity, player);
+            if (context.isSyntheticEntity() || !this.showInvisibles.getEffectiveValue().booleanValue() && context.isInvisibleWithoutEquipment() || context.isBot() || this.enemyOnly.getEffectiveValue().booleanValue() && (this.enemyListOnly.getEffectiveValue() != false ? !context.isEnemy() : !Vape.INSTANCE.getClientSettings().g(entity, false))) continue;
+            float distance = (float)context.getDistance();
             if (entity.isInstance(MappedClasses.lG)) {
-                if (!this.J.L().booleanValue() || this.I.L().booleanValue() && ((double)f < this.A.q$src$D$vgz097() || (double)f > this.A.M())) continue;
-                if (renderEntityContext.K$src$Z$1xmao67() && Vape.INSTANCE.getFriendManager().q.L().booleanValue()) {
-                    this.O.put(entityLivingBase, new RenderEntityContextEntry(renderEntityContext, Vape.INSTANCE.getFriendManager().R.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), null));
+                if (!this.renderPlayers.getEffectiveValue().booleanValue() || this.playerDistanceCheck.getEffectiveValue().booleanValue() && ((double)distance < this.playerDistance.getMinimumValue() || (double)distance > this.playerDistance.getMaximumValue())) continue;
+                if (context.isFriend() && Vape.INSTANCE.getFriendManager().q.getEffectiveValue().booleanValue()) {
+                    this.entries.put(livingEntity, new RenderEntityContextEntry(context, Vape.INSTANCE.getFriendManager().R.getMutableColor()));
                     continue;
                 }
-                if (renderEntityContext.f() && Vape.INSTANCE.getEnemyManager().p.L().booleanValue()) {
-                    this.O.put(entityLivingBase, new RenderEntityContextEntry(renderEntityContext, Vape.INSTANCE.getEnemyManager().i.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), null));
+                if (context.isEnemy() && Vape.INSTANCE.getEnemyManager().p.getEffectiveValue().booleanValue()) {
+                    this.entries.put(livingEntity, new RenderEntityContextEntry(context, Vape.INSTANCE.getEnemyManager().i.getMutableColor()));
                     continue;
                 }
-                this.O.put(entityLivingBase, new RenderEntityContextEntry(renderEntityContext, this.Z.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), null));
+                this.entries.put(livingEntity, new RenderEntityContextEntry(context, this.playerColor.getMutableColor()));
                 continue;
             }
-            boolean bl = false;
+            boolean mob = false;
             if (ForgeVersion.MC_1_17.d()) {
                 if (entity.isInstance(MappedClasses.Yw) || entity.isInstance(MappedClasses.Zo)) {
-                    bl = true;
+                    mob = true;
                 }
             } else if (entity.isInstance(MappedClasses.Fr) || entity.isInstance(MappedClasses.Zo)) {
-                bl = true;
+                mob = true;
             }
-            if (bl) {
-                if (!this.b.L().booleanValue() || this.r.L().booleanValue() && ((double)f < this.D.q$src$D$vgz097() || (double)f > this.D.M())) continue;
-                this.O.put(entityLivingBase, new RenderEntityContextEntry(renderEntityContext, this.a.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), null));
+            if (mob) {
+                if (!this.renderMobs.getEffectiveValue().booleanValue() || this.mobDistanceCheck.getEffectiveValue().booleanValue() && ((double)distance < this.mobDistance.getMinimumValue() || (double)distance > this.mobDistance.getMaximumValue())) continue;
+                this.entries.put(livingEntity, new RenderEntityContextEntry(context, this.mobColor.getMutableColor()));
                 continue;
             }
-            if (!this.t.L().booleanValue() || entity.isInstance(MappedClasses.Zo) || this.p.L().booleanValue() && ((double)f < this.L.q$src$D$vgz097() || (double)f > this.L.M())) continue;
-            this.O.put(entityLivingBase, new RenderEntityContextEntry(renderEntityContext, this.c.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), null));
+            if (!this.renderAnimals.getEffectiveValue().booleanValue() || entity.isInstance(MappedClasses.Zo) || this.animalDistanceCheck.getEffectiveValue().booleanValue() && ((double)distance < this.animalDistance.getMinimumValue() || (double)distance > this.animalDistance.getMaximumValue())) continue;
+            this.entries.put(livingEntity, new RenderEntityContextEntry(context, this.animalColor.getMutableColor()));
         }
     }
 
 
     public Tracers() {
-        super("Tracers", (int)P, Category.k);
-        this.J = BooleanValue.create(this, "Render Players", true);
-        this.b = BooleanValue.create(this, "Render Mobs", false);
-        this.t = BooleanValue.create(this, "Render Animals", false);
-        this.I = BooleanValue.create(this, "Distance Check", false);
-        this.r = BooleanValue.create(this, "Distance Check", false);
-        this.p = BooleanValue.create(this, "Distance Check", false);
-        this.H = BooleanValue.create(this, "Invisibles", false);
-        this.K = BooleanValue.create(this, "Color by distance", false);
-        this.V = BooleanValue.create(this, "Highlight if focusing", false, "If another player is looking at you their tracer will be highlighted");
-        this.A = RandomValue.create(this, "Player Distance", "#", "", 0.0, 0.0, 32.0, 256.0);
-        this.D = RandomValue.create(this, "Mob Distance", "#", "", 0.0, 0.0, 32.0, 256.0);
-        this.L = RandomValue.create(this, "Animal Distance", "#", "", 0.0, 0.0, 32.0, 256.0);
-        this.Z = ColorValue.L(this, "Player Color", new Color(0, 150, 255, 255));
-        this.a = ColorValue.L(this, "Mob Color", new Color(255, 154, 0));
-        this.c = ColorValue.L(this, "Animal Color", new Color(255, 255, 255));
-        this.O = new HashMap<EntityLivingBase, RenderEntityContextEntry>();
-        this.J.K(this.F, this.I, this.Z);
-        this.b.K(this.r, this.a);
-        this.t.K(this.p, this.c);
-        this.I.K(this.A);
-        this.r.K(this.D);
-        this.p.K(this.L);
-        this.addValue(this.H, this.K, this.V, this.J, this.F, this.I, this.A, this.Z, this.t, this.p, this.L, this.c, this.b, this.r, this.D, this.a);
+        super("Tracers", (int)MODULE_COLOR, Category.k);
+        this.renderPlayers = BooleanValue.create(this, "Render Players", true);
+        this.renderMobs = BooleanValue.create(this, "Render Mobs", false);
+        this.renderAnimals = BooleanValue.create(this, "Render Animals", false);
+        this.playerDistanceCheck = BooleanValue.create(this, "Distance Check", false);
+        this.mobDistanceCheck = BooleanValue.create(this, "Distance Check", false);
+        this.animalDistanceCheck = BooleanValue.create(this, "Distance Check", false);
+        this.showInvisibles = BooleanValue.create(this, "Invisibles", false);
+        this.colorByDistance = BooleanValue.create(this, "Color by distance", false);
+        this.highlightFocusing = BooleanValue.create(this, "Highlight if focusing", false, "If another player is looking at you their tracer will be highlighted");
+        this.playerDistance = RandomValue.create(this, "Player Distance", "#", "", 0.0, 0.0, 32.0, 256.0);
+        this.mobDistance = RandomValue.create(this, "Mob Distance", "#", "", 0.0, 0.0, 32.0, 256.0);
+        this.animalDistance = RandomValue.create(this, "Animal Distance", "#", "", 0.0, 0.0, 32.0, 256.0);
+        this.playerColor = ColorValue.create(this, "Player Color", new Color(0, 150, 255, 255));
+        this.mobColor = ColorValue.create(this, "Mob Color", new Color(255, 154, 0));
+        this.animalColor = ColorValue.create(this, "Animal Color", new Color(255, 255, 255));
+        this.entries = new HashMap<EntityLivingBase, RenderEntityContextEntry>();
+        this.renderPlayers.addDependentValues(this.enemyOnly, this.playerDistanceCheck, this.playerColor);
+        this.renderMobs.addDependentValues(this.mobDistanceCheck, this.mobColor);
+        this.renderAnimals.addDependentValues(this.animalDistanceCheck, this.animalColor);
+        this.playerDistanceCheck.addDependentValues(this.playerDistance);
+        this.mobDistanceCheck.addDependentValues(this.mobDistance);
+        this.animalDistanceCheck.addDependentValues(this.animalDistance);
+        this.addValue(this.showInvisibles, this.colorByDistance, this.highlightFocusing, this.renderPlayers, this.enemyOnly, this.playerDistanceCheck, this.playerDistance, this.playerColor, this.renderAnimals, this.animalDistanceCheck, this.animalDistance, this.animalColor, this.renderMobs, this.mobDistanceCheck, this.mobDistance, this.mobColor);
     }
 
-    private void drawTracer(EntityPlayerSP entityPlayerSP, Entity entity, Color color, float f, float f2, double d, double d2, double d3, double d4, boolean bl) {
-        double d5 = entity.M() + (entity.z() - entity.M()) * (double)f2 - d;
-        double d6 = entity.W() + (entity.N() - entity.W()) * (double)f2 - d2;
-        double d7 = entity.m$src$D$fwnne5() + (entity.h() - entity.m$src$D$fwnne5()) * (double)f2 - d3;
-        boolean bl2 = false;
-        boolean bl3 = false;
-        bl2 = OpenGlBackendHolder.d.L(3042);
-        bl3 = OpenGlBackendHolder.d.L(2896);
+    private void drawTracer(EntityPlayerSP player, Entity entity, Color color, float lineWidth, float partialTicks, double cameraX, double cameraY, double cameraZ, double startY, boolean outlined) {
+        double targetX = entity.M() + (entity.z() - entity.M()) * (double)partialTicks - cameraX;
+        double targetY = entity.W() + (entity.N() - entity.W()) * (double)partialTicks - cameraY;
+        double targetZ = entity.m$src$D$fwnne5() + (entity.h() - entity.m$src$D$fwnne5()) * (double)partialTicks - cameraZ;
+        boolean blendEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(3042);
+        boolean lightingEnabled = OpenGlBackendHolder.backend.isCapabilityEnabled(2896);
         GL11.glBlendFunc((int)770, (int)771);
-        if (!bl2) {
-            OpenGlBackendHolder.d.l(3042);
+        if (!blendEnabled) {
+            OpenGlBackendHolder.backend.enableCapability(3042);
         }
-        if (bl3) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(2896);
+        if (lightingEnabled) {
+            OpenGlBackendHolder.backend.disableCapability(2896);
         }
         GL11.glBlendFunc((int)770, (int)771);
-        OpenGlBackendHolder.d.l(2848);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-        double d8 = 0.0;
-        double d9 = 0.0;
+        OpenGlBackendHolder.backend.enableCapability(2848);
+        OpenGlBackendHolder.backend.disableCapability(3553);
+        double startX = 0.0;
+        double startZ = 0.0;
         if (ForgeVersion.MC_1_12_2.d()) {
-            Vec3d vec3d = new Vec3d(0.0, 0.0, 1.0);
+            Vec3d viewDirection = new Vec3d(0.0, 0.0, 1.0);
             if (ForgeVersion.MC_1_16_5.d()) {
-                vec3d.k((float)(-Math.toRadians(Minecraft.D().getPlayerViewY())));
-                vec3d.Y((float)(-Math.toRadians(Minecraft.D().getPlayerViewX())));
+                viewDirection.k((float)(-Math.toRadians(Minecraft.D().getPlayerViewY())));
+                viewDirection.Y((float)(-Math.toRadians(Minecraft.D().getPlayerViewX())));
             } else {
-                vec3d.k((float)(-Math.toRadians(entityPlayerSP.V())));
-                vec3d.Y((float)(-Math.toRadians(entityPlayerSP.J())));
+                viewDirection.k((float)(-Math.toRadians(player.V())));
+                viewDirection.Y((float)(-Math.toRadians(player.J())));
             }
-            d8 = vec3d.Y();
-            d4 += ForgeVersion.MC_1_16_5.d() ? vec3d.t() - (double)entityPlayerSP.X() : vec3d.t();
-            d9 = vec3d.o();
+            startX = viewDirection.Y();
+            startY += ForgeVersion.MC_1_16_5.d() ? viewDirection.t() - (double)player.X() : viewDirection.t();
+            startZ = viewDirection.o();
             if (ForgeVersion.MC_1_16_5.d() && Minecraft.gameSettings().x() != 0) {
                 ActiveRenderInfo activeRenderInfo = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().l();
-                double d10 = RenderManager.getInterpolatedRenderPosX() - activeRenderInfo.o().getX();
-                double d11 = RenderManager.getInterpolatedRenderPosY() - activeRenderInfo.o().getY();
-                double d12 = RenderManager.getInterpolatedRenderPosZ() - activeRenderInfo.o().getZ();
-                d5 += d10;
-                d6 += d11;
-                d7 += d12;
+                double cameraOffsetX = RenderManager.getInterpolatedRenderPosX() - activeRenderInfo.o().getX();
+                double cameraOffsetY = RenderManager.getInterpolatedRenderPosY() - activeRenderInfo.o().getY();
+                double cameraOffsetZ = RenderManager.getInterpolatedRenderPosZ() - activeRenderInfo.o().getZ();
+                targetX += cameraOffsetX;
+                targetY += cameraOffsetY;
+                targetZ += cameraOffsetZ;
             }
         }
-        d6 += (double)entity.X();
+        targetY += (double)entity.X();
         if (GuiRenderPrimitives.d()) {
-            if (bl) {
-                BufferedRenderPrimitives.Q(d8, d4, d9, d5, d6, d7, f + f * 0.5f, Color.black);
+            if (outlined) {
+                BufferedRenderPrimitives.drawLine3D(startX, startY, startZ, targetX, targetY, targetZ, lineWidth + lineWidth * 0.5f, Color.black);
             }
-            BufferedRenderPrimitives.Q(d8, d4, d9, d5, d6, d7, f, color);
+            BufferedRenderPrimitives.drawLine3D(startX, startY, startZ, targetX, targetY, targetZ, lineWidth, color);
         } else {
-            if (bl) {
-                GL11.glLineWidth((float)(f + f * 0.5f));
+            if (outlined) {
+                GL11.glLineWidth((float)(lineWidth + lineWidth * 0.5f));
                 GL11.glBegin((int)1);
                 RenderUtils.w(Color.black);
-                GL11.glVertex3d((double)d8, (double)d4, (double)d9);
-                GL11.glVertex3d((double)d5, (double)d6, (double)d7);
+                GL11.glVertex3d((double)startX, (double)startY, (double)startZ);
+                GL11.glVertex3d((double)targetX, (double)targetY, (double)targetZ);
                 GL11.glEnd();
             }
-            GL11.glLineWidth((float)f);
+            GL11.glLineWidth((float)lineWidth);
             GL11.glBegin((int)1);
             RenderUtils.w(color);
-            GL11.glVertex3d((double)d8, (double)d4, (double)d9);
-            GL11.glVertex3d((double)d5, (double)d6, (double)d7);
+            GL11.glVertex3d((double)startX, (double)startY, (double)startZ);
+            GL11.glVertex3d((double)targetX, (double)targetY, (double)targetZ);
             GL11.glEnd();
         }
-        if (bl3) {
-            OpenGlBackendHolder.d.l(2896);
+        if (lightingEnabled) {
+            OpenGlBackendHolder.backend.enableCapability(2896);
         }
-        if (!bl2) {
-            OpenGlBackendHolder.d.u$src$V$hntn98(3042);
+        if (!blendEnabled) {
+            OpenGlBackendHolder.backend.disableCapability(3042);
         }
-        OpenGlBackendHolder.d.l(3553);
-        OpenGlBackendHolder.d.u$src$V$hntn98(2848);
+        OpenGlBackendHolder.backend.enableCapability(3553);
+        OpenGlBackendHolder.backend.disableCapability(2848);
     }
 
-    private void applyFocusHighlight(EntityPlayerSP entityPlayerSP) {
-        if (this.V.L().booleanValue()) {
-            ArrayList<EntityLivingBase> arrayList = new ArrayList<EntityLivingBase>();
-            for (EntityLivingBase entityLivingBase : this.S) {
-                if (!(RotationUtil.M(entityLivingBase, entityPlayerSP) < 5.0)) continue;
-                arrayList.add(entityLivingBase);
+    private void applyFocusHighlight(EntityPlayerSP player) {
+        if (this.highlightFocusing.getEffectiveValue().booleanValue()) {
+            ArrayList<EntityLivingBase> focusedEntities = new ArrayList<EntityLivingBase>();
+            for (EntityLivingBase entity : this.sortedEntities) {
+                if (!(RotationUtil.M(entity, player) < 5.0)) continue;
+                focusedEntities.add(entity);
             }
-            if (!arrayList.isEmpty()) {
-                for (EntityLivingBase entityLivingBase : this.S) {
-                    RenderEntityContextEntry renderEntityContextEntry = this.O.get(entityLivingBase);
-                    if (!renderEntityContextEntry.Y().Y()) continue;
-                    if (arrayList.contains(entityLivingBase)) {
-                        renderEntityContextEntry.S(3.0);
-                        renderEntityContextEntry.I(true);
+            if (!focusedEntities.isEmpty()) {
+                for (EntityLivingBase entity : this.sortedEntities) {
+                    RenderEntityContextEntry entry = this.entries.get(entity);
+                    if (!entry.getContext().canViewerSee()) continue;
+                    if (focusedEntities.contains(entity)) {
+                        entry.setScale(3.0);
+                        entry.setFocused(true);
                         continue;
                     }
-                    renderEntityContextEntry.S(0.75);
+                    entry.setScale(0.75);
                 }
             }
         }
     }
 
     @EventHandler
-    public void onRender(EventRenderTracers3D eventRenderTracers3D) {
-        EntityPlayerSP entityPlayerSP = eventRenderTracers3D.getThePlayer();
-        this.collectEntities(entityPlayerSP, eventRenderTracers3D.getWorld());
-        if (this.O.isEmpty()) {
+    public void onRender(EventRenderTracers3D event) {
+        EntityPlayerSP player = event.getThePlayer();
+        this.collectEntities(player, event.getWorld());
+        if (this.entries.isEmpty()) {
             return;
         }
         RenderUtil.d();
         RenderUtils.g();
-        OpenGlBackendHolder.d.u$src$V$hntn98(2929);
-        eventRenderTracers3D.getEntityRenderer().B(0.0);
-        double d = RenderManager.getInterpolatedRenderPosX();
-        double d2 = RenderManager.getInterpolatedRenderPosY();
-        double d3 = RenderManager.getInterpolatedRenderPosZ();
-        double d4 = ForgeVersion.MC_1_7_10.Y() ? (double)entityPlayerSP.X() : 0.0;
-        this.S = new ArrayList<EntityLivingBase>(this.O.keySet());
-        this.updateMedianDistance(entityPlayerSP);
-        this.applyDistanceColors(entityPlayerSP);
-        this.applyFocusHighlight(entityPlayerSP);
-        Collections.reverse(this.S);
-        for (EntityLivingBase entityLivingBase : this.S) {
-            MutableColor mutableColor;
-            RenderEntityContextEntry renderEntityContextEntry = this.O.get(entityLivingBase);
-            Color color = renderEntityContextEntry.y();
-            if (entityLivingBase.isInstance(MappedClasses.Yl) && (mutableColor = renderEntityContextEntry.Y().E(false)) != null) {
-                color = mutableColor;
+        OpenGlBackendHolder.backend.disableCapability(2929);
+        event.getEntityRenderer().B(0.0);
+        double cameraX = RenderManager.getInterpolatedRenderPosX();
+        double cameraY = RenderManager.getInterpolatedRenderPosY();
+        double cameraZ = RenderManager.getInterpolatedRenderPosZ();
+        double startY = ForgeVersion.MC_1_7_10.Y() ? (double)player.X() : 0.0;
+        this.sortedEntities = new ArrayList<EntityLivingBase>(this.entries.keySet());
+        this.updateMedianDistance(player);
+        this.applyDistanceColors(player);
+        this.applyFocusHighlight(player);
+        Collections.reverse(this.sortedEntities);
+        for (EntityLivingBase entity : this.sortedEntities) {
+            MutableColor overrideColor;
+            RenderEntityContextEntry entry = this.entries.get(entity);
+            Color color = entry.getColor();
+            if (entity.isInstance(MappedClasses.Yl) && (overrideColor = entry.getContext().getRenderColor(false)) != null) {
+                color = overrideColor;
             }
-            this.drawTracer(entityPlayerSP, entityLivingBase, color, (float)renderEntityContextEntry.b(), eventRenderTracers3D.getTicks(), d, d2, d3, d4, renderEntityContextEntry.F());
+            this.drawTracer(player, entity, color, (float)entry.getScale(), event.getTicks(), cameraX, cameraY, cameraZ, startY, entry.isFocused());
         }
-        OpenGlBackendHolder.d.b(1.0, 1.0f, 1.0f);
-        eventRenderTracers3D.getEntityRenderer().O(0.0);
-        OpenGlBackendHolder.d.l(2929);
+        OpenGlBackendHolder.backend.setColor(1.0, 1.0f, 1.0f);
+        event.getEntityRenderer().O(0.0);
+        OpenGlBackendHolder.backend.enableCapability(2929);
         RenderUtils.f();
-        OpenGlBackendHolder.d.F();
-        this.O.clear();
+        OpenGlBackendHolder.backend.popMatrix();
+        this.entries.clear();
     }
 
-    private void applyDistanceColors(EntityPlayerSP entityPlayerSP) {
-        if (this.K.L().booleanValue()) {
-            for (EntityLivingBase entityLivingBase : this.S) {
-                double d = RenderEntityContextCache.V(entityLivingBase, entityPlayerSP).e();
-                float f = 0.35f;
-                double d2 = (double)(Math.round(d / 3.0) * 3L) - this.k / 3.0;
-                float f2 = (float)((double)f * (d2 / this.k));
-                if (d > this.k) {
-                    f2 = f;
+    private void applyDistanceColors(EntityPlayerSP player) {
+        if (this.colorByDistance.getEffectiveValue().booleanValue()) {
+            for (EntityLivingBase entity : this.sortedEntities) {
+                double distance = RenderEntityContextCache.getOrCreate(entity, player).getDistance();
+                float maximumHue = 0.35f;
+                double distanceOffset = (double)(Math.round(distance / 3.0) * 3L) - this.medianDistance / 3.0;
+                float hue = (float)((double)maximumHue * (distanceOffset / this.medianDistance));
+                if (distance > this.medianDistance) {
+                    hue = maximumHue;
                 }
-                Color color = new Color(Color.HSBtoRGB(f2, 1.0f, 1.0f));
-                int n = 255;
-                if (d > this.k && (n = (int)(255.0 / (d / this.k))) < 150) {
-                    n = 150;
+                Color color = new Color(Color.HSBtoRGB(hue, 1.0f, 1.0f));
+                int alpha = 255;
+                if (distance > this.medianDistance && (alpha = (int)(255.0 / (distance / this.medianDistance))) < 150) {
+                    alpha = 150;
                 }
-                color = new Color(color.getRed(), color.getGreen(), color.getBlue(), n);
-                this.O.get(entityLivingBase).Q(color);
+                color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+                this.entries.get(entity).setColor(color);
             }
         }
     }

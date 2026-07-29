@@ -8,19 +8,19 @@ import java.awt.Point;
 
 class PublicProfileOverlayOutsideClickCloseHandler
 implements GuiMouseListener {
-    final PublicProfileOverlayPopupFrame e;
+    final PublicProfileOverlayPopupFrame popupFrame;
 
     PublicProfileOverlayOutsideClickCloseHandler(PublicProfileOverlayPopupFrame publicProfileOverlayPopupFrame) {
-        this.e = publicProfileOverlayPopupFrame;
+        this.popupFrame = publicProfileOverlayPopupFrame;
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        if (!PublicProfileOverlayPopupFrame.C(this.e)) {
+        if (!PublicProfileOverlayPopupFrame.isOutsideClickCloseEnabled(this.popupFrame)) {
             return;
         }
-        if (!this.e.w$src$Z$e457mb()) {
-            ClientSettings.K(this.e);
+        if (!this.popupFrame.w$src$Z$e457mb()) {
+            ClientSettings.removePopup(this.popupFrame);
         }
     }
 

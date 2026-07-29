@@ -47,7 +47,7 @@ extends Mapping {
         String string3 = "LAVA";
         MMLGBlockWrapper mMLGBlockWrapper3 = this;
         this.n = ((MappingFieldBuilder)((MappingFieldBuilder)this.T(string3, clazz3).X(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).H(true)).z();
-        GuiComponent.D(new GuiComponent[5]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 
     private Object S() {

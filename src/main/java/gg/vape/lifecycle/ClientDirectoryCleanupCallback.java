@@ -1,29 +1,28 @@
 package gg.vape.lifecycle;
 
-import gg.vape.lifecycle.ClientLifecycleCallback;
 import java.io.File;
 
 public class ClientDirectoryCleanupCallback
 implements ClientLifecycleCallback {
     @Override
-    public void s(String string) {
+    public void log(String message) {
     }
 
     public ClientDirectoryCleanupCallback() {
-        String string = System.getenv("APPDATA");
-        String string2 = string + File.separator + ".vapeclient";
-        File file = new File(string2);
-        if (file.exists()) {
-            for (File file2 : file.listFiles()) {
-                if (file2.getName().equals("cache")) continue;
-                file2.delete();
+        String appDataDirectory = System.getenv("APPDATA");
+        String clientDirectoryPath = appDataDirectory + File.separator + ".vapeclient";
+        File clientDirectory = new File(clientDirectoryPath);
+        if (clientDirectory.exists()) {
+            for (File child : clientDirectory.listFiles()) {
+                if (child.getName().equals("cache")) continue;
+                child.delete();
             }
         }
     }
 
 
     @Override
-    public void B() {
+    public void close() {
     }
 }
 

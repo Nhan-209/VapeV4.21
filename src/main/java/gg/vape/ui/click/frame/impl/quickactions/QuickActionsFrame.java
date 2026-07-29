@@ -45,22 +45,22 @@ extends Frame {
         this.mW = new QuickActionRowComponent("Radar", "newradar", 0.9, 7);
         this.I2 = false;
         this.D(false);
-        this.T(QuickActionsFrame.J.i);
+        this.setDisabledOverlayColor(QuickActionsFrame.J.i);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         PublicProfilesFrameHeaderActionComponent publicProfilesFrameHeaderActionComponent = new PublicProfilesFrameHeaderActionComponent(this, "newoverlays", "Overlays", 0.7);
-        publicProfilesFrameHeaderActionComponent.O$src$Lgg_vape_ui_click_component_SquareIconButtonComp$z3cp96().k$src$V$qmpccm();
-        publicProfilesFrameHeaderActionComponent.O$src$Lgg_vape_ui_click_component_SquareIconButtonComp$z3cp96().r(new QuickActionsHeaderCloseCallback(this));
-        this.mF.y(TextGuiSettingsFrame.class);
-        this.mP.y(OnlinePlayerPreviewSettingsFrame.class);
-        this.mX.y(OnlineCombatStatsSettingsFrame.class);
-        this.mO.y(TargetInfoSettingsFrame.class);
-        this.m0.y(OnlineActivitySettingsFrame.class);
-        this.mW.y(OnlineRadarSettingsFrame.class);
+        publicProfilesFrameHeaderActionComponent.O$src$Lgg_vape_ui_click_component_SquareIconButtonComp$z3cp96().clearClickListeners();
+        publicProfilesFrameHeaderActionComponent.O$src$Lgg_vape_ui_click_component_SquareIconButtonComp$z3cp96().addClickListener(new QuickActionsHeaderCloseCallback(this));
+        this.mF.setTargetFrameClass(TextGuiSettingsFrame.class);
+        this.mP.setTargetFrameClass(OnlinePlayerPreviewSettingsFrame.class);
+        this.mX.setTargetFrameClass(OnlineCombatStatsSettingsFrame.class);
+        this.mO.setTargetFrameClass(TargetInfoSettingsFrame.class);
+        this.m0.setTargetFrameClass(OnlineActivitySettingsFrame.class);
+        this.mW.setTargetFrameClass(OnlineRadarSettingsFrame.class);
         this.Y(publicProfilesFrameHeaderActionComponent);
         this.h(new ColorDividerComponent(QuickActionsFrame.J.l), new Object[0]);
-        this.H(this.mF, this.mP, this.mX, this.mO, this.m0, this.mW);
-        this.Z(false);
+        this.addChildren(this.mF, this.mP, this.mX, this.mO, this.m0, this.mW);
+        this.setVisible(false);
         this.L(false, false);
     }
 
@@ -99,7 +99,7 @@ extends Frame {
 
     @Override
     public void Y() {
-        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.g(ClientSettingsSearchFrame.class);
+        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.getFrame(ClientSettingsSearchFrame.class);
         if (clientSettingsSearchFrame == null) {
             return;
         }
@@ -115,7 +115,7 @@ extends Frame {
         }
         if (this.mG == 4 && this.mI.getInterpolatedValue().doubleValue() == this.mI.getStartValue()) {
             this.mG = 0;
-            this.Z(false);
+            this.setVisible(false);
             return;
         }
         if (this.m_.getInterpolatedValue().doubleValue() != this.m_.getEndValue()) {

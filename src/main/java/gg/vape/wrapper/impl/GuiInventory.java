@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 public class GuiInventory
 extends Wrapper {
     private static Void lambda$drawEntityOnScreen$0(RenderMatrix4f renderMatrix4f, int n, float f, float f2, EntityLivingBase entityLivingBase) {
-        Vape.INSTANCE.getMappings().Q_.H((int)renderMatrix4f.e[0], (int)renderMatrix4f.e[5], (int)((double)n * Vape.INSTANCE.getClientSettings().s()), f, f2, entityLivingBase.getObject());
+        Vape.INSTANCE.getMappings().Q_.H((int)renderMatrix4f.elements[0], (int)renderMatrix4f.elements[5], (int)((double)n * Vape.INSTANCE.getClientSettings().s()), f, f2, entityLivingBase.getObject());
         return null;
     }
 
@@ -25,10 +25,10 @@ extends Wrapper {
             Vape.notifyNativeStackTrace();
         }
         if (GuiRenderPrimitives.d()) {
-            RenderMatrix4f renderMatrix4f = new RenderMatrix4f(new RenderVector4f(n, n2, 0.0f, 1.0f)).u(BufferedGuiRenderPrimitives.X.c());
+            RenderMatrix4f renderMatrix4f = new RenderMatrix4f(new RenderVector4f(n, n2, 0.0f, 1.0f)).multiply(BufferedGuiRenderPrimitives.matrixStack.peek());
             Supplier<Void> supplier = () -> GuiInventory.lambda$drawEntityOnScreen$0(renderMatrix4f, n3, f, f2, entityLivingBase);
-            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(VertexCoordinateMode.MINECRAFT, false).b(supplier);
-            RenderBatchManager.M().O(renderBatchBuilder);
+            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder(VertexCoordinateMode.MINECRAFT, false).setStandaloneRenderCallback(supplier);
+            RenderBatchManager.getInstance().queueGuiBatch(renderBatchBuilder);
             return;
         }
         Vape.INSTANCE.getMappings().Q_.H(n, n2, n3, f, f2, entityLivingBase.getObject());

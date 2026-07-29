@@ -3,25 +3,25 @@ package gg.vape.utils.render;
 import java.util.Objects;
 
 public class PotionEffectIconKey {
-    private int C;
+    private int effectId;
 
-    public int Y() {
-        return this.C;
+    public int getEffectId() {
+        return this.effectId;
     }
 
     public int hashCode() {
-        return Objects.hash(this.Y());
+        return Objects.hash(this.getEffectId());
     }
 
-    public PotionEffectIconKey(int n) {
-        this.C = n;
+    public PotionEffectIconKey(int effectId) {
+        this.effectId = effectId;
     }
 
 
     public boolean equals(Object object) {
         if (object instanceof PotionEffectIconKey) {
-            boolean bl = ((PotionEffectIconKey)object).Y() == this.Y();
-            return bl;
+            PotionEffectIconKey other = (PotionEffectIconKey)object;
+            return other.getEffectId() == this.getEffectId();
         }
         return false;
     }

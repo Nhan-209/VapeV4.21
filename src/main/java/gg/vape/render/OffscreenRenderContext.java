@@ -22,172 +22,172 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 public class OffscreenRenderContext {
-    private GlFramebuffer t;
-    private Framebuffer E;
-    public float K;
-    public double H;
-    private int Q;
-    private static int[] M;
-    private int o;
-    private static boolean m;
-    public double p;
-    private boolean c;
-    public double L;
-    public float i;
-    private int U;
-    private final TimerUtil I;
-    private boolean C;
-    private int D;
+    private GlFramebuffer modernFramebuffer;
+    private Framebuffer legacyFramebuffer;
+    public float cameraPitch;
+    public double cameraZ;
+    private int frameIntervalMillis;
+    private static int[] controlFlowMarker;
+    private int width;
+    private static boolean renderingOffscreen;
+    public double cameraX;
+    private boolean frameReady;
+    public double cameraY;
+    public float cameraYaw;
+    private int height;
+    private final TimerUtil frameTimer;
+    private boolean flipVertically;
+    private int fieldOfView;
 
-    public Framebuffer C() {
-        return this.E;
+    public Framebuffer getLegacyFramebuffer() {
+        return this.legacyFramebuffer;
     }
 
-    public static void F(boolean bl) {
-        m = bl;
+    public static void setRenderingOffscreen(boolean rendering) {
+        renderingOffscreen = rendering;
     }
 
-    public int d() {
-        return this.o;
+    public int getWidth() {
+        return this.width;
     }
 
-    public OffscreenRenderContext L(boolean bl) {
-        this.C = bl;
+    public OffscreenRenderContext setFlipVertically(boolean flipVertically) {
+        this.flipVertically = flipVertically;
         return this;
     }
 
     static {
-        OffscreenRenderContext.U(null);
+        OffscreenRenderContext.setControlFlowMarker(null);
     }
 
-    public void X(boolean bl, double d, double d2, double d3, double d4) {
-        this.B(bl, d, d2, d3, d4, Color.WHITE);
+    public void drawFramebuffer(boolean visible, double left, double top, double right, double bottom) {
+        this.drawFramebuffer(visible, left, top, right, bottom, Color.WHITE);
     }
 
     public OffscreenRenderContext() {
         this(false);
     }
 
-    public void d$src$V$1ng482b() {
+    public void initializeFramebuffer() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            this.t = new GlFramebuffer(this.o, this.U, true);
-            this.E = null;
+            this.modernFramebuffer = new GlFramebuffer(this.width, this.height, true);
+            this.legacyFramebuffer = null;
             return;
         }
-        this.E = Framebuffer.create(this.o, this.U, true);
-        this.t = null;
-        this.F$src$V$1mzme9h();
+        this.legacyFramebuffer = Framebuffer.create(this.width, this.height, true);
+        this.modernFramebuffer = null;
+        this.resizeFramebuffer();
     }
 
-    public void k(int n) {
-        this.U = n;
-        this.c = false;
+    public void setHeight(int height) {
+        this.height = height;
+        this.frameReady = false;
     }
 
-    public int F() {
-        return this.U;
+    public int getHeight() {
+        return this.height;
     }
 
-    protected void b(Entity entity) {
-        this.S(entity);
-        this.i = entity.J();
-        this.K = entity.V();
+    protected void captureCameraState(Entity entity) {
+        this.captureInterpolatedCameraPosition(entity);
+        this.cameraYaw = entity.J();
+        this.cameraPitch = entity.V();
     }
 
-    public void i(int n) {
-        this.o = n;
-        this.c = false;
+    public void setWidth(int width) {
+        this.width = width;
+        this.frameReady = false;
     }
 
-    protected void S(Entity entity) {
-        this.p = entity.M() - (entity.M() - entity.z()) * (double)Minecraft.getTimer().getElapsedPartialTicks();
-        this.L = entity.W() - (entity.W() - entity.N()) * (double)Minecraft.getTimer().getElapsedPartialTicks();
-        this.H = entity.m$src$D$fwnne5() - (entity.m$src$D$fwnne5() - entity.h()) * (double)Minecraft.getTimer().getElapsedPartialTicks();
+    protected void captureInterpolatedCameraPosition(Entity entity) {
+        this.cameraX = entity.M() - (entity.M() - entity.z()) * (double)Minecraft.getTimer().getElapsedPartialTicks();
+        this.cameraY = entity.W() - (entity.W() - entity.N()) * (double)Minecraft.getTimer().getElapsedPartialTicks();
+        this.cameraZ = entity.m$src$D$fwnne5() - (entity.m$src$D$fwnne5() - entity.h()) * (double)Minecraft.getTimer().getElapsedPartialTicks();
     }
 
-    public void X(int n) {
-        this.Q = n;
+    public void setFrameIntervalMillis(int frameIntervalMillis) {
+        this.frameIntervalMillis = frameIntervalMillis;
     }
 
-    public void F$src$V$1mzme9h() {
+    public void resizeFramebuffer() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            if (this.t != null) {
-                this.t.x();
+            if (this.modernFramebuffer != null) {
+                this.modernFramebuffer.delete();
             }
-            this.t = new GlFramebuffer(this.o, this.U, true);
+            this.modernFramebuffer = new GlFramebuffer(this.width, this.height, true);
             return;
         }
-        this.E.createFramebuffer(this.o, this.U);
+        this.legacyFramebuffer.createFramebuffer(this.width, this.height);
     }
 
-    public void v(int n) {
-        this.D = n;
+    public void setFieldOfView(int fieldOfView) {
+        this.fieldOfView = fieldOfView;
     }
 
-    public void b() {
-        boolean bl;
-        boolean bl2;
-        boolean bl3;
-        boolean bl4;
-        float f;
-        float f2;
-        float f3;
-        float f4;
-        float f5;
-        float f6;
-        float f7;
-        float f8;
-        float f9;
-        float f10;
-        float f11;
-        int n;
-        int n2;
-        int n3;
-        double d;
-        double d2;
-        double d3;
-        double d4;
-        double d5;
-        double d6;
-        double d7;
-        double d8;
-        double d9;
+    public void renderOffscreenFrame() {
+        boolean framebufferBound;
+        boolean stateModified;
+        boolean previousViewBobbing;
+        boolean previousHideGui;
+        float previousHeadYaw;
+        float previousCurrentHeadYaw;
+        float previousBodyYaw;
+        float currentBodyYaw;
+        float previousCameraYaw;
+        float previousCameraZoom;
+        float previousFov;
+        float previousPitch;
+        float previousYaw;
+        float currentPitch;
+        float currentYaw;
+        int previousThirdPersonView;
+        int displayHeight;
+        int displayWidth;
+        double previousLastTickZ;
+        double previousLastTickY;
+        double previousLastTickX;
+        double previousZ;
+        double previousY;
+        double previousX;
+        double currentZ;
+        double currentY;
+        double currentX;
         GameSettings gameSettings;
         EntityRenderer entityRenderer;
         Entity entity;
         entity = null;
         entityRenderer = null;
         gameSettings = null;
-        d9 = 0.0;
-        d8 = 0.0;
-        d7 = 0.0;
-        d6 = 0.0;
-        d5 = 0.0;
-        d4 = 0.0;
-        d3 = 0.0;
-        d2 = 0.0;
-        d = 0.0;
-        n3 = 0;
-        n2 = 0;
-        n = 0;
-        f11 = 0.0f;
-        f10 = 0.0f;
-        f9 = 0.0f;
-        f8 = 0.0f;
-        f7 = 0.0f;
-        f6 = 0.0f;
-        f5 = 0.0f;
-        f4 = 0.0f;
-        f3 = 0.0f;
-        f2 = 0.0f;
-        f = 0.0f;
-        bl4 = false;
-        bl3 = false;
-        bl2 = false;
-        bl = false;
+        currentX = 0.0;
+        currentY = 0.0;
+        currentZ = 0.0;
+        previousX = 0.0;
+        previousY = 0.0;
+        previousZ = 0.0;
+        previousLastTickX = 0.0;
+        previousLastTickY = 0.0;
+        previousLastTickZ = 0.0;
+        displayWidth = 0;
+        displayHeight = 0;
+        previousThirdPersonView = 0;
+        currentYaw = 0.0f;
+        currentPitch = 0.0f;
+        previousYaw = 0.0f;
+        previousPitch = 0.0f;
+        previousFov = 0.0f;
+        previousCameraZoom = 0.0f;
+        previousCameraYaw = 0.0f;
+        currentBodyYaw = 0.0f;
+        previousBodyYaw = 0.0f;
+        previousCurrentHeadYaw = 0.0f;
+        previousHeadYaw = 0.0f;
+        previousHideGui = false;
+        previousViewBobbing = false;
+        stateModified = false;
+        framebufferBound = false;
         try {
-                        if (m) return;
-                        if (!this.R()) {
+                        if (renderingOffscreen) return;
+                        if (!this.canRender()) {
                             return;
                         }
                         gameSettings = Minecraft.gameSettings();
@@ -207,94 +207,94 @@ public class OffscreenRenderContext {
                         }
                         entity = Minecraft.F();
                         entityRenderer = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf();
-                        n3 = Minecraft.J();
-                        n2 = Minecraft.h();
-                        f11 = entity.J();
-                        f9 = entity.j();
-                        f10 = entity.V();
-                        f8 = entity.D();
-                        f4 = ((EntityLivingBase)entity).s();
-                        f3 = ((EntityLivingBase)entity).P$src$F$14ztfk8();
-                        f2 = ((EntityLivingBase)entity).W$src$F$153nzpr();
-                        f = ((EntityLivingBase)entity).S$src$F$151gtcb();
-                        bl4 = gameSettings.U();
-                        n = gameSettings.x();
-                        bl3 = gameSettings.k();
-                        d9 = entity.z();
-                        d6 = entity.f();
-                        d3 = entity.M();
-                        d8 = entity.N();
-                        d5 = entity.H();
-                        d2 = entity.W();
-                        d7 = entity.h();
-                        d4 = entity.R();
-                        d = entity.m$src$D$fwnne5();
-                        f7 = gameSettings.g();
-                        f6 = entityRenderer.b();
-                        f5 = entityRenderer.s();
-                        entity.H(this.p);
-                        entity.n(this.p);
-                        entity.C(this.p);
-                        entity.u(this.L);
-                        entity.w(this.L);
-                        entity.L(this.L);
-                        entity.l(this.H);
-                        entity.A(this.H);
-                        entity.s(this.H);
+                        displayWidth = Minecraft.J();
+                        displayHeight = Minecraft.h();
+                        currentYaw = entity.J();
+                        previousYaw = entity.j();
+                        currentPitch = entity.V();
+                        previousPitch = entity.D();
+                        currentBodyYaw = ((EntityLivingBase)entity).s();
+                        previousBodyYaw = ((EntityLivingBase)entity).P$src$F$14ztfk8();
+                        previousCurrentHeadYaw = ((EntityLivingBase)entity).W$src$F$153nzpr();
+                        previousHeadYaw = ((EntityLivingBase)entity).S$src$F$151gtcb();
+                        previousHideGui = gameSettings.U();
+                        previousThirdPersonView = gameSettings.x();
+                        previousViewBobbing = gameSettings.k();
+                        currentX = entity.z();
+                        previousX = entity.f();
+                        previousLastTickX = entity.M();
+                        currentY = entity.N();
+                        previousY = entity.H();
+                        previousLastTickY = entity.W();
+                        currentZ = entity.h();
+                        previousZ = entity.R();
+                        previousLastTickZ = entity.m$src$D$fwnne5();
+                        previousFov = gameSettings.g();
+                        previousCameraZoom = entityRenderer.b();
+                        previousCameraYaw = entityRenderer.s();
+                        entity.H(this.cameraX);
+                        entity.n(this.cameraX);
+                        entity.C(this.cameraX);
+                        entity.u(this.cameraY);
+                        entity.w(this.cameraY);
+                        entity.L(this.cameraY);
+                        entity.l(this.cameraZ);
+                        entity.A(this.cameraZ);
+                        entity.s(this.cameraZ);
                         if (ForgeVersion.MC_1_21_4.v()) {
-                            Minecraft.U(this.o);
-                            Minecraft.X(this.U);
+                            Minecraft.U(this.width);
+                            Minecraft.X(this.height);
                         }
-                        entity.H(this.i);
-                        entity.D(this.i);
-                        entity.C(this.K);
-                        entity.l(this.K);
-                        ((EntityLivingBase)entity).z(this.i);
-                        ((EntityLivingBase)entity).o(this.i);
-                        ((EntityLivingBase)entity).X(this.i);
-                        ((EntityLivingBase)entity).Y(this.i);
+                        entity.H(this.cameraYaw);
+                        entity.D(this.cameraYaw);
+                        entity.C(this.cameraPitch);
+                        entity.l(this.cameraPitch);
+                        ((EntityLivingBase)entity).z(this.cameraYaw);
+                        ((EntityLivingBase)entity).o(this.cameraYaw);
+                        ((EntityLivingBase)entity).X(this.cameraYaw);
+                        ((EntityLivingBase)entity).Y(this.cameraYaw);
                         gameSettings.I(0);
                         gameSettings.O(false);
                         gameSettings.F(true);
-                        gameSettings.k(this.D);
+                        gameSettings.k(this.fieldOfView);
                         entityRenderer.V(1.0f);
                         entityRenderer.r(1.0f);
-                        bl2 = true;
-                        if (!this.I.hasTimeElapsed(this.Q) && this.c) return;
+                        stateModified = true;
+                        if (!this.frameTimer.hasTimeElapsed(this.frameIntervalMillis) && this.frameReady) return;
                         if (ForgeVersion.MC_1_21_4.d()) {
-                            int n4;
-                            if (this.t == null) {
-                                this.d$src$V$1ng482b();
+                            int previousFramebuffer;
+                            if (this.modernFramebuffer == null) {
+                                this.initializeFramebuffer();
                             }
-                            if ((n4 = RenderBatchManager.M().E()) <= 0) {
-                                n4 = GL11.glGetInteger((int)36006);
+                            if ((previousFramebuffer = RenderBatchManager.getInstance().getTargetFramebufferId()) <= 0) {
+                                previousFramebuffer = GL11.glGetInteger((int)36006);
                             }
-                            int n5 = GL11.glGetInteger((int)36010);
-                            GL30.glBindFramebuffer((int)36160, (int)n4);
+                            int previousDrawFramebuffer = GL11.glGetInteger((int)36010);
+                            GL30.glBindFramebuffer((int)36160, (int)previousFramebuffer);
                             GL11.glClearColor((float)0.0f, (float)0.0f, (float)0.0f, (float)1.0f);
                             GL11.glClear((int)16640);
-                            this.z(true);
-                            bl = true;
-                            RenderBatchManager.M().a(this.t.w);
+                            this.bindFramebuffer(true);
+                            framebufferBound = true;
+                            RenderBatchManager.getInstance().setFramebufferOverride(this.modernFramebuffer.framebufferId);
                             entityRenderer.D(Minecraft.getTimer().renderPartialTicks(), 0L);
-                            RenderBatchManager.M().j();
-                            int n6 = Minecraft.p().getDeltaX();
-                            int n7 = Minecraft.p().e();
-                            this.t.H();
-                            GL30.glBindFramebuffer((int)36008, (int)n4);
-                            GL30.glBindFramebuffer((int)36009, (int)this.t.w);
-                            GL30.glBlitFramebuffer((int)0, (int)0, (int)n6, (int)n7, (int)0, (int)0, (int)this.o, (int)this.U, (int)16384, (int)9729);
-                            GL30.glBindFramebuffer((int)36009, (int)this.t.w);
+                            RenderBatchManager.getInstance().restoreFramebufferOverride();
+                            int sourceWidth = Minecraft.p().getDeltaX();
+                            int sourceHeight = Minecraft.p().e();
+                            this.modernFramebuffer.clear();
+                            GL30.glBindFramebuffer((int)36008, (int)previousFramebuffer);
+                            GL30.glBindFramebuffer((int)36009, (int)this.modernFramebuffer.framebufferId);
+                            GL30.glBlitFramebuffer((int)0, (int)0, (int)sourceWidth, (int)sourceHeight, (int)0, (int)0, (int)this.width, (int)this.height, (int)16384, (int)9729);
+                            GL30.glBindFramebuffer((int)36009, (int)this.modernFramebuffer.framebufferId);
                             GL11.glColorMask((boolean)false, (boolean)false, (boolean)false, (boolean)true);
                             GL11.glClearColor((float)0.0f, (float)0.0f, (float)0.0f, (float)1.0f);
                             GL11.glClear((int)16384);
                             GL11.glColorMask((boolean)true, (boolean)true, (boolean)true, (boolean)true);
-                            GL30.glBindFramebuffer((int)36008, (int)n5);
-                            GL30.glBindFramebuffer((int)36009, (int)n4);
+                            GL30.glBindFramebuffer((int)36008, (int)previousDrawFramebuffer);
+                            GL30.glBindFramebuffer((int)36009, (int)previousFramebuffer);
                         } else {
-                            this.z(true);
-                            bl = true;
-                            this.E.bindFramebufferTexture();
+                            this.bindFramebuffer(true);
+                            framebufferBound = true;
+                            this.legacyFramebuffer.bindFramebufferTexture();
                             entityRenderer.D(Minecraft.getTimer().renderPartialTicks(), 0L);
                             FloatBuffer floatBuffer = BufferUtils.createFloatBuffer((int)16);
                             GL11.glGetFloat((int)3106, (FloatBuffer)floatBuffer);
@@ -304,175 +304,175 @@ public class OffscreenRenderContext {
                             GL11.glColorMask((boolean)true, (boolean)true, (boolean)true, (boolean)true);
                             GL11.glClearColor((float)floatBuffer.get(0), (float)floatBuffer.get(1), (float)floatBuffer.get(2), (float)floatBuffer.get(3));
                         }
-                        this.I.reset();
-            this.c = true;
+                        this.frameTimer.reset();
+            this.frameReady = true;
         }
         catch (Exception exception) {
             Object ignored = Minecraft.c;
             return;
         }
         finally {
-            if (bl2 && entity != null && entityRenderer != null && gameSettings != null) {
-                if (bl) {
-                    this.z(false);
+            if (stateModified && entity != null && entityRenderer != null && gameSettings != null) {
+                if (framebufferBound) {
+                    this.bindFramebuffer(false);
                 }
                 if (ForgeVersion.MC_1_21_4.v()) {
-                    Minecraft.U(n3);
-                    Minecraft.X(n2);
+                    Minecraft.U(displayWidth);
+                    Minecraft.X(displayHeight);
                 }
-                entity.H(f11);
-                entity.D(f9);
-                entity.C(f10);
-                entity.l(f8);
-                ((EntityLivingBase)entity).z(f4);
-                ((EntityLivingBase)entity).o(f3);
-                ((EntityLivingBase)entity).X(f2);
-                ((EntityLivingBase)entity).Y(f);
-                gameSettings.I(n);
-                gameSettings.F(bl4);
-                gameSettings.O(bl3);
-                entity.H(d9);
-                entity.n(d6);
-                entity.C(d3);
-                entity.u(d8);
-                entity.w(d5);
-                entity.L(d2);
-                entity.l(d7);
-                entity.A(d4);
-                entity.s(d);
-                gameSettings.k(f7);
-                entityRenderer.V(f6);
-                entityRenderer.r(f5);
+                entity.H(currentYaw);
+                entity.D(previousYaw);
+                entity.C(currentPitch);
+                entity.l(previousPitch);
+                ((EntityLivingBase)entity).z(currentBodyYaw);
+                ((EntityLivingBase)entity).o(previousBodyYaw);
+                ((EntityLivingBase)entity).X(previousCurrentHeadYaw);
+                ((EntityLivingBase)entity).Y(previousHeadYaw);
+                gameSettings.I(previousThirdPersonView);
+                gameSettings.F(previousHideGui);
+                gameSettings.O(previousViewBobbing);
+                entity.H(currentX);
+                entity.n(previousX);
+                entity.C(previousLastTickX);
+                entity.u(currentY);
+                entity.w(previousY);
+                entity.L(previousLastTickY);
+                entity.l(currentZ);
+                entity.A(previousZ);
+                entity.s(previousLastTickZ);
+                gameSettings.k(previousFov);
+                entityRenderer.V(previousCameraZoom);
+                entityRenderer.r(previousCameraYaw);
                 if (ForgeVersion.MC_1_21_4.d()) {
-                    GL11.glViewport((int)0, (int)0, (int)n3, (int)n2);
+                    GL11.glViewport((int)0, (int)0, (int)displayWidth, (int)displayHeight);
                 } else {
-                    this.E.unbindFramebuffer();
+                    this.legacyFramebuffer.unbindFramebuffer();
                     Minecraft.getFrameBuffer().bindFramebuffer(true);
                 }
             }
         }
     }
 
-    private boolean R() {
+    private boolean canRender() {
         return true;
     }
 
-    public static boolean W() {
-        return m;
+    public static boolean isRenderingOffscreen() {
+        return renderingOffscreen;
     }
 
-    public OffscreenRenderContext(boolean bl, int n, int n2) {
-        this.I = new TimerUtil();
-        this.Q = 30;
-        this.C = bl;
-        this.o = n;
-        this.U = n2;
-        this.d$src$V$1ng482b();
+    public OffscreenRenderContext(boolean flipVertically, int width, int height) {
+        this.frameTimer = new TimerUtil();
+        this.frameIntervalMillis = 30;
+        this.flipVertically = flipVertically;
+        this.width = width;
+        this.height = height;
+        this.initializeFramebuffer();
     }
 
-    public static int[] W$src$AI$1oy8lkc() {
-        return M;
+    public static int[] getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
-    public boolean D() {
-        return this.c;
+    public boolean hasFrame() {
+        return this.frameReady;
     }
 
-    protected void z(boolean bl) {
+    protected void bindFramebuffer(boolean bind) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            if (this.t == null) {
-                this.d$src$V$1ng482b();
+            if (this.modernFramebuffer == null) {
+                this.initializeFramebuffer();
             }
-            if (bl) {
-                this.t.f(true);
+            if (bind) {
+                this.modernFramebuffer.bind(true);
             } else {
-                this.t.o();
+                this.modernFramebuffer.unbind();
             }
-        } else if (bl) {
-            this.E.bindFramebuffer(true);
+        } else if (bind) {
+            this.legacyFramebuffer.bindFramebuffer(true);
         } else {
-            this.E.unbindFramebuffer();
+            this.legacyFramebuffer.unbindFramebuffer();
         }
-        m = bl;
+        renderingOffscreen = bind;
     }
 
-    public void B(boolean bl, double d, double d2, double d3, double d4, Color color) {
+    public void drawFramebuffer(boolean visible, double left, double top, double right, double bottom, Color color) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            if (!bl || this.t == null || this.t.l <= 0) {
+            if (!visible || this.modernFramebuffer == null || this.modernFramebuffer.colorTextureId <= 0) {
                 return;
             }
-            float f = (float)Math.min(d, d3);
-            float f2 = (float)Math.min(d2, d4);
-            float f3 = (float)Math.abs(d3 - d);
-            float f4 = (float)Math.abs(d4 - d2);
-            float f5 = this.C ? 1.0f : 0.0f;
-            float f6 = this.C ? 0.0f : 1.0f;
-            float f7 = 1.0f;
-            float f8 = 0.0f;
-            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder().o(new GlImageTexture(this.t.l)).e(f, f2, f3, f4, f3, f4, f5, f7, f6, f8, color);
-            RenderBatchManager.M().O(renderBatchBuilder);
+            float renderX = (float)Math.min(left, right);
+            float renderY = (float)Math.min(top, bottom);
+            float renderWidth = (float)Math.abs(right - left);
+            float renderHeight = (float)Math.abs(bottom - top);
+            float minV = this.flipVertically ? 1.0f : 0.0f;
+            float maxV = this.flipVertically ? 0.0f : 1.0f;
+            float maxU = 1.0f;
+            float minU = 0.0f;
+            RenderBatchBuilder renderBatchBuilder = new RenderBatchBuilder().setTexture(new GlImageTexture(this.modernFramebuffer.colorTextureId)).addTexturedRect(renderX, renderY, renderWidth, renderHeight, renderWidth, renderHeight, minV, maxU, maxV, minU, color);
+            RenderBatchManager.getInstance().queueGuiBatch(renderBatchBuilder);
             return;
         }
         if (!Minecraft.gameSettings().Y$src$Z$1rxemad()) {
             return;
         }
-        OpenGlBackendHolder.d.l(2903);
-        boolean bl2 = GL11.glIsEnabled((int)3553);
-        boolean bl3 = GL11.glIsEnabled((int)2896);
-        boolean bl4 = GL11.glIsEnabled((int)3008);
-        boolean bl5 = GL11.glIsEnabled((int)3042);
-        if (!bl2) {
+        OpenGlBackendHolder.backend.enableCapability(2903);
+        boolean textureEnabled = GL11.glIsEnabled((int)3553);
+        boolean lightingEnabled = GL11.glIsEnabled((int)2896);
+        boolean alphaTestEnabled = GL11.glIsEnabled((int)3008);
+        boolean blendingEnabled = GL11.glIsEnabled((int)3042);
+        if (!textureEnabled) {
             GlStateManager.enableTexture2D();
         }
-        if (bl3) {
+        if (lightingEnabled) {
             GlStateManager.disableLighting();
         }
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
         GL11.glColor4f((float)((float)color.getRed() / 255.0f), (float)((float)color.getGreen() / 255.0f), (float)((float)color.getBlue() / 255.0f), (float)((float)color.getAlpha() / 255.0f));
-        if (bl) {
+        if (visible) {
             if (ForgeVersion.MC_1_21_4.d()) {
-                if (this.t == null || this.t.l <= 0) {
+                if (this.modernFramebuffer == null || this.modernFramebuffer.colorTextureId <= 0) {
                     return;
                 }
-                this.t.S();
+                this.modernFramebuffer.bindColorTexture();
             } else {
-                this.E.bindFramebufferTexture();
+                this.legacyFramebuffer.bindFramebufferTexture();
             }
-            if (this.C) {
-                RenderUtils.J(d, d2, d3, d4);
+            if (this.flipVertically) {
+                RenderUtils.J(left, top, right, bottom);
             } else {
-                RenderUtils.A(d, d2, d3, d4);
+                RenderUtils.A(left, top, right, bottom);
             }
             if (ForgeVersion.MC_1_21_4.d()) {
-                this.t.M();
+                this.modernFramebuffer.restorePreviousTexture();
             } else {
-                this.E.unbindFramebufferTexture();
+                this.legacyFramebuffer.unbindFramebufferTexture();
             }
         }
-        if (!bl2) {
+        if (!textureEnabled) {
             GlStateManager.disableTexture2D();
         }
-        if (bl3) {
+        if (lightingEnabled) {
             GlStateManager.enableLighting();
         }
-        if (bl4) {
+        if (alphaTestEnabled) {
             GlStateManager.enableAlpha();
         }
-        if (!bl5) {
+        if (!blendingEnabled) {
             GlStateManager.disableBlend();
         }
     }
 
-    public OffscreenRenderContext(boolean bl) {
-        this(bl, 720, 400);
+    public OffscreenRenderContext(boolean flipVertically) {
+        this(flipVertically, 720, 400);
     }
 
-    public static void U(int[] nArray) {
-        M = nArray;
+    public static void setControlFlowMarker(int[] marker) {
+        controlFlowMarker = marker;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception propagateException(Exception exception) {
         return exception;
     }
 }

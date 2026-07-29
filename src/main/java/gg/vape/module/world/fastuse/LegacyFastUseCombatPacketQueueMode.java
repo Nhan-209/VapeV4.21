@@ -2,7 +2,6 @@ package gg.vape.module.world.fastuse;
 
 import gg.vape.event.EventHandler;
 import gg.vape.event.EventPriority;
-import gg.vape.event.impl.DelayedPacketSendEntry;
 import gg.vape.event.impl.EventPacketSend;
 import gg.vape.event.impl.EventPreTick;
 import gg.vape.event.impl.EventTickBase;
@@ -10,10 +9,9 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Mod;
 import gg.vape.module.SubModule;
 import gg.vape.module.combat.AttackPacketTimingTracker;
-import gg.vape.module.control.SharedModuleControlClaimPrimary;
+import gg.vape.module.control.PrimaryActionControlClaim;
 import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.world.FastUseModule;
-import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.utils.SleepUtil;
 import gg.vape.utils.network.PacketDispatchGuard;
 import gg.vape.wrapper.impl.Entity;
@@ -29,138 +27,105 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LegacyFastUseCombatPacketQueueMode
 extends SubModule<FastUseModule> {
-    private final Queue<EventPacketSend> r;
-    private long O;
-    private final PacketDispatchGuard o = PacketDispatchGuard.b;
-    private AtomicBoolean Z;
-    private EntityLivingBase I;
-    private SharedModuleControlClaimPrimary S;
+    private final Queue<EventPacketSend> queuedPackets;
+    private long flushDeadline;
+    private final PacketDispatchGuard dispatchGuard = PacketDispatchGuard.b;
+    private final AtomicBoolean flushing;
+    private EntityLivingBase targetEntity;
+    private final PrimaryActionControlClaim controlClaim;
 
-    public LegacyFastUseCombatPacketQueueMode(Mod mod, String string) {
-        super(mod, string);
-        this.r = new LinkedList<EventPacketSend>();
-        this.Z = new AtomicBoolean(false);
-        this.S = SharedModuleControlClaims.L;
+    public LegacyFastUseCombatPacketQueueMode(Mod parent, String name) {
+        super(parent, name);
+        this.queuedPackets = new LinkedList<EventPacketSend>();
+        this.flushing = new AtomicBoolean(false);
+        this.controlClaim = SharedModuleControlClaims.primaryAction;
     }
 
     @Override
-    public String r() {
-        String string = "Repel " + ((FastUseModule)this.getParent()).j.c() + "ms";
-        if (!this.r.isEmpty()) {
-            string = "\u00a7c" + string;
+    public String getDetailedSuffix() {
+        String suffix = "Repel " + ((FastUseModule)this.getParent()).delay.getDisplayValue() + "ms";
+        if (!this.queuedPackets.isEmpty()) {
+            suffix = "\u00a7c" + suffix;
         }
-        return string;
+        return suffix;
     }
 
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
         NetHandlerPlayClientImpl netHandlerPlayClientImpl = Minecraft.N();
-        int n = DelayedPacketSendEntry.G();
-        if (n != 0) {
-            boolean bl;
-            int n2;
-            int n3;
-            EntityLivingBase entityLivingBase = this.I;
-            if (entityLivingBase != null && (n3 = this.I.c$src$I$15a9iwo()) > 0 && (n2 = this.I.c$src$I$15a9iwo()) <= AttackPacketTimingTracker.a.Z() && !(bl = this.r.isEmpty()) && netHandlerPlayClientImpl.isNotNull()) {
-                LegacyFastUseCombatPacketQueueMode legacyFastUseCombatPacketQueueMode = this;
-                legacyFastUseCombatPacketQueueMode.D();
-            }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
-                DelayedPacketSendEntry.A(++n);
-            }
-            return;
-        }
-        EntityLivingBase entityLivingBase = this.I;
-        int n4 = entityLivingBase.c$src$I$15a9iwo();
-        int n5 = n4;
-        int n6 = n5;
-        if (n6 != 0) {
-            LegacyFastUseCombatPacketQueueMode legacyFastUseCombatPacketQueueMode = this;
-            legacyFastUseCombatPacketQueueMode.D();
-        }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
-            DelayedPacketSendEntry.A(++n);
+        EntityLivingBase target = this.targetEntity;
+        if (target != null
+                && target.c$src$I$15a9iwo() > 0
+                && target.c$src$I$15a9iwo() <= AttackPacketTimingTracker.INSTANCE.getExpectedHurtTimeTicks()
+                && !this.queuedPackets.isEmpty()
+                && netHandlerPlayClientImpl.isNotNull()) {
+            this.flushPackets();
         }
     }
 
 
-    private void D() {
-        int n = DelayedPacketSendEntry.I();
-        boolean bl = this.r.isEmpty();
-        if (n == 0) {
-            if (bl) {
-                return;
-            }
-            bl = Thread.currentThread().equals(EventTickBase.S.getOwnerThread());
-        }
-        if (!bl) {
+    private void flushPackets() {
+        if (this.queuedPackets.isEmpty() || !Thread.currentThread().equals(EventTickBase.S.getOwnerThread())) {
             return;
         }
-        this.Z.set(true);
-        this.r.forEach(this::lambda$flushPackets$0);
-        this.r.clear();
-        this.Z.set(false);
+        this.flushing.set(true);
+        this.queuedPackets.forEach(this::dispatchQueuedPacket);
+        this.queuedPackets.clear();
+        this.flushing.set(false);
     }
 
-    private void lambda$flushPackets$0(EventPacketSend eventPacketSend) {
-        this.o.o(eventPacketSend);
+    private void dispatchQueuedPacket(EventPacketSend eventPacketSend) {
+        this.dispatchGuard.o(eventPacketSend);
     }
 
     @EventHandler(A=EventPriority.LOW)
     public void onPacketSend(EventPacketSend eventPacketSend) {
         Entity entity;
         UseEntityPacketBridge useEntityPacketBridge;
-        int n = DelayedPacketSendEntry.I();
-        if (this.S.v$src$Z$1r7ksy2()) {
-            LegacyFastUseCombatPacketQueueMode legacyFastUseCombatPacketQueueMode = this;
-            legacyFastUseCombatPacketQueueMode.D();
+        if (this.controlClaim.isClaimed()) {
+            this.flushPackets();
             return;
         }
         Packet packet = eventPacketSend.getPacket();
-        if (this.o.R(packet)) {
+        if (this.dispatchGuard.R(packet)) {
             return;
         }
-        while (this.Z.get()) {
+        while (this.flushing.get()) {
             SleepUtil.sleep(10L);
         }
-        if (!this.r.isEmpty()) {
+        if (!this.queuedPackets.isEmpty()) {
             UseEntityPacketBridge useEntityPacketBridge2;
-            boolean bl = false;
-            if (System.currentTimeMillis() >= this.O) {
-                bl = true;
-            }
+            boolean shouldFlush = System.currentTimeMillis() >= this.flushDeadline;
             if (UseEntityPacketBridge.h(packet) && (useEntityPacketBridge2 = new UseEntityPacketBridge(packet)).S()) {
-                bl = true;
+                shouldFlush = true;
             }
             if (packet.isInstance(MappedClasses.u7)) {
-                bl = true;
+                shouldFlush = true;
             }
             if (!Thread.currentThread().equals(EventTickBase.S.getOwnerThread())) {
-                bl = false;
+                shouldFlush = false;
             }
-            if (bl) {
-                this.r.add(eventPacketSend);
+            if (shouldFlush) {
+                this.queuedPackets.add(eventPacketSend);
                 eventPacketSend.setCancelled(true);
-                LegacyFastUseCombatPacketQueueMode legacyFastUseCombatPacketQueueMode = this;
-                legacyFastUseCombatPacketQueueMode.D();
+                this.flushPackets();
                 return;
             }
-            this.r.add(eventPacketSend);
+            this.queuedPackets.add(eventPacketSend);
             eventPacketSend.setCancelled(true);
             return;
         }
         if (UseEntityPacketBridge.h(packet) && (useEntityPacketBridge = new UseEntityPacketBridge(packet)).S() && (entity = Minecraft.theWorld().V(useEntityPacketBridge.w())).isInstance(MappedClasses.zm)) {
-            this.I = new EntityLivingBase(entity);
-            long l = ((Double)((FastUseModule)this.getParent()).j.K()).longValue() + (long)ThreadLocalRandom.current().nextInt(100);
-            if (this.I.c$src$I$15a9iwo() > 0 && this.I.c$src$I$15a9iwo() <= (int)Math.ceil((double)l / 50.0)) {
-                this.r.add(eventPacketSend);
-                this.O = System.currentTimeMillis() + l;
+            this.targetEntity = new EntityLivingBase(entity);
+            long delay = ((Double)((FastUseModule)this.getParent()).delay.getValue()).longValue() + (long)ThreadLocalRandom.current().nextInt(100);
+            if (this.targetEntity.c$src$I$15a9iwo() > 0 && this.targetEntity.c$src$I$15a9iwo() <= (int)Math.ceil((double)delay / 50.0)) {
+                this.queuedPackets.add(eventPacketSend);
+                this.flushDeadline = System.currentTimeMillis() + delay;
                 eventPacketSend.setCancelled(true);
             }
         }
-        if (this.r.isEmpty()) {
-            this.o.J(packet);
+        if (this.queuedPackets.isEmpty()) {
+            this.dispatchGuard.J(packet);
         }
     }
 }
-

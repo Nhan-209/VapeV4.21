@@ -12,57 +12,53 @@ public class ChestStealInventoryState
 extends TextComponentBase {
     private static final String UNSUPPORTED_MESSAGE = "This method is available on 1.20.6 and later.";
 
-    public static ChestStealInventoryState v(String string, Object ... objectArray) {
-        return new ChestStealInventoryState(MTextComponentTranslation.B(ChestStealInventoryState.c.getMappings().D_, string, objectArray));
+    public static ChestStealInventoryState createTranslation(String translationKey, Object ... formatArguments) {
+        return new ChestStealInventoryState(MTextComponentTranslation.B(ChestStealInventoryState.c.getMappings().D_, translationKey, formatArguments));
     }
 
-    public String U() {
+    public String getTranslationKey() {
         if (ForgeVersion.MC_1_16_5.v()) {
             Vape.notifyNativeStackTrace();
         }
         return MTextComponentTranslation.C(ChestStealInventoryState.c.getMappings().D_, this.getObject());
     }
 
-    public String p() {
+    public String getFallback() {
         if (ForgeVersion.MC_1_20_6.v()) {
             Vape.notifyNativeStackTrace();
         }
         return MTextComponentTranslation.a(ChestStealInventoryState.c.getMappings().D_, this.getObject());
     }
 
-    public static ChestStealInventoryState A(String string, @Nullable String string2, Object[] objectArray) {
+    public static ChestStealInventoryState createTranslationWithFallback(String translationKey, @Nullable String fallback, Object[] formatArguments) {
         if (ForgeVersion.MC_1_20_6.v()) {
             Vape.notifyNativeStackTrace();
             throw new UnsupportedOperationException(UNSUPPORTED_MESSAGE);
         }
-        return new ChestStealInventoryState(MTextComponentTranslation.k(ChestStealInventoryState.c.getMappings().D_, string, string2, objectArray));
+        return new ChestStealInventoryState(MTextComponentTranslation.k(ChestStealInventoryState.c.getMappings().D_, translationKey, fallback, formatArguments));
     }
 
     @Override
-    public String C() {
+    public String getFormattedText() {
         if (ForgeVersion.MC_1_20_6.d()) {
             TextComponent textComponent = TextComponent.p(this.I);
-            return textComponent.C();
+            return textComponent.getFormattedText();
         }
-        return super.C();
+        return super.getFormattedText();
     }
 
-    public Object[] c() {
+    public Object[] getFormatArguments() {
         if (ForgeVersion.MC_1_16_5.v()) {
             Vape.notifyNativeStackTrace();
         }
         return MTextComponentTranslation.x(ChestStealInventoryState.c.getMappings().D_, this.getObject());
     }
 
-    private static UnsupportedOperationException b(UnsupportedOperationException unsupportedOperationException) {
-        return unsupportedOperationException;
+    public ChestStealInventoryState(Object component) {
+        super(component);
     }
 
-    public ChestStealInventoryState(Object object) {
-        super(object);
-    }
-
-    public List b() {
+    public List<?> getSiblings() {
         return ChestStealInventoryState.c.getMappings().D_.k(this.getObject());
     }
 }

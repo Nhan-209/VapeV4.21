@@ -6,19 +6,18 @@ import gg.vape.unmap.ModeOption;
 
 public class SubModuleValue<T extends SubModule>
 extends ModeOption {
-    private final T L;
+    private final T instance;
 
-    public SubModuleValue(String string, T t) {
-        super(string);
-        this.L = t;
+    public SubModuleValue(String name, T instance) {
+        super(name);
+        this.instance = instance;
     }
 
-    public SubModuleValue(T t) {
-        this(((Mod)t).getName(), t);
+    public SubModuleValue(T instance) {
+        this(((Mod)instance).getName(), instance);
     }
 
     public T getInstance() {
-        return this.L;
+        return this.instance;
     }
 }
-

@@ -16,16 +16,16 @@ import java.awt.Color;
 
 public class ColorValueEditorComponent
 extends GuiComponent {
-    private ColorChannelSliderComponent G;
-    private boolean i = true;
-    private boolean O;
-    private ColorChannelSliderComponent v;
-    private ColorChannelSliderComponent o;
-    private IconButtonComponent I = new IconButtonComponent("upcollapse", 0.3);
-    private final ColorPreviewSwatchComponent b;
-    private ColorChannelSliderComponent R;
-    private static String a;
-    private ColorValue K;
+    private ColorChannelSliderComponent vibranceSlider;
+    private boolean collapsed = true;
+    private boolean suppressChildMouseDispatch;
+    private ColorChannelSliderComponent rainbowSlider;
+    private ColorChannelSliderComponent opacitySlider;
+    private IconButtonComponent collapseButton = new IconButtonComponent("upcollapse", 0.3);
+    private final ColorPreviewSwatchComponent previewSwatch;
+    private ColorChannelSliderComponent saturationSlider;
+    private static String legacyInteractionMarker;
+    private ColorValue colorValue;
 
     @Override
     public void I() {
@@ -34,40 +34,40 @@ extends GuiComponent {
     @Override
     public void H() {
         this.onDisable();
-        this.v.K(this.G$src$D$1b2f02a());
-        this.v.S(this.n());
-        this.I.K(this.G$src$D$1b2f02a() + this.v.c$src$D$35vrdj() + 5.0);
-        this.I.S(this.n() + 2.5 - 2.0);
-        this.I.Y(this.v.L() / 2.0);
-        this.I.o(10.0);
-        this.I.H(this.i ? "downexpand" : "upcollapse");
-        ImageRenderer.E(this.K.q$src$Lgg_vape_utils_MutableColor_$1dowyd3(), (float)(this.G$src$D$1b2f02a() + this.A() - 5.0 - 6.0), (float)this.n() + 5.0f, "colorpreview", 6.0f, 6.0f, false);
-        this.b.K(this.G$src$D$1b2f02a() + this.A() - 10.0 - 5.0 - 6.0);
-        this.b.S(this.n() + 5.0);
-        if (this.i) {
-            this.R.Z(false);
-            this.G.Z(false);
-            this.o.Z(false);
+        this.rainbowSlider.K(this.G$src$D$1b2f02a());
+        this.rainbowSlider.S(this.n());
+        this.collapseButton.K(this.G$src$D$1b2f02a() + this.rainbowSlider.getLabelWidth() + 5.0);
+        this.collapseButton.S(this.n() + 2.5 - 2.0);
+        this.collapseButton.Y(this.rainbowSlider.L() / 2.0);
+        this.collapseButton.o(10.0);
+        this.collapseButton.setIconResource(this.collapsed ? "downexpand" : "upcollapse");
+        ImageRenderer.drawImage(this.colorValue.getMutableColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 5.0 - 6.0), (float)this.n() + 5.0f, "colorpreview", 6.0f, 6.0f, false);
+        this.previewSwatch.K(this.G$src$D$1b2f02a() + this.A() - 10.0 - 5.0 - 6.0);
+        this.previewSwatch.S(this.n() + 5.0);
+        if (this.collapsed) {
+            this.saturationSlider.setVisible(false);
+            this.vibranceSlider.setVisible(false);
+            this.opacitySlider.setVisible(false);
         } else {
-            this.R.Z(true);
-            this.R.K(this.G$src$D$1b2f02a());
-            this.R.S(this.n() + 20.0 + 5.0);
-            this.G.Z(true);
-            this.G.K(this.G$src$D$1b2f02a());
-            this.G.S(this.n() + 40.0 + 10.0);
-            this.o.Z(true);
-            this.o.K(this.G$src$D$1b2f02a());
-            this.o.S(this.n() + 60.0 + 15.0);
+            this.saturationSlider.setVisible(true);
+            this.saturationSlider.K(this.G$src$D$1b2f02a());
+            this.saturationSlider.S(this.n() + 20.0 + 5.0);
+            this.vibranceSlider.setVisible(true);
+            this.vibranceSlider.K(this.G$src$D$1b2f02a());
+            this.vibranceSlider.S(this.n() + 40.0 + 10.0);
+            this.opacitySlider.setVisible(true);
+            this.opacitySlider.K(this.G$src$D$1b2f02a());
+            this.opacitySlider.S(this.n() + 60.0 + 15.0);
         }
     }
 
     @Override
-    public void P(boolean bl) {
-        super.P(bl);
-        this.v.P(bl);
-        this.R.P(bl);
-        this.G.P(bl);
-        this.o.P(bl);
+    public void setUseExplicitWidth(boolean bl) {
+        super.setUseExplicitWidth(bl);
+        this.rainbowSlider.setUseExplicitWidth(bl);
+        this.saturationSlider.setUseExplicitWidth(bl);
+        this.vibranceSlider.setUseExplicitWidth(bl);
+        this.opacitySlider.setUseExplicitWidth(bl);
     }
 
     @Override
@@ -75,36 +75,36 @@ extends GuiComponent {
         MousePosition mousePosition = RenderUtils.h();
     }
 
-    public static String P() {
-        return a;
+    public static String getLegacyInteractionMarker() {
+        return legacyInteractionMarker;
     }
 
-    public static void x(String string) {
-        a = string;
+    public static void setLegacyInteractionMarker(String marker) {
+        legacyInteractionMarker = marker;
     }
 
     public ColorValueEditorComponent(ColorValue colorValue) {
-        this.K = colorValue;
-        this.C(colorValue);
-        this.v = new ColorChannelSliderComponent(ColorChannelType.RAINBOW, colorValue);
-        this.v.H((GuiComponent)this);
-        this.R = new ColorChannelSliderComponent(ColorChannelType.SATURATION, colorValue);
-        this.G = new ColorChannelSliderComponent(ColorChannelType.VIBRANCE, colorValue);
-        this.o = new ColorChannelSliderComponent(ColorChannelType.OPACITY, colorValue);
-        this.b = new ColorPreviewSwatchComponent(colorValue);
-        this.v.T(Color.WHITE);
-        this.R.T(ColorValueEditorComponent.J.r);
-        this.G.T(ColorValueEditorComponent.J.r);
-        this.o.T(ColorValueEditorComponent.J.r);
-        this.R.M(null);
-        this.G.M(null);
-        this.o.M(null);
-        this.I.r(new ColorValueEditorToggleExpandedClickHandler(this));
-        this.H(this.I, this.b, this.v, this.R, this.G, this.o);
+        this.colorValue = colorValue;
+        this.bindValue(colorValue);
+        this.rainbowSlider = new ColorChannelSliderComponent(ColorChannelType.RAINBOW, colorValue);
+        this.rainbowSlider.setFallbackColorComponent(this);
+        this.saturationSlider = new ColorChannelSliderComponent(ColorChannelType.SATURATION, colorValue);
+        this.vibranceSlider = new ColorChannelSliderComponent(ColorChannelType.VIBRANCE, colorValue);
+        this.opacitySlider = new ColorChannelSliderComponent(ColorChannelType.OPACITY, colorValue);
+        this.previewSwatch = new ColorPreviewSwatchComponent(colorValue);
+        this.rainbowSlider.setDisabledOverlayColor(Color.WHITE);
+        this.saturationSlider.setDisabledOverlayColor(ColorValueEditorComponent.J.r);
+        this.vibranceSlider.setDisabledOverlayColor(ColorValueEditorComponent.J.r);
+        this.opacitySlider.setDisabledOverlayColor(ColorValueEditorComponent.J.r);
+        this.saturationSlider.setToolTips(null);
+        this.vibranceSlider.setToolTips(null);
+        this.opacitySlider.setToolTips(null);
+        this.collapseButton.addClickListener(new ColorValueEditorToggleExpandedClickHandler(this));
+        this.addChildren(this.collapseButton, this.previewSwatch, this.rainbowSlider, this.saturationSlider, this.vibranceSlider, this.opacitySlider);
     }
 
     static {
-        ColorValueEditorComponent.x(null);
+        ColorValueEditorComponent.setLegacyInteractionMarker(null);
     }
 
     @Override
@@ -112,34 +112,34 @@ extends GuiComponent {
     }
 
     @Override
-    public void D(GuiMouseEvent guiMouseEvent) {
-        if (this.O) {
+    public void dispatchMouseEvent(GuiMouseEvent guiMouseEvent) {
+        if (this.suppressChildMouseDispatch) {
             return;
         }
         for (GuiComponent guiComponent : this.f()) {
             if (!guiComponent.V$src$Z$1xhop3l() || !guiComponent.w$src$Z$e457mb()) continue;
-            guiComponent.D(guiMouseEvent);
+            guiComponent.dispatchMouseEvent(guiMouseEvent);
             if (guiComponent instanceof FrameHeaderComponent) continue;
             return;
         }
     }
 
     @Override
-    public void q(double d) {
-        super.q(d);
-        this.v.q(d);
-        this.R.q(d);
-        this.G.q(d);
-        this.o.q(d);
+    public void setExplicitWidth(double d) {
+        super.setExplicitWidth(d);
+        this.rainbowSlider.setExplicitWidth(d);
+        this.saturationSlider.setExplicitWidth(d);
+        this.vibranceSlider.setExplicitWidth(d);
+        this.opacitySlider.setExplicitWidth(d);
     }
 
     @Override
     public void o(double d) {
         super.o(d);
-        this.v.o(d);
-        this.R.o(d);
-        this.G.o(d);
-        this.o.o(d);
+        this.rainbowSlider.o(d);
+        this.saturationSlider.o(d);
+        this.vibranceSlider.o(d);
+        this.opacitySlider.o(d);
     }
 
     @Override
@@ -147,13 +147,13 @@ extends GuiComponent {
         return 110.0;
     }
 
-    public static boolean h(ColorValueEditorComponent colorValueEditorComponent, boolean bl) {
-        colorValueEditorComponent.i = bl;
-        return colorValueEditorComponent.i;
+    public static boolean setCollapsedCompat(ColorValueEditorComponent editor, boolean collapsed) {
+        editor.collapsed = collapsed;
+        return editor.collapsed;
     }
 
-    public static boolean M(ColorValueEditorComponent colorValueEditorComponent) {
-        return colorValueEditorComponent.i;
+    public static boolean isCollapsedCompat(ColorValueEditorComponent editor) {
+        return editor.collapsed;
     }
 
     @Override
@@ -162,7 +162,7 @@ extends GuiComponent {
 
     @Override
     public double C() {
-        return this.i ? 25.0 : 104.0;
+        return this.collapsed ? 25.0 : 104.0;
     }
 
 }

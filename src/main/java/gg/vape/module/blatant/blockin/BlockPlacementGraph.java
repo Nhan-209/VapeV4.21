@@ -20,336 +20,262 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlockPlacementGraph {
-    public final double P;
-    public final double j;
-    public final int G;
-    public final ArrayList f;
-    public final float p;
-    public final double t;
-    public boolean A;
-    public boolean N;
-    public final int S;
-    public final double k;
-    public final boolean K;
-    public boolean R;
-    public final double Z;
-    public final boolean C;
-    public final boolean U;
-    public final float B;
-    public final boolean V;
-    public final float E;
+    public final double positionZ;
+    public final double previousPositionY;
+    public final int jumpTicks;
+    public final ArrayList movementSpeedModifiers;
+    public final float moveForward;
+    public final double motionZ;
+    public boolean jumpKeyDown;
+    public boolean sprintKeyDown;
+    public final int sprintToggleTimer;
+    public final double positionX;
+    public final boolean sprinting;
+    public boolean leftKeyDown;
+    public final double previousPositionX;
+    public final boolean inWater;
+    public final boolean onGround;
+    public final float aiMoveSpeed;
+    public final boolean sneaking;
+    public final float jumpMovementFactor;
     private static Sprint sprintMod;
-    public final float g;
-    public boolean D;
-    public final float s;
-    public final double v;
-    public final boolean c;
-    public final float n;
-    public final double H;
-    public final float L;
-    public final BlockPlacementGraphNode u;
-    public final float Q;
-    public boolean M;
-    public final int J;
-    public boolean Y;
-    public final double I;
-    public boolean y;
-    public final double x;
-    private static int[] packedData;
-    public final boolean l;
+    public final float previousYaw;
+    public boolean backwardKeyDown;
+    public final float moveStrafe;
+    public final double positionY;
+    public final boolean sneakInput;
+    public final float pitch;
+    public final double motionY;
+    public final float previousPitch;
+    public final BlockPlacementGraphNode aimNode;
+    public final float yaw;
+    public boolean forwardKeyDown;
+    public final int sprintingTicksLeft;
+    public boolean rightKeyDown;
+    public final double motionX;
+    public boolean sneakKeyDown;
+    public final double previousPositionZ;
+    public final boolean jumpInput;
 
-    public static void o(int[] nArray) {
-        packedData = nArray;
-    }
-
-    public String K() {
+    public String serialize() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.k).append(",");
-        stringBuilder.append(this.v).append(",");
-        stringBuilder.append(this.P).append(",");
-        stringBuilder.append(this.Z).append(",");
-        stringBuilder.append(this.j).append(",");
-        stringBuilder.append(this.x).append(",");
-        stringBuilder.append(this.I).append(",");
-        stringBuilder.append(this.H).append(",");
-        stringBuilder.append(this.t).append(",");
-        stringBuilder.append(this.Q).append(",");
-        stringBuilder.append(this.n).append(",");
-        stringBuilder.append(this.g).append(",");
-        stringBuilder.append(this.L).append(",");
-        stringBuilder.append(this.J).append(",");
-        stringBuilder.append(this.S).append(",");
-        stringBuilder.append(this.U).append(",");
-        stringBuilder.append(this.V).append(",");
-        stringBuilder.append(this.K).append(",");
-        stringBuilder.append(this.G).append(",");
-        stringBuilder.append(this.E).append(",");
-        stringBuilder.append(this.B).append(",");
-        stringBuilder.append(this.C).append(",");
-        stringBuilder.append(this.s).append(",");
-        stringBuilder.append(this.p).append(",");
-        stringBuilder.append(this.l).append(",");
-        stringBuilder.append(this.c).append(",");
-        stringBuilder.append(this.M).append(",");
-        stringBuilder.append(this.D).append(",");
-        stringBuilder.append(this.R).append(",");
-        stringBuilder.append(this.Y).append(",");
-        stringBuilder.append(this.y).append(",");
-        stringBuilder.append(this.A).append(",");
-        stringBuilder.append(this.N);
+        stringBuilder.append(this.positionX).append(",");
+        stringBuilder.append(this.positionY).append(",");
+        stringBuilder.append(this.positionZ).append(",");
+        stringBuilder.append(this.previousPositionX).append(",");
+        stringBuilder.append(this.previousPositionY).append(",");
+        stringBuilder.append(this.previousPositionZ).append(",");
+        stringBuilder.append(this.motionX).append(",");
+        stringBuilder.append(this.motionY).append(",");
+        stringBuilder.append(this.motionZ).append(",");
+        stringBuilder.append(this.yaw).append(",");
+        stringBuilder.append(this.pitch).append(",");
+        stringBuilder.append(this.previousYaw).append(",");
+        stringBuilder.append(this.previousPitch).append(",");
+        stringBuilder.append(this.sprintingTicksLeft).append(",");
+        stringBuilder.append(this.sprintToggleTimer).append(",");
+        stringBuilder.append(this.onGround).append(",");
+        stringBuilder.append(this.sneaking).append(",");
+        stringBuilder.append(this.sprinting).append(",");
+        stringBuilder.append(this.jumpTicks).append(",");
+        stringBuilder.append(this.jumpMovementFactor).append(",");
+        stringBuilder.append(this.aiMoveSpeed).append(",");
+        stringBuilder.append(this.inWater).append(",");
+        stringBuilder.append(this.moveStrafe).append(",");
+        stringBuilder.append(this.moveForward).append(",");
+        stringBuilder.append(this.jumpInput).append(",");
+        stringBuilder.append(this.sneakInput).append(",");
+        stringBuilder.append(this.forwardKeyDown).append(",");
+        stringBuilder.append(this.backwardKeyDown).append(",");
+        stringBuilder.append(this.leftKeyDown).append(",");
+        stringBuilder.append(this.rightKeyDown).append(",");
+        stringBuilder.append(this.sneakKeyDown).append(",");
+        stringBuilder.append(this.jumpKeyDown).append(",");
+        stringBuilder.append(this.sprintKeyDown);
         return stringBuilder.toString();
     }
 
-    public static BlockPlacementGraph S(String string) {
-        String[] stringArray = string.split(",");
-        if (stringArray.length < 32) {
+    public static BlockPlacementGraph deserialize(String serialized) {
+        String[] values = serialized.split(",");
+        if (values.length < 33) {
             throw new IllegalArgumentException("Invalid data for MovementSnapshot");
         }
-        double d = Double.parseDouble(stringArray[0]);
-        double d2 = Double.parseDouble(stringArray[1]);
-        double d3 = Double.parseDouble(stringArray[2]);
-        double d4 = Double.parseDouble(stringArray[3]);
-        double d5 = Double.parseDouble(stringArray[4]);
-        double d6 = Double.parseDouble(stringArray[5]);
-        double d7 = Double.parseDouble(stringArray[6]);
-        double d8 = Double.parseDouble(stringArray[7]);
-        double d9 = Double.parseDouble(stringArray[8]);
-        float f = Float.parseFloat(stringArray[9]);
-        float f2 = Float.parseFloat(stringArray[10]);
-        float f3 = Float.parseFloat(stringArray[11]);
-        float f4 = Float.parseFloat(stringArray[12]);
-        int n = Integer.parseInt(stringArray[13]);
-        int n2 = Integer.parseInt(stringArray[14]);
-        boolean bl = Boolean.parseBoolean(stringArray[15]);
-        boolean bl2 = Boolean.parseBoolean(stringArray[16]);
-        boolean bl3 = Boolean.parseBoolean(stringArray[17]);
-        int n3 = Integer.parseInt(stringArray[18]);
-        float f5 = Float.parseFloat(stringArray[19]);
-        float f6 = Float.parseFloat(stringArray[20]);
-        boolean bl4 = Boolean.parseBoolean(stringArray[21]);
-        float f7 = Float.parseFloat(stringArray[22]);
-        float f8 = Float.parseFloat(stringArray[23]);
-        boolean bl5 = Boolean.parseBoolean(stringArray[24]);
-        boolean bl6 = Boolean.parseBoolean(stringArray[25]);
-        boolean bl7 = Boolean.parseBoolean(stringArray[26]);
-        boolean bl8 = Boolean.parseBoolean(stringArray[27]);
-        boolean bl9 = Boolean.parseBoolean(stringArray[28]);
-        boolean bl10 = Boolean.parseBoolean(stringArray[29]);
-        boolean bl11 = Boolean.parseBoolean(stringArray[30]);
-        boolean bl12 = Boolean.parseBoolean(stringArray[31]);
-        boolean bl13 = Boolean.parseBoolean(stringArray[32]);
-        return new BlockPlacementGraph(d, d2, d3, d4, d5, d6, d7, d8, d9, f, f2, f3, f4, n, n2, bl, bl2, bl3, n3, f5, f6, bl4, f7, f8, bl5, bl6, bl7, bl8, bl9, bl10, bl11, bl12, bl13);
+        return new BlockPlacementGraph(
+                Double.parseDouble(values[0]), Double.parseDouble(values[1]),
+                Double.parseDouble(values[2]), Double.parseDouble(values[3]),
+                Double.parseDouble(values[4]), Double.parseDouble(values[5]),
+                Double.parseDouble(values[6]), Double.parseDouble(values[7]),
+                Double.parseDouble(values[8]), Float.parseFloat(values[9]),
+                Float.parseFloat(values[10]), Float.parseFloat(values[11]),
+                Float.parseFloat(values[12]), Integer.parseInt(values[13]),
+                Integer.parseInt(values[14]), Boolean.parseBoolean(values[15]),
+                Boolean.parseBoolean(values[16]), Boolean.parseBoolean(values[17]),
+                Integer.parseInt(values[18]), Float.parseFloat(values[19]),
+                Float.parseFloat(values[20]), Boolean.parseBoolean(values[21]),
+                Float.parseFloat(values[22]), Float.parseFloat(values[23]),
+                Boolean.parseBoolean(values[24]), Boolean.parseBoolean(values[25]),
+                Boolean.parseBoolean(values[26]), Boolean.parseBoolean(values[27]),
+                Boolean.parseBoolean(values[28]), Boolean.parseBoolean(values[29]),
+                Boolean.parseBoolean(values[30]), Boolean.parseBoolean(values[31]),
+                Boolean.parseBoolean(values[32]));
     }
 
-    public boolean G(BlockPlacementGraph blockPlacementGraph) {
-        return this.M == blockPlacementGraph.M && this.D == blockPlacementGraph.D && this.R == blockPlacementGraph.R && this.Y == blockPlacementGraph.Y;
+    public boolean hasSameDirectionalKeys(BlockPlacementGraph other) {
+        return this.forwardKeyDown == other.forwardKeyDown
+                && this.backwardKeyDown == other.backwardKeyDown
+                && this.leftKeyDown == other.leftKeyDown
+                && this.rightKeyDown == other.rightKeyDown;
     }
 
     public BlockPlacementGraph(BlockPathPlanner blockPathPlanner) {
-        EntityPlayer entityPlayer = blockPathPlanner.T();
-        this.k = entityPlayer.z();
-        this.v = entityPlayer.N();
-        this.P = entityPlayer.h();
-        this.Z = entityPlayer.f();
-        this.j = entityPlayer.H();
-        this.x = entityPlayer.R();
-        this.I = entityPlayer.t();
-        this.H = entityPlayer.q();
-        this.t = entityPlayer.T();
-        this.Q = entityPlayer.J();
-        this.n = entityPlayer.V();
-        this.g = entityPlayer.j();
-        this.L = entityPlayer.D();
-        this.u = this.buildAimNode(blockPathPlanner.H());
-        this.J = blockPathPlanner.D();
-        this.S = blockPathPlanner.g();
-        this.U = entityPlayer.b$src$Z$fqlxe4();
-        this.V = blockPathPlanner.Y();
-        this.K = entityPlayer.B$src$Z$f90iek();
-        this.G = entityPlayer.B$src$I$14s4bbr();
-        this.E = entityPlayer.y$src$F$15mczw1();
-        this.B = entityPlayer.C$src$F$1i1kt1e();
-        this.C = entityPlayer.D$src$Z$fa43la();
+        EntityPlayer entityPlayer = blockPathPlanner.getSimulatedPlayer();
+        this.positionX = entityPlayer.z();
+        this.positionY = entityPlayer.N();
+        this.positionZ = entityPlayer.h();
+        this.previousPositionX = entityPlayer.f();
+        this.previousPositionY = entityPlayer.H();
+        this.previousPositionZ = entityPlayer.R();
+        this.motionX = entityPlayer.t();
+        this.motionY = entityPlayer.q();
+        this.motionZ = entityPlayer.T();
+        this.yaw = entityPlayer.J();
+        this.pitch = entityPlayer.V();
+        this.previousYaw = entityPlayer.j();
+        this.previousPitch = entityPlayer.D();
+        this.aimNode = this.buildAimNode(blockPathPlanner.getRotationController());
+        this.sprintingTicksLeft = blockPathPlanner.getSprintingTicksLeft();
+        this.sprintToggleTimer = blockPathPlanner.getSprintToggleTimer();
+        this.onGround = entityPlayer.b$src$Z$fqlxe4();
+        this.sneaking = blockPathPlanner.isSneaking();
+        this.sprinting = entityPlayer.B$src$Z$f90iek();
+        this.jumpTicks = entityPlayer.B$src$I$14s4bbr();
+        this.jumpMovementFactor = entityPlayer.y$src$F$15mczw1();
+        this.aiMoveSpeed = entityPlayer.C$src$F$1i1kt1e();
+        this.inWater = entityPlayer.D$src$Z$fa43la();
         AttributeInstance attributeInstance = ForgeVersion.MC_1_20_6.d() ? entityPlayer.t(MonsterAttributesBridge.U()) : entityPlayer.h(MonsterAttributesBridge.B());
-        this.f = new ArrayList(attributeInstance.I());
-        this.p = blockPathPlanner.k();
-        this.s = blockPathPlanner.U();
-        this.l = blockPathPlanner.K$src$Z$17o55j8();
-        this.c = blockPathPlanner.Y();
-        this.M = blockPathPlanner.C();
-        this.D = blockPathPlanner.s();
-        this.R = blockPathPlanner.o();
-        this.Y = blockPathPlanner.d$src$Z$181w0d9();
-        this.y = blockPathPlanner.R();
-        this.A = blockPathPlanner.g$src$Z$183je5c();
+        this.movementSpeedModifiers = new ArrayList(attributeInstance.I());
+        this.moveForward = blockPathPlanner.getMoveForward();
+        this.moveStrafe = blockPathPlanner.getMoveStrafe();
+        this.jumpInput = blockPathPlanner.isJumpInput();
+        this.sneakInput = blockPathPlanner.isSneaking();
+        this.forwardKeyDown = blockPathPlanner.isForwardKeyDown();
+        this.backwardKeyDown = blockPathPlanner.isBackwardKeyDown();
+        this.leftKeyDown = blockPathPlanner.isLeftKeyDown();
+        this.rightKeyDown = blockPathPlanner.isRightKeyDown();
+        this.sneakKeyDown = blockPathPlanner.isSneakKeyDown();
+        this.jumpKeyDown = blockPathPlanner.isJumpKeyDown();
         if (sprintMod == null) {
             sprintMod = Vape.INSTANCE.getModManager().getMod(Sprint.class);
         }
-        this.N = blockPathPlanner.i() || sprintMod.r$src$Z$14eylz9();
+        this.sprintKeyDown = blockPathPlanner.isSprintKeyDown() || sprintMod.r$src$Z$14eylz9();
     }
 
-    private BlockPlacementGraph(double d, double d2, double d3, double d4, double d5, double d6, double d7, double d8, double d9, float f, float f2, float f3, float f4, int n, int n2, boolean bl, boolean bl2, boolean bl3, int n3, float f5, float f6, boolean bl4, float f7, float f8, boolean bl5, boolean bl6, boolean bl7, boolean bl8, boolean bl9, boolean bl10, boolean bl11, boolean bl12, boolean bl13) {
-        this.k = d;
-        this.v = d2;
-        this.P = d3;
-        this.Z = d4;
-        this.j = d5;
-        this.x = d6;
-        this.I = d7;
-        this.H = d8;
-        this.t = d9;
-        this.Q = f;
-        this.n = f2;
-        this.g = f3;
-        this.L = f4;
-        this.J = n;
-        this.S = n2;
-        this.U = bl;
-        this.V = bl2;
-        this.K = bl3;
-        this.G = n3;
-        this.E = f5;
-        this.B = f6;
-        this.C = bl4;
-        this.f = new ArrayList();
-        this.s = f7;
-        this.p = f8;
-        this.l = bl5;
-        this.c = bl6;
-        this.M = bl7;
-        this.D = bl8;
-        this.R = bl9;
-        this.Y = bl10;
-        this.y = bl11;
-        this.A = bl12;
-        this.N = bl13;
-        this.u = null;
+    private BlockPlacementGraph(double positionX, double positionY, double positionZ,
+                                double previousPositionX, double previousPositionY, double previousPositionZ,
+                                double motionX, double motionY, double motionZ,
+                                float yaw, float pitch, float previousYaw, float previousPitch,
+                                int sprintingTicksLeft, int sprintToggleTimer, boolean onGround,
+                                boolean sneaking, boolean sprinting, int jumpTicks,
+                                float jumpMovementFactor, float aiMoveSpeed, boolean inWater,
+                                float moveStrafe, float moveForward, boolean jumpInput, boolean sneakInput,
+                                boolean forwardKeyDown, boolean backwardKeyDown, boolean leftKeyDown,
+                                boolean rightKeyDown, boolean sneakKeyDown, boolean jumpKeyDown,
+                                boolean sprintKeyDown) {
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.positionZ = positionZ;
+        this.previousPositionX = previousPositionX;
+        this.previousPositionY = previousPositionY;
+        this.previousPositionZ = previousPositionZ;
+        this.motionX = motionX;
+        this.motionY = motionY;
+        this.motionZ = motionZ;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.previousYaw = previousYaw;
+        this.previousPitch = previousPitch;
+        this.sprintingTicksLeft = sprintingTicksLeft;
+        this.sprintToggleTimer = sprintToggleTimer;
+        this.onGround = onGround;
+        this.sneaking = sneaking;
+        this.sprinting = sprinting;
+        this.jumpTicks = jumpTicks;
+        this.jumpMovementFactor = jumpMovementFactor;
+        this.aiMoveSpeed = aiMoveSpeed;
+        this.inWater = inWater;
+        this.movementSpeedModifiers = new ArrayList();
+        this.moveStrafe = moveStrafe;
+        this.moveForward = moveForward;
+        this.jumpInput = jumpInput;
+        this.sneakInput = sneakInput;
+        this.forwardKeyDown = forwardKeyDown;
+        this.backwardKeyDown = backwardKeyDown;
+        this.leftKeyDown = leftKeyDown;
+        this.rightKeyDown = rightKeyDown;
+        this.sneakKeyDown = sneakKeyDown;
+        this.jumpKeyDown = jumpKeyDown;
+        this.sprintKeyDown = sprintKeyDown;
+        this.aimNode = null;
     }
 
-    private static IllegalArgumentException rethrow(IllegalArgumentException illegalArgumentException) {
-        return illegalArgumentException;
-    }
-
-    public boolean Q(BlockPlacementGraph blockPlacementGraph) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (this.k != blockPlacementGraph.k) {
-            stringBuilder.append("posX: ").append(blockPlacementGraph.k).append(" -> ").append(this.k).append("\n");
+    public boolean matchesSimulationState(BlockPlacementGraph snapshot) {
+        if (this.positionX != snapshot.positionX || this.positionY != snapshot.positionY
+                || this.positionZ != snapshot.positionZ || this.motionX != snapshot.motionX
+                || this.motionY != snapshot.motionY || this.motionZ != snapshot.motionZ) {
+            return false;
         }
-        if (this.v != blockPlacementGraph.v) {
-            stringBuilder.append("posY: ").append(blockPlacementGraph.v).append(" -> ").append(this.v).append("\n");
+        if (ForgeVersion.MC_1_16_5.B()
+                && (this.previousPositionX != snapshot.previousPositionX
+                || this.previousPositionY != snapshot.previousPositionY
+                || this.previousPositionZ != snapshot.previousPositionZ)) {
+            return false;
         }
-        if (this.P != blockPlacementGraph.P) {
-            stringBuilder.append("posZ: ").append(blockPlacementGraph.P).append(" -> ").append(this.P).append("\n");
+        if (this.sprintingTicksLeft != snapshot.sprintingTicksLeft
+                || this.sprintToggleTimer != snapshot.sprintToggleTimer
+                || this.onGround != snapshot.onGround || this.sneaking != snapshot.sneaking
+                || this.sprinting != snapshot.sprinting || this.jumpTicks != snapshot.jumpTicks
+                || this.jumpMovementFactor != snapshot.jumpMovementFactor
+                || this.aiMoveSpeed != snapshot.aiMoveSpeed || this.inWater != snapshot.inWater
+                || this.moveStrafe != snapshot.moveStrafe || this.moveForward != snapshot.moveForward
+                || this.jumpInput != snapshot.jumpInput || this.sneakInput != snapshot.sneakInput) {
+            return false;
         }
-        if (ForgeVersion.MC_1_16_5.B()) {
-            if (this.Z != blockPlacementGraph.Z) {
-                stringBuilder.append("prevPosX: ").append(blockPlacementGraph.Z).append(" -> ").append(this.Z).append("\n");
-            }
-            if (this.j != blockPlacementGraph.j) {
-                stringBuilder.append("prevPosY: ").append(blockPlacementGraph.j).append(" -> ").append(this.j).append("\n");
-            }
-            if (this.x != blockPlacementGraph.x) {
-                stringBuilder.append("prevPosZ: ").append(blockPlacementGraph.x).append(" -> ").append(this.x).append("\n");
-            }
+        if (this.aimNode != null && snapshot.aimNode != null) {
+            return this.aimNode.describeDifferences(snapshot.aimNode).isEmpty();
         }
-        if (this.I != blockPlacementGraph.I) {
-            stringBuilder.append("motionX: ").append(blockPlacementGraph.I).append(" -> ").append(this.I).append("\n");
+        float sensitivity = RotationManager.INSTANCE.getMouseSensitivity();
+        float sensitivityStep = sensitivity * 0.6f + 0.2f;
+        float angleThreshold = sensitivityStep * sensitivityStep * sensitivityStep * 8.0f * 0.15f;
+        float yawDifference = MathUtil.wrapAngleTo180(snapshot.yaw - this.yaw);
+        if (this.yaw != snapshot.yaw && yawDifference >= angleThreshold) {
+            return false;
         }
-        if (this.H != blockPlacementGraph.H) {
-            stringBuilder.append("motionY: ").append(blockPlacementGraph.H).append(" -> ").append(this.H).append("\n");
-        }
-        if (this.t != blockPlacementGraph.t) {
-            stringBuilder.append("motionZ: ").append(blockPlacementGraph.t).append(" -> ").append(this.t).append("\n");
-        }
-        float f = RotationManager.b.E();
-        float f2 = f * 0.6f + 0.2f;
-        float f3 = f2 * f2 * f2 * 8.0f;
-        float f4 = (float)(0.0 + (double)f3 * 0.15);
-        if (this.J != blockPlacementGraph.J) {
-            stringBuilder.append("sprintingTicksLeft: ").append(blockPlacementGraph.J).append(" -> ").append(this.J).append("\n");
-        }
-        if (this.S != blockPlacementGraph.S) {
-            stringBuilder.append("sprintToggleTimer: ").append(blockPlacementGraph.S).append(" -> ").append(this.S).append("\n");
-        }
-        if (this.U != blockPlacementGraph.U) {
-            stringBuilder.append("onGround: ").append(blockPlacementGraph.U).append(" -> ").append(this.U).append("\n");
-        }
-        if (this.V != blockPlacementGraph.V) {
-            stringBuilder.append("sneaking: ").append(blockPlacementGraph.V).append(" -> ").append(this.V).append("\n");
-        }
-        if (this.K != blockPlacementGraph.K) {
-            stringBuilder.append("sprinting: ").append(blockPlacementGraph.K).append(" -> ").append(this.K).append("\n");
-        }
-        if (this.G != blockPlacementGraph.G) {
-            stringBuilder.append("jumpTicks: ").append(blockPlacementGraph.G).append(" -> ").append(this.G).append("\n");
-        }
-        if (this.E != blockPlacementGraph.E) {
-            stringBuilder.append("jumpMovementFactor: ").append(blockPlacementGraph.E).append(" -> ").append(this.E).append("\n");
-        }
-        if (this.B != blockPlacementGraph.B) {
-            stringBuilder.append("aiMoveSpeed: ").append(blockPlacementGraph.B).append(" -> ").append(this.B).append("\n");
-        }
-        if (this.C != blockPlacementGraph.C) {
-            stringBuilder.append("inWater: ").append(blockPlacementGraph.C).append(" -> ").append(this.C).append("\n");
-        }
-        if (this.s != blockPlacementGraph.s) {
-            stringBuilder.append("moveStrafe: ").append(blockPlacementGraph.s).append(" -> ").append(this.s).append("\n");
-        }
-        if (this.p != blockPlacementGraph.p) {
-            stringBuilder.append("moveForward: ").append(blockPlacementGraph.p).append(" -> ").append(this.p).append("\n");
-        }
-        if (this.l != blockPlacementGraph.l) {
-            stringBuilder.append("jump: ").append(blockPlacementGraph.l).append(" -> ").append(this.l).append("\n");
-        }
-        if (this.c != blockPlacementGraph.c) {
-            stringBuilder.append("sneak: ").append(blockPlacementGraph.c).append(" -> ").append(this.c).append("\n");
-        }
-        if (this.u != null && blockPlacementGraph.u != null) {
-            String string = this.u.C(blockPlacementGraph.u);
-            if (!string.isEmpty()) {
-                stringBuilder.append("AimJob Differences (Snapshot -> Current): \n");
-                stringBuilder.append(string);
-            }
-        } else {
-            float f5;
-            float f6 = MathUtil.wrapAngleTo180(blockPlacementGraph.Q - this.Q);
-            if (this.Q != blockPlacementGraph.Q && f6 >= f4) {
-                stringBuilder.append("yaw: ").append(blockPlacementGraph.Q).append(" -> ").append(this.Q).append("\n");
-                f5 = f6 / f4;
-                stringBuilder.append("Yaw Diff Px: ").append(f5).append("\n");
-            }
-            f5 = MathUtil.wrapAngleTo180(blockPlacementGraph.n - this.n);
-            if (this.n != blockPlacementGraph.n && f5 >= f4) {
-                stringBuilder.append("pitch: ").append(blockPlacementGraph.n).append(" -> ").append(this.n).append("\n");
-                float f7 = f5 / f4;
-                stringBuilder.append("Pitch Diff Px: ").append(f7).append("\n");
-            }
-        }
-        if (stringBuilder.length() > 0) {
-            // empty if block
-        }
-        return stringBuilder.length() == 0;
-    }
-
-    static {
-        BlockPlacementGraph.o(null);
+        float pitchDifference = MathUtil.wrapAngleTo180(snapshot.pitch - this.pitch);
+        return this.pitch == snapshot.pitch || pitchDifference < angleThreshold;
     }
 
     private BlockPlacementGraphNode buildAimNode(MouseRotationController mouseRotationController) {
         BlockPlacementGraphNode blockPlacementGraphNode = null;
         if (mouseRotationController != null) {
-            blockPlacementGraphNode = mouseRotationController instanceof AdaptiveRotationController ? new BlockPlacementGraphNode((AdaptiveRotationController)mouseRotationController) : new BlockPlacementGraphNode(mouseRotationController, this.Q, this.n);
+            blockPlacementGraphNode = mouseRotationController instanceof AdaptiveRotationController
+                    ? new BlockPlacementGraphNode((AdaptiveRotationController)mouseRotationController)
+                    : new BlockPlacementGraphNode(mouseRotationController, this.yaw, this.pitch);
         }
         return blockPlacementGraphNode;
     }
 
-    public static String H(List<BlockPlacementGraph> list) {
+    public static String toCsv(List<BlockPlacementGraph> snapshots) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("posX,posY,posZ,prevPosX,prevPosY,prevPosZ,motionX,motionY,motionZ,yaw,pitch,prevYaw,prevPitch,sprintingTicksLeft,sprintToggleTimer,onGround,sneaking,sprinting,jumpTicks,jumpMovementFactor,aiMoveSpeed,moveStrafe,moveForward,jump,sneak,inputForward,inputBackwards,inputLeft,inputRight,inputSneak,inputJump,inputSprint,targetYaw,targetPitch,deltaX,deltaY,yawChanged,pitchChanged,isCompleted,currentYaw,currentPitch\n");
-        for (BlockPlacementGraph blockPlacementGraph : list) {
-            stringBuilder.append(blockPlacementGraph.k).append(",").append(blockPlacementGraph.v).append(",").append(blockPlacementGraph.P).append(",").append(blockPlacementGraph.Z).append(",").append(blockPlacementGraph.j).append(",").append(blockPlacementGraph.x).append(",").append(blockPlacementGraph.I).append(",").append(blockPlacementGraph.H).append(",").append(blockPlacementGraph.t).append(",").append(blockPlacementGraph.Q).append(",").append(blockPlacementGraph.n).append(",").append(blockPlacementGraph.g).append(",").append(blockPlacementGraph.L).append(",").append(blockPlacementGraph.J).append(",").append(blockPlacementGraph.S).append(",").append(blockPlacementGraph.U).append(",").append(blockPlacementGraph.V).append(",").append(blockPlacementGraph.K).append(",").append(blockPlacementGraph.G).append(",").append(blockPlacementGraph.E).append(",").append(blockPlacementGraph.B).append(",").append(blockPlacementGraph.s).append(",").append(blockPlacementGraph.p).append(",").append(blockPlacementGraph.l).append(",").append(blockPlacementGraph.c).append(",").append(blockPlacementGraph.M).append(",").append(blockPlacementGraph.D).append(",").append(blockPlacementGraph.R).append(",").append(blockPlacementGraph.Y).append(",").append(blockPlacementGraph.y).append(",").append(blockPlacementGraph.A).append(",").append(blockPlacementGraph.N).append(",");
-            if (blockPlacementGraph.u != null) {
-                stringBuilder.append(blockPlacementGraph.u.W).append(",").append(blockPlacementGraph.u.g).append(",").append(blockPlacementGraph.u.e).append(",").append(blockPlacementGraph.u.m).append(",").append(blockPlacementGraph.u.X).append(",").append(blockPlacementGraph.u.Y).append(",").append(blockPlacementGraph.u.z).append(",").append(blockPlacementGraph.u.M).append(",").append(blockPlacementGraph.u.u).append("\n");
+        for (BlockPlacementGraph snapshot : snapshots) {
+            stringBuilder.append(snapshot.serialize()).append(",");
+            if (snapshot.aimNode != null) {
+                BlockPlacementGraphNode node = snapshot.aimNode;
+                stringBuilder.append(node.targetYaw).append(",").append(node.targetPitch).append(",")
+                        .append(node.pendingYawDelta).append(",").append(node.pendingPitchDelta).append(",")
+                        .append(node.yawDistance).append(",").append(node.pitchDistance).append(",")
+                        .append(node.complete).append(",").append(node.currentYaw).append(",")
+                        .append(node.currentPitch).append("\n");
                 continue;
             }
             stringBuilder.append(",,,,,,,,\n");
@@ -357,56 +283,55 @@ public class BlockPlacementGraph {
         return stringBuilder.toString();
     }
 
-    public BlockPlacementGraph(EntityPlayerSP entityPlayerSP) {
-        this.k = entityPlayerSP.z();
-        this.v = entityPlayerSP.N();
-        this.P = entityPlayerSP.h();
-        this.Z = entityPlayerSP.f();
-        this.j = entityPlayerSP.H();
-        this.x = entityPlayerSP.R();
-        this.I = entityPlayerSP.t();
-        this.H = entityPlayerSP.q();
-        this.t = entityPlayerSP.T();
-        this.Q = entityPlayerSP.J();
-        this.n = entityPlayerSP.V();
-        this.g = entityPlayerSP.j();
-        this.L = entityPlayerSP.D();
-        this.u = this.buildAimNode(RotationManager.b.w());
-        this.J = entityPlayerSP.z$src$I$1uboxyr();
-        this.S = entityPlayerSP.L$src$I$1tmeeo5();
-        this.U = entityPlayerSP.b$src$Z$fqlxe4();
-        this.V = entityPlayerSP.P();
-        this.K = entityPlayerSP.B$src$Z$f90iek();
-        this.G = entityPlayerSP.B$src$I$14s4bbr();
-        this.E = entityPlayerSP.y$src$F$15mczw1();
-        this.B = entityPlayerSP.C$src$F$1i1kt1e();
-        this.C = entityPlayerSP.D$src$Z$fa43la();
-        AttributeInstance attributeInstance = ForgeVersion.MC_1_20_6.d() ? entityPlayerSP.t(MonsterAttributesBridge.U()) : entityPlayerSP.h(MonsterAttributesBridge.B());
-        this.f = new ArrayList(attributeInstance.I());
-        MovementInput movementInput = entityPlayerSP.movementInput();
-        this.s = movementInput.T();
-        this.p = movementInput.D();
-        this.l = movementInput.G();
-        this.c = movementInput.D$src$Z$v5d6e8();
+    public BlockPlacementGraph(EntityPlayerSP player) {
+        this.positionX = player.z();
+        this.positionY = player.N();
+        this.positionZ = player.h();
+        this.previousPositionX = player.f();
+        this.previousPositionY = player.H();
+        this.previousPositionZ = player.R();
+        this.motionX = player.t();
+        this.motionY = player.q();
+        this.motionZ = player.T();
+        this.yaw = player.J();
+        this.pitch = player.V();
+        this.previousYaw = player.j();
+        this.previousPitch = player.D();
+        this.aimNode = this.buildAimNode(RotationManager.INSTANCE.getActiveController());
+        this.sprintingTicksLeft = player.z$src$I$1uboxyr();
+        this.sprintToggleTimer = player.L$src$I$1tmeeo5();
+        this.onGround = player.b$src$Z$fqlxe4();
+        this.sneaking = player.P();
+        this.sprinting = player.B$src$Z$f90iek();
+        this.jumpTicks = player.B$src$I$14s4bbr();
+        this.jumpMovementFactor = player.y$src$F$15mczw1();
+        this.aiMoveSpeed = player.C$src$F$1i1kt1e();
+        this.inWater = player.D$src$Z$fa43la();
+        AttributeInstance attributeInstance = ForgeVersion.MC_1_20_6.d()
+                ? player.t(MonsterAttributesBridge.U()) : player.h(MonsterAttributesBridge.B());
+        this.movementSpeedModifiers = new ArrayList(attributeInstance.I());
+        MovementInput movementInput = player.movementInput();
+        this.moveStrafe = movementInput.T();
+        this.moveForward = movementInput.D();
+        this.jumpInput = movementInput.G();
+        this.sneakInput = movementInput.D$src$Z$v5d6e8();
         GameSettings gameSettings = Minecraft.gameSettings();
-        this.M = gameSettings.Y().isKeyDown();
-        this.D = gameSettings.s().isKeyDown();
-        this.R = gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg().isKeyDown();
-        this.Y = gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3().isKeyDown();
-        this.y = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0().isKeyDown();
-        this.A = gameSettings.O().isKeyDown();
+        this.forwardKeyDown = gameSettings.Y().isKeyDown();
+        this.backwardKeyDown = gameSettings.s().isKeyDown();
+        this.leftKeyDown = gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg().isKeyDown();
+        this.rightKeyDown = gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3().isKeyDown();
+        this.sneakKeyDown = gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0().isKeyDown();
+        this.jumpKeyDown = gameSettings.O().isKeyDown();
         if (sprintMod == null) {
             sprintMod = Vape.INSTANCE.getModManager().getMod(Sprint.class);
         }
-        this.N = gameSettings.r().isKeyDown() || sprintMod.r$src$Z$14eylz9();
+        this.sprintKeyDown = gameSettings.r().isKeyDown() || sprintMod.r$src$Z$14eylz9();
     }
 
-    public boolean h(BlockPlacementGraph blockPlacementGraph) {
-        return this.G(blockPlacementGraph) && this.y == blockPlacementGraph.y && this.A == blockPlacementGraph.A && this.N == blockPlacementGraph.N;
-    }
-
-    public static int[] Q() {
-        return packedData;
+    public boolean hasSameInputKeys(BlockPlacementGraph other) {
+        return this.hasSameDirectionalKeys(other)
+                && this.sneakKeyDown == other.sneakKeyDown
+                && this.jumpKeyDown == other.jumpKeyDown
+                && this.sprintKeyDown == other.sprintKeyDown;
     }
 }
-

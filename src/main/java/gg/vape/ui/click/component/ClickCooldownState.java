@@ -3,30 +3,29 @@ package gg.vape.ui.click.component;
 import gg.vape.utils.TimerUtil;
 
 public class ClickCooldownState {
-    long e = 0L;
-    boolean C = false;
-    TimerUtil k = new TimerUtil();
+    long cooldownMillis = 0L;
+    boolean active = false;
+    TimerUtil timer = new TimerUtil();
 
-    public long m() {
-        return this.e;
+    public long getCooldownMillis() {
+        return this.cooldownMillis;
     }
 
 
-    public void I(long l) {
-        this.e = l;
+    public void setCooldownMillis(long cooldownMillis) {
+        this.cooldownMillis = cooldownMillis;
     }
 
-    public boolean t() {
-        boolean bl = this.C && !this.k.hasTimeElapsed(this.e);
-        return bl;
+    public boolean isCoolingDown() {
+        return this.active && !this.timer.hasTimeElapsed(this.cooldownMillis);
     }
 
-    public void j(boolean bl) {
-        if (bl) {
-            this.C = true;
-            this.k.reset();
+    public void setActive(boolean active) {
+        if (active) {
+            this.active = true;
+            this.timer.reset();
         } else {
-            this.C = false;
+            this.active = false;
         }
     }
 }

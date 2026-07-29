@@ -55,7 +55,7 @@ extends Mapping {
             String string2 = "getDisplayName";
             MIWorldNameable mIWorldNameable2 = this;
             this.c = this.Y(string2, bl5, clazz2, classArray2);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MWorld.g(false);
             }
             return;
@@ -78,7 +78,7 @@ extends Mapping {
         String string4 = "getDisplayName";
         MIWorldNameable mIWorldNameable4 = this;
         this.c = this.Y(string4, bl8, clazz4, classArray4);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MWorld.g(true);
         }
     }

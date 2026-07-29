@@ -10,17 +10,17 @@ import java.awt.Color;
 
 public class StringMapEntryComponent
 extends GuiComponent {
-    private int a = (int)O;
-    private boolean b = true;
-    private static final String G = "newclose";
-    private SquareIconButtonComponent i = new SquareIconButtonComponent(G);
-    private String v;
-    private boolean K;
-    private String I;
-    private static final long O = -3947651445599240187L;
+    private int legacyIndex = (int)LEGACY_INDEX_SEED;
+    private boolean selected = true;
+    private static final String REMOVE_ICON = "newclose";
+    private SquareIconButtonComponent removeButton = new SquareIconButtonComponent(REMOVE_ICON);
+    private String valueText;
+    private boolean hovered;
+    private String keyText;
+    private static final long LEGACY_INDEX_SEED = -3947651445599240187L;
 
-    public StringMapEntryComponent N(GuiClickListener guiClickListener) {
-        this.i.r(guiClickListener);
+    public StringMapEntryComponent setRemoveClickListener(GuiClickListener guiClickListener) {
+        this.removeButton.addClickListener(guiClickListener);
         return this;
     }
 
@@ -34,23 +34,23 @@ extends GuiComponent {
         return 110.0;
     }
 
-    public void r(boolean bl) {
-        this.b = bl;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     @Override
     public void H() {
-        SmoothFontRenderer smoothFontRenderer = this.O(0.8);
-        Color color = this.K ? StringMapEntryComponent.J.A : StringMapEntryComponent.J.Z;
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.8);
+        Color color = this.hovered ? StringMapEntryComponent.J.A : StringMapEntryComponent.J.Z;
         GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 2.0, this.n() + 1.0, this.A() - 10.0, this.L() - 2.0, StringMapEntryComponent.J.m);
-        if (this.K) {
+        if (this.hovered) {
             GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 2.0, this.n() + 1.5, this.A() - 10.0 - 1.0, this.L() - 3.0, StringMapEntryComponent.J.i);
         }
-        smoothFontRenderer.d(this.I, this.G$src$D$1b2f02a() + 8.0, this.n() + 3.0, color);
-        smoothFontRenderer.d(this.v, this.G$src$D$1b2f02a() + 8.0, this.n() + 9.0, color.darker());
-        this.i.K(this.G$src$D$1b2f02a() + this.A() - 22.0);
-        this.i.S(this.n());
-        this.i.Y(this.L());
+        smoothFontRenderer.d(this.keyText, this.G$src$D$1b2f02a() + 8.0, this.n() + 3.0, color);
+        smoothFontRenderer.d(this.valueText, this.G$src$D$1b2f02a() + 8.0, this.n() + 9.0, color.darker());
+        this.removeButton.K(this.G$src$D$1b2f02a() + this.A() - 22.0);
+        this.removeButton.S(this.n());
+        this.removeButton.Y(this.L());
     }
 
     @Override
@@ -59,37 +59,37 @@ extends GuiComponent {
 
     @Override
     public void u() {
-        if (this.K && !this.w$src$Z$e457mb()) {
-            this.K = false;
+        if (this.hovered && !this.w$src$Z$e457mb()) {
+            this.hovered = false;
         }
     }
 
-    public SquareIconButtonComponent s() {
-        return this.i;
+    public SquareIconButtonComponent getRemoveButton() {
+        return this.removeButton;
     }
 
     @Override
     public void F() {
-        this.K = true;
+        this.hovered = true;
     }
 
-    public String x$src$Ljava_lang_String_$18ql3qa() {
-        return this.I;
+    public String getKeyText() {
+        return this.keyText;
     }
 
-    public boolean v() {
-        return this.K;
+    public boolean isHovered() {
+        return this.hovered;
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        this.b = !this.b;
+        this.selected = !this.selected;
     }
 
-    public StringMapEntryComponent(String string, String string2) {
-        this.I = string;
-        this.v = string2;
-        this.H(this.i);
+    public StringMapEntryComponent(String keyText, String valueText) {
+        this.keyText = keyText;
+        this.valueText = valueText;
+        this.addChildren(this.removeButton);
     }
 
 }

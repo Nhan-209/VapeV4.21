@@ -6,15 +6,15 @@ import gg.vape.value.Value;
 
 public class ConfigSettingsModule
 extends Mod {
-    public void G(JsonObject jsonObject) {
+    public void loadMatchingValues(JsonObject jsonObject) {
         for (Value<?, ?> value : this.V()) {
-            if (!value.W(jsonObject)) continue;
+            if (!value.matchesJsonId(jsonObject)) continue;
             value.loadJson(jsonObject);
         }
     }
 
-    public ConfigSettingsModule(String string) {
-        super(string);
+    public ConfigSettingsModule(String name) {
+        super(name);
     }
 
 }

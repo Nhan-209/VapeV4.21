@@ -7,12 +7,11 @@ import gg.vape.value.BooleanValue;
 
 public class ArmorStatusHudModule
 extends HudModule {
-    public final BooleanValue P = BooleanValue.create(this, "Compact", false);
+    public final BooleanValue compact = BooleanValue.create(this, "Compact", false);
 
     public ArmorStatusHudModule() {
-        super("Armor Status", HudModuleGroup.f, "armor_status", ArmorStatusHudFrame.class);
+        super("Armor Status", HudModuleGroup.HUD, "armor_status", ArmorStatusHudFrame.class);
         this.setSuffix("Shows your currently equipped armor, and its durability");
-        this.addValue(this.P);
+        this.addValue(this.compact);
     }
 }
-

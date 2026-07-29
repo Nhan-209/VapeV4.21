@@ -8,8 +8,8 @@ extends CompactTextInputComponent {
     final AddFriendInputPanel to;
 
     @Override
-    public void p() {
-        super.p();
+    public void submit() {
+        super.submit();
         AddFriendInputPanel.h(this.to);
     }
 

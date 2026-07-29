@@ -131,10 +131,10 @@ implements EventListener {
     }
 
     @Override
-    protected void o$src$V$7f79jo() {
-        int n = HudModuleConfigFrameBase.h$src$Z$1tlh1co() ? 200 : 102;
+    protected void renderHudModeBorder() {
+        int n = HudModuleConfigFrameBase.isHudEditorContext() ? 200 : 102;
         Color color = new Color(OnlineCombatStatsSettingsFrame.J.i.getRed(), OnlineCombatStatsSettingsFrame.J.i.getGreen(), OnlineCombatStatsSettingsFrame.J.i.getBlue(), n);
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.l(color));
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n(), this.A(), this.L(), this.applyDefaultEditorAlpha(color));
     }
 
     private void ff() {
@@ -151,7 +151,7 @@ implements EventListener {
         if (this.q()) {
             this.w();
         }
-        this.M(this.IK, this.IN, this.I4);
+        this.addSettings(this.IK, this.IN, this.I4);
         this.fq();
         EventBus.getInstance().registerListener(this, new Predicate[0]);
     }
@@ -159,7 +159,7 @@ implements EventListener {
     @Override
     public void t(JsonObject jsonObject) {
         super.t(jsonObject);
-        ClientSettings.g(QuickActionsFrame.class).Y$src$Lgg_vape_ui_click_frame_impl_quickactions_QuickA$p4ezt5().h(this.V$src$Z$1xhop3l());
+        ClientSettings.getFrame(QuickActionsFrame.class).Y$src$Lgg_vape_ui_click_frame_impl_quickactions_QuickA$p4ezt5().setValue(this.V$src$Z$1xhop3l());
     }
 
     @EventHandler

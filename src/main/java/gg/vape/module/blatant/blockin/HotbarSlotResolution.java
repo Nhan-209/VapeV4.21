@@ -1,85 +1,81 @@
 package gg.vape.module.blatant.blockin;
 
-import gg.vape.module.blatant.blockin.HotbarSlotResolutionStatus;
 import org.jetbrains.annotations.Nullable;
 
 public class HotbarSlotResolution<T extends HotbarSlotResolution<T>> {
     @Nullable
     private String message;
     private HotbarSlotResolutionStatus status;
-    private boolean forced = false;
+    private boolean forced;
 
-    public static HotbarSlotResolution J(@Nullable String string) {
-        return new HotbarSlotResolution(HotbarSlotResolutionStatus.PENDING, string);
+    HotbarSlotResolution(HotbarSlotResolutionStatus status, @Nullable String message) {
+        this.status = status;
+        this.message = message;
     }
 
-    public T i(boolean bl) {
-        this.forced = bl;
+    public static HotbarSlotResolution pending(@Nullable String message) {
+        return new HotbarSlotResolution(HotbarSlotResolutionStatus.PENDING, message);
+    }
+
+    public static HotbarSlotResolution failure(@Nullable String message) {
+        return new HotbarSlotResolution(HotbarSlotResolutionStatus.FAILURE, message);
+    }
+
+    public static HotbarSlotResolution success(@Nullable String message) {
+        return new HotbarSlotResolution(HotbarSlotResolutionStatus.SUCCESS, message);
+    }
+
+    public T setForced(boolean forced) {
+        this.forced = forced;
         return (T)this;
     }
 
-    HotbarSlotResolution(HotbarSlotResolutionStatus hotbarSlotResolutionStatus, @Nullable String string) {
-        this.status = hotbarSlotResolutionStatus;
-        this.message = string;
+    public T force() {
+        return this.setForced(true);
     }
 
-    public T A() {
-        this.forced = true;
+    public boolean canContinue() {
+        return this.status == HotbarSlotResolutionStatus.PENDING
+                || this.status == HotbarSlotResolutionStatus.SUCCESS
+                || this.status == HotbarSlotResolutionStatus.FAILURE && this.forced;
+    }
+
+    public T markSuccess(@Nullable String message) {
+        this.status = HotbarSlotResolutionStatus.SUCCESS;
+        this.message = message;
         return (T)this;
     }
 
-    public boolean B() {
-        return this.status == HotbarSlotResolutionStatus.PENDING || this.status == HotbarSlotResolutionStatus.SUCCESS || this.status == HotbarSlotResolutionStatus.FAIL && this.forced;
+    public boolean isFailure() {
+        return this.status == HotbarSlotResolutionStatus.FAILURE;
     }
 
-    public T m(@Nullable String string) {
-        return this.H(HotbarSlotResolutionStatus.SUCCESS).P(string);
-    }
-
-    public static HotbarSlotResolution W(@Nullable String string) {
-        return new HotbarSlotResolution(HotbarSlotResolutionStatus.FAIL, string);
-    }
-
-    public static HotbarSlotResolution j(@Nullable String string) {
-        return new HotbarSlotResolution(HotbarSlotResolutionStatus.SUCCESS, string);
-    }
-
-    public boolean h() {
-        return this.status == HotbarSlotResolutionStatus.FAIL;
-    }
-
-    public String b() {
+    public String getMessage() {
         return this.message == null ? "" : this.message;
     }
 
-    T P(@Nullable String string) {
-        this.message = string;
-        return (T)this;
-    }
-
-    public boolean Q() {
+    public boolean isPending() {
         return this.status == HotbarSlotResolutionStatus.PENDING;
     }
 
-    public T Q(@Nullable String string) {
-        return this.H(HotbarSlotResolutionStatus.FAIL).P(string);
+    public T markFailure(@Nullable String message) {
+        this.status = HotbarSlotResolutionStatus.FAILURE;
+        this.message = message;
+        return (T)this;
     }
 
-    HotbarSlotResolutionStatus q() {
-        return this.status;
-    }
-
-
-    public boolean v() {
+    public boolean isSuccess() {
         return this.status == HotbarSlotResolutionStatus.SUCCESS;
     }
 
-    public T f(@Nullable String string) {
-        return this.H(HotbarSlotResolutionStatus.PENDING).P(string);
-    }
-
-    T H(HotbarSlotResolutionStatus hotbarSlotResolutionStatus) {
-        this.status = hotbarSlotResolutionStatus;
+    public T markPending(@Nullable String message) {
+        this.status = HotbarSlotResolutionStatus.PENDING;
+        this.message = message;
         return (T)this;
     }
+
+    HotbarSlotResolutionStatus getStatus() {
+        return this.status;
+    }
+
 }

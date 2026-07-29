@@ -5,89 +5,89 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
 public class GLUtils {
-    private FloatBuffer D;
-    private FloatBuffer U;
-    private int C;
-    private int R;
-    private int P;
-    private float[] g;
-    private int N;
-    private float[] o;
-    private int b;
+    private FloatBuffer vertexBuffer;
+    private FloatBuffer textureCoordinateBuffer;
+    private int primitiveMode;
+    private int vertexCount;
+    private int textureCoordinateIndex;
+    private float[] vertexData;
+    private int vertexDataIndex;
+    private float[] textureCoordinateData;
+    private int componentsPerVertex;
 
-    public void initializeVertexBuffer(int n, int n2) {
-        this.b(n, n2, 3);
+    public void initializeVertexBuffer(int vertexCount, int primitiveMode) {
+        this.configureVertexBuffer(vertexCount, primitiveMode, 3);
     }
 
-    public void addVertex2D(float f, float f2) {
-        this.g[this.N++] = f;
-        this.g[this.N++] = f2;
+    public void addVertex2D(float x, float y) {
+        this.vertexData[this.vertexDataIndex++] = x;
+        this.vertexData[this.vertexDataIndex++] = y;
     }
 
     public void draw() {
         GL11.glEnableClientState((int)32884);
-        if (this.o != null) {
+        if (this.textureCoordinateData != null) {
             GL11.glEnableClientState((int)32888);
         }
-        gg.vape.wrapper.impl.GL11.f(this.b, 0, this.D);
-        if (this.o != null) {
-            GL11.glTexCoordPointer((int)2, (int)0, (FloatBuffer)this.U);
+        gg.vape.wrapper.impl.GL11.f(this.componentsPerVertex, 0, this.vertexBuffer);
+        if (this.textureCoordinateData != null) {
+            GL11.glTexCoordPointer((int)2, (int)0, (FloatBuffer)this.textureCoordinateBuffer);
         }
-        GL11.glDrawArrays((int)this.C, (int)0, (int)this.R);
-        if (this.o != null) {
+        GL11.glDrawArrays((int)this.primitiveMode, (int)0, (int)this.vertexCount);
+        if (this.textureCoordinateData != null) {
             GL11.glDisableClientState((int)32888);
         }
         GL11.glDisableClientState((int)32884);
-        this.N = 0;
-        this.P = 0;
+        this.vertexDataIndex = 0;
+        this.textureCoordinateIndex = 0;
     }
 
 
-    public void addVertex(double d, double d2, double d3) {
-        this.g[this.N++] = (float)d;
-        this.g[this.N++] = (float)d2;
-        this.g[this.N++] = (float)d3;
+    public void addVertex(double x, double y, double z) {
+        this.vertexData[this.vertexDataIndex++] = (float)x;
+        this.vertexData[this.vertexDataIndex++] = (float)y;
+        this.vertexData[this.vertexDataIndex++] = (float)z;
     }
 
 
-    public void X() {
-        this.o = new float[this.R * 2];
-        this.U = BufferUtils.createFloatBuffer((int)(this.R * 2));
+    public void enableTextureCoordinates() {
+        this.textureCoordinateData = new float[this.vertexCount * 2];
+        this.textureCoordinateBuffer = BufferUtils.createFloatBuffer((int)(this.vertexCount * 2));
     }
 
     public void uploadAndDraw() {
-        this.D.put(this.g);
-        this.D.flip();
-        if (this.o != null) {
-            this.U.put(this.o);
-            this.U.flip();
+        this.vertexBuffer.put(this.vertexData);
+        this.vertexBuffer.flip();
+        if (this.textureCoordinateData != null) {
+            this.textureCoordinateBuffer.put(this.textureCoordinateData);
+            this.textureCoordinateBuffer.flip();
         }
         this.draw();
     }
 
     public void reset() {
-        this.N = 0;
-        this.P = 0;
-        this.D.clear();
+        this.vertexDataIndex = 0;
+        this.textureCoordinateIndex = 0;
+        this.vertexBuffer.clear();
     }
 
-    public void a(float f, float f2) {
-        this.o[this.P++] = f;
-        this.o[this.P++] = f2;
+    public void addTextureCoordinate(float u, float v) {
+        this.textureCoordinateData[this.textureCoordinateIndex++] = u;
+        this.textureCoordinateData[this.textureCoordinateIndex++] = v;
     }
 
     public GLUtils() {
-        this.b = 2;
-        this.C = 7;
-        this.N = -1;
-        this.P = -1;
+        this.componentsPerVertex = 2;
+        this.primitiveMode = 7;
+        this.vertexDataIndex = -1;
+        this.textureCoordinateIndex = -1;
     }
 
-    public void b(int n, int n2, int n3) {
-        this.R = n;
-        this.C = n2;
-        this.b = n3;
-        this.g = new float[n * this.b];
-        this.D = BufferUtils.createFloatBuffer((int)(n * this.b));
+    public void configureVertexBuffer(int vertexCount, int primitiveMode, int componentsPerVertex) {
+        this.vertexCount = vertexCount;
+        this.primitiveMode = primitiveMode;
+        this.componentsPerVertex = componentsPerVertex;
+        this.vertexData = new float[vertexCount * this.componentsPerVertex];
+        this.vertexBuffer = BufferUtils.createFloatBuffer((int)(vertexCount * this.componentsPerVertex));
     }
 }

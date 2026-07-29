@@ -18,9 +18,9 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public void p() {
+    public void submit() {
         SessionSpoofFrame.W(this.rf);
-        this.k("");
+        this.setText("");
     }
 
     @Override

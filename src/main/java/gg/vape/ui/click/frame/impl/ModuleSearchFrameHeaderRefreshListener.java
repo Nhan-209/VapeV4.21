@@ -12,8 +12,7 @@ implements GuiRefreshListener {
     }
 
     @Override
-    public void G() {
+    public void onRefresh() {
         this.Q.l$src$V$11ec2hr();
     }
 }
-

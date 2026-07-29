@@ -9,10 +9,10 @@ implements GuiClickListener {
     final ModuleCategoryFrameHeader m;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         boolean bl;
-        ClientSettings.Y = bl = !ClientSettings.Y;
-        ClientSettings.M$src$V$1giazqf();
+        ClientSettings.moduleSearchActive = bl = !ClientSettings.moduleSearchActive;
+        ClientSettings.refreshModuleCategoryHeaders();
     }
 
 

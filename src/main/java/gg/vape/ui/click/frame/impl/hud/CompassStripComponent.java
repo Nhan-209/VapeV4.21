@@ -14,11 +14,10 @@ import java.awt.Color;
 
 public class CompassStripComponent
 extends GuiComponent {
-    private CompassHudFrame Q;
-    private String K = "compassbigpoint";
-    private String i = "compassarrow";
-    private String O = "compasssmallpoint";
-    private String R = "compasspointer";
+    private final CompassHudFrame frame;
+    private static final String MAJOR_TICK_RESOURCE = "compassbigpoint";
+    private static final String CENTER_ARROW_RESOURCE = "compassarrow";
+    private static final String MINOR_TICK_RESOURCE = "compasssmallpoint";
 
     @Override
     public void I() {
@@ -26,42 +25,50 @@ extends GuiComponent {
     }
 
 
-    private float l$src$F$uzmaa0() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        float f = entityPlayerSP.J() % 360.0f;
-        if (f < -180.0f) {
-            f += 360.0f;
+    private float getHeading() {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        float heading = player.J() % 360.0f;
+        if (heading < -180.0f) {
+            heading += 360.0f;
         }
-        if (f > 180.0f) {
-            f -= 360.0f;
+        if (heading > 180.0f) {
+            heading -= 360.0f;
         }
-        return f + 180.0f;
+        return heading + 180.0f;
     }
 
-    private void Y$src$V$up67dx() {
+    private void renderCompass() {
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        RenderUtils.m(this.Q.G$src$D$1b2f02a(), this.Q.n() - 10.0, this.Q.A(), this.Q.L() + 10.0);
-        float f = this.l$src$F$uzmaa0();
-        float f2 = f - 70.0f;
-        float f3 = f + 70.0f;
-        ImageRenderer.e();
-        double d = (this.Q.A() + 4.0) / 1400.0 * Vape.INSTANCE.getClientSettings().s();
-        double d2 = this.Q.G$src$D$1b2f02a() * Vape.INSTANCE.getClientSettings().s();
-        float f4 = f2;
-        while (f4 < f3) {
-            float f5 = (float)((int)(f4 * 10.0f)) / 10.0f;
-            this.S(d2 += d, f5);
-            float f6 = f5 + 0.1f;
-            this.S(d2 += d, f6);
-            f4 = (float)((double)f4 + 0.2);
+        RenderUtils.m(this.frame.G$src$D$1b2f02a(), this.frame.n() - 10.0,
+                this.frame.A(), this.frame.L() + 10.0);
+        float heading = this.getHeading();
+        float startHeading = heading - 70.0f;
+        float endHeading = heading + 70.0f;
+        ImageRenderer.beginBatch();
+        double tickSpacing = (this.frame.A() + 4.0) / 1400.0
+                * Vape.INSTANCE.getClientSettings().s();
+        double tickX = this.frame.G$src$D$1b2f02a() * Vape.INSTANCE.getClientSettings().s();
+        float currentHeading = startHeading;
+        while (currentHeading < endHeading) {
+            float firstTickHeading = (float)((int)(currentHeading * 10.0f)) / 10.0f;
+            this.drawTick(tickX += tickSpacing, firstTickHeading);
+            float secondTickHeading = firstTickHeading + 0.1f;
+            this.drawTick(tickX += tickSpacing, secondTickHeading);
+            currentHeading = (float)((double)currentHeading + 0.2);
         }
-        ImageRenderer.m();
-        this.n(this.i, this.Q.G$src$D$1b2f02a() - 5.0 + 2.3 + this.Q.A() / 2.0, this.Q.n() - 2.5, this.Q.m$src$Ljava_awt_Color_$ppsp8z(), 0.5);
-        String string = String.valueOf((int)f);
+        ImageRenderer.endBatch();
+        this.drawImage(CENTER_ARROW_RESOURCE,
+                this.frame.G$src$D$1b2f02a() - 5.0 + 2.3 + this.frame.A() / 2.0,
+                this.frame.n() - 2.5, this.frame.getEditorForegroundColor(), 0.5);
+        String headingText = String.valueOf((int)heading);
         SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().W(0.8, false);
-        smoothFontRenderer.T(string, this.Q.G$src$D$1b2f02a() + this.Q.A() / 2.0 + 2.3 - smoothFontRenderer.N(string) / 2.0, this.Q.n() - 8.0, this.Q.l(new Color(230, 230, 230)), this.Q.l(new Color(0, 0, 0, 180)));
+        smoothFontRenderer.T(headingText,
+                this.frame.G$src$D$1b2f02a() + this.frame.A() / 2.0 + 2.3
+                        - smoothFontRenderer.N(headingText) / 2.0,
+                this.frame.n() - 8.0, this.frame.applyDefaultEditorAlpha(new Color(230, 230, 230)),
+                this.frame.applyDefaultEditorAlpha(new Color(0, 0, 0, 180)));
         RenderUtils.T();
     }
 
@@ -84,56 +91,70 @@ extends GuiComponent {
         return 0.0;
     }
 
-    private void S(double d, float f) {
-        double d2 = this.Q.n() * Vape.INSTANCE.getClientSettings().s();
-        double d3 = this.Q.L() * Vape.INSTANCE.getClientSettings().s();
-        if (f < 0.0f) {
-            f = 360.0f + f;
-        } else if (f > 359.0f) {
-            f = 360.0f - f;
+    private void drawTick(double x, float heading) {
+        double frameY = this.frame.n() * Vape.INSTANCE.getClientSettings().s();
+        double frameHeight = this.frame.L() * Vape.INSTANCE.getClientSettings().s();
+        if (heading < 0.0f) {
+            heading = 360.0f + heading;
+        } else if (heading > 359.0f) {
+            heading = 360.0f - heading;
         }
-        f = Math.abs(f);
-        if (f % 45.0f == 0.0f) {
-            if (!this.Q.m()) {
-                GuiRenderPrimitives.F(this.K, (double)((float)d), (double)((float)d2) + d3 / 2.0 - 6.0, 7.0, 10.0, this.Q.l(new Color(0, 0, 0, 100)));
+        heading = Math.abs(heading);
+        if (heading % 45.0f == 0.0f) {
+            if (!this.frame.shouldRenderHudBackground()) {
+                GuiRenderPrimitives.F(MAJOR_TICK_RESOURCE, (float)x,
+                        (float)frameY + frameHeight / 2.0 - 6.0, 7.0, 10.0,
+                        this.frame.applyDefaultEditorAlpha(new Color(0, 0, 0, 100)));
             }
-            GuiRenderPrimitives.F(this.K, (double)((float)d), (double)((float)d2) + d3 / 2.0 - 6.0, 7.0, 10.0, this.Q.l(Color.WHITE));
-        } else if (f % 5.0f == 0.0f) {
-            if (!this.Q.m()) {
-                GuiRenderPrimitives.h(this.O, (float)d, (float)(d2 + d3 / 2.0 - 6.0), 7.0f, 8.0f, this.Q.l(new Color(0, 0, 0, 50)));
+            GuiRenderPrimitives.F(MAJOR_TICK_RESOURCE, (float)x,
+                    (float)frameY + frameHeight / 2.0 - 6.0, 7.0, 10.0,
+                    this.frame.applyDefaultEditorAlpha(Color.WHITE));
+        } else if (heading % 5.0f == 0.0f) {
+            if (!this.frame.shouldRenderHudBackground()) {
+                GuiRenderPrimitives.h(MINOR_TICK_RESOURCE, (float)x,
+                        (float)(frameY + frameHeight / 2.0 - 6.0), 7.0f, 8.0f,
+                        this.frame.applyDefaultEditorAlpha(new Color(0, 0, 0, 50)));
             }
-            GuiRenderPrimitives.h(this.O, (float)d, (float)(d2 + d3 / 2.0 - 6.0), 7.0f, 8.0f, this.Q.l(Color.WHITE));
+            GuiRenderPrimitives.h(MINOR_TICK_RESOURCE, (float)x,
+                    (float)(frameY + frameHeight / 2.0 - 6.0), 7.0f, 8.0f,
+                    this.frame.applyDefaultEditorAlpha(Color.WHITE));
         }
-        if (f % 45.0f == 0.0f) {
-            String string = this.t(f);
-            if (string != null) {
-                double d4 = this.O(0.7).N(string) / 2.0;
-                this.z(string, d - d4, d2 + d3 / 2.0, this.Q.l(Color.WHITE), true);
+        if (heading % 45.0f == 0.0f) {
+            String direction = this.getCardinalDirection(heading);
+            if (direction != null) {
+                double halfTextWidth = this.getFontRenderer(0.7).N(direction) / 2.0;
+                this.drawLabel(direction, x - halfTextWidth, frameY + frameHeight / 2.0,
+                        this.frame.applyDefaultEditorAlpha(Color.WHITE), true);
             }
-        } else if (f % 15.0f == 0.0f) {
-            String string = String.valueOf((int)f);
-            double d5 = this.O(0.7).N(string) / 2.0;
-            this.z(string, d - d5, d2 + d3 / 2.0, this.Q.l(CompassStripComponent.J.Z), false);
+        } else if (heading % 15.0f == 0.0f) {
+            String headingText = String.valueOf((int)heading);
+            double halfTextWidth = this.getFontRenderer(0.7).N(headingText) / 2.0;
+            this.drawLabel(headingText, x - halfTextWidth, frameY + frameHeight / 2.0,
+                    this.frame.applyDefaultEditorAlpha(CompassStripComponent.J.Z), false);
         }
     }
 
     public CompassStripComponent(CompassHudFrame compassHudFrame) {
-        this.Q = compassHudFrame;
+        this.frame = compassHudFrame;
     }
 
-    private void n(String string, double d, double d2, Color color, double d3) {
-        ImageRenderer.drawRes(color, (float)d, (float)d2, string, (float)d3);
+    private void drawImage(String resourceName, double x, double y, Color color, double scale) {
+        ImageRenderer.drawRes(color, (float)x, (float)y, resourceName, (float)scale);
     }
 
-    private void z(String string, double d, double d2, Color color, boolean bl) {
-        if (!this.Q.m()) {
-            bl = true;
+    private void drawLabel(String text, double x, double y, Color color, boolean emphasized) {
+        if (!this.frame.shouldRenderHudBackground()) {
+            emphasized = true;
         }
-        SmoothFontRenderer smoothFontRenderer = bl ? Vape.INSTANCE.getFontManager().W(0.7, false) : Vape.INSTANCE.getFontManager().Y(0.7);
-        if (this.Q.m()) {
-            smoothFontRenderer.T(string, d, d2, this.Q.l(color), this.Q.l(new Color(0, 0, 0, 30)));
+        SmoothFontRenderer smoothFontRenderer = emphasized
+                ? Vape.INSTANCE.getFontManager().W(0.7, false)
+                : Vape.INSTANCE.getFontManager().Y(0.7);
+        if (this.frame.shouldRenderHudBackground()) {
+            smoothFontRenderer.T(text, x, y, this.frame.applyDefaultEditorAlpha(color),
+                    this.frame.applyDefaultEditorAlpha(new Color(0, 0, 0, 30)));
         } else {
-            smoothFontRenderer.T(string, d, d2, this.Q.l(new Color(230, 230, 230)), this.Q.l(new Color(0, 0, 0, 150)));
+            smoothFontRenderer.T(text, x, y, this.frame.applyDefaultEditorAlpha(new Color(230, 230, 230)),
+                    this.frame.applyDefaultEditorAlpha(new Color(0, 0, 0, 150)));
         }
     }
 
@@ -147,32 +168,32 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        this.Y$src$V$up67dx();
+        this.renderCompass();
     }
 
-    private String t(float f) {
-        if ((double)f == 0.0) {
+    private String getCardinalDirection(float heading) {
+        if ((double)heading == 0.0) {
             return "N";
         }
-        if ((double)f == 45.0) {
+        if ((double)heading == 45.0) {
             return "NE";
         }
-        if ((double)f == 90.0) {
+        if ((double)heading == 90.0) {
             return "E";
         }
-        if ((double)f == 135.0) {
+        if ((double)heading == 135.0) {
             return "SE";
         }
-        if ((double)f == 180.0) {
+        if ((double)heading == 180.0) {
             return "S";
         }
-        if ((double)f == 225.0) {
+        if ((double)heading == 225.0) {
             return "SW";
         }
-        if ((double)f == 270.0) {
+        if ((double)heading == 270.0) {
             return "W";
         }
-        if ((double)f == 315.0) {
+        if ((double)heading == 315.0) {
             return "NW";
         }
         return null;

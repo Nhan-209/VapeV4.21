@@ -14,165 +14,165 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Bendable {
-    private final List<Integer> E = new BendableBindList(this);
-    private final List<BindChangeListener> j = new ArrayList<BindChangeListener>();
-    private static int T;
+    private final List<Integer> boundInputs = new BendableBindList(this);
+    private final List<BindChangeListener> changeListeners = new ArrayList<BindChangeListener>();
+    private static int legacyState;
 
-    public abstract void A();
+    public abstract void onBindActivated();
 
-    public boolean A$src$Z$jg36ch() {
+    public boolean supportsActivationMode() {
         return false;
     }
 
-    public boolean f(int n) {
-        if (this.L().isEmpty()) {
+    public boolean activateIfMatched(int inputCode) {
+        if (this.getBoundInputs().isEmpty()) {
             return false;
         }
-        if (this.L().size() == 1) {
-            if (this.L().contains(n)) {
-                this.L$src$V$qc2osj();
+        if (this.getBoundInputs().size() == 1) {
+            if (this.getBoundInputs().contains(inputCode)) {
+                this.notifyBindActivated();
                 return true;
             }
         } else {
-            int n2 = 0;
-            for (int n3 : this.L()) {
-                if (n3 == n) {
-                    ++n2;
+            int matchedInputCount = 0;
+            for (int boundInput : this.getBoundInputs()) {
+                if (boundInput == inputCode) {
+                    ++matchedInputCount;
                     continue;
                 }
-                if (n3 < 0) {
-                    if (!MouseInput.I(100 + n3)) continue;
-                    ++n2;
+                if (boundInput < 0) {
+                    if (!MouseInput.isButtonDown(100 + boundInput)) continue;
+                    ++matchedInputCount;
                     continue;
                 }
-                if (!KeyboardInput.isKeyDown(n3)) continue;
-                ++n2;
+                if (!KeyboardInput.isKeyDown(boundInput)) continue;
+                ++matchedInputCount;
             }
-            if (n2 == this.L().size()) {
-                this.L$src$V$qc2osj();
+            if (matchedInputCount == this.getBoundInputs().size()) {
+                this.notifyBindActivated();
                 return true;
             }
         }
         return false;
     }
 
-    public void Y(BindActivationMode bindActivationMode) {
+    public void setActivationMode(BindActivationMode activationMode) {
     }
 
-    private void L$src$V$qc2osj() {
-        this.A();
-        for (BindChangeListener bindChangeListener : this.j) {
-            bindChangeListener.S();
+    private void notifyBindActivated() {
+        this.onBindActivated();
+        for (BindChangeListener changeListener : this.changeListeners) {
+            changeListener.onBindChanged();
         }
     }
 
-    public boolean y$src$Z$r0tfl8() {
-        boolean bl = !this.L().isEmpty();
-        for (Integer n : this.L()) {
-            if (n != 0) continue;
-            bl = false;
+    public boolean hasValidBinding() {
+        boolean valid = !this.getBoundInputs().isEmpty();
+        for (Integer boundInput : this.getBoundInputs()) {
+            if (boundInput != 0) continue;
+            valid = false;
             break;
         }
-        return bl;
+        return valid;
     }
 
-    public boolean Y() {
+    public boolean usesOwnKeybindStorage() {
         return true;
     }
 
-    protected boolean n(int n) {
-        return this.L().contains(n);
+    protected boolean containsInput(int inputCode) {
+        return this.getBoundInputs().contains(inputCode);
     }
 
-    public static int G$src$I$q9bpij() {
-        int n = Bendable.q();
+    public static int getLegacySentinelResult() {
+        int state = Bendable.getLegacyState();
         return 0;
     }
 
-    public abstract boolean m();
+    public abstract boolean isActive();
 
-    public boolean U(int n, boolean bl) {
-        if (!bl) {
+    public boolean handleInput(int inputCode, boolean pressed) {
+        if (!pressed) {
             return false;
         }
-        return this.f(n);
+        return this.activateIfMatched(inputCode);
     }
 
-    public boolean K() {
-        if (this.L().isEmpty()) {
+    public boolean areBoundInputsDown() {
+        if (this.getBoundInputs().isEmpty()) {
             return false;
         }
-        if (this.L().size() == 1) {
-            return ClientSettings.l(this.L().get(0));
+        if (this.getBoundInputs().size() == 1) {
+            return ClientSettings.l(this.getBoundInputs().get(0));
         }
-        int n = 0;
-        for (int n2 : this.L()) {
-            if (!ClientSettings.l(n2)) continue;
-            ++n;
+        int pressedInputCount = 0;
+        for (int boundInput : this.getBoundInputs()) {
+            if (!ClientSettings.l(boundInput)) continue;
+            ++pressedInputCount;
         }
-        return n == this.L().size();
+        return pressedInputCount == this.getBoundInputs().size();
     }
 
-    public JsonArray toJson$src$Lcom_google_gson_JsonArray_$13cfbto() {
+    public JsonArray serializeBoundInputs() {
         JsonArray jsonArray = new JsonArray();
-        for (Integer n : this.L()) {
-            jsonArray.add(new Gson().toJsonTree((Object)n));
+        for (Integer boundInput : this.getBoundInputs()) {
+            jsonArray.add(new Gson().toJsonTree((Object)boundInput));
         }
         return jsonArray;
     }
 
-    public abstract String y();
+    public abstract String getDisplayText();
 
-    public void O(JsonArray jsonArray, boolean bl) {
-        List<Integer> list = ConfigJsonUtils.o(jsonArray, bl);
-        if (!list.isEmpty()) {
-            this.L().clear();
-            for (int n : list) {
-                this.L().add(n);
+    public void loadBoundInputs(JsonArray jsonArray, boolean convertLegacyCodes) {
+        List<Integer> loadedInputs = ConfigJsonUtils.o(jsonArray, convertLegacyCodes);
+        if (!loadedInputs.isEmpty()) {
+            this.getBoundInputs().clear();
+            for (int inputCode : loadedInputs) {
+                this.getBoundInputs().add(inputCode);
             }
         }
     }
 
-    public List<Integer> L() {
-        return this.E;
+    public List<Integer> getBoundInputs() {
+        return this.boundInputs;
     }
 
-    public BindActivationMode G() {
+    public BindActivationMode getActivationMode() {
         return BindActivationMode.TOGGLE;
     }
 
-    public void R(BindChangeListener bindChangeListener) {
-        this.j.add(bindChangeListener);
+    public void addChangeListener(BindChangeListener changeListener) {
+        this.changeListeners.add(changeListener);
     }
 
 
-    public String h() {
-        return StringUtils.q(this.L());
+    public String getBindText() {
+        return StringUtils.q(this.getBoundInputs());
     }
 
     static {
-        if (Bendable.q() == 0) {
-            Bendable.L(28);
+        if (Bendable.getLegacyState() == 0) {
+            Bendable.setLegacyState(28);
         }
     }
 
-    public static void L(int n) {
-        T = n;
+    public static void setLegacyState(int state) {
+        legacyState = state;
     }
 
-    public static int q() {
-        return T;
+    public static int getLegacyState() {
+        return legacyState;
     }
 
-    public void n$src$V$quroyt() {
-        this.Y(this.G().I());
+    public void toggleActivationMode() {
+        this.setActivationMode(this.getActivationMode().toggle());
     }
 
-    public void c(List<Integer> list) {
-        this.L().clear();
-        for (Integer n : list) {
-            if (n == 27) continue;
-            this.L().add(n);
+    public void setBoundInputs(List<Integer> inputCodes) {
+        this.getBoundInputs().clear();
+        for (Integer inputCode : inputCodes) {
+            if (inputCode == 27) continue;
+            this.getBoundInputs().add(inputCode);
         }
     }
 }

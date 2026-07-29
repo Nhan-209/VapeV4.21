@@ -28,7 +28,7 @@ extends Mapping {
     private MResourceLocationName(boolean bl) {
         super(MappedClasses.qA);
         if (bl) {
-            GuiComponent.D(new GuiComponent[1]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[1]);
             this.x = null;
             if (ForgeVersion.MC_1_8_9.L()) {
                 Class[] classArray = new Class[]{};

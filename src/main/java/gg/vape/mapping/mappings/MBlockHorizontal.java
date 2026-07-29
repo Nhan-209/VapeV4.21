@@ -23,7 +23,7 @@ extends Mapping {
             String string = "FACING";
             MBlockHorizontal mBlockHorizontal = this;
             this.c = mBlockHorizontal.u(string, bl, clazz);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MBlock.Y(new GuiComponent[1]);
             }
             return;
@@ -41,7 +41,7 @@ extends Mapping {
             MBlockHorizontal mBlockHorizontal = this;
             this.c = mBlockHorizontal.u(string, bl, clazz); 
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MBlock.Y(new GuiComponent[1]);
         }
     }

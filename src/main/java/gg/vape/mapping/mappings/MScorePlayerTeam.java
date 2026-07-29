@@ -94,7 +94,7 @@ extends Mapping {
                 MScorePlayerTeam mScorePlayerTeam = this;
                 this.r = ((MappingMethodBuilder)((MappingMethodBuilder)mScorePlayerTeam.u(string, clazz, classArray).X(ForgeVersion.MC_1_20_6.n(), MappedClasses.uM)).H(true)).s();
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MScoreboard.c(new int[4]);
             }
             return;
@@ -129,7 +129,7 @@ extends Mapping {
             MScorePlayerTeam mScorePlayerTeam6 = this;
             this.r = ((MappingMethodBuilder)((MappingMethodBuilder)this.u(string6, clazz6, classArray2).X(ForgeVersion.MC_1_20_6.n(), MappedClasses.uM)).H(true)).s();
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MScoreboard.c(new int[4]);
         }
     }

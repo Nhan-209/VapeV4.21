@@ -150,7 +150,7 @@ extends Mapping {
             String string15 = "setFogDensity";
             MGlStateManager mGlStateManager15 = this;
             this.F = this.x(string15, bl15, clazz15, classArray12);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MEntityRenderer.c(++n2);
             }
             this.o = null;
@@ -548,7 +548,7 @@ extends Mapping {
             MGlStateManager mGlStateManager67 = this;
             this.F = this.x(string67, bl67, clazz67, classArray55);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MEntityRenderer.c(++n2);
         }
     }

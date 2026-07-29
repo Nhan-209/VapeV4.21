@@ -9,53 +9,53 @@ import gg.vape.utils.render.RenderUtils;
 
 class ModuleComponentToggleClickHandler
 implements GuiClickListener {
-    final Mod E;
-    final ModuleComponent L;
+    final Mod module;
+    final ModuleComponent owner;
 
     @Override
-    public void G() {
-        if (ClientSettings.Y) {
+    public void onSecondaryClick() {
+        if (ClientSettings.moduleSearchActive) {
             return;
         }
-        ModuleComponent.v(this.L).P$src$V$q7uwbv();
+        this.owner.getSettingsButton().dispatchPrimaryClick();
     }
 
     ModuleComponentToggleClickHandler(ModuleComponent moduleComponent, Mod mod) {
-        this.L = moduleComponent;
-        this.E = mod;
+        this.owner = moduleComponent;
+        this.module = mod;
     }
 
 
     @Override
-    public void P() {
-        if (ClientSettings.Y) {
-            RectData toggleBounds = ModuleComponent.F(this.L);
-            if (!ModuleComponent.P(this.L) && toggleBounds != null && toggleBounds.Z(RenderUtils.h())) {
-                this.E.C(!this.E.O());
-                if (this.E.r$src$Z$14eylz9() && !this.E.O()) {
-                    this.E.Y(false);
+    public void onPrimaryClick() {
+        if (ClientSettings.moduleSearchActive) {
+            RectData toggleBounds = this.owner.getToggleBounds();
+            if (!this.owner.isFavoriteMode() && toggleBounds != null && toggleBounds.Z(RenderUtils.h())) {
+                this.module.C(!this.module.O());
+                if (this.module.r$src$Z$14eylz9() && !this.module.O()) {
+                    this.module.Y(false);
                 }
-                if (ModuleComponent.v$src$Z$1nzvssj(this.L)) {
-                    ModuleComponent.m(this.L, false);
+                if (this.owner.isExpanded()) {
+                    this.owner.setExpanded(false);
                 }
-                ClientSettings.M$src$V$1giazqf();
+                ClientSettings.refreshModuleCategoryHeaders();
             }
             return;
         }
-        if (this.E.X()) {
-            if (!this.E.a().y$src$Z$r0tfl8()) {
-                this.L.j("must be bound");
-                ModuleComponent.k(this.L).w(true);
+        if (this.module.X()) {
+            if (!this.module.a().hasValidBinding()) {
+                this.owner.setStatusText("must be bound");
+                this.owner.getBindInput().setHighlighted(true);
                 return;
             }
-            this.L.j("use via bind");
-            ModuleComponent.k(this.L).w(true);
+            this.owner.setStatusText("use via bind");
+            this.owner.getBindInput().setHighlighted(true);
             return;
         }
-        this.E.s(!this.E.r$src$Z$14eylz9(), true);
-        if (!this.E.O()) {
-            this.E.C(true);
-            ClientSettings.M$src$V$1giazqf();
+        this.module.setEnabled(!this.module.r$src$Z$14eylz9(), true);
+        if (!this.module.O()) {
+            this.module.C(true);
+            ClientSettings.refreshModuleCategoryHeaders();
         }
     }
 }

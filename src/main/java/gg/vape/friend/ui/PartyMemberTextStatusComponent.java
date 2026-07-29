@@ -19,16 +19,16 @@ extends PartyMemberStatusComponent {
     }
 
     public PartyMemberTextStatusComponent(String string) {
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         GuiComponent[] guiComponentArray = new GuiComponent[1];
         this._Z = new WrappedTextComponent(string, 1.0);
         this._t = new PaddedComponent(3.0, this._Z);
         guiComponentArray[0] = this._t;
-        this.H(guiComponentArray);
-        this._Z.u(false);
-        this._Z.c(68.0);
-        this._Z.i(0.75);
-        this._Z.T$src$V$1orl066(Color.WHITE);
+        this.addChildren(guiComponentArray);
+        this._Z.setWrappingEnabled(false);
+        this._Z.setWrapWidth(68.0);
+        this._Z.setFontScale(0.75);
+        this._Z.setTextColor(Color.WHITE);
     }
 
     @Override
@@ -59,8 +59,8 @@ extends PartyMemberStatusComponent {
 
     @Override
     public void c() {
-        this._Z.i(0.8);
-        GuiRenderPrimitives.d(this._t.G$src$D$1b2f02a(), this._t.n(), this._t.A(), this._t.L(), this.d());
+        this._Z.setFontScale(0.8);
+        GuiRenderPrimitives.d(this._t.G$src$D$1b2f02a(), this._t.n(), this._t.A(), this._t.L(), this.getDisabledOverlayColor());
         super.c();
         this._k = this._Z.C();
     }

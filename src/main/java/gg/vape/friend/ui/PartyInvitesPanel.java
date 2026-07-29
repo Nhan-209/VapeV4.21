@@ -67,7 +67,7 @@ extends PanelComponent {
         Map<PartyInvite, PartyInviteRow> map = this.eA;
         synchronized (map) {
             this.eA.remove(partyInviteRow.T());
-            this.I(partyInviteRow);
+            this.removeChild(partyInviteRow);
             this.b$src$V$172vuhc();
         }
     }
@@ -92,7 +92,7 @@ extends PanelComponent {
 
     public PartyInvitesPanel() {
         super(100.0, 0.0);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.F(FrameScrollbarPlacement.OUTSIDE);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
     }
@@ -106,10 +106,10 @@ extends PanelComponent {
         List<GuiComponent> list = this.f();
         for (int i = 0; i < list.size(); ++i) {
             if (i == 0) {
-                list.get(i).Z(true);
+                list.get(i).setVisible(true);
                 continue;
             }
-            list.get(i).Z(this.eE);
+            list.get(i).setVisible(this.eE);
         }
         this.W(0.0);
     }

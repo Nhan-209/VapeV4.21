@@ -5,16 +5,16 @@ import gg.vape.ui.click.component.value.ColorValueEditorComponent;
 
 public class ColorValueEditorToggleExpandedClickHandler
 implements GuiClickListener {
-    final ColorValueEditorComponent l;
+    final ColorValueEditorComponent editor;
 
     public ColorValueEditorToggleExpandedClickHandler(ColorValueEditorComponent colorValueEditorComponent) {
-        this.l = colorValueEditorComponent;
+        this.editor = colorValueEditorComponent;
     }
 
     @Override
-    public void P() {
-        ColorValueEditorComponent.h(this.l, !ColorValueEditorComponent.M(this.l));
-        this.l.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().l$src$V$1mibm4x();
+    public void onPrimaryClick() {
+        ColorValueEditorComponent.setCollapsedCompat(this.editor, !ColorValueEditorComponent.isCollapsedCompat(this.editor));
+        this.editor.getParentFrameComponent().l$src$V$1mibm4x();
     }
 
 }

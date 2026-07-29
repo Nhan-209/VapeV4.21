@@ -13,11 +13,11 @@ public class ArmorInventoryItemMatchers {
 
     static {
         String[] labels = new String[]{"any-armor", "Any armor", "armor_item", "Any type of armor"};
-        g = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.c().t().n(labels[0])).m(labels[1])).H(labels[2])).M(labels[3])).A(InventoryItemMatcherGroup.ARMOR)).t(ArmorInventoryItemMatchers::isArmorItem).q();
+        g = ((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)((InventoryItemMatcherBuilderFoundation)InventoryItemMatcher.builder().composite().withId(labels[0])).withName(labels[1])).withIconName(labels[2])).withDescription(labels[3])).withGroup(InventoryItemMatcherGroup.ARMOR)).withPredicate(ArmorInventoryItemMatchers::isArmorItem).build();
     }
 
     static void v() {
-        InventoryItemMatcherRegistry.R(g);
+        InventoryItemMatcherRegistry.register(g);
     }
 
     private static boolean isArmorItem(ItemStack itemStack, Item item) {

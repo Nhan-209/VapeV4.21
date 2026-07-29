@@ -7,20 +7,33 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class SelfDamagePacketUtil {
 
-    private void Y() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (!entityPlayerSP.b$src$Z$fqlxe4() || !entityPlayerSP.u$src$Z$g120nz()) {
+    private void sendSelfDamagePackets() {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (!player.b$src$Z$fqlxe4() || !player.u$src$Z$g120nz()) {
             return;
         }
-        for (int i = 0; i < 60; ++i) {
-            double d = 0.13029834580989086 + 7.045809890852092E-4 * Math.random();
-            CPacketPlayerPosition cPacketPlayerPosition = ClientSettings.H ? CPacketPlayerPosition.newInstance(entityPlayerSP.z(), entityPlayerSP.N() + d, entityPlayerSP.h(), false) : CPacketPlayerPosition.newInstance(entityPlayerSP.z(), entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY() + d, entityPlayerSP.N() + d, entityPlayerSP.h(), false);
-            double d2 = 0.07029834580989085 + 7.045809890852092E-4 * Math.random();
-            CPacketPlayerPosition cPacketPlayerPosition2 = ClientSettings.H ? CPacketPlayerPosition.newInstance(entityPlayerSP.z(), entityPlayerSP.N() + d, entityPlayerSP.h(), false) : CPacketPlayerPosition.newInstance(entityPlayerSP.z(), entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY() + d2, entityPlayerSP.N() + d2, entityPlayerSP.h(), false);
-            entityPlayerSP.sendQueue().addToSendQueue(cPacketPlayerPosition);
-            entityPlayerSP.sendQueue().addToSendQueue(cPacketPlayerPosition2);
+        for (int packetPair = 0; packetPair < 60; ++packetPair) {
+            double highOffset = 0.13029834580989086 + 7.045809890852092E-4 * Math.random();
+            CPacketPlayerPosition highPositionPacket = ClientSettings.H
+                    ? CPacketPlayerPosition.newInstance(player.z(), player.N() + highOffset, player.h(), false)
+                    : CPacketPlayerPosition.newInstance(player.z(),
+                            player.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY() + highOffset,
+                            player.N() + highOffset, player.h(), false);
+            double lowOffset = 0.07029834580989085 + 7.045809890852092E-4 * Math.random();
+            CPacketPlayerPosition lowPositionPacket = ClientSettings.H
+                    ? CPacketPlayerPosition.newInstance(player.z(), player.N() + highOffset, player.h(), false)
+                    : CPacketPlayerPosition.newInstance(player.z(),
+                            player.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY() + lowOffset,
+                            player.N() + lowOffset, player.h(), false);
+            player.sendQueue().addToSendQueue(highPositionPacket);
+            player.sendQueue().addToSendQueue(lowPositionPacket);
         }
-        entityPlayerSP.sendQueue().addToSendQueue(ClientSettings.H ? CPacketPlayerPosition.newInstance(entityPlayerSP.z(), entityPlayerSP.N(), entityPlayerSP.h(), true) : CPacketPlayerPosition.newInstance(entityPlayerSP.z(), entityPlayerSP.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY(), entityPlayerSP.N(), entityPlayerSP.h(), true));
+        CPacketPlayerPosition landingPacket = ClientSettings.H
+                ? CPacketPlayerPosition.newInstance(player.z(), player.N(), player.h(), true)
+                : CPacketPlayerPosition.newInstance(player.z(),
+                        player.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().getMinY(),
+                        player.N(), player.h(), true);
+        player.sendQueue().addToSendQueue(landingPacket);
     }
 }
 

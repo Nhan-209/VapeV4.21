@@ -12,104 +12,105 @@ import java.util.Map;
 import java.util.Vector;
 
 public class BlockInSearchPlanner {
-    private static EnumFacing[] w;
-    private final BlockPathSearchStrategy<PlacementTarget> d;
-    private int b;
-    private static EnumFacing[] q;
-    private final Map<BlockData, Vector<PlacementTarget>> M;
-    private static final long c;
-    private long p;
+    private static EnumFacing[] directions;
 
-    public BlockInSearchPlanner(BlockPathSearchStrategy<PlacementTarget> blockPathSearchStrategy) {
-        this.d = blockPathSearchStrategy;
-        this.p = 0L;
-        this.b = 0;
-        this.M = new HashMap<BlockData, Vector<PlacementTarget>>();
-        if (w == null) {
-            w = EnumFacing.t();
-            q = EnumFacing.c$src$ALgg_vape_wrapper_impl_EnumFacing_$1i3g4ft();
+    private final BlockPathSearchStrategy<PlacementTarget> strategy;
+    private int visitedNodeCount;
+    private final Map<BlockData, Vector<PlacementTarget>> pathCache;
+    private long elapsedNanos;
+
+    public BlockInSearchPlanner(BlockPathSearchStrategy<PlacementTarget> strategy) {
+        this.strategy = strategy;
+        this.pathCache = new HashMap<>();
+        if (directions == null) {
+            directions = EnumFacing.t();
         }
     }
 
-    public Vector<PlacementTarget> P(BlockData blockData, BlockData blockData2) {
-        this.M.clear();
-        long l = System.nanoTime();
-        this.b = 0;
-        Vector<PlacementTarget> vector = this.F(blockData, blockData2, 0, new Vector<PlacementTarget>());
-        long l2 = System.nanoTime();
-        this.p = l2 - l;
-        return vector;
+    public Vector<PlacementTarget> findPath(BlockData start, BlockData destination) {
+        this.pathCache.clear();
+        this.visitedNodeCount = 0;
+        long startNanos = System.nanoTime();
+        Vector<PlacementTarget> result = this.findPathRecursive(start, destination, 0, new Vector<>());
+        this.elapsedNanos = System.nanoTime() - startNanos;
+        return result;
     }
 
-    public long f() {
-        return this.p;
+    public long getElapsedNanos() {
+        return this.elapsedNanos;
     }
 
-
-    static {
-        c = -1361127528260960257L;
+    public int getVisitedNodeCount() {
+        return this.visitedNodeCount;
     }
 
-    public int P() {
-        return this.b;
-    }
-
-    public Vector<PlacementTarget> F(BlockData blockData, BlockData blockData2, int n, Vector<PlacementTarget> vector) {
-        ++this.b;
-        if (this.M.containsKey(blockData)) {
-            return this.M.get(blockData);
+    private Vector<PlacementTarget> findPathRecursive(BlockData current, BlockData destination, int depth,
+                                                      Vector<PlacementTarget> currentPath) {
+        ++this.visitedNodeCount;
+        if (this.pathCache.containsKey(current)) {
+            return this.pathCache.get(current);
         }
-        if (n > this.d.w()) {
+        if (depth > this.strategy.getMaxDepth()) {
             return null;
         }
-        int n4 = blockData2.D() - blockData.D();
-        int n5 = blockData2.B() - blockData.B();
-        int n6 = blockData2.G() - blockData.G();
-        int n7 = n4 > 0 ? 5 : (n4 < 0 ? 4 : -1);
-        int n8 = n5 > 0 ? 1 : (n5 < 0 ? 0 : -1);
-        int n9 = n6 > 0 ? 3 : (n6 < 0 ? 2 : -1);
-        int[] nArray = new int[]{n7, n8, n9};
-        ArrayList<PlacementTarget> arrayList = new ArrayList<PlacementTarget>();
-        for (int n10 : nArray) {
-            if (n10 == -1) continue;
-            EnumFacing enumFacing = w[n10];
-            BlockData blockData3 = blockData.R(enumFacing);
-            if (!this.d.B(blockData3)) continue;
-            PlacementTarget placementTarget = new PlacementTarget(blockData, enumFacing);
-            placementTarget.Y = n;
-            arrayList.add(placementTarget);
+
+        int deltaX = destination.D() - current.D();
+        int deltaY = destination.B() - current.B();
+        int deltaZ = destination.G() - current.G();
+        int xDirection = deltaX > 0 ? 5 : (deltaX < 0 ? 4 : -1);
+        int yDirection = deltaY > 0 ? 1 : (deltaY < 0 ? 0 : -1);
+        int zDirection = deltaZ > 0 ? 3 : (deltaZ < 0 ? 2 : -1);
+
+        ArrayList<PlacementTarget> candidates = new ArrayList<>();
+        for (int directionIndex : new int[]{xDirection, yDirection, zDirection}) {
+            if (directionIndex == -1) {
+                continue;
+            }
+            EnumFacing direction = directions[directionIndex];
+            BlockData adjacent = current.R(direction);
+            if (!this.strategy.isValidBlock(adjacent)) {
+                continue;
+            }
+            PlacementTarget target = new PlacementTarget(current, direction);
+            target.depth = depth;
+            candidates.add(target);
         }
-        arrayList.sort(Comparator.comparingInt(arg_0 -> this.lambda$recurFindPlacePathTargets$0(vector, n, arg_0)));
+        candidates.sort(Comparator.comparingInt(candidate -> this.scoreCandidate(currentPath, depth, candidate)));
+
         Vector<PlacementTarget> bestPath = null;
-        int n11 = (int)c;
-        for (PlacementTarget placementTarget : arrayList) {
-            BlockData nextBlock = placementTarget.k.R(placementTarget.G);
-            Vector<PlacementTarget> path = new Vector<PlacementTarget>(vector);
-            path.add(placementTarget);
-            if (nextBlock.equals(blockData2)) {
-                bestPath = path;
+        int bestScore = Integer.MAX_VALUE;
+        for (PlacementTarget candidate : candidates) {
+            BlockData nextBlock = candidate.supportBlock.R(candidate.facing);
+            Vector<PlacementTarget> candidatePath = new Vector<>(currentPath);
+            candidatePath.add(candidate);
+            if (nextBlock.equals(destination)) {
+                bestPath = candidatePath;
                 break;
             }
-            Vector<PlacementTarget> recursivePath = this.F(nextBlock, blockData2, n + 1, path);
+            Vector<PlacementTarget> recursivePath = this.findPathRecursive(
+                    nextBlock, destination, depth + 1, candidatePath);
             if (recursivePath != null && !recursivePath.isEmpty()) {
-                path = new Vector<PlacementTarget>(recursivePath);
+                candidatePath = new Vector<>(recursivePath);
             }
-            if (path.isEmpty()) break;
-            if (n == 0) {
-                BlockIn.O.add(new Vector<PlacementTarget>(path));
+            if (candidatePath.isEmpty()) {
+                break;
             }
-            int score = this.d.g(path, n);
-            if (bestPath != null && score >= n11) continue;
-            bestPath = path;
-            n11 = score;
+            if (depth == 0) {
+                BlockIn.DEBUG_PLACEMENT_PATHS.add(new Vector<>(candidatePath));
+            }
+            int score = this.strategy.scorePath(candidatePath, depth);
+            if (bestPath == null || score < bestScore) {
+                bestPath = candidatePath;
+                bestScore = score;
+            }
         }
-        this.M.put(blockData, bestPath);
+        this.pathCache.put(current, bestPath);
         return bestPath;
     }
 
-    private int lambda$recurFindPlacePathTargets$0(Vector vector, int n, PlacementTarget placementTarget) {
-        Vector<PlacementTarget> vector2 = new Vector<PlacementTarget>(vector);
-        vector2.add(placementTarget);
-        return this.d.g(vector2, n);
+    private int scoreCandidate(Vector<PlacementTarget> currentPath, int depth, PlacementTarget candidate) {
+        Vector<PlacementTarget> candidatePath = new Vector<>(currentPath);
+        candidatePath.add(candidate);
+        return this.strategy.scorePath(candidatePath, depth);
     }
 }

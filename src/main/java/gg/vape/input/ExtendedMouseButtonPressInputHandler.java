@@ -7,8 +7,7 @@ import gg.vape.input.KeyboardCodeUtil;
 public class ExtendedMouseButtonPressInputHandler
 implements InputEventHandler {
     @Override
-    public boolean handle(long l, long l2) {
-        return InputEventDispatcher.getInstance().getMouseState().setButtonState(KeyboardCodeUtil.s(l), true);
+    public boolean handle(long buttonMetadata, long secondArgument) {
+        return InputEventDispatcher.getInstance().getMouseState().setButtonState(KeyboardCodeUtil.decodeExtendedMouseButton(buttonMetadata), true);
     }
 }
-

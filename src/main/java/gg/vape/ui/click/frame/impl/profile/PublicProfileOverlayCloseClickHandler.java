@@ -8,15 +8,14 @@ import java.awt.Point;
 
 class PublicProfileOverlayCloseClickHandler
 implements GuiMouseListener {
-    final PublicProfileOverlayPopupFrame Y;
+    final PublicProfileOverlayPopupFrame popupFrame;
 
     PublicProfileOverlayCloseClickHandler(PublicProfileOverlayPopupFrame publicProfileOverlayPopupFrame) {
-        this.Y = publicProfileOverlayPopupFrame;
+        this.popupFrame = publicProfileOverlayPopupFrame;
     }
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        ClientSettings.K(this.Y);
+        ClientSettings.removePopup(this.popupFrame);
     }
 }
-

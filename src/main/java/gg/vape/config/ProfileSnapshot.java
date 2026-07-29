@@ -21,151 +21,121 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ProfileSnapshot {
-    private final List<ProfileModuleSnapshot> N;
-    private static int I;
-    static final boolean Z;
-    private final JsonArray A;
-    private final ProfileSnapshotGuiBuilder s;
-    private Profile V;
+    private final List<ProfileModuleSnapshot> moduleSnapshots;
+    private final ProfileSnapshotGuiBuilder guiBuilder;
+    private Profile profile;
 
-    public Profile T() {
-        return this.V;
+    public List<ProfileModuleSnapshot> getSortedModules(boolean includeDefaults) {
+        List<ProfileModuleSnapshot> modules = this.getModules(includeDefaults);
+        modules.sort(new ProfileModuleSnapshotOrderComparator());
+        return modules;
     }
 
-    public List<ProfileModuleSnapshot> Z(boolean bl) {
-        List<ProfileModuleSnapshot> list = this.H(bl);
-        list.sort(new ProfileModuleSnapshotOrderComparator(this));
-        return list;
-    }
-
-    public JsonObject Q() {
-        JsonObject jsonObject = new JsonObject();
-        for (ProfileModuleSnapshot profileModuleSnapshot : this.L()) {
-            if (profileModuleSnapshot.G() instanceof HudModule || !profileModuleSnapshot.Q()) continue;
-            jsonObject.addProperty(profileModuleSnapshot.getName(), Boolean.valueOf(profileModuleSnapshot.Q()));
+    public JsonObject serializeEnabledModules() {
+        JsonObject enabledModules = new JsonObject();
+        for (ProfileModuleSnapshot moduleSnapshot : this.getAllModules()) {
+            if (moduleSnapshot.getModule() instanceof HudModule || !moduleSnapshot.isEnabled()) continue;
+            enabledModules.addProperty(moduleSnapshot.getName(), Boolean.valueOf(moduleSnapshot.isEnabled()));
         }
-        return jsonObject;
+        return enabledModules;
     }
 
-    public ProfileSnapshotGuiBuilder C() {
-        return this.s;
+    public ProfileSnapshotGuiBuilder getGuiBuilder() {
+        return this.guiBuilder;
     }
 
-    public void D() {
-        if (this.V == null) {
+    public void applyToProfile() {
+        if (this.profile == null) {
             return;
         }
-        JsonObject jsonObject = this.V.J$src$Lcom_google_gson_JsonObject_$16ar19y();
-        jsonObject.add("modules", (JsonElement)this.V());
-        jsonObject.add("enabled", (JsonElement)this.Q());
-        this.V.B(jsonObject);
+        JsonObject profileJson = this.profile.J$src$Lcom_google_gson_JsonObject_$16ar19y();
+        profileJson.add("modules", this.serializeModules());
+        profileJson.add("enabled", this.serializeEnabledModules());
+        this.profile.B(profileJson);
     }
 
-    public static int O() {
-        int n = ProfileSnapshot.I();
-        return 0;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
-    public void I(Profile profile) {
-        this.V = profile;
+    public Profile getProfile() {
+        return this.profile;
     }
 
-    public static void I(int n) {
-        I = n;
-    }
-
-    public static int I() {
-        return I;
-    }
-
-    public Profile d() {
-        return this.V;
-    }
-
-    public JsonArray V() {
-        JsonArray jsonArray = new JsonArray();
-        for (ProfileModuleSnapshot profileModuleSnapshot : this.N) {
-            JsonObject jsonObject = profileModuleSnapshot.g();
-            if (jsonObject == null) continue;
-            jsonArray.add((JsonElement)jsonObject);
+    public JsonArray serializeModules() {
+        JsonArray modulesJson = new JsonArray();
+        for (ProfileModuleSnapshot moduleSnapshot : this.moduleSnapshots) {
+            JsonObject moduleJson = moduleSnapshot.toJson();
+            if (moduleJson == null) continue;
+            modulesJson.add(moduleJson);
         }
-        return jsonArray;
+        return modulesJson;
     }
 
-    public List<ProfileModuleSnapshot> H(boolean bl) {
-        ArrayList<ProfileModuleSnapshot> arrayList = new ArrayList<ProfileModuleSnapshot>();
-        for (ProfileModuleSnapshot profileModuleSnapshot : this.L()) {
-            if (profileModuleSnapshot.G() instanceof SubModule || profileModuleSnapshot.G().getCategory() == Category.b || !profileModuleSnapshot.j() && !bl) continue;
-            arrayList.add(profileModuleSnapshot);
+    public List<ProfileModuleSnapshot> getModules(boolean includeDefaults) {
+        ArrayList<ProfileModuleSnapshot> modules = new ArrayList<>();
+        for (ProfileModuleSnapshot moduleSnapshot : this.getAllModules()) {
+            if (moduleSnapshot.getModule() instanceof SubModule || moduleSnapshot.getModule().getCategory() == Category.b || !moduleSnapshot.hasChanges() && !includeDefaults) continue;
+            modules.add(moduleSnapshot);
         }
-        return arrayList;
+        return modules;
     }
 
-    public ProfileSnapshot(Profile profile, JsonArray jsonArray) {
-        JsonObject jsonObject;
-        this.V = profile;
-        this.A = jsonArray;
-        this.N = new ArrayList<ProfileModuleSnapshot>();
-        LinkedHashMap<String, JsonObject> linkedHashMap = new LinkedHashMap<String, JsonObject>();
-        if (this.A != null) {
-            for (JsonElement object : this.A) {
-                String string;
-                if (object.isJsonNull() || !object.isJsonObject() || (string = ConfigJsonUtils.P(jsonObject = object.getAsJsonObject(), "name")) == null) continue;
-                linkedHashMap.put(string, jsonObject);
+    public ProfileSnapshot(Profile profile, JsonArray modulesJson) {
+        this.profile = profile;
+        this.moduleSnapshots = new ArrayList<>();
+        LinkedHashMap<String, JsonObject> moduleJsonByName = new LinkedHashMap<>();
+        if (modulesJson != null) {
+            for (JsonElement moduleElement : modulesJson) {
+                if (moduleElement.isJsonNull() || !moduleElement.isJsonObject()) continue;
+                JsonObject moduleJson = moduleElement.getAsJsonObject();
+                String moduleName = ConfigJsonUtils.P(moduleJson, "name");
+                if (moduleName == null) continue;
+                moduleJsonByName.put(moduleName, moduleJson);
             }
         }
         for (Mod mod : Vape.INSTANCE.getModManager().f()) {
-            jsonObject = (JsonObject)linkedHashMap.get(mod.getName());
-            this.N.add(new ProfileModuleSnapshot(this, mod, jsonObject));
+            this.moduleSnapshots.add(new ProfileModuleSnapshot(this, mod, moduleJsonByName.get(mod.getName())));
         }
-        this.N.sort(new NameComparator());
-        this.s = new ProfileSnapshotGuiBuilder(this);
+        this.moduleSnapshots.sort(new NameComparator());
+        this.guiBuilder = new ProfileSnapshotGuiBuilder(this);
     }
 
-    public static ProfileSnapshot t(PublicProfile publicProfile, Profile profile) {
-        Profile profile2 = new Profile(publicProfile.v(), profile.P());
-        profile2.e(profile.C(true));
-        profile2.A(profile.r());
-        profile2.h(publicProfile.v());
-        return new ProfileSnapshot(profile2, profile.J$src$Lcom_google_gson_JsonObject_$16ar19y().getAsJsonArray("modules"));
+    public static ProfileSnapshot createEditableCopy(PublicProfile publicProfile, Profile sourceProfile) {
+        Profile editableProfile = new Profile(publicProfile.v(), sourceProfile.P());
+        editableProfile.e(sourceProfile.C(true));
+        editableProfile.A(sourceProfile.r());
+        editableProfile.h(publicProfile.v());
+        return new ProfileSnapshot(editableProfile, sourceProfile.J$src$Lcom_google_gson_JsonObject_$16ar19y().getAsJsonArray("modules"));
     }
 
-    static {
-        ProfileSnapshot.I(3);
-        Z = !ProfileSnapshot.class.desiredAssertionStatus();
+    public List<ProfileModuleSnapshot> getAllModules() {
+        return this.moduleSnapshots;
     }
 
-    public List<ProfileModuleSnapshot> L() {
-        return this.N;
-    }
-
-
-    public static ProfileSnapshot z(PublicProfile publicProfile) {
-        Profile profile;
-        Object var3_1;
-        Object v0 = var3_1 = publicProfile.s$src$Ljava_util_Map_$1fhtcsp() != null ? publicProfile.s$src$Ljava_util_Map_$1fhtcsp().getOrDefault("modules", null) : null;
-        if (!Z && publicProfile.c() == null) {
-            throw new AssertionError();
-        }
-        Profile profile2 = profile = publicProfile.c().v() != null ? Vape.INSTANCE.getProfilesManager().H(publicProfile.c().v()) : null;
-        if (profile != null) {
-            if (profile.equals(Vape.INSTANCE.getProfilesManager().M())) {
-                profile.a();
+    public static ProfileSnapshot resolvePublicProfileSnapshot(PublicProfile publicProfile) {
+        Object serializedModules = publicProfile.s$src$Ljava_util_Map_$1fhtcsp() != null
+            ? publicProfile.s$src$Ljava_util_Map_$1fhtcsp().getOrDefault("modules", null)
+            : null;
+        assert publicProfile.c() != null;
+        Profile localProfile = publicProfile.c().v() != null
+            ? Vape.INSTANCE.getProfilesManager().H(publicProfile.c().v())
+            : null;
+        if (localProfile != null) {
+            if (localProfile.equals(Vape.INSTANCE.getProfilesManager().M())) {
+                localProfile.a();
             }
-            return profile.n(true);
+            return localProfile.n(true);
         }
-        if (publicProfile.c().v() != null) {
-            // empty if block
-        }
-        Profile profile3 = new Profile(publicProfile.v(), "4.21");
-        JsonArray jsonArray = (JsonArray)ApiHttpClient.Z.fromJson(var3_1 != null ? ApiHttpClient.Z.toJson(var3_1) : "[]", JsonArray.class);
-        JsonObject jsonObject = new JsonObject();
-        JsonObject jsonObject2 = new JsonObject();
-        jsonObject2.add("modules", (JsonElement)jsonArray);
-        jsonObject.add("data", (JsonElement)jsonObject2);
-        profile3.e(jsonObject);
-        profile3.h(publicProfile.v());
-        return new ProfileSnapshot(profile3, jsonArray);
+        Profile detachedProfile = new Profile(publicProfile.v(), "4.21");
+        JsonArray modulesJson = ApiHttpClient.Z.fromJson(serializedModules != null ? ApiHttpClient.Z.toJson(serializedModules) : "[]", JsonArray.class);
+        JsonObject profileData = new JsonObject();
+        JsonObject data = new JsonObject();
+        data.add("modules", modulesJson);
+        profileData.add("data", data);
+        detachedProfile.e(profileData);
+        detachedProfile.h(publicProfile.v());
+        return new ProfileSnapshot(detachedProfile, modulesJson);
     }
 }
 

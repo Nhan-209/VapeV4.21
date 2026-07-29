@@ -13,38 +13,33 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class AnchoredHudModuleConfigFrame<T extends InteractiveComponent>
 extends Frame {
-    private T wM;
-    private double wK;
-    private final SimpleTextLabelComponent wm;
-    private String wG = "OverlaySettingsFrame";
-    private HudModule wJ;
-    private static boolean wS;
-    private double wv;
+    private final T anchorComponent;
+    private double previousAnchorY;
+    private final SimpleTextLabelComponent noSettingsLabel;
+    private String title = "OverlaySettingsFrame";
+    private HudModule hudModule;
+    private double previousAnchorX;
 
-    public static boolean x$src$Z$x2ngyz() {
-        boolean bl = AnchoredHudModuleConfigFrame.C$src$Z$w9idiu();
-        return false;
+    public HudModule getHudModule() {
+        return this.hudModule;
     }
 
-    public HudModule s$src$Lgg_vape_module_render_hud_HudModule_$14buku() {
-        return this.wJ;
-    }
-
-    public void h() {
-        if (((GuiComponent)this.wM).G$src$D$1b2f02a() != this.wv || ((GuiComponent)this.wM).n() != this.wK) {
-            double d = ((GuiComponent)this.wM).n();
-            FrameComponent frameComponent = ((GuiComponent)this.wM).B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb();
+    public void repositionToAnchor() {
+        GuiComponent anchor = (GuiComponent)this.anchorComponent;
+        if (anchor.G$src$D$1b2f02a() != this.previousAnchorX || anchor.n() != this.previousAnchorY) {
+            double anchoredY = anchor.n();
+            FrameComponent frameComponent = anchor.getParentFrameComponent();
             if (frameComponent.k$src$Z$if6xeb()) {
-                d = Math.min(d, frameComponent.n() + frameComponent.d$src$D$ibccpu() - ((GuiComponent)this.wM).L());
-                d = Math.max(d, frameComponent.n() + frameComponent.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
+                anchoredY = Math.min(anchoredY, frameComponent.n() + frameComponent.d$src$D$ibccpu() - anchor.L());
+                anchoredY = Math.max(anchoredY, frameComponent.n() + frameComponent.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
             }
-            if (((GuiComponent)this.wM).G$src$D$1b2f02a() + ((GuiComponent)this.wM).A() + this.A() > (double)Minecraft.G().T()) {
-                this.M(((GuiComponent)this.wM).G$src$D$1b2f02a() - this.A() + 13.0, d);
+            if (anchor.G$src$D$1b2f02a() + anchor.A() + this.A() > (double)Minecraft.G().T()) {
+                this.M(anchor.G$src$D$1b2f02a() - this.A() + 13.0, anchoredY);
             } else {
-                this.M(((GuiComponent)this.wM).G$src$D$1b2f02a() + ((GuiComponent)this.wM).A() - 13.0, d);
+                this.M(anchor.G$src$D$1b2f02a() + anchor.A() - 13.0, anchoredY);
             }
-            this.wv = ((GuiComponent)this.wM).G$src$D$1b2f02a();
-            this.wK = ((GuiComponent)this.wM).n();
+            this.previousAnchorX = anchor.G$src$D$1b2f02a();
+            this.previousAnchorY = anchor.n();
         }
     }
 
@@ -60,45 +55,45 @@ extends Frame {
         }
         boolean bl = false;
         for (GuiComponent guiComponent : this.f()) {
-            if (guiComponent == this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() || guiComponent == this.wm) continue;
+            if (guiComponent == this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc() || guiComponent == this.noSettingsLabel) continue;
             bl = true;
             break;
         }
-        this.wm.Z(!bl);
+        this.noSettingsLabel.setVisible(!bl);
         this.l$src$V$1mibm4x();
     }
 
     @Override
     public String getName() {
-        return this.wG;
+        return this.title;
     }
 
-    public T T$src$Lgg_vape_ui_click_component_gui_InteractiveCompo$1wph4d9() {
-        return this.wM;
+    public T getAnchorComponent() {
+        return this.anchorComponent;
     }
 
     public AnchoredHudModuleConfigFrame(T t) {
-        this.T(AnchoredHudModuleConfigFrame.J.i);
+        this.setDisabledOverlayColor(AnchoredHudModuleConfigFrame.J.i);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.wM = t;
+        this.anchorComponent = t;
         this.Y(false);
         this.N(true);
-        this.Z(false);
+        this.setVisible(false);
         this.L(false, false);
-        AnchoredHudModuleConfigCloseHeaderButton anchoredHudModuleConfigCloseHeaderButton = new AnchoredHudModuleConfigCloseHeaderButton(this, this, "settingdots", this.wG, 0.7);
-        anchoredHudModuleConfigCloseHeaderButton.O$src$Lgg_vape_ui_click_component_SquareIconButtonComp$z3cp96().l$src$Ljava_util_List_$7yhdmw().clear();
-        anchoredHudModuleConfigCloseHeaderButton.O$src$Lgg_vape_ui_click_component_SquareIconButtonComp$z3cp96().r(new HudModuleFrameOpenConfigClickHandler(this));
+        AnchoredHudModuleConfigCloseHeaderButton anchoredHudModuleConfigCloseHeaderButton = new AnchoredHudModuleConfigCloseHeaderButton(this, "settingdots", this.title, 0.7);
+        anchoredHudModuleConfigCloseHeaderButton.O$src$Lgg_vape_ui_click_component_SquareIconButtonComp$z3cp96().getClickListeners().clear();
+        anchoredHudModuleConfigCloseHeaderButton.O$src$Lgg_vape_ui_click_component_SquareIconButtonComp$z3cp96().addClickListener(new HudModuleFrameOpenConfigClickHandler(this));
         this.Y(anchoredHudModuleConfigCloseHeaderButton);
-        this.wm = new SimpleTextLabelComponent("No settings available", 0.75, AnchoredHudModuleConfigFrame.J.h);
-        this.wm.Z(false);
-        this.wm.Q(false);
-        this.h(this.wm, new Object[0]);
+        this.noSettingsLabel = new SimpleTextLabelComponent("No settings available", 0.75, AnchoredHudModuleConfigFrame.J.h);
+        this.noSettingsLabel.setVisible(false);
+        this.noSettingsLabel.setRemovable(false);
+        this.h(this.noSettingsLabel, new Object[0]);
     }
 
-    public void G(HudModule hudModule) {
-        this.wJ = hudModule;
-        this.j(hudModule.getName());
+    public void setHudModule(HudModule hudModule) {
+        this.hudModule = hudModule;
+        this.setTitle(hudModule.getName());
     }
 
     @Override
@@ -111,20 +106,8 @@ extends Frame {
         return d;
     }
 
-    public static void M(boolean bl) {
-        wS = bl;
-    }
-
-    public void j(String string) {
-        this.wG = string;
-    }
-
-    static {
-        AnchoredHudModuleConfigFrame.M(true);
-    }
-
-    public static boolean C$src$Z$w9idiu() {
-        return wS;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
 }

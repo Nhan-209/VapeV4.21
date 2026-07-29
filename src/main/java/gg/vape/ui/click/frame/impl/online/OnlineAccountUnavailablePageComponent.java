@@ -22,19 +22,19 @@ extends OnlineConnectionSettingsPageComponent {
         this.h(new PaddedComponent(20.0, 0.0, 45.0, 45.0, iconGlyphComponent), new Object[0]);
         this.h(new SpacerComponent(0.0, 5.0), new Object[0]);
         WrappingTextLabelComponent wrappingTextLabelComponent = new WrappingTextLabelComponent("Error establishing connection", 1.0);
-        wrappingTextLabelComponent.l(true);
+        wrappingTextLabelComponent.setBold(true);
         wrappingTextLabelComponent.o(this.A() - 30.0);
         wrappingTextLabelComponent.Y(20.0);
-        wrappingTextLabelComponent.T$src$V$1orl066(OnlineAccountUnavailablePageComponent.J.q);
+        wrappingTextLabelComponent.setTextColor(OnlineAccountUnavailablePageComponent.J.q);
         this.h(new PaddedComponent(0.0, 0.0, 15.0, 15.0, wrappingTextLabelComponent), new Object[0]);
         this.h(new SpacerComponent(0.0, 5.0), new Object[0]);
         this.DX = new WrappingTextLabelComponent("Unknown", 0.8);
         this.DX.o(this.A() - 30.0);
         this.DX.Y(20.0);
-        this.DX.T$src$V$1orl066(OnlineAccountUnavailablePageComponent.J.A);
+        this.DX.setTextColor(OnlineAccountUnavailablePageComponent.J.A);
         this.h(new PaddedComponent(0.0, 0.0, 15.0, 15.0, this.DX), new Object[0]);
         this.D2 = new UnderlinedTextLabel("Try again", (double)0.8f, OnlineAccountUnavailablePageComponent.J.A, new Color(255, 255, 255, 255));
-        this.D2.r(OnlineAccountUnavailablePageComponent::lambda$new$0);
+        this.D2.addClickListener(OnlineAccountUnavailablePageComponent::lambda$new$0);
         this.D2.o(50.0);
         this.D2.Y(10.0);
         this.h(new PaddedComponent(40.0, 0.0, 26.0, 0.0, this.D2), new Object[0]);
@@ -47,11 +47,11 @@ extends OnlineConnectionSettingsPageComponent {
     @Override
     public void s() {
         if (OnlineConnectionManager.T.j().equals((Object)OnlineAccountState.BANNED)) {
-            this.DX.G("You have been banned from Vape Online");
+            this.DX.setText("You have been banned from Vape Online");
         } else if (OnlineConnectionManager.T.j().equals((Object)OnlineAccountState.REGISTRATION_OFFLINE)) {
-            this.DX.G("Registration is currently offline");
+            this.DX.setText("Registration is currently offline");
         } else {
-            this.DX.G("Unknown error");
+            this.DX.setText("Unknown error");
         }
     }
 }

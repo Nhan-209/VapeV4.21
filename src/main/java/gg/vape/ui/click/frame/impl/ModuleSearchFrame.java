@@ -16,8 +16,8 @@ extends ModuleCategoryFrame {
     private ModuleSearchFrameHeader Rt;
 
     public void D(String string) {
-        this.S();
-        ClientSettings.V = null;
+        this.removeMarkedChildren();
+        ClientSettings.activeTooltips = null;
         if (string == null || string.length() < 1) {
             return;
         }
@@ -28,13 +28,13 @@ extends ModuleCategoryFrame {
             if (mod.getCategory().equals(Category.w) ? !string2.equals(string3) : !string2.contains(string3)) continue;
             ModuleComponent moduleComponent = new ModuleComponent(this, mod);
             this.h(moduleComponent, new Object[0]);
-            moduleComponent.d$src$V$m6rlha();
+            moduleComponent.buildValueComponents();
         }
     }
 
     @Override
     public boolean V$src$Z$1xhop3l() {
-        return ((ModeSelection)ClientSettings.fW.fz.K()).equals(ClientSettings.fW.c) || ClientSettings.fW.O.L() != false;
+        return ((ModeSelection)ClientSettings.INSTANCE.searchBarStyle.getValue()).equals(ClientSettings.INSTANCE.floatingSearchBarMode) || ClientSettings.INSTANCE.showLegitMode.getEffectiveValue() != false;
     }
 
     @Override
@@ -48,7 +48,7 @@ extends ModuleCategoryFrame {
 
     public ModuleSearchFrame() {
         super(Category.b);
-        this.T(ModuleSearchFrame.J.r);
+        this.setDisabledOverlayColor(ModuleSearchFrame.J.r);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.I2 = false;

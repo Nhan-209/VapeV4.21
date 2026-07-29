@@ -1,12 +1,11 @@
 package gg.vape.module.render.entity;
 
 import gg.vape.module.render.entity.RenderEntityContext;
-import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityLivingBase;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.ITextComponent;
-import gg.vape.wrapper.impl.Minecraft;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -18,7 +17,6 @@ public class RenderEntityContextCache {
     private static final Object lock;
     private static final Map<Integer, RenderEntityContext> contexts;
     private static final HashMap<Integer, ITextComponent> displayNameCache;
-    private static final boolean UNUSED = false;
 
     static {
         lock = new Object();
@@ -28,17 +26,13 @@ public class RenderEntityContextCache {
     }
 
     @Nullable
-    public static RenderEntityContext T(EntityLivingBase entityLivingBase) {
-        return RenderEntityContextCache.r(entityLivingBase.S());
+    public static void setCustomName(EntityPlayer player, ITextComponent customName) {
+        customNames.put(player.S(), customName);
     }
 
-    public static void G(EntityPlayer entityPlayer, ITextComponent iTextComponent) {
-        customNames.put(entityPlayer.S(), iTextComponent);
-    }
-
-    public static ITextComponent I(EntityPlayer entityPlayer) {
-        if (customNames.containsKey(entityPlayer.S())) {
-            return customNames.get(entityPlayer.S());
+    public static ITextComponent getCustomName(EntityPlayer player) {
+        if (customNames.containsKey(player.S())) {
+            return customNames.get(player.S());
         }
         return null;
     }
@@ -46,22 +40,14 @@ public class RenderEntityContextCache {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static void i(RenderEntityContext renderEntityContext) {
-        Object object = lock;
-        synchronized (object) {
-            contexts.put(renderEntityContext.U$src$I$1xrslp6(), renderEntityContext);
-        }
-    }
-
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static void u() {
+    public static void clear() {
         if (contexts.isEmpty()) {
             return;
         }
-        Object object = lock;
-        synchronized (object) {
+        synchronized (lock) {
             contexts.clear();
         }
     }
@@ -69,11 +55,10 @@ public class RenderEntityContextCache {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static void E(int ... nArray) {
-        Object object = lock;
-        synchronized (object) {
-            for (int n : nArray) {
-                contexts.remove(n);
+    public static void remove(int ... entityIds) {
+        synchronized (lock) {
+            for (int entityId : entityIds) {
+                contexts.remove(entityId);
             }
         }
     }
@@ -82,60 +67,44 @@ public class RenderEntityContextCache {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static Collection<RenderEntityContext> E() {
-        Object object = lock;
-        synchronized (object) {
-            return contexts.values();
+    public static Collection<RenderEntityContext> getContexts() {
+        synchronized (lock) {
+            return new ArrayList<>(contexts.values());
         }
     }
 
-    public static void J() {
+    public static void clearNameCaches() {
         displayNameCache.clear();
         customNames.clear();
     }
 
-    private static RenderEntityContext createContext(EntityLivingBase entityLivingBase, EntityPlayerSP entityPlayerSP, Integer n) {
-        RenderEntityContext renderEntityContext = new RenderEntityContext(n, entityLivingBase, entityPlayerSP);
-        renderEntityContext.v(entityLivingBase, entityPlayerSP);
-        return renderEntityContext;
-    }
-
-    public static RenderEntityContext Q(EntityLivingBase entityLivingBase) {
-        return RenderEntityContextCache.V(entityLivingBase, Minecraft.thePlayer());
+    private static RenderEntityContext createContext(EntityLivingBase entity, EntityPlayerSP viewer, Integer entityId) {
+        RenderEntityContext context = new RenderEntityContext(entityId, entity, viewer);
+        context.update(entity, viewer);
+        return context;
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     @Nullable
-    public static RenderEntityContext r(int n) {
-        Object object = lock;
-        synchronized (object) {
-            return contexts.get(n);
+    public static ITextComponent getDisplayName(EntityPlayer player) {
+        if (displayNameCache.containsKey(player.S())) {
+            return displayNameCache.get(player.S());
         }
-    }
-
-    public static ITextComponent g(EntityPlayer entityPlayer) {
-        if (displayNameCache.containsKey(entityPlayer.S())) {
-            return displayNameCache.get(entityPlayer.S());
-        }
-        ITextComponent iTextComponent = entityPlayer.Q();
-        displayNameCache.put(entityPlayer.S(), iTextComponent);
-        return iTextComponent;
+        ITextComponent displayName = player.Q();
+        displayNameCache.put(player.S(), displayName);
+        return displayName;
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    public static RenderEntityContext V(EntityLivingBase entityLivingBase, EntityPlayerSP entityPlayerSP) {
-        Object object = lock;
-        synchronized (object) {
-            return contexts.computeIfAbsent(entityLivingBase.S(), arg_0 -> RenderEntityContextCache.createContext(entityLivingBase, entityPlayerSP, arg_0));
+    public static RenderEntityContext getOrCreate(EntityLivingBase entity, EntityPlayerSP viewer) {
+        synchronized (lock) {
+            return contexts.computeIfAbsent(entity.S(), entityId -> RenderEntityContextCache.createContext(entity, viewer, entityId));
         }
     }
 
-    public static String W(Entity entity) {
-        return entity.Q().C();
-    }
 }
 

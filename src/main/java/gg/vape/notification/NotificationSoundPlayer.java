@@ -5,59 +5,59 @@ import gg.vape.notification.SoundClip;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class NotificationSoundPlayer {
-    private static int[] A;
-    private final AtomicReference<SoundClip> r = new AtomicReference();
+    private static int[] controlFlowMarker;
+    private final AtomicReference<SoundClip> pendingSound = new AtomicReference<SoundClip>();
 
     public NotificationSoundPlayer() {
-        this.e();
+        this.startSoundThread();
     }
 
     static {
-        if (NotificationSoundPlayer.v() == null) {
-            NotificationSoundPlayer.j(new int[3]);
+        if (NotificationSoundPlayer.getControlFlowMarker() == null) {
+            NotificationSoundPlayer.setControlFlowMarker(new int[3]);
         }
     }
 
-    public void P() {
-        if (this.r.get() != null) {
-            SoundClip soundClip = this.r.get();
-            this.r.set(null);
-            if (!this.s()) {
-                soundClip.E(this.B());
+    public void playPendingSound() {
+        if (this.pendingSound.get() != null) {
+            SoundClip sound = this.pendingSound.get();
+            this.pendingSound.set(null);
+            if (!this.isMuted()) {
+                sound.play(this.getVolumePercent());
             }
         }
     }
 
-    public boolean s() {
-        return Vape.INSTANCE.getPublicProfileSettings().m.L();
+    public boolean isMuted() {
+        return Vape.INSTANCE.getPublicProfileSettings().m.getEffectiveValue();
     }
 
-    public static int[] v() {
-        return A;
+    public static int[] getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
-    public static void j(int[] nArray) {
-        A = nArray;
+    public static void setControlFlowMarker(int[] marker) {
+        controlFlowMarker = marker;
     }
 
 
-    public float B() {
-        return ((Double)Vape.INSTANCE.getPublicProfileSettings().h.K()).floatValue();
+    public float getVolumePercent() {
+        return ((Double)Vape.INSTANCE.getPublicProfileSettings().h.getValue()).floatValue();
     }
 
-    public void q(SoundClip soundClip) {
-        this.r.set(soundClip);
+    public void queue(SoundClip sound) {
+        this.pendingSound.set(sound);
     }
 
-    public void e() {
-        new Thread(this::lambda$startSoundThread$0).start();
+    public void startSoundThread() {
+        new Thread(this::runSoundLoop, "Vape notification sound player").start();
     }
 
-    private void lambda$startSoundThread$0() {
+    private void runSoundLoop() {
         while (!Vape.INSTANCE.enabled) {
             try {
                 Thread.sleep(100L);
-                this.P();
+                this.playPendingSound();
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);

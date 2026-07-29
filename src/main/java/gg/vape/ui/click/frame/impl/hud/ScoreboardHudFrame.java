@@ -6,12 +6,12 @@ import gg.vape.utils.Vec3d;
 
 public class ScoreboardHudFrame
 extends HudModuleConfigFrameBase {
-    private ScoreboardHudModule HP = (ScoreboardHudModule)this.l$src$Lgg_vape_module_render_hud_HudModule_$v08nt0();
-    private static final String tb = "Scoreboard";
+    private final ScoreboardHudModule scoreboardModule = (ScoreboardHudModule)this.getModule();
+    private static final String FRAME_NAME = "Scoreboard";
 
     @Override
     public String getName() {
-        return tb;
+        return FRAME_NAME;
     }
 
     public ScoreboardHudFrame() {
@@ -19,25 +19,15 @@ extends HudModuleConfigFrameBase {
     }
 
     @Override
-    public void o() {
-        Vec3d vec3d = this.HP.K(this.G$src$D$1b2f02a(), this.n(), this.D$src$Z$1t1ofzo());
+    public void renderHudContent() {
+        Vec3d vec3d = this.scoreboardModule.renderScoreboard(
+                this.G$src$D$1b2f02a(), this.n(), this.shouldDrawBackground());
         this.o(vec3d.H + 2.0);
         this.Y(vec3d.B);
     }
 
     @Override
-    public double L() {
-        return super.L();
-    }
-
-    @Override
-    public double A() {
-        return super.A();
-    }
-
-    @Override
-    public boolean m() {
+    public boolean shouldRenderHudBackground() {
         return false;
     }
 }
-

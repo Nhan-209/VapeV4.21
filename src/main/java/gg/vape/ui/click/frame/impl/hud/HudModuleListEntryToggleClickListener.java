@@ -13,43 +13,43 @@ import gg.vape.value.Value;
 
 public class HudModuleListEntryToggleClickListener
 implements GuiClickListener {
-    final HudModule Z;
-    private static final String b = "Keybind";
-    final HudModuleListEntry c;
+    private static final String KEYBIND_LABEL = "Keybind";
+    private final HudModule module;
+    private final HudModuleListEntry listEntry;
 
     @Override
-    public void P() {
-        HudModuleConfigFrame hudModuleConfigFrame = ClientSettings.g(HudModuleConfigFrame.class);
+    public void onPrimaryClick() {
+        HudModuleConfigFrame hudModuleConfigFrame = ClientSettings.getFrame(HudModuleConfigFrame.class);
         if (hudModuleConfigFrame == null) {
             return;
         }
-        hudModuleConfigFrame.T(this.Z);
-        hudModuleConfigFrame.S();
-        for (Value<?, ?> value : this.Z.F$src$Ljava_util_List_$1kytx9u()) {
-            GuiComponent guiComponent = ValueComponentFactory.Y(value);
+        hudModuleConfigFrame.setSelectedModule(this.module);
+        hudModuleConfigFrame.removeMarkedChildren();
+        for (Value<?, ?> value : this.module.F$src$Ljava_util_List_$1kytx9u()) {
+            GuiComponent guiComponent = ValueComponentFactory.createMainValueComponent(value);
             if (guiComponent == null) continue;
             if (value.getParent() != null) {
-                guiComponent.T(GuiComponentContract.J.r);
+                guiComponent.setDisabledOverlayColor(GuiComponentContract.J.r);
             } else {
-                guiComponent.T(GuiComponentContract.J.i);
+                guiComponent.setDisabledOverlayColor(GuiComponentContract.J.i);
             }
             hudModuleConfigFrame.h(guiComponent, new Object[0]);
         }
-        if (this.Z.W()) {
-            hudModuleConfigFrame.h(new BindValueRowComponent(b, this.Z.a()), new Object[0]);
+        if (this.module.shouldShowKeybindSetting()) {
+            hudModuleConfigFrame.h(new BindValueRowComponent(KEYBIND_LABEL, this.module.a()), new Object[0]);
         }
-        HudModuleListEntry.x(this.c).Z(true);
-        hudModuleConfigFrame.Z(true);
+        this.listEntry.getSettingsButton().setVisible(true);
+        hudModuleConfigFrame.setVisible(true);
         hudModuleConfigFrame.U();
         hudModuleConfigFrame.t(hudModuleConfigFrame.L());
-        hudModuleConfigFrame.R(1);
+        hudModuleConfigFrame.beginOpening();
         hudModuleConfigFrame.l$src$V$1mibm4x();
     }
 
 
     public HudModuleListEntryToggleClickListener(HudModuleListEntry hudModuleListEntry, HudModule hudModule) {
-        this.c = hudModuleListEntry;
-        this.Z = hudModule;
+        this.listEntry = hudModuleListEntry;
+        this.module = hudModule;
     }
 }
 

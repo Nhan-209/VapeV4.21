@@ -34,7 +34,7 @@ implements Runnable {
             try {
                 Thread.sleep(this.U);
                 if (this.R.r$src$Z$14eylz9()) {
-                    this.R.q();
+                    this.R.onScheduledAction();
                 }
             }
             catch (Exception ignored) {

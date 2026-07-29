@@ -36,14 +36,14 @@ extends InteractiveComponent {
     @Override
     public void H() {
         double d;
-        SmoothFontRenderer smoothFontRenderer = this.O(0.9);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.9);
         double d2 = smoothFontRenderer.d(this.q1.getName());
         double d3 = this.n() + 9.0 - d2 / 2.0;
         double d4 = this.n() + 9.0;
         double d5 = this.G$src$D$1b2f02a() + 10.0;
         this.I.K(d5);
         this.I.S(d3);
-        this.I.D(this.qn ? this.A() - 20.0 - 8.0 : 65.0 - this.qr.A());
+        this.I.setMaxWidth(this.qn ? this.A() - 20.0 - 8.0 : 65.0 - this.qr.A());
         if (this.qn) {
             GuiRenderPrimitives.d(this.G$src$D$1b2f02a() + 5.0 - 0.5, this.n() + 0.5, this.A() - 10.0 + 1.0, this.L() - 1.0, FrameMacrosEditor.J.l);
         }
@@ -59,14 +59,14 @@ extends InteractiveComponent {
             this.qz.S(d6 += this.qR.L());
             this.qz.o(d7 - 6.0);
             d6 += this.qz.L();
-            if (this.qz.M$src$Lgg_vape_value_BooleanValue_$1ruml8g().L().booleanValue()) {
-                this.Q.Z(true);
+            if (this.qz.getBooleanValue().getEffectiveValue().booleanValue()) {
+                this.Q.setVisible(true);
                 this.Q.K(d);
                 this.Q.S(d6);
                 this.Q.o(d7);
                 d6 += this.Q.L();
             } else {
-                this.Q.Z(false);
+                this.Q.setVisible(false);
                 d6 += 5.0;
             }
             double d8 = (this.A() - 25.0) / 5.0;
@@ -88,14 +88,14 @@ extends InteractiveComponent {
         }
         d = this.G$src$D$1b2f02a() + this.A() - 15.0;
         if (this.v.V$src$Z$1xhop3l()) {
-            this.v.G(this.qn ? FrameMacrosEditor.J.f : null);
+            this.v.setOverrideColor(this.qn ? FrameMacrosEditor.J.f : null);
             this.v.K(d);
             this.v.S(this.n());
             this.v.Y(18.0);
             d -= 5.0;
         }
         if (!this.qn) {
-            this.qr.Q$src$Lgg_vape_ui_click_component_TruncatedTextCompone$6s53nl().D(20.0);
+            this.qr.getBindLabel().setMaxWidth(20.0);
             this.qr.K(d -= this.qr.A());
             this.qr.S(this.n() + 4.0);
             GuiRenderPrimitives.F("newclock", d -= 9.0, d4, 8.0, 8.0, FrameMacrosEditor.J.K);
@@ -104,12 +104,12 @@ extends InteractiveComponent {
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        if (this.qQ.l$src$Lgg_vape_ui_click_frame_impl_FrameMacrosEditor_$1712c36() != null && this.qQ.l$src$Lgg_vape_ui_click_frame_impl_FrameMacrosEditor_$1712c36().equals(this) && !this.Q().J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
+        if (this.qQ.l$src$Lgg_vape_ui_click_frame_impl_FrameMacrosEditor_$1712c36() != null && this.qQ.l$src$Lgg_vape_ui_click_frame_impl_FrameMacrosEditor_$1712c36().equals(this) && !this.getBounds().J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
             if (!this.v.V$src$Z$1xhop3l()) {
                 this.qQ.X(null);
                 return;
             }
-            this.v.P$src$V$q7uwbv();
+            this.v.dispatchPrimaryClick();
             return;
         }
         super.g(guiMouseEvent);
@@ -125,92 +125,92 @@ extends InteractiveComponent {
     }
 
     public FrameMacrosEditor(FrameMacros frameMacros, Macro macro) {
-        this.b = new TextButton("Update", 0.8, FrameMacrosEditor.J.B).R(FrameMacrosEditor.J.l);
-        this.q5 = new TextButton("Cancel", 0.8, FrameMacrosEditor.J.B).R(FrameMacrosEditor.J.l);
+        this.b = new TextButton("Update", 0.8, FrameMacrosEditor.J.B).setTransparentBackgroundBorder(FrameMacrosEditor.J.l);
+        this.q5 = new TextButton("Cancel", 0.8, FrameMacrosEditor.J.B).setTransparentBackgroundBorder(FrameMacrosEditor.J.l);
         this.K = new AnimatedIconButtonComponent("newtrash", 0.8, FrameMacrosEditor.J.d);
         this.v = new IconButtonComponent("settingdots");
-        this.b.F(false);
-        this.q5.F(false);
+        this.b.setDeriveTextColorFromBackground(false);
+        this.q5.setDeriveTextColorFromBackground(false);
         this.qQ = frameMacros;
         this.q1 = macro;
         this.qr = new BindableInputComponent(macro);
         FrameMacrosEditor frameMacrosEditor = this;
-        this.v.r(() -> {
+        this.v.addClickListener(() -> {
             this.qn = !this.qn;
             if (this.qn) {
                 frameMacros.X(frameMacrosEditor);
                 this.q3 = Macro.create(macro.getName()).loadJson(macro.toJson());
-                this.qz.Z(true);
-                this.qR.Z(true);
-                this.Q.Z(true);
-                this.q5.Z(true);
-                this.b.Z(true);
-                this.K.Z(true);
-                this.qr.Z(false);
+                this.qz.setVisible(true);
+                this.qR.setVisible(true);
+                this.Q.setVisible(true);
+                this.q5.setVisible(true);
+                this.b.setVisible(true);
+                this.K.setVisible(true);
+                this.qr.setVisible(false);
             } else {
                 frameMacros.X(null);
-                this.qz.Z(false);
-                this.qR.Z(false);
-                this.Q.Z(false);
-                this.q5.Z(false);
-                this.b.Z(false);
-                this.K.Z(false);
-                this.qr.Z(true);
+                this.qz.setVisible(false);
+                this.qR.setVisible(false);
+                this.Q.setVisible(false);
+                this.q5.setVisible(false);
+                this.b.setVisible(false);
+                this.K.setVisible(false);
+                this.qr.setVisible(true);
             }
             frameMacros.l$src$V$1mibm4x();
         });
         this.qR = new RandomRangeSliderComponent(macro.getDelay());
         this.Q = new RandomRangeSliderComponent(macro.getDoubleClickDelay());
         this.qz = new BooleanToggleComponent(macro.getDoubleClick());
-        this.qz.j(new FrameMacrosEditorRefreshFrameMouseListener(this, frameMacros));
-        this.K.r(() -> {
+        this.qz.addMouseListener(new FrameMacrosEditorRefreshFrameMouseListener(this, frameMacros));
+        this.K.addClickListener(() -> {
             Vape.INSTANCE.getMacrosManager().removeMacro(macro);
             frameMacros.X(null);
         });
-        this.q5.r(() -> {
+        this.q5.addClickListener(() -> {
             if (this.q3 != null) {
                 macro.loadJson(this.q3.toJson());
             }
-            this.v.P$src$V$q7uwbv();
+            this.v.dispatchPrimaryClick();
         });
-        this.b.r(() -> {
+        this.b.addClickListener(() -> {
             if (!this.v.V$src$Z$1xhop3l()) {
                 frameMacros.X(null);
             } else {
-                this.v.P$src$V$q7uwbv();
+                this.v.dispatchPrimaryClick();
             }
         });
-        this.qz.Z(false);
-        this.qz.P(true);
-        this.qz.T(FrameMacrosEditor.J.m);
-        this.qR.Z(false);
-        this.qR.P(true);
-        this.qR.T(FrameMacrosEditor.J.m);
-        this.Q.Z(false);
-        this.Q.P(true);
-        this.Q.T(FrameMacrosEditor.J.m);
-        this.q5.Z(false);
-        this.b.Z(false);
-        this.K.Z(false);
-        this.K.T(FrameMacrosEditor.J.m);
+        this.qz.setVisible(false);
+        this.qz.setUseExplicitWidth(true);
+        this.qz.setDisabledOverlayColor(FrameMacrosEditor.J.m);
+        this.qR.setVisible(false);
+        this.qR.setUseExplicitWidth(true);
+        this.qR.setDisabledOverlayColor(FrameMacrosEditor.J.m);
+        this.Q.setVisible(false);
+        this.Q.setUseExplicitWidth(true);
+        this.Q.setDisabledOverlayColor(FrameMacrosEditor.J.m);
+        this.q5.setVisible(false);
+        this.b.setVisible(false);
+        this.K.setVisible(false);
+        this.K.setDisabledOverlayColor(FrameMacrosEditor.J.m);
         this.I = new FadingTruncatedTextComponent(macro.getName(), 40.0, 0.9, FrameMacrosEditor.J.Z, FrameMacrosEditor.J.m, false, false);
-        this.H(this.I, this.v, this.qr, this.qz, this.qR, this.Q, this.q5, this.b, this.K);
+        this.addChildren(this.I, this.v, this.qr, this.qz, this.qR, this.Q, this.q5, this.b, this.K);
     }
 
     @Override
     public double C() {
-        return this.qn ? (this.qz.M$src$Lgg_vape_value_BooleanValue_$1ruml8g().L().booleanValue() ? 120.0 : 90.0) : 18.0;
+        return this.qn ? (this.qz.getBooleanValue().getEffectiveValue().booleanValue() ? 120.0 : 90.0) : 18.0;
     }
 
     private void lambda$setInitialMode$4() {
-        this.Z(false);
+        this.setVisible(false);
         this.qQ.X(null);
     }
 
     private void lambda$setInitialMode$5() {
         this.q1 = Macro.create(this.q1.getName()).loadJson(this.q1.toJson());
         Vape.INSTANCE.getMacrosManager().addMacro(this.q1);
-        this.Z(false);
+        this.setVisible(false);
         this.qQ.X(null);
     }
 
@@ -228,15 +228,15 @@ extends InteractiveComponent {
     }
 
     public void N$src$V$13y6z98() {
-        this.v.P$src$V$q7uwbv();
-        this.v.Z(false);
-        this.qr.Z(false);
-        this.K.Z(false);
-        this.q5.d("Cancel");
-        this.q5.G(new Color(0, 0, 0, 0), FrameMacrosEditor.J.d);
-        this.b.d("Add");
-        this.b.G(new Color(0, 0, 0, 0), FrameMacrosEditor.J.B);
-        this.q5.s(this::lambda$setInitialMode$4);
-        this.b.s(this::lambda$setInitialMode$5);
+        this.v.dispatchPrimaryClick();
+        this.v.setVisible(false);
+        this.qr.setVisible(false);
+        this.K.setVisible(false);
+        this.q5.setLabelText("Cancel");
+        this.q5.setBackgroundAnimationColors(new Color(0, 0, 0, 0), FrameMacrosEditor.J.d);
+        this.b.setLabelText("Add");
+        this.b.setBackgroundAnimationColors(new Color(0, 0, 0, 0), FrameMacrosEditor.J.B);
+        this.q5.setClickListener(this::lambda$setInitialMode$4);
+        this.b.setClickListener(this::lambda$setInitialMode$5);
     }
 }

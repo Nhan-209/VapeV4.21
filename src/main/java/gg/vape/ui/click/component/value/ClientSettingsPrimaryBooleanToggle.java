@@ -7,20 +7,20 @@ import java.awt.Color;
 
 public final class ClientSettingsPrimaryBooleanToggle
 extends BooleanToggleComponent {
-    final PublicProfileSettings W7;
+    final PublicProfileSettings publicProfileSettings;
 
     public ClientSettingsPrimaryBooleanToggle(BooleanValue booleanValue, PublicProfileSettings publicProfileSettings) {
         super(booleanValue);
-        this.W7 = publicProfileSettings;
+        this.publicProfileSettings = publicProfileSettings;
     }
 
     @Override
-    public Color d() {
+    public Color getDisabledOverlayColor() {
         return ClientSettingsPrimaryBooleanToggle.J.r;
     }
 
     @Override
     public boolean V$src$Z$1xhop3l() {
-        return this.W7.R.L();
+        return this.publicProfileSettings.R.getEffectiveValue();
     }
 }

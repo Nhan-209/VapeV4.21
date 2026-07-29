@@ -9,8 +9,8 @@ implements GuiClickListener {
     final CurrentPartyPanel c;
 
     @Override
-    public void P() {
-        ClientSettings.K(CurrentPartyPanel.n(this.c));
+    public void onPrimaryClick() {
+        ClientSettings.removePopup(CurrentPartyPanel.n(this.c));
         CurrentPartyPanel.U(this.c, null);
         CurrentPartyPanel.f(this.c, null);
     }
@@ -19,4 +19,3 @@ implements GuiClickListener {
         this.c = kB;
     }
 }
-

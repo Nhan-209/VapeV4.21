@@ -29,7 +29,7 @@ extends InsetFrameBase {
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().I(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().u(false);
-        this.Z(true);
+        this.setVisible(true);
         this.p();
     }
 
@@ -68,11 +68,11 @@ extends InsetFrameBase {
     }
 
     public void p() {
-        this.S();
+        this.removeMarkedChildren();
         List<ItemStack> list = this.OM.E$src$Ljava_lang_String_$ous8w6() != null && this.OM.E$src$Ljava_lang_String_$ous8w6().length() > 0 ? this.n$src$Ljava_util_List_$re8j0m() : Oq;
         for (int i = 0; i < list.size(); ++i) {
             int n = i;
-            this.h(new ItemStackIconButtonComponent(HotbarSlotRuleItemListFrame.J.m, HotbarSlotRuleItemListFrame.J.l, list.get(i)).r(new HotbarSlotRuleItemSelectClickHandler(this, list, n)), i > 0 && (i + 1) % 9 == 0 ? "wrap" : "");
+            this.h(new ItemStackIconButtonComponent(HotbarSlotRuleItemListFrame.J.m, HotbarSlotRuleItemListFrame.J.l, list.get(i)).addClickListener(new HotbarSlotRuleItemSelectClickHandler(this, list, n)), i > 0 && (i + 1) % 9 == 0 ? "wrap" : "");
         }
     }
 
@@ -123,64 +123,64 @@ extends InsetFrameBase {
 
     private static void N$src$V$199jj6x() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            Oq.add(new HotbarSlotRule(869).c());
-            Oq.add(new HotbarSlotRule(871).c());
-            Oq.add(new HotbarSlotRule(872).c());
-            Oq.add(new HotbarSlotRule(832).c());
-            Oq.add(new HotbarSlotRule(1038).c());
-            Oq.add(new HotbarSlotRule(1042).c());
-            Oq.add(new HotbarSlotRule(945).c());
-            Oq.add(new HotbarSlotRule(960).c());
-            Oq.add(new HotbarSlotRule(980).c());
-            Oq.add(new HotbarSlotRule(915).c());
-            Oq.add(new HotbarSlotRule(916).c());
-            Oq.add(new HotbarSlotRule(880).c());
-            Oq.add(new HotbarSlotRule(662).c());
+            Oq.add(new HotbarSlotRule(869).createItemStack());
+            Oq.add(new HotbarSlotRule(871).createItemStack());
+            Oq.add(new HotbarSlotRule(872).createItemStack());
+            Oq.add(new HotbarSlotRule(832).createItemStack());
+            Oq.add(new HotbarSlotRule(1038).createItemStack());
+            Oq.add(new HotbarSlotRule(1042).createItemStack());
+            Oq.add(new HotbarSlotRule(945).createItemStack());
+            Oq.add(new HotbarSlotRule(960).createItemStack());
+            Oq.add(new HotbarSlotRule(980).createItemStack());
+            Oq.add(new HotbarSlotRule(915).createItemStack());
+            Oq.add(new HotbarSlotRule(916).createItemStack());
+            Oq.add(new HotbarSlotRule(880).createItemStack());
+            Oq.add(new HotbarSlotRule(662).createItemStack());
             HotbarSlotRuleItemListFrame.h();
-            Oq.add(new HotbarSlotRule(615).c());
-            Oq.add(new HotbarSlotRule(1).c());
+            Oq.add(new HotbarSlotRule(615).createItemStack());
+            Oq.add(new HotbarSlotRule(1).createItemStack());
         } else if (ForgeVersion.MC_1_16_5.d()) {
-            Oq.add(new HotbarSlotRule(603).c());
-            Oq.add(new HotbarSlotRule(605).c());
-            Oq.add(new HotbarSlotRule(606).c());
-            Oq.add(new HotbarSlotRule(574).c());
-            Oq.add(new HotbarSlotRule(740).c());
-            Oq.add(new HotbarSlotRule(744).c());
-            Oq.add(new HotbarSlotRule(666).c());
-            Oq.add(new HotbarSlotRule(682).c());
-            Oq.add(new HotbarSlotRule(684).c());
-            Oq.add(new HotbarSlotRule(650).c());
-            Oq.add(new HotbarSlotRule(651).c());
-            Oq.add(new HotbarSlotRule(661).c());
-            Oq.add(new HotbarSlotRule(662).c());
+            Oq.add(new HotbarSlotRule(603).createItemStack());
+            Oq.add(new HotbarSlotRule(605).createItemStack());
+            Oq.add(new HotbarSlotRule(606).createItemStack());
+            Oq.add(new HotbarSlotRule(574).createItemStack());
+            Oq.add(new HotbarSlotRule(740).createItemStack());
+            Oq.add(new HotbarSlotRule(744).createItemStack());
+            Oq.add(new HotbarSlotRule(666).createItemStack());
+            Oq.add(new HotbarSlotRule(682).createItemStack());
+            Oq.add(new HotbarSlotRule(684).createItemStack());
+            Oq.add(new HotbarSlotRule(650).createItemStack());
+            Oq.add(new HotbarSlotRule(651).createItemStack());
+            Oq.add(new HotbarSlotRule(661).createItemStack());
+            Oq.add(new HotbarSlotRule(662).createItemStack());
             HotbarSlotRuleItemListFrame.h();
-            Oq.add(new HotbarSlotRule(615).c());
-            Oq.add(new HotbarSlotRule(1).c());
+            Oq.add(new HotbarSlotRule(615).createItemStack());
+            Oq.add(new HotbarSlotRule(1).createItemStack());
         } else {
-            Oq.add(new HotbarSlotRule(276).c());
-            Oq.add(new HotbarSlotRule(278).c());
-            Oq.add(new HotbarSlotRule(279).c());
-            Oq.add(new HotbarSlotRule(261).c());
-            Oq.add(new HotbarSlotRule(364).c());
-            Oq.add(new HotbarSlotRule(368).c());
-            Oq.add(new HotbarSlotRule(332).c());
-            Oq.add(new HotbarSlotRule(344).c());
-            Oq.add(new HotbarSlotRule(346).c());
-            Oq.add(new HotbarSlotRule(322).c());
-            Oq.add(new HotbarSlotRule(322).M(1).c());
-            Oq.add(new HotbarSlotRule(326).c());
-            Oq.add(new HotbarSlotRule(327).c());
+            Oq.add(new HotbarSlotRule(276).createItemStack());
+            Oq.add(new HotbarSlotRule(278).createItemStack());
+            Oq.add(new HotbarSlotRule(279).createItemStack());
+            Oq.add(new HotbarSlotRule(261).createItemStack());
+            Oq.add(new HotbarSlotRule(364).createItemStack());
+            Oq.add(new HotbarSlotRule(368).createItemStack());
+            Oq.add(new HotbarSlotRule(332).createItemStack());
+            Oq.add(new HotbarSlotRule(344).createItemStack());
+            Oq.add(new HotbarSlotRule(346).createItemStack());
+            Oq.add(new HotbarSlotRule(322).createItemStack());
+            Oq.add(new HotbarSlotRule(322).setMetadata(1).createItemStack());
+            Oq.add(new HotbarSlotRule(326).createItemStack());
+            Oq.add(new HotbarSlotRule(327).createItemStack());
             if (ForgeVersion.MC_1_12_2.d()) {
                 HotbarSlotRuleItemListFrame.h();
             } else {
-                Oq.add(new HotbarSlotRule(373).M(8259).c());
-                Oq.add(new HotbarSlotRule(373).M(8258).c());
-                Oq.add(new HotbarSlotRule(373).M(16421).c());
-                Oq.add(new HotbarSlotRule(373).M(16388).c());
-                Oq.add(new HotbarSlotRule(373).M(16449).c());
+                Oq.add(new HotbarSlotRule(373).setMetadata(8259).createItemStack());
+                Oq.add(new HotbarSlotRule(373).setMetadata(8258).createItemStack());
+                Oq.add(new HotbarSlotRule(373).setMetadata(16421).createItemStack());
+                Oq.add(new HotbarSlotRule(373).setMetadata(16388).createItemStack());
+                Oq.add(new HotbarSlotRule(373).setMetadata(16449).createItemStack());
             }
-            Oq.add(new HotbarSlotRule(282).c());
-            Oq.add(new HotbarSlotRule(1).c());
+            Oq.add(new HotbarSlotRule(282).createItemStack());
+            Oq.add(new HotbarSlotRule(1).createItemStack());
         }
     }
 }

@@ -12,8 +12,7 @@ implements GuiClickListener {
     }
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         ClientSettingsFrame.a(this.c);
     }
 }
-

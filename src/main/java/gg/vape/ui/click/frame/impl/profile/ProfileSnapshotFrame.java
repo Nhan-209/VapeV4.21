@@ -22,87 +22,78 @@ import org.jetbrains.annotations.Nullable;
 
 public class ProfileSnapshotFrame
 extends Frame {
-    private ProfileSnapshot Cz;
-    private final ProfileSnapshotModuleDetailsPanel CE;
+    private ProfileSnapshot snapshot;
+    private final ProfileSnapshotModuleDetailsPanel moduleDetailsPanel;
     @Nullable
-    private FrameStackManager CT;
-    private final PanelComponent C8;
-    private static int Cq;
-    private final ProfileSnapshotModuleListPanel Ci;
-    private final PanelComponent CS = new PanelComponent(332.0, 182.0);
-    private final IconButtonComponent CM;
+    private FrameStackManager returnStack;
+    private final PanelComponent detailsContainer;
+    private final ProfileSnapshotModuleListPanel moduleListPanel;
+    private final PanelComponent rootPanel = new PanelComponent(332.0, 182.0);
+    private final IconButtonComponent closeButton;
 
 
     @Override
     public void v() {
     }
 
-    public static void f(int n) {
-        Cq = n;
+    private void applyChangesAndClose() {
+        this.applyChanges();
+        this.closeEditor();
     }
 
-    private void lambda$null$0() {
-        this.o$src$V$tv7efs();
-        this.K$src$V$tbet2s();
-    }
-
-    public void V(ProfileSnapshot profileSnapshot) {
-        this.Cz = profileSnapshot;
-        this.CE.N(profileSnapshot);
-        this.Ci.A(profileSnapshot);
-        this.Ci.d$src$V$sx0x0a();
+    public void setSnapshot(ProfileSnapshot snapshot) {
+        this.snapshot = snapshot;
+        this.moduleDetailsPanel.setSnapshot(snapshot);
+        this.moduleListPanel.setSnapshot(snapshot);
+        this.moduleListPanel.selectInitialModule();
     }
 
     public ProfileSnapshotFrame() {
-        this.C8 = new PanelComponent(206.0, 182.0);
-        this.CM = new SquareIconButtonComponent("newclose", 1.0, new Color(255, 255, 255, 0), new Color(255, 255, 255, 25), 10.0, 10.0);
-        this.Ci = new ProfileSnapshotModuleListPanel();
-        this.CE = new ProfileSnapshotModuleDetailsPanel();
+        this.detailsContainer = new PanelComponent(206.0, 182.0);
+        this.closeButton = new SquareIconButtonComponent("newclose", 1.0, new Color(255, 255, 255, 0), new Color(255, 255, 255, 25), 10.0, 10.0);
+        this.moduleListPanel = new ProfileSnapshotModuleListPanel();
+        this.moduleDetailsPanel = new ProfileSnapshotModuleDetailsPanel();
         this.g(true);
-        PaddedComponent paddedComponent = new PaddedComponent(4.0, 4.0, 4.0, 0.0, this.CS);
+        PaddedComponent paddedComponent = new PaddedComponent(4.0, 4.0, 4.0, 0.0, this.rootPanel);
         this.h(paddedComponent, new Object[0]);
-        PaddedComponent paddedComponent2 = new PaddedComponent(8.0, this.Ci);
+        PaddedComponent paddedComponent2 = new PaddedComponent(8.0, this.moduleListPanel);
         PanelComponent panelComponent = new PanelComponent(14.0, 10.0);
-        panelComponent.h(this.CM, new Object[0]);
-        this.CS.h(paddedComponent2, new Object[0]);
-        this.CS.h(new SpacerComponent(2.0, 0.0), new Object[0]);
-        this.CS.h(this.C8, new Object[0]);
-        this.C8.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
-        this.C8.h(panelComponent, "alignright");
-        this.C8.h(this.CE, new Object[0]);
-        this.CM.r(this::lambda$new$2);
+        panelComponent.h(this.closeButton, new Object[0]);
+        this.rootPanel.h(paddedComponent2, new Object[0]);
+        this.rootPanel.h(new SpacerComponent(2.0, 0.0), new Object[0]);
+        this.rootPanel.h(this.detailsContainer, new Object[0]);
+        this.detailsContainer.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
+        this.detailsContainer.h(panelComponent, "alignright");
+        this.detailsContainer.h(this.moduleDetailsPanel, new Object[0]);
+        this.closeButton.addClickListener(this::showCloseConfirmation);
     }
 
-    private void o$src$V$tv7efs() {
-        this.Cz.D();
+    private void applyChanges() {
+        this.snapshot.applyToProfile();
         Profile profile = Vape.INSTANCE.getProfilesManager().o();
-        if (this.Cz.d() != null && this.Cz.d().equals(profile)) {
-            Vape.INSTANCE.getProfilesManager().L(this.Cz.d());
+        if (this.snapshot.getProfile() != null && this.snapshot.getProfile().equals(profile)) {
+            Vape.INSTANCE.getProfilesManager().L(this.snapshot.getProfile());
         }
     }
 
-    private void K$src$V$tbet2s() {
-        FrameStackManager frameStackManager = this.CT;
+    private void closeEditor() {
+        FrameStackManager frameStackManager = this.returnStack;
         if (frameStackManager != null) {
             if (frameStackManager instanceof ClickGuiFrameManager) {
                 ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)frameStackManager;
-                clickGuiFrameManager.G();
+                clickGuiFrameManager.closeSidecar();
             } else {
-                ClientSettings.fW.I(frameStackManager);
+                ClientSettings.INSTANCE.switchFrameStack(frameStackManager);
             }
-            this.CT = null;
+            this.returnStack = null;
         } else {
-            ClientSettings.fW.I(ClientSettings.a);
+            ClientSettings.INSTANCE.switchFrameStack(ClientSettings.mainStack);
         }
     }
 
     @Override
     public String getName() {
         return "profileEditor";
-    }
-
-    public static int j$src$I$tsgf5s() {
-        return Cq;
     }
 
     @Override
@@ -113,46 +104,37 @@ extends Frame {
     }
 
     @Nullable
-    public FrameStackManager Q$src$Lgg_vape_ui_click_frame_FrameStackManager_$1lj7mlh() {
-        return this.CT;
+    public FrameStackManager getReturnStack() {
+        return this.returnStack;
     }
 
-    private void lambda$null$1() {
-        this.K$src$V$tbet2s();
+    private void discardChangesAndClose() {
+        this.closeEditor();
     }
 
-    public void I(ProfileModuleSnapshot profileModuleSnapshot) {
-        this.CE.K(profileModuleSnapshot);
-        this.Ci.y(profileModuleSnapshot);
+    public void selectModule(ProfileModuleSnapshot moduleSnapshot) {
+        this.moduleDetailsPanel.setSelectedModule(moduleSnapshot);
+        this.moduleListPanel.selectModuleRow(moduleSnapshot);
     }
 
-    public ProfileSnapshot v$src$Lgg_vape_config_ProfileSnapshot_$1tlunqq() {
-        return this.Cz;
+    public ProfileSnapshot getSnapshot() {
+        return this.snapshot;
     }
 
-    public static int h() {
-        int n = ProfileSnapshotFrame.j$src$I$tsgf5s();
-        return 122;
+    public void setReturnStack(@Nullable FrameStackManager returnStack) {
+        this.returnStack = returnStack;
     }
 
-    public void A(@Nullable FrameStackManager frameStackManager) {
-        this.CT = frameStackManager;
+    private void showCloseConfirmation() {
+        ConfirmationDialogComponent.show(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), "Do you want to apply changes to profile?", "Apply", null, this::applyChangesAndClose, 80.0, "Discard", this::discardChangesAndClose);
     }
 
-    private void lambda$new$2() {
-        ConfirmationDialogComponent.x(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), "Do you want to apply changes to profile?", "Apply", null, this::lambda$null$0, 80.0, "Discard", this::lambda$null$1);
-    }
-
-    static {
-        ProfileSnapshotFrame.f(0);
-    }
-
-    public void s$src$V$txekt8() {
-        if (this.Cz == null) {
+    public void resetAllSettings() {
+        if (this.snapshot == null) {
             return;
         }
-        this.Cz.C().H();
-        this.Ci.h();
+        this.snapshot.getGuiBuilder().resetAllModules();
+        this.moduleListPanel.rebuildModuleRows();
     }
 }
 

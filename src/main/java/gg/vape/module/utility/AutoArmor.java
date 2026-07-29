@@ -33,7 +33,6 @@ implements InventoryActionModule {
     private String[] bootsNames;
     private final TimerUtil openTimer;
     private final TimerUtil clickTimer;
-    private InventoryPlayer inventory;
     private boolean closingInventory;
     private final BooleanValue dropEquipped;
     private final RandomValue delay;
@@ -49,79 +48,79 @@ implements InventoryActionModule {
     private final Queue<InventoryClick> clickQueue;
     private String[] chestplateNames;
 
-    private void queueClick(int n, int n2, int n3, int n4) {
-        this.clickQueue.add(new InventoryClick(n, n2, n3, n4));
+    private void queueClick(int windowId, int slot, int mouseButton, int clickType) {
+        this.clickQueue.add(new InventoryClick(windowId, slot, mouseButton, clickType));
     }
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
+    public void onTick(EventPrePlayerTick event) {
         if (Vape.INSTANCE.getModManager().N(AutoArmor.class) || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
             this.clickQueue.clear();
             return;
         }
         this.trackScreenChange();
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (!entityPlayerSP.p$src$Lgg_vape_wrapper_impl_Container_$1a6go00().isNull() && entityPlayerSP.p$src$Lgg_vape_wrapper_impl_Container_$1a6go00().getWindowId() != 0) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        if (!localPlayer.p$src$Lgg_vape_wrapper_impl_Container_$1a6go00().isNull() && localPlayer.p$src$Lgg_vape_wrapper_impl_Container_$1a6go00().getWindowId() != 0) {
             return;
         }
-        if (this.openInventory.L().booleanValue() && !Minecraft.currentScreen().isInstance(MappedClasses.YS) && !Minecraft.currentScreen().isInstance(MappedClasses.n)) {
+        if (this.openInventory.getEffectiveValue().booleanValue() && !Minecraft.currentScreen().isInstance(MappedClasses.YS) && !Minecraft.currentScreen().isInstance(MappedClasses.n)) {
             this.clickQueue.clear();
         }
-        if (this.inventoryOnly.L().booleanValue() && !Minecraft.currentScreen().isInstance(MappedClasses.YS) && !Minecraft.currentScreen().isInstance(MappedClasses.n)) {
+        if (this.inventoryOnly.getEffectiveValue().booleanValue() && !Minecraft.currentScreen().isInstance(MappedClasses.YS) && !Minecraft.currentScreen().isInstance(MappedClasses.n)) {
             this.clickQueue.clear();
             return;
         }
-        if (!this.openTimer.hasTimeElapsed(100L + (long)this.delay.B())) {
+        if (!this.openTimer.hasTimeElapsed(100L + (long)this.delay.getRandomValue())) {
             return;
         }
         if (!this.clickQueue.isEmpty()) {
-            if (this.clickTimer.hasTimeElapsed((long)this.delay.B())) {
-                InventoryClick inventoryClick = this.clickQueue.poll();
-                inventoryClick.k();
+            if (this.clickTimer.hasTimeElapsed((long)this.delay.getRandomValue())) {
+                InventoryClick pendingClick = this.clickQueue.poll();
+                pendingClick.execute();
                 this.clickTimer.reset();
             }
             return;
         }
         if (this.closingInventory) {
             if (Minecraft.currentScreen().isNotNull()) {
-                entityPlayerSP.Z$src$V$1ie832h();
+                localPlayer.Z$src$V$1ie832h();
                 this.pressedInventoryKey = false;
                 this.closingInventory = false;
             }
             return;
         }
-        if (this.combatCheck.L().booleanValue()) {
-            this.combatGuard.i(entityPlayerSP);
-            if (this.combatGuard.l()) {
+        if (this.combatCheck.getEffectiveValue().booleanValue()) {
+            this.combatGuard.update(localPlayer);
+            if (this.combatGuard.isBlocked()) {
                 this.openTimer.reset();
                 return;
             }
         }
-        for (int i = 5; i < 9; ++i) {
-            int n = this.findBestArmorSlot(i, this.checkDurability.L());
-            if (n == -1) continue;
-            if (this.openInventory.L().booleanValue() && !Minecraft.currentScreen().isInstance(MappedClasses.YS)) {
-                if (this.openTimer.hasTimeElapsed(200L + (long)this.delay.B())) {
+        for (int armorSlot = 5; armorSlot < 9; ++armorSlot) {
+            int candidateSlot = this.findBestArmorSlot(armorSlot, this.checkDurability.getEffectiveValue());
+            if (candidateSlot == -1) continue;
+            if (this.openInventory.getEffectiveValue().booleanValue() && !Minecraft.currentScreen().isInstance(MappedClasses.YS)) {
+                if (this.openTimer.hasTimeElapsed(200L + (long)this.delay.getRandomValue())) {
                     KeyBinding keyBinding = Minecraft.gameSettings().j();
                     if (ForgeVersion.MC_1_16_5.d()) {
-                        KeyBindingHelper.a(keyBinding);
+                        KeyBindingHelper.incrementPressTime(keyBinding);
                     } else {
-                        KeyBindingHelper.d(keyBinding, true);
-                        KeyBindingHelper.v(keyBinding, false, false);
+                        KeyBindingHelper.setPressedAndTick(keyBinding, true);
+                        KeyBindingHelper.updateKeyBinding(keyBinding, false, false);
                     }
                     this.pressedInventoryKey = true;
                 }
                 return;
             }
-            if (entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(n).I().isNotNull()) {
-                if (this.dropEquipped.L().booleanValue()) {
-                    this.queueClick(entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), i, 0, 0);
-                    this.queueClick(entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), -999, 0, 0);
+            if (localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(armorSlot).I().isNotNull()) {
+                if (this.dropEquipped.getEffectiveValue().booleanValue()) {
+                    this.queueClick(localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), armorSlot, 0, 0);
+                    this.queueClick(localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), -999, 0, 0);
                 } else {
-                    this.queueClick(entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), i, 0, 1);
+                    this.queueClick(localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), armorSlot, 0, 1);
                 }
             }
-            this.queueClick(entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), n, 0, 1);
+            this.queueClick(localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), candidateSlot, 0, 1);
         }
         if (this.pressedInventoryKey && this.clickQueue.isEmpty()) {
             this.closingInventory = true;
@@ -136,65 +135,66 @@ implements InventoryActionModule {
         this.pressedInventoryKey = false;
     }
 
-    private int findBestArmorSlot(int n, boolean bl) {
-        int n2 = -1;
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        ItemStack itemStack = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(n).I();
-        double d = 0.0;
-        double d2 = 999.0;
-        if (itemStack.isNotNull()) {
-            d = this.scoreItem(itemStack);
-            d2 = this.durabilityOf(n);
+    private int findBestArmorSlot(int armorSlot, boolean compareDurability) {
+        int bestSlot = -1;
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        ItemStack equippedArmor = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(armorSlot).I();
+        double equippedScore = 0.0;
+        double equippedDamage = 999.0;
+        if (equippedArmor.isNotNull()) {
+            equippedScore = this.scoreItem(equippedArmor);
+            equippedDamage = this.getItemDamage(armorSlot);
         }
-        double d3 = d;
-        double d4 = d2;
-        for (int i = 9; i < 45; ++i) {
-            ItemStack itemStack2;
-            if (!entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).I().isNotNull() || this.armorSlotFor(itemStack2 = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).I()) == -1 || this.armorSlotFor(itemStack2) != n) continue;
-            double d5 = this.scoreItem(itemStack2);
-            double d6 = this.durabilityOf(i);
-            if (d5 > d3) {
-                d3 = d5;
-                n2 = i;
-                d4 = d6;
+        double bestScore = equippedScore;
+        double bestDamage = equippedDamage;
+        for (int inventorySlot = 9; inventorySlot < 45; ++inventorySlot) {
+            ItemStack candidateArmor = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(inventorySlot).I();
+            if (!candidateArmor.isNotNull() || this.armorSlotFor(candidateArmor) != armorSlot) continue;
+            double candidateScore = this.scoreItem(candidateArmor);
+            double candidateDamage = this.getItemDamage(inventorySlot);
+            if (candidateScore > bestScore) {
+                bestScore = candidateScore;
+                bestSlot = inventorySlot;
+                bestDamage = candidateDamage;
                 continue;
             }
-            if (!bl || d5 != d3 || !(d6 < d4)) continue;
-            d4 = d6;
-            n2 = i;
+            if (!compareDurability || candidateScore != bestScore || !(candidateDamage < bestDamage)) continue;
+            bestDamage = candidateDamage;
+            bestSlot = inventorySlot;
         }
-        return n2;
+        return bestSlot;
     }
 
-    private int durabilityOf(int n) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        return entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(n).I().isNotNull() ? entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(n).I().L() : 999;
+    private int getItemDamage(int slot) {
+        EntityPlayerSP localPlayer = Minecraft.thePlayer();
+        ItemStack itemStack = localPlayer.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I();
+        return itemStack.isNotNull() ? itemStack.L() : 999;
     }
 
 
     @Override
-    public boolean x() {
+    public boolean isPerformingInventoryAction() {
         return this.r$src$Z$14eylz9() && this.clickQueue.size() > 0;
     }
 
     @Override
-    public String r() {
-        if (this.combatCheck.L().booleanValue() && this.combatGuard.l()) {
+    public String getDetailedSuffix() {
+        if (this.combatCheck.getEffectiveValue().booleanValue() && this.combatGuard.isBlocked()) {
             return ClientSettings.F + "c[In Combat]";
         }
-        return super.r();
+        return super.getDetailedSuffix();
     }
 
     private void trackScreenChange() {
-        Object object = Minecraft.currentScreen().getObject();
-        if (object != this.lastScreen) {
+        Object currentScreen = Minecraft.currentScreen().getObject();
+        if (currentScreen != this.lastScreen) {
             this.openTimer.reset();
         }
-        this.lastScreen = object;
+        this.lastScreen = currentScreen;
     }
 
     private int armorSlotFor(ItemStack itemStack) {
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack);
+        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         if (itemMappingEntry == null || itemMappingEntry.M() == null) {
             return -1;
         }
@@ -223,7 +223,7 @@ implements InventoryActionModule {
         this.checkDurability = BooleanValue.create(this, "Check durability", true, "Always puts on the armor with the highest durability");
         this.dropEquipped = BooleanValue.create(this, "Drop equipped", false, "Drops worse equipped armor for better armor when active");
         this.combatCheck = BooleanValue.create(this, "Combat check", false, "Won't equip armor while in combat");
-        this.delay = RandomValue.C(this, "Delay", "#", "", 1.0, 100.0, 120.0, 200.0, 1.0);
+        this.delay = RandomValue.createWithIncrement(this, "Delay", "#", "", 1.0, 100.0, 120.0, 200.0, 1.0);
         this.clickTimer = new TimerUtil();
         this.openTimer = new TimerUtil();
         this.combatGuard = new InventoryActionGuard(20);
@@ -236,15 +236,15 @@ implements InventoryActionModule {
     }
 
     private double scoreItem(ItemStack itemStack) {
-        Item item;
-        double d = ItemStackScoreUtil.L(itemStack);
-        if (ForgeVersion.MC_1_16_5.d()) {
-            // empty if block
+        double score = ItemStackScoreUtil.L(itemStack);
+        if (!itemStack.isNotNull()) {
+            return score;
         }
-        if (itemStack.isNotNull() && (item = itemStack.getItem()).isNotNull() && ItemStackScoreUtil.R(item) && ItemStackScoreUtil.T$src$Z$2fnsig(itemStack) && ItemStackScoreUtil.t(itemStack) == 0) {
-            d -= 0.01;
+        Item item = itemStack.getItem();
+        if (item.isNotNull() && ItemStackScoreUtil.R(item) && ItemStackScoreUtil.T$src$Z$2fnsig(itemStack) && ItemStackScoreUtil.t(itemStack) == 0) {
+            score -= 0.01;
         }
-        return d;
+        return score;
     }
 }
 

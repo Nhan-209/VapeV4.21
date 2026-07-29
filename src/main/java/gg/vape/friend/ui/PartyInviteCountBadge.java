@@ -32,13 +32,13 @@ extends PanelComponent {
         this._X = new PanelComponent(80.0, 12.0);
         this._C = new PanelComponent(26.0, 12.0);
         this._n = 0;
-        this.d(false);
-        this._X.d(false);
-        this._C.d(false);
+        this.setShowDisabledOverlay(false);
+        this._X.setShowDisabledOverlay(false);
+        this._C.setShowDisabledOverlay(false);
         this._C.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
-        this._e.r(new PartyInviteCountBadgeToggleInvitesClickHandler(this));
-        this._C.H(this._e);
-        this.H(this._X, this._C);
+        this._e.addClickListener(new PartyInviteCountBadgeToggleInvitesClickHandler(this));
+        this._C.addChildren(this._e);
+        this.addChildren(this._X, this._C);
     }
 
     @Override
@@ -48,7 +48,7 @@ extends PanelComponent {
     @Override
     public void u() {
         this._n = Vape.INSTANCE.getOnlineManager().y().n().size();
-        this.Z(this._n > 1);
+        this.setVisible(this._n > 1);
     }
 
     @Override
@@ -63,8 +63,8 @@ extends PanelComponent {
 
     @Override
     public void H() {
-        this._j.Z(false);
-        SmoothFontRenderer smoothFontRenderer = this.O(0.7);
+        this._j.setVisible(false);
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.7);
         smoothFontRenderer.d(this._l, this.G$src$D$1b2f02a(), this.n() + (this.L() - smoothFontRenderer.d(this._l)) / 2.0, PartyInviteCountBadge.J.Z);
         int n = 7;
         if (this._n > 99) {

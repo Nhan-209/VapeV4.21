@@ -10,70 +10,67 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Macro;
 import gg.vape.module.macro.MacroAction;
 import gg.vape.wrapper.impl.Minecraft;
-import java.util.Iterator;
 import java.util.List;
 
 public class MacroEventListener
 implements EventListener {
-    private MacroAction m;
+    private MacroAction activeAction;
 
-    private boolean G(Macro macro) {
-        MacroAction pc_02 = macro.N();
-        if (pc_02 == null) {
+    private boolean startMacro(Macro macro) {
+        MacroAction nextAction = macro.createAction();
+        if (nextAction == null) {
             return false;
         }
-        if (this.m != null) {
-            this.m.N();
-            pc_02.J(this.m);
+        if (this.activeAction != null) {
+            this.activeAction.cancel();
+            nextAction.inheritState(this.activeAction);
         }
-        this.m = pc_02;
+        this.activeAction = nextAction;
         return true;
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventTick) {
-        if (this.m == null) {
+    public void onTick(EventPreTick event) {
+        if (this.activeAction == null) {
             return;
         }
-        this.m.Z();
-        if (this.m.h()) {
-            this.m = null;
+        this.activeAction.tick();
+        if (this.activeAction.isFinished()) {
+            this.activeAction = null;
         }
     }
 
 
     @EventHandler
-    public void I(EventMouseButton eventMouseButton) {
-        if (eventMouseButton.getButtonState()) {
-            Macro macro;
-            List<Macro> list = Vape.INSTANCE.getMacrosManager().getMacros(-100 + eventMouseButton.getButton());
-            if (list.isEmpty()) {
-                return;
-            }
-            Iterator<Macro> iterator = list.iterator();
-            while (!(!iterator.hasNext() || (macro = iterator.next()).f(-100 + eventMouseButton.getButton()) && this.G(macro))) {
+    public void onMouseButton(EventMouseButton event) {
+        if (event.getButtonState()) {
+            int binding = -100 + event.getButton();
+            List<Macro> macros = Vape.INSTANCE.getMacrosManager().getMacros(binding);
+            for (Macro macro : macros) {
+                if (macro.activateIfMatched(binding) && this.startMacro(macro)) {
+                    break;
+                }
             }
         }
     }
 
     @EventHandler
-    public void y(EventKeyPress eventKeyPress) {
-        Macro macro;
-        if (eventKeyPress.isDown()) {
+    public void onKeyPress(EventKeyPress event) {
+        if (event.isDown()) {
             return;
         }
-        if (eventKeyPress.getThePlayer().isNull()) {
+        if (event.getThePlayer().isNull()) {
             return;
         }
         if (Minecraft.a_pt_1_w().isInstance(MappedClasses.qo)) {
             return;
         }
-        List<Macro> list = Vape.INSTANCE.getMacrosManager().getMacros(eventKeyPress.getKey());
-        if (list.isEmpty()) {
-            return;
-        }
-        Iterator<Macro> iterator = list.iterator();
-        while (!(!iterator.hasNext() || (macro = iterator.next()).f(eventKeyPress.getKey()) && this.G(macro))) {
+        int binding = event.getKey();
+        List<Macro> macros = Vape.INSTANCE.getMacrosManager().getMacros(binding);
+        for (Macro macro : macros) {
+            if (macro.activateIfMatched(binding) && this.startMacro(macro)) {
+                break;
+            }
         }
     }
 }

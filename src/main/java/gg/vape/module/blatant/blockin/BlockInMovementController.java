@@ -3,12 +3,11 @@ package gg.vape.module.blatant.blockin;
 import gg.vape.module.blatant.blockin.BlockPlacementGraph;
 
 public interface BlockInMovementController {
-    public void b(boolean var1, boolean var2, boolean var3, boolean var4, boolean var5, boolean var6);
+    void setInput(boolean forward, boolean backward, boolean left, boolean right, boolean jump, boolean sneak);
 
-    public void X(BlockPlacementGraph var1);
+    void applySnapshot(BlockPlacementGraph snapshot);
 
-    public void N();
+    void tick();
 
-    public void B();
+    void initialize();
 }
-

@@ -83,19 +83,19 @@ public class OnlineSettings {
             this.Q.H();
             this.E = true;
         }
-        this.S.o(this.Q.k());
-        this.w.o(this.Q.a());
-        this.a.o(this.Q.m());
-        this.r.o(this.Q.A());
-        this.h.o(this.Q.T());
+        this.S.setValue(this.Q.k());
+        this.w.setValue(this.Q.a());
+        this.a.setValue(this.Q.m());
+        this.r.setValue(this.Q.A());
+        this.h.setValue(this.Q.T());
         if (this.Q.x() != null) {
-            this.x.M(this.Q.x());
+            this.x.setSelectedIndex(this.Q.x());
         }
         if (this.Q.K() != null) {
-            this.V.O(this.Q.K(), false);
+            this.V.loadBoundInputs(this.Q.K(), false);
         }
         if (this.Q.b() != null) {
-            this.u.O(this.Q.b(), false);
+            this.u.loadBoundInputs(this.Q.b(), false);
         }
         if (!this.E) {
             Stream.of(this.w).forEach(OnlineSettings::lambda$initialize$1);
@@ -107,7 +107,7 @@ public class OnlineSettings {
     }
 
     private static void lambda$initialize$1(BooleanValue booleanValue) {
-        booleanValue.B(OnlineSettings::lambda$null$0);
+        booleanValue.addChangeListener(OnlineSettings::lambda$null$0);
     }
 
     public static void t(boolean bl) {
@@ -158,7 +158,7 @@ public class OnlineSettings {
             return;
         }
         for (Bendable bendable : this.T) {
-            if (!bendable.f(eventKeyPress.getKey())) continue;
+            if (!bendable.activateIfMatched(eventKeyPress.getKey())) continue;
             eventKeyPress.setCancelled(true);
         }
     }
@@ -230,7 +230,7 @@ public class OnlineSettings {
         }
         int n = -100 + eventMouseButton.getButton();
         for (Bendable bendable : this.T) {
-            if (!bendable.f(n)) continue;
+            if (!bendable.activateIfMatched(n)) continue;
             eventMouseButton.setCancelled(true);
         }
     }
@@ -239,4 +239,3 @@ public class OnlineSettings {
         return this.r;
     }
 }
-

@@ -9,7 +9,7 @@ implements GuiClickListener {
     final PartyInviteCountBadge I;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         OnlineFriendUiHelper.N(this.I).Y$src$Lgg_vape_friend_ui_PartyInvitesPanel_$1o49ve3().n$src$V$179hdlo();
     }
 
@@ -17,4 +17,3 @@ implements GuiClickListener {
         this.I = partyInviteCountBadge;
     }
 }
-

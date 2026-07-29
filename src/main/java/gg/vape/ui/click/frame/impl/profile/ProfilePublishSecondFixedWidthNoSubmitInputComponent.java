@@ -5,8 +5,7 @@ import gg.vape.ui.click.frame.impl.profile.ProfilePublishEditorPanel;
 
 public class ProfilePublishSecondFixedWidthNoSubmitInputComponent
 extends TextInputComponentBase {
-    final ProfilePublishEditorPanel rQ;
-    final double rx;
+    private final double fixedWidth;
 
     @Override
     public double C() {
@@ -14,17 +13,16 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public void p() {
+    public void submit() {
     }
 
     @Override
     public double x() {
-        return this.rx;
+        return this.fixedWidth;
     }
 
-    public ProfilePublishSecondFixedWidthNoSubmitInputComponent(ProfilePublishEditorPanel profilePublishEditorPanel, String string, double d) {
-        super(string);
-        this.rQ = profilePublishEditorPanel;
-        this.rx = d;
+    public ProfilePublishSecondFixedWidthNoSubmitInputComponent(String placeholder, double fixedWidth) {
+        super(placeholder);
+        this.fixedWidth = fixedWidth;
     }
 }

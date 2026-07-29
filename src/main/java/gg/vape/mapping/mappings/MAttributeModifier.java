@@ -63,7 +63,7 @@ extends Mapping {
             String string4 = "getAmount";
             MAttributeModifier mAttributeModifier = this;
             this.Q = mAttributeModifier.Y(string4, bl, clazz, classArray);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MIAttributeInstance.k("QRcZV");
             }
             return;
@@ -80,7 +80,7 @@ extends Mapping {
         String string6 = "getAmount";
         MAttributeModifier mAttributeModifier2 = this;
         this.Q = this.Y(string6, bl2, clazz2, classArray2);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MIAttributeInstance.k("QRcZV");
         }
     }

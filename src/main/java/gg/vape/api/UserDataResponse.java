@@ -37,7 +37,7 @@ public class UserDataResponse {
         JsonObject jsonObject3 = ConfigJsonUtils.E(jsonObject2, "profiles");
         if (jsonObject3 != null) {
             for (Map.Entry<String, JsonElement> entry : jsonObject3.entrySet()) {
-                RemoteProfileData remoteProfileData = RemoteProfileData.q(entry.getValue());
+                RemoteProfileData remoteProfileData = RemoteProfileData.fromJson(entry.getValue());
                 if (remoteProfileData == null) continue;
                 linkedHashMap.put(UUID.fromString(entry.getKey()), remoteProfileData);
             }

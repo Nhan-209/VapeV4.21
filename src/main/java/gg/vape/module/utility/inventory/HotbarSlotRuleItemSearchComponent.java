@@ -36,9 +36,9 @@ extends GuiComponent {
 
     public HotbarSlotRuleItemSearchComponent(HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame) {
         this.saveExitButton = new TextButton("Save & Exit", HotbarSlotRuleItemSearchComponent.J.B);
-        this.searchInput.o(new HotbarSlotRuleSearchInputKeyTypedListener(this, hotbarSlotRuleItemPickerFrame));
-        this.saveExitButton.r(new HotbarSlotRuleItemPickerSearchCloseClickHandler(this));
-        this.H(this.searchInput, this.saveExitButton);
+        this.searchInput.addKeyTypedListener(new HotbarSlotRuleSearchInputKeyTypedListener(this, hotbarSlotRuleItemPickerFrame));
+        this.saveExitButton.addClickListener(new HotbarSlotRuleItemPickerSearchCloseClickHandler(this));
+        this.addChildren(this.searchInput, this.saveExitButton);
     }
 
     @Override

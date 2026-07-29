@@ -29,21 +29,21 @@ extends PanelComponent {
         super(100.0, 12.0);
         this.qd = new OnlineModeToggleRightTextButton(this, "", 0.7, new Color(255, 255, 255, 102), new Color(255, 255, 255));
         this.q1 = new DoubleAnimation(0.1, 0.0, 49.0);
-        this.q_.d(string);
-        this.qd.d(string2);
+        this.q_.setLabelText(string);
+        this.qd.setLabelText(string2);
         this.qW = bl;
         this.qj = bl;
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         if (!bl) {
             this.q1.Z();
         }
-        this.q_.q(this.A() / 2.0);
+        this.q_.setExplicitWidth(this.A() / 2.0);
         this.q_.Y(12.0);
-        this.qd.q(this.A() / 2.0);
+        this.qd.setExplicitWidth(this.A() / 2.0);
         this.qd.Y(12.0);
-        this.q_.r(new OnlineModeToggleInactiveClickHandler(this));
-        this.qd.r(new OnlineModeToggleClickHandler(this));
-        this.H(this.q_, this.qd);
+        this.q_.addClickListener(new OnlineModeToggleInactiveClickHandler(this));
+        this.qd.addClickListener(new OnlineModeToggleClickHandler(this));
+        this.addChildren(this.q_, this.qd);
     }
 
     @Override
@@ -79,8 +79,8 @@ extends PanelComponent {
     public void o(double d) {
         super.o(d);
         try {
-            this.q_.q(d / 2.0);
-            this.qd.q(d / 2.0);
+            this.q_.setExplicitWidth(d / 2.0);
+            this.qd.setExplicitWidth(d / 2.0);
         }
         catch (Exception exception) {
             // empty catch block
@@ -164,30 +164,30 @@ extends PanelComponent {
         GuiRenderPrimitives.I(this.G$src$D$1b2f02a() + this.q1.getInterpolatedValue(), this.n() + 0.5, this.A() / 2.0 + 1.0, this.L() - 1.0, OnlineModeToggleComponent.J.y, true, 1.0f, 1.0f, 8.0f, new Color(0, 0, 0, 70));
         boolean bl = this.r$src$Ljava_lang_Boolean_$180i77a();
         if (bl) {
-            SmoothFontRenderer smoothFontRenderer = this.O(0.6);
-            double d = (this.q_.L() - smoothFontRenderer.d(this.q_.L$src$Ljava_lang_String_$1ncdwqb())) / 2.0;
+            SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.6);
+            double d = (this.q_.L() - smoothFontRenderer.d(this.q_.getText())) / 2.0;
             double d2 = this.q_.n() + d;
             double d3 = this.G$src$D$1b2f02a() + this.A() * 0.25;
-            String string = this.q_.L$src$Ljava_lang_String_$1ncdwqb();
+            String string = this.q_.getText();
             SmoothFontRenderer smoothFontRenderer2 = smoothFontRenderer;
             smoothFontRenderer2.W(string, d3, d2, OnlineModeToggleComponent.J.A);
             double d4 = this.qd.n() + d;
             double d5 = this.G$src$D$1b2f02a() + this.A() * 0.75;
-            String string2 = this.qd.L$src$Ljava_lang_String_$1ncdwqb();
+            String string2 = this.qd.getText();
             SmoothFontRenderer smoothFontRenderer3 = smoothFontRenderer;
-            smoothFontRenderer3.W(string2, d5, d4, this.qd.L$src$Lgg_vape_ui_click_animation_ColorAnimation_$1j6vdwo().getInterpolatedColor());
+            smoothFontRenderer3.W(string2, d5, d4, this.qd.getBackgroundAnimation().getInterpolatedColor());
             return;
         }
-        SmoothFontRenderer smoothFontRenderer = this.O(0.6);
-        double d = (this.q_.L() - smoothFontRenderer.d(this.q_.L$src$Ljava_lang_String_$1ncdwqb())) / 2.0;
+        SmoothFontRenderer smoothFontRenderer = this.getFontRenderer(0.6);
+        double d = (this.q_.L() - smoothFontRenderer.d(this.q_.getText())) / 2.0;
         double d6 = this.q_.n() + d;
         double d7 = this.G$src$D$1b2f02a() + this.A() * 0.25;
-        String string = this.q_.L$src$Ljava_lang_String_$1ncdwqb();
+        String string = this.q_.getText();
         SmoothFontRenderer smoothFontRenderer4 = smoothFontRenderer;
-        smoothFontRenderer4.W(string, d7, d6, this.q_.L$src$Lgg_vape_ui_click_animation_ColorAnimation_$1j6vdwo().getInterpolatedColor());
+        smoothFontRenderer4.W(string, d7, d6, this.q_.getBackgroundAnimation().getInterpolatedColor());
         double d8 = this.qd.n() + d;
         double d9 = this.G$src$D$1b2f02a() + this.A() * 0.75;
-        String string3 = this.qd.L$src$Ljava_lang_String_$1ncdwqb();
+        String string3 = this.qd.getText();
         SmoothFontRenderer smoothFontRenderer5 = smoothFontRenderer;
         smoothFontRenderer5.W(string3, d9, d8, OnlineModeToggleComponent.J.A);
     }

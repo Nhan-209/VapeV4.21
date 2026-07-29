@@ -10,20 +10,17 @@ import gg.vape.wrapper.impl.ItemStack;
 
 public class ItemHighlightModule
 extends Mod {
-    private static final long DEFAULT_ID;
     private static final String MODULE_NAME;
-    public int I = (int)DEFAULT_ID;
 
     @EventHandler
-    public void onRender3D(EventRender3D eventRender3D) {
-        ItemIconRenderer.R(ItemStack.S(Item.T(1)), 10.0f, 1.0f, 16, 16);
-        ItemIconRenderer.R(ItemStack.S(Item.T(10)), 20.0f, 1.0f, 16, 16);
-        ItemIconRenderer.R(ItemStack.S(Item.T(11)), 30.0f, 1.0f, 16, 16);
+    public void onRender3D(EventRender3D event) {
+        ItemIconRenderer.renderItemStack(ItemStack.S(Item.T(1)), 10.0f, 1.0f, 16, 16);
+        ItemIconRenderer.renderItemStack(ItemStack.S(Item.T(10)), 20.0f, 1.0f, 16, 16);
+        ItemIconRenderer.renderItemStack(ItemStack.S(Item.T(11)), 30.0f, 1.0f, 16, 16);
     }
 
     static {
         MODULE_NAME = "Render Test Module";
-        DEFAULT_ID = -9060873430974332925L;
     }
 
     public ItemHighlightModule() {

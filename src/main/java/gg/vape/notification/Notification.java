@@ -2,9 +2,6 @@ package gg.vape.notification;
 
 import func.skidline.RectData;
 import gg.vape.Vape;
-import gg.vape.notification.AbstractNotification;
-import gg.vape.notification.NotificationContent;
-import gg.vape.notification.NotificationType;
 import gg.vape.ui.theme.ThemeColors;
 import gg.vape.utils.render.BlurRegionRenderer;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -17,124 +14,134 @@ import org.lwjgl.opengl.GL11;
 
 public class Notification
 extends AbstractNotification {
-    private boolean C;
-    private long q = Long.MAX_VALUE;
-    private static final String d = "noti_alert_large";
-    private final BlurRegionRenderer t = new BlurRegionRenderer(0, 0);
-    private long I;
+    private boolean started;
+    private long expiresAt = Long.MAX_VALUE;
+    private static final String LARGE_ALERT_ICON = "noti_alert_large";
+    private final BlurRegionRenderer blurRenderer = new BlurRegionRenderer(0, 0);
+    private long durationMillis;
 
-    private double c$src$D$1oj5l18() {
-        return this.F() + 3.0 + (double)Minecraft.J() / Vape.INSTANCE.getClientSettings().s() / 2.0;
+    private double getRenderX() {
+        return this.getCurrentX() + 3.0
+                + (double)Minecraft.J() / Vape.INSTANCE.getClientSettings().s() / 2.0;
     }
 
-    public long getTime() {
-        return this.q;
+    public long getExpiresAt() {
+        return this.expiresAt;
     }
 
 
     @Override
-    public boolean P() {
-        return this.F() >= 1.0;
+    public boolean shouldRemove() {
+        return this.getCurrentX() >= 1.0;
     }
 
     @Override
-    public void z(double d, double d2) {
-        if (!this.Y().J(d, d2)) {
+    public void handleClick(double mouseX, double mouseY) {
+        if (!this.getBounds().J(mouseX, mouseY)) {
             return;
         }
-        this.X$src$V$1od3uxr();
+        this.dismiss();
     }
 
-    public Notification(NotificationType notificationType, String string, NotificationContent notificationContent, double d, double d2, long l) {
-        super(notificationType, string, notificationContent, d, d2);
-        this.I = l;
+    public Notification(NotificationType type, String title, NotificationContent content,
+            double x, double y, long durationMillis) {
+        super(type, title, content, x, y);
+        this.durationMillis = durationMillis;
     }
 
-    private double O() {
-        return this.v() + (double)Minecraft.h() / Vape.INSTANCE.getClientSettings().s() / 2.0;
+    private double getRenderY() {
+        return this.getCurrentY()
+                + (double)Minecraft.h() / Vape.INSTANCE.getClientSettings().s() / 2.0;
     }
 
-    public double C() {
-        return Math.max(Math.min((double)(this.q - System.currentTimeMillis()) / (double)this.I, 1.0), 0.0);
+    public double getRemainingProgress() {
+        return Math.max(Math.min((double)(this.expiresAt - System.currentTimeMillis())
+                / (double)this.durationMillis, 1.0), 0.0);
     }
 
-    public void d(long l) {
-        this.I = l;
-        this.q = System.currentTimeMillis() + l;
-    }
-
-    @Override
-    public double X() {
-        double d = 18.0;
-        double d2 = 100.0 + d;
-        return Math.max(d2, super.X()) + d;
+    public void setDuration(long durationMillis) {
+        this.durationMillis = durationMillis;
+        this.expiresAt = System.currentTimeMillis() + durationMillis;
     }
 
     @Override
-    public double t() {
-        return super.t();
-    }
-
-    public void X$src$V$1od3uxr() {
-        this.T(5.0);
+    public double getWidth() {
+        double iconMargin = 18.0;
+        double minimumContentWidth = 100.0 + iconMargin;
+        return Math.max(minimumContentWidth, super.getWidth()) + iconMargin;
     }
 
     @Override
-    public void W() {
-        if (!this.C) {
-            this.C = true;
-            this.d(this.I);
+    public double getHeight() {
+        return super.getHeight();
+    }
+
+    public void dismiss() {
+        this.setTargetX(5.0);
+    }
+
+    @Override
+    public void render() {
+        if (!this.started) {
+            this.started = true;
+            this.setDuration(this.durationMillis);
         }
-        float f = (float)(1.0 / Vape.INSTANCE.getClientSettings().s());
-        boolean bl = GL11.glIsEnabled((int)3042);
-        float f2 = 1.0f / f;
+        float inverseScale = (float)(1.0 / Vape.INSTANCE.getClientSettings().s());
+        boolean blendingEnabled = GL11.glIsEnabled((int)3042);
+        float scale = 1.0f / inverseScale;
         if (GuiRenderPrimitives.d()) {
-            OpenGlBackendHolder.d.H(f2, f2, f2);
+            OpenGlBackendHolder.backend.scale(scale, scale, scale);
         }
-        double d = this.c$src$D$1oj5l18();
-        double d2 = this.O();
-        double d3 = this.X();
-        double d4 = this.t();
-        boolean bl2 = this.Y().Z(RenderUtils.h());
-        this.t.L((int)d3 * 2, (int)d4 * 2);
-        this.t.t((int)d, (int)d2, 20.0f, 3.0f);
-        Color color = this.y();
-        Color color2 = new Color(0, 0, 0, 173);
-        Color color3 = new Color(48, 48, 48, 255);
-        if (bl2) {
-            color2 = new Color(0, 0, 0, 200);
-            color3 = new Color(60, 60, 60, 255);
+        double renderX = this.getRenderX();
+        double renderY = this.getRenderY();
+        double width = this.getWidth();
+        double height = this.getHeight();
+        boolean hovered = this.getBounds().Z(RenderUtils.h());
+        this.blurRenderer.setDimensions((int)width * 2, (int)height * 2);
+        this.blurRenderer.renderBlur((int)renderX, (int)renderY, 20.0f, 3.0f);
+        Color iconColor = this.getRenderColor();
+        Color backgroundColor = new Color(0, 0, 0, 173);
+        Color borderColor = new Color(48, 48, 48, 255);
+        if (hovered) {
+            backgroundColor = new Color(0, 0, 0, 200);
+            borderColor = new Color(60, 60, 60, 255);
         }
-        GuiRenderPrimitives.e(d, d2, d3, d4, color2, true, 3.0f, 1.0f);
-        GuiRenderPrimitives.P(d, d2, d3, d4, color3, 3.0f, 1.0f, 1.0f);
-        ImageRenderer.drawResWithShadow(color, (float)d - 4.0f, (float)d2 - 6.0f, this.H(), 1.0f, true);
-        if (this.c().equals((Object)NotificationType.ALERT)) {
-            ImageRenderer.drawResWithShadow(color, (float)d - 2.0f, (float)d2, Notification.d, 0.65f, false);
+        GuiRenderPrimitives.e(renderX, renderY, width, height, backgroundColor, true, 3.0f, 1.0f);
+        GuiRenderPrimitives.P(renderX, renderY, width, height, borderColor, 3.0f, 1.0f, 1.0f);
+        ImageRenderer.drawResWithShadow(iconColor, (float)renderX - 4.0f, (float)renderY - 6.0f,
+                this.getIconResource(), 1.0f, true);
+        if (this.getType().equals((Object)NotificationType.ALERT)) {
+            ImageRenderer.drawResWithShadow(iconColor, (float)renderX - 2.0f, (float)renderY,
+                    LARGE_ALERT_ICON, 0.65f, false);
         }
-        Vape.INSTANCE.getFontManager().W(0.9, true).d(this.R(), d + 23.0, d2 + 8.0, this.c().equals((Object)NotificationType.ALERT) ? new Color(this.c().v()) : ThemeColors.J.A);
-        this.X$src$Lgg_vape_notification_NotificationContent_$1gg6y56().q(d + 23.0, d2 + 21.0);
-        double d5 = this.C();
-        if (d5 < 100.0) {
-            GuiRenderPrimitives.e(d + 1.0, d2 + d4 - 1.5, d3 * d5 - 1.0, 0.5, new Color(this.c().v()), false, 1.0f, 1.0f);
+        Vape.INSTANCE.getFontManager().W(0.9, true).d(this.getTitle(), renderX + 23.0,
+                renderY + 8.0, this.getType().equals((Object)NotificationType.ALERT)
+                        ? new Color(this.getType().getColor()) : ThemeColors.J.A);
+        this.getContent().render(renderX + 23.0, renderY + 21.0);
+        double remainingProgress = this.getRemainingProgress();
+        if (remainingProgress < 100.0) {
+            GuiRenderPrimitives.e(renderX + 1.0, renderY + height - 1.5,
+                    width * remainingProgress - 1.0, 0.5,
+                    new Color(this.getType().getColor()), false, 1.0f, 1.0f);
         }
-        if (d5 <= 0.0) {
-            this.X$src$V$1od3uxr();
+        if (remainingProgress <= 0.0) {
+            this.dismiss();
         }
         if (GuiRenderPrimitives.d()) {
-            OpenGlBackendHolder.d.H(f, f, f);
+            OpenGlBackendHolder.backend.scale(inverseScale, inverseScale, inverseScale);
         }
-        OpenGlBackendHolder.d.q(1.0f, 1.0f, 1.0f, 1.0f);
-        if (bl) {
+        OpenGlBackendHolder.backend.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        if (blendingEnabled) {
             GL11.glEnable((int)3042);
         }
     }
 
-    private RectData Y() {
-        return new RectData(this.c$src$D$1oj5l18(), this.O(), this.X(), this.t());
+    private RectData getBounds() {
+        return new RectData(this.getRenderX(), this.getRenderY(), this.getWidth(), this.getHeight());
     }
 
-    public boolean M() {
-        return System.currentTimeMillis() >= this.q;
+    public boolean isExpired() {
+        return System.currentTimeMillis() >= this.expiresAt;
     }
 }
 

@@ -28,7 +28,7 @@ extends InteractiveComponent {
             double d2 = (double)n / 2.0;
             float f = (float)(this.G$src$D$1b2f02a() + d - d2);
             float f2 = (float)(this.n() + d - d2);
-            ItemIconRenderer.R(this.itemStack, f, f2, n, n);
+            ItemIconRenderer.renderItemStack(this.itemStack, f, f2, n, n);
         }
     }
 

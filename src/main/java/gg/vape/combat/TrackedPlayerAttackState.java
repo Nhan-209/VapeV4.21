@@ -1,6 +1,5 @@
 package gg.vape.combat;
 
-import gg.vape.combat.AttackStrengthTracker;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.utils.BlockUtil;
 import gg.vape.utils.MathUtil;
@@ -19,175 +18,170 @@ import gg.vape.wrapper.impl.SoundAwareEntityFX;
 import java.util.List;
 
 public class TrackedPlayerAttackState {
-    private int b = (int)d;
-    private int g;
-    private float X = 20.0f;
-    private boolean l;
-    private EntityPlayer j;
-    private static final String c = "crit";
-    private final TimerUtil z = new TimerUtil();
-    private float q = 5.0f;
-    private static final long d = -3278579833910591468L;
-    private boolean w;
-    private int v;
-    private float H;
-    private boolean C;
-    private ItemStack f;
+    private static final String CRITICAL_HIT_PARTICLE_NAME = "crit";
 
-    static ItemStack V(TrackedPlayerAttackState trackedPlayerAttackState, ItemStack itemStack) {
-        trackedPlayerAttackState.f = itemStack;
-        return trackedPlayerAttackState.f;
+    private int estimatedFoodLevel = 20;
+    private int foodTickTimer;
+    private float estimatedHealth = 20.0f;
+    private boolean attackPending;
+    private EntityPlayer player;
+    private final TimerUtil inactivityTimer = new TimerUtil();
+    private float estimatedSaturationLevel = 5.0f;
+    private boolean receivedLivingUpdate;
+    private int ticksSinceAttack;
+    private float estimatedExhaustionLevel;
+    private boolean targetWasBlocking;
+    private ItemStack attackingItem;
+
+    public TrackedPlayerAttackState(EntityPlayer player) {
+        this.player = player;
     }
 
-    static float C(TrackedPlayerAttackState trackedPlayerAttackState, float f) {
-        trackedPlayerAttackState.q = f;
-        return trackedPlayerAttackState.q;
+    void markLivingUpdate() {
+        this.receivedLivingUpdate = true;
     }
 
-    static int L(TrackedPlayerAttackState trackedPlayerAttackState, int n) {
-        trackedPlayerAttackState.v = n;
-        return trackedPlayerAttackState.v;
+    void updatePlayer(EntityPlayer player) {
+        this.player = player;
     }
 
-    static float j(TrackedPlayerAttackState trackedPlayerAttackState, float f) {
-        trackedPlayerAttackState.X = f;
-        return trackedPlayerAttackState.X;
+    TimerUtil getInactivityTimer() {
+        return this.inactivityTimer;
     }
 
-    public void u() {
-        boolean bl;
-        ++this.v;
-        this.z.reset();
-        if (this.X > 20.0f) {
-            this.X = 20.0f;
+    void resetPrediction() {
+        this.estimatedHealth = 20.0f;
+        this.estimatedFoodLevel = 20;
+        this.foodTickTimer = 0;
+        this.estimatedExhaustionLevel = 0.0f;
+        this.estimatedSaturationLevel = 5.0f;
+        this.attackingItem = null;
+        this.attackPending = false;
+        this.inactivityTimer.reset();
+    }
+
+    void recordAttack(boolean targetWasBlocking, ItemStack attackingItem) {
+        this.targetWasBlocking = targetWasBlocking;
+        this.ticksSinceAttack = 0;
+        this.attackPending = true;
+        this.attackingItem = attackingItem;
+    }
+
+    float getEstimatedHealth() {
+        return this.estimatedHealth;
+    }
+
+    void addEstimatedHealth(float amount) {
+        this.estimatedHealth += amount;
+    }
+
+    public void update() {
+        ++this.ticksSinceAttack;
+        this.inactivityTimer.reset();
+        if (this.estimatedHealth > 20.0f) {
+            this.estimatedHealth = 20.0f;
         }
-        boolean bl2 = AttackStrengthTracker.B.s() && this.Q(this.j.N() - this.j.W(), this.j.b$src$Z$fqlxe4());
-        boolean bl3 = bl = AttackStrengthTracker.B.v() && this.T();
-        if (this.w) {
-            this.H += 0.3f;
-            if (this.l && this.v <= 11) {
-                List<SoundAwareEntityFX> list;
-                boolean bl4 = false;
-                EffectRenderer effectRenderer = Minecraft.z();
-                if (effectRenderer.isNotNull() && (list = effectRenderer.getParticleEmitters()).size() > 0) {
-                    for (SoundAwareEntityFX soundAwareEntityFX : list) {
-                        if (!soundAwareEntityFX.Z$src$Lgg_vape_wrapper_impl_EnumParticleTypes_$1aa3947().K().equalsIgnoreCase(c) || this.j.isNull() || !((double)this.j.getDistanceToEntity(soundAwareEntityFX) < 1.1) || !(soundAwareEntityFX.N() < this.j.N() + 2.5) || RotationUtil.S(this.j, soundAwareEntityFX)) continue;
-                        bl4 = true;
-                        break;
-                    }
-                }
-                float f = AttackStrengthTracker.j(this.f, this.j, this.C, bl4);
-                this.X -= f;
-                this.l = false;
-            } else if (!bl2 && !bl && this.j.U$src$Z$fjglof()) {
-                this.X -= AttackStrengthTracker.r(this.j, false, 1.0f);
+
+        boolean fallDamageApplied = AttackStrengthTracker.INSTANCE.shouldEstimateFallDamage()
+                && this.applyFallDamage(this.player.N() - this.player.W(), this.player.b$src$Z$fqlxe4());
+        boolean foodHealingAdjusted = AttackStrengthTracker.INSTANCE.shouldEstimateFoodHealing()
+                && this.simulateFoodHealing();
+        if (this.receivedLivingUpdate) {
+            this.estimatedExhaustionLevel += 0.3f;
+            if (this.attackPending && this.ticksSinceAttack <= 11) {
+                boolean criticalHit = this.hasCriticalHitParticle();
+                float damage = AttackStrengthTracker.calculateAttackDamage(
+                        this.attackingItem, this.player, this.targetWasBlocking, criticalHit);
+                this.estimatedHealth -= damage;
+                this.attackPending = false;
+            } else if (!fallDamageApplied && !foodHealingAdjusted && this.player.U$src$Z$fjglof()) {
+                this.estimatedHealth -= AttackStrengthTracker.applyDamageReductions(this.player, false, 1.0f);
             }
-            this.w = false;
-            this.C = false;
+            this.receivedLivingUpdate = false;
+            this.targetWasBlocking = false;
         }
     }
 
-    static int R(TrackedPlayerAttackState trackedPlayerAttackState, int n) {
-        trackedPlayerAttackState.g = n;
-        return trackedPlayerAttackState.g;
-    }
-
-    static int h(TrackedPlayerAttackState trackedPlayerAttackState, int n) {
-        trackedPlayerAttackState.b = n;
-        return trackedPlayerAttackState.b;
-    }
-
-    static float T(TrackedPlayerAttackState trackedPlayerAttackState, float f) {
-        trackedPlayerAttackState.H = f;
-        return trackedPlayerAttackState.H;
-    }
-
-
-    public TrackedPlayerAttackState(EntityPlayer entityPlayer) {
-        this.j = entityPlayer;
-    }
-
-    static boolean W(TrackedPlayerAttackState trackedPlayerAttackState, boolean bl) {
-        trackedPlayerAttackState.w = bl;
-        return trackedPlayerAttackState.w;
-    }
-
-    static float J(TrackedPlayerAttackState trackedPlayerAttackState) {
-        return trackedPlayerAttackState.X;
-    }
-
-    static TimerUtil H(TrackedPlayerAttackState trackedPlayerAttackState) {
-        return trackedPlayerAttackState.z;
-    }
-
-    private boolean T() {
-        boolean bl = false;
-        if (this.X >= 20.0f) {
-            this.g = 0;
+    private boolean hasCriticalHitParticle() {
+        EffectRenderer effectRenderer = Minecraft.z();
+        if (effectRenderer.isNull()) {
+            return false;
         }
-        if (this.X > 0.0f && this.X < 20.0f) {
-            ++this.g;
-            if (this.g >= 80 && (!this.j.U$src$Z$fjglof() || Minecraft.thePlayer().i(PotionRegistry.W))) {
-                this.X += 1.0f;
-                this.H += 3.0f;
-                this.g = 0;
+        List<SoundAwareEntityFX> particleEmitters = effectRenderer.getParticleEmitters();
+        for (SoundAwareEntityFX particle : particleEmitters) {
+            if (!particle.Z$src$Lgg_vape_wrapper_impl_EnumParticleTypes_$1aa3947()
+                    .K().equalsIgnoreCase(CRITICAL_HIT_PARTICLE_NAME)) {
+                continue;
             }
-        } else if (this.b <= 0) {
-            ++this.g;
-            if (this.g >= 80) {
-                if (this.X > 1.0f) {
-                    this.X -= 1.0f;
-                    bl = true;
-                }
-                this.g = 0;
+            if (this.player.isNull() || this.player.getDistanceToEntity(particle) >= 1.1f
+                    || particle.N() >= this.player.N() + 2.5 || RotationUtil.S(this.player, particle)) {
+                continue;
             }
-        } else {
-            this.g = 0;
-        }
-        return bl;
-    }
-
-    public boolean Q(double d, boolean bl) {
-        PotionEffect potionEffect;
-        float f;
-        int n;
-        float f2 = (float)(this.j.N() - this.j.W());
-        if (ForgeVersion.MC_1_7_10.Y()) {
-            Block block;
-            int n2 = MathUtil.floor(this.j.z());
-            int n3 = MathUtil.floor(this.j.N() - (double)0.2f);
-            n = MathUtil.floor(this.j.h());
-            BlockPos blockPos = BlockPos.create(n2, n3, n);
-            Block block2 = Minecraft.theWorld().getBlockState(blockPos).getBlock();
-            if (BlockUtil.p(block2) && ((block = Minecraft.theWorld().getBlockState(blockPos.d$src$Lgg_vape_wrapper_impl_BlockPos_$6vry9r()).getBlock()).isInstance(MappedClasses.V7) || block.isInstance(MappedClasses.lx) || block.isInstance(MappedClasses.YY))) {
-                blockPos = blockPos.d$src$Lgg_vape_wrapper_impl_BlockPos_$6vry9r();
-                block2 = Minecraft.theWorld().getBlockState(blockPos).getBlock();
-            }
-            f2 += this.j.M$src$F$ff28gb();
-            this.j.L(d, bl, block2, blockPos);
-        } else {
-            this.j.q(d, bl);
-        }
-        if (this.j.b$src$Z$fqlxe4() && f2 > 0.0f && (n = MathUtil.ceil(f2 - 3.0f - (f = (potionEffect = this.j.b(PotionRegistry.Z)).isNotNull() ? (float)(potionEffect.L() + 1) : 0.0f))) > 0) {
-            this.X -= (float)n;
             return true;
         }
         return false;
     }
 
-    static boolean m(TrackedPlayerAttackState trackedPlayerAttackState, boolean bl) {
-        trackedPlayerAttackState.C = bl;
-        return trackedPlayerAttackState.C;
+    private boolean simulateFoodHealing() {
+        boolean healthAdjustedDown = false;
+        if (this.estimatedHealth >= 20.0f) {
+            this.foodTickTimer = 0;
+        }
+        if (this.estimatedHealth > 0.0f && this.estimatedHealth < 20.0f) {
+            ++this.foodTickTimer;
+            if (this.foodTickTimer >= 80
+                    && (!this.player.U$src$Z$fjglof() || Minecraft.thePlayer().i(PotionRegistry.W))) {
+                this.estimatedHealth += 1.0f;
+                this.estimatedExhaustionLevel += 3.0f;
+                this.foodTickTimer = 0;
+            }
+        } else if (this.estimatedFoodLevel <= 0) {
+            ++this.foodTickTimer;
+            if (this.foodTickTimer >= 80) {
+                if (this.estimatedHealth > 1.0f) {
+                    this.estimatedHealth -= 1.0f;
+                    healthAdjustedDown = true;
+                }
+                this.foodTickTimer = 0;
+            }
+        } else {
+            this.foodTickTimer = 0;
+        }
+        return healthAdjustedDown;
     }
 
-    static boolean D(TrackedPlayerAttackState trackedPlayerAttackState, boolean bl) {
-        trackedPlayerAttackState.l = bl;
-        return trackedPlayerAttackState.l;
-    }
+    public boolean applyFallDamage(double fallDistance, boolean onGround) {
+        float previousFallDistance = (float)(this.player.N() - this.player.W());
+        if (ForgeVersion.MC_1_7_10.Y()) {
+            int blockX = MathUtil.floor(this.player.z());
+            int blockY = MathUtil.floor(this.player.N() - (double)0.2f);
+            int blockZ = MathUtil.floor(this.player.h());
+            BlockPos landingPosition = BlockPos.create(blockX, blockY, blockZ);
+            Block landingBlock = Minecraft.theWorld().getBlockState(landingPosition).getBlock();
+            if (BlockUtil.p(landingBlock)) {
+                Block blockBelow = Minecraft.theWorld().getBlockState(
+                        landingPosition.d$src$Lgg_vape_wrapper_impl_BlockPos_$6vry9r()).getBlock();
+                if (blockBelow.isInstance(MappedClasses.V7) || blockBelow.isInstance(MappedClasses.lx)
+                        || blockBelow.isInstance(MappedClasses.YY)) {
+                    landingPosition = landingPosition.d$src$Lgg_vape_wrapper_impl_BlockPos_$6vry9r();
+                    landingBlock = blockBelow;
+                }
+            }
+            previousFallDistance += this.player.M$src$F$ff28gb();
+            this.player.L(fallDistance, onGround, landingBlock, landingPosition);
+        } else {
+            this.player.q(fallDistance, onGround);
+        }
 
-    static EntityPlayer n(TrackedPlayerAttackState trackedPlayerAttackState, EntityPlayer entityPlayer) {
-        trackedPlayerAttackState.j = entityPlayer;
-        return trackedPlayerAttackState.j;
+        if (this.player.b$src$Z$fqlxe4() && previousFallDistance > 0.0f) {
+            PotionEffect jumpBoost = this.player.b(PotionRegistry.Z);
+            float jumpReduction = jumpBoost.isNotNull() ? (float)(jumpBoost.L() + 1) : 0.0f;
+            int damage = MathUtil.ceil(previousFallDistance - 3.0f - jumpReduction);
+            if (damage > 0) {
+                this.estimatedHealth -= (float)damage;
+                return true;
+            }
+        }
+        return false;
     }
 }
-

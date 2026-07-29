@@ -7,45 +7,45 @@ import gg.vape.ui.click.frame.impl.main.ClickGuiMacrosSettingsViewMode;
 
 class ClickGuiMacrosNameInput
 extends SmallTextInputComponent {
-    final ClickGuiMacrosSettingsPanel SC;
+    final ClickGuiMacrosSettingsPanel settingsPanel;
 
     @Override
-    public float p$src$F$1qfoyd() {
+    public float getTextVerticalOffset() {
         return 0.0f;
     }
 
     @Override
-    public boolean n$src$Z$1rnxqrn() {
-        return this.g$src$Z$tyzhmd() && super.n$src$Z$1rnxqrn();
+    public boolean isFocused() {
+        return this.isNameInputMode() && super.isFocused();
     }
 
     @Override
-    public void p() {
-        if (this.g$src$Z$tyzhmd() && this.u$src$Z$wt77ym()) {
-            ClickGuiMacrosSettingsPanel.T(this.SC, this.i$src$Ljava_lang_String_$1n2xf3k().trim());
+    public void submit() {
+        if (this.isNameInputMode() && this.hasNonBlankText()) {
+            this.settingsPanel.submitName(this.getText().trim());
         }
     }
 
     ClickGuiMacrosNameInput(ClickGuiMacrosSettingsPanel clickGuiMacrosSettingsPanel, String string) {
         super(string);
-        this.SC = clickGuiMacrosSettingsPanel;
+        this.settingsPanel = clickGuiMacrosSettingsPanel;
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        if (this.g$src$Z$tyzhmd()) {
+        if (this.isNameInputMode()) {
             super.g(guiMouseEvent);
         }
     }
 
-    private boolean g$src$Z$tyzhmd() {
-        return ClickGuiMacrosSettingsPanel.F(this.SC) == ClickGuiMacrosSettingsViewMode.NAME_INPUT;
+    private boolean isNameInputMode() {
+        return this.settingsPanel.getViewMode() == ClickGuiMacrosSettingsViewMode.NAME_INPUT;
     }
 
     @Override
-    public void b$src$V$17wa4kz() {
-        if (this.g$src$Z$tyzhmd()) {
-            super.b$src$V$17wa4kz();
+    public void requestFocus() {
+        if (this.isNameInputMode()) {
+            super.requestFocus();
         }
     }
 

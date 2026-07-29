@@ -9,69 +9,69 @@ import java.util.List;
 
 public class BindSet
 extends Bendable {
-    private final List<Integer> h;
-    private final boolean i;
-    private BindActivationMode v = BindActivationMode.TOGGLE;
+    private final List<Integer> defaultKeys;
+    private final boolean supportsActivationMode;
+    private BindActivationMode activationMode = BindActivationMode.TOGGLE;
 
-    public BindSet(List<Integer> list, boolean bl, boolean bl2) {
-        this.c(list);
-        if (bl) {
-            BendableInputDispatcher.H(this);
+    public BindSet(List<Integer> keys, boolean registerForInput, boolean supportsActivationMode) {
+        this.setBoundInputs(keys);
+        if (registerForInput) {
+            BendableInputDispatcher.register(this);
         }
-        this.i = bl2;
-        this.h = new ArrayList<Integer>(this.L());
+        this.supportsActivationMode = supportsActivationMode;
+        this.defaultKeys = new ArrayList<Integer>(this.getBoundInputs());
     }
 
     @Override
-    public void Y(BindActivationMode bindActivationMode) {
-        this.v = bindActivationMode == null ? BindActivationMode.TOGGLE : bindActivationMode;
+    public void setActivationMode(BindActivationMode activationMode) {
+        this.activationMode = activationMode == null ? BindActivationMode.TOGGLE : activationMode;
     }
 
-    public BindSet(List<Integer> list, boolean bl) {
-        this(list, bl, false);
-    }
-
-    @Override
-    public boolean A$src$Z$jg36ch() {
-        return this.i;
+    public BindSet(List<Integer> keys, boolean registerForInput) {
+        this(keys, registerForInput, false);
     }
 
     @Override
-    public BindActivationMode G() {
-        return this.v;
+    public boolean supportsActivationMode() {
+        return this.supportsActivationMode;
     }
 
     @Override
-    public void A() {
+    public BindActivationMode getActivationMode() {
+        return this.activationMode;
+    }
+
+    @Override
+    public void onBindActivated() {
     }
 
     public BindSet() {
-        this.c(new ArrayList<Integer>());
-        BendableInputDispatcher.H(this);
-        this.i = false;
-        this.h = new ArrayList<Integer>(this.L());
+        this.setBoundInputs(new ArrayList<Integer>());
+        BendableInputDispatcher.register(this);
+        this.supportsActivationMode = false;
+        this.defaultKeys = new ArrayList<Integer>(this.getBoundInputs());
     }
 
 
     @Override
-    public String y() {
-        return this.h();
+    public String getDisplayText() {
+        return this.getBindText();
     }
 
     @Override
-    public boolean m() {
+    public boolean isActive() {
         return false;
     }
 
-    public BindSet(int n) {
-        this.c(Arrays.asList(n));
-        BendableInputDispatcher.H(this);
-        this.i = false;
-        this.h = new ArrayList<Integer>(this.L());
+    public BindSet(int keyCode) {
+        this.setBoundInputs(Arrays.asList(keyCode));
+        BendableInputDispatcher.register(this);
+        this.supportsActivationMode = false;
+        this.defaultKeys = new ArrayList<Integer>(this.getBoundInputs());
     }
 
-    public List<Integer> o() {
-        return this.h;
+    public List<Integer> getDefaultKeys() {
+        return this.defaultKeys;
     }
 }
 

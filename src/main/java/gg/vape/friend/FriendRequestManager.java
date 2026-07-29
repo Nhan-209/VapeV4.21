@@ -83,7 +83,7 @@ public class FriendRequestManager {
     }
 
     private FriendRequestListPanel k() {
-        return ClientSettings.g(OnlineFriendsFrame.class).o$src$Lgg_vape_friend_ui_FriendRequestsPanel_$8g38ub().k$src$Lgg_vape_friend_ui_FriendRequestListPanel_$1poeaqd();
+        return ClientSettings.getFrame(OnlineFriendsFrame.class).o$src$Lgg_vape_friend_ui_FriendRequestsPanel_$8g38ub().k$src$Lgg_vape_friend_ui_FriendRequestListPanel_$1poeaqd();
     }
 
     public void X(IncomingFriendRequest incomingFriendRequest) {
@@ -150,7 +150,7 @@ public class FriendRequestManager {
                 this.q.put(friendRequest.x(), (IncomingFriendRequest)friendRequest);
                 this.k().z(friendRequest);
                 if (OnlineConnectionManager.T.V().hasTimeElapsed(5000L)) {
-                    Vape.INSTANCE.getNotificationManager().t("Friend request", "Incoming friend request from " + friendRequest.x().C(), NotificationType.FRIENDS_NEW_REQUEST, 4000L);
+                    Vape.INSTANCE.getNotificationManager().show("Friend request", "Incoming friend request from " + friendRequest.x().C(), NotificationType.FRIENDS_NEW_REQUEST, 4000L);
                 }
             }
         }

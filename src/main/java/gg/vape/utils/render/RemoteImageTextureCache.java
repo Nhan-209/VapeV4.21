@@ -10,59 +10,58 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 class RemoteImageTextureCache {
-    private final int u;
-    private ConcurrentLinkedQueue<String> l = new ConcurrentLinkedQueue();
-    private ConcurrentHashMap<String, GlImageTexture> X;
-    private ConcurrentHashMap<String, byte[]> a = new ConcurrentHashMap();
+    private final int imageSize;
+    private ConcurrentLinkedQueue<String> pendingUsernames = new ConcurrentLinkedQueue();
+    private ConcurrentHashMap<String, GlImageTexture> textures;
+    private ConcurrentHashMap<String, byte[]> downloadedImages = new ConcurrentHashMap();
 
-    void G() {
-        while (!this.l.isEmpty()) {
-            this.q(this.l.poll());
+    void processPendingDownloads() {
+        while (!this.pendingUsernames.isEmpty()) {
+            this.download(this.pendingUsernames.poll());
         }
     }
 
-    public RemoteImageTextureCache(int n) {
-        this.X = new ConcurrentHashMap();
-        this.u = n;
+    public RemoteImageTextureCache(int imageSize) {
+        this.textures = new ConcurrentHashMap();
+        this.imageSize = imageSize;
     }
 
-    byte[] W(String string) {
-        if (this.a.containsKey(string)) {
-            return this.a.get(string);
+    byte[] getDownloadedImage(String username) {
+        if (this.downloadedImages.containsKey(username)) {
+            return this.downloadedImages.get(username);
         }
-        if (!this.l.contains(string)) {
-            this.l.add(string);
+        if (!this.pendingUsernames.contains(username)) {
+            this.pendingUsernames.add(username);
         }
         return null;
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception identityException(Exception exception) {
         return exception;
     }
 
-    GlImageTexture g(String string) {
-        if (this.X.containsKey(string)) {
-            return this.X.get(string);
+    GlImageTexture getTexture(String username) {
+        if (this.textures.containsKey(username)) {
+            return this.textures.get(username);
         }
-        byte[] byArray = this.W(string);
-        if (byArray == null) {
+        byte[] imageData = this.getDownloadedImage(username);
+        if (imageData == null) {
             return null;
         }
-        GlImageTexture glImageTexture = null;
+        GlImageTexture texture = null;
         try {
-            glImageTexture = new GlImageTexture(new ByteArrayInputStream(byArray), 9729, ImageParser$Format.RGBA);
+            texture = new GlImageTexture(new ByteArrayInputStream(imageData), 9729, ImageParser$Format.RGBA);
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
-            glImageTexture = ImageRenderer.loadResource("default_user", false, false);
+            texture = ImageRenderer.loadResource("default_user", false, false);
         }
-        this.X.put(string, glImageTexture);
-        return glImageTexture;
+        this.textures.put(username, texture);
+        return texture;
     }
 
-    void q(String string) {
-        byte[] byArray = RemoteImageTextureLoader.L("https://minotar.net/avatar/" + string + "/" + this.u + ".png");
-        this.a.put(string, byArray);
+    void download(String username) {
+        byte[] imageData = RemoteImageTextureLoader.download("https://minotar.net/avatar/" + username + "/" + this.imageSize + ".png");
+        this.downloadedImages.put(username, imageData);
     }
 }
-

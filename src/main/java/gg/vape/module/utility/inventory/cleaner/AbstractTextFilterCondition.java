@@ -11,80 +11,53 @@ import java.util.List;
 
 public abstract class AbstractTextFilterCondition<T extends AbstractTextFilterCondition<T>>
 implements TextFilterCondition<T> {
-    private List<String> m = new ArrayList<String>();
-    private TextMatchMode N = TextMatchMode.EQUALS;
+    private List<String> texts = new ArrayList<String>();
+    private TextMatchMode matchMode = TextMatchMode.EQUALS;
 
     @Override
-    public TextMatchMode M() {
-        return this.N;
+    public TextMatchMode getMatchMode() {
+        return this.matchMode;
     }
 
     @Override
-    public List<String> M$src$Ljava_util_List_$bgq9xa() {
-        return this.m;
+    public List<String> getTexts() {
+        return this.texts;
     }
 
-    public T l(TextMatchMode textMatchMode) {
-        this.N = textMatchMode;
+    public T withMatchMode(TextMatchMode matchMode) {
+        this.matchMode = matchMode;
         return (T)this;
     }
 
-    @Override
-    public T W(TextMatchMode textMatchMode) {
-        return this.l(textMatchMode);
-    }
-
-    public T S(String string) {
-        this.m.remove(string);
+    public T removeText(String text) {
+        this.texts.remove(text);
         return (T)this;
-    }
-
-    @Override
-    public T l(String string) {
-        return this.S(string);
     }
 
     protected AbstractTextFilterCondition(List<String> list, TextMatchMode textMatchMode) {
-        this.m = new ArrayList<String>(list);
-        this.N = textMatchMode;
+        this.texts = new ArrayList<String>(list);
+        this.matchMode = textMatchMode;
     }
 
     public T clearText() {
-        this.m.clear();
+        this.texts.clear();
         return (T)this;
-    }
-
-    @Override
-    public T B() {
-        return this.clearText();
-    }
-
-    @Override
-    public T w() {
-        return this.H();
     }
 
     protected AbstractTextFilterCondition(JsonObject jsonObject) {
         JsonArray jsonArray = ConfigJsonUtils.q(jsonObject, "text");
         if (jsonArray != null) {
             for (int i = 0; i < jsonArray.size(); ++i) {
-                this.m.add(Base64Util.decodeUtf8Base64(jsonArray.get(i).getAsString()));
+                this.texts.add(Base64Util.decodeUtf8Base64(jsonArray.get(i).getAsString()));
             }
         }
-        this.N = TextMatchMode.p(jsonObject.get("operator").getAsString());
+        this.matchMode = TextMatchMode.fromName(jsonObject.get("operator").getAsString());
     }
 
 
-    public abstract T H();
-
-    public T Q(String string) {
-        this.m.add(string);
+    public T addText(String text) {
+        this.texts.add(text);
         return (T)this;
-    }
-
-    @Override
-    public T n(String string) {
-        return this.Q(string);
     }
 
     protected AbstractTextFilterCondition() {

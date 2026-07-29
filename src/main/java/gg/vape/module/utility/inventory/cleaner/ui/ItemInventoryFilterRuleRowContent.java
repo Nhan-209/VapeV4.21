@@ -12,7 +12,7 @@ import java.awt.Color;
 class ItemInventoryFilterRuleRowContent
 extends InventoryFilterRuleRowBase {
     private final ItemFilterSelectionComponent selectionComponent;
-    final ItemInventoryFilterRuleRow a;
+    final ItemInventoryFilterRuleRow parent;
     private final ColorAnimation backgroundAnimation;
     private final ColorAnimation innerAnimation;
 
@@ -52,7 +52,7 @@ extends InventoryFilterRuleRowBase {
     }
 
     @Override
-    public void p() {
+    public void refresh() {
         this.backgroundAnimation.setStartColor(ItemInventoryFilterRuleRowContent.J.l);
         this.backgroundAnimation.setEndColor(ItemInventoryFilterRuleRowContent.J.l.brighter());
         this.innerAnimation.setStartColor(ItemInventoryFilterRuleRowContent.J.r);
@@ -60,13 +60,13 @@ extends InventoryFilterRuleRowBase {
     }
 
     public ItemInventoryFilterRuleRowContent(ItemInventoryFilterRuleRow itemInventoryFilterRuleRow, InventoryCleanerProfile inventoryCleanerProfile, ItemInventoryFilterRule itemInventoryFilterRule) {
-        this.a = itemInventoryFilterRuleRow;
+        this.parent = itemInventoryFilterRuleRow;
         this.backgroundAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), ItemInventoryFilterRuleRowContent.J.l);
         this.innerAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), ItemInventoryFilterRuleRowContent.J.l);
         this.selectionComponent = new ItemFilterSelectionComponent(itemInventoryFilterRule);
-        this.p();
-        this.o(true);
-        this.H(this.selectionComponent);
+        this.refresh();
+        this.setPropagateMouseEvents(true);
+        this.addChildren(this.selectionComponent);
     }
 }
 

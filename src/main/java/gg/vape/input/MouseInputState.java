@@ -6,99 +6,98 @@ import gg.vape.ui.click.GuiScreenNativeCallbackBridge;
 import java.util.HashMap;
 
 public class MouseInputState {
-    private HashMap<Integer, Boolean> p = new HashMap();
-    private boolean U;
-    private int V;
-    private boolean S;
-    private int l;
-    private long b = System.nanoTime();
-    private int g;
-    private int Z;
+    private HashMap<Integer, Boolean> buttonStates = new HashMap();
+    private boolean handledByGui;
+    private int scrollDelta;
+    private boolean lastButtonDown;
+    private int lastButton;
+    private long lastChangeTime = System.nanoTime();
+    private int mouseX;
+    private int mouseY;
 
-    private boolean J(int n, boolean bl) {
-        this.b = System.nanoTime();
-        this.S = bl;
-        this.l = n;
-        if (!ClientSettings.fW.P) {
-            if (bl) {
-                GuiScreenNativeCallbackBridge.mouseClicked(null, this.g, this.Z, n);
+    private boolean dispatchButtonChange(int button, boolean buttonDown) {
+        this.lastChangeTime = System.nanoTime();
+        this.lastButtonDown = buttonDown;
+        this.lastButton = button;
+        if (!ClientSettings.INSTANCE.inputEnabled) {
+            if (buttonDown) {
+                GuiScreenNativeCallbackBridge.mouseClicked(null, this.mouseX, this.mouseY, button);
             }
-            this.U = true;
+            this.handledByGui = true;
             return true;
         }
-        return new EventMouseButton(n, bl).fire();
+        return new EventMouseButton(button, buttonDown).fire();
     }
 
-    public boolean setButtonState(int n, boolean bl) {
-        boolean bl2 = this.p.getOrDefault(n, false);
-        boolean bl3 = false;
-        if (bl2 != bl) {
-            bl3 = this.J(n, bl);
+    public boolean setButtonState(int button, boolean buttonDown) {
+        boolean previousState = this.buttonStates.getOrDefault(button, false);
+        boolean canceled = false;
+        if (previousState != buttonDown) {
+            canceled = this.dispatchButtonChange(button, buttonDown);
         }
-        this.p.put(n, bl);
-        return bl3;
+        this.buttonStates.put(button, buttonDown);
+        return canceled;
     }
 
-    public boolean updateCursorPosition(int n, int n2) {
-        this.g = n;
-        this.Z = n2;
-        if (!ClientSettings.fW.P) {
+    public boolean updateCursorPosition(int mouseX, int mouseY) {
+        this.mouseX = mouseX;
+        this.mouseY = mouseY;
+        if (!ClientSettings.INSTANCE.inputEnabled) {
             GuiScreenNativeCallbackBridge.handleMouseInput(null);
         }
         return false;
     }
 
     public int getLastButton() {
-        return this.l;
+        return this.lastButton;
     }
 
 
-    public boolean H(int n) {
-        return this.p.getOrDefault(n, false);
+    public boolean getButtonState(int button) {
+        return this.buttonStates.getOrDefault(button, false);
     }
 
     public long getLastChangeTime() {
-        return this.b;
+        return this.lastChangeTime;
     }
 
-    public boolean isButtonDown(int n) {
-        return this.p.getOrDefault(n, false);
+    public boolean isButtonDown(int button) {
+        return this.buttonStates.getOrDefault(button, false);
     }
 
-    public boolean setScrollDelta(int n) {
-        if (!ClientSettings.fW.P) {
-            this.V = n;
+    public boolean setScrollDelta(int scrollDelta) {
+        if (!ClientSettings.INSTANCE.inputEnabled) {
+            this.scrollDelta = scrollDelta;
             return true;
         }
         return false;
     }
 
     public int getMouseX() {
-        return this.g;
+        return this.mouseX;
     }
 
     public int getMouseY() {
-        return this.Z;
+        return this.mouseY;
     }
 
-    public boolean Q() {
-        return this.U;
+    public boolean wasHandledByGui() {
+        return this.handledByGui;
     }
 
     public boolean isLastButtonDown() {
-        return this.S;
+        return this.lastButtonDown;
     }
 
-    public void S() {
+    public void prepareFrame() {
     }
 
     public void resetScrollDelta() {
-        this.V = 0;
+        this.scrollDelta = 0;
     }
 
     public int getScrollDelta() {
-        int n = this.V;
-        return n;
+        return this.scrollDelta;
     }
 }
 

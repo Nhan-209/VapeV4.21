@@ -11,38 +11,38 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 class PublicProfileFilterTokenClickListener
 implements GuiMouseListener {
-    final PublicProfileFilterTokenComponent W;
-    final PaddedComponent O;
-    final PublicProfileSearchFilterPanel L;
-    final AtomicBoolean f;
+    private final PublicProfileFilterTokenComponent token;
+    private final PaddedComponent suggestion;
+    private final PublicProfileSearchFilterPanel searchPanel;
+    private final AtomicBoolean clickPending;
 
 
-    PublicProfileFilterTokenClickListener(PublicProfileSearchFilterPanel publicProfileSearchFilterPanel, AtomicBoolean atomicBoolean, PaddedComponent mn_12, PublicProfileFilterTokenComponent _j_02) {
-        this.L = publicProfileSearchFilterPanel;
-        this.f = atomicBoolean;
-        this.O = mn_12;
-        this.W = _j_02;
+    PublicProfileFilterTokenClickListener(PublicProfileSearchFilterPanel searchPanel, AtomicBoolean clickPending, PaddedComponent suggestion, PublicProfileFilterTokenComponent token) {
+        this.searchPanel = searchPanel;
+        this.clickPending = clickPending;
+        this.suggestion = suggestion;
+        this.token = token;
     }
 
     @Override
     public void g(Point point, MouseClickButton uA) {
-        if (this.f.get()) {
+        if (this.clickPending.get()) {
             return;
         }
-        this.f.set(true);
-        ClientSettings.f6.execute(() -> this.lambda$onClick$0(this.O, this.W, this.f));
+        this.clickPending.set(true);
+        ClientSettings.UI_EXECUTOR.execute(this::selectSuggestion);
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    private void lambda$onClick$0(PaddedComponent mn_12, PublicProfileFilterTokenComponent _j_02, AtomicBoolean atomicBoolean) {
+    private void selectSuggestion() {
         try {
-            PublicProfileSearchFilterPanel.T(this.L).I(mn_12);
-            PublicProfileSearchFilterPanel.k(this.L).V(_j_02);
+            this.searchPanel.getSuggestionsPanel().removeChild(this.suggestion);
+            this.searchPanel.getTokenSelector().addToken(this.token);
         }
         finally {
-            atomicBoolean.set(false);
+            this.clickPending.set(false);
         }
     }
 }

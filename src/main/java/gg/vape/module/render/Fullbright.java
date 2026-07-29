@@ -16,118 +16,118 @@ import gg.vape.wrapper.impl.PotionRegistry;
 
 public class Fullbright
 extends Mod {
-    private float P;
-    private final BooleanValue j;
-    private boolean V;
-    private boolean H;
-    private final ModeOption I;
-    private float k = 1.0f;
-    private final TimerUtil K;
-    private float t = -1.0f;
-    private final ModeValue L;
-    private final ModeOption v = new ModeOption("Night Vision");
+    private float currentGamma;
+    private final BooleanValue fade;
+    private boolean fadingOut;
+    private boolean fadingIn;
+    private final ModeOption gammaMode;
+    private float fadeStep = 1.0f;
+    private final TimerUtil fadeTimer;
+    private float originalGamma = -1.0f;
+    private final ModeValue mode;
+    private final ModeOption nightVisionMode = new ModeOption("Night Vision");
 
-    public void G() {
-        if (!this.K.hasTimeElapsed(10L)) {
+    public void updateGammaFade() {
+        if (!this.fadeTimer.hasTimeElapsed(10L)) {
             return;
         }
-        this.K.reset();
-        this.k = 0.4f;
-        if (this.H && this.P < 10.0f) {
-            this.P += this.k;
-            if (this.P >= 10.0f) {
+        this.fadeTimer.reset();
+        this.fadeStep = 0.4f;
+        if (this.fadingIn && this.currentGamma < 10.0f) {
+            this.currentGamma += this.fadeStep;
+            if (this.currentGamma >= 10.0f) {
                 Minecraft.gameSettings().y(10.0f);
-                this.H = false;
+                this.fadingIn = false;
             } else {
-                Minecraft.gameSettings().y(this.P);
+                Minecraft.gameSettings().y(this.currentGamma);
             }
         }
-        if (this.V && this.P >= this.t) {
-            this.P -= this.k;
-            if (this.P <= this.t) {
-                Minecraft.gameSettings().y(this.t);
-                this.V = false;
-                super.s(false, true);
+        if (this.fadingOut && this.currentGamma >= this.originalGamma) {
+            this.currentGamma -= this.fadeStep;
+            if (this.currentGamma <= this.originalGamma) {
+                Minecraft.gameSettings().y(this.originalGamma);
+                this.fadingOut = false;
+                super.setEnabled(false, true);
             } else {
-                Minecraft.gameSettings().y(this.P);
+                Minecraft.gameSettings().y(this.currentGamma);
             }
         }
     }
 
     @Override
     public void onEnable() {
-        this.t = Minecraft.gameSettings().b();
-        if (!this.j.L().booleanValue()) {
+        this.originalGamma = Minecraft.gameSettings().b();
+        if (!this.fade.getEffectiveValue().booleanValue()) {
             Minecraft.gameSettings().y(10.0f);
-        } else if (!this.V) {
-            this.P = this.t;
-            this.H = true;
+        } else if (!this.fadingOut) {
+            this.currentGamma = this.originalGamma;
+            this.fadingIn = true;
         }
     }
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        if (((ModeSelection)this.L.K()).equals(this.v)) {
+    public void onTick(EventPrePlayerTick event) {
+        if (((ModeSelection)this.mode.getValue()).equals(this.nightVisionMode)) {
             Minecraft.thePlayer().s(PotionEffect.o(PotionRegistry.T.D(), 5220, 0));
-            this.H = false;
+            this.fadingIn = false;
         }
     }
 
-    private void lambda$new$0(ModeValue modeValue) {
+    private void onModeChanged(ModeValue changedMode) {
         if (!this.r$src$Z$14eylz9()) {
             return;
         }
-        if (((ModeSelection)this.L.K()).equals(this.I)) {
+        if (((ModeSelection)this.mode.getValue()).equals(this.gammaMode)) {
             Minecraft.thePlayer().q(16);
-        } else if (this.t != -1.0f) {
-            Minecraft.gameSettings().y(this.t);
+        } else if (this.originalGamma != -1.0f) {
+            Minecraft.gameSettings().y(this.originalGamma);
         }
     }
 
     @Override
-    public void s(boolean bl, boolean bl2) {
-        if (((ModeSelection)this.L.K()).equals(this.I) && this.j.L().booleanValue() && this.r$src$Z$14eylz9()) {
-            this.V = true;
-            this.H = false;
+    public void setEnabled(boolean enabled, boolean bypassVisibilityCheck) {
+        if (((ModeSelection)this.mode.getValue()).equals(this.gammaMode) && this.fade.getEffectiveValue().booleanValue() && this.r$src$Z$14eylz9()) {
+            this.fadingOut = true;
+            this.fadingIn = false;
             return;
         }
-        super.s(bl, bl2);
+        super.setEnabled(enabled, bypassVisibilityCheck);
     }
 
     @EventHandler
-    public void K(EventPreRenderTick eventPreRenderTick) {
-        if (((ModeSelection)this.L.K()).equals(this.I)) {
-            this.G();
+    public void onPreRenderTick(EventPreRenderTick event) {
+        if (((ModeSelection)this.mode.getValue()).equals(this.gammaMode)) {
+            this.updateGammaFade();
         }
     }
 
     @Override
     public void onDisable() {
-        if (((ModeSelection)this.L.K()).equals(this.v)) {
+        if (((ModeSelection)this.mode.getValue()).equals(this.nightVisionMode)) {
             if (Minecraft.thePlayer().isNotNull()) {
                 Minecraft.thePlayer().q(PotionRegistry.T.D());
-                this.V = false;
-                Minecraft.gameSettings().y(this.t);
+                this.fadingOut = false;
+                Minecraft.gameSettings().y(this.originalGamma);
             }
         } else {
             if (Minecraft.thePlayer().isNotNull()) {
                 Minecraft.thePlayer().q(PotionRegistry.T.D());
             }
-            if (!this.j.L().booleanValue()) {
-                Minecraft.gameSettings().y(this.t);
+            if (!this.fade.getEffectiveValue().booleanValue()) {
+                Minecraft.gameSettings().y(this.originalGamma);
             }
         }
     }
 
     public Fullbright() {
         super("Fullbright", -256, Category.k);
-        this.I = new ModeOption("Gamma");
-        this.L = ModeValue.create((Object)this, "Mode", this.v, this.v, this.I);
-        this.j = BooleanValue.create(this, "Fade", false, "Brightness changes will fade in or out");
-        this.K = new TimerUtil();
-        this.L.L(this.j, this.I);
-        this.addValue(this.L, this.j);
-        this.L.B(this::lambda$new$0);
+        this.gammaMode = new ModeOption("Gamma");
+        this.mode = ModeValue.create((Object)this, "Mode", this.nightVisionMode, this.nightVisionMode, this.gammaMode);
+        this.fade = BooleanValue.create(this, "Fade", false, "Brightness changes will fade in or out");
+        this.fadeTimer = new TimerUtil();
+        this.mode.addActiveMode(this.fade, this.gammaMode);
+        this.addValue(this.mode, this.fade);
+        this.mode.addChangeListener(this::onModeChanged);
     }
 
 }

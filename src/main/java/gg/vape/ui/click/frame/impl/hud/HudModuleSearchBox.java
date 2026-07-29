@@ -8,8 +8,8 @@ import gg.vape.ui.click.frame.impl.hud.HudModuleSelectorFrame;
 
 public class HudModuleSearchBox
 extends GuiComponent {
-    private LabeledTextInputComponent a = new LabeledTextInputComponent(i);
-    private static final String i = "Search mods";
+    private static final String PLACEHOLDER = "Search mods";
+    private final LabeledTextInputComponent input = new LabeledTextInputComponent(PLACEHOLDER);
 
     @Override
     public void I() {
@@ -20,8 +20,8 @@ extends GuiComponent {
         return 20.0;
     }
 
-    public static LabeledTextInputComponent N(HudModuleSearchBox hudModuleSearchBox) {
-        return hudModuleSearchBox.a;
+    public LabeledTextInputComponent getInput() {
+        return this.input;
     }
 
     @Override
@@ -39,19 +39,18 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        this.a.K(this.G$src$D$1b2f02a());
-        this.a.S(this.n());
-        this.a.o(this.x());
-        this.a.Y(this.L());
+        this.input.K(this.G$src$D$1b2f02a());
+        this.input.S(this.n());
+        this.input.o(this.x());
+        this.input.Y(this.L());
     }
 
     public HudModuleSearchBox(HudModuleSelectorFrame hudModuleSelectorFrame) {
-        this.a.o(new HudModuleSearchKeyHandler(this, hudModuleSelectorFrame));
-        this.H(this.a);
+        this.input.addKeyTypedListener(new HudModuleSearchKeyHandler(this, hudModuleSelectorFrame));
+        this.addChildren(this.input);
     }
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
     }
 }
-

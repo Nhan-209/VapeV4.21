@@ -5,18 +5,18 @@ import gg.vape.utils.TimerUtil;
 import java.util.Random;
 
 public class SilentAuraAimJitter {
-    private Random random = new Random();
-    private double minValue;
+    private final Random random = new Random();
+    private final double minValue;
     private double current;
-    private TimerUtil retargetTimer = new TimerUtil();
+    private final TimerUtil retargetTimer = new TimerUtil();
     private double target;
-    private double maxValue;
+    private final double maxValue;
 
-    public double b() {
+    public double getCurrentOffset() {
         return this.current;
     }
 
-    public void v() {
+    public void update() {
         if (this.retargetTimer.hasTimeElapsed(MathUtil.randomExclusiveUpper(this.random, 100, 1000))) {
             this.retargetTimer.reset();
             this.target = MathUtil.randomRange(this.random, this.minValue, this.maxValue);
@@ -35,8 +35,8 @@ public class SilentAuraAimJitter {
     }
 
 
-    public SilentAuraAimJitter(double min, double max) {
-        this.minValue = min;
-        this.maxValue = max;
+    public SilentAuraAimJitter(double minValue, double maxValue) {
+        this.minValue = minValue;
+        this.maxValue = maxValue;
     }
 }

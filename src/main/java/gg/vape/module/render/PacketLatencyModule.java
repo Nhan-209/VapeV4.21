@@ -9,38 +9,40 @@ import gg.vape.module.render.PacketLatencySample;
 import gg.vape.value.NumberValue;
 import gg.vape.wrapper.impl.Minecraft;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PacketLatencyModule
 extends Mod {
     private long lastTimestamp;
     private int highestFps;
-    private ArrayList<PacketLatencySample> samples = new ArrayList();
+    private final List<PacketLatencySample> samples = new ArrayList<>();
     private int lowestFps;
-    private NumberValue testAmount;
-    private NumberValue benchmarkTime = NumberValue.create((Object)this, "Benchmark Time", "#", "s", 10.0, 30.0, 60.0, 1.0);
-    private boolean running = false;
+    private final NumberValue testAmount;
+    private final NumberValue benchmarkTime = NumberValue.create((Object)this, "Benchmark Time", "#", "s", 10.0, 30.0, 60.0, 1.0);
+    private boolean running;
     private int captureCount;
-    private int fpsSum = 0;
+    private int fpsSum;
 
     private void logResults() {
         Vape.debugLog("----------------------------");
-        Vape.debugLog("Amount of Tests: " + this.testAmount.K());
-        Vape.debugLog("Time Taken for each Tests: " + this.benchmarkTime.K() + "s");
-        int n = 0;
-        int n2 = 0;
+        Vape.debugLog("Amount of Tests: " + this.testAmount.getValue());
+        Vape.debugLog("Time Taken for each Tests: " + this.benchmarkTime.getValue() + "s");
+        int totalAverageFps = 0;
+        long totalCaptures = 0L;
         Vape.debugLog("Avg:");
-        for (int i = 0; i < this.samples.size(); ++i) {
-            Vape.debugLog(i + 1 + ": fps - " + this.samples.get(i).K() + " captures - " + this.samples.get((int)i).S);
-            Vape.debugLog("Highest FPS: " + this.samples.get((int)i).G + " Lowest FPS: " + this.samples.get((int)i).N);
-            n = (int)((double)n + this.samples.get(i).K());
-            n2 = (int)((long)n2 + this.samples.get((int)i).S);
+        for (int sampleIndex = 0; sampleIndex < this.samples.size(); ++sampleIndex) {
+            PacketLatencySample sample = this.samples.get(sampleIndex);
+            Vape.debugLog(sampleIndex + 1 + ": fps - " + sample.getAverageFps() + " captures - " + sample.getCaptureCount());
+            Vape.debugLog("Highest FPS: " + sample.getHighestFps() + " Lowest FPS: " + sample.getLowestFps());
+            totalAverageFps = (int)((double)totalAverageFps + sample.getAverageFps());
+            totalCaptures += sample.getCaptureCount();
         }
-        Vape.debugLog("Avg for all tests: fps - " + n / this.samples.size() + " captures - " + n2 / this.samples.size());
+        Vape.debugLog("Avg for all tests: fps - " + totalAverageFps / this.samples.size() + " captures - " + totalCaptures / this.samples.size());
         Vape.debugLog("----------------------------");
     }
 
     @EventHandler
-    public void b(EventPostRenderTick eventPostRenderTick) {
+    public void onPostRenderTick(EventPostRenderTick event) {
         if (!this.running) {
             if (System.currentTimeMillis() - this.lastTimestamp <= 5000L) {
                 return;
@@ -52,13 +54,13 @@ extends Mod {
             this.lowestFps = Integer.MAX_VALUE;
             this.highestFps = Integer.MIN_VALUE;
         }
-        if ((double)this.samples.size() >= (Double)this.testAmount.K()) {
+        if ((double)this.samples.size() >= (Double)this.testAmount.getValue()) {
             this.logResults();
             this.F();
             return;
         }
-        long l = System.currentTimeMillis() - this.lastTimestamp;
-        if ((double)l >= this.testDurationMillis()) {
+        long elapsedMillis = System.currentTimeMillis() - this.lastTimestamp;
+        if ((double)elapsedMillis >= this.testDurationMillis()) {
             this.samples.add(new PacketLatencySample(this.captureCount, this.fpsSum, this.highestFps, this.lowestFps));
             Vape.debugLog("Test " + this.samples.size() + " completed");
             this.fpsSum = 0;
@@ -69,10 +71,10 @@ extends Mod {
             return;
         }
         ++this.captureCount;
-        int n = Minecraft.l();
-        this.fpsSum += n;
-        this.highestFps = Math.max(this.highestFps, n);
-        this.lowestFps = Math.min(this.lowestFps, n);
+        int currentFps = Minecraft.l();
+        this.fpsSum += currentFps;
+        this.highestFps = Math.max(this.highestFps, currentFps);
+        this.lowestFps = Math.min(this.lowestFps, currentFps);
     }
 
     public PacketLatencyModule() {
@@ -85,7 +87,7 @@ extends Mod {
 
 
     private double testDurationMillis() {
-        return (Double)this.benchmarkTime.K() * 1000.0;
+        return (Double)this.benchmarkTime.getValue() * 1000.0;
     }
 
     @Override

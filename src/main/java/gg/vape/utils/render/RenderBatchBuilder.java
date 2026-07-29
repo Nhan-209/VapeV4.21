@@ -16,300 +16,292 @@ import java.awt.Color;
 import java.util.function.Supplier;
 
 public class RenderBatchBuilder {
-    public int a = 0;
-    private boolean c;
-    private final RenderVector3f b;
-    private GlImageTexture V;
-    private final RenderVector4f w;
-    public RenderMatrix4f C;
-    private VertexCoordinateMode E;
-    private int[] f;
-    private float[] J;
-    private float F = 1.0f;
-    private Supplier<Void> o = null;
-    private GlScissorRect G = null;
-    private PrimitiveTopology H = null;
-    private final FloatPair z = new FloatPair(0.0f, 0.0f);
-    private int I;
-    private Supplier<Void> x = null;
-    public int v = 0;
-    private GlCapabilityState g;
+    public int baseVertexIndex = 0;
+    private boolean worldSpace;
+    private final RenderVector3f zeroVector3;
+    private GlImageTexture texture;
+    private final RenderVector4f zeroVector4;
+    public RenderMatrix4f modelMatrix;
+    private VertexCoordinateMode coordinateMode;
+    private int[] indices;
+    private float[] vertexData;
+    private float lineWidth = 1.0f;
+    private Supplier<Void> standaloneRenderCallback = null;
+    private GlScissorRect scissorRect = null;
+    private PrimitiveTopology topology = null;
+    private final FloatPair zeroPair = new FloatPair(0.0f, 0.0f);
+    private int vertexCapacity;
+    private Supplier<Void> drawSetupCallback = null;
+    public int vertexCount = 0;
+    private GlCapabilityState capabilityState;
 
-    private void n(float f, float f2, float f3, float f4, RenderVector4f renderVector4f, float f5, RenderVector4f renderVector4f2) {
-        this.z(f, f2, f3, f4, renderVector4f, f5, 0.0f, renderVector4f2);
+    private void appendSolidColorVertexData(float shaderMode, float x, float y, float z, RenderVector4f innerRect, float spread, RenderVector4f color) {
+        this.appendRoundedShapeVertex(shaderMode, x, y, z, innerRect, spread, 0.0f, color);
     }
 
-    public RenderBatchBuilder p(float f, float f2, float f3, float f4, float f5, float f6, Color color) {
-        if (f3 == 0.0f || f4 == 0.0f) {
+    public RenderBatchBuilder addRoundedTexturedRect(float x, float y, float width, float height, float cornerRadius, float borderWidth, Color color) {
+        if (width == 0.0f || height == 0.0f) {
             return null;
         }
-        float f7 = 0.5f;
-        if (f5 == 0.0f) {
-            f7 = 0.0f;
+        float antialiasPadding = 0.5f;
+        if (cornerRadius == 0.0f) {
+            antialiasPadding = 0.0f;
         }
-        float f8 = Math.max(0.0f, (f5 += f7 * 2.0f) - f6);
-        if (f5 != 0.0f) {
-            f = (float)((double)f - ((double)f6 - 0.5));
-            f2 -= f6;
-            f4 = (float)((double)f4 + (double)f6 * 1.5);
-            f3 += f6 * 1.0f;
+        float insetCornerRadius = Math.max(0.0f, (cornerRadius += antialiasPadding * 2.0f) - borderWidth);
+        if (cornerRadius != 0.0f) {
+            x = (float)((double)x - ((double)borderWidth - 0.5));
+            y -= borderWidth;
+            height = (float)((double)height + (double)borderWidth * 1.5);
+            width += borderWidth;
         }
-        float f9 = f + f3;
-        float f10 = f2 + f4;
-        float f11 = this.V != null ? this.V.C : 0.0f;
-        float f12 = this.V != null ? this.V.w : 0.0f;
-        float f13 = this.V != null ? this.V.h : 1.0f;
-        float f14 = this.V != null ? this.V.p : 1.0f;
-        RenderVector4f renderVector4f = new RenderVector4f(f + f5, f2 + f5, f + f3 - f5, f2 + f4 - f5);
-        RenderVector4f renderVector4f2 = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.x(7.0f, f, f2, 0.0f, f11, f12, f8, renderVector4f, f6, renderVector4f2);
-        this.x(7.0f, f, f10, 0.0f, f11, f14, f8, renderVector4f, f6, renderVector4f2);
-        this.x(7.0f, f9, f2, 0.0f, f13, f12, f8, renderVector4f, f6, renderVector4f2);
-        this.x(7.0f, f9, f10, 0.0f, f13, f14, f8, renderVector4f, f6, renderVector4f2);
-        this.B("quad");
+        float right = x + width;
+        float bottom = y + height;
+        float textureMinU = this.texture != null ? this.texture.minU : 0.0f;
+        float textureMinV = this.texture != null ? this.texture.minV : 0.0f;
+        float textureMaxU = this.texture != null ? this.texture.maxU : 1.0f;
+        float textureMaxV = this.texture != null ? this.texture.maxV : 1.0f;
+        RenderVector4f roundedRectBounds = new RenderVector4f(x + cornerRadius, y + cornerRadius, x + width - cornerRadius, y + height - cornerRadius);
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendTexturedShapeVertex(7.0f, x, y, 0.0f, textureMinU, textureMinV, insetCornerRadius, roundedRectBounds, borderWidth, colorVector);
+        this.appendTexturedShapeVertex(7.0f, x, bottom, 0.0f, textureMinU, textureMaxV, insetCornerRadius, roundedRectBounds, borderWidth, colorVector);
+        this.appendTexturedShapeVertex(7.0f, right, y, 0.0f, textureMaxU, textureMinV, insetCornerRadius, roundedRectBounds, borderWidth, colorVector);
+        this.appendTexturedShapeVertex(7.0f, right, bottom, 0.0f, textureMaxU, textureMaxV, insetCornerRadius, roundedRectBounds, borderWidth, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    private void z(float f, float f2, float f3, float f4, RenderVector4f renderVector4f, float f5, float f6, RenderVector4f renderVector4f2) {
-        RenderVector3f renderVector3f = new RenderVector3f(f2, f3, f4);
-        RenderVector3f renderVector3f2 = new RenderVector3f(f6, 0.0f, 0.0f);
-        this.q(f, renderVector3f, this.z, renderVector4f2, 0.0f, 0.0f, this.z, 0.0f, 0.0f, this.z, this.z, renderVector4f, renderVector3f2, f5, this.w);
+    private void appendRoundedShapeVertex(float shaderMode, float x, float y, float z, RenderVector4f innerRect, float spread, float cornerRadius, RenderVector4f color) {
+        RenderVector3f position = new RenderVector3f(x, y, z);
+        RenderVector3f radius = new RenderVector3f(cornerRadius, 0.0f, 0.0f);
+        this.appendVertex(shaderMode, position, this.zeroPair, color, 0.0f, 0.0f, this.zeroPair, 0.0f, 0.0f, this.zeroPair, this.zeroPair, innerRect, radius, spread, this.zeroVector4);
     }
 
-    public RenderBatchBuilder b(PrimitiveTopology primitiveTopology) {
-        return this.Q(primitiveTopology, RenderBatchManager.M().s().Q());
+    public RenderBatchBuilder setTopology(PrimitiveTopology topology) {
+        return this.initializeTopology(topology, RenderBatchManager.getInstance().getBatchBuffer().getVertexStride());
     }
 
-    public float[] y() {
-        return this.J;
+    public float[] getVertexData() {
+        return this.vertexData;
     }
 
-    public RenderBatchBuilder F(float f, float f2, float f3, float f4, Color color) {
-        float f5 = f3 += f4;
-        float f6 = f3;
-        float f7 = (f -= f4 / 2.0f) + f5;
-        float f8 = (f2 -= f4 / 2.0f) + f6;
-        float f9 = f3 / 2.0f;
-        FloatPair floatPair = new FloatPair(f + f5 / 2.0f, f2 + f6 / 2.0f);
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.k(2.0f, f, f2, 0.0f, f9, f4, floatPair, renderVector4f);
-        this.k(2.0f, f, f8, 0.0f, f9, f4, floatPair, renderVector4f);
-        this.k(2.0f, f7, f2, 0.0f, f9, f4, floatPair, renderVector4f);
-        this.k(2.0f, f7, f8, 0.0f, f9, f4, floatPair, renderVector4f);
-        this.B("quad");
+    public RenderBatchBuilder addCircle(float x, float y, float diameter, float feather, Color color) {
+        float boundsWidth = diameter += feather;
+        float boundsHeight = diameter;
+        float right = (x -= feather / 2.0f) + boundsWidth;
+        float bottom = (y -= feather / 2.0f) + boundsHeight;
+        float radius = diameter / 2.0f;
+        FloatPair center = new FloatPair(x + boundsWidth / 2.0f, y + boundsHeight / 2.0f);
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendCircleVertexData(2.0f, x, y, 0.0f, radius, feather, center, colorVector);
+        this.appendCircleVertexData(2.0f, x, bottom, 0.0f, radius, feather, center, colorVector);
+        this.appendCircleVertexData(2.0f, right, y, 0.0f, radius, feather, center, colorVector);
+        this.appendCircleVertexData(2.0f, right, bottom, 0.0f, radius, feather, center, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public RenderBatchBuilder i(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, float f9, Color color) {
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.TRIANGLES);
-        this.V(9.0f, f4, f5, f6, renderVector4f);
-        this.V(9.0f, f, f2, f3, renderVector4f);
-        this.V(9.0f, f7, f8, f9, renderVector4f);
-        this.B("triangle");
+    public RenderBatchBuilder addTriangle(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, Color color) {
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.TRIANGLES);
+        this.appendSolidColorVertex(9.0f, x2, y2, z2, colorVector);
+        this.appendSolidColorVertex(9.0f, x1, y1, z1, colorVector);
+        this.appendSolidColorVertex(9.0f, x3, y3, z3, colorVector);
+        this.generateIndicesForCurrentBatch("triangle");
         return this;
     }
 
-    public RenderBatchBuilder L(float f) {
-        this.F = f;
+    public RenderBatchBuilder setLineWidth(float lineWidth) {
+        this.lineWidth = lineWidth;
         return this;
     }
 
-    private static IllegalArgumentException a(IllegalArgumentException illegalArgumentException) {
+    private static IllegalArgumentException propagateIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
         return illegalArgumentException;
     }
 
-    public RenderBatchBuilder(VertexCoordinateMode vertexCoordinateMode, boolean bl) {
-        this(4, vertexCoordinateMode, bl);
+    public RenderBatchBuilder(VertexCoordinateMode coordinateMode, boolean worldSpace) {
+        this(4, coordinateMode, worldSpace);
     }
 
-    private void i(float f, float f2, float f3, float f4, float f5, float f6, float f7, FloatPair floatPair, RenderVector4f renderVector4f) {
-        RenderVector3f renderVector3f = new RenderVector3f(f2, f3, f4);
-        this.q(f, renderVector3f, this.z, renderVector4f, f5, f7, floatPair, 0.0f, 0.0f, this.z, this.z, this.w, new RenderVector3f(f6, 0.0f, 0.0f), 0.0f, this.w);
+    private void appendCircleStrokeVertex(float shaderMode, float x, float y, float z, float innerRadius, float outerRadius, float feather, FloatPair center, RenderVector4f color) {
+        RenderVector3f position = new RenderVector3f(x, y, z);
+        this.appendVertex(shaderMode, position, this.zeroPair, color, innerRadius, feather, center, 0.0f, 0.0f, this.zeroPair, this.zeroPair, this.zeroVector4, new RenderVector3f(outerRadius, 0.0f, 0.0f), 0.0f, this.zeroVector4);
     }
 
-    public float D() {
-        return this.F;
+    public float getLineWidth() {
+        return this.lineWidth;
     }
 
-    public RenderBatchBuilder p(float f, float f2, float f3, float f4, Color color, float f5, float f6, float f7) {
-        float f8 = 0.5f;
-        f = (float)((double)f - ((double)f7 - 0.5));
-        f4 = (float)((double)f4 + (double)f7 * 1.5);
-        float f9 = f + f8;
-        float f10 = f + (f3 += f7 * 1.0f) - f8;
-        float f11 = (f2 -= f7) + f8;
-        float f12 = f2 + f4 - f8;
-        RenderVector3f renderVector3f = new RenderVector3f(f5, f7, f6);
-        RenderVector4f renderVector4f = new RenderVector4f(f + f5 + f6, f2 + f5 + f6, f + f3 - (f5 + f6), f2 + f4 - (f5 + f6));
-        RenderVector4f renderVector4f2 = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.j(6.0f, f9, f11, 0.0f, renderVector3f, renderVector4f, renderVector4f2);
-        this.j(6.0f, f9, f12, 0.0f, renderVector3f, renderVector4f, renderVector4f2);
-        this.j(6.0f, f10, f11, 0.0f, renderVector3f, renderVector4f, renderVector4f2);
-        this.j(6.0f, f10, f12, 0.0f, renderVector3f, renderVector4f, renderVector4f2);
-        this.B("quad");
+    public RenderBatchBuilder addRoundedRect(float x, float y, float width, float height, Color color, float cornerRadius, float borderWidth, float edgeSoftness) {
+        float antialiasPadding = 0.5f;
+        x = (float)((double)x - ((double)edgeSoftness - 0.5));
+        height = (float)((double)height + (double)edgeSoftness * 1.5);
+        float left = x + antialiasPadding;
+        float right = x + (width += edgeSoftness) - antialiasPadding;
+        float top = (y -= edgeSoftness) + antialiasPadding;
+        float bottom = y + height - antialiasPadding;
+        RenderVector3f roundedRectParameters = new RenderVector3f(cornerRadius, edgeSoftness, borderWidth);
+        RenderVector4f roundedRectBounds = new RenderVector4f(x + cornerRadius + borderWidth, y + cornerRadius + borderWidth, x + width - (cornerRadius + borderWidth), y + height - (cornerRadius + borderWidth));
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendRoundedShapeBoundsVertex(6.0f, left, top, 0.0f, roundedRectParameters, roundedRectBounds, colorVector);
+        this.appendRoundedShapeBoundsVertex(6.0f, left, bottom, 0.0f, roundedRectParameters, roundedRectBounds, colorVector);
+        this.appendRoundedShapeBoundsVertex(6.0f, right, top, 0.0f, roundedRectParameters, roundedRectBounds, colorVector);
+        this.appendRoundedShapeBoundsVertex(6.0f, right, bottom, 0.0f, roundedRectParameters, roundedRectBounds, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    private void x(float f, float f2, float f3, float f4, float f5, float f6, float f7, RenderVector4f renderVector4f, float f8, RenderVector4f renderVector4f2) {
-        RenderVector3f renderVector3f = new RenderVector3f(f2, f3, f4);
-        FloatPair floatPair = new FloatPair(f5, f6);
-        this.q(f, renderVector3f, floatPair, renderVector4f2, 0.0f, 0.0f, this.z, 0.0f, 0.0f, this.z, this.z, renderVector4f, new RenderVector3f(f7, 0.0f, 0.0f), f8, this.w);
+    private void appendTexturedShapeVertex(float shaderMode, float x, float y, float z, float u, float v, float cornerRadius, RenderVector4f innerRect, float spread, RenderVector4f color) {
+        RenderVector3f position = new RenderVector3f(x, y, z);
+        FloatPair textureCoordinates = new FloatPair(u, v);
+        this.appendVertex(shaderMode, position, textureCoordinates, color, 0.0f, 0.0f, this.zeroPair, 0.0f, 0.0f, this.zeroPair, this.zeroPair, innerRect, new RenderVector3f(cornerRadius, 0.0f, 0.0f), spread, this.zeroVector4);
     }
 
-    private void d(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, FloatPair floatPair, RenderVector4f renderVector4f) {
-        RenderVector3f renderVector3f = new RenderVector3f(f2, f3, f4);
-        FloatPair floatPair2 = new FloatPair(f5, f6);
-        this.q(f, renderVector3f, floatPair2, renderVector4f, 0.0f, f8, floatPair, 0.0f, 0.0f, this.z, this.z, this.w, new RenderVector3f(f7, 0.0f, 0.0f), 0.0f, this.w);
+    private void appendTexturedCircleVertexData(float shaderMode, float x, float y, float z, float u, float v, float radius, float feather, FloatPair center, RenderVector4f color) {
+        RenderVector3f position = new RenderVector3f(x, y, z);
+        FloatPair textureCoordinates = new FloatPair(u, v);
+        this.appendVertex(shaderMode, position, textureCoordinates, color, 0.0f, feather, center, 0.0f, 0.0f, this.zeroPair, this.zeroPair, this.zeroVector4, new RenderVector3f(radius, 0.0f, 0.0f), 0.0f, this.zeroVector4);
     }
 
-    public RenderBatchBuilder H(float f, float f2, SmoothFontGlyph smoothFontGlyph, Color color, float f3) {
-        float f4 = f + smoothFontGlyph.X * f3;
-        float f5 = f + smoothFontGlyph.g * f3;
-        float f6 = f2 + smoothFontGlyph.a * f3;
-        float f7 = f2 + smoothFontGlyph.G * f3;
-        this.o(BufferedGuiRenderPrimitives.e);
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.w(11.0f, f4, f6, 0.0f, smoothFontGlyph.t, smoothFontGlyph.J, renderVector4f);
-        this.w(11.0f, f4, f7, 0.0f, smoothFontGlyph.t, smoothFontGlyph.B, renderVector4f);
-        this.w(11.0f, f5, f6, 0.0f, smoothFontGlyph.w, smoothFontGlyph.J, renderVector4f);
-        this.w(11.0f, f5, f7, 0.0f, smoothFontGlyph.w, smoothFontGlyph.B, renderVector4f);
-        this.B("quad");
+    private RenderBatchBuilder addGlyphQuad(float shaderMode, float x, float y, SmoothFontGlyph glyph, GlImageTexture glyphTexture, Color color, float scale) {
+        float left = x + glyph.X * scale;
+        float right = x + glyph.g * scale;
+        float top = y + glyph.a * scale;
+        float bottom = y + glyph.G * scale;
+        this.setTexture(glyphTexture);
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendTexturedVertex(shaderMode, left, top, 0.0f, glyph.t, glyph.J, colorVector);
+        this.appendTexturedVertex(shaderMode, left, bottom, 0.0f, glyph.t, glyph.B, colorVector);
+        this.appendTexturedVertex(shaderMode, right, top, 0.0f, glyph.w, glyph.J, colorVector);
+        this.appendTexturedVertex(shaderMode, right, bottom, 0.0f, glyph.w, glyph.B, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public RenderBatchBuilder X(float f, float f2, float f3, float f4, Color color, float f5, float f6, int n) {
-        float f7 = 0.5f;
-        if (f5 <= 0.0f) {
-            f7 = 0.0f;
+    public RenderBatchBuilder addFontGlyph(float x, float y, SmoothFontGlyph glyph, Color color, float scale) {
+        return this.addGlyphQuad(11.0f, x, y, glyph, BufferedGuiRenderPrimitives.fontTexture, color, scale);
+    }
+
+    public RenderBatchBuilder addCornerMaskedRoundedRect(float x, float y, float width, float height, Color color, float cornerRadius, float edgeSoftness, int cornerMask) {
+        float antialiasPadding = 0.5f;
+        if (cornerRadius <= 0.0f) {
+            antialiasPadding = 0.0f;
         }
-        float f8 = Math.max(0.0f, (f5 += f7 * 2.0f) - f6);
-        if (f5 > 0.0f) {
-            f -= f6 - 0.5f;
-            f2 -= f6;
-            f4 += f6 * 1.0f;
-            f3 += f6 * 1.0f;
+        float shaderRadius = Math.max(0.0f, (cornerRadius += antialiasPadding * 2.0f) - edgeSoftness);
+        if (cornerRadius > 0.0f) {
+            x -= edgeSoftness - 0.5f;
+            y -= edgeSoftness;
+            height += edgeSoftness;
+            width += edgeSoftness;
         }
-        float f9 = f + f7;
-        float f10 = f + f3 - f7;
-        float f11 = f2 + f7;
-        float f12 = f2 + f4 - f7;
-        boolean bl = (n & 1) != 0;
-        boolean bl2 = (n & 2) != 0;
-        boolean bl3 = (n & 4) != 0;
-        boolean bl4 = (n & 8) != 0;
-        RenderVector4f renderVector4f = new RenderVector4f(bl ? 1.0f : 0.0f, bl2 ? 1.0f : 0.0f, bl3 ? 1.0f : 0.0f, bl4 ? 1.0f : 0.0f);
-        RenderVector4f renderVector4f2 = new RenderVector4f(f + f5, f2 + f5, f + f3 - f5, f2 + f4 - f5);
-        RenderVector4f renderVector4f3 = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.o(5.0f, f9, f11, 0.0f, f8, renderVector4f2, f6, renderVector4f3, renderVector4f);
-        this.o(5.0f, f9, f12, 0.0f, f8, renderVector4f2, f6, renderVector4f3, renderVector4f);
-        this.o(5.0f, f10, f11, 0.0f, f8, renderVector4f2, f6, renderVector4f3, renderVector4f);
-        this.o(5.0f, f10, f12, 0.0f, f8, renderVector4f2, f6, renderVector4f3, renderVector4f);
-        this.B("quad");
+        float left = x + antialiasPadding;
+        float right = x + width - antialiasPadding;
+        float top = y + antialiasPadding;
+        float bottom = y + height - antialiasPadding;
+        boolean topLeft = (cornerMask & 1) != 0;
+        boolean topRight = (cornerMask & 2) != 0;
+        boolean bottomRight = (cornerMask & 4) != 0;
+        boolean bottomLeft = (cornerMask & 8) != 0;
+        RenderVector4f enabledCorners = new RenderVector4f(topLeft ? 1.0f : 0.0f, topRight ? 1.0f : 0.0f, bottomRight ? 1.0f : 0.0f, bottomLeft ? 1.0f : 0.0f);
+        RenderVector4f innerRect = new RenderVector4f(x + cornerRadius, y + cornerRadius, x + width - cornerRadius, y + height - cornerRadius);
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendParameterizedShapeVertex(5.0f, left, top, 0.0f, shaderRadius, innerRect, edgeSoftness, colorVector, enabledCorners);
+        this.appendParameterizedShapeVertex(5.0f, left, bottom, 0.0f, shaderRadius, innerRect, edgeSoftness, colorVector, enabledCorners);
+        this.appendParameterizedShapeVertex(5.0f, right, top, 0.0f, shaderRadius, innerRect, edgeSoftness, colorVector, enabledCorners);
+        this.appendParameterizedShapeVertex(5.0f, right, bottom, 0.0f, shaderRadius, innerRect, edgeSoftness, colorVector, enabledCorners);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public RenderBatchBuilder e(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, float f9, float f10, Color color) {
-        float f11;
-        if (f3 == f4) {
-            f11 = f5 / f6;
-            f3 *= f11;
+    public RenderBatchBuilder addTexturedRect(float x, float y, float width, float height, float textureWidth, float textureHeight, float minU, float minV, float maxU, float maxV, Color color) {
+        float right;
+        if (width == height) {
+            float textureAspectRatio = textureWidth / textureHeight;
+            width *= textureAspectRatio;
         }
-        f11 = f + f3;
-        float f12 = f2 + f4;
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.w(10.0f, f, f2, 0.0f, f7, f8, renderVector4f);
-        this.w(10.0f, f, f12, 0.0f, f7, f10, renderVector4f);
-        this.w(10.0f, f11, f2, 0.0f, f9, f8, renderVector4f);
-        this.w(10.0f, f11, f12, 0.0f, f9, f10, renderVector4f);
-        this.B("quad");
+        right = x + width;
+        float bottom = y + height;
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendTexturedVertex(10.0f, x, y, 0.0f, minU, minV, colorVector);
+        this.appendTexturedVertex(10.0f, x, bottom, 0.0f, minU, maxV, colorVector);
+        this.appendTexturedVertex(10.0f, right, y, 0.0f, maxU, minV, colorVector);
+        this.appendTexturedVertex(10.0f, right, bottom, 0.0f, maxU, maxV, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    private void Q(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, float f9, float f10, RenderVector4f renderVector4f, FloatPair floatPair) {
-        RenderVector3f renderVector3f = new RenderVector3f(f2, f3, f4);
-        FloatPair floatPair2 = new FloatPair(f5, f6);
-        this.q(f, renderVector3f, floatPair2, this.w, 0.0f, f7, this.z, 0.0f, 0.0f, floatPair, this.z, renderVector4f, new RenderVector3f(f9, f8, 0.0f), f10, this.w);
+    private void appendBlurVertex(float shaderMode, float x, float y, float z, float u, float v, float feather, float blurRadius, float radiusX, float direction, RenderVector4f innerRect, FloatPair screenDimensions) {
+        RenderVector3f position = new RenderVector3f(x, y, z);
+        FloatPair textureCoordinates = new FloatPair(u, v);
+        this.appendVertex(shaderMode, position, textureCoordinates, this.zeroVector4, 0.0f, feather, this.zeroPair, 0.0f, 0.0f, screenDimensions, this.zeroPair, innerRect, new RenderVector3f(radiusX, blurRadius, 0.0f), direction, this.zeroVector4);
     }
 
-    private void U(float f, float f2, float f3, float f4, float f5, float f6, float f7, FloatPair floatPair, float f8, float f9, RenderVector4f renderVector4f) {
-        RenderVector3f renderVector3f = new RenderVector3f(f2, f3, f4);
-        this.q(f, renderVector3f, this.z, renderVector4f, f5, f7, floatPair, f8, f9, this.z, this.z, this.w, new RenderVector3f(f6, 0.0f, 0.0f), 0.0f, this.w);
+    private void appendArcStrokeVertex(float shaderMode, float x, float y, float z, float innerRadius, float outerRadius, float feather, FloatPair center, float middleAngle, float sweepAngle, RenderVector4f color) {
+        RenderVector3f position = new RenderVector3f(x, y, z);
+        this.appendVertex(shaderMode, position, this.zeroPair, color, innerRadius, feather, center, middleAngle, sweepAngle, this.zeroPair, this.zeroPair, this.zeroVector4, new RenderVector3f(outerRadius, 0.0f, 0.0f), 0.0f, this.zeroVector4);
     }
 
-    public int[] R() {
-        return this.f;
+    public int[] getIndices() {
+        return this.indices;
     }
 
-    public RenderBatchBuilder d(float f, float f2, float f3, float f4, float[] fArray, float[] fArray2) {
-        float f5 = Math.max(f4 / 2.0f - 0.5f, 0.25f);
-        float f6 = f2 + f4 / 2.0f;
-        float f7 = f + f4 / 2.0f;
-        float f8 = f + f3 - f4 / 2.0f;
-        float f9 = 0.5f;
-        float f10 = f - f9;
-        float f11 = f2 - f9;
-        float f12 = f + f3 + f9;
-        float f13 = f2 + f4 + f9;
-        RenderVector4f renderVector4f = new RenderVector4f(f7, f6, f8, f6);
-        RenderVector4f renderVector4f2 = new RenderVector4f(fArray[0] * 255.0f, fArray[1] * 255.0f, fArray[2] * 255.0f, fArray[3] * 255.0f);
-        RenderVector4f renderVector4f3 = new RenderVector4f(fArray2[0], fArray2[1], fArray2[2], fArray2[3]);
-        this.b(PrimitiveTopology.QUADS);
-        this.o(20.0f, f10, f11, 0.0f, f5, renderVector4f, 0.0f, renderVector4f2, renderVector4f3);
-        this.o(20.0f, f10, f13, 0.0f, f5, renderVector4f, 0.0f, renderVector4f2, renderVector4f3);
-        this.o(20.0f, f12, f11, 0.0f, f5, renderVector4f, 0.0f, renderVector4f2, renderVector4f3);
-        this.o(20.0f, f12, f13, 0.0f, f5, renderVector4f, 0.0f, renderVector4f2, renderVector4f3);
-        this.B("quad");
+    public RenderBatchBuilder addGradientPill(float x, float y, float width, float height, float[] startHsba, float[] endHsba) {
+        float radius = Math.max(height / 2.0f - 0.5f, 0.25f);
+        float centerY = y + height / 2.0f;
+        float leftCenterX = x + height / 2.0f;
+        float rightCenterX = x + width - height / 2.0f;
+        float antialiasPadding = 0.5f;
+        float left = x - antialiasPadding;
+        float top = y - antialiasPadding;
+        float right = x + width + antialiasPadding;
+        float bottom = y + height + antialiasPadding;
+        RenderVector4f centerLine = new RenderVector4f(leftCenterX, centerY, rightCenterX, centerY);
+        RenderVector4f startHsbaVector = new RenderVector4f(startHsba[0] * 255.0f, startHsba[1] * 255.0f, startHsba[2] * 255.0f, startHsba[3] * 255.0f);
+        RenderVector4f endHsbaVector = new RenderVector4f(endHsba[0], endHsba[1], endHsba[2], endHsba[3]);
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendParameterizedShapeVertex(20.0f, left, top, 0.0f, radius, centerLine, 0.0f, startHsbaVector, endHsbaVector);
+        this.appendParameterizedShapeVertex(20.0f, left, bottom, 0.0f, radius, centerLine, 0.0f, startHsbaVector, endHsbaVector);
+        this.appendParameterizedShapeVertex(20.0f, right, top, 0.0f, radius, centerLine, 0.0f, startHsbaVector, endHsbaVector);
+        this.appendParameterizedShapeVertex(20.0f, right, bottom, 0.0f, radius, centerLine, 0.0f, startHsbaVector, endHsbaVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public RenderBatchBuilder b(Supplier<Void> supplier) {
-        this.o = supplier;
-        this.b(PrimitiveTopology.QUADS);
+    public RenderBatchBuilder setStandaloneRenderCallback(Supplier<Void> callback) {
+        this.standaloneRenderCallback = callback;
+        this.setTopology(PrimitiveTopology.QUADS);
         return this;
     }
 
-    private void B(String string) {
-        this.N(string, RenderBatchManager.M().A(this.c));
+    private void generateIndicesForCurrentBatch(String primitiveName) {
+        this.generateIndices(primitiveName, RenderBatchManager.getInstance().getLastBatchMergeCount(this.worldSpace));
     }
 
-    public RenderBatchBuilder H(float f, float f2, SmoothFontGlyph smoothFontGlyph, int n, Color color, float f3) {
-        float f4 = f + smoothFontGlyph.X * f3;
-        float f5 = f + smoothFontGlyph.g * f3;
-        float f6 = f2 + smoothFontGlyph.a * f3;
-        float f7 = f2 + smoothFontGlyph.G * f3;
-        this.o(new GlImageTexture(n));
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.w(17.0f, f4, f6, 0.0f, smoothFontGlyph.t, smoothFontGlyph.J, renderVector4f);
-        this.w(17.0f, f4, f7, 0.0f, smoothFontGlyph.t, smoothFontGlyph.B, renderVector4f);
-        this.w(17.0f, f5, f6, 0.0f, smoothFontGlyph.w, smoothFontGlyph.J, renderVector4f);
-        this.w(17.0f, f5, f7, 0.0f, smoothFontGlyph.w, smoothFontGlyph.B, renderVector4f);
-        this.B("quad");
-        return this;
+    public RenderBatchBuilder addMinecraftIntensityFontGlyph(float x, float y, SmoothFontGlyph glyph, int textureId, Color color, float scale) {
+        return this.addGlyphQuad(17.0f, x, y, glyph, new GlImageTexture(textureId), color, scale);
     }
 
-    public RenderBatchBuilder Q(float f, float f2, float f3, float f4, float f5, Color color) {
-        float f6 = f3 += f5;
-        float f7 = f3;
-        float f8 = (f -= f5 / 2.0f) + f6;
-        float f9 = (f2 -= f5 / 2.0f) + f7;
-        float f10 = f3 / 2.0f;
-        float f11 = f10 - f4;
-        FloatPair floatPair = new FloatPair(f + f6 / 2.0f, f2 + f7 / 2.0f);
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.i(3.0f, f, f2, 0.0f, f11, f10, f5, floatPair, renderVector4f);
-        this.i(3.0f, f, f9, 0.0f, f11, f10, f5, floatPair, renderVector4f);
-        this.i(3.0f, f8, f2, 0.0f, f11, f10, f5, floatPair, renderVector4f);
-        this.i(3.0f, f8, f9, 0.0f, f11, f10, f5, floatPair, renderVector4f);
-        this.B("quad");
+    public RenderBatchBuilder addCircleStroke(float x, float y, float diameter, float strokeWidth, float feather, Color color) {
+        float boundsWidth = diameter += feather;
+        float boundsHeight = diameter;
+        float right = (x -= feather / 2.0f) + boundsWidth;
+        float bottom = (y -= feather / 2.0f) + boundsHeight;
+        float outerRadius = diameter / 2.0f;
+        float innerRadius = outerRadius - strokeWidth;
+        FloatPair center = new FloatPair(x + boundsWidth / 2.0f, y + boundsHeight / 2.0f);
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendCircleStrokeVertex(3.0f, x, y, 0.0f, innerRadius, outerRadius, feather, center, colorVector);
+        this.appendCircleStrokeVertex(3.0f, x, bottom, 0.0f, innerRadius, outerRadius, feather, center, colorVector);
+        this.appendCircleStrokeVertex(3.0f, right, y, 0.0f, innerRadius, outerRadius, feather, center, colorVector);
+        this.appendCircleStrokeVertex(3.0f, right, bottom, 0.0f, innerRadius, outerRadius, feather, center, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
@@ -317,430 +309,398 @@ public class RenderBatchBuilder {
         this(4);
     }
 
-    public RenderBatchBuilder k(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, float f9, float f10, float f11, float f12, Color color, Color color2) {
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        RenderVector4f renderVector4f2 = new RenderVector4f(color2.getRed(), color2.getGreen(), color2.getBlue(), color2.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.V(9.0f, f4, f5, f6, renderVector4f);
-        this.V(9.0f, f, f2, f3, renderVector4f);
-        this.V(9.0f, f7, f8, f9, renderVector4f2);
-        this.V(9.0f, f10, f11, f12, renderVector4f2);
-        this.B("quad");
+    public RenderBatchBuilder addGradientQuad(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, Color startColor, Color endColor) {
+        RenderVector4f startColorVector = new RenderVector4f(startColor.getRed(), startColor.getGreen(), startColor.getBlue(), startColor.getAlpha());
+        RenderVector4f endColorVector = new RenderVector4f(endColor.getRed(), endColor.getGreen(), endColor.getBlue(), endColor.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendSolidColorVertex(9.0f, x2, y2, z2, startColorVector);
+        this.appendSolidColorVertex(9.0f, x1, y1, z1, startColorVector);
+        this.appendSolidColorVertex(9.0f, x3, y3, z3, endColorVector);
+        this.appendSolidColorVertex(9.0f, x4, y4, z4, endColorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public RenderBatchBuilder n(float f, float f2, float f3, float f4, float f5, float f6, Color color) {
-        float f7 = f5 + f6;
-        float f8 = Math.min(f, f3) - f7;
-        float f9 = Math.max(f, f3) + f7;
-        float f10 = Math.min(f2, f4) - f7;
-        float f11 = Math.max(f2, f4) + f7;
-        FloatPair floatPair = new FloatPair(f, f2);
-        FloatPair floatPair2 = new FloatPair(f3, f4);
-        RenderVector3f renderVector3f = new RenderVector3f(f5, f6, 0.0f);
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.q(18.0f, new RenderVector3f(f8, f10, 0.0f), this.z, renderVector4f, 0.0f, 0.0f, floatPair, 0.0f, 0.0f, this.z, floatPair2, this.w, renderVector3f, 0.0f, this.w);
-        this.q(18.0f, new RenderVector3f(f8, f11, 0.0f), this.z, renderVector4f, 0.0f, 0.0f, floatPair, 0.0f, 0.0f, this.z, floatPair2, this.w, renderVector3f, 0.0f, this.w);
-        this.q(18.0f, new RenderVector3f(f9, f10, 0.0f), this.z, renderVector4f, 0.0f, 0.0f, floatPair, 0.0f, 0.0f, this.z, floatPair2, this.w, renderVector3f, 0.0f, this.w);
-        this.q(18.0f, new RenderVector3f(f9, f11, 0.0f), this.z, renderVector4f, 0.0f, 0.0f, floatPair, 0.0f, 0.0f, this.z, floatPair2, this.w, renderVector3f, 0.0f, this.w);
-        this.B("quad");
+    public RenderBatchBuilder addDottedLine(float startX, float startY, float endX, float endY, float thickness, float spacing, Color color) {
+        float boundsPadding = thickness + spacing;
+        float left = Math.min(startX, endX) - boundsPadding;
+        float right = Math.max(startX, endX) + boundsPadding;
+        float top = Math.min(startY, endY) - boundsPadding;
+        float bottom = Math.max(startY, endY) + boundsPadding;
+        FloatPair start = new FloatPair(startX, startY);
+        FloatPair end = new FloatPair(endX, endY);
+        RenderVector3f lineParameters = new RenderVector3f(thickness, spacing, 0.0f);
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendVertex(18.0f, new RenderVector3f(left, top, 0.0f), this.zeroPair, colorVector, 0.0f, 0.0f, start, 0.0f, 0.0f, this.zeroPair, end, this.zeroVector4, lineParameters, 0.0f, this.zeroVector4);
+        this.appendVertex(18.0f, new RenderVector3f(left, bottom, 0.0f), this.zeroPair, colorVector, 0.0f, 0.0f, start, 0.0f, 0.0f, this.zeroPair, end, this.zeroVector4, lineParameters, 0.0f, this.zeroVector4);
+        this.appendVertex(18.0f, new RenderVector3f(right, top, 0.0f), this.zeroPair, colorVector, 0.0f, 0.0f, start, 0.0f, 0.0f, this.zeroPair, end, this.zeroVector4, lineParameters, 0.0f, this.zeroVector4);
+        this.appendVertex(18.0f, new RenderVector3f(right, bottom, 0.0f), this.zeroPair, colorVector, 0.0f, 0.0f, start, 0.0f, 0.0f, this.zeroPair, end, this.zeroVector4, lineParameters, 0.0f, this.zeroVector4);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public VertexCoordinateMode m() {
-        return this.E;
+    public VertexCoordinateMode getCoordinateMode() {
+        return this.coordinateMode;
     }
 
-    public void o(int n, float f) {
-        this.J[n] = f;
+    public void setVertexValue(int index, float value) {
+        this.vertexData[index] = value;
     }
 
-    public PrimitiveTopology q() {
-        return this.H;
+    public PrimitiveTopology getTopology() {
+        return this.topology;
     }
 
-    private void o(float f, float f2, float f3, float f4, float f5, RenderVector4f renderVector4f, float f6, RenderVector4f renderVector4f2, RenderVector4f renderVector4f3) {
-        RenderVector3f renderVector3f = new RenderVector3f(f2, f3, f4);
-        this.q(f, renderVector3f, this.z, renderVector4f2, 0.0f, 0.0f, this.z, 0.0f, 0.0f, this.z, this.z, renderVector4f, new RenderVector3f(f5, 0.0f, 0.0f), f6, renderVector4f3);
+    private void appendParameterizedShapeVertex(float shaderMode, float x, float y, float z, float radius, RenderVector4f innerRect, float spread, RenderVector4f color, RenderVector4f corners) {
+        RenderVector3f position = new RenderVector3f(x, y, z);
+        this.appendVertex(shaderMode, position, this.zeroPair, color, 0.0f, 0.0f, this.zeroPair, 0.0f, 0.0f, this.zeroPair, this.zeroPair, innerRect, new RenderVector3f(radius, 0.0f, 0.0f), spread, corners);
     }
 
-    private void q(float f, RenderVector3f renderVector3f, FloatPair floatPair, RenderVector4f renderVector4f, float f2, float f3, FloatPair floatPair2, float f4, float f5, FloatPair floatPair3, FloatPair floatPair4, RenderVector4f renderVector4f2, RenderVector3f renderVector3f2, float f6, RenderVector4f renderVector4f3) {
-        float f7 = 0.003921569f;
-        float[] fArray = new float[]{f, renderVector3f.t, renderVector3f.n, renderVector3f.x, floatPair.l, floatPair.S, renderVector4f.N * f7, renderVector4f.w * f7, renderVector4f.Y * f7, renderVector4f.J * f7, f2, f3, floatPair2.l, floatPair2.S, f4, f5, floatPair3.l, floatPair3.S, floatPair4.l, floatPair4.S, renderVector4f2.N, renderVector4f2.w, renderVector4f2.Y, renderVector4f2.J, renderVector3f2.t, renderVector3f2.n, renderVector3f2.x, f6, renderVector4f3.N, renderVector4f3.w, renderVector4f3.Y, renderVector4f3.J};
-        int n = this.v * RenderBatchManager.M().s().Q();
-        System.arraycopy(fArray, 0, this.J, n, fArray.length);
-        ++this.v;
+    private void appendVertex(float shaderMode, RenderVector3f position, FloatPair textureCoordinates, RenderVector4f color, float inner, float feather, FloatPair center, float middleAngle, float sweepAngle, FloatPair screenDimensions, FloatPair origin, RenderVector4f innerRect, RenderVector3f radius, float spread, RenderVector4f corners) {
+        float colorChannelScale = 0.003921569f;
+        float[] encodedVertex = new float[]{shaderMode, position.x, position.y, position.z, textureCoordinates.first, textureCoordinates.second, color.x * colorChannelScale, color.y * colorChannelScale, color.z * colorChannelScale, color.w * colorChannelScale, inner, feather, center.first, center.second, middleAngle, sweepAngle, screenDimensions.first, screenDimensions.second, origin.first, origin.second, innerRect.x, innerRect.y, innerRect.z, innerRect.w, radius.x, radius.y, radius.z, spread, corners.x, corners.y, corners.z, corners.w};
+        int destinationOffset = this.vertexCount * RenderBatchManager.getInstance().getBatchBuffer().getVertexStride();
+        System.arraycopy(encodedVertex, 0, this.vertexData, destinationOffset, encodedVertex.length);
+        ++this.vertexCount;
     }
 
-    public Supplier<Void> d() {
-        return this.x;
+    public Supplier<Void> getDrawSetupCallback() {
+        return this.drawSetupCallback;
     }
 
-    public RenderBatchBuilder V(Supplier<Void> supplier) {
-        this.x = supplier;
+    public RenderBatchBuilder setDrawSetupCallback(Supplier<Void> callback) {
+        this.drawSetupCallback = callback;
         return this;
     }
 
-    private void j(float f, float f2, float f3, float f4, RenderVector3f renderVector3f, RenderVector4f renderVector4f, RenderVector4f renderVector4f2) {
-        RenderVector3f renderVector3f2 = new RenderVector3f(f2, f3, f4);
-        this.q(f, renderVector3f2, this.z, renderVector4f2, 0.0f, 0.0f, this.z, 0.0f, 0.0f, this.z, this.z, renderVector4f, renderVector3f, 0.0f, this.w);
+    private void appendRoundedShapeBoundsVertex(float shaderMode, float x, float y, float z, RenderVector3f radius, RenderVector4f innerRect, RenderVector4f color) {
+        RenderVector3f position = new RenderVector3f(x, y, z);
+        this.appendVertex(shaderMode, position, this.zeroPair, color, 0.0f, 0.0f, this.zeroPair, 0.0f, 0.0f, this.zeroPair, this.zeroPair, innerRect, radius, 0.0f, this.zeroVector4);
     }
 
-    public RenderBatchBuilder d(float f, float f2, float f3, float f4, Color color) {
-        float f5 = f + f3;
-        float f6 = f2 + f4;
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.V(9.0f, f, f2, 0.0f, renderVector4f);
-        this.V(9.0f, f, f6, 0.0f, renderVector4f);
-        this.V(9.0f, f5, f2, 0.0f, renderVector4f);
-        this.V(9.0f, f5, f6, 0.0f, renderVector4f);
-        this.B("quad");
+    public RenderBatchBuilder addSolidRect(float x, float y, float width, float height, Color color) {
+        float right = x + width;
+        float bottom = y + height;
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendSolidColorVertex(9.0f, x, y, 0.0f, colorVector);
+        this.appendSolidColorVertex(9.0f, x, bottom, 0.0f, colorVector);
+        this.appendSolidColorVertex(9.0f, right, y, 0.0f, colorVector);
+        this.appendSolidColorVertex(9.0f, right, bottom, 0.0f, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public RenderBatchBuilder b(float f, float f2, float f3, float f4, float f5, float f6, float f7, Color color) {
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.LINES);
-        this.L(f7);
-        this.V(9.0f, f, f2, f3, renderVector4f);
-        this.V(9.0f, f4, f5, f6, renderVector4f);
-        this.B("line");
+    public RenderBatchBuilder addLine(float x1, float y1, float z1, float x2, float y2, float z2, float width, Color color) {
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.LINES);
+        this.setLineWidth(width);
+        this.appendSolidColorVertex(9.0f, x1, y1, z1, colorVector);
+        this.appendSolidColorVertex(9.0f, x2, y2, z2, colorVector);
+        this.generateIndicesForCurrentBatch("line");
         return this;
     }
 
-    public RenderBatchBuilder v(float f, float f2, float f3, float f4, Color color) {
-        float f5 = Math.max(f4 / 2.0f - 0.5f, 0.25f);
-        float f6 = f2 + f4 / 2.0f;
-        float f7 = f + f4 / 2.0f;
-        float f8 = f + f3 - f4 / 2.0f;
-        float f9 = 0.5f;
-        float f10 = f - f9;
-        float f11 = f2 - f9;
-        float f12 = f + f3 + f9;
-        float f13 = f2 + f4 + f9;
-        RenderVector4f renderVector4f = new RenderVector4f(f7, f6, f8, f6);
-        RenderVector3f renderVector3f = new RenderVector3f(f5, 0.0f, 0.0f);
-        RenderVector4f renderVector4f2 = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.j(19.0f, f10, f11, 0.0f, renderVector3f, renderVector4f, renderVector4f2);
-        this.j(19.0f, f10, f13, 0.0f, renderVector3f, renderVector4f, renderVector4f2);
-        this.j(19.0f, f12, f11, 0.0f, renderVector3f, renderVector4f, renderVector4f2);
-        this.j(19.0f, f12, f13, 0.0f, renderVector3f, renderVector4f, renderVector4f2);
-        this.B("quad");
+    public RenderBatchBuilder addCapsule(float x, float y, float width, float height, Color color) {
+        float radius = Math.max(height / 2.0f - 0.5f, 0.25f);
+        float centerY = y + height / 2.0f;
+        float leftCenterX = x + height / 2.0f;
+        float rightCenterX = x + width - height / 2.0f;
+        float antialiasPadding = 0.5f;
+        float left = x - antialiasPadding;
+        float top = y - antialiasPadding;
+        float right = x + width + antialiasPadding;
+        float bottom = y + height + antialiasPadding;
+        RenderVector4f centerLine = new RenderVector4f(leftCenterX, centerY, rightCenterX, centerY);
+        RenderVector3f capsuleParameters = new RenderVector3f(radius, 0.0f, 0.0f);
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendRoundedShapeBoundsVertex(19.0f, left, top, 0.0f, capsuleParameters, centerLine, colorVector);
+        this.appendRoundedShapeBoundsVertex(19.0f, left, bottom, 0.0f, capsuleParameters, centerLine, colorVector);
+        this.appendRoundedShapeBoundsVertex(19.0f, right, top, 0.0f, capsuleParameters, centerLine, colorVector);
+        this.appendRoundedShapeBoundsVertex(19.0f, right, bottom, 0.0f, capsuleParameters, centerLine, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public RenderBatchBuilder P(float f, float f2, float f3, float f4, float f5, float f6, float f7, Color color) {
-        float f8 = (f3 += f5 * 4.0f) / 2.0f;
-        FloatPair floatPair = new FloatPair((f -= f5 * 2.0f) + f8, (f2 -= f5 * 2.0f) + f8);
-        f8 = f8 - (f4 /= 2.0f) - 1.0f;
-        float f9 = f8 - f4;
-        float f10 = f + f3;
-        float f11 = f2 + f3;
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        if (f7 != -360.0f) {
-            f7 %= 360.0f;
+    public RenderBatchBuilder addArcStroke(float x, float y, float diameter, float strokeWidth, float feather, float startAngle, float sweepAngle, Color color) {
+        float boundsSize = diameter += feather * 4.0f;
+        float halfBoundsSize = boundsSize / 2.0f;
+        FloatPair center = new FloatPair((x -= feather * 2.0f) + halfBoundsSize, (y -= feather * 2.0f) + halfBoundsSize);
+        float halfStrokeWidth = strokeWidth /= 2.0f;
+        float outerRadius = halfBoundsSize - halfStrokeWidth - 1.0f;
+        float innerRadius = outerRadius - halfStrokeWidth;
+        float right = x + boundsSize;
+        float bottom = y + boundsSize;
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        if (sweepAngle != -360.0f) {
+            sweepAngle %= 360.0f;
         }
-        float f12 = f6 % 360.0f + f7 * 0.5f;
-        this.b(PrimitiveTopology.QUADS);
-        this.U(0.0f, f, f2, 0.0f, f9, f8, f5, floatPair, f12, f7, renderVector4f);
-        this.U(0.0f, f, f11, 0.0f, f9, f8, f5, floatPair, f12, f7, renderVector4f);
-        this.U(0.0f, f10, f2, 0.0f, f9, f8, f5, floatPair, f12, f7, renderVector4f);
-        this.U(0.0f, f10, f11, 0.0f, f9, f8, f5, floatPair, f12, f7, renderVector4f);
-        this.B("quad");
+        float middleAngle = startAngle % 360.0f + sweepAngle * 0.5f;
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendArcStrokeVertex(0.0f, x, y, 0.0f, innerRadius, outerRadius, feather, center, middleAngle, sweepAngle, colorVector);
+        this.appendArcStrokeVertex(0.0f, x, bottom, 0.0f, innerRadius, outerRadius, feather, center, middleAngle, sweepAngle, colorVector);
+        this.appendArcStrokeVertex(0.0f, right, y, 0.0f, innerRadius, outerRadius, feather, center, middleAngle, sweepAngle, colorVector);
+        this.appendArcStrokeVertex(0.0f, right, bottom, 0.0f, innerRadius, outerRadius, feather, center, middleAngle, sweepAngle, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public RenderBatchBuilder(int n) {
-        this(n, VertexCoordinateMode.DEFAULT, false);
+    public RenderBatchBuilder(int vertexCapacity) {
+        this(vertexCapacity, VertexCoordinateMode.DEFAULT, false);
     }
 
-    public GlImageTexture C() {
-        return this.V;
+    public GlImageTexture getTexture() {
+        return this.texture;
     }
 
-    public GlScissorRect c() {
-        return this.G;
+    public GlScissorRect getScissorRect() {
+        return this.scissorRect;
     }
 
-    public RenderBatchBuilder k(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, float f9, float f10, Color color) {
-        float f11;
-        if (f3 == f4) {
-            f11 = f5 / f6;
-            f3 *= f11;
+    public RenderBatchBuilder addItemTextureRect(float x, float y, float width, float height, float textureWidth, float textureHeight, float minU, float minV, float maxU, float maxV, Color color) {
+        float right;
+        if (width == height) {
+            float textureAspectRatio = textureWidth / textureHeight;
+            width *= textureAspectRatio;
         }
-        f11 = f + f3;
-        float f12 = f2 + f4;
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.w(14.0f, f, f2, 0.0f, f7, f8, renderVector4f);
-        this.w(14.0f, f, f12, 0.0f, f7, f10, renderVector4f);
-        this.w(14.0f, f11, f2, 0.0f, f9, f8, renderVector4f);
-        this.w(14.0f, f11, f12, 0.0f, f9, f10, renderVector4f);
-        this.B("quad");
+        right = x + width;
+        float bottom = y + height;
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendTexturedVertex(14.0f, x, y, 0.0f, minU, minV, colorVector);
+        this.appendTexturedVertex(14.0f, x, bottom, 0.0f, minU, maxV, colorVector);
+        this.appendTexturedVertex(14.0f, right, y, 0.0f, maxU, minV, colorVector);
+        this.appendTexturedVertex(14.0f, right, bottom, 0.0f, maxU, maxV, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public RenderBatchBuilder t(float f, float f2, SmoothFontGlyph smoothFontGlyph, int n, Color color, float f3) {
-        float f4 = f + smoothFontGlyph.X * f3;
-        float f5 = f + smoothFontGlyph.g * f3;
-        float f6 = f2 + smoothFontGlyph.a * f3;
-        float f7 = f2 + smoothFontGlyph.G * f3;
-        this.o(new GlImageTexture(n));
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.w(15.0f, f4, f6, 0.0f, smoothFontGlyph.t, smoothFontGlyph.J, renderVector4f);
-        this.w(15.0f, f4, f7, 0.0f, smoothFontGlyph.t, smoothFontGlyph.B, renderVector4f);
-        this.w(15.0f, f5, f6, 0.0f, smoothFontGlyph.w, smoothFontGlyph.J, renderVector4f);
-        this.w(15.0f, f5, f7, 0.0f, smoothFontGlyph.w, smoothFontGlyph.B, renderVector4f);
-        this.B("quad");
-        return this;
+    public RenderBatchBuilder addMinecraftFontGlyph(float x, float y, SmoothFontGlyph glyph, int textureId, Color color, float scale) {
+        return this.addGlyphQuad(15.0f, x, y, glyph, new GlImageTexture(textureId), color, scale);
     }
 
-    public RenderBatchBuilder q(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, float f9, float f10, float f11, float f12, Color color) {
-        return this.k(f, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, color, color);
+    public RenderBatchBuilder addQuad(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, Color color) {
+        return this.addGradientQuad(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, color, color);
     }
 
-    public RenderBatchBuilder Y(float f, float f2, float f3, float f4, float f5, float f6, Color color, float f7, float f8, float f9, Color color2, Color color3, float f10, float f11, Color color4, boolean bl) {
-        if (f3 == 0.0f || f4 == 0.0f) {
+    public RenderBatchBuilder addCompositeRoundedRect(float x, float y, float width, float height, float shadowSpread, float cornerRadius, Color shadowColor, float shadowOffsetX, float shadowOffsetY, float strokeWidth, Color strokeColor, Color fillColor, float circleThickness, float circleYOffset, Color circleColor, boolean texturePassthrough) {
+        if (width == 0.0f || height == 0.0f) {
             return this;
         }
-        float f12 = f5;
-        float f13 = f - f12;
-        float f14 = f2 - f12;
-        float f15 = f + f3 + f12;
-        float f16 = f2 + f4 + f12;
-        float f17 = 0.003921569f;
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        RenderVector4f renderVector4f2 = new RenderVector4f((float)color2.getRed() * f17, (float)color2.getGreen() * f17, (float)color2.getBlue() * f17, (float)color2.getAlpha() * f17);
-        FloatPair floatPair = new FloatPair((float)color3.getRed() * f17, (float)color3.getGreen() * f17);
-        FloatPair floatPair2 = new FloatPair((float)color3.getBlue() * f17, (float)color3.getAlpha() * f17);
-        FloatPair floatPair3 = new FloatPair((float)color4.getBlue() * f17, (float)color4.getAlpha() * f17);
-        float f18 = (float)color4.getRed() * f17;
-        float f19 = (float)color4.getGreen() * f17;
-        RenderVector4f renderVector4f3 = new RenderVector4f(f, f2, f3, f4);
-        RenderVector3f renderVector3f = new RenderVector3f(f6, f18, f19);
-        FloatPair floatPair4 = new FloatPair(f7, f8);
-        float f20 = bl ? 1.0f : 0.0f;
-        this.b(PrimitiveTopology.QUADS);
-        this.q(13.0f, new RenderVector3f(f13, f14, 0.0f), floatPair3, renderVector4f, f9, f11, floatPair4, f10, f20, floatPair, floatPair2, renderVector4f3, renderVector3f, f12, renderVector4f2);
-        this.q(13.0f, new RenderVector3f(f13, f16, 0.0f), floatPair3, renderVector4f, f9, f11, floatPair4, f10, f20, floatPair, floatPair2, renderVector4f3, renderVector3f, f12, renderVector4f2);
-        this.q(13.0f, new RenderVector3f(f15, f14, 0.0f), floatPair3, renderVector4f, f9, f11, floatPair4, f10, f20, floatPair, floatPair2, renderVector4f3, renderVector3f, f12, renderVector4f2);
-        this.q(13.0f, new RenderVector3f(f15, f16, 0.0f), floatPair3, renderVector4f, f9, f11, floatPair4, f10, f20, floatPair, floatPair2, renderVector4f3, renderVector3f, f12, renderVector4f2);
-        this.B("quad");
+        float left = x - shadowSpread;
+        float top = y - shadowSpread;
+        float right = x + width + shadowSpread;
+        float bottom = y + height + shadowSpread;
+        float channelScale = 0.003921569f;
+        RenderVector4f shadowColorVector = new RenderVector4f(shadowColor.getRed(), shadowColor.getGreen(), shadowColor.getBlue(), shadowColor.getAlpha());
+        RenderVector4f strokeColorVector = new RenderVector4f(strokeColor.getRed() * channelScale, strokeColor.getGreen() * channelScale, strokeColor.getBlue() * channelScale, strokeColor.getAlpha() * channelScale);
+        FloatPair fillRedGreen = new FloatPair(fillColor.getRed() * channelScale, fillColor.getGreen() * channelScale);
+        FloatPair fillBlueAlpha = new FloatPair(fillColor.getBlue() * channelScale, fillColor.getAlpha() * channelScale);
+        FloatPair circleBlueAlpha = new FloatPair(circleColor.getBlue() * channelScale, circleColor.getAlpha() * channelScale);
+        float circleRed = circleColor.getRed() * channelScale;
+        float circleGreen = circleColor.getGreen() * channelScale;
+        RenderVector4f rect = new RenderVector4f(x, y, width, height);
+        RenderVector3f radiusAndCircleRedGreen = new RenderVector3f(cornerRadius, circleRed, circleGreen);
+        FloatPair shadowOffset = new FloatPair(shadowOffsetX, shadowOffsetY);
+        float texturePassthroughFlag = texturePassthrough ? 1.0f : 0.0f;
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendVertex(13.0f, new RenderVector3f(left, top, 0.0f), circleBlueAlpha, shadowColorVector, strokeWidth, circleYOffset, shadowOffset, circleThickness, texturePassthroughFlag, fillRedGreen, fillBlueAlpha, rect, radiusAndCircleRedGreen, shadowSpread, strokeColorVector);
+        this.appendVertex(13.0f, new RenderVector3f(left, bottom, 0.0f), circleBlueAlpha, shadowColorVector, strokeWidth, circleYOffset, shadowOffset, circleThickness, texturePassthroughFlag, fillRedGreen, fillBlueAlpha, rect, radiusAndCircleRedGreen, shadowSpread, strokeColorVector);
+        this.appendVertex(13.0f, new RenderVector3f(right, top, 0.0f), circleBlueAlpha, shadowColorVector, strokeWidth, circleYOffset, shadowOffset, circleThickness, texturePassthroughFlag, fillRedGreen, fillBlueAlpha, rect, radiusAndCircleRedGreen, shadowSpread, strokeColorVector);
+        this.appendVertex(13.0f, new RenderVector3f(right, bottom, 0.0f), circleBlueAlpha, shadowColorVector, strokeWidth, circleYOffset, shadowOffset, circleThickness, texturePassthroughFlag, fillRedGreen, fillBlueAlpha, rect, radiusAndCircleRedGreen, shadowSpread, strokeColorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public RenderBatchBuilder(int n, VertexCoordinateMode vertexCoordinateMode, boolean bl) {
-        this.b = new RenderVector3f(0.0f, 0.0f, 0.0f);
-        this.w = new RenderVector4f(0.0f, 0.0f, 0.0f, 0.0f);
-        this.E = vertexCoordinateMode;
-        this.C = BufferedGuiRenderPrimitives.X.c().m();
-        if (BufferedGuiRenderPrimitives.u != null) {
-            this.G = new GlScissorRect(BufferedGuiRenderPrimitives.u.v, BufferedGuiRenderPrimitives.u.F, BufferedGuiRenderPrimitives.u.I, BufferedGuiRenderPrimitives.u.f);
+    public RenderBatchBuilder(int vertexCapacity, VertexCoordinateMode coordinateMode, boolean worldSpace) {
+        this.zeroVector3 = new RenderVector3f(0.0f, 0.0f, 0.0f);
+        this.zeroVector4 = new RenderVector4f(0.0f, 0.0f, 0.0f, 0.0f);
+        this.coordinateMode = coordinateMode;
+        this.modelMatrix = BufferedGuiRenderPrimitives.matrixStack.peek().shallowCopy();
+        if (BufferedGuiRenderPrimitives.scissorRect != null) {
+            this.scissorRect = new GlScissorRect(BufferedGuiRenderPrimitives.scissorRect.x, BufferedGuiRenderPrimitives.scissorRect.y, BufferedGuiRenderPrimitives.scissorRect.width, BufferedGuiRenderPrimitives.scissorRect.height);
         }
-        this.c = bl;
-        this.I = n;
-        this.g = BufferedGuiRenderPrimitives.b.L();
+        this.worldSpace = worldSpace;
+        this.vertexCapacity = vertexCapacity;
+        this.capabilityState = BufferedGuiRenderPrimitives.capabilityState.copy();
     }
 
-    public Supplier<Void> h() {
-        return this.o;
+    public Supplier<Void> getStandaloneRenderCallback() {
+        return this.standaloneRenderCallback;
     }
 
-    public void N(String string, int n) {
-        this.a += this.H.verticesCount * n;
-        switch (string) {
+    public void generateIndices(String primitiveName, int precedingBatchCount) {
+        this.baseVertexIndex += this.topology.verticesCount * precedingBatchCount;
+        switch (primitiveName) {
             case "quad": {
-                this.f[0] = this.a;
-                this.f[1] = this.a + 1;
-                this.f[2] = this.a + 2;
-                this.f[3] = this.a + 1;
-                this.f[4] = this.a + 3;
-                this.f[5] = this.a + 2;
+                this.indices[0] = this.baseVertexIndex;
+                this.indices[1] = this.baseVertexIndex + 1;
+                this.indices[2] = this.baseVertexIndex + 2;
+                this.indices[3] = this.baseVertexIndex + 1;
+                this.indices[4] = this.baseVertexIndex + 3;
+                this.indices[5] = this.baseVertexIndex + 2;
                 break;
             }
             case "line": {
-                this.f[0] = this.a;
-                this.f[1] = this.a + 1;
+                this.indices[0] = this.baseVertexIndex;
+                this.indices[1] = this.baseVertexIndex + 1;
                 break;
             }
             case "triangle": {
-                this.f[0] = this.a;
-                this.f[1] = this.a + 2;
-                this.f[2] = this.a + 1;
+                this.indices[0] = this.baseVertexIndex;
+                this.indices[1] = this.baseVertexIndex + 2;
+                this.indices[2] = this.baseVertexIndex + 1;
                 break;
             }
             default: {
-                throw new IllegalArgumentException("Unknown mode: " + string);
+                throw new IllegalArgumentException("Unknown mode: " + primitiveName);
             }
         }
     }
 
-    public RenderBatchBuilder Q(PrimitiveTopology primitiveTopology, int n) {
-        if (this.H != null) {
+    public RenderBatchBuilder initializeTopology(PrimitiveTopology topology, int vertexStride) {
+        if (this.topology != null) {
             return this;
         }
-        this.H = primitiveTopology;
-        this.J = new float[n * this.I];
-        this.f = new int[primitiveTopology.indicesCount];
+        this.topology = topology;
+        this.vertexData = new float[vertexStride * this.vertexCapacity];
+        this.indices = new int[topology.indicesCount];
         return this;
     }
 
-    public GlCapabilityState A() {
-        return this.g;
+    public GlCapabilityState getCapabilityState() {
+        return this.capabilityState;
     }
 
-    public RenderBatchBuilder o(GlImageTexture glImageTexture) {
-        this.V = glImageTexture;
+    public RenderBatchBuilder setTexture(GlImageTexture texture) {
+        this.texture = texture;
         return this;
     }
 
-    public RenderBatchBuilder c(float f, float f2, float f3, float f4, Color color) {
-        return this.X(f, f2, f3, f4, color, 1.5f, 1.0f, 0);
+    public RenderBatchBuilder addDefaultRoundedRect(float x, float y, float width, float height, Color color) {
+        return this.addCornerMaskedRoundedRect(x, y, width, height, color, 1.5f, 1.0f, 0);
     }
 
-    public RenderBatchBuilder k(float f, float f2, float f3, float f4, Color color) {
-        f -= f4 / 2.0f;
-        f2 -= f4 / 2.0f;
-        float f5 = f3 += f4;
-        float f6 = f3;
+    public RenderBatchBuilder addTexturedCircle(float x, float y, float diameter, float feather, Color color) {
+        x -= feather / 2.0f;
+        y -= feather / 2.0f;
+        float boundsWidth = diameter += feather;
+        float boundsHeight = diameter;
         if (color == null) {
             color = Color.WHITE;
         }
-        float f7 = f + f5;
-        float f8 = f2 + f6;
-        float f9 = f3 / 2.0f;
-        FloatPair floatPair = new FloatPair(f + f5 / 2.0f, f2 + f6 / 2.0f);
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        float f10 = this.V != null ? this.V.C : 0.0f;
-        float f11 = this.V != null ? this.V.w : 0.0f;
-        float f12 = this.V != null ? this.V.h : 1.0f;
-        float f13 = this.V != null ? this.V.p : 1.0f;
-        this.d(4.0f, f, f2, 0.0f, f10, f11, f9, f4, floatPair, renderVector4f);
-        this.d(4.0f, f, f8, 0.0f, f10, f13, f9, f4, floatPair, renderVector4f);
-        this.d(4.0f, f7, f2, 0.0f, f12, f11, f9, f4, floatPair, renderVector4f);
-        this.d(4.0f, f7, f8, 0.0f, f12, f13, f9, f4, floatPair, renderVector4f);
-        this.B("quad");
+        float right = x + boundsWidth;
+        float bottom = y + boundsHeight;
+        float radius = diameter / 2.0f;
+        FloatPair center = new FloatPair(x + boundsWidth / 2.0f, y + boundsHeight / 2.0f);
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        float minU = this.texture != null ? this.texture.minU : 0.0f;
+        float minV = this.texture != null ? this.texture.minV : 0.0f;
+        float maxU = this.texture != null ? this.texture.maxU : 1.0f;
+        float maxV = this.texture != null ? this.texture.maxV : 1.0f;
+        this.appendTexturedCircleVertexData(4.0f, x, y, 0.0f, minU, minV, radius, feather, center, colorVector);
+        this.appendTexturedCircleVertexData(4.0f, x, bottom, 0.0f, minU, maxV, radius, feather, center, colorVector);
+        this.appendTexturedCircleVertexData(4.0f, right, y, 0.0f, maxU, minV, radius, feather, center, colorVector);
+        this.appendTexturedCircleVertexData(4.0f, right, bottom, 0.0f, maxU, maxV, radius, feather, center, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    private void N(float f, float f2, float f3, float f4, RenderVector4f renderVector4f, float f5, float f6, RenderVector4f renderVector4f2, RenderVector4f renderVector4f3) {
-        RenderVector3f renderVector3f = new RenderVector3f(f2, f3, f4);
-        RenderVector3f renderVector3f2 = new RenderVector3f(f5, 0.0f, 0.0f);
-        this.q(f, renderVector3f, this.z, renderVector4f3, 0.0f, f6, this.z, 0.0f, 0.0f, this.z, this.z, renderVector4f, renderVector3f2, 0.0f, renderVector4f2);
+    private void appendInvertedRoundedRectVertex(float shaderMode, float x, float y, float z, RenderVector4f innerRect, float radius, float feather, RenderVector4f corners, RenderVector4f color) {
+        RenderVector3f position = new RenderVector3f(x, y, z);
+        RenderVector3f radiusVector = new RenderVector3f(radius, 0.0f, 0.0f);
+        this.appendVertex(shaderMode, position, this.zeroPair, color, 0.0f, feather, this.zeroPair, 0.0f, 0.0f, this.zeroPair, this.zeroPair, innerRect, radiusVector, 0.0f, corners);
     }
 
-    public RenderBatchBuilder a(float f, float f2, float f3, float f4, float f5, float f6, int n, Color color) {
-        float f7 = 0.5f;
-        if (f5 <= 0.0f) {
-            f7 = 0.0f;
+    public RenderBatchBuilder addInvertedRoundedRectCorners(float x, float y, float width, float height, float cornerRadius, float feather, int cornerMask, Color color) {
+        float antialiasPadding = 0.5f;
+        if (cornerRadius <= 0.0f) {
+            antialiasPadding = 0.0f;
         }
-        float f8 = f6;
-        float f9 = Math.max(0.0f, (f5 += f7 * 2.0f) - f8);
-        if (f5 > 0.0f) {
-            f = (float)((double)f - ((double)f8 - 0.5));
-            f2 -= f8;
-            f4 = (float)((double)f4 + (double)f8 * 1.5);
-            f3 += f8 * 1.0f;
+        float edgeFeather = feather;
+        float shaderRadius = Math.max(0.0f, (cornerRadius += antialiasPadding * 2.0f) - edgeFeather);
+        if (cornerRadius > 0.0f) {
+            x = (float)((double)x - ((double)edgeFeather - 0.5));
+            y -= edgeFeather;
+            height = (float)((double)height + (double)edgeFeather * 1.5);
+            width += edgeFeather;
         }
-        float f10 = f + f7;
-        float f11 = f + f3 - f7;
-        float f12 = f2 + f7;
-        float f13 = f2 + f4 - f7;
-        boolean bl = (n & 1) != 0;
-        boolean bl2 = (n & 2) != 0;
-        boolean bl3 = (n & 4) != 0;
-        boolean bl4 = (n & 8) != 0;
-        RenderVector4f renderVector4f = new RenderVector4f(bl ? 1.0f : 0.0f, bl2 ? 1.0f : 0.0f, bl3 ? 1.0f : 0.0f, bl4 ? 1.0f : 0.0f);
-        RenderVector4f renderVector4f2 = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        RenderVector4f renderVector4f3 = new RenderVector4f(f + f5, f2 + f5, f + f3 - f5, f2 + f4 - f5);
-        this.N(12.0f, f10, f12, 0.0f, renderVector4f3, f9, f8, renderVector4f, renderVector4f2);
-        this.N(12.0f, f10, f13, 0.0f, renderVector4f3, f9, f8, renderVector4f, renderVector4f2);
-        this.N(12.0f, f11, f12, 0.0f, renderVector4f3, f9, f8, renderVector4f, renderVector4f2);
-        this.N(12.0f, f11, f13, 0.0f, renderVector4f3, f9, f8, renderVector4f, renderVector4f2);
+        float left = x + antialiasPadding;
+        float right = x + width - antialiasPadding;
+        float top = y + antialiasPadding;
+        float bottom = y + height - antialiasPadding;
+        boolean topLeft = (cornerMask & 1) != 0;
+        boolean topRight = (cornerMask & 2) != 0;
+        boolean bottomRight = (cornerMask & 4) != 0;
+        boolean bottomLeft = (cornerMask & 8) != 0;
+        RenderVector4f enabledCorners = new RenderVector4f(topLeft ? 1.0f : 0.0f, topRight ? 1.0f : 0.0f, bottomRight ? 1.0f : 0.0f, bottomLeft ? 1.0f : 0.0f);
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        RenderVector4f innerRect = new RenderVector4f(x + cornerRadius, y + cornerRadius, x + width - cornerRadius, y + height - cornerRadius);
+        this.appendInvertedRoundedRectVertex(12.0f, left, top, 0.0f, innerRect, shaderRadius, edgeFeather, enabledCorners, colorVector);
+        this.appendInvertedRoundedRectVertex(12.0f, left, bottom, 0.0f, innerRect, shaderRadius, edgeFeather, enabledCorners, colorVector);
+        this.appendInvertedRoundedRectVertex(12.0f, right, top, 0.0f, innerRect, shaderRadius, edgeFeather, enabledCorners, colorVector);
+        this.appendInvertedRoundedRectVertex(12.0f, right, bottom, 0.0f, innerRect, shaderRadius, edgeFeather, enabledCorners, colorVector);
         return this;
     }
 
-    private void V(float f, float f2, float f3, float f4, RenderVector4f renderVector4f) {
-        this.n(f, f2, f3, f4, this.w, 0.0f, renderVector4f);
+    private void appendSolidColorVertex(float shaderMode, float x, float y, float z, RenderVector4f color) {
+        this.appendSolidColorVertexData(shaderMode, x, y, z, this.zeroVector4, 0.0f, color);
     }
 
-    public RenderBatchBuilder G(float f, float f2, float f3, float f4, Color color, float f5) {
-        return this.X(f, f2, f3, f4, color, f5, 1.0f, 0);
+    public RenderBatchBuilder addRoundedRectWithCornerRadius(float x, float y, float width, float height, Color color, float cornerRadius) {
+        return this.addCornerMaskedRoundedRect(x, y, width, height, color, cornerRadius, 1.0f, 0);
     }
 
-    public RenderBatchBuilder r(float f, float f2, float f3, float f4, float f5, float f6, Color color) {
-        float f7 = f - f5;
-        float f8 = f + f3 + f5;
-        float f9 = f2 - f5;
-        float f10 = f2 + f4 + f5;
-        RenderVector4f renderVector4f = new RenderVector4f(f, f2, f3, f4);
-        RenderVector4f renderVector4f2 = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.z(8.0f, f7, f9, 0.0f, renderVector4f, f5, f6, renderVector4f2);
-        this.z(8.0f, f7, f10, 0.0f, renderVector4f, f5, f6, renderVector4f2);
-        this.z(8.0f, f8, f9, 0.0f, renderVector4f, f5, f6, renderVector4f2);
-        this.z(8.0f, f8, f10, 0.0f, renderVector4f, f5, f6, renderVector4f2);
-        this.B("quad");
+    public RenderBatchBuilder addRoundedRectShadow(float x, float y, float width, float height, float spread, float cornerRadius, Color color) {
+        float left = x - spread;
+        float right = x + width + spread;
+        float top = y - spread;
+        float bottom = y + height + spread;
+        RenderVector4f rect = new RenderVector4f(x, y, width, height);
+        RenderVector4f colorVector = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendRoundedShapeVertex(8.0f, left, top, 0.0f, rect, spread, cornerRadius, colorVector);
+        this.appendRoundedShapeVertex(8.0f, left, bottom, 0.0f, rect, spread, cornerRadius, colorVector);
+        this.appendRoundedShapeVertex(8.0f, right, top, 0.0f, rect, spread, cornerRadius, colorVector);
+        this.appendRoundedShapeVertex(8.0f, right, bottom, 0.0f, rect, spread, cornerRadius, colorVector);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    private void k(float f, float f2, float f3, float f4, float f5, float f6, FloatPair floatPair, RenderVector4f renderVector4f) {
-        this.d(f, f2, f3, f4, 0.0f, 0.0f, f5, f6, floatPair, renderVector4f);
+    private void appendCircleVertexData(float shaderMode, float x, float y, float z, float radius, float feather, FloatPair center, RenderVector4f color) {
+        this.appendTexturedCircleVertexData(shaderMode, x, y, z, 0.0f, 0.0f, radius, feather, center, color);
     }
 
-    private void w(float f, float f2, float f3, float f4, float f5, float f6, RenderVector4f renderVector4f) {
-        this.x(f, f2, f3, f4, f5, f6, 0.0f, this.w, 0.0f, renderVector4f);
+    private void appendTexturedVertex(float shaderMode, float x, float y, float z, float u, float v, RenderVector4f color) {
+        this.appendTexturedShapeVertex(shaderMode, x, y, z, u, v, 0.0f, this.zeroVector4, 0.0f, color);
     }
 
-    public RenderBatchBuilder A(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8) {
-        float f9 = 0.0f;
-        float f10 = 1.0f;
-        float f11 = 1.0f;
-        float f12 = 0.0f;
-        float f13 = f + f3;
-        float f14 = f2 + f4;
-        RenderVector4f renderVector4f = new RenderVector4f(f + f6, f2 + f6, f + f3 - f6, f2 + f4 - f6);
-        FloatPair floatPair = new FloatPair(f3 * 2.0f, f4 * 2.0f);
-        this.b(PrimitiveTopology.QUADS);
-        this.Q(1.0f, f, f2, 0.0f, f9, f10, f7, f5, f6, f8, renderVector4f, floatPair);
-        this.Q(1.0f, f, f14, 0.0f, f9, f12, f7, f5, f6, f8, renderVector4f, floatPair);
-        this.Q(1.0f, f13, f2, 0.0f, f11, f10, f7, f5, f6, f8, renderVector4f, floatPair);
-        this.Q(1.0f, f13, f14, 0.0f, f11, f12, f7, f5, f6, f8, renderVector4f, floatPair);
-        this.B("quad");
+    public RenderBatchBuilder addBlurPass(float x, float y, float width, float height, float blurRadius, float inset, float feather, float direction) {
+        float minU = 0.0f;
+        float maxV = 1.0f;
+        float maxU = 1.0f;
+        float minV = 0.0f;
+        float right = x + width;
+        float bottom = y + height;
+        RenderVector4f innerRect = new RenderVector4f(x + inset, y + inset, x + width - inset, y + height - inset);
+        FloatPair screenDimensions = new FloatPair(width * 2.0f, height * 2.0f);
+        this.setTopology(PrimitiveTopology.QUADS);
+        this.appendBlurVertex(1.0f, x, y, 0.0f, minU, maxV, feather, blurRadius, inset, direction, innerRect, screenDimensions);
+        this.appendBlurVertex(1.0f, x, bottom, 0.0f, minU, minV, feather, blurRadius, inset, direction, innerRect, screenDimensions);
+        this.appendBlurVertex(1.0f, right, y, 0.0f, maxU, maxV, feather, blurRadius, inset, direction, innerRect, screenDimensions);
+        this.appendBlurVertex(1.0f, right, bottom, 0.0f, maxU, minV, feather, blurRadius, inset, direction, innerRect, screenDimensions);
+        this.generateIndicesForCurrentBatch("quad");
         return this;
     }
 
-    public RenderBatchBuilder Z(float f, float f2, SmoothFontGlyph smoothFontGlyph, int n, Color color, float f3) {
-        float f4 = f + smoothFontGlyph.X * f3;
-        float f5 = f + smoothFontGlyph.g * f3;
-        float f6 = f2 + smoothFontGlyph.a * f3;
-        float f7 = f2 + smoothFontGlyph.G * f3;
-        this.o(new GlImageTexture(n));
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.w(16.0f, f4, f6, 0.0f, smoothFontGlyph.t, smoothFontGlyph.J, renderVector4f);
-        this.w(16.0f, f4, f7, 0.0f, smoothFontGlyph.t, smoothFontGlyph.B, renderVector4f);
-        this.w(16.0f, f5, f6, 0.0f, smoothFontGlyph.w, smoothFontGlyph.J, renderVector4f);
-        this.w(16.0f, f5, f7, 0.0f, smoothFontGlyph.w, smoothFontGlyph.B, renderVector4f);
-        this.B("quad");
-        return this;
+    public RenderBatchBuilder addMinecraftColorFontGlyph(float x, float y, SmoothFontGlyph glyph, int textureId, Color color, float scale) {
+        return this.addGlyphQuad(16.0f, x, y, glyph, new GlImageTexture(textureId), color, scale);
     }
 
-    public RenderBatchBuilder E(float f, float f2, float f3, float f4, float f5, float f6, float f7, float f8, float f9, float f10, float f11, float f12, Color color, Color color2) {
-        RenderVector4f renderVector4f = new RenderVector4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        RenderVector4f renderVector4f2 = new RenderVector4f(color2.getRed(), color2.getGreen(), color2.getBlue(), color2.getAlpha());
-        this.b(PrimitiveTopology.QUADS);
-        this.V(9.0f, f4, f5, f6, renderVector4f);
-        this.V(9.0f, f, f2, f3, renderVector4f);
-        this.V(9.0f, f7, f8, f9, renderVector4f2);
-        this.V(9.0f, f10, f11, f12, renderVector4f2);
-        this.B("quad");
-        return this;
+    public RenderBatchBuilder addDefaultShaderGradientQuad(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, Color startColor, Color endColor) {
+        return this.addGradientQuad(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, startColor, endColor);
     }
 }
-

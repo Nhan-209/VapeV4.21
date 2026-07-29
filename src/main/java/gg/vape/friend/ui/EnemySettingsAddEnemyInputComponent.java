@@ -14,29 +14,29 @@ extends TextInputComponentBase {
     }
 
     @Override
-    public double r() {
+    public double getAvailableTextWidth() {
         return this.A() - 35.0;
     }
 
 
     public EnemySettingsAddEnemyInputComponent(String string) {
         super(string);
-        this.d(false);
-        this.a = EnemySettingsAddEnemyInputComponent.J.d;
+        this.setShowDisabledOverlay(false);
+        this.actionButtonColor = EnemySettingsAddEnemyInputComponent.J.d;
     }
 
     @Override
-    public void p() {
-        if (!this.u$src$Z$wt77ym()) {
-            this.k("");
+    public void submit() {
+        if (!this.hasNonBlankText()) {
+            this.setText("");
             return;
         }
-        String[] stringArray = this.i$src$Ljava_lang_String_$1n2xf3k().split(" ");
+        String[] stringArray = this.getText().split(" ");
         String string = stringArray[0];
         String string2 = stringArray.length > 1 ? stringArray[1] : stringArray[0];
         Vape.INSTANCE.getEnemyManager().Q(new Enemy(string, string2));
-        ClientSettings.g(EnemySettingsFrame.class).Q$src$V$1u5tkk5();
-        this.k("");
+        ClientSettings.getFrame(EnemySettingsFrame.class).Q$src$V$1u5tkk5();
+        this.setText("");
     }
 
     @Override
@@ -44,4 +44,3 @@ extends TextInputComponentBase {
         return 110.0;
     }
 }
-

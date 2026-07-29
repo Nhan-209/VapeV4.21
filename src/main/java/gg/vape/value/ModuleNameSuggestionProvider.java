@@ -11,20 +11,20 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 public class ModuleNameSuggestionProvider
 extends AbstractListValueSuggestionProvider {
-    private List<String> W;
-    private boolean x;
-    private static GuiComponent[] D;
+    private List<String> cachedModuleNames;
+    private boolean excludeOtherCategory;
+    private static GuiComponent[] legacyComponents;
 
-    public ModuleNameSuggestionProvider(boolean bl) {
-        this.x = bl;
+    public ModuleNameSuggestionProvider(boolean excludeOtherCategory) {
+        this.excludeOtherCategory = excludeOtherCategory;
     }
 
-    public static GuiComponent[] R() {
-        return D;
+    public static GuiComponent[] getLegacyComponents() {
+        return legacyComponents;
     }
 
-    public static void D(GuiComponent[] guiComponentArray) {
-        D = guiComponentArray;
+    public static void setLegacyComponents(GuiComponent[] components) {
+        legacyComponents = components;
     }
 
     public ModuleNameSuggestionProvider() {
@@ -33,20 +33,20 @@ extends AbstractListValueSuggestionProvider {
 
     @Override
     public @UnmodifiableView List<String> getValues() {
-        if (this.W == null) {
-            this.W = new ArrayList<String>();
-            for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-                if (mod.getCategory() == Category.b || this.x && mod.getCategory() == Category.w) continue;
-                this.W.add(mod.getName());
+        if (this.cachedModuleNames == null) {
+            this.cachedModuleNames = new ArrayList<String>();
+            for (Mod module : Vape.INSTANCE.getModManager().collectMods()) {
+                if (module.getCategory() == Category.b || this.excludeOtherCategory && module.getCategory() == Category.w) continue;
+                this.cachedModuleNames.add(module.getName());
             }
         }
-        return this.W;
+        return this.cachedModuleNames;
     }
 
 
     static {
-        if (ModuleNameSuggestionProvider.R() != null) {
-            ModuleNameSuggestionProvider.D(new GuiComponent[3]);
+        if (ModuleNameSuggestionProvider.getLegacyComponents() != null) {
+            ModuleNameSuggestionProvider.setLegacyComponents(new GuiComponent[3]);
         }
     }
 }

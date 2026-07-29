@@ -8,21 +8,21 @@ import gg.vape.ui.notification.NotificationType;
 
 public class UsernameEditorTextInputComponent
 extends DebouncedTextInputComponent {
-    final UsernameEditorPanel Dh;
+    final UsernameEditorPanel editorPanel;
 
     @Override
-    public float O() {
+    public float getVerticalInset() {
         return 0.0f;
     }
 
     private void lambda$enterEvent$0(String string) {
-        UsernameEditorPanel.t(this.Dh);
+        UsernameEditorPanel.t(this.editorPanel);
         OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.SUCCESS, "Name changed to " + string));
     }
 
     @Override
-    public float g() {
-        return super.g();
+    public float getRightInset() {
+        return super.getRightInset();
     }
 
     @Override
@@ -31,22 +31,22 @@ extends DebouncedTextInputComponent {
     }
 
     @Override
-    public void U$src$V$1pxrzte() {
-        UsernameEditorPanel.o(UsernameEditorPanel.I(this.Dh), this.i$src$Ljava_lang_String_$1n2xf3k(), this::lambda$enterEvent$0, UsernameEditorTextInputComponent::lambda$enterEvent$1);
+    public void handleSubmitReady() {
+        UsernameEditorPanel.o(UsernameEditorPanel.I(this.editorPanel), this.getText(), this::lambda$enterEvent$0, UsernameEditorTextInputComponent::lambda$enterEvent$1);
     }
 
-    public UsernameEditorTextInputComponent(UsernameEditorPanel usernameEditorPanel, String string, long l) {
-        super(string, l);
-        this.Dh = usernameEditorPanel;
+    public UsernameEditorTextInputComponent(UsernameEditorPanel editorPanel, String text, long cooldownMillis) {
+        super(text, cooldownMillis);
+        this.editorPanel = editorPanel;
     }
 
     @Override
-    public float y() {
+    public float getLeftInset() {
         return 0.0f;
     }
 
     @Override
-    public void j() {
+    public void handleSubmitCooldown() {
         OnlineFriendUiHelper.w(NotificationType.WARNING, "You are on cooldown!");
     }
 

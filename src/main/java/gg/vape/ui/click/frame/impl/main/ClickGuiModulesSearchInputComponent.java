@@ -8,10 +8,10 @@ extends LabeledTextInputComponent {
     final ClickGuiModulesPage tO;
 
     @Override
-    public void k(String string) {
-        super.k(string);
-        ClickGuiModulesPage.k(this.tO, string);
-        ClickGuiModulesPage.h(this.tO, ClickGuiModulesPage.x(this.tO), false);
+    public void setText(String text) {
+        super.setText(text);
+        ClickGuiModulesPage.setModuleSearchQuery(this.tO, text);
+        ClickGuiModulesPage.rebuildModuleCards(this.tO, ClickGuiModulesPage.getModuleContent(this.tO), false);
     }
 
     public ClickGuiModulesSearchInputComponent(ClickGuiModulesPage clickGuiModulesPage, String string) {

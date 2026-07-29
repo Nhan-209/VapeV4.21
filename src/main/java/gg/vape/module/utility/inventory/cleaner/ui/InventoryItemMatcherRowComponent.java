@@ -14,10 +14,10 @@ extends InventoryCleanerClickableRowComponentBase {
 
     public InventoryItemMatcherRowComponent(InventoryItemMatcher inventoryItemMatcher, GuiClickListener guiClickListener) {
         super(guiClickListener);
-        this.iconComponent = new IconGlyphComponent(inventoryItemMatcher.Z(), 6.0f, 6.0f, InventoryItemMatcherRowComponent.J.Z);
+        this.iconComponent = new IconGlyphComponent(inventoryItemMatcher.getIconName(), 6.0f, 6.0f, InventoryItemMatcherRowComponent.J.Z);
         this.textComponent = new TruncatedTextComponent(inventoryItemMatcher.getName(), ELLIPSIS, 50.0, 0.8, InventoryItemMatcherRowComponent.J.Z, false);
-        this.o(true);
-        this.H(this.textComponent, this.iconComponent);
+        this.setPropagateMouseEvents(true);
+        this.addChildren(this.textComponent, this.iconComponent);
     }
 
     @Override

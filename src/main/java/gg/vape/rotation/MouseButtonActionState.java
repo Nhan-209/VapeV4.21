@@ -5,15 +5,14 @@ public enum MouseButtonActionState {
     PRESS,
     RELEASE;
 
-    private static final MouseButtonActionState[] j;
+    private static final MouseButtonActionState[] cachedValues;
 
     static {
-        String[] stringArray = new String[]{"NONE", "RELEASE", "PRESS"};
+        String[] stateNames = new String[]{"NONE", "RELEASE", "PRESS"};
 
 
 
-        j = new MouseButtonActionState[]{NONE, PRESS, RELEASE};
+        cachedValues = new MouseButtonActionState[]{NONE, PRESS, RELEASE};
     }
 
 }
-

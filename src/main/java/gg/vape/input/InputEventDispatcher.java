@@ -22,107 +22,106 @@ import gg.vape.wrapper.impl.RenderTypeBuffer;
 import java.util.HashMap;
 
 public class InputEventDispatcher {
-    public HashMap<Integer, InputEventHandler> y = new HashMap();
-    private InputFocusState M;
-    private static InputEventDispatcher U;
-    private MouseInputState S;
-    private KeyboardInputState K = new KeyboardInputState();
-    private long N;
-    private static int[] o;
+    public HashMap<Integer, InputEventHandler> handlers = new HashMap();
+    private InputFocusState focusState;
+    private static InputEventDispatcher instance;
+    private MouseInputState mouseState;
+    private KeyboardInputState keyboardState = new KeyboardInputState();
+    private long windowHandle;
+    private static int[] legacyState;
 
 
-    public static void M(int[] nArray) {
-        o = nArray;
+    public static void setLegacyState(int[] state) {
+        legacyState = state;
     }
 
     public KeyboardInputState getKeyboardState() {
-        return this.K;
+        return this.keyboardState;
     }
 
     public static InputEventDispatcher getInstance() {
-        if (U == null) {
-            U = new InputEventDispatcher();
+        if (instance == null) {
+            instance = new InputEventDispatcher();
         }
-        return U;
+        return instance;
     }
 
     public InputEventDispatcher() {
-        this.S = new MouseInputState();
-        this.M = new InputFocusState();
+        this.mouseState = new MouseInputState();
+        this.focusState = new InputFocusState();
     }
 
     public InputFocusState getFocusState() {
-        return this.M;
+        return this.focusState;
     }
 
-    public void U() {
+    public void flushRenderBufferBeforeInput() {
         if (ForgeVersion.MC_1_21_10.v()) {
             return;
         }
-        RenderTypeBuffer bD = Minecraft.K();
-        if (bD.isNull()) {
+        RenderTypeBuffer renderBuffer = Minecraft.K();
+        if (renderBuffer.isNull()) {
             return;
         }
-        if (!this.M.isFocused()) {
+        if (!this.focusState.isFocused()) {
             return;
         }
-        bD.q();
+        renderBuffer.q();
     }
 
-    public boolean dispatch(int n, long l, long l2) {
-        InputEventHandler inputEventHandler = this.y.get(n);
-        if (inputEventHandler != null) {
-            this.U();
-            return inputEventHandler.handle(l, l2);
+    public boolean dispatch(int notificationCode, long firstArgument, long secondArgument) {
+        InputEventHandler handler = this.handlers.get(notificationCode);
+        if (handler != null) {
+            this.flushRenderBufferBeforeInput();
+            return handler.handle(firstArgument, secondArgument);
         }
         return false;
     }
 
     public void registerHandlers() {
-        int[] nArray = InputEventDispatcher.c();
-        this.y.put(258, new CharacterInputHandler());
-        this.y.put(256, new KeyboardPressInputHandler());
-        this.y.put(257, new KeyboardReleaseInputHandler());
-        this.y.put(260, new KeyboardPressInputHandler());
-        this.y.put(261, new KeyboardReleaseInputHandler());
-        this.y.put(513, new MouseButtonPressInputHandler(0));
-        this.y.put(516, new MouseButtonPressInputHandler(1));
-        this.y.put(519, new MouseButtonPressInputHandler(2));
-        this.y.put(514, new MouseButtonReleaseInputHandler(0));
-        this.y.put(517, new MouseButtonReleaseInputHandler(1));
-        this.y.put(520, new MouseButtonReleaseInputHandler(2));
-        this.y.put(523, new ExtendedMouseButtonPressInputHandler());
-        this.y.put(524, new ExtendedMouseButtonReleaseInputHandler());
-        this.y.put(522, new MouseWheelInputHandler());
-        this.y.put(512, new MouseMoveInputHandler());
-        this.y.put(7, new InputFocusGainedHandler());
-        this.y.put(8, new InputFocusLostHandlerPayload());
-        int[] nArray2 = nArray;
-        if (nArray2 != null) {
-            GuiComponent.D(new GuiComponent[5]);
+        int[] legacyState = InputEventDispatcher.getLegacyState();
+        this.handlers.put(258, new CharacterInputHandler());
+        this.handlers.put(256, new KeyboardPressInputHandler());
+        this.handlers.put(257, new KeyboardReleaseInputHandler());
+        this.handlers.put(260, new KeyboardPressInputHandler());
+        this.handlers.put(261, new KeyboardReleaseInputHandler());
+        this.handlers.put(513, new MouseButtonPressInputHandler(0));
+        this.handlers.put(516, new MouseButtonPressInputHandler(1));
+        this.handlers.put(519, new MouseButtonPressInputHandler(2));
+        this.handlers.put(514, new MouseButtonReleaseInputHandler(0));
+        this.handlers.put(517, new MouseButtonReleaseInputHandler(1));
+        this.handlers.put(520, new MouseButtonReleaseInputHandler(2));
+        this.handlers.put(523, new ExtendedMouseButtonPressInputHandler());
+        this.handlers.put(524, new ExtendedMouseButtonReleaseInputHandler());
+        this.handlers.put(522, new MouseWheelInputHandler());
+        this.handlers.put(512, new MouseMoveInputHandler());
+        this.handlers.put(7, new InputFocusGainedHandler());
+        this.handlers.put(8, new InputFocusLostHandlerPayload());
+        if (legacyState != null) {
+            GuiComponent.setLegacyComponentState(new GuiComponent[5]);
         }
     }
 
-    public static int[] c() {
-        return o;
+    public static int[] getLegacyState() {
+        return legacyState;
     }
 
     public long getWindowHandle() {
-        return this.N;
+        return this.windowHandle;
     }
 
-    public void setWindowHandle(long l) {
-        this.N = l;
-        this.M.markFocused();
+    public void setWindowHandle(long windowHandle) {
+        this.windowHandle = windowHandle;
+        this.focusState.markFocused();
     }
 
     public MouseInputState getMouseState() {
-        return this.S;
+        return this.mouseState;
     }
 
     static {
-        if (InputEventDispatcher.c() != null) {
-            InputEventDispatcher.M(new int[1]);
+        if (InputEventDispatcher.getLegacyState() != null) {
+            InputEventDispatcher.setLegacyState(new int[1]);
         }
     }
 }

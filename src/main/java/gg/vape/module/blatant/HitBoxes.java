@@ -15,86 +15,79 @@ import gg.vape.wrapper.impl.Vec3;
 public class HitBoxes
 extends Mod {
     private final NumberValue expandAmount = NumberValue.create((Object)this, "Expand amount", "#.##", "", 0.0, 0.35, 1.0, 0.01);
-    private static final long k = -170962805321564187L;
+    private static final long MODULE_ID = -170962805321564187L;
 
     public HitBoxes() {
-        super("HitBoxes", (int)k, Category.w, "Expands entities hitboxes");
+        super("HitBoxes", (int)MODULE_ID, Category.w, "Expands entities hitboxes");
         this.addValue(this.expandAmount);
     }
 
     @EventHandler
     public void onPacketSend(EventPacketSend eventPacketSend) {
-        UseEntityPacketBridge useEntityPacketBridge;
         if (ForgeVersion.MC_1_8_9.v()) {
             return;
         }
-        if (UseEntityPacketBridge.h(eventPacketSend.getPacket()) && (useEntityPacketBridge = new UseEntityPacketBridge(eventPacketSend.getPacket())).V()) {
-            double d;
-            double d2;
-            double d3;
-            double d4;
-            double d5;
-            Vec3 vec3 = useEntityPacketBridge.O();
-            Entity entity = useEntityPacketBridge.C(Minecraft.theWorld());
-            double d6 = (Double)this.expandAmount.K();
-            double d7 = entity.b();
-            AxisAlignedBB axisAlignedBB = entity.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().expand(d7, d7, d7);
-            AxisAlignedBB axisAlignedBB2 = entity.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().expand(d7 + d6, d7 + d6, d7 + d6);
-            double d8 = axisAlignedBB.getMaxX() - axisAlignedBB.getMinX();
-            double d9 = d8 / 2.0;
-            double d10 = axisAlignedBB2.getMaxX() - axisAlignedBB2.getMinX();
-            double d11 = d10 / 2.0;
-            if (Math.abs(vec3.getX()) > d9) {
-                d5 = Math.min(1.0, Math.abs(vec3.getX()) / d11);
-                d4 = d9 * d5;
-                if (d5 == 1.0) {
-                    vec3.N(vec3.getX() > 0.0 ? d9 : -d9);
+        if (UseEntityPacketBridge.h(eventPacketSend.getPacket())) {
+            UseEntityPacketBridge useEntityPacket = new UseEntityPacketBridge(eventPacketSend.getPacket());
+            if (!useEntityPacket.V()) {
+                return;
+            }
+            Vec3 hitVector = useEntityPacket.O();
+            Entity entity = useEntityPacket.C(Minecraft.theWorld());
+            double expansion = (Double)this.expandAmount.getValue();
+            double collisionBorder = entity.b();
+            AxisAlignedBB normalBounds = entity.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().expand(collisionBorder, collisionBorder, collisionBorder);
+            AxisAlignedBB expandedBounds = entity.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().expand(collisionBorder + expansion, collisionBorder + expansion, collisionBorder + expansion);
+            double normalHalfWidth = (normalBounds.getMaxX() - normalBounds.getMinX()) / 2.0;
+            double expandedHalfWidth = (expandedBounds.getMaxX() - expandedBounds.getMinX()) / 2.0;
+            if (Math.abs(hitVector.getX()) > normalHalfWidth) {
+                double xRatio = Math.min(1.0, Math.abs(hitVector.getX()) / expandedHalfWidth);
+                double adjustedX = normalHalfWidth * xRatio;
+                if (xRatio == 1.0) {
+                    hitVector.N(hitVector.getX() > 0.0 ? normalHalfWidth : -normalHalfWidth);
                 } else {
-                    vec3.N(vec3.getX() > 0.0 ? d4 : -d4);
+                    hitVector.N(hitVector.getX() > 0.0 ? adjustedX : -adjustedX);
                 }
             }
-            d5 = axisAlignedBB.getMaxZ() - axisAlignedBB.getMinZ();
-            d4 = d5 / 2.0;
-            double d12 = axisAlignedBB2.getMaxZ() - axisAlignedBB2.getMinZ();
-            double d13 = d12 / 2.0;
-            if (Math.abs(vec3.getZ()) > d4) {
-                d3 = Math.min(1.0, Math.abs(vec3.getZ()) / d13);
-                d2 = d4 * d3;
-                if (d3 == 1.0) {
-                    vec3.Z(vec3.getZ() > 0.0 ? d4 : -d4);
+            double normalHalfDepth = (normalBounds.getMaxZ() - normalBounds.getMinZ()) / 2.0;
+            double expandedHalfDepth = (expandedBounds.getMaxZ() - expandedBounds.getMinZ()) / 2.0;
+            if (Math.abs(hitVector.getZ()) > normalHalfDepth) {
+                double zRatio = Math.min(1.0, Math.abs(hitVector.getZ()) / expandedHalfDepth);
+                double adjustedZ = normalHalfDepth * zRatio;
+                if (zRatio == 1.0) {
+                    hitVector.Z(hitVector.getZ() > 0.0 ? normalHalfDepth : -normalHalfDepth);
                 } else {
-                    vec3.Z(vec3.getZ() > 0.0 ? d2 : -d2);
+                    hitVector.Z(hitVector.getZ() > 0.0 ? adjustedZ : -adjustedZ);
                 }
             }
-            d2 = d3 = axisAlignedBB.getMaxY() - entity.N();
-            double d14 = axisAlignedBB.getMinY() - entity.N();
-            double d15 = d = axisAlignedBB2.getMaxY() - entity.N();
-            if (vec3.getY() > d2) {
-                double d16 = Math.min(1.0, Math.abs(vec3.getY()) / d15);
-                double d17 = d2 * d16;
-                if (d16 == 1.0) {
-                    vec3.m(d2);
+            double normalTop = normalBounds.getMaxY() - entity.N();
+            double normalBottom = normalBounds.getMinY() - entity.N();
+            double expandedTop = expandedBounds.getMaxY() - entity.N();
+            if (hitVector.getY() > normalTop) {
+                double yRatio = Math.min(1.0, Math.abs(hitVector.getY()) / expandedTop);
+                double adjustedY = normalTop * yRatio;
+                if (yRatio == 1.0) {
+                    hitVector.m(normalTop);
                 } else {
-                    vec3.m(d17);
+                    hitVector.m(adjustedY);
                 }
-            } else if (vec3.getY() < d14) {
-                double d18 = d14 - d6;
-                double d19 = vec3.getY() / d18;
-                if (d19 >= 1.0) {
-                    vec3.m(d14);
+            } else if (hitVector.getY() < normalBottom) {
+                double expandedBottom = normalBottom - expansion;
+                double yRatio = hitVector.getY() / expandedBottom;
+                if (yRatio >= 1.0) {
+                    hitVector.m(normalBottom);
                 } else {
-                    double d20 = d14 * d19;
-                    vec3.m(d20);
+                    hitVector.m(normalBottom * yRatio);
                 }
             }
         }
     }
 
-    public float z() {
+    public float getExpansionAmount() {
         if (!this.r$src$Z$14eylz9()) {
             return 0.0f;
         }
-        return ((Double)this.expandAmount.K()).floatValue();
+        return ((Double)this.expandAmount.getValue()).floatValue();
     }
 
 }

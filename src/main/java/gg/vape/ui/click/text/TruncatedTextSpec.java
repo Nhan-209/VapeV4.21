@@ -3,66 +3,65 @@ package gg.vape.ui.click.text;
 import java.util.Objects;
 
 public class TruncatedTextSpec {
-    private boolean a;
-    private double G;
-    private double X;
-    private String p;
-    private String e;
+    private boolean bold;
+    private double fontScale;
+    private double maxWidth;
+    private String text;
+    private String truncationSuffix;
 
-    public double y() {
-        return this.X;
+    public double getMaxWidth() {
+        return this.maxWidth;
     }
 
-    public TruncatedTextSpec(String string, String string2, double d, double d2, boolean bl) {
-        this.p = string;
-        this.e = string2;
-        this.X = d;
-        this.G = d2;
-        this.a = bl;
+    public TruncatedTextSpec(String text, String truncationSuffix, double maxWidth, double fontScale, boolean bold) {
+        this.text = text;
+        this.truncationSuffix = truncationSuffix;
+        this.maxWidth = maxWidth;
+        this.fontScale = fontScale;
+        this.bold = bold;
     }
 
-    public void v(String string) {
-        this.p = string;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public void R(double d) {
-        this.G = d;
+    public void setFontScale(double fontScale) {
+        this.fontScale = fontScale;
     }
 
-    public void O(double d) {
-        this.X = d;
+    public void setMaxWidth(double maxWidth) {
+        this.maxWidth = maxWidth;
     }
 
-    public String L() {
-        return this.e;
+    public String getTruncationSuffix() {
+        return this.truncationSuffix;
     }
 
     public String toString() {
-        return "CutoffLabelData{text='" + this.p + '\'' + ", endText='" + this.e + '\'' + ", maxWidth=" + this.X + ", scale=" + this.G + ", bold=" + this.a + '}';
+        return "CutoffLabelData{text='" + this.text + '\'' + ", endText='" + this.truncationSuffix + '\'' + ", maxWidth=" + this.maxWidth + ", scale=" + this.fontScale + ", bold=" + this.bold + '}';
     }
 
-    public void B(boolean bl) {
-        this.a = bl;
+    public void setBold(boolean bold) {
+        this.bold = bold;
     }
 
-    public void w(String string) {
-        this.e = string;
+    public void setTruncationSuffix(String truncationSuffix) {
+        this.truncationSuffix = truncationSuffix;
     }
 
     public int hashCode() {
-        return Objects.hash(this.p, this.e, this.X, this.G, this.a);
+        return Objects.hash(this.text, this.truncationSuffix, this.maxWidth, this.fontScale, this.bold);
     }
 
-    public double N() {
-        return this.G;
+    public double getFontScale() {
+        return this.fontScale;
     }
 
-    public boolean q() {
-        return this.a;
+    public boolean isBold() {
+        return this.bold;
     }
 
-    public String g() {
-        return this.p;
+    public String getText() {
+        return this.text;
     }
 }
-

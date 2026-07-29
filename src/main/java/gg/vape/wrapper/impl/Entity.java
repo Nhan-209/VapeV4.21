@@ -573,7 +573,7 @@ extends Wrapper {
     public String getName() {
         if (ForgeVersion.MC_1_16_5.d()) {
             ITextComponent iTextComponent = new ITextComponent(MEntity.W$src$Ljava_lang_Object_$bmu1rm(Entity.c.getMappings().Rr, this.I));
-            return iTextComponent.C();
+            return iTextComponent.getFormattedText();
         }
         return MEntity.z$src$Ljava_lang_String_$ch83r5(Entity.c.getMappings().Rr, this.I);
     }
@@ -883,4 +883,3 @@ extends Wrapper {
         return this.T();
     }
 }
-

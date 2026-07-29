@@ -28,11 +28,11 @@ extends Frame {
     }
 
     private void W() {
-        this.n4 = this.nZ.i$src$Ljava_lang_String_$1n2xf3k();
+        this.n4 = this.nZ.getText();
         if (this.nu == null) {
             this.nu = Minecraft.Q$src$Lgg_vape_account_MinecraftSessionWrapper_$1ftnn3u();
         }
-        this.nR.d("Offline as " + this.n4 + "\nReset (" + this.nu.M() + ")");
+        this.nR.setLabelText("Offline as " + this.n4 + "\nReset (" + this.nu.M() + ")");
         MinecraftSessionWrapper minecraftSessionWrapper = MinecraftSessionWrapper.U(this.n4, "00000000-0000-0000-0000-000000000000", "", "mojang");
         Minecraft.w(minecraftSessionWrapper);
     }
@@ -51,12 +51,12 @@ extends Frame {
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().I(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().U(false);
         this.Y(false);
-        this.Z(true);
+        this.setVisible(true);
         this.L(false, true);
         this.g(true);
-        this.nZ.t$src$Lgg_vape_ui_click_component_GlyphIconComponent_$s6bz9o().W("newnext");
-        this.nR.r(new SessionSpoofApplyClickHandler(this));
-        this.n8.H(new SimpleTextLabelComponent("Offline account login"), this.nZ, new SpacerComponent(5.0, 10.0), this.nR);
+        this.nZ.getActionButton().setIconResource("newnext");
+        this.nR.addClickListener(new SessionSpoofApplyClickHandler(this));
+        this.n8.addChildren(new SimpleTextLabelComponent("Offline account login"), this.nZ, new SpacerComponent(5.0, 10.0), this.nR);
         this.h(this.n8, new Object[0]);
     }
 
@@ -90,4 +90,3 @@ extends Frame {
         sessionSpoofFrame.W();
     }
 }
-

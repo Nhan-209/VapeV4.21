@@ -48,44 +48,44 @@ extends Mod {
         RenderUtil.d();
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().B(1.0);
         RenderUtils.g();
-        boolean bl = OpenGlBackendHolder.d.L(3042);
+        boolean bl = OpenGlBackendHolder.backend.isCapabilityEnabled(3042);
         if (bl) {
             GL11.glBlendFunc((int)770, (int)771);
-            OpenGlBackendHolder.d.r(1.5f);
-            OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-            OpenGlBackendHolder.d.l(2848);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2929);
-            OpenGlBackendHolder.d.U(false);
+            OpenGlBackendHolder.backend.setLineWidth(1.5f);
+            OpenGlBackendHolder.backend.disableCapability(3553);
+            OpenGlBackendHolder.backend.enableCapability(2848);
+            OpenGlBackendHolder.backend.disableCapability(2929);
+            OpenGlBackendHolder.backend.setDepthMask(false);
             double d = RenderManager.getInterpolatedRenderPosX();
             double d2 = RenderManager.getInterpolatedRenderPosY();
             double d3 = RenderManager.getInterpolatedRenderPosZ();
             for (Object e : Minecraft.theWorld().R$src$Ljava_util_List_$1ycbpra()) {
                 Color color = null;
                 TileEntity tileEntity = null;
-                if ((this.renderChests.L().booleanValue() || this.renderTrappedChests.L().booleanValue()) && MappedClasses.DZ.isInstance(e)) {
+                if ((this.renderChests.getEffectiveValue().booleanValue() || this.renderTrappedChests.getEffectiveValue().booleanValue()) && MappedClasses.DZ.isInstance(e)) {
                     TileEntityOpenedChest openedChest = new TileEntityOpenedChest(e);
                     int n = openedChest.getNumPlayersUsing();
-                    if (this.renderChests.L().booleanValue() && n == 0) {
-                        color = this.chestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                    if (this.renderChests.getEffectiveValue().booleanValue() && n == 0) {
+                        color = this.chestColor.getMutableColor();
                         tileEntity = openedChest;
                     }
-                    if (this.renderTrappedChests.L().booleanValue() && n == 1) {
-                        color = this.trappedChestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                    if (this.renderTrappedChests.getEffectiveValue().booleanValue() && n == 1) {
+                        color = this.trappedChestColor.getMutableColor();
                         tileEntity = openedChest;
                     }
-                } else if (this.renderEnderchests.L().booleanValue() && MappedClasses.u0.isInstance(e)) {
-                    color = this.enderChestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                } else if (this.renderEnderchests.getEffectiveValue().booleanValue() && MappedClasses.u0.isInstance(e)) {
+                    color = this.enderChestColor.getMutableColor();
                     tileEntity = new TileEntityChest(e);
-                } else if (this.renderHopper.L().booleanValue() && MappedClasses.Dx.isInstance(e)) {
-                    color = this.hopperColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-                } else if (this.renderFurnace.L().booleanValue() && MappedClasses.li.isInstance(e)) {
-                    color = this.furnaceColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-                } else if (this.renderDropper.L().booleanValue() && MappedClasses.YI.equals(e.getClass())) {
-                    color = this.dropperColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-                } else if (this.renderDispenser.L().booleanValue() && MappedClasses.lI.equals(e.getClass())) {
-                    color = this.dispenserColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-                } else if (ForgeVersion.MC_1_12_2.d() && this.renderShulker.L().booleanValue() && MappedClasses.Dh.isInstance(e)) {
-                    color = this.shulkerColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                } else if (this.renderHopper.getEffectiveValue().booleanValue() && MappedClasses.Dx.isInstance(e)) {
+                    color = this.hopperColor.getMutableColor();
+                } else if (this.renderFurnace.getEffectiveValue().booleanValue() && MappedClasses.li.isInstance(e)) {
+                    color = this.furnaceColor.getMutableColor();
+                } else if (this.renderDropper.getEffectiveValue().booleanValue() && MappedClasses.YI.equals(e.getClass())) {
+                    color = this.dropperColor.getMutableColor();
+                } else if (this.renderDispenser.getEffectiveValue().booleanValue() && MappedClasses.lI.equals(e.getClass())) {
+                    color = this.dispenserColor.getMutableColor();
+                } else if (ForgeVersion.MC_1_12_2.d() && this.renderShulker.getEffectiveValue().booleanValue() && MappedClasses.Dh.isInstance(e)) {
+                    color = this.shulkerColor.getMutableColor();
                 }
                 if (color == null) continue;
                 if (tileEntity == null) {
@@ -95,7 +95,7 @@ extends Mod {
                 HSBData renderData;
                 if (tileEntity instanceof TileEntityOpenedChest) {
                     TileEntityOpenedChest tileEntityOpenedChest = (TileEntityOpenedChest)tileEntity;
-                    renderData = this.outlineOpen.L().booleanValue() ? new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, tileEntityOpenedChest.Y()) : new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
+                    renderData = this.outlineOpen.getEffectiveValue().booleanValue() ? new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, tileEntityOpenedChest.Y()) : new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
                 } else if (tileEntity instanceof TileEntityChest) {
                     TileEntity tileEntity2 = tileEntity;
                     renderData = new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, ((TileEntityChest)tileEntity2).D());
@@ -104,52 +104,52 @@ extends Mod {
                 }
                 RenderUtil.L(d, d2, d3, renderData);
             }
-            OpenGlBackendHolder.d.U(true);
-            OpenGlBackendHolder.d.l(2929);
-            OpenGlBackendHolder.d.l(3553);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2848);
+            OpenGlBackendHolder.backend.setDepthMask(true);
+            OpenGlBackendHolder.backend.enableCapability(2929);
+            OpenGlBackendHolder.backend.enableCapability(3553);
+            OpenGlBackendHolder.backend.disableCapability(2848);
             RenderUtils.f();
             Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
             RenderUtil.Y();
             return;
         }
-        OpenGlBackendHolder.d.l(3042);
+        OpenGlBackendHolder.backend.enableCapability(3042);
         GL11.glBlendFunc((int)770, (int)771);
-        OpenGlBackendHolder.d.r(1.5f);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3553);
-        OpenGlBackendHolder.d.l(2848);
-        OpenGlBackendHolder.d.u$src$V$hntn98(2929);
-        OpenGlBackendHolder.d.U(false);
+        OpenGlBackendHolder.backend.setLineWidth(1.5f);
+        OpenGlBackendHolder.backend.disableCapability(3553);
+        OpenGlBackendHolder.backend.enableCapability(2848);
+        OpenGlBackendHolder.backend.disableCapability(2929);
+        OpenGlBackendHolder.backend.setDepthMask(false);
         double d = RenderManager.getInterpolatedRenderPosX();
         double d4 = RenderManager.getInterpolatedRenderPosY();
         double d5 = RenderManager.getInterpolatedRenderPosZ();
         for (Object e : Minecraft.theWorld().R$src$Ljava_util_List_$1ycbpra()) {
             Color color = null;
             TileEntity tileEntity = null;
-            if ((this.renderChests.L().booleanValue() || this.renderTrappedChests.L().booleanValue()) && MappedClasses.DZ.isInstance(e)) {
+            if ((this.renderChests.getEffectiveValue().booleanValue() || this.renderTrappedChests.getEffectiveValue().booleanValue()) && MappedClasses.DZ.isInstance(e)) {
                 TileEntityOpenedChest openedChest = new TileEntityOpenedChest(e);
                 int n = openedChest.getNumPlayersUsing();
-                if (this.renderChests.L().booleanValue() && n == 0) {
-                    color = this.chestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                if (this.renderChests.getEffectiveValue().booleanValue() && n == 0) {
+                    color = this.chestColor.getMutableColor();
                     tileEntity = openedChest;
                 }
-                if (this.renderTrappedChests.L().booleanValue() && n == 1) {
-                    color = this.trappedChestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+                if (this.renderTrappedChests.getEffectiveValue().booleanValue() && n == 1) {
+                    color = this.trappedChestColor.getMutableColor();
                     tileEntity = openedChest;
                 }
-            } else if (this.renderEnderchests.L().booleanValue() && MappedClasses.u0.isInstance(e)) {
-                color = this.enderChestColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+            } else if (this.renderEnderchests.getEffectiveValue().booleanValue() && MappedClasses.u0.isInstance(e)) {
+                color = this.enderChestColor.getMutableColor();
                 tileEntity = new TileEntityChest(e);
-            } else if (this.renderHopper.L().booleanValue() && MappedClasses.Dx.isInstance(e)) {
-                color = this.hopperColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-            } else if (this.renderFurnace.L().booleanValue() && MappedClasses.li.isInstance(e)) {
-                color = this.furnaceColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-            } else if (this.renderDropper.L().booleanValue() && MappedClasses.YI.equals(e.getClass())) {
-                color = this.dropperColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-            } else if (this.renderDispenser.L().booleanValue() && MappedClasses.lI.equals(e.getClass())) {
-                color = this.dispenserColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
-            } else if (ForgeVersion.MC_1_12_2.d() && this.renderShulker.L().booleanValue() && MappedClasses.Dh.isInstance(e)) {
-                color = this.shulkerColor.q$src$Lgg_vape_utils_MutableColor_$1dowyd3();
+            } else if (this.renderHopper.getEffectiveValue().booleanValue() && MappedClasses.Dx.isInstance(e)) {
+                color = this.hopperColor.getMutableColor();
+            } else if (this.renderFurnace.getEffectiveValue().booleanValue() && MappedClasses.li.isInstance(e)) {
+                color = this.furnaceColor.getMutableColor();
+            } else if (this.renderDropper.getEffectiveValue().booleanValue() && MappedClasses.YI.equals(e.getClass())) {
+                color = this.dropperColor.getMutableColor();
+            } else if (this.renderDispenser.getEffectiveValue().booleanValue() && MappedClasses.lI.equals(e.getClass())) {
+                color = this.dispenserColor.getMutableColor();
+            } else if (ForgeVersion.MC_1_12_2.d() && this.renderShulker.getEffectiveValue().booleanValue() && MappedClasses.Dh.isInstance(e)) {
+                color = this.shulkerColor.getMutableColor();
             }
             if (color == null) continue;
             if (tileEntity == null) {
@@ -159,7 +159,7 @@ extends Mod {
             HSBData renderData;
             if (tileEntity instanceof TileEntityOpenedChest) {
                 TileEntityOpenedChest tileEntityOpenedChest = (TileEntityOpenedChest)tileEntity;
-                renderData = this.outlineOpen.L().booleanValue() ? new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, tileEntityOpenedChest.Y()) : new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
+                renderData = this.outlineOpen.getEffectiveValue().booleanValue() ? new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, tileEntityOpenedChest.Y()) : new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
             } else if (tileEntity instanceof TileEntityChest) {
                 TileEntity tileEntity3 = tileEntity;
                 renderData = new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, ((TileEntityChest)tileEntity3).D());
@@ -168,11 +168,11 @@ extends Mod {
             }
             RenderUtil.L(d, d4, d5, renderData);
         }
-        OpenGlBackendHolder.d.U(true);
-        OpenGlBackendHolder.d.l(2929);
-        OpenGlBackendHolder.d.l(3553);
-        OpenGlBackendHolder.d.u$src$V$hntn98(2848);
-        OpenGlBackendHolder.d.u$src$V$hntn98(3042);
+        OpenGlBackendHolder.backend.setDepthMask(true);
+        OpenGlBackendHolder.backend.enableCapability(2929);
+        OpenGlBackendHolder.backend.enableCapability(3553);
+        OpenGlBackendHolder.backend.disableCapability(2848);
+        OpenGlBackendHolder.backend.disableCapability(3042);
         RenderUtils.f();
         Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(1.0);
         RenderUtil.Y();
@@ -188,22 +188,22 @@ extends Mod {
         this.renderDispenser = BooleanValue.create(this, "Render Dispenser", false);
         this.renderDropper = BooleanValue.create(this, "Render Dropper", false);
         this.renderShulker = BooleanValue.create(this, "Render Shulker", false);
-        this.chestColor = ColorValue.L(this, "Chest Color", new Color(1, 255, 146, 100));
-        this.trappedChestColor = ColorValue.L(this, "Chest Color", new Color(255, 0, 0, 100));
-        this.enderChestColor = ColorValue.L(this, "Ender Chest Color", new Color(126, 21, 156, 100));
-        this.hopperColor = ColorValue.L(this, "Hopper Color", new Color(138, 138, 138, 255));
-        this.furnaceColor = ColorValue.L(this, "Furnace Color", new Color(90, 90, 90, 255));
-        this.dispenserColor = ColorValue.L(this, "Dispenser Color", new Color(1, 20, 200, 100));
-        this.dropperColor = ColorValue.L(this, "Dropper Color", new Color(70, 200, 200, 100));
-        this.shulkerColor = ColorValue.L(this, "Shulker Color", new Color(255, 255, 255, 100));
-        this.renderChests.K(this.chestColor);
-        this.renderTrappedChests.K(this.trappedChestColor);
-        this.renderEnderchests.K(this.enderChestColor);
-        this.renderHopper.K(this.hopperColor);
-        this.renderFurnace.K(this.furnaceColor);
-        this.renderDispenser.K(this.dispenserColor);
-        this.renderDropper.K(this.dropperColor);
-        this.renderShulker.K(this.shulkerColor);
+        this.chestColor = ColorValue.create(this, "Chest Color", new Color(1, 255, 146, 100));
+        this.trappedChestColor = ColorValue.create(this, "Chest Color", new Color(255, 0, 0, 100));
+        this.enderChestColor = ColorValue.create(this, "Ender Chest Color", new Color(126, 21, 156, 100));
+        this.hopperColor = ColorValue.create(this, "Hopper Color", new Color(138, 138, 138, 255));
+        this.furnaceColor = ColorValue.create(this, "Furnace Color", new Color(90, 90, 90, 255));
+        this.dispenserColor = ColorValue.create(this, "Dispenser Color", new Color(1, 20, 200, 100));
+        this.dropperColor = ColorValue.create(this, "Dropper Color", new Color(70, 200, 200, 100));
+        this.shulkerColor = ColorValue.create(this, "Shulker Color", new Color(255, 255, 255, 100));
+        this.renderChests.addDependentValues(this.chestColor);
+        this.renderTrappedChests.addDependentValues(this.trappedChestColor);
+        this.renderEnderchests.addDependentValues(this.enderChestColor);
+        this.renderHopper.addDependentValues(this.hopperColor);
+        this.renderFurnace.addDependentValues(this.furnaceColor);
+        this.renderDispenser.addDependentValues(this.dispenserColor);
+        this.renderDropper.addDependentValues(this.dropperColor);
+        this.renderShulker.addDependentValues(this.shulkerColor);
         this.addValue(this.outlineOpen, this.renderChests, this.chestColor, this.renderTrappedChests, this.trappedChestColor, this.renderEnderchests, this.enderChestColor, this.renderHopper, this.hopperColor, this.renderFurnace, this.furnaceColor, this.renderDispenser, this.dispenserColor, this.renderDropper, this.dropperColor);
         this.U(this.renderShulker, ForgeVersion.MC_1_12_2.n());
         this.U(this.shulkerColor, ForgeVersion.MC_1_12_2.n());

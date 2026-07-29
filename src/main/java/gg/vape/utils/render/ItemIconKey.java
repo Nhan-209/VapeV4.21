@@ -3,48 +3,48 @@ package gg.vape.utils.render;
 import java.util.Objects;
 
 public class ItemIconKey {
-    private int u;
-    private int l;
-    private int F;
-    private float Q = 1.0f;
+    private int armorColor;
+    private int itemId;
+    private int metadata;
+    private float scale = 1.0f;
 
 
     public boolean equals(Object object) {
         if (object instanceof ItemIconKey) {
-            boolean bl = ((ItemIconKey)object).A() == this.A() && ((ItemIconKey)object).E() == this.E() && ((ItemIconKey)object).w() == this.w() && ((ItemIconKey)object).q() == this.q();
-            return bl;
+            ItemIconKey other = (ItemIconKey)object;
+            return other.getItemId() == this.getItemId() && other.getMetadata() == this.getMetadata() && other.getScale() == this.getScale() && other.getArmorColor() == this.getArmorColor();
         }
         return false;
     }
 
-    public int A() {
-        return this.l;
+    public int getItemId() {
+        return this.itemId;
     }
 
-    public ItemIconKey(int n, int n2, float f) {
-        this.l = n;
-        this.F = n2;
-        this.Q = f;
+    public ItemIconKey(int itemId, int metadata, float scale) {
+        this.itemId = itemId;
+        this.metadata = metadata;
+        this.scale = scale;
     }
 
     public int hashCode() {
-        return Objects.hash(this.A(), this.E(), this.q());
+        return Objects.hash(this.getItemId(), this.getMetadata(), this.getArmorColor());
     }
 
-    public float w() {
-        return this.Q;
+    public float getScale() {
+        return this.scale;
     }
 
-    public int q() {
-        return this.u;
+    public int getArmorColor() {
+        return this.armorColor;
     }
 
-    public int E() {
-        return this.F;
+    public int getMetadata() {
+        return this.metadata;
     }
 
-    public void a(int n) {
-        this.u = n;
+    public void setArmorColor(int armorColor) {
+        this.armorColor = armorColor;
     }
 }
 

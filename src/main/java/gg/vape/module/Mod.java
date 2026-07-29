@@ -66,7 +66,7 @@ EventListener {
         return null;
     }
 
-    public String E() {
+    public String getSimpleSuffix() {
         return "";
     }
 
@@ -94,7 +94,7 @@ EventListener {
     }
 
     public boolean Q() {
-        return this.getProperty(PropertyContainer.W);
+        return this.getProperty(PropertyContainer.LEGACY_FLAG);
     }
 
     public void i(ValueDisplayDescriptor ... valueDisplayDescriptorArray) {
@@ -102,48 +102,48 @@ EventListener {
         this.valueDisplayDescriptors.addAll(Arrays.asList(valueDisplayDescriptorArray));
     }
 
-    public String r() {
+    public String getDetailedSuffix() {
         return "";
     }
 
     public void loadJson(JsonObject jsonObject) {
         String string;
-        if (this.bind.Y()) {
-            this.bind.L().clear();
+        if (this.bind.usesOwnKeybindStorage()) {
+            this.bind.getBoundInputs().clear();
         }
         if ((string = ConfigJsonUtils.P(jsonObject, "name")) != null && string.equalsIgnoreCase(this.getName())) {
             Object object;
             JsonArray jsonArray;
-            if (this.bind.Y()) {
+            if (this.bind.usesOwnKeybindStorage()) {
                 jsonArray = ConfigJsonUtils.q(jsonObject, "keybinds_2");
                 if (jsonArray != null) {
                     try {
-                        this.bind.O(jsonArray, false);
+                        this.bind.loadBoundInputs(jsonArray, false);
                     }
                     catch (Exception exception) {}
                 } else {
                     jsonArray = ConfigJsonUtils.q(jsonObject, "keybinds");
                     if (jsonArray != null) {
                         try {
-                            this.bind.O(jsonArray, true);
+                            this.bind.loadBoundInputs(jsonArray, true);
                         }
                         catch (Exception exception) {}
                     } else {
-                        this.bind.L().clear();
+                        this.bind.getBoundInputs().clear();
                         if (this.defaultKeybind != 0) {
-                            this.bind.L().add(this.defaultKeybind);
+                            this.bind.getBoundInputs().add(this.defaultKeybind);
                         }
                     }
                 }
-                if ((object = ConfigJsonUtils.P(jsonObject, "bind_mode")) != null && this.bind.A$src$Z$jg36ch()) {
+                if ((object = ConfigJsonUtils.P(jsonObject, "bind_mode")) != null && this.bind.supportsActivationMode()) {
                     try {
-                        this.bind.Y(BindActivationMode.valueOf((String)object));
+                        this.bind.setActivationMode(BindActivationMode.valueOf((String)object));
                     }
                     catch (IllegalArgumentException illegalArgumentException) {
-                        this.bind.Y(BindActivationMode.TOGGLE);
+                        this.bind.setActivationMode(BindActivationMode.TOGGLE);
                     }
                 } else {
-                    this.bind.Y(BindActivationMode.TOGGLE);
+                    this.bind.setActivationMode(BindActivationMode.TOGGLE);
                 }
             }
             if ((jsonArray = jsonObject.getAsJsonArray("values")) != null) {
@@ -152,7 +152,7 @@ EventListener {
                     JsonElement jsonElement = valueIterator.next();
                     JsonObject jsonObject2 = jsonElement.getAsJsonObject();
                     for (Value<?, ?> value : this.allValues) {
-                        if (!value.W(jsonObject2)) continue;
+                        if (!value.matchesJsonId(jsonObject2)) continue;
                         value.loadJson(jsonObject2);
                     }
                 }
@@ -173,9 +173,10 @@ EventListener {
     }
 
     public void B() {
-        this.toggleNotification.p(1500L);
-        this.toggleNotification.S("\u00a7f" + this.getName()).m(this.r$src$Z$14eylz9() ? "\u00a72Enabled" : "\u00a7cDisabled").B();
-        Vape.INSTANCE.getNotificationManager().m(this.toggleNotification);
+        this.toggleNotification.setDefaultDuration(1500L);
+        this.toggleNotification.withTitle("\u00a7f" + this.getName())
+                .withMessage(this.r$src$Z$14eylz9() ? "\u00a72Enabled" : "\u00a7cDisabled").reset();
+        Vape.INSTANCE.getNotificationManager().show(this.toggleNotification);
     }
 
     @Nullable
@@ -183,19 +184,19 @@ EventListener {
         JsonArray jsonArray;
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("name", this.getName());
-        if (this.bind.Y()) {
-            jsonArray = this.bind.toJson$src$Lcom_google_gson_JsonArray_$13cfbto();
+        if (this.bind.usesOwnKeybindStorage()) {
+            jsonArray = this.bind.serializeBoundInputs();
             if (this.defaultKeybind == 0 && jsonArray.size() != 0 || jsonArray.size() == 1 && jsonArray.get(0).getAsInt() != this.defaultKeybind) {
                 jsonObject.add("keybinds_2", (JsonElement)jsonArray);
             }
-            if (this.bind.A$src$Z$jg36ch() && this.bind.G() != BindActivationMode.TOGGLE) {
-                jsonObject.addProperty("bind_mode", this.bind.G().name());
+            if (this.bind.supportsActivationMode() && this.bind.getActivationMode() != BindActivationMode.TOGGLE) {
+                jsonObject.addProperty("bind_mode", this.bind.getActivationMode().name());
             }
         }
         jsonArray = new JsonArray();
         for (Value<?, ?> value : this.allValues) {
             JsonObject jsonObject2;
-            if (!value.s$src$Z$1arlhq2() || value.k() || (jsonObject2 = value.H(bl)).entrySet().size() <= 1) continue;
+            if (!value.isSerializable() || value.isDefault() || (jsonObject2 = value.toJson(bl)).entrySet().size() <= 1) continue;
             jsonArray.add((JsonElement)jsonObject2);
         }
         if (jsonArray.size() != 0) {
@@ -214,25 +215,25 @@ EventListener {
         this.tooltip = string;
     }
 
-    public void q(boolean bl, boolean bl2) {
+    public void syncSubModuleStates(boolean enabled, boolean bypassVisibilityCheck) {
         for (SubModule subModule : this.u()) {
             if (subModule.J$src$Z$gcqtyf()) {
-                if (subModule.r$src$Z$14eylz9() == bl) continue;
-                subModule.s(bl, bl2);
+                if (subModule.r$src$Z$14eylz9() == enabled) continue;
+                subModule.setEnabled(enabled, bypassVisibilityCheck);
                 continue;
             }
             if (!subModule.G()) continue;
-            subModule.s(false, bl2);
+            subModule.setEnabled(false, bypassVisibilityCheck);
         }
     }
 
-    public String c(int n) {
+    public String getSuffixForMode(int mode) {
         String string = "";
-        if (n == 0) {
-            string = this.E();
+        if (mode == 0) {
+            string = this.getSimpleSuffix();
         }
-        if (n == 1 && ((string = this.r()) == null || string.isEmpty())) {
-            string = this.E();
+        if (mode == 1 && ((string = this.getDetailedSuffix()) == null || string.isEmpty())) {
+            string = this.getSimpleSuffix();
         }
         return string;
     }
@@ -254,32 +255,31 @@ EventListener {
     }
 
     public boolean L() {
-        return this.getProperty(PropertyContainer.x);
+        return this.getProperty(PropertyContainer.NEW_BADGE);
     }
 
     public void F() {
-        if (this.X() && this.bind.Y() && this.bind.L().isEmpty()) {
+        if (this.X() && this.bind.usesOwnKeybindStorage() && this.bind.getBoundInputs().isEmpty()) {
             return;
         }
         this.Y(!this.enabled);
     }
 
-    public void s(boolean bl, boolean bl2) {
-        boolean bl3;
-        boolean bl4 = bl3 = this.enabled != bl;
-        if (!bl2 && !this.O() && this.E != Category.b && bl) {
+    public void setEnabled(boolean enabled, boolean bypassVisibilityCheck) {
+        boolean stateChanged = this.enabled != enabled;
+        if (!bypassVisibilityCheck && !this.O() && this.E != Category.b && enabled) {
             if (Vape.INSTANCE.getNotificationManager() != null) {
-                Vape.INSTANCE.getNotificationManager().t("Hidden Module", "Attempted to toggle " + this.getName() + "!", NotificationType.WARNING, 2500L);
+                Vape.INSTANCE.getNotificationManager().show("Hidden Module", "Attempted to toggle " + this.getName() + "!", NotificationType.WARNING, 2500L);
             }
             return;
         }
-        if (bl && this.isBlatantMod()) {
+        if (enabled && this.isBlatantMod()) {
             Vape.INSTANCE.getPrimaryMappingTaskSet().f();
         }
-        if (!bl) {
-            this.g();
+        if (!enabled) {
+            this.onBeforeDisable();
         }
-        this.enabled = bl;
+        this.enabled = enabled;
         if (this.enabled) {
             EventBus.getInstance().registerListener(this, this.w());
             new EventModStateChange(this, true).fire();
@@ -291,8 +291,8 @@ EventListener {
                 EventBus.getInstance().unregisterListener(this);
             }
         }
-        this.q(bl, bl2);
-        if (bl3 && this.E != Category.b) {
+        this.syncSubModuleStates(enabled, bypassVisibilityCheck);
+        if (stateChanged && this.E != Category.b) {
             Vape.INSTANCE.saveAndStop();
         }
     }
@@ -349,23 +349,23 @@ EventListener {
         if (eventKeyPress.getKey() <= 0) {
             return;
         }
-        if (this.bind.L().isEmpty()) {
+        if (this.bind.getBoundInputs().isEmpty()) {
             return;
         }
-        if (Minecraft.currentScreen().getObject() == null && this.bind.U(eventKeyPress.getKey(), eventKeyPress.isDown())) {
+        if (Minecraft.currentScreen().getObject() == null && this.bind.handleInput(eventKeyPress.getKey(), eventKeyPress.isDown())) {
             eventKeyPress.setCancelled(true);
         }
     }
 
     public void Y(boolean bl) {
-        this.s(bl, false);
+        this.setEnabled(bl, false);
     }
 
     public Mod(String string, int n, Category category, String string2) {
         this(string, 0, n, category, string2);
     }
 
-    public void g() {
+    public void onBeforeDisable() {
     }
 
     @Override
@@ -406,7 +406,7 @@ EventListener {
         return this.defaultVisible;
     }
 
-    public void q() {
+    public void onScheduledAction() {
     }
 
     public boolean r$src$Z$14eylz9() {
@@ -432,12 +432,12 @@ EventListener {
 
     public String f() {
         if (!this.valueDisplayDescriptors.isEmpty()) {
-            return ModuleValueDisplayFormatter.Z(this.valueDisplayDescriptors);
+            return ModuleValueDisplayFormatter.formatDescriptorSummary(this.valueDisplayDescriptors);
         }
         if (this.F$src$Ljava_util_List_$1kytx9u().isEmpty()) {
             return "";
         }
-        return ModuleValueDisplayFormatter.v(this.F$src$Ljava_util_List_$1kytx9u());
+        return ModuleValueDisplayFormatter.formatValueSummary(this.F$src$Ljava_util_List_$1kytx9u());
     }
 
     public List<Value<?, ?>> V() {
@@ -450,7 +450,7 @@ EventListener {
 
     public Value getValue(String string) {
         for (Value<?, ?> value : this.V()) {
-            if (!value.P$src$Ljava_lang_String_$1ijjhmj().equalsIgnoreCase(string) && !value.getName().equalsIgnoreCase(string)) continue;
+            if (!value.getId().equalsIgnoreCase(string) && !value.getName().equalsIgnoreCase(string)) continue;
             return value;
         }
         return null;
@@ -469,7 +469,7 @@ EventListener {
     public void j() {
         if (!this.developmentWarningShown && this.Q()) {
             this.developmentWarningShown = true;
-            Vape.INSTANCE.getNotificationManager().t("Module in development", this.getName() + " is in development\n\nUse with caution and report issues to support", NotificationType.WARNING, 10000L);
+            Vape.INSTANCE.getNotificationManager().show("Module in development", this.getName() + " is in development\n\nUse with caution and report issues to support", NotificationType.WARNING, 10000L);
         }
     }
 
@@ -517,12 +517,12 @@ EventListener {
 
     public List<ClickGuiModuleCardRenderState> S() {
         if (!this.valueDisplayDescriptors.isEmpty()) {
-            return ModuleValueDisplayFormatter.b(this.valueDisplayDescriptors);
+            return ModuleValueDisplayFormatter.buildDescriptorRenderStates(this.valueDisplayDescriptors);
         }
         if (this.F$src$Ljava_util_List_$1kytx9u().isEmpty()) {
             return Collections.emptyList();
         }
-        return ModuleValueDisplayFormatter.I(this.F$src$Ljava_util_List_$1kytx9u());
+        return ModuleValueDisplayFormatter.buildValueRenderStates(this.F$src$Ljava_util_List_$1kytx9u());
     }
 
     public Mod(String string) {
@@ -541,13 +541,13 @@ EventListener {
         this.E = category;
         this.tooltip = string2;
         this.bind = this.C$src$Lgg_vape_unmap_Bendable_$1we4j6l();
-        if (this.bind.Y() && n != 0) {
-            this.bind.L().add(n);
+        if (this.bind.usesOwnKeybindStorage() && n != 0) {
+            this.bind.getBoundInputs().add(n);
         }
     }
 
     public boolean t$src$Z$14g275z() {
-        return this.getProperty(PropertyContainer.B);
+        return this.getProperty(PropertyContainer.BETA_BADGE);
     }
 
     public void P(Value<?, ?> value, MinecraftVersionConstraint ... minecraftVersionConstraintArray) {

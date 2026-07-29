@@ -95,7 +95,7 @@ extends Mapping {
             MNetHandlerPlayClientImpl mNetHandlerPlayClientImpl = this;
             this.r = mNetHandlerPlayClientImpl.u(string, clazz, classArray).s();
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MNetworkManager.Z(new String[2]);
         }
     }

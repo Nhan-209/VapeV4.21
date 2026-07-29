@@ -8,17 +8,15 @@ import java.awt.Point;
 
 class PublicProfileOwnerBooleanToggleClickHandler
 implements GuiMouseListener {
-    final BooleanToggleComponent b;
-    final PublicProfileOwnerDetailsPanel J;
+    private final BooleanToggleComponent dependentToggle;
 
     @Override
     public void g(Point point, MouseClickButton mouseClickButton) {
-        this.b.Z(!this.b.V$src$Z$1xhop3l());
+        this.dependentToggle.setVisible(!this.dependentToggle.V$src$Z$1xhop3l());
     }
 
-    PublicProfileOwnerBooleanToggleClickHandler(PublicProfileOwnerDetailsPanel publicProfileOwnerDetailsPanel, BooleanToggleComponent booleanToggleComponent) {
-        this.J = publicProfileOwnerDetailsPanel;
-        this.b = booleanToggleComponent;
+    PublicProfileOwnerBooleanToggleClickHandler(BooleanToggleComponent dependentToggle) {
+        this.dependentToggle = dependentToggle;
     }
 
 }

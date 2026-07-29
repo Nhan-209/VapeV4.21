@@ -14,7 +14,6 @@ DescribedOption {
     DURATION("Duration", "How long the potion effect lasts for.");
 
     public static final List<PotionEffectFilterMode> VALUES;
-    private static final PotionEffectFilterMode[] valuesCache;
     private final String description;
     private final String name;
 
@@ -34,7 +33,7 @@ DescribedOption {
 
 
     @Override
-    public String E() {
+    public String getDescription() {
         return this.description;
     }
 
@@ -44,11 +43,6 @@ DescribedOption {
     }
 
     static {
-        String[] stringArray = new String[]{"HAS", "The level of the potion effect.", "Duration", "How long the potion effect lasts for.", "Has", "Level", "Whether the item has the potion effect.", "LEVEL", "DURATION"};
-
-
-
-        valuesCache = new PotionEffectFilterMode[]{HAS, LEVEL, DURATION};
         VALUES = Arrays.asList(PotionEffectFilterMode.values());
     }
 
@@ -57,7 +51,7 @@ DescribedOption {
         return potionEffectFilterMode2 == null ? potionEffectFilterMode : potionEffectFilterMode2;
     }
 
-    public static PotionEffectFilterMode r(String string) {
+    public static PotionEffectFilterMode fromName(String string) {
         return PotionEffectFilterMode.fromNameOrDefault(string, HAS);
     }
 }

@@ -74,7 +74,7 @@ extends Mapping {
             String string7 = "PICKUP_ALL";
             MClickType mClickType7 = this;
             this.n = this.u(string7, bl7, clazz7);
-            GuiComponent.D(new GuiComponent[4]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[4]);
             return;
         }
         Class clazz8 = MappedClasses.V_;

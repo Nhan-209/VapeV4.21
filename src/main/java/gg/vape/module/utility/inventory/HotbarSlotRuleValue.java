@@ -11,30 +11,30 @@ import org.jetbrains.annotations.Nullable;
 public class HotbarSlotRuleValue
 extends Value<List<HotbarSlotRule>, HotbarSlotRuleValue> {
     @Nullable
-    private HotbarSlotRuleEditorComponent f;
+    private HotbarSlotRuleEditorComponent editor;
 
-    public List<HotbarSlotRule> f$src$Ljava_util_List_$5if89l() {
-        if (this.f == null || this.f.q$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1uq9d6u() == null) {
+    public List<HotbarSlotRule> getRules() {
+        if (this.editor == null || this.editor.q$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1uq9d6u() == null) {
             return new ArrayList<HotbarSlotRule>();
         }
-        return this.f.q$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1uq9d6u().u$src$Ljava_util_List_$1u5n2i3();
+        return this.editor.q$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1uq9d6u().u$src$Ljava_util_List_$1u5n2i3();
     }
 
-    public HotbarSlotRuleValue f() {
-        return new HotbarSlotRuleValue(null, this.P$src$Ljava_lang_String_$1ijjhmj());
+    public HotbarSlotRuleValue createCopy() {
+        return new HotbarSlotRuleValue(null, this.getId());
     }
 
     @Override
-    public HotbarSlotRuleValue getALimit() {
-        return this.f();
+    public HotbarSlotRuleValue copyValueDefinition() {
+        return this.createCopy();
     }
 
     @Override
     public void parse(String string) {
     }
 
-    public void u(HotbarSlotRuleEditorComponent hotbarSlotRuleEditorComponent) {
-        this.f = hotbarSlotRuleEditorComponent;
+    public void setEditor(HotbarSlotRuleEditorComponent editor) {
+        this.editor = editor;
     }
 
 
@@ -44,40 +44,37 @@ extends Value<List<HotbarSlotRule>, HotbarSlotRuleValue> {
 
     @Override
     public boolean loadJson(JsonObject jsonObject) {
-        if (this.f != null) {
-            this.f.f(jsonObject);
+        if (this.editor != null) {
+            this.editor.f(jsonObject);
         }
         return true;
     }
 
     @Override
-    public String c() {
-        List<HotbarSlotRule> list = this.f$src$Ljava_util_List_$5if89l();
+    public String getDisplayValue() {
+        List<HotbarSlotRule> list = this.getRules();
         if (list.isEmpty()) {
             return "None";
         }
         if (list.size() == 1) {
-            return String.valueOf(list.get(0).x());
+            return String.valueOf(list.get(0).getItemId());
         }
-        return list.get(0).x() + " +" + (list.size() - 1);
+        return list.get(0).getItemId() + " +" + (list.size() - 1);
     }
 
     @Override
-    public JsonObject H(boolean bl) {
-        JsonObject jsonObject = this.f != null ? this.f.A$src$Lcom_google_gson_JsonObject_$167pnb8() : new JsonObject();
-        jsonObject.addProperty("id", this.P$src$Ljava_lang_String_$1ijjhmj());
+    public JsonObject toJson(boolean bl) {
+        JsonObject jsonObject = this.editor != null ? this.editor.A$src$Lcom_google_gson_JsonObject_$167pnb8() : new JsonObject();
+        jsonObject.addProperty("id", this.getId());
         return jsonObject;
     }
 
     @Nullable
-    public HotbarSlotRuleEditorComponent Y() {
-        return this.f;
+    public HotbarSlotRuleEditorComponent getEditor() {
+        return this.editor;
     }
 
-    public void W(List<HotbarSlotRule> list) {
-    }
-
-    public static HotbarSlotRuleValue m(Object object, String string) {
-        return new HotbarSlotRuleValue(object, string);
+    public static HotbarSlotRuleValue create(Object owner, String id) {
+        return new HotbarSlotRuleValue(owner, id);
     }
 }

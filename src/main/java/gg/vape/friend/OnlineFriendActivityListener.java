@@ -104,7 +104,7 @@ implements EventListener {
         onlineActivityManager.o(entityPlayer, worldClient);
         ActivitySnapshotPayload activitySnapshotPayload = OnlineFriendActivityState.f$src$Lgg_vape_friend_activity_ActivitySnapshotPayload$cbdquh(entityPlayer);
         onlineFriendActivityState.N(activitySnapshotPayload);
-        int n = MouseClickRateTracker.m();
+        int n = MouseClickRateTracker.getClicksPerSecond();
         onlineFriendActivityState.O(n);
         if (!onlineActivityManager.x()) {
             if (this.d != n) {
@@ -130,7 +130,7 @@ implements EventListener {
         String string = Minecraft.V() ? "Singleplayer" : (serverData.isNotNull() ? serverData.f() : null);
         String string2 = string;
         if (string2 != null) {
-            if (!OnlineConnectionManager.T.S().z().L().booleanValue()) {
+            if (!OnlineConnectionManager.T.S().z().getEffectiveValue().booleanValue()) {
                 string = null;
             }
             if (onlineFriend.v() == null && string != null) {
@@ -153,7 +153,7 @@ implements EventListener {
             this.E = string2;
             return;
         }
-        if (!OnlineConnectionManager.T.S().z().L().booleanValue()) {
+        if (!OnlineConnectionManager.T.S().z().getEffectiveValue().booleanValue()) {
             string = null;
         }
         if (onlineFriend.v() == null && string != null) {
@@ -180,7 +180,7 @@ implements EventListener {
 
     @EventHandler
     public void onRender3D(EventRender3D eventRender3D) {
-        if (OffscreenRenderContext.W()) {
+        if (OffscreenRenderContext.isRenderingOffscreen()) {
             return;
         }
         PartyState partyState = Vape.INSTANCE.getOnlineManager().y().j();
@@ -205,12 +205,12 @@ implements EventListener {
         Collection<OnlineFriendActivityState> activityStates = Vape.INSTANCE.getOnlineManager().V().X();
         for (OnlineFriendActivityState activityState : activityStates) {
             EntityPlayer entityPlayer;
-            if (!partyState.c().contains(activityState.a()) || activityState.equals(Vape.INSTANCE.getOnlineManager().r().E()) && !onlineSettings.U().L().booleanValue() || !activityState.Q() || (entityPlayer = linkedHashMap.get(activityState.m())) == null || entityPlayer.equals(Minecraft.thePlayer())) continue;
+            if (!partyState.c().contains(activityState.a()) || activityState.equals(Vape.INSTANCE.getOnlineManager().r().E()) && !onlineSettings.U().getEffectiveValue().booleanValue() || !activityState.Q() || (entityPlayer = linkedHashMap.get(activityState.m())) == null || entityPlayer.equals(Minecraft.thePlayer())) continue;
             statesByPlayer.compute(entityPlayer, (arg_0, arg_1) -> OnlineFriendActivityListener.lambda$onRenderWorldLast$0(activityState, arg_0, arg_1));
         }
         OnlineFriendActivityState localActivityState;
         EntityPlayer localEntityPlayer;
-        if (onlineSettings.U().L().booleanValue() && (localActivityState = Vape.INSTANCE.getOnlineManager().r().E()).Q() && (localEntityPlayer = linkedHashMap.get(localActivityState.m())) != null && !localEntityPlayer.equals(Minecraft.thePlayer())) {
+        if (onlineSettings.U().getEffectiveValue().booleanValue() && (localActivityState = Vape.INSTANCE.getOnlineManager().r().E()).Q() && (localEntityPlayer = linkedHashMap.get(localActivityState.m())) != null && !localEntityPlayer.equals(Minecraft.thePlayer())) {
             statesByPlayer.compute(localEntityPlayer, (arg_0, arg_1) -> OnlineFriendActivityListener.lambda$onRenderWorldLast$1(localActivityState, arg_0, arg_1));
         }
         if (statesByPlayer.isEmpty()) {
@@ -234,7 +234,7 @@ implements EventListener {
             GL11.glScaled((double)0.1, (double)0.1, (double)0.1);
             float f2 = 10.0f;
             GL11.glPopMatrix();
-            if (list.size() <= 0 || !onlineSettings.k$src$Lgg_vape_value_BooleanValue_$ffgfgd().L().booleanValue()) continue;
+            if (list.size() <= 0 || !onlineSettings.k$src$Lgg_vape_value_BooleanValue_$ffgfgd().getEffectiveValue().booleanValue()) continue;
             OnlineFriendActivityState onlineFriendActivityState = list.get(0);
             MutableColor mutableColor = new MutableColor(OnlineFriendColorUtil.V(onlineFriendActivityState.a())).withAlpha(150);
             GuiRenderPrimitives.R(entityPlayer.c(), entityPlayer.A(), entityPlayer.Z(), 50.0f, 0.7f, entityPlayer.Y(), mutableColor);
@@ -264,7 +264,7 @@ implements EventListener {
             arrayList.add(onlineFriendActivityState);
         }
         OnlineFriendActivityState onlineFriendActivityState = Vape.INSTANCE.getOnlineManager().r().E();
-        if (OnlineConnectionManager.T.S().U().L().booleanValue() && onlineFriendActivityState.Q() && onlineFriendActivityState.O().equals(string)) {
+        if (OnlineConnectionManager.T.S().U().getEffectiveValue().booleanValue() && onlineFriendActivityState.Q() && onlineFriendActivityState.O().equals(string)) {
             arrayList.add(onlineFriendActivityState);
         }
         return arrayList;
@@ -273,24 +273,24 @@ implements EventListener {
     @Nullable
     public EntityPlayer M() {
         Wrapper wrapper;
-        if (this.J.r$src$Z$14eylz9() && !this.J.D.isEmpty()) {
+        if (this.J.r$src$Z$14eylz9() && !this.J.targets.isEmpty()) {
             wrapper = Minecraft.currentScreen();
-            if (!this.J.Y.L().booleanValue() || ((GuiScreen)wrapper).isNull()) {
-                for (EntityLivingBase entityLivingBase : this.J.D) {
+            if (!this.J.guiCheck.getEffectiveValue().booleanValue() || ((GuiScreen)wrapper).isNull()) {
+                for (EntityLivingBase entityLivingBase : this.J.targets) {
                     if (!entityLivingBase.isInstance(MappedClasses.Yl)) continue;
                     return new EntityPlayer(entityLivingBase.getObject());
                 }
             }
         }
         if (this.i.r$src$Z$14eylz9()) {
-            wrapper = this.i.j$src$Lgg_vape_wrapper_impl_EntityLivingBase_$si0dgx();
+            wrapper = this.i.getTarget();
             GuiScreen currentScreen = Minecraft.currentScreen();
             if (currentScreen.isNull() && wrapper != null && wrapper.isInstance(MappedClasses.Yl)) {
                 return new EntityPlayer(wrapper);
             }
         }
         EntityLivingBase aimAssistTarget;
-        if (this.f.r$src$Z$14eylz9() && ((GuiScreen)(wrapper = Minecraft.currentScreen())).isNull() && (aimAssistTarget = this.f.q$src$Lgg_vape_wrapper_impl_EntityLivingBase_$8dbhmm()) != null && aimAssistTarget.isInstance(MappedClasses.Yl)) {
+        if (this.f.r$src$Z$14eylz9() && ((GuiScreen)(wrapper = Minecraft.currentScreen())).isNull() && (aimAssistTarget = this.f.getCurrentTarget()) != null && aimAssistTarget.isInstance(MappedClasses.Yl)) {
             return new EntityPlayer(aimAssistTarget.getObject());
         }
         if (this.c != null && System.currentTimeMillis() - this.V < 5000L) {
@@ -390,30 +390,30 @@ implements EventListener {
         int n = 5;
         OnlineSettings onlineSettings = OnlineConnectionManager.T.S();
         OnlineFriendActivityState primaryState;
-        if (OnlineConnectionManager.T.S().y().L().booleanValue() && (primaryState = Vape.INSTANCE.getOnlineManager().V().X(entityPlayer.getName())) != null && partyState.c().contains(primaryState.a())) {
+        if (OnlineConnectionManager.T.S().y().getEffectiveValue().booleanValue() && (primaryState = Vape.INSTANCE.getOnlineManager().V().X(entityPlayer.getName())) != null && partyState.c().contains(primaryState.a())) {
             Color color = OnlineFriendColorUtil.V(primaryState.a());
             color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255);
             GuiRenderPrimitives.V(-6.0, -n - 1, 12.0, 1.0, new Color(0, 0, 0, 96));
             GuiRenderPrimitives.V(-5.0, -n, 10.0, 1.0, color);
             n = (int)((double)n + 15.0);
         }
-        if (OnlineConnectionManager.T.S().k$src$Lgg_vape_value_BooleanValue_$ffgfgd().L().booleanValue()) {
+        if (OnlineConnectionManager.T.S().k$src$Lgg_vape_value_BooleanValue_$ffgfgd().getEffectiveValue().booleanValue()) {
             Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().B(0.0);
-            OpenGlBackendHolder.d.u$src$V$hntn98(2896);
+            OpenGlBackendHolder.backend.disableCapability(2896);
             GlStateManager.enableAlpha();
             GL11.glBlendFunc((int)770, (int)771);
             List<OnlineFriendActivityState> activityStates = OnlineFriendActivityListener.r(entityPlayer.getName());
-            if (!activityStates.isEmpty() && onlineSettings.k$src$Lgg_vape_value_BooleanValue_$ffgfgd().L().booleanValue()) {
+            if (!activityStates.isEmpty() && onlineSettings.k$src$Lgg_vape_value_BooleanValue_$ffgfgd().getEffectiveValue().booleanValue()) {
                 double d3 = -5.0 - (double)activityStates.size() * 20.0 / 2.0 + 10.0 - 2.0;
                 for (OnlineFriendActivityState onlineFriendActivityState : activityStates) {
                     Color color = OnlineFriendColorUtil.V(onlineFriendActivityState.a());
                     color = new Color(color.getRed(), color.getGreen(), color.getBlue(), 255);
-                    ImageRenderer.E(new Color(0, 0, 0, 150), (float)d3 - 1.0f, (float)(-n) - 1.0f, "triangle", 16.0f, 16.0f, false);
-                    ImageRenderer.E(color, (float)d3, -n, "triangle", 14.0f, 14.0f, false);
+                    ImageRenderer.drawImage(new Color(0, 0, 0, 150), (float)d3 - 1.0f, (float)(-n) - 1.0f, "triangle", 16.0f, 16.0f, false);
+                    ImageRenderer.drawImage(color, (float)d3, -n, "triangle", 14.0f, 14.0f, false);
                     d3 += 20.0;
                 }
             }
-            OpenGlBackendHolder.d.l(2896);
+            OpenGlBackendHolder.backend.enableCapability(2896);
             Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().O(0.0);
         }
     }

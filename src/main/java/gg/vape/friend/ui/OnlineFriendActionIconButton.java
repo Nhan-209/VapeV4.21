@@ -15,13 +15,13 @@ extends IconActionButton {
 
 
     @Override
-    public void n(boolean bl) {
+    public void setHovered(boolean hovered) {
         if (OnlineFriendActionPanel.V(this.iF)) {
-            this.q = false;
-            this.d$src$Lgg_vape_ui_click_animation_ColorAnimation_$onqyea().O();
-            this.l$src$Lgg_vape_ui_click_animation_ColorAnimation_$1s4yq9u().O();
+            this.hovered = false;
+            this.getIconColorAnimation().O();
+            this.getBackgroundAnimation().O();
             return;
         }
-        super.n(bl);
+        super.setHovered(hovered);
     }
 }

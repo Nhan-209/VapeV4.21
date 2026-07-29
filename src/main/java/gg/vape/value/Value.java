@@ -31,88 +31,88 @@ public abstract class Value<K, T extends Value<K, T>>
 extends PropertyContainer
 implements INamed {
     @Nullable
-    private String X;
-    private ValueAccessor<K, T> t;
-    private final Object e;
-    private final List<ValueChangeValidator<T, K>> U;
-    private boolean N;
-    protected K c;
-    private boolean i = false;
-    private final List<String> P;
-    private GuiComponent E;
-    private boolean F = false;
-    private boolean q = true;
-    private boolean k = true;
-    private Value S;
-    private final DirectValueAccessor<K, T> j;
-    private final HashMap<ConditionalValue, ValueCondition> z = new HashMap();
-    private final String H;
-    private static String C;
-    private final List<ValueChangeListener<T>> I = new ArrayList<ValueChangeListener<T>>();
+    private String description;
+    private ValueAccessor<K, T> accessor;
+    private final Object owner;
+    private final List<ValueChangeValidator<T, K>> validators;
+    private boolean suppressPersistence;
+    protected K defaultValue;
+    private boolean encodeBase64 = false;
+    private final List<String> aliases;
+    private GuiComponent boundComponent;
+    private boolean hidden = false;
+    private boolean serializable = true;
+    private boolean resettable = true;
+    private Value parent;
+    private final DirectValueAccessor<K, T> directAccessor;
+    private final HashMap<ConditionalValue, ValueCondition> conditions = new HashMap();
+    private final String name;
+    private static String legacyState;
+    private final List<ValueChangeListener<T>> changeListeners = new ArrayList<ValueChangeListener<T>>();
     @Nullable
-    private Color a = null;
-    private K h;
+    private Color overrideColor = null;
+    private K currentValue;
 
     protected JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("id", this.P$src$Ljava_lang_String_$1ijjhmj());
+        jsonObject.addProperty("id", this.getId());
         return jsonObject;
     }
 
-    public Object k$src$Ljava_lang_Object_$13p7u5q() {
-        return this.e;
+    public Object getOwner() {
+        return this.owner;
     }
 
-    public boolean W(JsonObject jsonObject) {
+    public boolean matchesJsonId(JsonObject jsonObject) {
         String string = ConfigJsonUtils.P(jsonObject, "id");
-        for (String string2 : this.P) {
+        for (String string2 : this.aliases) {
             if (!string2.equalsIgnoreCase(string)) continue;
             return true;
         }
-        return this.P$src$Ljava_lang_String_$1ijjhmj().equalsIgnoreCase(string);
+        return this.getId().equalsIgnoreCase(string);
     }
 
-    public K K() {
-        return this.t.F();
+    public K getValue() {
+        return this.accessor.getValue();
     }
 
 
-    public void Z() {
-        for (ValueChangeListener<T> valueChangeListener : this.I) {
-            valueChangeListener.m((T)this);
+    public void notifyChangeListeners() {
+        for (ValueChangeListener<T> valueChangeListener : this.changeListeners) {
+            valueChangeListener.onValueChanged((T)this);
         }
     }
 
     @Override
     public String getName() {
-        return this.H;
+        return this.name;
     }
 
-    public K P$src$Ljava_lang_Object_$qcpui1() {
-        return this.c;
+    public K getDefaultValue() {
+        return this.defaultValue;
     }
 
-    public void X(ValueChangeValidator<T, K> valueChangeValidator) {
-        this.U.add(valueChangeValidator);
+    public void addValidator(ValueChangeValidator<T, K> validator) {
+        this.validators.add(validator);
     }
 
-    public void r$src$V$1ar1p19() {
-        this.t = this.j;
+    public void useDirectAccessor() {
+        this.accessor = this.directAccessor;
     }
 
-    public boolean N$src$Z$1a793rp() {
-        return this.k;
+    public boolean isResettable() {
+        return this.resettable;
     }
 
-    public void f(boolean bl) {
-        this.N = bl;
+    public void setPersistenceSuppressed(boolean suppressed) {
+        this.suppressPersistence = suppressed;
     }
 
     public abstract void parse(String var1);
 
-    public boolean k() {
-        K k = this.K();
-        K k2 = this.P$src$Ljava_lang_Object_$qcpui1();
+    public boolean isDefault() {
+        K k = this.getValue();
+        K k2 = this.getDefaultValue();
         if (k2 == null && k == null) {
             return true;
         }
@@ -129,9 +129,9 @@ implements INamed {
                 return false;
             }
             for (int i = 0; i < list.size(); ++i) {
-                Object object = ValueComponentFactory.z(list.get(i));
-                Object object2 = ValueComponentFactory.z(list2.get(i));
-                if (object == null && object2 == null || object != null && object.equals(object2)) continue;
+                Object defaultEntryText = ValueComponentFactory.getComparableListEntryText(list.get(i));
+                Object currentEntryText = ValueComponentFactory.getComparableListEntryText(list2.get(i));
+                if (defaultEntryText == null && currentEntryText == null || defaultEntryText != null && defaultEntryText.equals(currentEntryText)) continue;
                 return false;
             }
             return true;
@@ -155,13 +155,13 @@ implements INamed {
         return k2.equals(k);
     }
 
-    public JsonObject H(boolean bl) {
+    public JsonObject toJson(boolean bl) {
         JsonObject jsonObject = this.toJson();
-        jsonObject.addProperty("id", this.P$src$Ljava_lang_String_$1ijjhmj());
-        if (this.K() != null) {
+        jsonObject.addProperty("id", this.getId());
+        if (this.getValue() != null) {
             String string = "value";
-            String string2 = this.K().toString();
-            if (this.i) {
+            String string2 = this.getValue().toString();
+            if (this.encodeBase64) {
                 string2 = "b64:" + Base64Util.encodeUtf8Base64(string2);
             }
             jsonObject.addProperty(string, string2);
@@ -169,223 +169,226 @@ implements INamed {
         return jsonObject;
     }
 
-    public void U(ValueCondition valueCondition) {
-        for (ConditionalValue conditionalValue : valueCondition.U().keySet()) {
-            this.z.put(conditionalValue, valueCondition);
+    public void addCondition(ValueCondition valueCondition) {
+        for (ConditionalValue conditionalValue : valueCondition.getPredicatesByValue().keySet()) {
+            this.conditions.put(conditionalValue, valueCondition);
         }
     }
 
-    public void B(ValueChangeListener<T> valueChangeListener) {
-        this.I.add(valueChangeListener);
+    public void addChangeListener(ValueChangeListener<T> valueChangeListener) {
+        this.changeListeners.add(valueChangeListener);
     }
 
-    public void H$src$V$8t5pov(boolean bl) {
-        this.F = bl;
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
-    public Value(Object object, String string, K k) {
-        this.U = new ArrayList<ValueChangeValidator<T, K>>();
-        this.P = new ArrayList<String>();
-        this.j = new DirectValueAccessor<K, T>(this);
-        this.t = this.j;
-        this.e = object;
-        this.H = string;
-        this.A(k);
-        this.h = k;
-        if (object != null) {
-            if (object instanceof ColorValue || object instanceof EntityTargetFilterValue) {
+    public Value(Object owner, String name, K defaultValue) {
+        this.validators = new ArrayList<ValueChangeValidator<T, K>>();
+        this.aliases = new ArrayList<String>();
+        this.directAccessor = new DirectValueAccessor<K, T>(this);
+        this.accessor = this.directAccessor;
+        this.owner = owner;
+        this.name = name;
+        // Do not dispatch to subclass setters while the subclass is still
+        // uninitialized. NumberValue overrides A(), so virtual dispatch here
+        // left its default value null and also ran change side effects.
+        this.defaultValue = defaultValue;
+        this.currentValue = defaultValue;
+        if (owner != null) {
+            if (owner instanceof ColorValue || owner instanceof EntityTargetFilterValue) {
                 return;
             }
-            if (object instanceof PublicProfileSettings) {
+            if (owner instanceof PublicProfileSettings) {
                 Vape.INSTANCE.getSettingsManager().registerValue(this);
-            } else if (!(object instanceof Mod)) {
+            } else if (!(owner instanceof Mod)) {
                 Vape.INSTANCE.getValueManager().registerValue(this);
             }
         }
     }
 
-    public void O(ValueAccessor<K, T> valueAccessor) {
-        this.t = valueAccessor;
+    public void setAccessor(ValueAccessor<K, T> valueAccessor) {
+        this.accessor = valueAccessor;
     }
 
     @Nullable
-    public Color Q() {
+    public Color getDisplayColor() {
         return null;
     }
 
-    public void L(ConditionalValue conditionalValue) {
-        this.z.put(conditionalValue, null);
+    public void addConditionalValue(ConditionalValue conditionalValue) {
+        this.conditions.put(conditionalValue, null);
     }
 
-    public void e(boolean bl) {
-        this.q = bl;
+    public void setSerializable(boolean serializable) {
+        this.serializable = serializable;
     }
 
-    public static void m(String string) {
-        C = string;
+    public static void setLegacyState(String state) {
+        legacyState = state;
     }
 
-    public boolean K$src$Z$1a5lpzm() {
+    public boolean areConditionsMet() {
         HashMap<ValueCondition, Boolean> hashMap = new HashMap<ValueCondition, Boolean>();
-        for (Map.Entry<ConditionalValue, ValueCondition> entry : this.z.entrySet()) {
+        for (Map.Entry<ConditionalValue, ValueCondition> entry : this.conditions.entrySet()) {
             ValueCondition valueCondition = entry.getValue();
             if (valueCondition != null) {
                 if (!hashMap.containsKey(valueCondition)) {
-                    hashMap.put(valueCondition, valueCondition.x());
+                    hashMap.put(valueCondition, valueCondition.isSatisfied());
                 }
                 if (((Boolean)hashMap.get(valueCondition)).booleanValue()) continue;
                 return false;
             }
-            if (entry.getKey().q(this)) continue;
+            if (entry.getKey().isDependentValueActive(this)) continue;
             return false;
         }
         return true;
     }
 
-    public T I(String string) {
-        this.P.add(string);
+    public T addAlias(String alias) {
+        this.aliases.add(alias);
         return (T)this;
     }
 
     @Nullable
-    public Color q$src$Ljava_awt_Color_$1ibcet6() {
-        return this.a;
+    public Color getOverrideColor() {
+        return this.overrideColor;
     }
 
-    public boolean L$src$Z$1a65ikz() {
-        return this.N;
+    public boolean isPersistenceSuppressed() {
+        return this.suppressPersistence;
     }
 
     @Nullable
-    public String w$src$Ljava_lang_String_$ikqblg() {
-        return this.X;
+    public String getDescription() {
+        return this.description;
     }
 
-    public abstract T getALimit();
+    public abstract T copyValueDefinition();
 
-    public void L(GuiComponent guiComponent) {
-        this.E = guiComponent;
+    public void setBoundComponent(GuiComponent component) {
+        this.boundComponent = component;
     }
 
-    public void F(K k) {
-        this.h = k;
-        this.g$src$V$1akzyia();
+    public void setDirectValue(K k) {
+        this.currentValue = k;
+        this.notifyChanged();
     }
 
     public boolean loadJson(JsonObject jsonObject) {
-        if (this.W(jsonObject)) {
+        if (this.matchesJsonId(jsonObject)) {
             String string = "";
             String string2 = ConfigJsonUtils.P(jsonObject, "value");
             if (string2 != null) {
                 string = string2;
             }
-            if (this.i && string.startsWith("b64:")) {
+            if (this.encodeBase64 && string.startsWith("b64:")) {
                 string = string.split(":")[1];
                 string = Base64Util.decodeUtf8Base64(string);
             }
             this.parse(string);
-            this.Z();
+            this.notifyChangeListeners();
             return true;
         }
         return false;
     }
 
     public Value getParent() {
-        return this.S;
+        return this.parent;
     }
 
-    public K l() {
-        return this.h;
+    public K copyValue() {
+        return this.currentValue;
     }
 
-    public void g$src$V$1akzyia() {
-        if (!this.N) {
+    public void notifyChanged() {
+        if (!this.suppressPersistence) {
             Vape.INSTANCE.saveAndStop();
         }
-        for (ValueChangeListener<T> valueChangeListener : this.I) {
-            valueChangeListener.m((T)this);
+        for (ValueChangeListener<T> valueChangeListener : this.changeListeners) {
+            valueChangeListener.onValueChanged((T)this);
         }
     }
 
-    public K O$src$Ljava_lang_Object_$1o24gsq() {
-        return this.h;
+    public K getDirectValue() {
+        return this.currentValue;
     }
 
     public void setParent(Value value) {
-        this.S = value;
+        this.parent = value;
     }
 
-    public <T> T n(boolean bl) {
-        this.k = bl;
+    public <T> T setResettable(boolean resettable) {
+        this.resettable = resettable;
         return (T)this;
     }
 
-    public void o(K k) {
-        this.t.e(k);
+    public void setValue(K k) {
+        this.accessor.setValue(k);
     }
 
-    public void A(K k) {
-        this.c = k;
+    public void setDefaultValue(K k) {
+        this.defaultValue = k;
     }
 
-    public boolean C$src$Z$1a17d8q() {
-        return this.F;
+    public boolean isHidden() {
+        return this.hidden;
     }
 
-    public GuiComponent R$src$Lgg_vape_ui_click_component_GuiComponent_$1gnoyjm() {
-        return this.E;
+    public GuiComponent getBoundComponent() {
+        return this.boundComponent;
     }
 
-    public boolean s$src$Z$1arlhq2() {
-        return this.q;
+    public boolean isSerializable() {
+        return this.serializable;
     }
 
-    public T Z$src$Lgg_vape_value_Value_$16i62fx(@Nullable String string) {
-        this.X = string;
+    public T setDescription(@Nullable String description) {
+        this.description = description;
         return (T)this;
     }
 
-    public boolean b(K k) {
-        K k2 = this.K();
-        for (ValueChangeValidator<T, K> valueChangeValidator : this.U) {
-            if (valueChangeValidator.u((T)this, k2, k)) continue;
+    public boolean isChangeValid(K k) {
+        K k2 = this.getValue();
+        for (ValueChangeValidator<T, K> valueChangeValidator : this.validators) {
+            if (valueChangeValidator.isValidChange((T)this, k2, k)) continue;
             return false;
         }
         return true;
     }
 
-    public void C(@Nullable Color color) {
-        this.a = color;
+    public void setOverrideColor(@Nullable Color color) {
+        this.overrideColor = color;
     }
 
-    public K m() {
-        return this.t.a();
+    public K getValueCompat() {
+        return this.accessor.getValue();
     }
 
-    public static String K$src$Ljava_lang_String_$9z8f6o() {
-        return C;
+    public static String getLegacyState() {
+        return legacyState;
     }
 
-    public String P$src$Ljava_lang_String_$1ijjhmj() {
-        String string = this.H;
-        if (this.e != null && this.e instanceof SubModule) {
-            SubModule subModule = (SubModule)this.e;
+    public String getId() {
+        String string = this.name;
+        if (this.owner != null && this.owner instanceof SubModule) {
+            SubModule subModule = (SubModule)this.owner;
             string = subModule.getName() + "-" + string;
         }
-        if (this.S != null) {
-            string = this.S.P$src$Ljava_lang_String_$1ijjhmj() + "-" + string;
+        if (this.parent != null) {
+            string = this.parent.getId() + "-" + string;
         }
         return string;
     }
 
-    public void S() {
-        if (this.k && this.P$src$Ljava_lang_Object_$qcpui1() != null) {
-            this.o(this.P$src$Ljava_lang_Object_$qcpui1());
+    public void reset() {
+        if (this.resettable && this.getDefaultValue() != null) {
+            this.setValue(this.getDefaultValue());
         }
     }
 
-    public String c() {
-        K k = this.K();
+    public String getDisplayValue() {
+        K k = this.getValue();
         if (k == null) {
             return "";
         }
@@ -396,16 +399,16 @@ implements INamed {
         return string;
     }
 
-    public T W(boolean bl) {
-        this.i = bl;
+    public T setBase64Encoded(boolean encodeBase64) {
+        this.encodeBase64 = encodeBase64;
         return (T)this;
     }
 
     static {
-        Value.m("RrLfY");
+        Value.setLegacyState("RrLfY");
     }
 
     public Object java_lang_Object_K() {
-        return this.K();
+        return this.getValue();
     }
 }

@@ -14,7 +14,7 @@ implements GuiMouseListener {
 
     @Override
     public boolean Q(Point point) {
-        if (!PartyDetailsPanel.P(this.O).Q().R(point) && !PartyDetailsPanel.b(this.O).Q().R(point)) {
+        if (!PartyDetailsPanel.P(this.O).getBounds().R(point) && !PartyDetailsPanel.b(this.O).getBounds().R(point)) {
             PartyDetailsPanel.H(this.O);
             return true;
         }

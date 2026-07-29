@@ -32,21 +32,21 @@ extends GuiComponent {
 
     @Override
     public void g(GuiMouseEvent guiMouseEvent) {
-        ClientSettings.g(HotbarSlotRuleItemPickerFrame.class).y(this);
+        ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class).y(this);
         if (this.editor.q$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$1uq9d6u().equals(this)) {
-            HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame = ClientSettings.g(HotbarSlotRuleItemPickerFrame.class);
-            if (ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v() instanceof ClickGuiFrameManager) {
-                ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v();
+            HotbarSlotRuleItemPickerFrame hotbarSlotRuleItemPickerFrame = ClientSettings.getFrame(HotbarSlotRuleItemPickerFrame.class);
+            if (ClientSettings.INSTANCE.getActiveStack() instanceof ClickGuiFrameManager) {
+                ClickGuiFrameManager clickGuiFrameManager = (ClickGuiFrameManager)ClientSettings.INSTANCE.getActiveStack();
                 hotbarSlotRuleItemPickerFrame.O(clickGuiFrameManager);
-                clickGuiFrameManager.K(hotbarSlotRuleItemPickerFrame);
+                clickGuiFrameManager.setSidecarFrame(hotbarSlotRuleItemPickerFrame);
                 clickGuiFrameManager.q(hotbarSlotRuleItemPickerFrame.D$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$dqviyt());
                 clickGuiFrameManager.R(hotbarSlotRuleItemPickerFrame, hotbarSlotRuleItemPickerFrame.D$src$Lgg_vape_module_utility_inventory_HotbarSlotRule$dqviyt());
             } else {
-                hotbarSlotRuleItemPickerFrame.O(ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v());
+                hotbarSlotRuleItemPickerFrame.O(ClientSettings.INSTANCE.getActiveStack());
                 hotbarSlotRuleItemPickerFrame.t(true, false);
-                ClientSettings.fW.I(ClientSettings.L);
+                ClientSettings.INSTANCE.switchFrameStack(ClientSettings.hotbarRuleEditorStack);
                 RectData rectData = new RectData(0.0, 0.0, Minecraft.J(), Minecraft.h());
-                ClientSettings.fW.M(rectData, rectData);
+                ClientSettings.INSTANCE.refreshFrameLayouts();
             }
         }
         this.editor.f(this);
@@ -69,11 +69,11 @@ extends GuiComponent {
         for (HotbarSlotRule hotbarSlotRule : this.rules) {
             double iconSize = 9.0;
             GuiRenderPrimitives.C(iconX, this.n() + this.L() / 2.0 - iconSize / 2.0, 8.5, iconSize, HotbarSlotRuleGroupComponent.J.r);
-            ItemStack itemStack = hotbarSlotRule.c();
+            ItemStack itemStack = hotbarSlotRule.createItemStack();
             if (itemStack != null && itemStack.isNotNull()) {
                 float renderX = (float)iconX;
                 float renderY = (float)(this.n() + this.L() / 2.0 - 4.0);
-                ItemIconRenderer.R(itemStack, renderX, renderY, 8, 8);
+                ItemIconRenderer.renderItemStack(itemStack, renderX, renderY, 8, 8);
             }
             iconX += 9.0;
         }
@@ -87,7 +87,7 @@ extends GuiComponent {
     }
 
     public HotbarSlotRuleGroupComponent Q(GuiClickListener guiClickListener) {
-        this.closeButton.r(guiClickListener);
+        this.closeButton.addClickListener(guiClickListener);
         return this;
     }
 
@@ -95,7 +95,7 @@ extends GuiComponent {
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         for (HotbarSlotRule hotbarSlotRule : this.rules) {
-            jsonArray.add((JsonElement)hotbarSlotRule.C());
+            jsonArray.add((JsonElement)hotbarSlotRule.toJson());
         }
         jsonObject.add("hotbars", (JsonElement)jsonArray);
         return jsonObject;
@@ -126,7 +126,7 @@ extends GuiComponent {
     public HotbarSlotRuleGroupComponent(HotbarSlotRuleEditorComponent hotbarSlotRuleEditorComponent, List<HotbarSlotRule> list) {
         this.rules = list;
         this.editor = hotbarSlotRuleEditorComponent;
-        this.H(this.closeButton);
+        this.addChildren(this.closeButton);
     }
 
     public void W(JsonObject jsonObject) {
@@ -134,7 +134,7 @@ extends GuiComponent {
         int n = jsonArray.size();
         for (int i = 0; i < n; ++i) {
             JsonObject jsonObject2 = jsonArray.get(i).getAsJsonObject();
-            this.u$src$Ljava_util_List_$1u5n2i3().get(i).W(jsonObject2);
+            this.u$src$Ljava_util_List_$1u5n2i3().get(i).loadJson(jsonObject2);
         }
     }
 

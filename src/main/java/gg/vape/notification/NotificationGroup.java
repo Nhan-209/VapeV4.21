@@ -4,14 +4,13 @@ public enum NotificationGroup {
     NONE,
     FRIENDS;
 
-    private static final NotificationGroup[] p;
+    private static final NotificationGroup[] cachedValues;
 
     static {
-        String[] stringArray = new String[]{"FRIENDS", "NONE"};
+        String[] groupNames = new String[]{"FRIENDS", "NONE"};
 
 
-        p = new NotificationGroup[]{NONE, FRIENDS};
+        cachedValues = new NotificationGroup[]{NONE, FRIENDS};
     }
 
 }
-

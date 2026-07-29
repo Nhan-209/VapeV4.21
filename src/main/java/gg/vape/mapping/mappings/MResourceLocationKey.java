@@ -28,7 +28,7 @@ extends Mapping {
             String string = b;
             MResourceLocationKey mResourceLocationKey = this;
             this.I = mResourceLocationKey.u(string, bl2, clazz);
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MResourceLocationKey.L(false);
             }
             return;
@@ -38,7 +38,7 @@ extends Mapping {
         String string = b;
         MResourceLocationKey mResourceLocationKey = this;
         this.I = mResourceLocationKey.u(string, bl3, clazz);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MResourceLocationKey.L(true);
         }
     }

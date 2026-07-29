@@ -6,10 +6,10 @@ public final class PropertyContainerBooleanKeyC
 extends PropertyKey<Boolean> {
     @Override
     public Boolean getDefaultValue() {
-        return this.w();
+        return this.getFalseDefault();
     }
 
-    Boolean w() {
+    Boolean getFalseDefault() {
         return false;
     }
 }

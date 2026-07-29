@@ -5,7 +5,7 @@ import gg.vape.module.combat.AimAssistTargetingSubModule;
 
 public class AimAssistWorkerThread
 extends Thread {
-    final AimAssistTargetingSubModule targetingSubModule;
+    private final AimAssistTargetingSubModule targetingSubModule;
 
     @Override
     public void run() {
@@ -13,14 +13,14 @@ extends Thread {
             try {
                 Thread.sleep(1L);
                 if (!this.targetingSubModule.r$src$Z$14eylz9() || !this.targetingSubModule.J$src$Z$gcqtyf()) continue;
-                AimAssistTargetingSubModule.c(this.targetingSubModule);
+                AimAssistTargetingSubModule.runWorkerTick(this.targetingSubModule);
             }
-            catch (Exception exception) {}
+            catch (Exception ignored) {}
         }
     }
 
-    public AimAssistWorkerThread(AimAssistTargetingSubModule aimAssistTargetingSubModule) {
-        this.targetingSubModule = aimAssistTargetingSubModule;
+    public AimAssistWorkerThread(AimAssistTargetingSubModule targetingSubModule) {
+        this.targetingSubModule = targetingSubModule;
     }
 }
 

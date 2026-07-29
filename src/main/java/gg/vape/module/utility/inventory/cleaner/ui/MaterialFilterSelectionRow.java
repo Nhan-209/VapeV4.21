@@ -22,7 +22,7 @@ extends GuiComponent {
         this.content.S(this.n() + 3.0);
         super.c();
         GuiRenderPrimitives.V(this.G$src$D$1b2f02a() + this.A() - 4.0, this.n() + 3.0, 6.0, 1.0, this.lineColorAnimation.getInterpolatedColor());
-        ImageRenderer.E(this.closeIconColorAnimation.getInterpolatedColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 4.5), (float)(this.n() + 2.0), CLOSE_ICON, 7.0f, 7.0f, false);
+        ImageRenderer.drawImage(this.closeIconColorAnimation.getInterpolatedColor(), (float)(this.G$src$D$1b2f02a() + this.A() - 4.5), (float)(this.n() + 2.0), CLOSE_ICON, 7.0f, 7.0f, false);
     }
 
 
@@ -31,8 +31,8 @@ extends GuiComponent {
         this.closeIconColorAnimation = new ColorAnimation(0.15, new Color(0, 0, 0, 0), Color.WHITE);
         this.selection = itemFilterSelection;
         this.content = new MaterialFilterSelectionRowContent(this, itemFilterSelection);
-        this.o(true);
-        this.H(this.content);
+        this.setPropagateMouseEvents(true);
+        this.addChildren(this.content);
     }
 
     @Override
@@ -59,7 +59,7 @@ extends GuiComponent {
         this.closeIconColorAnimation.J();
     }
 
-    public ItemFilterSelection y$src$Lgg_vape_module_utility_inventory_cleaner_ItemFi$17dg1qx() {
+    public ItemFilterSelection getSelection() {
         return this.selection;
     }
 }

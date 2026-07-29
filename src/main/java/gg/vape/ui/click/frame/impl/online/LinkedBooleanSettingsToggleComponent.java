@@ -6,22 +6,22 @@ import gg.vape.value.BooleanValue;
 
 public class LinkedBooleanSettingsToggleComponent
 extends BooleanToggleComponent {
-    final BooleanValue[] eD;
-    final OnlineAccountSettingsPageComponent eb;
+    final BooleanValue[] linkedValues;
+    final OnlineAccountSettingsPageComponent accountSettingsPage;
 
-    public LinkedBooleanSettingsToggleComponent(OnlineAccountSettingsPageComponent onlineAccountSettingsPageComponent, String string, double d, BooleanValue booleanValue, BooleanValue[] booleanValueArray) {
-        super(string, d, booleanValue);
-        this.eb = onlineAccountSettingsPageComponent;
-        this.eD = booleanValueArray;
+    public LinkedBooleanSettingsToggleComponent(OnlineAccountSettingsPageComponent accountSettingsPage, String label, double fontScale, BooleanValue booleanValue, BooleanValue[] linkedValues) {
+        super(label, fontScale, booleanValue);
+        this.accountSettingsPage = accountSettingsPage;
+        this.linkedValues = linkedValues;
     }
 
     @Override
-    public void N() {
-        boolean bl = this.i$src$Z$1d37ezg();
-        boolean bl2 = !bl;
-        super.N();
-        for (BooleanValue booleanValue : this.eD) {
-            booleanValue.o(!bl2);
+    public void toggleIfInteractive() {
+        boolean wasOn = this.isOn();
+        boolean toggledState = !wasOn;
+        super.toggleIfInteractive();
+        for (BooleanValue booleanValue : this.linkedValues) {
+            booleanValue.setValue(!toggledState);
         }
     }
 
@@ -29,15 +29,15 @@ extends BooleanToggleComponent {
     @Override
     public void u() {
         super.u();
-        int n = 0;
-        for (BooleanValue booleanValue : this.eD) {
-            if (!booleanValue.L().booleanValue()) continue;
-            ++n;
+        int enabledLinkedValueCount = 0;
+        for (BooleanValue booleanValue : this.linkedValues) {
+            if (!booleanValue.getEffectiveValue().booleanValue()) continue;
+            ++enabledLinkedValueCount;
         }
-        if (n > 0 && this.i$src$Z$1d37ezg()) {
-            this.h(false);
-        } else if (n == 0 && !this.i$src$Z$1d37ezg()) {
-            this.h(true);
+        if (enabledLinkedValueCount > 0 && this.isOn()) {
+            this.setValue(false);
+        } else if (enabledLinkedValueCount == 0 && !this.isOn()) {
+            this.setValue(true);
         }
     }
 }

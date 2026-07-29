@@ -7,61 +7,59 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class BlockPlacementNode {
-    public ArrayList<BlockPlacementPathSegmentState> q;
-    public final ArrayList<EnumFacing> I = new ArrayList();
-    public final ArrayList<EnumFacing> S = new ArrayList();
-    public EnumFacing r;
-    public final HashSet<BlockData> Y = new HashSet();
-    public final BlockData F;
-    public final EnumFacing P;
-    public int d = 0;
-    public final BlockData h;
+    public final ArrayList<BlockPlacementPathSegmentState> candidatePaths = new ArrayList<>();
+    public final ArrayList<EnumFacing> blockedBaseFacings = new ArrayList<>();
+    public final ArrayList<EnumFacing> blockedSupportFacings = new ArrayList<>();
+    public EnumFacing baseFacing;
+    public final HashSet<BlockData> occupiedBlocks = new HashSet<>();
+    public final BlockData supportBlock;
+    public final EnumFacing supportFacing;
+    public int retryState = 0;
+    public final BlockData baseBlock;
 
-    public void W(EnumFacing enumFacing) {
-        this.S.add(EnumFacing.t()[enumFacing.Y()]);
-        if (this.F != null) {
-            this.Y.add(this.F.R(enumFacing));
+    public void blockSupportFacing(EnumFacing facing) {
+        this.blockedSupportFacings.add(EnumFacing.t()[facing.Y()]);
+        if (this.supportBlock != null) {
+            this.occupiedBlocks.add(this.supportBlock.R(facing));
         }
     }
 
     public BlockPlacementNode(BlockData blockData, EnumFacing enumFacing, boolean useSupportBlock) {
-        this.q = new ArrayList();
-        this.h = blockData;
-        this.P = enumFacing;
-        this.F = useSupportBlock ? blockData.y(0, 1, 0) : null;
+        this.baseBlock = blockData;
+        this.supportFacing = enumFacing;
+        this.supportBlock = useSupportBlock ? blockData.y(0, 1, 0) : null;
     }
 
 
-    public boolean D() {
-        this.q.forEach(BlockPlacementPathSegmentState::A);
-        this.q.clear();
+    public boolean clearCandidatePaths() {
+        this.candidatePaths.forEach(BlockPlacementPathSegmentState::clearPendingTargets);
+        this.candidatePaths.clear();
         return true;
     }
 
-    public boolean b(EnumFacing enumFacing) {
-        return this.I.contains(EnumFacing.t()[enumFacing.Y()]);
+    public boolean isBaseFacingBlocked(EnumFacing facing) {
+        return this.blockedBaseFacings.contains(EnumFacing.t()[facing.Y()]);
     }
 
-    public void w(EnumFacing enumFacing) {
-        this.I.add(EnumFacing.t()[enumFacing.Y()]);
-        this.Y.add(this.h.R(enumFacing));
+    public void blockBaseFacing(EnumFacing facing) {
+        this.blockedBaseFacings.add(EnumFacing.t()[facing.Y()]);
+        this.occupiedBlocks.add(this.baseBlock.R(facing));
     }
 
     public BlockPlacementNode(BlockData blockData) {
         this(blockData, null, false);
     }
 
-    public boolean w() {
-        boolean hasSupportBlock = this.F != null;
-        return hasSupportBlock;
+    public boolean hasSupportBlock() {
+        return this.supportBlock != null;
     }
 
     public BlockPlacementNode(BlockData blockData, EnumFacing enumFacing) {
         this(blockData, enumFacing, true);
     }
 
-    public boolean M(EnumFacing enumFacing) {
-        return this.S.contains(EnumFacing.t()[enumFacing.Y()]);
+    public boolean isSupportFacingBlocked(EnumFacing facing) {
+        return this.blockedSupportFacings.contains(EnumFacing.t()[facing.Y()]);
     }
 }
 

@@ -4,76 +4,76 @@ import gg.vape.value.Value;
 import gg.vape.value.ValueDisplayNameMode;
 
 public class ValueDisplayDescriptor {
-    private final Value<?, ?> C;
-    private final String l;
-    private final ValueDisplayNameMode U;
+    private final Value<?, ?> value;
+    private final String customName;
+    private final ValueDisplayNameMode nameMode;
 
-    private ValueDisplayDescriptor(Value<?, ?> value, String string, ValueDisplayNameMode valueDisplayNameMode) {
-        this.C = value;
-        this.l = string;
-        this.U = valueDisplayNameMode;
+    private ValueDisplayDescriptor(Value<?, ?> value, String customName, ValueDisplayNameMode nameMode) {
+        this.value = value;
+        this.customName = customName;
+        this.nameMode = nameMode;
     }
 
-    public static ValueDisplayDescriptor p(Value<?, ?> value) {
+    public static ValueDisplayDescriptor fullName(Value<?, ?> value) {
         return new ValueDisplayDescriptor(value, null, ValueDisplayNameMode.FULL);
     }
 
-    private static String Z(String string) {
-        if (string == null || string.isEmpty()) {
+    private static String createAbbreviation(String name) {
+        if (name == null || name.isEmpty()) {
             return "";
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        boolean bl = true;
-        for (int i = 0; i < string.length(); ++i) {
-            char c = string.charAt(i);
-            if (c == ' ' || c == '-' || c == '_') {
-                bl = true;
+        StringBuilder abbreviation = new StringBuilder();
+        boolean wordStart = true;
+        for (int index = 0; index < name.length(); ++index) {
+            char character = name.charAt(index);
+            if (character == ' ' || character == '-' || character == '_') {
+                wordStart = true;
                 continue;
             }
-            if (i > 0 && Character.isUpperCase(c) && Character.isLowerCase(string.charAt(i - 1))) {
-                bl = true;
+            if (index > 0 && Character.isUpperCase(character) && Character.isLowerCase(name.charAt(index - 1))) {
+                wordStart = true;
             }
-            if (!bl || !Character.isLetterOrDigit(c)) continue;
-            stringBuilder.append(Character.toUpperCase(c));
-            bl = false;
+            if (!wordStart || !Character.isLetterOrDigit(character)) continue;
+            abbreviation.append(Character.toUpperCase(character));
+            wordStart = false;
         }
-        return stringBuilder.toString();
+        return abbreviation.toString();
     }
 
-    public String S() {
-        switch (this.U) {
+    public String getDisplayName() {
+        switch (this.nameMode) {
             case CUSTOM: {
-                return this.l;
+                return this.customName;
             }
             case SIMPLE: {
-                return ValueDisplayDescriptor.Z(this.C.getName());
+                return ValueDisplayDescriptor.createAbbreviation(this.value.getName());
             }
         }
-        return this.C.getName();
+        return this.value.getName();
     }
 
-    public static ValueDisplayDescriptor X(Value<?, ?> value) {
+    public static ValueDisplayDescriptor abbreviatedName(Value<?, ?> value) {
         return new ValueDisplayDescriptor(value, null, ValueDisplayNameMode.SIMPLE);
     }
 
 
-    public static ValueDisplayDescriptor o(Value<?, ?> value, String string) {
-        return new ValueDisplayDescriptor(value, string, ValueDisplayNameMode.CUSTOM);
+    public static ValueDisplayDescriptor customName(Value<?, ?> value, String customName) {
+        return new ValueDisplayDescriptor(value, customName, ValueDisplayNameMode.CUSTOM);
     }
 
-    public String M$src$Ljava_lang_String_$1ohdx77() {
-        return this.C.getName();
+    public String getFullName() {
+        return this.value.getName();
     }
 
-    public Value<?, ?> M() {
-        return this.C;
+    public Value<?, ?> getValue() {
+        return this.value;
     }
 
-    public boolean X() {
-        if (this.U == ValueDisplayNameMode.FULL) {
+    public boolean usesShorterName() {
+        if (this.nameMode == ValueDisplayNameMode.FULL) {
             return false;
         }
-        return this.S().length() < this.M$src$Ljava_lang_String_$1ohdx77().length();
+        return this.getDisplayName().length() < this.getFullName().length();
     }
 }
 

@@ -23,271 +23,284 @@ import java.util.ArrayList;
 
 public class KeystrokesHudFrame
 extends HudModuleConfigFrameBase {
-    private boolean o6;
-    private final KeystrokesKeyComponent ow;
-    private ArrayList<KeystrokesKeyComponent> o0;
-    private boolean oj = false;
-    private long op;
-    public KeystrokesCpsCounterComponent oK;
-    private GameSettings oz = Minecraft.gameSettings();
-    private final KeystrokesKeyComponent oA;
-    private KeystrokesHudModule os;
-    private final KeystrokesKeyComponent o2;
-    private final KeystrokesKeyComponent oQ;
-    private final KeystrokesKeyComponent oy;
-    private final KeystrokesKeyComponent oY;
-    private final KeystrokesKeyComponent ot;
+    private boolean syntheticAttackPressed;
+    private final KeystrokesKeyComponent forwardKey;
+    private final ArrayList<KeystrokesKeyComponent> keys;
+    private boolean inputDisabled;
+    private long syntheticAttackReleaseAt;
+    public final KeystrokesCpsCounterComponent cpsCounter;
+    private final GameSettings gameSettings = Minecraft.gameSettings();
+    private final KeystrokesKeyComponent spacebar;
+    private final KeystrokesHudModule keystrokesModule;
+    private final KeystrokesKeyComponent leftMouseButton;
+    private final KeystrokesKeyComponent rightMouseButton;
+    private final KeystrokesKeyComponent rightKey;
+    private final KeystrokesKeyComponent backwardKey;
+    private final KeystrokesKeyComponent leftKey;
 
     @Override
     public String getName() {
         return "KeystrokesFrame";
     }
 
-    private void p(double d, double d2) {
-        ImageRenderer.drawResWithShadow(this.l(this.o2.j().getInterpolatedColor()), (float)d, (float)d2, "lmb", 0.75f, false);
-        ImageRenderer.drawResWithShadow(this.l(this.oQ.j().getInterpolatedColor()), (float)(d + 20.0), (float)d2, "rmb", 0.75f, false);
-        ImageRenderer.drawResWithShadow(this.l(new Color(225, 225, 225)), (float)(d + 21.5), (float)(d2 + 7.0), "mmb", 0.216f, false);
+    private void drawMouseIcons(double x, double y) {
+        ImageRenderer.drawResWithShadow(this.applyDefaultEditorAlpha(this.leftMouseButton.getBackgroundColorAnimation().getInterpolatedColor()), (float)x, (float)y, "lmb", 0.75f, false);
+        ImageRenderer.drawResWithShadow(this.applyDefaultEditorAlpha(this.rightMouseButton.getBackgroundColorAnimation().getInterpolatedColor()), (float)(x + 20.0), (float)y, "rmb", 0.75f, false);
+        ImageRenderer.drawResWithShadow(this.applyDefaultEditorAlpha(new Color(225, 225, 225)), (float)(x + 21.5), (float)(y + 7.0), "mmb", 0.216f, false);
     }
 
-    private boolean L$src$Z$bmylp1() {
-        if (this.os == null) {
+    private boolean shouldShowSpacebar() {
+        if (this.keystrokesModule == null) {
             return false;
         }
-        return this.os.P.L();
+        return this.keystrokesModule.showSpacebar.getEffectiveValue();
     }
 
-    public void WH() {
-        this.G(this.o2.p.getKeyCode(), true, false);
-        this.o6 = true;
-        this.op = System.currentTimeMillis() + 25L;
-        this.oK.O(0);
+    public void registerSyntheticAttack() {
+        this.updateKeyCode(this.leftMouseButton.keyBinding.getKeyCode(), true, false);
+        this.syntheticAttackPressed = true;
+        this.syntheticAttackReleaseAt = System.currentTimeMillis() + 25L;
+        this.cpsCounter.recordClick(0);
     }
 
-    private void M(KeystrokesKeyComponent keystrokesKeyComponent, double d, double d2, double d3, double d4, String string) {
-        KeyBinding keyBinding = keystrokesKeyComponent.p;
+    private void drawKey(KeystrokesKeyComponent key, double x, double y,
+            double width, double height, String iconName) {
+        KeyBinding keyBinding = key.keyBinding;
         SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().W(0.9, false);
-        GuiRenderPrimitives.I(d, d2 - 0.5, d3, d4 + 0.5, this.l(keystrokesKeyComponent.j().getInterpolatedColor()), !keystrokesKeyComponent.R(), 1.0f, 1.0f, 3.0f, KeystrokesHudFrame.J.u);
-        if (keystrokesKeyComponent.equals(this.oA)) {
-            double d5 = 30.0;
-            GuiRenderPrimitives.C(d + d3 / 2.0 - d5 / 2.0, d2 + 2.0, d5, 1.5, this.R(keystrokesKeyComponent.D().getInterpolatedColor(), 10));
+        GuiRenderPrimitives.I(x, y - 0.5, width, height + 0.5,
+                this.applyDefaultEditorAlpha(key.getBackgroundColorAnimation().getInterpolatedColor()),
+                !key.isReleased(), 1.0f, 1.0f, 3.0f, KeystrokesHudFrame.J.u);
+        if (key.equals(this.spacebar)) {
+            double spacebarIndicatorWidth = 30.0;
+            GuiRenderPrimitives.C(x + width / 2.0 - spacebarIndicatorWidth / 2.0,
+                    y + 2.0, spacebarIndicatorWidth, 1.5,
+                    this.applyEditorAlpha(key.getTextColorAnimation().getInterpolatedColor(), 10));
         }
-        if (string != null) {
-            float f = 4.4f;
-            ImageRenderer.E(this.l(keystrokesKeyComponent.D().getInterpolatedColor()), (float)(d + d3 / 2.5 - 4.0), (float)d2 + 2.0f, string, f, f, false);
+        if (iconName != null) {
+            float iconSize = 4.4f;
+            ImageRenderer.drawImage(this.applyDefaultEditorAlpha(key.getTextColorAnimation().getInterpolatedColor()),
+                    (float)(x + width / 2.5 - 4.0), (float)y + 2.0f,
+                    iconName, iconSize, iconSize, false);
         } else {
-            String string2 = keystrokesKeyComponent == this.o2 ? "LMB" : (keystrokesKeyComponent == this.oQ ? "RMB" : (keystrokesKeyComponent == this.oA ? "" : KeyboardInput.getKeyName(keyBinding.getKeyCode())));
-            smoothFontRenderer.d(string2, d + d3 / 2.5 - smoothFontRenderer.N(string2) / 2.0, d2 + 3.0, this.l(keystrokesKeyComponent.D().getInterpolatedColor()));
+            String label = key == this.leftMouseButton ? "LMB"
+                    : (key == this.rightMouseButton ? "RMB"
+                    : (key == this.spacebar ? "" : KeyboardInput.getKeyName(keyBinding.getKeyCode())));
+            smoothFontRenderer.d(label, x + width / 2.5 - smoothFontRenderer.N(label) / 2.0,
+                    y + 3.0, this.applyDefaultEditorAlpha(key.getTextColorAnimation().getInterpolatedColor()));
         }
     }
 
-    public void e() {
-        for (KeystrokesKeyComponent keystrokesKeyComponent : this.o0) {
-            this.o(keystrokesKeyComponent.p, keystrokesKeyComponent.p.isKeyDown());
+    public void syncPhysicalKeyStates() {
+        for (KeystrokesKeyComponent key : this.keys) {
+            this.updateKeyState(key.keyBinding, key.keyBinding.isKeyDown());
         }
     }
 
-    private boolean R$src$Z$bq9d97() {
-        if (this.os == null) {
+    private boolean usesArrowKeyStyle() {
+        if (this.keystrokesModule == null) {
             return false;
         }
-        return this.os.J.K() == this.os.O;
+        return this.keystrokesModule.keyStyle.getValue() == this.keystrokesModule.arrowKeyStyle;
     }
 
-    public void Wx() {
-        for (KeystrokesKeyComponent keystrokesKeyComponent : this.o0) {
-            this.o(keystrokesKeyComponent.p, false);
+    public void releaseAllKeys() {
+        for (KeystrokesKeyComponent key : this.keys) {
+            this.updateKeyState(key.keyBinding, false);
         }
     }
 
-    public void o(KeyBinding keyBinding, boolean bl) {
-        this.G(keyBinding.getKeyCode(), bl, false);
+    public void updateKeyState(KeyBinding keyBinding, boolean pressed) {
+        this.updateKeyCode(keyBinding.getKeyCode(), pressed, false);
     }
 
-    public void T(EventKeyPress eventKeyPress) {
-        this.G(eventKeyPress.getKey(), eventKeyPress.isDown(), ForgeVersion.MC_1_16_5.v());
+    public void handleKeyEvent(EventKeyPress event) {
+        this.updateKeyCode(event.getKey(), event.isDown(), ForgeVersion.MC_1_16_5.v());
     }
 
     @Override
     public double L() {
-        if (this.os != null && this.os.c.L().booleanValue()) {
+        if (this.keystrokesModule != null && this.keystrokesModule.showCpsOnly.getEffectiveValue().booleanValue()) {
             return 20.0;
         }
-        double d = 0.0;
-        if (this.B$src$Z$bhgnrf()) {
-            d += 40.0;
-            if (this.L$src$Z$bmylp1()) {
-                d += 14.0;
+        double height = 0.0;
+        if (this.usesMouseIconStyle()) {
+            height += 40.0;
+            if (this.shouldShowSpacebar()) {
+                height += 14.0;
             }
         } else {
-            d += 72.0;
-            if (this.L$src$Z$bmylp1()) {
-                d += 14.0;
+            height += 72.0;
+            if (this.shouldShowSpacebar()) {
+                height += 14.0;
             }
         }
-        return d;
+        return height;
     }
 
     @Override
-    public boolean m() {
-        return this.U$src$Z$brwr1a() && this.os.c.L() == false;
+    public boolean shouldRenderHudBackground() {
+        return this.shouldRenderBackground() && this.keystrokesModule.showCpsOnly.getEffectiveValue() == false;
     }
 
-    public boolean U$src$Z$brwr1a() {
-        return super.m();
+    public boolean shouldRenderBackground() {
+        return super.shouldRenderHudBackground();
     }
 
-    private boolean B$src$Z$bhgnrf() {
-        if (this.os == null) {
+    private boolean usesMouseIconStyle() {
+        if (this.keystrokesModule == null) {
             return false;
         }
-        return this.os.t.K() == this.os.K;
+        return this.keystrokesModule.mouseStyle.getValue() == this.keystrokesModule.mouseIconStyle;
     }
 
     @Override
     public void u() {
-        boolean bl;
-        this.Wv();
-        boolean bl2 = bl = !ClientSettings.fW.v();
-        if (this.oj == bl) {
+        this.releaseSyntheticAttackIfDue();
+        boolean disabled = !ClientSettings.INSTANCE.isInputEnabled();
+        if (this.inputDisabled == disabled) {
             return;
         }
-        if (this.oj) {
-            this.Wx();
+        if (this.inputDisabled) {
+            this.releaseAllKeys();
         } else {
-            this.e();
+            this.syncPhysicalKeyStates();
         }
-        this.oj = bl;
+        this.inputDisabled = disabled;
     }
 
-    public KeystrokesCpsCounterComponent o$src$Lgg_vape_ui_click_frame_impl_hud_KeystrokesCpsCo$1bghhzn() {
-        return this.oK;
+    public KeystrokesCpsCounterComponent getCpsCounter() {
+        return this.cpsCounter;
     }
 
-    private void G(int n, boolean bl, boolean bl2) {
-        for (KeystrokesKeyComponent keystrokesKeyComponent : this.o0) {
-            int n2 = keystrokesKeyComponent.p.getKeyCode();
-            if (n2 < 0) continue;
-            if (bl2) {
-                n2 = KeyboardCodeUtil.m(n2);
+    private void updateKeyCode(int keyCode, boolean pressed, boolean translateKeyCode) {
+        for (KeystrokesKeyComponent key : this.keys) {
+            int boundKeyCode = key.keyBinding.getKeyCode();
+            if (boundKeyCode < 0) continue;
+            if (translateKeyCode) {
+                boundKeyCode = KeyboardCodeUtil.convertLegacyKeyCode(boundKeyCode);
             }
-            if (n2 != n) continue;
-            if (bl != keystrokesKeyComponent.C) {
-                keystrokesKeyComponent.a();
-                if (!bl && !keystrokesKeyComponent.R()) {
-                    keystrokesKeyComponent.t();
+            if (boundKeyCode != keyCode) continue;
+            if (pressed != key.pressed) {
+                key.press();
+                if (!pressed && !key.isReleased()) {
+                    key.release();
                 }
             }
-            keystrokesKeyComponent.C = bl;
+            key.pressed = pressed;
         }
     }
 
-    private void Wv() {
-        if (!this.o6 || System.currentTimeMillis() < this.op) {
+    private void releaseSyntheticAttackIfDue() {
+        if (!this.syntheticAttackPressed || System.currentTimeMillis() < this.syntheticAttackReleaseAt) {
             return;
         }
-        this.o6 = false;
-        if (this.o2.C && !this.o2.p.isKeyDown()) {
-            this.G(this.o2.p.getKeyCode(), false, false);
+        this.syntheticAttackPressed = false;
+        if (this.leftMouseButton.pressed && !this.leftMouseButton.keyBinding.isKeyDown()) {
+            this.updateKeyCode(this.leftMouseButton.keyBinding.getKeyCode(), false, false);
         }
     }
 
     public KeystrokesHudFrame() {
         super(KeystrokesHudModule.class);
-        this.o0 = new ArrayList();
-        this.ow = new KeystrokesKeyComponent(this, this.oz.Y());
-        this.oY = new KeystrokesKeyComponent(this, this.oz.s());
-        this.ot = new KeystrokesKeyComponent(this, this.oz.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
-        this.oy = new KeystrokesKeyComponent(this, this.oz.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
-        this.o2 = new KeystrokesMouseButtonComponent(this, this.oz.F());
-        this.oQ = new KeystrokesMouseButtonComponent(this, this.oz.b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362());
-        this.oA = new KeystrokesMouseButtonComponent(this, this.oz.O());
-        this.os = (KeystrokesHudModule)this.l$src$Lgg_vape_module_render_hud_HudModule_$v08nt0();
-        this.oK = new KeystrokesCpsCounterComponent(this);
-        this.H(this.oK);
-        this.o0.add(this.ow);
-        this.o0.add(this.oY);
-        this.o0.add(this.ot);
-        this.o0.add(this.oy);
-        this.o0.add(this.o2);
-        this.o0.add(this.oQ);
-        this.o0.add(this.oA);
+        this.keys = new ArrayList();
+        this.forwardKey = new KeystrokesKeyComponent(this, this.gameSettings.Y());
+        this.backwardKey = new KeystrokesKeyComponent(this, this.gameSettings.s());
+        this.leftKey = new KeystrokesKeyComponent(this, this.gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
+        this.rightKey = new KeystrokesKeyComponent(this, this.gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
+        this.leftMouseButton = new KeystrokesMouseButtonComponent(this, this.gameSettings.F());
+        this.rightMouseButton = new KeystrokesMouseButtonComponent(this, this.gameSettings.b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362());
+        this.spacebar = new KeystrokesMouseButtonComponent(this, this.gameSettings.O());
+        this.keystrokesModule = (KeystrokesHudModule)this.getModule();
+        this.cpsCounter = new KeystrokesCpsCounterComponent(this);
+        this.addChildren(this.cpsCounter);
+        this.keys.add(this.forwardKey);
+        this.keys.add(this.backwardKey);
+        this.keys.add(this.leftKey);
+        this.keys.add(this.rightKey);
+        this.keys.add(this.leftMouseButton);
+        this.keys.add(this.rightMouseButton);
+        this.keys.add(this.spacebar);
     }
 
     @Override
     public double A() {
-        if (this.os != null && this.os.c.L().booleanValue()) {
+        if (this.keystrokesModule != null && this.keystrokesModule.showCpsOnly.getEffectiveValue().booleanValue()) {
             return 75.0;
         }
-        double d = 54.0;
-        if (this.B$src$Z$bhgnrf()) {
-            d += 48.0;
+        double width = 54.0;
+        if (this.usesMouseIconStyle()) {
+            width += 48.0;
         }
-        return d;
+        return width;
     }
 
-    public void z(EventMouseButton eventMouseButton) {
-        for (KeystrokesKeyComponent keystrokesKeyComponent : this.o0) {
-            int n = keystrokesKeyComponent.p.getKeyCode();
+    public void handleMouseEvent(EventMouseButton event) {
+        for (KeystrokesKeyComponent key : this.keys) {
+            int keyCode = key.keyBinding.getKeyCode();
             if (ForgeVersion.MC_1_16_5.v()) {
-                n += 100;
+                keyCode += 100;
             }
-            if (n != eventMouseButton.getButton()) continue;
-            if (eventMouseButton.getButtonState() != keystrokesKeyComponent.C) {
-                keystrokesKeyComponent.a();
-                if (!eventMouseButton.getButtonState() && !keystrokesKeyComponent.R()) {
-                    keystrokesKeyComponent.t();
+            if (keyCode != event.getButton()) continue;
+            if (event.getButtonState() != key.pressed) {
+                key.press();
+                if (!event.getButtonState() && !key.isReleased()) {
+                    key.release();
                 }
             }
-            keystrokesKeyComponent.C = eventMouseButton.getButtonState();
+            key.pressed = event.getButtonState();
         }
     }
 
     @Override
-    public void o() {
-        double d;
-        double d2;
-        double d3;
-        if (this.os != null && this.os.c.L().booleanValue()) {
-            this.M(true);
-            this.oK.g(true);
-            this.oK.K(this.G$src$D$1b2f02a());
-            this.oK.S(this.n());
-            this.oK.o(55.0);
-            this.oK.Y(10.0);
+    public void renderHudContent() {
+        double mouseY;
+        double mouseX;
+        double keysY;
+        if (this.keystrokesModule != null && this.keystrokesModule.showCpsOnly.getEffectiveValue().booleanValue()) {
+            this.setBackgroundSettingSuppressed(true);
+            this.cpsCounter.setSingleButtonMode(true);
+            this.cpsCounter.K(this.G$src$D$1b2f02a());
+            this.cpsCounter.S(this.n());
+            this.cpsCounter.o(55.0);
+            this.cpsCounter.Y(10.0);
             return;
         }
-        this.M(false);
-        this.oK.g(false);
-        int n = 17;
-        double d4 = d3 = this.B$src$Z$bhgnrf() ? this.n() + 4.0 : this.n() + 2.0;
-        if (this.B$src$Z$bhgnrf()) {
-            d2 = this.G$src$D$1b2f02a() + 51.0 + 10.0;
-            d = d3 - 6.0;
+        this.setBackgroundSettingSuppressed(false);
+        this.cpsCounter.setSingleButtonMode(false);
+        keysY = this.usesMouseIconStyle() ? this.n() + 4.0 : this.n() + 2.0;
+        if (this.usesMouseIconStyle()) {
+            mouseX = this.G$src$D$1b2f02a() + 61.0;
+            mouseY = keysY - 6.0;
         } else {
-            d2 = this.G$src$D$1b2f02a();
-            d = d3 + 40.0;
+            mouseX = this.G$src$D$1b2f02a();
+            mouseY = keysY + 40.0;
         }
-        this.M(this.ow, this.G$src$D$1b2f02a() + 19.0, d3 - 2.0, 17.0, 17.0, this.R$src$Z$bq9d97() ? "up" : null);
-        this.M(this.ot, this.G$src$D$1b2f02a(), d3 + 19.0, 17.0, 17.0, this.R$src$Z$bq9d97() ? "left" : null);
-        this.M(this.oY, this.G$src$D$1b2f02a() + 19.0, d3 + 19.0, 17.0, 17.0, this.R$src$Z$bq9d97() ? "down" : null);
-        this.M(this.oy, this.G$src$D$1b2f02a() + 38.0, d3 + 19.0, 17.0, 17.0, this.R$src$Z$bq9d97() ? "right" : null);
-        if (this.L$src$Z$bmylp1()) {
-            this.M(this.oA, this.G$src$D$1b2f02a(), d3 + 39.5, 55.25, 11.0, null);
-            d += 14.0;
+        this.drawKey(this.forwardKey, this.G$src$D$1b2f02a() + 19.0, keysY - 2.0,
+                17.0, 17.0, this.usesArrowKeyStyle() ? "up" : null);
+        this.drawKey(this.leftKey, this.G$src$D$1b2f02a(), keysY + 19.0,
+                17.0, 17.0, this.usesArrowKeyStyle() ? "left" : null);
+        this.drawKey(this.backwardKey, this.G$src$D$1b2f02a() + 19.0, keysY + 19.0,
+                17.0, 17.0, this.usesArrowKeyStyle() ? "down" : null);
+        this.drawKey(this.rightKey, this.G$src$D$1b2f02a() + 38.0, keysY + 19.0,
+                17.0, 17.0, this.usesArrowKeyStyle() ? "right" : null);
+        if (this.shouldShowSpacebar()) {
+            this.drawKey(this.spacebar, this.G$src$D$1b2f02a(), keysY + 39.5,
+                    55.25, 11.0, null);
+            mouseY += 14.0;
         }
-        if (this.B$src$Z$bhgnrf()) {
-            this.p(d2 - 2.0, d);
-            this.oK.o(40.0);
+        if (this.usesMouseIconStyle()) {
+            this.drawMouseIcons(mouseX - 2.0, mouseY);
+            this.cpsCounter.o(40.0);
         } else {
-            this.M(this.o2, d2, d, 26.35, 16.0, null);
-            this.M(this.oQ, d2 + 26.35 + 2.0, d, 26.35, 16.0, null);
-            this.oK.o(55.0);
+            this.drawKey(this.leftMouseButton, mouseX, mouseY, 26.35, 16.0, null);
+            this.drawKey(this.rightMouseButton, mouseX + 28.35, mouseY, 26.35, 16.0, null);
+            this.cpsCounter.o(55.0);
         }
-        double d5 = this.B$src$Z$bhgnrf() ? 22.0 : 17.0;
-        this.oK.K(d2);
-        this.oK.S(d + d5);
-        this.oK.Y(10.0);
-        this.o2.h.U(0.01);
+        double cpsOffsetY = this.usesMouseIconStyle() ? 22.0 : 17.0;
+        this.cpsCounter.K(mouseX);
+        this.cpsCounter.S(mouseY + cpsOffsetY);
+        this.cpsCounter.Y(10.0);
+        this.leftMouseButton.backgroundColorAnimation.U(0.01);
     }
 
 }

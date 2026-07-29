@@ -5,15 +5,14 @@ import gg.vape.ui.click.frame.impl.main.ClickGuiProfilesPage;
 
 public class ProfilesPageRefreshListener
 implements GuiRefreshListener {
-    final ClickGuiProfilesPage n;
+    final ClickGuiProfilesPage profilesPage;
 
     @Override
-    public void G() {
-        ClickGuiProfilesPage.q(this.n);
+    public void onRefresh() {
+        ClickGuiProfilesPage.updateCreateButtonState(this.profilesPage);
     }
 
     public ProfilesPageRefreshListener(ClickGuiProfilesPage kV) {
-        this.n = kV;
+        this.profilesPage = kV;
     }
 }
-

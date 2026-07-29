@@ -1,8 +1,7 @@
 package gg.vape.ui.click.component;
 
 public interface FocusableComponent {
-    public boolean v();
+    public boolean isDisabled();
 
-    public void F(boolean var1);
+    public void setDisabled(boolean disabled);
 }
-

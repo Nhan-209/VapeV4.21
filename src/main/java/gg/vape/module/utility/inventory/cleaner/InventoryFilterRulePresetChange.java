@@ -9,26 +9,26 @@ public class InventoryFilterRulePresetChange {
     private final InventoryFilterPreset previousPreset;
     private final InventoryFilterPreset newPreset;
 
-    public InventoryFilterPreset L() {
+    public InventoryFilterPreset getNewPreset() {
         return this.newPreset;
     }
 
-    public boolean q() {
+    public boolean wasAdded() {
         return this.added;
     }
 
-    public InventoryFilterPreset W() {
+    public InventoryFilterPreset getPreviousPreset() {
         return this.previousPreset;
     }
 
-    public InventoryFilterRulePresetChange(InventoryFilterRule inventoryFilterRule, InventoryFilterPreset pJ, InventoryFilterPreset pJ2, boolean bl) {
-        this.rule = inventoryFilterRule;
-        this.newPreset = pJ;
-        this.previousPreset = pJ2;
-        this.added = bl;
+    public InventoryFilterRulePresetChange(InventoryFilterRule rule, InventoryFilterPreset newPreset, InventoryFilterPreset previousPreset, boolean added) {
+        this.rule = rule;
+        this.newPreset = newPreset;
+        this.previousPreset = previousPreset;
+        this.added = added;
     }
 
-    public InventoryFilterRule R() {
+    public InventoryFilterRule getRule() {
         return this.rule;
     }
 }

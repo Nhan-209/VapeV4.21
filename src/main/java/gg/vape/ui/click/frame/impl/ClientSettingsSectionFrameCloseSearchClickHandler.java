@@ -10,12 +10,11 @@ implements GuiClickListener {
     final ClientSettingsSectionFrame V;
 
     @Override
-    public void P() {
-        ClientSettings.f(ClientSettingsSearchFrame.class, false);
+    public void onPrimaryClick() {
+        ClientSettings.setFrameVisibility(ClientSettingsSearchFrame.class, false);
     }
 
     ClientSettingsSectionFrameCloseSearchClickHandler(ClientSettingsSectionFrame clientSettingsSectionFrame) {
         this.V = clientSettingsSectionFrame;
     }
 }
-

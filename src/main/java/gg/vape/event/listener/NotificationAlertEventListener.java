@@ -35,7 +35,7 @@ implements EventListener {
     public void t(EventPostRenderTick eventPostRenderTick) {
         int n;
         if (!this.e && (n = GL11.glGetError()) != 0) {
-            Vape.INSTANCE.getNotificationManager().t("GL Error " + n, "Please contact support and report this error code", NotificationType.ALERT, 10000L);
+            Vape.INSTANCE.getNotificationManager().show("GL Error " + n, "Please contact support and report this error code", NotificationType.ALERT, 10000L);
             this.e = true;
         }
     }

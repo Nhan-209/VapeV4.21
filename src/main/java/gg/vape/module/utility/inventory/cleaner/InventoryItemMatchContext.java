@@ -12,16 +12,16 @@ public class InventoryItemMatchContext {
     private final ItemStack itemStack;
 
 
-    public Item M() {
+    public Item getItem() {
         return this.item;
     }
 
     @Nullable
-    public static InventoryItemMatchContext i(ItemStack itemStack) {
+    public static InventoryItemMatchContext fromItemStack(ItemStack itemStack) {
         if (itemStack == null || itemStack.isNull()) {
             return null;
         }
-        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().j(itemStack);
+        ItemMappingEntry itemMappingEntry = Vape.INSTANCE.getItemStackResolver().resolve(itemStack);
         return new InventoryItemMatchContext(itemMappingEntry, itemStack);
     }
 
@@ -29,7 +29,7 @@ public class InventoryItemMatchContext {
         this(itemMappingEntry, itemStack, itemStack.getItem());
     }
 
-    public ItemMappingEntry f() {
+    public ItemMappingEntry getMappingEntry() {
         return this.mappingEntry;
     }
 
@@ -39,7 +39,7 @@ public class InventoryItemMatchContext {
         this.item = resolvedItem;
     }
 
-    public ItemStack v() {
+    public ItemStack getItemStack() {
         return this.itemStack;
     }
 }

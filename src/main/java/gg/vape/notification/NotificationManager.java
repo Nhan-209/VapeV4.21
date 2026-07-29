@@ -27,172 +27,176 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class NotificationManager
 implements EventListener {
-    private final Map<NotificationGroup, BooleanValue> v;
-    private final ArrayBlockingQueue<INotification> e = new ArrayBlockingQueue(20);
-    private long p;
-    private static int l;
-    private final Map<NotificationType, SoundClip> C = new HashMap<NotificationType, SoundClip>();
+    private final Map<NotificationGroup, BooleanValue> groupSettings;
+    private final ArrayBlockingQueue<INotification> notifications = new ArrayBlockingQueue<INotification>(20);
+    private long lastRenderTime;
+    private static int controlFlowState;
+    private final Map<NotificationType, SoundClip> notificationSounds = new HashMap<NotificationType, SoundClip>();
 
 
-    private boolean X(INotification iNotification) {
+    private boolean isAllowedByFriendSettings(INotification notification) {
         FriendNotificationSettings friendNotificationSettings = OnlineConnectionManager.T.S().m();
-        if (iNotification.c() == NotificationType.FRIENDS_GENERAL && !friendNotificationSettings.K.L().booleanValue()) {
+        if (notification.getType() == NotificationType.FRIENDS_GENERAL && !friendNotificationSettings.general.getEffectiveValue().booleanValue()) {
             return false;
         }
-        if (iNotification.c() == NotificationType.FRIENDS_NEW_REQUEST && !friendNotificationSettings.P.L().booleanValue()) {
+        if (notification.getType() == NotificationType.FRIENDS_NEW_REQUEST && !friendNotificationSettings.friendRequests.getEffectiveValue().booleanValue()) {
             return false;
         }
-        if (iNotification.c() == NotificationType.FRIENDS_NEW_CHAT && !friendNotificationSettings.I.L().booleanValue()) {
+        if (notification.getType() == NotificationType.FRIENDS_NEW_CHAT && !friendNotificationSettings.chats.getEffectiveValue().booleanValue()) {
             return false;
         }
-        if (iNotification.c() == NotificationType.FRIENDS_ONLINE && !friendNotificationSettings.p.L().booleanValue()) {
+        if (notification.getType() == NotificationType.FRIENDS_ONLINE && !friendNotificationSettings.friendOnline.getEffectiveValue().booleanValue()) {
             return false;
         }
-        if (iNotification.c() == NotificationType.FRIENDS_PARTY_GENERAL && !friendNotificationSettings.Q.L().booleanValue()) {
+        if (notification.getType() == NotificationType.FRIENDS_PARTY_GENERAL && !friendNotificationSettings.partyInviteAccepted.getEffectiveValue().booleanValue()) {
             return false;
         }
-        return iNotification.c() != NotificationType.FRIENDS_PARTY_INVITE || friendNotificationSettings.q.L() != false;
+        return notification.getType() != NotificationType.FRIENDS_PARTY_INVITE || friendNotificationSettings.partyInvites.getEffectiveValue();
     }
 
-    public void K(String string, String string2, NotificationType notificationType, long l, boolean bl) {
-        this.x(new Notification(notificationType, string, new TextNotificationContent(string2), 0.0, 0.0, l), bl);
+    public void show(String title, String message, NotificationType type, long durationMillis, boolean force) {
+        this.enqueue(new Notification(type, title, new TextNotificationContent(message), 0.0, 0.0, durationMillis), force);
     }
 
-    public ArrayBlockingQueue<INotification> f() {
-        return this.e;
+    public ArrayBlockingQueue<INotification> getNotifications() {
+        return this.notifications;
     }
 
-    private boolean Z(NotificationGroup notificationGroup) {
-        if (!this.v.containsKey((Object)notificationGroup)) {
+    private boolean isGroupEnabled(NotificationGroup group) {
+        if (!this.groupSettings.containsKey(group)) {
             return true;
         }
-        return this.v.get((Object)notificationGroup).L();
+        return this.groupSettings.get(group).getEffectiveValue();
     }
 
     static {
-        if (NotificationManager.l() == 0) {
-            NotificationManager.m(82);
+        if (NotificationManager.initializeControlFlowState() == 0) {
+            NotificationManager.setControlFlowState(82);
         }
     }
 
-    public void J() {
-        int n = NotificationManager.i();
+    public void renderNotifications() {
+        int unusedControlFlowState = NotificationManager.getControlFlowState();
         if (Minecraft.theWorld().isNull() || Minecraft.thePlayer().isNull()) {
             return;
         }
-        int n2 = OpenGlBackendHolder.d.K(3009);
-        float f = OpenGlBackendHolder.d.u(3010);
-        OpenGlBackendHolder.d.k(516, 0.0f);
-        OpenGlBackendHolder.d.m();
+        int previousAlphaTestFunction = OpenGlBackendHolder.backend.getIntegerState(3009);
+        float previousAlphaTestReference = OpenGlBackendHolder.backend.getFloat(3010);
+        OpenGlBackendHolder.backend.setAlphaFunction(516, 0.0f);
+        OpenGlBackendHolder.backend.pushMatrix();
         /* Timebomb here (disabled): full-screen black overlay after 2027-03-14 (epoch ms 1805274154878L)
         if (System.currentTimeMillis() > 1805274154878L) {
-            float f2 = (float)Math.abs(Minecraft.thePlayer().z());
-            Color color = new Color(0, 0, 0, (int)Math.min(240.0f, f2));
+            float playerYawMagnitude = (float)Math.abs(Minecraft.thePlayer().z());
+            Color color = new Color(0, 0, 0, (int)Math.min(240.0f, playerYawMagnitude));
             GuiRenderPrimitives.y(0.0f, 0.0f, Minecraft.J(), Minecraft.h(), color);
         }
         */
-        double d = -14.0;
-        long l2 = System.currentTimeMillis() - this.p;
-        this.p = System.currentTimeMillis();
-        ArrayList<INotification> arrayList = new ArrayList<INotification>();
-        for (INotification iNotification : this.e) {
-            iNotification.I(d -= iNotification.t() + 2.0);
-            int n3 = (int)(Math.abs(iNotification.k() - iNotification.F()) * 0.3);
-            int n4 = (int)(Math.abs(iNotification.E() - iNotification.v()) * 0.3);
-            double d2 = NotificationManager.w(iNotification.k(), iNotification.F(), l2, n3);
-            double d3 = NotificationManager.w(iNotification.E(), iNotification.v(), l2, n4);
-            iNotification.r(d2);
-            iNotification.S(d3);
-            iNotification.W();
-            if (!iNotification.P()) continue;
-            arrayList.add(iNotification);
+        double nextTargetY = -14.0;
+        long now = System.currentTimeMillis();
+        long elapsedMillis = now - this.lastRenderTime;
+        this.lastRenderTime = now;
+        ArrayList<INotification> expiredNotifications = new ArrayList<INotification>();
+        for (INotification notification : this.notifications) {
+            nextTargetY -= notification.getHeight() + 2.0;
+            notification.setTargetY(nextTargetY);
+            int horizontalStep = (int)(Math.abs(notification.getTargetX() - notification.getCurrentX()) * 0.3);
+            int verticalStep = (int)(Math.abs(notification.getTargetY() - notification.getCurrentY()) * 0.3);
+            double currentX = NotificationManager.interpolateToward(
+                    notification.getTargetX(), notification.getCurrentX(), elapsedMillis, horizontalStep);
+            double currentY = NotificationManager.interpolateToward(
+                    notification.getTargetY(), notification.getCurrentY(), elapsedMillis, verticalStep);
+            notification.setCurrentX(currentX);
+            notification.setCurrentY(currentY);
+            notification.render();
+            if (!notification.shouldRemove()) continue;
+            expiredNotifications.add(notification);
         }
-        for (INotification iNotification : arrayList) {
-            this.e.remove(iNotification);
+        for (INotification notification : expiredNotifications) {
+            this.notifications.remove(notification);
         }
-        OpenGlBackendHolder.d.k(n2, f);
-        OpenGlBackendHolder.d.F();
+        OpenGlBackendHolder.backend.setAlphaFunction(previousAlphaTestFunction, previousAlphaTestReference);
+        OpenGlBackendHolder.backend.popMatrix();
     }
 
-    public static int l() {
-        int n = NotificationManager.i();
-        if (n == 0) {
+    public static int initializeControlFlowState() {
+        int currentState = NotificationManager.getControlFlowState();
+        if (currentState == 0) {
             return 112;
         }
         return 0;
     }
 
-    public void m(INotification iNotification) {
-        this.x(iNotification, false);
+    public void show(INotification notification) {
+        this.enqueue(notification, false);
     }
 
-    public void k(String string, String string2, long l) {
-        this.t(string, string2, NotificationType.INFO, l);
+    public void showInfo(String title, String message, long durationMillis) {
+        this.show(title, message, NotificationType.INFO, durationMillis);
     }
 
-    public static void m(int n) {
-        l = n;
+    public static void setControlFlowState(int state) {
+        controlFlowState = state;
     }
 
-    public void t(String string, String string2, NotificationType notificationType, long l) {
-        this.K(string, string2, notificationType, l, false);
+    public void show(String title, String message, NotificationType type, long durationMillis) {
+        this.show(title, message, type, durationMillis, false);
     }
 
     @EventHandler
-    public void r(GuiMouseEvent guiMouseEvent) {
-        if (!guiMouseEvent.getAction().equals((Object)MouseButton.LEFT_CLICK)) {
+    public void onMouseClick(GuiMouseEvent event) {
+        if (!event.getAction().equals(MouseButton.LEFT_CLICK)) {
             return;
         }
-        for (INotification iNotification : this.e) {
-            iNotification.z(guiMouseEvent.getX(), guiMouseEvent.getY());
+        for (INotification notification : this.notifications) {
+            notification.handleClick(event.getX(), event.getY());
         }
     }
 
-    public static double w(double d, double d2, long l, double d3) {
-        if (d == d2) {
-            return d;
+    public static double interpolateToward(double target, double current, long elapsedMillis, double maxStep) {
+        if (target == current) {
+            return target;
         }
-        double d4 = Math.max(d3 * (double)Math.max(1L, l) / 16.666666666666668, 0.1);
-        return d2 + MathUtil.clamp(d - d2, -d4, d4);
+        double scaledStep = Math.max(maxStep * (double)Math.max(1L, elapsedMillis) / 16.666666666666668, 0.1);
+        return current + MathUtil.clamp(target - current, -scaledStep, scaledStep);
     }
 
-    public static int i() {
-        return l;
+    public static int getControlFlowState() {
+        return controlFlowState;
     }
 
-    public void x(INotification iNotification, boolean bl) {
-        if (!this.X(iNotification)) {
+    public void enqueue(INotification notification, boolean force) {
+        if (!this.isAllowedByFriendSettings(notification)) {
             return;
         }
-        if (!Vape.INSTANCE.getPublicProfileSettings().R.L().booleanValue() && !bl) {
+        if (!Vape.INSTANCE.getPublicProfileSettings().R.getEffectiveValue().booleanValue() && !force) {
             return;
         }
-        if (!this.Z(iNotification.c().T())) {
+        if (!this.isGroupEnabled(notification.getType().getGroup())) {
             return;
         }
-        if (this.C.containsKey((Object)iNotification.c())) {
-            Vape.INSTANCE.getNotificationSoundPlayer().q(this.C.get((Object)iNotification.c()));
+        if (this.notificationSounds.containsKey(notification.getType())) {
+            Vape.INSTANCE.getNotificationSoundPlayer().queue(this.notificationSounds.get(notification.getType()));
         }
-        double d = iNotification.t() + 16.0;
-        for (INotification iNotification2 : this.e) {
-            d += iNotification2.t() + 2.0;
+        double initialY = notification.getHeight() + 16.0;
+        for (INotification queuedNotification : this.notifications) {
+            initialY += queuedNotification.getHeight() + 2.0;
         }
-        iNotification.S(-d);
-        iNotification.r(0.0);
-        iNotification.T(-iNotification.X());
-        if (this.e.remainingCapacity() == 0) {
-            this.e.remove();
+        notification.setCurrentY(-initialY);
+        notification.setCurrentX(0.0);
+        notification.setTargetX(-notification.getWidth());
+        if (this.notifications.remainingCapacity() == 0) {
+            this.notifications.remove();
         }
-        if (!this.e.contains(iNotification)) {
-            this.e.add(iNotification);
+        if (!this.notifications.contains(notification)) {
+            this.notifications.add(notification);
         }
     }
 
     public NotificationManager() {
-        this.v = new HashMap<NotificationGroup, BooleanValue>();
-        this.C.put(NotificationType.FRIENDS_NEW_CHAT, NotificationSounds.F);
-        this.C.put(NotificationType.FRIENDS_PARTY_INVITE, NotificationSounds.P);
-        this.v.put(NotificationGroup.FRIENDS, Vape.INSTANCE.getPublicProfileSettings().H);
+        this.groupSettings = new HashMap<NotificationGroup, BooleanValue>();
+        this.notificationSounds.put(NotificationType.FRIENDS_NEW_CHAT, NotificationSounds.MESSAGE_RECEIVED);
+        this.notificationSounds.put(NotificationType.FRIENDS_PARTY_INVITE, NotificationSounds.PARTY_INVITE);
+        this.groupSettings.put(NotificationGroup.FRIENDS, Vape.INSTANCE.getPublicProfileSettings().H);
     }
 }
 

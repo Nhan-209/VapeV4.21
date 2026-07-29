@@ -78,7 +78,7 @@ extends Mapping {
                 MMatrixStack mMatrixStack9 = this;
                 this.W = this.Y(string9, bl9, clazz9, classArray9);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MMatrixStack.m(new int[3]);
             }
             return;
@@ -89,7 +89,7 @@ extends Mapping {
         String string10 = "setIdentity";
         MMatrixStack mMatrixStack10 = this;
         this.W = this.Y(string10, bl10, clazz10, classArray10);
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MMatrixStack.m(new int[3]);
         }
     }

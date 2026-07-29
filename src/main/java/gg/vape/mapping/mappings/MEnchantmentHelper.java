@@ -189,7 +189,7 @@ extends Mapping {
             MEnchantmentHelper mEnchantmentHelper = this;
             this.C = mEnchantmentHelper.u(string20, bl, clazz); 
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MEnchantments.b("T0jqMc");
         }
     }

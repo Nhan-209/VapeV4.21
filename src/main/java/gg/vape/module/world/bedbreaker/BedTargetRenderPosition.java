@@ -5,35 +5,30 @@ import gg.vape.wrapper.impl.RenderManager;
 import java.util.Objects;
 
 public class BedTargetRenderPosition {
-    private static int[] R;
-    private final double G;
-    private final double a;
     private final double z;
+    private final double x;
+    private final double y;
 
     public int hashCode() {
-        return Objects.hash(this.a, this.z, this.G);
+        return Objects.hash(this.x, this.y, this.z);
     }
 
-    public double b() {
-        double d = RenderManager.getInterpolatedRenderPosZ();
-        return this.G - d;
+    public double getRelativeZ() {
+        double renderZ = RenderManager.getInterpolatedRenderPosZ();
+        return this.z - renderZ;
     }
 
-    public int h() {
-        return MathUtil.floor(this.z);
+    public int getBlockY() {
+        return MathUtil.floor(this.y);
     }
 
-    public double double_D() {
-        double d = RenderManager.getInterpolatedRenderPosY();
-        return this.z - d;
+    public double getRelativeY() {
+        double renderY = RenderManager.getInterpolatedRenderPosY();
+        return this.y - renderY;
     }
 
-    public double r() {
-        return this.z;
-    }
-
-    public static int[] Y() {
-        return R;
+    public double getY() {
+        return this.y;
     }
 
     public boolean equals(Object object) {
@@ -44,60 +39,41 @@ public class BedTargetRenderPosition {
             return false;
         }
         BedTargetRenderPosition bedTargetRenderPosition = (BedTargetRenderPosition)object;
-        boolean bl = this.a == bedTargetRenderPosition.a && this.z == bedTargetRenderPosition.z && this.G == bedTargetRenderPosition.G;
-        return bl;
+        return this.x == bedTargetRenderPosition.x && this.y == bedTargetRenderPosition.y && this.z == bedTargetRenderPosition.z;
     }
 
-    public double Z() {
-        return this.a;
+    public double getX() {
+        return this.x;
     }
 
-    public static void l(int[] nArray) {
-        R = nArray;
+    public double getRelativeX() {
+        double renderX = RenderManager.getInterpolatedRenderPosX();
+        return this.x - renderX;
     }
 
-    public double G() {
-        double d = RenderManager.getInterpolatedRenderPosX();
-        return this.a - d;
+    public int getBlockZ() {
+        return MathUtil.floor(this.z);
     }
 
-    public int int_D() {
-        return MathUtil.floor(this.G);
+    public int getBlockX() {
+        return MathUtil.floor(this.x);
     }
 
-    public int N() {
-        return MathUtil.floor(this.a);
+    public BedTargetRenderPosition(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    public BedTargetRenderPosition(double d, double d2, double d3) {
-        this.a = d;
-        this.z = d2;
-        this.G = d3;
-    }
-
-    public double E() {
-        return this.G;
+    public double getZ() {
+        return this.z;
     }
 
 
-    public BedTargetRenderPosition(int n, int n2, int n3) {
-        this.a = n;
-        this.z = n2;
-        this.G = n3;
-    }
-
-    static {
-        if (BedTargetRenderPosition.Y() != null) {
-            BedTargetRenderPosition.l(new int[4]);
-        }
-    }
-
-    public /* synthetic */ double D() {
-        return this.double_D();
-    }
-
-    public /* synthetic */ int D$src$I$nuyd86() {
-        return this.int_D();
+    public BedTargetRenderPosition(int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 }
 

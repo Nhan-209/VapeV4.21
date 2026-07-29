@@ -7,24 +7,24 @@ import gg.vape.ui.click.component.SpacerComponent;
 
 class OnlineFriendCardVisibleChildrenHeightComponent
 extends FlowLayoutComponent {
-    final OnlineFriendCard Tw;
+    final OnlineFriendCard onlineFriendCard;
 
 
-    OnlineFriendCardVisibleChildrenHeightComponent(OnlineFriendCard onlineFriendCard, double d) {
-        super(d);
-        this.Tw = onlineFriendCard;
+    OnlineFriendCardVisibleChildrenHeightComponent(OnlineFriendCard onlineFriendCard, double width) {
+        super(width);
+        this.onlineFriendCard = onlineFriendCard;
     }
 
     @Override
-    public double i() {
-        double d = 0.0;
-        if (!OnlineFriendCard.B(this.Tw).V$src$Z$1xhop3l()) {
-            return d;
+    public double getVisibleChildrenWidth() {
+        double totalWidth = 0.0;
+        if (!OnlineFriendCard.B(this.onlineFriendCard).V$src$Z$1xhop3l()) {
+            return totalWidth;
         }
-        for (GuiComponent guiComponent : OnlineFriendCard.B(this.Tw).f()) {
-            if (guiComponent instanceof SpacerComponent || !guiComponent.V$src$Z$1xhop3l()) continue;
-            d += guiComponent.A();
+        for (GuiComponent child : OnlineFriendCard.B(this.onlineFriendCard).f()) {
+            if (child instanceof SpacerComponent || !child.V$src$Z$1xhop3l()) continue;
+            totalWidth += child.A();
         }
-        return d + 2.0;
+        return totalWidth + 2.0;
     }
 }

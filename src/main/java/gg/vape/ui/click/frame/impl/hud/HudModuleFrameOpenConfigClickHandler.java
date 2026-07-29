@@ -6,20 +6,20 @@ import gg.vape.ui.click.frame.impl.hud.AnchoredHudModuleConfigFrame;
 
 class HudModuleFrameOpenConfigClickHandler
 implements GuiClickListener {
-    final AnchoredHudModuleConfigFrame B;
+    private final AnchoredHudModuleConfigFrame configFrame;
 
 
     @Override
-    public void P() {
-        this.B.Z(false);
-        for (GuiComponent guiComponent : this.B.f()) {
-            if (guiComponent == this.B.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc()) continue;
-            guiComponent.Z(false);
+    public void onPrimaryClick() {
+        this.configFrame.setVisible(false);
+        for (GuiComponent guiComponent : this.configFrame.f()) {
+            if (guiComponent == this.configFrame.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc()) continue;
+            guiComponent.setVisible(false);
         }
     }
 
     HudModuleFrameOpenConfigClickHandler(AnchoredHudModuleConfigFrame anchoredHudModuleConfigFrame) {
-        this.B = anchoredHudModuleConfigFrame;
+        this.configFrame = anchoredHudModuleConfigFrame;
     }
 }
 

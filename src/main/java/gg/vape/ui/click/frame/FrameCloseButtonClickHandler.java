@@ -8,7 +8,7 @@ implements GuiClickListener {
     final Frame X;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         this.X.L$src$V$1erh1l9();
         this.X.j$src$V$1f7yve3();
         this.X.l$src$Z$193vdc5();
@@ -18,4 +18,3 @@ implements GuiClickListener {
         this.X = frame;
     }
 }
-

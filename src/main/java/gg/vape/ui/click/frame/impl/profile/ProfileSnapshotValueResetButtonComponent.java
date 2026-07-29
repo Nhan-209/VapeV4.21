@@ -8,21 +8,19 @@ import java.awt.Color;
 
 class ProfileSnapshotValueResetButtonComponent
 extends AnimatedRingIconButtonComponent {
-    final ProfileSnapshotGuiBuilder eg;
-    final GuiComponent eC;
-    final ValueSnapshot eG;
+    private final GuiComponent valueComponent;
+    private final ValueSnapshot<?, ?> valueSnapshot;
 
-    ProfileSnapshotValueResetButtonComponent(ProfileSnapshotGuiBuilder profileSnapshotGuiBuilder, String string, Color color, double d, double d2, double d3, GuiComponent guiComponent, ValueSnapshot valueSnapshot) {
-        super(string, color, d, d2, d3);
-        this.eg = profileSnapshotGuiBuilder;
-        this.eC = guiComponent;
-        this.eG = valueSnapshot;
+    ProfileSnapshotValueResetButtonComponent(String icon, Color color, double scale, double width, double height, GuiComponent valueComponent, ValueSnapshot<?, ?> valueSnapshot) {
+        super(icon, color, scale, width, height);
+        this.valueComponent = valueComponent;
+        this.valueSnapshot = valueSnapshot;
     }
 
     @Override
     public void u() {
         super.u();
-        this.Z(this.eC.V$src$Z$1xhop3l() && !this.eG.h());
+        this.setVisible(this.valueComponent.V$src$Z$1xhop3l() && !this.valueSnapshot.isDefault());
     }
 
 }

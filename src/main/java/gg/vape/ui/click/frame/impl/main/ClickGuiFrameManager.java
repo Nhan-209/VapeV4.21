@@ -17,174 +17,151 @@ import org.jetbrains.annotations.Nullable;
 
 public class ClickGuiFrameManager
 extends FrameStackManager {
-    private final Set<HudModuleFrameBase> G = new HashSet<HudModuleFrameBase>();
-    private static int w;
-    private Frame V;
-    private final Set<HudModuleFrameBase> J = new HashSet<HudModuleFrameBase>();
-    private HudOverlaySelectorFrame z;
-    private ClickGuiMainFrame g;
+    private final Set<HudModuleFrameBase> overlayLayerHudFrames = new HashSet<HudModuleFrameBase>();
+    private Frame sidecarFrame;
+    private final Set<HudModuleFrameBase> mainLayerHudFrames = new HashSet<HudModuleFrameBase>();
+    private HudOverlaySelectorFrame overlaySelector;
+    private ClickGuiMainFrame mainFrame;
 
-    public static void W(int n) {
-        w = n;
-    }
-
-    private void a() {
-        if (this.J.isEmpty()) {
+    private void clearMainLayerHudFrames() {
+        if (this.mainLayerHudFrames.isEmpty()) {
             return;
         }
-        for (HudModuleFrameBase hudModuleFrameBase : this.J) {
-            hudModuleFrameBase.U(false);
+        for (HudModuleFrameBase hudModuleFrameBase : this.mainLayerHudFrames) {
+            hudModuleFrameBase.setFrontmostOverlay(false);
             this.m(hudModuleFrameBase);
         }
-        this.J.clear();
-    }
-
-    public static int p() {
-        return w;
+        this.mainLayerHudFrames.clear();
     }
 
 
-    public Frame L() {
-        return this.V;
+    public Frame getSidecarFrame() {
+        return this.sidecarFrame;
     }
 
-    public HudOverlaySelectorFrame Y$src$Lgg_vape_ui_click_frame_impl_hud_HudOverlaySelec$z60fv4() {
-        return this.z;
+    public HudOverlaySelectorFrame getOverlaySelector() {
+        return this.overlaySelector;
     }
 
-    public void K(@Nullable Frame frame) {
+    public void setSidecarFrame(@Nullable Frame frame) {
         if (frame != null) {
-            if (this.V != null && this.V != frame) {
-                this.m(this.V);
+            if (this.sidecarFrame != null && this.sidecarFrame != frame) {
+                this.m(this.sidecarFrame);
             }
-            this.V = frame;
+            this.sidecarFrame = frame;
             if (!this.Y().contains(frame)) {
                 this.q(frame);
             }
-            this.R(this.g, frame);
+            this.R(this.mainFrame, frame);
             frame.t(true, false);
-            this.g.K$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiMainFr$2ph4q().H(true);
+            this.mainFrame.getTransitionOverlay().setActive(true);
         } else {
-            if (this.V != null) {
-                this.m(this.V);
+            if (this.sidecarFrame != null) {
+                this.m(this.sidecarFrame);
             }
-            this.V = null;
-            this.g.K$src$Lgg_vape_ui_click_frame_impl_main_ClickGuiMainFr$2ph4q().H(false);
+            this.sidecarFrame = null;
+            this.mainFrame.getTransitionOverlay().setActive(false);
         }
     }
 
     @Override
     public void A() {
-        if (this.g == null) {
-            this.g = new ClickGuiMainFrame();
-            this.q(this.g);
-            this.z = new HudOverlaySelectorFrame();
-            this.q(this.z);
-            this.G(ClickGuiLayer.MAIN);
+        if (this.mainFrame == null) {
+            this.mainFrame = new ClickGuiMainFrame();
+            this.q(this.mainFrame);
+            this.overlaySelector = new HudOverlaySelectorFrame();
+            this.q(this.overlaySelector);
+            this.showLayer(ClickGuiLayer.MAIN);
         }
-        if (this.z.V$src$Z$1xhop3l()) {
-            this.a();
-            this.z.K((double)Minecraft.J() / 4.0 / Vape.INSTANCE.getClientSettings().s() - this.z.A() / 2.0);
-            this.z.S((double)Minecraft.h() / 2.0 / Vape.INSTANCE.getClientSettings().s() - this.z.L() - 5.0);
-            this.m();
+        if (this.overlaySelector.V$src$Z$1xhop3l()) {
+            this.clearMainLayerHudFrames();
+            this.overlaySelector.K((double)Minecraft.J() / 4.0 / Vape.INSTANCE.getClientSettings().s() - this.overlaySelector.A() / 2.0);
+            this.overlaySelector.S((double)Minecraft.h() / 2.0 / Vape.INSTANCE.getClientSettings().s() - this.overlaySelector.L() - 5.0);
+            this.syncOverlayLayerHudFrames();
         } else {
-            this.K();
-            this.T();
+            this.clearOverlayLayerHudFrames();
+            this.syncMainLayerHudFrames();
         }
     }
 
-    public ClickGuiMainFrame l() {
-        return this.g;
+    public ClickGuiMainFrame getMainFrame() {
+        return this.mainFrame;
     }
 
-    public static int I() {
-        int n = ClickGuiFrameManager.p();
-        if (n == 0) {
-            return 70;
-        }
-        return 0;
-    }
-
-    private void K() {
-        if (this.G.isEmpty()) {
+    private void clearOverlayLayerHudFrames() {
+        if (this.overlayLayerHudFrames.isEmpty()) {
             return;
         }
-        for (HudModuleFrameBase hudModuleFrameBase : this.G) {
+        for (HudModuleFrameBase hudModuleFrameBase : this.overlayLayerHudFrames) {
             this.m(hudModuleFrameBase);
         }
-        this.G.clear();
+        this.overlayLayerHudFrames.clear();
     }
 
-    public void G(ClickGuiLayer clickGuiLayer) {
+    public void showLayer(ClickGuiLayer clickGuiLayer) {
         switch (clickGuiLayer) {
             case MAIN: {
-                this.g.Z(true);
-                this.z.Z(false);
-                HudModuleConfigFrameBase.w$src$V$1ttpy5n();
+                this.mainFrame.setVisible(true);
+                this.overlaySelector.setVisible(false);
+                HudModuleConfigFrameBase.closeAllHudSettings();
                 break;
             }
             case OVERLAYS: {
-                this.z.Z(true);
-                this.g.Z(false);
+                this.overlaySelector.setVisible(true);
+                this.mainFrame.setVisible(false);
             }
         }
     }
 
-    private void T() {
-        HashSet<HudModuleFrameBase> hashSet = new HashSet<HudModuleFrameBase>();
-        for (Frame frame : ClientSettings.G()) {
+    private void syncMainLayerHudFrames() {
+        HashSet<HudModuleFrameBase> visibleFrames = new HashSet<HudModuleFrameBase>();
+        for (Frame frame : ClientSettings.getAllFrames()) {
             HudModuleFrameBase hudModuleFrameBase;
             if (!(frame instanceof HudModuleFrameBase) || !(hudModuleFrameBase = (HudModuleFrameBase)frame).V$src$Z$1xhop3l()) continue;
-            hashSet.add(hudModuleFrameBase);
+            visibleFrames.add(hudModuleFrameBase);
             if (this.Y().contains(hudModuleFrameBase)) continue;
-            int n = this.Y().indexOf(this.g);
+            int n = this.Y().indexOf(this.mainFrame);
             if (n >= 0) {
                 this.Y().add(n, hudModuleFrameBase);
                 continue;
             }
             this.q(hudModuleFrameBase);
         }
-        Iterator<HudModuleFrameBase> iterator = this.J.iterator();
+        Iterator<HudModuleFrameBase> iterator = this.mainLayerHudFrames.iterator();
         while (iterator.hasNext()) {
             HudModuleFrameBase frame = iterator.next();
-            if (hashSet.contains(frame) && frame.V$src$Z$1xhop3l()) continue;
+            if (visibleFrames.contains(frame) && frame.V$src$Z$1xhop3l()) continue;
             this.m(frame);
             iterator.remove();
         }
-        this.J.addAll(hashSet);
+        this.mainLayerHudFrames.addAll(visibleFrames);
     }
 
-    public void G() {
-        this.K(null);
+    public void closeSidecar() {
+        this.setSidecarFrame(null);
     }
 
-    public boolean i(Frame frame) {
-        return this.J.contains(frame);
+    public boolean isMainLayerHudFrame(Frame frame) {
+        return this.mainLayerHudFrames.contains(frame);
     }
 
-    private void m() {
-        HashSet<HudModuleFrameBase> hashSet = new HashSet<HudModuleFrameBase>();
-        for (Frame frame : ClientSettings.G()) {
+    private void syncOverlayLayerHudFrames() {
+        HashSet<HudModuleFrameBase> visibleFrames = new HashSet<HudModuleFrameBase>();
+        for (Frame frame : ClientSettings.getAllFrames()) {
             HudModuleFrameBase hudModuleFrameBase;
             if (!(frame instanceof HudModuleFrameBase) || !(hudModuleFrameBase = (HudModuleFrameBase)frame).V$src$Z$1xhop3l()) continue;
-            hashSet.add(hudModuleFrameBase);
+            visibleFrames.add(hudModuleFrameBase);
             if (this.Y().contains(hudModuleFrameBase)) continue;
             this.q(hudModuleFrameBase);
         }
-        Iterator<HudModuleFrameBase> iterator = this.G.iterator();
+        Iterator<HudModuleFrameBase> iterator = this.overlayLayerHudFrames.iterator();
         while (iterator.hasNext()) {
             HudModuleFrameBase frame = iterator.next();
-            if (hashSet.contains(frame) && frame.V$src$Z$1xhop3l()) continue;
+            if (visibleFrames.contains(frame) && frame.V$src$Z$1xhop3l()) continue;
             this.m(frame);
             iterator.remove();
         }
-        this.G.addAll(hashSet);
-        this.v(this.z);
-    }
-
-    static {
-        if (ClickGuiFrameManager.I() == 0) {
-            ClickGuiFrameManager.W(45);
-        }
+        this.overlayLayerHudFrames.addAll(visibleFrames);
+        this.v(this.overlaySelector);
     }
 }

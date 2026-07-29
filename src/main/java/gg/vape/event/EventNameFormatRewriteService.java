@@ -44,7 +44,7 @@ extends FriendAliasDisplayNameListener {
         }
         if (iTextComponent.isInstance(MappedClasses.ux)) {
             ChestStealInventoryState chestStealInventoryState = new ChestStealInventoryState(iTextComponent.getObject());
-            for (Object object : chestStealInventoryState.b()) {
+            for (Object object : chestStealInventoryState.getSiblings()) {
                 ITextComponent iTextComponent2 = new ITextComponent(object);
                 if (iTextComponent2.isNull() || !iTextComponent2.isInstance(MappedClasses.Yr)) continue;
                 this.a(iTextComponent2, set);
@@ -175,7 +175,7 @@ extends FriendAliasDisplayNameListener {
         }
         boolean bl = false;
         ArrayList<Object> arrayList = new ArrayList<Object>();
-        for (Object object : objectArray = chestStealInventoryState.c()) {
+        for (Object object : objectArray = chestStealInventoryState.getFormatArguments()) {
             Object object2;
             Object object3;
             if (object == null) {
@@ -200,7 +200,7 @@ extends FriendAliasDisplayNameListener {
             }
             arrayList.add(object);
         }
-        return !bl ? chestStealInventoryState : (ForgeVersion.MC_1_20_6.d() ? ChestStealInventoryState.A(chestStealInventoryState.U(), chestStealInventoryState.p(), arrayList.toArray()) : ChestStealInventoryState.v(chestStealInventoryState.U(), arrayList.toArray()));
+        return !bl ? chestStealInventoryState : (ForgeVersion.MC_1_20_6.d() ? ChestStealInventoryState.createTranslationWithFallback(chestStealInventoryState.getTranslationKey(), chestStealInventoryState.getFallback(), arrayList.toArray()) : ChestStealInventoryState.createTranslation(chestStealInventoryState.getTranslationKey(), arrayList.toArray()));
     }
 
     public static void w(String[] stringArray) {
@@ -232,4 +232,3 @@ extends FriendAliasDisplayNameListener {
         }
     }
 }
-

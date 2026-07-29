@@ -10,16 +10,15 @@ import gg.vape.module.utility.inventory.cleaner.StringInventoryItemMatcherBuilde
 
 public class InventoryItemMatcherBuilder
 extends InventoryItemMatcherBuilderBase<InventoryItemMatcherBuilder> {
-    public InventoryItemMatcherBuilderFoundation t() {
-        return CompositeInventoryItemMatcher.p(this);
+    public InventoryItemMatcherBuilderFoundation composite() {
+        return CompositeInventoryItemMatcher.builderFrom(this);
     }
 
-    public StringInventoryItemMatcherBuilder y() {
-        return StringInventoryItemMatcher.n(this);
+    public StringInventoryItemMatcherBuilder stringMatcher() {
+        return StringInventoryItemMatcher.builderFrom(this);
     }
 
-    public ClassInventoryItemMatcherBuilder Y() {
-        return ClassInventoryItemMatcher.J(this);
+    public ClassInventoryItemMatcherBuilder classMatcher() {
+        return ClassInventoryItemMatcher.builderFrom(this);
     }
 }
-

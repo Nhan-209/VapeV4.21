@@ -31,7 +31,7 @@ extends Mapping {
     private MTileEntityChest(int[] nArray) {
         super(MappedClasses.u0);
         if (nArray != null) {
-            GuiComponent.D(new GuiComponent[1]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[1]);
             Class<Float> clazz = Float.TYPE;
             boolean bl = true;
             String string = ClientSettings.H ? "lidAngle" : "field_145972_a";

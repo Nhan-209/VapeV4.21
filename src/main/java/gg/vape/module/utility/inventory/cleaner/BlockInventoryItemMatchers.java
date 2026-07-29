@@ -19,21 +19,21 @@ public class BlockInventoryItemMatchers {
 
     static {
         String[] stringArray = new String[]{"building-block-hover@2x", "_planks", "building-blocks", "any-block", "obsidian", "blocks-hover@2x", "stone", "_wool", "Any block", "Any type of building block", "Building blocks", "red_sandstone", "terracotta", "end_stone"};
-        x = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.c().Y().n(stringArray[3])).m(stringArray[8])).H(stringArray[5])).A(InventoryItemMatcherGroup.BLOCKS)).Q(MappedClasses.Vw).p(InventoryMatcherListMode.WHITELIST).o();
-        StringInventoryItemMatcherBuilder stringInventoryItemMatcherBuilder = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.c().y().n(stringArray[2])).m(stringArray[10])).M(stringArray[9])).H(stringArray[0])).A(InventoryItemMatcherGroup.BLOCKS)).R(stringArray[7], StringMatchOperator.ENDS).R(stringArray[6], StringMatchOperator.EQUALS).R(stringArray[1], StringMatchOperator.ENDS).R(stringArray[11], StringMatchOperator.EQUALS).R(stringArray[12], StringMatchOperator.ENDS).R(stringArray[13], StringMatchOperator.EQUALS).R(stringArray[4], StringMatchOperator.EQUALS);
-        stringInventoryItemMatcherBuilder.N((first, second) -> {
-            String firstName = first.f().M();
-            String secondName = second.f().M();
+        x = ((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)((ClassInventoryItemMatcherBuilder)InventoryItemMatcher.builder().classMatcher().withId(stringArray[3])).withName(stringArray[8])).withIconName(stringArray[5])).withGroup(InventoryItemMatcherGroup.BLOCKS)).addClass(MappedClasses.Vw).withListMode(InventoryMatcherListMode.WHITELIST).build();
+        StringInventoryItemMatcherBuilder stringInventoryItemMatcherBuilder = ((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)((StringInventoryItemMatcherBuilder)InventoryItemMatcher.builder().stringMatcher().withId(stringArray[2])).withName(stringArray[10])).withDescription(stringArray[9])).withIconName(stringArray[0])).withGroup(InventoryItemMatcherGroup.BLOCKS)).addPattern(stringArray[7], StringMatchOperator.ENDS).addPattern(stringArray[6], StringMatchOperator.EQUALS).addPattern(stringArray[1], StringMatchOperator.ENDS).addPattern(stringArray[11], StringMatchOperator.EQUALS).addPattern(stringArray[12], StringMatchOperator.ENDS).addPattern(stringArray[13], StringMatchOperator.EQUALS).addPattern(stringArray[4], StringMatchOperator.EQUALS);
+        stringInventoryItemMatcherBuilder.withComparator((first, second) -> {
+            String firstName = first.getMappingEntry().M();
+            String secondName = second.getMappingEntry().M();
             int firstRank = -1;
             int secondRank = -1;
-            int rank = stringInventoryItemMatcherBuilder.X().size();
-            for (Map.Entry<String, StringMatchOperator> entry : stringInventoryItemMatcherBuilder.X().entrySet()) {
+            int rank = stringInventoryItemMatcherBuilder.getOperatorsByPattern().size();
+            for (Map.Entry<String, StringMatchOperator> entry : stringInventoryItemMatcherBuilder.getOperatorsByPattern().entrySet()) {
                 String pattern = entry.getKey();
                 StringMatchOperator operator = entry.getValue();
-                if (operator.z().test(firstName, pattern)) {
+                if (operator.getPredicate().test(firstName, pattern)) {
                     firstRank = rank;
                 }
-                if (operator.z().test(secondName, pattern)) {
+                if (operator.getPredicate().test(secondName, pattern)) {
                     secondRank = rank;
                 }
                 --rank;
@@ -43,12 +43,12 @@ public class BlockInventoryItemMatchers {
             }
             return Integer.compare(firstRank, secondRank);
         });
-        f = stringInventoryItemMatcherBuilder.g();
+        f = stringInventoryItemMatcherBuilder.build();
     }
 
-    public static void C() {
-        InventoryItemMatcherRegistry.R(x);
-        InventoryItemMatcherRegistry.R(f);
+    public static void initialize() {
+        InventoryItemMatcherRegistry.register(x);
+        InventoryItemMatcherRegistry.register(f);
     }
 
 }

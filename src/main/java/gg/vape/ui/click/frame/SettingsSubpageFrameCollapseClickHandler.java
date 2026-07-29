@@ -8,7 +8,7 @@ implements GuiClickListener {
     final SettingsSubpageFrame y;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         this.y.p();
     }
 
@@ -16,4 +16,3 @@ implements GuiClickListener {
         this.y = settingsSubpageFrame;
     }
 }
-

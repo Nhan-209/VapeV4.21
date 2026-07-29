@@ -29,7 +29,7 @@ extends StringValue {
     }
 
     public void Z(String string) {
-        super.o(string);
+        super.setValue(string);
         boolean bl = StringUtils.n(string);
         if (bl) {
             Profile profile = Vape.INSTANCE.getProfilesManager().H(UUID.fromString(string));

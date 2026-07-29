@@ -9,7 +9,7 @@ import java.awt.Color;
 
 public class FpsDisplayHudFrame
 extends HudModuleConfigFrameBase {
-    private static final long xb = 5183938735720366080L;
+    private static final int SHADOW_COLOR_ARGB = 0x80000000;
 
 
     @Override
@@ -18,15 +18,19 @@ extends HudModuleConfigFrameBase {
     }
 
     @Override
-    public void o() {
+    public void renderHudContent() {
         SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().W(1.2, false);
-        String string = Minecraft.l() + " FPS";
-        float f = (int)(this.G$src$D$1b2f02a() + this.A() / 2.0 - smoothFontRenderer.N(string) / 2.0);
-        float f2 = (int)(this.n() + this.L() / 2.0 - smoothFontRenderer.d(string) / 2.0);
-        if (this.m()) {
-            smoothFontRenderer.d(string, f, f2, this.m$src$Ljava_awt_Color_$ppsp8z());
+        String fpsText = Minecraft.l() + " FPS";
+        float textX = (int)(this.G$src$D$1b2f02a() + this.A() / 2.0
+                - smoothFontRenderer.N(fpsText) / 2.0);
+        float textY = (int)(this.n() + this.L() / 2.0
+                - smoothFontRenderer.d(fpsText) / 2.0);
+        if (this.shouldRenderHudBackground()) {
+            smoothFontRenderer.d(fpsText, textX, textY, this.getEditorForegroundColor());
         } else {
-            smoothFontRenderer.T(string, f, f2, this.m$src$Ljava_awt_Color_$ppsp8z(), this.l(new Color((int)xb, true)));
+            smoothFontRenderer.T(fpsText, textX, textY,
+                    this.getEditorForegroundColor(),
+                    this.applyDefaultEditorAlpha(new Color(SHADOW_COLOR_ARGB, true)));
         }
     }
 

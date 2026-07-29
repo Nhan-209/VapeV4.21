@@ -10,17 +10,17 @@ public enum ImageParser$Format {
     ABGR(4, true),
     WHITE(4, true);
 
-    final boolean E;
-    final int Z;
-    private static final ImageParser$Format[] X;
+    final boolean hasAlphaChannel;
+    final int componentCount;
+    private static final ImageParser$Format[] DECLARED_VALUES;
 
-    private ImageParser$Format(int n2, boolean bl) {
-        this.Z = n2;
-        this.E = bl;
+    private ImageParser$Format(int componentCount, boolean hasAlphaChannel) {
+        this.componentCount = componentCount;
+        this.hasAlphaChannel = hasAlphaChannel;
     }
 
     static {
-        String[] stringArray = new String[]{"LUMINANCE", "WHITE", "ALPHA", "ABGR", "LUMINANCE_ALPHA", "RGB", "BGRA", "RGBA"};
+        String[] legacyNames = new String[]{"LUMINANCE", "WHITE", "ALPHA", "ABGR", "LUMINANCE_ALPHA", "RGB", "BGRA", "RGBA"};
 
 
 
@@ -29,16 +29,15 @@ public enum ImageParser$Format {
 
 
 
-        X = new ImageParser$Format[]{ALPHA, LUMINANCE, LUMINANCE_ALPHA, RGB, RGBA, BGRA, ABGR, WHITE};
+        DECLARED_VALUES = new ImageParser$Format[]{ALPHA, LUMINANCE, LUMINANCE_ALPHA, RGB, RGBA, BGRA, ABGR, WHITE};
     }
 
-    public boolean q() {
-        return this.E;
+    public boolean hasAlphaChannel() {
+        return this.hasAlphaChannel;
     }
 
-    public int M() {
-        return this.Z;
+    public int getComponentCount() {
+        return this.componentCount;
     }
 
 }
-

@@ -6,12 +6,11 @@ import gg.vape.wrapper.impl.EntityEnderPearl;
 
 public class EnderPearlProjectileBridge
 extends EntityEnderPearl {
-    public EnderPearlProjectileBridge(Object object) {
-        super(object);
+    public EnderPearlProjectileBridge(Object handle) {
+        super(handle);
     }
 
-    public Entity C() {
+    public Entity getOwnerEntity() {
         return new Entity(MEnderPearlProjectileBridge.w(EnderPearlProjectileBridge.c.getMappings().CH, this.getObject()));
     }
 }
-

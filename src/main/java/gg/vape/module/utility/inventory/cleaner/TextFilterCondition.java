@@ -7,37 +7,31 @@ import com.google.gson.JsonPrimitive;
 import gg.vape.module.utility.inventory.cleaner.InventoryFilterCondition;
 import gg.vape.module.utility.inventory.cleaner.TextMatchMode;
 import gg.vape.utils.Base64Util;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public interface TextFilterCondition<T extends InventoryFilterCondition<T>>
 extends InventoryFilterCondition<T> {
-    public static final Map g = new HashMap(13);
-    public static final String[] d = new String[2];
-    public static final String[] c = null;
+    public @UnmodifiableView List<String> getTexts();
 
-    public @UnmodifiableView List<String> M$src$Ljava_util_List_$bgq9xa();
+    public T removeText(String text);
 
-    public T l(String var1);
+    public T addText(String text);
 
-    public T n(String var1);
+    public T withMatchMode(TextMatchMode mode);
 
-    public T W(TextMatchMode var1);
+    public TextMatchMode getMatchMode();
 
-    public TextMatchMode M();
-
-    public T B();
+    public T clearText();
 
     @Override
-    default public JsonObject L() {
-        JsonObject jsonObject = InventoryFilterCondition.super.L();
+    default public JsonObject toJson() {
+        JsonObject jsonObject = InventoryFilterCondition.super.toJson();
         JsonArray jsonArray = new JsonArray();
-        for (String string : this.M$src$Ljava_util_List_$bgq9xa()) {
+        for (String string : this.getTexts()) {
             jsonArray.add((JsonElement)new JsonPrimitive(Base64Util.encodeUtf8Base64(string)));
         }
-        jsonObject.addProperty("operator", this.M().getName());
+        jsonObject.addProperty("operator", this.getMatchMode().getName());
         jsonObject.add("text", (JsonElement)jsonArray);
         return jsonObject;
     }

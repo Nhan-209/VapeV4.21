@@ -49,7 +49,7 @@ extends PanelComponent {
     }
 
     private void lambda$null$10(PopupFrame popupFrame) {
-        ClientSettings.K(popupFrame);
+        ClientSettings.removePopup(popupFrame);
         this.RV = false;
     }
 
@@ -72,7 +72,7 @@ extends PanelComponent {
     }
 
     private void lambda$null$9(PopupFrame popupFrame) {
-        ClientSettings.K(popupFrame);
+        ClientSettings.removePopup(popupFrame);
         ZeusConnectionManager.T().u().i(this.R7.S(), this::lambda$null$7, this::lambda$null$8);
     }
 
@@ -100,41 +100,41 @@ extends PanelComponent {
             boolean bl3 = Vape.INSTANCE.getOnlineManager().y().j().c().contains(onlineFriend);
             boolean bl4 = Vape.INSTANCE.getOnlineManager().y().j().S().contains(onlineFriend);
             this.RP = onlineFriend.F().equals((Object)OnlineStatus.OFFLINE) || bl3 || bl4;
-            this.RM.e(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.P$src$Ljava_awt_Color_$va33hp()));
-            this.RM.w(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
-            this.RY.o(onlineFriend.y());
-            this.d(false);
-            this.Rw.P(true);
+            this.RM.setBackgroundAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.getBackgroundColor()));
+            this.RM.setIconColorAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
+            this.RY.setValue(onlineFriend.y());
+            this.setShowDisabledOverlay(false);
+            this.Rw.setUseExplicitWidth(true);
             this.Rw.o(90.0);
-            this.Rw.q(90.0);
-            this.Rw.d(false);
+            this.Rw.setExplicitWidth(90.0);
+            this.Rw.setShowDisabledOverlay(false);
             this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap, widthwrap");
             this.RT.w("Remove friend");
             this.RM.w("Invite to party");
             this.Rw.w("Automatically add friend to Minecraft Friends list");
             this.b$src$V$1c62ivh();
-            this.RM.r(() -> this.lambda$new$6(onlineFriend));
-            this.H(new SpacerComponent(99.0, 1.0), new SpacerComponent(6.0, 1.0), this.RT, new SpacerComponent(2.0, 1.0), this.RM, new SpacerComponent(2.0, 1.0), this.RI, new SpacerComponent(99.0, 2.0), new SpacerComponent(2.0, 1.0), this.Rw);
+            this.RM.addClickListener(() -> this.lambda$new$6(onlineFriend));
+            this.addChildren(new SpacerComponent(99.0, 1.0), new SpacerComponent(6.0, 1.0), this.RT, new SpacerComponent(2.0, 1.0), this.RM, new SpacerComponent(2.0, 1.0), this.RI, new SpacerComponent(99.0, 2.0), new SpacerComponent(2.0, 1.0), this.Rw);
             return;
         }
         boolean bl5 = false;
         boolean bl6 = false;
         this.RP = onlineFriend.F().equals((Object)OnlineStatus.OFFLINE);
-        this.RM.e(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.P$src$Ljava_awt_Color_$va33hp()));
-        this.RM.w(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
-        this.RY.o(onlineFriend.y());
-        this.d(false);
-        this.Rw.P(true);
+        this.RM.setBackgroundAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.getBackgroundColor()));
+        this.RM.setIconColorAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
+        this.RY.setValue(onlineFriend.y());
+        this.setShowDisabledOverlay(false);
+        this.Rw.setUseExplicitWidth(true);
         this.Rw.o(90.0);
-        this.Rw.q(90.0);
-        this.Rw.d(false);
+        this.Rw.setExplicitWidth(90.0);
+        this.Rw.setShowDisabledOverlay(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap, widthwrap");
         this.RT.w("Remove friend");
         this.RM.w("Invite to party");
         this.Rw.w("Automatically add friend to Minecraft Friends list");
         this.b$src$V$1c62ivh();
-        this.RM.r(() -> this.lambda$new$6(onlineFriend));
-        this.H(new SpacerComponent(99.0, 1.0), new SpacerComponent(6.0, 1.0), this.RT, new SpacerComponent(2.0, 1.0), this.RM, new SpacerComponent(2.0, 1.0), this.RI, new SpacerComponent(99.0, 2.0), new SpacerComponent(2.0, 1.0), this.Rw);
+        this.RM.addClickListener(() -> this.lambda$new$6(onlineFriend));
+        this.addChildren(new SpacerComponent(99.0, 1.0), new SpacerComponent(6.0, 1.0), this.RT, new SpacerComponent(2.0, 1.0), this.RM, new SpacerComponent(2.0, 1.0), this.RI, new SpacerComponent(99.0, 2.0), new SpacerComponent(2.0, 1.0), this.Rw);
     }
 
     static OnlineFriend O(OnlineFriendActionPanel onlineFriendActionPanel) {
@@ -158,8 +158,8 @@ extends PanelComponent {
             boolean bl7 = bl4 = this.R7.F().equals((Object)OnlineStatus.OFFLINE) || bl5 || bl6;
             if (this.RP != bl4) {
                 this.RP = bl4;
-                this.RM.e(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.P$src$Ljava_awt_Color_$va33hp()));
-                this.RM.w(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
+                this.RM.setBackgroundAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.getBackgroundColor()));
+                this.RM.setIconColorAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
             }
             return;
         }
@@ -168,8 +168,8 @@ extends PanelComponent {
         boolean bl10 = bl = this.R7.F().equals((Object)OnlineStatus.OFFLINE);
         if (this.RP != bl) {
             this.RP = bl;
-            this.RM.e(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.P$src$Ljava_awt_Color_$va33hp()));
-            this.RM.w(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
+            this.RM.setBackgroundAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.m : new Color(45, 45, 45), this.RP ? OnlineFriendActionPanel.J.m : this.RM.getBackgroundColor()));
+            this.RM.setIconColorAnimation(new ColorAnimation(0.15, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.W, this.RP ? OnlineFriendActionPanel.J.K : OnlineFriendActionPanel.J.f));
         }
     }
 
@@ -225,7 +225,7 @@ extends PanelComponent {
     }
 
     private void b$src$V$1c62ivh() {
-        this.RT.r(this::lambda$addDeleteListener$11);
+        this.RT.addClickListener(this::lambda$addDeleteListener$11);
     }
 
     @Override
@@ -253,9 +253,9 @@ extends PanelComponent {
         }
         this.RV = true;
         ConfirmationDialogComponent confirmationDialogComponent = new ConfirmationDialogComponent("Are you sure you want to remove this friend?", "REMOVE", "newtrash");
-        DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.g(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialogComponent, DimmedCenteredPopupFrame.class);
-        confirmationDialogComponent.T$src$Lgg_vape_ui_click_component_gui_TextButton_$17m2d4e().r(() -> this.lambda$null$9(dimmedCenteredPopupFrame));
-        confirmationDialogComponent.E().r(() -> this.lambda$null$10(dimmedCenteredPopupFrame));
-        dimmedCenteredPopupFrame.j(new OnlineFriendActionPanelPopupOutsideClickFilter(this, dimmedCenteredPopupFrame));
+        DimmedCenteredPopupFrame dimmedCenteredPopupFrame = ClientSettings.createPopup(this.L$src$Lgg_vape_ui_click_frame_Frame_$1djx6sa(), confirmationDialogComponent, DimmedCenteredPopupFrame.class);
+        confirmationDialogComponent.getConfirmButton().addClickListener(() -> this.lambda$null$9(dimmedCenteredPopupFrame));
+        confirmationDialogComponent.getCloseButton().addClickListener(() -> this.lambda$null$10(dimmedCenteredPopupFrame));
+        dimmedCenteredPopupFrame.addMouseListener(new OnlineFriendActionPanelPopupOutsideClickFilter(this, dimmedCenteredPopupFrame));
     }
 }

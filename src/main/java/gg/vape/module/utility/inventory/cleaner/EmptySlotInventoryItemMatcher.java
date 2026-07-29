@@ -14,11 +14,11 @@ extends AbstractInventoryItemMatcher {
 
 
     EmptySlotInventoryItemMatcher() {
-        super((InventoryItemMatcherBuilderBase<?>)((InventoryItemMatcherBuilder)((InventoryItemMatcherBuilder)InventoryItemMatcher.c().m("Hand")).M("No item")).A(InventoryItemMatcherGroup.HIDDEN));
+        super((InventoryItemMatcherBuilderBase<?>)((InventoryItemMatcherBuilder)((InventoryItemMatcherBuilder)InventoryItemMatcher.builder().withName("Hand")).withDescription("No item")).withGroup(InventoryItemMatcherGroup.HIDDEN));
     }
 
     @Override
-    public boolean g(ItemStack itemStack, Item item) {
+    public boolean matches(ItemStack itemStack, Item item) {
         return itemStack == null || itemStack.isNull() || item == null || item.isNull();
     }
 }

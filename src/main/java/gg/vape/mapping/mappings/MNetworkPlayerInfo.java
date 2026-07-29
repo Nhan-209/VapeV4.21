@@ -29,7 +29,7 @@ extends Mapping {
         MNetworkPlayerInfo mNetworkPlayerInfo2 = this;
         this.j = this.J(string2, bl2, clazz2);
         String[] stringArray = MS08PacketPlayerPosLook.c();
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MS08PacketPlayerPosLook.G(new String[5]);
         }
     }

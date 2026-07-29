@@ -5,13 +5,12 @@ import gg.vape.runtime.model.DetachedStringTreeEntry;
 import java.util.List;
 
 class DetachedStringTreeNode {
-    List<DetachedStringTreeEntry> d;
-    final DetachedStringTree B;
-    String b;
-    String j;
+    List<DetachedStringTreeEntry> entries;
+    final DetachedStringTree ownerTree;
+    String primaryValue;
+    String secondaryValue;
 
-    DetachedStringTreeNode(DetachedStringTree by_02) {
-        this.B = by_02;
+    DetachedStringTreeNode(DetachedStringTree ownerTree) {
+        this.ownerTree = ownerTree;
     }
 }
-

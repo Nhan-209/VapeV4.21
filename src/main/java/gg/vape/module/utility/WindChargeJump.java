@@ -27,10 +27,10 @@ extends UtilityMod {
     private final BooleanValue silentAim = new BooleanValue((Object)this, "Silent aim", true);
 
     private int findWindChargeSlot() {
-        InventoryPlayer inventoryPlayer = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
+        InventoryPlayer inventory = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6();
         Item item = Item.L("minecraft:wind_charge");
         for (int i = 0; i < 9; ++i) {
-            ItemStack itemStack = inventoryPlayer.c(i);
+            ItemStack itemStack = inventory.c(i);
             if (itemStack.isNull() || itemStack.getItem().isNull()) continue;
             Item slotItem = itemStack.getItem();
             if (item == null || !item.isNotNull() || !slotItem.equals(item)) continue;
@@ -40,7 +40,7 @@ extends UtilityMod {
     }
 
     private boolean canClaimRotation() {
-        return this.rotationClaim.U(this) || this.rotationClaim.h(this, this.silentAim.L());
+        return this.rotationClaim.isOwnedBy(this) || this.rotationClaim.acquire(this, this.silentAim.getEffectiveValue());
     }
 
     @Override
@@ -56,16 +56,16 @@ extends UtilityMod {
 
     private void releaseRotation() {
         if (this.rotationController != null) {
-            RotationManager.b.v(this.rotationController);
-            this.rotationClaim.X(this);
+            RotationManager.INSTANCE.releaseController(this.rotationController);
+            this.rotationClaim.release(this);
         }
     }
 
     public WindChargeJump() {
         super("WindCharge", "Automatically uses a wind charge");
-        this.rotationClaim = SharedModuleControlClaims.I;
+        this.rotationClaim = SharedModuleControlClaims.rotation;
         this.addValue(this.aimSpeed, this.silentAim);
-        this.rotationClaim.l(this, 6);
+        this.rotationClaim.setPriority(this, 6);
     }
 
 
@@ -78,18 +78,18 @@ extends UtilityMod {
                 if (!this.canClaimRotation()) {
                     return;
                 }
-                this.rotationController = this.silentAim.L() != false ? new AdaptiveRotationController(-999.0f, 90.0f) : new FixedRotationController(-999.0f, 90.0f);
-                this.rotationController.g(-999.0f, 90.0f);
-                this.rotationController.Y(((Double)this.aimSpeed.K()).intValue());
-                this.rotationController.U(false);
-                this.rotationController.s(true);
-                this.rotationController.t(5.0f);
-                RotationManager.b.S(this.rotationController);
+                this.rotationController = this.silentAim.getEffectiveValue() != false ? new AdaptiveRotationController(-999.0f, 90.0f) : new FixedRotationController(-999.0f, 90.0f);
+                this.rotationController.setTargetRotation(-999.0f, 90.0f);
+                this.rotationController.setSpeed(((Double)this.aimSpeed.getValue()).intValue());
+                this.rotationController.setScaleAxesProportionally(false);
+                this.rotationController.setLinearAcceleration(true);
+                this.rotationController.setTolerance(5.0f);
+                RotationManager.INSTANCE.setController(this.rotationController);
                 this.state = 1;
             }
         } else if (this.state == 1) {
             if (this.rotationController != null) {
-                if (this.rotationController.V$src$Z$lb4tvc() || RotationManager.b.x() > 80.0f) {
+                if (this.rotationController.isComplete() || RotationManager.INSTANCE.getManagedPitch() > 80.0f) {
                     KeyBinding keyBinding = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
                     KeyBinding.setKeyBindState(keyBinding, true);
                     KeyBinding.onTick(keyBinding);
@@ -108,7 +108,7 @@ extends UtilityMod {
                 Minecraft.gameSettings().O().e();
                 Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.savedSlot);
             }
-            this.s(false, true);
+            this.setEnabled(false, true);
         }
     }
 
@@ -119,8 +119,7 @@ extends UtilityMod {
             this.savedSlot = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
             this.state = 0;
         } else {
-            this.s(false, true);
+            this.setEnabled(false, true);
         }
     }
 }
-

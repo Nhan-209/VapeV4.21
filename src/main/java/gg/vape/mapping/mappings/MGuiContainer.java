@@ -153,7 +153,7 @@ extends Mapping {
             String string = "inventoryBackground";
             MGuiContainer mGuiContainer = this;
             mGuiContainer.u(string, bl, clazz);
-            GuiComponent.D(new GuiComponent[3]);
+            GuiComponent.setLegacyComponentState(new GuiComponent[3]);
         }
         Class clazz = MappedClasses.zC;
         boolean bl = Wrapper.G;

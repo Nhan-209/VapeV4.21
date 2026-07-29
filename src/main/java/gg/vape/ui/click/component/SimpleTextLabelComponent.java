@@ -9,27 +9,27 @@ import org.jetbrains.annotations.Nullable;
 
 public class SimpleTextLabelComponent
 extends GuiComponent {
-    private float I;
+    private float offsetX;
     @Nullable
-    private Supplier<String> a;
-    private float i;
-    private Color Q;
-    private boolean v;
-    protected String O;
-    private static String[] K;
-    protected double G;
-    private int R;
+    private Supplier<String> textSupplier;
+    private float offsetY;
+    private Color textColor;
+    private boolean bold;
+    protected String text;
+    private static String[] legacyState;
+    protected double fontScale;
+    private int extraHeight;
 
     @Override
     public void F() {
     }
 
-    public String c$src$Ljava_lang_String_$1q00otb() {
-        return this.O;
+    public String getText() {
+        return this.text;
     }
 
-    public SimpleTextLabelComponent(String string) {
-        this(string, 0.75);
+    public SimpleTextLabelComponent(String text) {
+        this(text, 0.75);
     }
 
     @Override
@@ -38,123 +38,123 @@ extends GuiComponent {
 
 
     @Nullable
-    public Supplier<String> A$src$Ljava_util_function_Supplier_$ylcwqv() {
-        return this.a;
+    public Supplier<String> getTextSupplier() {
+        return this.textSupplier;
     }
 
-    public double y$src$D$idacv3() {
-        return this.O(this.G).d(this.O);
+    public double getTextHeight() {
+        return this.getFontRenderer(this.fontScale).d(this.text);
     }
 
-    public void c(int n) {
-        this.R = n;
+    public void setExtraHeight(int extraHeight) {
+        this.extraHeight = extraHeight;
     }
 
-    public void z(float f) {
-        this.i = f;
+    public void setOffsetY(float offsetY) {
+        this.offsetY = offsetY;
     }
 
-    public void g(float f) {
-        this.I = f;
+    public void setOffsetX(float offsetX) {
+        this.offsetX = offsetX;
     }
 
-    public void l(boolean bl) {
-        this.v = bl;
+    public void setBold(boolean bold) {
+        this.bold = bold;
     }
 
-    public double h() {
-        return this.O(this.G).N(this.O);
+    public double getTextWidth() {
+        return this.getFontRenderer(this.fontScale).N(this.text);
     }
 
     @Override
     public double C() {
-        return this.O(this.G).d("A") + (double)this.R;
+        return this.getFontRenderer(this.fontScale).d("A") + (double)this.extraHeight;
     }
 
     @Override
     public void u() {
     }
 
-    public void G(String string) {
-        this.O = string;
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override
     public double x() {
-        return this.O(this.G).N(this.O);
+        return this.getFontRenderer(this.fontScale).N(this.text);
     }
 
-    public void f(@Nullable Supplier<String> supplier) {
-        this.a = supplier;
-        if (supplier != null) {
-            this.G(supplier.get());
+    public void setTextSupplier(@Nullable Supplier<String> textSupplier) {
+        this.textSupplier = textSupplier;
+        if (textSupplier != null) {
+            this.setText(textSupplier.get());
         }
     }
 
-    public void T$src$V$1orl066(Color color) {
-        this.Q = color;
+    public void setTextColor(Color textColor) {
+        this.textColor = textColor;
     }
 
-    public double g$src$D$i3e26l() {
-        return this.G;
+    public double getFontScale() {
+        return this.fontScale;
     }
 
     @Override
     public void I() {
     }
 
-    public static String[] S$src$ALjava_lang_String_$1c8hx4() {
-        return K;
+    public static String[] getLegacyState() {
+        return legacyState;
     }
 
     static {
-        SimpleTextLabelComponent.G((String[])null);
+        SimpleTextLabelComponent.setLegacyState((String[])null);
     }
 
-    public SimpleTextLabelComponent(String string, double d) {
-        this.Q = SimpleTextLabelComponent.J.h;
-        this.I = 5.0f;
-        this.i = 0.0f;
-        this.R = 0;
-        this.O = string;
-        this.G = d;
+    public SimpleTextLabelComponent(String text, double fontScale) {
+        this.textColor = SimpleTextLabelComponent.J.h;
+        this.offsetX = 5.0f;
+        this.offsetY = 0.0f;
+        this.extraHeight = 0;
+        this.text = text;
+        this.fontScale = fontScale;
     }
 
-    public static void G(String[] stringArray) {
-        K = stringArray;
+    public static void setLegacyState(String[] state) {
+        legacyState = state;
     }
 
-    public boolean e() {
-        return this.v;
+    public boolean isBold() {
+        return this.bold;
     }
 
-    public SimpleTextLabelComponent(String string, double d, Color color, boolean bl) {
-        this(string, d, color);
-        this.v = bl;
+    public SimpleTextLabelComponent(String text, double fontScale, Color textColor, boolean bold) {
+        this(text, fontScale, textColor);
+        this.bold = bold;
     }
 
     @Override
     public void H() {
-        Supplier<String> supplier = this.a;
-        if (supplier != null) {
-            this.G(supplier.get());
+        Supplier<String> currentTextSupplier = this.textSupplier;
+        if (currentTextSupplier != null) {
+            this.setText(currentTextSupplier.get());
         }
-        SmoothFontRenderer smoothFontRenderer = this.v ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.G) : this.O(this.G);
-        double d = smoothFontRenderer.d("A");
-        double d2 = this.n() + this.L() / 2.0 - d / 2.0;
-        smoothFontRenderer.d(this.O, this.G$src$D$1b2f02a() + (double)this.I, d2 + (double)this.i, this.Q);
+        SmoothFontRenderer fontRenderer = this.bold ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer(this.fontScale);
+        double textHeight = fontRenderer.d("A");
+        double textY = this.n() + this.L() / 2.0 - textHeight / 2.0;
+        fontRenderer.d(this.text, this.G$src$D$1b2f02a() + (double)this.offsetX, textY + (double)this.offsetY, this.textColor);
     }
 
-    public Color G$src$Ljava_awt_Color_$11jgid7() {
-        return this.Q;
+    public Color getTextColor() {
+        return this.textColor;
     }
 
-    public void i(double d) {
-        this.G = d;
+    public void setFontScale(double fontScale) {
+        this.fontScale = fontScale;
     }
 
-    public SimpleTextLabelComponent(String string, double d, Color color) {
-        this(string, d);
-        this.T$src$V$1orl066(color);
+    public SimpleTextLabelComponent(String text, double fontScale, Color textColor) {
+        this(text, fontScale);
+        this.setTextColor(textColor);
     }
 }

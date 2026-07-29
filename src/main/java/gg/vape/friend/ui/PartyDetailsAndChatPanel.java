@@ -41,14 +41,14 @@ extends PanelComponent {
     public PartyDetailsAndChatPanel(PartyState partyState) {
         super(99.0, 24.0);
         this.Vu = partyState;
-        this.VH.d(false);
+        this.VH.setShowDisabledOverlay(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(db);
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         GuiComponent[] guiComponentArray = new GuiComponent[2];
         this.V1 = new PartyDetailsPanel(this.Vu);
         guiComponentArray[0] = new PaddedComponent(4.0, this.V1);
         guiComponentArray[1] = this.VK;
-        this.H(guiComponentArray);
+        this.addChildren(guiComponentArray);
         for (PartyMemberRow partyMemberRow : partyState.d()) {
             this.VK.z().b(partyMemberRow);
         }

@@ -21,11 +21,7 @@ import gg.vape.value.LimitValue;
 import gg.vape.value.ModeValue;
 import gg.vape.value.NumberValue;
 import gg.vape.value.RandomValue;
-import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.CPacketHeldItemChange;
-import gg.vape.wrapper.impl.Entity;
-import gg.vape.wrapper.impl.EntityLivingBase;
-import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Item;
@@ -41,160 +37,171 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AutoSoup
 extends Mod {
-    private final ModeOption a;
-    private final BooleanValue O;
-    private final NumberValue p;
-    private boolean F;
-    private final ModeOption L;
-    private final ModeOption Ac;
-    private int s;
-    private int V;
-    private final LimitValue K;
-    private final BooleanValue Y;
-    private int o = -1;
-    private final NumberValue J;
-    private final ModeOption AS;
-    private int A;
-    private final BooleanValue Aj;
-    private final TimerUtil b;
-    private final ModeValue U;
-    private final BooleanValue c;
-    private final ModeOption r;
-    private final NumberValue Ah;
-    private boolean S;
-    private int j;
-    private final ModeValue D;
-    private int Z;
-    private final BooleanValue Aa = BooleanValue.create(this, "Soup", false, "Uses soups to heal.");
-    private final RandomValue I;
-    private final BooleanValue v;
-    private final Queue<InventoryClick> A0;
-    private boolean C;
-    private boolean k;
-    private final BooleanValue P;
-    private int A9;
-    private final BooleanValue H;
-    private int t;
+    private final ModeOption legitMode;
+    private final BooleanValue replaceItems;
+    private final NumberValue healthThreshold;
+    private boolean potionUsePending;
+    private final ModeOption discardBowlsMode;
+    private final ModeOption stackBowlsMode;
+    private final LimitValue customHealingItems;
+    private final BooleanValue useCustomItems;
+    private int pendingPotionSlot = -1;
+    private final NumberValue useDelay;
+    private final ModeOption throwBowlsMode;
+    private final BooleanValue useResistancePotions;
+    private final TimerUtil useTimer;
+    private final ModeValue useMode;
+    private final BooleanValue inventoryOnly;
+    private final ModeOption silentMode;
+    private final NumberValue refillHotbarSlot;
+    private boolean closeInventoryPending;
+    private int previousHotbarSlot;
+    private final ModeValue bowlMode;
+    private int soupItemId;
+    private final BooleanValue useSoup = BooleanValue.create(this, "Soup", false, "Uses soups to heal.");
+    private final RandomValue swapBackDelay;
+    private final BooleanValue useRegenerationPotions;
+    private final Queue<InventoryClick> pendingInventoryClicks;
+    private boolean inventoryOpenedForRefill;
+    private boolean legitUseInProgress;
+    private final BooleanValue useSpeedPotions;
+    private int bowlItemId;
+    private final BooleanValue usePotions;
+    private int pendingHealSlot;
 
-    private int I$src$I$1qpanj0() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        int n = -1;
-        for (int i = 0; i < 45; ++i) {
-            ItemStack itemStack;
-            if (!entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).v() || !this.L(itemStack = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).I())) continue;
-            if (i < 8) {
-                n = i;
+    private int findHealingPotionSlot() {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        int potionSlot = -1;
+        for (int slot = 0; slot < 45; ++slot) {
+            ItemStack stack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).I();
+            if (!player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).v()
+                    || !this.isHealingPotion(stack)) {
+                continue;
+            }
+            if (slot < 8) {
+                potionSlot = slot;
                 break;
             }
-            if (!this.O.L().booleanValue()) break;
-            this.u(i, 36 + ((Double)this.Ah.K()).intValue() - 1);
-            n = ((Double)this.Ah.K()).intValue() - 1;
+            if (!this.replaceItems.getEffectiveValue()) {
+                break;
+            }
+            int hotbarSlot = ((Double)this.refillHotbarSlot.getValue()).intValue() - 1;
+            this.moveInventoryItem(slot, 36 + hotbarSlot);
+            potionSlot = hotbarSlot;
             break;
         }
-        return n;
-    }
-
-    private static Exception a(Exception exception) {
-        return exception;
+        return potionSlot;
     }
 
     @EventHandler
-    public void onTick(EventPrePlayerTick eventPrePlayerTick) {
-        boolean bl;
-        Object object;
-        if (!eventPrePlayerTick.getPlayer().isInstance(MappedClasses.z5) || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l() || Minecraft.currentScreen().isNotNull()) {
+    public void onTick(EventPrePlayerTick event) {
+        if (!event.getPlayer().isInstance(MappedClasses.z5)
+                || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()
+                || Minecraft.currentScreen().isNotNull()) {
             return;
         }
-        boolean bl2 = false;
-        if (this.U.K() == this.a) {
-            if (this.S) {
+        boolean executedQueuedClick = false;
+        if (this.useMode.getValue() == this.legitMode) {
+            if (this.closeInventoryPending) {
                 if (!Minecraft.currentScreen().isNull()) {
                     Minecraft.thePlayer().Z$src$V$1ie832h();
                 }
-                this.S = false;
+                this.closeInventoryPending = false;
             } else {
-                while (!this.A0.isEmpty()) {
-                    object = this.A0.poll();
-                    ((InventoryClick)object).k();
-                    bl2 = true;
+                while (!this.pendingInventoryClicks.isEmpty()) {
+                    this.pendingInventoryClicks.poll().execute();
+                    executedQueuedClick = true;
                 }
             }
         }
-        if (this.k || this.C) {
+        if (this.legitUseInProgress || this.inventoryOpenedForRefill) {
             return;
         }
-        object = Minecraft.thePlayer();
-        int n = ((Double)this.p.K()).intValue();
-        boolean bl3 = bl = ((EntityLivingBase)object).w$src$F$15l9epb() / Math.max(((EntityLivingBase)object).I$src$F$14vyvep(), 1.0f) <= (float)n / 20.0f && this.b.hasTimeElapsed(((Double)this.J.K()).intValue());
-        if (bl) {
-            for (int i = 36; i < 45; ++i) {
-                ItemStack itemStack;
-                if (!((EntityPlayer)object).F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).v() || !this.u(itemStack = ((EntityPlayer)object).F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).I())) continue;
-                if (this.U.K() == this.a) {
-                    this.k = true;
-                    this.t = i - 36;
-                    this.j = ((EntityPlayer)object).V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
-                    this.v(bl2 ? 51L : 0L, false);
-                } else {
-                    this.t = -1;
-                    this.j = -1;
-                    ((EntityPlayerSP)object).sendQueue().addToSendQueue(CPacketHeldItemChange.create(i - 36));
-                    Minecraft.playerController().sendUseItem((EntityPlayer)object, ((Entity)object).getWorld(), ((EntityPlayer)object).F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).I());
-                    ((EntityPlayerSP)object).sendQueue().addToSendQueue(CPacketHeldItemChange.create(((EntityPlayer)object).V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v()));
+        EntityPlayerSP player = Minecraft.thePlayer();
+        int threshold = ((Double)this.healthThreshold.getValue()).intValue();
+        boolean shouldHeal = player.w$src$F$15l9epb()
+                / Math.max(player.I$src$F$14vyvep(), 1.0f) <= (float)threshold / 20.0f
+                && this.useTimer.hasTimeElapsed(((Double)this.useDelay.getValue()).intValue());
+        if (shouldHeal) {
+            for (int containerSlot = 36; containerSlot < 45; ++containerSlot) {
+                ItemStack stack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
+                        .getSlot(containerSlot).I();
+                if (!player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(containerSlot).v()
+                        || !this.isHealingItem(stack)) {
+                    continue;
                 }
-                this.b.reset();
+                if (this.useMode.getValue() == this.legitMode) {
+                    this.legitUseInProgress = true;
+                    this.pendingHealSlot = containerSlot - 36;
+                    this.previousHotbarSlot = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+                    this.v(executedQueuedClick ? 51L : 0L, false);
+                } else {
+                    this.pendingHealSlot = -1;
+                    this.previousHotbarSlot = -1;
+                    player.sendQueue().addToSendQueue(CPacketHeldItemChange.create(containerSlot - 36));
+                    Minecraft.playerController().sendUseItem(player, player.getWorld(), stack);
+                    player.sendQueue().addToSendQueue(CPacketHeldItemChange.create(
+                            player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v()));
+                }
+                this.useTimer.reset();
                 return;
             }
         }
-        this.t = -1;
+        this.pendingHealSlot = -1;
     }
 
     @EventHandler
-    public void onMotionUpdate(EventPostMotion eventPostMotion) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (!this.H.L().booleanValue()) {
+    public void onMotionUpdate(EventPostMotion event) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (!this.usePotions.getEffectiveValue()) {
             return;
         }
-        if (this.F && this.o != -1 && this.b.hasTimeElapsed(((Double)this.J.K()).intValue())) {
-            ItemStack itemStack = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(36 + this.o).I();
-            if (itemStack.isNotNull()) {
-                int n = entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
-                entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.o);
-                entityPlayerSP.sendQueue().addToSendQueue(CPacketHeldItemChange.create(this.o));
-                Minecraft.playerController().sendUseItem(entityPlayerSP, entityPlayerSP.getWorld(), itemStack);
-                entityPlayerSP.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(n);
-                entityPlayerSP.sendQueue().addToSendQueue(CPacketHeldItemChange.create(n));
+        if (this.potionUsePending && this.pendingPotionSlot != -1
+                && this.useTimer.hasTimeElapsed(((Double)this.useDelay.getValue()).intValue())) {
+            ItemStack potionStack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
+                    .getSlot(36 + this.pendingPotionSlot).I();
+            if (potionStack.isNotNull()) {
+                int selectedSlot = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
+                player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.pendingPotionSlot);
+                player.sendQueue().addToSendQueue(CPacketHeldItemChange.create(this.pendingPotionSlot));
+                Minecraft.playerController().sendUseItem(player, player.getWorld(), potionStack);
+                player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(selectedSlot);
+                player.sendQueue().addToSendQueue(CPacketHeldItemChange.create(selectedSlot));
             }
-            this.b.reset();
-            this.F = false;
-            this.o = -1;
+            this.useTimer.reset();
+            this.potionUsePending = false;
+            this.pendingPotionSlot = -1;
         }
     }
 
-    private void z(int n, int n2, int n3, int n4) {
-        this.A0.add(new InventoryClick(n, n2, n3, n4));
+    private void queueInventoryClick(int windowId, int slot, int button, int mode) {
+        this.pendingInventoryClicks.add(new InventoryClick(windowId, slot, button, mode));
     }
 
-    private boolean L(ItemStack itemStack) {
-        if (itemStack.isNull()) {
+    private boolean isHealingPotion(ItemStack stack) {
+        if (stack.isNull()) {
             return false;
         }
-        if (itemStack.getItem().isInstance(MappedClasses.Di) && ItemSplashPotion.isSplashPotion(itemStack)) {
-            EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            ItemSplashPotion itemSplashPotion = new ItemSplashPotion(itemStack.getItem().getObject());
-            if (itemSplashPotion.getRawPotionEffects(itemStack) != null) {
-                for (Object e : itemSplashPotion.getRawPotionEffects(itemStack)) {
-                    boolean bl;
-                    PotionEffect potionEffect = new PotionEffect(e);
-                    boolean bl2 = bl = (double)entityPlayerSP.w$src$F$15l9epb() <= (Double)this.p.K();
-                    if (potionEffect.C() == PotionRegistry.z.D() && bl) {
+        if (stack.getItem().isInstance(MappedClasses.Di) && ItemSplashPotion.isSplashPotion(stack)) {
+            EntityPlayerSP player = Minecraft.thePlayer();
+            ItemSplashPotion splashPotion = new ItemSplashPotion(stack.getItem().getObject());
+            if (splashPotion.getRawPotionEffects(stack) != null) {
+                for (Object effectHandle : splashPotion.getRawPotionEffects(stack)) {
+                    PotionEffect potionEffect = new PotionEffect(effectHandle);
+                    boolean belowHealthThreshold = player.w$src$F$15l9epb()
+                            <= (Double)this.healthThreshold.getValue();
+                    if (potionEffect.C() == PotionRegistry.z.D() && belowHealthThreshold) {
                         return true;
                     }
-                    if (potionEffect.C() == PotionRegistry.U.D() && this.P.L().booleanValue() && !entityPlayerSP.i(PotionRegistry.U)) {
+                    if (potionEffect.C() == PotionRegistry.U.D() && this.useSpeedPotions.getEffectiveValue()
+                            && !player.i(PotionRegistry.U)) {
                         return true;
                     }
-                    if (potionEffect.C() != PotionRegistry.i.D() || !this.v.L().booleanValue() || !bl || entityPlayerSP.i(PotionRegistry.i)) continue;
-                    return true;
+                    if (potionEffect.C() == PotionRegistry.i.D()
+                            && this.useRegenerationPotions.getEffectiveValue() && belowHealthThreshold
+                            && !player.i(PotionRegistry.i)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -202,208 +209,229 @@ extends Mod {
     }
 
     @Override
-    public void q() {
-        if (!this.k) {
+    public void onScheduledAction() {
+        if (!this.legitUseInProgress) {
             return;
         }
         try {
-            boolean bl;
-            KeyBinding keyBinding = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
-            int n = keyBinding.getKeyCode();
-            Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.t);
-            boolean bl2 = bl = Minecraft.thePlayer().l$src$Z$1io4duf() && ClientSettings.l(n);
-            if (bl) {
-                KeyBindingHelper.d(keyBinding, false);
+            KeyBinding useItemKey = Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362();
+            int keyCode = useItemKey.getKeyCode();
+            Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6()
+                    .g(this.pendingHealSlot);
+            boolean releasePhysicalUseKey = Minecraft.thePlayer().l$src$Z$1io4duf()
+                    && ClientSettings.l(keyCode);
+            if (releasePhysicalUseKey) {
+                KeyBindingHelper.setPressedAndTick(useItemKey, false);
                 Thread.sleep(51L);
             }
-            KeyBindingHelper.d(keyBinding, true);
+            KeyBindingHelper.setPressedAndTick(useItemKey, true);
             Thread.sleep(51L);
-            KeyBindingHelper.v(keyBinding, false, false);
-            long l = Math.max((long)this.I.B() + (long)(bl ? -35 : 0), 0L);
-            Thread.sleep(l);
-            Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().g(this.j);
-            if (ClientSettings.l(n)) {
-                KeyBindingHelper.d(keyBinding, true);
+            KeyBindingHelper.updateKeyBinding(useItemKey, false, false);
+            long swapDelay = Math.max((long)this.swapBackDelay.getRandomValue()
+                    + (releasePhysicalUseKey ? -35L : 0L), 0L);
+            Thread.sleep(swapDelay);
+            Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6()
+                    .g(this.previousHotbarSlot);
+            if (ClientSettings.l(keyCode)) {
+                KeyBindingHelper.setPressedAndTick(useItemKey, true);
             }
         }
         catch (Exception exception) {
-            this.k = false;
-            this.t = -1;
-            this.j = -1;
+            this.legitUseInProgress = false;
+            this.pendingHealSlot = -1;
+            this.previousHotbarSlot = -1;
         }
-        this.t = -1;
-        this.j = -1;
-        this.k = false;
+        this.pendingHealSlot = -1;
+        this.previousHotbarSlot = -1;
+        this.legitUseInProgress = false;
     }
 
-    private void u(int n, int n2) {
-        n2 -= 36;
-        if (this.U.K() == this.a) {
-            this.z(Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), n, n2, 2);
+    private void moveInventoryItem(int sourceSlot, int targetContainerSlot) {
+        int hotbarSlot = targetContainerSlot - 36;
+        if (this.useMode.getValue() == this.legitMode) {
+            this.queueInventoryClick(
+                    Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(),
+                    sourceSlot, hotbarSlot, 2);
         } else {
-            Minecraft.playerController().O(Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(), n, n2, 2, Minecraft.thePlayer());
+            Minecraft.playerController().O(
+                    Minecraft.thePlayer().F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getWindowId(),
+                    sourceSlot, hotbarSlot, 2, Minecraft.thePlayer());
         }
     }
 
     @Override
-    public String E() {
-        return this.U.c();
+    public String getSimpleSuffix() {
+        return this.useMode.getDisplayValue();
     }
 
     public AutoSoup() {
         super("AutoHeal", 0, 16711819, Category.A, "Automatically heals for you when health is under threshold.");
-        this.O = BooleanValue.create(this, "Replace", false, "Refills empty slots with healing items.");
-        this.c = BooleanValue.create(this, "Inventory Only", false, "Only refills/crafts when your inventory is open.");
-        this.H = BooleanValue.create(this, "Potions", false, "Uses splash healing potions to heal.");
-        this.v = BooleanValue.create(this, "Regen", true, "Uses regeneration potions when available.");
-        this.P = BooleanValue.create(this, "Speed", false, "Uses speed potions when available.");
-        this.Aj = BooleanValue.create(this, "Resistance", false, "Uses resistance potions when available.");
-        this.Y = BooleanValue.create(this, "Use Custom Items", false, "Uses other custom healing items.\nUses the same delay as soup/potion.");
-        this.K = LimitValue.N(this, "autoheal-customitems", "Healing Items", LimitValue.r, new ItemLimitData("397:3"));
-        this.AS = new ModeOption("Throw");
-        this.Ac = new ModeOption("Stack");
-        this.L = new ModeOption("None");
-        this.D = ModeValue.create((Object)this, "Bowl Mode", this.Ac, this.Ac, this.AS, this.L);
-        this.r = new ModeOption("Silent");
-        this.a = new ModeOption("Legit");
-        this.U = ModeValue.create((Object)this, "Mode", this.a, this.r, this.a);
-        this.I = RandomValue.G(this, "Swap Delay", "#", "ms", 0.0, 75.0, 125.0, 200.0, 5.0, "The delay between using the item and swapping back.");
-        this.J = NumberValue.create(this, "Delay", "#", "ms", 50.0, 500.0, 1000.0, 50.0, "The delay to wait before healing again.");
-        this.p = NumberValue.create((Object)this, "Health", "#", "HP", 1.0, 17.0, 20.0, 1.0);
-        this.Ah = NumberValue.create(this, "Slot", "#", "", 1.0, 6.0, 9.0, 1.0, "The slot to fill a potion for autopot.");
-        this.b = new TimerUtil();
-        this.A0 = new ConcurrentLinkedQueue<InventoryClick>();
-        this.U.f(this.r, this.H, this.D);
-        this.U.f(this.a, this.I);
-        this.Y.K(this.K);
-        this.Aa.K(this.D);
-        this.H.K(this.v, this.P, this.Aj, this.Ah);
-        this.addValue(this.U, this.Aa, this.D, this.H, this.v, this.P, this.Aj, this.Ah, this.Y, this.K, this.O, this.p, this.J, this.I);
+        this.replaceItems = BooleanValue.create(this, "Replace", false, "Refills empty slots with healing items.");
+        this.inventoryOnly = BooleanValue.create(this, "Inventory Only", false, "Only refills/crafts when your inventory is open.");
+        this.usePotions = BooleanValue.create(this, "Potions", false, "Uses splash healing potions to heal.");
+        this.useRegenerationPotions = BooleanValue.create(this, "Regen", true, "Uses regeneration potions when available.");
+        this.useSpeedPotions = BooleanValue.create(this, "Speed", false, "Uses speed potions when available.");
+        this.useResistancePotions = BooleanValue.create(this, "Resistance", false, "Uses resistance potions when available.");
+        this.useCustomItems = BooleanValue.create(this, "Use Custom Items", false, "Uses other custom healing items.\nUses the same delay as soup/potion.");
+        this.customHealingItems = LimitValue.create(this, "autoheal-customitems", "Healing Items", LimitValue.ALLOW_LIST_COLOR, new ItemLimitData("397:3"));
+        this.throwBowlsMode = new ModeOption("Throw");
+        this.stackBowlsMode = new ModeOption("Stack");
+        this.discardBowlsMode = new ModeOption("None");
+        this.bowlMode = ModeValue.create((Object)this, "Bowl Mode", this.stackBowlsMode,
+                this.stackBowlsMode, this.throwBowlsMode, this.discardBowlsMode);
+        this.silentMode = new ModeOption("Silent");
+        this.legitMode = new ModeOption("Legit");
+        this.useMode = ModeValue.create((Object)this, "Mode", this.legitMode, this.silentMode, this.legitMode);
+        this.swapBackDelay = RandomValue.createWithDescription(this, "Swap Delay", "#", "ms", 0.0, 75.0, 125.0, 200.0, 5.0, "The delay between using the item and swapping back.");
+        this.useDelay = NumberValue.create(this, "Delay", "#", "ms", 50.0, 500.0, 1000.0, 50.0, "The delay to wait before healing again.");
+        this.healthThreshold = NumberValue.create((Object)this, "Health", "#", "HP", 1.0, 17.0, 20.0, 1.0);
+        this.refillHotbarSlot = NumberValue.create(this, "Slot", "#", "", 1.0, 6.0, 9.0, 1.0, "The slot to fill a potion for autopot.");
+        this.useTimer = new TimerUtil();
+        this.pendingInventoryClicks = new ConcurrentLinkedQueue<InventoryClick>();
+        this.useMode.addModeDependentValues(this.silentMode, this.usePotions, this.bowlMode);
+        this.useMode.addModeDependentValues(this.legitMode, this.swapBackDelay);
+        this.useCustomItems.addDependentValues(this.customHealingItems);
+        this.useSoup.addDependentValues(this.bowlMode);
+        this.usePotions.addDependentValues(this.useRegenerationPotions, this.useSpeedPotions,
+                this.useResistancePotions, this.refillHotbarSlot);
+        this.addValue(this.useMode, this.useSoup, this.bowlMode, this.usePotions,
+                this.useRegenerationPotions, this.useSpeedPotions, this.useResistancePotions,
+                this.refillHotbarSlot, this.useCustomItems, this.customHealingItems,
+                this.replaceItems, this.healthThreshold, this.useDelay, this.swapBackDelay);
         if (ForgeVersion.MC_1_17.d()) {
-            this.A9 = 730;
-            this.Z = 731;
-            this.V = 187;
-            this.A = 188;
-            this.s = 955;
+            this.bowlItemId = 730;
+            this.soupItemId = 731;
         } else {
-            this.A9 = 281;
-            this.Z = 282;
-            this.V = 39;
-            this.A = 40;
-            this.s = 397;
+            this.bowlItemId = 281;
+            this.soupItemId = 282;
         }
     }
 
     @EventHandler
-    public void onMotionUpdate(EventPreMotion eventPreMotion) {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (!this.H.L().booleanValue()) {
+    public void onMotionUpdate(EventPreMotion event) {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (!this.usePotions.getEffectiveValue()) {
             return;
         }
-        int n = ((Double)this.p.K()).intValue();
-        boolean bl = (entityPlayerSP.w$src$F$15l9epb() <= (float)n && (this.v.L() == false || !entityPlayerSP.i(PotionRegistry.i)) || this.P.L() != false && !entityPlayerSP.i(PotionRegistry.U) || this.Aj.L() != false && !entityPlayerSP.i(PotionRegistry.P)) && entityPlayerSP.b$src$Z$fqlxe4() && entityPlayerSP.u$src$Z$g120nz();
-        int n2 = this.I$src$I$1qpanj0();
-        if (n2 != -1 && bl && this.b.hasTimeElapsed(((Double)this.J.K()).intValue())) {
-            if (this.o == -1) {
-                this.F = true;
-                this.o = n2;
+        int threshold = ((Double)this.healthThreshold.getValue()).intValue();
+        boolean needsPotion = (player.w$src$F$15l9epb() <= threshold
+                && (!this.useRegenerationPotions.getEffectiveValue() || !player.i(PotionRegistry.i))
+                || this.useSpeedPotions.getEffectiveValue() && !player.i(PotionRegistry.U)
+                || this.useResistancePotions.getEffectiveValue() && !player.i(PotionRegistry.P))
+                && player.b$src$Z$fqlxe4() && player.u$src$Z$g120nz();
+        int potionSlot = this.findHealingPotionSlot();
+        if (potionSlot != -1 && needsPotion
+                && this.useTimer.hasTimeElapsed(((Double)this.useDelay.getValue()).intValue())) {
+            if (this.pendingPotionSlot == -1) {
+                this.potionUsePending = true;
+                this.pendingPotionSlot = potionSlot;
                 EventMotion.setRotationPitch(88.99f);
             }
         } else {
-            this.F = false;
+            this.potionUsePending = false;
         }
     }
 
-    private boolean u(ItemStack itemStack) {
-        if (itemStack.isNull() || itemStack.getItem().isNull()) {
+    private boolean isHealingItem(ItemStack stack) {
+        if (stack.isNull() || stack.getItem().isNull()) {
             return false;
         }
-        Item item = itemStack.getItem();
-        if (this.Aa.L().booleanValue() && item.P() == this.Z) {
+        Item item = stack.getItem();
+        if (this.useSoup.getEffectiveValue() && item.P() == this.soupItemId) {
             return true;
         }
-        return this.Y.L() != false && this.K.A(itemStack);
+        return this.useCustomItems.getEffectiveValue() && this.customHealingItems.matches(stack);
     }
 
-    private void T(EntityPlayerSP entityPlayerSP) {
-        Wrapper wrapper;
-        Wrapper wrapper2;
-        int n;
-        if (this.c.L().booleanValue() && !Minecraft.currentScreen().isInstance(MappedClasses.YS)) {
+    private void manageInventory(EntityPlayerSP player) {
+        if (this.inventoryOnly.getEffectiveValue() && !Minecraft.currentScreen().isInstance(MappedClasses.YS)) {
             return;
         }
-        if (this.k) {
+        if (this.legitUseInProgress) {
             return;
         }
-        if (!this.C && this.Aa.L().booleanValue() && this.D.K() != this.L) {
-            for (n = 9; n < 45; ++n) {
-                boolean bl;
-                ItemStack itemStack;
-                boolean bl2;
-                boolean bl3 = bl2 = n >= 36;
-                if (!entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(n).v() || !(wrapper2 = (itemStack = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(n).I()).getItem()).isNotNull() || ((Item)wrapper2).P() != this.A9) continue;
-                wrapper = Minecraft.playerController();
-                if (this.D.K() == this.AS) {
-                    ((PlayerControllerMP)wrapper).O(0, n, 1, 4, entityPlayerSP);
+        if (!this.inventoryOpenedForRefill && this.useSoup.getEffectiveValue()
+                && this.bowlMode.getValue() != this.discardBowlsMode) {
+            for (int slot = 9; slot < 45; ++slot) {
+                boolean inHotbar = slot >= 36;
+                ItemStack stack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
+                        .getSlot(slot).I();
+                if (!player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(slot).v()
+                        || stack.getItem().isNull() || stack.getItem().P() != this.bowlItemId) {
+                    continue;
+                }
+                PlayerControllerMP controller = Minecraft.playerController();
+                if (this.bowlMode.getValue() == this.throwBowlsMode) {
+                    controller.O(0, slot, 1, 4, player);
                     return;
                 }
-                if (this.D.K() != this.Ac || n == 17) continue;
-                boolean bl4 = bl = !entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(17).v();
-                if (bl || entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(17).I().getItem().P() != this.A9) {
-                    if (bl2) {
-                        this.u(17, n);
+                if (this.bowlMode.getValue() != this.stackBowlsMode || slot == 17) {
+                    continue;
+                }
+                boolean bowlStackSlotEmpty = !player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
+                        .getSlot(17).v();
+                if (bowlStackSlotEmpty || player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
+                        .getSlot(17).I().getItem().P() != this.bowlItemId) {
+                    if (inHotbar) {
+                        this.moveInventoryItem(17, slot);
                     } else {
-                        ((PlayerControllerMP)wrapper).O(0, n, 0, 0, entityPlayerSP);
-                        ((PlayerControllerMP)wrapper).O(0, 17, 0, 0, entityPlayerSP);
-                        ((PlayerControllerMP)wrapper).O(0, n, 0, 0, entityPlayerSP);
+                        controller.O(0, slot, 0, 0, player);
+                        controller.O(0, 17, 0, 0, player);
+                        controller.O(0, slot, 0, 0, player);
                     }
-                } else if (entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(17).I().getItem().P() == this.A9) {
-                    if (bl2) {
-                        ((PlayerControllerMP)wrapper).O(0, n, 0, 1, entityPlayerSP);
-                    } else {
-                        ((PlayerControllerMP)wrapper).O(0, n, 0, 0, entityPlayerSP);
-                        ((PlayerControllerMP)wrapper).O(0, 17, 0, 0, entityPlayerSP);
-                    }
+                } else if (inHotbar) {
+                    controller.O(0, slot, 0, 1, player);
+                } else {
+                    controller.O(0, slot, 0, 0, player);
+                    controller.O(0, 17, 0, 0, player);
                 }
                 return;
             }
         }
-        if (this.O.L().booleanValue()) {
-            for (n = 9; n < 36; ++n) {
-                ItemStack itemStack;
-                if (!entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(n).v() || !this.u(itemStack = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(n).I())) continue;
-                for (int i = 36; i < 45; ++i) {
-                    wrapper2 = entityPlayerSP.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm().getSlot(i).I();
-                    if (!((ItemStack)wrapper2).isNull() && !((ItemStack)wrapper2).getItem().isNull()) continue;
-                    if (!this.C) {
-                        wrapper = Minecraft.gameSettings().j();
+        if (this.replaceItems.getEffectiveValue()) {
+            for (int inventorySlot = 9; inventorySlot < 36; ++inventorySlot) {
+                ItemStack healingStack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
+                        .getSlot(inventorySlot).I();
+                if (!player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
+                        .getSlot(inventorySlot).v() || !this.isHealingItem(healingStack)) {
+                    continue;
+                }
+                for (int hotbarContainerSlot = 36; hotbarContainerSlot < 45; ++hotbarContainerSlot) {
+                    ItemStack hotbarStack = player.F$src$Lgg_vape_wrapper_impl_Container_$152y6lm()
+                            .getSlot(hotbarContainerSlot).I();
+                    if (hotbarStack.isNotNull() && hotbarStack.getItem().isNotNull()) {
+                        continue;
+                    }
+                    if (!this.inventoryOpenedForRefill) {
+                        KeyBinding inventoryKey = Minecraft.gameSettings().j();
                         if (ForgeVersion.MC_1_16_5.d()) {
-                            KeyBindingHelper.a((KeyBinding)wrapper);
+                            KeyBindingHelper.incrementPressTime(inventoryKey);
                         } else {
-                            KeyBindingHelper.d((KeyBinding)wrapper, true);
-                            KeyBindingHelper.v((KeyBinding)wrapper, false, false);
+                            KeyBindingHelper.setPressedAndTick(inventoryKey, true);
+                            KeyBindingHelper.updateKeyBinding(inventoryKey, false, false);
                         }
-                        this.C = true;
+                        this.inventoryOpenedForRefill = true;
                         return;
                     }
-                    this.S = false;
-                    this.u(n, i);
+                    this.closeInventoryPending = false;
+                    this.moveInventoryItem(inventorySlot, hotbarContainerSlot);
                     return;
                 }
             }
-            if (this.C) {
-                this.C = false;
-                this.S = true;
+            if (this.inventoryOpenedForRefill) {
+                this.inventoryOpenedForRefill = false;
+                this.closeInventoryPending = true;
             }
         }
     }
 
     @EventHandler
-    public void onPlayerTick(EventPostPlayerTick eventPostPlayerTick) {
-        if (!eventPostPlayerTick.getPlayer().isInstance(MappedClasses.z5) || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
+    public void onPlayerTick(EventPostPlayerTick event) {
+        if (!event.getPlayer().isInstance(MappedClasses.z5)
+                || Vape.INSTANCE.getClientSettings().J$src$Z$c57s1l()) {
             return;
         }
-        this.T(eventPostPlayerTick.getThePlayer());
+        this.manageInventory(event.getThePlayer());
     }
 }
 

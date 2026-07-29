@@ -12,13 +12,13 @@ implements GuiClickListener {
 
 
     @Override
-    public void P() {
-        QuickActionsFrame quickActionsFrame = ClientSettings.g(QuickActionsFrame.class);
-        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.g(ClientSettingsSearchFrame.class);
+    public void onPrimaryClick() {
+        QuickActionsFrame quickActionsFrame = ClientSettings.getFrame(QuickActionsFrame.class);
+        ClientSettingsSearchFrame clientSettingsSearchFrame = ClientSettings.getFrame(ClientSettingsSearchFrame.class);
         if (quickActionsFrame == null || clientSettingsSearchFrame == null) {
             return;
         }
-        quickActionsFrame.Z(!quickActionsFrame.V$src$Z$1xhop3l());
+        quickActionsFrame.setVisible(!quickActionsFrame.V$src$Z$1xhop3l());
         if (quickActionsFrame.V$src$Z$1xhop3l()) {
             quickActionsFrame.U();
             quickActionsFrame.w(1);

@@ -29,19 +29,19 @@ extends PanelComponent {
         this.Cp = new PanelComponent(74.0, 16.0);
         this.Cc = new PanelComponent(16.0, 16.0);
         this.Ce = new PanelComponent(8.0, 16.0);
-        this.Cw.F(false);
-        this.Cw.h(Color.WHITE);
+        this.Cw.setDeriveTextColorFromBackground(false);
+        this.Cw.setNormalTextColor(Color.WHITE);
         this.CA = friendRequest;
-        this.d(false);
-        this.Cp.d(false);
-        this.Cc.d(false);
-        this.Ce.d(false);
+        this.setShowDisabledOverlay(false);
+        this.Cp.setShowDisabledOverlay(false);
+        this.Cc.setShowDisabledOverlay(false);
+        this.Ce.setShowDisabledOverlay(false);
         this.Cc.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
         this.Ce.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().Q(true);
         this.Ce.h(this.CE, new Object[0]);
         this.CG = new FriendRequestNameTextComponent(this, friendRequest.x().C(), "...", 66.0, 0.8, FriendRequestRow.J.Z, false);
-        this.Cp.H(new SpacerComponent(6.0, 1.0), this.CG);
-        this.H(this.Cp, this.Cc, this.Ce);
+        this.Cp.addChildren(new SpacerComponent(6.0, 1.0), this.CG);
+        this.addChildren(this.Cp, this.Cc, this.Ce);
     }
 
     public FriendRequest y$src$Lgg_vape_friend_FriendRequest_$kilm25() {

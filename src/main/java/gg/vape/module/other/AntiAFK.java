@@ -29,87 +29,86 @@ import java.util.Random;
 
 public class AntiAFK
 extends Mod {
-    private FixedRotationController t;
-    private final TimerUtil S;
-    private final NumberValue p;
-    private RotationAngles D;
-    private static final long s = -1750558580268514572L;
-    private final NumberValue J;
-    private final Random O;
-    private long v = -1L;
-    private final RotationControlClaim F;
-    private Vec3 P;
-    private boolean k;
-    private final RandomValue H;
-    private long U = -1L;
-    private final BooleanValue V;
-    private final BooleanValue Z;
-    private final MovementInputLock A;
-    private final TimerUtil I;
-    private final BooleanValue K;
-    private final NumberValue c;
-    private TargetPositionMovementTask o;
-    private final TimerUtil C;
-    private final TimerUtil Y = new TimerUtil();
+    private FixedRotationController rotationController;
+    private final TimerUtil rotationTimer;
+    private final NumberValue frequency;
+    private RotationAngles referenceRotation;
+    private static final long MODULE_ID = -1750558580268514572L;
+    private final NumberValue maxPitchChange;
+    private final Random random;
+    private long nextRotationDelay = -1L;
+    private final RotationControlClaim rotationClaim;
+    private Vec3 referencePosition;
+    private boolean disablePending;
+    private final RandomValue startDelay;
+    private long nextMovementDelay = -1L;
+    private final BooleanValue keepClose;
+    private final BooleanValue silentAim;
+    private final MovementInputLock movementInputLock;
+    private final TimerUtil movementDurationTimer;
+    private final BooleanValue rotationEnabled;
+    private final NumberValue maxYawChange;
+    private TargetPositionMovementTask movementTask;
+    private final TimerUtil movementTimer;
+    private final TimerUtil inactivityTimer = new TimerUtil();
 
     private void captureReferencePose() {
-        if (this.P == null) {
-            this.P = Vec3.create(Minecraft.thePlayer().z(), Minecraft.thePlayer().N(), Minecraft.thePlayer().h());
+        if (this.referencePosition == null) {
+            this.referencePosition = Vec3.create(Minecraft.thePlayer().z(), Minecraft.thePlayer().N(), Minecraft.thePlayer().h());
         }
-        if (this.D == null) {
-            this.D = new RotationAngles(RotationManager.b.V(), RotationManager.b.x());
+        if (this.referenceRotation == null) {
+            this.referenceRotation = new RotationAngles(RotationManager.INSTANCE.getManagedYaw(), RotationManager.INSTANCE.getManagedPitch());
         }
     }
 
     private void resetActionState() {
-        this.Y.reset();
-        this.U = (long)this.H.B() * 1000L;
-        this.v = (long)this.H.B() * 1000L;
-        this.P = null;
-        this.D = null;
-        this.C.reset();
-        this.S.reset();
-        this.I.reset();
+        this.inactivityTimer.reset();
+        this.nextMovementDelay = (long)this.startDelay.getRandomValue() * 1000L;
+        this.nextRotationDelay = (long)this.startDelay.getRandomValue() * 1000L;
+        this.referencePosition = null;
+        this.referenceRotation = null;
+        this.movementTimer.reset();
+        this.rotationTimer.reset();
+        this.movementDurationTimer.reset();
     }
 
     @EventHandler(A=EventPriority.LOW)
     public void onTick(EventPreTick eventPreTick) {
-        boolean bl;
         EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();
         if (Minecraft.thePlayer().isNull() || Minecraft.currentScreen().isInstance(MappedClasses.YS)) {
             return;
         }
-        if (this.k || this.shouldPauseForInput() || this.F.e(this)) {
+        if (this.disablePending || this.shouldPauseForInput() || this.rotationClaim.isBlockedFor(this)) {
             this.resetActionState();
             this.clearActionState();
             this.removeMovementTarget();
             return;
         }
-        if (!this.Y.hasTimeElapsed((long)this.H.B() * 1000L)) {
+        if (!this.inactivityTimer.hasTimeElapsed((long)this.startDelay.getRandomValue() * 1000L)) {
             return;
         }
-        int n = (int)(1000.0f / ((Double)this.p.K()).floatValue());
-        if (this.t != null && !this.t.v() && this.t.V$src$Z$lb4tvc()) {
+        int intervalRange = (int)(1000.0f / ((Double)this.frequency.getValue()).floatValue());
+        if (this.rotationController != null && !this.rotationController.shouldRetainAfterCompletion() && this.rotationController.isComplete()) {
             this.clearActionState();
         }
-        boolean bl2 = this.F.U(this) || this.F.h(this, this.Z.L());
-        boolean bl3 = bl = this.K.L() != false && bl2 && Minecraft.currentScreen().isNull();
-        if (bl && this.S.hasTimeElapsed(this.v)) {
+        boolean ownsRotationClaim = this.rotationClaim.isOwnedBy(this) || this.rotationClaim.acquire(this, this.silentAim.getEffectiveValue());
+        boolean shouldRotate = this.rotationEnabled.getEffectiveValue() && ownsRotationClaim && Minecraft.currentScreen().isNull();
+        if (shouldRotate && this.rotationTimer.hasTimeElapsed(this.nextRotationDelay)) {
             this.captureReferencePose();
-            this.v = this.O.nextInt(1000 + n);
+            this.nextRotationDelay = this.random.nextInt(1000 + intervalRange);
             this.updateRandomRotation();
-            this.S.reset();
+            this.rotationTimer.reset();
         }
-        if (this.o == null) {
-            if (!this.A.s() && this.C.hasTimeElapsed(this.U)) {
+        if (this.movementTask == null) {
+            if (!this.movementInputLock.isLocked() && this.movementTimer.hasTimeElapsed(this.nextMovementDelay)) {
                 this.captureReferencePose();
-                this.U = this.O.nextInt(1000 + n);
-                this.A.K(this);
+                this.nextMovementDelay = this.random.nextInt(1000 + intervalRange);
+                this.movementInputLock.lock();
                 this.queueMovementTarget(entityPlayerSP);
-                this.C.reset();
-                this.I.reset();
+                this.movementTimer.reset();
+                this.movementDurationTimer.reset();
             }
-        } else if (this.I.hasTimeElapsed(100 + this.O.nextInt(100))) {
+        } else if (this.movementDurationTimer.hasTimeElapsed(100 + this.random.nextInt(100))) {
             this.removeMovementTarget();
         }
     }
@@ -121,52 +120,54 @@ extends Mod {
     }
 
     private void removeMovementTarget() {
-        if (this.o != null) {
-            PlayerMovementTaskManager.G.Q(this.o);
-            this.A.T(this);
-            this.o = null;
+        if (this.movementTask != null) {
+            PlayerMovementTaskManager.INSTANCE.cancel(this.movementTask);
+            this.movementInputLock.unlock();
+            this.movementTask = null;
         }
     }
 
     private void queueMovementTarget(EntityPlayerSP entityPlayerSP) {
-        double d;
-        double d2;
-        double d3;
-        double d4 = entityPlayerSP.z() + this.O.nextDouble() * 2.0 - 1.0;
-        double d5 = entityPlayerSP.h() + this.O.nextDouble() * 2.0 - 1.0;
-        if (this.V.L().booleanValue() && this.P != null && (d3 = Math.sqrt((d2 = this.P.getX() - entityPlayerSP.z()) * d2 + (d = this.P.getZ() - entityPlayerSP.h()) * d)) >= 0.75) {
-            d4 = this.P.getX();
-            d5 = this.P.getZ();
+        double targetX = entityPlayerSP.z() + this.random.nextDouble() * 2.0 - 1.0;
+        double targetZ = entityPlayerSP.h() + this.random.nextDouble() * 2.0 - 1.0;
+        if (this.keepClose.getEffectiveValue().booleanValue() && this.referencePosition != null) {
+            double deltaX = this.referencePosition.getX() - entityPlayerSP.z();
+            double deltaZ = this.referencePosition.getZ() - entityPlayerSP.h();
+            double distanceFromReference = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+            if (distanceFromReference >= 0.75) {
+                targetX = this.referencePosition.getX();
+                targetZ = this.referencePosition.getZ();
+            }
         }
-        if (this.o == null) {
-            this.o = new TargetPositionMovementTask(d4, d5);
+        if (this.movementTask == null) {
+            this.movementTask = new TargetPositionMovementTask(targetX, targetZ);
         }
-        this.o.g(true);
-        PlayerMovementTaskManager.G.i(this.o);
+        this.movementTask.setRestoreInputOnCompletion(true);
+        PlayerMovementTaskManager.INSTANCE.submit(this.movementTask);
     }
 
     public AntiAFK() {
-        super("Anti-AFK", (int)s, Category.m);
-        this.C = new TimerUtil();
-        this.S = new TimerUtil();
-        this.I = new TimerUtil();
-        this.O = new Random();
-        this.H = RandomValue.G(this, "Start delay", "##", "sec", 10.0, 30.0, 40.0, 200.0, 1.0, "How long to wait after moving to start");
-        this.p = NumberValue.E(this, "Frequency", "#.#", "", 0.1, 0.2, 20.0, "How often you should move");
-        this.K = BooleanValue.create(this, "Rotation", true, "Moves your camera around");
-        this.Z = BooleanValue.create(this, "Silent aim", false, "Uses Silent Aim system");
-        this.V = BooleanValue.create(this, "Keep close", false, "Keeps your position and rotation close to the original");
-        this.c = NumberValue.create(this, "Max yaw change", "#", "\u00b0", 1.0, 10.0, 180.0, 1.0, "Max you will turn left and right");
-        this.J = NumberValue.create(this, "Max pitch change", "#", "\u00b0", 1.0, 5.0, 90.0, 1.0, "Max you will tilt up and down");
-        this.F = SharedModuleControlClaims.I;
-        this.A = SharedModuleControlClaims.l;
-        this.K.K(this.Z, this.c, this.J);
-        this.addValue(this.H, this.p, this.V, this.K, this.Z, this.c, this.J);
+        super("Anti-AFK", (int)MODULE_ID, Category.m);
+        this.movementTimer = new TimerUtil();
+        this.rotationTimer = new TimerUtil();
+        this.movementDurationTimer = new TimerUtil();
+        this.random = new Random();
+        this.startDelay = RandomValue.createWithDescription(this, "Start delay", "##", "sec", 10.0, 30.0, 40.0, 200.0, 1.0, "How long to wait after moving to start");
+        this.frequency = NumberValue.createWithDescription(this, "Frequency", "#.#", "", 0.1, 0.2, 20.0, "How often you should move");
+        this.rotationEnabled = BooleanValue.create(this, "Rotation", true, "Moves your camera around");
+        this.silentAim = BooleanValue.create(this, "Silent aim", false, "Uses Silent Aim system");
+        this.keepClose = BooleanValue.create(this, "Keep close", false, "Keeps your position and rotation close to the original");
+        this.maxYawChange = NumberValue.create(this, "Max yaw change", "#", "\u00b0", 1.0, 10.0, 180.0, 1.0, "Max you will turn left and right");
+        this.maxPitchChange = NumberValue.create(this, "Max pitch change", "#", "\u00b0", 1.0, 5.0, 90.0, 1.0, "Max you will tilt up and down");
+        this.rotationClaim = SharedModuleControlClaims.rotation;
+        this.movementInputLock = SharedModuleControlClaims.movementInput;
+        this.rotationEnabled.addDependentValues(this.silentAim, this.maxYawChange, this.maxPitchChange);
+        this.addValue(this.startDelay, this.frequency, this.keepClose, this.rotationEnabled, this.silentAim, this.maxYawChange, this.maxPitchChange);
     }
 
     private boolean shouldPauseForInput() {
-        boolean bl = InputEventDispatcher.getInstance().getFocusState().isFocused();
-        return bl && MovementInputHelper.k();
+        boolean focused = InputEventDispatcher.getInstance().getFocusState().isFocused();
+        return focused && MovementInputHelper.isPhysicalMovementInputActive();
     }
 
 
@@ -174,70 +175,69 @@ extends Mod {
     public void onDisable() {
         this.clearActionState();
         this.removeMovementTarget();
-        this.A.T(this);
-        this.F.X(this);
+        this.movementInputLock.unlock();
+        this.rotationClaim.release(this);
     }
 
     @Override
-    public void s(boolean bl, boolean bl2) {
-        if (!bl && this.t instanceof AdaptiveRotationController) {
-            this.k = !this.k;
+    public void setEnabled(boolean enabled, boolean bypassVisibilityCheck) {
+        if (!enabled && this.rotationController instanceof AdaptiveRotationController) {
+            this.disablePending = !this.disablePending;
         } else {
-            this.k = false;
-            super.s(bl, bl2);
+            this.disablePending = false;
+            super.setEnabled(enabled, bypassVisibilityCheck);
         }
     }
 
-    public void clearActionState() {
-        if (this.t != null) {
-            RotationManager.b.v(this.t);
-            this.t.U(true);
-            this.t.D(false);
-            this.t.z(false);
-            this.t.A(true);
-            this.t.Y(6.0f);
+    private void clearActionState() {
+        if (this.rotationController != null) {
+            RotationManager.INSTANCE.releaseController(this.rotationController);
+            this.rotationController.setScaleAxesProportionally(true);
+            this.rotationController.setRandomizeMovement(false);
+            this.rotationController.setCubicAcceleration(false);
+            this.rotationController.setAngleBasedAcceleration(true);
+            this.rotationController.setSpeed(6.0f);
         }
-        if (RotationManager.b.w() == null || RotationManager.b.w() != this.t || this.t != null && !this.t.v() && this.t.V$src$Z$lb4tvc()) {
-            this.t = null;
-            this.F.X(this);
-            if (this.k) {
-                this.k = false;
+        if (RotationManager.INSTANCE.getActiveController() == null || RotationManager.INSTANCE.getActiveController() != this.rotationController || this.rotationController != null && !this.rotationController.shouldRetainAfterCompletion() && this.rotationController.isComplete()) {
+            this.rotationController = null;
+            this.rotationClaim.release(this);
+            if (this.disablePending) {
+                this.disablePending = false;
                 super.Y(false);
             }
         }
     }
 
     private void updateRandomRotation() {
-        float f;
-        float f2;
-        float f3 = 0.0f;
-        if (this.V.L().booleanValue() && this.D != null) {
-            float f4 = MathUtil.wrapAngleTo180(RotationManager.b.V() - this.D.z());
-            float f5 = MathUtil.wrapAngleTo180(RotationManager.b.x() - this.D.N());
-            f3 = MathUtil.sqrt(f4 * f4 + f5 * f5);
+        float targetPitch;
+        float targetYaw;
+        float distanceFromReference = 0.0f;
+        if (this.keepClose.getEffectiveValue().booleanValue() && this.referenceRotation != null) {
+            float yawOffset = MathUtil.wrapAngleTo180(RotationManager.INSTANCE.getManagedYaw() - this.referenceRotation.getYaw());
+            float pitchOffset = MathUtil.wrapAngleTo180(RotationManager.INSTANCE.getManagedPitch() - this.referenceRotation.getPitch());
+            distanceFromReference = MathUtil.sqrt(yawOffset * yawOffset + pitchOffset * pitchOffset);
         }
-        double d = Math.sqrt((Double)this.c.K() * (Double)this.c.K() + (Double)this.J.K() * (Double)this.J.K());
-        double d2 = this.O.nextDouble() * (Double)this.c.K();
-        double d3 = this.O.nextDouble() * (Double)this.J.K();
-        if (this.O.nextDouble() > 0.6) {
-            d2 = -d2;
+        double maxReferenceDistance = Math.sqrt((Double)this.maxYawChange.getValue() * (Double)this.maxYawChange.getValue() + (Double)this.maxPitchChange.getValue() * (Double)this.maxPitchChange.getValue());
+        double yawChange = this.random.nextDouble() * (Double)this.maxYawChange.getValue();
+        double pitchChange = this.random.nextDouble() * (Double)this.maxPitchChange.getValue();
+        if (this.random.nextDouble() > 0.6) {
+            yawChange = -yawChange;
         }
-        if (this.O.nextDouble() > 0.5) {
-            d3 = -d3;
+        if (this.random.nextDouble() > 0.5) {
+            pitchChange = -pitchChange;
         }
-        if ((double)f3 >= d) {
-            f2 = this.D.z();
-            f = this.D.N();
+        if ((double)distanceFromReference >= maxReferenceDistance) {
+            targetYaw = this.referenceRotation.getYaw();
+            targetPitch = this.referenceRotation.getPitch();
         } else {
-            f2 = (float)((double)RotationManager.b.V() + d2) % 360.0f;
-            f = (float)((double)RotationManager.b.x() + d3) % 90.0f;
+            targetYaw = (float)((double)RotationManager.INSTANCE.getManagedYaw() + yawChange) % 360.0f;
+            targetPitch = (float)((double)RotationManager.INSTANCE.getManagedPitch() + pitchChange) % 90.0f;
         }
-        if (this.t == null) {
-            this.t = this.Z.L() != false ? new AdaptiveRotationController(f2, f) : new FixedRotationController(f2, f);
+        if (this.rotationController == null) {
+            this.rotationController = this.silentAim.getEffectiveValue() ? new AdaptiveRotationController(targetYaw, targetPitch) : new FixedRotationController(targetYaw, targetPitch);
         }
-        this.t.g(f2, f);
-        this.t.Y((int)(this.O.nextDouble() * 10.0));
-        RotationManager.b.S(this.t);
+        this.rotationController.setTargetRotation(targetYaw, targetPitch);
+        this.rotationController.setSpeed((int)(this.random.nextDouble() * 10.0));
+        RotationManager.INSTANCE.setController(this.rotationController);
     }
 }
-

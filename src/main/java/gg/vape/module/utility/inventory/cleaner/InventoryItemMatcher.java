@@ -14,31 +14,30 @@ import org.jetbrains.annotations.Nullable;
 public interface InventoryItemMatcher
 extends INamed,
 DescribedOption {
-    default public boolean R(ItemStack itemStack) {
-        return this.g(itemStack, itemStack.getItem());
+    default public boolean matches(ItemStack itemStack) {
+        return this.matches(itemStack, itemStack.getItem());
     }
 
-    default public InventoryItemCategory G() {
+    default public InventoryItemCategory getCategory() {
         return null;
     }
 
     @Nullable
-    public String Z();
+    public String getIconName();
 
     @Nullable
-    public Comparator<InventoryItemMatchContext> v();
+    public Comparator<InventoryItemMatchContext> getComparator();
 
-    public static InventoryItemMatcherBuilder c() {
+    public static InventoryItemMatcherBuilder builder() {
         return new InventoryItemMatcherBuilder();
     }
 
-    public String k();
+    public String getId();
 
-    public InventoryItemMatcherGroup l();
+    public InventoryItemMatcherGroup getGroup();
 
-    public boolean g(ItemStack var1, Item var2);
+    public boolean matches(ItemStack itemStack, Item item);
 
-    default public void S(InventoryItemCategory inventoryItemCategory) {
+    default public void setCategory(InventoryItemCategory category) {
     }
 }
-

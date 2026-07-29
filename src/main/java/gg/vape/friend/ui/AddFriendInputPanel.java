@@ -37,8 +37,8 @@ extends FrameComponent {
         componentLayout.t(false);
         componentLayout.U(false);
         componentLayout.u(false);
-        this.FL.E(new PlayerNameSuggestionProvider());
-        this.H(this.FL);
+        this.FL.setSuggestionProvider(new PlayerNameSuggestionProvider());
+        this.addChildren(this.FL);
     }
 
     @Override
@@ -46,18 +46,18 @@ extends FrameComponent {
     }
 
     private void b$src$V$y3rl3d() {
-        if (this.FL.i$src$Ljava_lang_String_$1n2xf3k() == "") {
+        if (this.FL.getText() == "") {
             return;
         }
-        if (!this.FL.u$src$Z$wt77ym()) {
-            this.FL.k("");
+        if (!this.FL.hasNonBlankText()) {
+            this.FL.setText("");
             return;
         }
-        String[] stringArray = this.FL.i$src$Ljava_lang_String_$1n2xf3k().split(" ");
+        String[] stringArray = this.FL.getText().split(" ");
         String string = stringArray[0];
         String string2 = stringArray.length > 1 ? stringArray[1] : stringArray[0];
         Vape.INSTANCE.getFriendManager().u(new Friend(string, string2));
-        this.FL.k("");
+        this.FL.setText("");
     }
 
     @Override
@@ -74,4 +74,3 @@ extends FrameComponent {
     public void V() {
     }
 }
-

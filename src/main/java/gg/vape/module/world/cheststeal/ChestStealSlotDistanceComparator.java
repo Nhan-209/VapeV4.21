@@ -4,16 +4,14 @@ import gg.vape.utils.RotationUtil;
 import java.util.Comparator;
 
 public class ChestStealSlotDistanceComparator
-implements Comparator {
+implements Comparator<Integer> {
     private final int sourceSlot;
 
     public ChestStealSlotDistanceComparator(int sourceSlot) {
         this.sourceSlot = sourceSlot;
     }
 
-    public int compare(Object first, Object second) {
-        int firstSlot = (Integer)first;
-        int secondSlot = (Integer)second;
+    public int compare(Integer firstSlot, Integer secondSlot) {
         int sourceColumn = this.sourceSlot % 9;
         int sourceRow = (this.sourceSlot - sourceColumn) / 9;
         int firstColumn = firstSlot % 9;

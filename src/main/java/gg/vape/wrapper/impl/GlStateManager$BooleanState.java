@@ -23,9 +23,9 @@ extends Wrapper {
         if (bl != bl2) {
             GlStateManager$BooleanState.c.getMappings().he.T(this.I, bl);
             if (bl) {
-                OpenGlBackendHolder.d.l(GlStateManager$BooleanState.c.getMappings().he.n(this.I));
+                OpenGlBackendHolder.backend.enableCapability(GlStateManager$BooleanState.c.getMappings().he.n(this.I));
             } else {
-                OpenGlBackendHolder.d.u$src$V$hntn98(GlStateManager$BooleanState.c.getMappings().he.n(this.I));
+                OpenGlBackendHolder.backend.disableCapability(GlStateManager$BooleanState.c.getMappings().he.n(this.I));
             }
         }
     }

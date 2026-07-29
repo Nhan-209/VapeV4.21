@@ -1,4 +1,5 @@
 #include "vape421_native.h"
+#include "loader_bootstrap.h"
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -174,6 +175,60 @@ static jint JNICALL native_mvk(
     (void)env;
     (void)bridge;
     return (jint)MapVirtualKeyA((UINT)code, (UINT)map_type);
+}
+
+static void JNICALL native_cpy(
+        JNIEnv *env, jclass bridge, jstring text) {
+    const char *chars;
+    SIZE_T byte_count;
+    HGLOBAL memory = NULL;
+    void *destination;
+    BOOL clipboard_open = FALSE;
+    (void)bridge;
+    if (text == NULL) {
+        return;
+    }
+    chars = (*env)->GetStringUTFChars(env, text, NULL);
+    if (chars == NULL) {
+        return;
+    }
+    byte_count = strlen(chars) + 1;
+    memory = GlobalAlloc(GMEM_MOVEABLE, byte_count);
+    if (memory == NULL) {
+        vape_log(L"cpy GlobalAlloc failed: %lu", GetLastError());
+        goto cleanup;
+    }
+    destination = GlobalLock(memory);
+    if (destination == NULL) {
+        vape_log(L"cpy GlobalLock failed: %lu", GetLastError());
+        goto cleanup;
+    }
+    memcpy(destination, chars, byte_count);
+    GlobalUnlock(memory);
+
+    clipboard_open = OpenClipboard(NULL);
+    if (!clipboard_open) {
+        vape_log(L"cpy OpenClipboard failed: %lu", GetLastError());
+        goto cleanup;
+    }
+    if (!EmptyClipboard()) {
+        vape_log(L"cpy EmptyClipboard failed: %lu", GetLastError());
+        goto cleanup;
+    }
+    if (SetClipboardData(CF_TEXT, memory) == NULL) {
+        vape_log(L"cpy SetClipboardData failed: %lu", GetLastError());
+        goto cleanup;
+    }
+    memory = NULL;
+
+cleanup:
+    if (clipboard_open) {
+        CloseClipboard();
+    }
+    if (memory != NULL) {
+        GlobalFree(memory);
+    }
+    (*env)->ReleaseStringUTFChars(env, text, chars);
 }
 
 static jbyteArray JNICALL native_gcb(JNIEnv *env, jclass bridge, jclass target) {
@@ -354,6 +409,7 @@ static void JNICALL native_trs(JNIEnv *env, jclass bridge, jint step) {
     jint index;
     JNINativeMethod update_method;
     (void)bridge;
+    vape_loader_report_progress((int)step);
     if (step != 23 || g_jvmti == NULL
             || InterlockedCompareExchange(&g_windows_display_registered, 0, 0) != 0) {
         return;
@@ -709,6 +765,23 @@ static jint JNICALL native_dsv2(
     return 0;
 }
 
+static jstring JNICALL bridge_gat(JNIEnv *env, jclass bridge) {
+    const char *token;
+    (void)bridge;
+    if (!vape_loader_bootstrap_initialize()
+            || vape_loader_bootstrap_failed()) {
+        jclass exception_class = (*env)->FindClass(env,
+                "java/lang/IllegalStateException");
+        if (exception_class != NULL) {
+            (*env)->ThrowNew(env, exception_class,
+                    "Loader token bootstrap failed");
+        }
+        return NULL;
+    }
+    token = vape_loader_access_token();
+    return (*env)->NewStringUTF(env, token);
+}
+
 jint vape_register_native_bridge(JNIEnv *env, jclass bridge_class) {
     JNINativeMethod methods[] = {
         {"scb", "(Ljava/lang/Class;[B)I", (void *)native_scb},
@@ -716,11 +789,13 @@ jint vape_register_native_bridge(JNIEnv *env, jclass bridge_class) {
         {"gks", "(I)S", (void *)native_gks},
         {"gkn", "(J)Ljava/lang/String;", (void *)native_gkn},
         {"mvk", "(II)I", (void *)native_mvk},
+        {"cpy", "(Ljava/lang/String;)V", (void *)native_cpy},
         {"gcb", "(Ljava/lang/Class;)[B", (void *)native_gcb},
         {"gfb", "(Ljava/lang/String;)[B", (void *)native_gfb},
         {"trs", "(I)V", (void *)native_trs},
         {"inv", "(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;",
                 (void *)native_inv},
+        {"gat", "()Ljava/lang/String;", (void *)bridge_gat},
         /* sample-unimplemented natives, stubbed for test robustness */
         {"dsv2", "(ILjava/lang/String;DDIF)I", (void *)native_dsv2},
         {"ss_2", "(Ljava/lang/String;)I", (void *)native_ss_2},
@@ -747,7 +822,7 @@ jint vape_register_native_bridge(JNIEnv *env, jclass bridge_class) {
         vape_log_pending_exception(env, L"resolve NativeBridge.om");
         return JNI_ERR;
     }
-    vape_log(L"registered NativeBridge methods (9 sample.dll + 5 stub)");
+    vape_log(L"registered NativeBridge methods (9 sample + gat + cpy + 5 stub)");
     return JNI_OK;
 }
 

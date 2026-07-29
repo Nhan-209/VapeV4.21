@@ -6,25 +6,25 @@ import gg.vape.ui.click.component.input.BindableInputComponent;
 
 class BindableInputComponentCaptureToggleClickHandler
 implements GuiClickListener {
-    final BindableInputComponent g;
+    final BindableInputComponent owner;
 
     BindableInputComponentCaptureToggleClickHandler(BindableInputComponent bindableInputComponent) {
-        this.g = bindableInputComponent;
+        this.owner = bindableInputComponent;
     }
 
     @Override
-    public void P() {
-        if (BindableInputComponent.J(this.g).V$src$Z$xc25df()) {
-            BindableInputComponent.P(this.g).M(null);
-            this.g.w(BindableInputComponent.h(this.g));
+    public void onPrimaryClick() {
+        if (this.owner.getCaptureTask().isCapturing()) {
+            this.owner.getBindLabel().setToolTips(null);
+            this.owner.w(this.owner.buildTooltipText());
             return;
         }
-        if (BindableInputComponent.C(this.g) && BindableInputComponent.J$src$Z$1bckkjz(this.g)) {
-            BindableInputComponent.Z(this.g).n$src$V$quroyt();
+        if (this.owner.supportsActivationModeConfiguration() && this.owner.isShiftPressed()) {
+            this.owner.getBendable().toggleActivationMode();
             Vape.INSTANCE.saveAndStop();
             return;
         }
-        BindableInputComponent.J(this.g).run();
+        this.owner.getCaptureTask().run();
     }
 
 }

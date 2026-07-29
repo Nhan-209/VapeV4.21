@@ -10,31 +10,31 @@ import java.awt.Color;
 
 public class AnimatedTextButtonComponent
 extends InteractiveComponent {
-    private final DoubleAnimation I;
-    private final double b;
-    private static final String cb = "expandarrow";
-    private final float Hs;
-    private final Color HF;
-    private boolean HS;
-    private boolean Q;
-    private final String K;
-    private boolean v;
+    private final DoubleAnimation arrowAnimation;
+    private final double fontScale;
+    private static final String EXPAND_ARROW_RESOURCE = "expandarrow";
+    private final float arrowSize;
+    private final Color idleArrowColor;
+    private boolean useAlternateFont;
+    private boolean pressed;
+    private final String text;
+    private boolean expanded;
 
-    private void A$src$V$15bszb4() {
-        if (this.v) {
-            this.I.C();
-        } else if (this.I.I$src$Z$c48gtw()) {
-            this.I.O();
+    private void syncArrowAnimationDirection() {
+        if (this.expanded) {
+            this.arrowAnimation.C();
+        } else if (this.arrowAnimation.I$src$Z$c48gtw()) {
+            this.arrowAnimation.O();
         }
     }
 
-    public DoubleAnimation V$src$Lgg_vape_ui_click_animation_DoubleAnimation_$15ru9pe() {
-        return this.I;
+    public DoubleAnimation getArrowAnimation() {
+        return this.arrowAnimation;
     }
 
     @Override
     public void F() {
-        this.Q = true;
+        this.pressed = true;
     }
 
     @Override
@@ -47,97 +47,97 @@ extends InteractiveComponent {
         return 18.0;
     }
 
-    public void N(boolean bl) {
-        this.HS = bl;
+    public void setUseAlternateFont(boolean useAlternateFont) {
+        this.useAlternateFont = useAlternateFont;
     }
 
     @Override
     public void I() {
     }
 
-    public AnimatedTextButtonComponent(String string, double d) {
-        this(string, d, false);
+    public AnimatedTextButtonComponent(String text, double fontScale) {
+        this(text, fontScale, false);
     }
 
-    public AnimatedTextButtonComponent(String string) {
-        this(string, 0.9);
+    public AnimatedTextButtonComponent(String text) {
+        this(text, 0.9);
     }
 
-    public boolean G$src$Z$15f3qyq() {
-        return this.HS;
+    public boolean isUseAlternateFont() {
+        return this.useAlternateFont;
     }
 
-    public void X(boolean bl) {
-        boolean bl2 = this.v != bl;
-        this.v = bl;
-        if (bl2) {
-            if (this.I.l()) {
-                this.A$src$V$15bszb4();
+    public void setExpanded(boolean expanded) {
+        boolean changed = this.expanded != expanded;
+        this.expanded = expanded;
+        if (changed) {
+            if (this.arrowAnimation.l()) {
+                this.syncArrowAnimationDirection();
             } else {
-                this.I.J();
+                this.arrowAnimation.J();
             }
         }
     }
 
-    public AnimatedTextButtonComponent(String string, double d, boolean bl) {
+    public AnimatedTextButtonComponent(String text, double fontScale, boolean expanded) {
         this.getClass();
-        this.I = new DoubleAnimation(0.15, 0.0, 3.0);
-        this.Hs = 4.0f;
-        this.HF = AnimatedTextButtonComponent.J.W;
-        this.K = string;
-        this.b = d;
-        this.v = bl;
-        this.r(this::lambda$new$0);
-        this.A$src$V$15bszb4();
+        this.arrowAnimation = new DoubleAnimation(0.15, 0.0, 3.0);
+        this.arrowSize = 4.0f;
+        this.idleArrowColor = AnimatedTextButtonComponent.J.W;
+        this.text = text;
+        this.fontScale = fontScale;
+        this.expanded = expanded;
+        this.addClickListener(this::toggleExpanded);
+        this.syncArrowAnimationDirection();
     }
 
-    public boolean e() {
-        return this.v;
+    public boolean isExpanded() {
+        return this.expanded;
     }
 
-    private void lambda$new$0() {
-        this.X(!this.v);
+    private void toggleExpanded() {
+        this.setExpanded(!this.expanded);
     }
 
 
     @Override
     public void u() {
-        if (this.Q && !this.w$src$Z$e457mb()) {
-            this.Q = false;
+        if (this.pressed && !this.w$src$Z$e457mb()) {
+            this.pressed = false;
         }
     }
 
-    public String q$src$Ljava_lang_String_$txw8ee() {
-        return this.K;
+    public String getText() {
+        return this.text;
     }
 
     @Override
     public void H() {
-        SmoothFontRenderer smoothFontRenderer = this.v && this.HS ? this.U$src$Lgg_vape_ui_font_SmoothFontRenderer_$16wbbnl(this.b) : this.O(this.b);
-        double d = smoothFontRenderer.d(this.K);
-        double d2 = this.n() + this.L() / 2.0 - d / 2.0;
-        double d3 = this.n() + this.L() / 2.0 - (double)(this.Hs / 2.0f);
-        Color color = AnimatedTextButtonComponent.J.m;
-        Color color2 = AnimatedTextButtonComponent.J.Z;
-        if (this.Q) {
-            color = AnimatedTextButtonComponent.J.a;
-            color2 = AnimatedTextButtonComponent.J.A;
+        SmoothFontRenderer fontRenderer = this.expanded && this.useAlternateFont ? this.getAlternateFontRenderer(this.fontScale) : this.getFontRenderer(this.fontScale);
+        double textHeight = fontRenderer.d(this.text);
+        double textY = this.n() + this.L() / 2.0 - textHeight / 2.0;
+        double arrowY = this.n() + this.L() / 2.0 - (double)(this.arrowSize / 2.0f);
+        Color backgroundColor = AnimatedTextButtonComponent.J.m;
+        Color textColor = AnimatedTextButtonComponent.J.Z;
+        if (this.pressed) {
+            backgroundColor = AnimatedTextButtonComponent.J.a;
+            textColor = AnimatedTextButtonComponent.J.A;
         }
-        if (this.v) {
-            color = AnimatedTextButtonComponent.J.a;
-            color2 = AnimatedTextButtonComponent.J.A;
-            if (this.Q) {
-                color2 = ColorUtil.N(color2, 30.0);
+        if (this.expanded) {
+            backgroundColor = AnimatedTextButtonComponent.J.a;
+            textColor = AnimatedTextButtonComponent.J.A;
+            if (this.pressed) {
+                textColor = ColorUtil.offsetRgb(textColor, 30.0);
             }
         }
-        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n() + 1.0, this.A() - 2.0, this.L() - 2.5, color);
-        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n() + 1.5, this.A(), this.L() - 3.0, color);
-        Color color3 = this.v || this.Q ? color2 : this.HF;
-        float f = (float)this.G$src$D$1b2f02a() + (float)this.A();
+        GuiRenderPrimitives.C(this.G$src$D$1b2f02a(), this.n() + 1.0, this.A() - 2.0, this.L() - 2.5, backgroundColor);
+        GuiRenderPrimitives.d(this.G$src$D$1b2f02a(), this.n() + 1.5, this.A(), this.L() - 3.0, backgroundColor);
+        Color arrowColor = this.expanded || this.pressed ? textColor : this.idleArrowColor;
+        float rightEdge = (float)this.G$src$D$1b2f02a() + (float)this.A();
         this.getClass();
-        ImageRenderer.E(color3, f - 5.0f - 5.0f + this.I.getInterpolatedValue().floatValue(), (float)d3, cb, this.Hs, this.Hs, false);
-        double d4 = this.G$src$D$1b2f02a();
+        ImageRenderer.drawImage(arrowColor, rightEdge - 5.0f - 5.0f + this.arrowAnimation.getInterpolatedValue().floatValue(), (float)arrowY, EXPAND_ARROW_RESOURCE, this.arrowSize, this.arrowSize, false);
+        double leftEdge = this.G$src$D$1b2f02a();
         this.getClass();
-        smoothFontRenderer.d(this.K, d4 + (double)(5.0f * 2.0f), d2, color2);
+        fontRenderer.d(this.text, leftEdge + (double)(5.0f * 2.0f), textY, textColor);
     }
 }

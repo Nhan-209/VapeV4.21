@@ -41,7 +41,7 @@ extends Mapping {
                 MEntityEnderPearl mEntityEnderPearl = this;
                 this.u = mEntityEnderPearl.J(string, bl, clazz);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MEntityEnderPearl.o(new GuiComponent[1]);
             }
             return;
@@ -51,7 +51,7 @@ extends Mapping {
         String string = "fuse";
         MEntityEnderPearl mEntityEnderPearl = this;
         this.u = mEntityEnderPearl.J(string, bl, clazz); 
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MEntityEnderPearl.o(new GuiComponent[1]);
         }
     }

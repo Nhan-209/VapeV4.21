@@ -6,20 +6,20 @@ import java.util.Comparator;
 
 public final class AxisAlignedBBDistanceComparator
 implements Comparator<AxisAlignedBB> {
-    final EntityPlayer n;
+    final EntityPlayer player;
 
     @Override
-    public int compare(AxisAlignedBB axisAlignedBB, AxisAlignedBB axisAlignedBB2) {
-        return this.k(axisAlignedBB, axisAlignedBB2);
+    public int compare(AxisAlignedBB firstBounds, AxisAlignedBB secondBounds) {
+        return this.compareByDistance(firstBounds, secondBounds);
     }
 
-    public int k(AxisAlignedBB axisAlignedBB, AxisAlignedBB axisAlignedBB2) {
-        double d = this.n.i(axisAlignedBB.getMinX() + 0.5, this.n.N(), axisAlignedBB.getMinZ() + 0.5);
-        double d2 = this.n.i(axisAlignedBB2.getMinX() + 0.5, this.n.N(), axisAlignedBB2.getMinZ() + 0.5);
-        return Double.compare(d, d2);
+    public int compareByDistance(AxisAlignedBB firstBounds, AxisAlignedBB secondBounds) {
+        double firstDistance = this.player.i(firstBounds.getMinX() + 0.5, this.player.N(), firstBounds.getMinZ() + 0.5);
+        double secondDistance = this.player.i(secondBounds.getMinX() + 0.5, this.player.N(), secondBounds.getMinZ() + 0.5);
+        return Double.compare(firstDistance, secondDistance);
     }
 
     public AxisAlignedBBDistanceComparator(EntityPlayer entityPlayer) {
-        this.n = entityPlayer;
+        this.player = entityPlayer;
     }
 }

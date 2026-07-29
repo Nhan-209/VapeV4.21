@@ -61,7 +61,7 @@ extends Mod {
     }
 
     public boolean J$src$Z$gcqtyf() {
-        return this.Y.o();
+        return this.Y.isSelected();
     }
 
     public static void W(boolean bl) {

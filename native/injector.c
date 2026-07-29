@@ -4,10 +4,27 @@
 #include <windows.h>
 #include <tlhelp32.h>
 
+#include <conio.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <wchar.h>
+
+#define MAX_CANDIDATES 256
+#define WINDOW_TITLE_CAPACITY 256
+#define REFRESH_INTERVAL_MS 750
+
+typedef struct process_candidate {
+    DWORD process_id;
+    wchar_t executable[MAX_PATH];
+    wchar_t title[WINDOW_TITLE_CAPACITY];
+} process_candidate;
+
+typedef struct window_search_context {
+    process_candidate *candidates;
+    size_t count;
+} window_search_context;
 
 static void print_last_error(const wchar_t *operation) {
     DWORD error = GetLastError();
@@ -33,6 +50,204 @@ static int absolute_existing_file(
     attributes = GetFileAttributesW(output);
     return attributes != INVALID_FILE_ATTRIBUTES
             && (attributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
+}
+
+static int default_dll_path(wchar_t *output, DWORD capacity) {
+    DWORD length = GetModuleFileNameW(NULL, output, capacity);
+    DWORD attributes;
+    wchar_t *file_name;
+    if (length == 0 || length >= capacity) {
+        return 0;
+    }
+    file_name = wcsrchr(output, L'\\');
+    file_name = file_name == NULL ? output : file_name + 1;
+    if ((size_t)(file_name - output) + wcslen(L"Vape421Native.dll") + 1
+            > capacity) {
+        return 0;
+    }
+    wcscpy(file_name, L"Vape421Native.dll");
+    attributes = GetFileAttributesW(output);
+    return attributes != INVALID_FILE_ATTRIBUTES
+            && (attributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
+}
+
+static int is_java_process(const wchar_t *executable) {
+    return _wcsicmp(executable, L"java.exe") == 0
+            || _wcsicmp(executable, L"javaw.exe") == 0;
+}
+
+static BOOL CALLBACK capture_window_title(HWND window, LPARAM parameter) {
+    window_search_context *context = (window_search_context *)parameter;
+    wchar_t title[WINDOW_TITLE_CAPACITY];
+    DWORD process_id = 0;
+    size_t index;
+    if (!IsWindowVisible(window) || GetWindowTextLengthW(window) == 0) {
+        return TRUE;
+    }
+    GetWindowThreadProcessId(window, &process_id);
+    if (process_id == 0
+            || GetWindowTextW(window, title, WINDOW_TITLE_CAPACITY) == 0) {
+        return TRUE;
+    }
+    for (index = 0; index < context->count; ++index) {
+        process_candidate *candidate = &context->candidates[index];
+        if (candidate->process_id == process_id && candidate->title[0] == L'\0') {
+            wcscpy(candidate->title, title);
+            break;
+        }
+    }
+    return TRUE;
+}
+
+static int compare_candidates(const void *left, const void *right) {
+    const process_candidate *a = (const process_candidate *)left;
+    const process_candidate *b = (const process_candidate *)right;
+    if (a->process_id < b->process_id) return -1;
+    if (a->process_id > b->process_id) return 1;
+    return 0;
+}
+
+static size_t enumerate_candidates(
+        process_candidate *candidates, size_t capacity) {
+    HANDLE snapshot;
+    PROCESSENTRY32W entry;
+    size_t count = 0;
+    size_t read_index;
+    size_t write_index = 0;
+    window_search_context context;
+
+    snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (snapshot == INVALID_HANDLE_VALUE) {
+        return 0;
+    }
+    memset(&entry, 0, sizeof(entry));
+    entry.dwSize = sizeof(entry);
+    if (Process32FirstW(snapshot, &entry)) {
+        do {
+            if (count < capacity && is_java_process(entry.szExeFile)) {
+                process_candidate *candidate = &candidates[count++];
+                memset(candidate, 0, sizeof(*candidate));
+                candidate->process_id = entry.th32ProcessID;
+                wcsncpy(candidate->executable, entry.szExeFile, MAX_PATH - 1);
+            }
+        } while (Process32NextW(snapshot, &entry));
+    }
+    CloseHandle(snapshot);
+
+    context.candidates = candidates;
+    context.count = count;
+    EnumWindows(capture_window_title, (LPARAM)&context);
+
+    /* The selector is for game windows, so omit background JVMs without one. */
+    for (read_index = 0; read_index < count; ++read_index) {
+        if (candidates[read_index].title[0] != L'\0') {
+            if (write_index != read_index) {
+                candidates[write_index] = candidates[read_index];
+            }
+            ++write_index;
+        }
+    }
+    qsort(candidates, write_index, sizeof(*candidates), compare_candidates);
+    return write_index;
+}
+
+static void clear_console_rows(HANDLE output, SHORT rows) {
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    COORD start = {0, 0};
+    DWORD cells;
+    DWORD written;
+    if (!GetConsoleScreenBufferInfo(output, &info)) return;
+    if (rows > info.dwSize.Y) rows = info.dwSize.Y;
+    cells = (DWORD)info.dwSize.X * (DWORD)rows;
+    FillConsoleOutputCharacterW(output, L' ', cells, start, &written);
+    FillConsoleOutputAttribute(output, info.wAttributes, cells, start, &written);
+}
+
+static void render_selector(const process_candidate *candidates, size_t count,
+        size_t selected, const wchar_t *dll_path) {
+    HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    COORD home = {0, 0};
+    size_t index;
+    static SHORT previous_rows = 0;
+    if (GetConsoleScreenBufferInfo(output, &info)) {
+        SHORT rows = (SHORT)(count + 5);
+        if (count == 0) ++rows;
+        clear_console_rows(output, rows > previous_rows ? rows : previous_rows);
+        SetConsoleCursorPosition(output, home);
+        previous_rows = rows;
+    }
+    wprintf(L"Vape421 Injector\n");
+    wprintf(L"DLL: %ls\n\n", dll_path);
+    wprintf(L"Select a Java game window (Up/Down, Enter to inject, Esc to quit)\n\n");
+    if (count == 0) {
+        wprintf(L"  No visible java.exe/javaw.exe windows. Waiting...\n");
+    } else {
+        for (index = 0; index < count; ++index) {
+            wprintf(L"%lc [%5lu] %-9ls  %ls\n",
+                    index == selected ? L'>' : L' ',
+                    (unsigned long)candidates[index].process_id,
+                    candidates[index].executable, candidates[index].title);
+        }
+    }
+    fflush(stdout);
+}
+
+static DWORD select_process(const wchar_t *dll_path) {
+    process_candidate candidates[MAX_CANDIDATES];
+    size_t count = 0;
+    size_t selected = 0;
+    DWORD selected_process_id = 0;
+    ULONGLONG next_refresh = 0;
+    HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO original_cursor;
+    CONSOLE_CURSOR_INFO hidden_cursor;
+    int cursor_changed = 0;
+
+    if (GetConsoleCursorInfo(output, &original_cursor)) {
+        hidden_cursor = original_cursor;
+        hidden_cursor.bVisible = FALSE;
+        cursor_changed = SetConsoleCursorInfo(output, &hidden_cursor);
+    }
+    for (;;) {
+        ULONGLONG now = GetTickCount64();
+        if (now >= next_refresh) {
+            DWORD previous_id = count == 0 ? 0 : candidates[selected].process_id;
+            size_t index;
+            count = enumerate_candidates(candidates, MAX_CANDIDATES);
+            selected = 0;
+            for (index = 0; index < count; ++index) {
+                if (candidates[index].process_id == previous_id) {
+                    selected = index;
+                    break;
+                }
+            }
+            render_selector(candidates, count, selected, dll_path);
+            next_refresh = now + REFRESH_INTERVAL_MS;
+        }
+        if (_kbhit()) {
+            int key = _getwch();
+            if (key == 0 || key == 0xe0) {
+                key = _getwch();
+                if (key == 72 && count != 0) {
+                    selected = selected == 0 ? count - 1 : selected - 1;
+                    render_selector(candidates, count, selected, dll_path);
+                } else if (key == 80 && count != 0) {
+                    selected = (selected + 1) % count;
+                    render_selector(candidates, count, selected, dll_path);
+                }
+            } else if (key == 13 && count != 0) {
+                selected_process_id = candidates[selected].process_id;
+                break;
+            } else if (key == 27) {
+                break;
+            }
+        }
+        Sleep(25);
+    }
+    if (cursor_changed) SetConsoleCursorInfo(output, &original_cursor);
+    wprintf(L"\n");
+    return selected_process_id;
 }
 
 static uintptr_t remote_module_base(DWORD process_id, const wchar_t *module_name) {
@@ -192,27 +407,46 @@ cleanup:
 
 static void usage(const wchar_t *program) {
     fwprintf(stderr,
-            L"Usage: %ls <minecraft-pid> <Vape421Native.dll>\n"
+            L"Usage: %ls [Vape421Native.dll]\n"
+            L"       %ls <minecraft-pid> <Vape421Native.dll>\n"
+            L"Without a PID, an automatically refreshing Java window selector is shown.\n"
             L"The injected DLL loads and starts the Java product automatically.\n",
-            program);
+            program, program);
 }
 
 int wmain(int argc, wchar_t **argv) {
     wchar_t dll_path[MAX_PATH];
     wchar_t *end = NULL;
-    unsigned long process_id;
-    if (argc != 3) {
+    unsigned long process_id = 0;
+    if (argc < 1 || argc > 3) {
         usage(argv[0]);
         return 2;
     }
-    process_id = wcstoul(argv[1], &end, 10);
-    if (process_id == 0 || end == argv[1] || *end != L'\0') {
-        fwprintf(stderr, L"Invalid process id: %ls\n", argv[1]);
+    if (argc == 3) {
+        process_id = wcstoul(argv[1], &end, 10);
+        if (process_id == 0 || end == argv[1] || *end != L'\0') {
+            fwprintf(stderr, L"Invalid process id: %ls\n", argv[1]);
+            return 2;
+        }
+        if (!absolute_existing_file(argv[2], dll_path, MAX_PATH)) {
+            fwprintf(stderr, L"DLL does not exist: %ls\n", argv[2]);
+            return 2;
+        }
+    } else if (argc == 2) {
+        if (!absolute_existing_file(argv[1], dll_path, MAX_PATH)) {
+            fwprintf(stderr, L"DLL does not exist: %ls\n", argv[1]);
+            return 2;
+        }
+    } else if (!default_dll_path(dll_path, MAX_PATH)) {
+        fwprintf(stderr, L"Vape421Native.dll was not found beside the injector.\n");
+        usage(argv[0]);
         return 2;
     }
-    if (!absolute_existing_file(argv[2], dll_path, MAX_PATH)) {
-        fwprintf(stderr, L"DLL does not exist: %ls\n", argv[2]);
-        return 2;
+    if (argc != 3) {
+        process_id = (unsigned long)select_process(dll_path);
+        if (process_id == 0) {
+            return 1;
+        }
     }
     {
         int injection_result = inject_library((DWORD)process_id, dll_path);

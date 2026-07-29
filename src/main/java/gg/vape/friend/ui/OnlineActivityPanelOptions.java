@@ -28,7 +28,7 @@ implements EventListener {
 
     @EventHandler
     public void K(EventPreAttack eventPreAttack) {
-        OnlineActivitySettingsFrame onlineActivitySettingsFrame = ClientSettings.g(OnlineActivitySettingsFrame.class);
+        OnlineActivitySettingsFrame onlineActivitySettingsFrame = ClientSettings.getFrame(OnlineActivitySettingsFrame.class);
         if (onlineActivitySettingsFrame == null) {
             return;
         }
@@ -64,14 +64,14 @@ implements EventListener {
 
     @EventHandler
     public void v(EventMouseButton eventMouseButton) {
-        OnlineActivitySettingsFrame onlineActivitySettingsFrame = ClientSettings.g(OnlineActivitySettingsFrame.class);
+        OnlineActivitySettingsFrame onlineActivitySettingsFrame = ClientSettings.getFrame(OnlineActivitySettingsFrame.class);
         if (onlineActivitySettingsFrame == null) {
             return;
         }
         if (eventMouseButton.getButtonState()) {
             Vape.INSTANCE.getOnlineManager().r().E().n(0);
             if (eventMouseButton.getButton() == 0 && Minecraft.currentScreen().isNull()) {
-                MouseClickRateTracker.j();
+                MouseClickRateTracker.recordClick();
             }
         }
     }

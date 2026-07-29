@@ -8,19 +8,19 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class HudEditorReturnToMainLayerFrame
 extends Frame {
-    private boolean D9;
-    private final HudEditorReturnToMainLayerHeaderComponent DM;
+    private boolean pressed;
+    private final HudEditorReturnToMainLayerHeaderComponent header;
 
-    public HudEditorReturnToMainLayerHeaderComponent Q$src$Lgg_vape_ui_click_frame_impl_hud_HudEditorReturn$el2t19() {
-        return this.DM;
+    public HudEditorReturnToMainLayerHeaderComponent getHeader() {
+        return this.header;
     }
 
 
     @Override
     public void Y() {
-        this.T(HudEditorReturnToMainLayerFrame.J.i);
-        ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v().v(this);
-        this.Z$src$V$1vz8z77();
+        this.setDisabledOverlayColor(HudEditorReturnToMainLayerFrame.J.i);
+        ClientSettings.INSTANCE.getActiveStack().v(this);
+        this.centerAtTop();
     }
 
     @Override
@@ -28,19 +28,19 @@ extends Frame {
         return "LegitToggleFrame";
     }
 
-    public void Z$src$V$1vz8z77() {
+    public void centerAtTop() {
         this.M((double)Minecraft.J() / 4.0 / Vape.INSTANCE.getClientSettings().s() - this.A() / 2.0, 7.0);
     }
 
     @Override
     public void F() {
-        this.D9 = true;
+        this.pressed = true;
     }
 
     @Override
     public void u() {
-        if (this.D9 && !this.w$src$Z$e457mb()) {
-            this.D9 = false;
+        if (this.pressed && !this.w$src$Z$e457mb()) {
+            this.pressed = false;
         }
     }
 
@@ -48,9 +48,9 @@ extends Frame {
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.I2 = false;
-        this.Z(true);
-        this.DM = new HudEditorReturnToMainLayerHeaderComponent(this);
-        this.Y(this.DM);
+        this.setVisible(true);
+        this.header = new HudEditorReturnToMainLayerHeaderComponent(this);
+        this.Y(this.header);
     }
 
     @Override

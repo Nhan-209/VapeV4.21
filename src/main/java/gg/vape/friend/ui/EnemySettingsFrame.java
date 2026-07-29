@@ -40,10 +40,10 @@ implements CollapsibleFrame {
 
     public EnemySettingsFrame() {
         this.X5 = new ColorDividerComponent(EnemySettingsFrame.J.l);
-        this.T(EnemySettingsFrame.J.i);
+        this.setDisabledOverlayColor(EnemySettingsFrame.J.i);
         this.K(300.0);
         this.S(100.0);
-        this.Z(false);
+        this.setVisible(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.Y(new EnemySettingsFrameToggleHeaderComponent(this, this, "newfriends", "Enemies"));
@@ -52,25 +52,25 @@ implements CollapsibleFrame {
         this.X0 = new BooleanToggleComponent(Vape.INSTANCE.getEnemyManager().L);
         this.X9 = new BooleanToggleComponent(Vape.INSTANCE.getFriendManager().J);
         this.XH = new BooleanToggleComponent(Vape.INSTANCE.getFriendManager().C);
-        this.XR.T(EnemySettingsFrame.J.r);
-        this.Xg.T(EnemySettingsFrame.J.r);
-        this.X0.T(EnemySettingsFrame.J.r);
-        this.X9.T(EnemySettingsFrame.J.r);
-        this.XH.T(EnemySettingsFrame.J.r);
-        this.XR.Z(false);
-        this.Xg.Z(false);
-        this.X0.Z(false);
-        this.X9.Z(false);
-        this.XH.Z(false);
-        this.X5.Z(false);
+        this.XR.setDisabledOverlayColor(EnemySettingsFrame.J.r);
+        this.Xg.setDisabledOverlayColor(EnemySettingsFrame.J.r);
+        this.X0.setDisabledOverlayColor(EnemySettingsFrame.J.r);
+        this.X9.setDisabledOverlayColor(EnemySettingsFrame.J.r);
+        this.XH.setDisabledOverlayColor(EnemySettingsFrame.J.r);
+        this.XR.setVisible(false);
+        this.Xg.setVisible(false);
+        this.X0.setVisible(false);
+        this.X9.setVisible(false);
+        this.XH.setVisible(false);
+        this.X5.setVisible(false);
     }
 
     public void Q$src$V$1u5tkk5() {
-        this.S();
-        this.H(this.XR, this.Xg, this.X0, this.X9, this.XH, this.X5);
+        this.removeMarkedChildren();
+        this.addChildren(this.XR, this.Xg, this.X0, this.X9, this.XH, this.X5);
         this.h(new EnemySettingsAddEnemyInputComponent("Username / Alias"), new Object[0]);
         for (Enemy enemy : Vape.INSTANCE.getEnemyManager().y()) {
-            this.h(new EnemySettingsEntryRow(enemy).I(new EnemySettingsRemoveEntryClickHandler(this, enemy)), new Object[0]);
+            this.h(new EnemySettingsEntryRow(enemy).setDeleteActionListener(new EnemySettingsRemoveEntryClickHandler(this, enemy)), new Object[0]);
         }
         this.l$src$V$1mibm4x();
     }
@@ -88,7 +88,7 @@ implements CollapsibleFrame {
         this.Xj = !this.Xj;
         for (GuiComponent guiComponent : this.f()) {
             if (guiComponent instanceof FrameHeaderComponent) continue;
-            guiComponent.Z(this.Xj);
+            guiComponent.setVisible(this.Xj);
         }
         this.l$src$V$1mibm4x();
     }

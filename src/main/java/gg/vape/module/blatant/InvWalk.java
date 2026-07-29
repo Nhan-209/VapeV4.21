@@ -34,18 +34,18 @@ extends Mod {
     }
 
     @EventHandler
-    public void X(EventPreEntityUpdate eventPreEntityUpdate) {
+    public void onPreEntityUpdate(EventPreEntityUpdate eventPreEntityUpdate) {
         if (eventPreEntityUpdate.getEntity().isInstance(MappedClasses.z5)) {
-            if (this.g$src$Z$tdg77x()) {
+            if (this.shouldHandleCurrentScreen()) {
                 this.bindsHeld = true;
                 GameSettings gameSettings = Minecraft.gameSettings();
-                InvWalkSettingsState.C(gameSettings.Y());
-                InvWalkSettingsState.C(gameSettings.s());
-                InvWalkSettingsState.C(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
-                InvWalkSettingsState.C(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
-                InvWalkSettingsState.C(gameSettings.O());
-                if (this.sneak.L().booleanValue()) {
-                    InvWalkSettingsState.C(gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0());
+                InvWalkSettingsState.synchronizeKey(gameSettings.Y());
+                InvWalkSettingsState.synchronizeKey(gameSettings.s());
+                InvWalkSettingsState.synchronizeKey(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
+                InvWalkSettingsState.synchronizeKey(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
+                InvWalkSettingsState.synchronizeKey(gameSettings.O());
+                if (this.sneak.getEffectiveValue().booleanValue()) {
+                    InvWalkSettingsState.synchronizeKey(gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0());
                 }
             } else {
                 if (this.bindsHeld) {
@@ -56,14 +56,14 @@ extends Mod {
         }
     }
 
-    public boolean g$src$Z$tdg77x() {
+    public boolean shouldHandleCurrentScreen() {
         if (Minecraft.currentScreen().isNull()) {
             return false;
         }
-        if (ClientSettings.fT != null) {
+        if (ClientSettings.activeComponent != null) {
             return false;
         }
-        if (!(Minecraft.currentScreen().isInstance(MappedClasses.Ft) && Minecraft.currentScreen().isInstance(MappedClasses.YS) || !this.inventoryOnly.L().booleanValue())) {
+        if (!(Minecraft.currentScreen().isInstance(MappedClasses.Ft) && Minecraft.currentScreen().isInstance(MappedClasses.YS) || !this.inventoryOnly.getEffectiveValue().booleanValue())) {
             return false;
         }
         return !Minecraft.currentScreen().isInstance(MappedClasses.qo);
@@ -76,24 +76,24 @@ extends Mod {
 
     private void resetBinds() {
         GameSettings gameSettings = Minecraft.gameSettings();
-        InvWalkSettingsState.C(gameSettings.Y());
-        InvWalkSettingsState.C(gameSettings.s());
-        InvWalkSettingsState.C(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
-        InvWalkSettingsState.C(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
-        InvWalkSettingsState.C(gameSettings.O());
-        InvWalkSettingsState.C(gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0());
+        InvWalkSettingsState.synchronizeKey(gameSettings.Y());
+        InvWalkSettingsState.synchronizeKey(gameSettings.s());
+        InvWalkSettingsState.synchronizeKey(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg());
+        InvWalkSettingsState.synchronizeKey(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3());
+        InvWalkSettingsState.synchronizeKey(gameSettings.O());
+        InvWalkSettingsState.synchronizeKey(gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0());
     }
 
     @Override
     public void onDisable() {
         if (Minecraft.currentScreen().isNotNull()) {
             GameSettings gameSettings = Minecraft.gameSettings();
-            InvWalkSettingsState.L(gameSettings.Y(), false);
-            InvWalkSettingsState.L(gameSettings.s(), false);
-            InvWalkSettingsState.L(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), false);
-            InvWalkSettingsState.L(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), false);
-            InvWalkSettingsState.L(gameSettings.O(), false);
-            InvWalkSettingsState.L(gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0(), false);
+            InvWalkSettingsState.setPressed(gameSettings.Y(), false);
+            InvWalkSettingsState.setPressed(gameSettings.s(), false);
+            InvWalkSettingsState.setPressed(gameSettings.x$src$Lgg_vape_wrapper_impl_KeyBinding_$1cf7isg(), false);
+            InvWalkSettingsState.setPressed(gameSettings.g$src$Lgg_vape_wrapper_impl_KeyBinding_$qqn5n3(), false);
+            InvWalkSettingsState.setPressed(gameSettings.O(), false);
+            InvWalkSettingsState.setPressed(gameSettings.d$src$Lgg_vape_wrapper_impl_KeyBinding_$adn2z0(), false);
         } else {
             this.resetBinds();
         }
@@ -101,20 +101,20 @@ extends Mod {
 
     @EventHandler
     public void onMotionUpdate(EventPreMotion eventPreMotion) {
-        if (this.rotate.L().booleanValue()) {
-            EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            if (this.g$src$Z$tdg77x()) {
-                if (KeyboardInput.isKeyDown(38) && entityPlayerSP.V() - 3.0f > -90.0f) {
-                    entityPlayerSP.C(MathUtil.clamp(entityPlayerSP.V() - 3.0f, -89.5f, 89.5f));
+        if (this.rotate.getEffectiveValue().booleanValue()) {
+            EntityPlayerSP player = Minecraft.thePlayer();
+            if (this.shouldHandleCurrentScreen()) {
+                if (KeyboardInput.isKeyDown(38) && player.V() - 3.0f > -90.0f) {
+                    player.C(MathUtil.clamp(player.V() - 3.0f, -89.5f, 89.5f));
                 }
-                if (KeyboardInput.isKeyDown(40) && entityPlayerSP.V() + 3.0f < 90.0f) {
-                    entityPlayerSP.C(MathUtil.clamp(entityPlayerSP.V() + 3.0f, -89.5f, 89.5f));
+                if (KeyboardInput.isKeyDown(40) && player.V() + 3.0f < 90.0f) {
+                    player.C(MathUtil.clamp(player.V() + 3.0f, -89.5f, 89.5f));
                 }
                 if (KeyboardInput.isKeyDown(37)) {
-                    entityPlayerSP.H(entityPlayerSP.J() - 5.0f);
+                    player.H(player.J() - 5.0f);
                 }
                 if (KeyboardInput.isKeyDown(39)) {
-                    entityPlayerSP.H(entityPlayerSP.J() + 5.0f);
+                    player.H(player.J() + 5.0f);
                 }
             }
         }

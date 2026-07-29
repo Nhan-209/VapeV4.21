@@ -6,31 +6,31 @@ import gg.vape.ui.click.frame.impl.ModuleCategoryFrame;
 
 class ModuleComponentExpandToggleClickHandler
 implements GuiClickListener {
-    final ModuleCategoryFrame i;
-    final ModuleComponent x;
+    final ModuleCategoryFrame categoryFrame;
+    final ModuleComponent owner;
 
 
     @Override
-    public void G() {
-        this.P();
+    public void onSecondaryClick() {
+        this.onPrimaryClick();
     }
 
     @Override
-    public void P() {
-        ModuleComponent.m(this.x, !ModuleComponent.v$src$Z$1nzvssj(this.x));
-        if (ModuleComponent.v$src$Z$1nzvssj(this.x)) {
-            this.i.G(this.x.N$src$Lgg_vape_module_Mod_$rb0ew8());
-            this.x.K$src$V$lt0qn9();
+    public void onPrimaryClick() {
+        this.owner.setExpanded(!this.owner.isExpanded());
+        if (this.owner.isExpanded()) {
+            this.categoryFrame.G(this.owner.getModule());
+            this.owner.expandValueComponents();
         } else {
-            this.i.G(null);
-            this.x.l$src$V$mb5y86();
+            this.categoryFrame.G(null);
+            this.owner.collapseValueComponents();
         }
-        this.i.l$src$V$1mibm4x();
+        this.categoryFrame.l$src$V$1mibm4x();
     }
 
     ModuleComponentExpandToggleClickHandler(ModuleComponent moduleComponent, ModuleCategoryFrame moduleCategoryFrame) {
-        this.x = moduleComponent;
-        this.i = moduleCategoryFrame;
+        this.owner = moduleComponent;
+        this.categoryFrame = moduleCategoryFrame;
     }
 }
 

@@ -46,7 +46,6 @@ import gg.vape.wrapper.impl.WorldClient;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -55,36 +54,31 @@ import org.lwjgl.opengl.GL11;
 public class BedPlates
 extends Mod {
     private World lastWorld;
-    private BooleanValue showDistance = BooleanValue.create(this, "Show distance", true);
-    private List<BedTargetRenderPosition> bedPositions = new CopyOnWriteArrayList<BedTargetRenderPosition>();
-    private static final long GL_TEXTURE_BINDING_2D = 8840478352411230313L;
-    private HashMap<BedTargetRenderPosition, BedPlateCountState> countStates = new HashMap();
-    int A = 0;
-    private TimerUtil updateTimer = new TimerUtil();
-
-    private static Exception rethrow(Exception exception) {
-        return exception;
-    }
+    private final BooleanValue showDistance = BooleanValue.create(this, "Show distance", true);
+    private final List<BedTargetRenderPosition> bedPositions = new CopyOnWriteArrayList<>();
+    private static final int GL_TEXTURE_BINDING_2D = 32873;
+    private final Map<BedTargetRenderPosition, BedPlateCountState> countStates = new HashMap<>();
+    private int loadedChunkScanTicks;
+    private final TimerUtil updateTimer = new TimerUtil();
 
     @EventHandler
-    public void onRender3D(EventRender3D eventRender3D) {
-        Object object;
-        WorldClient worldClient = eventRender3D.getWorld();
-        if (worldClient.isNull()) {
+    public void onRender3D(EventRender3D event) {
+        WorldClient world = event.getWorld();
+        if (world.isNull()) {
             return;
         }
-        if (!worldClient.equals(this.lastWorld)) {
+        if (!world.equals(this.lastWorld)) {
             this.bedPositions.clear();
             this.countStates.clear();
             return;
         }
-        double d = eventRender3D.getThePlayer().z();
-        double d2 = eventRender3D.getThePlayer().h();
-        for (BedTargetRenderPosition object2 : this.bedPositions) {
-            object = worldClient.getBlockByPos(object2.N(), object2.h(), object2.D$src$I$nuyd86());
-            if (BlockUtil.f((Block)object) && !(MathUtil.Z(d, 0.0, d2, object2.N(), 0.0, object2.D$src$I$nuyd86()) > 100.0)) continue;
-            this.bedPositions.remove(object2);
-            this.countStates.remove(object2);
+        double playerX = event.getThePlayer().z();
+        double playerZ = event.getThePlayer().h();
+        for (BedTargetRenderPosition bedPosition : this.bedPositions) {
+            Block block = world.getBlockByPos(bedPosition.getBlockX(), bedPosition.getBlockY(), bedPosition.getBlockZ());
+            if (BlockUtil.f(block) && MathUtil.Z(playerX, 0.0, playerZ, bedPosition.getBlockX(), 0.0, bedPosition.getBlockZ()) <= 100.0) continue;
+            this.bedPositions.remove(bedPosition);
+            this.countStates.remove(bedPosition);
         }
         try {
             if (this.updateTimer.hasTimeElapsed(500L)) {
@@ -92,69 +86,61 @@ extends Mod {
                 this.updateCountStates();
             }
             if (GuiRenderPrimitives.d()) {
-                for (Map.Entry entry : this.countStates.entrySet()) {
-                    object = (BedPlateCountState)entry.getValue();
-                    this.renderPlate(eventRender3D, (BedPlateCountState)object);
+                for (BedPlateCountState countState : this.countStates.values()) {
+                    this.renderPlate(event, countState);
                 }
             } else {
-                Object object2;
-                int n;
-                for (Map.Entry entry : this.countStates.entrySet()) {
-                    object = (BedPlateCountState)entry.getValue();
-                    for (n = 1; n < 4; ++n) {
-                        List<BedPlateBlockStateKey> list = ((BedPlateCountState)object).c(n);
-                        Iterator<BedPlateBlockStateKey> iterator = list.iterator();
-                        while (iterator.hasNext()) {
-                            object2 = iterator.next();
-                            ItemIconRenderer.k(((BedPlateBlockStateKey)object2).i, ((BedPlateBlockStateKey)object2).f);
+                for (BedPlateCountState countState : this.countStates.values()) {
+                    for (int layer = 1; layer < 4; ++layer) {
+                        for (BedPlateBlockStateKey blockState : countState.getSortedLayer(layer)) {
+                            ItemIconRenderer.precache(blockState.getItemId(), blockState.getMetadata());
                         }
                     }
                 }
-                GlFramebuffer.E = true;
+                GlFramebuffer.skipTextureStateTracking = true;
                 GuiRenderPrimitives.U = true;
-                int n2 = GL11.glGetInteger((int)((int)GL_TEXTURE_BINDING_2D));
-                boolean bl = GL11.glIsEnabled((int)2884);
-                boolean bl2 = GL11.glIsEnabled((int)3042);
-                n = GL11.glIsEnabled((int)2896) ? 1 : 0;
-                eventRender3D.getEntityRenderer().B(1.0);
-                if (n != 0) {
+                int boundTexture = GL11.glGetInteger(GL_TEXTURE_BINDING_2D);
+                boolean cullEnabled = GL11.glIsEnabled(2884);
+                boolean blendEnabled = GL11.glIsEnabled(3042);
+                boolean lightingEnabled = GL11.glIsEnabled(2896);
+                event.getEntityRenderer().B(1.0);
+                if (lightingEnabled) {
                     GlStateManager.disableLighting();
                 }
                 GlStateManager.depthMask(false);
                 GlStateManager.disableDepth();
                 GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-                if (bl) {
+                if (cullEnabled) {
                     GlStateManager.Y();
                 }
-                if (!bl2) {
+                if (!blendEnabled) {
                     GlStateManager.enableBlend();
                 }
-                GuiRenderPrimitives.G.f();
+                GuiRenderPrimitives.G.bind();
                 RenderUtils.g();
-                for (Map.Entry entry : this.countStates.entrySet()) {
-                    object2 = (BedPlateCountState)entry.getValue();
-                    this.renderPlate(eventRender3D, (BedPlateCountState)object2);
+                for (BedPlateCountState countState : this.countStates.values()) {
+                    this.renderPlate(event, countState);
                 }
                 RenderUtils.f();
-                GuiRenderPrimitives.G.L();
+                GuiRenderPrimitives.G.restorePreviousProgram();
                 GlStateManager.enableTexture2D();
                 GlStateManager.enableDepth();
                 GlStateManager.depthMask(true);
-                if (n != 0) {
+                if (lightingEnabled) {
                     GlStateManager.enableLighting();
                 }
                 GlStateManager.disableBlend();
                 GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-                eventRender3D.getEntityRenderer().O(1.0);
-                if (!bl2) {
+                event.getEntityRenderer().O(1.0);
+                if (!blendEnabled) {
                     GlStateManager.disableBlend();
                 }
-                if (bl) {
+                if (cullEnabled) {
                     GlStateManager.L();
                 }
                 GuiRenderPrimitives.U = false;
-                GlFramebuffer.E = false;
-                GlStateManager.bindTexture(n2);
+                GlFramebuffer.skipTextureStateTracking = false;
+                GlStateManager.bindTexture(boundTexture);
             }
         }
         catch (Exception exception) {
@@ -163,45 +149,44 @@ extends Mod {
     }
 
     @Override
-    public void q() {
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        if (entityPlayerSP.isNull()) {
+    public void onScheduledAction() {
+        EntityPlayerSP player = Minecraft.thePlayer();
+        if (player.isNull()) {
             return;
         }
-        WorldClient worldClient = Minecraft.theWorld();
-        if (worldClient.isNull()) {
+        WorldClient world = Minecraft.theWorld();
+        if (world.isNull()) {
             return;
         }
-        int n = (int)entityPlayerSP.z();
-        int n2 = (int)entityPlayerSP.N();
-        int n3 = (int)entityPlayerSP.h();
-        if (worldClient.isNull() || !worldClient.equals(this.lastWorld)) {
+        int playerX = (int)player.z();
+        int playerY = (int)player.N();
+        int playerZ = (int)player.h();
+        if (!world.equals(this.lastWorld)) {
             this.bedPositions.clear();
             this.countStates.clear();
         }
-        this.lastWorld = worldClient;
+        this.lastWorld = world;
         if (ForgeVersion.MC_1_8_9.A()) {
-            int n4 = 100;
-            for (int i = -n4; i < n4; ++i) {
-                for (int j = -n4; j < n4; ++j) {
-                    int n5 = 0;
-                    while (n5 != -1) {
-                        n5 = n5 == 0 ? 1 : -1;
-                        for (int k = 0; k < 20; ++k) {
-                            if (entityPlayerSP.isNull() || worldClient.isNull()) {
+            int scanRadius = 100;
+            for (int offsetX = -scanRadius; offsetX < scanRadius; ++offsetX) {
+                for (int offsetZ = -scanRadius; offsetZ < scanRadius; ++offsetZ) {
+                    int verticalDirection = 0;
+                    while (verticalDirection != -1) {
+                        verticalDirection = verticalDirection == 0 ? 1 : -1;
+                        for (int verticalDistance = 0; verticalDistance < 20; ++verticalDistance) {
+                            if (player.isNull() || world.isNull()) {
                                 return;
                             }
-                            int n6 = n + i;
-                            int n7 = k * n5;
-                            int n8 = n2 + n7;
-                            int n9 = n3 + j;
-                            Block block = worldClient.getBlockByPos(n6, n8, n9);
+                            int blockX = playerX + offsetX;
+                            int blockY = playerY + verticalDistance * verticalDirection;
+                            int blockZ = playerZ + offsetZ;
+                            Block block = world.getBlockByPos(blockX, blockY, blockZ);
                             if (!BlockUtil.f(block)) continue;
-                            BedTargetRenderPosition bedTargetRenderPosition = new BedTargetRenderPosition(n6, n8, n9);
+                            BedTargetRenderPosition bedPosition = new BedTargetRenderPosition(blockX, blockY, blockZ);
                             BlockBed blockBed = new BlockBed(block);
-                            boolean bl = blockBed.f(worldClient, n6, n8, n9);
-                            if (this.bedPositions.contains(bedTargetRenderPosition) || bl) continue;
-                            this.bedPositions.add(bedTargetRenderPosition);
+                            boolean bedHead = blockBed.f(world, blockX, blockY, blockZ);
+                            if (this.bedPositions.contains(bedPosition) || bedHead) continue;
+                            this.bedPositions.add(bedPosition);
                         }
                     }
                 }
@@ -210,218 +195,205 @@ extends Mod {
     }
 
     private void scanLoadedChunks() {
-        WorldClient worldClient = Minecraft.theWorld();
-        ClientChunkProvider clientChunkProvider = worldClient.U();
-        List<Chunk> list = clientChunkProvider.L();
-        EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-        double d = entityPlayerSP.z();
-        double d2 = entityPlayerSP.N();
-        double d3 = entityPlayerSP.h();
-        for (Chunk chunk : list) {
-            List<ChunkSection> list2 = chunk.U();
-            for (ChunkSection chunkSection : list2) {
-                int n;
-                if (!chunkSection.isNotNull()) continue;
-                char[] cArray = chunkSection.C();
-                int n2 = chunkSection.l();
-                int n3 = chunk.a();
-                int n4 = (int)MathUtil.Z(d, 0.0, d3, n3 << 4, 0.0, (n = chunk.j()) << 4);
-                if (n4 > 100) continue;
-                this.scanChunkSection(cArray, n3, n2, n);
+        WorldClient world = Minecraft.theWorld();
+        ClientChunkProvider chunkProvider = world.U();
+        List<Chunk> loadedChunks = chunkProvider.L();
+        EntityPlayerSP player = Minecraft.thePlayer();
+        double playerX = player.z();
+        double playerZ = player.h();
+        for (Chunk chunk : loadedChunks) {
+            for (ChunkSection section : chunk.U()) {
+                if (!section.isNotNull()) continue;
+                char[] blockData = section.C();
+                int sectionBaseY = section.l();
+                int chunkX = chunk.a();
+                int chunkZ = chunk.j();
+                int distance = (int)MathUtil.Z(playerX, 0.0, playerZ, chunkX << 4, 0.0, chunkZ << 4);
+                if (distance > 100) continue;
+                this.scanChunkSection(blockData, chunkX, sectionBaseY, chunkZ);
             }
         }
     }
 
-    private void renderPlate(EventRender3D eventRender3D, BedPlateCountState bedPlateCountState) {
-        Object object;
-        Object object2;
-        float f;
-        EntityPlayerSP entityPlayerSP = eventRender3D.getThePlayer();
-        double d = RenderManager.getInterpolatedRenderPosX();
-        double d2 = RenderManager.getInterpolatedRenderPosY();
-        double d3 = RenderManager.getInterpolatedRenderPosZ();
+    private void renderPlate(EventRender3D event, BedPlateCountState countState) {
+        EntityPlayerSP player = event.getThePlayer();
+        double cameraX = RenderManager.getInterpolatedRenderPosX();
+        double cameraY = RenderManager.getInterpolatedRenderPosY();
+        double cameraZ = RenderManager.getInterpolatedRenderPosZ();
         Timer timer = Minecraft.getTimer();
-        float f2 = timer.renderPartialTicks();
-        double d4 = (double)bedPlateCountState.l().N() - d + 0.5;
-        double d5 = (double)bedPlateCountState.l().h() - d2;
-        double d6 = (double)bedPlateCountState.l().D$src$I$nuyd86() - d3 + 0.5;
-        double d7 = entityPlayerSP.M() + (entityPlayerSP.z() - entityPlayerSP.M()) * (double)f2 - d;
-        double d8 = entityPlayerSP.W() + (entityPlayerSP.N() - entityPlayerSP.W()) * (double)f2 - d2;
-        double d9 = entityPlayerSP.m$src$D$fwnne5() + (entityPlayerSP.h() - entityPlayerSP.m$src$D$fwnne5()) * (double)f2 - d3;
-        Color color = new Color(0, 0, 0, 170);
-        double d10 = RotationUtil.y(d4, d5, d6, d7, d8, d9);
-        double d11 = d10 / 5.0;
-        double d12 = 0.01666666753590107 * (d11 * 0.3 * 3.0);
+        float partialTicks = timer.renderPartialTicks();
+        double plateX = (double)countState.getPosition().getBlockX() - cameraX + 0.5;
+        double plateY = (double)countState.getPosition().getBlockY() - cameraY;
+        double plateZ = (double)countState.getPosition().getBlockZ() - cameraZ + 0.5;
+        double playerRenderX = player.M() + (player.z() - player.M()) * (double)partialTicks - cameraX;
+        double playerRenderY = player.W() + (player.N() - player.W()) * (double)partialTicks - cameraY;
+        double playerRenderZ = player.m$src$D$fwnne5() + (player.h() - player.m$src$D$fwnne5()) * (double)partialTicks - cameraZ;
+        double distance = RotationUtil.y(plateX, plateY, plateZ, playerRenderX, playerRenderY, playerRenderZ);
+        double distanceFactor = distance / 5.0;
+        double plateScale = 0.01666666753590107 * (distanceFactor * 0.3 * 3.0);
         RenderUtil.d();
-        float f3 = FreeLookHudModule.z() ? FreeLookHudModule.w$src$F$1kb9hl5() : eventRender3D.getRenderManager().getPlayerViewX();
-        float f4 = f = FreeLookHudModule.z() ? FreeLookHudModule.c() : eventRender3D.getRenderManager().getPlayerViewY();
+        float viewPitch = FreeLookHudModule.isActive() ? FreeLookHudModule.getRenderPitch() : event.getRenderManager().getPlayerViewX();
+        float viewYaw = FreeLookHudModule.isActive() ? FreeLookHudModule.getRenderYaw() : event.getRenderManager().getPlayerViewY();
         if (ForgeVersion.MC_1_16_5.d()) {
             if (Minecraft.gameSettings().x() == 0) {
-                OpenGlBackendHolder.d.I(d4 + 0.0, d5 + 1.0, d6);
-                OpenGlBackendHolder.d.F(0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(-f3, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(-f, -1.0f, 0.0f, 0.0f);
+                OpenGlBackendHolder.backend.translate(plateX, plateY + 1.0, plateZ);
+                OpenGlBackendHolder.backend.setNormal(0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-viewPitch, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-viewYaw, -1.0f, 0.0f, 0.0f);
             } else {
-                object2 = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().l();
-                double d13 = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosX() - ((ActiveRenderInfo)object2).o().getX();
-                double d14 = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosY() - ((ActiveRenderInfo)object2).o().getY();
-                double d15 = GuiRenderPrimitives.d() ? 0.0 : RenderManager.getInterpolatedRenderPosZ() - ((ActiveRenderInfo)object2).o().getZ();
-                OpenGlBackendHolder.d.I(d4 + d13, d5 + d14 + 1.0, d6 + d15);
-                OpenGlBackendHolder.d.F(0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(-f3, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(f, 1.0f, 0.0f, 0.0f);
+                ActiveRenderInfo renderInfo = Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().l();
+                double renderOffsetX = GuiRenderPrimitives.d() ? 0.0 : cameraX - renderInfo.o().getX();
+                double renderOffsetY = GuiRenderPrimitives.d() ? 0.0 : cameraY - renderInfo.o().getY();
+                double renderOffsetZ = GuiRenderPrimitives.d() ? 0.0 : cameraZ - renderInfo.o().getZ();
+                OpenGlBackendHolder.backend.translate(plateX + renderOffsetX, plateY + renderOffsetY + 1.0, plateZ + renderOffsetZ);
+                OpenGlBackendHolder.backend.setNormal(0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-viewPitch, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(viewYaw, 1.0f, 0.0f, 0.0f);
             }
         } else {
-            OpenGlBackendHolder.d.I(d4 + 0.0, d5 + 1.0, d6);
-            OpenGlBackendHolder.d.F(0.0f, 1.0f, 0.0f);
+            OpenGlBackendHolder.backend.translate(plateX, plateY + 1.0, plateZ);
+            OpenGlBackendHolder.backend.setNormal(0.0f, 1.0f, 0.0f);
             if (Minecraft.gameSettings().x() == 2) {
-                OpenGlBackendHolder.d.X(-f3, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(f, -1.0f, 0.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-viewPitch, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(viewYaw, -1.0f, 0.0f, 0.0f);
             } else {
-                OpenGlBackendHolder.d.X(-f3, 0.0f, 1.0f, 0.0f);
-                OpenGlBackendHolder.d.X(f, 1.0f, 0.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(-viewPitch, 0.0f, 1.0f, 0.0f);
+                OpenGlBackendHolder.backend.rotate(viewYaw, 1.0f, 0.0f, 0.0f);
             }
         }
-        OpenGlBackendHolder.d.G(-d12, -d12, d12);
-        List<BedPlateBlockStateKey> visibleBlockStates = new ArrayList<BedPlateBlockStateKey>();
-        for (int i = 1; i < 4; ++i) {
-            List<BedPlateBlockStateKey> layer = bedPlateCountState.c(i);
-            int n = 0;
-            for (int j = 0; j < layer.size(); ++j) {
-                BedPlateBlockStateKey bedPlateBlockStateKey = layer.get(j);
-                if (bedPlateBlockStateKey.U()) continue;
-                ++n;
-                if (visibleBlockStates.contains(bedPlateBlockStateKey)) continue;
-                visibleBlockStates.add(bedPlateBlockStateKey);
+        OpenGlBackendHolder.backend.scale(-plateScale, -plateScale, plateScale);
+        List<BedPlateBlockStateKey> visibleBlockStates = new ArrayList<>();
+        for (int layerIndex = 1; layerIndex < 4; ++layerIndex) {
+            List<BedPlateBlockStateKey> layer = countState.getSortedLayer(layerIndex);
+            int visibleInLayer = 0;
+            for (BedPlateBlockStateKey blockState : layer) {
+                if (blockState.isNullItem()) continue;
+                ++visibleInLayer;
+                if (visibleBlockStates.contains(blockState)) continue;
+                visibleBlockStates.add(blockState);
             }
-            if (n == 0) break;
+            if (visibleInLayer == 0) break;
         }
-        String string = (int)d10 + "m";
-        object = Vape.INSTANCE.getFontManager().W(1.2, false);
-        int n = Math.max(visibleBlockStates.size(), 1);
-        float f5 = 22.0f;
-        float f6 = n * 18 + 6;
-        if (this.showDistance.L().booleanValue()) {
-            f6 = (float)Math.max(((SmoothFontRenderer)object).N(string) + 10.0, (double)f6);
+        String distanceText = (int)distance + "m";
+        SmoothFontRenderer fontRenderer = Vape.INSTANCE.getFontManager().W(1.2, false);
+        int displayedItemCount = Math.max(visibleBlockStates.size(), 1);
+        float panelHeight = 22.0f;
+        float panelWidth = displayedItemCount * 18 + 6;
+        if (this.showDistance.getEffectiveValue().booleanValue()) {
+            panelWidth = (float)Math.max(fontRenderer.N(distanceText) + 10.0, (double)panelWidth);
         }
-        float f7 = -f6 / 2.0f;
-        float f8 = -f5;
-        if (this.showDistance.L().booleanValue()) {
-            f8 -= 8.0f;
-            f5 += 8.0f;
+        float panelX = -panelWidth / 2.0f;
+        float panelY = -panelHeight;
+        if (this.showDistance.getEffectiveValue().booleanValue()) {
+            panelY -= 8.0f;
+            panelHeight += 8.0f;
         }
         if (GuiRenderPrimitives.d()) {
-            boolean bl = visibleBlockStates.isEmpty();
-            float f9 = this.showDistance.L() != false ? 4.0f : 0.0f;
-            float f10 = bl ? 0.8f : 0.0f;
-            BufferedRenderPrimitives.P(f7, f8 - 1.0f, f6, f5 + 1.0f, 12.0f, 6.0f, new Color(0, 0, 0, 150), 0.0f, 0.0f, 1.0f, new Color(45, 45, 45, 255), new Color(0, 0, 0, 170), f10, f9, new Color(51, 51, 51, 255), false);
-            float f11 = f7 + 4.0f;
-            float f12 = f8 + f5 - 20.0f;
-            Iterator<BedPlateBlockStateKey> iterator = visibleBlockStates.iterator();
-            while (iterator.hasNext()) {
-                BedPlateBlockStateKey bedPlateBlockStateKey = iterator.next();
-                if (bedPlateBlockStateKey.U()) continue;
-                ItemStack itemStack = ItemStack.S(Item.T(bedPlateBlockStateKey.i));
-                ItemIconRenderer.C(itemStack, f11, f12, 16, 16, 1.0f, true);
-                f11 += 18.0f;
+            float distanceCornerRadius = this.showDistance.getEffectiveValue() != false ? 4.0f : 0.0f;
+            float emptyStateOpacity = visibleBlockStates.isEmpty() ? 0.8f : 0.0f;
+            BufferedRenderPrimitives.drawCompositeRoundedRect(panelX, panelY - 1.0f, panelWidth, panelHeight + 1.0f, 12.0f, 6.0f, new Color(0, 0, 0, 150), 0.0f, 0.0f, 1.0f, new Color(45, 45, 45, 255), new Color(0, 0, 0, 170), emptyStateOpacity, distanceCornerRadius, new Color(51, 51, 51, 255), false);
+            float itemX = panelX + 4.0f;
+            float itemY = panelY + panelHeight - 20.0f;
+            for (BedPlateBlockStateKey blockState : visibleBlockStates) {
+                if (blockState.isNullItem()) continue;
+                ItemStack itemStack = ItemStack.S(Item.T(blockState.getItemId()));
+                ItemIconRenderer.renderItemStack(itemStack, itemX, itemY, 16, 16, 1.0f, true);
+                itemX += 18.0f;
             }
-            if (this.showDistance.L().booleanValue()) {
-                ((BufferedSmoothFontRenderer)object).B(string, f7 + f6 / 2.0f, f8 + 2.0f, -1, false, true);
+            if (this.showDistance.getEffectiveValue().booleanValue()) {
+                ((BufferedSmoothFontRenderer)fontRenderer).B(distanceText, panelX + panelWidth / 2.0f, panelY + 2.0f, -1, false, true);
             }
         } else {
-            GuiRenderPrimitives.G.r(false);
-            GuiRenderPrimitives.G.C(visibleBlockStates.isEmpty(), this.showDistance.L());
-            GuiRenderPrimitives.n(f7, (double)f8, (double)f6, (double)f5);
-            GuiRenderPrimitives.G.r(true);
-            float f13 = f7 + 4.0f;
-            float f14 = f8 + f5 - 20.0f;
-            Iterator<BedPlateBlockStateKey> iterator = visibleBlockStates.iterator();
-            while (iterator.hasNext()) {
-                BedPlateBlockStateKey bedPlateBlockStateKey = iterator.next();
-                if (bedPlateBlockStateKey.U()) continue;
-                ItemIconRenderer.m(bedPlateBlockStateKey.i, bedPlateBlockStateKey.f, f13, f14, 16, 16);
-                f13 += 18.0f;
+            GuiRenderPrimitives.G.setShaderDisabled(false);
+            GuiRenderPrimitives.G.setCircleOptions(visibleBlockStates.isEmpty(), this.showDistance.getEffectiveValue());
+            GuiRenderPrimitives.n(panelX, (double)panelY, (double)panelWidth, (double)panelHeight);
+            GuiRenderPrimitives.G.setShaderDisabled(true);
+            float itemX = panelX + 4.0f;
+            float itemY = panelY + panelHeight - 20.0f;
+            for (BedPlateBlockStateKey blockState : visibleBlockStates) {
+                if (blockState.isNullItem()) continue;
+                ItemIconRenderer.renderItem(blockState.getItemId(), blockState.getMetadata(), itemX, itemY, 16, 16);
+                itemX += 18.0f;
             }
-            if (this.showDistance.L().booleanValue()) {
-                ((SmoothFontRenderer)object).L(string, f7 + f6 / 2.0f, f8 + 2.0f, -1);
+            if (this.showDistance.getEffectiveValue().booleanValue()) {
+                fontRenderer.L(distanceText, panelX + panelWidth / 2.0f, panelY + 2.0f, -1);
             }
         }
-        OpenGlBackendHolder.d.F();
+        OpenGlBackendHolder.backend.popMatrix();
     }
 
     @EventHandler
-    public void onTick(EventPreTick eventPreTick) {
-        if (ForgeVersion.MC_1_8_9.L() && Minecraft.theWorld().isNotNull() && this.A++ >= 20) {
+    public void onTick(EventPreTick event) {
+        if (ForgeVersion.MC_1_8_9.L() && Minecraft.theWorld().isNotNull() && this.loadedChunkScanTicks++ >= 20) {
             this.scanLoadedChunks();
-            this.A = 0;
+            this.loadedChunkScanTicks = 0;
         }
     }
 
     private void updateCountStates() {
-        WorldClient worldClient = Minecraft.theWorld();
-        for (BedTargetRenderPosition bedTargetRenderPosition : this.bedPositions) {
-            if (!this.countStates.containsKey(bedTargetRenderPosition)) {
-                this.countStates.put(bedTargetRenderPosition, new BedPlateCountState(bedTargetRenderPosition));
+        WorldClient world = Minecraft.theWorld();
+        for (BedTargetRenderPosition bedPosition : this.bedPositions) {
+            if (!this.countStates.containsKey(bedPosition)) {
+                this.countStates.put(bedPosition, new BedPlateCountState(bedPosition));
             }
-            BedPlateCountState bedPlateCountState = this.countStates.get(bedTargetRenderPosition);
-            bedPlateCountState.y();
-            Block block = worldClient.getBlockByPos(bedTargetRenderPosition.N(), bedTargetRenderPosition.h(), bedTargetRenderPosition.D$src$I$nuyd86());
+            BedPlateCountState countState = this.countStates.get(bedPosition);
+            countState.clearCounts();
+            Block block = world.getBlockByPos(bedPosition.getBlockX(), bedPosition.getBlockY(), bedPosition.getBlockZ());
             BlockBed blockBed = new BlockBed(block);
-            EnumFacing enumFacing = blockBed.e(worldClient, bedTargetRenderPosition.N(), bedTargetRenderPosition.h(), bedTargetRenderPosition.D$src$I$nuyd86());
-            int n = enumFacing.Y();
-            int n2 = 4;
-            for (int i = 1; i < n2; ++i) {
-                int n3 = -i;
-                int n4 = -i;
-                int n5 = i;
-                int n6 = i;
-                int n7 = 0;
-                int n8 = 0;
-                if (n == 2) {
-                    ++n6;
-                    ++n8;
+            EnumFacing facing = blockBed.e(world, bedPosition.getBlockX(), bedPosition.getBlockY(), bedPosition.getBlockZ());
+            int facingIndex = facing.Y();
+            int layerLimit = 4;
+            for (int radius = 1; radius < layerLimit; ++radius) {
+                int minX = -radius;
+                int minZ = -radius;
+                int maxX = radius;
+                int maxZ = radius;
+                int bedOffsetX = 0;
+                int bedOffsetZ = 0;
+                if (facingIndex == 2) {
+                    ++maxZ;
+                    ++bedOffsetZ;
                 }
-                if (n == 3) {
-                    --n4;
-                    --n8;
+                if (facingIndex == 3) {
+                    --minZ;
+                    --bedOffsetZ;
                 }
-                if (n == 4) {
-                    ++n5;
-                    ++n7;
+                if (facingIndex == 4) {
+                    ++maxX;
+                    ++bedOffsetX;
                 }
-                if (n == 5) {
-                    --n3;
-                    --n7;
+                if (facingIndex == 5) {
+                    --minX;
+                    --bedOffsetX;
                 }
-                for (int j = 0; j <= i; ++j) {
-                    for (int k = n3; k <= n5; ++k) {
-                        for (int i2 = n4; i2 <= n6; ++i2) {
-                            int n9;
-                            int n10;
-                            if (k != n3 && k != n5 && i2 != n4 && i2 != n6 && Math.abs(j) != Math.abs(i)) continue;
-                            double d = RotationUtil.r(bedTargetRenderPosition.N(), bedTargetRenderPosition.D$src$I$nuyd86(), bedTargetRenderPosition.N() + k, bedTargetRenderPosition.D$src$I$nuyd86() + i2) + (double)j;
-                            double d2 = RotationUtil.r(bedTargetRenderPosition.N() + n7, bedTargetRenderPosition.D$src$I$nuyd86() + n8, bedTargetRenderPosition.N() + k, bedTargetRenderPosition.D$src$I$nuyd86() + i2) + (double)j;
-                            boolean bl = false;
-                            if (d > (double)i && d2 > (double)i) {
-                                bl = true;
-                            }
-                            Block block2 = worldClient.getBlockByPos(bedTargetRenderPosition.N() + k, bedTargetRenderPosition.h() + j, bedTargetRenderPosition.D$src$I$nuyd86() + i2);
+                for (int offsetY = 0; offsetY <= radius; ++offsetY) {
+                    for (int offsetX = minX; offsetX <= maxX; ++offsetX) {
+                        for (int offsetZ = minZ; offsetZ <= maxZ; ++offsetZ) {
+                            if (offsetX != minX && offsetX != maxX && offsetZ != minZ && offsetZ != maxZ && Math.abs(offsetY) != radius) continue;
+                            double distanceFromFoot = RotationUtil.r(bedPosition.getBlockX(), bedPosition.getBlockZ(), bedPosition.getBlockX() + offsetX, bedPosition.getBlockZ() + offsetZ) + (double)offsetY;
+                            double distanceFromHead = RotationUtil.r(bedPosition.getBlockX() + bedOffsetX, bedPosition.getBlockZ() + bedOffsetZ, bedPosition.getBlockX() + offsetX, bedPosition.getBlockZ() + offsetZ) + (double)offsetY;
+                            boolean belongsToOuterLayer = distanceFromFoot > (double)radius && distanceFromHead > (double)radius;
+                            int blockX = bedPosition.getBlockX() + offsetX;
+                            int blockY = bedPosition.getBlockY() + offsetY;
+                            int blockZ = bedPosition.getBlockZ() + offsetZ;
+                            Block surroundingBlock = world.getBlockByPos(blockX, blockY, blockZ);
+                            int itemId;
                             if (ForgeVersion.MC_1_16_5.d()) {
-                                BlockPos blockPos = BlockPos.create(bedTargetRenderPosition.N() + k, bedTargetRenderPosition.h() + j, bedTargetRenderPosition.D$src$I$nuyd86() + i2);
-                                BlockState blockState = new BlockState(Vape.INSTANCE.getMappings().Cy.u(worldClient.getObject(), blockPos.getObject()));
-                                n10 = block2.Z(worldClient, blockPos, blockState).getItem().P();
+                                BlockPos blockPos = BlockPos.create(blockX, blockY, blockZ);
+                                BlockState blockState = new BlockState(Vape.INSTANCE.getMappings().Cy.u(world.getObject(), blockPos.getObject()));
+                                itemId = surroundingBlock.Z(world, blockPos, blockState).getItem().P();
                             } else {
-                                n10 = Block.R(block2);
+                                itemId = Block.R(surroundingBlock);
                             }
-                            int n11 = ForgeVersion.MC_1_16_5.d() ? -1 : block2.d(bedTargetRenderPosition.N() + k, bedTargetRenderPosition.h() + j, bedTargetRenderPosition.D$src$I$nuyd86() + i2);
-                            int n12 = n9 = bl ? i + 1 : i;
-                            if (n9 >= n2) continue;
-                            BedPlateCountState.j(bedPlateCountState, n9, n10, n11);
+                            int metadata = ForgeVersion.MC_1_16_5.d() ? -1 : surroundingBlock.d(blockX, blockY, blockZ);
+                            int targetLayer = belongsToOuterLayer ? radius + 1 : radius;
+                            if (targetLayer >= layerLimit) continue;
+                            countState.incrementBlock(targetLayer, itemId, metadata);
                         }
                     }
                 }
             }
-            bedPlateCountState.r();
+            countState.sortLayersByFrequency();
         }
     }
 
@@ -431,24 +403,23 @@ extends Mod {
         this.addValue(this.showDistance);
     }
 
-    private void scanChunkSection(char[] cArray, int n, int n2, int n3) {
-        for (int i = 0; i < cArray.length; ++i) {
-            char c = cArray[i];
-            int n4 = c >> 4;
-            int n5 = c & 0xF;
-            if (n4 != 26) continue;
-            int n6 = i % 16;
-            int n7 = i / 256 + n2;
-            int n8 = i / 16 % 16;
-            int n9 = (n << 4) + n6;
-            int n10 = (n3 << 4) + n8;
-            Block block = Minecraft.theWorld().getBlockByPos(n9, n7, n10);
-            BedTargetRenderPosition bedTargetRenderPosition = new BedTargetRenderPosition(n9, n7, n10);
+    private void scanChunkSection(char[] blockData, int chunkX, int sectionBaseY, int chunkZ) {
+        for (int blockIndex = 0; blockIndex < blockData.length; ++blockIndex) {
+            char packedBlock = blockData[blockIndex];
+            int blockId = packedBlock >> 4;
+            if (blockId != 26) continue;
+            int localX = blockIndex % 16;
+            int blockY = blockIndex / 256 + sectionBaseY;
+            int localZ = blockIndex / 16 % 16;
+            int blockX = (chunkX << 4) + localX;
+            int blockZ = (chunkZ << 4) + localZ;
+            Block block = Minecraft.theWorld().getBlockByPos(blockX, blockY, blockZ);
+            BedTargetRenderPosition bedPosition = new BedTargetRenderPosition(blockX, blockY, blockZ);
             BlockBed blockBed = new BlockBed(block);
-            boolean bl = blockBed.f(Minecraft.theWorld(), n9, n7, n10);
-            if (this.bedPositions.contains(bedTargetRenderPosition) || bl) continue;
-            this.bedPositions.add(bedTargetRenderPosition);
-            this.countStates.put(bedTargetRenderPosition, new BedPlateCountState(bedTargetRenderPosition));
+            boolean bedHead = blockBed.f(Minecraft.theWorld(), blockX, blockY, blockZ);
+            if (this.bedPositions.contains(bedPosition) || bedHead) continue;
+            this.bedPositions.add(bedPosition);
+            this.countStates.put(bedPosition, new BedPlateCountState(bedPosition));
         }
     }
 }

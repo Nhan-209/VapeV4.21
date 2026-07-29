@@ -157,7 +157,7 @@ public class RotationUtil {
 
     public static float x(EntityLivingBase entityLivingBase) {
         if (entityLivingBase.isInstance(MappedClasses.Yl)) {
-            return AttackStrengthTracker.B.S(new EntityPlayer(entityLivingBase));
+            return AttackStrengthTracker.INSTANCE.getEstimatedHealth(new EntityPlayer(entityLivingBase));
         }
         return entityLivingBase.w$src$F$15l9epb();
     }
@@ -449,7 +449,7 @@ public class RotationUtil {
         } else if (d3 < 0.0 && d2 < 0.0) {
             d = 90.0 + Math.toDegrees(Math.atan(d3 / d2));
         }
-        float f = RotationManager.b.V();
+        float f = RotationManager.INSTANCE.getManagedYaw();
         int n = (int)(Math.abs(d - (double)f) % 360.0);
         return n > 180 ? 360 - n : n;
     }
@@ -593,7 +593,7 @@ public class RotationUtil {
     public static double L(Entity entity) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         double d = entityPlayerSP.getDistanceToEntity(entity);
-        double d2 = RotationManager.b.V();
+        double d2 = RotationManager.INSTANCE.getManagedYaw();
         double d3 = Math.cos(Math.toRadians(d2 + 90.0)) * d;
         double d4 = Math.sin(Math.toRadians(d2 + 90.0)) * d;
         double d5 = entityPlayerSP.z() + d3;

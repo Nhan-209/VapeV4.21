@@ -70,34 +70,34 @@ implements RefreshableSettingsPayload {
     @Override
     public void H() {
         if (this.x == null) {
-            this.x = (Boolean)OnlineConnectionManager.T.S().X$src$Lgg_vape_value_BooleanValue_$7rygmo().P$src$Ljava_lang_Object_$qcpui1();
+            this.x = (Boolean)OnlineConnectionManager.T.S().X$src$Lgg_vape_value_BooleanValue_$7rygmo().getDefaultValue();
         }
         if (this.m == null) {
             this.m = new LinkedHashMap<Long, Boolean>();
         }
         if (this.R == null) {
-            this.R = (Boolean)OnlineConnectionManager.T.S().z().P$src$Ljava_lang_Object_$qcpui1();
+            this.R = (Boolean)OnlineConnectionManager.T.S().z().getDefaultValue();
         }
         if (this.y == null) {
-            this.y = (Boolean)OnlineConnectionManager.T.S().O().P$src$Ljava_lang_Object_$qcpui1();
+            this.y = (Boolean)OnlineConnectionManager.T.S().O().getDefaultValue();
         }
         if (this.X == null) {
-            this.X = (Boolean)OnlineConnectionManager.T.S().k$src$Lgg_vape_value_BooleanValue_$ffgfgd().P$src$Ljava_lang_Object_$qcpui1();
+            this.X = (Boolean)OnlineConnectionManager.T.S().k$src$Lgg_vape_value_BooleanValue_$ffgfgd().getDefaultValue();
         }
         if (this.c == null) {
-            this.c = (Boolean)OnlineConnectionManager.T.S().l().P$src$Ljava_lang_Object_$qcpui1();
+            this.c = (Boolean)OnlineConnectionManager.T.S().l().getDefaultValue();
         }
         if (this.F == null) {
-            this.F = OnlineConnectionManager.T.S().p().toJson$src$Lcom_google_gson_JsonArray_$13cfbto();
+            this.F = OnlineConnectionManager.T.S().p().serializeBoundInputs();
         }
         if (this.D == null) {
-            this.D = OnlineConnectionManager.T.S().k().toJson$src$Lcom_google_gson_JsonArray_$13cfbto();
+            this.D = OnlineConnectionManager.T.S().k().serializeBoundInputs();
         }
         if (this.k == null) {
-            this.k = OnlineConnectionManager.T.S().r$src$Lgg_vape_value_ModeValue_$lqfla9().w$src$I$15qcf2k();
+            this.k = OnlineConnectionManager.T.S().r$src$Lgg_vape_value_ModeValue_$lqfla9().getSelectedIndex();
         }
         if (this.S == null) {
-            this.S = (Boolean)OnlineConnectionManager.T.S().j$src$Lgg_vape_value_BooleanValue_$1co7xi6().P$src$Ljava_lang_Object_$qcpui1();
+            this.S = (Boolean)OnlineConnectionManager.T.S().j$src$Lgg_vape_value_BooleanValue_$1co7xi6().getDefaultValue();
         }
     }
 
@@ -107,20 +107,20 @@ implements RefreshableSettingsPayload {
 
     @Override
     public void M() {
-        this.x = OnlineConnectionManager.T.S().X$src$Lgg_vape_value_BooleanValue_$7rygmo().L();
+        this.x = OnlineConnectionManager.T.S().X$src$Lgg_vape_value_BooleanValue_$7rygmo().getEffectiveValue();
         this.m.clear();
         for (OnlineFriend onlineFriend : Vape.INSTANCE.getOnlineFriendManager().g()) {
             if (!onlineFriend.y()) continue;
             this.m.put(onlineFriend.S().g(), true);
         }
-        this.R = OnlineConnectionManager.T.S().z().L();
-        this.y = OnlineConnectionManager.T.S().O().L();
-        this.X = OnlineConnectionManager.T.S().k$src$Lgg_vape_value_BooleanValue_$ffgfgd().L();
-        this.c = OnlineConnectionManager.T.S().l().L();
-        this.F = OnlineConnectionManager.T.S().p().toJson$src$Lcom_google_gson_JsonArray_$13cfbto();
-        this.k = OnlineConnectionManager.T.S().r$src$Lgg_vape_value_ModeValue_$lqfla9().w$src$I$15qcf2k();
-        this.S = OnlineConnectionManager.T.S().j$src$Lgg_vape_value_BooleanValue_$1co7xi6().L();
-        this.D = OnlineConnectionManager.T.S().k().toJson$src$Lcom_google_gson_JsonArray_$13cfbto();
+        this.R = OnlineConnectionManager.T.S().z().getEffectiveValue();
+        this.y = OnlineConnectionManager.T.S().O().getEffectiveValue();
+        this.X = OnlineConnectionManager.T.S().k$src$Lgg_vape_value_BooleanValue_$ffgfgd().getEffectiveValue();
+        this.c = OnlineConnectionManager.T.S().l().getEffectiveValue();
+        this.F = OnlineConnectionManager.T.S().p().serializeBoundInputs();
+        this.k = OnlineConnectionManager.T.S().r$src$Lgg_vape_value_ModeValue_$lqfla9().getSelectedIndex();
+        this.S = OnlineConnectionManager.T.S().j$src$Lgg_vape_value_BooleanValue_$1co7xi6().getEffectiveValue();
+        this.D = OnlineConnectionManager.T.S().k().serializeBoundInputs();
     }
 
 

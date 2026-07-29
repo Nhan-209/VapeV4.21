@@ -6,26 +6,26 @@ import gg.vape.ui.click.frame.impl.hud.HudModuleOverviewListFrame;
 
 public class HudModuleOverviewFrame
 extends Frame {
-    private HudModuleOverviewListFrame gq = new HudModuleOverviewListFrame(this);
-    private static final String eb = "LegitMinModuleFrame";
-    private boolean gR = false;
+    private static final String FRAME_NAME = "LegitMinModuleFrame";
+    private final HudModuleOverviewListFrame moduleList = new HudModuleOverviewListFrame();
+    private boolean initialized;
 
     @Override
     public void c() {
         super.c();
-        if (!this.gR) {
-            this.gq.U();
-            this.gR = true;
+        if (!this.initialized) {
+            this.moduleList.U();
+            this.initialized = true;
         }
-        this.gq.o(this.A());
-        this.gq.Y(this.L());
-        this.gq.M(this.G$src$D$1b2f02a(), this.n() + this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
+        this.moduleList.o(this.A());
+        this.moduleList.Y(this.L());
+        this.moduleList.M(this.G$src$D$1b2f02a(), this.n() + this.j$src$Lgg_vape_ui_click_frame_FrameHeaderComponent_$175vsfc().L());
     }
 
     @Override
     public void t(boolean bl, boolean bl2) {
         super.t(bl, bl2);
-        this.gq.Z(bl);
+        this.moduleList.setVisible(bl);
     }
 
     @Override
@@ -40,7 +40,7 @@ extends Frame {
 
     @Override
     public String getName() {
-        return eb;
+        return FRAME_NAME;
     }
 
     public HudModuleOverviewFrame() {
@@ -49,9 +49,9 @@ extends Frame {
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().I(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().U(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().u(false);
-        this.T(HudModuleOverviewFrame.J.i);
+        this.setDisabledOverlayColor(HudModuleOverviewFrame.J.i);
         this.Y(new HudModuleOverviewHeaderComponent(this));
-        this.Z(false);
+        this.setVisible(false);
         this.L(false, false);
         this.g(true);
     }
@@ -61,8 +61,8 @@ extends Frame {
     public void v() {
     }
 
-    public HudModuleOverviewListFrame s$src$Lgg_vape_ui_click_frame_impl_hud_HudModuleOvervi$1xo3dwo() {
-        return this.gq;
+    public HudModuleOverviewListFrame getModuleList() {
+        return this.moduleList;
     }
 
     @Override
@@ -73,7 +73,7 @@ extends Frame {
     @Override
     public void U() {
         super.U();
-        this.gq.U();
+        this.moduleList.U();
     }
 
     @Override

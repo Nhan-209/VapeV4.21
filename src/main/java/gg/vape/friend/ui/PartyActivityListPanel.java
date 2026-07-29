@@ -44,7 +44,7 @@ extends PanelComponent {
     public PartyActivityListPanel() {
         super(114.0, 0.0);
         this.wu = new ArrayList<GuiComponent>();
-        this.d(false);
+        this.setShowDisabledOverlay(false);
         this.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("wrap");
         this.wq = OnlineActivityPanelOptions.p;
     }
@@ -60,8 +60,8 @@ extends PanelComponent {
     @Override
     public void H() {
         boolean bl;
-        boolean bl2 = bl = ClientSettings.fW != null && ClientSettings.fW.b$src$Lgg_vape_ui_click_frame_FrameStackManager_$8fdo9v() instanceof ClickGuiFrameManager;
-        double d = ClientSettings.fW.v() ? this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().n() : (bl ? this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().n() : (((HudSettingsFrameBase)this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb()).q() ? this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().n() + 20.0 : this.B$src$Lgg_vape_ui_click_frame_FrameComponent_$1yr52yb().n() + 107.0));
+        boolean bl2 = bl = ClientSettings.INSTANCE != null && ClientSettings.INSTANCE.getActiveStack() instanceof ClickGuiFrameManager;
+        double d = ClientSettings.INSTANCE.isInputEnabled() ? this.getParentFrameComponent().n() : (bl ? this.getParentFrameComponent().n() : (((HudSettingsFrameBase)this.getParentFrameComponent()).q() ? this.getParentFrameComponent().n() + 20.0 : this.getParentFrameComponent().n() + 107.0));
         this.S(d);
         boolean bl3 = this.S$src$Z$1pghvaa();
         if (bl3) {
@@ -78,12 +78,12 @@ extends PanelComponent {
     }
 
     private boolean S$src$Z$1pghvaa() {
-        return this.w9.isEmpty() && !ClientSettings.fW.P && HudModuleConfigFrameBase.h$src$Z$1tlh1co();
+        return this.w9.isEmpty() && !ClientSettings.INSTANCE.inputEnabled && HudModuleConfigFrameBase.isHudEditorContext();
     }
 
     private void e(List<OnlineFriendActivityState> list) {
         this.b$src$V$1poqs39();
-        if (OnlineConnectionManager.T.S().j$src$Lgg_vape_value_BooleanValue_$1co7xi6().L().booleanValue()) {
+        if (OnlineConnectionManager.T.S().j$src$Lgg_vape_value_BooleanValue_$1co7xi6().getEffectiveValue().booleanValue()) {
             this.w9.add(Vape.INSTANCE.getOnlineManager().r().X());
         }
         for (OnlineFriendActivityState object : list) {
@@ -133,7 +133,7 @@ extends PanelComponent {
 
     private void N$src$V$1pdqw81() {
         for (GuiComponent guiComponent : this.wu) {
-            this.I(guiComponent);
+            this.removeChild(guiComponent);
         }
         this.wu.clear();
         this.wj = false;
@@ -150,7 +150,7 @@ extends PanelComponent {
         this.wn = 0;
         for (GuiComponent guiComponent : this.f()) {
             if (guiComponent instanceof SettingsFrameHeaderComponent) continue;
-            this.I(guiComponent);
+            this.removeChild(guiComponent);
         }
         this.w9.clear();
         this.wu.clear();

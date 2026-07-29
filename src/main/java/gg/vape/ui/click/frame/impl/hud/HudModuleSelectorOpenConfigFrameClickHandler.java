@@ -8,26 +8,26 @@ import gg.vape.ui.click.frame.impl.hud.HudModuleSelectorHeaderComponent;
 
 class HudModuleSelectorOpenConfigFrameClickHandler
 implements GuiClickListener {
-    final HudModuleSelectorHeaderComponent A;
+    private final HudModuleSelectorHeaderComponent header;
 
     HudModuleSelectorOpenConfigFrameClickHandler(HudModuleSelectorHeaderComponent hudModuleSelectorHeaderComponent) {
-        this.A = hudModuleSelectorHeaderComponent;
+        this.header = hudModuleSelectorHeaderComponent;
     }
 
     @Override
-    public void P() {
-        HudModuleConfigFrame hudModuleConfigFrame = ClientSettings.g(HudModuleConfigFrame.class);
+    public void onPrimaryClick() {
+        HudModuleConfigFrame hudModuleConfigFrame = ClientSettings.getFrame(HudModuleConfigFrame.class);
         if (hudModuleConfigFrame == null) {
             return;
         }
-        hudModuleConfigFrame.T("Settings");
-        hudModuleConfigFrame.S();
+        hudModuleConfigFrame.setTitle("Settings");
+        hudModuleConfigFrame.removeMarkedChildren();
         hudModuleConfigFrame.h(new SimpleTextLabelComponent("No settings yet"), new Object[0]);
-        HudModuleSelectorHeaderComponent.a(this.A).Z(true);
-        hudModuleConfigFrame.Z(true);
+        this.header.getSettingsButton().setVisible(true);
+        hudModuleConfigFrame.setVisible(true);
         hudModuleConfigFrame.U();
         hudModuleConfigFrame.t(hudModuleConfigFrame.L());
-        hudModuleConfigFrame.R(1);
+        hudModuleConfigFrame.beginOpening();
         hudModuleConfigFrame.l$src$V$1mibm4x();
     }
 

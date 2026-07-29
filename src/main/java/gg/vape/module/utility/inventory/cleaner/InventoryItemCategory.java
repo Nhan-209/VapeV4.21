@@ -12,22 +12,21 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 public interface InventoryItemCategory
 extends INamed {
-    public String F();
+    public String getId();
 
-    public @UnmodifiableView List<InventoryItemMatcher> i();
+    public @UnmodifiableView List<InventoryItemMatcher> getMatchers();
 
     @Override
     public String getName();
 
-    public static DefaultInventoryItemCategoryBuilder L() {
+    public static DefaultInventoryItemCategoryBuilder builder() {
         return new DefaultInventoryItemCategoryBuilder();
     }
 
-    public boolean V(ItemFilterSelection var1);
+    public boolean isCompatible(ItemFilterSelection selection);
 
-    public String r();
+    public String getDisplayName();
 
     @Nullable
-    public Comparator<ItemStack> j();
+    public Comparator<ItemStack> getComparator();
 }
-

@@ -7,8 +7,8 @@ import gg.vape.ui.click.frame.impl.profile.ProfilesSettingsFrame;
 
 class ProfileRenameInputComponent
 extends TextInputComponentBase {
-    final TruncatedTextComponent zj;
-    final ProfileListEntryComponent zI;
+    private final TruncatedTextComponent nameDisplay;
+    private final ProfileListEntryComponent entry;
 
     @Override
     public double x() {
@@ -16,33 +16,26 @@ extends TextInputComponentBase {
     }
 
 
-    ProfileRenameInputComponent(ProfileListEntryComponent profileListEntryComponent, String string, TruncatedTextComponent truncatedTextComponent) {
-        super(string);
-        this.zI = profileListEntryComponent;
-        this.zj = truncatedTextComponent;
+    ProfileRenameInputComponent(ProfileListEntryComponent entry, String profileName, TruncatedTextComponent nameDisplay) {
+        super(profileName);
+        this.entry = entry;
+        this.nameDisplay = nameDisplay;
     }
 
     @Override
     public double C() {
-        double d;
-        if (this.V$src$Z$1xhop3l()) {
-            this.getClass();
-            d = 17.5 + 5.0;
-        } else {
-            d = 0.0;
-        }
-        return d;
+        return this.V$src$Z$1xhop3l() ? 22.5 : 0.0;
     }
 
     @Override
-    public void p() {
-        this.Z(false);
-        String string = this.i$src$Ljava_lang_String_$1n2xf3k().trim();
-        if (string.isEmpty()) {
+    public void submit() {
+        this.setVisible(false);
+        String profileName = this.getText().trim();
+        if (profileName.isEmpty()) {
             return;
         }
-        ProfileListEntryComponent.f(this.zI).h(string);
-        this.zj.O(ProfileListEntryComponent.f(this.zI).n$src$Ljava_lang_String_$xqhelw());
-        ProfilesSettingsFrame.Z$src$V$6cxyg1();
+        this.entry.getProfile().h(profileName);
+        this.nameDisplay.setText(this.entry.getProfile().n$src$Ljava_lang_String_$xqhelw());
+        ProfilesSettingsFrame.refreshProfileList();
     }
 }

@@ -7,13 +7,13 @@ import java.awt.Color;
 
 public class CenteredGlyphComponent
 extends GuiComponent {
-    private String o;
-    private float K;
-    private float I;
-    private Color R;
+    private String glyphResource;
+    private float glyphHeight;
+    private float glyphWidth;
+    private Color color;
 
-    public void H(Color color) {
-        this.R = color;
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     @Override
@@ -24,68 +24,67 @@ extends GuiComponent {
     public void I() {
     }
 
-    public void B(String string) {
-        this.o = string;
+    public void setGlyphResource(String glyphResource) {
+        this.glyphResource = glyphResource;
     }
 
-    public String L$src$Ljava_lang_String_$p6m3nd() {
-        return this.o;
+    public String getGlyphResource() {
+        return this.glyphResource;
     }
 
-    public CenteredGlyphComponent(String string, float f, float f2, Color color) {
-        this.o = string;
-        this.I = f;
-        this.K = f2;
-        this.R = color;
+    public CenteredGlyphComponent(String glyphResource, float glyphWidth, float glyphHeight, Color color) {
+        this.glyphResource = glyphResource;
+        this.glyphWidth = glyphWidth;
+        this.glyphHeight = glyphHeight;
+        this.color = color;
     }
 
     @Override
     public double x() {
-        return this.I;
+        return this.glyphWidth;
     }
 
     @Override
-    public void g(GuiMouseEvent guiMouseEvent) {
+    public void g(GuiMouseEvent mouseEvent) {
     }
 
-    public void H(float f) {
-        this.K = f;
+    public void setGlyphHeight(float glyphHeight) {
+        this.glyphHeight = glyphHeight;
     }
 
-    public void Z(float f) {
-        this.I = f;
+    public void setGlyphWidth(float glyphWidth) {
+        this.glyphWidth = glyphWidth;
     }
 
-    public Color L$src$Ljava_awt_Color_$ombltl() {
-        return this.R;
+    public Color getColor() {
+        return this.color;
     }
 
     @Override
     public void F() {
     }
 
-    public float b$src$F$1epz9s3() {
-        return this.I;
+    public float getGlyphWidth() {
+        return this.glyphWidth;
     }
 
-    public CenteredGlyphComponent(String string, float f, float f2) {
-        this(string, f, f2, Color.white);
+    public CenteredGlyphComponent(String glyphResource, float glyphWidth, float glyphHeight) {
+        this(glyphResource, glyphWidth, glyphHeight, Color.white);
     }
 
-    public float e() {
-        return this.K;
+    public float getGlyphHeight() {
+        return this.glyphHeight;
     }
 
     @Override
     public double C() {
-        return this.K;
+        return this.glyphHeight;
     }
 
     @Override
     public void H() {
-        float f = this.b$src$F$1epz9s3() / 2.0f;
-        float f2 = this.e() / 2.0f;
-        ImageRenderer.E(this.R, (float)this.G$src$D$1b2f02a() + f, (float)this.n() + f2, this.o, this.I, this.K, false);
+        float centerOffsetX = this.getGlyphWidth() / 2.0f;
+        float centerOffsetY = this.getGlyphHeight() / 2.0f;
+        ImageRenderer.drawImage(this.color, (float)this.G$src$D$1b2f02a() + centerOffsetX, (float)this.n() + centerOffsetY, this.glyphResource, this.glyphWidth, this.glyphHeight, false);
     }
 }
-

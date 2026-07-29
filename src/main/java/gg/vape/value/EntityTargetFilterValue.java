@@ -18,189 +18,187 @@ import java.util.List;
 
 public class EntityTargetFilterValue
 extends Value<Boolean[], EntityTargetFilterValue> {
-    private final BooleanValue u = BooleanValue.D(this, "Players" + this.P$src$Ljava_lang_String_$1ijjhmj(), "Players", true);
-    private final BooleanValue D;
-    private final List<BooleanValue> R;
-    private final BooleanValue G;
-    private final BooleanValue b;
-    private final BooleanValue Z;
-    boolean V;
-    private final BooleanValue O;
-    private final BooleanValue o = BooleanValue.D(this, "Mobs" + this.P$src$Ljava_lang_String_$1ijjhmj(), "Mobs", false);
+    private final BooleanValue playersValue = BooleanValue.createWithDisplayName(this, "Players" + this.getId(), "Players", true);
+    private final BooleanValue ignoreBehindWallsValue;
+    private final List<BooleanValue> filterValues;
+    private final BooleanValue ignoreNakedValue;
+    private final BooleanValue ignoreInvisibleValue;
+    private final BooleanValue peacefulValue;
+    boolean synchronizingValues;
+    private final BooleanValue neutralValue;
+    private final BooleanValue mobsValue = BooleanValue.createWithDisplayName(this, "Mobs" + this.getId(), "Mobs", false);
 
     @Override
-    public String c() {
-        String string;
-        StringBuilder stringBuilder = new StringBuilder();
-        if (this.u.L().booleanValue()) {
-            stringBuilder.append("Players ");
+    public String getDisplayValue() {
+        String displayValue;
+        StringBuilder displayBuilder = new StringBuilder();
+        if (this.playersValue.getEffectiveValue().booleanValue()) {
+            displayBuilder.append("Players ");
         }
-        if (this.o.L().booleanValue()) {
-            stringBuilder.append("Mobs ");
+        if (this.mobsValue.getEffectiveValue().booleanValue()) {
+            displayBuilder.append("Mobs ");
         }
-        if (this.Z.L().booleanValue()) {
-            stringBuilder.append("Peaceful ");
+        if (this.peacefulValue.getEffectiveValue().booleanValue()) {
+            displayBuilder.append("Peaceful ");
         }
-        if (this.O.L().booleanValue()) {
-            stringBuilder.append("Neutral ");
+        if (this.neutralValue.getEffectiveValue().booleanValue()) {
+            displayBuilder.append("Neutral ");
         }
-        if ((string = stringBuilder.toString().trim()).isEmpty()) {
-            string = "None";
+        if ((displayValue = displayBuilder.toString().trim()).isEmpty()) {
+            displayValue = "None";
         }
-        if (this.G.L().booleanValue() || this.b.L().booleanValue() || this.D.L().booleanValue()) {
-            stringBuilder.append(" | ");
-            if (this.G.L().booleanValue()) {
-                stringBuilder.append("NoNaked ");
+        if (this.ignoreNakedValue.getEffectiveValue().booleanValue() || this.ignoreInvisibleValue.getEffectiveValue().booleanValue() || this.ignoreBehindWallsValue.getEffectiveValue().booleanValue()) {
+            displayBuilder.append(" | ");
+            if (this.ignoreNakedValue.getEffectiveValue().booleanValue()) {
+                displayBuilder.append("NoNaked ");
             }
-            if (this.b.L().booleanValue()) {
-                stringBuilder.append("NoInvis ");
+            if (this.ignoreInvisibleValue.getEffectiveValue().booleanValue()) {
+                displayBuilder.append("NoInvis ");
             }
-            if (this.D.L().booleanValue()) {
-                stringBuilder.append("NoWalls");
+            if (this.ignoreBehindWallsValue.getEffectiveValue().booleanValue()) {
+                displayBuilder.append("NoWalls");
             }
-            string = stringBuilder.toString().trim();
+            displayValue = displayBuilder.toString().trim();
         }
-        return string;
+        return displayValue;
     }
 
-    public BooleanValue S$src$Lgg_vape_value_BooleanValue_$7aakrq() {
-        return this.O;
+    public BooleanValue getNeutralValue() {
+        return this.neutralValue;
     }
 
-    public List<BooleanValue> i() {
-        return this.R;
+    public List<BooleanValue> getFilterValues() {
+        return this.filterValues;
     }
 
-    public EntityTargetFilterValue(Object object, String string) {
-        super(object, string, new Boolean[7]);
-        this.Z = BooleanValue.D(this, "Peaceful" + this.P$src$Ljava_lang_String_$1ijjhmj(), "Peaceful", false);
-        this.O = BooleanValue.D(this, "Neutral" + this.P$src$Ljava_lang_String_$1ijjhmj(), "Neutral", false);
-        this.G = BooleanValue.D(this, "Ignore Naked" + this.P$src$Ljava_lang_String_$1ijjhmj(), "Ignore naked", false);
-        this.b = BooleanValue.D(this, "Ignore invisible" + this.P$src$Ljava_lang_String_$1ijjhmj(), "Ignore invisible", false);
-        this.D = BooleanValue.D(this, "Ignore behind walls" + this.P$src$Ljava_lang_String_$1ijjhmj(), "Ignore behind walls", false);
-        this.R = Arrays.asList(this.u, this.o, this.Z, this.O, this.G, this.b, this.D);
-        for (int i = 0; i < this.R.size(); ++i) {
-            ((Boolean[])this.P$src$Ljava_lang_Object_$qcpui1())[i] = (Boolean)this.R.get(i).P$src$Ljava_lang_Object_$qcpui1();
-            this.R.get(i).B(this::lambda$new$0);
+    public EntityTargetFilterValue(Object owner, String name) {
+        super(owner, name, new Boolean[7]);
+        this.peacefulValue = BooleanValue.createWithDisplayName(this, "Peaceful" + this.getId(), "Peaceful", false);
+        this.neutralValue = BooleanValue.createWithDisplayName(this, "Neutral" + this.getId(), "Neutral", false);
+        this.ignoreNakedValue = BooleanValue.createWithDisplayName(this, "Ignore Naked" + this.getId(), "Ignore naked", false);
+        this.ignoreInvisibleValue = BooleanValue.createWithDisplayName(this, "Ignore invisible" + this.getId(), "Ignore invisible", false);
+        this.ignoreBehindWallsValue = BooleanValue.createWithDisplayName(this, "Ignore behind walls" + this.getId(), "Ignore behind walls", false);
+        this.filterValues = Arrays.asList(this.playersValue, this.mobsValue, this.peacefulValue, this.neutralValue, this.ignoreNakedValue, this.ignoreInvisibleValue, this.ignoreBehindWallsValue);
+        for (int index = 0; index < this.filterValues.size(); ++index) {
+            ((Boolean[])this.getDefaultValue())[index] = (Boolean)this.filterValues.get(index).getDefaultValue();
+            this.filterValues.get(index).addChangeListener(this::handleFilterValueChanged);
         }
     }
 
-    public BooleanValue x() {
-        return this.D;
+    public BooleanValue getIgnoreBehindWallsValue() {
+        return this.ignoreBehindWallsValue;
     }
 
-    public BooleanValue r$src$Lgg_vape_value_BooleanValue_$167auuf() {
-        return this.Z;
+    public BooleanValue getPeacefulValue() {
+        return this.peacefulValue;
     }
 
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (BooleanValue booleanValue : this.R) {
-            stringBuilder.append(booleanValue.L() != false ? "1" : "0");
+        StringBuilder serializedFilters = new StringBuilder();
+        for (BooleanValue filterValue : this.filterValues) {
+            serializedFilters.append(filterValue.getEffectiveValue() != false ? "1" : "0");
         }
-        return stringBuilder.toString();
+        return serializedFilters.toString();
     }
 
-    public void U(Boolean[] booleanArray) {
-        for (int i = 0; i < this.R.size(); ++i) {
-            this.R.get(i).o(booleanArray[i]);
+    public void setFilterValues(Boolean[] filterSnapshot) {
+        for (int index = 0; index < this.filterValues.size(); ++index) {
+            this.filterValues.get(index).setValue(filterSnapshot[index]);
         }
-        super.o(booleanArray);
+        super.setValue(filterSnapshot);
     }
 
-    public BooleanValue q$src$Lgg_vape_value_BooleanValue_$4eyax4() {
-        return this.G;
+    public BooleanValue getIgnoreNakedValue() {
+        return this.ignoreNakedValue;
     }
 
 
     @Override
-    public void parse(String string) {
-        for (int i = 0; i < string.toCharArray().length && this.R.size() > i; ++i) {
-            this.R.get(i).o(string.charAt(i) == '1');
+    public void parse(String serializedFilters) {
+        for (int index = 0; index < serializedFilters.length() && this.filterValues.size() > index; ++index) {
+            this.filterValues.get(index).setValue(serializedFilters.charAt(index) == '1');
         }
     }
 
     @Override
     public boolean loadJson(JsonObject jsonObject) {
-        boolean bl = super.loadJson(jsonObject);
+        boolean loaded = super.loadJson(jsonObject);
         this.parse(this.toString());
-        return bl;
+        return loaded;
     }
 
     @Override
-    public JsonObject H(boolean bl) {
+    public JsonObject toJson(boolean includeValue) {
         JsonObject jsonObject = this.toJson();
         jsonObject.addProperty("value", this.toString());
         return jsonObject;
     }
 
-    public BooleanValue f() {
-        return this.o;
+    public BooleanValue getMobsValue() {
+        return this.mobsValue;
     }
 
     @Override
-    public boolean k() {
-        return this.R.stream().allMatch(Value::k);
+    public boolean isDefault() {
+        return this.filterValues.stream().allMatch(Value::isDefault);
     }
 
     @Override
-    public void S() {
-        super.S();
-        if (this.N$src$Z$1a793rp()) {
-            for (BooleanValue booleanValue : this.R) {
-                booleanValue.S();
+    public void reset() {
+        super.reset();
+        if (this.isResettable()) {
+            for (BooleanValue filterValue : this.filterValues) {
+                filterValue.reset();
             }
         }
     }
 
-    private void lambda$new$0(BooleanValue booleanValue) {
-        if (this.V) {
+    private void handleFilterValueChanged(BooleanValue changedFilterValue) {
+        if (this.synchronizingValues) {
             return;
         }
-        this.V = true;
-        this.U(this.H());
-        this.V = false;
+        this.synchronizingValues = true;
+        this.setFilterValues(this.getFilterValueSnapshot());
+        this.synchronizingValues = false;
     }
 
-    public BooleanValue E() {
-        return this.b;
+    public BooleanValue getIgnoreInvisibleValue() {
+        return this.ignoreInvisibleValue;
     }
 
-    public EntityTargetFilterValue e() {
-        EntityTargetFilterValue entityTargetFilterValue = new EntityTargetFilterValue(null, this.P$src$Ljava_lang_String_$1ijjhmj());
-        return entityTargetFilterValue;
+    public EntityTargetFilterValue copyDefinition() {
+        return new EntityTargetFilterValue(null, this.getId());
     }
 
     @Override
-    public EntityTargetFilterValue getALimit() {
-        return this.e();
+    public EntityTargetFilterValue copyValueDefinition() {
+        return this.copyDefinition();
     }
 
-    public Boolean[] H() {
-        Boolean[] booleanArray = new Boolean[this.R.size()];
-        for (int i = 0; i < this.R.size(); ++i) {
-            booleanArray[i] = this.R.get(i).L();
+    public Boolean[] getFilterValueSnapshot() {
+        Boolean[] filterSnapshot = new Boolean[this.filterValues.size()];
+        for (int index = 0; index < this.filterValues.size(); ++index) {
+            filterSnapshot[index] = this.filterValues.get(index).getEffectiveValue();
         }
-        return booleanArray;
+        return filterSnapshot;
     }
 
-    public BooleanValue D() {
-        return this.u;
+    public BooleanValue getPlayersValue() {
+        return this.playersValue;
     }
 
-    public static EntityTargetFilterValue W(Mod mod) {
-        return new EntityTargetFilterValue(mod, "Target Settings " + mod.getName());
+    public static EntityTargetFilterValue createForModule(Mod module) {
+        return new EntityTargetFilterValue(module, "Target Settings " + module.getName());
     }
 
-    public boolean c(Entity entity) {
-        boolean bl;
+    public boolean isValidTarget(Entity entity) {
         if (entity.isNull()) {
             return false;
         }
         if (ClientSettings.E(entity)) {
             return false;
         }
-        if (!this.Z.L().booleanValue() && entity.isInstance(MappedClasses.zS)) {
+        if (!this.peacefulValue.getEffectiveValue().booleanValue() && entity.isInstance(MappedClasses.zS)) {
             return false;
         }
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
@@ -217,27 +215,27 @@ extends Value<Boolean[], EntityTargetFilterValue> {
         if (entityLivingBase.w$src$F$15l9epb() <= 0.0f) {
             return false;
         }
-        if (this.b.L().booleanValue() && RotationUtil.k(entityLivingBase)) {
+        if (this.ignoreInvisibleValue.getEffectiveValue().booleanValue() && RotationUtil.k(entityLivingBase)) {
             return false;
         }
-        if (this.D.L().booleanValue() && !entityPlayerSP.canEntityBeSeen(entity)) {
+        if (this.ignoreBehindWallsValue.getEffectiveValue().booleanValue() && !entityPlayerSP.canEntityBeSeen(entity)) {
             return false;
         }
         if (Vape.INSTANCE.getFriendManager().isFriend(entityLivingBase)) {
             return false;
         }
-        boolean bl2 = entity.isInstance(MappedClasses.lG);
-        Class clazz = ForgeVersion.MC_1_21_4.d() ? MappedClasses.Yw : MappedClasses.Fr;
-        boolean bl3 = entity.isInstance(clazz) || entity.isInstance(MappedClasses.Zo) || entity.isInstance(MappedClasses.ur) || entity.isInstance(MappedClasses.Z8);
-        boolean bl4 = bl = entity.isInstance(MappedClasses.ZP) || entity.isInstance(MappedClasses.Fb) || entity.isInstance(MappedClasses.qf);
-        if (bl2) {
-            if (!this.u.L().booleanValue()) {
+        boolean isPlayer = entity.isInstance(MappedClasses.lG);
+        Class mobClass = ForgeVersion.MC_1_21_4.d() ? MappedClasses.Yw : MappedClasses.Fr;
+        boolean isMobEntity = entity.isInstance(mobClass) || entity.isInstance(MappedClasses.Zo) || entity.isInstance(MappedClasses.ur) || entity.isInstance(MappedClasses.Z8);
+        boolean isPeacefulEntity = entity.isInstance(MappedClasses.ZP) || entity.isInstance(MappedClasses.Fb) || entity.isInstance(MappedClasses.qf);
+        if (isPlayer) {
+            if (!this.playersValue.getEffectiveValue().booleanValue()) {
                 return false;
             }
             if (Vape.INSTANCE.getEnemyManager().q(entity.getName())) {
                 return true;
             }
-            if (this.G.L().booleanValue() && RotationUtil.b$src$Z$reqs95(entityLivingBase)) {
+            if (this.ignoreNakedValue.getEffectiveValue().booleanValue() && RotationUtil.b$src$Z$reqs95(entityLivingBase)) {
                 return false;
             }
             if (Vape.INSTANCE.getClientSettings().e(entityPlayerSP, entityLivingBase)) {
@@ -245,12 +243,12 @@ extends Value<Boolean[], EntityTargetFilterValue> {
             }
             return !Vape.INSTANCE.getClientSettings().J(entityLivingBase);
         }
-        if (bl3 && !this.o.L().booleanValue()) {
+        if (isMobEntity && !this.mobsValue.getEffectiveValue().booleanValue()) {
             return false;
         }
-        if (bl && !this.Z.L().booleanValue()) {
+        if (isPeacefulEntity && !this.peacefulValue.getEffectiveValue().booleanValue()) {
             return false;
         }
-        return bl3 || bl || this.Z.L() != false;
+        return isMobEntity || isPeacefulEntity || this.peacefulValue.getEffectiveValue() != false;
     }
 }

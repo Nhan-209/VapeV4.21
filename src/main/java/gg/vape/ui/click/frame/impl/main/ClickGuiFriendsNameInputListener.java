@@ -6,21 +6,21 @@ import gg.vape.ui.click.frame.impl.main.ClickGuiFriendsPage;
 
 public class ClickGuiFriendsNameInputListener
 extends LabeledTextInputComponent {
-    final ClickGuiFriendsPage FD;
+    final ClickGuiFriendsPage page;
 
     @Override
-    public void k(String string) {
-        super.k(string);
-        ClickGuiFriendsPage.z(this.FD, string);
-        ClientSettings.f6.execute(this::lambda$setInputValue$0);
+    public void setText(String text) {
+        super.setText(text);
+        ClickGuiFriendsPage.setSearchQuery(this.page, text);
+        ClientSettings.UI_EXECUTOR.execute(this::refreshResults);
     }
 
-    private void lambda$setInputValue$0() {
-        ClickGuiFriendsPage.F(this.FD);
+    private void refreshResults() {
+        ClickGuiFriendsPage.refreshSearchResults(this.page);
     }
 
     public ClickGuiFriendsNameInputListener(ClickGuiFriendsPage clickGuiFriendsPage, String string) {
         super(string);
-        this.FD = clickGuiFriendsPage;
+        this.page = clickGuiFriendsPage;
     }
 }

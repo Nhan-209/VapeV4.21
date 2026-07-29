@@ -5,13 +5,12 @@ import gg.vape.module.none.ClientSettings;
 import gg.vape.ui.click.component.GuiKeyTypedListener;
 
 public class GuiKeyTypedDispatcher {
-    public static void p(char c, int n) {
+    public static void dispatch(char character, int keyCode) {
         ClientSettings clientSettings = Vape.INSTANCE.getModManager().getMod(ClientSettings.class);
-        if (ClientSettings.fT != null) {
-            for (GuiKeyTypedListener guiKeyTypedListener : ClientSettings.fT.b$src$Ljava_util_List_$1hubsov()) {
-                guiKeyTypedListener.v(c, n);
+        if (ClientSettings.activeComponent != null) {
+            for (GuiKeyTypedListener keyTypedListener : ClientSettings.activeComponent.getKeyTypedListeners()) {
+                keyTypedListener.onKeyTyped(character, keyCode);
             }
         }
     }
 }
-

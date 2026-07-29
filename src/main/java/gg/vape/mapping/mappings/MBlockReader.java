@@ -25,7 +25,7 @@ extends Mapping {
         Class[] classArray = new Class[]{MappedClasses.qP, MappedClasses.qP, MappedClasses.lN, MappedClasses.Y9, MappedClasses.zc};
         MBlockReader mBlockReader = this;
         this.A = mBlockReader.g(classArray); 
-        GuiComponent.D(new GuiComponent[1]);
+        GuiComponent.setLegacyComponentState(new GuiComponent[1]);
     }
 
 

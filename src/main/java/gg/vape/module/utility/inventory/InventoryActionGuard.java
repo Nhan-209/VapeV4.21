@@ -7,83 +7,75 @@ import gg.vape.wrapper.impl.RayTraceResult;
 import gg.vape.wrapper.impl.World;
 
 public class InventoryActionGuard {
-    public int F;
-    private static final long keyConstant;
-    int M;
-    public World o;
-    public boolean P;
-    int J;
-    public int U;
-    public double K;
+    protected int remainingCooldownTicks;
+    protected final int recentActionWindow = 10;
+    protected World trackedWorld;
+    protected boolean blocked;
+    protected final int cooldownTicks;
+    protected int stationaryTicks;
+    protected double previousHealth;
 
-    public void g() {
-        this.P = true;
-        this.F = this.J;
+    public void activateBlock() {
+        this.blocked = true;
+        this.remainingCooldownTicks = this.cooldownTicks;
     }
 
-    public InventoryActionGuard(int n) {
-        this.M = (int)keyConstant;
-        this.J = n;
+    public InventoryActionGuard(int cooldownTicks) {
+        this.cooldownTicks = cooldownTicks;
     }
 
-    public void L() {
-        this.P = false;
-        this.K = -999.0;
-        this.o = Minecraft.theWorld();
-        this.U = 0;
-        this.F = 0;
+    public void reset() {
+        this.blocked = false;
+        this.previousHealth = -999.0;
+        this.trackedWorld = Minecraft.theWorld();
+        this.stationaryTicks = 0;
+        this.remainingCooldownTicks = 0;
     }
 
-    public boolean l() {
-        return this.P;
+    public boolean isBlocked() {
+        return this.blocked;
     }
 
-    public void i(EntityLivingBase entityLivingBase) {
-        boolean bl;
-        boolean bl2;
-        double d = entityLivingBase.w$src$F$15l9epb();
-        World world = entityLivingBase.getWorld();
-        if (world.isNull() || this.o != null && this.o.isNotNull() && !world.equals(this.o)) {
-            this.L();
+    public void update(EntityLivingBase entity) {
+        double health = entity.w$src$F$15l9epb();
+        World world = entity.getWorld();
+        if (world.isNull() || this.trackedWorld != null && this.trackedWorld.isNotNull() && !world.equals(this.trackedWorld)) {
+            this.reset();
             return;
         }
-        if (this.P) {
-            if (this.F > 0) {
-                --this.F;
+        if (this.blocked) {
+            if (this.remainingCooldownTicks > 0) {
+                --this.remainingCooldownTicks;
             } else {
-                bl2 = RotationUtil.d(entityLivingBase);
-                if (bl2) {
-                    ++this.U;
-                    if (this.U >= 5) {
-                        this.L();
+                boolean stationary = RotationUtil.d(entity);
+                if (stationary) {
+                    ++this.stationaryTicks;
+                    if (this.stationaryTicks >= 5) {
+                        this.reset();
                         return;
                     }
-                    if (!RotationUtil.H(entityLivingBase) && !RotationUtil.F(entityLivingBase)) {
-                        this.L();
+                    if (!RotationUtil.H(entity) && !RotationUtil.F(entity)) {
+                        this.reset();
                         return;
                     }
-                    this.g();
+                    this.activateBlock();
                 } else {
-                    this.U = 0;
-                    if (RotationUtil.D(entityLivingBase, this.M) == 0) {
-                        this.L();
+                    this.stationaryTicks = 0;
+                    if (RotationUtil.D(entity, this.recentActionWindow) == 0) {
+                        this.reset();
                         return;
                     }
                 }
             }
         }
-        bl2 = d < this.K || entityLivingBase.V$src$I$fk0dv5() == 20;
-        RayTraceResult rayTraceResult = Minecraft.p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0();
-        boolean bl3 = bl = rayTraceResult.isNotNull() && rayTraceResult.getEntity().isNotNull() && entityLivingBase.Y$src$Z$154rldp();
-        if (bl2 || bl) {
-            this.g();
+        boolean tookDamage = health < this.previousHealth || entity.V$src$I$fk0dv5() == 20;
+        RayTraceResult rayTrace = Minecraft.p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0();
+        boolean targetingEntity = rayTrace.isNotNull() && rayTrace.getEntity().isNotNull() && entity.Y$src$Z$154rldp();
+        if (tookDamage || targetingEntity) {
+            this.activateBlock();
         }
-        this.o = world;
-        this.K = d;
-    }
-
-    static {
-        keyConstant = 1665370352093495306L;
+        this.trackedWorld = world;
+        this.previousHealth = health;
     }
 
 }

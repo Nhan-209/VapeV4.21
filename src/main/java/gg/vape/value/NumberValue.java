@@ -8,165 +8,174 @@ import java.text.DecimalFormat;
 
 public class NumberValue
 extends Value<Double, NumberValue> {
-    private static final String d;
-    private final String Q;
-    private static int[] D;
-    private final DecimalFormat Z;
-    private double J = 0.01;
-    private final String o;
-    private final double G;
-    private final double r;
-    private final DecimalFormat f;
-    private double A = 999999.0;
+    private static final String DEFAULT_FORMAT_PATTERN;
+    private final String unitSuffix;
+    private static int[] legacyState;
+    private final DecimalFormat displayFormat;
+    private double increment = 0.01;
+    private final String formatPattern;
+    private final double minimum;
+    private final double maximum;
+    private final DecimalFormat inputFormat;
+    private double absoluteClampLimit = 999999.0;
 
 
-    public String T() {
-        return this.Q;
+    public String getUnitSuffix() {
+        return this.unitSuffix;
     }
 
-    public NumberValue C(int n) {
-        this.Z.setMaximumFractionDigits(n);
+    public NumberValue setMaximumFractionDigits(int digits) {
+        this.displayFormat.setMaximumFractionDigits(digits);
         return this;
     }
 
-    public static NumberValue create(Object object, String string, String string2, String string3, String string4, double d, double d2, double d3) {
-        return new NumberValue(object, string, d2, d, d3, string3, string4);
+    public static NumberValue create(Object owner, String name, String legacyLabel, String formatPattern, String unitSuffix, double minimum, double defaultValue, double maximum) {
+        return new NumberValue(owner, name, defaultValue, minimum, maximum, formatPattern, unitSuffix);
     }
 
-    public static NumberValue create(Object object, String string, String string2, String string3, double d, double d2, double d3, double d4) {
-        NumberValue numberValue = new NumberValue(object, string, d2, d, d3, string2, string3);
-        numberValue.J = d4;
+    public static NumberValue create(Object owner, String name, String formatPattern, String unitSuffix, double minimum, double defaultValue, double maximum, double increment) {
+        NumberValue numberValue = new NumberValue(owner, name, defaultValue, minimum, maximum, formatPattern, unitSuffix);
+        numberValue.increment = increment;
         return numberValue;
     }
 
-    public DecimalFormat Q$src$Ljava_text_DecimalFormat_$j98hth() {
-        return this.f;
+    public DecimalFormat getInputFormat() {
+        return this.inputFormat;
     }
 
-    public double S$src$D$10pa1t3() {
-        return this.G;
+    public double getMinimum() {
+        return this.minimum;
     }
 
     @Override
-    public void parse(String string) {
-        if (string.isEmpty()) {
+    public void parse(String serializedValue) {
+        if (serializedValue.isEmpty()) {
             return;
         }
-        this.e(Double.parseDouble(string));
+        this.setRawValue(Double.parseDouble(serializedValue));
     }
 
-    public static NumberValue create(Object object, String string, String string2, String string3, double d, double d2, double d3, double d4, String string4) {
-        NumberValue numberValue = new NumberValue(object, string, d2, d, d3, string2, string3);
-        numberValue.Z$src$Lgg_vape_value_Value_$16i62fx(string4);
-        numberValue.J = d4;
+    public static NumberValue create(Object owner, String name, String formatPattern, String unitSuffix, double minimum, double defaultValue, double maximum, double increment, String description) {
+        NumberValue numberValue = new NumberValue(owner, name, defaultValue, minimum, maximum, formatPattern, unitSuffix);
+        numberValue.setDescription(description);
+        numberValue.increment = increment;
         return numberValue;
     }
 
-    public static NumberValue create(Object object, String string, String string2, String string3, double d, double d2, double d3) {
-        return new NumberValue(object, string, d2, d, d3, string2, string3);
+    public static NumberValue create(Object owner, String name, String formatPattern, String unitSuffix, double minimum, double defaultValue, double maximum) {
+        return new NumberValue(owner, name, defaultValue, minimum, maximum, formatPattern, unitSuffix);
     }
 
     @Override
-    public String c() {
-        String string = String.valueOf(this.K());
-        string = this.Z.format(this.K());
-        return string;
+    public String getDisplayValue() {
+        String displayValue = String.valueOf(this.getValue());
+        displayValue = this.displayFormat.format(this.getValue());
+        return displayValue;
     }
 
     @Override
-    public void A(Double d) {
-        if (d > this.A) {
-            d = this.A;
-        } else if (d < -this.A) {
-            d = -this.A;
+    public void setValue(Double value) {
+        if (value == null) {
+            value = this.getDefaultValue();
+            if (value == null) {
+                value = super.getValue();
+            }
+            if (value == null) {
+                value = this.minimum;
+            }
         }
-        super.o(MathUtil.roundToIncrement(d, this.J));
-        this.g$src$V$1akzyia();
-        if (this.k$src$Ljava_lang_Object_$13p7u5q() instanceof ColorValue) {
-            ((ColorValue)this.k$src$Ljava_lang_Object_$13p7u5q()).a();
+        if (value > this.absoluteClampLimit) {
+            value = this.absoluteClampLimit;
+        } else if (value < -this.absoluteClampLimit) {
+            value = -this.absoluteClampLimit;
+        }
+        super.setValue(MathUtil.roundToIncrement(value, this.increment));
+        this.notifyChanged();
+        if (this.getOwner() instanceof ColorValue) {
+            ((ColorValue)this.getOwner()).syncCompositeValue();
         }
     }
 
-    public static NumberValue E(Object object, String string, String string2, String string3, double d, double d2, double d3, String string4) {
-        return (NumberValue)new NumberValue(object, string, d2, d, d3, string2, string3).Z$src$Lgg_vape_value_Value_$16i62fx(string4);
+    public static NumberValue createWithDescription(Object owner, String name, String formatPattern, String unitSuffix, double minimum, double defaultValue, double maximum, String description) {
+        return (NumberValue)new NumberValue(owner, name, defaultValue, minimum, maximum, formatPattern, unitSuffix).setDescription(description);
     }
 
-    public void e(Double d) {
-        super.o(d);
-        this.g$src$V$1akzyia();
+    public void setRawValue(Double value) {
+        super.setValue(value);
+        this.notifyChanged();
     }
 
-    public double K$src$D$10kvp27() {
-        return this.J;
+    public double getIncrement() {
+        return this.increment;
     }
 
     @Override
-    public Double K() {
-        Double current = super.K();
+    public Double getValue() {
+        Double current = super.getValue();
         // During profile-apply, the backing value can transiently be null;
-        // numeric consumers unbox K() directly, so fall back to the (non-null)
+            // Numeric consumers unbox this value directly, so fall back to the non-null
         // default rather than NPE on unboxing.
-        return current != null ? current : this.P$src$Ljava_lang_Object_$qcpui1();
+        return current != null ? current : this.getDefaultValue();
     }
 
-    public void P(Double d) {
-        double d2 = (double)Math.round(d * 100.0) / 100.0;
-        super.A(d2);
+    public void setRoundedDefaultValue(Double value) {
+        double roundedValue = (double)Math.round(value * 100.0) / 100.0;
+        super.setDefaultValue(roundedValue);
     }
 
-    public static void Y(int[] nArray) {
-        D = nArray;
+    public static void setNumberLegacyState(int[] state) {
+        legacyState = state;
     }
 
-    public double Q$src$D$10o6gmd() {
-        return this.r;
+    public double getMaximum() {
+        return this.maximum;
     }
 
-    public void m(double d) {
-        this.A = d;
+    public void setAbsoluteClampLimit(double limit) {
+        this.absoluteClampLimit = limit;
     }
 
     static {
-        NumberValue.Y(null);
-        d = "#.##";
+        NumberValue.setNumberLegacyState(null);
+        DEFAULT_FORMAT_PATTERN = "#.##";
     }
 
-    private DecimalFormat c$src$Ljava_text_DecimalFormat_$choocn() {
+    private DecimalFormat createDecimalFormat() {
         DecimalFormat decimalFormat;
         try {
-            decimalFormat = new DecimalFormat(this.o);
+            decimalFormat = new DecimalFormat(this.formatPattern);
         }
         catch (Exception exception) {
             Vape.logThrowable(exception);
-            decimalFormat = new DecimalFormat(d);
+            decimalFormat = new DecimalFormat(DEFAULT_FORMAT_PATTERN);
         }
         decimalFormat.setMinimumIntegerDigits(1);
         return decimalFormat;
     }
 
-    public static int[] O$src$AI$1yesq9t() {
-        return D;
+    public static int[] getNumberLegacyState() {
+        return legacyState;
     }
 
-    public NumberValue A() {
-        return new NumberValue(null, this.getName(), (Double)this.K(), this.G, this.r, this.o, this.Q);
+    public NumberValue copyDefinition() {
+        return new NumberValue(null, this.getName(), (Double)this.getValue(), this.minimum, this.maximum, this.formatPattern, this.unitSuffix);
     }
 
     @Override
-    public NumberValue getALimit() {
-        return this.A();
+    public NumberValue copyValueDefinition() {
+        return this.copyDefinition();
     }
 
-    public NumberValue(Object object, String string, double d, double d2, double d3, String string2, String string3) {
-        super(object, string, d);
-        this.G = d2;
-        this.r = d3;
-        if (!string3.isEmpty()) {
-            string3 = " " + string3;
+    public NumberValue(Object owner, String name, double defaultValue, double minimum, double maximum, String formatPattern, String unitSuffix) {
+        super(owner, name, defaultValue);
+        this.minimum = minimum;
+        this.maximum = maximum;
+        if (!unitSuffix.isEmpty()) {
+            unitSuffix = " " + unitSuffix;
         }
-        this.Q = string3;
-        this.o = string2;
-        this.f = this.c$src$Ljava_text_DecimalFormat_$choocn();
-        this.Z = this.c$src$Ljava_text_DecimalFormat_$choocn();
+        this.unitSuffix = unitSuffix;
+        this.formatPattern = formatPattern;
+        this.inputFormat = this.createDecimalFormat();
+        this.displayFormat = this.createDecimalFormat();
     }
 }

@@ -13,9 +13,9 @@ extends InventoryFilterPreset {
     }
 
     public SharedInventoryFilterPreset copy() {
-        SharedInventoryFilterPreset copy = new SharedInventoryFilterPreset(this.j(), this.getName());
-        for (InventoryFilterConditionGroup inventoryFilterConditionGroup : this.z()) {
-            copy.x(inventoryFilterConditionGroup.A());
+        SharedInventoryFilterPreset copy = new SharedInventoryFilterPreset(this.getId(), this.getName());
+        for (InventoryFilterConditionGroup conditionGroup : this.getConditionGroups()) {
+            copy.addConditionGroup(conditionGroup.copy());
         }
         return copy;
     }
@@ -25,8 +25,8 @@ extends InventoryFilterPreset {
     }
 
     public SharedInventoryFilterPreset(InventoryFilterPreset preset) {
-        super(preset.K());
-        this.h = UUID.randomUUID();
+        super(preset.toJson());
+        this.id = UUID.randomUUID();
     }
 }
 

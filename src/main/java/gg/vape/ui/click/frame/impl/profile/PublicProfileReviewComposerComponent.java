@@ -22,20 +22,20 @@ import java.util.concurrent.Executor;
 
 public class PublicProfileReviewComposerComponent
 extends GuiComponent {
-    private final boolean G;
-    private final PublicProfile I;
-    private final SmallTextInputComponent a;
-    static final boolean Q = !PublicProfileReviewComposerComponent.class.desiredAssertionStatus();
-    private final Runnable i;
-    private FlowLayoutComponent v = new FlowLayoutComponent(100.0);
-    private final Runnable K;
-    private final GlyphIconComponent R;
-    private final PublicProfileUserAvatarComponent b;
-    private final PanelComponent o;
+    private final boolean editingExistingReview;
+    private final PublicProfile publicProfile;
+    private final SmallTextInputComponent feedbackInput;
+    static final boolean ASSERTIONS_DISABLED = !PublicProfileReviewComposerComponent.class.desiredAssertionStatus();
+    private final Runnable reviewUpdatedCallback;
+    private FlowLayoutComponent actionLayout = new FlowLayoutComponent(100.0);
+    private final Runnable closeCallback;
+    private final GlyphIconComponent submitButton;
+    private final PublicProfileUserAvatarComponent avatar;
+    private final PanelComponent container;
 
     @Override
     public double C() {
-        return this.o.L();
+        return this.container.L();
     }
 
     private static ApiResponse lambda$submit$5(Throwable throwable) {
@@ -52,31 +52,31 @@ extends GuiComponent {
             PublicProfileManager.b("Failed to leave review: " + apiResponse.N());
             return;
         }
-        if (!Q && apiResponse.T() == null) {
+        if (!ASSERTIONS_DISABLED && apiResponse.T() == null) {
             throw new AssertionError();
         }
-        if (this.G) {
+        if (this.editingExistingReview) {
             PublicProfileManager.M("Review updated!");
         } else {
             PublicProfileManager.M("Review posted!");
         }
-        if (this.I.z() == null) {
+        if (this.publicProfile.z() == null) {
             if (bl) {
-                this.I.E(this.I.J() + 1L);
+                this.publicProfile.E(this.publicProfile.J() + 1L);
             } else {
-                this.I.b(this.I.W() + 1L);
+                this.publicProfile.b(this.publicProfile.W() + 1L);
             }
         }
-        this.I.B((PublicProfileReview)apiResponse.T());
-        this.i.run();
+        this.publicProfile.B((PublicProfileReview)apiResponse.T());
+        this.reviewUpdatedCallback.run();
         if (bl2) {
-            this.K.run();
+            this.closeCallback.run();
         }
     }
 
     private CompletableFuture lambda$new$3(Runnable runnable, boolean bl) {
         runnable.run();
-        String string = this.a.i$src$Ljava_lang_String_$1n2xf3k().trim();
+        String string = this.feedbackInput.getText().trim();
         if (string.isEmpty() && !bl) {
             PublicProfileManager.b("You must provide feedback when leaving a negative review!");
             return null;
@@ -85,84 +85,84 @@ extends GuiComponent {
     }
 
     private void lambda$new$1(Color color, char c, int n) {
-        if (this.a.i$src$Ljava_lang_String_$1n2xf3k().isEmpty()) {
-            this.R.o(PublicProfileReviewComposerComponent.J.W);
-            this.R.k(true);
+        if (this.feedbackInput.getText().isEmpty()) {
+            this.submitButton.setNormalColor(PublicProfileReviewComposerComponent.J.W);
+            this.submitButton.setInteractionDisabled(true);
         } else {
-            this.R.o(color);
-            this.R.k(false);
+            this.submitButton.setNormalColor(color);
+            this.submitButton.setInteractionDisabled(false);
         }
     }
 
     private void lambda$new$2(boolean bl) {
         if (bl) {
-            this.a.b("Share additional feedback? (Optional)");
-            this.a.A(PublicProfileReviewComposerComponent.J.B);
+            this.feedbackInput.setPlaceholderText("Share additional feedback? (Optional)");
+            this.feedbackInput.setPlaceholderColor(PublicProfileReviewComposerComponent.J.B);
         } else {
-            this.a.b("Please provide feedback with your rating...");
-            this.a.A(PublicProfileReviewComposerComponent.J.I);
+            this.feedbackInput.setPlaceholderText("Please provide feedback with your rating...");
+            this.feedbackInput.setPlaceholderColor(PublicProfileReviewComposerComponent.J.I);
         }
     }
 
     public SmallTextInputComponent k() {
-        return this.a;
+        return this.feedbackInput;
     }
 
 
     private void lambda$new$0() {
-        CompletableFuture.runAsync(this.K, ClientSettings.f6);
+        CompletableFuture.runAsync(this.closeCallback, ClientSettings.UI_EXECUTOR);
     }
 
     public PublicProfileReviewComposerComponent(PublicProfile publicProfile, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
-        this.I = publicProfile;
-        this.G = bl2;
-        this.K = runnable;
-        this.i = runnable2;
-        this.o = new PanelComponent(20.0, 20.0);
-        this.o.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
-        this.o.d(false);
-        this.b = new PublicProfileUserAvatarComponent(Vape.INSTANCE.getAccountInfo().i(), 15.0, 15.0);
-        this.b.X(2.0f);
+        this.publicProfile = publicProfile;
+        this.editingExistingReview = bl2;
+        this.closeCallback = runnable;
+        this.reviewUpdatedCallback = runnable2;
+        this.container = new PanelComponent(20.0, 20.0);
+        this.container.l$src$Lgg_vape_ui_click_layout_ComponentLayout_$di1tij().M("widthwrap");
+        this.container.setShowDisabledOverlay(false);
+        this.avatar = new PublicProfileUserAvatarComponent(Vape.INSTANCE.getAccountInfo().i(), 15.0, 15.0);
+        this.avatar.setInset(2.0f);
         Color color = bl ? PublicProfileReviewComposerComponent.J.B : PublicProfileReviewComposerComponent.J.d;
         Color color2 = bl ? PublicProfileReviewComposerComponent.J.O : PublicProfileReviewComposerComponent.J.c;
-        this.R = new GlyphIconComponent("submit@2x", 6.0, 6.0, 6.0, 12.0, color, color2, null);
-        this.R.o(PublicProfileReviewComposerComponent.J.W);
-        this.R.k(true);
-        this.R.R(true);
+        this.submitButton = new GlyphIconComponent("submit@2x", 6.0, 6.0, 6.0, 12.0, color, color2, null);
+        this.submitButton.setNormalColor(PublicProfileReviewComposerComponent.J.W);
+        this.submitButton.setInteractionDisabled(true);
+        this.submitButton.setCenterVertically(true);
         AnimatedCenteredTextLabelComponent animatedCenteredTextLabelComponent = new AnimatedCenteredTextLabelComponent(bl && !bl2 ? "No thanks" : "Cancel", PublicProfileReviewComposerComponent.J.l);
         animatedCenteredTextLabelComponent.o(35.0);
         animatedCenteredTextLabelComponent.Y(12.0);
-        animatedCenteredTextLabelComponent.y(0.75);
-        animatedCenteredTextLabelComponent.s(this::lambda$new$0);
-        this.a = new SmallTextInputComponent("");
+        animatedCenteredTextLabelComponent.setFontScale(0.75);
+        animatedCenteredTextLabelComponent.setClickListener(this::lambda$new$0);
+        this.feedbackInput = new SmallTextInputComponent("");
         PublicProfileReview publicProfileReview = publicProfile.z();
         if (publicProfileReview != null) {
-            this.a.k(publicProfileReview.I());
-            this.a.o((arg_0, arg_1) -> this.lambda$new$1(color, arg_0, arg_1));
+            this.feedbackInput.setText(publicProfileReview.I());
+            this.feedbackInput.addKeyTypedListener((arg_0, arg_1) -> this.lambda$new$1(color, arg_0, arg_1));
             Runnable runnable3 = () -> this.lambda$new$2(bl);
             runnable3.run();
-            this.R.e(() -> this.lambda$new$3(runnable3, bl));
-            this.v.h(this.R, new Object[0]);
-            this.v.h(new FilledSpacerComponent(12.0, 12.0, 1.0, 6.0, PublicProfileReviewComposerComponent.J.l), new Object[0]);
-            this.v.h(animatedCenteredTextLabelComponent, new Object[0]);
-            this.v.d(false);
-            this.o.H(this.b, this.a, new PaddedComponent(2.0, 0.0, 0.0, 0.0, this.v));
-            this.H(this.o);
+            this.submitButton.setSingleFutureClickListener(() -> this.lambda$new$3(runnable3, bl));
+            this.actionLayout.h(this.submitButton, new Object[0]);
+            this.actionLayout.h(new FilledSpacerComponent(12.0, 12.0, 1.0, 6.0, PublicProfileReviewComposerComponent.J.l), new Object[0]);
+            this.actionLayout.h(animatedCenteredTextLabelComponent, new Object[0]);
+            this.actionLayout.setShowDisabledOverlay(false);
+            this.container.addChildren(this.avatar, this.feedbackInput, new PaddedComponent(2.0, 0.0, 0.0, 0.0, this.actionLayout));
+            this.addChildren(this.container);
             if (bl && !bl2) {
                 this.Y(true, publicProfileReview.I(), false);
             }
             return;
         }
-        this.a.o((arg_0, arg_1) -> this.lambda$new$1(color, arg_0, arg_1));
+        this.feedbackInput.addKeyTypedListener((arg_0, arg_1) -> this.lambda$new$1(color, arg_0, arg_1));
         Runnable runnable4 = () -> this.lambda$new$2(bl);
         runnable4.run();
-        this.R.e(() -> this.lambda$new$3(runnable4, bl));
-        this.v.h(this.R, new Object[0]);
-        this.v.h(new FilledSpacerComponent(12.0, 12.0, 1.0, 6.0, PublicProfileReviewComposerComponent.J.l), new Object[0]);
-        this.v.h(animatedCenteredTextLabelComponent, new Object[0]);
-        this.v.d(false);
-        this.o.H(this.b, this.a, new PaddedComponent(2.0, 0.0, 0.0, 0.0, this.v));
-        this.H(this.o);
+        this.submitButton.setSingleFutureClickListener(() -> this.lambda$new$3(runnable4, bl));
+        this.actionLayout.h(this.submitButton, new Object[0]);
+        this.actionLayout.h(new FilledSpacerComponent(12.0, 12.0, 1.0, 6.0, PublicProfileReviewComposerComponent.J.l), new Object[0]);
+        this.actionLayout.h(animatedCenteredTextLabelComponent, new Object[0]);
+        this.actionLayout.setShowDisabledOverlay(false);
+        this.container.addChildren(this.avatar, this.feedbackInput, new PaddedComponent(2.0, 0.0, 0.0, 0.0, this.actionLayout));
+        this.addChildren(this.container);
         if (bl && !bl2) {
             this.Y(true, "", false);
         }
@@ -170,24 +170,24 @@ extends GuiComponent {
 
     @Override
     public void H() {
-        this.o.K(this.G$src$D$1b2f02a());
-        this.o.S(this.n());
-        this.o.o(this.A());
-        this.o.Y(this.L());
-        this.a.o(this.A() - (this.v.A() + 8.0) - this.b.A());
-        this.o.l$src$V$1mibm4x();
+        this.container.K(this.G$src$D$1b2f02a());
+        this.container.S(this.n());
+        this.container.o(this.A());
+        this.container.Y(this.L());
+        this.feedbackInput.o(this.A() - (this.actionLayout.A() + 8.0) - this.avatar.A());
+        this.container.l$src$V$1mibm4x();
     }
 
     private CompletableFuture<ApiResponse<PublicProfileReview>> Y(boolean bl, String string, boolean bl2) {
-        return ApiServices.d().R().m(this.I, bl, string).whenCompleteAsync((arg_0, arg_1) -> this.lambda$submit$4(bl, bl2, arg_0, arg_1), (Executor)ClientSettings.f6).exceptionally(PublicProfileReviewComposerComponent::lambda$submit$5);
+        return ApiServices.d().R().m(this.publicProfile, bl, string).whenCompleteAsync((arg_0, arg_1) -> this.lambda$submit$4(bl, bl2, arg_0, arg_1), (Executor)ClientSettings.UI_EXECUTOR).exceptionally(PublicProfileReviewComposerComponent::lambda$submit$5);
     }
 
     public PublicProfileUserAvatarComponent g$src$Lgg_vape_ui_click_frame_impl_profile_PublicProfi$1wft5vq() {
-        return this.b;
+        return this.avatar;
     }
 
     @Override
     public double x() {
-        return this.o.A();
+        return this.container.A();
     }
 }

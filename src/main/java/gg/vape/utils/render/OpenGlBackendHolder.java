@@ -6,7 +6,7 @@ import gg.vape.utils.render.LegacyOpenGlBackend;
 import gg.vape.utils.render.OpenGlBackend;
 
 public class OpenGlBackendHolder {
-    public static OpenGlBackend d = GuiRenderPrimitives.d() ? new BufferedOpenGlBackend() : new LegacyOpenGlBackend();
+    public static OpenGlBackend backend = GuiRenderPrimitives.d() ? new BufferedOpenGlBackend() : new LegacyOpenGlBackend();
 
 }
 

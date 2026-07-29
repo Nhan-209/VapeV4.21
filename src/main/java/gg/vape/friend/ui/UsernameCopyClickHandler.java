@@ -13,7 +13,7 @@ implements GuiClickListener {
     final UsernameEditorPanel x;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         ClipboardUtil.setText(Vape.INSTANCE.getOnlineManager().r().C());
         OnlineFriendUiHelper.P(new NotificationMessage(NotificationType.SUCCESS, "Copied " + Vape.INSTANCE.getOnlineManager().r().C() + " to clipboard"));
     }
@@ -22,4 +22,3 @@ implements GuiClickListener {
         this.x = usernameEditorPanel;
     }
 }
-

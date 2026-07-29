@@ -11,7 +11,7 @@ implements GuiMouseListener {
 
     @Override
     public boolean Q(Point point) {
-        return !this.D.Q().R(point);
+        return !this.D.getBounds().R(point);
     }
 
     public OnlineConnectionBackdropMouseListener(OnlineConnectionSettingsFrame onlineConnectionSettingsFrame) {

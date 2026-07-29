@@ -4,20 +4,20 @@ import gg.vape.unmap.ModeSelection;
 
 public class ModeOption
 extends ModeSelection {
-    public ModeOption(String string) {
-        this(string, 1.0);
+    public ModeOption(String name) {
+        this(name, 1.0);
     }
 
-    public boolean o() {
+    public boolean isSelected() {
         if (this.getMode() == null) {
             return false;
         }
-        return ((ModeSelection)this.getMode().K()).equals(this);
+        return ((ModeSelection)this.getMode().getValue()).equals(this);
     }
 
 
-    public ModeOption(String string, double d) {
-        super(string);
+    public ModeOption(String name, double displayScale) {
+        super(name);
     }
 }
 

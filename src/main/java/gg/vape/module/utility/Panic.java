@@ -31,8 +31,8 @@ extends UtilityMod {
     @Override
     public void onEnable() {
         this.Y(false);
-        if (this.reEnable.L().booleanValue()) {
-            boolean bl = this.reEnableActive = !this.reEnableActive;
+        if (this.reEnable.getEffectiveValue().booleanValue()) {
+            this.reEnableActive = !this.reEnableActive;
             if (!this.reEnableActive) {
                 for (Mod mod : this.disabledMods) {
                     mod.Y(true);
@@ -46,7 +46,7 @@ extends UtilityMod {
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
             if (!mod.r$src$Z$14eylz9() || mod == this) continue;
             mod.Y(false);
-            if (!this.reEnable.L().booleanValue()) continue;
+            if (!this.reEnable.getEffectiveValue().booleanValue()) continue;
             this.disabledMods.add(mod);
         }
     }

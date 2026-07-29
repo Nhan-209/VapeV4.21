@@ -14,17 +14,17 @@ extends AbstractListValueSuggestionProvider {
 
     @Override
     public @UnmodifiableView List<String> getValues() {
-        ArrayList<String> arrayList = new ArrayList<String>();
-        WorldClient worldClient = Minecraft.theWorld();
-        if (worldClient.isNull()) {
-            return arrayList;
+        ArrayList<String> playerNames = new ArrayList<String>();
+        WorldClient world = Minecraft.theWorld();
+        if (world.isNull()) {
+            return playerNames;
         }
-        for (Object e : worldClient.X()) {
-            if (!MappedClasses.Yl.isInstance(e)) continue;
-            EntityPlayer entityPlayer = new EntityPlayer(e);
-            arrayList.add(entityPlayer.getName());
+        for (Object entity : world.X()) {
+            if (!MappedClasses.Yl.isInstance(entity)) continue;
+            EntityPlayer player = new EntityPlayer(entity);
+            playerNames.add(player.getName());
         }
-        return arrayList;
+        return playerNames;
     }
 }
 

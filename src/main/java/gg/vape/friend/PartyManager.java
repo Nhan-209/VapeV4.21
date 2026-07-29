@@ -47,7 +47,7 @@ public class PartyManager {
 
     public void n(@Nullable PartyState partyState) {
         this.W = partyState;
-        ClientSettings.g(OnlineFriendsFrame.class).l$src$V$1mibm4x();
+        ClientSettings.getFrame(OnlineFriendsFrame.class).l$src$V$1mibm4x();
         Vape.INSTANCE.getOnlineManager().V().T();
         Vape.INSTANCE.getOnlineManager().N().A();
     }
@@ -60,7 +60,7 @@ public class PartyManager {
         synchronized (map) {
             this.T.remove(partyInvite.x());
         }
-        ClientSettings.g(OnlineFriendsFrame.class).Y$src$Lgg_vape_friend_ui_PartyInvitesPanel_$1o49ve3().P(partyInvite);
+        ClientSettings.getFrame(OnlineFriendsFrame.class).Y$src$Lgg_vape_friend_ui_PartyInvitesPanel_$1o49ve3().P(partyInvite);
     }
 
     /*
@@ -71,8 +71,8 @@ public class PartyManager {
         synchronized (map) {
             this.T.put(partyInvite.x(), partyInvite);
         }
-        ClientSettings.g(OnlineFriendsFrame.class).Y$src$Lgg_vape_friend_ui_PartyInvitesPanel_$1o49ve3().u(new PartyInviteRow(partyInvite));
-        Vape.INSTANCE.getNotificationManager().t(b, partyInvite.x().C(), NotificationType.FRIENDS_PARTY_INVITE, 4000L);
+        ClientSettings.getFrame(OnlineFriendsFrame.class).Y$src$Lgg_vape_friend_ui_PartyInvitesPanel_$1o49ve3().u(new PartyInviteRow(partyInvite));
+        Vape.INSTANCE.getNotificationManager().show(b, partyInvite.x().C(), NotificationType.FRIENDS_PARTY_INVITE, 4000L);
     }
 
     static {

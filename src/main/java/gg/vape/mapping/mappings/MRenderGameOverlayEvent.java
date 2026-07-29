@@ -56,7 +56,7 @@ extends Mapping {
                 MRenderGameOverlayEvent mRenderGameOverlayEvent3 = this;
                 this.C = this.J(string3, bl3, clazz3);
             }
-            if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+            if (GuiComponent.getLegacyComponentState() == null) {
                 MTileEntityMobSpawner.N(new int[1]);
             }
             this.E = null;
@@ -107,7 +107,7 @@ extends Mapping {
             MRenderGameOverlayEvent mRenderGameOverlayEvent = this;
             this.C = mRenderGameOverlayEvent.J(string, bl, clazz);
         }
-        if (GuiComponent.D$src$ALgg_vape_ui_click_component_GuiComponent_$1yk9q9k() == null) {
+        if (GuiComponent.getLegacyComponentState() == null) {
             MTileEntityMobSpawner.N(new int[1]);
         }
     }

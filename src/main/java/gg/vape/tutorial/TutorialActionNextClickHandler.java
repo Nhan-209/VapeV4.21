@@ -8,7 +8,7 @@ implements GuiClickListener {
     final TutorialPage o;
 
     @Override
-    public void P() {
+    public void onPrimaryClick() {
         this.o.r();
     }
 
@@ -16,4 +16,3 @@ implements GuiClickListener {
         this.o = bF;
     }
 }
-

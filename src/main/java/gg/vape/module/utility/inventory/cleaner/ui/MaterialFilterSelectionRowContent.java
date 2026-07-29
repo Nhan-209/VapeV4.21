@@ -17,9 +17,9 @@ extends GuiComponent {
     public void c() {
         this.selectionComponent.K(this.G$src$D$1b2f02a());
         this.selectionComponent.S(this.n());
-        this.selectionComponent.W(0.5f);
-        this.selectionComponent.D(8.0f);
-        this.selectionComponent.s(8.0f);
+        this.selectionComponent.setScale(0.5f);
+        this.selectionComponent.setIconWidth(8.0f);
+        this.selectionComponent.setIconHeight(8.0f);
         this.selectionComponent.o(this.A());
         this.selectionComponent.Y(this.L());
         super.c();
@@ -46,8 +46,8 @@ extends GuiComponent {
         this.o = materialFilterSelectionRow;
         this.backgroundColorAnimation = new ColorAnimation(0.15, MaterialFilterSelectionRowContent.J.z, MaterialFilterSelectionRowContent.J.M);
         this.selectionComponent = new ItemFilterSelectionComponent(itemFilterSelection);
-        this.o(true);
-        this.H(this.selectionComponent);
+        this.setPropagateMouseEvents(true);
+        this.addChildren(this.selectionComponent);
     }
 
     @Override

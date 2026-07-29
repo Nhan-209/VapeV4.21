@@ -7,25 +7,24 @@ import org.jetbrains.annotations.NotNull;
 
 public class FixedStringListSuggestionProvider
 extends AbstractListValueSuggestionProvider {
-    private List<String> B = new ArrayList<String>();
+    private List<String> values = new ArrayList<String>();
 
     public FixedStringListSuggestionProvider() {
         this.updateFilter("");
     }
 
-    public void setValues(@NotNull List<String> list) {
-        this.B = list;
+    public void setValues(@NotNull List<String> values) {
+        this.values = values;
         this.updateFilter("");
     }
 
-    public FixedStringListSuggestionProvider(List<String> list) {
-        this.B = list;
+    public FixedStringListSuggestionProvider(List<String> values) {
+        this.values = values;
         this.updateFilter("");
     }
 
     @Override
     public List<String> getValues() {
-        return this.B;
+        return this.values;
     }
 }
-

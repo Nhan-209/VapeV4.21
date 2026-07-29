@@ -5,54 +5,54 @@ import gg.vape.input.MouseInputState;
 import gg.vape.wrapper.impl.Minecraft;
 
 public class MouseInput {
-    private static MouseInputState R;
+    private static MouseInputState cachedState;
 
-    public static int N() {
-        return MouseInput.O().getMouseX();
+    public static int getMouseX() {
+        return MouseInput.getState().getMouseX();
     }
 
-    public static boolean I(int n) {
-        return MouseInput.O().isButtonDown(n);
+    public static boolean isButtonDown(int button) {
+        return MouseInput.getState().isButtonDown(button);
     }
 
 
-    public static int u() {
-        return Minecraft.h() - MouseInput.O().getMouseY();
+    public static int getInvertedMouseY() {
+        return Minecraft.h() - MouseInput.getState().getMouseY();
     }
 
-    public static MouseInputState O() {
-        if (R == null) {
-            R = InputEventDispatcher.getInstance().getMouseState();
+    public static MouseInputState getState() {
+        if (cachedState == null) {
+            cachedState = InputEventDispatcher.getInstance().getMouseState();
         }
-        return R;
+        return cachedState;
     }
 
-    public static int m() {
-        return MouseInput.O().getScrollDelta();
+    public static int getScrollDelta() {
+        return MouseInput.getState().getScrollDelta();
     }
 
-    public static boolean t() {
-        return MouseInput.O().Q();
+    public static boolean wasHandledByGui() {
+        return MouseInput.getState().wasHandledByGui();
     }
 
-    public static long long_l() {
-        return MouseInput.O().getLastChangeTime();
+    public static long getLastChangeTime() {
+        return MouseInput.getState().getLastChangeTime();
     }
 
-    public static boolean E() {
-        return MouseInput.O().isLastButtonDown();
+    public static boolean isLastButtonDown() {
+        return MouseInput.getState().isLastButtonDown();
     }
 
-    public static int int_l() {
-        return MouseInput.O().getLastButton();
+    public static int getLastButton() {
+        return MouseInput.getState().getLastButton();
     }
 
-    public static /* synthetic */ int l() {
-        return MouseInput.int_l();
+    public static /* synthetic */ int getLastButtonBridge() {
+        return MouseInput.getLastButton();
     }
 
-    public static /* synthetic */ long l$src$J$dk87ei() {
-        return MouseInput.long_l();
+    public static /* synthetic */ long getLastChangeTimeBridge() {
+        return MouseInput.getLastChangeTime();
     }
 }
 

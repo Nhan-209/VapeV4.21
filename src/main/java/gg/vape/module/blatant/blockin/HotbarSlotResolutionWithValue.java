@@ -1,17 +1,16 @@
 package gg.vape.module.blatant.blockin;
 
-import gg.vape.module.blatant.blockin.HotbarSlotResolution;
-import gg.vape.module.blatant.blockin.HotbarSlotResolutionStatus;
 import org.jetbrains.annotations.Nullable;
 
 public class HotbarSlotResolutionWithValue<T>
 extends HotbarSlotResolution<HotbarSlotResolutionWithValue<T>> {
     @Nullable
-    private T value = null;
+    private T value;
 
-    HotbarSlotResolutionWithValue(HotbarSlotResolutionStatus zD, @Nullable String string, @Nullable T t) {
-        super(zD, string);
-        this.q(t);
+    HotbarSlotResolutionWithValue(HotbarSlotResolutionStatus status, @Nullable String message,
+                                  @Nullable T value) {
+        super(status, message);
+        this.value = value;
     }
 
     public HotbarSlotResolutionWithValue() {
@@ -19,17 +18,12 @@ extends HotbarSlotResolution<HotbarSlotResolutionWithValue<T>> {
     }
 
     @Nullable
-    public T w() {
+    public T getValue() {
         return this.value;
     }
 
-    private HotbarSlotResolutionWithValue<T> self() {
+    public HotbarSlotResolutionWithValue<T> setValue(@Nullable T value) {
+        this.value = value;
         return this;
     }
-
-    public HotbarSlotResolutionWithValue<T> q(@Nullable T t) {
-        this.value = t;
-        return this.self();
-    }
 }
-
