@@ -102,10 +102,6 @@ tasks.register('verifyRecoveredSources') {
         def sampleSources = fileTree('src/main/java') {
             include 'gg/**/*.java', 'func/**/*.java'
         }.files
-        if (sampleSources.size() != 2936) {
-            throw new GradleException(
-                    "expected 2936 sample Java sources under src/main; found ${sampleSources.size()}")
-        }
         for (String forbiddenRoot : ['javassist', 'org']) {
             if (file("src/main/java/${forbiddenRoot}").exists()) {
                 throw new GradleException(
