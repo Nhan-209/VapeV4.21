@@ -1,28 +1,26 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MCPacketUseEntity;
 import gg.vape.wrapper.Wrapper;
 
 public class CPacketUseEntity
 extends Wrapper {
-    private CPacketUseEntity(Object object) {
-        super(object);
+    private CPacketUseEntity(Object handle) {
+        super(handle);
     }
 
-    public static CPacketUseEntity T() {
-        return new CPacketUseEntity(MCPacketUseEntity.L(CPacketUseEntity.vapeInstance.getMappingsMapperCompat().Ra));
+    public static CPacketUseEntity attack() {
+        return new CPacketUseEntity(CPacketUseEntity.vapeInstance.getMappingsMapperCompat().Ra.getAttackAction());
     }
 
-    public static CPacketUseEntity o() {
-        return new CPacketUseEntity(MCPacketUseEntity.x(CPacketUseEntity.vapeInstance.getMappingsMapperCompat().Ra));
+    public static CPacketUseEntity interactAt() {
+        return new CPacketUseEntity(CPacketUseEntity.vapeInstance.getMappingsMapperCompat().Ra.getInteractAtAction());
     }
 
-    public static CPacketUseEntity M() {
-        return new CPacketUseEntity(MCPacketUseEntity.W(CPacketUseEntity.vapeInstance.getMappingsMapperCompat().Ra));
+    public static CPacketUseEntity interact() {
+        return new CPacketUseEntity(CPacketUseEntity.vapeInstance.getMappingsMapperCompat().Ra.getInteractAction());
     }
 
-    public CPacketUseEntity(Object object, CPacketUseEntityActionConstructorMarker fv_02) {
-        this(object);
+    public CPacketUseEntity(Object handle, CPacketUseEntityActionConstructorMarker constructorMarker) {
+        this(handle);
     }
 }
-

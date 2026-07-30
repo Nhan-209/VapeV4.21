@@ -2,12 +2,11 @@ package gg.vape.wrapper.impl;
 
 public class ByteStatePacketBridge
 extends Packet {
-    public ByteStatePacketBridge(Object object) {
-        super(object);
+    public ByteStatePacketBridge(Object handle) {
+        super(handle);
     }
 
-    public byte r() {
-        return ByteStatePacketBridge.vapeInstance.getMappingsMapperCompat().hy.L(this.I);
+    public byte getHeadYaw() {
+        return ByteStatePacketBridge.vapeInstance.getMappingsMapperCompat().hy.getHeadYaw(this.I);
     }
 }
-

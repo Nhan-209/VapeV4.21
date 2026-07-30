@@ -4,10 +4,6 @@ import gg.vape.Vape;
 import gg.vape.event.impl.EventMotion;
 import gg.vape.event.impl.EventPostMotion;
 import gg.vape.event.impl.EventPreMotion;
-import gg.vape.mapping.EntityClientPlayerMPMotionExprEditor;
-import gg.vape.mapping.JavassistMappingTask;
-import gg.vape.mapping.MappedClasses;
-import gg.vape.mapping.MappingMethod;
 import gg.vape.runtime.NativeBridge;
 import gg.vape.wrapper.impl.ForgeVersion;
 import javassist.CannotCompileException;
@@ -65,7 +61,7 @@ extends JavassistMappingTask {
         CtBehavior ctBehavior = this.F(this.J);
         this.c(this.J, EventPreMotion.class, "$0");
         this.k(this.J, EventPostMotion.class, "$0");
-        boolean bl = Vape.INSTANCE.isNativeAvailable();
+        boolean bl = Vape.INSTANCE.isForgeAbsent();
         if (bl && NativeBridge.gc(string = "aaa") == null || ForgeVersion.MC_1_7_10.L() && Vape.INSTANCE.isVanillaMinecraftPresent()) {
             bl = false;
         }

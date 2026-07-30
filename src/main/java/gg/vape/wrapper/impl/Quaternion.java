@@ -4,59 +4,58 @@ import gg.vape.wrapper.Wrapper;
 
 public class Quaternion
 extends Wrapper {
-    public static Quaternion A(Vector3f j__02, float f, boolean bl) {
-        if (bl) {
-            f *= (float)Math.PI / 180;
+    public static Quaternion fromAxisAngle(Vector3f axis, float angle, boolean degrees) {
+        if (degrees) {
+            angle *= (float)Math.PI / 180;
         }
-        float f2 = (float)Math.sin(f / 2.0f);
-        float f3 = j__02.V() * f2;
-        float f4 = j__02.D() * f2;
-        float f5 = j__02.R() * f2;
-        float f6 = (float)Math.cos(f / 2.0f);
-        return new Quaternion(Quaternion.vapeInstance.getMappingsMapperCompat().qf.N(f3, f4, f5, f6));
+        float halfAngleSin = (float)Math.sin(angle / 2.0f);
+        float x = axis.getX() * halfAngleSin;
+        float y = axis.getY() * halfAngleSin;
+        float z = axis.getZ() * halfAngleSin;
+        float w = (float)Math.cos(angle / 2.0f);
+        return new Quaternion(Quaternion.vapeInstance.getMappingsMapperCompat().quaternion.newFromComponents(x, y, z, w));
     }
 
-    public float P() {
-        return Quaternion.vapeInstance.getMappingsMapperCompat().qf.O(this.I);
+    public float getZ() {
+        return Quaternion.vapeInstance.getMappingsMapperCompat().quaternion.getZ(this.I);
     }
 
-
-    public static Quaternion K(float f, float f2, float f3, boolean bl) {
+    public static Quaternion fromEulerAngles(float xAngle, float yAngle, float zAngle, boolean degrees) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            if (bl) {
-                f *= (float)Math.PI / 180;
-                f2 *= (float)Math.PI / 180;
-                f3 *= (float)Math.PI / 180;
+            if (degrees) {
+                xAngle *= (float)Math.PI / 180;
+                yAngle *= (float)Math.PI / 180;
+                zAngle *= (float)Math.PI / 180;
             }
-            float f4 = (float)Math.sin(0.5f * f);
-            float f5 = (float)Math.cos(0.5f * f);
-            float f6 = (float)Math.sin(0.5f * f2);
-            float f7 = (float)Math.cos(0.5f * f2);
-            float f8 = (float)Math.sin(0.5f * f3);
-            float f9 = (float)Math.cos(0.5f * f3);
-            float f10 = f4 * f7 * f9 + f5 * f6 * f8;
-            float f11 = f5 * f6 * f9 - f4 * f7 * f8;
-            float f12 = f4 * f6 * f9 + f5 * f7 * f8;
-            float f13 = f5 * f7 * f9 - f4 * f6 * f8;
-            return new Quaternion(Quaternion.vapeInstance.getMappingsMapperCompat().qf.N(f10, f11, f12, f13));
+            float sinHalfX = (float)Math.sin(0.5f * xAngle);
+            float cosHalfX = (float)Math.cos(0.5f * xAngle);
+            float sinHalfY = (float)Math.sin(0.5f * yAngle);
+            float cosHalfY = (float)Math.cos(0.5f * yAngle);
+            float sinHalfZ = (float)Math.sin(0.5f * zAngle);
+            float cosHalfZ = (float)Math.cos(0.5f * zAngle);
+            float x = sinHalfX * cosHalfY * cosHalfZ + cosHalfX * sinHalfY * sinHalfZ;
+            float y = cosHalfX * sinHalfY * cosHalfZ - sinHalfX * cosHalfY * sinHalfZ;
+            float z = sinHalfX * sinHalfY * cosHalfZ + cosHalfX * cosHalfY * sinHalfZ;
+            float w = cosHalfX * cosHalfY * cosHalfZ - sinHalfX * sinHalfY * sinHalfZ;
+            return new Quaternion(Quaternion.vapeInstance.getMappingsMapperCompat().quaternion.newFromComponents(x, y, z, w));
         }
-        return new Quaternion(Quaternion.vapeInstance.getMappingsMapperCompat().qf.v(f, f2, f3, bl));
+        return new Quaternion(Quaternion.vapeInstance.getMappingsMapperCompat().quaternion.newFromEulerAngles(xAngle, yAngle, zAngle, degrees));
     }
 
-    public float Q() {
-        return Quaternion.vapeInstance.getMappingsMapperCompat().qf.V(this.I);
+    public float getX() {
+        return Quaternion.vapeInstance.getMappingsMapperCompat().quaternion.getX(this.I);
     }
 
-    public float q() {
-        return Quaternion.vapeInstance.getMappingsMapperCompat().qf.h(this.I);
+    public float getW() {
+        return Quaternion.vapeInstance.getMappingsMapperCompat().quaternion.getW(this.I);
     }
 
-    public Quaternion(Object object) {
-        super(object);
+    public Quaternion(Object handle) {
+        super(handle);
     }
 
-    public float N() {
-        return Quaternion.vapeInstance.getMappingsMapperCompat().qf.v(this.I);
+    public float getY() {
+        return Quaternion.vapeInstance.getMappingsMapperCompat().quaternion.getY(this.I);
     }
 }
 

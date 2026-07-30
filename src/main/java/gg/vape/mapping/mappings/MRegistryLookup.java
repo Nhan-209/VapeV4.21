@@ -33,7 +33,7 @@ extends Mapping {
         String string3 = "get";
         MRegistryLookup mRegistryLookup3 = this;
         this.e = this.Y(string3, bl3, clazz3, classArray3);
-        if (MRegistryAccess.d() != null) {
+        if (MRegistryAccess.getControlFlowMarker() != null) {
             return;
         }
         GuiComponent.setLegacyComponentState(new GuiComponent[3]);

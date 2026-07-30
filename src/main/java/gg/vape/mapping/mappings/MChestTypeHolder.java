@@ -7,66 +7,46 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MChestTypeHolder
 extends Mapping {
-    private MappingField O;
-    private MappingField a;
-    private static boolean k;
+    private final MappingField goldToolMaterialsField;
+    private final MappingField woodenToolMaterialsField;
+    private static boolean controlFlowState;
 
     public MChestTypeHolder() {
-        this(MChestTypeHolder.f());
+        this(MChestTypeHolder.getChestTypeHolderControlFlowState());
     }
 
-    private MChestTypeHolder(boolean bl) {
+    private MChestTypeHolder(boolean initialControlFlowState) {
         super(MappedClasses.ZY);
-        Class clazz = MappedClasses.qC;
-        boolean bl2 = true;
-        String string = "WOODEN_TOOL_MATERIALS";
-        MChestTypeHolder mChestTypeHolder = this;
-        this.a = this.registerStaticField(string, bl2, clazz);
-        if (bl) {
-            Class clazz2 = MappedClasses.qC;
-            boolean bl3 = true;
-            String string2 = "GOLD_TOOL_MATERIALS";
-            MChestTypeHolder mChestTypeHolder2 = this;
-            this.O = this.registerStaticField(string2, bl3, clazz2);
-            if (GuiComponent.getLegacyComponentState() == null) {
-                MChestTypeHolder.F(false);
-            }
-            return;
-        }
-        Class clazz3 = MappedClasses.qC;
-        boolean bl4 = true;
-        String string3 = "GOLD_TOOL_MATERIALS";
-        MChestTypeHolder mChestTypeHolder3 = this;
-        this.O = this.registerStaticField(string3, bl4, clazz3);
+        this.woodenToolMaterialsField = this.registerStaticField("WOODEN_TOOL_MATERIALS", true, MappedClasses.qC);
+        this.goldToolMaterialsField = this.registerStaticField("GOLD_TOOL_MATERIALS", true, MappedClasses.qC);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MChestTypeHolder.F(true);
+            MChestTypeHolder.setChestTypeHolderControlFlowState(!initialControlFlowState);
         }
     }
 
-    public static boolean D() {
-        boolean bl = MChestTypeHolder.f();
-        return !bl;
+    public static boolean isChestTypeHolderControlFlowDisabled() {
+        return !MChestTypeHolder.getChestTypeHolderControlFlowState();
     }
 
-    public Object H() {
-        return this.a.getObject(null);
+    public Object getWoodenToolMaterials() {
+        return this.woodenToolMaterialsField.getObject(null);
     }
 
 
-    public static void F(boolean bl) {
-        k = bl;
+    public static void setChestTypeHolderControlFlowState(boolean state) {
+        controlFlowState = state;
     }
 
-    public static boolean f() {
-        return k;
+    public static boolean getChestTypeHolderControlFlowState() {
+        return controlFlowState;
     }
 
-    public Object g() {
-        return this.O.getObject(null);
+    public Object getGoldToolMaterials() {
+        return this.goldToolMaterialsField.getObject(null);
     }
 
     static {
-        MChestTypeHolder.F(true);
+        MChestTypeHolder.setChestTypeHolderControlFlowState(true);
     }
 }
 

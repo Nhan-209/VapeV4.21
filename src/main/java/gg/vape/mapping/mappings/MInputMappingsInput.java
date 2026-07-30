@@ -6,24 +6,20 @@ import gg.vape.mapping.MappingField;
 
 public class MInputMappingsInput
 extends Mapping {
-    private MappingField e;
-    private static final String b = "keyCode";
+    private static final String KEY_CODE_FIELD_NAME = "keyCode";
+    private final MappingField keyCodeField;
 
     public MInputMappingsInput() {
         super(MappedClasses.zp);
-        Class<Integer> clazz = Integer.TYPE;
-        boolean bl = true;
-        String string = b;
-        MInputMappingsInput mInputMappingsInput = this;
-        this.e = this.J(string, bl, clazz);
+        this.keyCodeField = this.J(KEY_CODE_FIELD_NAME, true, Integer.TYPE);
     }
 
-    private int s(Object object) {
-        return this.e.getInt(object);
+    private int readKeyCode(Object input) {
+        return this.keyCodeField.getInt(input);
     }
 
-    public static int B(MInputMappingsInput mInputMappingsInput, Object object) {
-        return mInputMappingsInput.s(object);
+    public static int getKeyCode(MInputMappingsInput mapping, Object input) {
+        return mapping.readKeyCode(input);
     }
 }
 

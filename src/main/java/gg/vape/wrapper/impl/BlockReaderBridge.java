@@ -1,20 +1,18 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MAbstractBlockState;
 import gg.vape.wrapper.Wrapper;
 
 public class BlockReaderBridge
 extends Wrapper {
-    public BlockReaderBridge(Object object) {
-        super(object);
+    public BlockReaderBridge(Object handle) {
+        super(handle);
     }
 
-    public EntityFishHook Z(BlockReader ji_12, BlockPos blockPos) {
-        return new EntityFishHook(MAbstractBlockState.i(BlockReaderBridge.vapeInstance.getMappingsMapperCompat().CJ, this.I, ji_12.getObject(), blockPos.getObject()));
+    public EntityFishHook getShape(BlockReader blockReader, BlockPos blockPosition) {
+        return new EntityFishHook(BlockReaderBridge.vapeInstance.getMappingsMapperCompat().CJ.getShape(this.I, blockReader.getObject(), blockPosition.getObject()));
     }
 
-    public boolean e(Object object, Object object2) {
-        return MAbstractBlockState.R(BlockReaderBridge.vapeInstance.getMappingsMapperCompat().CJ, this.I, object, object2);
+    public boolean isSuffocating(Object blockReader, Object blockPosition) {
+        return BlockReaderBridge.vapeInstance.getMappingsMapperCompat().CJ.isSuffocating(this.I, blockReader, blockPosition);
     }
 }
-

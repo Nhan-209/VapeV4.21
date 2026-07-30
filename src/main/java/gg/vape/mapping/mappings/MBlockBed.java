@@ -10,56 +10,43 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MBlockBed
 extends Mapping {
-    private MappingMethod M;
-    private MappingField V;
+    private MappingMethod getBedDirectionMethod;
+    private MappingField partField;
 
-    public static Object X(MBlockBed mBlockBed) {
-        return mBlockBed.y();
+    public static Object getPart(MBlockBed mapping) {
+        return mapping.readPart();
     }
 
 
-    private Object y() {
-        return this.V.getObject(null);
+    private Object readPart() {
+        return this.partField.getObject(null);
     }
 
-    public static Object i(MBlockBed mBlockBed, Object object, Object object2) {
-        return mBlockBed.f(object, object2);
+    public static Object getBedDirection(MBlockBed mapping, Object world, Object blockPos) {
+        return mapping.invokeGetBedDirection(world, blockPos);
     }
 
-    private Object f(Object object, Object object2) {
-        return this.M.invokeObject(null, object, object2);
+    private Object invokeGetBedDirection(Object world, Object blockPos) {
+        return this.getBedDirectionMethod.invokeObject(null, world, blockPos);
     }
 
     public MBlockBed() {
         this(MBlock.m());
     }
 
-    private MBlockBed(GuiComponent[] guiComponentArray) {
+    private MBlockBed(GuiComponent[] controlFlowState) {
         super(MappedClasses.YE);
-        if (guiComponentArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_16_5.d()) {
-                Class clazz = MappedClasses.Vh;
-                boolean bl = true;
-                String string = "PART";
-                MBlockBed mBlockBed = this;
-                this.V = mBlockBed.registerStaticField(string, bl, clazz);
+                this.partField = this.registerStaticField("PART", true, MappedClasses.Vh);
             }
             return;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            Class[] classArray = new Class[]{MappedClasses.zJ, MappedClasses.lf};
-            Class clazz = MappedClasses.q0;
-            boolean bl = true;
-            String string = "getBedDirection";
-            MBlockBed mBlockBed = this;
-            this.M = mBlockBed.registerStaticMethod(string, bl, clazz, classArray);
+            this.getBedDirectionMethod = this.registerStaticMethod("getBedDirection", true, MappedClasses.q0, new Class[]{MappedClasses.zJ, MappedClasses.lf});
         }
         if (ForgeVersion.MC_1_7_10.Y()) {
-            Class clazz = MappedClasses.Vh;
-            boolean bl = true;
-            String string = "PART";
-            MBlockBed mBlockBed = this;
-            this.V = mBlockBed.registerStaticField(string, bl, clazz);
+            this.partField = this.registerStaticField("PART", true, MappedClasses.Vh);
         }
     }
 }

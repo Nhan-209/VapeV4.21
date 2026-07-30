@@ -10,53 +10,34 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MCPacketHeldItemChange
 extends Mapping {
-    private final MappingMethod q;
-    private final MappingField Q;
+    private final MappingMethod constructor;
+    private final MappingField selectedSlotField;
 
     public MCPacketHeldItemChange() {
-        this(MPacketIdFactory.A());
+        this(MPacketIdFactory.getPacketMappingControlFlowState());
     }
 
-    private MCPacketHeldItemChange(GuiComponent[] guiComponentArray) {
+    private MCPacketHeldItemChange(GuiComponent[] controlFlowState) {
         super(MappedClasses.e);
-        GuiComponent[] guiComponentArray2 = guiComponentArray;
         if (ForgeVersion.MC_1_8_9.L()) {
-            Class<Integer> clazz = Integer.TYPE;
-            boolean bl = true;
-            String string = "slotId";
-            MCPacketHeldItemChange mCPacketHeldItemChange = this;
-            this.Q = mCPacketHeldItemChange.J(string, bl, clazz);
+            this.selectedSlotField = this.J("slotId", true, Integer.TYPE);
         } else if (ForgeVersion.MC_1_7_10.L() && Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
-            Class<Integer> clazz = Integer.TYPE;
-            boolean bl = true;
-            String string = "slotId";
-            MCPacketHeldItemChange mCPacketHeldItemChange = this;
-            this.Q = mCPacketHeldItemChange.J(string, bl, clazz);
+            this.selectedSlotField = this.J("slotId", true, Integer.TYPE);
         } else {
-            Class<Integer> clazz = Integer.TYPE;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "field_149615_a";
-            MCPacketHeldItemChange mCPacketHeldItemChange = this;
-            this.Q = mCPacketHeldItemChange.J(string, bl, clazz);
+            this.selectedSlotField = this.J("field_149615_a", Wrapper.isNativeAvailable, Integer.TYPE);
         }
-        Class[] classArray = new Class[]{Integer.TYPE};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = "<init>";
-        MCPacketHeldItemChange mCPacketHeldItemChange = this;
-        this.q = mCPacketHeldItemChange.Y(string, bl, clazz, classArray); 
+        this.constructor = this.Y("<init>", false, Void.TYPE, new Class[]{Integer.TYPE});
     }
 
-    public void d(Object object, int n) {
-        this.Q.setInt(object, n);
+    public void setSelectedSlot(Object packet, int selectedSlot) {
+        this.selectedSlotField.setInt(packet, selectedSlot);
     }
 
-    public int B(Object object) {
-        return this.Q.getInt(object);
+    public int getSelectedSlot(Object packet) {
+        return this.selectedSlotField.getInt(packet);
     }
 
-
-    public Object l(int n) {
-        return this.q.newInstance(n);
+    public Object createPacket(int selectedSlot) {
+        return this.constructor.newInstance(selectedSlot);
     }
 }

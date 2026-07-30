@@ -27,7 +27,7 @@ extends Mapping {
     }
 
     public MEntityPlayerMacroBridge() {
-        this(MSPacketMapChunkBulk.E$src$Ljava_lang_String_$1dqes8v());
+        this(MSPacketMapChunkBulk.getMappingControlFlowToken());
     }
 
     private MEntityPlayerMacroBridge(String string) {

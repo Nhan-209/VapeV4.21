@@ -6,21 +6,15 @@ import gg.vape.mapping.MappingMethod;
 
 public class MAbstractClientPlayer
 extends Mapping {
-    private MappingMethod f;
+    private final MappingMethod keyEventConstructor;
 
     public MAbstractClientPlayer() {
         super(MappedClasses.YM);
-        Class[] classArray = new Class[]{Integer.TYPE, Integer.TYPE, Integer.TYPE};
-        MAbstractClientPlayer mAbstractClientPlayer = this;
-        this.f = this.registerConstructor(classArray);
+        this.keyEventConstructor = this.registerConstructor(new Class[]{Integer.TYPE, Integer.TYPE, Integer.TYPE});
     }
 
-    private Object I(int n, int n2, int n3) {
-        return this.f.newInstance(n, n2, n3);
-    }
-
-    public static Object W(MAbstractClientPlayer mAbstractClientPlayer, int n, int n2, int n3) {
-        return mAbstractClientPlayer.I(n, n2, n3);
+    public Object createKeyEvent(int keyCode, int scanCode, int modifiers) {
+        return this.keyEventConstructor.newInstance(keyCode, scanCode, modifiers);
     }
 }
 

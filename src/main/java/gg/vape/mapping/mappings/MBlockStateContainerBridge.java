@@ -7,30 +7,21 @@ import gg.vape.mapping.MappingMethod;
 
 public class MBlockStateContainerBridge
 extends Mapping {
-    private final MappingMethod u;
-    private final MappingField I;
+    private final MappingMethod getOrUpdateMethod;
+    private final MappingField textureViewField;
 
-    public Object V(Object object) {
-        return this.I.getObject(object);
+    public Object getTextureView(Object atlas) {
+        return this.textureViewField.getObject(atlas);
     }
 
-    public Object N(Object object, Object object2) {
-        return this.u.invokeObject(object, object2);
+    public Object getOrUpdate(Object atlas, Object renderState) {
+        return this.getOrUpdateMethod.invokeObject(atlas, renderState);
     }
 
     public MBlockStateContainerBridge() {
         super(MappedClasses.uF);
-        Class[] classArray = new Class[]{MappedClasses.zE};
-        Class clazz = MappedClasses.uC;
-        boolean bl = true;
-        String string = "getOrUpdate";
-        MBlockStateContainerBridge mBlockStateContainerBridge = this;
-        this.u = this.Y(string, bl, clazz, classArray);
-        Class clazz2 = MappedClasses.lu;
-        boolean bl2 = true;
-        String string2 = "textureView";
-        MBlockStateContainerBridge mBlockStateContainerBridge2 = this;
-        this.I = this.J(string2, bl2, clazz2);
+        this.getOrUpdateMethod = this.Y("getOrUpdate", true, MappedClasses.uC, new Class[]{MappedClasses.zE});
+        this.textureViewField = this.J("textureView", true, MappedClasses.GPU_TEXTURE_VIEW);
     }
 }
 

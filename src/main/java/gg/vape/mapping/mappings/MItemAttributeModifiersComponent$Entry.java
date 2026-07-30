@@ -8,36 +8,27 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MItemAttributeModifiersComponent$Entry
 extends Mapping {
-    private MappingField e;
-    private MappingField C;
+    private final MappingField attributeField;
+    private final MappingField modifierField;
 
-    public Object q(Object object) {
-        return this.C.getObject(object);
+    public Object getModifier(Object entry) {
+        return this.modifierField.getObject(entry);
     }
 
-    public Object P(Object object) {
-        return this.e.getObject(object);
+    public Object getAttribute(Object entry) {
+        return this.attributeField.getObject(entry);
     }
 
     public MItemAttributeModifiersComponent$Entry() {
-        this(MItemAttributeModifiersComponent.F());
+        this(MItemAttributeModifiersComponent.getItemAttributeModifiersControlFlowState());
     }
 
-    private MItemAttributeModifiersComponent$Entry(GuiComponent[] guiComponentArray) {
+    private MItemAttributeModifiersComponent$Entry(GuiComponent[] controlFlowState) {
         super(MappedClasses.zP);
-        GuiComponent[] guiComponentArray2 = guiComponentArray;
-        Class clazz = MappedClasses.Vo;
-        boolean bl = true;
-        String string = "attribute";
-        MItemAttributeModifiersComponent$Entry mItemAttributeModifiersComponent$Entry = this;
-        this.e = this.J(string, bl, clazz);
-        Class clazz2 = MappedClasses.z_;
-        boolean bl2 = true;
-        String string2 = "modifier";
-        MItemAttributeModifiersComponent$Entry mItemAttributeModifiersComponent$Entry2 = this;
-        this.C = this.J(string2, bl2, clazz2);
+        this.attributeField = this.J("attribute", true, MappedClasses.Vo);
+        this.modifierField = this.J("modifier", true, MappedClasses.z_);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MItemAttributeModifiersComponent.M(new GuiComponent[5]);
+            MItemAttributeModifiersComponent.setItemAttributeModifiersControlFlowState(new GuiComponent[5]);
         }
     }
 

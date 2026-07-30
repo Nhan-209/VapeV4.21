@@ -7,20 +7,19 @@ import java.util.List;
 
 public class ItemAttributeModifiersComponent
 extends Wrapper {
-    public List<Object> z() {
-        return ItemAttributeModifiersComponent.vapeInstance.getMappingsMapperCompat().r.p(this.I);
+    public List<Object> getRawModifiers() {
+        return ItemAttributeModifiersComponent.vapeInstance.getMappingsMapperCompat().r.getModifiers(this.I);
     }
 
-    public List<ItemAttributeModifiersComponent$Entry> P() {
-        ArrayList<ItemAttributeModifiersComponent$Entry> arrayList = new ArrayList<ItemAttributeModifiersComponent$Entry>();
-        for (Object object : this.z()) {
-            arrayList.add(new ItemAttributeModifiersComponent$Entry(object));
+    public List<ItemAttributeModifiersComponent$Entry> getEntries() {
+        ArrayList<ItemAttributeModifiersComponent$Entry> entries = new ArrayList<ItemAttributeModifiersComponent$Entry>();
+        for (Object modifier : this.getRawModifiers()) {
+            entries.add(new ItemAttributeModifiersComponent$Entry(modifier));
         }
-        return arrayList;
+        return entries;
     }
 
-    public ItemAttributeModifiersComponent(Object object) {
-        super(object);
+    public ItemAttributeModifiersComponent(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

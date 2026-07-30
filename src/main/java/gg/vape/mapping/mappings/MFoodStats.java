@@ -6,25 +6,20 @@ import gg.vape.mapping.MappingMethod;
 
 public class MFoodStats
 extends Mapping {
-    private static final String b = "getFoodLevel";
-    private final MappingMethod n;
+    private static final String GET_FOOD_LEVEL_METHOD_NAME = "getFoodLevel";
+    private final MappingMethod getFoodLevelMethod;
 
-    private int K(Object object) {
-        return this.n.invokeInt(object, new Object[0]);
+    private int invokeGetFoodLevel(Object foodStats) {
+        return this.getFoodLevelMethod.invokeInt(foodStats, new Object[0]);
     }
 
     public MFoodStats() {
         super(MappedClasses.Zd);
-        Class[] classArray = new Class[]{};
-        Class<Integer> clazz = Integer.TYPE;
-        boolean bl = true;
-        String string = b;
-        MFoodStats mFoodStats = this;
-        this.n = this.Y(string, bl, clazz, classArray);
+        this.getFoodLevelMethod = this.Y(GET_FOOD_LEVEL_METHOD_NAME, true, Integer.TYPE, new Class[]{});
     }
 
-    public static int g(MFoodStats mFoodStats, Object object) {
-        return mFoodStats.K(object);
+    public static int getFoodLevel(MFoodStats mapping, Object foodStats) {
+        return mapping.invokeGetFoodLevel(foodStats);
     }
 }
 

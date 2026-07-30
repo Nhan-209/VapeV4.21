@@ -8,69 +8,56 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MMobSpawnerBaseLogic
 extends Mapping {
-    private MappingMethod X;
-    private MappingMethod W;
+    private MappingMethod entityNameToSpawnMethod;
+    private MappingMethod cachedDisplayEntityMethod;
 
-    private Object getCachedEntity(Object object, Object object2) {
+    public Object getCachedEntity(Object spawnerLogic, Object world) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.W.invokeObject(object, object2, null);
+            return this.cachedDisplayEntityMethod.invokeObject(spawnerLogic, world, null);
         }
         if (ForgeVersion.MC_1_17.d()) {
-            return this.W.invokeObject(object, object2);
+            return this.cachedDisplayEntityMethod.invokeObject(spawnerLogic, world);
         }
-        return this.W.invokeObject(object, new Object[0]);
+        return this.cachedDisplayEntityMethod.invokeObject(spawnerLogic, new Object[0]);
     }
 
-    public static String getEntityNameToSpawn(MMobSpawnerBaseLogic mMobSpawnerBaseLogic, Object object) {
-        return mMobSpawnerBaseLogic.getEntityNameToSpawn(object);
-    }
-
-    private String getEntityNameToSpawn(Object object) {
-        return (String)this.X.invokeObject(object, new Object[0]);
-    }
-
-
-    public static Object getCachedEntity(MMobSpawnerBaseLogic mMobSpawnerBaseLogic, Object object, Object object2) {
-        return mMobSpawnerBaseLogic.getCachedEntity(object, object2);
+    public String getEntityNameToSpawn(Object spawnerLogic) {
+        return (String)this.entityNameToSpawnMethod.invokeObject(spawnerLogic, new Object[0]);
     }
 
     public MMobSpawnerBaseLogic() {
-        this(MTileEntityMobSpawner.d());
+        this(MTileEntityMobSpawner.getMobSpawnerControlFlowState());
     }
 
-    private MMobSpawnerBaseLogic(int[] nArray) {
-        super(MappedClasses.uj);
-        int[] nArray2 = nArray;
+    private MMobSpawnerBaseLogic(int[] controlFlowState) {
+        super(MappedClasses.MOB_SPAWNER_LOGIC);
+        int[] unusedControlFlowState = controlFlowState;
         if (ForgeVersion.MC_1_12_2.d()) {
             if (ForgeVersion.MC_1_20_6.d()) {
-                Class[] classArray = new Class[]{MappedClasses.YU, MappedClasses.lf};
-                Class clazz = MappedClasses.zc;
-                boolean bl = true;
-                String string = "getOrCreateDisplayEntity";
-                MMobSpawnerBaseLogic mMobSpawnerBaseLogic = this;
-                this.W = mMobSpawnerBaseLogic.Y(string, bl, clazz, classArray);
+                Class[] parameterTypes = new Class[]{MappedClasses.YU, MappedClasses.lf};
+                Class returnType = MappedClasses.zc;
+                boolean remap = true;
+                String methodName = "getOrCreateDisplayEntity";
+                this.cachedDisplayEntityMethod = this.Y(methodName, remap, returnType, parameterTypes);
             } else if (ForgeVersion.MC_1_17.d()) {
-                Class[] classArray = new Class[]{MappedClasses.YU};
-                Class clazz = MappedClasses.zc;
-                boolean bl = true;
-                String string = "getOrCreateDisplayEntity";
-                MMobSpawnerBaseLogic mMobSpawnerBaseLogic = this;
-                this.W = mMobSpawnerBaseLogic.Y(string, bl, clazz, classArray);
+                Class[] parameterTypes = new Class[]{MappedClasses.YU};
+                Class returnType = MappedClasses.zc;
+                boolean remap = true;
+                String methodName = "getOrCreateDisplayEntity";
+                this.cachedDisplayEntityMethod = this.Y(methodName, remap, returnType, parameterTypes);
             } else {
-                Class[] classArray = new Class[]{};
-                Class clazz = MappedClasses.zc;
-                boolean bl = true;
-                String string = "getCachedEntity";
-                MMobSpawnerBaseLogic mMobSpawnerBaseLogic = this;
-                this.W = mMobSpawnerBaseLogic.Y(string, bl, clazz, classArray);
+                Class[] parameterTypes = new Class[]{};
+                Class returnType = MappedClasses.zc;
+                boolean remap = true;
+                String methodName = "getCachedEntity";
+                this.cachedDisplayEntityMethod = this.Y(methodName, remap, returnType, parameterTypes);
             }
         } else {
-            Class[] classArray = new Class[]{};
-            Class<String> clazz = String.class;
-            boolean bl = true;
-            String string = "getEntityNameToSpawn";
-            MMobSpawnerBaseLogic mMobSpawnerBaseLogic = this;
-            this.X = mMobSpawnerBaseLogic.Y(string, bl, clazz, classArray);
+            Class[] parameterTypes = new Class[]{};
+            Class<String> returnType = String.class;
+            boolean remap = true;
+            String methodName = "getEntityNameToSpawn";
+            this.entityNameToSpawnMethod = this.Y(methodName, remap, returnType, parameterTypes);
         }
     }
 }

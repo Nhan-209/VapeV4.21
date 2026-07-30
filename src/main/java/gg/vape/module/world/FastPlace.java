@@ -45,7 +45,7 @@ extends Mod {
             return;
         }
         ItemStack mainHandStack = entityPlayerSP.getHeldItemHand();
-        ItemStack offHandStack = ForgeVersion.MC_1_12_2.d() ? entityPlayerSP.i(EnumHand.p()) : new ItemStack(null);
+        ItemStack offHandStack = ForgeVersion.MC_1_12_2.d() ? entityPlayerSP.i(EnumHand.offHand()) : new ItemStack(null);
         if (this.heldItemMode.getValue() == this.blocksOption && !this.isBlock(mainHandStack) && !this.isBlock(offHandStack)) {
             return;
         }

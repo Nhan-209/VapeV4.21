@@ -8,41 +8,39 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MSetVisibility
 extends Mapping {
-    public final MappingMethod X;
-    public final MappingMethod z;
+    public final MappingMethod setAllVisibleMethod;
+    public final MappingMethod constructor;
 
 
-    public void t(Object object, boolean bl) {
-        this.X.invokeVoid(object, bl);
+    public void setAllVisible(Object visibilitySet, boolean visible) {
+        this.setAllVisibleMethod.invokeVoid(visibilitySet, visible);
     }
 
     public MSetVisibility() {
-        this(MVisGraph.r());
+        this(MVisGraph.getVisGraphControlFlowMarker());
     }
 
-    private MSetVisibility(String string) {
-        super(MappedClasses.qG);
-        Class[] classArray = new Class[]{};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string2 = "<init>";
-        MSetVisibility mSetVisibility = this;
-        this.z = this.Y(string2, bl, clazz, classArray);
-        if (string != null) {
-            Class[] classArray2 = new Class[]{Boolean.TYPE};
-            Class<Void> clazz2 = Void.TYPE;
-            boolean bl2 = true;
-            String string3 = "setAllVisible";
-            MSetVisibility mSetVisibility2 = this;
-            this.X = this.Y(string3, bl2, clazz2, classArray2);
+    private MSetVisibility(String controlFlowMarker) {
+        super(MappedClasses.SET_VISIBILITY);
+        Class[] constructorParameterTypes = new Class[]{};
+        Class<Void> constructorReturnType = Void.TYPE;
+        boolean remapConstructor = false;
+        String constructorName = "<init>";
+        MSetVisibility mappings = this;
+        this.constructor = mappings.Y(constructorName, remapConstructor, constructorReturnType, constructorParameterTypes);
+        if (controlFlowMarker != null) {
+            Class[] parameterTypes = new Class[]{Boolean.TYPE};
+            Class<Void> returnType = Void.TYPE;
+            boolean remap = true;
+            String methodName = "setAllVisible";
+            this.setAllVisibleMethod = this.Y(methodName, remap, returnType, parameterTypes);
             return;
         }
-        Class[] classArray3 = new Class[]{Boolean.TYPE};
-        Class<Void> clazz3 = Void.TYPE;
-        boolean bl3 = true;
-        String string4 = "setAllVisible";
-        MSetVisibility mSetVisibility3 = this;
-        this.X = this.Y(string4, bl3, clazz3, classArray3);
+        Class[] parameterTypes = new Class[]{Boolean.TYPE};
+        Class<Void> returnType = Void.TYPE;
+        boolean remap = true;
+        String methodName = "setAllVisible";
+        this.setAllVisibleMethod = this.Y(methodName, remap, returnType, parameterTypes);
         GuiComponent.setLegacyComponentState(new GuiComponent[2]);
     }
 }

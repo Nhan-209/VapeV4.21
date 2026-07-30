@@ -6,73 +6,50 @@ import gg.vape.mapping.MappingMethod;
 
 public class MBlockStateWorldBridge
 extends Mapping {
-    private final MappingMethod S;
-    private final MappingMethod W;
-    private final MappingMethod M;
-    private static boolean c;
-    private final MappingMethod A;
+    private final MappingMethod getTypeMethod;
+    private final MappingMethod isTagMethod;
+    private final MappingMethod isEmptyMethod;
+    private static boolean fluidStateControlFlowState;
+    private final MappingMethod getHeightMethod;
 
     public MBlockStateWorldBridge() {
         super(MappedClasses.Dw);
-        Class[] classArray = new Class[]{};
-        Class clazz = MappedClasses.VR;
-        boolean bl = true;
-        String string = "getType";
-        MBlockStateWorldBridge mBlockStateWorldBridge = this;
-        this.S = this.Y(string, bl, clazz, classArray);
-        Class[] classArray2 = new Class[]{};
-        Class<Boolean> clazz2 = Boolean.TYPE;
-        boolean bl2 = true;
-        String string2 = "isEmpty";
-        MBlockStateWorldBridge mBlockStateWorldBridge2 = this;
-        this.M = this.Y(string2, bl2, clazz2, classArray2);
-        Class[] classArray3 = new Class[]{MappedClasses.qC};
-        Class<Boolean> clazz3 = Boolean.TYPE;
-        boolean bl3 = true;
-        String string3 = "is";
-        MBlockStateWorldBridge mBlockStateWorldBridge3 = this;
-        this.W = this.Y(string3, bl3, clazz3, classArray3);
-        boolean bl4 = MBlockStateWorldBridge.H();
-        Class[] classArray4 = new Class[]{MappedClasses.zJ, MappedClasses.lf};
-        Class<Float> clazz4 = Float.TYPE;
-        boolean bl5 = true;
-        String string4 = "getHeight";
-        MBlockStateWorldBridge mBlockStateWorldBridge4 = this;
-        this.A = this.Y(string4, bl5, clazz4, classArray4);
+        this.getTypeMethod = this.Y("getType", true, MappedClasses.VR, new Class[]{});
+        this.isEmptyMethod = this.Y("isEmpty", true, Boolean.TYPE, new Class[]{});
+        this.isTagMethod = this.Y("is", true, Boolean.TYPE, new Class[]{MappedClasses.qC});
+        this.getHeightMethod = this.Y("getHeight", true, Float.TYPE, new Class[]{MappedClasses.zJ, MappedClasses.lf});
     }
 
-    public static void O(boolean bl) {
-        c = bl;
+    public static void setFluidStateControlFlowState(boolean state) {
+        fluidStateControlFlowState = state;
     }
 
-    public Object E(Object object) {
-        return this.S.invokeObject(object, new Object[0]);
+    public Object getType(Object fluidState) {
+        return this.getTypeMethod.invokeObject(fluidState, new Object[0]);
     }
 
-    public boolean e(Object object) {
-        return this.M.invokeBoolean(object, new Object[0]);
+    public boolean isEmpty(Object fluidState) {
+        return this.isEmptyMethod.invokeBoolean(fluidState, new Object[0]);
     }
 
-
-    public static boolean Q() {
-        boolean bl = MBlockStateWorldBridge.H();
+    public static boolean getControlFlowSentinel() {
         return false;
     }
 
-    public static boolean H() {
-        return c;
+    public static boolean getFluidStateControlFlowState() {
+        return fluidStateControlFlowState;
     }
 
-    public float r(Object object, Object object2, Object object3) {
-        return this.A.invokeFloat(object, object2, object3);
+    public float getHeight(Object fluidState, Object world, Object blockPosition) {
+        return this.getHeightMethod.invokeFloat(fluidState, world, blockPosition);
     }
 
-    public boolean b(Object object, Object object2) {
-        return this.W.invokeBoolean(object, object2);
+    public boolean isTag(Object fluidState, Object tag) {
+        return this.isTagMethod.invokeBoolean(fluidState, tag);
     }
 
     static {
-        MBlockStateWorldBridge.O(true);
+        MBlockStateWorldBridge.setFluidStateControlFlowState(true);
     }
 }
 

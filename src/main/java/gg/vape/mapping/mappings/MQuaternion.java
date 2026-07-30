@@ -9,81 +9,53 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MQuaternion
 extends Mapping {
-    private MappingField I;
-    private MappingField G;
-    private MappingMethod c;
-    private MappingField v;
-    private MappingField A;
-    private MappingMethod e;
+    private MappingField xField;
+    private MappingField yField;
+    private MappingField zField;
+    private MappingField wField;
+    private MappingMethod eulerAnglesConstructor;
+    private MappingMethod componentsConstructor;
 
-    public float O(Object object) {
-        return this.I.getFloat(object);
+    public float getZ(Object instance) {
+        return this.zField.getFloat(instance);
     }
 
-    public float V(Object object) {
-        return this.A.getFloat(object);
+    public float getX(Object instance) {
+        return this.xField.getFloat(instance);
     }
 
     public MQuaternion() {
         this(BlockData.W());
     }
 
-    private MQuaternion(String[] stringArray) {
+    private MQuaternion(String[] initializationGuard) {
         super(MappedClasses.qI);
-        if (stringArray != null) {
+        if (initializationGuard != null) {
             if (ForgeVersion.MC_1_20_6.v()) {
-                Class[] classArray = new Class[]{Float.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MQuaternion mQuaternion = this;
-                this.c = mQuaternion.Y(string, bl, clazz, classArray);
+                this.eulerAnglesConstructor = this.Y("<init>", false, Void.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE);
             }
-            Class[] classArray = new Class[]{Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE};
-            Class<Void> clazz = Void.TYPE;
-            boolean bl = false;
-            String string = "<init>";
-            MQuaternion mQuaternion = this;
-            this.e = mQuaternion.Y(string, bl, clazz, classArray);
-            Class<Float> clazz2 = Float.TYPE;
-            boolean bl2 = true;
-            String string2 = "x";
-            MQuaternion mQuaternion2 = this;
-            this.A = this.J(string2, bl2, clazz2);
-            Class<Float> clazz3 = Float.TYPE;
-            boolean bl3 = true;
-            String string3 = "y";
-            MQuaternion mQuaternion3 = this;
-            this.v = this.J(string3, bl3, clazz3);
-            Class<Float> clazz4 = Float.TYPE;
-            boolean bl4 = true;
-            String string4 = "z";
-            MQuaternion mQuaternion4 = this;
-            this.I = this.J(string4, bl4, clazz4);
-            Class<Float> clazz5 = Float.TYPE;
-            boolean bl5 = true;
-            String string5 = "w";
-            MQuaternion mQuaternion5 = this;
-            this.G = this.J(string5, bl5, clazz5);
-            return;
+            this.componentsConstructor = this.Y("<init>", false, Void.TYPE, Float.TYPE, Float.TYPE, Float.TYPE, Float.TYPE);
+            this.xField = this.J("x", true, Float.TYPE);
+            this.yField = this.J("y", true, Float.TYPE);
+            this.zField = this.J("z", true, Float.TYPE);
+            this.wField = this.J("w", true, Float.TYPE);
         }
     }
 
-    public float h(Object object) {
-        return this.G.getFloat(object);
+    public float getW(Object instance) {
+        return this.wField.getFloat(instance);
     }
 
-    public Object v(float f, float f2, float f3, boolean bl) {
-        return this.c.newInstance(Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), bl);
+    public Object newFromEulerAngles(float xAngle, float yAngle, float zAngle, boolean degrees) {
+        return this.eulerAnglesConstructor.newInstance(Float.valueOf(xAngle), Float.valueOf(yAngle), Float.valueOf(zAngle), degrees);
     }
 
-    public float v(Object object) {
-        return this.v.getFloat(object);
+    public float getY(Object instance) {
+        return this.yField.getFloat(instance);
     }
 
-
-    public Object N(float f, float f2, float f3, float f4) {
-        return this.e.newInstance(Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3), Float.valueOf(f4));
+    public Object newFromComponents(float x, float y, float z, float w) {
+        return this.componentsConstructor.newInstance(Float.valueOf(x), Float.valueOf(y), Float.valueOf(z), Float.valueOf(w));
     }
 }
 

@@ -8,56 +8,36 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MSPacketDestroyEntitiesArrayBridge
 extends Mapping {
-    private MappingField l;
+    private MappingField entityIdsField;
 
-    public Object M(Object object) {
-        return this.l.getObject(object);
+    public Object getEntityIdsContainer(Object packet) {
+        return this.entityIdsField.getObject(packet);
     }
 
     public MSPacketDestroyEntitiesArrayBridge() {
-        this(MSPacketEntityVelocity.G());
+        this(MSPacketEntityVelocity.getPacketMappingControlFlowState());
     }
 
-    private MSPacketDestroyEntitiesArrayBridge(int[] nArray) {
+    private MSPacketDestroyEntitiesArrayBridge(int[] controlFlowState) {
         super(MappedClasses.Yv);
-        if (nArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_7_10.L()) {
-                Class<int[]> clazz = int[].class;
-                boolean bl = Wrapper.isNativeAvailable;
-                String string = "field_149100_a";
-                MSPacketDestroyEntitiesArrayBridge mSPacketDestroyEntitiesArrayBridge = this;
-                this.l = mSPacketDestroyEntitiesArrayBridge.J(string, bl, clazz);
+                this.entityIdsField = this.J("field_149100_a", Wrapper.isNativeAvailable, int[].class);
             } else if (ForgeVersion.MC_1_17.d()) {
-                Class clazz = MappedClasses.N;
-                boolean bl = true;
-                String string = "entityIds";
-                MSPacketDestroyEntitiesArrayBridge mSPacketDestroyEntitiesArrayBridge = this;
-                this.l = mSPacketDestroyEntitiesArrayBridge.J(string, bl, clazz);
+                this.entityIdsField = this.J("entityIds", true, MappedClasses.N);
             } else {
-                Class<int[]> clazz = int[].class;
-                boolean bl = true;
-                String string = "entityIDs";
-                MSPacketDestroyEntitiesArrayBridge mSPacketDestroyEntitiesArrayBridge = this;
-                this.l = mSPacketDestroyEntitiesArrayBridge.J(string, bl, clazz);
+                this.entityIdsField = this.J("entityIDs", true, int[].class);
             }
             return;
         }
         if (ForgeVersion.MC_1_7_10.L()) {
-            Class clazz = MappedClasses.N;
-            boolean bl = true;
-            String string = "entityIds";
-            MSPacketDestroyEntitiesArrayBridge mSPacketDestroyEntitiesArrayBridge = this;
-            this.l = mSPacketDestroyEntitiesArrayBridge.J(string, bl, clazz);
+            this.entityIdsField = this.J("entityIds", true, MappedClasses.N);
         }
-        Class<int[]> clazz = int[].class;
-        boolean bl = true;
-        String string = "entityIDs";
-        MSPacketDestroyEntitiesArrayBridge mSPacketDestroyEntitiesArrayBridge = this;
-        this.l = mSPacketDestroyEntitiesArrayBridge.J(string, bl, clazz);
+        this.entityIdsField = this.J("entityIDs", true, int[].class);
     }
 
-    public int[] Y(Object object) {
-        return this.l.getIntArray(object);
+    public int[] getEntityIds(Object packet) {
+        return this.entityIdsField.getIntArray(packet);
     }
 
 }

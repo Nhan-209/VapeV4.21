@@ -7,21 +7,16 @@ import java.util.stream.Stream;
 
 public class MResourceKeyRegistryLookupStreamBridge
 extends Mapping {
-    private final MappingMethod B;
-    private static final String b = "listElements";
+    private static final String LIST_ELEMENTS_METHOD_NAME = "listElements";
+    private final MappingMethod listElementsMethod;
 
     public MResourceKeyRegistryLookupStreamBridge() {
         super(MappedClasses.Da);
-        Class[] classArray = new Class[]{};
-        Class<Stream> clazz = Stream.class;
-        boolean bl = true;
-        String string = b;
-        MResourceKeyRegistryLookupStreamBridge mResourceKeyRegistryLookupStreamBridge = this;
-        this.B = this.Y(string, bl, clazz, classArray);
+        this.listElementsMethod = this.Y(LIST_ELEMENTS_METHOD_NAME, true, Stream.class, new Class[]{});
     }
 
-    public Stream<Object> a(Object object) {
-        return (Stream)this.B.invokeObject(object, new Object[0]);
+    public Stream<Object> listElements(Object registryLookup) {
+        return (Stream)this.listElementsMethod.invokeObject(registryLookup, new Object[0]);
     }
 }
 

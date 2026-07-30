@@ -119,7 +119,7 @@ extends ListValue<ItemLimitData, LimitValue> {
             return true;
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            ItemStack offHandItem = player.i(EnumHand.p());
+            ItemStack offHandItem = player.i(EnumHand.offHand());
             if (includeOffhand && this.matches(offHandItem)) {
                 return true;
             }

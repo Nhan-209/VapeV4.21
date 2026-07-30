@@ -23,7 +23,7 @@ extends Mapping {
     }
 
     public MLists() {
-        this(MOrdering.y());
+        this(MOrdering.getControlFlowMarker());
     }
 
     private MLists(String string) {
@@ -42,7 +42,7 @@ extends Mapping {
         MLists mLists2 = this;
         this.v = this.registerStaticMethod(string4, bl2, clazz2, classArray2);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MOrdering.u("Ze85D");
+            MOrdering.setControlFlowMarker("Ze85D");
         }
     }
 }

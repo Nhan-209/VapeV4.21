@@ -6,47 +6,39 @@ import gg.vape.wrapper.Wrapper;
 
 public class Vec3i
 extends Wrapper {
-    private static GuiComponent[] g;
+    private static GuiComponent[] guiComponents;
 
-    public static Vec3i b(int n, int n2, int n3) {
-        return new Vec3i(MVec3I.Y(Vec3i.vapeInstance.getMappings().Dn).newInstance(n, n2, n3));
+    public static Vec3i create(int x, int y, int z) {
+        return new Vec3i(MVec3I.getConstructor(Vec3i.vapeInstance.getMappings().vec3i).newInstance(x, y, z));
     }
 
-    public Vec3i(Object object) {
-        super(object);
+    public Vec3i(Object handle) {
+        super(handle);
     }
 
-    public static void n(GuiComponent[] guiComponentArray) {
-        g = guiComponentArray;
+    public static void setGuiComponents(GuiComponent[] components) {
+        guiComponents = components;
     }
 
-    public int o() {
-        return Vec3i.vapeInstance.getMappings().Dn.z(this.I);
+    public int getY() {
+        return Vec3i.vapeInstance.getMappings().vec3i.getY(this.I);
     }
 
-    public int d() {
-        return Vec3i.vapeInstance.getMappings().Dn.O(this.I);
+    public int getZ() {
+        return Vec3i.vapeInstance.getMappings().vec3i.getZ(this.I);
     }
 
-    public static GuiComponent[] J() {
-        return g;
+    public static GuiComponent[] getGuiComponents() {
+        return guiComponents;
     }
 
-    public int P() {
-        return Vec3i.vapeInstance.getMappings().Dn.u(this.I);
-    }
-
-    public int int_o() {
-        return this.o();
-    }
-
-    public int int_d() {
-        return this.d();
+    public int getX() {
+        return Vec3i.vapeInstance.getMappings().vec3i.getX(this.I);
     }
 
     static {
-        if (Vec3i.J() != null) {
-            Vec3i.n(new GuiComponent[1]);
+        if (Vec3i.getGuiComponents() != null) {
+            Vec3i.setGuiComponents(new GuiComponent[1]);
         }
     }
 }

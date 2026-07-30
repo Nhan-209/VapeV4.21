@@ -608,7 +608,7 @@ extends Mapping {
             this.Q = mBlock.J(string, bl, clazz); 
             Class<String> clazz44 = String.class;
             boolean bl32 = true;
-            String string35 = "unlocalizedName";
+            String string35 = ForgeVersion.c() >= 23 ? "translationKey" : "unlocalizedName";
             MBlock mBlock35 = this;
             this.D = this.J(string35, bl32, clazz44);
         }

@@ -10,52 +10,37 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MMLGBlockWrapper
 extends Mapping {
-    private final MappingField n;
-    private final MappingField y;
+    private final MappingField lavaField;
+    private final MappingField waterField;
 
-    public static Object a(MMLGBlockWrapper mMLGBlockWrapper) {
-        return mMLGBlockWrapper.R();
+    public static Object getLava(MMLGBlockWrapper mapping) {
+        return mapping.readLava();
     }
 
-    private Object R() {
-        return this.n.getObject(null);
+    private Object readLava() {
+        return this.lavaField.getObject(null);
     }
 
 
     public MMLGBlockWrapper() {
-        this(MChestTypeHolder.f());
+        this(MChestTypeHolder.getChestTypeHolderControlFlowState());
     }
 
-    private MMLGBlockWrapper(boolean bl) {
+    private MMLGBlockWrapper(boolean controlFlowState) {
         super(MappedClasses.Za);
-        if (bl) {
-            Class clazz = MappedClasses.W;
-            String string = "WATER";
-            MMLGBlockWrapper mMLGBlockWrapper = this;
-            this.y = ((MappingFieldBuilder)((MappingFieldBuilder)mMLGBlockWrapper.fieldBuilder(string, clazz).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).setStaticMember(true)).buildField();
-            Class clazz2 = MappedClasses.W;
-            String string2 = "LAVA";
-            MMLGBlockWrapper mMLGBlockWrapper2 = this;
-            this.n = ((MappingFieldBuilder)((MappingFieldBuilder)this.fieldBuilder(string2, clazz2).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).setStaticMember(true)).buildField();
-            return;
+        this.waterField = ((MappingFieldBuilder)((MappingFieldBuilder)this.fieldBuilder("WATER", MappedClasses.W).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).setStaticMember(true)).buildField();
+        this.lavaField = ((MappingFieldBuilder)((MappingFieldBuilder)this.fieldBuilder("LAVA", MappedClasses.W).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).setStaticMember(true)).buildField();
+        if (!controlFlowState) {
+            GuiComponent.setLegacyComponentState(new GuiComponent[5]);
         }
-        Class clazz = MappedClasses.W;
-        String string = "WATER";
-        MMLGBlockWrapper mMLGBlockWrapper = this;
-        this.y = ((MappingFieldBuilder)((MappingFieldBuilder)mMLGBlockWrapper.fieldBuilder(string, clazz).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).setStaticMember(true)).buildField();
-        Class clazz3 = MappedClasses.W;
-        String string3 = "LAVA";
-        MMLGBlockWrapper mMLGBlockWrapper3 = this;
-        this.n = ((MappingFieldBuilder)((MappingFieldBuilder)this.fieldBuilder(string3, clazz3).setTypeForVersion(ForgeVersion.MC_1_20_6.n(), MappedClasses.qC)).setStaticMember(true)).buildField();
-        GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 
-    private Object S() {
-        return this.y.getObject(null);
+    private Object readWater() {
+        return this.waterField.getObject(null);
     }
 
-    public static Object m(MMLGBlockWrapper mMLGBlockWrapper) {
-        return mMLGBlockWrapper.S();
+    public static Object getWater(MMLGBlockWrapper mapping) {
+        return mapping.readWater();
     }
 }
 

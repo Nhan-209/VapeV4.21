@@ -5,31 +5,31 @@ import gg.vape.wrapper.Wrapper;
 
 public class Vector3f
 extends Wrapper {
-    public float R() {
-        return Vector3f.vapeInstance.getMappingsMapperCompat().qM.e(this.I);
+    public float getZ() {
+        return Vector3f.vapeInstance.getMappingsMapperCompat().vector3f.getZ(this.I);
     }
 
-    public static Vector3f Z(float f, float f2, float f3) {
-        return new Vector3f(MVector3f.u(Vector3f.vapeInstance.getMappingsMapperCompat().qM, f, f2, f3));
+    public static Vector3f create(float x, float y, float z) {
+        return new Vector3f(Vector3f.vapeInstance.getMappingsMapperCompat().vector3f.newInstance(x, y, z));
     }
 
-    public Quaternion I(float f) {
+    public Quaternion rotationDegrees(float degrees) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return Quaternion.A(this, f, true);
+            return Quaternion.fromAxisAngle(this, degrees, true);
         }
-        return new Quaternion(Vector3f.vapeInstance.getMappingsMapperCompat().qM.O(this.I, f));
+        return new Quaternion(Vector3f.vapeInstance.getMappingsMapperCompat().vector3f.rotationDegrees(this.I, degrees));
     }
 
-    public float V() {
-        return Vector3f.vapeInstance.getMappingsMapperCompat().qM.X(this.I);
+    public float getX() {
+        return Vector3f.vapeInstance.getMappingsMapperCompat().vector3f.getX(this.I);
     }
 
-    public Vector3f(Object object) {
-        super(object);
+    public Vector3f(Object handle) {
+        super(handle);
     }
 
-    public float D() {
-        return Vector3f.vapeInstance.getMappingsMapperCompat().qM.L(this.I);
+    public float getY() {
+        return Vector3f.vapeInstance.getMappingsMapperCompat().vector3f.getY(this.I);
     }
 
 }

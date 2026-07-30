@@ -15,7 +15,7 @@ extends Packet {
     }
 
     public Iterable getPacketHandles() {
-        return BacktrackPacketQueueEntry.vapeInstance.getMappingsMapperCompat().CS.A(this.I);
+        return BacktrackPacketQueueEntry.vapeInstance.getMappingsMapperCompat().CS.getPacketHandles(this.I);
     }
 
     public BacktrackPacketQueueEntry(Object handle) {

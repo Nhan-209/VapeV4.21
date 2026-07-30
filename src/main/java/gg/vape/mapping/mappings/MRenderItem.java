@@ -83,7 +83,7 @@ extends Mapping {
             String string = "<init>";
             MRenderItem mRenderItem = this;
             this.n = mRenderItem.Y(string, bl, clazz, classArray);
-            if (!Wrapper.vapeInstance.isNativeAvailable()) {
+            if (!Wrapper.vapeInstance.isForgeAbsent()) {
                 Class[] classArray2 = new Class[]{};
                 Class clazz2 = MappedClasses.z8;
                 boolean bl2 = false;

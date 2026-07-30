@@ -22,7 +22,7 @@ extends Mapping {
     }
 
     public MEntityRayTraceBridge() {
-        this(MItemAttributeModifiersComponent.F());
+        this(MItemAttributeModifiersComponent.getItemAttributeModifiersControlFlowState());
     }
 
     private MEntityRayTraceBridge(GuiComponent[] guiComponentArray) {

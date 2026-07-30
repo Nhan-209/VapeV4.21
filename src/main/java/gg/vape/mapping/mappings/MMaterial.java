@@ -8,158 +8,158 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MMaterial
 extends Mapping {
-    public MappingField c;
-    private static int[] K;
-    private final MappingMethod C;
-    private MappingField u;
-    public final MappingMethod S;
-    public final MappingMethod p;
-    private MappingField n;
-    public final MappingMethod T;
-    private MappingMethod B;
-    private MappingField f;
+    public MappingField airField;
+    private static int[] constructorState;
+    private final MappingMethod isLiquidMethod;
+    private MappingField fireField;
+    public final MappingMethod isReplaceableMethod;
+    public final MappingMethod isSolidMethod;
+    private MappingField waterField;
+    public final MappingMethod blocksMovementMethod;
+    private MappingMethod isToolNotRequiredMethod;
+    private MappingField vineField;
 
-    public boolean O(Object object) {
-        return this.T.invokeBoolean(object, new Object[0]);
+    public boolean blocksMovement(Object material) {
+        return this.blocksMovementMethod.invokeBoolean(material, new Object[0]);
     }
 
-    public static int[] u() {
-        return K;
+    public static int[] getConstructorState() {
+        return constructorState;
     }
 
-    public boolean A(Object object) {
-        return this.p.invokeBoolean(object, new Object[0]);
+    public boolean isSolid(Object material) {
+        return this.isSolidMethod.invokeBoolean(material, new Object[0]);
     }
 
-    public boolean M(Object object) {
-        return this.S.invokeBoolean(object, new Object[0]);
+    public boolean isReplaceable(Object material) {
+        return this.isReplaceableMethod.invokeBoolean(material, new Object[0]);
     }
 
-    public boolean b(Object object) {
-        return this.B.invokeBoolean(object, new Object[0]);
+    public boolean isToolNotRequired(Object material) {
+        return this.isToolNotRequiredMethod.invokeBoolean(material, new Object[0]);
     }
 
 
     public MMaterial() {
-        this(MMaterial.u());
+        this(MMaterial.getConstructorState());
     }
 
-    private MMaterial(int[] nArray) {
+    private MMaterial(int[] constructorState) {
         super(MappedClasses.ZN);
-        int[] nArray2 = nArray;
+        int[] unusedConstructorState = constructorState;
         if (ForgeVersion.MC_1_20_6.v()) {
             if (ForgeVersion.MC_1_12_2.d()) {
-                Class clazz = MappedClasses.ZN;
-                boolean bl = true;
-                String string = "AIR";
-                MMaterial mMaterial = this;
-                this.c = mMaterial.registerStaticField(string, bl, clazz);
-                Class clazz2 = MappedClasses.ZN;
-                boolean bl2 = true;
-                String string2 = "WATER";
-                MMaterial mMaterial2 = this;
-                this.n = this.registerStaticField(string2, bl2, clazz2);
-                Class clazz3 = MappedClasses.ZN;
-                boolean bl3 = true;
-                String string3 = "FIRE";
-                MMaterial mMaterial3 = this;
-                this.u = this.registerStaticField(string3, bl3, clazz3);
+                Class materialClass = MappedClasses.ZN;
+                boolean remapField = true;
+                String airFieldName = "AIR";
+                MMaterial mappings = this;
+                this.airField = mappings.registerStaticField(airFieldName, remapField, materialClass);
+                Class waterOwner = MappedClasses.ZN;
+                boolean remapWaterField = true;
+                String waterFieldName = "WATER";
+                MMaterial waterMappings = this;
+                this.waterField = waterMappings.registerStaticField(waterFieldName, remapWaterField, waterOwner);
+                Class fireOwner = MappedClasses.ZN;
+                boolean remapFireField = true;
+                String fireFieldName = "FIRE";
+                MMaterial fireMappings = this;
+                this.fireField = fireMappings.registerStaticField(fireFieldName, remapFireField, fireOwner);
                 if (ForgeVersion.MC_1_16_5.d()) {
-                    Class clazz4 = MappedClasses.ZN;
-                    boolean bl4 = true;
-                    String string4 = "TALL_PLANTS";
-                    MMaterial mMaterial4 = this;
-                    this.f = this.registerStaticField(string4, bl4, clazz4);
+                    Class vineOwner = MappedClasses.ZN;
+                    boolean remapVineField = true;
+                    String vineFieldName = "TALL_PLANTS";
+                    MMaterial vineMappings = this;
+                    this.vineField = vineMappings.registerStaticField(vineFieldName, remapVineField, vineOwner);
                 } else {
-                    Class clazz5 = MappedClasses.ZN;
-                    boolean bl5 = true;
-                    String string5 = "VINE";
-                    MMaterial mMaterial5 = this;
-                    this.f = this.registerStaticField(string5, bl5, clazz5);
+                    Class vineOwner = MappedClasses.ZN;
+                    boolean remapVineField = true;
+                    String vineFieldName = "VINE";
+                    MMaterial vineMappings = this;
+                    this.vineField = vineMappings.registerStaticField(vineFieldName, remapVineField, vineOwner);
                 }
             } else {
-                Class clazz = MappedClasses.ZN;
-                boolean bl = true;
-                String string = "air";
-                MMaterial mMaterial = this;
-                this.c = mMaterial.registerStaticField(string, bl, clazz);
-                Class clazz6 = MappedClasses.ZN;
-                boolean bl6 = true;
-                String string6 = "water";
-                MMaterial mMaterial6 = this;
-                this.n = this.registerStaticField(string6, bl6, clazz6);
-                Class clazz7 = MappedClasses.ZN;
-                boolean bl7 = true;
-                String string7 = "vine";
-                MMaterial mMaterial7 = this;
-                this.f = this.registerStaticField(string7, bl7, clazz7);
-                Class clazz8 = MappedClasses.ZN;
-                boolean bl8 = true;
-                String string8 = "fire";
-                MMaterial mMaterial8 = this;
-                this.u = this.registerStaticField(string8, bl8, clazz8);
+                Class materialClass = MappedClasses.ZN;
+                boolean remapField = true;
+                String airFieldName = "air";
+                MMaterial mappings = this;
+                this.airField = mappings.registerStaticField(airFieldName, remapField, materialClass);
+                Class waterOwner = MappedClasses.ZN;
+                boolean remapWaterField = true;
+                String waterFieldName = "water";
+                MMaterial waterMappings = this;
+                this.waterField = waterMappings.registerStaticField(waterFieldName, remapWaterField, waterOwner);
+                Class vineOwner = MappedClasses.ZN;
+                boolean remapVineField = true;
+                String vineFieldName = "vine";
+                MMaterial vineMappings = this;
+                this.vineField = vineMappings.registerStaticField(vineFieldName, remapVineField, vineOwner);
+                Class fireOwner = MappedClasses.ZN;
+                boolean remapFireField = true;
+                String fireFieldName = "fire";
+                MMaterial fireMappings = this;
+                this.fireField = fireMappings.registerStaticField(fireFieldName, remapFireField, fireOwner);
             }
         }
         if (ForgeVersion.MC_1_16_5.v()) {
-            Class[] classArray = new Class[]{};
-            Class<Boolean> clazz = Boolean.TYPE;
-            boolean bl = true;
-            String string = "isToolNotRequired";
-            MMaterial mMaterial = this;
-            this.B = mMaterial.Y(string, bl, clazz, classArray);
+            Class[] parameterTypes = new Class[]{};
+            Class<Boolean> returnType = Boolean.TYPE;
+            boolean remapMethod = true;
+            String methodName = "isToolNotRequired";
+            MMaterial mappings = this;
+            this.isToolNotRequiredMethod = mappings.Y(methodName, remapMethod, returnType, parameterTypes);
         }
-        Class[] classArray = new Class[]{};
-        Class<Boolean> clazz = Boolean.TYPE;
-        boolean bl = true;
-        String string = "isReplaceable";
-        MMaterial mMaterial = this;
-        this.S = mMaterial.Y(string, bl, clazz, classArray);
-        Class[] classArray2 = new Class[]{};
-        Class<Boolean> clazz9 = Boolean.TYPE;
-        boolean bl9 = true;
-        String string9 = "blocksMovement";
-        MMaterial mMaterial9 = this;
-        this.T = this.Y(string9, bl9, clazz9, classArray2);
-        Class[] classArray3 = new Class[]{};
-        Class<Boolean> clazz10 = Boolean.TYPE;
-        boolean bl10 = true;
-        String string10 = "isSolid";
-        MMaterial mMaterial10 = this;
-        this.p = this.Y(string10, bl10, clazz10, classArray3);
-        Class[] classArray4 = new Class[]{};
-        Class<Boolean> clazz11 = Boolean.TYPE;
-        boolean bl11 = true;
-        String string11 = "isLiquid";
-        MMaterial mMaterial11 = this;
-        this.C = this.Y(string11, bl11, clazz11, classArray4);
+        Class[] replaceableParameterTypes = new Class[]{};
+        Class<Boolean> replaceableReturnType = Boolean.TYPE;
+        boolean remapReplaceableMethod = true;
+        String replaceableMethodName = "isReplaceable";
+        MMaterial replaceableMappings = this;
+        this.isReplaceableMethod = replaceableMappings.Y(replaceableMethodName, remapReplaceableMethod, replaceableReturnType, replaceableParameterTypes);
+        Class[] blocksMovementParameterTypes = new Class[]{};
+        Class<Boolean> blocksMovementReturnType = Boolean.TYPE;
+        boolean remapBlocksMovementMethod = true;
+        String blocksMovementMethodName = "blocksMovement";
+        MMaterial blocksMovementMappings = this;
+        this.blocksMovementMethod = blocksMovementMappings.Y(blocksMovementMethodName, remapBlocksMovementMethod, blocksMovementReturnType, blocksMovementParameterTypes);
+        Class[] solidParameterTypes = new Class[]{};
+        Class<Boolean> solidReturnType = Boolean.TYPE;
+        boolean remapSolidMethod = true;
+        String solidMethodName = "isSolid";
+        MMaterial solidMappings = this;
+        this.isSolidMethod = solidMappings.Y(solidMethodName, remapSolidMethod, solidReturnType, solidParameterTypes);
+        Class[] liquidParameterTypes = new Class[]{};
+        Class<Boolean> liquidReturnType = Boolean.TYPE;
+        boolean remapLiquidMethod = true;
+        String liquidMethodName = "isLiquid";
+        MMaterial liquidMappings = this;
+        this.isLiquidMethod = liquidMappings.Y(liquidMethodName, remapLiquidMethod, liquidReturnType, liquidParameterTypes);
     }
 
-    public boolean z(Object object) {
-        return this.C.invokeBoolean(object, new Object[0]);
+    public boolean isLiquid(Object material) {
+        return this.isLiquidMethod.invokeBoolean(material, new Object[0]);
     }
 
-    public static void r(int[] nArray) {
-        K = nArray;
+    public static void setConstructorState(int[] state) {
+        constructorState = state;
     }
 
     static {
-        MMaterial.r(null);
+        MMaterial.setConstructorState(null);
     }
 
-    public Object q() {
-        return this.c.getObject(null);
+    public Object getAir() {
+        return this.airField.getObject(null);
     }
 
-    public Object H() {
-        return this.u.getObject(null);
+    public Object getFire() {
+        return this.fireField.getObject(null);
     }
 
-    public Object m() {
-        return this.n.getObject(null);
+    public Object getWater() {
+        return this.waterField.getObject(null);
     }
 
-    public Object A() {
-        return this.f.getObject(null);
+    public Object getVine() {
+        return this.vineField.getObject(null);
     }
 }
 

@@ -4,12 +4,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class RegistryAccess
 extends Wrapper {
-    public RegistryAccess(Object object) {
-        super(object);
+    public RegistryAccess(Object wrappedObject) {
+        super(wrappedObject);
     }
 
-    public Registry getFluidState(ResourceKey jy_12) {
-        return new Registry(RegistryAccess.vapeInstance.getMappingsMapperCompat().qs.H(this.I, jy_12.getObject()));
+    public Registry lookupOrThrow(ResourceKey resourceKey) {
+        return new Registry(RegistryAccess.vapeInstance.getMappingsMapperCompat().qs.lookupOrThrow(this.I, resourceKey.getObject()));
     }
 }
-

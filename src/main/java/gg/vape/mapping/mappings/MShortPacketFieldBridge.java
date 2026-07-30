@@ -9,46 +9,29 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MShortPacketFieldBridge
 extends Mapping {
-    private final MappingField d;
+    private final MappingField transactionIdField;
 
-
-    public short P(Object object) {
-        return this.d.getShort(object);
+    public short getTransactionId(Object packet) {
+        return this.transactionIdField.getShort(packet);
     }
 
     public MShortPacketFieldBridge() {
-        this(MPacketIdFactory.A());
+        this(MPacketIdFactory.getPacketMappingControlFlowState());
     }
 
-    private MShortPacketFieldBridge(GuiComponent[] guiComponentArray) {
+    private MShortPacketFieldBridge(GuiComponent[] controlFlowState) {
         super(MappedClasses.zy);
-        if (guiComponentArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_7_10.L() && !Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
-                Class<Short> clazz = Short.TYPE;
-                boolean bl = Wrapper.isNativeAvailable;
-                String string = "field_149534_b";
-                MShortPacketFieldBridge mShortPacketFieldBridge = this;
-                this.d = mShortPacketFieldBridge.J(string, bl, clazz);
+                this.transactionIdField = this.J("field_149534_b", Wrapper.isNativeAvailable, Short.TYPE);
             } else {
-                Class<Short> clazz = Short.TYPE;
-                boolean bl = true;
-                String string = "uid";
-                MShortPacketFieldBridge mShortPacketFieldBridge = this;
-                this.d = mShortPacketFieldBridge.J(string, bl, clazz);
+                this.transactionIdField = this.J("uid", true, Short.TYPE);
             }
             return;
         }
         if (!ForgeVersion.MC_1_7_10.L()) {
-            Class<Short> clazz = Short.TYPE;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "field_149534_b";
-            MShortPacketFieldBridge mShortPacketFieldBridge = this;
-            mShortPacketFieldBridge.J(string, bl, clazz);
+            this.J("field_149534_b", Wrapper.isNativeAvailable, Short.TYPE);
         }
-        Class<Short> clazz = Short.TYPE;
-        boolean bl = true;
-        String string = "uid";
-        MShortPacketFieldBridge mShortPacketFieldBridge = this;
-        this.d = mShortPacketFieldBridge.J(string, bl, clazz);
+        this.transactionIdField = this.J("uid", true, Short.TYPE);
     }
 }

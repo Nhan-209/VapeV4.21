@@ -5,87 +5,87 @@ import gg.vape.wrapper.Wrapper;
 
 public class CPacketPlayerBlockPlacement
 extends Wrapper {
-    public float d() {
+    public float getFacingX() {
         if (ForgeVersion.MC_1_16_5_ACTUAL.d()) {
-            return this.d$src$Lgg_vape_utils_MutableFloatTriple_$uj7uxi().getX();
+            return this.getFacingVector().getX();
         }
-        return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.u(this.getObject());
+        return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.getFacingX(this.getObject());
     }
 
-    public Object l$src$Ljava_lang_Object_$1lmatan() {
+    public Object getHand() {
         if (ForgeVersion.MC_1_16_5_ACTUAL.d()) {
-            return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.N(this.I);
+            return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.getHand(this.I);
         }
         throw new UnsupportedOperationException("Unimplemented");
     }
 
-    public ItemStack Q$src$Lgg_vape_wrapper_impl_ItemStack_$16phjq1() {
+    public ItemStack getItemStack() {
         if (ForgeVersion.MC_1_12_2.d()) {
             return Minecraft.thePlayer().getHeldItemHand();
         }
-        return new ItemStack(CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.p(this.I));
+        return new ItemStack(CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.getItemStack(this.I));
     }
 
-    public BlockRayTraceResult l() {
+    public BlockRayTraceResult getBlockHit() {
         if (ForgeVersion.MC_1_16_5_ACTUAL.d()) {
-            return new BlockRayTraceResult(CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.b(this.I));
+            return new BlockRayTraceResult(CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.getBlockHit(this.I));
         }
         throw new UnsupportedOperationException("Unimplemented");
     }
 
-    public int K() {
+    public int getSequence() {
         if (ForgeVersion.MC_1_21_11.d()) {
-            return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.I(this.I);
+            return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.getSequence(this.I);
         }
         return -1;
     }
 
-    public float N() {
+    public float getFacingZ() {
         if (ForgeVersion.MC_1_16_5_ACTUAL.d()) {
-            return this.d$src$Lgg_vape_utils_MutableFloatTriple_$uj7uxi().getZ();
+            return this.getFacingVector().getZ();
         }
-        return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.j(this.getObject());
+        return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.getFacingZ(this.getObject());
     }
 
-    public MutableFloatTriple d$src$Lgg_vape_utils_MutableFloatTriple_$uj7uxi() {
+    public MutableFloatTriple getFacingVector() {
         if (ForgeVersion.MC_1_16_5_ACTUAL.d()) {
-            BlockRayTraceResult blockRayTraceResult = this.l();
-            BlockPos blockPos = blockRayTraceResult.getBlockPos();
-            Vec3 vec3 = blockRayTraceResult.getHitVec();
-            float f = (float)(vec3.getX() - (double)blockPos.P());
-            float f2 = (float)(vec3.getY() - (double)blockPos.o());
-            float f3 = (float)(vec3.getZ() - (double)blockPos.d());
-            return new MutableFloatTriple(f, f2, f3);
+            BlockRayTraceResult blockHit = this.getBlockHit();
+            BlockPos blockPosition = blockHit.getBlockPos();
+            Vec3 hitLocation = blockHit.getHitVec();
+            float facingX = (float)(hitLocation.getX() - (double)blockPosition.getX());
+            float facingY = (float)(hitLocation.getY() - (double)blockPosition.getY());
+            float facingZ = (float)(hitLocation.getZ() - (double)blockPosition.getZ());
+            return new MutableFloatTriple(facingX, facingY, facingZ);
         }
-        return new MutableFloatTriple(this.d(), this.q(), this.N());
+        return new MutableFloatTriple(this.getFacingX(), this.getFacingY(), this.getFacingZ());
     }
 
-    public float q() {
+    public float getFacingY() {
         if (ForgeVersion.MC_1_16_5_ACTUAL.d()) {
-            return this.d$src$Lgg_vape_utils_MutableFloatTriple_$uj7uxi().getY();
+            return this.getFacingVector().getY();
         }
-        return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.h(this.getObject());
+        return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.getFacingY(this.getObject());
     }
 
-    private static UnsupportedOperationException a(UnsupportedOperationException unsupportedOperationException) {
-        return unsupportedOperationException;
+    private static UnsupportedOperationException propagateException(UnsupportedOperationException exception) {
+        return exception;
     }
 
-    public CPacketPlayerBlockPlacement(Object object) {
-        super(object);
+    public CPacketPlayerBlockPlacement(Object handle) {
+        super(handle);
     }
 
-    public BlockPos Q() {
+    public BlockPos getBlockPosition() {
         if (ForgeVersion.MC_1_16_5_ACTUAL.d()) {
-            return this.l().getBlockPos();
+            return this.getBlockHit().getBlockPos();
         }
-        return new BlockPos(CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.V(this.getObject()));
+        return new BlockPos(CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.getBlockPosition(this.getObject()));
     }
 
-    public int d$src$I$17a761m() {
+    public int getPlacedBlockDirection() {
         if (ForgeVersion.MC_1_16_5_ACTUAL.d()) {
-            return this.l().Z();
+            return this.getBlockHit().Z();
         }
-        return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.s(this.getObject());
+        return CPacketPlayerBlockPlacement.vapeInstance.getMappings().D3.getPlacedBlockDirection(this.getObject());
     }
 }

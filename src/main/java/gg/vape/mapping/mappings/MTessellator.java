@@ -115,7 +115,7 @@ extends Mapping {
                 } else {
                     Class clazz = MappedClasses.lX;
                     boolean bl = true;
-                    String string = "worldRenderer";
+                    String string = ForgeVersion.c() >= 23 ? "buffer" : "worldRenderer";
                     MTessellator mTessellator = this;
                     this.u = mTessellator.J(string, bl, clazz);
                 }

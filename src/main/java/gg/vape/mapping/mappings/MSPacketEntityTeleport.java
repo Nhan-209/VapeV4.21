@@ -8,165 +8,79 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MSPacketEntityTeleport
 extends Mapping {
-    private MappingField r;
-    public MappingField Z;
-    public MappingField H;
-    public MappingField M;
-    public MappingField G;
-    public MappingField U;
+    private MappingField entityIdField;
+    private MappingField zField;
+    private MappingField xField;
+    private MappingField yField;
+    private MappingField yawField;
+    private MappingField pitchField;
 
-    public int z(Object object) {
+    public int getY(Object packet) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            return (int)this.M.getDouble(object);
+            return (int)this.yField.getDouble(packet);
         }
-        return this.M.getInt(object);
+        return this.yField.getInt(packet);
     }
 
-    public byte s(Object object) {
-        return (byte)this.G.getInt(object);
+    public byte getYaw(Object packet) {
+        return (byte)this.yawField.getInt(packet);
     }
 
-
-    public int a(Object object) {
+    public int getZ(Object packet) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            return (int)this.Z.getDouble(object);
+            return (int)this.zField.getDouble(packet);
         }
-        return this.Z.getInt(object);
+        return this.zField.getInt(packet);
     }
 
-    public byte v(Object object) {
-        return (byte)this.U.getInt(object);
+    public byte getPitch(Object packet) {
+        return (byte)this.pitchField.getInt(packet);
     }
 
-    public int O(Object object) {
-        return this.r.getInt(object);
+    public int getEntityId(Object packet) {
+        return this.entityIdField.getInt(packet);
     }
 
-    public int J(Object object) {
+    public int getX(Object packet) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            return (int)this.H.getDouble(object);
+            return (int)this.xField.getDouble(packet);
         }
-        return this.H.getInt(object);
+        return this.xField.getInt(packet);
     }
 
     public MSPacketEntityTeleport() {
-        this(MSPacketEntityVelocity.G());
+        this(MSPacketEntityVelocity.getPacketMappingControlFlowState());
     }
 
-    private MSPacketEntityTeleport(int[] nArray) {
+    private MSPacketEntityTeleport(int[] controlFlowState) {
         super(MappedClasses.uW);
-        int[] nArray2 = nArray;
         if (ForgeVersion.MC_1_7_10.L()) {
-            Class<Integer> clazz = Integer.TYPE;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "field_148957_a";
-            MSPacketEntityTeleport mSPacketEntityTeleport = this;
-            this.r = mSPacketEntityTeleport.J(string, bl, clazz);
-            Class<Integer> clazz2 = Integer.TYPE;
-            boolean bl2 = Wrapper.isNativeAvailable;
-            String string2 = "field_148956_c";
-            MSPacketEntityTeleport mSPacketEntityTeleport2 = this;
-            this.H = this.J(string2, bl2, clazz2);
-            Class<Integer> clazz3 = Integer.TYPE;
-            boolean bl3 = Wrapper.isNativeAvailable;
-            String string3 = "field_148953_d";
-            MSPacketEntityTeleport mSPacketEntityTeleport3 = this;
-            this.M = this.J(string3, bl3, clazz3);
-            Class<Integer> clazz4 = Integer.TYPE;
-            boolean bl4 = Wrapper.isNativeAvailable;
-            String string4 = "field_148954_e";
-            MSPacketEntityTeleport mSPacketEntityTeleport4 = this;
-            this.Z = this.J(string4, bl4, clazz4);
-            Class<Byte> clazz5 = Byte.TYPE;
-            boolean bl5 = Wrapper.isNativeAvailable;
-            String string5 = "field_148951_f";
-            MSPacketEntityTeleport mSPacketEntityTeleport5 = this;
-            this.G = this.J(string5, bl5, clazz5);
-            Class<Byte> clazz6 = Byte.TYPE;
-            boolean bl6 = Wrapper.isNativeAvailable;
-            String string6 = "field_148952_g";
-            MSPacketEntityTeleport mSPacketEntityTeleport6 = this;
-            this.U = this.J(string6, bl6, clazz6);
+            this.entityIdField = this.J("field_148957_a", Wrapper.isNativeAvailable, Integer.TYPE);
+            this.xField = this.J("field_148956_c", Wrapper.isNativeAvailable, Integer.TYPE);
+            this.yField = this.J("field_148953_d", Wrapper.isNativeAvailable, Integer.TYPE);
+            this.zField = this.J("field_148954_e", Wrapper.isNativeAvailable, Integer.TYPE);
+            this.yawField = this.J("field_148951_f", Wrapper.isNativeAvailable, Byte.TYPE);
+            this.pitchField = this.J("field_148952_g", Wrapper.isNativeAvailable, Byte.TYPE);
         } else if (ForgeVersion.MC_1_16_5.d()) {
-            Class<Integer> clazz = Integer.TYPE;
-            boolean bl = true;
-            String string = "entityId";
-            MSPacketEntityTeleport mSPacketEntityTeleport = this;
-            this.r = mSPacketEntityTeleport.J(string, bl, clazz);
+            this.entityIdField = this.J("entityId", true, Integer.TYPE);
             if (ForgeVersion.MC_1_17.d()) {
-                Class<Double> clazz7 = Double.TYPE;
-                boolean bl7 = true;
-                String string7 = "x";
-                MSPacketEntityTeleport mSPacketEntityTeleport7 = this;
-                this.H = this.J(string7, bl7, clazz7);
-                Class<Double> clazz8 = Double.TYPE;
-                boolean bl8 = true;
-                String string8 = "y";
-                MSPacketEntityTeleport mSPacketEntityTeleport8 = this;
-                this.M = this.J(string8, bl8, clazz8);
-                Class<Double> clazz9 = Double.TYPE;
-                boolean bl9 = true;
-                String string9 = "z";
-                MSPacketEntityTeleport mSPacketEntityTeleport9 = this;
-                this.Z = this.J(string9, bl9, clazz9);
+                this.xField = this.J("x", true, Double.TYPE);
+                this.yField = this.J("y", true, Double.TYPE);
+                this.zField = this.J("z", true, Double.TYPE);
             } else {
-                Class<Double> clazz10 = Double.TYPE;
-                boolean bl10 = true;
-                String string10 = "x";
-                MSPacketEntityTeleport mSPacketEntityTeleport10 = this;
-                this.H = this.J(string10, bl10, clazz10);
-                Class<Double> clazz11 = Double.TYPE;
-                boolean bl11 = true;
-                String string11 = "y";
-                MSPacketEntityTeleport mSPacketEntityTeleport11 = this;
-                this.M = this.J(string11, bl11, clazz11);
-                Class<Double> clazz12 = Double.TYPE;
-                boolean bl12 = true;
-                String string12 = "z";
-                MSPacketEntityTeleport mSPacketEntityTeleport12 = this;
-                this.Z = this.J(string12, bl12, clazz12);
+                this.xField = this.J("x", true, Double.TYPE);
+                this.yField = this.J("y", true, Double.TYPE);
+                this.zField = this.J("z", true, Double.TYPE);
             }
-            Class<Byte> clazz13 = Byte.TYPE;
-            boolean bl13 = true;
-            String string13 = "yRot";
-            MSPacketEntityTeleport mSPacketEntityTeleport13 = this;
-            this.G = this.J(string13, bl13, clazz13);
-            Class<Byte> clazz14 = Byte.TYPE;
-            boolean bl14 = true;
-            String string14 = "xRot";
-            MSPacketEntityTeleport mSPacketEntityTeleport14 = this;
-            this.U = this.J(string14, bl14, clazz14);
+            this.yawField = this.J("yRot", true, Byte.TYPE);
+            this.pitchField = this.J("xRot", true, Byte.TYPE);
         } else {
-            Class<Integer> clazz = Integer.TYPE;
-            boolean bl = true;
-            String string = "entityId";
-            MSPacketEntityTeleport mSPacketEntityTeleport = this;
-            this.r = mSPacketEntityTeleport.J(string, bl, clazz);
-            Class<Integer> clazz15 = Integer.TYPE;
-            boolean bl15 = true;
-            String string15 = "x";
-            MSPacketEntityTeleport mSPacketEntityTeleport15 = this;
-            this.H = this.J(string15, bl15, clazz15);
-            Class<Integer> clazz16 = Integer.TYPE;
-            boolean bl16 = true;
-            String string16 = "y";
-            MSPacketEntityTeleport mSPacketEntityTeleport16 = this;
-            this.M = this.J(string16, bl16, clazz16);
-            Class<Integer> clazz17 = Integer.TYPE;
-            boolean bl17 = true;
-            String string17 = "z";
-            MSPacketEntityTeleport mSPacketEntityTeleport17 = this;
-            this.Z = this.J(string17, bl17, clazz17);
-            Class<Byte> clazz18 = Byte.TYPE;
-            boolean bl18 = true;
-            String string18 = "yaw";
-            MSPacketEntityTeleport mSPacketEntityTeleport18 = this;
-            this.G = this.J(string18, bl18, clazz18);
-            Class<Byte> clazz19 = Byte.TYPE;
-            boolean bl19 = true;
-            String string19 = "pitch";
-            MSPacketEntityTeleport mSPacketEntityTeleport19 = this;
-            this.U = this.J(string19, bl19, clazz19);
+            this.entityIdField = this.J("entityId", true, Integer.TYPE);
+            this.xField = this.J("x", true, Integer.TYPE);
+            this.yField = this.J("y", true, Integer.TYPE);
+            this.zField = this.J("z", true, Integer.TYPE);
+            this.yawField = this.J("yaw", true, Byte.TYPE);
+            this.pitchField = this.J("pitch", true, Byte.TYPE);
         }
     }
 }

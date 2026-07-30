@@ -104,7 +104,7 @@ public class Vape {
     public static final boolean DEV = false; // always false; likely dead compile-time toggle
     public static final String VERSION;
     static TimerUtil loadTimer;
-    private boolean nativeAvailable;
+    private boolean forgeAbsent;
     private boolean mappingsRemapped;
     private boolean vanillaMinecraftPresentCache;
     private boolean renderInitialized;
@@ -144,6 +144,7 @@ public class Vape {
     private ModuleProfileMetadataCodec moduleProfileMetadataCodec;
     private Object directoryCleanupCallback;
     private SyncThread syncThread;
+    //used for time bomb
     private static Date buildDate;
     private static int[] supportedVersionIds;
 
@@ -189,7 +190,7 @@ public class Vape {
         int opaqueBranch = opaqueSeed;
         if (opaqueBranch != 0) {
             this.traceStep(19);
-            if (this.nativeAvailable && ForgeVersion.MC_26_1.v()) {
+            if (this.forgeAbsent && ForgeVersion.MC_26_1.v()) {
                 NativeBridge.fs();
                 MappedClasses.p();
                 NativeBridge.rsc();
@@ -443,7 +444,7 @@ public class Vape {
             return this.vanillaMinecraftPresentCache;
         }
         this.vanillaMinecraftChecked = true;
-        if (!this.nativeAvailable) {
+        if (!this.forgeAbsent) {
             return false;
         }
         if (ForgeVersion.MC_26_1.d()) {
@@ -616,8 +617,8 @@ public class Vape {
         }
     }
 
-    public boolean isNativeAvailable() {
-        return this.nativeAvailable;
+    public boolean isForgeAbsent() {
+        return this.forgeAbsent;
     }
 
     public ProfilesManager getProfilesManager() {
@@ -692,16 +693,6 @@ public class Vape {
     static {
         Vape.setOpaqueState(66);
         VERSION = "4.21";
-        Object[] discardedSlotStorage = new Object[925];
-        Array.newInstance(Integer.TYPE, 737);
-        Array.newInstance(Byte.TYPE, 960);
-        Array.newInstance(Float.TYPE, 889);
-        Array.newInstance(Long.TYPE, 885);
-        Array.newInstance(Character.TYPE, 731);
-        Array.newInstance(Object.class, 749);
-        Array.newInstance(Boolean.TYPE, 854);
-        Array.newInstance(Double.TYPE, 796);
-        Array.newInstance(Short.TYPE, 617);
         supportedVersionIds = new int[]{13, 15, 23, 35, 36};
         buildDate = new Date(1710640988922L);
         renderReady = false;
@@ -758,6 +749,13 @@ public class Vape {
     }
 
     public static void debugLog(String message) {
+        String normalizedMessage = message == null ? "<null>" : message;
+        try {
+            NativeBridge.sce("DEBUG " + normalizedMessage);
+        }
+        catch (Throwable nativeLoggingFailure) {
+            System.err.println("[Vape421] " + normalizedMessage);
+        }
     }
 
     private static <T extends Throwable> T rethrow(T error) {
@@ -781,18 +779,8 @@ public class Vape {
     }
 
     public Vape() {
-        Object[] discardedSlotStorage = new Object[712];
-        Array.newInstance(Character.TYPE, 862);
-        Array.newInstance(Byte.TYPE, 941);
         int opaqueBranch = Vape.opaquePredicate();
-        Array.newInstance(Short.TYPE, 939);
         if (opaqueBranch != 0) {
-            Array.newInstance(Boolean.TYPE, 721);
-            Array.newInstance(Object.class, 792);
-            Array.newInstance(Integer.TYPE, 950);
-            Array.newInstance(Long.TYPE, 806);
-            Array.newInstance(Double.TYPE, 860);
-            Array.newInstance(Float.TYPE, 555);
             this.nativePresenceUpdater = new NativePresenceUpdater();
             this.syncThread = new SyncThread(this);
             this.vanillaMinecraftChecked = false;
@@ -802,17 +790,11 @@ public class Vape {
             this.isLabyModCache = null;
             this.traceStep(17);
             INSTANCE = this;
-            this.nativeAvailable = NativeBridge.isForgeAbsent();
+            this.forgeAbsent = NativeBridge.isForgeAbsent();
             this.directoryCleanupCallback = new ClientDirectoryCleanupCallback();
             GuiComponent.setLegacyComponentState(new GuiComponent[4]);
             return;
         }
-        Array.newInstance(Boolean.TYPE, 721);
-        Array.newInstance(Object.class, 792);
-        Array.newInstance(Integer.TYPE, 950);
-        Array.newInstance(Long.TYPE, 806);
-        Array.newInstance(Double.TYPE, 860);
-        Array.newInstance(Float.TYPE, 555);
         this.nativePresenceUpdater = new NativePresenceUpdater();
         this.syncThread = new SyncThread(this);
         this.vanillaMinecraftChecked = false;
@@ -822,7 +804,7 @@ public class Vape {
         this.isLabyModCache = null;
         this.traceStep(17);
         INSTANCE = this;
-        this.nativeAvailable = NativeBridge.isForgeAbsent();
+        this.forgeAbsent = NativeBridge.isForgeAbsent();
         this.directoryCleanupCallback = new ClientDirectoryCleanupCallback();
     }
 

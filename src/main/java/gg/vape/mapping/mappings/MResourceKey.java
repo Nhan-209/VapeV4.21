@@ -8,22 +8,19 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MResourceKey
 extends Mapping {
-    private MappingField c;
+    private final MappingField locationField;
 
     public MResourceKey() {
         super(MappedClasses.qB);
-        Class clazz = MappedClasses.zC;
-        String string = "location";
-        MResourceKey mResourceKey = this;
-        this.c = ((MappingFieldBuilder)this.fieldBuilder(string, clazz).setNameForVersion(ForgeVersion.MC_1_21_11.n(), "identifier")).buildField();
+        this.locationField = ((MappingFieldBuilder)this.fieldBuilder("location", MappedClasses.zC).setNameForVersion(ForgeVersion.MC_1_21_11.n(), "identifier")).buildField();
     }
 
-    public static Object J(MResourceKey mResourceKey, Object object) {
-        return mResourceKey.U(object);
+    public static Object getLocation(MResourceKey mapping, Object resourceKey) {
+        return mapping.readLocation(resourceKey);
     }
 
-    private Object U(Object object) {
-        return this.c.getObject(object);
+    private Object readLocation(Object resourceKey) {
+        return this.locationField.getObject(resourceKey);
     }
 }
 

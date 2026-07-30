@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class EntityEquipmentSlotHolder
 extends Wrapper {
-    public EntityEquipmentSlot a() {
-        return new EntityEquipmentSlot(MEntityEquipmentSlotHolder.S(EntityEquipmentSlotHolder.vapeInstance.getMappingsMapperCompat().hh, this.I));
+    public EntityEquipmentSlot getSlot() {
+        return new EntityEquipmentSlot(MEntityEquipmentSlotHolder.getSlot(EntityEquipmentSlotHolder.vapeInstance.getMappingsMapperCompat().hh, this.I));
     }
 
-    public EntityEquipmentSlotHolder(Object object) {
-        super(object);
+    public EntityEquipmentSlotHolder(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

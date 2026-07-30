@@ -4,16 +4,15 @@ import gg.vape.wrapper.Wrapper;
 
 public class SPacketAnimation
 extends Wrapper {
-    public int K() {
-        return SPacketAnimation.vapeInstance.getMappingsMapperCompat().DF.h(this.I);
+    public int getEntityId() {
+        return SPacketAnimation.vapeInstance.getMappingsMapperCompat().DF.getEntityId(this.I);
     }
 
-    public int x() {
-        return SPacketAnimation.vapeInstance.getMappingsMapperCompat().DF.y(this.I);
+    public int getAnimationType() {
+        return SPacketAnimation.vapeInstance.getMappingsMapperCompat().DF.getAnimationType(this.I);
     }
 
-    public SPacketAnimation(Object object) {
-        super(object);
+    public SPacketAnimation(Object handle) {
+        super(handle);
     }
 }
-

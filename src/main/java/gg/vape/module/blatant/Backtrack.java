@@ -224,7 +224,7 @@ extends Mod {
         int entityId = -1;
         if (packet.isInstance(MappedClasses.qz)) {
             SEntityPacket relativeMovePacket = new SEntityPacket(packet);
-            Entity entity = relativeMovePacket.V(event.getWorld());
+            Entity entity = relativeMovePacket.getEntity(event.getWorld());
             if (entity.isNotNull()) {
                 entityId = entity.S();
                 packetState = this.entityPacketStates.get(entityId);
@@ -238,20 +238,20 @@ extends Mod {
             }
         } else if (packet.isInstance(MappedClasses.s)) {
             SPacketEntity entityPacket = new SPacketEntity(packet);
-            entityId = entityPacket.k();
+            entityId = entityPacket.getEntityId();
             packetState = this.entityPacketStates.get(entityId);
             if (packetState != null) {
                 packetState.applyAbsolutePacket(entityPacket);
             } else {
                 packetState = new BacktrackPacketState(
-                        entityPacket.H(), entityPacket.M(), entityPacket.B());
+                        entityPacket.getX(), entityPacket.getY(), entityPacket.getZ());
                 this.entityPacketStates.put(entityId, packetState);
             }
         } else {
             if (packet.isInstance(MappedClasses.uW)) {
                 SPacketEntityTeleport teleportPacket = new SPacketEntityTeleport(packet);
-                this.entityPacketStates.put(teleportPacket.u(), new BacktrackPacketState(
-                        teleportPacket.m$src$I$1g30xfs(), teleportPacket.I(), teleportPacket.d()));
+                this.entityPacketStates.put(teleportPacket.getEntityId(), new BacktrackPacketState(
+                        teleportPacket.getX(), teleportPacket.getY(), teleportPacket.getZ()));
                 return null;
             }
             if (packet.isInstance(MappedClasses.Yv)) {
@@ -274,7 +274,7 @@ extends Mod {
         }
         if (ForgeVersion.MC_1_21_4.d() && packet.isInstance(MappedClasses.ly)) {
             NetworkPlayerInfo networkPlayerInfo = new NetworkPlayerInfo(packet);
-            entityId = networkPlayerInfo.C();
+            entityId = networkPlayerInfo.getEntityId();
             packetState = this.entityPacketStates.get(entityId);
             if (packetState != null) {
                 packetState.applyNetworkPlayerInfo(networkPlayerInfo);

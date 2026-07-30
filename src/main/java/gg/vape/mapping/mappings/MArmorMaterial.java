@@ -8,120 +8,65 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MArmorMaterial
 extends Mapping {
-    private final MappingField L;
-    private final MappingField A;
-    private final MappingField F;
-    private final MappingField z;
-    private final MappingField g;
+    private final MappingField leatherField;
+    private final MappingField goldField;
+    private final MappingField chainField;
+    private final MappingField ironField;
+    private final MappingField diamondField;
 
-    public static Object L(MArmorMaterial mArmorMaterial) {
-        return mArmorMaterial.getIron();
+    public static Object getIron(MArmorMaterial mapping) {
+        return mapping.readIron();
     }
 
 
-    private Object getIron() {
-        return this.z.getObject(null);
+    private Object readIron() {
+        return this.ironField.getObject(null);
     }
 
-    public static Object u(MArmorMaterial mArmorMaterial) {
-        return mArmorMaterial.getChain();
+    public static Object getChain(MArmorMaterial mapping) {
+        return mapping.readChain();
     }
 
-    public static Object O(MArmorMaterial mArmorMaterial) {
-        return mArmorMaterial.getDiamond();
+    public static Object getDiamond(MArmorMaterial mapping) {
+        return mapping.readDiamond();
     }
 
-    private Object getCloth() {
-        return this.L.getObject(null);
+    private Object readLeather() {
+        return this.leatherField.getObject(null);
     }
 
-    private Object getChain() {
-        return this.F.getObject(null);
+    private Object readChain() {
+        return this.chainField.getObject(null);
     }
 
-    public static Object e(MArmorMaterial mArmorMaterial) {
-        return mArmorMaterial.getGold();
+    public static Object getGold(MArmorMaterial mapping) {
+        return mapping.readGold();
     }
 
-    private Object getDiamond() {
-        return this.g.getObject(null);
+    private Object readDiamond() {
+        return this.diamondField.getObject(null);
     }
 
     public MArmorMaterial() {
         this(MItemStack.M());
     }
 
-    private MArmorMaterial(int n) {
+    private MArmorMaterial(int mappingState) {
         super(MappedClasses.ZM);
-        if (n != 0) {
-            Class clazz = MappedClasses.ZM;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "LEATHER";
-            MArmorMaterial mArmorMaterial = this;
-            this.L = mArmorMaterial.registerStaticField(string, bl, clazz);
-            Class clazz2 = MappedClasses.ZM;
-            boolean bl2 = Wrapper.isNativeAvailable;
-            String string2 = "CHAIN";
-            MArmorMaterial mArmorMaterial2 = this;
-            this.F = this.registerStaticField(string2, bl2, clazz2);
-            Class clazz3 = MappedClasses.ZM;
-            boolean bl3 = Wrapper.isNativeAvailable;
-            String string3 = "IRON";
-            MArmorMaterial mArmorMaterial3 = this;
-            this.z = this.registerStaticField(string3, bl3, clazz3);
-            Class clazz4 = MappedClasses.ZM;
-            boolean bl4 = Wrapper.isNativeAvailable;
-            String string4 = "GOLD";
-            MArmorMaterial mArmorMaterial4 = this;
-            this.A = this.registerStaticField(string4, bl4, clazz4);
-            Class clazz5 = MappedClasses.ZM;
-            boolean bl5 = Wrapper.isNativeAvailable;
-            String string5 = "DIAMOND";
-            MArmorMaterial mArmorMaterial5 = this;
-            this.g = this.registerStaticField(string5, bl5, clazz5);
-            return;
-        }
-        if (ForgeVersion.MC_1_7_10.L()) {
-            Class clazz = MappedClasses.ZM;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "CLOTH";
-            MArmorMaterial mArmorMaterial = this;
-            this.L = mArmorMaterial.registerStaticField(string, bl, clazz);
-        } else {
-            Class clazz = MappedClasses.ZM;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "LEATHER";
-            MArmorMaterial mArmorMaterial = this;
-            this.L = mArmorMaterial.registerStaticField(string, bl, clazz);
-        }
-        Class clazz = MappedClasses.ZM;
-        boolean bl = Wrapper.isNativeAvailable;
-        String string = "CHAIN";
-        MArmorMaterial mArmorMaterial = this;
-        this.F = mArmorMaterial.registerStaticField(string, bl, clazz);
-        Class clazz6 = MappedClasses.ZM;
-        boolean bl6 = Wrapper.isNativeAvailable;
-        String string6 = "IRON";
-        MArmorMaterial mArmorMaterial6 = this;
-        this.z = this.registerStaticField(string6, bl6, clazz6);
-        Class clazz7 = MappedClasses.ZM;
-        boolean bl7 = Wrapper.isNativeAvailable;
-        String string7 = "GOLD";
-        MArmorMaterial mArmorMaterial7 = this;
-        this.A = this.registerStaticField(string7, bl7, clazz7);
-        Class clazz8 = MappedClasses.ZM;
-        boolean bl8 = Wrapper.isNativeAvailable;
-        String string8 = "DIAMOND";
-        MArmorMaterial mArmorMaterial8 = this;
-        this.g = this.registerStaticField(string8, bl8, clazz8);
+        String leatherFieldName = mappingState == 0 && ForgeVersion.MC_1_7_10.L() ? "CLOTH" : "LEATHER";
+        this.leatherField = this.registerStaticField(leatherFieldName, Wrapper.isNativeAvailable, MappedClasses.ZM);
+        this.chainField = this.registerStaticField("CHAIN", Wrapper.isNativeAvailable, MappedClasses.ZM);
+        this.ironField = this.registerStaticField("IRON", Wrapper.isNativeAvailable, MappedClasses.ZM);
+        this.goldField = this.registerStaticField("GOLD", Wrapper.isNativeAvailable, MappedClasses.ZM);
+        this.diamondField = this.registerStaticField("DIAMOND", Wrapper.isNativeAvailable, MappedClasses.ZM);
     }
 
-    public static Object v(MArmorMaterial mArmorMaterial) {
-        return mArmorMaterial.getCloth();
+    public static Object getLeather(MArmorMaterial mapping) {
+        return mapping.readLeather();
     }
 
-    private Object getGold() {
-        return this.A.getObject(null);
+    private Object readGold() {
+        return this.goldField.getObject(null);
     }
 }
 

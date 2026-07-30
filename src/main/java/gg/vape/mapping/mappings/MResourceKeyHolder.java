@@ -8,29 +8,24 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MResourceKeyHolder
 extends Mapping {
-    private MappingField u;
-    private static final String b = "GOLD";
+    private static final String GOLD_FIELD_NAME = "GOLD";
+    private final MappingField goldField;
 
 
     public MResourceKeyHolder() {
         this(MEquippable.p());
     }
 
-    private MResourceKeyHolder(String string) {
+    private MResourceKeyHolder(String controlFlowMarker) {
         super(MappedClasses.qL);
-        String string2 = string;
-        Class clazz = MappedClasses.qB;
-        boolean bl = true;
-        String string3 = b;
-        MResourceKeyHolder mResourceKeyHolder = this;
-        this.u = this.registerStaticField(string3, bl, clazz);
+        this.goldField = this.registerStaticField(GOLD_FIELD_NAME, true, MappedClasses.qB);
         if (GuiComponent.getLegacyComponentState() == null) {
             MEquippable.z("Xwix5b");
         }
     }
 
-    public Object d() {
-        return this.u.getObject(null);
+    public Object getGold() {
+        return this.goldField.getObject(null);
     }
 }
 

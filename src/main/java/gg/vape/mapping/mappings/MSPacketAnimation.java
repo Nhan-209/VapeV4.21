@@ -8,55 +8,34 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MSPacketAnimation
 extends Mapping {
-    private MappingField L;
-    private MappingField H;
+    private MappingField animationTypeField;
+    private MappingField entityIdField;
 
-
-    public int h(Object object) {
-        return this.H.getInt(object);
+    public int getEntityId(Object packet) {
+        return this.entityIdField.getInt(packet);
     }
 
     public MSPacketAnimation() {
-        this(MSPacketEntityVelocity.G());
+        this(MSPacketEntityVelocity.getPacketMappingControlFlowState());
     }
 
-    private MSPacketAnimation(int[] nArray) {
+    private MSPacketAnimation(int[] controlFlowState) {
         super(MappedClasses.ZQ);
-        if (nArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_7_10.L() && !Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
-                Class<Integer> clazz = Integer.TYPE;
-                boolean bl = Wrapper.isNativeAvailable;
-                String string = "field_148981_a";
-                MSPacketAnimation mSPacketAnimation = this;
-                this.H = mSPacketAnimation.J(string, bl, clazz);
-                Class<Integer> clazz2 = Integer.TYPE;
-                boolean bl2 = Wrapper.isNativeAvailable;
-                String string2 = "field_148980_b";
-                MSPacketAnimation mSPacketAnimation2 = this;
-                this.L = this.J(string2, bl2, clazz2);
+                this.entityIdField = this.J("field_148981_a", Wrapper.isNativeAvailable, Integer.TYPE);
+                this.animationTypeField = this.J("field_148980_b", Wrapper.isNativeAvailable, Integer.TYPE);
             } else {
-                Class<Integer> clazz = Integer.TYPE;
-                boolean bl = true;
-                String string = "entityId";
-                MSPacketAnimation mSPacketAnimation = this;
-                this.H = mSPacketAnimation.J(string, bl, clazz);
-                Class<Integer> clazz3 = Integer.TYPE;
-                boolean bl3 = true;
-                String string3 = "type";
-                MSPacketAnimation mSPacketAnimation3 = this;
-                this.L = this.J(string3, bl3, clazz3);
+                this.entityIdField = this.J("entityId", true, Integer.TYPE);
+                this.animationTypeField = this.J("type", true, Integer.TYPE);
             }
             return;
         }
-        Class<Integer> clazz = Integer.TYPE;
-        boolean bl = true;
-        String string = "type";
-        MSPacketAnimation mSPacketAnimation = this;
-        this.L = mSPacketAnimation.J(string, bl, clazz);
+        this.animationTypeField = this.J("type", true, Integer.TYPE);
     }
 
-    public int y(Object object) {
-        return this.L.getInt(object);
+    public int getAnimationType(Object packet) {
+        return this.animationTypeField.getInt(packet);
     }
 }
 

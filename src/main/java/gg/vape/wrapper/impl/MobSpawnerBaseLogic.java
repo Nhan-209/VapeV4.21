@@ -1,24 +1,23 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MMobSpawnerBaseLogic;
 import gg.vape.wrapper.Wrapper;
 
 public class MobSpawnerBaseLogic
 extends Wrapper {
-    public MobSpawnerBaseLogic(Object object) {
-        super(object);
+    public MobSpawnerBaseLogic(Object wrappedObject) {
+        super(wrappedObject);
     }
 
 
-    public String Q() {
+    public String getEntityName() {
         if (ForgeVersion.MC_1_12_2.d()) {
-            Entity entity = new Entity(MMobSpawnerBaseLogic.getCachedEntity(MobSpawnerBaseLogic.vapeInstance.getMappings().DA, this.I, ForgeVersion.MC_1_17.d() ? Minecraft.theWorld().getObject() : null));
+            Entity entity = new Entity(MobSpawnerBaseLogic.vapeInstance.getMappings().mobSpawnerBaseLogic.getCachedEntity(this.I, ForgeVersion.MC_1_17.d() ? Minecraft.theWorld().getObject() : null));
             if (entity.isNotNull()) {
                 return entity.getName();
             }
             return "";
         }
-        return MMobSpawnerBaseLogic.getEntityNameToSpawn(MobSpawnerBaseLogic.vapeInstance.getMappings().DA, this.I);
+        return MobSpawnerBaseLogic.vapeInstance.getMappings().mobSpawnerBaseLogic.getEntityNameToSpawn(this.I);
     }
 }
 

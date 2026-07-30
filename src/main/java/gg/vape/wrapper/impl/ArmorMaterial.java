@@ -5,28 +5,27 @@ import gg.vape.wrapper.Wrapper;
 
 public class ArmorMaterial
 extends Wrapper {
-    public static ArmorMaterial v() {
-        return new ArmorMaterial(MArmorMaterial.e(ArmorMaterial.vapeInstance.getMappingsMapperCompat().e));
+    public static ArmorMaterial gold() {
+        return new ArmorMaterial(MArmorMaterial.getGold(ArmorMaterial.vapeInstance.getMappingsMapperCompat().e));
     }
 
-    public static ArmorMaterial E() {
-        return new ArmorMaterial(MArmorMaterial.L(ArmorMaterial.vapeInstance.getMappingsMapperCompat().e));
+    public static ArmorMaterial iron() {
+        return new ArmorMaterial(MArmorMaterial.getIron(ArmorMaterial.vapeInstance.getMappingsMapperCompat().e));
     }
 
-    public static ArmorMaterial c() {
-        return new ArmorMaterial(MArmorMaterial.u(ArmorMaterial.vapeInstance.getMappingsMapperCompat().e));
+    public static ArmorMaterial chain() {
+        return new ArmorMaterial(MArmorMaterial.getChain(ArmorMaterial.vapeInstance.getMappingsMapperCompat().e));
     }
 
-    public static ArmorMaterial i() {
-        return new ArmorMaterial(MArmorMaterial.v(ArmorMaterial.vapeInstance.getMappingsMapperCompat().e));
+    public static ArmorMaterial leather() {
+        return new ArmorMaterial(MArmorMaterial.getLeather(ArmorMaterial.vapeInstance.getMappingsMapperCompat().e));
     }
 
-    public ArmorMaterial(Object object) {
-        super(object);
+    public ArmorMaterial(Object wrappedObject) {
+        super(wrappedObject);
     }
 
-    public static ArmorMaterial r() {
-        return new ArmorMaterial(MArmorMaterial.O(ArmorMaterial.vapeInstance.getMappingsMapperCompat().e));
+    public static ArmorMaterial diamond() {
+        return new ArmorMaterial(MArmorMaterial.getDiamond(ArmorMaterial.vapeInstance.getMappingsMapperCompat().e));
     }
 }
-

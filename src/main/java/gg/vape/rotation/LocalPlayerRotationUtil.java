@@ -26,7 +26,7 @@ public class LocalPlayerRotationUtil {
         if (settings.k()) {
             renderer.Z(matrixStack, partialTicks);
         }
-        if ((viewMatrix = matrixStack.F().u()).isNull()) {
+        if ((viewMatrix = matrixStack.F().getMatrix()).isNull()) {
             BufferedGuiRenderPrimitives.projectionMatrix = projectionMatrix.m$src$Lgg_vape_utils_render_RenderMatrix4f_$1hodrum();
             BufferedGuiRenderPrimitives.viewMatrix = new RenderMatrix4f().setIdentity();
             return;

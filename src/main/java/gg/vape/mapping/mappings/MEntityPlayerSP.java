@@ -69,7 +69,7 @@ extends Mapping {
                 Class<Float> clazz2 = Float.TYPE;
                 boolean bl2 = Wrapper.isNativeAvailable;
                 String string2 = "field_191988_bg";
-                Class clazz3 = MappedClasses.zQ;
+                Class clazz3 = MappedClasses.zm;
                 MEntityPlayerSP mEntityPlayerSP2 = this;
                 this.g = this.registerInstanceFieldForOwner(clazz3, string2, bl2, clazz2);
                 Class clazz4 = MappedClasses.F1;

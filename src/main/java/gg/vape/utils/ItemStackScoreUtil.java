@@ -64,10 +64,10 @@ public class ItemStackScoreUtil {
             Object object = dataComponentMap.E(DataComponents.E());
             ItemAttributeModifiersComponent itemAttributeModifiersComponent = new ItemAttributeModifiersComponent(object);
             EquipmentSlotGroup equipmentSlotGroup = MonsterAttributesBridge.t();
-            List<ItemAttributeModifiersComponent$Entry> list = itemAttributeModifiersComponent.P();
+            List<ItemAttributeModifiersComponent$Entry> list = itemAttributeModifiersComponent.getEntries();
             for (ItemAttributeModifiersComponent$Entry itemAttributeModifiersComponent$Entry : list) {
-                EquipmentSlotGroup equipmentSlotGroup2 = itemAttributeModifiersComponent$Entry.J();
-                AttributeModifier attributeModifier = itemAttributeModifiersComponent$Entry.e();
+                EquipmentSlotGroup equipmentSlotGroup2 = itemAttributeModifiersComponent$Entry.getEquipmentSlotGroup();
+                AttributeModifier attributeModifier = itemAttributeModifiersComponent$Entry.getModifier();
                 if (!equipmentSlotGroup2.equals(equipmentSlotGroup)) continue;
                 double d = attributeModifier.getAmount();
                 f += (float)d;
@@ -351,9 +351,9 @@ public class ItemStackScoreUtil {
             DataComponentMap dataComponentMap = item.g();
             Object object = dataComponentMap.E(DataComponents.E());
             ItemAttributeModifiersComponent itemAttributeModifiersComponent = new ItemAttributeModifiersComponent(object);
-            List<ItemAttributeModifiersComponent$Entry> list = itemAttributeModifiersComponent.P();
+            List<ItemAttributeModifiersComponent$Entry> list = itemAttributeModifiersComponent.getEntries();
             for (ItemAttributeModifiersComponent$Entry itemAttributeModifiersComponent$Entry : list) {
-                EquipmentSlotGroup equipmentSlotGroup2 = itemAttributeModifiersComponent$Entry.J();
+                EquipmentSlotGroup equipmentSlotGroup2 = itemAttributeModifiersComponent$Entry.getEquipmentSlotGroup();
                 if (!equipmentSlotGroup2.equals(equipmentSlotGroup)) continue;
                 return true;
             }
@@ -366,9 +366,9 @@ public class ItemStackScoreUtil {
         if (ForgeVersion.MC_1_21_4.d()) {
             DataComponentMap dataComponentMap = item.g();
             Object object = dataComponentMap.E(DataComponents.d());
-            if (MappedClasses.zj.isInstance(object)) {
+            if (MappedClasses.foodPropertiesClass.isInstance(object)) {
                 FoodProperties foodProperties = new FoodProperties(object);
-                if (Foods.d().equals(foodProperties)) {
+                if (Foods.mushroomStew().equals(foodProperties)) {
                     return true;
                 }
             }
@@ -413,10 +413,10 @@ public class ItemStackScoreUtil {
             Object object = dataComponentMap.E(DataComponents.E());
             ItemAttributeModifiersComponent itemAttributeModifiersComponent = new ItemAttributeModifiersComponent(object);
             EquipmentSlotGroup equipmentSlotGroup = MonsterAttributesBridge.K();
-            List<ItemAttributeModifiersComponent$Entry> list = itemAttributeModifiersComponent.P();
+            List<ItemAttributeModifiersComponent$Entry> list = itemAttributeModifiersComponent.getEntries();
             for (ItemAttributeModifiersComponent$Entry itemAttributeModifiersComponent$Entry : list) {
-                EquipmentSlotGroup equipmentSlotGroup2 = itemAttributeModifiersComponent$Entry.J();
-                AttributeModifier attributeModifier = itemAttributeModifiersComponent$Entry.e();
+                EquipmentSlotGroup equipmentSlotGroup2 = itemAttributeModifiersComponent$Entry.getEquipmentSlotGroup();
+                AttributeModifier attributeModifier = itemAttributeModifiersComponent$Entry.getModifier();
                 if (!equipmentSlotGroup2.equals(equipmentSlotGroup)) continue;
                 double d2 = attributeModifier.getAmount();
                 d += d2;
@@ -488,12 +488,12 @@ public class ItemStackScoreUtil {
             ResourceKey resourceKey;
             DataComponentMap dataComponentMap = itemStack.getItem().g();
             Object object = dataComponentMap.E(DataComponents.k());
-            if (object != null && (resourceKey = (equippable = new Equippable(object)).j()) != null && resourceKey.equals(ResourceKeyHolder.v())) {
+            if (object != null && (resourceKey = (equippable = new Equippable(object)).j()) != null && resourceKey.equals(ResourceKeyHolder.gold())) {
                 return true;
             }
         } else {
             ItemArmor itemArmor = new ItemArmor(itemStack.getItem());
-            if (ArmorMaterial.v().equals(itemArmor.Y$src$Lgg_vape_wrapper_impl_ArmorMaterial_$11f9rp6())) {
+            if (ArmorMaterial.gold().equals(itemArmor.Y$src$Lgg_vape_wrapper_impl_ArmorMaterial_$11f9rp6())) {
                 return true;
             }
         }
@@ -584,10 +584,10 @@ public class ItemStackScoreUtil {
             Object object = dataComponentMap.E(DataComponents.E());
             ItemAttributeModifiersComponent itemAttributeModifiersComponent = new ItemAttributeModifiersComponent(object);
             EquipmentSlotGroup equipmentSlotGroup = MonsterAttributesBridge.H();
-            List<ItemAttributeModifiersComponent$Entry> list = itemAttributeModifiersComponent.P();
+            List<ItemAttributeModifiersComponent$Entry> list = itemAttributeModifiersComponent.getEntries();
             for (ItemAttributeModifiersComponent$Entry itemAttributeModifiersComponent$Entry : list) {
-                EquipmentSlotGroup equipmentSlotGroup2 = itemAttributeModifiersComponent$Entry.J();
-                AttributeModifier attributeModifier = itemAttributeModifiersComponent$Entry.e();
+                EquipmentSlotGroup equipmentSlotGroup2 = itemAttributeModifiersComponent$Entry.getEquipmentSlotGroup();
+                AttributeModifier attributeModifier = itemAttributeModifiersComponent$Entry.getModifier();
                 if (!equipmentSlotGroup2.equals(equipmentSlotGroup)) continue;
                 double d2 = attributeModifier.getAmount();
                 d += d2;
@@ -617,7 +617,7 @@ public class ItemStackScoreUtil {
         if (!ItemStackScoreUtil.I(itemStack.getItem())) {
             return false;
         }
-        return ForgeVersion.MC_1_21_4.d() ? (object = (dataComponentMap = itemStack.getItem().g()).E(DataComponents.X())) != null && (itemCameraTransformBase = (itemCameraTransformType = new ItemCameraTransformType(object)).e()).isInstance(MappedClasses.zo) && (itemCameraTransformSubtypeValue = (itemCameraTransformLeaf = new ItemCameraTransformLeaf(itemCameraTransformBase)).getKey()).equals(ChestTypeHolder.d()) : (itemSword = new ItemSword(itemStack.getItem())).s().equals(ToolMaterial.S());
+        return ForgeVersion.MC_1_21_4.d() ? (object = (dataComponentMap = itemStack.getItem().g()).E(DataComponents.X())) != null && (itemCameraTransformBase = (itemCameraTransformType = new ItemCameraTransformType(object)).e()).isInstance(MappedClasses.zo) && (itemCameraTransformSubtypeValue = (itemCameraTransformLeaf = new ItemCameraTransformLeaf(itemCameraTransformBase)).getKey()).equals(ChestTypeHolder.goldToolMaterials()) : (itemSword = new ItemSword(itemStack.getItem())).s().equals(ToolMaterial.S());
     }
 
     public static double f(ItemStack itemStack) {

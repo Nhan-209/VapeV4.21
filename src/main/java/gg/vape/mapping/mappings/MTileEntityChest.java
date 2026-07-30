@@ -12,72 +12,68 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MTileEntityChest
 extends Mapping {
-    private MappingMethod k;
-    private final MappingField h;
-    private final MappingField d;
+    private MappingMethod getOpennessMethod;
+    private final MappingField openCountField;
+    private final MappingField opennessField;
 
-    public int b(Object object) {
-        return this.h.getInt(object);
+    public int getOpenCount(Object chestTileEntity) {
+        return this.openCountField.getInt(chestTileEntity);
     }
 
-    public float t(Object object, float f) {
-        return this.k.invokeFloat(object, Float.valueOf(f));
+    public float getOpenness(Object chestTileEntity, float partialTick) {
+        return this.getOpennessMethod.invokeFloat(chestTileEntity, Float.valueOf(partialTick));
     }
 
     public MTileEntityChest() {
-        this(MTileEntityMobSpawner.d());
+        this(MTileEntityMobSpawner.getMobSpawnerControlFlowState());
     }
 
-    private MTileEntityChest(int[] nArray) {
+    private MTileEntityChest(int[] initializationState) {
         super(MappedClasses.u0);
-        if (nArray != null) {
+        if (initializationState != null) {
             GuiComponent.setLegacyComponentState(new GuiComponent[1]);
-            Class<Float> clazz = Float.TYPE;
-            boolean bl = true;
-            String string = ClientSettings.IS_LEGACY_1_7 ? "lidAngle" : "field_145972_a";
-            MTileEntityChest mTileEntityChest = this;
-            this.d = mTileEntityChest.J(string, bl, clazz);
-            Class<Integer> clazz2 = Integer.TYPE;
-            boolean bl2 = true;
-            String string2 = ClientSettings.IS_LEGACY_1_7 ? "numPlayersUsing" : "field_145973_j";
-            MTileEntityChest mTileEntityChest2 = this;
-            this.h = this.J(string2, bl2, clazz2);
+            Class<Float> opennessType = Float.TYPE;
+            boolean remapOpennessField = true;
+            String opennessFieldName = ClientSettings.IS_LEGACY_1_7 ? "lidAngle" : "field_145972_a";
+            MTileEntityChest mappings = this;
+            this.opennessField = mappings.J(opennessFieldName, remapOpennessField, opennessType);
+            Class<Integer> openCountType = Integer.TYPE;
+            boolean remapOpenCountField = true;
+            String openCountFieldName = ClientSettings.IS_LEGACY_1_7 ? "numPlayersUsing" : "field_145973_j";
+            this.openCountField = this.J(openCountFieldName, remapOpenCountField, openCountType);
             return;
         }
         if (ForgeVersion.MC_1_17.d()) {
-            Class<Float> clazz = Float.TYPE;
-            boolean bl = true;
-            String string = "openness";
-            Class clazz3 = MappedClasses.lQ;
-            MTileEntityChest mTileEntityChest = this;
-            this.d = mTileEntityChest.registerInstanceFieldForOwner(clazz3, string, bl, clazz);
-            Class<Integer> clazz4 = Integer.TYPE;
-            boolean bl3 = true;
-            String string3 = "openCount";
-            Class clazz5 = MappedClasses.zn;
-            MTileEntityChest mTileEntityChest3 = this;
-            this.h = this.registerInstanceFieldForOwner(clazz5, string3, bl3, clazz4);
-            Class[] classArray = new Class[]{Float.TYPE};
-            Class<Float> clazz6 = Float.TYPE;
-            String string4 = "getOpenNess";
-            MTileEntityChest mTileEntityChest4 = this;
-            this.k = ((MappingMethodBuilder)this.methodBuilder(string4, clazz6, classArray).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Fs)).buildMethod();
+            Class<Float> opennessType = Float.TYPE;
+            boolean remapOpennessField = true;
+            String opennessFieldName = "openness";
+            Class opennessOwner = MappedClasses.lQ;
+            MTileEntityChest mappings = this;
+            this.opennessField = mappings.registerInstanceFieldForOwner(opennessOwner, opennessFieldName, remapOpennessField, opennessType);
+            Class<Integer> openCountType = Integer.TYPE;
+            boolean remapOpenCountField = true;
+            String openCountFieldName = "openCount";
+            Class openCountOwner = MappedClasses.zn;
+            this.openCountField = this.registerInstanceFieldForOwner(openCountOwner, openCountFieldName, remapOpenCountField, openCountType);
+            Class[] parameterTypes = new Class[]{Float.TYPE};
+            Class<Float> returnType = Float.TYPE;
+            String methodName = "getOpenNess";
+            this.getOpennessMethod = ((MappingMethodBuilder)this.methodBuilder(methodName, returnType, parameterTypes).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Fs)).buildMethod();
         } else {
-            Class<Float> clazz = Float.TYPE;
-            boolean bl = true;
-            String string = ClientSettings.IS_LEGACY_1_7 ? "lidAngle" : "field_145972_a";
-            MTileEntityChest mTileEntityChest = this;
-            this.d = mTileEntityChest.J(string, bl, clazz);
-            Class<Integer> clazz7 = Integer.TYPE;
-            boolean bl4 = true;
-            String string5 = ClientSettings.IS_LEGACY_1_7 ? "numPlayersUsing" : "field_145973_j";
-            MTileEntityChest mTileEntityChest5 = this;
-            this.h = this.J(string5, bl4, clazz7);
+            Class<Float> opennessType = Float.TYPE;
+            boolean remapOpennessField = true;
+            String opennessFieldName = ClientSettings.IS_LEGACY_1_7 ? "lidAngle" : "field_145972_a";
+            MTileEntityChest mappings = this;
+            this.opennessField = mappings.J(opennessFieldName, remapOpennessField, opennessType);
+            Class<Integer> openCountType = Integer.TYPE;
+            boolean remapOpenCountField = true;
+            String openCountFieldName = ClientSettings.IS_LEGACY_1_7 ? "numPlayersUsing" : "field_145973_j";
+            this.openCountField = this.J(openCountFieldName, remapOpenCountField, openCountType);
         }
     }
 
-    public float p(Object object) {
-        return this.d.getFloat(object);
+    public float getStoredOpenness(Object chestTileEntity) {
+        return this.opennessField.getFloat(chestTileEntity);
     }
 
 }

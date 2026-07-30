@@ -11,165 +11,89 @@ import gg.vape.wrapper.impl.Vec3;
 
 public class MSPacketEntityVelocity
 extends Mapping {
-    private MappingField a;
-    private MappingMethod q;
-    private final MappingField c;
-    private MappingField Y;
-    private MappingField j;
-    private MappingField F;
-    private static int[] A;
+    private MappingField motionZField;
+    private MappingMethod packetConstructor;
+    private final MappingField entityIdField;
+    private MappingField motionYField;
+    private MappingField motionXField;
+    private MappingField movementField;
+    private static int[] packetMappingControlFlowState;
 
     public MSPacketEntityVelocity() {
-        this(MSPacketEntityVelocity.G());
+        this(MSPacketEntityVelocity.getPacketMappingControlFlowState());
     }
 
-    private MSPacketEntityVelocity(int[] nArray) {
+    private MSPacketEntityVelocity(int[] controlFlowState) {
         super(MappedClasses.YX);
-        int[] nArray2 = nArray;
         if (Vape.INSTANCE.isVanillaMinecraftPresent() && ForgeVersion.MC_1_7_10.Y()) {
-            Class<Integer> clazz = Integer.TYPE;
-            boolean bl = true;
-            String string = "entityID";
-            MSPacketEntityVelocity mSPacketEntityVelocity = this;
-            this.c = mSPacketEntityVelocity.J(string, bl, clazz);
-            Class<Integer> clazz2 = Integer.TYPE;
-            boolean bl2 = true;
-            String string2 = "motionX";
-            MSPacketEntityVelocity mSPacketEntityVelocity2 = this;
-            this.j = this.J(string2, bl2, clazz2);
-            Class<Integer> clazz3 = Integer.TYPE;
-            boolean bl3 = true;
-            String string3 = "motionY";
-            MSPacketEntityVelocity mSPacketEntityVelocity3 = this;
-            this.Y = this.J(string3, bl3, clazz3);
-            Class<Integer> clazz4 = Integer.TYPE;
-            boolean bl4 = true;
-            String string4 = "motionZ";
-            MSPacketEntityVelocity mSPacketEntityVelocity4 = this;
-            this.a = this.J(string4, bl4, clazz4);
+            this.entityIdField = this.J("entityID", true, Integer.TYPE);
+            this.motionXField = this.J("motionX", true, Integer.TYPE);
+            this.motionYField = this.J("motionY", true, Integer.TYPE);
+            this.motionZField = this.J("motionZ", true, Integer.TYPE);
         } else {
-            Class<Integer> clazz = Integer.TYPE;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "field_149417_a";
-            MSPacketEntityVelocity mSPacketEntityVelocity = this;
-            this.c = mSPacketEntityVelocity.J(string, bl, clazz);
+            this.entityIdField = this.J("field_149417_a", Wrapper.isNativeAvailable, Integer.TYPE);
             if (ForgeVersion.MC_1_21_10.d()) {
-                Class clazz5 = MappedClasses.qP;
-                boolean bl5 = true;
-                String string5 = "movement";
-                MSPacketEntityVelocity mSPacketEntityVelocity5 = this;
-                this.F = this.J(string5, bl5, clazz5);
-                Class[] classArray = new Class[]{Integer.TYPE, MappedClasses.qP};
-                MSPacketEntityVelocity mSPacketEntityVelocity6 = this;
-                this.q = this.registerConstructor(classArray);
+                this.movementField = this.J("movement", true, MappedClasses.qP);
+                this.packetConstructor = this.registerConstructor(new Class[]{Integer.TYPE, MappedClasses.qP});
             } else {
-                Class<Integer> clazz6 = Integer.TYPE;
-                boolean bl6 = Wrapper.isNativeAvailable;
-                String string6 = "field_149415_b";
-                MSPacketEntityVelocity mSPacketEntityVelocity7 = this;
-                this.j = this.J(string6, bl6, clazz6);
-                Class<Integer> clazz7 = Integer.TYPE;
-                boolean bl7 = Wrapper.isNativeAvailable;
-                String string7 = "field_149416_c";
-                MSPacketEntityVelocity mSPacketEntityVelocity8 = this;
-                this.Y = this.J(string7, bl7, clazz7);
-                Class<Integer> clazz8 = Integer.TYPE;
-                boolean bl8 = Wrapper.isNativeAvailable;
-                String string8 = "field_149414_d";
-                MSPacketEntityVelocity mSPacketEntityVelocity9 = this;
-                this.a = this.J(string8, bl8, clazz8);
+                this.motionXField = this.J("field_149415_b", Wrapper.isNativeAvailable, Integer.TYPE);
+                this.motionYField = this.J("field_149416_c", Wrapper.isNativeAvailable, Integer.TYPE);
+                this.motionZField = this.J("field_149414_d", Wrapper.isNativeAvailable, Integer.TYPE);
             }
         }
     }
 
-    public static int a(MSPacketEntityVelocity mSPacketEntityVelocity, Object object) {
-        return mSPacketEntityVelocity.W(object);
+    public int getMotionX(Object packet) {
+        return this.motionXField.getInt(packet);
     }
 
-    public static int g(MSPacketEntityVelocity mSPacketEntityVelocity, Object object) {
-        return mSPacketEntityVelocity.J(object);
+    public int getMotionY(Object packet) {
+        return this.motionYField.getInt(packet);
     }
 
-    private void K(Object object, int n) {
-        this.j.setInt(object, n);
+    public void setMotionX(Object packet, int motionX) {
+        this.motionXField.setInt(packet, motionX);
     }
 
-    private Object f(Object object) {
-        return this.F.getObject(object);
+    public Object getMovement(Object packet) {
+        return this.movementField.getObject(packet);
     }
 
-    private void m(Object object, Object object2) {
-        this.F.setObject(object, object2);
+    public void setMovement(Object packet, Object movement) {
+        this.movementField.setObject(packet, movement);
     }
 
-    public static Object I(MSPacketEntityVelocity mSPacketEntityVelocity, Object object) {
-        return mSPacketEntityVelocity.f(object);
+    public Object createPacket(int entityId, double motionX, double motionY, double motionZ) {
+        Vec3 movement = Vec3.create(motionX, motionY, motionZ);
+        return this.packetConstructor.newInstance(entityId, movement.getObject());
     }
 
-    public Object Y(int n, double d, double d2, double d3) {
-        Vec3 vec3 = Vec3.create(d, d2, d3);
-        return this.q.newInstance(n, vec3.getObject());
+    public int getMotionZ(Object packet) {
+        return this.motionZField.getInt(packet);
     }
 
-    public static int X(MSPacketEntityVelocity mSPacketEntityVelocity, Object object) {
-        return mSPacketEntityVelocity.A(object);
+    public void setMotionZ(Object packet, int motionZ) {
+        this.motionZField.setInt(packet, motionZ);
     }
 
-    private void s(Object object, int n) {
-        this.a.setInt(object, n);
+    public void setMotionY(Object packet, int motionY) {
+        this.motionYField.setInt(packet, motionY);
     }
 
-    public static void Q(MSPacketEntityVelocity mSPacketEntityVelocity, Object object, int n) {
-        mSPacketEntityVelocity.T(object, n);
+    public int getEntityId(Object packet) {
+        return this.entityIdField.getInt(packet);
     }
 
-    public static int V(MSPacketEntityVelocity mSPacketEntityVelocity, Object object) {
-        return mSPacketEntityVelocity.Z(object);
+    public static int[] getPacketMappingControlFlowState() {
+        return packetMappingControlFlowState;
     }
 
-    public static int[] G() {
-        return A;
+    public static void setPacketMappingControlFlowState(int[] state) {
+        packetMappingControlFlowState = state;
     }
 
     static {
-        MSPacketEntityVelocity.N(new int[3]);
-    }
-
-    private int A(Object object) {
-        return this.a.getInt(object);
-    }
-
-    private void T(Object object, int n) {
-        this.Y.setInt(object, n);
-    }
-
-    private int J(Object object) {
-        return this.Y.getInt(object);
-    }
-
-    public static void E(MSPacketEntityVelocity mSPacketEntityVelocity, Object object, Object object2) {
-        mSPacketEntityVelocity.m(object, object2);
-    }
-
-    private int W(Object object) {
-        return this.j.getInt(object);
-    }
-
-
-    public static void k(MSPacketEntityVelocity mSPacketEntityVelocity, Object object, int n) {
-        mSPacketEntityVelocity.s(object, n);
-    }
-
-    public static void q(MSPacketEntityVelocity mSPacketEntityVelocity, Object object, int n) {
-        mSPacketEntityVelocity.K(object, n);
-    }
-
-    public static void N(int[] nArray) {
-        A = nArray;
-    }
-
-    private int Z(Object object) {
-        return this.c.getInt(object);
+        MSPacketEntityVelocity.setPacketMappingControlFlowState(new int[3]);
     }
 }
 

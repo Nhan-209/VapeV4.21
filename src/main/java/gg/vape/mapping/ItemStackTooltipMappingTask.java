@@ -23,6 +23,12 @@ extends JavassistMappingTask {
         eventInjectionSpec.setReturnExpression("($r) $event.getTooltip()");
         if (ForgeVersion.MC_1_17.v()) {
             this.registerEventInjection(eventInjectionSpec);
+            try {
+                this.F(mappingMethod).getMethodInfo().rebuildStackMap(e);
+            }
+            catch (Exception exception) {
+                throw new IllegalStateException("Could not rebuild ItemStack tooltip stack map", exception);
+            }
         }
     }
 }

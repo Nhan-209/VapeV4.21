@@ -4,16 +4,15 @@ import gg.vape.wrapper.Wrapper;
 
 public class EnumHand
 extends Wrapper {
-    public static EnumHand M() {
-        return new EnumHand(EnumHand.vapeInstance.getMappingsMapperCompat().DX.L());
+    public static EnumHand mainHand() {
+        return new EnumHand(EnumHand.vapeInstance.getMappingsMapperCompat().DX.getMainHand());
     }
 
-    public static EnumHand p() {
-        return new EnumHand(EnumHand.vapeInstance.getMappingsMapperCompat().DX.c());
+    public static EnumHand offHand() {
+        return new EnumHand(EnumHand.vapeInstance.getMappingsMapperCompat().DX.getOffHand());
     }
 
-    public EnumHand(Object object) {
-        super(object);
+    public EnumHand(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

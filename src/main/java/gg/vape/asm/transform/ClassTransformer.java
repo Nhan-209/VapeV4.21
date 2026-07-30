@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.asm.ITramsformNode;
 import gg.vape.asm.helper.EventBuilder;
 import gg.vape.asm.helper.MethodInfo;
-import gg.vape.asm.transform.TransformClassWriter;
 import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.MappingTask;
 import gg.vape.runtime.ClassBytecodeCache;
@@ -74,7 +73,7 @@ implements MappingTask {
     }
 
     public ClassTransformer(Class targetClass) {
-        if (!Vape.INSTANCE.isNativeAvailable()) {
+        if (!Vape.INSTANCE.isForgeAbsent()) {
             LaunchClassLoader.getLaunchClassLoader().cachedClasses().put(targetClass.getName(), targetClass);
         }
         this.targetClass = targetClass;

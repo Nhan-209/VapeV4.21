@@ -2,11 +2,11 @@ package gg.vape.wrapper.impl;
 
 public class SPacketHeldItemChange
 extends Packet {
-    public SPacketHeldItemChange(Object wrappedObject) {
-        super(wrappedObject);
+    public SPacketHeldItemChange(Object handle) {
+        super(handle);
     }
 
-    public static SPacketHeldItemChange create(int slot) {
-        return new SPacketHeldItemChange(SPacketHeldItemChange.vapeInstance.getMappingsMapperCompat().C6.newInstance(slot));
+    public static SPacketHeldItemChange createCloseWindowPacket(int windowId) {
+        return new SPacketHeldItemChange(SPacketHeldItemChange.vapeInstance.getMappingsMapperCompat().C6.createCloseWindowPacket(windowId));
     }
 }

@@ -10,10 +10,10 @@ extends Wrapper {
     }
 
     public static Object getWaterBlock() {
-        return MMLGBlockWrapper.m(MLGBlockWrapper.vapeInstance.getMappingsMapperCompat().Rj);
+        return MMLGBlockWrapper.getWater(MLGBlockWrapper.vapeInstance.getMappingsMapperCompat().Rj);
     }
 
     public static Object getLavaBlock() {
-        return MMLGBlockWrapper.a(MLGBlockWrapper.vapeInstance.getMappingsMapperCompat().Rj);
+        return MMLGBlockWrapper.getLava(MLGBlockWrapper.vapeInstance.getMappingsMapperCompat().Rj);
     }
 }

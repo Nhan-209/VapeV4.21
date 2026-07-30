@@ -5,28 +5,23 @@ import gg.vape.mapping.Mapping;
 
 public class MSPacketMapChunkBulk
 extends Mapping {
-    private static String e;
+    private static String mappingControlFlowToken;
 
     public MSPacketMapChunkBulk() {
         super(MappedClasses.uv);
     }
 
-    public static String java_lang_String_E() {
-        return e;
+    public static String getMappingControlFlowToken() {
+        return mappingControlFlowToken;
     }
 
-    public static void o(String string) {
-        e = string;
+    public static void setMappingControlFlowToken(String token) {
+        mappingControlFlowToken = token;
     }
 
     static {
-        if (MSPacketMapChunkBulk.java_lang_String_E() == null) {
-            MSPacketMapChunkBulk.o("ih9zKb");
+        if (MSPacketMapChunkBulk.getMappingControlFlowToken() == null) {
+            MSPacketMapChunkBulk.setMappingControlFlowToken("ih9zKb");
         }
     }
-
-    public static /* synthetic */ String E$src$Ljava_lang_String_$1dqes8v() {
-        return MSPacketMapChunkBulk.java_lang_String_E();
-    }
 }
-

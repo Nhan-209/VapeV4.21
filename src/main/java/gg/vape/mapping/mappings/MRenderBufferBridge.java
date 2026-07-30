@@ -4,7 +4,7 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.mapping.Mapping;
 import gg.vape.mapping.MappingField;
 import gg.vape.mapping.MappingMethod;
-import gg.vape.wrapper.impl.BlockStateBridge;
+import gg.vape.wrapper.impl.GpuTextureView;
 import gg.vape.wrapper.impl.BlockStateContainerBridge;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.ScaledResolution;
@@ -57,7 +57,7 @@ extends Mapping {
             MRenderBufferBridge mRenderBufferBridge = this;
             this.z = mRenderBufferBridge.Y(string, bl, clazz, classArray);
             if (ForgeVersion.MC_26_1.d()) {
-                Class clazz2 = MappedClasses.DO;
+                Class clazz2 = MappedClasses.GPU_TEXTURE;
                 boolean bl2 = true;
                 String string2 = "itemsAtlas";
                 MRenderBufferBridge mRenderBufferBridge2 = this;
@@ -110,7 +110,7 @@ extends Mapping {
             MRenderBufferBridge mRenderBufferBridge6 = this;
             this.H = this.Y(string6, bl6, clazz6, classArray);
         } else if (ForgeVersion.MC_1_21_6.d()) {
-            Class clazz = MappedClasses.DO;
+            Class clazz = MappedClasses.GPU_TEXTURE;
             boolean bl = true;
             String string = "itemsAtlas";
             MRenderBufferBridge mRenderBufferBridge = this;
@@ -158,8 +158,8 @@ extends Mapping {
                 return 0;
             }
             BlockStateContainerBridge blockStateContainerBridge = new BlockStateContainerBridge(object2);
-            BlockStateBridge blockStateBridge = blockStateContainerBridge.C();
-            return blockStateBridge.isNull() ? 0 : blockStateBridge.h(0);
+            GpuTextureView textureView = blockStateContainerBridge.getTextureView();
+            return textureView.isNull() ? 0 : textureView.getWidth(0);
         }
         return this.e.invokeInt(object, n);
     }

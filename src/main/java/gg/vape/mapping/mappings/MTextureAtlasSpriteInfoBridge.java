@@ -6,25 +6,15 @@ import gg.vape.mapping.MappingMethod;
 
 public class MTextureAtlasSpriteInfoBridge
 extends Mapping {
-    private static final String b = "texturePath";
-    private MappingMethod L;
-
-    private Object Q(Object object) {
-        return this.L.invokeObject(object, new Object[0]);
-    }
-
-    public static Object C(MTextureAtlasSpriteInfoBridge mTextureAtlasSpriteInfoBridge, Object object) {
-        return mTextureAtlasSpriteInfoBridge.Q(object);
-    }
+    private final MappingMethod texturePathMethod;
 
     public MTextureAtlasSpriteInfoBridge() {
         super(MappedClasses.zI);
-        Class[] classArray = new Class[]{};
-        Class clazz = MappedClasses.zC;
-        boolean bl = true;
-        String string = b;
-        MTextureAtlasSpriteInfoBridge mTextureAtlasSpriteInfoBridge = this;
-        this.L = this.Y(string, bl, clazz, classArray);
+        this.texturePathMethod = this.Y("texturePath", true, MappedClasses.zC, new Class[]{});
+    }
+
+    public Object getTexturePath(Object spriteInfo) {
+        return this.texturePathMethod.invokeObject(spriteInfo, new Object[0]);
     }
 }
 

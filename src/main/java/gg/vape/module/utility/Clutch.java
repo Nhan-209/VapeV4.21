@@ -697,7 +697,7 @@ extends Mod {
     }
 
     public boolean isRightTool(Block block, ItemStack itemStack) {
-        if (block.H().s()) {
+        if (block.H().isToolNotRequired()) {
             return true;
         }
         return true;

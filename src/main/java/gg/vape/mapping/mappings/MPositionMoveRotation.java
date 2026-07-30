@@ -6,76 +6,58 @@ import gg.vape.mapping.MappingField;
 
 public class MPositionMoveRotation
 extends Mapping {
-    private static String[] V;
-    private MappingField c;
-    private MappingField e;
-    private MappingField N;
-    private MappingField T;
+    private static String[] mappingControlFlowState;
+    private final MappingField yawField;
+    private final MappingField pitchField;
+    private final MappingField positionField;
+    private final MappingField deltaMovementField;
 
-    public float J(Object object) {
-        return this.e.getFloat(object);
+    public float getPitch(Object values) {
+        return this.pitchField.getFloat(values);
     }
 
-
-    public void u(Object object, float f) {
-        this.c.setFloat(object, f);
+    public void setYaw(Object values, float yaw) {
+        this.yawField.setFloat(values, yaw);
     }
 
-    public float n(Object object) {
-        return this.c.getFloat(object);
+    public float getYaw(Object values) {
+        return this.yawField.getFloat(values);
     }
 
     public MPositionMoveRotation() {
-        this(MPositionMoveRotation.d());
+        this(MPositionMoveRotation.getMappingControlFlowState());
     }
 
-    private MPositionMoveRotation(String[] stringArray) {
+    private MPositionMoveRotation(String[] controlFlowState) {
         super(MappedClasses.Dd);
-        String[] stringArray2 = stringArray;
-        Class clazz = MappedClasses.qP;
-        boolean bl = true;
-        String string = "position";
-        MPositionMoveRotation mPositionMoveRotation = this;
-        this.N = this.J(string, bl, clazz);
-        Class clazz2 = MappedClasses.qP;
-        boolean bl2 = true;
-        String string2 = "deltaMovement";
-        MPositionMoveRotation mPositionMoveRotation2 = this;
-        this.T = this.J(string2, bl2, clazz2);
-        Class<Float> clazz3 = Float.TYPE;
-        boolean bl3 = true;
-        String string3 = "yRot";
-        MPositionMoveRotation mPositionMoveRotation3 = this;
-        this.c = this.J(string3, bl3, clazz3);
-        Class<Float> clazz4 = Float.TYPE;
-        boolean bl4 = true;
-        String string4 = "xRot";
-        MPositionMoveRotation mPositionMoveRotation4 = this;
-        this.e = this.J(string4, bl4, clazz4);
+        this.positionField = this.J("position", true, MappedClasses.qP);
+        this.deltaMovementField = this.J("deltaMovement", true, MappedClasses.qP);
+        this.yawField = this.J("yRot", true, Float.TYPE);
+        this.pitchField = this.J("xRot", true, Float.TYPE);
     }
 
-    public Object r(Object object) {
-        return this.T.getObject(object);
+    public Object getDeltaMovement(Object values) {
+        return this.deltaMovementField.getObject(values);
     }
 
-    public static void R(String[] stringArray) {
-        V = stringArray;
+    public static void setMappingControlFlowState(String[] state) {
+        mappingControlFlowState = state;
     }
 
-    public static String[] d() {
-        return V;
+    public static String[] getMappingControlFlowState() {
+        return mappingControlFlowState;
     }
 
-    public Object j(Object object) {
-        return this.N.getObject(object);
+    public Object getPosition(Object values) {
+        return this.positionField.getObject(values);
     }
 
     static {
-        MPositionMoveRotation.R(null);
+        MPositionMoveRotation.setMappingControlFlowState(null);
     }
 
-    public void d(Object object, float f) {
-        this.e.setFloat(object, f);
+    public void setPitch(Object values, float pitch) {
+        this.pitchField.setFloat(values, pitch);
     }
 }
 

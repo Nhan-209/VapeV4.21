@@ -175,7 +175,7 @@ extends Mod {
             return 0;
         }
         boolean creativeMode = player.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode();
-        ItemStack itemStack = player.i(EnumHand.p());
+        ItemStack itemStack = player.i(EnumHand.offHand());
         if (this.isUsableBlockStack(itemStack)) {
             return !exactCount && creativeMode ? 64 : itemStack.t();
         }
@@ -235,7 +235,7 @@ extends Mod {
             y -= 1.0;
         }
         Block block = Minecraft.theWorld().getBlock(x, y, z);
-        return block.equals(Blocks.j());
+        return block.equals(Blocks.air());
     }
 
     public boolean isUsableBlockStack(ItemStack itemStack) {

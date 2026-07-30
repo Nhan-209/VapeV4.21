@@ -1,16 +1,14 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MAbstractClientPlayer;
 import gg.vape.wrapper.Wrapper;
 
 public class InputMappingsInputFactory
 extends Wrapper {
-    public static InputMappingsInputFactory F(int n, int n2, int n3) {
-        return new InputMappingsInputFactory(MAbstractClientPlayer.W(InputMappingsInputFactory.vapeInstance.getMappingsMapperCompat().Du, n, n2, n3));
+    public static InputMappingsInputFactory create(int keyCode, int scanCode, int modifiers) {
+        return new InputMappingsInputFactory(InputMappingsInputFactory.vapeInstance.getMappingsMapperCompat().Du.createKeyEvent(keyCode, scanCode, modifiers));
     }
 
-    public InputMappingsInputFactory(Object object) {
-        super(object);
+    public InputMappingsInputFactory(Object handle) {
+        super(handle);
     }
 }
-

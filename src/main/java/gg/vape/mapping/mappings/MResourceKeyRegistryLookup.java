@@ -22,7 +22,7 @@ extends Mapping {
     }
 
     public MResourceKeyRegistryLookup() {
-        this(MRegistryAccess.d());
+        this(MRegistryAccess.getControlFlowMarker());
     }
 
     private MResourceKeyRegistryLookup(String string) {
@@ -41,7 +41,7 @@ extends Mapping {
         this.J = this.Y(string3, bl2, clazz2, classArray2);
         String string4 = string;
         if (GuiComponent.getLegacyComponentState() == null) {
-            MRegistryAccess.l("Th1Gp");
+            MRegistryAccess.setControlFlowMarker("Th1Gp");
         }
     }
 }

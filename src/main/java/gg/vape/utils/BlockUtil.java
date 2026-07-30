@@ -36,7 +36,7 @@ public class BlockUtil {
             return block.a().g() && block.a().Y();
         }
         Material material = block.H();
-        return material.S() && material.H();
+        return material.isSolid() && material.blocksMovement();
     }
 
     public static boolean t(Block block) {
@@ -72,11 +72,11 @@ public class BlockUtil {
 
     public static BlockState E(ItemStack itemStack) {
         if (itemStack.isNull() || itemStack.getItem().isNull()) {
-            return Blocks.j().Z();
+            return Blocks.air().Z();
         }
         Item item = itemStack.getItem();
         if (!item.isInstance(MappedClasses.Vw)) {
-            return Blocks.j().Z();
+            return Blocks.air().Z();
         }
         ItemBlock itemBlock = new ItemBlock(item);
         Block block = itemBlock.C();
@@ -92,7 +92,7 @@ public class BlockUtil {
             return block.isInstance(MappedClasses.uY);
         }
         Material material = block.H();
-        return material.equals(Material.k());
+        return material.equals(Material.air());
     }
 
     public static boolean u(Block block) {
@@ -100,7 +100,7 @@ public class BlockUtil {
             return block.isInstance(MappedClasses.uY) || block.a().u();
         }
         Material material = block.H();
-        return material.equals(Material.k()) || material.u();
+        return material.equals(Material.air()) || material.isReplaceable();
     }
 
     private static int resolveItemMetadata(String itemName, Item item) {
@@ -135,18 +135,18 @@ public class BlockUtil {
     public static boolean z(World world, BlockPos blockPos, BlockState blockState) {
         BlockPos blockPos2 = blockPos;
         Chunk chunk = world.j(blockPos);
-        int n = blockPos2.o();
-        int n2 = blockPos2.P() & 0xF;
+        int n = blockPos2.getY();
+        int n2 = blockPos2.getX() & 0xF;
         int n3 = n & 0xF;
-        int n4 = blockPos2.d() & 0xF;
+        int n4 = blockPos2.getZ() & 0xF;
         Block block = blockState.getBlock();
         int n5 = chunk.q(n);
         Object object = chunk.R()[n5];
         if (object == null) {
-            if (block.equals(Blocks.j())) {
+            if (block.equals(Blocks.air())) {
                 return false;
             }
-            Object object2 = ChunkSection.u(n5 << 4, ForgeVersion.MC_1_16_5.v() && !world.i().hasNoSky());
+            Object object2 = ChunkSection.u(n5 << 4, ForgeVersion.MC_1_16_5.v() && !world.getWorldProvider().hasNoSky());
             chunk.R()[n5] = object2;
             object = object2;
         }
@@ -192,7 +192,7 @@ public class BlockUtil {
         if (ForgeVersion.MC_1_20_6.d()) {
             return block.a().x();
         }
-        return block.H().e();
+        return block.H().isLiquid();
     }
 
     public static boolean e(EntityPlayerSP entityPlayerSP, BlockData blockData) {
@@ -215,7 +215,7 @@ public class BlockUtil {
                     BlockState blockState = world.getBlockState(blockPos);
                     if (blockState.isInstance(MappedClasses.Fj)) {
                         BlockReaderBridge blockReaderBridge = new BlockReaderBridge(blockState);
-                        EntityFishHook entityFishHook = blockReaderBridge.Z(Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().l().x$src$Lgg_vape_wrapper_impl_BlockReader_$120g8sh(), blockPos);
+                        EntityFishHook entityFishHook = blockReaderBridge.getShape(Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf().l().x$src$Lgg_vape_wrapper_impl_BlockReader_$120g8sh(), blockPos);
                         if (entityFishHook.isNotNull()) {
                             axisAlignedBB = entityFishHook.n();
                             if (ForgeVersion.MC_1_16_5.d()) {
@@ -254,7 +254,7 @@ public class BlockUtil {
             return BlockUtil.C(block) || BlockUtil.p(block);
         }
         Material material = block.H();
-        return material.e() || material.equals(Material.k()) || material.equals(Material.a()) && ForgeVersion.MC_1_16_5.v();
+        return material.isLiquid() || material.equals(Material.air()) || material.equals(Material.fire()) && ForgeVersion.MC_1_16_5.v();
     }
 
     public static boolean f(Block block) {
@@ -314,6 +314,6 @@ public class BlockUtil {
         if (ForgeVersion.MC_1_20_6.d()) {
             return block.a().Y();
         }
-        return block.H().H();
+        return block.H().blocksMovement();
     }
 }

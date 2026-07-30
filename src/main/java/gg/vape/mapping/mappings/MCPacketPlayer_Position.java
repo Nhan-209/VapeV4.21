@@ -9,78 +9,43 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MCPacketPlayer_Position
 extends Mapping {
-    private MappingMethod S;
-
-    private Object L(double d, double d2, double d3, boolean bl) {
-        return this.S.newInstance(d, d2, d3, bl);
-    }
+    private MappingMethod positionPacketConstructor;
 
     public MCPacketPlayer_Position() {
-        this(MPacketIdFactory.A());
+        this(MPacketIdFactory.getPacketMappingControlFlowState());
     }
 
-    private MCPacketPlayer_Position(GuiComponent[] guiComponentArray) {
+    private MCPacketPlayer_Position(GuiComponent[] controlFlowState) {
         super(MappedClasses.ul);
-        if (guiComponentArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_7_10.Y()) {
                 if (ForgeVersion.MC_1_21_4.d()) {
-                    Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE, Boolean.TYPE};
-                    Class<Void> clazz = Void.TYPE;
-                    boolean bl = false;
-                    String string = "<init>";
-                    MCPacketPlayer_Position mCPacketPlayer_Position = this;
-                    this.S = mCPacketPlayer_Position.Y(string, bl, clazz, classArray);
+                    this.positionPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE, Boolean.TYPE});
                 } else {
-                    Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE};
-                    Class<Void> clazz = Void.TYPE;
-                    boolean bl = false;
-                    String string = "<init>";
-                    MCPacketPlayer_Position mCPacketPlayer_Position = this;
-                    this.S = mCPacketPlayer_Position.Y(string, bl, clazz, classArray);
+                    this.positionPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE});
                 }
             } else {
-                Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MCPacketPlayer_Position mCPacketPlayer_Position = this;
-                this.S = mCPacketPlayer_Position.Y(string, bl, clazz, classArray);
+                this.positionPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE});
             }
             return;
         }
         if (ForgeVersion.MC_1_7_10.Y()) {
-            Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE, Boolean.TYPE};
-            Class<Void> clazz = Void.TYPE;
-            boolean bl = false;
-            String string = "<init>";
-            MCPacketPlayer_Position mCPacketPlayer_Position = this;
-            this.S = mCPacketPlayer_Position.Y(string, bl, clazz, classArray);
+            this.positionPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE, Boolean.TYPE});
         }
-        Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = "<init>";
-        MCPacketPlayer_Position mCPacketPlayer_Position = this;
-        this.S = mCPacketPlayer_Position.Y(string, bl, clazz, classArray); 
-        Class[] classArray2 = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE};
-        Class<Void> clazz2 = Void.TYPE;
-        boolean bl2 = false;
-        String string2 = "<init>";
-        MCPacketPlayer_Position mCPacketPlayer_Position2 = this;
-        this.S = this.Y(string2, bl2, clazz2, classArray2);
+        this.positionPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE});
+        this.positionPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Double.TYPE, Boolean.TYPE});
     }
 
-    public Object R(double d, double d2, double d3, boolean bl, boolean bl2) {
-        return this.S.newInstance(d, d2, d3, bl, bl2);
+    public Object createPositionPacket(double x, double y, double z, boolean onGround, boolean horizontalCollision) {
+        return this.positionPacketConstructor.newInstance(x, y, z, onGround, horizontalCollision);
     }
 
-    public static Object T(MCPacketPlayer_Position mCPacketPlayer_Position, double d, double d2, double d3, boolean bl) {
-        return mCPacketPlayer_Position.L(d, d2, d3, bl);
+    public Object createPositionPacket(double x, double y, double z, boolean onGround) {
+        return this.positionPacketConstructor.newInstance(x, y, z, onGround);
     }
 
-
-    public Object U(double d, double d2, double d3, double d4, boolean bl) {
-        return this.S.newInstance(d, d2, d3, d4, bl);
+    public Object createLegacyPositionPacket(double x, double feetY, double stanceY, double z, boolean onGround) {
+        return this.positionPacketConstructor.newInstance(x, feetY, stanceY, z, onGround);
     }
 }
 

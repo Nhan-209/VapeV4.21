@@ -1,15 +1,12 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MCPacketUseEntityOne;
-
 public class CPacketUseEntityOne
 extends Packet {
-    public CPacketUseEntityOne(Object object) {
-        super(object);
+    public CPacketUseEntityOne(Object handle) {
+        super(handle);
     }
 
-    public static CPacketUseEntityOne g(ModelPlayer modelPlayer) {
-        return new CPacketUseEntityOne(MCPacketUseEntityOne.e(CPacketUseEntityOne.vapeInstance.getMappingsMapperCompat().RE, modelPlayer.getObject()));
+    public static CPacketUseEntityOne create(ModelPlayer playerCapabilities) {
+        return new CPacketUseEntityOne(CPacketUseEntityOne.vapeInstance.getMappingsMapperCompat().RE.createPlayerAbilitiesPacket(playerCapabilities.getObject()));
     }
 }
-

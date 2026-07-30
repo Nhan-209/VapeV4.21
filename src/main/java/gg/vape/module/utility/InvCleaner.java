@@ -122,7 +122,7 @@ implements InventoryActionModule {
         }
         int notBest = 1;
         notBest = this.bestItems.getEffectiveValue() != false ? (item.isInstance(MappedClasses.Vl) && !this.bestItemC.equals(itemStack) || item.isInstance(MappedClasses.DU) && !this.bestItemB.equals(itemStack) || ItemStackScoreUtil.h(item) && !this.bestItemA.equals(itemStack) || item.isInstance(MappedClasses.YP) && !this.bestItemD.equals(itemStack) ? 1 : 0) : 0;
-        return this.blacklisted.isValid(itemStack, true) || notBest != 0 || this.removeFood.getEffectiveValue() != false && item.isInstance(MappedClasses.DL) && !item.isInstance(MappedClasses.q3) || this.removeNegativePotions.getEffectiveValue() != false && item.isInstance(MappedClasses.Di) && this.isNegativeSplashPotion(itemStack);
+        return this.blacklisted.isValid(itemStack, true) || notBest != 0 || this.removeFood.getEffectiveValue() != false && item.isInstance(MappedClasses.ITEM_FOOD) && !item.isInstance(MappedClasses.q3) || this.removeNegativePotions.getEffectiveValue() != false && item.isInstance(MappedClasses.Di) && this.isNegativeSplashPotion(itemStack);
     }
 
     @Override

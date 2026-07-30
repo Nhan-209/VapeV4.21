@@ -6,29 +6,21 @@ import gg.vape.mapping.MappingField;
 
 public class MSPacketChunkDataExtracted
 extends Mapping {
-    private MappingField m;
-    private MappingField B;
+    private final MappingField dataSizeField;
+    private final MappingField dataField;
 
     public MSPacketChunkDataExtracted() {
         super(MappedClasses.uU);
-        Class<byte[]> clazz = byte[].class;
-        boolean bl = true;
-        String string = "data";
-        MSPacketChunkDataExtracted mSPacketChunkDataExtracted = this;
-        this.B = this.J(string, bl, clazz);
-        Class<Integer> clazz2 = Integer.TYPE;
-        boolean bl2 = true;
-        String string2 = "dataSize";
-        MSPacketChunkDataExtracted mSPacketChunkDataExtracted2 = this;
-        this.m = this.J(string2, bl2, clazz2);
+        this.dataField = this.J("data", true, byte[].class);
+        this.dataSizeField = this.J("dataSize", true, Integer.TYPE);
     }
 
-    public byte[] G(Object object) {
-        return this.B.getByteArray(object);
+    public byte[] getData(Object extractedData) {
+        return this.dataField.getByteArray(extractedData);
     }
 
-    public int S(Object object) {
-        return this.m.getInt(object);
+    public int getDataSize(Object extractedData) {
+        return this.dataSizeField.getInt(extractedData);
     }
 }
 

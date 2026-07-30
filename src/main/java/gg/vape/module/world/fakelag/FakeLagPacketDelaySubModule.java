@@ -39,7 +39,7 @@ extends SubModule<FakeLag> {
     private final PacketDispatchGuard dispatchGuard = PacketDispatchGuard.b;
     private long lastAttackTime;
     private Entity targetEntity;
-    private PlayerLocationSnapshot lastGroundSnapshot;
+    private PlayerLocationSnapshot lastPositionSnapshot;
     private long lastBlockPlaceTime;
     private long blockPlaceCooldownUntil;
     private final ReadWriteLockHelper lock = new ReadWriteLockHelper();
@@ -91,10 +91,10 @@ extends SubModule<FakeLag> {
 
     private void processPacket(EventPacketSend eventPacketSend) {
         Packet packet = eventPacketSend.getPacket();
-        if (UseEntityPacketBridge.h(packet)) {
+        if (UseEntityPacketBridge.isUseEntityPacket(packet)) {
             UseEntityPacketBridge useEntityPacket = new UseEntityPacketBridge(packet);
-            if (useEntityPacket.S()) {
-                Entity attackedEntity = Minecraft.theWorld().V(useEntityPacket.w());
+            if (useEntityPacket.isAttack()) {
+                Entity attackedEntity = Minecraft.theWorld().V(useEntityPacket.getEntityId());
                 if (attackedEntity.isInstance(MappedClasses.zm)) {
                     EntityLivingBase livingTarget = new EntityLivingBase(attackedEntity);
                     if (livingTarget.c$src$I$15a9iwo() <= AttackPacketTimingTracker.INSTANCE.getExpectedHurtTimeTicks()) {
@@ -117,7 +117,7 @@ extends SubModule<FakeLag> {
             }
             if (packet.isInstance(MappedClasses.YB)) {
                 CPacketPlayerBlockPlacement placementPacket = new CPacketPlayerBlockPlacement(packet);
-                ItemStack placedStack = placementPacket.Q$src$Lgg_vape_wrapper_impl_ItemStack_$16phjq1();
+                ItemStack placedStack = placementPacket.getItemStack();
                 if (placedStack.isNotNull()) {
                     if (!ItemStackScoreUtil.h(placedStack.getItem())) {
                         this.delaySend(eventPacketSend);
@@ -138,10 +138,10 @@ extends SubModule<FakeLag> {
         if (this.targetEntity != null && this.targetEntity.isNotNull() && this.targetEntity.isInstance(MappedClasses.zm)) {
             if (packet.isInstance(MappedClasses.qD)) {
                 C03PacketPlayer movementPacket = new C03PacketPlayer(packet);
-                if (this.lastGroundSnapshot != null && movementPacket.isOnGround()) {
+                if (this.lastPositionSnapshot != null && movementPacket.hasPosition()) {
                     PlayerLocationSnapshot targetPosition = new PlayerLocationSnapshot(this.targetEntity.z(), this.targetEntity.N(), this.targetEntity.h());
                     PlayerLocationSnapshot packetPosition = new PlayerLocationSnapshot(movementPacket.getX(), movementPacket.getY(), movementPacket.getZ());
-                    if (PlayerLocationSnapshot.rayIntersectionDistance(this.lastGroundSnapshot, targetPosition) < PlayerLocationSnapshot.rayIntersectionDistance(packetPosition, targetPosition) - 0.03) {
+                    if (PlayerLocationSnapshot.rayIntersectionDistance(this.lastPositionSnapshot, targetPosition) < PlayerLocationSnapshot.rayIntersectionDistance(packetPosition, targetPosition) - 0.03) {
                         this.delaySend(eventPacketSend);
                         return;
                     }
@@ -153,20 +153,20 @@ extends SubModule<FakeLag> {
         }
         long baseDelay = ((Double)((FakeLag)this.getParent()).delay.getValue()).longValue();
         long sendTime = System.currentTimeMillis() + baseDelay;
-        long lastGroundTime = System.currentTimeMillis();
+        long lastPositionPacketTime = System.currentTimeMillis();
         this.lock.lockRead();
         try {
             for (Map.Entry<DelayedPacketSendEntry, Long> entry : this.delayedPackets.entrySet()) {
                 C03PacketPlayer movementPacket;
                 DelayedPacketSendEntry delayedPacket = entry.getKey();
                 Packet queuedPacket = delayedPacket.getEvent().getPacket();
-                if (!queuedPacket.isInstance(MappedClasses.qD) || !(movementPacket = new C03PacketPlayer(queuedPacket)).isOnGround()) continue;
-                lastGroundTime = entry.getValue();
+                if (!queuedPacket.isInstance(MappedClasses.qD) || !(movementPacket = new C03PacketPlayer(queuedPacket)).hasPosition()) continue;
+                lastPositionPacketTime = entry.getValue();
             }
         } finally {
             this.lock.unlockRead();
         }
-        sendTime = Math.min(lastGroundTime + 90L, sendTime);
+        sendTime = Math.min(lastPositionPacketTime + 90L, sendTime);
         this.lock.lockWrite();
         try {
             this.delayedPackets.put(new DelayedPacketSendEntry(eventPacketSend), sendTime);
@@ -213,11 +213,11 @@ extends SubModule<FakeLag> {
     }
 
     @EventHandler(priority=EventPriority.HIGHEST)
-    public void captureGroundPosition(EventPacketSend eventPacketSend) {
-        C03PacketPlayer c03PacketPlayer;
+    public void capturePosition(EventPacketSend eventPacketSend) {
+        C03PacketPlayer movementPacket;
         Packet packet = eventPacketSend.getPacket();
-        if (packet.isInstance(MappedClasses.qD) && (c03PacketPlayer = new C03PacketPlayer(packet)).isOnGround()) {
-            this.lastGroundSnapshot = new PlayerLocationSnapshot(c03PacketPlayer.getX(), c03PacketPlayer.getY(), c03PacketPlayer.getZ());
+        if (packet.isInstance(MappedClasses.qD) && (movementPacket = new C03PacketPlayer(packet)).hasPosition()) {
+            this.lastPositionSnapshot = new PlayerLocationSnapshot(movementPacket.getX(), movementPacket.getY(), movementPacket.getZ());
         }
     }
 

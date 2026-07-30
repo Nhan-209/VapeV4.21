@@ -170,8 +170,8 @@ extends Mod {
         }
         HitSwap hitSwap = Vape.INSTANCE.getModManager().getMod(HitSwap.class);
         if (!hitSwap.isEnabled()) {
-            ItemStack offhandItem = Minecraft.thePlayer().i(EnumHand.M());
-            return offhandItem.isNotNull() && offhandItem.getItem().isInstance(MappedClasses.zx)
+            ItemStack mainHandItem = Minecraft.thePlayer().i(EnumHand.mainHand());
+            return mainHandItem.isNotNull() && mainHandItem.getItem().isInstance(MappedClasses.zx)
                     && RotationUtil.u(Minecraft.thePlayer());
         }
         return hitSwap.hasValidWeaponSwap();

@@ -3,7 +3,7 @@ package gg.vape.account;
 import gg.vape.mapping.mappings.MSession;
 import gg.vape.wrapper.Wrapper;
 import gg.vape.wrapper.impl.ForgeVersion;
-import gg.vape.wrapper.impl.WorldRendererBuilder;
+import gg.vape.wrapper.impl.SessionType;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,7 +12,7 @@ extends Wrapper {
 
     public static MinecraftSessionWrapper createModern(String username, UUID profileId, String accessToken,
                                                        Optional<String> xuid, Optional<String> clientId,
-                                                       WorldRendererBuilder accountType) {
+                                                       SessionType accountType) {
         return new MinecraftSessionWrapper(MSession.B(MinecraftSessionWrapper.vapeInstance.getMappings().hw, username,
                 profileId, accessToken, xuid, clientId, accountType.getObject()));
     }
@@ -42,4 +42,3 @@ extends Wrapper {
                 profileId, accessToken, sessionType));
     }
 }
-

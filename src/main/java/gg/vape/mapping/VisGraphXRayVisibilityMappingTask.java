@@ -10,21 +10,21 @@ import gg.vape.mapping.MappingMethod;
 
 public class VisGraphXRayVisibilityMappingTask
 extends JavassistMappingTask {
-    private static final String c = "($r) $event.getVisibility()";
+    private static final String VISIBILITY_RETURN_EXPRESSION = "($r) $event.getVisibility()";
 
     @Override
     public void transform() {
-        MappingMethod mappingMethod = Vape.INSTANCE.getMappings().Cg.V;
-        EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventVisGraphComputeVisibility.class);
-        eventInjectionSpec.setReturnExpression(c);
-        this.registerEventInjection(eventInjectionSpec);
-        MappingMethod mappingMethod2 = Vape.INSTANCE.getMappings().Cg.o;
-        EventInjectionSpec eventInjectionSpec2 = new EventInjectionSpec(mappingMethod2, EventVisGraphSetOpaqueCube.class);
-        eventInjectionSpec2.setInsertBefore(true);
-        this.registerEventInjection(eventInjectionSpec2);
+        MappingMethod computeVisibilityMethod = Vape.INSTANCE.getMappings().visGraph.computeVisibilityMethod;
+        EventInjectionSpec computeVisibilityInjection = new EventInjectionSpec(computeVisibilityMethod, EventVisGraphComputeVisibility.class);
+        computeVisibilityInjection.setReturnExpression(VISIBILITY_RETURN_EXPRESSION);
+        this.registerEventInjection(computeVisibilityInjection);
+        MappingMethod setOpaqueCubeMethod = Vape.INSTANCE.getMappings().visGraph.setOpaqueCubeMethod;
+        EventInjectionSpec setOpaqueCubeInjection = new EventInjectionSpec(setOpaqueCubeMethod, EventVisGraphSetOpaqueCube.class);
+        setOpaqueCubeInjection.setInsertBefore(true);
+        this.registerEventInjection(setOpaqueCubeInjection);
     }
 
     public VisGraphXRayVisibilityMappingTask() {
-        super(MappedClasses.Y7);
+        super(MappedClasses.VIS_GRAPH);
     }
 }

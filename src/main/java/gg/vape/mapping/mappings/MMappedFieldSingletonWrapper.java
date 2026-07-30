@@ -6,20 +6,16 @@ import gg.vape.mapping.MappingField;
 
 public class MMappedFieldSingletonWrapper
 extends Mapping {
-    private final MappingField i;
-    private static final String b = "HUMANOID_ARMOR";
+    private static final String HUMANOID_ARMOR_FIELD_NAME = "HUMANOID_ARMOR";
+    private final MappingField humanoidArmorField;
 
     public MMappedFieldSingletonWrapper() {
         super(MappedClasses.Vf);
-        Class clazz = MappedClasses.Vf;
-        boolean bl = true;
-        String string = b;
-        MMappedFieldSingletonWrapper mMappedFieldSingletonWrapper = this;
-        this.i = this.registerStaticField(string, bl, clazz);
+        this.humanoidArmorField = this.registerStaticField(HUMANOID_ARMOR_FIELD_NAME, true, MappedClasses.Vf);
     }
 
-    public static MappingField W(MMappedFieldSingletonWrapper mMappedFieldSingletonWrapper) {
-        return mMappedFieldSingletonWrapper.i;
+    public static MappingField getHumanoidArmorField(MMappedFieldSingletonWrapper mapping) {
+        return mapping.humanoidArmorField;
     }
 }
 

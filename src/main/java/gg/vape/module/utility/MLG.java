@@ -323,7 +323,7 @@ extends Mod {
                 }
                 BlockPos blockPos = placementResolution.getValue();
                 if (blockPos != null && blockPos.isNotNull()) {
-                    this.lastPlacePos = new BlockCoordinate(blockPos.P(), blockPos.o(), blockPos.d());
+                    this.lastPlacePos = new BlockCoordinate(blockPos.getX(), blockPos.getY(), blockPos.getZ());
                 }
                 if (BlockPlacementUtility.getWaterBucketItem().equals(this.mlgItem) && this.pickUpWater.getEffectiveValue().booleanValue()) {
                     this.placementTimer.reset();

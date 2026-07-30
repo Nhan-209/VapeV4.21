@@ -1,37 +1,25 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MSEntityPacket;
-
 public class SEntityPacket
 extends Packet {
-    public int x() {
-        if (ForgeVersion.MC_1_16_5.d()) {
-            return MSEntityPacket.b(SEntityPacket.vapeInstance.getMappingsMapperCompat().qC, this.I);
-        }
-        return MSEntityPacket.P(SEntityPacket.vapeInstance.getMappingsMapperCompat().qC, this.I);
+    public int getDeltaY() {
+        return SEntityPacket.vapeInstance.getMappingsMapperCompat().qC.getDeltaY(this.I);
     }
 
-    public int E() {
-        if (ForgeVersion.MC_1_16_5.d()) {
-            return MSEntityPacket.t(SEntityPacket.vapeInstance.getMappingsMapperCompat().qC, this.I);
-        }
-        return MSEntityPacket.m(SEntityPacket.vapeInstance.getMappingsMapperCompat().qC, this.I);
+    public int getDeltaZ() {
+        return SEntityPacket.vapeInstance.getMappingsMapperCompat().qC.getDeltaZ(this.I);
     }
 
-    public Entity V(World world) {
-        return new Entity(MSEntityPacket.W(SEntityPacket.vapeInstance.getMappingsMapperCompat().qC, this.I, world.getObject()));
+    public Entity getEntity(World world) {
+        return new Entity(SEntityPacket.vapeInstance.getMappingsMapperCompat().qC.getEntity(this.I, world.getObject()));
     }
 
-
-    public SEntityPacket(Object object) {
-        super(object);
+    public SEntityPacket(Object handle) {
+        super(handle);
     }
 
-    public int Y() {
-        if (ForgeVersion.MC_1_16_5.d()) {
-            return MSEntityPacket.U(SEntityPacket.vapeInstance.getMappingsMapperCompat().qC, this.I);
-        }
-        return MSEntityPacket.O(SEntityPacket.vapeInstance.getMappingsMapperCompat().qC, this.I);
+    public int getDeltaX() {
+        return SEntityPacket.vapeInstance.getMappingsMapperCompat().qC.getDeltaX(this.I);
     }
 }
 

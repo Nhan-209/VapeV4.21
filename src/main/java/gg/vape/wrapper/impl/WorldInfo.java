@@ -4,12 +4,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class WorldInfo
 extends Wrapper {
-    public long q() {
-        return WorldInfo.vapeInstance.getMappingsMapperCompat().Dw.R(this.I);
+    public long getWorldTime() {
+        return WorldInfo.vapeInstance.getMappingsMapperCompat().worldInfo.getWorldTime(this.I);
     }
 
-    public WorldInfo(Object object) {
-        super(object);
+    public WorldInfo(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

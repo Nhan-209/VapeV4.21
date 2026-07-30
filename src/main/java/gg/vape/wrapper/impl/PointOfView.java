@@ -4,17 +4,17 @@ import gg.vape.wrapper.Wrapper;
 
 public class PointOfView
 extends Wrapper {
-    public static PointOfView[] F() {
-        Object[] objectArray = PointOfView.vapeInstance.getMappingsMapperCompat().RZ.M();
-        PointOfView[] w7_0Array = new PointOfView[objectArray.length];
-        for (int i = 0; i < objectArray.length; ++i) {
-            w7_0Array[i] = new PointOfView(objectArray[i]);
+    public static PointOfView[] values() {
+        Object[] rawValues = PointOfView.vapeInstance.getMappingsMapperCompat().RZ.values();
+        PointOfView[] values = new PointOfView[rawValues.length];
+        for (int index = 0; index < rawValues.length; ++index) {
+            values[index] = new PointOfView(rawValues[index]);
         }
-        return w7_0Array;
+        return values;
     }
 
-    public PointOfView(Object object) {
-        super(object);
+    public PointOfView(Object wrappedObject) {
+        super(wrappedObject);
     }
 
 }

@@ -7,35 +7,30 @@ import java.util.List;
 
 public class MOrdering
 extends Mapping {
-    public MappingMethod C;
-    private static final String c;
-    private static String d;
+    public final MappingMethod sortedCopyMethod;
+    private static final String SORTED_COPY_METHOD_NAME;
+    private static String controlFlowMarker;
 
-    public static String y() {
-        return d;
+    public static String getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
-    public static void u(String string) {
-        d = string;
+    public static void setControlFlowMarker(String marker) {
+        controlFlowMarker = marker;
     }
 
-    public List n(Object object, Iterable iterable) {
-        return (List)this.C.invokeObject(object, iterable);
+    public List sortedCopy(Object ordering, Iterable iterable) {
+        return (List)this.sortedCopyMethod.invokeObject(ordering, iterable);
     }
 
     public MOrdering() {
         super(MappedClasses.F4);
-        Class[] classArray = new Class[]{Iterable.class};
-        Class<List> clazz = List.class;
-        boolean bl = false;
-        String string = c;
-        MOrdering mOrdering = this;
-        this.C = this.Y(string, bl, clazz, classArray);
+        this.sortedCopyMethod = this.Y(SORTED_COPY_METHOD_NAME, false, List.class, new Class[]{Iterable.class});
     }
 
     static {
-        MOrdering.u("XPzfA");
-        c = "sortedCopy";
+        MOrdering.setControlFlowMarker("XPzfA");
+        SORTED_COPY_METHOD_NAME = "sortedCopy";
     }
 }
 

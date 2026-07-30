@@ -18,8 +18,8 @@ extends MemberNameRemapTable {
     }
 
     protected void R7() {
-        this.t(MappedClasses.Y7, "computeVisibility", "resolve");
-        this.t(MappedClasses.Y7, "setOpaqueCube", "setOpaque");
+        this.t(MappedClasses.VIS_GRAPH, "computeVisibility", "resolve");
+        this.t(MappedClasses.VIS_GRAPH, "setOpaqueCube", "setOpaque");
     }
 
     protected void R() {
@@ -292,7 +292,7 @@ extends MemberNameRemapTable {
     }
 
     protected void y() {
-        this.t(MappedClasses.qG, "setAllVisible", "setAll");
+        this.t(MappedClasses.SET_VISIBILITY, "setAllVisible", "setAll");
     }
 
     protected void Ry() {
@@ -554,8 +554,8 @@ extends MemberNameRemapTable {
     }
 
     protected void Rj() {
-        this.B(MappedClasses.DL, "value", "nutrition");
-        this.B(MappedClasses.DL, "saturation", "saturationModifier");
+        this.B(MappedClasses.ITEM_FOOD, "value", "nutrition");
+        this.B(MappedClasses.ITEM_FOOD, "saturation", "saturationModifier");
     }
 
     protected void m() {
@@ -881,8 +881,8 @@ extends MemberNameRemapTable {
     }
 
     protected void d() {
-        this.t(MappedClasses.uO, "getSpawnerBaseLogic", "getSpawner");
-        this.t(MappedClasses.uO, "func_145881_a", "m_59801_");
+        this.t(MappedClasses.MOB_SPAWNER_TILE_ENTITY, "getSpawnerBaseLogic", "getSpawner");
+        this.t(MappedClasses.MOB_SPAWNER_TILE_ENTITY, "func_145881_a", "m_59801_");
     }
 
     protected void Ro() {

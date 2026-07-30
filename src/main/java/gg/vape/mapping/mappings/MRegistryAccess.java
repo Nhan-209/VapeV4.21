@@ -6,35 +6,30 @@ import gg.vape.mapping.MappingMethod;
 
 public class MRegistryAccess
 extends Mapping {
-    private MappingMethod B;
-    private static String y;
-    private static final String c;
+    private final MappingMethod lookupOrThrowMethod;
+    private static String controlFlowMarker;
+    private static final String LOOKUP_OR_THROW_METHOD_NAME;
 
     static {
-        MRegistryAccess.l("Wm5ntb");
-        c = "lookupOrThrow";
+        MRegistryAccess.setControlFlowMarker("Wm5ntb");
+        LOOKUP_OR_THROW_METHOD_NAME = "lookupOrThrow";
     }
 
-    public static void l(String string) {
-        y = string;
+    public static void setControlFlowMarker(String marker) {
+        controlFlowMarker = marker;
     }
 
-    public static String d() {
-        return y;
+    public static String getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
     public MRegistryAccess() {
         super(MappedClasses.Fd);
-        Class[] classArray = new Class[]{MappedClasses.qB};
-        Class clazz = MappedClasses.Fk;
-        boolean bl = true;
-        String string = c;
-        MRegistryAccess mRegistryAccess = this;
-        this.B = this.Y(string, bl, clazz, classArray);
+        this.lookupOrThrowMethod = this.Y(LOOKUP_OR_THROW_METHOD_NAME, true, MappedClasses.Fk, new Class[]{MappedClasses.qB});
     }
 
-    public Object H(Object object, Object object2) {
-        return this.B.invokeObject(object, object2);
+    public Object lookupOrThrow(Object registryAccess, Object resourceKey) {
+        return this.lookupOrThrowMethod.invokeObject(registryAccess, resourceKey);
     }
 }
 

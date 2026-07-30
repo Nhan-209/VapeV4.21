@@ -179,7 +179,7 @@ extends MemberNameRemapTable {
     }
 
     protected void EC() {
-        this.t(MappedClasses.zv, "m_142232_", "get");
+        this.t(MappedClasses.LEVEL_ENTITY_GETTER, "m_142232_", "get");
     }
 
     protected void Es() {
@@ -246,7 +246,7 @@ extends MemberNameRemapTable {
     }
 
     protected void EW() {
-        this.t(MappedClasses.qG, "setAllVisible", "setAll");
+        this.t(MappedClasses.SET_VISIBILITY, "setAllVisible", "setAll");
     }
 
     protected void N() {
@@ -573,8 +573,8 @@ extends MemberNameRemapTable {
     }
 
     protected void EZ() {
-        this.t(MappedClasses.uO, "getSpawnerBaseLogic", "getSpawner");
-        this.t(MappedClasses.uO, "func_145881_a", "getSpawner");
+        this.t(MappedClasses.MOB_SPAWNER_TILE_ENTITY, "getSpawnerBaseLogic", "getSpawner");
+        this.t(MappedClasses.MOB_SPAWNER_TILE_ENTITY, "func_145881_a", "getSpawner");
     }
 
     protected void EX() {
@@ -790,8 +790,8 @@ extends MemberNameRemapTable {
     }
 
     protected void zJ() {
-        this.t(MappedClasses.Y7, "computeVisibility", "resolve");
-        this.t(MappedClasses.Y7, "setOpaqueCube", "setOpaque");
+        this.t(MappedClasses.VIS_GRAPH, "computeVisibility", "resolve");
+        this.t(MappedClasses.VIS_GRAPH, "setOpaqueCube", "setOpaque");
     }
 
     protected void Q() {
@@ -834,7 +834,7 @@ extends MemberNameRemapTable {
     }
 
     protected void zZ() {
-        this.f(MappedClasses.Dq, "setupFog", "setupFog", MappedClasses.DH, MappedClasses.lt, MappedClasses.uw, MappedClasses.FC, Float.TYPE, Boolean.TYPE, Float.TYPE);
+        this.f(MappedClasses.FOG_RENDERER, "setupFog", "setupFog", MappedClasses.DH, MappedClasses.lt, MappedClasses.FOG_TYPE, MappedClasses.FC, Float.TYPE, Boolean.TYPE, Float.TYPE);
     }
 
     protected void E7() {
@@ -875,8 +875,8 @@ extends MemberNameRemapTable {
     }
 
     protected void o() {
-        this.B(MappedClasses.DL, "value", "nutrition");
-        this.B(MappedClasses.DL, "saturation", "saturation");
+        this.B(MappedClasses.ITEM_FOOD, "value", "nutrition");
+        this.B(MappedClasses.ITEM_FOOD, "saturation", "saturation");
     }
 
     protected void zQ() {

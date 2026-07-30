@@ -9,55 +9,55 @@ import gg.vape.wrapper.Wrapper;
 
 public class MBlockRayTraceResult
 extends Mapping {
-    private MappingMethod Z;
-    private static int q;
-    private MappingField o;
+    private MappingMethod createMissMethod;
+    private static int controlFlowState;
+    private MappingField insideField;
 
-    public boolean n(Object object) {
-        return this.o.getBoolean(object);
+    public boolean isInside(Object blockRayTraceResult) {
+        return this.insideField.getBoolean(blockRayTraceResult);
     }
 
-    public static void m(int n) {
-        q = n;
+    public static void setBlockRayTraceControlFlowState(int state) {
+        controlFlowState = state;
     }
 
-    public static int X() {
-        int n = MBlockRayTraceResult.c();
+    public static int getInitializationBranch() {
+        int unusedControlFlowState = MBlockRayTraceResult.getBlockRayTraceControlFlowState();
         return 0;
     }
 
-    public Object Q(Object object, Object object2, Object object3) {
-        return this.Z.invokeObject(null, object, object2, object3);
+    public Object createMiss(Object hitLocation, Object direction, Object blockPos) {
+        return this.createMissMethod.invokeObject(null, hitLocation, direction, blockPos);
     }
 
-    public static int c() {
-        return q;
+    public static int getBlockRayTraceControlFlowState() {
+        return controlFlowState;
     }
 
     static {
-        MBlockRayTraceResult.m(15);
+        MBlockRayTraceResult.setBlockRayTraceControlFlowState(15);
     }
 
     public MBlockRayTraceResult() {
         super(MappedClasses.qF);
-        Class[] classArray = new Class[]{MappedClasses.qP, MappedClasses.us, MappedClasses.lf};
-        Class clazz = MappedClasses.qF;
-        boolean bl = Wrapper.isNativeAvailable;
-        String string = "func_216352_a";
-        MBlockRayTraceResult mBlockRayTraceResult = this;
-        this.Z = this.registerStaticMethod(string, bl, clazz, classArray);
-        if (MBlockRayTraceResult.X() != 0) {
-            Class<Boolean> clazz2 = Boolean.TYPE;
-            String string2 = "inside";
-            MBlockRayTraceResult mBlockRayTraceResult2 = this;
-            this.o = this.fieldBuilder(string2, clazz2).buildField();
+        Class[] parameterTypes = new Class[]{MappedClasses.qP, MappedClasses.us, MappedClasses.lf};
+        Class returnType = MappedClasses.qF;
+        boolean remap = Wrapper.isNativeAvailable;
+        String methodName = "func_216352_a";
+        MBlockRayTraceResult mappings = this;
+        this.createMissMethod = mappings.registerStaticMethod(methodName, remap, returnType, parameterTypes);
+        if (MBlockRayTraceResult.getInitializationBranch() != 0) {
+            Class<Boolean> fieldType = Boolean.TYPE;
+            String fieldName = "inside";
+            MBlockRayTraceResult insideMappings = this;
+            this.insideField = insideMappings.fieldBuilder(fieldName, fieldType).buildField();
             GuiComponent.setLegacyComponentState(new GuiComponent[4]);
             return;
         }
-        Class<Boolean> clazz3 = Boolean.TYPE;
-        String string3 = "inside";
-        MBlockRayTraceResult mBlockRayTraceResult3 = this;
-        this.o = this.fieldBuilder(string3, clazz3).buildField();
+        Class<Boolean> fieldType = Boolean.TYPE;
+        String fieldName = "inside";
+        MBlockRayTraceResult insideMappings = this;
+        this.insideField = insideMappings.fieldBuilder(fieldName, fieldType).buildField();
     }
 
 }

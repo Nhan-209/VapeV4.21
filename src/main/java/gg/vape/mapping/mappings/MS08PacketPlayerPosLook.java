@@ -7,60 +7,47 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MS08PacketPlayerPosLook
 extends Mapping {
-    private static String[] V;
-    private MappingField u;
-    private MappingField K;
+    private static String[] mappingControlFlowState;
+    private final MappingField yawField;
+    private final MappingField pitchField;
 
     static {
-        MS08PacketPlayerPosLook.G(new String[1]);
+        MS08PacketPlayerPosLook.setMappingControlFlowState(new String[1]);
     }
 
     public MS08PacketPlayerPosLook() {
         super(MappedClasses.Dg);
-        Class<Float> clazz = Float.TYPE;
-        boolean bl = true;
-        String string = "yRot";
-        MS08PacketPlayerPosLook mS08PacketPlayerPosLook = this;
-        this.u = this.J(string, bl, clazz);
-        if (MS08PacketPlayerPosLook.c() != null) {
-            Class<Float> clazz2 = Float.TYPE;
-            boolean bl2 = true;
-            String string2 = "xRot";
-            MS08PacketPlayerPosLook mS08PacketPlayerPosLook2 = this;
-            this.K = this.J(string2, bl2, clazz2);
+        this.yawField = this.J("yRot", true, Float.TYPE);
+        if (MS08PacketPlayerPosLook.getMappingControlFlowState() != null) {
+            this.pitchField = this.J("xRot", true, Float.TYPE);
             return;
         }
-        Class<Float> clazz3 = Float.TYPE;
-        boolean bl3 = true;
-        String string3 = "xRot";
-        MS08PacketPlayerPosLook mS08PacketPlayerPosLook3 = this;
-        this.K = this.J(string3, bl3, clazz3);
+        this.pitchField = this.J("xRot", true, Float.TYPE);
         GuiComponent.setLegacyComponentState(new GuiComponent[1]);
     }
 
-    public static String[] c() {
-        return V;
+    public static String[] getMappingControlFlowState() {
+        return mappingControlFlowState;
     }
 
-    public float I(Object object) {
-        return this.K.getFloat(object);
+    public float getPitch(Object packet) {
+        return this.pitchField.getFloat(packet);
     }
 
-
-    public void Q(Object object, float f) {
-        this.u.setFloat(object, f);
+    public void setYaw(Object packet, float yaw) {
+        this.yawField.setFloat(packet, yaw);
     }
 
-    public float j(Object object) {
-        return this.u.getFloat(object);
+    public float getYaw(Object packet) {
+        return this.yawField.getFloat(packet);
     }
 
-    public void K(Object object, float f) {
-        this.K.setFloat(object, f);
+    public void setPitch(Object packet, float pitch) {
+        this.pitchField.setFloat(packet, pitch);
     }
 
-    public static void G(String[] stringArray) {
-        V = stringArray;
+    public static void setMappingControlFlowState(String[] state) {
+        mappingControlFlowState = state;
     }
 }
 

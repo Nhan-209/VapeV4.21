@@ -258,8 +258,8 @@ extends Mod {
         BlockPos blockPos = fishHook.J$src$Lgg_vape_wrapper_impl_BlockPos_$kv8a0x();
         BlockStateWorldBridge blockState = world.o(blockPos);
         float fluidHeight = 0.0f;
-        if (blockState.o(MLGBlockWrapper.getWaterBlock())) {
-            fluidHeight = blockState.i(world, blockPos);
+        if (blockState.isTag(MLGBlockWrapper.getWaterBlock())) {
+            fluidHeight = blockState.getHeight(world, blockPos);
         }
         return fluidHeight > 0.0f;
     }
@@ -273,7 +273,7 @@ extends Mod {
             double sampleMinY = hookBounds.getMinY() + height * (double)sample / (double)sampleCount;
             double sampleMaxY = hookBounds.getMinY() + height * (double)(sample + 1) / (double)sampleCount;
             AxisAlignedBB sampleBounds = AxisAlignedBB.create(hookBounds.getMinX(), sampleMinY, hookBounds.getMinZ(), hookBounds.getMaxX(), sampleMaxY, hookBounds.getMaxZ());
-            if (!fishHook.getWorld().h(sampleBounds, Material.f())) continue;
+            if (!fishHook.getWorld().h(sampleBounds, Material.water())) continue;
             submergedFraction += 1.0 / (double)sampleCount;
         }
         return submergedFraction > 0.0;

@@ -4,22 +4,21 @@ import gg.vape.wrapper.Wrapper;
 
 public class BlockStateContainerBridge
 extends Wrapper {
-    public BlockStateBridge C() {
-        return new BlockStateBridge(BlockStateContainerBridge.vapeInstance.getMappingsMapperCompat().Ds.V(this.I));
+    public GpuTextureView getTextureView() {
+        return new GpuTextureView(BlockStateContainerBridge.vapeInstance.getMappingsMapperCompat().Ds.getTextureView(this.I));
     }
 
-    public Object w(TextComponentTranslation wi_12) {
-        return BlockStateContainerBridge.vapeInstance.getMappingsMapperCompat().Ds.N(this.I, wi_12.getObject());
+    public Object getOrUpdate(TextComponentTranslation renderState) {
+        return BlockStateContainerBridge.vapeInstance.getMappingsMapperCompat().Ds.getOrUpdate(this.I, renderState.getObject());
     }
 
-    public BlockStateContainerBridge(Object object) {
-        super(object);
+    public BlockStateContainerBridge(Object handle) {
+        super(handle);
     }
 
-    public int I() {
-        BlockStateBridge bi_02 = this.C();
-        int n = bi_02.isNull() ? -1 : bi_02.v();
-        return n;
+    public int getTextureId() {
+        GpuTextureView textureView = this.getTextureView();
+        return textureView.isNull() ? -1 : textureView.getTextureId();
     }
 
 }

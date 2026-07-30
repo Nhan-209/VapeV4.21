@@ -29,9 +29,9 @@ extends Wrapper {
         return this.s() - this.h();
     }
 
-    public BlockStateBridge H$src$Lgg_vape_wrapper_impl_BlockStateBridge_$1eevee() {
+    public GpuTextureView getTextureView() {
         Object object = GlyphInfo.vapeInstance.getMappings().qp.r$src$Ljava_lang_Object_$1r6sqxs(this.I);
-        return object != null ? new BlockStateBridge(object) : null;
+        return object != null ? new GpuTextureView(object) : null;
     }
 
 
@@ -45,8 +45,8 @@ extends Wrapper {
     }
 
     public int q() {
-        BlockStateBridge blockStateBridge = this.H$src$Lgg_vape_wrapper_impl_BlockStateBridge_$1eevee();
-        return blockStateBridge != null ? blockStateBridge.v() : -1;
+        GpuTextureView textureView = this.getTextureView();
+        return textureView != null ? textureView.getTextureId() : -1;
     }
 
     public float h() {

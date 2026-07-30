@@ -4,16 +4,15 @@ import gg.vape.wrapper.Wrapper;
 
 public class Util
 extends Wrapper {
-    public static long Q() {
-        return Util.vapeInstance.getMappingsMapperCompat().Rf.b();
+    public static long glfwGetCurrentContext() {
+        return Util.vapeInstance.getMappingsMapperCompat().Rf.glfwGetCurrentContext();
     }
 
-    public Util(Object object) {
-        super(object);
+    public Util(Object wrappedObject) {
+        super(wrappedObject);
     }
 
-    public static void g() {
-        Util.vapeInstance.getMappingsMapperCompat().Rf.v();
+    public static void glfwPollEvents() {
+        Util.vapeInstance.getMappingsMapperCompat().Rf.glfwPollEvents();
     }
 }
-

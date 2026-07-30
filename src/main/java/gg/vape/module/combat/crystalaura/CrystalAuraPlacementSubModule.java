@@ -192,7 +192,7 @@ extends SubModule<CrystalAura> {
             AxisAlignedBB placementBox = AxisAlignedBB.create(actionPosition.B(), actionPosition.E() + 1, actionPosition.A(),
                     (double)actionPosition.B() + 1.0, (double)actionPosition.E() + 2.0, (double)actionPosition.A() + 1.0);
             ArrayList<Entity> entities = new ArrayList<Entity>();
-            world.A().p(placementBox, entityObject -> CrystalAuraPlacementSubModule.collectEntities(entities, entityObject));
+            world.getEntityGetter().forEachEntityInBounds(placementBox, entityObject -> CrystalAuraPlacementSubModule.collectEntities(entities, entityObject));
             for (Entity entity : entities) {
                 if (entity.n$src$Z$fx7gig() || entity.isInstance(MappedClasses.Ze)) {
                     this.invalidateAction();
@@ -201,11 +201,11 @@ extends SubModule<CrystalAura> {
             }
             if (crosshairHit.getTypeOfHit().equals(RayTraceResult_type.block())) {
                 BlockPos hitPosition = crosshairHit.getBlockPos();
-                DirectionalPosition hitSide = new DirectionalPosition(hitPosition.P(), hitPosition.o(), hitPosition.d(), crosshairHit.Z());
+                DirectionalPosition hitSide = new DirectionalPosition(hitPosition.getX(), hitPosition.getY(), hitPosition.getZ(), crosshairHit.Z());
                 Block hitBlock = crosshairHit.Z$src$Lgg_vape_wrapper_impl_Block_$6x2c9a();
                 boolean replaceableHit = BlockUtil.u(hitBlock) && !BlockUtil.J(hitBlock);
                 EnumFacing facing = EnumFacing.T(crosshairHit.Z());
-                BlockData adjacentBlock = new BlockData(hitPosition.P(), hitPosition.o(), hitPosition.d()).R(facing.getOpposite());
+                BlockData adjacentBlock = new BlockData(hitPosition.getX(), hitPosition.getY(), hitPosition.getZ()).R(facing.getOpposite());
                 DirectionalPosition adjacentSide = new DirectionalPosition(adjacentBlock.D(), adjacentBlock.B(), adjacentBlock.G(), facing.Y());
                 if (hitSide.equals(actionPosition) || replaceableHit && adjacentSide.equals(actionPosition)) {
                     this.clickUseItem();
@@ -222,7 +222,7 @@ extends SubModule<CrystalAura> {
             AxisAlignedBB crystalBox = AxisAlignedBB.create(actionPosition.B(), actionPosition.E(), actionPosition.A(),
                     (double)actionPosition.B() + 1.0, (double)actionPosition.E() + 2.0, (double)actionPosition.A() + 1.0);
             ArrayList<Entity> entities = new ArrayList<Entity>();
-            world.A().p(crystalBox, entityObject -> CrystalAuraPlacementSubModule.collectEntities(entities, entityObject));
+            world.getEntityGetter().forEachEntityInBounds(crystalBox, entityObject -> CrystalAuraPlacementSubModule.collectEntities(entities, entityObject));
             if (!entities.isEmpty() && this.wouldIntersect(this.target, actionPosition, player, world)) {
                 Entity crystal = null;
                 for (Entity entity : entities) {
@@ -239,7 +239,7 @@ extends SubModule<CrystalAura> {
             }
             if (crosshairHit.getTypeOfHit().equals(RayTraceResult_type.block())) {
                 BlockPos hitPosition = crosshairHit.getBlockPos();
-                DirectionalPosition hitSide = new DirectionalPosition(hitPosition.P(), hitPosition.o(), hitPosition.d(), crosshairHit.Z());
+                DirectionalPosition hitSide = new DirectionalPosition(hitPosition.getX(), hitPosition.getY(), hitPosition.getZ(), crosshairHit.Z());
                 if (actionPosition.equals(hitSide)) {
                     this.clickUseItem();
                 } else if (!this.hasPlacementPath(player, world, eyePosition, actionPosition)) {
@@ -312,10 +312,10 @@ extends SubModule<CrystalAura> {
                 return;
             }
             Packet packet = eventPacketSend.getPacket();
-            if (UseEntityPacketBridge.h(packet)) {
+            if (UseEntityPacketBridge.isUseEntityPacket(packet)) {
                 UseEntityPacketBridge useEntityPacket = new UseEntityPacketBridge(packet.getObject());
-                if (useEntityPacket.S()) {
-                    Entity attackedEntity = useEntityPacket.C(world);
+                if (useEntityPacket.isAttack()) {
+                    Entity attackedEntity = useEntityPacket.getEntity(world);
                     if (this.predictAttackVelocity.getEffectiveValue().booleanValue() && attackedEntity.isNotNull() && attackedEntity.isInstance(MappedClasses.zm) && attackedEntity.V$src$I$fk0dv5() <= 13) {
                         this.attacked = true;
                     }
@@ -342,7 +342,7 @@ extends SubModule<CrystalAura> {
             return;
         }
         Packet packet = eventPacketSend.getPacket();
-        if (UseEntityPacketBridge.h(packet) && this.currentAction != null) {
+        if (UseEntityPacketBridge.isUseEntityPacket(packet) && this.currentAction != null) {
             CPacketPlayerBlockPlacement placementPacket = new CPacketPlayerBlockPlacement(packet.getObject());
             if (this.currentAction.getAction() == CrystalAuraAction.PLACING_OBSIDIAN) {
                 this.placementSent = true;
@@ -722,7 +722,7 @@ extends SubModule<CrystalAura> {
             BlockState blockState = world.getBlockState(placedPosition);
             if (blockState.isNotNull() && blockState.getBlock().U().toLowerCase().contains("obsidian")) {
                 this.currentAction.setAction(CrystalAuraAction.PLACING_CRYSTAL);
-                BlockCoordinate placedCoordinate = new BlockCoordinate(placedPosition.P(), placedPosition.o(), placedPosition.d());
+                BlockCoordinate placedCoordinate = new BlockCoordinate(placedPosition.getX(), placedPosition.getY(), placedPosition.getZ());
                 this.currentAction.directionalPosition = new DirectionalPosition(placedCoordinate, 1);
                 this.aimAtAction(player);
                 this.placementSent = false;
@@ -735,7 +735,7 @@ extends SubModule<CrystalAura> {
             BlockCoordinate crystalPosition = new BlockCoordinate(actionPosition.B(), actionPosition.E() + 1, actionPosition.A());
             AxisAlignedBB crystalBox = AxisAlignedBB.create((double)crystalPosition.B() - 0.5, crystalPosition.E(), (double)crystalPosition.A() - 0.5, (double)crystalPosition.B() + 0.5, (double)crystalPosition.E() + 2.0, (double)crystalPosition.A() + 0.5);
             ArrayList<Entity> crystals = new ArrayList<Entity>();
-            world.A().p(crystalBox, entityObject -> CrystalAuraPlacementSubModule.collectCrystals(crystals, entityObject));
+            world.getEntityGetter().forEachEntityInBounds(crystalBox, entityObject -> CrystalAuraPlacementSubModule.collectCrystals(crystals, entityObject));
             if (!crystals.isEmpty()) {
                 this.currentAction.setAction(CrystalAuraAction.ATTACKING_CRYSTAL);
                 this.currentAction.setTargetEntity(crystals.get(0));
@@ -817,7 +817,7 @@ extends SubModule<CrystalAura> {
             BlockCoordinate crystalPosition = new BlockCoordinate(actionPosition.B(), actionPosition.E() + 1, actionPosition.A());
             AxisAlignedBB crystalBox = AxisAlignedBB.create((double)crystalPosition.B() - 0.5, crystalPosition.E(), (double)crystalPosition.A() - 0.5, (double)crystalPosition.B() + 0.5, (double)crystalPosition.E() + 2.0, (double)crystalPosition.A() + 0.5);
             ArrayList<Entity> crystals = new ArrayList<Entity>();
-            player.getWorld().A().p(crystalBox, entityObject -> CrystalAuraPlacementSubModule.collectCrystalsForAim(crystals, entityObject));
+            player.getWorld().getEntityGetter().forEachEntityInBounds(crystalBox, entityObject -> CrystalAuraPlacementSubModule.collectCrystalsForAim(crystals, entityObject));
             BlockData baseBlock = new BlockData(actionPosition.B(), actionPosition.E(), actionPosition.A());
             boolean hasPlacementPath = ClutchPlacementPathUtils.isBlockFaceVisible(eyePosition, player.getWorld(), baseBlock, facing);
             targetPoint = !crystals.isEmpty() && !hasPlacementPath
@@ -904,7 +904,7 @@ extends SubModule<CrystalAura> {
                             x - collisionMargin, searchY + 1.0, z - collisionMargin,
                             x + 1.0 + collisionMargin, searchY + 3.0, z + 1.0 + collisionMargin);
                     ArrayList<Entity> crystals = new ArrayList<>();
-                    world.A().p(crystalSearchBox,
+                    world.getEntityGetter().forEachEntityInBounds(crystalSearchBox,
                             entity -> CrystalAuraPlacementSubModule.collectCrystalsAtPosition(crystals, entity));
                     for (Entity crystal : crystals) {
                         Vec3 crystalPosition = crystal.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk();
@@ -1041,7 +1041,7 @@ extends SubModule<CrystalAura> {
                                 x - collisionMargin, searchY + 1.0, z - collisionMargin,
                                 x + 1.0 + collisionMargin, searchY + 2.0, z + 1.0 + collisionMargin);
                         ArrayList<Entity> collidingEntities = new ArrayList<>();
-                        world.A().p(placementBox,
+                        world.getEntityGetter().forEachEntityInBounds(placementBox,
                                 entity -> CrystalAuraPlacementSubModule.collectCollidingEntities(collidingEntities, entity));
                         if (!collidingEntities.isEmpty()) {
                             searchState.markBlocked();
@@ -1132,7 +1132,7 @@ extends SubModule<CrystalAura> {
                             x - collisionMargin, searchY + 1.0, z - collisionMargin,
                             x + 1.0 + collisionMargin, searchY + 2.0, z + 1.0 + collisionMargin);
                     ArrayList<Entity> collidingEntities = new ArrayList<>();
-                    world.A().p(placementBox,
+                    world.getEntityGetter().forEachEntityInBounds(placementBox,
                             entity -> CrystalAuraPlacementSubModule.collectCollidingEntities(collidingEntities, entity));
                     if (!collidingEntities.isEmpty()
                             || this.wouldIntersect(this.target, explosionPosition, player, world)) {
@@ -1330,7 +1330,7 @@ extends SubModule<CrystalAura> {
                         crystalPosition.B() - 0.5, crystalPosition.E() - 0.01, crystalPosition.A() - 0.5,
                         crystalPosition.B() + 0.5, crystalPosition.E() + 2.0, crystalPosition.A() + 0.5);
                 ArrayList<Entity> crystals = new ArrayList<>();
-                world.A().p(crystalBox, entity -> CrystalAuraPlacementSubModule.collectCrystals(crystals, entity));
+                world.getEntityGetter().forEachEntityInBounds(crystalBox, entity -> CrystalAuraPlacementSubModule.collectCrystals(crystals, entity));
                 if (!crystals.isEmpty()) {
                     this.currentAction.setAction(CrystalAuraAction.ATTACKING_CRYSTAL);
                     this.currentAction.setTargetEntity(crystals.get(0));

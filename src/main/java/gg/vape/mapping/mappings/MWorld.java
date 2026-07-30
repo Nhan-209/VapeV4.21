@@ -54,7 +54,7 @@ extends Mapping {
     private final MappingMethod z;
     private MappingField f;
     private MappingField S;
-    private MappingField c;
+    private MappingField worldProviderField;
     private MappingMethod X;
     private MappingMethod l;
     private final MappingField Z;
@@ -181,7 +181,7 @@ extends Mapping {
         } else {
             if (ForgeVersion.MC_1_17.d()) {
                 Class[] classArray9 = new Class[]{};
-                Class clazz15 = MappedClasses.zv;
+                Class clazz15 = MappedClasses.LEVEL_ENTITY_GETTER;
                 boolean bl16 = true;
                 String string15 = "getEntities";
                 MWorld mWorld15 = this;
@@ -454,11 +454,11 @@ extends Mapping {
             String string53 = "playerEntities";
             MWorld mWorld53 = this;
             this.f = this.J(string53, bl48, clazz66);
-            Class clazz67 = MappedClasses.DJ;
+            Class clazz67 = MappedClasses.WORLD_PROVIDER;
             boolean bl49 = true;
             String string54 = "provider";
             MWorld mWorld54 = this;
-            this.c = this.J(string54, bl49, clazz67);
+            this.worldProviderField = this.J(string54, bl49, clazz67);
             if (ForgeVersion.MC_1_12_2.d()) {
                 Class[] classArray46 = new Class[]{MappedClasses.zc, MappedClasses.uk, MappedClasses.lH};
                 Class<List> clazz68 = List.class;
@@ -672,8 +672,8 @@ extends Mapping {
         return this.y.invokeObject(object, object2, object3);
     }
 
-    public Object F(Object object) {
-        return this.x.invokeObject(object, new Object[0]);
+    public Object getEntityGetter(Object world) {
+        return this.x.invokeObject(world, new Object[0]);
     }
 
     public boolean H(Object object, Object object2, Object object3) {
@@ -745,8 +745,8 @@ extends Mapping {
         this.Z.setFloat(object, f);
     }
 
-    private Object w$src$Ljava_lang_Object_$1e4340z(Object object) {
-        return this.c.getObject(object);
+    private Object getWorldProviderHandle(Object world) {
+        return this.worldProviderField.getObject(world);
     }
 
     private Object t(Object object, int n, int n2) {
@@ -777,8 +777,8 @@ extends Mapping {
         return this.o.invokeObject(object, object2);
     }
 
-    public static Object f(MWorld mWorld, Object object) {
-        return mWorld.w$src$Ljava_lang_Object_$1e4340z(object);
+    public static Object getWorldProvider(MWorld mappings, Object world) {
+        return mappings.getWorldProviderHandle(world);
     }
 
     private Object b(Object object, int n) {

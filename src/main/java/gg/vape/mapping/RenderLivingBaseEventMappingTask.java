@@ -2,10 +2,6 @@ package gg.vape.mapping;
 
 import gg.vape.Vape;
 import gg.vape.event.impl.EventBlockRenderColorOverride;
-import gg.vape.mapping.EventPreRenderEntityForgeCallback;
-import gg.vape.mapping.JavassistMappingTask;
-import gg.vape.mapping.MappedClasses;
-import gg.vape.mapping.MappingMethod;
 import gg.vape.mapping.expr.EventBlockRenderColorOverrideExprEditor;
 import gg.vape.wrapper.impl.ForgeVersion;
 import javassist.CtBehavior;
@@ -35,7 +31,7 @@ extends JavassistMappingTask {
                 Vape.logThrowable(exception);
             }
         }
-        if (ForgeVersion.MC_1_7_10.L() && Vape.INSTANCE.isNativeAvailable()) {
+        if (ForgeVersion.MC_1_7_10.L() && Vape.INSTANCE.isForgeAbsent()) {
             mappingMethod = Vape.INSTANCE.getMappings().CP.r;
             this.c(mappingMethod, EventPreRenderEntityForgeCallback.class, "$1, $2, $3, $4");
         }

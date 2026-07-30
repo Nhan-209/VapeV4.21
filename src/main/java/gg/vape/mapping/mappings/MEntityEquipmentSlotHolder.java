@@ -6,24 +6,20 @@ import gg.vape.mapping.MappingField;
 
 public class MEntityEquipmentSlotHolder
 extends Mapping {
-    private static final String b = "slot";
-    private MappingField D;
+    private static final String SLOT_FIELD_NAME = "slot";
+    private final MappingField slotField;
 
-    public static Object S(MEntityEquipmentSlotHolder mEntityEquipmentSlotHolder, Object object) {
-        return mEntityEquipmentSlotHolder.c(object);
+    public static Object getSlot(MEntityEquipmentSlotHolder mapping, Object holder) {
+        return mapping.readSlot(holder);
     }
 
     public MEntityEquipmentSlotHolder() {
         super(MappedClasses.YW);
-        Class clazz = MappedClasses.FY;
-        boolean bl = true;
-        String string = b;
-        MEntityEquipmentSlotHolder mEntityEquipmentSlotHolder = this;
-        this.D = this.J(string, bl, clazz);
+        this.slotField = this.J(SLOT_FIELD_NAME, true, MappedClasses.FY);
     }
 
-    private Object c(Object object) {
-        return this.D.getObject(object);
+    private Object readSlot(Object holder) {
+        return this.slotField.getObject(holder);
     }
 }
 

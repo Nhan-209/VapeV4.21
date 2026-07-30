@@ -502,7 +502,7 @@ extends Mapping {
             } else {
                 Class clazz6 = MappedClasses.uQ;
                 boolean bl6 = true;
-                String string6 = "fontRenderer";
+                String string6 = "fontRendererObj";
                 MMinecraft mMinecraft6 = this;
                 this.y = this.J(string6, bl6, clazz6);
                 Class[] classArray = new Class[]{};
@@ -554,7 +554,7 @@ extends Mapping {
             } else {
                 Class clazz = MappedClasses.uQ;
                 boolean bl = true;
-                String string = "fontRendererObj";
+                String string = ForgeVersion.c() >= 23 ? "fontRenderer" : "fontRendererObj";
                 MMinecraft mMinecraft = this;
                 this.y = mMinecraft.J(string, bl, clazz);
                 Class clazz11 = MappedClasses.z8;
@@ -698,12 +698,12 @@ extends Mapping {
             this.OW = this.J(string32, bl27, clazz33);
             Class clazz34 = MappedClasses.FO;
             boolean bl28 = true;
-            String string33 = "myNetworkManager";
+            String string33 = ForgeVersion.c() >= 23 ? "networkManager" : "myNetworkManager";
             MMinecraft mMinecraft33 = this;
             this.e = this.J(string33, bl28, clazz34);
             Class clazz35 = MappedClasses.FI;
             boolean bl29 = true;
-            String string34 = "theIntegratedServer";
+            String string34 = ForgeVersion.c() >= 23 ? "integratedServer" : "theIntegratedServer";
             MMinecraft mMinecraft34 = this;
             this.Z = this.J(string34, bl29, clazz35);
             Class[] classArray12 = new Class[]{};

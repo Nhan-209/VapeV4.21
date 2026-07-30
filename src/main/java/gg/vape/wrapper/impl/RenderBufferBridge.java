@@ -17,8 +17,8 @@ extends Wrapper {
             if (blockStateContainerBridge.isNull()) {
                 return new TextureObjectHandle(null);
             }
-            BlockStateBridge blockStateBridge = blockStateContainerBridge.C();
-            return blockStateBridge.isNull() ? new TextureObjectHandle(null) : new TextureObjectHandle(blockStateBridge.d());
+            GpuTextureView textureView = blockStateContainerBridge.getTextureView();
+            return textureView.isNull() ? new TextureObjectHandle(null) : new TextureObjectHandle(textureView.getTexture());
         }
         return new TextureObjectHandle(MRenderBufferBridge.P(RenderBufferBridge.vapeInstance.getMappings().Ca, this.I));
     }

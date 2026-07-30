@@ -7,62 +7,6 @@ import gg.vape.event.impl.EventChatMessageRender;
 import gg.vape.event.impl.EventFogDensity;
 import gg.vape.event.impl.EventPreRenderLivingSpecials;
 import gg.vape.event.impl.EventRender2D;
-import gg.vape.mapping.BlockLayerOverrideEventMappingTask;
-import gg.vape.mapping.BlockLayerOverrideModernEventMappingTask;
-import gg.vape.mapping.BlockModelRenderEventMappingTask;
-import gg.vape.mapping.BlockRenderColorOpacityMappingTask;
-import gg.vape.mapping.BlockRenderLayerEventMappingTask;
-import gg.vape.mapping.ChatMessageRenderMappingTask;
-import gg.vape.mapping.ChunkRenderRebuildEventMappingTask;
-import gg.vape.mapping.EntityClientPlayerMPMotionMappingTask;
-import gg.vape.mapping.EntityLivingBaseEventMappingTask;
-import gg.vape.mapping.EntityMoveEventMappingTask;
-import gg.vape.mapping.EntityPlayerSPEventMappingTask;
-import gg.vape.mapping.EntityRenderPreEventMappingTask;
-import gg.vape.mapping.EntityRenderStateMappingTask;
-import gg.vape.mapping.EntityRendererEventMappingTask;
-import gg.vape.mapping.EventPostTickCallback;
-import gg.vape.mapping.EventPreRenderEntityCallback;
-import gg.vape.mapping.EventPreTickCallback;
-import gg.vape.mapping.EventRenderPlayerPostCallback;
-import gg.vape.mapping.EventRenderPlayerPreCallback;
-import gg.vape.mapping.FogDensityEventMappingTask;
-import gg.vape.mapping.GlStateManagerBlendFuncMappingTask;
-import gg.vape.mapping.InsertedCallbackLockMarker;
-import gg.vape.mapping.ItemRendererFirstPersonEventMappingTask;
-import gg.vape.mapping.ItemStackTooltipMappingTask;
-import gg.vape.mapping.JavassistMappingTask;
-import gg.vape.mapping.KeyBindingStateEventMappingTask;
-import gg.vape.mapping.LegacyEntityRenderPreEventMappingTask;
-import gg.vape.mapping.LegacyRenderStringHookMappingTask;
-import gg.vape.mapping.LegacyWorldEntityJoinEventMappingTask;
-import gg.vape.mapping.LivingSpecialsRenderMappingTask;
-import gg.vape.mapping.LocalPlayerTickClassTransformer;
-import gg.vape.mapping.MappedClasses;
-import gg.vape.mapping.MappingTaskSet;
-import gg.vape.mapping.MinecraftTickEventMappingTask;
-import gg.vape.mapping.NetworkPacketEventMappingTask;
-import gg.vape.mapping.PlayerControllerMPEventMappingTask;
-import gg.vape.mapping.PlayerTabOverlayDisplayNameLegacyMappingTask;
-import gg.vape.mapping.PlayerTabOverlayDisplayNameMappingTask;
-import gg.vape.mapping.PlayerTickEventMappingTask;
-import gg.vape.mapping.Render2DStaticCallbackMappingTask;
-import gg.vape.mapping.Render3DEventMappingTask;
-import gg.vape.mapping.RenderBatchFlushCallbackMarker;
-import gg.vape.mapping.RenderBlocksEventMappingTask;
-import gg.vape.mapping.RenderHandEventMappingTask;
-import gg.vape.mapping.RenderLivingBaseEventMappingTask;
-import gg.vape.mapping.RenderManagerEntityMappingTask;
-import gg.vape.mapping.RenderPlayerEventMappingTask;
-import gg.vape.mapping.RenderTickEventMappingTask;
-import gg.vape.mapping.RenderWorldPassEventMappingTask;
-import gg.vape.mapping.RenderWorldPassExecutorDrainMappingTask;
-import gg.vape.mapping.ScoreboardObjectiveRenderMappingTask;
-import gg.vape.mapping.ScoreboardScoresEventMappingTask;
-import gg.vape.mapping.ThreadBoundTickEventMappingTask;
-import gg.vape.mapping.VisGraphXRayVisibilityMappingTask;
-import gg.vape.mapping.WorldEntityJoinEventMappingTask;
-import gg.vape.mapping.WorldTimeEventMappingTask;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class PrimaryMappingTaskSet
@@ -119,7 +63,7 @@ extends MappingTaskSet {
         if (ForgeVersion.MC_1_21_4.v()) {
             this.D.add(new RenderManagerEntityMappingTask());
         }
-        if (ForgeVersion.MC_1_7_10.L() && !Vape.INSTANCE.isNativeAvailable()) {
+        if (ForgeVersion.MC_1_7_10.L() && !Vape.INSTANCE.isForgeAbsent()) {
             this.D.add(new LegacyEntityRenderPreEventMappingTask());
         }
         if (ForgeVersion.MC_1_12_2.B()) {

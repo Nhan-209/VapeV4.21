@@ -5,12 +5,11 @@ import gg.vape.wrapper.impl.Packet;
 
 public class ShortStatePacketBridge
 extends Packet {
-    public short D() {
-        return Vape.INSTANCE.getMappingsMapperCompat().F.P(this.I);
+    public short getTransactionId() {
+        return Vape.INSTANCE.getMappingsMapperCompat().F.getTransactionId(this.I);
     }
 
-    public ShortStatePacketBridge(Object object) {
-        super(object);
+    public ShortStatePacketBridge(Object handle) {
+        super(handle);
     }
 }
-

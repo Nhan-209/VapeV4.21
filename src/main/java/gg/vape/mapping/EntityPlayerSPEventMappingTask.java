@@ -7,10 +7,6 @@ import gg.vape.event.impl.EventPostMotion;
 import gg.vape.event.impl.EventPreLocalPlayerTick;
 import gg.vape.event.impl.EventPreMotion;
 import gg.vape.event.impl.EventSetSprinting;
-import gg.vape.mapping.EntityPlayerSPMotionExprEditor;
-import gg.vape.mapping.JavassistMappingTask;
-import gg.vape.mapping.MappedClasses;
-import gg.vape.mapping.MappingMethod;
 import gg.vape.runtime.NativeBridge;
 import gg.vape.wrapper.impl.ForgeVersion;
 import javassist.CannotCompileException;
@@ -100,7 +96,7 @@ extends JavassistMappingTask {
         CtBehavior ctBehavior = this.F(this.j);
         this.c(this.j, EventPreMotion.class, "$0");
         this.k(this.j, EventPostMotion.class, "$0");
-        boolean bl = Vape.INSTANCE.isNativeAvailable();
+        boolean bl = Vape.INSTANCE.isForgeAbsent();
         if (bl && NativeBridge.gc(string = "aaa") == null) {
             bl = false;
         }

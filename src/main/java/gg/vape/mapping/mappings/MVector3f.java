@@ -9,71 +9,43 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MVector3f
 extends Mapping {
-    private MappingMethod q;
-    private MappingField m;
-    private MappingField v;
-    private MappingField S;
-    private MappingMethod T;
+    private final MappingMethod constructor;
+    private MappingField xField;
+    private MappingField yField;
+    private MappingField zField;
+    private MappingMethod rotationDegreesMethod;
 
-
-    public float e(Object object) {
-        return this.m.getFloat(object);
+    public float getZ(Object instance) {
+        return this.zField.getFloat(instance);
     }
 
-    public Object O(Object object, float f) {
-        return this.T.invokeObject(object, Float.valueOf(f));
+    public Object rotationDegrees(Object instance, float degrees) {
+        return this.rotationDegreesMethod.invokeObject(instance, Float.valueOf(degrees));
     }
 
-    public static Object u(MVector3f mVector3f, float f, float f2, float f3) {
-        return mVector3f.g(f, f2, f3);
+    public Object newInstance(float x, float y, float z) {
+        return this.constructor.newInstance(Float.valueOf(x), Float.valueOf(y), Float.valueOf(z));
     }
 
     public MVector3f() {
         super(MappedClasses.qb);
-        Class[] classArray = new Class[]{Float.TYPE, Float.TYPE, Float.TYPE};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = "<init>";
-        MVector3f mVector3f = this;
-        this.q = this.Y(string, bl, clazz, classArray);
+        this.constructor = this.Y("<init>", false, Void.TYPE, Float.TYPE, Float.TYPE, Float.TYPE);
         if (BlockData.W() != null) {
             if (ForgeVersion.MC_1_20_6.v()) {
-                Class[] classArray2 = new Class[]{Float.TYPE};
-                Class clazz2 = MappedClasses.qI;
-                boolean bl2 = true;
-                String string2 = "rotationDegrees";
-                MVector3f mVector3f2 = this;
-                this.T = this.Y(string2, bl2, clazz2, classArray2);
+                this.rotationDegreesMethod = this.Y("rotationDegrees", true, MappedClasses.qI, Float.TYPE);
             }
-            Class<Float> clazz3 = Float.TYPE;
-            boolean bl3 = true;
-            String string3 = "x";
-            MVector3f mVector3f3 = this;
-            this.v = this.J(string3, bl3, clazz3);
-            Class<Float> clazz4 = Float.TYPE;
-            boolean bl4 = true;
-            String string4 = "y";
-            MVector3f mVector3f4 = this;
-            this.S = this.J(string4, bl4, clazz4);
-            Class<Float> clazz5 = Float.TYPE;
-            boolean bl5 = true;
-            String string5 = "z";
-            MVector3f mVector3f5 = this;
-            this.m = this.J(string5, bl5, clazz5);
-            return;
+            this.xField = this.J("x", true, Float.TYPE);
+            this.yField = this.J("y", true, Float.TYPE);
+            this.zField = this.J("z", true, Float.TYPE);
         }
     }
 
-    public float L(Object object) {
-        return this.S.getFloat(object);
+    public float getY(Object instance) {
+        return this.yField.getFloat(instance);
     }
 
-    public float X(Object object) {
-        return this.v.getFloat(object);
-    }
-
-    private Object g(float f, float f2, float f3) {
-        return this.q.newInstance(Float.valueOf(f), Float.valueOf(f2), Float.valueOf(f3));
+    public float getX(Object instance) {
+        return this.xField.getFloat(instance);
     }
 }
 

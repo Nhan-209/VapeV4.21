@@ -6,25 +6,20 @@ import gg.vape.mapping.MappingMethod;
 
 public class MTeam
 extends Mapping {
-    private final MappingMethod f;
-    private static final String b = "isSameTeam";
+    private static final String IS_SAME_TEAM_METHOD_NAME = "isSameTeam";
+    private final MappingMethod isSameTeamMethod;
 
-    public static boolean s(MTeam mTeam, Object object, Object object2) {
-        return mTeam.Y(object, object2);
+    public static boolean isSameTeam(MTeam mapping, Object team, Object otherTeam) {
+        return mapping.invokeIsSameTeam(team, otherTeam);
     }
 
-    private boolean Y(Object object, Object object2) {
-        return this.f.invokeBoolean(object, object2);
+    private boolean invokeIsSameTeam(Object team, Object otherTeam) {
+        return this.isSameTeamMethod.invokeBoolean(team, otherTeam);
     }
 
     public MTeam() {
         super(MappedClasses.Yh);
-        Class[] classArray = new Class[]{MappedClasses.Yh};
-        Class<Boolean> clazz = Boolean.TYPE;
-        boolean bl = true;
-        String string = b;
-        MTeam mTeam = this;
-        this.f = this.Y(string, bl, clazz, classArray);
+        this.isSameTeamMethod = this.Y(IS_SAME_TEAM_METHOD_NAME, true, Boolean.TYPE, new Class[]{MappedClasses.Yh});
     }
 }
 

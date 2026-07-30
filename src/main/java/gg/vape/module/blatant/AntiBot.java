@@ -107,7 +107,7 @@ extends Mod {
         this.playerInfoList = ForgeVersion.MC_1_20_6.d()
                 ? Arrays.asList(connection.getPlayerInfoMap().stream()
                         .sorted(GuiPlayerTabOverlayBridge.T()).toArray())
-                : GuiPlayerTabOverlayBridge.O().E(connection.getPlayerInfoMap());
+                : GuiPlayerTabOverlayBridge.O().sortedCopy(connection.getPlayerInfoMap());
         ArrayList<UUID> uuids = new ArrayList<>();
         for (Object playerInfoObject : this.playerInfoList) {
             PlayerInfo playerInfo = new PlayerInfo(playerInfoObject);

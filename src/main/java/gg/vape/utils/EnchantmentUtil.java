@@ -143,7 +143,7 @@ public class EnchantmentUtil {
         String string2 = string.contains(":") ? string : "minecraft:" + string;
         ResourceLocation resourceLocation = ResourceLocation.create(string2);
         RegistryAccess registryAccess = worldClient.e();
-        Registry registry = registryAccess.getFluidState(ResourceKeyEnchantmentBridge.h());
+        Registry registry = registryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.h());
         return registry.t(resourceLocation);
     }
 
@@ -165,7 +165,7 @@ public class EnchantmentUtil {
         }
         EnchantmentRegistryAccess enchantmentRegistryAccess = EnchantmentUtil.z();
         EnchantmentRegistry enchantmentRegistry = enchantmentRegistryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.h());
-        Stream<EnchantmentHolder> stream = enchantmentRegistry.x();
+        Stream<EnchantmentHolder> stream = enchantmentRegistry.listElements();
         Stream<Enchantment> stream2 = stream.map(EnchantmentUtil::lambda$getVanillaEnchantments_54$0);
         Enchantment[] enchantmentArray = (Enchantment[])stream2.toArray(EnchantmentUtil::lambda$getVanillaEnchantments_54$1);
         A = enchantmentArray;
@@ -214,7 +214,7 @@ public class EnchantmentUtil {
         String string2 = string.contains(":") ? string : "minecraft:" + string;
         EnchantmentRegistryAccess enchantmentRegistryAccess = EnchantmentUtil.z();
         EnchantmentRegistry enchantmentRegistry = enchantmentRegistryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.h());
-        Stream<EnchantmentHolder> stream = enchantmentRegistry.x();
+        Stream<EnchantmentHolder> stream = enchantmentRegistry.listElements();
         Optional<EnchantmentHolder> optional = stream.filter(arg_0 -> EnchantmentUtil.lambda$getEnchantmentByName$2(string2, arg_0)).findFirst();
         return optional.map(EnchantmentUtil::lambda$getEnchantmentByName$3).orElse(null);
     }

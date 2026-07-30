@@ -601,10 +601,10 @@ implements EventListener {
                 controller.setComplete(true);
             } else {
                 PlayerPositionLookPacketModern positionLookPacket = new PlayerPositionLookPacketModern(packet);
-                float packetYaw = positionLookPacket.f();
-                float packetPitch = positionLookPacket.M();
+                float packetYaw = positionLookPacket.getYaw();
+                float packetPitch = positionLookPacket.getPitch();
                 if (ForgeVersion.MC_1_7_10.Y()) {
-                    Set relativeFlags = positionLookPacket.W();
+                    Set relativeFlags = positionLookPacket.getRelativeFlags();
                     for (Object relativeFlag : relativeFlags) {
                         PlayerInteractEventAction action = new PlayerInteractEventAction(relativeFlag);
                         if (action.T() == PlayerInteractEventAction.e()) {

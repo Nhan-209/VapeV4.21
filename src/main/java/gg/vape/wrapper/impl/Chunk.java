@@ -77,7 +77,7 @@ extends Wrapper {
     public void d(Entity entity, AxisAlignedBB axisAlignedBB, List list, Object object) {
         if (ForgeVersion.MC_1_17.d()) {
             Predicate predicate = object == null ? Chunk::lambda$getEntitiesWithinAABBForEntity$0 : (Predicate)object;
-            Minecraft.theWorld().A().p(axisAlignedBB, arg_0 -> Chunk.lambda$getEntitiesWithinAABBForEntity$1(axisAlignedBB, predicate, list, arg_0));
+            Minecraft.theWorld().getEntityGetter().forEachEntityInBounds(axisAlignedBB, entityObject -> Chunk.lambda$getEntitiesWithinAABBForEntity$1(axisAlignedBB, predicate, list, entityObject));
             return;
         }
         Chunk.vapeInstance.getMappings().qD.j(this.I, entity.getObject(), axisAlignedBB.getObject(), list, object);

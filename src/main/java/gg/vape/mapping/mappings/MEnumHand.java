@@ -7,29 +7,21 @@ import gg.vape.wrapper.Wrapper;
 
 public class MEnumHand
 extends Mapping {
-    private final MappingField w;
-    private final MappingField g;
+    private final MappingField offHandField;
+    private final MappingField mainHandField;
 
     public MEnumHand() {
         super(MappedClasses.Yf);
-        Class clazz = MappedClasses.Yf;
-        boolean bl = Wrapper.isNativeAvailable;
-        String string = "MAIN_HAND";
-        MEnumHand mEnumHand = this;
-        this.g = this.registerStaticField(string, bl, clazz);
-        Class clazz2 = MappedClasses.Yf;
-        boolean bl2 = Wrapper.isNativeAvailable;
-        String string2 = "OFF_HAND";
-        MEnumHand mEnumHand2 = this;
-        this.w = this.registerStaticField(string2, bl2, clazz2);
+        this.mainHandField = this.registerStaticField("MAIN_HAND", Wrapper.isNativeAvailable, MappedClasses.Yf);
+        this.offHandField = this.registerStaticField("OFF_HAND", Wrapper.isNativeAvailable, MappedClasses.Yf);
     }
 
-    public Object c() {
-        return this.w.getObject(null);
+    public Object getOffHand() {
+        return this.offHandField.getObject(null);
     }
 
-    public Object L() {
-        return this.g.getObject(null);
+    public Object getMainHand() {
+        return this.mainHandField.getObject(null);
     }
 }
 

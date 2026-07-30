@@ -115,7 +115,7 @@ extends AnimationsMode {
     private boolean isReleaseUseItemPacket(Packet packet) {
         if (packet.isInstance(MappedClasses.DN)) {
             CPacketPlayerDigging diggingPacket = new CPacketPlayerDigging(packet);
-            return ForgeVersion.MC_1_8_9.d() ? diggingPacket.Z().equals(PlayerDiggingAction.releaseUseItem()) : diggingPacket.I() == 5;
+            return ForgeVersion.MC_1_8_9.d() ? diggingPacket.getAction().equals(PlayerDiggingAction.releaseUseItem()) : diggingPacket.getLegacyActionId() == 5;
         }
         return false;
     }

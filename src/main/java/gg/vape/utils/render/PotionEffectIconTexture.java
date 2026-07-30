@@ -53,7 +53,7 @@ implements PotionEffectIconRenderBackend {
             TextureAtlas textureAtlas = Minecraft.x().q(ResourceLocationConstantPair.v());
             sprite = textureAtlas.a(Screen.k(effectHolder));
         } else if (ForgeVersion.MC_1_21_6.d()) {
-            sprite = Minecraft.T().t(Screen.k(effectHolder));
+            sprite = Minecraft.T().getSprite(Screen.k(effectHolder));
         } else {
             StatusEffectSpriteUploader spriteUploader = StatusEffectSpriteUploader.c();
             sprite = spriteUploader.T(effectHolder);

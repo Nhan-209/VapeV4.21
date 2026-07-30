@@ -98,7 +98,7 @@ public class ItemHelper {
             DataComponentMap dataComponentMap = item.g();
             return dataComponentMap.V(DataComponents.d());
         }
-        return item.isInstance(MappedClasses.DL);
+        return item.isInstance(MappedClasses.ITEM_FOOD);
     }
 }
 

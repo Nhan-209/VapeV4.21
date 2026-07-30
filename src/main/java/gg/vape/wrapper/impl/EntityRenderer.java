@@ -71,8 +71,8 @@ extends Wrapper {
         MEntityRenderer.f(EntityRenderer.vapeInstance.getMappings().RY, this.I, d);
     }
 
-    public WorldProvider h() {
-        return new WorldProvider(MEntityRenderer.s(EntityRenderer.vapeInstance.getMappings().RY, this.I));
+    public FogRenderer getFogRenderer() {
+        return new FogRenderer(MEntityRenderer.getFogRenderer(EntityRenderer.vapeInstance.getMappings().RY, this.I));
     }
 
     public GlStateManager$FogState y() {
@@ -96,7 +96,7 @@ extends Wrapper {
             this.i((float)gameSettings.v() * 16.0f);
             MatrixStack matrixStack = MatrixStack.A();
             Matrix4f matrix4f = this.l(this.l(), f, true);
-            matrixStack.F().u().a(matrix4f);
+            matrixStack.F().getMatrix().a(matrix4f);
             this.B(matrixStack, f);
             if (gameSettings.k()) {
                 this.Z(matrixStack, f);
@@ -105,13 +105,13 @@ extends Wrapper {
                 int n2 = entityPlayerSP.i(StatusEffect.V()) ? 7 : 20;
                 float f3 = 5.0f / (f2 * f2 + 5.0f) - f2 * 0.04f;
                 f3 *= f3;
-                Vector3f vector3f = Vector3f.Z(0.0f, MathUtil.sqrt(2.0f) / 2.0f, MathUtil.sqrt(2.0f) / 2.0f);
-                matrixStack.i(vector3f.I(((float)this.Q() + f) * (float)n2));
+                Vector3f vector3f = Vector3f.create(0.0f, MathUtil.sqrt(2.0f) / 2.0f, MathUtil.sqrt(2.0f) / 2.0f);
+                matrixStack.i(vector3f.rotationDegrees(((float)this.Q() + f) * (float)n2));
                 matrixStack.S(1.0f / f3, 1.0f, 1.0f);
                 float f4 = -((float)this.Q() + f) * (float)n2;
-                matrixStack.i(vector3f.I(f4));
+                matrixStack.i(vector3f.rotationDegrees(f4));
             }
-            Matrix4f matrix4f2 = matrixStack.F().u();
+            Matrix4f matrix4f2 = matrixStack.F().getMatrix();
             this.setShaderGroup(matrix4f2);
             SharedModuleControlClaims.renderPass.clearClaimed();
             return;

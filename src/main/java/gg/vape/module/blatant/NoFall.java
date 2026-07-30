@@ -77,8 +77,8 @@ extends Mod {
             }
             if ((double)localPlayer.M$src$F$ff28gb() > 2.124 && localPlayer.q() < 0.0 && localPlayer.M$src$F$ff28gb() >= 3.0f && localPlayer.M$src$F$ff28gb() - this.lastFallDistance > 3.0f) {
                 this.lastFallDistance = localPlayer.M$src$F$ff28gb();
-                localPlayer.sendQueue().addToSendQueue(C03PacketPlayer.newInstance(true));
-                localPlayer.sendQueue().addToSendQueue(C03PacketPlayer.newInstance(false));
+                localPlayer.sendQueue().addToSendQueue(C03PacketPlayer.create(true));
+                localPlayer.sendQueue().addToSendQueue(C03PacketPlayer.create(false));
             }
         }
     }

@@ -4,12 +4,11 @@ import java.util.stream.Stream;
 
 public class EnchantmentRegistryLookup
 extends ResourceKeyRegistryLookup {
-    public Stream<EnchantmentHolder> x() {
-        return EnchantmentRegistryLookup.vapeInstance.getMappingsMapperCompat().R2.a(this.getObject()).map(EnchantmentHolder::new);
+    public Stream<EnchantmentHolder> listElements() {
+        return EnchantmentRegistryLookup.vapeInstance.getMappingsMapperCompat().R2.listElements(this.getObject()).map(EnchantmentHolder::new);
     }
 
-    public EnchantmentRegistryLookup(Object object) {
-        super(object);
+    public EnchantmentRegistryLookup(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

@@ -445,7 +445,7 @@ extends Wrapper {
     }
 
     public boolean C$src$Z$f9kazx() {
-        if (Vape.INSTANCE.isNativeAvailable()) {
+        if (Vape.INSTANCE.isForgeAbsent()) {
             return false;
         }
         return MEntity.m$src$Z$v9pdac(Entity.vapeInstance.getMappings().Rr, this.I);

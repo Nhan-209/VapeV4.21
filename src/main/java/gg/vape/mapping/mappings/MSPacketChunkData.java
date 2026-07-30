@@ -6,39 +6,27 @@ import gg.vape.mapping.MappingField;
 
 public class MSPacketChunkData
 extends Mapping {
-    private MappingField k;
-    private MappingField E;
-    private MappingField e;
+    private final MappingField chunkZField;
+    private final MappingField extractedDataField;
+    private final MappingField chunkXField;
 
-    public int J(Object object) {
-        return this.e.getInt(object);
+    public int getChunkX(Object packet) {
+        return this.chunkXField.getInt(packet);
     }
 
-    public int k(Object object) {
-        return this.k.getInt(object);
+    public int getChunkZ(Object packet) {
+        return this.chunkZField.getInt(packet);
     }
 
-    public Object r(Object object) {
-        return this.E.getObject(object);
+    public Object getExtractedData(Object packet) {
+        return this.extractedDataField.getObject(packet);
     }
 
     public MSPacketChunkData() {
         super(MappedClasses.ZJ);
-        Class clazz = MappedClasses.uU;
-        boolean bl = true;
-        String string = "extractedData";
-        MSPacketChunkData mSPacketChunkData = this;
-        this.E = this.J(string, bl, clazz);
-        Class<Integer> clazz2 = Integer.TYPE;
-        boolean bl2 = true;
-        String string2 = "chunkX";
-        MSPacketChunkData mSPacketChunkData2 = this;
-        this.e = this.J(string2, bl2, clazz2);
-        Class<Integer> clazz3 = Integer.TYPE;
-        boolean bl3 = true;
-        String string3 = "chunkZ";
-        MSPacketChunkData mSPacketChunkData3 = this;
-        this.k = this.J(string3, bl3, clazz3);
+        this.extractedDataField = this.J("extractedData", true, MappedClasses.uU);
+        this.chunkXField = this.J("chunkX", true, Integer.TYPE);
+        this.chunkZField = this.J("chunkZ", true, Integer.TYPE);
     }
 }
 

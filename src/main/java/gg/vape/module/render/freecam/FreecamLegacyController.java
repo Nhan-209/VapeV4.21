@@ -97,31 +97,31 @@ extends FreecamController<Freecam> {
             return;
         }
         EntityOtherPlayerMP fakePlayer = this.module.fakePlayer;
-        double x = packet.S();
-        double y = packet.H();
-        double z = packet.e();
-        float yaw = packet.f();
-        float pitch = packet.M();
+        double x = packet.getX();
+        double y = packet.getY();
+        double z = packet.getZ();
+        float yaw = packet.getYaw();
+        float pitch = packet.getPitch();
         if (ForgeVersion.MC_1_7_10.Y()) {
-            if (packet.W().contains(PlayerInteractEventAction.z().getObject())) {
+            if (packet.getRelativeFlags().contains(PlayerInteractEventAction.z().getObject())) {
                 x += fakePlayer.z();
             } else {
                 fakePlayer.r(0.0);
             }
-            if (packet.W().contains(PlayerInteractEventAction.t$src$Lgg_vape_wrapper_impl_PlayerInteractEventAction_$1n8jtc5().getObject())) {
+            if (packet.getRelativeFlags().contains(PlayerInteractEventAction.t$src$Lgg_vape_wrapper_impl_PlayerInteractEventAction_$1n8jtc5().getObject())) {
                 y += fakePlayer.N();
             } else {
                 fakePlayer.k(0.0);
             }
-            if (packet.W().contains(PlayerInteractEventAction.a().getObject())) {
+            if (packet.getRelativeFlags().contains(PlayerInteractEventAction.a().getObject())) {
                 z += fakePlayer.h();
             } else {
                 fakePlayer.i(0.0);
             }
-            if (packet.W().contains(PlayerInteractEventAction.b().getObject())) {
+            if (packet.getRelativeFlags().contains(PlayerInteractEventAction.b().getObject())) {
                 pitch += fakePlayer.V();
             }
-            if (packet.W().contains(PlayerInteractEventAction.m$src$Lgg_vape_wrapper_impl_PlayerInteractEventAction_$1581zn0().getObject())) {
+            if (packet.getRelativeFlags().contains(PlayerInteractEventAction.m$src$Lgg_vape_wrapper_impl_PlayerInteractEventAction_$1581zn0().getObject())) {
                 yaw += fakePlayer.J();
             }
             fakePlayer.t(x, y, z, yaw, pitch);
@@ -215,7 +215,7 @@ extends FreecamController<Freecam> {
         } else if (rotationChanged) {
             movementPacket = positionChanged ? this.buildPositionLookPacket() : CPacketPlayer_Rotation.create(fakePlayer.J(), fakePlayer.V(), fakePlayer.b$src$Z$fqlxe4());
         } else {
-            movementPacket = positionChanged ? this.buildPositionPacket() : C03PacketPlayer.newInstance(fakePlayer.b$src$Z$fqlxe4());
+            movementPacket = positionChanged ? this.buildPositionPacket() : C03PacketPlayer.create(fakePlayer.b$src$Z$fqlxe4());
         }
         ++this.module.positionUpdateTicks;
         if (positionChanged) {

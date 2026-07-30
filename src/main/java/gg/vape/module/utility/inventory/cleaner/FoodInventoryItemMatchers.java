@@ -15,8 +15,8 @@ import gg.vape.wrapper.impl.DataComponents;
 import gg.vape.wrapper.impl.FoodProperties;
 import gg.vape.wrapper.impl.ForgeVersion;
 import gg.vape.wrapper.impl.Item;
+import gg.vape.wrapper.impl.ItemFood;
 import gg.vape.wrapper.impl.ItemStack;
-import gg.vape.wrapper.impl.TileEntityEnderChest;
 
 public class FoodInventoryItemMatchers {
     public static final CompositeInventoryItemMatcher ANY_FOOD;
@@ -27,7 +27,7 @@ public class FoodInventoryItemMatchers {
             DataComponentMap dataComponentMap = item.g();
             return dataComponentMap.V(DataComponents.d());
         }
-        return item.isInstance(MappedClasses.DL);
+        return item.isInstance(MappedClasses.ITEM_FOOD);
     }
 
     static {
@@ -52,14 +52,14 @@ public class FoodInventoryItemMatchers {
             }
             FoodProperties firstFood = new FoodProperties(firstFoodComponent);
             FoodProperties secondFood = new FoodProperties(secondFoodComponent);
-            float firstNutritionScore = (float)firstFood.n() * firstFood.M();
-            float secondNutritionScore = (float)secondFood.n() * secondFood.M();
+            float firstNutritionScore = (float)firstFood.getNutrition() * firstFood.getSaturation();
+            float secondNutritionScore = (float)secondFood.getNutrition() * secondFood.getSaturation();
             return Float.compare(firstNutritionScore, secondNutritionScore);
         }
-        TileEntityEnderChest firstFood = new TileEntityEnderChest(firstContext.getItem());
-        TileEntityEnderChest secondFood = new TileEntityEnderChest(secondContext.getItem());
-        float firstNutritionScore = (float)firstFood.o$src$I$tnn4wh() * firstFood.o();
-        float secondNutritionScore = (float)secondFood.o$src$I$tnn4wh() * secondFood.o();
+        ItemFood firstFood = new ItemFood(firstContext.getItem());
+        ItemFood secondFood = new ItemFood(secondContext.getItem());
+        float firstNutritionScore = (float)firstFood.getNutrition() * firstFood.getSaturation();
+        float secondNutritionScore = (float)secondFood.getNutrition() * secondFood.getSaturation();
         return Float.compare(firstNutritionScore, secondNutritionScore);
     }
 

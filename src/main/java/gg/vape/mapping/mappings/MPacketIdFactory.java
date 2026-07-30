@@ -7,32 +7,30 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MPacketIdFactory
 extends Mapping {
-    private final MappingMethod v;
-    private static GuiComponent[] j;
+    private final MappingMethod confirmTeleportPacketConstructor;
+    private static GuiComponent[] packetMappingControlFlowState;
 
-    public static GuiComponent[] A() {
-        return j;
+    public static GuiComponent[] getPacketMappingControlFlowState() {
+        return packetMappingControlFlowState;
     }
 
-    public static void x(GuiComponent[] guiComponentArray) {
-        j = guiComponentArray;
+    public static void setPacketMappingControlFlowState(GuiComponent[] state) {
+        packetMappingControlFlowState = state;
     }
 
     static {
-        if (MPacketIdFactory.A() == null) {
-            MPacketIdFactory.x(new GuiComponent[2]);
+        if (MPacketIdFactory.getPacketMappingControlFlowState() == null) {
+            MPacketIdFactory.setPacketMappingControlFlowState(new GuiComponent[2]);
         }
     }
 
-    public Object F(int n) {
-        return this.v.newInstance(n);
+    public Object createConfirmTeleportPacket(int teleportId) {
+        return this.confirmTeleportPacketConstructor.newInstance(teleportId);
     }
 
     public MPacketIdFactory() {
         super(MappedClasses.Yq);
-        Class[] classArray = new Class[]{Integer.TYPE};
-        MPacketIdFactory mPacketIdFactory = this;
-        this.v = this.registerConstructor(classArray);
+        this.confirmTeleportPacketConstructor = this.registerConstructor(new Class[]{Integer.TYPE});
     }
 }
 

@@ -4,41 +4,41 @@ import gg.vape.wrapper.Wrapper;
 
 public class TileEntity
 extends Wrapper {
-    private static boolean U;
+    private static boolean usesLegacyCoordinates;
 
 
-    public TileEntity(Object object) {
-        super(object);
+    public TileEntity(Object wrappedObject) {
+        super(wrappedObject);
     }
 
     public BlockPos getBlockPos() {
-        return new BlockPos(TileEntity.vapeInstance.getMappingsMapperCompat().DP.D(this.I));
+        return new BlockPos(TileEntity.vapeInstance.getMappingsMapperCompat().tileEntity.getBlockPos(this.I));
     }
 
     public int getX() {
-        if (U) {
-            return TileEntity.vapeInstance.getMappingsMapperCompat().DP.E(this.I);
+        if (usesLegacyCoordinates) {
+            return TileEntity.vapeInstance.getMappingsMapperCompat().tileEntity.getX(this.I);
         }
-        return this.getBlockPos().P();
+        return this.getBlockPos().getX();
     }
 
-    public static boolean j(boolean bl) {
-        U = bl;
-        return U;
+    public static boolean setUsesLegacyCoordinates(boolean legacyCoordinates) {
+        usesLegacyCoordinates = legacyCoordinates;
+        return usesLegacyCoordinates;
     }
 
     public int getY() {
-        if (U) {
-            return TileEntity.vapeInstance.getMappingsMapperCompat().DP.K(this.I);
+        if (usesLegacyCoordinates) {
+            return TileEntity.vapeInstance.getMappingsMapperCompat().tileEntity.getY(this.I);
         }
-        return this.getBlockPos().int_o();
+        return this.getBlockPos().getY();
     }
 
     public int getZ() {
-        if (U) {
-            return TileEntity.vapeInstance.getMappingsMapperCompat().DP.g(this.I);
+        if (usesLegacyCoordinates) {
+            return TileEntity.vapeInstance.getMappingsMapperCompat().tileEntity.getZ(this.I);
         }
-        return this.getBlockPos().int_d();
+        return this.getBlockPos().getZ();
     }
 }
 

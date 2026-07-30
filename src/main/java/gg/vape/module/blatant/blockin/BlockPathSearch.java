@@ -17,7 +17,7 @@ public class BlockPathSearch {
     private final BlockPathSearchNode startNode;
 
     public BlockPathSearch(BlockPos start, BlockPos destination) {
-        this(start.P(), start.o(), start.d(), destination.P(), destination.o(), destination.d());
+        this(start.getX(), start.getY(), start.getZ(), destination.getX(), destination.getY(), destination.getZ());
     }
 
     public BlockPathSearch(BlockCoordinate start, BlockCoordinate destination) {

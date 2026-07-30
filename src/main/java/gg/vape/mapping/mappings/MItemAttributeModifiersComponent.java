@@ -8,34 +8,30 @@ import java.util.List;
 
 public class MItemAttributeModifiersComponent
 extends Mapping {
-    private static GuiComponent[] U;
-    private MappingField G;
-    private static final String b;
+    private static GuiComponent[] controlFlowState;
+    private final MappingField modifiersField;
+    private static final String MODIFIERS_FIELD_NAME;
 
     public MItemAttributeModifiersComponent() {
         super(MappedClasses.Dp);
-        Class<List> clazz = List.class;
-        boolean bl = true;
-        String string = b;
-        MItemAttributeModifiersComponent mItemAttributeModifiersComponent = this;
-        this.G = this.J(string, bl, clazz);
+        this.modifiersField = this.J(MODIFIERS_FIELD_NAME, true, List.class);
     }
 
-    public static void M(GuiComponent[] guiComponentArray) {
-        U = guiComponentArray;
+    public static void setItemAttributeModifiersControlFlowState(GuiComponent[] state) {
+        controlFlowState = state;
     }
 
     static {
-        MItemAttributeModifiersComponent.M(new GuiComponent[4]);
-        b = "modifiers";
+        MItemAttributeModifiersComponent.setItemAttributeModifiersControlFlowState(new GuiComponent[4]);
+        MODIFIERS_FIELD_NAME = "modifiers";
     }
 
-    public static GuiComponent[] F() {
-        return U;
+    public static GuiComponent[] getItemAttributeModifiersControlFlowState() {
+        return controlFlowState;
     }
 
-    public List<Object> p(Object object) {
-        return (List)this.G.getObject(object);
+    public List<Object> getModifiers(Object component) {
+        return (List)this.modifiersField.getObject(component);
     }
 }
 

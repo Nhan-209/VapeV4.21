@@ -24,7 +24,7 @@ public class BlockData {
     }
 
     public static BlockData E(BlockPos blockPos) {
-        return new BlockData(blockPos.P(), blockPos.int_o(), blockPos.int_d());
+        return new BlockData(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
 
     public static BlockData P(AxisAlignedBB axisAlignedBB) {
@@ -60,7 +60,7 @@ public class BlockData {
     }
 
     public boolean y(BlockPos blockPos) {
-        return this.D() == blockPos.P() && this.B() == blockPos.int_o() && this.G() == blockPos.int_d();
+        return this.D() == blockPos.getX() && this.B() == blockPos.getY() && this.G() == blockPos.getZ();
     }
 
     public BlockData y(int n, int n2, int n3) {
@@ -68,8 +68,8 @@ public class BlockData {
     }
 
     public BlockData R(EnumFacing enumFacing) {
-        Vec3i vec3i = enumFacing.gg_vape_wrapper_impl_Vec3i_w();
-        return new BlockData(this.D() + vec3i.P(), this.B() + vec3i.int_o(), this.G() + vec3i.int_d());
+        Vec3i directionVector = enumFacing.getDirectionVector();
+        return new BlockData(this.D() + directionVector.getX(), this.B() + directionVector.getY(), this.G() + directionVector.getZ());
     }
 
     public boolean equals(Object object) {
@@ -84,4 +84,3 @@ public class BlockData {
         return "[" + this.x + ", " + this.y + ", " + this.z + "]";
     }
 }
-

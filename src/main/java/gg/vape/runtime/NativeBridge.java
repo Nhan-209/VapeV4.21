@@ -4,6 +4,7 @@ import gg.vape.Vape;
 import gg.vape.reflect.Type;
 import gg.vape.ui.click.GuiScreenNativeCallbackBridge;
 import gg.vape.utils.Base64Util;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -348,7 +349,89 @@ public class NativeBridge {
 
     //GetMinorVersion
     public static int gmv() {
-        return 15;
+        Throwable lastFailure = null;
+
+        try {
+            Object minorVersion = readStaticField(
+                    "net.minecraftforge.common.ForgeVersion", "minorVersion");
+            if (minorVersion instanceof Number) {
+                return ((Number)minorVersion).intValue();
+            }
+            lastFailure = new IllegalStateException("ForgeVersion.minorVersion is not numeric");
+        }
+        catch (Throwable throwable) {
+            lastFailure = throwable;
+        }
+
+        // Newer Forge versions expose a version string instead of minorVersion.
+        try {
+            Object forgeVersion = readStaticField(
+                    "net.minecraftforge.common.ForgeVersion", "forgeVersion");
+            int parsedVersion = parseForgeVersion(forgeVersion);
+            if (parsedVersion >= 0) {
+                return parsedVersion;
+            }
+            lastFailure = new IllegalStateException("ForgeVersion.forgeVersion is not supported: " + forgeVersion);
+        }
+        catch (Throwable throwable) {
+            lastFailure = throwable;
+        }
+
+        IllegalStateException failure = new IllegalStateException(
+                "Unable to determine Forge minor version");
+        if (lastFailure != null) {
+            failure.initCause(lastFailure);
+        }
+        throw failure;
+    }
+
+    private static Object readStaticField(String className, String fieldName) throws Exception {
+        Class<?> owner = Class.forName(className);
+        Field field;
+        try {
+            field = owner.getField(fieldName);
+        }
+        catch (NoSuchFieldException ignored) {
+            field = owner.getDeclaredField(fieldName);
+        }
+        field.setAccessible(true);
+        return field.get(null);
+    }
+
+    private static int parseForgeVersion(Object value) {
+        if (value == null) {
+            return -1;
+        }
+        String text = String.valueOf(value).trim();
+        int start = 0;
+        while (start < text.length() && !Character.isDigit(text.charAt(start))) {
+            ++start;
+        }
+        int end = start;
+        while (end < text.length() && Character.isDigit(text.charAt(end))) {
+            ++end;
+        }
+        if (start == end) {
+            return -1;
+        }
+        try {
+            int parsed = Integer.parseInt(text.substring(start, end));
+            return isKnownVersionId(parsed) ? parsed : -1;
+        }
+        catch (NumberFormatException ignored) {
+            return -1;
+        }
+    }
+
+    private static boolean isKnownVersionId(int version) {
+        switch (version) {
+            case 13: case 15: case 23: case 28: case 35: case 36: case 37:
+            case 50: case 51: case 54: case 55: case 56: case 60: case 61:
+            case 100: case 110:
+                return true;
+            default:
+                return false;
+        }
     }
 
     public static native int ss_2(String value);

@@ -6,45 +6,38 @@ import gg.vape.mapping.MappingField;
 
 public class MEntityFX
 extends Mapping {
-    private static final String b;
-    private static int A;
-    private final MappingField G;
+    private static final String PACKETS_FIELD_NAME;
+    private static int controlFlowState;
+    private final MappingField packetsField;
 
     static {
-        MEntityFX.K(0);
-        b = "packets";
+        MEntityFX.setPacketQueueControlFlowState(0);
+        PACKETS_FIELD_NAME = "packets";
     }
 
-    public Iterable A(Object object) {
-        return (Iterable)this.G.getObject(object);
+    public Iterable<?> getPacketHandles(Object packetQueueEntry) {
+        return (Iterable<?>)this.packetsField.getObject(packetQueueEntry);
     }
 
-    public static int R() {
-        int n = MEntityFX.l();
+    public static int getControlFlowSentinel() {
         return 45;
     }
 
-
-    public static int l() {
-        return A;
+    public static int getPacketQueueControlFlowState() {
+        return controlFlowState;
     }
 
-    public static void K(int n) {
-        A = n;
+    public static void setPacketQueueControlFlowState(int state) {
+        controlFlowState = state;
     }
 
     public MEntityFX() {
-        this(MEntityFX.l());
+        this(MEntityFX.getPacketQueueControlFlowState());
     }
 
-    private MEntityFX(int n) {
+    private MEntityFX(int controlFlowState) {
         super(MappedClasses.ue);
-        int n2 = n;
-        Class<Iterable> clazz = Iterable.class;
-        boolean bl = true;
-        String string = b;
-        MEntityFX mEntityFX = this;
-        this.G = this.J(string, bl, clazz);
+        this.packetsField = this.J(PACKETS_FIELD_NAME, true, Iterable.class);
     }
 }
 

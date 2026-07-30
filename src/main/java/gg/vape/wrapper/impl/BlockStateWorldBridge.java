@@ -4,24 +4,23 @@ import gg.vape.wrapper.Wrapper;
 
 public class BlockStateWorldBridge
 extends Wrapper {
-    public boolean o(Object object) {
-        return BlockStateWorldBridge.vapeInstance.getMappingsMapperCompat().hu.b(this.getObject(), object);
+    public boolean isTag(Object tag) {
+        return BlockStateWorldBridge.vapeInstance.getMappingsMapperCompat().hu.isTag(this.getObject(), tag);
     }
 
-    public float i(World world, BlockPos blockPos) {
-        return BlockStateWorldBridge.vapeInstance.getMappingsMapperCompat().hu.r(this.getObject(), world.getObject(), blockPos.getObject());
+    public float getHeight(World world, BlockPos blockPosition) {
+        return BlockStateWorldBridge.vapeInstance.getMappingsMapperCompat().hu.getHeight(this.getObject(), world.getObject(), blockPosition.getObject());
     }
 
-    public BlockStateWorldBridge(Object object) {
-        super(object);
+    public BlockStateWorldBridge(Object handle) {
+        super(handle);
     }
 
-    public AbstractBlockState X() {
-        return new AbstractBlockState(BlockStateWorldBridge.vapeInstance.getMappingsMapperCompat().hu.E(this.I));
+    public AbstractBlockState getType() {
+        return new AbstractBlockState(BlockStateWorldBridge.vapeInstance.getMappingsMapperCompat().hu.getType(this.I));
     }
 
-    public boolean x() {
-        return BlockStateWorldBridge.vapeInstance.getMappingsMapperCompat().hu.e(this.I);
+    public boolean isEmpty() {
+        return BlockStateWorldBridge.vapeInstance.getMappingsMapperCompat().hu.isEmpty(this.I);
     }
 }
-

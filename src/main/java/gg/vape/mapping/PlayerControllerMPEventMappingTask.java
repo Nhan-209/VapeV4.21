@@ -6,15 +6,11 @@ import gg.vape.event.impl.EventPlayerUseItem;
 import gg.vape.event.impl.EventPostAttack;
 import gg.vape.event.impl.EventPreAttack;
 import gg.vape.event.impl.EventWindowClick;
-import gg.vape.mapping.JavassistMappingTask;
-import gg.vape.mapping.MappedClasses;
-import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.PlayerUseItemCallback;
 import gg.vape.wrapper.impl.ForgeVersion;
 
 public class PlayerControllerMPEventMappingTask
 extends JavassistMappingTask {
-    public static final boolean U = ForgeVersion.MC_1_16_5.d() && (Vape.INSTANCE.isNativeAvailable() || Vape.INSTANCE.isVanillaMinecraftPresent());
+    public static final boolean U = ForgeVersion.MC_1_16_5.d() && (Vape.INSTANCE.isForgeAbsent() || Vape.INSTANCE.isVanillaMinecraftPresent());
 
     public PlayerControllerMPEventMappingTask() {
         super(MappedClasses.ld);

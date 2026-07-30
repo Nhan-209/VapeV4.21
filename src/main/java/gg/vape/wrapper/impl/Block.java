@@ -115,12 +115,12 @@ extends Wrapper {
             return enumActionResult.equals(EnumActionResult.A());
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return MBlock.G(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.getObject(), blockState.getObject(), entityPlayer.getObject(), EnumHand.M().getObject(), enumFacing.getObject(), f, f2, f3);
+            return MBlock.G(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.getObject(), blockState.getObject(), entityPlayer.getObject(), EnumHand.mainHand().getObject(), enumFacing.getObject(), f, f2, f3);
         }
         if (ForgeVersion.MC_1_7_10.Y()) {
             return MBlock.L(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.getObject(), blockState.getObject(), entityPlayer.getObject(), enumFacing.getObject(), f, f2, f3);
         }
-        return MBlock.w(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.P(), blockPos.o(), blockPos.d(), entityPlayer.getObject(), enumFacing.Y(), f, f2, f3);
+        return MBlock.w(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.getX(), blockPos.getY(), blockPos.getZ(), entityPlayer.getObject(), enumFacing.Y(), f, f2, f3);
     }
 
     public Block(Object object) {
@@ -203,4 +203,3 @@ extends Wrapper {
         return new AxisAlignedBB(MBlock.d(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.getObject()));
     }
 }
-

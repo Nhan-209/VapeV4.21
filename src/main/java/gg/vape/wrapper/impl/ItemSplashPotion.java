@@ -21,7 +21,7 @@ extends Item {
         if (ForgeVersion.MC_1_20_6.d()) {
             BiomeProvider biomeProvider = new BiomeProvider(itemStack.w(DataComponents.T()));
             ArrayList arrayList = new ArrayList();
-            for (Object t : biomeProvider.f()) {
+            for (Object t : biomeProvider.getAllEffects()) {
                 arrayList.add(t);
             }
             return arrayList;

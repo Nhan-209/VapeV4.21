@@ -1,18 +1,16 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MCPacketAnimation;
-
 public class CPacketAnimation
 extends Packet {
     public static CPacketAnimation create() {
         if (ForgeVersion.MC_1_12_2.d()) {
-            return new CPacketAnimation(MCPacketAnimation.A(CPacketAnimation.vapeInstance.getMappingsMapperCompat().Q3, EnumHand.M().getObject()));
+            return new CPacketAnimation(CPacketAnimation.vapeInstance.getMappingsMapperCompat().Q3.createAnimationPacket(EnumHand.mainHand().getObject()));
         }
-        return new CPacketAnimation(CPacketAnimation.vapeInstance.getMappingsMapperCompat().Q3.H());
+        return new CPacketAnimation(CPacketAnimation.vapeInstance.getMappingsMapperCompat().Q3.createAnimationPacket());
     }
 
-    public CPacketAnimation(Object object) {
-        super(object);
+    public CPacketAnimation(Object handle) {
+        super(handle);
     }
 
 }

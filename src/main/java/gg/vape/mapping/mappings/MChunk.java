@@ -57,7 +57,7 @@ extends Mapping {
     }
 
     public MChunk() {
-        this(MBlockPosCarrier.getBlockPosCarrierControlFlowState());
+        this(MTickingBlockEntity.getTickingBlockEntityControlFlowState());
     }
 
     private MChunk(int[] nArray) {
@@ -110,9 +110,9 @@ extends Mapping {
         this.o = ((MappingMethodBuilder)mChunk.methodBuilder(string, clazz, classArray).setOwnerClass(MappedClasses.VS)).buildMethod();
         }
         Class<Boolean> clazz = Boolean.TYPE;
-        String string = "isChunkLoaded";
+        String string = ForgeVersion.c() >= 23 ? "loaded" : "isChunkLoaded";
         MChunk mChunk = this;
-        this.p = ((MappingFieldBuilder)mChunk.fieldBuilder(string, clazz).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "loaded")).buildField();
+        this.p = mChunk.fieldBuilder(string, clazz).buildField();
         if (ForgeVersion.MC_1_17.d()) {
             Class<Map> clazz3 = Map.class;
             String string3 = "blockEntities";

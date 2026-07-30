@@ -6,24 +6,20 @@ import gg.vape.mapping.MappingField;
 
 public class MMatrixStackEntry
 extends Mapping {
-    private static final String b = "matrix";
-    private MappingField k;
+    private static final String MATRIX_FIELD_NAME = "matrix";
+    private final MappingField matrixField;
 
-    private Object A(Object object) {
-        return this.k.getObject(object);
+    private Object readMatrix(Object matrixStackEntry) {
+        return this.matrixField.getObject(matrixStackEntry);
     }
 
-    public static Object s(MMatrixStackEntry mMatrixStackEntry, Object object) {
-        return mMatrixStackEntry.A(object);
+    public static Object getMatrix(MMatrixStackEntry mapping, Object matrixStackEntry) {
+        return mapping.readMatrix(matrixStackEntry);
     }
 
     public MMatrixStackEntry() {
         super(MappedClasses.G);
-        Class clazz = MappedClasses.qr;
-        boolean bl = true;
-        String string = b;
-        MMatrixStackEntry mMatrixStackEntry = this;
-        this.k = this.J(string, bl, clazz);
+        this.matrixField = this.J(MATRIX_FIELD_NAME, true, MappedClasses.qr);
     }
 }
 

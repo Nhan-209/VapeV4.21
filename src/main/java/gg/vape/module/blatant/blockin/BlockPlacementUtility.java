@@ -282,11 +282,11 @@ public final class BlockPlacementUtility {
         if (blockPos == null || blockCoordinate == null) {
             return false;
         }
-        int hitX = blockPos.P();
+        int hitX = blockPos.getX();
         int targetX = blockCoordinate.B();
-        int hitY = blockPos.o();
+        int hitY = blockPos.getY();
         int targetY = blockCoordinate.E();
-        int hitZ = blockPos.d();
+        int hitZ = blockPos.getZ();
         int targetZ = blockCoordinate.A();
         int deltaX = Math.abs(hitX - targetX);
         int deltaY = Math.abs(hitY - targetY);

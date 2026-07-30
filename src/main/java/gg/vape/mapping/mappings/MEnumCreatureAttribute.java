@@ -84,9 +84,9 @@ extends Mapping {
             }
             if (ForgeVersion.MC_1_21_4.v()) {
                 Class clazz = MappedClasses.uB;
-                String string = "fall";
+                String string = ForgeVersion.c() >= 23 ? "FALL" : "fall";
                 MEnumCreatureAttribute mEnumCreatureAttribute = this;
-                this.B = ((MappingFieldBuilder)((MappingFieldBuilder)mEnumCreatureAttribute.fieldBuilder(string, clazz).setStaticMember(true)).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "FALL")).buildField();
+                this.B = ((MappingFieldBuilder)mEnumCreatureAttribute.fieldBuilder(string, clazz).setStaticMember(true)).buildField();
             }
             return;
         }
@@ -112,9 +112,9 @@ extends Mapping {
         this.G = this.Y(string6, bl6, clazz8, classArray3);
         if (ForgeVersion.MC_1_21_4.v()) {
             Class clazz9 = MappedClasses.uB;
-            String string7 = "fall";
+            String string7 = ForgeVersion.c() >= 23 ? "FALL" : "fall";
             MEnumCreatureAttribute mEnumCreatureAttribute7 = this;
-            this.B = ((MappingFieldBuilder)((MappingFieldBuilder)this.fieldBuilder(string7, clazz9).setStaticMember(true)).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "FALL")).buildField();
+            this.B = ((MappingFieldBuilder)this.fieldBuilder(string7, clazz9).setStaticMember(true)).buildField();
         }
         this.S = null;
     }

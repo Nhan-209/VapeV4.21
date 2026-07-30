@@ -184,8 +184,8 @@ extends Mod {
                             if (!BlockUtil.f(block)) continue;
                             BedTargetRenderPosition bedPosition = new BedTargetRenderPosition(blockX, blockY, blockZ);
                             BlockBed blockBed = new BlockBed(block);
-                            boolean bedHead = blockBed.f(world, blockX, blockY, blockZ);
-                            if (this.bedPositions.contains(bedPosition) || bedHead) continue;
+                            boolean isFoot = blockBed.isFoot(world, blockX, blockY, blockZ);
+                            if (this.bedPositions.contains(bedPosition) || isFoot) continue;
                             this.bedPositions.add(bedPosition);
                         }
                     }
@@ -340,7 +340,7 @@ extends Mod {
             countState.clearCounts();
             Block block = world.getBlockByPos(bedPosition.getBlockX(), bedPosition.getBlockY(), bedPosition.getBlockZ());
             BlockBed blockBed = new BlockBed(block);
-            EnumFacing facing = blockBed.e(world, bedPosition.getBlockX(), bedPosition.getBlockY(), bedPosition.getBlockZ());
+            EnumFacing facing = blockBed.getBedDirection(world, bedPosition.getBlockX(), bedPosition.getBlockY(), bedPosition.getBlockZ());
             int facingIndex = facing.Y();
             int layerLimit = 4;
             for (int radius = 1; radius < layerLimit; ++radius) {
@@ -416,8 +416,8 @@ extends Mod {
             Block block = Minecraft.theWorld().getBlockByPos(blockX, blockY, blockZ);
             BedTargetRenderPosition bedPosition = new BedTargetRenderPosition(blockX, blockY, blockZ);
             BlockBed blockBed = new BlockBed(block);
-            boolean bedHead = blockBed.f(Minecraft.theWorld(), blockX, blockY, blockZ);
-            if (this.bedPositions.contains(bedPosition) || bedHead) continue;
+            boolean isFoot = blockBed.isFoot(Minecraft.theWorld(), blockX, blockY, blockZ);
+            if (this.bedPositions.contains(bedPosition) || isFoot) continue;
             this.bedPositions.add(bedPosition);
             this.countStates.put(bedPosition, new BedPlateCountState(bedPosition));
         }

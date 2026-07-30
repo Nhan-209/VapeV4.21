@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class ResourceKey
 extends Wrapper {
-    public ResourceKey(Object object) {
-        super(object);
+    public ResourceKey(Object wrappedObject) {
+        super(wrappedObject);
     }
 
-    public ResourceLocation X() {
-        return new ResourceLocation(MResourceKey.J(ResourceKey.vapeInstance.getMappingsMapperCompat().P, this.I));
+    public ResourceLocation getLocation() {
+        return new ResourceLocation(MResourceKey.getLocation(ResourceKey.vapeInstance.getMappingsMapperCompat().P, this.I));
     }
 }
-

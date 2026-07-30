@@ -1,105 +1,103 @@
 package gg.vape.wrapper.impl;
 
 import gg.vape.mapping.MappedClasses;
-import gg.vape.mapping.mappings.MCPacketUseEntityPacket;
-
 public class UseEntityPacketBridge
 extends Packet {
-    private static final Vec3 y = new Vec3(null);
+    private static final Vec3 EMPTY_HIT_LOCATION = new Vec3(null);
 
-    public boolean u() {
+    public boolean isInteract() {
         if (ForgeVersion.MC_26_1.d()) {
-            return !this.J() && !this.V();
+            return !this.isAttackPacketVariant() && !this.isInteractAt();
         }
-        return this.U().equals(CPacketUseEntity.M());
+        return this.getAction().equals(CPacketUseEntity.interact());
     }
 
-    public boolean S() {
+    public boolean isAttack() {
         if (ForgeVersion.MC_26_1.d()) {
-            return this.J();
+            return this.isAttackPacketVariant();
         }
-        return this.U().equals(CPacketUseEntity.T());
+        return this.getAction().equals(CPacketUseEntity.attack());
     }
 
-    public int w() {
-        return UseEntityPacketBridge.vapeInstance.getMappings().Co.d(this.I);
+    public int getEntityId() {
+        return UseEntityPacketBridge.vapeInstance.getMappings().Co.getEntityId(this.I);
     }
 
-    public String A$src$Ljava_lang_String_$jiwkol() {
-        if (this.S()) {
+    public String getActionName() {
+        if (this.isAttack()) {
             return "ATTACK";
         }
-        if (this.V()) {
+        if (this.isInteractAt()) {
             return "INTERACT_AT";
         }
-        if (this.u()) {
+        if (this.isInteract()) {
             return "INTERACT";
         }
         return "UNKNOWN";
     }
 
-    public Vec3 O() {
+    public Vec3 getHitLocation() {
         if (ForgeVersion.MC_26_1.d()) {
-            if (this.J()) {
-                return y;
+            if (this.isAttackPacketVariant()) {
+                return EMPTY_HIT_LOCATION;
             }
-            Object object = MCPacketUseEntityPacket.Q(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I);
-            return object == null ? y : new Vec3(object);
+            Object hitLocation = UseEntityPacketBridge.vapeInstance.getMappings().Co.getHitLocation(this.I);
+            return hitLocation == null ? EMPTY_HIT_LOCATION : new Vec3(hitLocation);
         }
         if (ForgeVersion.MC_1_20_6.d()) {
-            CPacketUseEntityAction cPacketUseEntityAction = new CPacketUseEntityAction(MCPacketUseEntityPacket.k(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I), null);
-            if (cPacketUseEntityAction.w().equals(CPacketUseEntity.o())) {
-                CPacketUseEntityActionPacket cPacketUseEntityActionPacket = new CPacketUseEntityActionPacket(cPacketUseEntityAction.getObject());
-                return cPacketUseEntityActionPacket.getLocation();
+            CPacketUseEntityAction action = new CPacketUseEntityAction(UseEntityPacketBridge.vapeInstance.getMappings().Co.getAction(this.I), null);
+            if (action.getType().equals(CPacketUseEntity.interactAt())) {
+                CPacketUseEntityActionPacket actionPacket = new CPacketUseEntityActionPacket(action.getObject());
+                return actionPacket.getLocation();
             }
-            return y;
+            return EMPTY_HIT_LOCATION;
         }
-        return new Vec3(MCPacketUseEntityPacket.Q(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I));
+        return new Vec3(UseEntityPacketBridge.vapeInstance.getMappings().Co.getHitLocation(this.I));
     }
 
-    public void A(int n) {
-        UseEntityPacketBridge.vapeInstance.getMappings().Co.O(this.I, n);
+    public void setEntityId(int entityId) {
+        UseEntityPacketBridge.vapeInstance.getMappings().Co.setEntityId(this.I, entityId);
     }
 
-    public UseEntityPacketBridge(Object object) {
-        super(object);
+    public UseEntityPacketBridge(Object handle) {
+        super(handle);
     }
 
-    public Entity C(World world) {
-        return world.V(this.w());
+    public Entity getEntity(World world) {
+        return world.V(this.getEntityId());
     }
 
-    public CPacketUseEntity U() {
+    public CPacketUseEntity getAction() {
         if (ForgeVersion.MC_26_1.d()) {
             throw new IllegalStateException("Use helper methods for 26.1 packet actions");
         }
         if (ForgeVersion.MC_1_17.d()) {
-            CPacketUseEntityAction cPacketUseEntityAction = new CPacketUseEntityAction(MCPacketUseEntityPacket.k(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I), null);
-            return cPacketUseEntityAction.w();
+            CPacketUseEntityAction action = new CPacketUseEntityAction(UseEntityPacketBridge.vapeInstance.getMappings().Co.getAction(this.I), null);
+            return action.getType();
         }
-        return new CPacketUseEntity(MCPacketUseEntityPacket.k(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I), null);
+        return new CPacketUseEntity(UseEntityPacketBridge.vapeInstance.getMappings().Co.getAction(this.I), null);
     }
 
-    public static boolean h(Packet packet) {
+    public static boolean isUseEntityPacket(Packet packet) {
         return packet != null && (packet.isInstance(MappedClasses.Fa) || ForgeVersion.MC_26_1.d() && packet.isInstance(MappedClasses.ZW));
     }
 
-    public boolean V() {
+    public boolean isInteractAt() {
         if (ForgeVersion.MC_26_1.d()) {
-            if (this.J()) {
+            if (this.isAttackPacketVariant()) {
                 return false;
             }
-            Object object = MCPacketUseEntityPacket.Q(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I);
-            return object != null;
+            Object hitLocation = UseEntityPacketBridge.vapeInstance.getMappings().Co.getHitLocation(this.I);
+            return hitLocation != null;
         }
-        return this.U().equals(CPacketUseEntity.o());
+        return this.getAction().equals(CPacketUseEntity.interactAt());
     }
 
-    private static IllegalStateException a(IllegalStateException illegalStateException) {
-        return illegalStateException;
+    private static IllegalStateException propagateException(IllegalStateException exception) {
+        return exception;
     }
 
-    private boolean J() {
+    private boolean isAttackPacketVariant() {
         return ForgeVersion.MC_26_1.d() && this.isInstance(MappedClasses.ZW);
     }
 }

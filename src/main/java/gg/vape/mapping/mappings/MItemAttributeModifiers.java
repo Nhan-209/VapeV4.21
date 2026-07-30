@@ -22,7 +22,7 @@ extends Mapping {
     }
 
     public MItemAttributeModifiers() {
-        this(MOrdering.y());
+        this(MOrdering.getControlFlowMarker());
     }
 
     private MItemAttributeModifiers(String string) {

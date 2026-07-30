@@ -6,18 +6,18 @@ import gg.vape.wrapper.Wrapper;
 
 public class MappedFieldSingletonWrapper
 extends Wrapper {
-    private static MappedFieldSingletonWrapper A;
+    private static MappedFieldSingletonWrapper humanoidArmorInstance;
 
-    public MappedFieldSingletonWrapper(Object object) {
-        super(object);
+    public MappedFieldSingletonWrapper(Object wrappedObject) {
+        super(wrappedObject);
     }
 
 
-    public static MappedFieldSingletonWrapper T() {
-        if (A == null) {
-            A = new MappedFieldSingletonWrapper(MMappedFieldSingletonWrapper.W(Vape.INSTANCE.getMappings().CL).getObject(null));
+    public static MappedFieldSingletonWrapper humanoidArmor() {
+        if (humanoidArmorInstance == null) {
+            humanoidArmorInstance = new MappedFieldSingletonWrapper(MMappedFieldSingletonWrapper.getHumanoidArmorField(Vape.INSTANCE.getMappings().CL).getObject(null));
         }
-        return A;
+        return humanoidArmorInstance;
     }
 }
 

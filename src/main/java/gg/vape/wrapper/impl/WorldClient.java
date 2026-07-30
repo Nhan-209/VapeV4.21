@@ -27,8 +27,8 @@ extends World {
         return new Entity(WorldClient.vapeInstance.getMappingsCompat().ha.t(this.I, n));
     }
 
-    public WorldClientBridge F() {
-        return new WorldClientBridge(WorldClient.vapeInstance.getMappingsCompat().ha.u(this.I));
+    public ClientWorldInfo getWorldInfo() {
+        return new ClientWorldInfo(WorldClient.vapeInstance.getMappingsCompat().ha.u(this.I));
     }
 
     public static String b() {
@@ -45,4 +45,3 @@ extends World {
         }
     }
 }
-

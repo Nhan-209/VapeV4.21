@@ -9,79 +9,45 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MCPacketPlayer_PositionRotation
 extends Mapping {
-    private MappingMethod E;
-
-
-    private Object l(double d, double d2, double d3, float f, float f2, boolean bl) {
-        return this.E.newInstance(d, d2, d3, Float.valueOf(f), Float.valueOf(f2), bl);
-    }
-
-    private Object U(double d, double d2, double d3, float f, float f2, boolean bl, boolean bl2) {
-        return this.E.newInstance(d, d2, d3, Float.valueOf(f), Float.valueOf(f2), bl, bl2);
-    }
-
-    public static Object b(MCPacketPlayer_PositionRotation mCPacketPlayer_PositionRotation, double d, double d2, double d3, float f, float f2, boolean bl) {
-        return mCPacketPlayer_PositionRotation.l(d, d2, d3, f, f2, bl);
-    }
+    private MappingMethod positionRotationPacketConstructor;
 
     public MCPacketPlayer_PositionRotation() {
-        this(MPacketIdFactory.A());
+        this(MPacketIdFactory.getPacketMappingControlFlowState());
     }
 
-    private MCPacketPlayer_PositionRotation(GuiComponent[] guiComponentArray) {
+    private MCPacketPlayer_PositionRotation(GuiComponent[] controlFlowState) {
         super(MappedClasses.FK);
-        if (guiComponentArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_21_4.d()) {
-                Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE, Boolean.TYPE};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MCPacketPlayer_PositionRotation mCPacketPlayer_PositionRotation = this;
-                this.E = mCPacketPlayer_PositionRotation.Y(string, bl, clazz, classArray);
+                this.positionRotationPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE, Boolean.TYPE});
             } else if (ForgeVersion.MC_1_7_10.Y()) {
-                Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MCPacketPlayer_PositionRotation mCPacketPlayer_PositionRotation = this;
-                this.E = mCPacketPlayer_PositionRotation.Y(string, bl, clazz, classArray);
+                this.positionRotationPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE});
             } else {
-                Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MCPacketPlayer_PositionRotation mCPacketPlayer_PositionRotation = this;
-                this.E = mCPacketPlayer_PositionRotation.Y(string, bl, clazz, classArray);
+                this.positionRotationPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE});
             }
             if (GuiComponent.getLegacyComponentState() == null) {
-                MPacketIdFactory.x(new GuiComponent[2]);
+                MPacketIdFactory.setPacketMappingControlFlowState(new GuiComponent[2]);
             }
             return;
         }
         if (ForgeVersion.MC_1_21_4.d()) {
-            Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE};
-            Class<Void> clazz = Void.TYPE;
-            boolean bl = false;
-            String string = "<init>";
-            MCPacketPlayer_PositionRotation mCPacketPlayer_PositionRotation = this;
-            this.E = mCPacketPlayer_PositionRotation.Y(string, bl, clazz, classArray);
+            this.positionRotationPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE});
         }
-        Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = "<init>";
-        MCPacketPlayer_PositionRotation mCPacketPlayer_PositionRotation = this;
-        this.E = mCPacketPlayer_PositionRotation.Y(string, bl, clazz, classArray); 
+        this.positionRotationPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Double.TYPE, Double.TYPE, Double.TYPE, Double.TYPE, Float.TYPE, Float.TYPE, Boolean.TYPE});
         if (GuiComponent.getLegacyComponentState() == null) {
-            MPacketIdFactory.x(new GuiComponent[2]);
+            MPacketIdFactory.setPacketMappingControlFlowState(new GuiComponent[2]);
         }
     }
 
-    public Object L(double d, double d2, double d3, double d4, float f, float f2, boolean bl) {
-        return this.E.newInstance(d, d2, d3, d4, Float.valueOf(f), Float.valueOf(f2), bl);
+    public Object createLegacyPositionRotationPacket(double x, double feetY, double stanceY, double z, float yaw, float pitch, boolean onGround) {
+        return this.positionRotationPacketConstructor.newInstance(x, feetY, stanceY, z, Float.valueOf(yaw), Float.valueOf(pitch), onGround);
     }
 
-    public static Object P(MCPacketPlayer_PositionRotation mCPacketPlayer_PositionRotation, double d, double d2, double d3, float f, float f2, boolean bl, boolean bl2) {
-        return mCPacketPlayer_PositionRotation.U(d, d2, d3, f, f2, bl, bl2);
+    public Object createPositionRotationPacket(double x, double y, double z, float yaw, float pitch, boolean onGround) {
+        return this.positionRotationPacketConstructor.newInstance(x, y, z, Float.valueOf(yaw), Float.valueOf(pitch), onGround);
+    }
+
+    public Object createPositionRotationPacket(double x, double y, double z, float yaw, float pitch, boolean onGround, boolean horizontalCollision) {
+        return this.positionRotationPacketConstructor.newInstance(x, y, z, Float.valueOf(yaw), Float.valueOf(pitch), onGround, horizontalCollision);
     }
 }

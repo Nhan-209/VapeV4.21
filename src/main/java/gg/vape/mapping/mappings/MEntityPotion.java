@@ -26,7 +26,7 @@ extends Mapping {
     }
 
     public MEntityPotion() {
-        this(MSPacketMapChunkBulk.E$src$Ljava_lang_String_$1dqes8v());
+        this(MSPacketMapChunkBulk.getMappingControlFlowToken());
     }
 
     private MEntityPotion(String string) {
@@ -53,7 +53,7 @@ extends Mapping {
                 this.o = mEntityPotion.J(string4, bl, clazz);
             }
             if (GuiComponent.getLegacyComponentState() == null) {
-                MSPacketMapChunkBulk.o("JSVoh");
+                MSPacketMapChunkBulk.setMappingControlFlowToken("JSVoh");
             }
             return;
         }
@@ -71,7 +71,7 @@ extends Mapping {
         MEntityPotion mEntityPotion = this;
         this.o = mEntityPotion.J(string6, bl, clazz); 
         if (GuiComponent.getLegacyComponentState() == null) {
-            MSPacketMapChunkBulk.o("JSVoh");
+            MSPacketMapChunkBulk.setMappingControlFlowToken("JSVoh");
         }
     }
 

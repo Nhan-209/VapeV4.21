@@ -11,12 +11,12 @@ import java.util.Objects;
 public class BlockPos
 extends Vec3i {
     public static long L(BlockPos blockPos) {
-        return BlockPos.f(blockPos.P(), blockPos.o(), blockPos.d());
+        return BlockPos.f(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
 
     @Override
     public String toString() {
-        return this.P() + " " + this.o() + " " + this.d();
+        return this.getX() + " " + this.getY() + " " + this.getZ();
     }
 
     public static long f(int n, int n2, int n3) {
@@ -52,14 +52,14 @@ extends Vec3i {
             return ((BlockData)object).y(this);
         }
         if (object instanceof BlockPos) {
-            return ((BlockPos)object).P() == this.P() && ((BlockPos)object).o() == this.o() && ((BlockPos)object).d() == this.d();
+            return ((BlockPos)object).getX() == this.getX() && ((BlockPos)object).getY() == this.getY() && ((BlockPos)object).getZ() == this.getZ();
         }
         return false;
     }
 
 
     public BlockPos C(int n, int n2, int n3) {
-        return BlockPos.create(this.P() + n, this.o() + n2, this.d() + n3);
+        return BlockPos.create(this.getX() + n, this.getY() + n2, this.getZ() + n3);
     }
 
     public BlockPos X$src$Lgg_vape_wrapper_impl_BlockPos_$jlnp6b() {
@@ -106,7 +106,7 @@ extends Vec3i {
     }
 
     public int hashCode() {
-        return Objects.hash(this.P(), this.o(), this.d());
+        return Objects.hash(this.getX(), this.getY(), this.getZ());
     }
 
     public static BlockPos d(BlockData blockData) {
@@ -114,7 +114,7 @@ extends Vec3i {
     }
 
     public BlockCoordinate X() {
-        return new BlockCoordinate(this.P(), this.o(), this.d());
+        return new BlockCoordinate(this.getX(), this.getY(), this.getZ());
     }
 
     public static BlockPos D(double d, double d2, double d3) {

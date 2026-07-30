@@ -71,7 +71,7 @@ extends Mapping {
             return;
         }
         if (ForgeVersion.MC_1_21_6.d()) {
-            Class clazz = MappedClasses.DO;
+            Class clazz = MappedClasses.GPU_TEXTURE;
             boolean bl = true;
             String string = "texture";
             MTextureObject mTextureObject = this;

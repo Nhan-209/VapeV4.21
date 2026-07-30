@@ -2,12 +2,11 @@ package gg.vape.wrapper.impl;
 
 public class RegistryNamespaced
 extends RegistrySimple {
-    public Object L(int n) {
-        return RegistryNamespaced.vapeInstance.getMappingsMapperCompat().qc.e(this.I, n);
+    public Object getByValue(int id) {
+        return RegistryNamespaced.vapeInstance.getMappingsMapperCompat().qc.getByValue(this.I, id);
     }
 
-    public RegistryNamespaced(Object object) {
-        super(object);
+    public RegistryNamespaced(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

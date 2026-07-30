@@ -292,10 +292,10 @@ extends Mod {
     }
 
     private boolean isAttackPacket(Packet packet) {
-        if (!UseEntityPacketBridge.h(packet)) {
+        if (!UseEntityPacketBridge.isUseEntityPacket(packet)) {
             return false;
         }
-        return new UseEntityPacketBridge(packet).S();
+        return new UseEntityPacketBridge(packet).isAttack();
     }
 
     private boolean hasAllowedItem() {

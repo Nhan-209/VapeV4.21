@@ -2,12 +2,11 @@ package gg.vape.wrapper.impl;
 
 public class SPacketDestroyEntities
 extends SPacketDestroyEntitiesBase {
-    public int[] W() {
-        return SPacketDestroyEntities.vapeInstance.getMappingsMapperCompat().C7.K(this.I);
+    public int[] getEntityIds() {
+        return SPacketDestroyEntities.vapeInstance.getMappingsMapperCompat().C7.getEntityIds(this.I);
     }
 
-    public SPacketDestroyEntities(Object object) {
-        super(object);
+    public SPacketDestroyEntities(Object handle) {
+        super(handle);
     }
 }
-

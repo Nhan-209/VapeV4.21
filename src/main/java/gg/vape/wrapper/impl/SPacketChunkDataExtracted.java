@@ -4,16 +4,15 @@ import gg.vape.wrapper.Wrapper;
 
 public class SPacketChunkDataExtracted
 extends Wrapper {
-    public SPacketChunkDataExtracted(Object object) {
-        super(object);
+    public SPacketChunkDataExtracted(Object handle) {
+        super(handle);
     }
 
-    public int G() {
-        return SPacketChunkDataExtracted.vapeInstance.getMappings().b.S(this.I);
+    public int getDataSize() {
+        return SPacketChunkDataExtracted.vapeInstance.getMappings().b.getDataSize(this.I);
     }
 
-    public byte[] m$src$AB$7svbyb() {
-        return SPacketChunkDataExtracted.vapeInstance.getMappings().b.G(this.I);
+    public byte[] getData() {
+        return SPacketChunkDataExtracted.vapeInstance.getMappings().b.getData(this.I);
     }
 }
-

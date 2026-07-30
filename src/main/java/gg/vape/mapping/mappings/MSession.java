@@ -38,7 +38,7 @@ extends Mapping {
                 MSession mSession3 = this;
                 this.D = this.registerConstructor(classArray);
             } else if (ForgeVersion.MC_1_20_6.d()) {
-                Class[] classArray = new Class[]{String.class, UUID.class, String.class, Optional.class, Optional.class, MappedClasses.Z2};
+                Class[] classArray = new Class[]{String.class, UUID.class, String.class, Optional.class, Optional.class, MappedClasses.SESSION_TYPE};
                 Class<Void> clazz3 = Void.TYPE;
                 boolean bl3 = false;
                 String string3 = "<init>";
@@ -65,7 +65,7 @@ extends Mapping {
         MSession mSession6 = this;
         this.N = this.J(string5, bl5, clazz5);
         if (ForgeVersion.MC_1_21_10.d()) {
-            Class[] classArray = new Class[]{String.class, UUID.class, String.class, Optional.class, Optional.class, MappedClasses.Z2};
+            Class[] classArray = new Class[]{String.class, UUID.class, String.class, Optional.class, Optional.class, MappedClasses.SESSION_TYPE};
             Class<Void> clazz6 = Void.TYPE;
             boolean bl6 = false;
             String string6 = "<init>";

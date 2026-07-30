@@ -15,8 +15,8 @@ extends JavassistMappingTask {
 
     @Override
     public void transform() {
-        MappingMethod mappingMethod = Vape.INSTANCE.getMappings().hE.y;
-        EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(mappingMethod, EventBlockModelRender.class);
+        MappingMethod renderModelMethod = Vape.INSTANCE.getMappings().hE.renderModelMethod;
+        EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(renderModelMethod, EventBlockModelRender.class);
         eventInjectionSpec.setConstructorArguments("$0, $1, $2, $3, $4, $5, $6");
         eventInjectionSpec.setReturnExpression("$event.getResult()");
         this.registerEventInjection(eventInjectionSpec);

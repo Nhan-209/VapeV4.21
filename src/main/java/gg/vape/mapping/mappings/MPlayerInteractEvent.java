@@ -42,7 +42,7 @@ extends Mapping {
 
 
     public MPlayerInteractEvent() {
-        this(MSPacketEntityVelocity.G());
+        this(MSPacketEntityVelocity.getPacketMappingControlFlowState());
     }
 
     private MPlayerInteractEvent(int[] nArray) {
@@ -87,7 +87,7 @@ extends Mapping {
             MPlayerInteractEvent mPlayerInteractEvent5 = this;
             this.y = this.registerStaticField(string5, bl5, clazz5);
             if (GuiComponent.getLegacyComponentState() == null) {
-                MSPacketEntityVelocity.N(new int[1]);
+                MSPacketEntityVelocity.setPacketMappingControlFlowState(new int[1]);
             }
             return;
         }
@@ -122,7 +122,7 @@ extends Mapping {
         MPlayerInteractEvent mPlayerInteractEvent10 = this;
         this.y = this.registerStaticField(string10, bl10, clazz10);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MSPacketEntityVelocity.N(new int[1]);
+            MSPacketEntityVelocity.setPacketMappingControlFlowState(new int[1]);
         }
     }
 }

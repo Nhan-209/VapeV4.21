@@ -15,7 +15,7 @@ extends Wrapper {
 
     public ResourceLocation W() {
         if (ForgeVersion.MC_1_21_10.d()) {
-            return this.c().X();
+            return this.c().getTexturePath();
         }
         return new ResourceLocation(PlayerSkin.vapeInstance.getMappingsMapperCompat().hU.o(this.I));
     }

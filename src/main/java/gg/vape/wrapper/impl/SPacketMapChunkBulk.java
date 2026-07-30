@@ -5,25 +5,24 @@ import java.util.List;
 
 public class SPacketMapChunkBulk
 extends Packet {
-    public int[] c() {
-        return SPacketMapChunkBulk.vapeInstance.getMappingsMapperCompat().Rg.O(this.I);
+    public int[] getZPositions() {
+        return SPacketMapChunkBulk.vapeInstance.getMappingsMapperCompat().Rg.getZPositions(this.I);
     }
 
-    public List<SPacketChunkDataExtracted> s() {
-        Object[] objectArray = SPacketMapChunkBulk.vapeInstance.getMappingsMapperCompat().Rg.Q(this.I);
-        ArrayList<SPacketChunkDataExtracted> arrayList = new ArrayList<SPacketChunkDataExtracted>();
-        for (Object object : objectArray) {
-            arrayList.add(new SPacketChunkDataExtracted(object));
+    public List<SPacketChunkDataExtracted> getChunksData() {
+        Object[] chunkDataHandles = SPacketMapChunkBulk.vapeInstance.getMappingsMapperCompat().Rg.getChunksData(this.I);
+        ArrayList<SPacketChunkDataExtracted> chunksData = new ArrayList<SPacketChunkDataExtracted>();
+        for (Object chunkDataHandle : chunkDataHandles) {
+            chunksData.add(new SPacketChunkDataExtracted(chunkDataHandle));
         }
-        return arrayList;
+        return chunksData;
     }
 
-    public SPacketMapChunkBulk(Object object) {
-        super(object);
+    public SPacketMapChunkBulk(Object handle) {
+        super(handle);
     }
 
-    public int[] y() {
-        return SPacketMapChunkBulk.vapeInstance.getMappingsMapperCompat().Rg.S(this.I);
+    public int[] getXPositions() {
+        return SPacketMapChunkBulk.vapeInstance.getMappingsMapperCompat().Rg.getXPositions(this.I);
     }
 }
-

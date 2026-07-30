@@ -2,7 +2,6 @@ package gg.vape.mapping.runtime;
 
 import gg.vape.Vape;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.mapping.runtime.MemberNameRemapTable;
 
 public class MemberNameRemapTableV35V36
 extends MemberNameRemapTable {
@@ -26,8 +25,8 @@ extends MemberNameRemapTable {
     }
 
     protected void QP() {
-        this.B(MappedClasses.DL, "value", "nutrition");
-        this.B(MappedClasses.DL, "saturation", "saturationModifier");
+        this.B(MappedClasses.ITEM_FOOD, "value", "nutrition");
+        this.B(MappedClasses.ITEM_FOOD, "saturation", "saturationModifier");
     }
 
     protected void x() {
@@ -61,7 +60,7 @@ extends MemberNameRemapTable {
     }
 
     protected void Qa() {
-        this.t(MappedClasses.uj, "getCachedEntity", "getOrCreateDisplayEntity");
+        this.t(MappedClasses.MOB_SPAWNER_LOGIC, "getCachedEntity", "getOrCreateDisplayEntity");
     }
 
     protected void QK() {
@@ -129,7 +128,7 @@ extends MemberNameRemapTable {
     }
 
     protected void S() {
-        this.t(MappedClasses.qG, "setAllVisible", "setAll");
+        this.t(MappedClasses.SET_VISIBILITY, "setAllVisible", "setAll");
     }
 
     protected void QW() {
@@ -504,8 +503,8 @@ extends MemberNameRemapTable {
     }
 
     protected void uB() {
-        this.t(MappedClasses.Y7, "computeVisibility", "resolve");
-        this.t(MappedClasses.Y7, "setOpaqueCube", "setOpaque");
+        this.t(MappedClasses.VIS_GRAPH, "computeVisibility", "resolve");
+        this.t(MappedClasses.VIS_GRAPH, "setOpaqueCube", "setOpaque");
     }
 
     protected void uy() {
@@ -812,7 +811,7 @@ extends MemberNameRemapTable {
     }
 
     protected void f() {
-        this.t(MappedClasses.uO, "getSpawnerBaseLogic", "getSpawner");
+        this.t(MappedClasses.MOB_SPAWNER_TILE_ENTITY, "getSpawnerBaseLogic", "getSpawner");
     }
 
     protected void Qz() {
@@ -927,7 +926,7 @@ extends MemberNameRemapTable {
     protected void ue() {
         this.t(MappedClasses.lf, "down", "below");
         this.t(MappedClasses.lf, "up", "above");
-        if (Vape.INSTANCE.isVanillaMinecraftPresent() || !Vape.INSTANCE.isNativeAvailable()) {
+        if (Vape.INSTANCE.isVanillaMinecraftPresent() || !Vape.INSTANCE.isForgeAbsent()) {
             this.t(MappedClasses.lf, "offset", "relative");
         } else {
             this.t(MappedClasses.lf, "offset", "a");
@@ -964,7 +963,7 @@ extends MemberNameRemapTable {
     }
 
     protected void QS() {
-        this.b(MappedClasses.u4, "getSprite", "func_215288_a", Vape.INSTANCE.isNativeAvailable());
+        this.b(MappedClasses.u4, "getSprite", "func_215288_a", Vape.INSTANCE.isForgeAbsent());
     }
 
     protected void s() {

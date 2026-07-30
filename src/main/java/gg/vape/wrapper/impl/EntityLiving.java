@@ -39,7 +39,7 @@ extends EntityLivingBase {
                 for (Object e : InventoryListBridge.u().p()) {
                     ItemStack itemStack;
                     EquipmentSlotSet equipmentSlotSet = new EquipmentSlotSet(e);
-                    if (!equipmentSlotSet.y().equals(MappedFieldSingletonWrapper.T()) || !(itemStack = new ItemStack(MEntityLiving.L(EntityLiving.vapeInstance.getMappings().W, this.I, equipmentSlotSet.getObject()))).isNotNull() || itemStack.r()) continue;
+                    if (!equipmentSlotSet.y().equals(MappedFieldSingletonWrapper.humanoidArmor()) || !(itemStack = new ItemStack(MEntityLiving.L(EntityLiving.vapeInstance.getMappings().W, this.I, equipmentSlotSet.getObject()))).isNotNull() || itemStack.r()) continue;
                     arrayList.add(itemStack);
                 }
             }

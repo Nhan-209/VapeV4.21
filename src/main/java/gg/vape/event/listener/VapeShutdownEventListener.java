@@ -16,7 +16,7 @@ implements EventListener {
         UseEntityPacketBridge useEntityPacketBridge;
         int entityId;
         Packet packet = eventPacketSend.getPacket();
-        if (UseEntityPacketBridge.h(packet) && ClientSettings.isReservedEntityId(entityId = (useEntityPacketBridge = new UseEntityPacketBridge(packet.getObject())).w())) {
+        if (UseEntityPacketBridge.isUseEntityPacket(packet) && ClientSettings.isReservedEntityId(entityId = (useEntityPacketBridge = new UseEntityPacketBridge(packet.getObject())).getEntityId())) {
             eventPacketSend.setCancelled(true);
         }
     }

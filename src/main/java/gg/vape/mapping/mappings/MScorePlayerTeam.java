@@ -82,7 +82,7 @@ extends Mapping {
             } else {
                 Class<String> clazz = String.class;
                 boolean bl = true;
-                String string = "namePrefixSPT";
+                String string = ForgeVersion.c() >= 23 ? "prefix" : "namePrefixSPT";
                 MScorePlayerTeam mScorePlayerTeam = this;
                 this.q = mScorePlayerTeam.J(string, bl, clazz);
             }
@@ -118,7 +118,7 @@ extends Mapping {
         }
         Class<String> clazz5 = String.class;
         boolean bl5 = true;
-        String string5 = "namePrefixSPT";
+        String string5 = ForgeVersion.c() >= 23 ? "prefix" : "namePrefixSPT";
         MScorePlayerTeam mScorePlayerTeam5 = this;
         this.q = this.J(string5, bl5, clazz5);
         if (ForgeVersion.MC_1_16_5.d()) {

@@ -51,7 +51,7 @@ public class Wrapper {
         Wrapper.setObfuscationState(null);
         nullInstanceText = "Null instance";
         vapeInstance = Vape.INSTANCE;
-        isNativeAvailable = vapeInstance.isNativeAvailable();
+        isNativeAvailable = vapeInstance.isForgeAbsent();
         nativeDisabled = false;
         wrapperIdCache = new HashMap<String, Integer>();
     }

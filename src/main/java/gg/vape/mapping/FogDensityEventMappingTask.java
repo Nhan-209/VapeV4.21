@@ -12,11 +12,11 @@ extends JavassistMappingTask {
 
     @Override
     public void transform() {
-        CtBehavior ctBehavior = this.F(Vape.INSTANCE.getMappings().V.H);
+        CtBehavior ctBehavior = this.F(Vape.INSTANCE.getMappings().fogRenderer.setupFogMethod);
         this.H(ctBehavior, EventFogDensity.class, c, "", "");
     }
 
     public FogDensityEventMappingTask() {
-        super(MappedClasses.Dq);
+        super(MappedClasses.FOG_RENDERER);
     }
 }

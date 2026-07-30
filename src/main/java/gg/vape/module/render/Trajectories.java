@@ -188,17 +188,17 @@ extends Mod {
         double motionZ = MathUtil.cos(yawRadians) * MathUtil.cos(pitchRadians) * initialSpeed;
         int useTicks = 40;
         if (crossbow && !this.ghostBowCharge.getEffectiveValue().booleanValue()
-                && !TrajectoriesItemBridge.P(heldStack)) {
+                && !TrajectoriesItemBridge.isCharged(heldStack)) {
             return;
         }
         if (!(this.ghostBowCharge.getEffectiveValue().booleanValue()
                 || player.j$src$I$1in0s92() > 0
                 || !bowProjectile
-                || crossbow && TrajectoriesItemBridge.P(heldStack))) {
+                || crossbow && TrajectoriesItemBridge.isCharged(heldStack))) {
             return;
         }
         if (player.j$src$I$1in0s92() > 0 && bowProjectile
-                || crossbow && TrajectoriesItemBridge.P(heldStack)) {
+                || crossbow && TrajectoriesItemBridge.isCharged(heldStack)) {
             useTicks = player.j$src$I$1in0s92();
         }
         int chargeTicks = 72000 - useTicks;
@@ -406,7 +406,7 @@ extends Mod {
     @Nullable
     private ItemStack findHeldProjectile(EntityPlayerSP entityPlayerSP) {
         if (ForgeVersion.MC_1_12_2.d()) {
-            List<ItemStack> list = Arrays.asList(entityPlayerSP.i(EnumHand.M()), entityPlayerSP.i(EnumHand.p()));
+            List<ItemStack> list = Arrays.asList(entityPlayerSP.i(EnumHand.mainHand()), entityPlayerSP.i(EnumHand.offHand()));
             for (ItemStack itemStack : list) {
                 IProjectile iProjectile;
                 Item item;

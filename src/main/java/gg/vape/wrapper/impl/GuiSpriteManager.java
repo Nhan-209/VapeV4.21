@@ -1,16 +1,14 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MGuiSpriteManager;
 import gg.vape.wrapper.Wrapper;
 
 public class GuiSpriteManager
 extends Wrapper {
-    public TextureAtlasSprite t(ResourceLocation jx_22) {
-        return new TextureAtlasSprite(MGuiSpriteManager.F(GuiSpriteManager.vapeInstance.getMappingsMapperCompat().h4, this.I, jx_22.getObject()));
+    public TextureAtlasSprite getSprite(ResourceLocation resourceLocation) {
+        return new TextureAtlasSprite(GuiSpriteManager.vapeInstance.getMappingsMapperCompat().h4.getSprite(this.I, resourceLocation.getObject()));
     }
 
-    public GuiSpriteManager(Object object) {
-        super(object);
+    public GuiSpriteManager(Object handle) {
+        super(handle);
     }
 }
-

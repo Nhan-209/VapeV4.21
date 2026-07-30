@@ -9,73 +9,70 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MVisGraph
 extends Mapping {
-    private static String S;
-    public MappingMethod V;
-    public MappingMethod o;
+    private static String controlFlowMarker;
+    public MappingMethod computeVisibilityMethod;
+    public MappingMethod setOpaqueCubeMethod;
 
-    public static String r() {
-        return S;
+    public static String getVisGraphControlFlowMarker() {
+        return controlFlowMarker;
     }
 
-    public static void b(String string) {
-        S = string;
+    public static void setVisGraphControlFlowMarker(String marker) {
+        controlFlowMarker = marker;
     }
 
 
     public MVisGraph() {
-        this(MVisGraph.r());
+        this(MVisGraph.getVisGraphControlFlowMarker());
     }
 
-    private MVisGraph(String string) {
-        super(MappedClasses.Y7);
-        if (string != null) {
-            Class[] classArray = new Class[]{};
-            Class clazz = MappedClasses.qG;
-            boolean bl = true;
-            String string2 = "computeVisibility";
-            MVisGraph mVisGraph = this;
-            this.V = mVisGraph.Y(string2, bl, clazz, classArray);
+    private MVisGraph(String controlFlowMarker) {
+        super(MappedClasses.VIS_GRAPH);
+        if (controlFlowMarker != null) {
+            Class[] parameterTypes = new Class[]{};
+            Class returnType = MappedClasses.SET_VISIBILITY;
+            boolean remap = true;
+            String methodName = "computeVisibility";
+            MVisGraph mappings = this;
+            this.computeVisibilityMethod = mappings.Y(methodName, remap, returnType, parameterTypes);
             if (ForgeVersion.MC_1_12_2.d()) {
-                Class[] classArray2 = new Class[]{MappedClasses.lf};
-                Class<Void> clazz2 = Void.TYPE;
-                boolean bl2 = true;
-                String string3 = "setOpaqueCube";
-                MVisGraph mVisGraph2 = this;
-                this.o = this.Y(string3, bl2, clazz2, classArray2);
+                Class[] opaqueCubeParameterTypes = new Class[]{MappedClasses.lf};
+                Class<Void> opaqueCubeReturnType = Void.TYPE;
+                boolean remapOpaqueCubeMethod = true;
+                String opaqueCubeMethodName = "setOpaqueCube";
+                this.setOpaqueCubeMethod = this.Y(opaqueCubeMethodName, remapOpaqueCubeMethod, opaqueCubeReturnType, opaqueCubeParameterTypes);
             } else if (ForgeVersion.MC_1_7_10.Y()) {
-                Class[] classArray3 = new Class[]{MappedClasses.lf};
-                Class<Void> clazz3 = Void.TYPE;
-                boolean bl3 = Wrapper.isNativeAvailable;
-                String string4 = "func_178606_a";
-                MVisGraph mVisGraph3 = this;
-                this.o = this.Y(string4, bl3, clazz3, classArray3);
+                Class[] opaqueCubeParameterTypes = new Class[]{MappedClasses.lf};
+                Class<Void> opaqueCubeReturnType = Void.TYPE;
+                boolean remapOpaqueCubeMethod = Wrapper.isNativeAvailable;
+                String opaqueCubeMethodName = "func_178606_a";
+                this.setOpaqueCubeMethod = this.Y(opaqueCubeMethodName, remapOpaqueCubeMethod, opaqueCubeReturnType, opaqueCubeParameterTypes);
             }
             if (GuiComponent.getLegacyComponentState() == null) {
-                MVisGraph.b("K5b3Uc");
+                MVisGraph.setVisGraphControlFlowMarker("K5b3Uc");
             }
             return;
         }
-        Class[] classArray = new Class[]{};
-        Class clazz = MappedClasses.qG;
-        boolean bl = true;
-        String string5 = "computeVisibility";
-        MVisGraph mVisGraph = this;
-        this.V = mVisGraph.Y(string5, bl, clazz, classArray);
+        Class[] parameterTypes = new Class[]{};
+        Class returnType = MappedClasses.SET_VISIBILITY;
+        boolean remap = true;
+        String methodName = "computeVisibility";
+        MVisGraph mappings = this;
+        this.computeVisibilityMethod = mappings.Y(methodName, remap, returnType, parameterTypes);
         if (ForgeVersion.MC_1_12_2.d()) {
-            Class[] classArray4 = new Class[]{MappedClasses.lf};
-            Class<Void> clazz4 = Void.TYPE;
-            boolean bl4 = Wrapper.isNativeAvailable;
-            String string6 = "func_178606_a";
-            MVisGraph mVisGraph4 = this;
-            this.o = this.Y(string6, bl4, clazz4, classArray4);
+            Class[] opaqueCubeParameterTypes = new Class[]{MappedClasses.lf};
+            Class<Void> opaqueCubeReturnType = Void.TYPE;
+            boolean remapOpaqueCubeMethod = Wrapper.isNativeAvailable;
+            String opaqueCubeMethodName = "func_178606_a";
+            this.setOpaqueCubeMethod = this.Y(opaqueCubeMethodName, remapOpaqueCubeMethod, opaqueCubeReturnType, opaqueCubeParameterTypes);
         }
         if (GuiComponent.getLegacyComponentState() == null) {
-            MVisGraph.b("K5b3Uc");
+            MVisGraph.setVisGraphControlFlowMarker("K5b3Uc");
         }
     }
 
     static {
-        MVisGraph.b("qWXvyc");
+        MVisGraph.setVisGraphControlFlowMarker("qWXvyc");
     }
 }
 

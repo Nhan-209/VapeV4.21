@@ -4,30 +4,29 @@ import gg.vape.wrapper.impl.Vec3i;
 
 public class InlineVec3i
 extends Vec3i {
-    int y;
-    int a;
-    int L;
+    private final int x;
+    private final int y;
+    private final int z;
 
     @Override
-    public int o() {
-        return this.L;
-    }
-
-    @Override
-    public int P() {
+    public int getY() {
         return this.y;
     }
 
     @Override
-    public int d() {
-        return this.a;
+    public int getX() {
+        return this.x;
     }
 
-    public InlineVec3i(int n, int n2, int n3) {
+    @Override
+    public int getZ() {
+        return this.z;
+    }
+
+    public InlineVec3i(int x, int y, int z) {
         super(null);
-        this.y = n;
-        this.L = n2;
-        this.a = n3;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 }
-

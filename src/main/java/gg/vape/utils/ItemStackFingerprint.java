@@ -75,7 +75,7 @@ public class ItemStackFingerprint {
                 if (itemStack2.isNull()) continue;
                 itemStackArray[i + 1] = itemStack2;
             }
-            ItemStack itemStack3 = entityPlayer.i(EnumHand.p());
+            ItemStack itemStack3 = entityPlayer.i(EnumHand.offHand());
             if (itemStack3 != null && itemStack3.isNotNull()) {
                 itemStackArray[5] = itemStack3;
             }
@@ -131,4 +131,3 @@ public class ItemStackFingerprint {
         return ItemStackFingerprint.t(ItemStackFingerprint.T$src$ALgg_vape_wrapper_impl_ItemStack_$f6ukg1(entityPlayer));
     }
 }
-

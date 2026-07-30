@@ -140,7 +140,7 @@ extends HudModule {
         }
 
         BlockReaderBridge blockReader = new BlockReaderBridge(state);
-        EntityFishHook shape = blockReader.Z(
+        EntityFishHook shape = blockReader.getShape(
                 Minecraft.m$src$Lgg_vape_wrapper_impl_EntityRenderer_$13begmf()
                         .l().x$src$Lgg_vape_wrapper_impl_BlockReader_$120g8sh(),
                 position);

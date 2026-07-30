@@ -9,61 +9,33 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MAbstractBlockState
 extends Mapping {
-    private MappingMethod B;
-    private MappingMethod d;
-
-    private boolean j(Object object, Object object2, Object object3) {
-        return this.d.invokeBoolean(object, object2, object3);
-    }
+    private MappingMethod getShapeMethod;
+    private MappingMethod isSuffocatingMethod;
 
     public MAbstractBlockState() {
         this(BlockData.W());
     }
 
-    private MAbstractBlockState(String[] stringArray) {
+    private MAbstractBlockState(String[] controlFlowState) {
         super(MappedClasses.Fj);
-        if (stringArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_20_6.d()) {
-                Class[] classArray = new Class[]{MappedClasses.zJ, MappedClasses.lf};
-                Class clazz = MappedClasses.la;
-                boolean bl = true;
-                String string = "getShape";
-                MAbstractBlockState mAbstractBlockState = this;
-                this.B = mAbstractBlockState.Y(string, bl, clazz, classArray);
+                this.getShapeMethod = this.Y("getShape", true, MappedClasses.la, new Class[]{MappedClasses.zJ, MappedClasses.lf});
             } else {
-                Class[] classArray = new Class[]{MappedClasses.zJ, MappedClasses.lf};
-                Class clazz = MappedClasses.la;
-                boolean bl = Wrapper.isNativeAvailable;
-                String string = "func_196954_c";
-                MAbstractBlockState mAbstractBlockState = this;
-                this.B = mAbstractBlockState.Y(string, bl, clazz, classArray);
-                Class[] classArray2 = new Class[]{MappedClasses.zJ, MappedClasses.lf};
-                Class<Boolean> clazz2 = Boolean.TYPE;
-                boolean bl2 = Wrapper.isNativeAvailable;
-                String string2 = "func_229980_m_";
-                MAbstractBlockState mAbstractBlockState2 = this;
-                this.d = this.Y(string2, bl2, clazz2, classArray2);
+                this.getShapeMethod = this.Y("func_196954_c", Wrapper.isNativeAvailable, MappedClasses.la, new Class[]{MappedClasses.zJ, MappedClasses.lf});
+                this.isSuffocatingMethod = this.Y("func_229980_m_", Wrapper.isNativeAvailable, Boolean.TYPE, new Class[]{MappedClasses.zJ, MappedClasses.lf});
             }
             return;
         }
-        Class[] classArray = new Class[]{MappedClasses.zJ, MappedClasses.lf};
-        Class<Boolean> clazz = Boolean.TYPE;
-        boolean bl = Wrapper.isNativeAvailable;
-        String string = "func_229980_m_";
-        MAbstractBlockState mAbstractBlockState = this;
-        this.d = mAbstractBlockState.Y(string, bl, clazz, classArray); 
+        this.isSuffocatingMethod = this.Y("func_229980_m_", Wrapper.isNativeAvailable, Boolean.TYPE, new Class[]{MappedClasses.zJ, MappedClasses.lf});
     }
 
-    public static Object i(MAbstractBlockState mAbstractBlockState, Object object, Object object2, Object object3) {
-        return mAbstractBlockState.I(object, object2, object3);
+    public Object getShape(Object blockState, Object blockReader, Object blockPosition) {
+        return this.getShapeMethod.invokeObject(blockState, blockReader, blockPosition);
     }
 
-    private Object I(Object object, Object object2, Object object3) {
-        return this.B.invokeObject(object, object2, object3);
-    }
-
-    public static boolean R(MAbstractBlockState mAbstractBlockState, Object object, Object object2, Object object3) {
-        return mAbstractBlockState.j(object, object2, object3);
+    public boolean isSuffocating(Object blockState, Object blockReader, Object blockPosition) {
+        return this.isSuffocatingMethod.invokeBoolean(blockState, blockReader, blockPosition);
     }
 
 }

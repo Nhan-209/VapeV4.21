@@ -6,25 +6,15 @@ import gg.vape.mapping.MappingMethod;
 
 public class MVoxelShapeBridge
 extends Mapping {
-    private static final String b = "bufferSource";
-    private MappingMethod G;
-
-    private Object j(Object object) {
-        return this.G.invokeObject(object, new Object[0]);
-    }
+    private final MappingMethod bufferSourceMethod;
 
     public MVoxelShapeBridge() {
         super(MappedClasses.ZL);
-        Class[] classArray = new Class[]{};
-        Class clazz = MappedClasses.lp;
-        boolean bl = true;
-        String string = b;
-        MVoxelShapeBridge mVoxelShapeBridge = this;
-        this.G = this.Y(string, bl, clazz, classArray);
+        this.bufferSourceMethod = this.Y("bufferSource", true, MappedClasses.lp, new Class[]{});
     }
 
-    public static Object C(MVoxelShapeBridge mVoxelShapeBridge, Object object) {
-        return mVoxelShapeBridge.j(object);
+    public Object getBufferSource(Object renderer) {
+        return this.bufferSourceMethod.invokeObject(renderer, new Object[0]);
     }
 }
 

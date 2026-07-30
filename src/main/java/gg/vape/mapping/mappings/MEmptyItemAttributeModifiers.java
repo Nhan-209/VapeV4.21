@@ -6,25 +6,20 @@ import gg.vape.mapping.MappingMethod;
 
 public class MEmptyItemAttributeModifiers
 extends Mapping {
-    private final MappingMethod c;
-    private static final String b = "create";
+    private static final String CREATE_METHOD_NAME = "create";
+    private final MappingMethod createMethod;
 
-    public static Object I(MEmptyItemAttributeModifiers mEmptyItemAttributeModifiers) {
-        return mEmptyItemAttributeModifiers.z();
+    public static Object create(MEmptyItemAttributeModifiers mapping) {
+        return mapping.invokeCreate();
     }
 
-    private Object z() {
-        return this.c.invokeObject(null, new Object[0]);
+    private Object invokeCreate() {
+        return this.createMethod.invokeObject(null, new Object[0]);
     }
 
     public MEmptyItemAttributeModifiers() {
         super(MappedClasses.V1);
-        Class[] classArray = new Class[]{};
-        Class clazz = MappedClasses.V1;
-        boolean bl = false;
-        String string = b;
-        MEmptyItemAttributeModifiers mEmptyItemAttributeModifiers = this;
-        this.c = this.registerStaticMethod(string, bl, clazz, classArray);
+        this.createMethod = this.registerStaticMethod(CREATE_METHOD_NAME, false, MappedClasses.V1, new Class[]{});
     }
 }
 

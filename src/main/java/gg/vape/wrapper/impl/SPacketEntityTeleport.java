@@ -2,32 +2,31 @@ package gg.vape.wrapper.impl;
 
 public class SPacketEntityTeleport
 extends Packet {
-    public SPacketEntityTeleport(Object object) {
-        super(object);
+    public SPacketEntityTeleport(Object handle) {
+        super(handle);
     }
 
-    public int d() {
-        return SPacketEntityTeleport.vapeInstance.getMappings().qH.a(this.I);
+    public int getZ() {
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.getZ(this.I);
     }
 
-    public byte Z() {
-        return SPacketEntityTeleport.vapeInstance.getMappings().qH.s(this.I);
+    public byte getYaw() {
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.getYaw(this.I);
     }
 
-    public byte x() {
-        return SPacketEntityTeleport.vapeInstance.getMappings().qH.v(this.I);
+    public byte getPitch() {
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.getPitch(this.I);
     }
 
-    public int I() {
-        return SPacketEntityTeleport.vapeInstance.getMappings().qH.z(this.I);
+    public int getY() {
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.getY(this.I);
     }
 
-    public int u() {
-        return SPacketEntityTeleport.vapeInstance.getMappings().qH.O(this.I);
+    public int getEntityId() {
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.getEntityId(this.I);
     }
 
-    public int m$src$I$1g30xfs() {
-        return SPacketEntityTeleport.vapeInstance.getMappings().qH.J(this.I);
+    public int getX() {
+        return SPacketEntityTeleport.vapeInstance.getMappings().qH.getX(this.I);
     }
 }
-

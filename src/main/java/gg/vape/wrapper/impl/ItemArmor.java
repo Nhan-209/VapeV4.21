@@ -43,7 +43,7 @@ extends Item {
 
     public int b$src$I$1fmozr4() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            EntityEquipmentSlot entityEquipmentSlot = new EntityEquipmentSlotHolder(MItemArmor.D(ItemArmor.vapeInstance.getMappings().DZ, this.I)).a();
+            EntityEquipmentSlot entityEquipmentSlot = new EntityEquipmentSlotHolder(MItemArmor.D(ItemArmor.vapeInstance.getMappings().DZ, this.I)).getSlot();
             return entityEquipmentSlot.W();
         }
         if (ForgeVersion.MC_1_12_2.d()) {
@@ -53,4 +53,3 @@ extends Item {
         return MItemArmor.F(ItemArmor.vapeInstance.getMappings().DZ, this.I);
     }
 }
-

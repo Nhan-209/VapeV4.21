@@ -9,17 +9,17 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MBlockModelRenderer
 extends Mapping {
-    public MappingMethod P;
-    public MappingMethod y;
+    public MappingMethod renderModelAmbientOcclusionMethod;
+    public MappingMethod renderModelMethod;
 
-    public boolean a(Object object, Object object2, Object object3, Object object4, Object object5, Object object6, Object object7, boolean bl, long l) {
+    public boolean renderModelAmbientOcclusion(Object renderer, Object blockAccess, Object model, Object block, Object blockState, Object blockPosition, Object buffer, boolean checkSides, long positionSeed) {
         if (ForgeVersion.MC_1_12_2.d()) {
-            return this.P.invokeBoolean(object, object2, object3, object5, object6, object7, bl, l);
+            return this.renderModelAmbientOcclusionMethod.invokeBoolean(renderer, blockAccess, model, blockState, blockPosition, buffer, checkSides, positionSeed);
         }
         if (Wrapper.isNativeAvailable) {
-            return this.P.invokeBoolean(object, object2, object3, object4, object6, object7, bl);
+            return this.renderModelAmbientOcclusionMethod.invokeBoolean(renderer, blockAccess, model, block, blockPosition, buffer, checkSides);
         }
-        return this.P.invokeBoolean(object, object2, object3, object4, object6, object7, bl);
+        return this.renderModelAmbientOcclusionMethod.invokeBoolean(renderer, blockAccess, model, block, blockPosition, buffer, checkSides);
     }
 
 
@@ -27,54 +27,23 @@ extends Mapping {
         this(MEntityRenderer.X());
     }
 
-    private MBlockModelRenderer(int n) {
+    private MBlockModelRenderer(int controlFlowState) {
         super(MappedClasses.VU);
-        int n2 = n;
         if (ForgeVersion.MC_1_12_2.d()) {
             if (ForgeVersion.MC_1_16_5.v()) {
-                Class[] classArray = new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Vv, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE, Long.TYPE};
-                Class<Boolean> clazz = Boolean.TYPE;
-                boolean bl = Wrapper.isNativeAvailable;
-                String string = "func_187493_a";
-                MBlockModelRenderer mBlockModelRenderer = this;
-                this.y = mBlockModelRenderer.Y(string, bl, clazz, classArray);
-                Class[] classArray2 = new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Vv, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE, Long.TYPE};
-                Class<Boolean> clazz2 = Boolean.TYPE;
-                boolean bl2 = Wrapper.isNativeAvailable;
-                String string2 = "func_187498_b";
-                MBlockModelRenderer mBlockModelRenderer2 = this;
-                this.P = this.Y(string2, bl2, clazz2, classArray2);
+                this.renderModelMethod = this.Y("func_187493_a", Wrapper.isNativeAvailable, Boolean.TYPE, new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Vv, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE, Long.TYPE});
+                this.renderModelAmbientOcclusionMethod = this.Y("func_187498_b", Wrapper.isNativeAvailable, Boolean.TYPE, new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Vv, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE, Long.TYPE});
             }
         } else {
             if (Vape.INSTANCE.isVanillaMinecraftPresent()) {
-                Class[] classArray = new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Vv, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE};
-                Class<Boolean> clazz = Boolean.TYPE;
-                boolean bl = true;
-                String string = "renderModel";
-                MBlockModelRenderer mBlockModelRenderer = this;
-                this.y = mBlockModelRenderer.Y(string, bl, clazz, classArray);
+                this.renderModelMethod = this.Y("renderModel", true, Boolean.TYPE, new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Vv, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE});
             } else {
-                Class[] classArray = new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Vv, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE};
-                Class<Boolean> clazz = Boolean.TYPE;
-                boolean bl = Wrapper.isNativeAvailable;
-                String string = "func_178267_a";
-                MBlockModelRenderer mBlockModelRenderer = this;
-                this.y = mBlockModelRenderer.Y(string, bl, clazz, classArray);
+                this.renderModelMethod = this.Y("func_178267_a", Wrapper.isNativeAvailable, Boolean.TYPE, new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Vv, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE});
             }
             if (Wrapper.isNativeAvailable && !Vape.INSTANCE.isVanillaMinecraftPresent()) {
-                Class[] classArray = new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Zk, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE};
-                Class<Boolean> clazz = Boolean.TYPE;
-                boolean bl = false;
-                String string = "a";
-                MBlockModelRenderer mBlockModelRenderer = this;
-                this.P = mBlockModelRenderer.Y(string, bl, clazz, classArray);
+                this.renderModelAmbientOcclusionMethod = this.Y("a", false, Boolean.TYPE, new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Zk, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE});
             } else {
-                Class[] classArray = new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Zk, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE};
-                Class<Boolean> clazz = Boolean.TYPE;
-                boolean bl = true;
-                String string = "renderModelAmbientOcclusion";
-                MBlockModelRenderer mBlockModelRenderer = this;
-                this.P = mBlockModelRenderer.Y(string, bl, clazz, classArray); 
+                this.renderModelAmbientOcclusionMethod = this.Y("renderModelAmbientOcclusion", true, Boolean.TYPE, new Class[]{MappedClasses.zR, MappedClasses.lc, MappedClasses.Zk, MappedClasses.lf, MappedClasses.lX, Boolean.TYPE});
             }
         }
     }

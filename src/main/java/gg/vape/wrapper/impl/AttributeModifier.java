@@ -7,12 +7,12 @@ import java.util.UUID;
 
 public class AttributeModifier
 extends Wrapper {
-    public ResourceLocation a() {
-        return new ResourceLocation(MAttributeModifier.T(AttributeModifier.vapeInstance.getMappings().hv, this.I));
+    public ResourceLocation getResourceLocation() {
+        return new ResourceLocation(MAttributeModifier.getResourceLocation(AttributeModifier.vapeInstance.getMappings().hv, this.I));
     }
 
-    public AttributeModifier(Object object) {
-        super(object);
+    public AttributeModifier(Object wrappedObject) {
+        super(wrappedObject);
     }
 
     public double getAmount() {
@@ -20,7 +20,6 @@ extends Wrapper {
     }
 
     public UUID getId() {
-        return MAttributeModifier.getID(AttributeModifier.vapeInstance.getMappings().hv, this.I);
+        return MAttributeModifier.getUuid(AttributeModifier.vapeInstance.getMappings().hv, this.I);
     }
 }
-

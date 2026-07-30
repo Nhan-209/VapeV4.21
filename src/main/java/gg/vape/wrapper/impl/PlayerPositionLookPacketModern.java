@@ -4,86 +4,85 @@ import java.util.Set;
 
 public class PlayerPositionLookPacketModern
 extends Packet {
-    public PositionMoveRotation B$src$Lgg_vape_wrapper_impl_PositionMoveRotation_$14trjiv() {
-        return new PositionMoveRotation(PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.j(this.I));
+    public PositionMoveRotation getChange() {
+        return new PositionMoveRotation(PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.getChange(this.I));
     }
 
-    public Set G() {
-        return (Set)PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.B(this.I);
+    public Set getRelatives() {
+        return (Set)PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.getRelatives(this.I);
     }
 
-    public void z(float f) {
+    public void setPitch(float pitch) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation positionMoveRotation = this.B$src$Lgg_vape_wrapper_impl_PositionMoveRotation_$14trjiv();
-            positionMoveRotation.y(f);
+            PositionMoveRotation change = this.getChange();
+            change.setPitch(pitch);
             return;
         }
-        PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.o(this.I, f);
+        PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.setPitch(this.I, pitch);
     }
 
-    public float M() {
+    public float getPitch() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation positionMoveRotation = this.B$src$Lgg_vape_wrapper_impl_PositionMoveRotation_$14trjiv();
-            return positionMoveRotation.t();
+            PositionMoveRotation change = this.getChange();
+            return change.getPitch();
         }
-        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.d(this.I);
+        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.getPitch(this.I);
     }
 
-    public Set W() {
+    public Set getRelativeFlags() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            return this.G();
+            return this.getRelatives();
         }
-        return (Set)PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.w(this.I);
+        return (Set)PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.getRelativeFlags(this.I);
     }
 
-    public double H() {
+    public double getY() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation positionMoveRotation = this.B$src$Lgg_vape_wrapper_impl_PositionMoveRotation_$14trjiv();
-            return positionMoveRotation.a().getY();
+            PositionMoveRotation change = this.getChange();
+            return change.getPosition().getY();
         }
-        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.O(this.I);
+        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.getY(this.I);
     }
 
-    public double S() {
+    public double getX() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation positionMoveRotation = this.B$src$Lgg_vape_wrapper_impl_PositionMoveRotation_$14trjiv();
-            return positionMoveRotation.a().getX();
+            PositionMoveRotation change = this.getChange();
+            return change.getPosition().getX();
         }
-        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.e(this.I);
+        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.getX(this.I);
     }
 
-    public PlayerPositionLookPacketModern(Object object) {
-        super(object);
+    public PlayerPositionLookPacketModern(Object handle) {
+        super(handle);
     }
 
-    public float f() {
+    public float getYaw() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation positionMoveRotation = this.B$src$Lgg_vape_wrapper_impl_PositionMoveRotation_$14trjiv();
-            return positionMoveRotation.b();
+            PositionMoveRotation change = this.getChange();
+            return change.getYaw();
         }
-        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.g(this.I);
+        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.getYaw(this.I);
     }
 
-
-    public void r(float f) {
+    public void setYaw(float yaw) {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation positionMoveRotation = this.B$src$Lgg_vape_wrapper_impl_PositionMoveRotation_$14trjiv();
-            positionMoveRotation.V(f);
+            PositionMoveRotation change = this.getChange();
+            change.setYaw(yaw);
             return;
         }
-        PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.F(this.I, f);
+        PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.setYaw(this.I, yaw);
     }
 
-    public int B() {
-        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.n(this.I);
+    public int getTeleportId() {
+        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.getTeleportId(this.I);
     }
 
-    public double e() {
+    public double getZ() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation positionMoveRotation = this.B$src$Lgg_vape_wrapper_impl_PositionMoveRotation_$14trjiv();
-            return positionMoveRotation.a().getZ();
+            PositionMoveRotation change = this.getChange();
+            return change.getPosition().getZ();
         }
-        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.Q(this.I);
+        return PlayerPositionLookPacketModern.vapeInstance.getMappings().Ry.getZ(this.I);
     }
 }
 

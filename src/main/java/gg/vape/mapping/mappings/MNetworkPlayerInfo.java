@@ -8,34 +8,24 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MNetworkPlayerInfo
 extends Mapping {
-    private MappingField I;
-    private MappingField j;
+    private final MappingField entityIdField;
+    private final MappingField valuesField;
 
-
-    public int s(Object object) {
-        return this.I.getInt(object);
+    public int getEntityId(Object packet) {
+        return this.entityIdField.getInt(packet);
     }
 
     public MNetworkPlayerInfo() {
         super(MappedClasses.ly);
-        Class<Integer> clazz = Integer.TYPE;
-        boolean bl = true;
-        String string = "id";
-        MNetworkPlayerInfo mNetworkPlayerInfo = this;
-        this.I = this.J(string, bl, clazz);
-        Class clazz2 = MappedClasses.Dd;
-        boolean bl2 = true;
-        String string2 = "values";
-        MNetworkPlayerInfo mNetworkPlayerInfo2 = this;
-        this.j = this.J(string2, bl2, clazz2);
-        String[] stringArray = MS08PacketPlayerPosLook.c();
+        this.entityIdField = this.J("id", true, Integer.TYPE);
+        this.valuesField = this.J("values", true, MappedClasses.Dd);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MS08PacketPlayerPosLook.G(new String[5]);
+            MS08PacketPlayerPosLook.setMappingControlFlowState(new String[5]);
         }
     }
 
-    public Object C(Object object) {
-        return this.j.getObject(object);
+    public Object getValues(Object packet) {
+        return this.valuesField.getObject(packet);
     }
 }
 

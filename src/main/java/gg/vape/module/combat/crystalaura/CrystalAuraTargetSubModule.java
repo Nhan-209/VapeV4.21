@@ -111,7 +111,7 @@ extends SubModule<CrystalAura> {
         int blockZ = baseBlock.G();
         AxisAlignedBB searchBox = AxisAlignedBB.create(blockX, blockY + 1, blockZ, (double)blockX + 1.0, (double)blockY + 3.0, (double)blockZ + 1.0);
         ArrayList<Entity> crystals = new ArrayList<Entity>();
-        world.A().p(searchBox, entityObject -> CrystalAuraTargetSubModule.collectCrystals(crystals, entityObject));
+        world.getEntityGetter().forEachEntityInBounds(searchBox, entityObject -> CrystalAuraTargetSubModule.collectCrystals(crystals, entityObject));
         if (!crystals.isEmpty()) {
             return crystals.get(0);
         }
@@ -217,7 +217,7 @@ extends SubModule<CrystalAura> {
             if (crosshairHit.getTypeOfHit().equals(RayTraceResult_type.block())) {
                 BlockPos hitBlock = crosshairHit.getBlockPos();
                 BlockData targetBlock = this.targetObsidian;
-                if (hitBlock.P() == targetBlock.D() && hitBlock.o() == targetBlock.B() && hitBlock.d() == targetBlock.G()) {
+                if (hitBlock.getX() == targetBlock.D() && hitBlock.getY() == targetBlock.B() && hitBlock.getZ() == targetBlock.G()) {
                     KeyBinding attackKey = Minecraft.gameSettings().F();
                     if (attackKey.u() || attackKey.isPressed()) {
                         KeyBinding.setKeyBindState(attackKey, false);
@@ -236,7 +236,7 @@ extends SubModule<CrystalAura> {
         if (position == null) {
             return "null";
         }
-        return position.P() + "," + position.o() + "," + position.d();
+        return position.getX() + "," + position.getY() + "," + position.getZ();
     }
 
     private static void markCollidingEntity(boolean[] collisionFound, Object entityObject) {
@@ -316,8 +316,8 @@ extends SubModule<CrystalAura> {
             if (crosshairHit.getTypeOfHit().equals(RayTraceResult_type.block())) {
                 BlockPos hitBlock = crosshairHit.getBlockPos();
                 int hitSide = crosshairHit.Z();
-                if (hitBlock.P() == this.obsidianSupport.D() && hitBlock.o() == this.obsidianSupport.B()
-                        && hitBlock.d() == this.obsidianSupport.G() && hitSide == this.obsidianFacing.Y()) {
+                if (hitBlock.getX() == this.obsidianSupport.D() && hitBlock.getY() == this.obsidianSupport.B()
+                        && hitBlock.getZ() == this.obsidianSupport.G() && hitSide == this.obsidianFacing.Y()) {
                     KeyBinding attackKey = Minecraft.gameSettings().F();
                     if (attackKey.u() || attackKey.isPressed()) {
                         KeyBinding.setKeyBindState(attackKey, false);
@@ -339,7 +339,7 @@ extends SubModule<CrystalAura> {
         BlockPos hoveredPosition = crosshairHit.getBlockPos();
         if (this.isValidBaseBlock(world, hoveredPosition)) {
             this.crystalSlot = player.V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
-            BlockData baseBlock = new BlockData(hoveredPosition.P(), hoveredPosition.o(), hoveredPosition.d());
+            BlockData baseBlock = new BlockData(hoveredPosition.getX(), hoveredPosition.getY(), hoveredPosition.getZ());
             Entity crystal = this.findCrystalAbove(world, baseBlock);
             this.targetObsidian = baseBlock;
             if (crystal != null) {
@@ -368,7 +368,7 @@ extends SubModule<CrystalAura> {
             return false;
         }
         EnumFacing facing = EnumFacing.T(crosshairHit.Z());
-        BlockData supportBlock = new BlockData(hoveredPosition.P(), hoveredPosition.o(), hoveredPosition.d());
+        BlockData supportBlock = new BlockData(hoveredPosition.getX(), hoveredPosition.getY(), hoveredPosition.getZ());
         BlockData placementTarget = supportBlock.R(facing);
         if (!this.hasCrystalPlacementSpace(world, placementTarget)) {
             this.debug("idle: no room for crystal above obsidian placement");
@@ -397,17 +397,17 @@ extends SubModule<CrystalAura> {
             return;
         }
         BlockPos hoveredPosition = crosshairHit.getBlockPos();
-        boolean hoveringTarget = this.targetObsidian != null && hoveredPosition.P() == this.targetObsidian.D()
-                && hoveredPosition.o() == this.targetObsidian.B() && hoveredPosition.d() == this.targetObsidian.G();
+        boolean hoveringTarget = this.targetObsidian != null && hoveredPosition.getX() == this.targetObsidian.D()
+                && hoveredPosition.getY() == this.targetObsidian.B() && hoveredPosition.getZ() == this.targetObsidian.G();
         boolean hoveringSupport = this.state == CrystalAuraActionState.PLACING_OBSIDIAN && this.obsidianSupport != null
-                && hoveredPosition.P() == this.obsidianSupport.D() && hoveredPosition.o() == this.obsidianSupport.B()
-                && hoveredPosition.d() == this.obsidianSupport.G();
+                && hoveredPosition.getX() == this.obsidianSupport.D() && hoveredPosition.getY() == this.obsidianSupport.B()
+                && hoveredPosition.getZ() == this.obsidianSupport.G();
         if (hoveringTarget || hoveringSupport) {
             return;
         }
         int currentCrystalSlot = this.crystalSlot;
         if (this.isValidBaseBlock(world, hoveredPosition)) {
-            BlockData baseBlock = new BlockData(hoveredPosition.P(), hoveredPosition.o(), hoveredPosition.d());
+            BlockData baseBlock = new BlockData(hoveredPosition.getX(), hoveredPosition.getY(), hoveredPosition.getZ());
             Entity crystal = this.findCrystalAbove(world, baseBlock);
             if (crystal == null && !this.canPlaceCrystalAbove(world, baseBlock)) {
                 return;
@@ -426,7 +426,7 @@ extends SubModule<CrystalAura> {
             return;
         }
         EnumFacing facing = EnumFacing.T(crosshairHit.Z());
-        BlockData supportBlock = new BlockData(hoveredPosition.P(), hoveredPosition.o(), hoveredPosition.d());
+        BlockData supportBlock = new BlockData(hoveredPosition.getX(), hoveredPosition.getY(), hoveredPosition.getZ());
         BlockData placementTarget = supportBlock.R(facing);
         if (!this.hasCrystalPlacementSpace(world, placementTarget)) {
             return;
@@ -532,9 +532,9 @@ extends SubModule<CrystalAura> {
             Packet packet = eventPacketSend.getPacket();
             if (packet.isInstance(MappedClasses.Fa)) {
                 UseEntityPacketBridge useEntityPacket = new UseEntityPacketBridge(packet.getObject());
-                Entity attackedEntity = useEntityPacket.C(world);
+                Entity attackedEntity = useEntityPacket.getEntity(world);
                 boolean attackedCrystal = attackedEntity.isNotNull() && attackedEntity.isInstance(MappedClasses.Ze);
-                if (useEntityPacket.U().equals(CPacketUseEntity.T()) && this.state == CrystalAuraActionState.BREAKING_CRYSTAL && attackedCrystal) {
+                if (useEntityPacket.getAction().equals(CPacketUseEntity.attack()) && this.state == CrystalAuraActionState.BREAKING_CRYSTAL && attackedCrystal) {
                     if (((ModeSelection)this.optimizationMode.getValue()).equals(this.predictMode) && !Minecraft.V()) {
                         this.pendingRemoveEntityId = attackedEntity.S();
                     }
@@ -551,7 +551,7 @@ extends SubModule<CrystalAura> {
         Packet packet = eventPacketSend.getPacket();
         if (packet.isInstance(MappedClasses.Fa)) {
             UseEntityPacketBridge useEntityPacket = new UseEntityPacketBridge(packet.getObject());
-            Entity attackedEntity = useEntityPacket.C(eventPacketSend.getWorld());
+            Entity attackedEntity = useEntityPacket.getEntity(eventPacketSend.getWorld());
             if (this.state == CrystalAuraActionState.BREAKING_CRYSTAL) {
                 if (attackedEntity.isNotNull() && !Minecraft.V()) {
                     this.pendingRemoveEntityId = attackedEntity.S();
@@ -669,7 +669,7 @@ extends SubModule<CrystalAura> {
             float managedPitch = this.rotationManager.getManagedPitch();
             Vec3 hitPoint = ClutchPlacementPathUtils.findBestPlacementHitPoint(player, world, eyePosition, placementTarget, managedYaw, managedPitch);
             if (hitPoint == null) {
-                hitPoint = Vec3.create((double)this.obsidianSupport.D() + 0.5 + (double)this.obsidianFacing.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr().P() * 0.5, (double)this.obsidianSupport.B() + 0.5 + (double)this.obsidianFacing.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr().o() * 0.5, (double)this.obsidianSupport.G() + 0.5 + (double)this.obsidianFacing.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr().d() * 0.5);
+                hitPoint = Vec3.create((double)this.obsidianSupport.D() + 0.5 + (double)this.obsidianFacing.getDirectionVector().getX() * 0.5, (double)this.obsidianSupport.B() + 0.5 + (double)this.obsidianFacing.getDirectionVector().getY() * 0.5, (double)this.obsidianSupport.G() + 0.5 + (double)this.obsidianFacing.getDirectionVector().getZ() * 0.5);
             }
             this.aimAt(eyePosition, hitPoint);
         }
@@ -730,7 +730,7 @@ extends SubModule<CrystalAura> {
         }
         AxisAlignedBB placementBox = AxisAlignedBB.create(baseBlock.D(), baseBlock.B() + 1, baseBlock.G(), (double)baseBlock.D() + 1.0, (double)baseBlock.B() + 3.0, (double)baseBlock.G() + 1.0);
         boolean[] collisionFound = new boolean[]{false};
-        world.A().p(placementBox, entityObject -> CrystalAuraTargetSubModule.markCollidingEntity(collisionFound, entityObject));
+        world.getEntityGetter().forEachEntityInBounds(placementBox, entityObject -> CrystalAuraTargetSubModule.markCollidingEntity(collisionFound, entityObject));
         return !collisionFound[0];
     }
 
@@ -746,7 +746,7 @@ extends SubModule<CrystalAura> {
         if (hitBlock == null) {
             return false;
         }
-        if (hitBlock.P() != baseBlock.D() || hitBlock.o() != baseBlock.B() || hitBlock.d() != baseBlock.G()) {
+        if (hitBlock.getX() != baseBlock.D() || hitBlock.getY() != baseBlock.B() || hitBlock.getZ() != baseBlock.G()) {
             return false;
         }
         return this.crystalAura.isCrystalBaseBlock(world.getBlockState(hitBlock));

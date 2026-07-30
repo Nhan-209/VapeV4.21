@@ -173,8 +173,8 @@ extends AbstractBlockInMovementController {
     private void pushOutOfBlocks(double positionX, double positionZ) {
         BlockPos blockPos = BlockPos.D(positionX, this.simulatedPlayer.N(), positionZ);
         if (this.isPositionClear(blockPos)) {
-            double localX = positionX - blockPos.P();
-            double localZ = positionZ - blockPos.d();
+            double localX = positionX - blockPos.getX();
+            double localZ = positionZ - blockPos.getZ();
             Direction nearestDirection = null;
             double nearestDistance = Double.MAX_VALUE;
             EnumFacing[] horizontalFacings = new EnumFacing[]{Direction.X(),
@@ -275,7 +275,7 @@ extends AbstractBlockInMovementController {
         this.simulatedPlayer.h(this.simulatedPlayer.n(this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi()));
         this.moveEntity(MoverType.X(), this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi());
         Vec3 resultingMotion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
-        if ((this.simulatedPlayer.r() || this.simulatedPlayer.e$src$Z$15bd4i1()) && (this.simulatedPlayer.S$src$Z$151gttj() || this.simulatedPlayer.y().w(Blocks.h()) && Block.r(this.simulatedPlayer))) {
+        if ((this.simulatedPlayer.r() || this.simulatedPlayer.e$src$Z$15bd4i1()) && (this.simulatedPlayer.S$src$Z$151gttj() || this.simulatedPlayer.y().w(Blocks.powderSnow()) && Block.r(this.simulatedPlayer))) {
             resultingMotion = Vec3.create(resultingMotion.getX(), 0.2, resultingMotion.getZ());
         }
         return resultingMotion;
@@ -415,8 +415,8 @@ extends AbstractBlockInMovementController {
 
     private boolean isPositionClear(BlockPos blockPos) {
         AxisAlignedBB playerBounds = this.simulatedPlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
-        AxisAlignedBB blockColumn = AxisAlignedBB.create(blockPos.P(), playerBounds.getMinY(), blockPos.d(),
-                blockPos.P() + 1.0, playerBounds.getMaxY(), blockPos.d() + 1.0).v(1.0E-7);
+        AxisAlignedBB blockColumn = AxisAlignedBB.create(blockPos.getX(), playerBounds.getMinY(), blockPos.getZ(),
+                blockPos.getX() + 1.0, playerBounds.getMaxY(), blockPos.getZ() + 1.0).v(1.0E-7);
         return this.world.M(this.simulatedPlayer, blockColumn);
     }
 
@@ -565,7 +565,7 @@ extends AbstractBlockInMovementController {
                 || requestedMovement.j() - adjustedLengthSquared < 1.0E-7) {
             if (this.simulatedPlayer.M$src$F$ff28gb() != 0.0f
                     && adjustedLengthSquared >= 1.0) {
-                BlockRayTraceResult rayTrace = this.world.r(RayTraceContextFactory.v(
+                BlockRayTraceResult rayTrace = this.world.r(RayTraceContextFactory.create(
                         this.simulatedPlayer.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk(),
                         this.simulatedPlayer.I$src$Lgg_vape_wrapper_impl_Vec3_$q14opk()
                                 .add(adjustedMovement),
@@ -684,7 +684,7 @@ extends AbstractBlockInMovementController {
                 BlockPos headBlock = BlockPos.D(this.simulatedPlayer.z(),
                         this.simulatedPlayer.N() + 0.9, this.simulatedPlayer.h());
                 if (targetVerticalMotion <= 0.0 || this.simulatedPlayer.e$src$Z$15bd4i1()
-                        || !this.world.o(headBlock).x()) {
+                        || !this.world.o(headBlock).isEmpty()) {
                     Vec3 motion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
                     this.simulatedPlayer.h(motion.addVector(0.0,
                             (targetVerticalMotion - motion.getY()) * interpolationRate, 0.0));

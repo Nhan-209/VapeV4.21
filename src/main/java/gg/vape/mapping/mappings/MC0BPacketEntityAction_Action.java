@@ -9,57 +9,36 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MC0BPacketEntityAction_Action
 extends Mapping {
-    private MappingField f;
-    private MappingField L;
+    private MappingField stopSneakingActionField;
+    private MappingField startSneakingActionField;
 
-
-    public Object O() {
-        return this.f.getObject(null);
+    public Object getStopSneakingAction() {
+        return this.stopSneakingActionField.getObject(null);
     }
 
     public MC0BPacketEntityAction_Action() {
-        this(MPacketIdFactory.A());
+        this(MPacketIdFactory.getPacketMappingControlFlowState());
     }
 
-    private MC0BPacketEntityAction_Action(GuiComponent[] guiComponentArray) {
+    private MC0BPacketEntityAction_Action(GuiComponent[] controlFlowState) {
         super(MappedClasses.Do);
-        if (guiComponentArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_16_5.d()) {
                 if (ForgeVersion.MC_1_21_6.v()) {
-                    Class clazz = MappedClasses.Do;
-                    boolean bl = Wrapper.isNativeAvailable;
-                    String string = "PRESS_SHIFT_KEY";
-                    MC0BPacketEntityAction_Action mC0BPacketEntityAction_Action = this;
-                    this.L = mC0BPacketEntityAction_Action.registerStaticField(string, bl, clazz);
-                    Class clazz2 = MappedClasses.Do;
-                    boolean bl2 = Wrapper.isNativeAvailable;
-                    String string2 = "RELEASE_SHIFT_KEY";
-                    MC0BPacketEntityAction_Action mC0BPacketEntityAction_Action2 = this;
-                    this.f = this.registerStaticField(string2, bl2, clazz2);
+                    this.startSneakingActionField = this.registerStaticField("PRESS_SHIFT_KEY", Wrapper.isNativeAvailable, MappedClasses.Do);
+                    this.stopSneakingActionField = this.registerStaticField("RELEASE_SHIFT_KEY", Wrapper.isNativeAvailable, MappedClasses.Do);
                 }
             } else {
-                Class clazz = MappedClasses.Do;
-                boolean bl = Wrapper.isNativeAvailable;
-                String string = "START_SNEAKING";
-                MC0BPacketEntityAction_Action mC0BPacketEntityAction_Action = this;
-                this.L = mC0BPacketEntityAction_Action.registerStaticField(string, bl, clazz);
-                Class clazz3 = MappedClasses.Do;
-                boolean bl3 = Wrapper.isNativeAvailable;
-                String string3 = "STOP_SNEAKING";
-                MC0BPacketEntityAction_Action mC0BPacketEntityAction_Action3 = this;
-                this.f = this.registerStaticField(string3, bl3, clazz3);
+                this.startSneakingActionField = this.registerStaticField("START_SNEAKING", Wrapper.isNativeAvailable, MappedClasses.Do);
+                this.stopSneakingActionField = this.registerStaticField("STOP_SNEAKING", Wrapper.isNativeAvailable, MappedClasses.Do);
             }
             return;
         }
-        Class clazz = MappedClasses.Do;
-        boolean bl = Wrapper.isNativeAvailable;
-        String string = "STOP_SNEAKING";
-        MC0BPacketEntityAction_Action mC0BPacketEntityAction_Action = this;
-        this.f = mC0BPacketEntityAction_Action.registerStaticField(string, bl, clazz);
+        this.stopSneakingActionField = this.registerStaticField("STOP_SNEAKING", Wrapper.isNativeAvailable, MappedClasses.Do);
     }
 
-    public Object R() {
-        return this.L.getObject(null);
+    public Object getStartSneakingAction() {
+        return this.startSneakingActionField.getObject(null);
     }
 }
 

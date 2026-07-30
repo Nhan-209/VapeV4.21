@@ -48,7 +48,7 @@ extends Mod {
     public int fakeEntityId;
 
     public boolean shouldCancelPacket(Packet packet) {
-        if (UseEntityPacketBridge.h(packet) && !this.allowInteracting.getEffectiveValue().booleanValue()) {
+        if (UseEntityPacketBridge.isUseEntityPacket(packet) && !this.allowInteracting.getEffectiveValue().booleanValue()) {
             return true;
         }
         if (!this.allowInteracting.getEffectiveValue().booleanValue()) {

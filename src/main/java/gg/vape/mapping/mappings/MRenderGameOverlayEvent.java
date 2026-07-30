@@ -33,7 +33,7 @@ extends Mapping {
     }
 
     public MRenderGameOverlayEvent() {
-        this(MTileEntityMobSpawner.d());
+        this(MTileEntityMobSpawner.getMobSpawnerControlFlowState());
     }
 
     private MRenderGameOverlayEvent(int[] nArray) {
@@ -57,7 +57,7 @@ extends Mapping {
                 this.C = this.J(string3, bl3, clazz3);
             }
             if (GuiComponent.getLegacyComponentState() == null) {
-                MTileEntityMobSpawner.N(new int[1]);
+                MTileEntityMobSpawner.setMobSpawnerControlFlowState(new int[1]);
             }
             this.E = null;
             return;
@@ -108,7 +108,7 @@ extends Mapping {
             this.C = mRenderGameOverlayEvent.J(string, bl, clazz);
         }
         if (GuiComponent.getLegacyComponentState() == null) {
-            MTileEntityMobSpawner.N(new int[1]);
+            MTileEntityMobSpawner.setMobSpawnerControlFlowState(new int[1]);
         }
     }
 

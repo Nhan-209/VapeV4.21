@@ -30,7 +30,7 @@ extends Entity {
         if (ForgeVersion.MC_1_20_6.d()) {
             return MEntityLivingBase.c$src$Z$uftdxu(EntityLivingBase.vapeInstance.getMappings().hx, this.I, blockStateWorldBridge.getObject());
         }
-        Object object = blockStateWorldBridge.X().getObject();
+        Object object = blockStateWorldBridge.getType().getObject();
         if (object == null) {
             return false;
         }
@@ -43,7 +43,7 @@ extends Entity {
         }
         Object object = EntityLivingBase.vapeInstance.getMappings().hx.r(this.I);
         if (object == null) {
-            return EnumHand.M();
+            return EnumHand.mainHand();
         }
         return new EnumHand(object);
     }
@@ -138,7 +138,7 @@ extends Entity {
     public void T(float f) {
         if (ForgeVersion.MC_1_20_6.d()) {
             SPacketExplosion sPacketExplosion = new SPacketExplosion(EntityLivingBase.vapeInstance.getMappings().hx.u(this.I));
-            sPacketExplosion.b(f);
+            sPacketExplosion.setPreviousSpeed(f);
             return;
         }
         MEntityLivingBase.d(EntityLivingBase.vapeInstance.getMappings().hx, this.I, f);
@@ -147,7 +147,7 @@ extends Entity {
     public void G(float f) {
         if (ForgeVersion.MC_1_20_6.d()) {
             SPacketExplosion sPacketExplosion = new SPacketExplosion(EntityLivingBase.vapeInstance.getMappings().hx.u(this.I));
-            sPacketExplosion.a(f);
+            sPacketExplosion.setPosition(f);
             return;
         }
         MEntityLivingBase.P(EntityLivingBase.vapeInstance.getMappings().hx, this.I, f);
@@ -183,7 +183,7 @@ extends Entity {
 
     public void m$src$V$15frh5h() {
         if (ForgeVersion.MC_1_12_2.d()) {
-            MEntityLivingBase.a(EntityLivingBase.vapeInstance.getMappings().hx, this.I, EnumHand.M().getObject());
+            MEntityLivingBase.a(EntityLivingBase.vapeInstance.getMappings().hx, this.I, EnumHand.mainHand().getObject());
             return;
         }
         MEntityLivingBase.w$src$V$rgd406(EntityLivingBase.vapeInstance.getMappings().hx, this.I);
@@ -240,7 +240,7 @@ extends Entity {
     public float B$src$F$14s4b96() {
         if (ForgeVersion.MC_1_20_6.d()) {
             SPacketExplosion sPacketExplosion = new SPacketExplosion(EntityLivingBase.vapeInstance.getMappings().hx.u(this.I));
-            return sPacketExplosion.p();
+            return sPacketExplosion.getPreviousSpeed();
         }
         return MEntityLivingBase.A(EntityLivingBase.vapeInstance.getMappings().hx, this.I);
     }
@@ -320,7 +320,7 @@ extends Entity {
     public float U$src$F$152kej1() {
         if (ForgeVersion.MC_1_20_6.d()) {
             SPacketExplosion sPacketExplosion = new SPacketExplosion(EntityLivingBase.vapeInstance.getMappings().hx.u(this.I));
-            return sPacketExplosion.F();
+            return sPacketExplosion.getPosition();
         }
         return MEntityLivingBase.N(EntityLivingBase.vapeInstance.getMappings().hx, this.I);
     }
@@ -355,7 +355,7 @@ extends Entity {
     public float H$src$F$14vf2tc() {
         if (ForgeVersion.MC_1_20_6.d()) {
             SPacketExplosion sPacketExplosion = new SPacketExplosion(EntityLivingBase.vapeInstance.getMappings().hx.u(this.I));
-            return sPacketExplosion.b();
+            return sPacketExplosion.getSpeed();
         }
         return MEntityLivingBase.p(EntityLivingBase.vapeInstance.getMappings().hx, this.I);
     }
@@ -363,7 +363,7 @@ extends Entity {
     public void e(float f) {
         if (ForgeVersion.MC_1_20_6.d()) {
             SPacketExplosion sPacketExplosion = new SPacketExplosion(EntityLivingBase.vapeInstance.getMappings().hx.u(this.I));
-            sPacketExplosion.L(f);
+            sPacketExplosion.setPreviousSpeed(f);
             return;
         }
         MEntityLivingBase.F(EntityLivingBase.vapeInstance.getMappings().hx, this.I, f);

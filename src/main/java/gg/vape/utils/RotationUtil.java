@@ -301,7 +301,7 @@ public class RotationUtil {
         int n = 0;
         if (ClientSettings.IS_LEGACY_1_7) {
             NetHandlerPlayClientImpl netHandlerPlayClientImpl = Minecraft.thePlayer().sendQueue();
-            List list = GuiPlayerTabOverlayBridge.O().E(netHandlerPlayClientImpl.getPlayerInfoMap());
+            List list = GuiPlayerTabOverlayBridge.O().sortedCopy(netHandlerPlayClientImpl.getPlayerInfoMap());
             for (Object e : list) {
                 PlayerInfo playerInfo = new PlayerInfo(e);
                 if (!playerInfo.v().isNotNull() || !entityPlayer.c$src$Lgg_vape_wrapper_impl_GameProfile_$ir8937().equals(playerInfo.v()) && !entityPlayer.getName().equals(playerInfo.v().getName())) continue;
@@ -684,16 +684,16 @@ public class RotationUtil {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         BlockPos blockPos = BlockPos.create(MathUtil.floor(entityPlayerSP.z() - entityPlayerSP.t() * 1.0), MathUtil.floor(entityPlayerSP.N() - entityPlayerSP.q() * 1.0), MathUtil.floor(entityPlayerSP.h() - entityPlayerSP.T() * 1.0));
         if (enumFacing.h().equals("north")) {
-            return blockPos.d() > blockCoordinate.A();
+            return blockPos.getZ() > blockCoordinate.A();
         }
         if (enumFacing.h().equals("south")) {
-            return blockPos.d() < blockCoordinate.A();
+            return blockPos.getZ() < blockCoordinate.A();
         }
         if (enumFacing.h().equals("west")) {
-            return blockPos.P() > blockCoordinate.B();
+            return blockPos.getX() > blockCoordinate.B();
         }
         if (enumFacing.h().equals("east")) {
-            return blockPos.P() < blockCoordinate.B();
+            return blockPos.getX() < blockCoordinate.B();
         }
         return false;
     }
@@ -859,13 +859,13 @@ public class RotationUtil {
 
     @Nullable
     public static EnumHand q(EntityOtherPlayerMP entityOtherPlayerMP) {
-        ItemStack itemStack = entityOtherPlayerMP.i(EnumHand.p());
+        ItemStack itemStack = entityOtherPlayerMP.i(EnumHand.offHand());
         if (itemStack.isNotNull() && itemStack.getItem().isInstance(MappedClasses.Y1)) {
-            return EnumHand.p();
+            return EnumHand.offHand();
         }
-        ItemStack itemStack2 = entityOtherPlayerMP.i(EnumHand.M());
+        ItemStack itemStack2 = entityOtherPlayerMP.i(EnumHand.mainHand());
         if (itemStack2.isNotNull() && itemStack2.getItem().isInstance(MappedClasses.Y1)) {
-            return EnumHand.M();
+            return EnumHand.mainHand();
         }
         return null;
     }

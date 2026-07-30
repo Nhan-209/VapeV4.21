@@ -4,12 +4,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class WorldProvider
 extends Wrapper {
-    public WorldProvider(Object object) {
-        super(object);
+    public boolean hasNoSky() {
+        return WorldProvider.vapeInstance.getMappingsMapperCompat().worldProvider.hasNoSky(this.I);
     }
 
-    public Object v(TickEvent_Phase wm_22) {
-        return WorldProvider.vapeInstance.getMappingsMapperCompat().V.v(this.I, wm_22.getObject());
+    public WorldProvider(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

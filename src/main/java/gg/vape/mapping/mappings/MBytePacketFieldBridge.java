@@ -8,52 +8,32 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MBytePacketFieldBridge
 extends Mapping {
-    private final MappingField P;
+    private final MappingField headYawField;
 
     public MBytePacketFieldBridge() {
-        this(MSPacketEntityVelocity.G());
+        this(MSPacketEntityVelocity.getPacketMappingControlFlowState());
     }
 
-    private MBytePacketFieldBridge(int[] nArray) {
+    private MBytePacketFieldBridge(int[] controlFlowState) {
         super(MappedClasses.D7);
-        if (nArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_16_5.d()) {
-                Class<Byte> clazz = Byte.TYPE;
-                boolean bl = true;
-                String string = "yHeadRot";
-                MBytePacketFieldBridge mBytePacketFieldBridge = this;
-                this.P = mBytePacketFieldBridge.J(string, bl, clazz);
+                this.headYawField = this.J("yHeadRot", true, Byte.TYPE);
             } else if (ForgeVersion.MC_1_7_10.L()) {
-                Class<Byte> clazz = Byte.TYPE;
-                boolean bl = true;
-                String string = "field_149383_b";
-                MBytePacketFieldBridge mBytePacketFieldBridge = this;
-                this.P = mBytePacketFieldBridge.J(string, bl, clazz);
+                this.headYawField = this.J("field_149383_b", true, Byte.TYPE);
             } else {
-                Class<Byte> clazz = Byte.TYPE;
-                boolean bl = true;
-                String string = "yaw";
-                MBytePacketFieldBridge mBytePacketFieldBridge = this;
-                this.P = mBytePacketFieldBridge.J(string, bl, clazz);
+                this.headYawField = this.J("yaw", true, Byte.TYPE);
             }
             return;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            Class<Byte> clazz = Byte.TYPE;
-            boolean bl = true;
-            String string = "field_149383_b";
-            MBytePacketFieldBridge mBytePacketFieldBridge = this;
-            mBytePacketFieldBridge.J(string, bl, clazz);
+            this.J("field_149383_b", true, Byte.TYPE);
         }
-        Class<Byte> clazz = Byte.TYPE;
-        boolean bl = true;
-        String string = "yaw";
-        MBytePacketFieldBridge mBytePacketFieldBridge = this;
-        this.P = mBytePacketFieldBridge.J(string, bl, clazz); 
+        this.headYawField = this.J("yaw", true, Byte.TYPE);
     }
 
-    public byte L(Object object) {
-        return (byte)this.P.getInt(object);
+    public byte getHeadYaw(Object packet) {
+        return (byte)this.headYawField.getInt(packet);
     }
 
 }

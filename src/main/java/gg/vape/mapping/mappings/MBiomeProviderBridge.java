@@ -6,25 +6,20 @@ import gg.vape.mapping.MappingMethod;
 
 public class MBiomeProviderBridge
 extends Mapping {
-    private static final String b = "getAllEffects";
-    private MappingMethod U;
+    private static final String GET_ALL_EFFECTS_METHOD_NAME = "getAllEffects";
+    private final MappingMethod getAllEffectsMethod;
 
-    public static Iterable D(MBiomeProviderBridge mBiomeProviderBridge, Object object) {
-        return mBiomeProviderBridge.D(object);
+    public static Iterable getAllEffects(MBiomeProviderBridge mapping, Object biomeProvider) {
+        return mapping.invokeGetAllEffects(biomeProvider);
     }
 
     public MBiomeProviderBridge() {
         super(MappedClasses.uV);
-        Class[] classArray = new Class[]{};
-        Class<Iterable> clazz = Iterable.class;
-        boolean bl = true;
-        String string = b;
-        MBiomeProviderBridge mBiomeProviderBridge = this;
-        this.U = this.Y(string, bl, clazz, classArray);
+        this.getAllEffectsMethod = this.Y(GET_ALL_EFFECTS_METHOD_NAME, true, Iterable.class, new Class[]{});
     }
 
-    private Iterable D(Object object) {
-        return (Iterable)this.U.invokeObject(object, new Object[0]);
+    private Iterable invokeGetAllEffects(Object biomeProvider) {
+        return (Iterable)this.getAllEffectsMethod.invokeObject(biomeProvider, new Object[0]);
     }
 }
 

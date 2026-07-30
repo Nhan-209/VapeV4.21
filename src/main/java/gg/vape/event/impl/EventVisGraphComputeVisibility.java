@@ -37,8 +37,8 @@ extends Event {
     }
 
     public static Object getVisibility() {
-        SetVisibility setVisibility = new SetVisibility(Vape.INSTANCE.getMappingsMapperCompat().qy.z.newInstance(new Object[0]));
-        setVisibility.n(true);
+        SetVisibility setVisibility = new SetVisibility(Vape.INSTANCE.getMappingsMapperCompat().setVisibility.constructor.newInstance(new Object[0]));
+        setVisibility.setAllVisible(true);
         return setVisibility.getObject();
     }
 }

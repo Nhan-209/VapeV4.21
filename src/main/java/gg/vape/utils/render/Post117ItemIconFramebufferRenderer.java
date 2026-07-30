@@ -95,8 +95,8 @@ implements ItemIconRenderBackend {
                     Post117RenderPhaseCompat.applyRenderPhaseCompat();
                     if (ForgeVersion.MC_26_1.d()) {
                         renderTargetHandle = renderBuffer.P();
-                        renderTarget = renderTargetHandle.isNull() ? null : ((BlockStateContainerBridge)renderTargetHandle).w(renderTargetName.H());
-                        renderTargetTextureId = renderTargetHandle.isNull() ? -1 : ((BlockStateContainerBridge)renderTargetHandle).I();
+                        renderTarget = renderTargetHandle.isNull() ? null : ((BlockStateContainerBridge)renderTargetHandle).getOrUpdate(renderTargetName.H());
+                        renderTargetTextureId = renderTargetHandle.isNull() ? -1 : ((BlockStateContainerBridge)renderTargetHandle).getTextureId();
                     } else {
                         renderTarget = renderBuffer.p().get(renderTargetName.H().m$src$Ljava_lang_Object_$hvczij());
                         int resolvedTextureId = renderTargetTextureId = renderBuffer.F().isNull() ? -1 : renderBuffer.F().J();
@@ -192,8 +192,8 @@ implements ItemIconRenderBackend {
                 Post117RenderPhaseCompat.applyRenderPhaseCompat();
                 if (ForgeVersion.MC_26_1.d()) {
                     renderTargetHandle = renderBuffer.P();
-                    renderTarget = renderTargetHandle.isNull() ? null : ((BlockStateContainerBridge)renderTargetHandle).w(renderTargetName.H());
-                    renderTargetTextureId = renderTargetHandle.isNull() ? -1 : ((BlockStateContainerBridge)renderTargetHandle).I();
+                    renderTarget = renderTargetHandle.isNull() ? null : ((BlockStateContainerBridge)renderTargetHandle).getOrUpdate(renderTargetName.H());
+                    renderTargetTextureId = renderTargetHandle.isNull() ? -1 : ((BlockStateContainerBridge)renderTargetHandle).getTextureId();
                 } else {
                     renderTarget = renderBuffer.p().get(renderTargetName.H().m$src$Ljava_lang_Object_$hvczij());
                     int resolvedTextureId = renderTargetTextureId = renderBuffer.F().isNull() ? -1 : renderBuffer.F().J();

@@ -4,14 +4,6 @@ import gg.vape.Vape;
 import gg.vape.asm.transform.ClassTransformer;
 import gg.vape.event.EventBus;
 import gg.vape.event.IEvent;
-import gg.vape.mapping.BytecodeClassPool;
-import gg.vape.mapping.EventInjectionSpec;
-import gg.vape.mapping.InjectionParameterSpec;
-import gg.vape.mapping.InsertedCallbackEventMarker;
-import gg.vape.mapping.MappingClassBytecodeResolver;
-import gg.vape.mapping.MappingMethod;
-import gg.vape.mapping.MappingTask;
-import gg.vape.mapping.MappingTaskCallable;
 import gg.vape.mapping.expr.MethodCallInjectionExprEditor;
 import gg.vape.mapping.expr.MethodCallLineCaptureExprEditor;
 import gg.vape.mapping.expr.MethodCallReplacementExprEditor;
@@ -147,6 +139,28 @@ implements MappingTask {
         }
     }
 
+    private void dumpFailedCommit(int errorCode) {
+        try {
+            File directory = new File(System.getProperty("java.io.tmpdir"), "Vape421Recovery");
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            String className = this.E.getName().replace('.', '_');
+            File originalFile = new File(directory, className + "-error-" + errorCode + "-original.class");
+            File transformedFile = new File(directory, className + "-error-" + errorCode + "-transformed.class");
+            FileOutputStream originalOutput = new FileOutputStream(originalFile);
+            originalOutput.write(this.t);
+            originalOutput.close();
+            FileOutputStream transformedOutput = new FileOutputStream(transformedFile);
+            transformedOutput.write(this.B);
+            transformedOutput.close();
+            Vape.debugLog("Failed mapping commit bytecode dumped to " + directory.getAbsolutePath());
+        }
+        catch (Exception exception) {
+            Vape.logThrowable(exception);
+        }
+    }
+
     public String k(MappingMethod mappingMethod, Class clazz, String string) {
         return this.m(this.F(mappingMethod), clazz, string, "", "");
     }
@@ -163,7 +177,7 @@ implements MappingTask {
 
     public CtBehavior F(MappingMethod mappingMethod) {
         try {
-            if (mappingMethod.getResolvedName().equals("<init>")) {
+            if (mappingMethod.getOriginalName().equals("<init>")) {
                 return this.Y.getConstructor(mappingMethod.getDescriptor());
             }
             return this.Y.getMethod(mappingMethod.getResolvedName(), mappingMethod.getDescriptor());
@@ -176,7 +190,7 @@ implements MappingTask {
 
     public static void p(Class clazz) {
         V.O(clazz);
-        if (!Vape.INSTANCE.isNativeAvailable()) {
+        if (!Vape.INSTANCE.isForgeAbsent()) {
             ClassBytecodeCache.getClassBytecode(clazz, true);
             String string = clazz.getName();
             Set set = LaunchClassLoader.getLaunchClassLoader().getClassLoaderExceptions();
@@ -293,12 +307,20 @@ implements MappingTask {
 
     @Override
     public void prepare() {
+        if (this.E == null) {
+            throw new IllegalStateException("Mapping task target class is null: " + this.getClass().getName());
+        }
         this.t = ClassBytecodeCache.getClassBytecode(this.E, true);
+        if (this.t == null || this.t.length == 0) {
+            throw new IllegalStateException("Could not capture bytecode for " + this.E.getName());
+        }
         V.O(this.E.getClassLoader());
-        if (!Vape.INSTANCE.isNativeAvailable()) {
+        if (!Vape.INSTANCE.isForgeAbsent()) {
             LaunchClassLoader.getLaunchClassLoader().cachedClasses().put(this.E.getName(), this.E);
         }
-        this.x();
+        if (this.x() == null) {
+            throw new IllegalStateException("Javassist could not parse bytecode for " + this.E.getName());
+        }
         this.Y.defrost();
         JavassistMappingTask.q(new LoaderClassPath(this.E.getClassLoader()), this.E);
     }
@@ -364,7 +386,7 @@ implements MappingTask {
             byte[] byArray = this.B;
             int n3 = ClassBytecodeCache.setClassBytecode(clazz, byArray);
             if (n3 != 0) {
-                // empty if block
+                this.dumpFailedCommit(n3);
             }
             if ((n2 = n3) == 0) {
                 this.k = true;
@@ -376,7 +398,7 @@ implements MappingTask {
         byte[] byArray = this.B;
         int n4 = ClassBytecodeCache.setClassBytecode(clazz, byArray);
         if (n4 != 0) {
-            // empty if block
+            this.dumpFailedCommit(n4);
         }
         int n5 = n4;
         return n5;

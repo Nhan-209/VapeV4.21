@@ -5,12 +5,11 @@ import java.util.List;
 
 public class Ordering
 extends Wrapper {
-    public Ordering(Object object) {
-        super(object);
+    public Ordering(Object wrappedObject) {
+        super(wrappedObject);
     }
 
-    public List E(Iterable iterable) {
-        return Ordering.vapeInstance.getMappingsMapperCompat().qm.n(this.I, iterable);
+    public List sortedCopy(Iterable iterable) {
+        return Ordering.vapeInstance.getMappingsMapperCompat().qm.sortedCopy(this.I, iterable);
     }
 }
-

@@ -15,13 +15,13 @@ public class BacktrackPacketState {
     private long encodedY;
 
     public void applyAbsolutePacket(SPacketEntity entityPacket) {
-        this.encodedX = entityPacket.H();
-        this.encodedY = entityPacket.M();
-        this.encodedZ = entityPacket.B();
+        this.encodedX = entityPacket.getX();
+        this.encodedY = entityPacket.getY();
+        this.encodedZ = entityPacket.getZ();
     }
 
     public void applyNetworkPlayerInfo(NetworkPlayerInfo playerInfo) {
-        Vec3 position = playerInfo.e().u();
+        Vec3 position = playerInfo.getValues().getPosition();
         this.encodedX = MathUtil.floor(position.getX() * BacktrackPacketState.positionScale());
         this.encodedY = MathUtil.floor(position.getY() * BacktrackPacketState.positionScale());
         this.encodedZ = MathUtil.floor(position.getZ() * BacktrackPacketState.positionScale());
@@ -41,9 +41,9 @@ public class BacktrackPacketState {
 
 
     public void applyRelativeMove(SEntityPacket entityPacket) {
-        this.encodedX += (long)entityPacket.Y();
-        this.encodedY += (long)entityPacket.x();
-        this.encodedZ += (long)entityPacket.E();
+        this.encodedX += (long)entityPacket.getDeltaX();
+        this.encodedY += (long)entityPacket.getDeltaY();
+        this.encodedZ += (long)entityPacket.getDeltaZ();
     }
 
     public BacktrackPacketState(int x, int y, int z) {

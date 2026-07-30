@@ -8,54 +8,34 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MSPacketEntityStatus
 extends Mapping {
-    private MappingField E;
-    private MappingField x;
+    private MappingField entityIdField;
+    private MappingField logicOpcodeField;
 
     public MSPacketEntityStatus() {
-        this(MSPacketEntityVelocity.G());
+        this(MSPacketEntityVelocity.getPacketMappingControlFlowState());
     }
 
-    private MSPacketEntityStatus(int[] nArray) {
+    private MSPacketEntityStatus(int[] controlFlowState) {
         super(MappedClasses.lU);
-        if (nArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_7_10.L()) {
-                Class<Integer> clazz = Integer.TYPE;
-                boolean bl = true;
-                String string = "field_149164_a";
-                MSPacketEntityStatus mSPacketEntityStatus = this;
-                this.E = mSPacketEntityStatus.J(string, bl, clazz);
-                Class<Byte> clazz2 = Byte.TYPE;
-                boolean bl2 = true;
-                String string2 = "field_149163_b";
-                MSPacketEntityStatus mSPacketEntityStatus2 = this;
-                this.x = this.J(string2, bl2, clazz2);
+                this.entityIdField = this.J("field_149164_a", true, Integer.TYPE);
+                this.logicOpcodeField = this.J("field_149163_b", true, Byte.TYPE);
             } else {
-                Class<Integer> clazz = Integer.TYPE;
-                boolean bl = true;
-                String string = "entityId";
-                MSPacketEntityStatus mSPacketEntityStatus = this;
-                this.E = mSPacketEntityStatus.J(string, bl, clazz);
-                Class<Byte> clazz3 = Byte.TYPE;
-                boolean bl3 = true;
-                String string3 = "logicOpcode";
-                MSPacketEntityStatus mSPacketEntityStatus3 = this;
-                this.x = this.J(string3, bl3, clazz3);
+                this.entityIdField = this.J("entityId", true, Integer.TYPE);
+                this.logicOpcodeField = this.J("logicOpcode", true, Byte.TYPE);
             }
             return;
         }
-        Class<Byte> clazz = Byte.TYPE;
-        boolean bl = true;
-        String string = "logicOpcode";
-        MSPacketEntityStatus mSPacketEntityStatus = this;
-        this.x = mSPacketEntityStatus.J(string, bl, clazz);
+        this.logicOpcodeField = this.J("logicOpcode", true, Byte.TYPE);
     }
 
-    public byte n(Object object) {
-        return (byte)this.x.getInt(object);
+    public byte getLogicOpcode(Object packet) {
+        return (byte)this.logicOpcodeField.getInt(packet);
     }
 
-    public int e(Object object) {
-        return this.E.getInt(object);
+    public int getEntityId(Object packet) {
+        return this.entityIdField.getInt(packet);
     }
 
 }

@@ -11,157 +11,94 @@ import java.util.Set;
 
 public class MSPacketPlayerPosLook
 extends Mapping {
-    private MappingField i;
-    private MappingField Q;
-    private MappingMethod v;
-    private MappingField o;
-    private MappingField C;
-    private MappingField K;
-    private MappingField N;
-    private MappingField z;
-    private MappingField P;
+    private MappingField yawField;
+    private MappingField zField;
+    private MappingMethod getRelativeFlagsMethod;
+    private MappingField xField;
+    private MappingField relativesField;
+    private MappingField yField;
+    private MappingField teleportIdField;
+    private MappingField pitchField;
+    private MappingField changeField;
 
-    public int n(Object object) {
-        return this.N.getInt(object);
+    public int getTeleportId(Object packet) {
+        return this.teleportIdField.getInt(packet);
     }
 
-    public Object j(Object object) {
-        return this.P.getObject(object);
+    public Object getChange(Object packet) {
+        return this.changeField.getObject(packet);
     }
 
-
-    public Object B(Object object) {
-        return this.C.getObject(object);
+    public Object getRelatives(Object packet) {
+        return this.relativesField.getObject(packet);
     }
 
     public MSPacketPlayerPosLook() {
-        this(MSPacketEntityVelocity.G());
+        this(MSPacketEntityVelocity.getPacketMappingControlFlowState());
     }
 
-    private MSPacketPlayerPosLook(int[] nArray) {
+    private MSPacketPlayerPosLook(int[] controlFlowState) {
         super(MappedClasses.zw);
-        int[] nArray2 = nArray;
         if (ForgeVersion.MC_1_21_4.d()) {
-            Class clazz = MappedClasses.Dd;
-            boolean bl = true;
-            String string = "change";
-            MSPacketPlayerPosLook mSPacketPlayerPosLook = this;
-            this.P = mSPacketPlayerPosLook.J(string, bl, clazz);
-            Class<Set> clazz2 = Set.class;
-            boolean bl2 = true;
-            String string2 = "relatives";
-            MSPacketPlayerPosLook mSPacketPlayerPosLook2 = this;
-            this.C = this.J(string2, bl2, clazz2);
-            Class<Integer> clazz3 = Integer.TYPE;
-            boolean bl3 = true;
-            String string3 = "id";
-            MSPacketPlayerPosLook mSPacketPlayerPosLook3 = this;
-            this.N = this.J(string3, bl3, clazz3);
+            this.changeField = this.J("change", true, MappedClasses.Dd);
+            this.relativesField = this.J("relatives", true, Set.class);
+            this.teleportIdField = this.J("id", true, Integer.TYPE);
         } else {
             if (ForgeVersion.MC_1_7_10.Y()) {
-                Class<Double> clazz = Double.TYPE;
-                boolean bl = true;
-                String string = "x";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook = this;
-                this.o = mSPacketPlayerPosLook.J(string, bl, clazz);
-                Class<Double> clazz4 = Double.TYPE;
-                boolean bl4 = true;
-                String string4 = "y";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook4 = this;
-                this.K = this.J(string4, bl4, clazz4);
-                Class<Double> clazz5 = Double.TYPE;
-                boolean bl5 = true;
-                String string5 = "z";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook5 = this;
-                this.Q = this.J(string5, bl5, clazz5);
+                this.xField = this.J("x", true, Double.TYPE);
+                this.yField = this.J("y", true, Double.TYPE);
+                this.zField = this.J("z", true, Double.TYPE);
             } else {
-                Class<Double> clazz = Double.TYPE;
-                boolean bl = Wrapper.isNativeAvailable;
-                String string = "field_148940_a";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook = this;
-                this.o = mSPacketPlayerPosLook.J(string, bl, clazz);
-                Class<Double> clazz6 = Double.TYPE;
-                boolean bl6 = Wrapper.isNativeAvailable;
-                String string6 = "field_148938_b";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook6 = this;
-                this.K = this.J(string6, bl6, clazz6);
-                Class<Double> clazz7 = Double.TYPE;
-                boolean bl7 = Wrapper.isNativeAvailable;
-                String string7 = "field_148939_c";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook7 = this;
-                this.Q = this.J(string7, bl7, clazz7);
+                this.xField = this.J("field_148940_a", Wrapper.isNativeAvailable, Double.TYPE);
+                this.yField = this.J("field_148938_b", Wrapper.isNativeAvailable, Double.TYPE);
+                this.zField = this.J("field_148939_c", Wrapper.isNativeAvailable, Double.TYPE);
             }
             if (ForgeVersion.MC_1_7_10.Y()) {
-                Class[] classArray = new Class[]{};
-                Class<Set> clazz = Set.class;
-                boolean bl = Wrapper.isNativeAvailable;
-                String string = "func_179834_f";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook = this;
-                this.v = mSPacketPlayerPosLook.Y(string, bl, clazz, classArray);
+                this.getRelativeFlagsMethod = this.Y("func_179834_f", Wrapper.isNativeAvailable, Set.class, new Class[]{});
             }
             if (ForgeVersion.MC_1_8_9.d()) {
-                Class<Integer> clazz = Integer.TYPE;
-                boolean bl = true;
-                String string = "teleportId";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook = this;
-                this.N = mSPacketPlayerPosLook.J(string, bl, clazz);
+                this.teleportIdField = this.J("teleportId", true, Integer.TYPE);
             }
             if (Vape.INSTANCE.isVanillaMinecraftPresent() && ForgeVersion.MC_1_7_10.Y()) {
-                Class<Float> clazz = Float.TYPE;
-                boolean bl = true;
-                String string = "yaw";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook = this;
-                this.i = mSPacketPlayerPosLook.J(string, bl, clazz);
-                Class<Float> clazz8 = Float.TYPE;
-                boolean bl8 = true;
-                String string8 = "pitch";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook8 = this;
-                this.z = this.J(string8, bl8, clazz8);
+                this.yawField = this.J("yaw", true, Float.TYPE);
+                this.pitchField = this.J("pitch", true, Float.TYPE);
             } else {
-                Class<Float> clazz = Float.TYPE;
-                boolean bl = Wrapper.isNativeAvailable;
-                String string = "field_148936_d";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook = this;
-                this.i = mSPacketPlayerPosLook.J(string, bl, clazz);
-                Class<Float> clazz9 = Float.TYPE;
-                boolean bl9 = Wrapper.isNativeAvailable;
-                String string9 = "field_148937_e";
-                MSPacketPlayerPosLook mSPacketPlayerPosLook9 = this;
-                this.z = this.J(string9, bl9, clazz9);
+                this.yawField = this.J("field_148936_d", Wrapper.isNativeAvailable, Float.TYPE);
+                this.pitchField = this.J("field_148937_e", Wrapper.isNativeAvailable, Float.TYPE);
             }
         }
     }
 
-    public double Q(Object object) {
-        return this.Q.getDouble(object);
+    public double getZ(Object packet) {
+        return this.zField.getDouble(packet);
     }
 
-    public float g(Object object) {
-        return this.i.getFloat(object);
+    public float getYaw(Object packet) {
+        return this.yawField.getFloat(packet);
     }
 
-    public double e(Object object) {
-        return this.o.getDouble(object);
+    public double getX(Object packet) {
+        return this.xField.getDouble(packet);
     }
 
-    public float d(Object object) {
-        return this.z.getFloat(object);
+    public float getPitch(Object packet) {
+        return this.pitchField.getFloat(packet);
     }
 
-    public void o(Object object, float f) {
-        this.z.setFloat(object, f);
+    public void setPitch(Object packet, float pitch) {
+        this.pitchField.setFloat(packet, pitch);
     }
 
-    public void F(Object object, float f) {
-        this.i.setFloat(object, f);
+    public void setYaw(Object packet, float yaw) {
+        this.yawField.setFloat(packet, yaw);
     }
 
-    public double O(Object object) {
-        return this.K.getDouble(object);
+    public double getY(Object packet) {
+        return this.yField.getDouble(packet);
     }
 
-    public Object w(Object object) {
-        return this.v.invokeObject(object, new Object[0]);
+    public Object getRelativeFlags(Object packet) {
+        return this.getRelativeFlagsMethod.invokeObject(packet, new Object[0]);
     }
 }
 

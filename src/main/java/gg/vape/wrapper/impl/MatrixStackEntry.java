@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class MatrixStackEntry
 extends Wrapper {
-    public Matrix4f u() {
-        return new Matrix4f(MMatrixStackEntry.s(MatrixStackEntry.vapeInstance.getMappingsMapperCompat().CK, this.I));
+    public Matrix4f getMatrix() {
+        return new Matrix4f(MMatrixStackEntry.getMatrix(MatrixStackEntry.vapeInstance.getMappingsMapperCompat().CK, this.I));
     }
 
-    public MatrixStackEntry(Object object) {
-        super(object);
+    public MatrixStackEntry(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

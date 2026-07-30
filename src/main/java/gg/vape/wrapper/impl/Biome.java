@@ -15,7 +15,7 @@ extends Wrapper {
             Optional optional;
             ResourceKey resourceKey;
             if (this.isInstance(MappedClasses.Vo) && !(resourceKey = new ResourceKey((optional = new Holder(this.I).f()).orElse(null))).isNull()) {
-                return resourceKey.X().getResourcePath();
+                return resourceKey.getLocation().getResourcePath();
             }
             return b;
         }

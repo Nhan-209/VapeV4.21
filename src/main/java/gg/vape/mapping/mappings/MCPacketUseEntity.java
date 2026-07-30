@@ -9,72 +9,39 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MCPacketUseEntity
 extends Mapping {
-    private MappingField E;
-    private final MappingField Z;
-    private final MappingField U;
+    private MappingField interactAtActionField;
+    private final MappingField attackActionField;
+    private final MappingField interactActionField;
 
-    public static Object L(MCPacketUseEntity mCPacketUseEntity) {
-        return mCPacketUseEntity.s();
+    public Object getAttackAction() {
+        return this.attackActionField.getObject(null);
     }
 
-    private Object G() {
-        return this.E.getObject(null);
+    public Object getInteractAtAction() {
+        return this.interactAtActionField.getObject(null);
     }
 
-    private Object s() {
-        return this.Z.getObject(null);
-    }
-
-    private Object e() {
-        return this.U.getObject(null);
+    public Object getInteractAction() {
+        return this.interactActionField.getObject(null);
     }
 
     public MCPacketUseEntity() {
-        this(MPacketIdFactory.A());
+        this(MPacketIdFactory.getPacketMappingControlFlowState());
     }
 
-    private MCPacketUseEntity(GuiComponent[] guiComponentArray) {
+    private MCPacketUseEntity(GuiComponent[] controlFlowState) {
         super(MappedClasses.D5);
-        if (guiComponentArray != null) {
-            Class clazz = MappedClasses.D5;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "INTERACT";
-            MCPacketUseEntity mCPacketUseEntity = this;
-            this.U = mCPacketUseEntity.registerStaticField(string, bl, clazz);
-            Class clazz2 = MappedClasses.D5;
-            boolean bl2 = Wrapper.isNativeAvailable;
-            String string2 = "ATTACK";
-            MCPacketUseEntity mCPacketUseEntity2 = this;
-            this.Z = this.registerStaticField(string2, bl2, clazz2);
+        if (controlFlowState != null) {
+            this.interactActionField = this.registerStaticField("INTERACT", Wrapper.isNativeAvailable, MappedClasses.D5);
+            this.attackActionField = this.registerStaticField("ATTACK", Wrapper.isNativeAvailable, MappedClasses.D5);
             if (ForgeVersion.MC_1_8_9.d()) {
-                Class clazz3 = MappedClasses.D5;
-                boolean bl3 = Wrapper.isNativeAvailable;
-                String string3 = "INTERACT_AT";
-                MCPacketUseEntity mCPacketUseEntity3 = this;
-                this.E = this.registerStaticField(string3, bl3, clazz3);
+                this.interactAtActionField = this.registerStaticField("INTERACT_AT", Wrapper.isNativeAvailable, MappedClasses.D5);
             }
             return;
         }
-        Class clazz = MappedClasses.D5;
-        boolean bl = Wrapper.isNativeAvailable;
-        String string = "INTERACT";
-        MCPacketUseEntity mCPacketUseEntity = this;
-        this.U = mCPacketUseEntity.registerStaticField(string, bl, clazz);
-        Class clazz4 = MappedClasses.D5;
-        boolean bl4 = Wrapper.isNativeAvailable;
-        String string4 = "ATTACK";
-        MCPacketUseEntity mCPacketUseEntity4 = this;
-        this.E = this.registerStaticField(string4, bl4, clazz4);
-        this.Z = null;
-    }
-
-    public static Object x(MCPacketUseEntity mCPacketUseEntity) {
-        return mCPacketUseEntity.G();
-    }
-
-
-    public static Object W(MCPacketUseEntity mCPacketUseEntity) {
-        return mCPacketUseEntity.e();
+        this.interactActionField = this.registerStaticField("INTERACT", Wrapper.isNativeAvailable, MappedClasses.D5);
+        this.interactAtActionField = this.registerStaticField("ATTACK", Wrapper.isNativeAvailable, MappedClasses.D5);
+        this.attackActionField = null;
     }
 }
 

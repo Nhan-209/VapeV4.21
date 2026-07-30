@@ -122,8 +122,8 @@ public class PlayerSimulationUtil {
             return;
         }
         BlockPos blockPos = BlockPos.D(d, d2, d3);
-        double d4 = d - (double)blockPos.P();
-        double d5 = d3 - (double)blockPos.d();
+        double d4 = d - (double)blockPos.getX();
+        double d5 = d3 - (double)blockPos.getZ();
         if (!PlayerSimulationUtil.E(blockPos)) {
             int n = -1;
             double d6 = 9999.0;

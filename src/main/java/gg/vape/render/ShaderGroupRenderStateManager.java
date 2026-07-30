@@ -21,7 +21,7 @@ public class ShaderGroupRenderStateManager {
         if (this.active) {
             return;
         }
-        if (ForgeVersion.MC_1_16_5.d() && ForgeVersion.MC_1_16_5_ACTUAL.B() && Vape.INSTANCE.isNativeAvailable() && !Vape.INSTANCE.isVanillaMinecraftPresent()) {
+        if (ForgeVersion.MC_1_16_5.d() && ForgeVersion.MC_1_16_5_ACTUAL.B() && Vape.INSTANCE.isForgeAbsent() && !Vape.INSTANCE.isVanillaMinecraftPresent()) {
             return;
         }
         GameSettings gameSettings = Minecraft.gameSettings();

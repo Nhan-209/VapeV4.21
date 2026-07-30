@@ -32,7 +32,7 @@ extends Mapping {
                 String string = "addEntityImpl";
                 MWorldClient mWorldClient = this;
                 mWorldClient.Y(string, bl, clazz, classArray);
-                Class clazz2 = MappedClasses.ZT;
+                Class clazz2 = MappedClasses.CLIENT_WORLD_INFO;
                 boolean bl2 = true;
                 String string2 = "clientLevelData";
                 Class clazz3 = MappedClasses.Z;
@@ -71,7 +71,7 @@ extends Mapping {
             String string3 = "addEntityImpl";
             MWorldClient mWorldClient3 = this;
             this.s = this.Y(string3, bl, clazz5, classArray2);
-            Class clazz6 = MappedClasses.ZT;
+            Class clazz6 = MappedClasses.CLIENT_WORLD_INFO;
             boolean bl3 = true;
             String string4 = "clientLevelData";
             Class clazz7 = MappedClasses.Z;

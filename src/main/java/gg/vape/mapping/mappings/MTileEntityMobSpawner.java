@@ -9,67 +9,59 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MTileEntityMobSpawner
 extends Mapping {
-    private static int[] E;
-    private final MappingMethod q;
+    private static int[] controlFlowState;
+    private final MappingMethod getSpawnerBaseLogicMethod;
 
-    public static int[] d() {
-        return E;
+    public static int[] getMobSpawnerControlFlowState() {
+        return controlFlowState;
     }
 
-    public static void N(int[] nArray) {
-        E = nArray;
+    public static void setMobSpawnerControlFlowState(int[] state) {
+        controlFlowState = state;
     }
 
-    private Object y(Object object) {
-        return this.q.invokeObject(object, new Object[0]);
+    public Object getSpawnerBaseLogic(Object mobSpawnerTileEntity) {
+        return this.getSpawnerBaseLogicMethod.invokeObject(mobSpawnerTileEntity, new Object[0]);
     }
 
     static {
-        MTileEntityMobSpawner.N(null);
-    }
-
-    public static Object H(MTileEntityMobSpawner mTileEntityMobSpawner, Object object) {
-        return mTileEntityMobSpawner.y(object);
+        MTileEntityMobSpawner.setMobSpawnerControlFlowState(null);
     }
 
 
     public MTileEntityMobSpawner() {
-        this(MTileEntityMobSpawner.d());
+        this(MTileEntityMobSpawner.getMobSpawnerControlFlowState());
     }
 
-    private MTileEntityMobSpawner(int[] nArray) {
-        super(MappedClasses.uO);
-        if (nArray != null) {
+    private MTileEntityMobSpawner(int[] controlFlowState) {
+        super(MappedClasses.MOB_SPAWNER_TILE_ENTITY);
+        if (controlFlowState != null) {
             if (Vape.INSTANCE.isVanillaMinecraftPresent()) {
-                Class[] classArray = new Class[]{};
-                Class clazz = MappedClasses.uj;
-                boolean bl = true;
-                String string = "getSpawnerBaseLogic";
-                MTileEntityMobSpawner mTileEntityMobSpawner = this;
-                mTileEntityMobSpawner.Y(string, bl, clazz, classArray);
+                Class[] parameterTypes = new Class[]{};
+                Class returnType = MappedClasses.MOB_SPAWNER_LOGIC;
+                boolean remap = true;
+                String methodName = "getSpawnerBaseLogic";
+                this.Y(methodName, remap, returnType, parameterTypes);
             }
-            Class[] classArray = new Class[]{};
-            Class clazz = MappedClasses.uj;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "func_145881_a";
-            MTileEntityMobSpawner mTileEntityMobSpawner = this;
-            this.q = mTileEntityMobSpawner.Y(string, bl, clazz, classArray);
+            Class[] parameterTypes = new Class[]{};
+            Class returnType = MappedClasses.MOB_SPAWNER_LOGIC;
+            boolean remap = Wrapper.isNativeAvailable;
+            String methodName = "func_145881_a";
+            this.getSpawnerBaseLogicMethod = this.Y(methodName, remap, returnType, parameterTypes);
             return;
         }
         if (Vape.INSTANCE.isVanillaMinecraftPresent() && ForgeVersion.MC_1_7_10.Y()) {
-            Class[] classArray = new Class[]{};
-            Class clazz = MappedClasses.uj;
-            boolean bl = true;
-            String string = "getSpawnerBaseLogic";
-            MTileEntityMobSpawner mTileEntityMobSpawner = this;
-            this.q = mTileEntityMobSpawner.Y(string, bl, clazz, classArray);
+            Class[] parameterTypes = new Class[]{};
+            Class returnType = MappedClasses.MOB_SPAWNER_LOGIC;
+            boolean remap = true;
+            String methodName = "getSpawnerBaseLogic";
+            this.getSpawnerBaseLogicMethod = this.Y(methodName, remap, returnType, parameterTypes);
         } else {
-            Class[] classArray = new Class[]{};
-            Class clazz = MappedClasses.uj;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "func_145881_a";
-            MTileEntityMobSpawner mTileEntityMobSpawner = this;
-            this.q = mTileEntityMobSpawner.Y(string, bl, clazz, classArray);
+            Class[] parameterTypes = new Class[]{};
+            Class returnType = MappedClasses.MOB_SPAWNER_LOGIC;
+            boolean remap = Wrapper.isNativeAvailable;
+            String methodName = "func_145881_a";
+            this.getSpawnerBaseLogicMethod = this.Y(methodName, remap, returnType, parameterTypes);
         }
     }
 }

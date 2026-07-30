@@ -169,7 +169,7 @@ extends Wrapper {
         Iterator iterator = potionVersionRange.i().iterator();
         ArrayList<Enchantment> arrayList = new ArrayList<Enchantment>();
         while (iterator.hasNext()) {
-            Holder holder = new Holder(new VertexFormatElement(iterator.next()).b$src$Ljava_lang_Object_$triqpo());
+            Holder holder = new Holder(new ObjectToIntMapEntry(iterator.next()).getKey());
             arrayList.add(new Enchantment(holder.N()));
         }
         return arrayList;
@@ -185,7 +185,7 @@ extends Wrapper {
 
     public ItemAttributeModifiers o() {
         if (ForgeVersion.MC_1_20_6.d()) {
-            EmptyItemAttributeModifiers emptyItemAttributeModifiers = EmptyItemAttributeModifiers.l();
+            EmptyItemAttributeModifiers emptyItemAttributeModifiers = EmptyItemAttributeModifiers.create();
             this.k(EntityEquipmentSlot.L(), emptyItemAttributeModifiers::v);
             return emptyItemAttributeModifiers;
         }

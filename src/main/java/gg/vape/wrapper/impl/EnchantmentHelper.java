@@ -28,10 +28,10 @@ extends Wrapper {
             return hashMap;
         }
         PotionVersionRange potionVersionRange = new PotionVersionRange(itemStack.w(DataComponents.O()));
-        for (Object e : potionVersionRange.i()) {
-            VertexFormatElement vertexFormatElement = new VertexFormatElement(e);
-            Holder holder = new Holder(vertexFormatElement.b$src$Ljava_lang_Object_$triqpo());
-            hashMap.put(holder, vertexFormatElement.b());
+        for (Object entryObject : potionVersionRange.i()) {
+            ObjectToIntMapEntry entry = new ObjectToIntMapEntry(entryObject);
+            Holder holder = new Holder(entry.getKey());
+            hashMap.put(holder, entry.getIntValue());
         }
         return hashMap;
     }
@@ -150,7 +150,7 @@ extends Wrapper {
                 return 0;
             }
             RegistryAccess registryAccess = worldClient.e();
-            Registry registry = registryAccess.getFluidState(ResourceKeyEnchantmentBridge.h());
+            Registry registry = registryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.h());
             Holder holder = registry.J(enchantment.getObject());
             return MEnchantmentHelper.X(EnchantmentHelper.vapeInstance.getMappings().Rk, holder.getObject(), itemStack.getObject());
         }

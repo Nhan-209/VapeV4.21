@@ -27,8 +27,8 @@ implements EventListener {
     private long lastAttackTime;
 
     public static Entity getEntityFromStatusPacket(SPacketEntityStatus packet) {
-        if (packet.o() == 2) {
-            return Minecraft.theWorld().V(packet.X());
+        if (packet.getLogicOpcode() == 2) {
+            return Minecraft.theWorld().V(packet.getEntityId());
         }
         return null;
     }
@@ -89,7 +89,7 @@ implements EventListener {
     @EventHandler
     public void onPacketSend(EventPacketSend eventPacketSend) {
         Packet packet = eventPacketSend.getPacket();
-        if (UseEntityPacketBridge.h(packet)) {
+        if (UseEntityPacketBridge.isUseEntityPacket(packet)) {
             this.recordAttack(new UseEntityPacketBridge(packet));
         }
     }
@@ -115,8 +115,8 @@ implements EventListener {
     }
 
     public static Entity getEntityFromAnimationPacket(SPacketAnimation packet) {
-        if (packet.x() == 1) {
-            return Minecraft.theWorld().V(packet.K());
+        if (packet.getAnimationType() == 1) {
+            return Minecraft.theWorld().V(packet.getEntityId());
         }
         return null;
     }
@@ -134,7 +134,7 @@ implements EventListener {
 
     private void recordAttack(UseEntityPacketBridge attackPacket) {
         Entity entity;
-        if (attackPacket.S() && (entity = Minecraft.theWorld().V(attackPacket.w())).isInstance(MappedClasses.zm)) {
+        if (attackPacket.isAttack() && (entity = Minecraft.theWorld().V(attackPacket.getEntityId())).isInstance(MappedClasses.zm)) {
             EntityLivingBase target = new EntityLivingBase(entity);
             if (target.c$src$I$15a9iwo() == 0 && System.currentTimeMillis() - this.lastHitTime > 400L) {
                 if (System.currentTimeMillis() - this.lastAttackTime > this.getAverageHitDelay() * 2L) {

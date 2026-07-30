@@ -28,13 +28,13 @@ extends Mod {
         boolean inGui = Minecraft.l$src$Z$b9uwii();
         if (inGui) {
             if (packet.isInstance(MappedClasses.DN)
-                    && new CPacketPlayerDigging(packet).f()) {
+                    && new CPacketPlayerDigging(packet).isReleaseUseItem()) {
                 event.setCancelled(true);
             }
             return;
         }
         if (packet.isInstance(MappedClasses.DN)
-                && new CPacketPlayerDigging(packet).f()
+                && new CPacketPlayerDigging(packet).isReleaseUseItem()
                 && this.allowedItems.matches(Minecraft.thePlayer().B$src$Lgg_vape_wrapper_impl_ItemStack_$impdvt())) {
             event.setCancelled(true);
         }

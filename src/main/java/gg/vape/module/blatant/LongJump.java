@@ -68,7 +68,7 @@ extends Mod {
         }
         boolean hasEnoughFood = player.Y$src$Lgg_vape_wrapper_impl_FoodStats_$fakh1z().getFoodLevel() >= 6;
         boolean onFastSurface = eventPreMove.getWorld().getBlockState(BlockPos.D(player.z(), player.N() - 0.1, player.h())).getBlock().c() == 0.98f;
-        double baseSpeed = this.moveSpeed = this.getBaseMoveSpeed(player) * (player.d(Material.w()) ? 0.5 : (player.P() ? 0.8 : (player.Q$src$Z$fh9faz() || player.h$src$Z$ftwoya() ? 0.54 : (onFastSurface ? 2.4 : (hasEnoughFood ? 1.0 : 0.765)))));
+        double baseSpeed = this.moveSpeed = this.getBaseMoveSpeed(player) * (player.d(Material.vine()) ? 0.5 : (player.P() ? 0.8 : (player.Q$src$Z$fh9faz() || player.h$src$Z$ftwoya() ? 0.54 : (onFastSurface ? 2.4 : (hasEnoughFood ? 1.0 : 0.765)))));
         if (player.b$src$Z$fqlxe4()) {
             if (this.wasOnGround) {
                 this.moveSpeed = baseSpeed * (Double)this.boost.getValue();
@@ -128,4 +128,3 @@ extends Mod {
         return yaw * (float)Math.PI / 180;
     }
 }
-

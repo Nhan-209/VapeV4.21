@@ -10,13 +10,13 @@ public class WorldTimeEventMappingTask
 extends JavassistMappingTask {
     @Override
     public void transform() {
-        EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(Vape.INSTANCE.getMappings().Dw.m, EventWorldTime.class);
+        EventInjectionSpec eventInjectionSpec = new EventInjectionSpec(Vape.INSTANCE.getMappings().worldInfo.getWorldTimeMethod, EventWorldTime.class);
         eventInjectionSpec.setConstructorArguments("$0");
         eventInjectionSpec.setReturnExpression("$event.getWorldTime()");
         this.registerEventInjection(eventInjectionSpec);
     }
 
     public WorldTimeEventMappingTask() {
-        super(MappedClasses.FP);
+        super(MappedClasses.WORLD_INFO);
     }
 }

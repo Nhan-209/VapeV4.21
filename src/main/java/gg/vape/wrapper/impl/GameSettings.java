@@ -92,7 +92,7 @@ extends Wrapper {
         if (ForgeVersion.MC_1_16_5.d()) {
             Object object = MGameSettings.g(GameSettings.vapeInstance.getMappings().RM, this.I);
             int n = 0;
-            for (PointOfView pointOfView : PointOfView.F()) {
+            for (PointOfView pointOfView : PointOfView.values()) {
                 if (pointOfView.getObject() == object) {
                     return n;
                 }
@@ -194,7 +194,7 @@ extends Wrapper {
 
     public void I(int n) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            PointOfView pointOfView = PointOfView.F()[n];
+            PointOfView pointOfView = PointOfView.values()[n];
             MGameSettings.E(GameSettings.vapeInstance.getMappings().RM, this.I, pointOfView.getObject());
             return;
         }

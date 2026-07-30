@@ -17,8 +17,8 @@ extends HudModule {
 
     private void applyWorldTime(WorldClient worldClient, long time) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            worldClient.F().z(time);
-            worldClient.F().R(time);
+            worldClient.getWorldInfo().setGameTime(time);
+            worldClient.getWorldInfo().setDayTime(time);
         } else {
             worldClient.i(time);
         }

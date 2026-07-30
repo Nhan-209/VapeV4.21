@@ -4,168 +4,171 @@ import gg.vape.wrapper.Wrapper;
 
 public class Foods
 extends Wrapper {
-    public static FoodProperties B() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.c());
+    public Foods(Object handle) {
+        super(handle);
     }
 
-    public static FoodProperties D() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.l());
+    public static FoodProperties apple() {
+        return wrap(Foods.vapeInstance.getMappings().foods.apple());
     }
 
-    public static FoodProperties J() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.K());
+    public static FoodProperties bakedPotato() {
+        return wrap(Foods.vapeInstance.getMappings().foods.bakedPotato());
     }
 
-    public static FoodProperties b() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.w());
+    public static FoodProperties beef() {
+        return wrap(Foods.vapeInstance.getMappings().foods.beef());
     }
 
-    public static FoodProperties m$src$Lgg_vape_wrapper_impl_FoodProperties_$46vcvu() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.X());
+    public static FoodProperties beetroot() {
+        return wrap(Foods.vapeInstance.getMappings().foods.beetroot());
     }
 
-    public static FoodProperties o() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.H());
+    public static FoodProperties beetrootSoup() {
+        return wrap(Foods.vapeInstance.getMappings().foods.beetrootSoup());
     }
 
-    public static FoodProperties H() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.S());
+    public static FoodProperties bread() {
+        return wrap(Foods.vapeInstance.getMappings().foods.bread());
     }
 
-    public static FoodProperties y() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.P());
+    public static FoodProperties carrot() {
+        return wrap(Foods.vapeInstance.getMappings().foods.carrot());
     }
 
-    public static FoodProperties I() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.y());
+    public static FoodProperties chicken() {
+        return wrap(Foods.vapeInstance.getMappings().foods.chicken());
     }
 
-    public static FoodProperties u() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.O());
+    public static FoodProperties chorusFruit() {
+        return wrap(Foods.vapeInstance.getMappings().foods.chorusFruit());
     }
 
-    public static FoodProperties e() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.R());
+    public static FoodProperties cod() {
+        return wrap(Foods.vapeInstance.getMappings().foods.cod());
     }
 
-    public static FoodProperties x() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.E$src$Ljava_lang_Object_$o5u6ty());
+    public static FoodProperties cookedBeef() {
+        return wrap(Foods.vapeInstance.getMappings().foods.cookedBeef());
     }
 
-    public static FoodProperties l() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.z());
+    public static FoodProperties cookedChicken() {
+        return wrap(Foods.vapeInstance.getMappings().foods.cookedChicken());
     }
 
-    public static FoodProperties Y() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.d());
+    public static FoodProperties cookedCod() {
+        return wrap(Foods.vapeInstance.getMappings().foods.cookedCod());
     }
 
-    public static FoodProperties O() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.T());
+    public static FoodProperties cookedMutton() {
+        return wrap(Foods.vapeInstance.getMappings().foods.cookedMutton());
     }
 
-    public static FoodProperties q() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.p());
+    public static FoodProperties cookedPorkchop() {
+        return wrap(Foods.vapeInstance.getMappings().foods.cookedPorkchop());
     }
 
-    public static FoodProperties c() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.o());
+    public static FoodProperties cookedRabbit() {
+        return wrap(Foods.vapeInstance.getMappings().foods.cookedRabbit());
     }
 
-    public static FoodProperties P() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.m());
+    public static FoodProperties cookedSalmon() {
+        return wrap(Foods.vapeInstance.getMappings().foods.cookedSalmon());
     }
 
-    public static FoodProperties Q() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.B());
+    public static FoodProperties cookie() {
+        return wrap(Foods.vapeInstance.getMappings().foods.cookie());
     }
 
-    public static FoodProperties a() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.W());
+    public static FoodProperties driedKelp() {
+        return wrap(Foods.vapeInstance.getMappings().foods.driedKelp());
     }
 
-    public static FoodProperties s() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.Y());
+    public static FoodProperties enchantedGoldenApple() {
+        return wrap(Foods.vapeInstance.getMappings().foods.enchantedGoldenApple());
     }
 
-    public static FoodProperties R() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.j());
+    public static FoodProperties goldenApple() {
+        return wrap(Foods.vapeInstance.getMappings().foods.goldenApple());
     }
 
-    public static FoodProperties Z() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.s());
+    public static FoodProperties goldenCarrot() {
+        return wrap(Foods.vapeInstance.getMappings().foods.goldenCarrot());
     }
 
-    public static FoodProperties n() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.F());
+    public static FoodProperties honeyBottle() {
+        return wrap(Foods.vapeInstance.getMappings().foods.honeyBottle());
     }
 
-    public static FoodProperties U() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.U());
+    public static FoodProperties melonSlice() {
+        return wrap(Foods.vapeInstance.getMappings().foods.melonSlice());
     }
 
-    public static FoodProperties w() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.t());
+    public static FoodProperties mushroomStew() {
+        return wrap(Foods.vapeInstance.getMappings().foods.mushroomStew());
     }
 
-    public static FoodProperties r() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.f());
+    public static FoodProperties mutton() {
+        return wrap(Foods.vapeInstance.getMappings().foods.mutton());
     }
 
-    public static FoodProperties j() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.e());
+    public static FoodProperties poisonousPotato() {
+        return wrap(Foods.vapeInstance.getMappings().foods.poisonousPotato());
     }
 
-    public static FoodProperties i() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.J());
+    public static FoodProperties porkchop() {
+        return wrap(Foods.vapeInstance.getMappings().foods.porkchop());
     }
 
-    public Foods(Object object) {
-        super(object);
+    public static FoodProperties potato() {
+        return wrap(Foods.vapeInstance.getMappings().foods.potato());
     }
 
-    public static FoodProperties k() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.V());
+    public static FoodProperties pufferfish() {
+        return wrap(Foods.vapeInstance.getMappings().foods.pufferfish());
     }
 
-    public static FoodProperties d() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.C());
+    public static FoodProperties pumpkinPie() {
+        return wrap(Foods.vapeInstance.getMappings().foods.pumpkinPie());
     }
 
-    public static FoodProperties W() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.n());
+    public static FoodProperties rabbit() {
+        return wrap(Foods.vapeInstance.getMappings().foods.rabbit());
     }
 
-    public static FoodProperties K() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.r());
+    public static FoodProperties rabbitStew() {
+        return wrap(Foods.vapeInstance.getMappings().foods.rabbitStew());
     }
 
-    public static FoodProperties T() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.Q());
+    public static FoodProperties rottenFlesh() {
+        return wrap(Foods.vapeInstance.getMappings().foods.rottenFlesh());
     }
 
-    public static FoodProperties p() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.a());
+    public static FoodProperties salmon() {
+        return wrap(Foods.vapeInstance.getMappings().foods.salmon());
     }
 
-    public static FoodProperties G() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.k());
+    public static FoodProperties spiderEye() {
+        return wrap(Foods.vapeInstance.getMappings().foods.spiderEye());
     }
 
-    public static FoodProperties A() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.g());
+    public static FoodProperties suspiciousStew() {
+        return wrap(Foods.vapeInstance.getMappings().foods.suspiciousStew());
     }
 
-    public static FoodProperties F() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.D());
+    public static FoodProperties sweetBerries() {
+        return wrap(Foods.vapeInstance.getMappings().foods.sweetBerries());
     }
 
-    public static FoodProperties M() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.x());
+    public static FoodProperties glowBerries() {
+        return wrap(Foods.vapeInstance.getMappings().foods.glowBerries());
     }
 
-    public static FoodProperties C() {
-        return new FoodProperties(Foods.vapeInstance.getMappings().hT.v());
+    public static FoodProperties tropicalFish() {
+        return wrap(Foods.vapeInstance.getMappings().foods.tropicalFish());
+    }
+
+    private static FoodProperties wrap(Object handle) {
+        return new FoodProperties(handle);
     }
 }
-

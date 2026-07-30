@@ -9,66 +9,64 @@ import gg.vape.wrapper.impl.TileEntity;
 
 public class MTileEntity
 extends Mapping {
-    private MappingField q;
-    private MappingField e;
-    private MappingField J;
-    private MappingField n;
+    private MappingField xCoordinateField;
+    private MappingField yCoordinateField;
+    private MappingField zCoordinateField;
+    private MappingField positionField;
 
-    public Object D(Object object) {
-        return this.n.getObject(object);
+    public Object getBlockPos(Object tileEntity) {
+        return this.positionField.getObject(tileEntity);
     }
 
-    public int K(Object object) {
-        return this.e.getInt(object);
+    public int getY(Object tileEntity) {
+        return this.yCoordinateField.getInt(tileEntity);
     }
 
-    public int E(Object object) {
-        return this.q.getInt(object);
+    public int getX(Object tileEntity) {
+        return this.xCoordinateField.getInt(tileEntity);
     }
 
     public MTileEntity() {
-        this(MTileEntityMobSpawner.d());
+        this(MTileEntityMobSpawner.getMobSpawnerControlFlowState());
     }
 
-    private MTileEntity(int[] nArray) {
+    private MTileEntity(int[] initializationState) {
         super(MappedClasses.ZI);
-        TileEntity.j(ForgeVersion.MC_1_7_10.L());
-        if (nArray != null) {
-            Class clazz = MappedClasses.lf;
-            boolean bl = true;
-            String string = "pos";
-            MTileEntity mTileEntity = this;
-            this.n = mTileEntity.J(string, bl, clazz);
+        TileEntity.setUsesLegacyCoordinates(ForgeVersion.MC_1_7_10.L());
+        if (initializationState != null) {
+            Class positionType = MappedClasses.lf;
+            boolean remap = true;
+            String fieldName = "pos";
+            MTileEntity mappings = this;
+            this.positionField = mappings.J(fieldName, remap, positionType);
             return;
         }
         if (ForgeVersion.MC_1_7_10.L()) {
-            Class<Integer> clazz = Integer.TYPE;
-            boolean bl = true;
-            String string = "xCoord";
-            MTileEntity mTileEntity = this;
-            this.q = mTileEntity.J(string, bl, clazz);
-            Class<Integer> clazz2 = Integer.TYPE;
-            boolean bl2 = true;
-            String string2 = "yCoord";
-            MTileEntity mTileEntity2 = this;
-            this.e = this.J(string2, bl2, clazz2);
-            Class<Integer> clazz3 = Integer.TYPE;
-            boolean bl3 = true;
-            String string3 = "zCoord";
-            MTileEntity mTileEntity3 = this;
-            this.J = this.J(string3, bl3, clazz3);
+            Class<Integer> coordinateType = Integer.TYPE;
+            boolean remapXField = true;
+            String xFieldName = "xCoord";
+            MTileEntity mappings = this;
+            this.xCoordinateField = mappings.J(xFieldName, remapXField, coordinateType);
+            Class<Integer> yCoordinateType = Integer.TYPE;
+            boolean remapYField = true;
+            String yFieldName = "yCoord";
+            this.yCoordinateField = this.J(yFieldName, remapYField, yCoordinateType);
+            Class<Integer> zCoordinateType = Integer.TYPE;
+            boolean remapZField = true;
+            String zFieldName = "zCoord";
+            this.zCoordinateField = this.J(zFieldName, remapZField, zCoordinateType);
         } else {
-            Class clazz = MappedClasses.lf;
-            boolean bl = true;
-            String string = "pos";
-            MTileEntity mTileEntity = this;
-            this.n = mTileEntity.J(string, bl, clazz);
+            Class positionType = MappedClasses.lf;
+            boolean remap = true;
+            String fieldName = "pos";
+            MTileEntity mappings = this;
+            this.positionField = mappings.J(fieldName, remap, positionType);
         }
     }
 
 
-    public int g(Object object) {
-        return this.J.getInt(object);
+    public int getZ(Object tileEntity) {
+        return this.zCoordinateField.getInt(tileEntity);
     }
 }
 

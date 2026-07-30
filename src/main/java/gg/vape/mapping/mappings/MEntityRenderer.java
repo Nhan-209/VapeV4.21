@@ -19,7 +19,7 @@ extends Mapping {
     public MappingMethod V;
     private MappingMethod m;
     private MappingField c;
-    private MappingField T;
+    private MappingField fogRendererField;
     private MappingField f;
     public MappingMethod C;
     public MappingMethod H;
@@ -316,8 +316,8 @@ extends Mapping {
         MEntityRenderer.c(0);
     }
 
-    public static Object s(MEntityRenderer mEntityRenderer, Object object) {
-        return mEntityRenderer.B(object);
+    public static Object getFogRenderer(MEntityRenderer mappings, Object entityRenderer) {
+        return mappings.getFogRendererHandle(entityRenderer);
     }
 
     private void d(Object object, Object object2) {
@@ -382,11 +382,11 @@ extends Mapping {
             String string = "screenEffectRenderer";
             MEntityRenderer mEntityRenderer = this;
             this.A = mEntityRenderer.J(string, bl, clazz);
-            Class clazz10 = MappedClasses.Dq;
+            Class clazz10 = MappedClasses.FOG_RENDERER;
             boolean bl6 = true;
             String string6 = "fogRenderer";
             MEntityRenderer mEntityRenderer6 = this;
-            this.T = this.J(string6, bl6, clazz10);
+            this.fogRendererField = this.J(string6, bl6, clazz10);
             Class clazz11 = MappedClasses.w;
             boolean bl7 = true;
             String string7 = "guiRenderer";
@@ -545,7 +545,7 @@ extends Mapping {
         } else {
             Class clazz = MappedClasses.Fo;
             boolean bl = true;
-            String string = "theShaderGroup";
+            String string = ForgeVersion.c() >= 23 ? "shaderGroup" : "theShaderGroup";
             MEntityRenderer mEntityRenderer = this;
             this.N = mEntityRenderer.J(string, bl, clazz);
             Class clazz27 = MappedClasses.zc;
@@ -751,8 +751,8 @@ extends Mapping {
         mEntityRenderer.L(object, f);
     }
 
-    private Object B(Object object) {
-        return this.T.getObject(object);
+    private Object getFogRendererHandle(Object entityRenderer) {
+        return this.fogRendererField.getObject(entityRenderer);
     }
 
     private Object J(Object object) {

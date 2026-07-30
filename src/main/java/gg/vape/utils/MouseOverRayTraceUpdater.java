@@ -82,7 +82,7 @@ public class MouseOverRayTraceUpdater {
                 Vec3 vec34 = entityRayTraceResult.getHitVec();
                 double d5 = vec3.H(vec34);
                 if (bl && d5 > (double)(f * f)) {
-                    Minecraft.O(BlockRayTraceResult.o(vec34, Direction.i(vec32.getX(), vec32.getY(), vec32.getZ()), BlockPos.P(vec34)));
+                    Minecraft.O(BlockRayTraceResult.createMiss(vec34, Direction.i(vec32.getX(), vec32.getY(), vec32.getZ()), BlockPos.P(vec34)));
                 } else if (d5 < d2 || Minecraft.p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0().isNull()) {
                     Minecraft.O(entityRayTraceResult);
                     if (entity2.isInstance(MappedClasses.zm) || entity2.isInstance(MappedClasses.lL)) {
@@ -259,7 +259,7 @@ public class MouseOverRayTraceUpdater {
                 Vec3 vec34 = entityRayTraceResult.getHitVec();
                 double d5 = vec3.H(vec34);
                 if (bl && d5 > (double)(f * f)) {
-                    Minecraft.O(BlockRayTraceResult.o(vec34, Direction.i(vec32.getX(), vec32.getY(), vec32.getZ()), BlockPos.P(vec34)));
+                    Minecraft.O(BlockRayTraceResult.createMiss(vec34, Direction.i(vec32.getX(), vec32.getY(), vec32.getZ()), BlockPos.P(vec34)));
                 } else if (d5 < d2 || Minecraft.p$src$Lgg_vape_wrapper_impl_RayTraceResult_$5rw6n0().isNull()) {
                     Minecraft.O(entityRayTraceResult);
                     if (entity2.isInstance(MappedClasses.zm) || entity2.isInstance(MappedClasses.lL)) {

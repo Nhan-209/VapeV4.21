@@ -70,14 +70,14 @@ public class NameTagsNameState {
                 matrixStack.H();
                 Quaternion quaternion = renderManager.getCameraOrientation();
                 matrixStack.i(quaternion);
-                matrixStack.i(Quaternion.K(180.0f, 0.0f, 180.0f, true));
+                matrixStack.i(Quaternion.fromEulerAngles(180.0f, 0.0f, 180.0f, true));
                 int packedLight = 0xF000F0;
                 if (ForgeVersion.MC_1_20_6.d()) {
                     Minecraft.getFontRenderer().B(stackCount + "", (float)(x + 7.0), (float)(y + 9.0), textColor, true, null, SharedMonsterAttributes.V(), null);
                 } else {
                     ScorePlayerTeamTextComponent textComponent = ScorePlayerTeamTextComponent.B(stackCount + "");
                     RenderItemFontBridge fontBuffer = RenderItemFontBridge.V(Tessellator.getInstance().getWorldRenderer());
-                    Minecraft.getFontRenderer().Z(textComponent, (float)(x + 7.0), (float)(y + 9.0), textColor, true, matrixStack.F().u(), fontBuffer, true, 0, packedLight);
+                    Minecraft.getFontRenderer().Z(textComponent, (float)(x + 7.0), (float)(y + 9.0), textColor, true, matrixStack.F().getMatrix(), fontBuffer, true, 0, packedLight);
                     fontBuffer.q();
                 }
                 matrixStack.U();

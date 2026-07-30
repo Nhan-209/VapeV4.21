@@ -8,28 +8,23 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MBlockReader
 extends Mapping {
-    private final MappingMethod A;
+    private final MappingMethod clipContextConstructor;
 
     public MBlockReader() {
         this(MITooltipFlagBridge.D());
     }
 
-    private MBlockReader(GuiComponent[] guiComponentArray) {
+    private MBlockReader(GuiComponent[] controlFlowState) {
         super(MappedClasses.ZS);
-        if (guiComponentArray != null) {
-            Class[] classArray = new Class[]{MappedClasses.qP, MappedClasses.qP, MappedClasses.lN, MappedClasses.Y9, MappedClasses.zc};
-            MBlockReader mBlockReader = this;
-            this.A = mBlockReader.registerConstructor(classArray);
+        if (controlFlowState != null) {
+            this.clipContextConstructor = this.registerConstructor(new Class[]{MappedClasses.qP, MappedClasses.qP, MappedClasses.lN, MappedClasses.Y9, MappedClasses.zc});
             return;
         }
-        Class[] classArray = new Class[]{MappedClasses.qP, MappedClasses.qP, MappedClasses.lN, MappedClasses.Y9, MappedClasses.zc};
-        MBlockReader mBlockReader = this;
-        this.A = mBlockReader.registerConstructor(classArray);
+        this.clipContextConstructor = this.registerConstructor(new Class[]{MappedClasses.qP, MappedClasses.qP, MappedClasses.lN, MappedClasses.Y9, MappedClasses.zc});
         GuiComponent.setLegacyComponentState(new GuiComponent[1]);
     }
 
-
-    public Object n(Object object, Object object2, Object object3, Object object4, Object object5) {
-        return this.A.newInstance(object, object2, object3, object4, object5);
+    public Object createClipContext(Object from, Object to, Object blockMode, Object fluidMode, Object entity) {
+        return this.clipContextConstructor.newInstance(from, to, blockMode, fluidMode, entity);
     }
 }

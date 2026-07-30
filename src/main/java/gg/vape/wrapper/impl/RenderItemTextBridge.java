@@ -41,14 +41,14 @@ extends Wrapper {
         }
         if (ForgeVersion.MC_1_21_6.d()) {
             if (matrixStack.getObject() == null) {
-                return new RenderItemTextBridge(MAbstractGui.y(RenderItemTextBridge.vapeInstance.getMappings().qQ, Minecraft.i(), Matrix4fHandle.b(16).getObject(), Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox().getObject(), new Object[0]));
+                return new RenderItemTextBridge(MAbstractGui.y(RenderItemTextBridge.vapeInstance.getMappings().qQ, Minecraft.i(), Matrix4fHandle.b(16).getObject(), Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBufferSource().getObject(), new Object[0]));
             }
             if (matrixStack.isInstance(MappedClasses.Dy)) {
                 return RenderItemTextBridge.l(new Matrix4fHandle(matrixStack.getObject()));
             }
             Matrix4fHandle matrix4fHandle = Matrix4fHandle.b(16);
             matrix4fHandle.o();
-            float[] fArray = matrixStack.F().u().m$src$Lgg_vape_utils_render_RenderMatrix4f_$1hodrum().elements;
+            float[] fArray = matrixStack.F().getMatrix().m$src$Lgg_vape_utils_render_RenderMatrix4f_$1hodrum().elements;
             matrix4fHandle.K(fArray[0]);
             matrix4fHandle.m(fArray[1]);
             matrix4fHandle.z(fArray[4]);
@@ -57,7 +57,7 @@ extends Wrapper {
             matrix4fHandle.T(fArray[13]);
             return RenderItemTextBridge.l(matrix4fHandle);
         }
-        return new RenderItemTextBridge(MAbstractGui.y(RenderItemTextBridge.vapeInstance.getMappings().qQ, Minecraft.i(), matrixStack.getObject(), Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox().getObject(), new Object[0]));
+        return new RenderItemTextBridge(MAbstractGui.y(RenderItemTextBridge.vapeInstance.getMappings().qQ, Minecraft.i(), matrixStack.getObject(), Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBufferSource().getObject(), new Object[0]));
     }
 
     public static RenderItemTextBridge l(Matrix4fHandle matrix4fHandle) {
@@ -82,7 +82,7 @@ extends Wrapper {
             MAbstractGui.e(RenderItemTextBridge.vapeInstance.getMappings().qQ, object, resourceLocation.getObject(), n, n2, n3, n4, n5, f, f2, f3, f4);
             return;
         }
-        MAbstractGui.e(RenderItemTextBridge.vapeInstance.getMappings().qQ, object, matrixStack.F().u().getObject(), n, n2, n3, n4, n5, f, f2, f3, f4);
+        MAbstractGui.e(RenderItemTextBridge.vapeInstance.getMappings().qQ, object, matrixStack.F().getMatrix().getObject(), n, n2, n3, n4, n5, f, f2, f3, f4);
     }
 
     public void k() {

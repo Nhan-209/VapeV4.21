@@ -270,12 +270,12 @@ extends MemberNameRemapTable {
     }
 
     protected void J() {
-        this.t(MappedClasses.zv, "m_142232_", "get");
+        this.t(MappedClasses.LEVEL_ENTITY_GETTER, "m_142232_", "get");
     }
 
     protected void O() {
-        this.B(MappedClasses.DL, "value", "nutrition");
-        this.B(MappedClasses.DL, "saturation", "saturation");
+        this.B(MappedClasses.ITEM_FOOD, "value", "nutrition");
+        this.B(MappedClasses.ITEM_FOOD, "saturation", "saturation");
     }
 
     protected void bc() {
@@ -614,7 +614,7 @@ extends MemberNameRemapTable {
     }
 
     protected void AB() {
-        this.f(MappedClasses.Dq, "setupFog", "setupFog", MappedClasses.DH, MappedClasses.lt, MappedClasses.uw, MappedClasses.FC, Float.TYPE, Boolean.TYPE, Float.TYPE);
+        this.f(MappedClasses.FOG_RENDERER, "setupFog", "setupFog", MappedClasses.DH, MappedClasses.lt, MappedClasses.FOG_TYPE, MappedClasses.FC, Float.TYPE, Boolean.TYPE, Float.TYPE);
     }
 
     protected void bz() {
@@ -681,8 +681,8 @@ extends MemberNameRemapTable {
     }
 
     protected void S() {
-        this.t(MappedClasses.uO, "getSpawnerBaseLogic", "getSpawner");
-        this.t(MappedClasses.uO, "func_145881_a", "getSpawner");
+        this.t(MappedClasses.MOB_SPAWNER_TILE_ENTITY, "getSpawnerBaseLogic", "getSpawner");
+        this.t(MappedClasses.MOB_SPAWNER_TILE_ENTITY, "func_145881_a", "getSpawner");
     }
 
     protected void G() {
@@ -830,7 +830,7 @@ extends MemberNameRemapTable {
     }
 
     protected void C$src$V$tfe5zj() {
-        this.t(MappedClasses.qG, "setAllVisible", "setAll");
+        this.t(MappedClasses.SET_VISIBILITY, "setAllVisible", "setAll");
     }
 
     protected void ba() {
@@ -901,8 +901,8 @@ extends MemberNameRemapTable {
     }
 
     protected void x() {
-        this.t(MappedClasses.Y7, "computeVisibility", "resolve");
-        this.t(MappedClasses.Y7, "setOpaqueCube", "setOpaque");
+        this.t(MappedClasses.VIS_GRAPH, "computeVisibility", "resolve");
+        this.t(MappedClasses.VIS_GRAPH, "setOpaqueCube", "setOpaque");
     }
 
     protected void AS() {

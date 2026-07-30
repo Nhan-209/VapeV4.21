@@ -60,7 +60,7 @@ extends Wrapper {
             matrix4fHandle.N();
             return 0;
         }
-        RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
+        RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBufferSource();
         int n2 = this.p(string, (float)d, (float)d2, n, bl, renderMatrix4f.toMinecraftMatrix(), renderItemFontBridge, sharedMonsterAttributes, 0, 15728880);
         renderItemFontBridge.q();
         return n2;
@@ -176,7 +176,7 @@ extends Wrapper {
     }
 
     private Void lambda$drawString3D$0(String string, double d, double d2, int n, boolean bl, RenderMatrix4f renderMatrix4f, SharedMonsterAttributes sharedMonsterAttributes) {
-        RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
+        RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBufferSource();
         GlStateManager.disableDepth();
         this.p(string, (float)d, (float)d2, n, bl, renderMatrix4f.toMinecraftMatrix(), renderItemFontBridge, sharedMonsterAttributes, 0, 15728880);
         renderItemFontBridge.q();
@@ -186,7 +186,7 @@ extends Wrapper {
 
     public int s(String string, double d, double d2, int n, boolean bl, MatrixStack matrixStack, GlScissorRect glScissorRect) {
         if (ForgeVersion.MC_1_20_6.d()) {
-            return this.B(string, d, d2, n, bl, matrixStack.F().u().m$src$Lgg_vape_utils_render_RenderMatrix4f_$1hodrum(), SharedMonsterAttributes.V(), glScissorRect);
+            return this.B(string, d, d2, n, bl, matrixStack.F().getMatrix().m$src$Lgg_vape_utils_render_RenderMatrix4f_$1hodrum(), SharedMonsterAttributes.V(), glScissorRect);
         }
         if (ForgeVersion.MC_1_16_5.d()) {
             if (bl) {

@@ -152,7 +152,7 @@ public class RayTraceUtil {
                 Vec3 vec34 = entityRayTraceResult.getHitVec();
                 double d5 = vec3.H(vec34);
                 if (bl2 && d5 > (double)(f * f)) {
-                    rayTraceResult = BlockRayTraceResult.o(vec34, Direction.i(vec32.getX(), vec32.getY(), vec32.getZ()), BlockPos.P(vec34));
+                    rayTraceResult = BlockRayTraceResult.createMiss(vec34, Direction.i(vec32.getX(), vec32.getY(), vec32.getZ()), BlockPos.P(vec34));
                 } else if (d5 < d2 || rayTraceResult.isNull()) {
                     rayTraceResult = entityRayTraceResult;
                 }
@@ -196,7 +196,7 @@ public class RayTraceUtil {
         Vec3 vec32 = rayTraceResult.getHitVec();
         if (vec32.A(vec3) >= d * d) {
             Direction direction = Direction.i(vec32.getX() - vec3.getX(), vec32.getY() - vec3.getY(), vec32.getZ() - vec3.getZ());
-            return BlockRayTraceResult.o(vec32, direction, BlockPos.P(vec32));
+            return BlockRayTraceResult.createMiss(vec32, direction, BlockPos.P(vec32));
         }
         return rayTraceResult;
     }

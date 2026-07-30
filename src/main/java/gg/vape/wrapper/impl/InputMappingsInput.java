@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class InputMappingsInput
 extends Wrapper {
-    public InputMappingsInput(Object object) {
-        super(object);
+    public InputMappingsInput(Object wrappedObject) {
+        super(wrappedObject);
     }
 
-    public int R() {
-        return MInputMappingsInput.B(InputMappingsInput.vapeInstance.getMappingsMapperCompat().hm, this.I);
+    public int getKeyCode() {
+        return MInputMappingsInput.getKeyCode(InputMappingsInput.vapeInstance.getMappingsMapperCompat().hm, this.I);
     }
 }
-

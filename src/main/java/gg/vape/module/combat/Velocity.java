@@ -93,7 +93,7 @@ extends Mod {
 
     private SPacketEntityVelocity buildVelocityPacket(SPacketEntityVelocity originalPacket,
                                                        double motionX, double motionY, double motionZ) {
-        Object packetHandle = Vape.INSTANCE.getMappings().s.Y(
+        Object packetHandle = Vape.INSTANCE.getMappings().s.createPacket(
                 originalPacket.getEntityId(), motionX, motionY, motionZ);
         return new SPacketEntityVelocity(packetHandle);
     }

@@ -9,12 +9,11 @@ extends Wrapper {
         super(object);
     }
 
-    public static InputMappingsInput x(int n, int n2) {
+    public static InputMappingsInput x(int keyCode, int scanCode) {
         if (ForgeVersion.MC_1_21_10.d()) {
-            InputMappingsInputFactory wg_22 = InputMappingsInputFactory.F(n, n2, 0);
-            return new InputMappingsInput(MInputMappingsBridge.a(InputMappingsBridge.vapeInstance.getMappingsMapperCompat().CE, wg_22.getObject()));
+            InputMappingsInputFactory keyEvent = InputMappingsInputFactory.create(keyCode, scanCode, 0);
+            return new InputMappingsInput(MInputMappingsBridge.a(InputMappingsBridge.vapeInstance.getMappingsMapperCompat().CE, keyEvent.getObject()));
         }
-        return new InputMappingsInput(MInputMappingsBridge.e(InputMappingsBridge.vapeInstance.getMappingsMapperCompat().CE, n, n2));
+        return new InputMappingsInput(MInputMappingsBridge.e(InputMappingsBridge.vapeInstance.getMappingsMapperCompat().CE, keyCode, scanCode));
     }
 }
-

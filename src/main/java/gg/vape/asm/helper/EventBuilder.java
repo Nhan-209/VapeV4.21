@@ -2,7 +2,6 @@ package gg.vape.asm.helper;
 
 import gg.vape.Vape;
 import gg.vape.asm.ITramsformNode;
-import gg.vape.asm.helper.MethodInfo;
 import gg.vape.event.EventBus;
 import gg.vape.wrapper.impl.LaunchClassLoader;
 import java.util.ArrayList;
@@ -190,7 +189,7 @@ public class EventBuilder {
     public EventBuilder(int injectionPoint, Class eventClass, ClassNode classNode, MethodInfo methodInfo,
                         boolean staticMethod, ITramsformNode ... transformNodes) {
         this.eventStartLabel = new LabelNode(new Label());
-        if (!Vape.INSTANCE.isNativeAvailable()) {
+        if (!Vape.INSTANCE.isForgeAbsent()) {
             LaunchClassLoader.getLaunchClassLoader().cachedClasses().put(eventClass.getName(), eventClass);
         }
         for (MethodNode candidate : classNode.methods) {

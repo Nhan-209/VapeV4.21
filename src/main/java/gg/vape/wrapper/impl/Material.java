@@ -4,61 +4,61 @@ import gg.vape.wrapper.Wrapper;
 
 public class Material
 extends Wrapper {
-    private static Material a;
-    private static Material Y;
-    private static Material h;
+    private static Material air;
+    private static Material water;
+    private static Material vine;
 
-    public boolean u() {
-        return Material.vapeInstance.getMappingsMapperCompat().Cn.M(this.I);
+    public boolean isReplaceable() {
+        return Material.vapeInstance.getMappingsMapperCompat().Cn.isReplaceable(this.I);
     }
 
 
-    public static Material w() {
-        if (h == null) {
-            h = new Material(Material.vapeInstance.getMappingsMapperCompat().Cn.A());
+    public static Material vine() {
+        if (vine == null) {
+            vine = new Material(Material.vapeInstance.getMappingsMapperCompat().Cn.getVine());
         }
-        return h;
+        return vine;
     }
 
-    public boolean s() {
+    public boolean isToolNotRequired() {
         if (ForgeVersion.MC_1_16_5.d()) {
             return false;
         }
-        return Material.vapeInstance.getMappingsMapperCompat().Cn.b(this.I);
+        return Material.vapeInstance.getMappingsMapperCompat().Cn.isToolNotRequired(this.I);
     }
 
-    public static Material k() {
-        if (a == null) {
-            a = new Material(Material.vapeInstance.getMappingsMapperCompat().Cn.q());
+    public static Material air() {
+        if (air == null) {
+            air = new Material(Material.vapeInstance.getMappingsMapperCompat().Cn.getAir());
         }
-        return a;
+        return air;
     }
 
-    public static Material f() {
-        if (Y == null) {
-            Y = new Material(Material.vapeInstance.getMappingsMapperCompat().Cn.m());
+    public static Material water() {
+        if (water == null) {
+            water = new Material(Material.vapeInstance.getMappingsMapperCompat().Cn.getWater());
         }
-        return Y;
+        return water;
     }
 
-    public static Material a() {
-        return new Material(Material.vapeInstance.getMappingsMapperCompat().Cn.H());
+    public static Material fire() {
+        return new Material(Material.vapeInstance.getMappingsMapperCompat().Cn.getFire());
     }
 
-    public boolean e() {
-        return Material.vapeInstance.getMappingsMapperCompat().Cn.z(this.I);
+    public boolean isLiquid() {
+        return Material.vapeInstance.getMappingsMapperCompat().Cn.isLiquid(this.I);
     }
 
     public Material(Object object) {
         super(object);
     }
 
-    public boolean H() {
-        return Material.vapeInstance.getMappingsMapperCompat().Cn.O(this.I);
+    public boolean blocksMovement() {
+        return Material.vapeInstance.getMappingsMapperCompat().Cn.blocksMovement(this.I);
     }
 
-    public boolean S() {
-        return Material.vapeInstance.getMappingsMapperCompat().Cn.A(this.I);
+    public boolean isSolid() {
+        return Material.vapeInstance.getMappingsMapperCompat().Cn.isSolid(this.I);
     }
 }
 

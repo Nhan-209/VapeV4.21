@@ -76,7 +76,7 @@ extends Mapping {
             String string9 = "info";
             MGlyphInfo mGlyphInfo9 = this;
             this.k = this.J(string9, bl9, clazz9);
-            Class clazz10 = MappedClasses.lu;
+            Class clazz10 = MappedClasses.GPU_TEXTURE_VIEW;
             boolean bl10 = true;
             String string10 = "textureView";
             MGlyphInfo mGlyphInfo10 = this;
@@ -105,7 +105,7 @@ extends Mapping {
         String string14 = "info";
         MGlyphInfo mGlyphInfo14 = this;
         this.k = this.J(string14, bl14, clazz14);
-        Class clazz15 = MappedClasses.lu;
+        Class clazz15 = MappedClasses.GPU_TEXTURE_VIEW;
         boolean bl15 = true;
         String string15 = "textureView";
         MGlyphInfo mGlyphInfo15 = this;

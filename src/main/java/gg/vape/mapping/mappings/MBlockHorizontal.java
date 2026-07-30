@@ -9,49 +9,27 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MBlockHorizontal
 extends Mapping {
-    private MappingField c;
+    private final MappingField facingField;
 
     public MBlockHorizontal() {
         this(MBlock.m());
     }
 
-    private MBlockHorizontal(GuiComponent[] guiComponentArray) {
+    private MBlockHorizontal(GuiComponent[] controlFlowState) {
         super(MappedClasses.FQ);
-        if (guiComponentArray != null) {
-            Class clazz = MappedClasses.lo;
-            boolean bl = true;
-            String string = "FACING";
-            MBlockHorizontal mBlockHorizontal = this;
-            this.c = mBlockHorizontal.registerStaticField(string, bl, clazz);
-            if (GuiComponent.getLegacyComponentState() == null) {
-                MBlock.Y(new GuiComponent[1]);
-            }
-            return;
-        }
-        if (ForgeVersion.MC_1_21_4.d()) {
-            Class clazz = MappedClasses.Vh;
-            boolean bl = true;
-            String string = "FACING";
-            MBlockHorizontal mBlockHorizontal = this;
-            this.c = mBlockHorizontal.registerStaticField(string, bl, clazz);
-        } else {
-            Class clazz = MappedClasses.lo;
-            boolean bl = true;
-            String string = "FACING";
-            MBlockHorizontal mBlockHorizontal = this;
-            this.c = mBlockHorizontal.registerStaticField(string, bl, clazz);
-        }
+        Class<?> facingType = controlFlowState == null && ForgeVersion.MC_1_21_4.d() ? MappedClasses.Vh : MappedClasses.lo;
+        this.facingField = this.registerStaticField("FACING", true, facingType);
         if (GuiComponent.getLegacyComponentState() == null) {
             MBlock.Y(new GuiComponent[1]);
         }
     }
 
-    private Object E$src$Ljava_lang_Object_$1h8z3ru() {
-        return this.c.getObject(null);
+    private Object readFacing() {
+        return this.facingField.getObject(null);
     }
 
-    public static Object p(MBlockHorizontal mBlockHorizontal) {
-        return mBlockHorizontal.E$src$Ljava_lang_Object_$1h8z3ru();
+    public static Object getFacing(MBlockHorizontal mapping) {
+        return mapping.readFacing();
     }
 
 }

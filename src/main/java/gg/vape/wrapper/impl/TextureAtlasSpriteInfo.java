@@ -1,16 +1,14 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MTextureAtlasSpriteInfoBridge;
 import gg.vape.wrapper.Wrapper;
 
 public class TextureAtlasSpriteInfo
 extends Wrapper {
-    public TextureAtlasSpriteInfo(Object object) {
-        super(object);
+    public TextureAtlasSpriteInfo(Object handle) {
+        super(handle);
     }
 
-    public ResourceLocation X() {
-        return new ResourceLocation(MTextureAtlasSpriteInfoBridge.C(TextureAtlasSpriteInfo.vapeInstance.getMappingsMapperCompat().Cz, this.I));
+    public ResourceLocation getTexturePath() {
+        return new ResourceLocation(TextureAtlasSpriteInfo.vapeInstance.getMappingsMapperCompat().Cz.getTexturePath(this.I));
     }
 }
-

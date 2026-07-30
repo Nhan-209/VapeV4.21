@@ -4,12 +4,11 @@ import gg.vape.mapping.mappings.MBlockHorizontal;
 
 public class BlockHorizontal
 extends Block {
-    public BlockHorizontal(Object object) {
-        super(object);
+    public BlockHorizontal(Object wrappedObject) {
+        super(wrappedObject);
     }
 
-    public static BlockProperty V() {
-        return new BlockProperty(MBlockHorizontal.p(BlockHorizontal.vapeInstance.getMappingsMapperCompat().a));
+    public static BlockProperty facing() {
+        return new BlockProperty(MBlockHorizontal.getFacing(BlockHorizontal.vapeInstance.getMappingsMapperCompat().a));
     }
 }
-

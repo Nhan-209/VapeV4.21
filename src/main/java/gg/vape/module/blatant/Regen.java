@@ -23,7 +23,7 @@ extends Mod {
     public void onTick(EventPrePlayerTick eventPrePlayerTick) {
         EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
         if ((double)entityPlayerSP.w$src$F$15l9epb() < (Double)this.healthThreshold.getValue() * 2.0 && entityPlayerSP.Y$src$Lgg_vape_wrapper_impl_FoodStats_$fakh1z().getFoodLevel() > 16 && !entityPlayerSP.l$src$Z$1io4duf() && entityPlayerSP.u$src$Z$g120nz() && entityPlayerSP.b$src$Z$fqlxe4() && !Minecraft.gameSettings().O().u() && !entityPlayerSP.h$src$Z$ftwoya() && entityPlayerSP.l() % 5 == 1 && !entityPlayerSP.M$src$Z$ff28xj()) {
-            C03PacketPlayer c03PacketPlayer = C03PacketPlayer.newInstance(false);
+            C03PacketPlayer c03PacketPlayer = C03PacketPlayer.create(false);
             for (int i = 0; i < 40; ++i) {
                 entityPlayerSP.sendQueue().addToSendQueue(c03PacketPlayer);
             }

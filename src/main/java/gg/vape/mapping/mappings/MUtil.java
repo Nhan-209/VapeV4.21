@@ -6,31 +6,21 @@ import gg.vape.mapping.MappingMethod;
 
 public class MUtil
 extends Mapping {
-    private MappingMethod X;
-    private MappingMethod S;
+    private final MappingMethod glfwPollEventsMethod;
+    private final MappingMethod glfwGetCurrentContextMethod;
 
-    public long b() {
-        return this.S.invokeLong(null, new Object[0]);
+    public long glfwGetCurrentContext() {
+        return this.glfwGetCurrentContextMethod.invokeLong(null, new Object[0]);
     }
 
-    public void v() {
-        this.X.invokeVoidNoArgs(null);
+    public void glfwPollEvents() {
+        this.glfwPollEventsMethod.invokeVoidNoArgs(null);
     }
 
     public MUtil() {
         super(MappedClasses.zb);
-        Class[] classArray = new Class[]{};
-        Class<Long> clazz = Long.TYPE;
-        boolean bl = false;
-        String string = "glfwGetCurrentContext";
-        MUtil mUtil = this;
-        this.S = this.registerStaticMethod(string, bl, clazz, classArray);
-        Class[] classArray2 = new Class[]{};
-        Class<Void> clazz2 = Void.TYPE;
-        boolean bl2 = false;
-        String string2 = "glfwPollEvents";
-        MUtil mUtil2 = this;
-        this.X = this.registerStaticMethod(string2, bl2, clazz2, classArray2);
+        this.glfwGetCurrentContextMethod = this.registerStaticMethod("glfwGetCurrentContext", false, Long.TYPE, new Class[]{});
+        this.glfwPollEventsMethod = this.registerStaticMethod("glfwPollEvents", false, Void.TYPE, new Class[]{});
     }
 }
 

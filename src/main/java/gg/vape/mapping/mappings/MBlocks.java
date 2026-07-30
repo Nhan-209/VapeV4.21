@@ -8,99 +8,77 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MBlocks
 extends Mapping {
-    private final MappingField n;
-    private final MappingField f;
-    private MappingField j;
-    private final MappingField I;
+    private final MappingField ladderField;
+    private final MappingField airField;
+    private MappingField powderSnowField;
+    private final MappingField stoneField;
 
-    private Object B() {
-        return this.j.getObject(null);
+    public Object getPowderSnow() {
+        return this.powderSnowField.getObject(null);
     }
 
-    public static Object z(MBlocks mBlocks) {
-        return mBlocks.F();
+    public Object getLadder() {
+        return this.ladderField.getObject(null);
     }
 
-    private Object G() {
-        return this.f.getObject(null);
+    public Object getAir() {
+        return this.airField.getObject(null);
     }
 
-    private Object i() {
-        return this.I.getObject(null);
-    }
-
-    public static Object J(MBlocks mBlocks) {
-        return mBlocks.i();
-    }
-
-    private Object F() {
-        return this.n.getObject(null);
-    }
-
-
-    public static Object M(MBlocks mBlocks) {
-        return mBlocks.G();
-    }
-
-    public static Object U(MBlocks mBlocks) {
-        return mBlocks.B();
+    public Object getStone() {
+        return this.stoneField.getObject(null);
     }
 
     public MBlocks() {
         this(MDamageSource.r());
     }
 
-    private MBlocks(int[] nArray) {
-        super(MappedClasses.V8);
-        if (nArray != null) {
-            Class clazz = MappedClasses.Zk;
-            boolean bl = true;
-            String string = "air";
-            MBlocks mBlocks = this;
-            this.f = mBlocks.registerStaticField(string, bl, clazz);
-            this.n = null;
-            this.I = null;
+    private MBlocks(int[] initializationState) {
+        super(MappedClasses.BLOCKS);
+        if (initializationState != null) {
+            Class blockClass = MappedClasses.Zk;
+            boolean remap = true;
+            String fieldName = "air";
+            MBlocks mappings = this;
+            this.airField = mappings.registerStaticField(fieldName, remap, blockClass);
+            this.ladderField = null;
+            this.stoneField = null;
             return;
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            Class clazz = MappedClasses.Zk;
-            boolean bl = true;
-            String string = "LADDER";
-            MBlocks mBlocks = this;
-            this.n = mBlocks.registerStaticField(string, bl, clazz);
-            Class clazz2 = MappedClasses.Zk;
-            boolean bl2 = true;
-            String string2 = "STONE";
-            MBlocks mBlocks2 = this;
-            this.I = this.registerStaticField(string2, bl2, clazz2);
-            Class clazz3 = MappedClasses.Zk;
-            boolean bl3 = true;
-            String string3 = "AIR";
-            MBlocks mBlocks3 = this;
-            this.f = this.registerStaticField(string3, bl3, clazz3);
+            Class ladderOwner = MappedClasses.Zk;
+            boolean remapLadderField = true;
+            String ladderFieldName = "LADDER";
+            MBlocks mappings = this;
+            this.ladderField = mappings.registerStaticField(ladderFieldName, remapLadderField, ladderOwner);
+            Class stoneOwner = MappedClasses.Zk;
+            boolean remapStoneField = true;
+            String stoneFieldName = "STONE";
+            this.stoneField = this.registerStaticField(stoneFieldName, remapStoneField, stoneOwner);
+            Class airOwner = MappedClasses.Zk;
+            boolean remapAirField = true;
+            String airFieldName = "AIR";
+            this.airField = this.registerStaticField(airFieldName, remapAirField, airOwner);
             if (ForgeVersion.MC_1_21_4.d()) {
-                Class clazz4 = MappedClasses.Zk;
-                boolean bl4 = true;
-                String string4 = "POWDER_SNOW";
-                MBlocks mBlocks4 = this;
-                this.j = this.registerStaticField(string4, bl4, clazz4);
+                Class powderSnowOwner = MappedClasses.Zk;
+                boolean remapPowderSnowField = true;
+                String powderSnowFieldName = "POWDER_SNOW";
+                this.powderSnowField = this.registerStaticField(powderSnowFieldName, remapPowderSnowField, powderSnowOwner);
             }
         } else {
-            Class clazz = MappedClasses.Zk;
-            boolean bl = true;
-            String string = "ladder";
-            MBlocks mBlocks = this;
-            this.n = mBlocks.registerStaticField(string, bl, clazz);
-            Class clazz5 = MappedClasses.Zk;
-            boolean bl5 = true;
-            String string5 = "stone";
-            MBlocks mBlocks5 = this;
-            this.I = this.registerStaticField(string5, bl5, clazz5);
-            Class clazz6 = MappedClasses.Zk;
-            boolean bl6 = true;
-            String string6 = "air";
-            MBlocks mBlocks6 = this;
-            this.f = this.registerStaticField(string6, bl6, clazz6);
+            Class ladderOwner = MappedClasses.Zk;
+            boolean remapLadderField = true;
+            String ladderFieldName = "ladder";
+            MBlocks mappings = this;
+            this.ladderField = mappings.registerStaticField(ladderFieldName, remapLadderField, ladderOwner);
+            Class stoneOwner = MappedClasses.Zk;
+            boolean remapStoneField = true;
+            String stoneFieldName = "stone";
+            this.stoneField = this.registerStaticField(stoneFieldName, remapStoneField, stoneOwner);
+            Class airOwner = MappedClasses.Zk;
+            boolean remapAirField = true;
+            String airFieldName = "air";
+            this.airField = this.registerStaticField(airFieldName, remapAirField, airOwner);
         }
     }
 }

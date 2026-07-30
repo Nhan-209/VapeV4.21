@@ -13,7 +13,7 @@ extends Wrapper {
             return RayTraceResult.vapeInstance.getMappings().C0.a(this.I);
         }
         BlockPos blockPos = this.getBlockPos();
-        return blockPos.P();
+        return blockPos.getX();
     }
 
     public static RayTraceResult create(RayTraceResult_type rayTraceResult_type, Vec3 vec3, EnumFacing enumFacing, BlockPos blockPos) {
@@ -46,7 +46,7 @@ extends Wrapper {
             return RayTraceResult.vapeInstance.getMappings().C0.z(this.I);
         }
         BlockPos blockPos = this.getBlockPos();
-        return blockPos.d();
+        return blockPos.getZ();
     }
 
     public EnumFacing getSideHit() {
@@ -116,7 +116,7 @@ extends Wrapper {
             return RayTraceResult.vapeInstance.getMappings().C0.w(this.I);
         }
         BlockPos blockPos = this.getBlockPos();
-        return blockPos.o();
+        return blockPos.getY();
     }
 
     public static RayTraceResult create(Entity entity, Vec3 vec3) {

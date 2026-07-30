@@ -56,7 +56,7 @@ extends Mod {
             for (Object e : Minecraft.theWorld().R$src$Ljava_util_List_$1ycbpra()) {
                 TileEntityMobSpawner tileEntityMobSpawner;
                 String string;
-                if (!MappedClasses.uO.isInstance(e) || !this.spawnerWhitelist.matches(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
+                if (!MappedClasses.MOB_SPAWNER_TILE_ENTITY.isInstance(e) || !this.spawnerWhitelist.matches(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).getSpawnerBaseLogic().getEntityName(), true)) continue;
                 String string2 = "";
                 if (this.showDistance.getEffectiveValue().booleanValue()) {
                     String string3 = ClientSettings.FORMAT_CODE + "a[" + ClientSettings.FORMAT_CODE + "f" + (int)entityPlayerSP.i((double)tileEntityMobSpawner.getX(), (double)tileEntityMobSpawner.getY(), (double)tileEntityMobSpawner.getZ()) + ClientSettings.FORMAT_CODE + "a]" + ClientSettings.FORMAT_CODE + "r";
@@ -89,7 +89,7 @@ extends Mod {
         for (Object e : Minecraft.theWorld().R$src$Ljava_util_List_$1ycbpra()) {
             TileEntityMobSpawner tileEntityMobSpawner;
             String string;
-            if (!MappedClasses.uO.isInstance(e) || !this.spawnerWhitelist.matches(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).j().Q(), true)) continue;
+            if (!MappedClasses.MOB_SPAWNER_TILE_ENTITY.isInstance(e) || !this.spawnerWhitelist.matches(string = (tileEntityMobSpawner = new TileEntityMobSpawner(e)).getSpawnerBaseLogic().getEntityName(), true)) continue;
             String string4 = "";
             if (this.showDistance.getEffectiveValue().booleanValue()) {
                 String string5 = ClientSettings.FORMAT_CODE + "a[" + ClientSettings.FORMAT_CODE + "f" + (int)entityPlayerSP.i((double)tileEntityMobSpawner.getX(), (double)tileEntityMobSpawner.getY(), (double)tileEntityMobSpawner.getZ()) + ClientSettings.FORMAT_CODE + "a]" + ClientSettings.FORMAT_CODE + "r";

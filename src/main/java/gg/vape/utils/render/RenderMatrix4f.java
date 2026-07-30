@@ -75,10 +75,10 @@ public class RenderMatrix4f {
 
     public RenderMatrix4f(Quaternion quaternion) {
         this();
-        float quaternionX = quaternion.Q();
-        float quaternionY = quaternion.N();
-        float quaternionZ = quaternion.P();
-        float quaternionW = quaternion.q();
+        float quaternionX = quaternion.getX();
+        float quaternionY = quaternion.getY();
+        float quaternionZ = quaternion.getZ();
+        float quaternionW = quaternion.getW();
         float twiceXSquared = 2.0f * quaternionX * quaternionX;
         float twiceYSquared = 2.0f * quaternionY * quaternionY;
         float twiceZSquared = 2.0f * quaternionZ * quaternionZ;

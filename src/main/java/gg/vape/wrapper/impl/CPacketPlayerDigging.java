@@ -1,34 +1,29 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MCPacketPlayerDigging;
-
 public class CPacketPlayerDigging
 extends Packet {
-    public PlayerDiggingAction Z() {
-        return new PlayerDiggingAction(MCPacketPlayerDigging.K(CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA, this.I));
+    public PlayerDiggingAction getAction() {
+        return new PlayerDiggingAction(CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA.getAction(this.I));
     }
 
-
-    public int I() {
-        return MCPacketPlayerDigging.a(CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA, this.I);
+    public int getLegacyActionId() {
+        return CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA.getLegacyActionId(this.I);
     }
 
-    public boolean f() {
-        boolean bl;
-        boolean bl2 = ForgeVersion.MC_1_8_9.d() ? this.Z().equals(PlayerDiggingAction.releaseUseItem()) : (bl = this.I() == 5);
-        return bl2;
+    public boolean isReleaseUseItem() {
+        return ForgeVersion.MC_1_8_9.d() ? this.getAction().equals(PlayerDiggingAction.releaseUseItem()) : this.getLegacyActionId() == 5;
     }
 
-    public BlockPos K() {
-        return new BlockPos(MCPacketPlayerDigging.o(CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA, this.I));
+    public BlockPos getPosition() {
+        return new BlockPos(CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA.getPosition(this.I));
     }
 
-    public EnumFacing z() {
-        return new EnumFacing(MCPacketPlayerDigging.B(CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA, this.I));
+    public EnumFacing getFacing() {
+        return new EnumFacing(CPacketPlayerDigging.vapeInstance.getMappingsMapperCompat().qA.getFacing(this.I));
     }
 
-    public CPacketPlayerDigging(Object object) {
-        super(object);
+    public CPacketPlayerDigging(Object handle) {
+        super(handle);
     }
 }
 

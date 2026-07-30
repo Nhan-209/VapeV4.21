@@ -9,54 +9,30 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MCPacketPlayer_Rotation
 extends Mapping {
-    private final MappingMethod o;
+    private final MappingMethod rotationPacketConstructor;
 
     public MCPacketPlayer_Rotation() {
-        this(MPacketIdFactory.A());
+        this(MPacketIdFactory.getPacketMappingControlFlowState());
     }
 
-    private MCPacketPlayer_Rotation(GuiComponent[] guiComponentArray) {
+    private MCPacketPlayer_Rotation(GuiComponent[] controlFlowState) {
         super(MappedClasses.qw);
-        if (guiComponentArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_21_4.d()) {
-                Class[] classArray = new Class[]{Float.TYPE, Float.TYPE, Boolean.TYPE, Boolean.TYPE};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MCPacketPlayer_Rotation mCPacketPlayer_Rotation = this;
-                this.o = mCPacketPlayer_Rotation.Y(string, bl, clazz, classArray);
+                this.rotationPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Float.TYPE, Float.TYPE, Boolean.TYPE, Boolean.TYPE});
             } else {
-                Class[] classArray = new Class[]{Float.TYPE, Float.TYPE, Boolean.TYPE};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MCPacketPlayer_Rotation mCPacketPlayer_Rotation = this;
-                this.o = mCPacketPlayer_Rotation.Y(string, bl, clazz, classArray);
+                this.rotationPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Float.TYPE, Float.TYPE, Boolean.TYPE});
             }
             return;
         }
-        Class[] classArray = new Class[]{Float.TYPE, Float.TYPE, Boolean.TYPE};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = "<init>";
-        MCPacketPlayer_Rotation mCPacketPlayer_Rotation = this;
-        this.o = mCPacketPlayer_Rotation.Y(string, bl, clazz, classArray); 
+        this.rotationPacketConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{Float.TYPE, Float.TYPE, Boolean.TYPE});
     }
 
-    private Object w(float f, float f2, boolean bl) {
-        return this.o.newInstance(Float.valueOf(f), Float.valueOf(f2), bl);
+    public Object createRotationPacket(float yaw, float pitch, boolean onGround) {
+        return this.rotationPacketConstructor.newInstance(Float.valueOf(yaw), Float.valueOf(pitch), onGround);
     }
 
-    private Object o(float f, float f2, boolean bl, boolean bl2) {
-        return this.o.newInstance(Float.valueOf(f), Float.valueOf(f2), bl, bl2);
-    }
-
-
-    public static Object B(MCPacketPlayer_Rotation mCPacketPlayer_Rotation, float f, float f2, boolean bl, boolean bl2) {
-        return mCPacketPlayer_Rotation.o(f, f2, bl, bl2);
-    }
-
-    public static Object L(MCPacketPlayer_Rotation mCPacketPlayer_Rotation, float f, float f2, boolean bl) {
-        return mCPacketPlayer_Rotation.w(f, f2, bl);
+    public Object createRotationPacket(float yaw, float pitch, boolean onGround, boolean horizontalCollision) {
+        return this.rotationPacketConstructor.newInstance(Float.valueOf(yaw), Float.valueOf(pitch), onGround, horizontalCollision);
     }
 }

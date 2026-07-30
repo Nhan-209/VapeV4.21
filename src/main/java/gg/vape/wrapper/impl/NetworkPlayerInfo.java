@@ -2,16 +2,15 @@ package gg.vape.wrapper.impl;
 
 public class NetworkPlayerInfo
 extends Packet {
-    public PositionMoveRotation e() {
-        return new PositionMoveRotation(NetworkPlayerInfo.vapeInstance.getMappingsMapperCompat().RH.C(this.I));
+    public PositionMoveRotation getValues() {
+        return new PositionMoveRotation(NetworkPlayerInfo.vapeInstance.getMappingsMapperCompat().RH.getValues(this.I));
     }
 
-    public NetworkPlayerInfo(Object object) {
-        super(object);
+    public NetworkPlayerInfo(Object handle) {
+        super(handle);
     }
 
-    public int C() {
-        return NetworkPlayerInfo.vapeInstance.getMappingsMapperCompat().RH.s(this.I);
+    public int getEntityId() {
+        return NetworkPlayerInfo.vapeInstance.getMappingsMapperCompat().RH.getEntityId(this.I);
     }
 }
-

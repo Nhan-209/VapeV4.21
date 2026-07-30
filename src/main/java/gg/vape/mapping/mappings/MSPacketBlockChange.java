@@ -10,80 +10,55 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MSPacketBlockChange
 extends Mapping {
-    private MappingMethod U;
-    private MappingField o;
-    private MappingField i;
-    private MappingField G;
-    private MappingMethod Y;
-    private MappingField N;
+    private MappingMethod getBlockPositionMethod;
+    private MappingField legacyXField;
+    private MappingField legacyBlockStateField;
+    private MappingField legacyZField;
+    private MappingMethod getBlockStateMethod;
+    private MappingField legacyYField;
 
-    public Object Y(Object object) {
-        return this.i.getObject(object);
+    public Object getLegacyBlockState(Object packet) {
+        return this.legacyBlockStateField.getObject(packet);
     }
 
-    public int e(Object object) {
-        return this.o.getInt(object);
+    public int getLegacyX(Object packet) {
+        return this.legacyXField.getInt(packet);
     }
 
-    public int S(Object object) {
-        return this.N.getInt(object);
+    public int getLegacyY(Object packet) {
+        return this.legacyYField.getInt(packet);
     }
 
-    public int h(Object object) {
-        return this.G.getInt(object);
+    public int getLegacyZ(Object packet) {
+        return this.legacyZField.getInt(packet);
     }
 
-    public Object h$src$Ljava_lang_Object_$1ir33a2(Object object) {
-        return this.Y.invokeObject(object, new Object[0]);
+    public Object getBlockState(Object packet) {
+        return this.getBlockStateMethod.invokeObject(packet, new Object[0]);
     }
 
     public MSPacketBlockChange() {
-        this(MSPacketEntityVelocity.G());
+        this(MSPacketEntityVelocity.getPacketMappingControlFlowState());
     }
 
-    private MSPacketBlockChange(int[] nArray) {
+    private MSPacketBlockChange(int[] controlFlowState) {
         super(MappedClasses.DD);
-        if (nArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_7_10.Y()) {
-                Class[] classArray = new Class[]{};
-                Class clazz = MappedClasses.Vv;
-                String string = "getBlockState";
-                MSPacketBlockChange mSPacketBlockChange = this;
-                this.Y = ((MappingMethodBuilder)mSPacketBlockChange.methodBuilder(string, clazz, classArray).setTypeForVersion(ForgeVersion.MC_1_16_5.n(), MappedClasses.Zl)).buildMethod();
-                Class[] classArray2 = new Class[]{};
-                Class clazz2 = MappedClasses.lf;
-                String string2 = "getBlockPosition";
-                MSPacketBlockChange mSPacketBlockChange2 = this;
-                this.U = ((MappingMethodBuilder)this.methodBuilder(string2, clazz2, classArray2).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getPos")).buildMethod();
+                this.getBlockStateMethod = ((MappingMethodBuilder)this.methodBuilder("getBlockState", MappedClasses.Vv, new Class[]{}).setTypeForVersion(ForgeVersion.MC_1_16_5.n(), MappedClasses.Zl)).buildMethod();
+                this.getBlockPositionMethod = ((MappingMethodBuilder)this.methodBuilder("getBlockPosition", MappedClasses.lf, new Class[]{}).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "getPos")).buildMethod();
             } else {
-                Class<Integer> clazz = Integer.TYPE;
-                boolean bl = false;
-                String string = "field_148887_a";
-                MSPacketBlockChange mSPacketBlockChange = this;
-                this.o = mSPacketBlockChange.J(string, bl, clazz);
-                Class<Integer> clazz3 = Integer.TYPE;
-                boolean bl2 = false;
-                String string3 = "field_148885_b";
-                MSPacketBlockChange mSPacketBlockChange3 = this;
-                this.N = this.J(string3, bl2, clazz3);
-                Class<Integer> clazz4 = Integer.TYPE;
-                boolean bl3 = false;
-                String string4 = "field_148886_c";
-                MSPacketBlockChange mSPacketBlockChange4 = this;
-                this.G = this.J(string4, bl3, clazz4);
+                this.legacyXField = this.J("field_148887_a", false, Integer.TYPE);
+                this.legacyYField = this.J("field_148885_b", false, Integer.TYPE);
+                this.legacyZField = this.J("field_148886_c", false, Integer.TYPE);
             }
             return;
         }
-        Class<Integer> clazz = Integer.TYPE;
-        boolean bl = false;
-        String string = "field_148886_c";
-        MSPacketBlockChange mSPacketBlockChange = this;
-        this.G = mSPacketBlockChange.J(string, bl, clazz);
+        this.legacyZField = this.J("field_148886_c", false, Integer.TYPE);
     }
 
-
-    public Object j(Object object) {
-        return this.U.invokeObject(object, new Object[0]);
+    public Object getBlockPosition(Object packet) {
+        return this.getBlockPositionMethod.invokeObject(packet, new Object[0]);
     }
 }
 

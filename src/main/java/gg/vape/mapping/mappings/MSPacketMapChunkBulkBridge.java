@@ -6,39 +6,27 @@ import gg.vape.mapping.MappingField;
 
 public class MSPacketMapChunkBulkBridge
 extends Mapping {
-    private MappingField c;
-    private MappingField a;
-    private MappingField x;
+    private final MappingField xPositionsField;
+    private final MappingField chunksDataField;
+    private final MappingField zPositionsField;
 
-    public int[] S(Object object) {
-        return this.c.getIntArray(object);
+    public int[] getXPositions(Object packet) {
+        return this.xPositionsField.getIntArray(packet);
     }
 
-    public int[] O(Object object) {
-        return this.x.getIntArray(object);
+    public int[] getZPositions(Object packet) {
+        return this.zPositionsField.getIntArray(packet);
     }
 
-    public Object[] Q(Object object) {
-        return this.a.getObjectArray(object);
+    public Object[] getChunksData(Object packet) {
+        return this.chunksDataField.getObjectArray(packet);
     }
 
     public MSPacketMapChunkBulkBridge() {
         super(MappedClasses.zB);
-        Class<int[]> clazz = int[].class;
-        boolean bl = true;
-        String string = "xPositions";
-        MSPacketMapChunkBulkBridge mSPacketMapChunkBulkBridge = this;
-        this.c = this.J(string, bl, clazz);
-        Class<int[]> clazz2 = int[].class;
-        boolean bl2 = true;
-        String string2 = "zPositions";
-        MSPacketMapChunkBulkBridge mSPacketMapChunkBulkBridge2 = this;
-        this.x = this.J(string2, bl2, clazz2);
-        Class clazz3 = MappedClasses.lW;
-        boolean bl3 = true;
-        String string3 = "chunksData";
-        MSPacketMapChunkBulkBridge mSPacketMapChunkBulkBridge3 = this;
-        this.a = this.J(string3, bl3, clazz3);
+        this.xPositionsField = this.J("xPositions", true, int[].class);
+        this.zPositionsField = this.J("zPositions", true, int[].class);
+        this.chunksDataField = this.J("chunksData", true, MappedClasses.lW);
     }
 }
 

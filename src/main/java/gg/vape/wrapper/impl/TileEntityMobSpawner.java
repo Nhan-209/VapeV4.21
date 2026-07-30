@@ -1,15 +1,12 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MTileEntityMobSpawner;
-
 public class TileEntityMobSpawner
 extends TileEntity {
-    public MobSpawnerBaseLogic j() {
-        return new MobSpawnerBaseLogic(MTileEntityMobSpawner.H(TileEntityMobSpawner.vapeInstance.getMappingsMapperCompat().DT, this.I));
+    public MobSpawnerBaseLogic getSpawnerBaseLogic() {
+        return new MobSpawnerBaseLogic(TileEntityMobSpawner.vapeInstance.getMappingsMapperCompat().mobSpawnerTileEntity.getSpawnerBaseLogic(this.I));
     }
 
-    public TileEntityMobSpawner(Object object) {
-        super(object);
+    public TileEntityMobSpawner(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

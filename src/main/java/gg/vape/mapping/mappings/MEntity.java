@@ -1776,12 +1776,12 @@ extends Mapping {
             this.jp = this.J(string73, bl56, clazz73);
             Class<Boolean> clazz74 = Boolean.TYPE;
             boolean bl57 = true;
-            String string74 = "isCollidedHorizontally";
+            String string74 = ForgeVersion.c() >= 23 ? "collidedHorizontally" : "isCollidedHorizontally";
             MEntity mEntity74 = this;
             this.P = this.J(string74, bl57, clazz74);
             Class<Boolean> clazz75 = Boolean.TYPE;
             boolean bl58 = true;
-            String string75 = "isCollidedVertically";
+            String string75 = ForgeVersion.c() >= 23 ? "collidedVertically" : "isCollidedVertically";
             MEntity mEntity75 = this;
             this.d = this.J(string75, bl58, clazz75);
             Class[] classArray = new Class[]{MappedClasses.zc};

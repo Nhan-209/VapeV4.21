@@ -43,14 +43,14 @@ extends Mapping {
     private MTextureManagerHandle(boolean bl) {
         super(MappedClasses.DA);
         Class[] classArray = new Class[]{};
-        Class clazz = MappedClasses.DO;
+        Class clazz = MappedClasses.GPU_TEXTURE;
         boolean bl2 = true;
         String string = "getColorTexture";
         MTextureManagerHandle mTextureManagerHandle = this;
         this.z = this.Y(string, bl2, clazz, classArray);
         boolean bl3 = bl;
         Class[] classArray2 = new Class[]{};
-        Class clazz2 = MappedClasses.DO;
+        Class clazz2 = MappedClasses.GPU_TEXTURE;
         boolean bl4 = true;
         String string2 = "getDepthTexture";
         MTextureManagerHandle mTextureManagerHandle2 = this;

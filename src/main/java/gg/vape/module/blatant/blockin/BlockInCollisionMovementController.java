@@ -49,8 +49,8 @@ extends AbstractBlockInMovementController {
 
     private boolean isPositionClear(BlockPos blockPos) {
         AxisAlignedBB playerBounds = this.simulatedPlayer.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl();
-        AxisAlignedBB blockColumn = AxisAlignedBB.create(blockPos.P(), playerBounds.getMinY(), blockPos.d(),
-                blockPos.P() + 1.0, playerBounds.getMaxY(), blockPos.d() + 1.0).y(1.0E-7);
+        AxisAlignedBB blockColumn = AxisAlignedBB.create(blockPos.getX(), playerBounds.getMinY(), blockPos.getZ(),
+                blockPos.getX() + 1.0, playerBounds.getMaxY(), blockPos.getZ() + 1.0).y(1.0E-7);
         return !this.world.z(this.simulatedPlayer, blockColumn, this::shouldBlockPushPlayer);
     }
 
@@ -62,7 +62,7 @@ extends AbstractBlockInMovementController {
             BlockPos headBlock = BlockPos.D(this.simulatedPlayer.z(),
                     this.simulatedPlayer.N() + 0.9, this.simulatedPlayer.h());
             if (targetVerticalMotion <= 0.0 || this.simulatedPlayer.e$src$Z$15bd4i1()
-                    || !this.world.getBlockState(headBlock).j().x()) {
+                    || !this.world.getBlockState(headBlock).j().isEmpty()) {
                 Vec3 motion = this.simulatedPlayer.C$src$Lgg_vape_wrapper_impl_Vec3_$1q93kwi();
                 this.simulatedPlayer.h(motion.addVector(
                         0.0, (targetVerticalMotion - motion.getY()) * interpolationRate, 0.0));
@@ -137,8 +137,8 @@ extends AbstractBlockInMovementController {
     private void pushOutOfBlocks(double positionX, double positionZ) {
         BlockPos blockPos = BlockPos.D(positionX, this.simulatedPlayer.N(), positionZ);
         if (this.isPositionClear(blockPos)) {
-            double localX = positionX - blockPos.P();
-            double localZ = positionZ - blockPos.d();
+            double localX = positionX - blockPos.getX();
+            double localZ = positionZ - blockPos.getZ();
             Direction nearestDirection = null;
             double nearestDistance = Double.MAX_VALUE;
             EnumFacing[] horizontalFacings = new EnumFacing[]{EnumFacing.X(),
@@ -490,7 +490,7 @@ extends AbstractBlockInMovementController {
 
     private boolean shouldBlockPushPlayer(Object blockReader, Object position) {
         BlockReaderBridge blockReaderBridge = new BlockReaderBridge(blockReader);
-        return blockReaderBridge.e(this.world.getObject(), position);
+        return blockReaderBridge.isSuffocating(this.world.getObject(), position);
     }
 
     private void swimUp() {

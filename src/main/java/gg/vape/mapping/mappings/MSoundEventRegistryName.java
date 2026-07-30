@@ -6,24 +6,20 @@ import gg.vape.mapping.MappingField;
 
 public class MSoundEventRegistryName
 extends Mapping {
-    private static final String b = "name";
-    private MappingField M;
+    private static final String NAME_FIELD_NAME = "name";
+    private final MappingField nameField;
 
-    public static Object P(MSoundEventRegistryName mSoundEventRegistryName, Object object) {
-        return mSoundEventRegistryName.r(object);
+    public static Object getName(MSoundEventRegistryName mapping, Object soundEvent) {
+        return mapping.readName(soundEvent);
     }
 
-    private Object r(Object object) {
-        return this.M.getObject(object);
+    private Object readName(Object soundEvent) {
+        return this.nameField.getObject(soundEvent);
     }
 
     public MSoundEventRegistryName() {
         super(MappedClasses.V4);
-        Class clazz = MappedClasses.zC;
-        boolean bl = true;
-        String string = b;
-        MSoundEventRegistryName mSoundEventRegistryName = this;
-        this.M = this.J(string, bl, clazz);
+        this.nameField = this.J(NAME_FIELD_NAME, true, MappedClasses.zC);
     }
 }
 

@@ -1,33 +1,6 @@
 package gg.vape.mapping.runtime;
 
 import gg.vape.Vape;
-import gg.vape.mapping.runtime.ClassNameRemapTable;
-import gg.vape.mapping.runtime.ClassNameRemapTableV100;
-import gg.vape.mapping.runtime.ClassNameRemapTableV110;
-import gg.vape.mapping.runtime.ClassNameRemapTableV23;
-import gg.vape.mapping.runtime.ClassNameRemapTableV35V36Direct;
-import gg.vape.mapping.runtime.ClassNameRemapTableV35V36Layered;
-import gg.vape.mapping.runtime.ClassNameRemapTableV37;
-import gg.vape.mapping.runtime.ClassNameRemapTableV50;
-import gg.vape.mapping.runtime.ClassNameRemapTableV51;
-import gg.vape.mapping.runtime.ClassNameRemapTableV54;
-import gg.vape.mapping.runtime.ClassNameRemapTableV55;
-import gg.vape.mapping.runtime.ClassNameRemapTableV56;
-import gg.vape.mapping.runtime.ClassNameRemapTableV60;
-import gg.vape.mapping.runtime.ClassNameRemapTableV61;
-import gg.vape.mapping.runtime.MemberLookupSignature;
-import gg.vape.mapping.runtime.MemberNameRemapTable;
-import gg.vape.mapping.runtime.MemberNameRemapTableV100;
-import gg.vape.mapping.runtime.MemberNameRemapTableV110;
-import gg.vape.mapping.runtime.MemberNameRemapTableV35V36;
-import gg.vape.mapping.runtime.MemberNameRemapTableV37;
-import gg.vape.mapping.runtime.MemberNameRemapTableV50;
-import gg.vape.mapping.runtime.MemberNameRemapTableV51;
-import gg.vape.mapping.runtime.MemberNameRemapTableV54;
-import gg.vape.mapping.runtime.MemberNameRemapTableV55;
-import gg.vape.mapping.runtime.MemberNameRemapTableV56;
-import gg.vape.mapping.runtime.MemberNameRemapTableV60;
-import gg.vape.mapping.runtime.MemberNameRemapTableV61;
 import gg.vape.runtime.NativeBridge;
 import gg.vape.wrapper.impl.ForgeVersion;
 import java.util.LinkedHashMap;
@@ -131,7 +104,7 @@ public class RuntimeNameMappingRegistry {
             }
             case 35: 
             case 36: {
-                if (Vape.INSTANCE.isNativeAvailable()) {
+                if (Vape.INSTANCE.isForgeAbsent()) {
                     classNameRemapTable = new ClassNameRemapTableV35V36Direct();
                     break;
                 }
@@ -182,7 +155,7 @@ public class RuntimeNameMappingRegistry {
                 classNameRemapTable = null;
             }
         }
-        if (ForgeVersion.MC_1_16_5_ACTUAL.Y() && !Vape.INSTANCE.isNativeAvailable()) {
+        if (ForgeVersion.MC_1_16_5_ACTUAL.Y() && !Vape.INSTANCE.isForgeAbsent()) {
             ClassNameRemapTable.propagateMappingsToRuntimeRegistry = true;
             new ClassNameRemapTableV35V36Direct();
         }

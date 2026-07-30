@@ -266,7 +266,7 @@ extends Mod {
                     }
                     if (ForgeVersion.MC_1_12_2.d()) {
                         try {
-                            ItemStack itemStack2 = entityLivingBase.i(EnumHand.p());
+                            ItemStack itemStack2 = entityLivingBase.i(EnumHand.offHand());
                             object3 = itemStack2 != null && itemStack2.isNotNull() ? itemStack2 : null;
                         }
                         catch (Exception exception) {
@@ -359,7 +359,7 @@ extends Mod {
                 fontRenderer.h((String)object2, -n2, n3 + 2, n, false, (RenderMatrix4f)object, SharedMonsterAttributes.V());
             } else {
                 int n4 = 0xF000F0;
-                renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
+                renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBufferSource();
                 ScorePlayerTeamTextComponent scorePlayerTeamTextComponent = ScorePlayerTeamTextComponent.B((String)object2);
                 fontRenderer.Z(scorePlayerTeamTextComponent, -n2, n3 + 2, n, false, ((RenderMatrix4f)object).toMinecraftMatrix(), renderItemFontBridge, true, 0, n4);
                 renderItemFontBridge.q();
@@ -368,11 +368,11 @@ extends Mod {
             matrixStack.H();
             object = renderManager.getCameraOrientation();
             matrixStack.i((Quaternion)object);
-            matrixStack.i(Quaternion.K(180.0f, 0.0f, 180.0f, true));
+            matrixStack.i(Quaternion.fromEulerAngles(180.0f, 0.0f, 180.0f, true));
             ScorePlayerTeamTextComponent scorePlayerTeamTextComponent = ScorePlayerTeamTextComponent.B((String)object2);
             renderItemFontBridge = RenderItemFontBridge.V(Tessellator.getInstance().getWorldRenderer());
             int n5 = 0xF000F0;
-            Matrix4f wrapper = matrixStack.F().u();
+            Matrix4f wrapper = matrixStack.F().getMatrix();
             fontRenderer.Z(scorePlayerTeamTextComponent, -n2, n3 + 2, n, false, wrapper, renderItemFontBridge, true, 0, n5);
             renderItemFontBridge.q();
             matrixStack.U();

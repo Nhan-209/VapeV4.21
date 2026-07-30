@@ -4,12 +4,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class ResourceKeyHolder
 extends Wrapper {
-    public static ResourceKey v() {
-        return new ResourceKey(ResourceKeyHolder.vapeInstance.getMappingsMapperCompat().qV.d());
+    public static ResourceKey gold() {
+        return new ResourceKey(ResourceKeyHolder.vapeInstance.getMappingsMapperCompat().qV.getGold());
     }
 
-    public ResourceKeyHolder(Object object) {
-        super(object);
+    public ResourceKeyHolder(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

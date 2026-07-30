@@ -27,7 +27,7 @@ implements EventListener {
         if (world.isNull()) {
             return;
         }
-        Entity entity = world.V(entityStatusPacket.X());
+        Entity entity = world.V(entityStatusPacket.getEntityId());
         if (entity.isNull()) {
             return;
         }

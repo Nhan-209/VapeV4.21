@@ -2113,11 +2113,11 @@ extends Mod {
                 }
             } else if (packet.isInstance(MappedClasses.DD) && this.clutchPath != null && this.clutchPath.placementState != null) {
                 SPacketBlockChange blockChangePacket = new SPacketBlockChange(packet.getObject());
-                BlockState blockState = blockChangePacket.x();
-                BlockPos blockPos = blockChangePacket.B();
-                if (BlockUtil.p(blockState.getBlock()) && this.clutchPath.placementState.containsPosition(blockPos.P(), blockPos.o(), blockPos.d())) {
+                BlockState blockState = blockChangePacket.getBlockState();
+                BlockPos blockPos = blockChangePacket.getBlockPosition();
+                if (BlockUtil.p(blockState.getBlock()) && this.clutchPath.placementState.containsPosition(blockPos.getX(), blockPos.getY(), blockPos.getZ())) {
                     this.placementRejected = true;
-                    this.placedBlocks.N(new BlockData(blockPos.P(), blockPos.o(), blockPos.d()));
+                    this.placedBlocks.N(new BlockData(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
                 }
             }
         }

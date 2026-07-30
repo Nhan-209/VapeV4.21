@@ -101,7 +101,7 @@ extends GuiComponent {
     public void H(boolean bl) {
         try {
             if (GuiRenderPrimitives.V()) {
-                long l = Util.Q();
+                long l = Util.glfwGetCurrentContext();
                 if (l == 0L) {
                     throw new Exception("");
                 }

@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class BiomeProvider
 extends Wrapper {
-    public Iterable f() {
-        return MBiomeProviderBridge.D(BiomeProvider.vapeInstance.getMappingsMapperCompat().K, this.I);
+    public Iterable getAllEffects() {
+        return MBiomeProviderBridge.getAllEffects(BiomeProvider.vapeInstance.getMappingsMapperCompat().K, this.I);
     }
 
-    public BiomeProvider(Object object) {
-        super(object);
+    public BiomeProvider(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

@@ -37,7 +37,7 @@ extends Mod {
         World world = localPlayer.gg_vape_wrapper_impl_World_Z();
         for (double y = localPlayer.double_N() - 1.0; y > 0.0; y -= 1.0) {
             Block block = world.getBlock(localPlayer.double_z(), y, localPlayer.double_h());
-            if (block.isNull() || block.H().isInstance(Blocks.j().H().getObject().getClass())) continue;
+            if (block.isNull() || block.H().isInstance(Blocks.air().H().getObject().getClass())) continue;
             return true;
         }
         return false;
@@ -82,7 +82,7 @@ extends Mod {
         double triggerDistance = (Double)this.fallDistance.java_lang_Object_K();
         if ((double)localPlayer.float_M() >= triggerDistance && !modManager.getMod(Fly.class).boolean_r()) {
             Block blockBelow = world.getBlock(localPlayer.double_z(), localPlayer.double_N() - 1.0, localPlayer.double_h());
-            boolean overAir = blockBelow.isNull() || blockBelow.H().isInstance(Blocks.j().H().getObject().getClass());
+            boolean overAir = blockBelow.isNull() || blockBelow.H().isInstance(Blocks.air().H().getObject().getClass());
             if (overAir) {
                 if (!this.lagbackPending) {
                     this.lagbackPending = true;

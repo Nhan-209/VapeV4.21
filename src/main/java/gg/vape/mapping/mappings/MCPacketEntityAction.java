@@ -9,47 +9,31 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MCPacketEntityAction
 extends Mapping {
-    private MappingMethod N;
-    private MappingMethod Q;
+    private MappingMethod actionIdConstructor;
+    private MappingMethod actionConstructor;
 
     public MCPacketEntityAction() {
-        this(MPacketIdFactory.A());
+        this(MPacketIdFactory.getPacketMappingControlFlowState());
     }
 
-    private MCPacketEntityAction(GuiComponent[] guiComponentArray) {
+    private MCPacketEntityAction(GuiComponent[] controlFlowState) {
         super(MappedClasses.Dj);
-        if (guiComponentArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_7_10.Y()) {
-                Class[] classArray = new Class[]{MappedClasses.zc, MappedClasses.Do};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MCPacketEntityAction mCPacketEntityAction = this;
-                this.Q = mCPacketEntityAction.Y(string, bl, clazz, classArray);
+                this.actionConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{MappedClasses.zc, MappedClasses.Do});
             } else {
-                Class[] classArray = new Class[]{MappedClasses.zc, Integer.TYPE};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MCPacketEntityAction mCPacketEntityAction = this;
-                this.N = mCPacketEntityAction.Y(string, bl, clazz, classArray);
+                this.actionIdConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{MappedClasses.zc, Integer.TYPE});
             }
             return;
         }
-        Class[] classArray = new Class[]{MappedClasses.zc, Integer.TYPE};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = "<init>";
-        MCPacketEntityAction mCPacketEntityAction = this;
-        this.N = mCPacketEntityAction.Y(string, bl, clazz, classArray); 
+        this.actionIdConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{MappedClasses.zc, Integer.TYPE});
     }
 
-
-    public Object u(Object object, int n) {
-        return this.N.newInstance(object, n);
+    public Object createPacket(Object entity, int actionId) {
+        return this.actionIdConstructor.newInstance(entity, actionId);
     }
 
-    public Object k(Object object, Object object2) {
-        return this.Q.newInstance(object, object2);
+    public Object createPacket(Object entity, Object action) {
+        return this.actionConstructor.newInstance(entity, action);
     }
 }

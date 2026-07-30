@@ -142,13 +142,13 @@ public class ClutchPlacementPathUtils {
             return RotationUtil.M(eyePosition, bounds, 0.0, 0.0, 0.0).toVec3();
         }
         bounds = bounds.contract(0.002, 0.002, 0.002);
-        Vec3i direction = facing.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr();
+        Vec3i direction = facing.getDirectionVector();
         double width = bounds.getMaxX() - bounds.getMinX();
         double depth = bounds.getMaxZ() - bounds.getMinZ();
         double height = bounds.getMaxY() - bounds.getMinY();
-        double directionX = direction.P();
-        double directionY = direction.o();
-        double directionZ = direction.d();
+        double directionX = direction.getX();
+        double directionY = direction.getY();
+        double directionZ = direction.getZ();
         double bestRotationDistance = Double.MAX_VALUE;
         Vec3 bestHitPoint = null;
         Vec3d rotationOrigin = new Vec3d(eyePosition.getX(), eyePosition.getY(), eyePosition.getZ());
@@ -195,14 +195,14 @@ public class ClutchPlacementPathUtils {
         if (facing == null) {
             return RotationUtil.M(eyePosition, bounds, 0.0, 0.0, 0.0).toVec3();
         }
-        Vec3i direction = facing.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr();
+        Vec3i direction = facing.getDirectionVector();
         bounds = bounds.contract(0.002, 0.002, 0.002);
         double width = bounds.getMaxX() - bounds.getMinX();
         double depth = bounds.getMaxZ() - bounds.getMinZ();
         double height = bounds.getMaxY() - bounds.getMinY();
-        double directionX = direction.P();
-        double directionY = direction.o();
-        double directionZ = direction.d();
+        double directionX = direction.getX();
+        double directionY = direction.getY();
+        double directionZ = direction.getZ();
         int facingIndex = facing.Y();
         for (int insetPercent = 0; insetPercent <= 100; insetPercent += 10) {
             double scale = 1.0 - (double)insetPercent / 100.0;

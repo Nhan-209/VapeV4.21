@@ -45,8 +45,8 @@ public class BlockCoordinate {
     }
 
     public BlockCoordinate i(EnumFacing enumFacing) {
-        Vec3i vec3i = enumFacing.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr();
-        return new BlockCoordinate(this.B() + vec3i.P(), this.E() + vec3i.o(), this.A() + vec3i.d());
+        Vec3i directionVector = enumFacing.getDirectionVector();
+        return new BlockCoordinate(this.B() + directionVector.getX(), this.E() + directionVector.getY(), this.A() + directionVector.getZ());
     }
 
     public BlockCoordinate(double d, double d2, double d3) {

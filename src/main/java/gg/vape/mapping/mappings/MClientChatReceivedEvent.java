@@ -17,7 +17,7 @@ extends Mapping {
     }
 
     public MClientChatReceivedEvent() {
-        this(MSPacketEntityVelocity.G());
+        this(MSPacketEntityVelocity.getPacketMappingControlFlowState());
     }
 
     private MClientChatReceivedEvent(int[] nArray) {

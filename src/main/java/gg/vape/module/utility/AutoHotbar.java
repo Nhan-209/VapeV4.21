@@ -17,7 +17,7 @@ import gg.vape.module.utility.inventory.HotbarSlotRuleValue;
 import gg.vape.module.utility.inventory.InventoryActionModule;
 import gg.vape.module.utility.inventory.InventoryManagerPrimaryItemScoreComparator;
 import gg.vape.module.utility.inventory.InventoryManagerSecondaryItemScoreComparator;
-import gg.vape.module.utility.inventory.PotionSlotComparator;
+import gg.vape.module.utility.inventory.FoodSlotComparator;
 import gg.vape.unmap.ModeOption;
 import gg.vape.utils.RotationUtil;
 import gg.vape.utils.TimerUtil;
@@ -72,14 +72,14 @@ implements InventoryActionModule {
         Comparator<Slot> bowComparator = new BowSlotComparator(this);
         Comparator<Slot> secondaryItemComparator = new InventoryManagerSecondaryItemScoreComparator(this);
         Comparator<Slot> armorComparator = new ArmorSlotComparator(this);
-        Comparator<Slot> potionComparator = new PotionSlotComparator(this);
+        Comparator<Slot> foodComparator = new FoodSlotComparator(this);
         this.comparators.put(MappedClasses.V5, primaryItemComparator);
         this.comparators.put(MappedClasses.YP, primaryItemComparator);
         this.comparators.put(MappedClasses.DU, bowComparator);
         this.comparators.put(MappedClasses.FM, bowComparator);
         this.comparators.put(MappedClasses.Vl, secondaryItemComparator);
         this.comparators.put(MappedClasses.Di, armorComparator);
-        this.comparators.put(MappedClasses.DL, potionComparator);
+        this.comparators.put(MappedClasses.ITEM_FOOD, foodComparator);
     }
 
     private boolean queueEmptyHotbarClick() {

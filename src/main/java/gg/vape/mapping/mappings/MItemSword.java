@@ -105,12 +105,12 @@ extends Mapping {
             this.E = mItemSword.J(string, bl, clazz); 
             Class<Float> clazz7 = Float.TYPE;
             boolean bl4 = true;
-            String string4 = "damageVsEntity";
+            String string4 = ForgeVersion.c() >= 23 ? "attackDamage" : "damageVsEntity";
             MItemSword mItemSword4 = this;
             this.V = this.J(string4, bl4, clazz7);
             Class<Float> clazz8 = Float.TYPE;
             boolean bl5 = true;
-            String string5 = "efficiencyOnProperMaterial";
+            String string5 = ForgeVersion.c() >= 23 ? "efficiency" : "efficiencyOnProperMaterial";
             MItemSword mItemSword5 = this;
             this.d = this.J(string5, bl5, clazz8);
         }

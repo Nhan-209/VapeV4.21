@@ -4,51 +4,51 @@ import gg.vape.mapping.mappings.MBlockBed;
 
 public class BlockBed
 extends Block {
-    public static BlockProperty O() {
-        return new BlockProperty(MBlockBed.X(BlockBed.vapeInstance.getMappings().Dj));
+    public static BlockProperty part() {
+        return new BlockProperty(MBlockBed.getPart(BlockBed.vapeInstance.getMappings().Dj));
     }
 
-    public boolean f(World world, int n, int n2, int n3) {
+    public boolean isFoot(World world, int blockX, int blockY, int blockZ) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            BlockPos blockPos = BlockPos.create(n, n2, n3);
+            BlockPos blockPos = BlockPos.create(blockX, blockY, blockZ);
             BlockState blockState = world.getBlockState(blockPos);
-            Object object = blockState.I(BlockBed.O());
-            if (object != null) {
-                return object.toString().equals("foot");
+            Object part = blockState.I(BlockBed.part());
+            if (part != null) {
+                return part.toString().equals("foot");
             }
             return true;
         }
         if (ForgeVersion.MC_1_7_10.L()) {
-            int n4 = world.A(n, n2, n3);
-            boolean bl = (n4 & 8) != 0;
-            return !bl;
+            int metadata = world.A(blockX, blockY, blockZ);
+            boolean isHead = (metadata & 8) != 0;
+            return !isHead;
         }
-        BlockPos blockPos = BlockPos.create(n, n2, n3);
+        BlockPos blockPos = BlockPos.create(blockX, blockY, blockZ);
         BlockState blockState = world.getBlockState(blockPos);
-        BlockState blockState2 = new BlockState(BlockBed.vapeInstance.getMappings().qg.y(this.I, blockState.getObject(), world.getObject(), blockPos.getObject()));
-        Object object = blockState2.I(BlockBed.O());
-        if (object != null) {
-            return object.toString().equals("foot");
+        BlockState actualState = new BlockState(BlockBed.vapeInstance.getMappings().qg.y(this.I, blockState.getObject(), world.getObject(), blockPos.getObject()));
+        Object part = actualState.I(BlockBed.part());
+        if (part != null) {
+            return part.toString().equals("foot");
         }
         return true;
     }
 
-    public EnumFacing e(World world, int n, int n2, int n3) {
+    public EnumFacing getBedDirection(World world, int blockX, int blockY, int blockZ) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            BlockPos blockPos = BlockPos.create(n, n2, n3);
-            Object object = MBlockBed.i(BlockBed.vapeInstance.getMappings().Dj, world.getObject(), blockPos.getObject());
-            return new EnumFacing(object);
+            BlockPos blockPos = BlockPos.create(blockX, blockY, blockZ);
+            Object direction = MBlockBed.getBedDirection(BlockBed.vapeInstance.getMappings().Dj, world.getObject(), blockPos.getObject());
+            return new EnumFacing(direction);
         }
-        BlockPos blockPos = BlockPos.create(n, n2, n3);
+        BlockPos blockPos = BlockPos.create(blockX, blockY, blockZ);
         BlockState blockState = world.getBlockState(blockPos);
-        BlockState blockState2 = new BlockState(BlockBed.vapeInstance.getMappings().qg.y(this.I, blockState.getObject(), world.getObject(), blockPos.getObject()));
-        Object object = blockState2.I(BlockHorizontal.V());
-        return new EnumFacing(object);
+        BlockState actualState = new BlockState(BlockBed.vapeInstance.getMappings().qg.y(this.I, blockState.getObject(), world.getObject(), blockPos.getObject()));
+        Object direction = actualState.I(BlockHorizontal.facing());
+        return new EnumFacing(direction);
     }
 
 
-    public BlockBed(Object object) {
-        super(object);
+    public BlockBed(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
 

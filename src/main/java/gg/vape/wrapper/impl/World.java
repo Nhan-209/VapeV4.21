@@ -137,7 +137,7 @@ extends Wrapper {
 
     public boolean j$src$Z$11aji0a(BlockPos blockPos) {
         if (ForgeVersion.MC_1_17.d()) {
-            return World.vapeInstance.getMappings().Cy.d(this.I, blockPos.P() >> 4, blockPos.d() >> 4);
+            return World.vapeInstance.getMappings().Cy.d(this.I, blockPos.getX() >> 4, blockPos.getZ() >> 4);
         }
         return World.vapeInstance.getMappings().Cy.r(this.I, blockPos.getObject());
     }
@@ -201,8 +201,8 @@ extends Wrapper {
         World.vapeInstance.getMappings().Cy.V(this.I, l);
     }
 
-    public FluidState i() {
-        return new FluidState(MWorld.f(World.vapeInstance.getMappings().Cy, this.I));
+    public WorldProvider getWorldProvider() {
+        return new WorldProvider(MWorld.getWorldProvider(World.vapeInstance.getMappings().Cy, this.I));
     }
 
     public float n() {
@@ -244,8 +244,8 @@ extends Wrapper {
         return World.vapeInstance.getMappings().Cy.w(this.I);
     }
 
-    public WorldCollisionConsumerBridge A() {
-        return new WorldCollisionConsumerBridge(World.vapeInstance.getMappings().Cy.F(this.I));
+    public LevelEntityGetter getEntityGetter() {
+        return new LevelEntityGetter(World.vapeInstance.getMappings().Cy.getEntityGetter(this.I));
     }
 
     public BlockState getBlockState(BlockPos blockPos) {

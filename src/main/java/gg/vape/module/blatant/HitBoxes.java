@@ -27,13 +27,13 @@ extends Mod {
         if (ForgeVersion.MC_1_8_9.v()) {
             return;
         }
-        if (UseEntityPacketBridge.h(eventPacketSend.getPacket())) {
+        if (UseEntityPacketBridge.isUseEntityPacket(eventPacketSend.getPacket())) {
             UseEntityPacketBridge useEntityPacket = new UseEntityPacketBridge(eventPacketSend.getPacket());
-            if (!useEntityPacket.V()) {
+            if (!useEntityPacket.isInteractAt()) {
                 return;
             }
-            Vec3 hitVector = useEntityPacket.O();
-            Entity entity = useEntityPacket.C(Minecraft.theWorld());
+            Vec3 hitVector = useEntityPacket.getHitLocation();
+            Entity entity = useEntityPacket.getEntity(Minecraft.theWorld());
             double expansion = (Double)this.expandAmount.getValue();
             double collisionBorder = entity.b();
             AxisAlignedBB normalBounds = entity.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu().expand(collisionBorder, collisionBorder, collisionBorder);
@@ -91,4 +91,3 @@ extends Mod {
     }
 
 }
-

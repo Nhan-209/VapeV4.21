@@ -67,7 +67,7 @@ extends Wrapper {
         matrixStack2.S(1.0f, -1.0f, 1.0f);
         matrixStack2.S(16.0f, 16.0f, 16.0f);
         RenderSystem.v();
-        RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
+        RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBufferSource();
         boolean bl2 = bl = !channel.A();
         if (bl) {
             RenderHelper.l();

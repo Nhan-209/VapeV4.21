@@ -210,15 +210,15 @@ extends Mod {
         if (packet.isInstance(MappedClasses.VF)) {
             this.currentSample.markAuxiliaryPacketSent();
         }
-        if (UseEntityPacketBridge.h(packet)) {
+        if (UseEntityPacketBridge.isUseEntityPacket(packet)) {
             UseEntityPacketBridge interactionPacket = new UseEntityPacketBridge(packet.getObject());
-            Entity interactedEntity = interactionPacket.C(eventPacketSend.getWorld());
-            if (interactionPacket.S() && interactedEntity.equals(this.nearbyTarget)) {
+            Entity interactedEntity = interactionPacket.getEntity(eventPacketSend.getWorld());
+            if (interactionPacket.isAttack() && interactedEntity.equals(this.nearbyTarget)) {
                 this.currentSample.markTargetAttackSent();
             }
             if (this.logInteractions.getEffectiveValue().booleanValue() && interactedEntity != null && interactedEntity.isNotNull()) {
-                C02Debug debugEntry = new C02Debug(entityPlayerSP.l(), interactedEntity, interactionPacket.A$src$Ljava_lang_String_$jiwkol());
-                Vec3 vec3 = interactionPacket.O();
+                C02Debug debugEntry = new C02Debug(entityPlayerSP.l(), interactedEntity, interactionPacket.getActionName());
+                Vec3 vec3 = interactionPacket.getHitLocation();
                 if (vec3 != null && vec3.isNotNull()) {
                     debugEntry.setHitVector(new Vec3d(vec3.getX(), vec3.getY(), vec3.getZ()));
                 }
@@ -227,15 +227,15 @@ extends Mod {
         }
         if (this.logPlacements.getEffectiveValue().booleanValue() && packet.isInstance(MappedClasses.YB)) {
             CPacketPlayerBlockPlacement placementPacket = new CPacketPlayerBlockPlacement(packet.getObject());
-            Vec3i blockPosition = placementPacket.Q();
-            MutableFloatTriple facingVector = placementPacket.d$src$Lgg_vape_utils_MutableFloatTriple_$uj7uxi();
-            int side = placementPacket.d$src$I$17a761m();
-            DirectionalPosition directionalPosition = new DirectionalPosition(blockPosition.P(), blockPosition.o(), blockPosition.d(), side);
+            Vec3i blockPosition = placementPacket.getBlockPosition();
+            MutableFloatTriple facingVector = placementPacket.getFacingVector();
+            int side = placementPacket.getPlacedBlockDirection();
+            DirectionalPosition directionalPosition = new DirectionalPosition(blockPosition.getX(), blockPosition.getY(), blockPosition.getZ(), side);
             C08Debug rotationDebugState = new C08Debug(entityPlayerSP.l(), directionalPosition, facingVector);
             if (ForgeVersion.MC_1_16_5_ACTUAL.d()) {
-                rotationDebugState.setInsideBlock(placementPacket.l().a());
+                rotationDebugState.setInsideBlock(placementPacket.getBlockHit().isInside());
                 if (ForgeVersion.MC_1_21_11.d()) {
-                    rotationDebugState.setSequence(placementPacket.K());
+                    rotationDebugState.setSequence(placementPacket.getSequence());
                 }
             }
             Vape.debugLog(rotationDebugState.toString());

@@ -31,7 +31,7 @@ extends Mapping {
         if (n != 0) {
             Class<Float> clazz = Float.TYPE;
             boolean bl = true;
-            String string = "damageVsEntity";
+            String string = ForgeVersion.c() >= 23 ? "attackDamage" : "damageVsEntity";
             MItem_ToolMaterial mItem_ToolMaterial = this;
             this.r = mItem_ToolMaterial.J(string, bl, clazz);
             Class clazz2 = MappedClasses.F5;
@@ -65,7 +65,7 @@ extends Mapping {
         } else {
             Class<Float> clazz = Float.TYPE;
             boolean bl = true;
-            String string = "damageVsEntity";
+            String string = ForgeVersion.c() >= 23 ? "attackDamage" : "damageVsEntity";
             MItem_ToolMaterial mItem_ToolMaterial = this;
             this.r = mItem_ToolMaterial.J(string, bl, clazz);
         }

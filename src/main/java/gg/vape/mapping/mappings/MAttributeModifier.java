@@ -11,75 +11,43 @@ import java.util.UUID;
 
 public class MAttributeModifier
 extends Mapping {
-    private MappingField i;
-    private MappingMethod M;
-    private final MappingMethod Q;
+    private MappingField idField;
+    private MappingMethod getIdMethod;
+    private final MappingMethod getAmountMethod;
 
-    public static UUID getID(MAttributeModifier mAttributeModifier, Object object) {
-        return mAttributeModifier.getID(object);
+    public static UUID getUuid(MAttributeModifier mapping, Object attributeModifier) {
+        return mapping.readUuid(attributeModifier);
     }
 
 
-    private Object R(Object object) {
-        return this.i.getObject(object);
+    private Object readResourceLocation(Object attributeModifier) {
+        return this.idField.getObject(attributeModifier);
     }
 
-    private UUID getID(Object object) {
-        return (UUID)this.M.invokeObject(object, new Object[0]);
+    private UUID readUuid(Object attributeModifier) {
+        return (UUID)this.getIdMethod.invokeObject(attributeModifier, new Object[0]);
     }
 
-    public double getAmount(Object object) {
-        return this.Q.invokeDouble(object, new Object[0]);
+    public double getAmount(Object attributeModifier) {
+        return this.getAmountMethod.invokeDouble(attributeModifier, new Object[0]);
     }
 
-    public static Object T(MAttributeModifier mAttributeModifier, Object object) {
-        return mAttributeModifier.R(object);
+    public static Object getResourceLocation(MAttributeModifier mapping, Object attributeModifier) {
+        return mapping.readResourceLocation(attributeModifier);
     }
 
     public MAttributeModifier() {
         this(MIAttributeInstance.B());
     }
 
-    private MAttributeModifier(String string) {
+    private MAttributeModifier(String mappingState) {
         super(MappedClasses.z_);
-        if (string != null) {
-            if (ForgeVersion.MC_1_21_0.d()) {
-                Class clazz = MappedClasses.zC;
-                boolean bl = true;
-                String string2 = "id";
-                MAttributeModifier mAttributeModifier = this;
-                this.i = mAttributeModifier.J(string2, bl, clazz);
-            } else {
-                Class[] classArray = new Class[]{};
-                Class<UUID> clazz = UUID.class;
-                boolean bl = true;
-                String string3 = "getID";
-                MAttributeModifier mAttributeModifier = this;
-                this.M = mAttributeModifier.Y(string3, bl, clazz, classArray);
-            }
-            Class[] classArray = new Class[]{};
-            Class<Double> clazz = Double.TYPE;
-            boolean bl = true;
-            String string4 = "getAmount";
-            MAttributeModifier mAttributeModifier = this;
-            this.Q = mAttributeModifier.Y(string4, bl, clazz, classArray);
-            if (GuiComponent.getLegacyComponentState() == null) {
-                MIAttributeInstance.k("QRcZV");
-            }
-            return;
+        if (mappingState != null && ForgeVersion.MC_1_21_0.d()) {
+            this.idField = this.J("id", true, MappedClasses.zC);
+        } else {
+            this.getIdMethod = this.Y("getID", true, UUID.class, new Class[]{});
         }
-        Class[] classArray = new Class[]{};
-        Class<UUID> clazz = UUID.class;
-        boolean bl = true;
-        String string5 = "getID";
-        MAttributeModifier mAttributeModifier = this;
-        this.M = mAttributeModifier.Y(string5, bl, clazz, classArray); 
-        Class[] classArray2 = new Class[]{};
-        Class<Double> clazz2 = Double.TYPE;
-        boolean bl2 = true;
-        String string6 = "getAmount";
-        MAttributeModifier mAttributeModifier2 = this;
-        this.Q = this.Y(string6, bl2, clazz2, classArray2);
+        this.getAmountMethod = this.Y("getAmount", true, Double.TYPE, new Class[]{});
         if (GuiComponent.getLegacyComponentState() == null) {
             MIAttributeInstance.k("QRcZV");
         }

@@ -2,56 +2,55 @@ package gg.vape.wrapper.impl;
 
 public class SPacketEntity
 extends Packet {
-    public int B() {
+    public int getZ() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation j4_02 = this.r();
-            return (int)j4_02.a().getZ();
+            PositionMoveRotation change = this.getChange();
+            return (int)change.getPosition().getZ();
         }
-        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.m(this.I);
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.getZ(this.I);
     }
 
-    public SPacketEntity(Object object) {
-        super(object);
+    public SPacketEntity(Object handle) {
+        super(handle);
     }
 
-    public int H() {
+    public int getX() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation j4_02 = this.r();
-            return (int)j4_02.a().getX();
+            PositionMoveRotation change = this.getChange();
+            return (int)change.getPosition().getX();
         }
-        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.g(this.I);
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.getX(this.I);
     }
 
-    public byte D() {
+    public byte getYaw() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation j4_02 = this.r();
-            return (byte)j4_02.b();
+            PositionMoveRotation change = this.getChange();
+            return (byte)change.getYaw();
         }
-        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.C(this.I);
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.getYaw(this.I);
     }
 
-    public int M() {
+    public int getY() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation j4_02 = this.r();
-            return (int)j4_02.a().getY();
+            PositionMoveRotation change = this.getChange();
+            return (int)change.getPosition().getY();
         }
-        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.U(this.I);
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.getY(this.I);
     }
 
-    public byte U() {
+    public byte getPitch() {
         if (ForgeVersion.MC_1_21_4.d()) {
-            PositionMoveRotation j4_02 = this.r();
-            return (byte)j4_02.t();
+            PositionMoveRotation change = this.getChange();
+            return (byte)change.getPitch();
         }
-        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.u(this.I);
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.getPitch(this.I);
     }
 
-    public PositionMoveRotation r() {
-        return new PositionMoveRotation(SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.K(this.I));
+    public PositionMoveRotation getChange() {
+        return new PositionMoveRotation(SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.getChange(this.I));
     }
 
-    public int k() {
-        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.R(this.I);
+    public int getEntityId() {
+        return SPacketEntity.vapeInstance.getMappingsMapperCompat().qR.getEntityId(this.I);
     }
 }
-

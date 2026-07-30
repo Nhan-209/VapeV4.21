@@ -37,8 +37,8 @@ extends Mod {
             return;
         }
         SPacketBlockChange blockChange = new SPacketBlockChange(packet.getObject());
-        BlockPos position = blockChange.B();
-        boolean withinWorldBounds = position.P() >= -30000000 && position.d() >= -30000000 && position.P() < 30000000 && position.d() < 30000000 && position.o() >= 0 && position.o() < 256;
+        BlockPos position = blockChange.getBlockPosition();
+        boolean withinWorldBounds = position.getX() >= -30000000 && position.getZ() >= -30000000 && position.getX() < 30000000 && position.getZ() < 30000000 && position.getY() >= 0 && position.getY() < 256;
         if (withinWorldBounds && !this.trackedBlockAges.containsKey(position.getObject()) && this.trackedBlockAges.size() < 1024) {
             this.trackedBlockAges.put(position.getObject(), 0);
         }
@@ -78,9 +78,9 @@ extends Mod {
         }
         for (Object positionHandle : this.trackedBlockAges.keySet()) {
             Vec3i position = new BlockPos(positionHandle);
-            double x = position.P();
-            double y = position.o();
-            double z = position.d();
+            double x = position.getX();
+            double y = position.getY();
+            double z = position.getZ();
             Color fillColor = new Color(603914752, true);
             RenderUtil.u(x, y, z, 1.0, 1.0, 1.0, 0.1, Color.RED, fillColor, cameraX, cameraY, cameraZ);
         }
@@ -107,4 +107,3 @@ extends Mod {
         }
     }
 }
-

@@ -2,8 +2,6 @@ package gg.vape.mapping;
 
 import gg.vape.Vape;
 import gg.vape.asm.helper.DescUtils;
-import gg.vape.mapping.Mapping;
-import gg.vape.mapping.MappingProfileSnapshotRegistry;
 import gg.vape.mapping.runtime.RuntimeNameMappingRegistry;
 import gg.vape.runtime.NativeBridge;
 import gg.vape.ui.click.component.GuiComponent;
@@ -23,7 +21,7 @@ public class MappedClasses {
     public static Class Zx;
     public static Class Vs;
     public static Class ZP;
-    public static Class uO;
+    public static Class MOB_SPAWNER_TILE_ENTITY;
     public static Class qY;
     public static Class D;
     public static Class FB;
@@ -46,11 +44,11 @@ public class MappedClasses {
     public static Class q9;
     public static Class Vh;
     public static Class uP;
-    public static Class DO;
+    public static Class GPU_TEXTURE;
     public static Class FF;
     public static Class l_;
     public static Class DC;
-    public static Class zj;
+    public static Class foodPropertiesClass;
     public static Class uX;
     public static Class uu;
     public static Class b;
@@ -110,7 +108,7 @@ public class MappedClasses {
     public static Class Yt;
     public static Class qm;
     public static Class lK;
-    public static Class r;
+    public static Class REBINDABLE_TICKING_BLOCK_ENTITY;
     public static Class<?> zF;
     public static Class YF;
     public static Class zC;
@@ -179,7 +177,7 @@ public class MappedClasses {
     public static Class u1;
     public static Class uC;
     public static Class Zu;
-    public static Class up;
+    public static Class BOUND_TICKING_BLOCK_ENTITY;
     public static Class YR;
     public static Class H;
     public static Class l1;
@@ -189,7 +187,7 @@ public class MappedClasses {
     public static Class lg;
     public static Class ZK;
     public static Class VB;
-    public static Class Z2;
+    public static Class SESSION_TYPE;
     public static Class<?> YV;
     public static Class qp;
     public static Class zn;
@@ -212,7 +210,7 @@ public class MappedClasses {
     public static Class<?> z2;
     public static Class zm;
     public static Class<?> z7;
-    public static Class uw;
+    public static Class FOG_TYPE;
     public static Class J;
     public static Class FX;
     public static Class ZC;
@@ -229,7 +227,7 @@ public class MappedClasses {
     public static Class<?> uh;
     public static Class uI;
     public static Class uk;
-    public static Class l6;
+    public static Class foodsClass;
     public static Class Zr;
     public static Class Dw;
     public static Class DE;
@@ -248,7 +246,7 @@ public class MappedClasses {
     public static Class D9;
     public static Class lU;
     public static Class ZZ;
-    public static Class DJ;
+    public static Class WORLD_PROVIDER;
     public static Class uH;
     public static Class q2;
     public static Class ZU;
@@ -294,7 +292,7 @@ public class MappedClasses {
     public static Class zh;
     public static Class C;
     public static Class zU;
-    public static Class Y7;
+    public static Class VIS_GRAPH;
     public static Class z0;
     public static Class qF;
     public static Class z1;
@@ -321,8 +319,8 @@ public class MappedClasses {
     public static Class Fx;
     public static Class Y6;
     public static Class Y;
-    public static Class V8;
-    public static Class Dq;
+    public static Class BLOCKS;
+    public static Class FOG_RENDERER;
     public static Class zr;
     public static Class lR;
     public static Class ui;
@@ -339,7 +337,7 @@ public class MappedClasses {
     public static Class lH;
     public static Class D_;
     public static Class Dl;
-    public static Class ZT;
+    public static Class CLIENT_WORLD_INFO;
     public static Class ZO;
     public static Class ZW;
     public static Class FA;
@@ -421,7 +419,7 @@ public class MappedClasses {
     public static Class qu;
     public static Class uU;
     public static Class Dv;
-    public static Class lu;
+    public static Class GPU_TEXTURE_VIEW;
     public static Class Zc;
     public static Class ZM;
     public static Class Z8;
@@ -441,13 +439,13 @@ public class MappedClasses {
     public static Class FV;
     public static Class l3;
     public static Class lN;
-    public static Class FP;
+    public static Class WORLD_INFO;
     public static Class Dn;
     public static Class us;
     public static Class zx;
     public static Class lt;
     public static Class zB;
-    public static Class uD;
+    public static Class TICKING_BLOCK_ENTITY;
     public static Class Yp;
     public static Class uK;
     public static Class Vz;
@@ -487,7 +485,7 @@ public class MappedClasses {
     public static Class Zy;
     public static Class Yv;
     public static Class zi;
-    public static Class zv;
+    public static Class LEVEL_ENTITY_GETTER;
     public static Class qd;
     public static Class v;
     public static Class<?> DB;
@@ -533,11 +531,11 @@ public class MappedClasses {
     public static Class ud;
     public static Class YO;
     public static Class FE;
-    public static Class ZE;
+    public static Class OBJECT_TO_INT_MAP_ENTRY;
     public static Class Yb;
     public static Class uf;
     public static Class VC;
-    public static Class qG;
+    public static Class SET_VISIBILITY;
     @Deprecated
     public static Class V5;
     public static Class Dy;
@@ -565,12 +563,12 @@ public class MappedClasses {
     public static Class VD;
     public static Class YI;
     public static Class Vj;
-    public static Class uj;
+    public static Class MOB_SPAWNER_LOGIC;
     public static Class Vc;
     public static Class YN;
     public static Class Yi;
     public static Class<?> d;
-    public static Class DL;
+    public static Class ITEM_FOOD;
     public static Class zM;
     public static Class Fc;
     public static Class qS;
@@ -668,7 +666,7 @@ public class MappedClasses {
         lA = MappedClasses.m("java/lang/System");
         lJ = ForgeVersion.MC_1_7_10.Y() ? "net/minecraftforge/" : "cpw/mods/";
         F0 = lJ.replace("/", ".");
-        if (ForgeVersion.MC_1_7_10.L() && !Vape.INSTANCE.isNativeAvailable()) {
+        if (ForgeVersion.MC_1_7_10.L() && !Vape.INSTANCE.isForgeAbsent()) {
             S = MappedClasses.m(lJ + "fml/common/eventhandler/Event");
             x = MappedClasses.m("net/minecraftforge/client/event/RenderLivingEvent$Specials$Pre");
         }
@@ -716,14 +714,14 @@ public class MappedClasses {
         Ze = MappedClasses.m("net/minecraft/entity/item/EntityEnderCrystal");
         Zk = MappedClasses.m("net/minecraft/block/Block");
         ZH = MappedClasses.m("net/minecraft/item/ItemEnderPearl");
-        DL = MappedClasses.m("net/minecraft/item/ItemFood");
+        ITEM_FOOD = MappedClasses.m("net/minecraft/item/ItemFood");
         ZX = MappedClasses.m("net/minecraft/client/renderer/Tessellator");
         Dt = MappedClasses.m("net/minecraft/client/renderer/texture/TextureManager");
         qY = MappedClasses.m("net/minecraft/client/resources/IResourceManager");
         ll = MappedClasses.m("net/minecraft/client/shader/Framebuffer");
         zC = MappedClasses.m("net/minecraft/util/ResourceLocation");
         Fo = MappedClasses.m("net/minecraft/client/shader/ShaderGroup");
-        V8 = MappedClasses.m("net/minecraft/init/Blocks");
+        BLOCKS = MappedClasses.m("net/minecraft/init/Blocks");
         qa = MappedClasses.m("net/minecraft/block/BlockGrass");
         ZU = MappedClasses.m("net/minecraft/block/BlockLeaves");
         V7 = MappedClasses.m("net/minecraft/block/BlockFence");
@@ -761,12 +759,12 @@ public class MappedClasses {
         ZI = MappedClasses.m("net/minecraft/tileentity/TileEntity");
         DZ = MappedClasses.m("net/minecraft/tileentity/TileEntityChest");
         u0 = MappedClasses.m("net/minecraft/tileentity/TileEntityEnderChest");
-        uO = MappedClasses.m("net/minecraft/tileentity/TileEntityMobSpawner");
+        MOB_SPAWNER_TILE_ENTITY = MappedClasses.m("net/minecraft/tileentity/TileEntityMobSpawner");
         Dx = MappedClasses.m("net/minecraft/tileentity/TileEntityHopper");
         li = MappedClasses.m("net/minecraft/tileentity/TileEntityFurnace");
         YI = MappedClasses.m("net/minecraft/tileentity/TileEntityDropper");
         lI = MappedClasses.m("net/minecraft/tileentity/TileEntityDispenser");
-        uj = MappedClasses.m("net/minecraft/tileentity/MobSpawnerBaseLogic");
+        MOB_SPAWNER_LOGIC = MappedClasses.m("net/minecraft/tileentity/MobSpawnerBaseLogic");
         q9 = MappedClasses.m("net/minecraft/entity/player/PlayerCapabilities");
         FS = MappedClasses.m("net/minecraft/enchantment/EnchantmentHelper");
         Vp = MappedClasses.m("net/minecraft/enchantment/EnchantmentHelper$IModifier");
@@ -966,8 +964,8 @@ public class MappedClasses {
             FN = MappedClasses.m("net/minecraft/block/properties/IProperty");
             FQ = MappedClasses.m("net/minecraft/block/BlockDirectional");
             Vh = MappedClasses.m("net/minecraft/block/properties/PropertyEnum");
-            qG = MappedClasses.m("net/minecraft/client/renderer/chunk/SetVisibility");
-            Y7 = MappedClasses.m("net/minecraft/client/renderer/chunk/VisGraph");
+            SET_VISIBILITY = MappedClasses.m("net/minecraft/client/renderer/chunk/SetVisibility");
+            VIS_GRAPH = MappedClasses.m("net/minecraft/client/renderer/chunk/VisGraph");
             VU = MappedClasses.m("net/minecraft/client/renderer/BlockModelRenderer");
             Zn = MappedClasses.m("net/minecraft/client/renderer/GlStateManager$TextureState");
             U = MappedClasses.m("net/minecraft/client/renderer/GlStateManager$BooleanState");
@@ -994,7 +992,7 @@ public class MappedClasses {
             ZJ = MappedClasses.m("net/minecraft/network/play/server/S21PacketChunkData");
             uU = MappedClasses.m("net/minecraft/network/play/server/S21PacketChunkData$Extracted");
             zB = MappedClasses.m("net/minecraft/network/play/server/S26PacketMapChunkBulk");
-            FP = MappedClasses.m("net/minecraft/world/storage/WorldInfo");
+            WORLD_INFO = MappedClasses.m("net/minecraft/world/storage/WorldInfo");
             if (uU != null) {
                 Object object = Array.newInstance(uU, 1);
                 lW = object.getClass();
@@ -1065,8 +1063,8 @@ public class MappedClasses {
             P = MappedClasses.m("net/minecraft/entity/LivingEntity");
             Fk = MappedClasses.m("net/minecraft/util/registry/Registry");
             lz = MappedClasses.m("net/minecraft/util/registry/DefaultedRegistry");
-            Dq = MappedClasses.m("net/minecraft/client/renderer/FogRenderer");
-            uw = MappedClasses.m("net/minecraft/client/renderer/FogRenderer$FogType");
+            FOG_RENDERER = MappedClasses.m("net/minecraft/client/renderer/FogRenderer");
+            FOG_TYPE = MappedClasses.m("net/minecraft/client/renderer/FogRenderer$FogType");
             DQ = MappedClasses.m("com/mojang/blaze3d/matrix/MatrixStack");
             Du = MappedClasses.m("net/minecraft/util/IItemProvider");
             Zl = MappedClasses.m("net/minecraft/block/BlockState");
@@ -1126,7 +1124,7 @@ public class MappedClasses {
             D2 = MappedClasses.m("net/minecraft/client/gui/screen/DeathScreen");
             Q = MappedClasses.m("net/minecraft/client/util/InputMappings");
             f = MappedClasses.m("net/minecraft/util/math/MutableBoundingBox");
-            ZT = MappedClasses.m("net/minecraft/client/world/ClientWorld$ClientWorldInfo");
+            CLIENT_WORLD_INFO = MappedClasses.m("net/minecraft/client/world/ClientWorld$ClientWorldInfo");
             Vi = MappedClasses.m("net/minecraft/client/resources/ClientLanguageMap");
             us = MappedClasses.m("net/minecraft/util/Direction");
             ls = MappedClasses.m("com/mojang/blaze3d/systems/RenderSystem");
@@ -1150,7 +1148,7 @@ public class MappedClasses {
             Dw = MappedClasses.m("net/minecraft/fluid/FluidState");
             VR = MappedClasses.m("net/minecraft/fluid/Fluid");
         } else {
-            DJ = MappedClasses.m("net/minecraft/world/WorldProvider");
+            WORLD_PROVIDER = MappedClasses.m("net/minecraft/world/WorldProvider");
             zz = MappedClasses.m("net/minecraft/util/RegistryNamespaced");
             Vs = MappedClasses.m("net/minecraft/util/RegistrySimple");
             Zz = MappedClasses.m("net/minecraft/client/gui/ScaledResolution");
@@ -1173,16 +1171,16 @@ public class MappedClasses {
                 lw = MappedClasses.m("net/minecraft/network/protocol/game/ServerboundInteractPacket$Action");
                 uL = MappedClasses.m("net/minecraft/network/protocol/game/ServerboundInteractPacket$InteractionAtLocationAction");
             }
-            zv = MappedClasses.m("net/minecraft/world/level/entity/LevelEntityGetter");
+            LEVEL_ENTITY_GETTER = MappedClasses.m("net/minecraft/world/level/entity/LevelEntityGetter");
             VC = MappedClasses.m("it/unimi/dsi/fastutil/longs/Long2ObjectMap$Entry");
             if (ForgeVersion.MC_1_21_6.v()) {
                 ug = MappedClasses.m("com/mojang/blaze3d/vertex/BufferUploader");
             }
             N = MappedClasses.m("it/unimi/dsi/fastutil/ints/IntList");
             Yw = MappedClasses.m("net/minecraft/world/entity/monster/Monster");
-            up = MappedClasses.m("net/minecraft/world/level/chunk/LevelChunk$BoundTickingBlockEntity");
-            r = MappedClasses.m("net/minecraft/world/level/chunk/LevelChunk$RebindableTickingBlockEntityWrapper");
-            uD = MappedClasses.m("net/minecraft/world/level/block/entity/TickingBlockEntity");
+            BOUND_TICKING_BLOCK_ENTITY = MappedClasses.m("net/minecraft/world/level/chunk/LevelChunk$BoundTickingBlockEntity");
+            REBINDABLE_TICKING_BLOCK_ENTITY = MappedClasses.m("net/minecraft/world/level/chunk/LevelChunk$RebindableTickingBlockEntityWrapper");
+            TICKING_BLOCK_ENTITY = MappedClasses.m("net/minecraft/world/level/block/entity/TickingBlockEntity");
             I = MappedClasses.m("net/minecraft/client/multiplayer/ClientChunkCache");
             zd = MappedClasses.m("net/minecraft/client/multiplayer/ClientChunkCache$Storage");
             Vt = MappedClasses.m("net/minecraft/world/level/chunk/ChunkSource");
@@ -1194,7 +1192,7 @@ public class MappedClasses {
         }
         if (ForgeVersion.MC_1_20_6.d()) {
             if (ForgeVersion.MC_1_21_10.v()) {
-                Z2 = MappedClasses.m("net/minecraft/client/User$Type");
+                SESSION_TYPE = MappedClasses.m("net/minecraft/client/User$Type");
             }
             VO = MappedClasses.m("net/minecraft/util/RandomSource");
             l4 = MappedClasses.m("net/minecraft/client/OptionInstance");
@@ -1229,7 +1227,7 @@ public class MappedClasses {
             VT = MappedClasses.m("com/mojang/blaze3d/vertex/VertexSorting");
             DP = MappedClasses.m("net/minecraft/core/component/PatchedDataComponentMap");
             VX = MappedClasses.m("net/minecraft/world/item/enchantment/ItemEnchantments");
-            ZE = MappedClasses.m("it/unimi/dsi/fastutil/objects/Object2IntMap$Entry");
+            OBJECT_TO_INT_MAP_ENTRY = MappedClasses.m("it/unimi/dsi/fastutil/objects/Object2IntMap$Entry");
             un = MappedClasses.m("net/minecraft/client/KeyboardHandler");
             if (ForgeVersion.MC_1_21_6.v()) {
                 Fv = MappedClasses.m("net/minecraft/client/renderer/ShaderInstance");
@@ -1278,8 +1276,8 @@ public class MappedClasses {
             zo = MappedClasses.m("net/minecraft/core/HolderSet$Named");
             ZY = MappedClasses.m("net/minecraft/tags/ItemTags");
             qc = MappedClasses.m("it/unimi/dsi/fastutil/ints/IntArrayList");
-            zj = MappedClasses.m("net/minecraft/world/food/FoodProperties");
-            l6 = MappedClasses.m("net/minecraft/world/food/Foods");
+            foodPropertiesClass = MappedClasses.m("net/minecraft/world/food/FoodProperties");
+            foodsClass = MappedClasses.m("net/minecraft/world/food/Foods");
             if (ForgeVersion.MC_1_21_6.v()) {
                 DG = MappedClasses.m("net/minecraft/client/renderer/CoreShaders");
             }
@@ -1330,7 +1328,7 @@ public class MappedClasses {
             Vq = MappedClasses.m("net/minecraft/client/renderer/ScreenEffectRenderer");
             Y_ = MappedClasses.m("net/minecraft/world/entity/EquipmentSlotGroup");
             Vf = MappedClasses.m("net/minecraft/world/entity/EquipmentSlot$Type");
-            DO = MappedClasses.m("com/mojang/blaze3d/textures/GpuTexture");
+            GPU_TEXTURE = MappedClasses.m("com/mojang/blaze3d/textures/GpuTexture");
             uA = MappedClasses.m("com/mojang/blaze3d/opengl/GlTexture");
             D_ = MappedClasses.m("net/minecraft/client/gui/GuiSpriteManager");
             Dy = MappedClasses.m("org/joml/Matrix3x2fStack");
@@ -1367,7 +1365,7 @@ public class MappedClasses {
             qd = MappedClasses.m("net/minecraft/client/gui/font/glyphs/BakedGlyph");
             v = MappedClasses.m("net/minecraft/client/gui/font/glyphs/BakedSheetGlyph");
             g = MappedClasses.m("com/mojang/blaze3d/font/GlyphInfo");
-            lu = MappedClasses.m("com/mojang/blaze3d/textures/GpuTextureView");
+            GPU_TEXTURE_VIEW = MappedClasses.m("com/mojang/blaze3d/textures/GpuTextureView");
             lE = MappedClasses.m("net/minecraft/client/gui/font/GlyphStitcher");
             Yx = MappedClasses.m("net/minecraft/client/gui/GlyphSource");
             lC = MappedClasses.m("com/mojang/blaze3d/platform/FramerateLimitTracker");
@@ -1418,7 +1416,7 @@ public class MappedClasses {
         if (string3 != null) {
             string = string3;
         }
-        if ((bl2 = Vape.INSTANCE.isNativeAvailable()) && Vape.INSTANCE.isVanillaMinecraftPresent() && ForgeVersion.MC_1_20_6.d()) {
+        if ((bl2 = Vape.INSTANCE.isForgeAbsent()) && Vape.INSTANCE.isVanillaMinecraftPresent() && ForgeVersion.MC_1_20_6.d()) {
             bl2 = false;
         }
         if (!Vape.INSTANCE.isForgeRemapActive()) {

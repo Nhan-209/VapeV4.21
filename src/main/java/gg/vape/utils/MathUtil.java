@@ -79,7 +79,7 @@ public class MathUtil {
     }
 
     public static long S(Vec3i vec3i) {
-        return MathUtil.S(vec3i.P(), vec3i.o(), vec3i.d());
+        return MathUtil.S(vec3i.getX(), vec3i.getY(), vec3i.getZ());
     }
 
     public static double g(double ... dArray) {

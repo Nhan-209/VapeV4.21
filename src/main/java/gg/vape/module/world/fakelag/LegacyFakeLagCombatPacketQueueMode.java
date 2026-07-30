@@ -96,7 +96,7 @@ extends SubModule<FakeLag> {
         if (!this.queuedPackets.isEmpty()) {
             UseEntityPacketBridge useEntityPacketBridge2;
             boolean shouldFlush = System.currentTimeMillis() >= this.flushDeadline;
-            if (UseEntityPacketBridge.h(packet) && (useEntityPacketBridge2 = new UseEntityPacketBridge(packet)).S()) {
+            if (UseEntityPacketBridge.isUseEntityPacket(packet) && (useEntityPacketBridge2 = new UseEntityPacketBridge(packet)).isAttack()) {
                 shouldFlush = true;
             }
             if (packet.isInstance(MappedClasses.u7)) {
@@ -115,7 +115,7 @@ extends SubModule<FakeLag> {
             eventPacketSend.setCancelled(true);
             return;
         }
-        if (UseEntityPacketBridge.h(packet) && (useEntityPacketBridge = new UseEntityPacketBridge(packet)).S() && (entity = Minecraft.theWorld().V(useEntityPacketBridge.w())).isInstance(MappedClasses.zm)) {
+        if (UseEntityPacketBridge.isUseEntityPacket(packet) && (useEntityPacketBridge = new UseEntityPacketBridge(packet)).isAttack() && (entity = Minecraft.theWorld().V(useEntityPacketBridge.getEntityId())).isInstance(MappedClasses.zm)) {
             this.targetEntity = new EntityLivingBase(entity);
             long delay = ((Double)((FakeLag)this.getParent()).delay.getValue()).longValue() + (long)ThreadLocalRandom.current().nextInt(100);
             if (this.targetEntity.c$src$I$15a9iwo() > 0 && this.targetEntity.c$src$I$15a9iwo() <= (int)Math.ceil((double)delay / 50.0)) {

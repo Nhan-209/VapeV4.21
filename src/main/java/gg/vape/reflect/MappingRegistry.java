@@ -1,5 +1,6 @@
 package gg.vape.reflect;
 
+import gg.vape.wrapper.impl.ForgeVersion;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,10 +19,28 @@ public final class MappingRegistry {
     public static final Map<String, Set<String>> METHODS_REVERSED = new HashMap<String, Set<String>>();
     public static final Map<String, Set<String>> FIELDS = new HashMap<String, Set<String>>();
     public static final Map<String, Set<String>> FIELDS_REVERSED = new HashMap<String, Set<String>>();
-    private static final String METHODS_RESOURCE = "mappings/forge189/methods.csv";
-    private static final String FIELDS_RESOURCE = "mappings/forge189/fields.csv";
+    private static final String RESOURCE_DIRECTORY = getResourceDirectory();
+    private static final String METHODS_RESOURCE = RESOURCE_DIRECTORY + "/methods.csv";
+    private static final String FIELDS_RESOURCE = RESOURCE_DIRECTORY + "/fields.csv";
 
     private MappingRegistry() {
+    }
+
+    private static String getResourceDirectory() {
+        switch (ForgeVersion.c()) {
+            case 13:
+                return "mappings/forge1710";
+            case 15:
+                return "mappings/forge189";
+            case 23:
+                return "mappings/forge1122";
+            case 35:
+                return "mappings/forge1164";
+            case 36:
+                return "mappings/forge1165";
+            default:
+                return "mappings/forge189";
+        }
     }
 
     public static void parseCsv(InputStream stream, Map<String, Set<String>> namesToSrg, Map<String, Set<String>> srgToNames) throws IOException {
@@ -68,4 +87,3 @@ public final class MappingRegistry {
         }
     }
 }
-

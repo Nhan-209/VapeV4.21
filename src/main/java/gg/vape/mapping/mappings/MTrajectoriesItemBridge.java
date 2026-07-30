@@ -6,21 +6,15 @@ import gg.vape.mapping.MappingMethod;
 
 public class MTrajectoriesItemBridge
 extends Mapping {
-    private static final String b = "isCharged";
-    public final MappingMethod T;
+    private final MappingMethod isChargedMethod;
 
     public MTrajectoriesItemBridge() {
         super(MappedClasses.YA);
-        Class[] classArray = new Class[]{MappedClasses.VK};
-        Class<Boolean> clazz = Boolean.TYPE;
-        boolean bl = true;
-        String string = b;
-        MTrajectoriesItemBridge mTrajectoriesItemBridge = this;
-        this.T = this.registerStaticMethod(string, bl, clazz, classArray);
+        this.isChargedMethod = this.registerStaticMethod("isCharged", true, Boolean.TYPE, new Class[]{MappedClasses.VK});
     }
 
-    public boolean g(Object object) {
-        return this.T.invokeBoolean(null, object);
+    public boolean isCharged(Object itemStack) {
+        return this.isChargedMethod.invokeBoolean(null, itemStack);
     }
 }
 

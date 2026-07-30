@@ -1,36 +1,30 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MSPacketExplosion;
 import gg.vape.wrapper.Wrapper;
 
 public class SPacketExplosion
 extends Wrapper {
-    public void a(float f) {
-        MSPacketExplosion.m(SPacketExplosion.vapeInstance.getMappingsMapperCompat().hQ, this.I, f);
+    public void setPosition(float position) {
+        SPacketExplosion.vapeInstance.getMappingsMapperCompat().hQ.setPosition(this.I, position);
     }
 
-    public void b(float f) {
-        MSPacketExplosion.K(SPacketExplosion.vapeInstance.getMappingsMapperCompat().hQ, this.I, f);
+    public void setPreviousSpeed(float previousSpeed) {
+        SPacketExplosion.vapeInstance.getMappingsMapperCompat().hQ.setPreviousSpeed(this.I, previousSpeed);
     }
 
-    public float b() {
-        return MSPacketExplosion.V(SPacketExplosion.vapeInstance.getMappingsMapperCompat().hQ, this.I);
+    public float getSpeed() {
+        return SPacketExplosion.vapeInstance.getMappingsMapperCompat().hQ.getSpeed(this.I);
     }
 
-    public float p() {
-        return MSPacketExplosion.v(SPacketExplosion.vapeInstance.getMappingsMapperCompat().hQ, this.I);
+    public float getPreviousSpeed() {
+        return SPacketExplosion.vapeInstance.getMappingsMapperCompat().hQ.getPreviousSpeed(this.I);
     }
 
-    public SPacketExplosion(Object object) {
-        super(object);
+    public SPacketExplosion(Object handle) {
+        super(handle);
     }
 
-    public void L(float f) {
-        MSPacketExplosion.K(SPacketExplosion.vapeInstance.getMappingsMapperCompat().hQ, this.I, f);
-    }
-
-    public float F() {
-        return MSPacketExplosion.z(SPacketExplosion.vapeInstance.getMappingsMapperCompat().hQ, this.I);
+    public float getPosition() {
+        return SPacketExplosion.vapeInstance.getMappingsMapperCompat().hQ.getPosition(this.I);
     }
 }
-

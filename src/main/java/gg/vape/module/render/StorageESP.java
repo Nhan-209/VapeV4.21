@@ -98,7 +98,7 @@ extends Mod {
                     renderData = this.outlineOpen.getEffectiveValue().booleanValue() ? new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, tileEntityOpenedChest.Y()) : new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
                 } else if (tileEntity instanceof TileEntityChest) {
                     TileEntity tileEntity2 = tileEntity;
-                    renderData = new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, ((TileEntityChest)tileEntity2).D());
+                    renderData = new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, ((TileEntityChest)tileEntity2).getLidOpenness());
                 } else {
                     renderData = new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
                 }
@@ -162,7 +162,7 @@ extends Mod {
                 renderData = this.outlineOpen.getEffectiveValue().booleanValue() ? new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, tileEntityOpenedChest.Y()) : new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
             } else if (tileEntity instanceof TileEntityChest) {
                 TileEntity tileEntity3 = tileEntity;
-                renderData = new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, ((TileEntityChest)tileEntity3).D());
+                renderData = new HSBAData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color, ((TileEntityChest)tileEntity3).getLidOpenness());
             } else {
                 renderData = new HSBData(tileEntity.getX(), tileEntity.getY(), tileEntity.getZ(), -1, color);
             }

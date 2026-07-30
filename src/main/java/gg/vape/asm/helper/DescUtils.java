@@ -118,8 +118,7 @@ public class DescUtils {
     }
 
     public static Class<?> getArrayType(Class<?> componentType) {
-        String arrayDescriptor = "[" + NativeBridge.gcs(componentType);
-        return NativeBridge.gcj(arrayDescriptor);
+        return DescUtils.getReflectiveArrayType(componentType);
     }
 
 

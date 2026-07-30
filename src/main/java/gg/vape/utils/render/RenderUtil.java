@@ -320,7 +320,7 @@ public class RenderUtil {
                 fontRenderer.h(string, -n3, -n5 + 3, n2, false, renderMatrix4f, SharedMonsterAttributes.V());
             } else {
                 int n8 = 0xF000F0;
-                RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
+                RenderItemFontBridge renderItemFontBridge = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBufferSource();
                 ScorePlayerTeamTextComponent scorePlayerTeamTextComponent = ScorePlayerTeamTextComponent.B(string);
                 fontRenderer.Z(scorePlayerTeamTextComponent, -n3, -n5 + 3, n2, false, renderMatrix4f.toMinecraftMatrix(), renderItemFontBridge, true, 0, n8);
                 renderItemFontBridge.q();
@@ -330,11 +330,11 @@ public class RenderUtil {
             bl = true;
             Quaternion quaternion = Minecraft.D().getCameraOrientation();
             matrixStack.i(quaternion);
-            matrixStack.i(Quaternion.K(180.0f, 0.0f, 180.0f, true));
+            matrixStack.i(Quaternion.fromEulerAngles(180.0f, 0.0f, 180.0f, true));
             ScorePlayerTeamTextComponent scorePlayerTeamTextComponent = ScorePlayerTeamTextComponent.B(string);
             RenderItemFontBridge renderItemFontBridge = RenderItemFontBridge.V(Tessellator.getInstance().getWorldRenderer());
             int n9 = 0xF000F0;
-            Matrix4f matrix4f = matrixStack.F().u();
+            Matrix4f matrix4f = matrixStack.F().getMatrix();
             fontRenderer.Z(scorePlayerTeamTextComponent, -n3, -n5 + 3, n2, false, matrix4f, renderItemFontBridge, true, 0, n9);
             renderItemFontBridge.q();
         } else {

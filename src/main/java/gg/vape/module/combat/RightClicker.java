@@ -35,8 +35,8 @@ extends ClickerMod {
             return true;
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            ItemStack mainHandItem = player.i(EnumHand.M());
-            ItemStack offHandItem = player.i(EnumHand.p());
+            ItemStack mainHandItem = player.i(EnumHand.mainHand());
+            ItemStack offHandItem = player.i(EnumHand.offHand());
             if (!this.itemWhitelist.matches(mainHandItem) && this.itemWhitelist.matches(offHandItem)
                     && this.isUsableItem(mainHandItem, player)) {
                 return true;

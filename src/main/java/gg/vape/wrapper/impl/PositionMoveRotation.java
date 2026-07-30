@@ -4,32 +4,31 @@ import gg.vape.wrapper.Wrapper;
 
 public class PositionMoveRotation
 extends Wrapper {
-    public Vec3 a() {
-        return new Vec3(PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.r(this.I));
+    public Vec3 getDeltaMovement() {
+        return new Vec3(PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.getDeltaMovement(this.I));
     }
 
-    public void V(float f) {
-        PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.d(this.I, f);
+    public void setPitch(float pitch) {
+        PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.setPitch(this.I, pitch);
     }
 
-    public void y(float f) {
-        PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.u(this.I, f);
+    public void setYaw(float yaw) {
+        PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.setYaw(this.I, yaw);
     }
 
-    public Vec3 u() {
-        return new Vec3(PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.j(this.I));
+    public Vec3 getPosition() {
+        return new Vec3(PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.getPosition(this.I));
     }
 
-    public float b() {
-        return PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.J(this.I);
+    public float getPitch() {
+        return PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.getPitch(this.I);
     }
 
-    public float t() {
-        return PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.n(this.I);
+    public float getYaw() {
+        return PositionMoveRotation.vapeInstance.getMappingsMapperCompat().qT.getYaw(this.I);
     }
 
-    public PositionMoveRotation(Object object) {
-        super(object);
+    public PositionMoveRotation(Object handle) {
+        super(handle);
     }
 }
-

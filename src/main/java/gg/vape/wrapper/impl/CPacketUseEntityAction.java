@@ -4,16 +4,15 @@ import gg.vape.wrapper.Wrapper;
 
 public class CPacketUseEntityAction
 extends Wrapper {
-    private CPacketUseEntityAction(Object object) {
-        super(object);
+    private CPacketUseEntityAction(Object handle) {
+        super(handle);
     }
 
-    public CPacketUseEntityAction(Object object, CPacketUseEntityActionConstructorMarker fv_02) {
-        this(object);
+    public CPacketUseEntityAction(Object handle, CPacketUseEntityActionConstructorMarker constructorMarker) {
+        this(handle);
     }
 
-    public CPacketUseEntity w() {
-        return new CPacketUseEntity(CPacketUseEntityAction.vapeInstance.getMappingsMapperCompat().qz.f(this.I), null);
+    public CPacketUseEntity getType() {
+        return new CPacketUseEntity(CPacketUseEntityAction.vapeInstance.getMappingsMapperCompat().qz.getType(this.I), null);
     }
 }
-

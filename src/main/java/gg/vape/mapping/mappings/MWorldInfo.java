@@ -8,47 +8,46 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MWorldInfo
 extends Mapping {
-    private MappingField g;
-    private static String[] a;
-    public MappingMethod m;
+    private MappingField worldTimeField;
+    private static String[] constructorState;
+    public MappingMethod getWorldTimeMethod;
 
-    public long R(Object object) {
-        return this.g.getLong(object);
+    public long getWorldTime(Object worldInfo) {
+        return this.worldTimeField.getLong(worldInfo);
     }
 
     static {
-        MWorldInfo.C(null);
+        MWorldInfo.setWorldInfoConstructorState(null);
     }
 
-    public static void C(String[] stringArray) {
-        a = stringArray;
+    public static void setWorldInfoConstructorState(String[] state) {
+        constructorState = state;
     }
 
 
-    public static String[] T() {
-        return a;
+    public static String[] getWorldInfoConstructorState() {
+        return constructorState;
     }
 
     public MWorldInfo() {
-        this(MWorldInfo.T());
+        this(MWorldInfo.getWorldInfoConstructorState());
     }
 
-    private MWorldInfo(String[] stringArray) {
-        super(MappedClasses.FP);
-        String[] stringArray2 = stringArray;
-        Class<Long> clazz = Long.TYPE;
-        boolean bl = true;
-        String string = "worldTime";
-        MWorldInfo mWorldInfo = this;
-        this.g = this.J(string, bl, clazz);
-        Class[] classArray = new Class[]{};
-        Class<Long> clazz2 = Long.TYPE;
-        boolean bl2 = true;
-        String string2 = "getWorldTime";
-        MWorldInfo mWorldInfo2 = this;
-        this.m = this.Y(string2, bl2, clazz2, classArray);
+    private MWorldInfo(String[] constructorState) {
+        super(MappedClasses.WORLD_INFO);
+        String[] unusedConstructorState = constructorState;
+        Class<Long> fieldType = Long.TYPE;
+        boolean remapField = true;
+        String fieldName = "worldTime";
+        MWorldInfo mappings = this;
+        this.worldTimeField = mappings.J(fieldName, remapField, fieldType);
+        Class[] parameterTypes = new Class[]{};
+        Class<Long> returnType = Long.TYPE;
+        boolean remapMethod = true;
+        String methodName = "getWorldTime";
+        this.getWorldTimeMethod = this.Y(methodName, remapMethod, returnType, parameterTypes);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MWorldInfo.C(new String[1]);
+            MWorldInfo.setWorldInfoConstructorState(new String[1]);
         }
     }
 }

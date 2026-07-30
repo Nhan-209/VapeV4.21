@@ -8,19 +8,15 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MRegistryNamespaced
 extends Mapping {
-    private MappingMethod m;
+    private final MappingMethod getByValueMethod;
 
     public MRegistryNamespaced() {
         super(MappedClasses.lz);
-        Class[] classArray = new Class[]{Integer.TYPE};
-        Class<Object> clazz = Object.class;
-        String string = "getByValue";
-        MRegistryNamespaced mRegistryNamespaced = this;
-        this.m = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string, clazz, classArray).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "byId")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.ua)).buildMethod();
+        this.getByValueMethod = ((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder("getByValue", Object.class, new Class[]{Integer.TYPE}).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "byId")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.ua)).buildMethod();
     }
 
-    public Object e(Object object, int n) {
-        return this.m.invokeObject(object, n);
+    public Object getByValue(Object registry, int id) {
+        return this.getByValueMethod.invokeObject(registry, id);
     }
 }
 

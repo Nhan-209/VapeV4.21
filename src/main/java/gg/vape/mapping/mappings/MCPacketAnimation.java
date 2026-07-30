@@ -9,51 +9,32 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MCPacketAnimation
 extends Mapping {
-    private MappingMethod r;
-    private MappingMethod y;
+    private MappingMethod noArgConstructor;
+    private MappingMethod handConstructor;
 
-    public Object H() {
-        return this.r.newInstance(new Object[0]);
+    public Object createAnimationPacket() {
+        return this.noArgConstructor.newInstance(new Object[0]);
     }
 
     public MCPacketAnimation() {
-        this(MPacketIdFactory.A());
+        this(MPacketIdFactory.getPacketMappingControlFlowState());
     }
 
-    private MCPacketAnimation(GuiComponent[] guiComponentArray) {
+    private MCPacketAnimation(GuiComponent[] controlFlowState) {
         super(MappedClasses.VF);
-        if (guiComponentArray != null) {
+        if (controlFlowState != null) {
             if (ForgeVersion.MC_1_12_2.d()) {
-                Class[] classArray = new Class[]{MappedClasses.Yf};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MCPacketAnimation mCPacketAnimation = this;
-                this.y = mCPacketAnimation.Y(string, bl, clazz, classArray);
+                this.handConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{MappedClasses.Yf});
             } else {
-                Class[] classArray = new Class[]{};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MCPacketAnimation mCPacketAnimation = this;
-                this.r = mCPacketAnimation.Y(string, bl, clazz, classArray);
+                this.noArgConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{});
             }
             return;
         }
-        Class[] classArray = new Class[]{};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = "<init>";
-        MCPacketAnimation mCPacketAnimation = this;
-        this.r = mCPacketAnimation.Y(string, bl, clazz, classArray); 
+        this.noArgConstructor = this.Y("<init>", false, Void.TYPE, new Class[]{});
     }
 
-    private Object Z(Object object) {
-        return this.y.newInstance(object);
-    }
-
-    public static Object A(MCPacketAnimation mCPacketAnimation, Object object) {
-        return mCPacketAnimation.Z(object);
+    public Object createAnimationPacket(Object hand) {
+        return this.handConstructor.newInstance(hand);
     }
 
 }

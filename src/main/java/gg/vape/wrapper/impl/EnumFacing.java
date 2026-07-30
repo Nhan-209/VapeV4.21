@@ -23,7 +23,7 @@ extends Wrapper {
     private static EnumFacing P;
     public static final int X;
     public static final int q;
-    private Vec3i y;
+    private Vec3i directionVector;
 
     public static EnumFacing[] t() {
         if (i == null) {
@@ -75,11 +75,11 @@ extends Wrapper {
     }
 
     public int o() {
-        return this.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr().d();
+        return this.getDirectionVector().getZ();
     }
 
     public int C() {
-        return this.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr().o();
+        return this.getDirectionVector().getY();
     }
 
     public static EnumFacing F$src$Lgg_vape_wrapper_impl_EnumFacing_$glfxl5() {
@@ -127,18 +127,18 @@ extends Wrapper {
         return P;
     }
 
-    public Vec3i w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr() {
-        if (this.y == null) {
+    public Vec3i getDirectionVector() {
+        if (this.directionVector == null) {
             if (ForgeVersion.MC_1_7_10.Y()) {
-                this.y = new Vec3i(EnumFacing.vapeInstance.getMappings().O.e(this.I));
+                this.directionVector = new Vec3i(EnumFacing.vapeInstance.getMappings().O.e(this.I));
             } else {
                 int n = EnumFacing.vapeInstance.getMappings().O.V(this.I);
                 int n2 = EnumFacing.vapeInstance.getMappings().O.A(this.I);
                 int n3 = EnumFacing.vapeInstance.getMappings().O.s(this.I);
-                this.y = new InlineVec3i(n, n2, n3);
+                this.directionVector = new InlineVec3i(n, n2, n3);
             }
         }
-        return this.y;
+        return this.directionVector;
     }
 
     public static EnumFacing w() {
@@ -201,7 +201,7 @@ extends Wrapper {
     }
 
     public int g() {
-        return this.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr().P();
+        return this.getDirectionVector().getX();
     }
 
     public int c() {
@@ -233,7 +233,4 @@ extends Wrapper {
         return this.S;
     }
 
-    public Vec3i gg_vape_wrapper_impl_Vec3i_w() {
-        return this.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr();
-    }
 }

@@ -67,7 +67,7 @@ extends Wrapper {
 
     public int getKeyCode() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.u$src$Lgg_vape_wrapper_impl_InputMappingsInput_$1c10gpv().R();
+            return this.u$src$Lgg_vape_wrapper_impl_InputMappingsInput_$1c10gpv().getKeyCode();
         }
         return KeyBinding.vapeInstance.getMappings().hJ.B(this.I);
     }

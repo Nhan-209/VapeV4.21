@@ -211,7 +211,7 @@ extends Mod {
                     fontRenderer.h(line, -halfWidth, lineY, textColor, false, renderMatrix, SharedMonsterAttributes.V());
                 } else {
                     int packedLight = 0xF000F0;
-                    fontBuffer = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBoundingBox();
+                    fontBuffer = Minecraft.H$src$Lgg_vape_wrapper_impl_VoxelShape_$1dlcquv().getBufferSource();
                     ScorePlayerTeamTextComponent textComponent = ScorePlayerTeamTextComponent.B(line);
                     fontRenderer.Z(textComponent, -halfWidth, lineY, textColor, false, renderMatrix.toMinecraftMatrix(), fontBuffer, true, 0, packedLight);
                     fontBuffer.q();
@@ -220,11 +220,11 @@ extends Mod {
                 matrixStack.H();
                 Quaternion cameraOrientation = Minecraft.D().getCameraOrientation();
                 matrixStack.i(cameraOrientation);
-                matrixStack.i(Quaternion.K(180.0f, 0.0f, 180.0f, true));
+                matrixStack.i(Quaternion.fromEulerAngles(180.0f, 0.0f, 180.0f, true));
                 ScorePlayerTeamTextComponent textComponent = ScorePlayerTeamTextComponent.B(line);
                 fontBuffer = RenderItemFontBridge.V(Tessellator.getInstance().getWorldRenderer());
                 int packedLight = 0xF000F0;
-                Matrix4f matrix = matrixStack.F().u();
+                Matrix4f matrix = matrixStack.F().getMatrix();
                 fontRenderer.Z(textComponent, -halfWidth, lineY, textColor, false, matrix, fontBuffer, true, 0, packedLight);
                 fontBuffer.q();
                 matrixStack.U();

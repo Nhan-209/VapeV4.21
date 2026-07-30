@@ -9,129 +9,73 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MCPacketUseEntityPacket
 extends Mapping {
-    private MappingField w;
-    private MappingField I;
-    private final MappingField g;
-    private final MappingField u;
+    private MappingField actionField;
+    private MappingField hitLocationField;
+    private final MappingField entityIdField;
+    private final MappingField nestedEntityIdField;
 
-    private Object A(Object object) {
-        if (this.w == null) {
+    public Object getAction(Object packet) {
+        if (this.actionField == null) {
             return null;
         }
-        return this.w.getObject(object);
-    }
-
-
-    public static Object Q(MCPacketUseEntityPacket mCPacketUseEntityPacket, Object object) {
-        return mCPacketUseEntityPacket.m(object);
+        return this.actionField.getObject(packet);
     }
 
     public MCPacketUseEntityPacket() {
-        this(MPacketIdFactory.A());
+        this(MPacketIdFactory.getPacketMappingControlFlowState());
     }
 
-    private MCPacketUseEntityPacket(GuiComponent[] guiComponentArray) {
+    private MCPacketUseEntityPacket(GuiComponent[] controlFlowState) {
         super(MappedClasses.Fa);
-        GuiComponent[] guiComponentArray2 = guiComponentArray;
         if (ForgeVersion.MC_1_8_9.d()) {
             if (ForgeVersion.MC_1_17.d()) {
                 if (ForgeVersion.MC_26_1.v()) {
-                    Class clazz = MappedClasses.lw;
-                    boolean bl = true;
-                    String string = "action";
-                    MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
-                    this.w = mCPacketUseEntityPacket.J(string, bl, clazz);
+                    this.actionField = this.J("action", true, MappedClasses.lw);
                 }
             } else {
-                Class clazz = MappedClasses.D5;
-                boolean bl = true;
-                String string = "action";
-                MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
-                this.w = mCPacketUseEntityPacket.J(string, bl, clazz);
+                this.actionField = this.J("action", true, MappedClasses.D5);
             }
-            Class<Integer> clazz = Integer.TYPE;
-            boolean bl = true;
-            String string = "entityId";
-            MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
-            this.g = mCPacketUseEntityPacket.J(string, bl, clazz);
+            this.entityIdField = this.J("entityId", true, Integer.TYPE);
         } else if (Wrapper.vapeInstance.isVanillaMinecraftPresent()) {
-            Class clazz = MappedClasses.D5;
-            boolean bl = true;
-            String string = "action";
-            MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
-            this.w = mCPacketUseEntityPacket.J(string, bl, clazz);
-            Class<Integer> clazz2 = Integer.TYPE;
-            boolean bl2 = true;
-            String string2 = "entityId";
-            MCPacketUseEntityPacket mCPacketUseEntityPacket2 = this;
-            this.g = this.J(string2, bl2, clazz2);
+            this.actionField = this.J("action", true, MappedClasses.D5);
+            this.entityIdField = this.J("entityId", true, Integer.TYPE);
         } else {
-            Class clazz = MappedClasses.D5;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "field_149566_b";
-            MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
-            this.w = mCPacketUseEntityPacket.J(string, bl, clazz);
-            Class<Integer> clazz3 = Integer.TYPE;
-            boolean bl3 = Wrapper.isNativeAvailable;
-            String string3 = "field_149567_a";
-            MCPacketUseEntityPacket mCPacketUseEntityPacket3 = this;
-            this.g = this.J(string3, bl3, clazz3);
+            this.actionField = this.J("field_149566_b", Wrapper.isNativeAvailable, MappedClasses.D5);
+            this.entityIdField = this.J("field_149567_a", Wrapper.isNativeAvailable, Integer.TYPE);
         }
         if (ForgeVersion.MC_26_1.d()) {
-            Class<Integer> clazz = Integer.TYPE;
-            boolean bl = true;
-            String string = "entityId";
-            Class clazz4 = MappedClasses.ZW;
-            MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
-            this.u = mCPacketUseEntityPacket.registerInstanceFieldForOwner(clazz4, string, bl, clazz);
+            this.nestedEntityIdField = this.registerInstanceFieldForOwner(MappedClasses.ZW, "entityId", true, Integer.TYPE);
         } else {
-            this.u = null;
+            this.nestedEntityIdField = null;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
             if (ForgeVersion.MC_26_1.d()) {
-                Class clazz = MappedClasses.qP;
-                boolean bl = true;
-                boolean bl4 = true;
-                String string = "location";
-                MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
-                this.I = mCPacketUseEntityPacket.registerInstanceFieldWithSecondaryFlag(string, bl4, bl, clazz);
+                this.hitLocationField = this.registerInstanceFieldWithSecondaryFlag("location", true, true, MappedClasses.qP);
             } else if (ForgeVersion.MC_1_20_6.v()) {
-                Class clazz = MappedClasses.qP;
-                boolean bl = true;
-                String string = "location";
-                MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
-                this.I = mCPacketUseEntityPacket.J(string, bl, clazz);
+                this.hitLocationField = this.J("location", true, MappedClasses.qP);
             }
         } else if (ForgeVersion.MC_1_8_9.d()) {
-            Class clazz = MappedClasses.qP;
-            boolean bl = true;
-            String string = "hitVec";
-            MCPacketUseEntityPacket mCPacketUseEntityPacket = this;
-            this.I = mCPacketUseEntityPacket.J(string, bl, clazz); 
+            this.hitLocationField = this.J("hitVec", true, MappedClasses.qP);
         }
     }
 
-    public static Object k(MCPacketUseEntityPacket mCPacketUseEntityPacket, Object object) {
-        return mCPacketUseEntityPacket.A(object);
-    }
-
-    public void O(Object object, int n) {
-        if (ForgeVersion.MC_26_1.d() && MappedClasses.ZW != null && MappedClasses.ZW.isInstance(object)) {
-            this.u.setInt(object, n);
+    public void setEntityId(Object packet, int entityId) {
+        if (ForgeVersion.MC_26_1.d() && MappedClasses.ZW != null && MappedClasses.ZW.isInstance(packet)) {
+            this.nestedEntityIdField.setInt(packet, entityId);
             return;
         }
-        this.g.setInt(object, n);
+        this.entityIdField.setInt(packet, entityId);
     }
 
-    private Object m(Object object) {
-        return this.I.getObject(object);
+    public Object getHitLocation(Object packet) {
+        return this.hitLocationField.getObject(packet);
     }
 
-    public int d(Object object) {
-        if (ForgeVersion.MC_26_1.d() && MappedClasses.ZW != null && MappedClasses.ZW.isInstance(object)) {
-            return this.u.getInt(object);
+    public int getEntityId(Object packet) {
+        if (ForgeVersion.MC_26_1.d() && MappedClasses.ZW != null && MappedClasses.ZW.isInstance(packet)) {
+            return this.nestedEntityIdField.getInt(packet);
         }
-        return this.g.getInt(object);
+        return this.entityIdField.getInt(packet);
     }
 }
 

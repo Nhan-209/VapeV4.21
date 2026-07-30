@@ -100,17 +100,17 @@ extends Mapping {
         } else {
             Class<Double> clazz = Double.TYPE;
             boolean bl = true;
-            String string = "xCoord";
+            String string = ForgeVersion.c() >= 23 ? "x" : "xCoord";
             MVec3d mVec3d = this;
             this.i = mVec3d.J(string, bl, clazz);
             Class<Double> clazz9 = Double.TYPE;
             boolean bl7 = true;
-            String string9 = "yCoord";
+            String string9 = ForgeVersion.c() >= 23 ? "y" : "yCoord";
             MVec3d mVec3d9 = this;
             this.Q = this.J(string9, bl7, clazz9);
             Class<Double> clazz10 = Double.TYPE;
             boolean bl8 = true;
-            String string10 = "zCoord";
+            String string10 = ForgeVersion.c() >= 23 ? "z" : "zCoord";
             MVec3d mVec3d10 = this;
             this.m = this.J(string10, bl8, clazz10);
             Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE};

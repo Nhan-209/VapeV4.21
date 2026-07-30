@@ -74,8 +74,8 @@ extends Mod {
                         if (blockId != 26 && (blockName == null || !blockName.matches("block.minecraft.(.+_bed)"))) continue;
                         BedTargetRenderPosition bedTargetRenderPosition = new BedTargetRenderPosition(blockX, blockY, blockZ);
                         BlockBed blockBed = new BlockBed(block);
-                        boolean isHead = blockBed.f(worldClient, blockX, blockY, blockZ);
-                        if (this.targets.contains(bedTargetRenderPosition) || isHead) continue;
+                        boolean isFoot = blockBed.isFoot(worldClient, blockX, blockY, blockZ);
+                        if (this.targets.contains(bedTargetRenderPosition) || isFoot) continue;
                         this.targets.add(bedTargetRenderPosition);
                     }
                 }
@@ -93,14 +93,14 @@ extends Mod {
         WorldClient worldClient = Minecraft.theWorld();
         ArrayList<BedTargetRenderState> activeRenderStates = new ArrayList<BedTargetRenderState>();
         for (BedTargetRenderPosition bedTargetRenderPosition : this.targets) {
-            boolean isHead;
+            boolean isFoot;
             int blockZ;
             int blockY;
             int blockX = bedTargetRenderPosition.getBlockX();
             Block block = worldClient.getBlockByPos(blockX, blockY = bedTargetRenderPosition.getBlockY(), blockZ = bedTargetRenderPosition.getBlockZ());
             int blockId = Block.R(block);
             BlockBed blockBed = new BlockBed(block);
-            if (blockId != 26 && !block.U().matches("block.minecraft.(.+_bed)") || (isHead = blockBed.f(worldClient, blockX, blockY, blockZ))) continue;
+            if (blockId != 26 && !block.U().matches("block.minecraft.(.+_bed)") || (isFoot = blockBed.isFoot(worldClient, blockX, blockY, blockZ))) continue;
             BedTargetRenderState renderState;
             if (this.renderStates.containsKey(bedTargetRenderPosition)) {
                 renderState = this.renderStates.get(bedTargetRenderPosition);
@@ -157,8 +157,8 @@ extends Mod {
             for (EnumFacing enumFacing2 : EnumFacing.t()) {
                 BlockPos blockPos2 = blockPos.offset(enumFacing2);
                 if (enumFacing2.Y() <= 1) continue;
-                double diffX = (double)blockPos2.P() + 0.5 - vec3d.getX();
-                double diffZ = (double)blockPos2.d() + 0.5 - vec3d.getZ();
+                double diffX = (double)blockPos2.getX() + 0.5 - vec3d.getX();
+                double diffZ = (double)blockPos2.getZ() + 0.5 - vec3d.getZ();
                 double dist = Math.abs(diffX) + Math.abs(diffZ);
                 if (!(dist < bestDist)) continue;
                 bestDist = dist;

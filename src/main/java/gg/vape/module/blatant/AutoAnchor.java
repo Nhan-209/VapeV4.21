@@ -136,7 +136,7 @@ extends Mod {
 
 
     private Vec3 centerOf(BlockPos blockPos) {
-        return Vec3.create((double)blockPos.P() + 0.5, (double)blockPos.o() + 0.5, (double)blockPos.d() + 0.5);
+        return Vec3.create((double)blockPos.getX() + 0.5, (double)blockPos.getY() + 0.5, (double)blockPos.getZ() + 0.5);
     }
 
     public AutoAnchor() {
@@ -292,9 +292,9 @@ extends Mod {
                 obstruction.D(), obstruction.B(), obstruction.G(),
                 (double)obstruction.D() + 1.0, (double)obstruction.B() + 1.0,
                 (double)obstruction.G() + 1.0);
-        int anchorX = this.anchorPos.P();
-        int anchorY = this.anchorPos.o();
-        int anchorZ = this.anchorPos.d();
+        int anchorX = this.anchorPos.getX();
+        int anchorY = this.anchorPos.getY();
+        int anchorZ = this.anchorPos.getZ();
         Vec3[] samplePoints = new Vec3[]{
                 Vec3.create((double)anchorX + 0.5, (double)anchorY + 0.5, (double)anchorZ + 0.5),
                 Vec3.create((double)anchorX + 0.5, (double)anchorY + 1.0, (double)anchorZ + 0.5),
@@ -451,9 +451,9 @@ extends Mod {
         if (world.isNull()) {
             return null;
         }
-        int anchorX = this.anchorPos.P();
-        int anchorY = this.anchorPos.o();
-        int anchorZ = this.anchorPos.d();
+        int anchorX = this.anchorPos.getX();
+        int anchorY = this.anchorPos.getY();
+        int anchorZ = this.anchorPos.getZ();
         Vec3 eyePosition = Vec3.create(player.z(), player.N() + (double)player.X(), player.h());
         Vec3[] candidatePoints = new Vec3[]{
                 Vec3.create((double)anchorX + 0.5, (double)anchorY + 1.0, (double)anchorZ + 0.5),
@@ -499,8 +499,8 @@ extends Mod {
                     eyePosition, reachPoint, world, player, false, false, false, null);
             if (rayTraceResult == null || rayTraceResult.isNull() || !rayTraceResult.isBlockHit()) continue;
             BlockPos hitPos = rayTraceResult.getBlockPos();
-            if (hitPos == null || hitPos.isNull() || hitPos.P() != anchorX
-                    || hitPos.o() != anchorY || hitPos.d() != anchorZ) continue;
+            if (hitPos == null || hitPos.isNull() || hitPos.getX() != anchorX
+                    || hitPos.getY() != anchorY || hitPos.getZ() != anchorZ) continue;
             RotationAngles targetRotation = RotationVectorMath.H(
                     eyePosition, candidatePoint, currentYaw, false);
             float yawDelta = MathUtil.wrapAngleTo180(targetRotation.getYaw() - currentYaw);
@@ -514,7 +514,7 @@ extends Mod {
     }
 
     private Vec3 topCenterOf(BlockPos blockPos) {
-        return Vec3.create((double)blockPos.P() + 0.5, (double)blockPos.o() + 1.0, (double)blockPos.d() + 0.5);
+        return Vec3.create((double)blockPos.getX() + 0.5, (double)blockPos.getY() + 1.0, (double)blockPos.getZ() + 0.5);
     }
 
     private int findExplosionSlot(InventoryPlayer inventory) {
@@ -526,8 +526,8 @@ extends Mod {
     }
 
     private Vec3 faceCenter(BlockPos blockPos, EnumFacing facing) {
-        Vec3i direction = facing.w$src$Lgg_vape_wrapper_impl_Vec3i_$ixeccr();
-        return Vec3.create((double)blockPos.P() + 0.5 + (double)direction.P() * 0.5, (double)blockPos.o() + 0.5 + (double)direction.o() * 0.5, (double)blockPos.d() + 0.5 + (double)direction.d() * 0.5);
+        Vec3i direction = facing.getDirectionVector();
+        return Vec3.create((double)blockPos.getX() + 0.5 + (double)direction.getX() * 0.5, (double)blockPos.getY() + 0.5 + (double)direction.getY() * 0.5, (double)blockPos.getZ() + 0.5 + (double)direction.getZ() * 0.5);
     }
 
     private AnchorMacroState nextChargeState() {
@@ -860,8 +860,8 @@ extends Mod {
                     | ((long)blockY & 0xFFFL) << 26
                     | (long)blockZ & 0x3FFFFFFL;
             if (!visitedPositions.add(packedPosition)
-                    || blockX == this.anchorPos.P() && blockY == this.anchorPos.o()
-                    && blockZ == this.anchorPos.d()) continue;
+                    || blockX == this.anchorPos.getX() && blockY == this.anchorPos.getY()
+                    && blockZ == this.anchorPos.getZ()) continue;
             candidateBlocks.add(new BlockData(blockX, blockY, blockZ));
         }
         AnchorObstructionPlacementCandidate bestCandidate = null;
@@ -900,7 +900,7 @@ extends Mod {
         if (this.anchorPos == null || this.anchorPos.isNull()) {
             return false;
         }
-        String blockName = Minecraft.thePlayer().getWorld().getBlockByPos(this.anchorPos.P(), this.anchorPos.o(), this.anchorPos.d()).U();
+        String blockName = Minecraft.thePlayer().getWorld().getBlockByPos(this.anchorPos.getX(), this.anchorPos.getY(), this.anchorPos.getZ()).U();
         return blockName != null && blockName.toLowerCase().contains("respawn_anchor");
     }
 
