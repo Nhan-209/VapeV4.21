@@ -125,7 +125,7 @@ public final class ClientSettingsComponentFactory {
                     ++n;
                     continue;
                 }
-                Vape.debugLog(n + " -> Translation Key: " + ((Potion)wrapper).y$src$Ljava_lang_String_$yl6pfj() + " Display Name: " + I18n.f(((Potion)wrapper).y$src$Ljava_lang_String_$yl6pfj(), new Object[0]));
+                Vape.debugLog(n + " -> Translation Key: " + ((Potion)wrapper).y$src$Ljava_lang_String_$yl6pfj() + " Display Name: " + I18n.format(((Potion)wrapper).y$src$Ljava_lang_String_$yl6pfj(), new Object[0]));
             }
             ++n;
         }

@@ -75,7 +75,7 @@ implements ItemIconRenderBackend {
                     itemRenderState = RenderItemTextBridge.t(renderMatrixStack);
                 }
                 if (ForgeVersion.MC_1_21_6.d()) {
-                    itemRenderState.S().Q();
+                    itemRenderState.S().reset();
                 }
                 ItemStackRenderUtils.renderItemOverlay(itemRenderState, itemStack, 0, -100);
                 if (ForgeVersion.MC_1_21_10.d()) {
@@ -95,10 +95,12 @@ implements ItemIconRenderBackend {
                     Post117RenderPhaseCompat.applyRenderPhaseCompat();
                     if (ForgeVersion.MC_26_1.d()) {
                         renderTargetHandle = renderBuffer.P();
-                        renderTarget = renderTargetHandle.isNull() ? null : ((BlockStateContainerBridge)renderTargetHandle).getOrUpdate(renderTargetName.H());
+                        renderTarget = renderTargetHandle.isNull() ? null : ((BlockStateContainerBridge)renderTargetHandle)
+                                .getOrUpdate(renderTargetName.getItemStackRenderState());
                         renderTargetTextureId = renderTargetHandle.isNull() ? -1 : ((BlockStateContainerBridge)renderTargetHandle).getTextureId();
                     } else {
-                        renderTarget = renderBuffer.p().get(renderTargetName.H().m$src$Ljava_lang_Object_$hvczij());
+                        renderTarget = renderBuffer.p().get(
+                                renderTargetName.getItemStackRenderState().m$src$Ljava_lang_Object_$hvczij());
                         int resolvedTextureId = renderTargetTextureId = renderBuffer.F().isNull() ? -1 : renderBuffer.F().J();
                     }
                     if (renderTarget == null || renderTargetTextureId == -1) {
@@ -172,7 +174,7 @@ implements ItemIconRenderBackend {
                 itemRenderState = RenderItemTextBridge.t(renderMatrixStack);
             }
             if (ForgeVersion.MC_1_21_6.d()) {
-                itemRenderState.S().Q();
+                itemRenderState.S().reset();
             }
             ItemStackRenderUtils.renderItemOverlay(itemRenderState, itemStack, 0, -100);
             if (ForgeVersion.MC_1_21_10.d()) {
@@ -192,10 +194,12 @@ implements ItemIconRenderBackend {
                 Post117RenderPhaseCompat.applyRenderPhaseCompat();
                 if (ForgeVersion.MC_26_1.d()) {
                     renderTargetHandle = renderBuffer.P();
-                    renderTarget = renderTargetHandle.isNull() ? null : ((BlockStateContainerBridge)renderTargetHandle).getOrUpdate(renderTargetName.H());
+                    renderTarget = renderTargetHandle.isNull() ? null : ((BlockStateContainerBridge)renderTargetHandle)
+                            .getOrUpdate(renderTargetName.getItemStackRenderState());
                     renderTargetTextureId = renderTargetHandle.isNull() ? -1 : ((BlockStateContainerBridge)renderTargetHandle).getTextureId();
                 } else {
-                    renderTarget = renderBuffer.p().get(renderTargetName.H().m$src$Ljava_lang_Object_$hvczij());
+                    renderTarget = renderBuffer.p().get(
+                            renderTargetName.getItemStackRenderState().m$src$Ljava_lang_Object_$hvczij());
                     int resolvedTextureId = renderTargetTextureId = renderBuffer.F().isNull() ? -1 : renderBuffer.F().J();
                 }
                 if (renderTarget == null || renderTargetTextureId == -1) {

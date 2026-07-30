@@ -1,6 +1,5 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MVoxelShape;
 import gg.vape.wrapper.Wrapper;
 
 public class EntityFishHook
@@ -10,11 +9,11 @@ extends Wrapper {
     }
 
     public boolean o() {
-        return MVoxelShape.v(EntityFishHook.vapeInstance.getMappingsMapperCompat().Cr, this.I);
+        return EntityFishHook.vapeInstance.getMappingsMapperCompat().Cr.isEmpty(this.I);
     }
 
     public AxisAlignedBB n() {
-        return new AxisAlignedBB(MVoxelShape.o(EntityFishHook.vapeInstance.getMappingsMapperCompat().Cr, this.I));
+        return new AxisAlignedBB(EntityFishHook.vapeInstance.getMappingsMapperCompat().Cr.getBoundingBox(this.I));
     }
 }
 

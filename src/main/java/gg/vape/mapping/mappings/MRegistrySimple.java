@@ -41,7 +41,7 @@ extends Mapping {
                 Class<Object> clazz3 = Object.class;
                 String string2 = "getOrDefault";
                 MRegistrySimple mRegistrySimple2 = this;
-                this.e = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string2, clazz3, classArray2).setNameForVersion(ForgeVersion.MC_1_21_4.n(), "getValue")).setNameForVersion(ForgeVersion.MC_1_16_5.n(), "get")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Fk)).buildMethod();
+                this.e = ((MappingMethodBuilder)((MappingMethodBuilder)((MappingMethodBuilder)this.methodBuilder(string2, clazz3, classArray2).setNameForVersion(ForgeVersion.MC_1_21_4.n(), "getValue")).setNameForVersion(ForgeVersion.MC_1_17.n(), "get")).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Fk)).buildMethod();
             } else {
                 Class[] classArray = new Class[]{};
                 Class<Set> clazz = Set.class;

@@ -9,10 +9,10 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MGlStateManager_BlendState
 extends Mapping {
-    public MappingField a;
+    public MappingField blendEnabledStateField;
 
-    public Object F(Object object) {
-        return this.a.getObject(object);
+    public Object getBlendEnabledState(Object blendStateHandle) {
+        return this.blendEnabledStateField.getObject(blendStateHandle);
     }
 
 
@@ -20,39 +20,21 @@ extends Mapping {
         this(MEntityRenderer.n());
     }
 
-    private MGlStateManager_BlendState(int n) {
+    private MGlStateManager_BlendState(int initializationState) {
         super(MappedClasses.Yk);
-        if (n != 0) {
+        if (initializationState != 0) {
             if (Vape.INSTANCE.isVanillaMinecraftPresent()) {
-                Class clazz = MappedClasses.U;
-                boolean bl = true;
-                String string = "blend";
-                MGlStateManager_BlendState mGlStateManager_BlendState = this;
-                this.a = mGlStateManager_BlendState.J(string, bl, clazz);
+                this.blendEnabledStateField = this.J("blend", true, MappedClasses.U);
             } else if (ForgeVersion.MC_1_20_6.d()) {
-                Class clazz = MappedClasses.U;
-                String string = "mode";
-                MGlStateManager_BlendState mGlStateManager_BlendState = this;
-                this.a = mGlStateManager_BlendState.fieldBuilder(string, clazz).buildField();
+                this.blendEnabledStateField = this.fieldBuilder("mode", MappedClasses.U).buildField();
             } else {
-                Class clazz = MappedClasses.U;
-                boolean bl = Wrapper.isNativeAvailable;
-                String string = "field_179213_a";
-                MGlStateManager_BlendState mGlStateManager_BlendState = this;
-                this.a = mGlStateManager_BlendState.J(string, bl, clazz);
+                this.blendEnabledStateField = this.J("field_179213_a", Wrapper.isNativeAvailable, MappedClasses.U);
             }
             return;
         }
         if (Vape.INSTANCE.isVanillaMinecraftPresent()) {
-            Class clazz = MappedClasses.U;
-            String string = "mode";
-            MGlStateManager_BlendState mGlStateManager_BlendState = this;
-            this.a = mGlStateManager_BlendState.fieldBuilder(string, clazz).buildField();
+            this.blendEnabledStateField = this.fieldBuilder("mode", MappedClasses.U).buildField();
         }
-        Class clazz = MappedClasses.U;
-        boolean bl = Wrapper.isNativeAvailable;
-        String string = "field_179213_a";
-        MGlStateManager_BlendState mGlStateManager_BlendState = this;
-        this.a = mGlStateManager_BlendState.J(string, bl, clazz); 
+        this.blendEnabledStateField = this.J("field_179213_a", Wrapper.isNativeAvailable, MappedClasses.U);
     }
 }

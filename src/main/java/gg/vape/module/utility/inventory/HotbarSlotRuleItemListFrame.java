@@ -95,7 +95,7 @@ extends InsetFrameBase {
             wrapper = new Item(object);
             List list = new ArrayList();
             if (ForgeVersion.MC_1_12_2.d()) {
-                list = (List)NonNullList.F().getObject();
+                list = (List)NonNullList.create().getObject();
             }
             ((Item)wrapper).D((Item)wrapper, list);
             block1: for (Object e2 : list) {

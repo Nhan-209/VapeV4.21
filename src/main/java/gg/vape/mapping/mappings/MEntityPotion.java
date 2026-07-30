@@ -11,46 +11,37 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MEntityPotion
 extends Mapping {
-    private MappingMethod F;
-    private MappingField o;
-    private MappingMethod A;
+    private MappingMethod getItemMethod;
+    private MappingField potionDamageField;
+    private MappingMethod getPotionMethod;
 
-    private Object d(Object object) {
+    public Object getPotionItem(Object potionEntityHandle) {
         if (ForgeVersion.MC_1_16_5.d()) {
-            return this.F.invokeObject(object, new Object[0]);
+            return this.getItemMethod.invokeObject(potionEntityHandle);
         }
         if (ForgeVersion.MC_1_12_2.d()) {
-            return this.A.invokeObject(object, new Object[0]);
+            return this.getPotionMethod.invokeObject(potionEntityHandle);
         }
-        return this.o.getObject(object);
+        return this.potionDamageField.getObject(potionEntityHandle);
     }
 
     public MEntityPotion() {
         this(MSPacketMapChunkBulk.getMappingControlFlowToken());
     }
 
-    private MEntityPotion(String string) {
+    private MEntityPotion(String mappingControlFlowToken) {
         super(MappedClasses.Zf);
-        if (string != null) {
+        if (mappingControlFlowToken != null) {
             if (ForgeVersion.MC_1_16_5.d()) {
-                Class[] classArray = new Class[]{};
-                Class clazz = MappedClasses.VK;
-                String string2 = "getItem";
-                MEntityPotion mEntityPotion = this;
-                this.F = ((MappingMethodBuilder)((MappingMethodBuilder)mEntityPotion.methodBuilder(string2, clazz, classArray).setOwnerClass(MappedClasses.ub)).setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Y4)).buildMethod();
+                this.getItemMethod = ((MappingMethodBuilder)((MappingMethodBuilder)this
+                        .methodBuilder("getItem", MappedClasses.VK)
+                        .setOwnerClass(MappedClasses.ub))
+                        .setOwnerClassForVersion(ForgeVersion.MC_1_21_4.n(), MappedClasses.Y4))
+                        .buildMethod();
             } else if (ForgeVersion.MC_1_12_2.d()) {
-                Class[] classArray = new Class[]{};
-                Class clazz = MappedClasses.VK;
-                boolean bl = true;
-                String string3 = "getPotion";
-                MEntityPotion mEntityPotion = this;
-                this.A = mEntityPotion.Y(string3, bl, clazz, classArray);
+                this.getPotionMethod = this.Y("getPotion", true, MappedClasses.VK);
             } else {
-                Class clazz = MappedClasses.VK;
-                boolean bl = true;
-                String string4 = "potionDamage";
-                MEntityPotion mEntityPotion = this;
-                this.o = mEntityPotion.J(string4, bl, clazz);
+                this.potionDamageField = this.J("potionDamage", true, MappedClasses.VK);
             }
             if (GuiComponent.getLegacyComponentState() == null) {
                 MSPacketMapChunkBulk.setMappingControlFlowToken("JSVoh");
@@ -58,25 +49,11 @@ extends Mapping {
             return;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            Class[] classArray = new Class[]{};
-            Class clazz = MappedClasses.VK;
-            boolean bl = true;
-            String string5 = "getPotion";
-            MEntityPotion mEntityPotion = this;
-            this.A = mEntityPotion.Y(string5, bl, clazz, classArray);
+            this.getPotionMethod = this.Y("getPotion", true, MappedClasses.VK);
         }
-        Class clazz = MappedClasses.VK;
-        boolean bl = true;
-        String string6 = "potionDamage";
-        MEntityPotion mEntityPotion = this;
-        this.o = mEntityPotion.J(string6, bl, clazz); 
+        this.potionDamageField = this.J("potionDamage", true, MappedClasses.VK);
         if (GuiComponent.getLegacyComponentState() == null) {
             MSPacketMapChunkBulk.setMappingControlFlowToken("JSVoh");
         }
-    }
-
-
-    public static Object s(MEntityPotion mEntityPotion, Object object) {
-        return mEntityPotion.d(object);
     }
 }

@@ -112,7 +112,7 @@ extends Wrapper {
             RayTraceResult rayTraceResult = RayTraceResult.create(null, Vec3.create(f, f2, f3), enumFacing, blockPos);
             Object object = MBlock.E(Block.vapeInstance.getMappings().qg, this.I, Minecraft.theWorld().getBlockState(blockPos).getObject(), world.getObject(), blockPos.getObject(), entityPlayer.getObject(), enumFacing.getObject(), rayTraceResult.getObject());
             EnumActionResult enumActionResult = new EnumActionResult(object);
-            return enumActionResult.equals(EnumActionResult.A());
+            return enumActionResult.equals(EnumActionResult.success());
         }
         if (ForgeVersion.MC_1_12_2.d()) {
             return MBlock.G(Block.vapeInstance.getMappings().qg, this.I, world.getObject(), blockPos.getObject(), blockState.getObject(), entityPlayer.getObject(), EnumHand.mainHand().getObject(), enumFacing.getObject(), f, f2, f3);

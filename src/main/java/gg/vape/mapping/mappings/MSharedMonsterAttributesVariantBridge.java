@@ -6,29 +6,20 @@ import gg.vape.mapping.MappingField;
 
 public class MSharedMonsterAttributesVariantBridge
 extends Mapping {
-    private MappingField c;
-    private MappingField U;
+    private final MappingField noneField;
+    private final MappingField allField;
 
     public MSharedMonsterAttributesVariantBridge() {
         super(MappedClasses.Vx);
-        Class clazz = MappedClasses.Vx;
-        boolean bl = true;
-        String string = "NONE";
-        MSharedMonsterAttributesVariantBridge mSharedMonsterAttributesVariantBridge = this;
-        this.c = this.registerStaticField(string, bl, clazz);
-        Class clazz2 = MappedClasses.Vx;
-        boolean bl2 = true;
-        String string2 = "ALL";
-        MSharedMonsterAttributesVariantBridge mSharedMonsterAttributesVariantBridge2 = this;
-        this.U = this.registerStaticField(string2, bl2, clazz2);
+        this.noneField = this.registerStaticField("NONE", true, MappedClasses.Vx);
+        this.allField = this.registerStaticField("ALL", true, MappedClasses.Vx);
     }
 
-    public Object D() {
-        return this.c.getObject(null);
+    public Object getNone() {
+        return this.noneField.getObject(null);
     }
 
-    public Object h() {
-        return this.U.getObject(null);
+    public Object getAll() {
+        return this.allField.getObject(null);
     }
 }
-

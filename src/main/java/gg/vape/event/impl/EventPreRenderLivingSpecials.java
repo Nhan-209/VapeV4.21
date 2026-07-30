@@ -28,7 +28,10 @@ extends Event {
     @Override
     public boolean fire() {
         try {
-            String resourceName = ForgeVersion.c() == ForgeVersion.MC_1_8_9.i() ? new ResourceLocationName(this.resourceLocationHandle).n() : new ResourceLocationName(this.resourceLocationHandle).b(ResourceLocationKey.L());
+            ResourceLocationName resourceLocationName = new ResourceLocationName(this.resourceLocationHandle);
+            String resourceName = ForgeVersion.c() == ForgeVersion.MC_1_8_9.i()
+                    ? resourceLocationName.getCompleteReport()
+                    : resourceLocationName.getFriendlyReport(ResourceLocationKey.L());
             Vape.logError(resourceName);
         }
         catch (Throwable throwable) {

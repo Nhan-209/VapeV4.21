@@ -381,22 +381,22 @@ public class Mapper {
     public MWorldRenderer qZ;
     public MTextureManagerHandle hL;
     public MTickEventPhase R8;
-    public MGuiContainerCreativeSlot Db;
+    public MGuiContainerCreativeSlot guiContainerCreativeSlot;
     public MBlockModelRenderer hE;
     public MEntityEquipmentSlot CY;
     public MRayTraceContext_FluidMode DG;
     public MSPacketPlayerPosLook Ry;
     public MDataComponentMap qk;
     public MCPacketHeldItemChange Ck;
-    public MGuiChest Ch;
+    public MGuiChest guiChest;
     private static int DH;
     public MMouseHelper qI;
     public MBlockStateWorldBridge hu;
     public MWorld Cy;
     public MPlayerControllerMP hj;
-    public MLists hY;
+    public MLists lists;
     public MEntityEquipmentSlotHolder hh;
-    public MGlStateManager_BlendState qG;
+    public MGlStateManager_BlendState glBlendState;
     public MBlockBed Dj;
     public MWorldClient ha;
     public MEntityRemovalReason h;
@@ -430,10 +430,10 @@ public class Mapper {
     public MUtil Rf;
     public MItemCameraTransformBaseBridge hc;
     public MPlayerInput RI;
-    public MTitledScreen ql;
+    public MTitledScreen titledScreen;
     public MCPacketPlayer_Position R5;
     public MItemAttributeModifiersComponent$Entry DN;
-    public MEntityEnderPearl Dl;
+    public MEntityEnderPearl entityEnderPearl;
     public MInputMappingsBridge CE;
     public MObjectToIntMapEntry objectToIntMapEntry;
     public MGlStateManagerTexGenState hs;
@@ -446,11 +446,11 @@ public class Mapper {
     public MMoverType q6;
     public MAbstractBlockProperties CQ;
     public MResourceLocationKey qK;
-    public MEmptyDataComponentMap RS;
+    public MEmptyDataComponentMap emptyDataComponentMap;
     public MCPacketUseEntityAction qz;
     public MChestTypeHolder L;
     public MMainWindow DU;
-    public MEntityRayTraceResult qS;
+    public MEntityRayTraceResult entityRayTraceResult;
     public MScore Cm;
     public MPotion qU;
     public MItemPotion CI;
@@ -461,12 +461,12 @@ public class Mapper {
     public MModelPlayer Ri;
     public MFontGlyphInfo hZ;
     public MSoundEvent Cb;
-    public MRenderGlobal Df;
+    public MRenderGlobal renderGlobal;
     public MBuiltInRegistries q7;
     public MItems Rl;
     public MRegistryLookup DO;
     public MDeltaTracker RU;
-    public MGlStateManagerFogStateObject R;
+    public MGlStateManagerFogStateObject glFogStateObject;
     public MRegistryAccess qs;
     public MRenderBatchFlushTarget hX;
     public MRenderBufferBridge Ca;
@@ -481,10 +481,10 @@ public class Mapper {
     public MPacketIdFactory hp;
     public MFogRenderer fogRenderer;
     public MC0BPacketEntityAction_Action DQ;
-    public MEntityOtherPlayerMP h_;
+    public MEntityOtherPlayerMP entityOtherPlayer;
     public MSPacketAnimation DF;
     public MCaughtEntityActionBridge hC;
-    public MEnderPearlProjectileBridge CH;
+    public MEnderPearlProjectileBridge enderPearlProjectileBridge;
     public MSharedMonsterAttributesBridge h3;
     public MPlayerInfo CG;
     public MStatusEffect Rb;
@@ -505,7 +505,7 @@ public class Mapper {
     public MEnchantmentModifierDamage t;
     public MKeyboardHandler CR;
     public MFontManager qb;
-    public MGlStateManager_TextureState hH;
+    public MGlStateManager_TextureState glTextureState;
     public MResourceManager C2;
     public MEnchantmentHelper Rk;
     public MSPacketSoundEffect Cs;
@@ -520,14 +520,14 @@ public class Mapper {
     public MItemAttributeModifiersComponent r;
     public MIBlockState DE;
     public MMutableTextComponent RJ;
-    public MResourceLocationName qt;
+    public MResourceLocationName resourceLocationName;
     public MITooltipFlagBridge qh;
     public MTeam qW;
     public MChatMessageRenderTarget qd;
     public MScoreObjective qL;
     public MModelBiped Ct;
     public MTextureObject hG;
-    public MStringTextComponentBridge DK;
+    public MStringTextComponentBridge stringTextComponentBridge;
     public MModelManager CZ;
     public MItemFood itemFood;
     public MPlayerModel Rc;
@@ -541,10 +541,10 @@ public class Mapper {
     public MSPacketEntityStatus RO;
     public MBlockReader DV;
     public MDirection Q;
-    public MNonNullList DR;
+    public MNonNullList nonNullList;
     public MQuaternion quaternion;
     public MSlot qY;
-    public MResourceLocation C9;
+    public MResourceLocation resourceLocation;
     public MMaterial Cn;
     public MIInventory X;
     public MFontGlyph De;
@@ -567,9 +567,9 @@ public class Mapper {
     public MDataComponents q5;
     public MEquippable C3;
     public MBiomeRegistrySwitch qw;
-    public MRenderBlocks i;
+    public MRenderBlocks renderBlocks;
     public MAxisAlignedBB RQ;
-    public MMutableBoundingBox hM;
+    public MMutableBoundingBox mutableBoundingBox;
     public MS08PacketPlayerPosLook q9;
     public MItemRendererBridge o;
     public MEnumHand DX;
@@ -578,7 +578,7 @@ public class Mapper {
     public MStyle qi;
     public MSharedMonsterAttributesVariantBridge D7;
     public MClickType qN;
-    public MIChunkProvider ho;
+    public MIChunkProvider chunkProvider;
     public MRenderSystem f;
     public MGuiSpriteManager h4;
     public MSoundEventRegistryName h9;
@@ -607,8 +607,8 @@ public class Mapper {
     public MEntityLivingBase hx;
     public MOpenedChestTypeSentinelBridge CD;
     public MPlayerDiggingAction Ci;
-    public MEntityItem Rn;
-    public MI18n DB;
+    public MEntityItem entityItem;
+    public MI18n i18n;
     public MBlockPos RP;
     public MTextFormatting Cq;
     public MSPacketMapChunkBulk B;
@@ -621,7 +621,7 @@ public class Mapper {
     public MCPacketPlayerDigging qA;
     public MCPacketEntityAction Y;
     public MFramebuffer R9;
-    public MPlayerSkin hU;
+    public MPlayerSkin playerSkin;
     public MLegacyEntityRenderPreHook qB;
     public MEnumCreatureAttribute hW;
     public MMouseEvent he;
@@ -629,7 +629,7 @@ public class Mapper {
     public MEntityPlayerMacroBridge Da;
     public MSPacketChunkDataExtracted b;
     public MGpuTextureView gpuTextureView;
-    public MEntitySelectors CB;
+    public MEntitySelectors entitySelectors;
     public MRayTraceContext Rs;
     public MChannel hV;
     public MEnchantments z;
@@ -637,13 +637,13 @@ public class Mapper {
     public MGameSettingsGuiScale Dp;
     public MSPacketHeldItemChange C6;
     public MTextureAtlasSpriteInfoBridge Cz;
-    public MEnumCreatureAttributeBridge R0;
+    public MEnumCreatureAttributeBridge enumCreatureAttributeBridge;
     public MSEntityPacket qC;
     public MTextComponentTranslationBridge Dy;
     public MNetworkPlayerInfo RH;
     public MLaunchClassLoader C4;
     public MITextComponent RL;
-    public MScreen RT;
+    public MScreen screen;
     public MEntitySize h2;
     public MNetworkManager Do;
     public MItemArmor DZ;
@@ -652,7 +652,7 @@ public class Mapper {
     public MItem_ToolMaterial Re;
     public MRenderManager CA;
     public MRegistryAccessBridge CT;
-    public MEntityRayTraceBridge u;
+    public MEntityRayTraceBridge entityRayTraceBridge;
     public MRenderHelper x;
     public MMinecraft U;
     public MRegistrySimple hD;
@@ -661,14 +661,14 @@ public class Mapper {
     public MWorldProvider worldProvider;
     public MDamageSources h0;
     public MShortPacketFieldBridge F;
-    public MEntityPotion hf;
+    public MEntityPotion entityPotion;
     public MSPacketDestroyEntities C7;
     public MSoundAwareEntityFX R4;
     public MPotionVersionRange Cu;
     public MLevelEntityGetter levelEntityGetter;
     public MSPacketDestroyEntitiesArrayBridge Rt;
     public MContainer DD;
-    public MGlStateManagerTexGenCoord R_;
+    public MGlStateManagerTexGenCoord glTexGenCoord;
     public MRender qe;
     public MNBTTagCompound Dx;
     public MClientChunkProvider Dr;
@@ -679,11 +679,11 @@ public class Mapper {
     public MTextureManager DW;
     public MPotionEffect C8;
     public MSPacketExplosion hQ;
-    public MEnumActionResult RD;
+    public MEnumActionResult enumActionResult;
     public MCPacketAnimation Q3;
     public MITooltipFlag hO;
     public MEntityPlayer hd;
-    public MGuiInventory Q_;
+    public MGuiInventory guiInventory;
     public MItemSword qF;
     public MChunkSection Rx;
     public MNetworkManager_InboundHandlerTuplePacketListener q;
@@ -702,10 +702,10 @@ public class Mapper {
     public MFoodProperties foodProperties;
     public MBlock qg;
     public MItemBlock Cw;
-    public MGameSettingsGuiScaleValue Dv;
+    public MGameSettingsGuiScaleValue gameSettingsGuiScaleValue;
     public MGlyphProvider E;
     public MRenderStateBridgeVariant qX;
-    public MResourceLocationConstantsBridge j;
+    public MResourceLocationConstantsBridge resourceLocationConstants;
     public MMappedFieldSingletonWrapper CL;
     public MMappedClassSlotNRegistration G;
     public MISelectionContext RR;
@@ -720,26 +720,26 @@ public class Mapper {
     public MNetHandlerPlayClientImpl hB;
     public MTileEntityMobSpawner mobSpawnerTileEntity;
     public MServerData ht;
-    public MRenderStateBuilder C1;
+    public MRenderStateBuilder renderStateBuilder;
     public MResourceKeyHolder qV;
     public MRayTraceResult_Type q1;
     public MRenderItem DI;
     public MSession hw;
-    public MResourceKeyRegistryLookup hl;
+    public MResourceKeyRegistryLookup resourceKeyRegistryLookup;
     public MTessellator RB;
     public MResourceKey P;
     public MTextComponentTranslation D_;
     public MSPacketChunkData h8;
     public MItemTool M;
     public MSPacketEntityVelocity s;
-    public MLanguage D0;
+    public MLanguage language;
     public MInventoryListBridge DL;
     public MStatusEffectSpriteUploader hk;
     public MItemBlockBridge hb;
     public MEnumParticleTypes Rp;
     public MBiomeRegistryName hq;
     public MGuiScreen h1;
-    public MRenderPlayer hn;
+    public MRenderPlayer renderPlayer;
     public MVector3f vector3f;
     public MMappedClassSlotZG hg;
     public MBlockHorizontal a;
@@ -759,13 +759,13 @@ public class Mapper {
         this.U = new MMinecraft();
         this.h1 = new MGuiScreen();
         this.Ce = new MGuiChat();
-        this.RT = new MScreen();
+        this.screen = new MScreen();
         this.hw = new MSession();
         this.RM = new MGameSettings();
         this.hJ = new MKeyBinding();
         this.Rr = new MEntity();
-        this.Rn = new MEntityItem();
-        this.Dl = new MEntityEnderPearl();
+        this.entityItem = new MEntityItem();
+        this.entityEnderPearl = new MEntityEnderPearl();
         this.hd = new MEntityPlayer();
         this.CC = new MEntityPlayerSP();
         this.hx = new MEntityLivingBase();
@@ -784,12 +784,12 @@ public class Mapper {
         this.q8 = new MItemStack();
         this.CI = new MItemPotion();
         this.hK = new MGuiContainer();
-        this.Q_ = new MGuiInventory();
+        this.guiInventory = new MGuiInventory();
         this.DD = new MContainer();
         this.qY = new MSlot();
         this.CA = new MRenderManager();
         this.qe = new MRender();
-        this.h_ = new MEntityOtherPlayerMP();
+        this.entityOtherPlayer = new MEntityOtherPlayerMP();
         this.qg = new MBlock();
         this.Qv = new MShaderGroup();
         this.blocks = new MBlocks();
@@ -821,7 +821,7 @@ public class Mapper {
         this.Cx = new MPacket();
         this.q = new MNetworkManager_InboundHandlerTuplePacketListener();
         this.DI = new MRenderItem();
-        this.Ch = new MGuiChest();
+        this.guiChest = new MGuiChest();
         this.X = new MIInventory();
         this.hr = new MTimer();
         this.Co = new MCPacketUseEntityPacket();
@@ -834,7 +834,7 @@ public class Mapper {
         this.qr = new MSharedMonsterAttributes();
         this.CF = new MItem();
         this.RV = new MMethodSlotZYBridge();
-        this.Df = new MRenderGlobal();
+        this.renderGlobal = new MRenderGlobal();
         this.R9 = new MFramebuffer();
         this.qW = new MTeam();
         this.RL = new MITextComponent();
@@ -865,13 +865,13 @@ public class Mapper {
         this.D_ = new MTextComponentTranslation();
         this.qi = new MStyle();
         this.qD = new MChunk();
-        this.ho = new MIChunkProvider();
+        this.chunkProvider = new MIChunkProvider();
         this.Ct = new MModelBiped();
         this.Rz = new MModelRenderer();
         this.CP = new MRenderLivingBase();
-        this.hn = new MRenderPlayer();
-        this.C9 = new MResourceLocation();
-        this.hf = new MEntityPotion();
+        this.renderPlayer = new MRenderPlayer();
+        this.resourceLocation = new MResourceLocation();
+        this.entityPotion = new MEntityPotion();
         this.Da = new MEntityPlayerMacroBridge();
         this.qo = new MEntityArrow();
         this.h5 = new MRenderGameOverlayEvent();
@@ -880,7 +880,7 @@ public class Mapper {
         this.Cs = new MSPacketSoundEffect();
         this.O = new MEnumFacing();
         if (ForgeVersion.c() == ForgeVersion.MC_1_8_9.i() || ForgeVersion.c() == ForgeVersion.MC_1_21_11.i()) {
-            this.qt = new MResourceLocationName();
+            this.resourceLocationName = new MResourceLocationName();
         }
         if (ForgeVersion.c() == ForgeVersion.MC_1_21_11.i()) {
             this.qK = new MResourceLocationKey();
@@ -888,8 +888,8 @@ public class Mapper {
         this.DW = new MTextureManager();
         this.Re = new MItem_ToolMaterial();
         this.e = new MArmorMaterial();
-        this.Db = new MGuiContainerCreativeSlot();
-        this.ql = new MTitledScreen();
+        this.guiContainerCreativeSlot = new MGuiContainerCreativeSlot();
+        this.titledScreen = new MTitledScreen();
         this.itemFood = new MItemFood();
         this.hO = new MITooltipFlag();
         this.ht = new MServerData();
@@ -902,10 +902,10 @@ public class Mapper {
         this.qL = new MScoreObjective();
         this.Cm = new MScore();
         this.Rh = new MScorePlayerTeam();
-        this.DB = new MI18n();
+        this.i18n = new MI18n();
         this.k = new MGL11();
         this.RW = new MGL20();
-        this.D0 = new MLanguage();
+        this.language = new MLanguage();
         this.W = new MEntityLiving();
         this.RO = new MSPacketEntityStatus();
         this.DF = new MSPacketAnimation();
@@ -929,7 +929,7 @@ public class Mapper {
             Vape.renderReady = true;
         }
         if (MappedClasses.Ym != null) {
-            this.Dv = new MGameSettingsGuiScaleValue();
+            this.gameSettingsGuiScaleValue = new MGameSettingsGuiScaleValue();
         }
         if (ForgeVersion.MC_1_7_10.Y()) {
             this.visGraph = new MVisGraph();
@@ -957,15 +957,15 @@ public class Mapper {
             this.Rp = new MEnumParticleTypes();
             this.S = new MLanguageStateBridge();
             this.a = new MBlockHorizontal();
-            this.hH = new MGlStateManager_TextureState();
+            this.glTextureState = new MGlStateManager_TextureState();
             this.he = new MMouseEvent();
-            this.qG = new MGlStateManager_BlendState();
+            this.glBlendState = new MGlStateManager_BlendState();
             if (ForgeVersion.c() <= ForgeVersion.MC_1_8_9.i()) {
                 this.qA = new MCPacketPlayerDigging();
             }
             this.Rx = new MChunkSection();
         } else {
-            this.i = new MRenderBlocks();
+            this.renderBlocks = new MRenderBlocks();
             this.q_ = new MEntityClientPlayerMP();
         }
         if (ForgeVersion.MC_1_8_9.L()) {
@@ -985,16 +985,16 @@ public class Mapper {
             this.Cq = new MTextFormatting();
             this.qN = new MClickType();
             this.CY = new MEntityEquipmentSlot();
-            this.RD = new MEnumActionResult();
-            this.DR = new MNonNullList();
-            this.CB = new MEntitySelectors();
+            this.enumActionResult = new MEnumActionResult();
+            this.nonNullList = new MNonNullList();
+            this.entitySelectors = new MEntitySelectors();
         } else {
             this.Ru = new MEffectRenderer();
         }
         if (MappedClasses.Yb != null) {
             this.Cd = new MItemAttributeModifiers();
             this.Rw = new MEmptyItemAttributeModifiers();
-            this.hY = new MLists();
+            this.lists = new MLists();
             this.qm = new MOrdering();
         }
         this.hi = new MActiveRenderInfo();
@@ -1041,8 +1041,8 @@ public class Mapper {
             this.c = new MRenderTypeBuffer();
             this.qc = new MRegistryNamespaced();
             this.CE = new MInputMappingsBridge();
-            this.hM = new MMutableBoundingBox();
-            this.qS = new MEntityRayTraceResult();
+            this.mutableBoundingBox = new MMutableBoundingBox();
+            this.entityRayTraceResult = new MEntityRayTraceResult();
             this.Q = new MDirection();
             this.blockRayTraceResult = new MBlockRayTraceResult();
             this.f = new MRenderSystem();
@@ -1086,7 +1086,7 @@ public class Mapper {
             this.DM = new MGameSettingsValue();
             this.hQ = new MSPacketExplosion();
             this.Dp = new MGameSettingsGuiScale();
-            this.hU = new MPlayerSkin();
+            this.playerSkin = new MPlayerSkin();
             this.q7 = new MBuiltInRegistries();
             this.CV = new MRegistry();
             this.hh = new MEntityEquipmentSlotHolder();
@@ -1101,23 +1101,23 @@ public class Mapper {
             if (ForgeVersion.MC_1_21_6.v()) {
                 this.hR = new MEnumHandBridge();
             }
-            this.RS = new MEmptyDataComponentMap();
+            this.emptyDataComponentMap = new MEmptyDataComponentMap();
             this.Cu = new MPotionVersionRange();
             this.objectToIntMapEntry = new MObjectToIntMapEntry();
             this.CR = new MKeyboardHandler();
         } else {
             this.Cn = new MMaterial();
-            this.R0 = new MEnumCreatureAttributeBridge();
+            this.enumCreatureAttributeBridge = new MEnumCreatureAttributeBridge();
         }
         if (ForgeVersion.MC_1_21_0.d()) {
             this.RU = new MDeltaTracker();
             if (ForgeVersion.MC_1_20_6.v()) {
-                this.C1 = new MRenderStateBuilder();
+                this.renderStateBuilder = new MRenderStateBuilder();
             }
             this.z = new MEnchantments();
         }
         if (ForgeVersion.MC_1_21_11.d()) {
-            this.u = new MEntityRayTraceBridge();
+            this.entityRayTraceBridge = new MEntityRayTraceBridge();
         }
         if (ForgeVersion.MC_1_21_4.d()) {
             this.qT = new MPositionMoveRotation();
@@ -1161,9 +1161,9 @@ public class Mapper {
             this.DS = new MTextureObjectHandle();
             this.h4 = new MGuiSpriteManager();
             this.D8 = new MMatrix4fHandle();
-            this.R = new MGlStateManagerFogStateObject();
+            this.glFogStateObject = new MGlStateManagerFogStateObject();
             this.q2 = new MGlStateManagerFogStateBridge();
-            this.DK = new MStringTextComponentBridge();
+            this.stringTextComponentBridge = new MStringTextComponentBridge();
             this.Dy = new MTextComponentTranslationBridge();
             this.DU = new MMainWindow();
         } else {
@@ -1172,7 +1172,7 @@ public class Mapper {
         }
         if (ForgeVersion.MC_1_21_10.d()) {
             this.CZ = new MModelManager();
-            this.j = new MResourceLocationConstantsBridge();
+            this.resourceLocationConstants = new MResourceLocationConstantsBridge();
             this.w = new MFreecamPlayerBridge();
             this.Cz = new MTextureAtlasSpriteInfoBridge();
             this.Du = new MAbstractClientPlayer();
@@ -1187,7 +1187,7 @@ public class Mapper {
             this.CU = new MRenderTypeBufferBridge();
             this.C2 = new MResourceManager();
         }
-        this.CH = new MEnderPearlProjectileBridge();
+        this.enderPearlProjectileBridge = new MEnderPearlProjectileBridge();
         if (ForgeVersion.MC_1_20_6.d()) {
             this.qd = new MChatMessageRenderTarget();
             this.Cp = new MTextComponentBaseBridge();
@@ -1198,10 +1198,10 @@ public class Mapper {
             this.Cj = new MSPacketSoundEffectBridge();
             this.qX = new MRenderStateBridgeVariant();
             this.DO = new MRegistryLookup();
-            this.hl = new MResourceKeyRegistryLookup();
+            this.resourceKeyRegistryLookup = new MResourceKeyRegistryLookup();
         }
         if (ForgeVersion.MC_1_21_4.d()) {
-            this.R_ = new MGlStateManagerTexGenCoord();
+            this.glTexGenCoord = new MGlStateManagerTexGenCoord();
             this.J = new MItemRenderContext();
             this.Di = new MItemActionResult();
         }

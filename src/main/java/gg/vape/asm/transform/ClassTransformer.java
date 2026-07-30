@@ -74,7 +74,10 @@ implements MappingTask {
 
     public ClassTransformer(Class targetClass) {
         if (!Vape.INSTANCE.isForgeAbsent()) {
-            LaunchClassLoader.getLaunchClassLoader().cachedClasses().put(targetClass.getName(), targetClass);
+            LaunchClassLoader launchClassLoader = LaunchClassLoader.getLaunchClassLoader();
+            if (launchClassLoader.supportsLegacyClassCache()) {
+                launchClassLoader.cachedClasses().put(targetClass.getName(), targetClass);
+            }
         }
         this.targetClass = targetClass;
     }

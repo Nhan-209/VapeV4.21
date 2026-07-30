@@ -5,28 +5,27 @@ import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.wrapper.impl.ResourceLocation;
 
 public class ResourceLocationConstantPair {
-    private static GuiComponent[] o;
+    private static GuiComponent[] controlFlowState;
 
-    public static void P(GuiComponent[] upArray) {
-        o = upArray;
+    public static void setControlFlowState(GuiComponent[] state) {
+        controlFlowState = state;
     }
 
-    public static ResourceLocation B() {
-        return new ResourceLocation(Vape.INSTANCE.getMappingsMapperCompat().j.s());
+    public static ResourceLocation getItems() {
+        return new ResourceLocation(Vape.INSTANCE.getMappingsMapperCompat().resourceLocationConstants.getItems());
     }
 
-    public static GuiComponent[] b() {
-        return o;
+    public static GuiComponent[] getControlFlowState() {
+        return controlFlowState;
     }
 
-    public static ResourceLocation v() {
-        return new ResourceLocation(Vape.INSTANCE.getMappingsMapperCompat().j.o());
+    public static ResourceLocation getGui() {
+        return new ResourceLocation(Vape.INSTANCE.getMappingsMapperCompat().resourceLocationConstants.getGui());
     }
 
     static {
-        if (ResourceLocationConstantPair.b() != null) {
-            ResourceLocationConstantPair.P(new GuiComponent[3]);
+        if (ResourceLocationConstantPair.getControlFlowState() != null) {
+            ResourceLocationConstantPair.setControlFlowState(new GuiComponent[3]);
         }
     }
 }
-

@@ -159,7 +159,7 @@ public class ItemStackScoreUtil {
 
     public static double a(ItemStack itemStack) {
         double d = ItemStackScoreUtil.a$src$F$2aw1mh(itemStack);
-        return d += (double)EnchantmentHelper.C(itemStack, EnumCreatureAttribute.R());
+        return d += (double)EnchantmentHelper.C(itemStack, EnumCreatureAttribute.undefined());
     }
 
     public static float I$src$F$dh3k81(ItemStack itemStack) {
@@ -233,7 +233,7 @@ public class ItemStackScoreUtil {
             AttributeModifier attributeModifier = new AttributeModifier(itemAttributeModifiers.f().toArray()[n]);
             d = attributeModifier.getAmount();
         }
-        d += (double)EnchantmentHelper.C(itemStack, EnumCreatureAttribute.R());
+        d += (double)EnchantmentHelper.C(itemStack, EnumCreatureAttribute.undefined());
         if (!itemStack.getItem().isInstance(MappedClasses.YP)) {
             return d;
         }
@@ -523,7 +523,7 @@ public class ItemStackScoreUtil {
             wrapper = new Item(object);
             List list = new ArrayList();
             if (ForgeVersion.MC_1_12_2.d()) {
-                list = (List)NonNullList.F().getObject();
+                list = (List)NonNullList.create().getObject();
             }
             ((Item)wrapper).D((Item)wrapper, list);
             if (list.isEmpty()) {

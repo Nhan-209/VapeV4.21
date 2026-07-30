@@ -4,12 +4,12 @@ import gg.vape.wrapper.Wrapper;
 
 public class ChunkProvider
 extends Wrapper {
-    public boolean isChunkLoaded(int n, int n2) {
-        return ChunkProvider.vapeInstance.getMappingsMapperCompat().ho.m(this.I, n, n2);
+    public boolean isChunkLoaded(int chunkX, int chunkZ) {
+        return ChunkProvider.vapeInstance.getMappingsMapperCompat().chunkProvider
+                .chunkExists(this.I, chunkX, chunkZ);
     }
 
-    public ChunkProvider(Object object) {
-        super(object);
+    public ChunkProvider(Object chunkProviderHandle) {
+        super(chunkProviderHandle);
     }
 }
-

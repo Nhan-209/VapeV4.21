@@ -8,22 +8,21 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MGlStateManager_TextureState
 extends Mapping {
-    public MappingField c;
+    public final MappingField textureNameField;
 
     public MGlStateManager_TextureState() {
         super(MappedClasses.Zn);
-        Class<Integer> clazz = Integer.TYPE;
-        String string = "textureName";
-        MGlStateManager_TextureState mGlStateManager_TextureState = this;
-        this.c = ((MappingFieldBuilder)this.fieldBuilder(string, clazz).setNameForVersion(ForgeVersion.MC_1_20_6.n(), "binding")).buildField();
+        this.textureNameField = ((MappingFieldBuilder)this.fieldBuilder("textureName", Integer.TYPE)
+                .setNameForVersion(ForgeVersion.MC_1_20_6.n(), "binding"))
+                .buildField();
     }
 
-    public int R(Object object) {
-        return this.c.getInt(object);
+    public int getTextureName(Object textureStateHandle) {
+        return this.textureNameField.getInt(textureStateHandle);
     }
 
-    public void g(Object object, int n) {
-        this.c.setInt(object, n);
+    public void setTextureName(Object textureStateHandle, int textureName) {
+        this.textureNameField.setInt(textureStateHandle, textureName);
     }
 }
 

@@ -23,7 +23,7 @@ extends JavassistMappingTask {
             return;
         }
         Render2DStaticCallbackMappingTask.p(EventRender2DStaticCallback.class);
-        MappingMethod mappingMethod = Vape.INSTANCE.getMappings().ql.d;
+        MappingMethod mappingMethod = Vape.INSTANCE.getMappings().titledScreen.renderHudMethod;
         CtBehavior ctBehavior = this.F(mappingMethod);
         try {
             ctBehavior.insertAfter("{" + EventRender2DStaticCallback.class.getName() + c);

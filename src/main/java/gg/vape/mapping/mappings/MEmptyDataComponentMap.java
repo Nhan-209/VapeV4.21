@@ -7,44 +7,38 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MEmptyDataComponentMap
 extends Mapping {
-    private static final String b;
-    private final MappingMethod x;
-    private static String[] f;
+    private static final String CONSTRUCTOR;
+    private final MappingMethod constructor;
+    private static String[] controlFlowState;
 
     static {
-        MEmptyDataComponentMap.h(null);
-        b = "<init>";
+        MEmptyDataComponentMap.setControlFlowState(null);
+        CONSTRUCTOR = "<init>";
     }
 
     public MEmptyDataComponentMap() {
-        this(MEmptyDataComponentMap.X());
+        this(MEmptyDataComponentMap.getControlFlowState());
     }
 
-    private MEmptyDataComponentMap(String[] stringArray) {
+    private MEmptyDataComponentMap(String[] componentMapControlFlowState) {
         super(MappedClasses.DP);
-        String[] stringArray2 = stringArray;
-        Class[] classArray = new Class[]{MappedClasses.zD};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = b;
-        MEmptyDataComponentMap mEmptyDataComponentMap = this;
-        this.x = this.Y(string, bl, clazz, classArray);
+        this.constructor = this.Y(CONSTRUCTOR, false, Void.TYPE, MappedClasses.zD);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MEmptyDataComponentMap.h(new String[5]);
+            MEmptyDataComponentMap.setControlFlowState(new String[5]);
         }
     }
 
-    public Object L(Object object) {
-        return this.x.newInstance(object);
+    public Object create(Object defaultComponentsHandle) {
+        return this.constructor.newInstance(defaultComponentsHandle);
     }
 
 
-    public static void h(String[] stringArray) {
-        f = stringArray;
+    public static void setControlFlowState(String[] state) {
+        controlFlowState = state;
     }
 
-    public static String[] X() {
-        return f;
+    public static String[] getControlFlowState() {
+        return controlFlowState;
     }
 }
 

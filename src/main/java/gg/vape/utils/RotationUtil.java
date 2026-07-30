@@ -187,7 +187,7 @@ public class RotationUtil {
         }
         float f = (float)attributeInstance.W();
         float f2 = 0.0f;
-        f2 += EnchantmentHelper.C(itemStack, EnumCreatureAttribute.R());
+        f2 += EnchantmentHelper.C(itemStack, EnumCreatureAttribute.undefined());
         if (itemStack.isNotNull()) {
             f2 += ItemStackScoreUtil.a$src$F$2aw1mh(itemStack);
         }

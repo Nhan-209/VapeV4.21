@@ -9,42 +9,25 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MLanguage
 extends Mapping {
-    private MappingField i;
+    private final MappingField unicodeField;
 
-    private boolean C(Object object) {
-        return this.i.getBoolean(object);
-    }
-
-    public static boolean n(MLanguage mLanguage, Object object) {
-        return mLanguage.C(object);
+    public boolean isUnicode(Object languageHandle) {
+        return this.unicodeField.getBoolean(languageHandle);
     }
 
     public MLanguage() {
         this(MMappedClassSlotFp.l());
     }
 
-    private MLanguage(GuiComponent[] guiComponentArray) {
+    private MLanguage(GuiComponent[] legacyComponentState) {
         super(MappedClasses.Fn);
-        GuiComponent[] guiComponentArray2 = guiComponentArray;
         if (ForgeVersion.MC_1_16_5.d()) {
-            Class<Boolean> clazz = Boolean.TYPE;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "field_239496_d_";
-            Class clazz2 = MappedClasses.Vi;
-            MLanguage mLanguage = this;
-            this.i = mLanguage.registerInstanceFieldForOwner(clazz2, string, bl, clazz);
+            this.unicodeField = this.registerInstanceFieldForOwner(
+                    MappedClasses.Vi, "field_239496_d_", Wrapper.isNativeAvailable, Boolean.TYPE);
         } else if (ForgeVersion.MC_1_7_10.L()) {
-            Class<Boolean> clazz = Boolean.TYPE;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "field_135029_d";
-            MLanguage mLanguage = this;
-            this.i = mLanguage.J(string, bl, clazz);
+            this.unicodeField = this.J("field_135029_d", Wrapper.isNativeAvailable, Boolean.TYPE);
         } else {
-            Class<Boolean> clazz = Boolean.TYPE;
-            boolean bl = true;
-            String string = "unicode";
-            MLanguage mLanguage = this;
-            this.i = mLanguage.J(string, bl, clazz);
+            this.unicodeField = this.J("unicode", true, Boolean.TYPE);
         }
     }
 

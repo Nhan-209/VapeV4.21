@@ -9,47 +9,29 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MEntityItem
 extends Mapping {
-    private final MappingMethod l;
+    private final MappingMethod getItemMethod;
 
-    public static Object z(MEntityItem mEntityItem, Object object) {
-        return mEntityItem.Z(object);
-    }
-
-
-    private Object Z(Object object) {
-        return this.l.invokeObject(object, new Object[0]);
+    public Object getItem(Object entityItemHandle) {
+        return this.getItemMethod.invokeObject(entityItemHandle);
     }
 
     public MEntityItem() {
-        this(MEntityEnderPearl.I());
+        this(MEntityEnderPearl.getEntityControlFlowState());
     }
 
-    private MEntityItem(GuiComponent[] guiComponentArray) {
+    private MEntityItem(GuiComponent[] entityControlFlowState) {
         super(MappedClasses.zW);
-        if (guiComponentArray != null) {
+        if (entityControlFlowState != null) {
             if (ForgeVersion.MC_1_16_5.d()) {
-                Class[] classArray = new Class[]{};
-                Class clazz = MappedClasses.VK;
-                boolean bl = true;
-                String string = "getItem";
-                MEntityItem mEntityItem = this;
-                this.l = mEntityItem.Y(string, bl, clazz, classArray);
+                this.getItemMethod = this.Y("getItem", true, MappedClasses.VK);
             } else {
-                Class[] classArray = new Class[]{};
-                Class clazz = MappedClasses.VK;
-                boolean bl = true;
-                String string = "getEntityItem";
-                MEntityItem mEntityItem = this;
-                this.l = mEntityItem.Y(string, bl, clazz, classArray);
+                this.getItemMethod = this.Y(
+                        ForgeVersion.c() >= 23 ? "getItem" : "getEntityItem", true, MappedClasses.VK);
             }
             return;
         }
         GuiComponent.setLegacyComponentState(new GuiComponent[4]);
-        Class[] classArray = new Class[]{};
-        Class clazz = MappedClasses.VK;
-        boolean bl = true;
-        String string = "getEntityItem";
-        MEntityItem mEntityItem = this;
-        this.l = mEntityItem.Y(string, bl, clazz, classArray); 
+        this.getItemMethod = this.Y(
+                ForgeVersion.c() >= 23 ? "getItem" : "getEntityItem", true, MappedClasses.VK);
     }
 }

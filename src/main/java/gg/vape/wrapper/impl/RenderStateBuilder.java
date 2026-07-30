@@ -1,16 +1,15 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MRenderStateBuilder;
 import gg.vape.wrapper.Wrapper;
 
 public class RenderStateBuilder
 extends Wrapper {
-    public RenderStateBuilder(Object object) {
-        super(object);
+    public RenderStateBuilder(Object builderHandle) {
+        super(builderHandle);
     }
 
-    public static void t(RenderState renderState) {
-        MRenderStateBuilder.E(RenderStateBuilder.vapeInstance.getMappingsMapperCompat().C1, renderState.getObject());
+    public static void drawWithShader(RenderState renderState) {
+        RenderStateBuilder.vapeInstance.getMappingsMapperCompat().renderStateBuilder
+                .drawWithShader(renderState.getObject());
     }
 }
-

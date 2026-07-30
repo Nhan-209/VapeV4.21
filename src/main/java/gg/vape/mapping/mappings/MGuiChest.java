@@ -9,47 +9,31 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MGuiChest
 extends Mapping {
-    private final MappingField f;
+    private final MappingField lowerChestInventoryField;
 
-    private Object M(Object object) {
-        return this.f.getObject(object);
-    }
-
-    public static Object F(MGuiChest mGuiChest, Object object) {
-        return mGuiChest.M(object);
+    public Object getLowerChestInventory(Object screenHandle) {
+        return this.lowerChestInventoryField.getObject(screenHandle);
     }
 
     public MGuiChest() {
         this(MGuiContainer.l());
     }
 
-    private MGuiChest(String[] stringArray) {
+    private MGuiChest(String[] legacyMappingState) {
         super(MappedClasses.qs);
-        if (stringArray != null) {
+        if (legacyMappingState != null) {
             if (ForgeVersion.MC_1_16_5.d()) {
-                Class clazz = MappedClasses.l0;
-                boolean bl = true;
-                String string = "lowerChestInventory";
-                Class clazz2 = MappedClasses.zZ;
-                MGuiChest mGuiChest = this;
-                this.f = mGuiChest.registerInstanceFieldForOwner(clazz2, string, bl, clazz);
+                this.lowerChestInventoryField = this.registerInstanceFieldForOwner(
+                        MappedClasses.zZ, "lowerChestInventory", true, MappedClasses.l0);
             } else {
-                Class clazz = MappedClasses.l0;
-                boolean bl = true;
-                String string = "lowerChestInventory";
-                MGuiChest mGuiChest = this;
-                this.f = mGuiChest.J(string, bl, clazz);
+                this.lowerChestInventoryField = this.J("lowerChestInventory", true, MappedClasses.l0);
             }
             if (GuiComponent.getLegacyComponentState() == null) {
                 MGuiContainer.r(new String[4]);
             }
             return;
         }
-        Class clazz = MappedClasses.l0;
-        boolean bl = true;
-        String string = "lowerChestInventory";
-        MGuiChest mGuiChest = this;
-        this.f = mGuiChest.J(string, bl, clazz); 
+        this.lowerChestInventoryField = this.J("lowerChestInventory", true, MappedClasses.l0);
         if (GuiComponent.getLegacyComponentState() == null) {
             MGuiContainer.r(new String[4]);
         }

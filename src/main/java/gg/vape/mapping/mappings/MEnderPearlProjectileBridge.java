@@ -8,49 +8,30 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MEnderPearlProjectileBridge
 extends Mapping {
-    private MappingMethod E;
+    private MappingMethod getOwnerMethod;
 
     public MEnderPearlProjectileBridge() {
         this(MEntity.P());
     }
 
-    private MEnderPearlProjectileBridge(int n) {
+    private MEnderPearlProjectileBridge(int entityControlFlowState) {
         super(MappedClasses.lv);
-        if (n != 0) {
+        if (entityControlFlowState != 0) {
             if (ForgeVersion.MC_1_21_4.d()) {
-                Class[] classArray = new Class[]{};
-                Class clazz = MappedClasses.zc;
-                boolean bl = true;
-                String string = "getOwner";
-                MEnderPearlProjectileBridge mEnderPearlProjectileBridge = this;
-                this.E = mEnderPearlProjectileBridge.Y(string, bl, clazz, classArray);
+                this.getOwnerMethod = this.Y("getOwner", true, MappedClasses.zc);
             }
             return;
         }
         if (ForgeVersion.MC_1_21_4.d()) {
-            Class[] classArray = new Class[]{};
-            Class clazz = MappedClasses.zc;
-            boolean bl = true;
-            String string = "getOwner";
-            Class<?> clazz2 = MappedClasses.YV;
-            MEnderPearlProjectileBridge mEnderPearlProjectileBridge = this;
-            this.E = mEnderPearlProjectileBridge.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
+            this.getOwnerMethod = this.registerInstanceMethodForOwner(
+                    MappedClasses.YV, "getOwner", true, MappedClasses.zc);
         } else if (ForgeVersion.MC_1_16_5.d()) {
-            Class[] classArray = new Class[]{};
-            Class clazz = MappedClasses.zc;
-            boolean bl = true;
-            String string = "getOwner";
-            MEnderPearlProjectileBridge mEnderPearlProjectileBridge = this;
-            this.E = mEnderPearlProjectileBridge.Y(string, bl, clazz, classArray); 
+            this.getOwnerMethod = this.Y("getOwner", true, MappedClasses.zc);
         }
     }
 
-    public static Object w(MEnderPearlProjectileBridge mEnderPearlProjectileBridge, Object object) {
-        return mEnderPearlProjectileBridge.a(object);
-    }
-
-    private Object a(Object object) {
-        return this.E.invokeObject(object, new Object[0]);
+    public Object getOwner(Object projectileHandle) {
+        return this.getOwnerMethod.invokeObject(projectileHandle);
     }
 
 }

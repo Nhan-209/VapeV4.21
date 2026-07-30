@@ -104,7 +104,8 @@ public class RayTraceUtil {
             return null;
         }
         EntityRayTraceBridge entityRayTraceBridge = new EntityRayTraceBridge(object);
-        return entityRayTraceBridge.V(entityLivingBase, f, arg_0 -> RayTraceUtil.lambda$getAttackRangeHit121$0(predicate, arg_0));
+        return entityRayTraceBridge.getClosestHit(
+                entityLivingBase, f, entityHandle -> RayTraceUtil.lambda$getAttackRangeHit121$0(predicate, entityHandle));
     }
 
     private static boolean lambda$getAttackRangeHit121$0(Predicate predicate, Object object) {

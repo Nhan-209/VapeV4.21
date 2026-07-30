@@ -101,7 +101,7 @@ extends MemberNameRemapTable {
         this.B(MappedClasses.zm, "swingProgressInt", "swingTime");
         this.B(MappedClasses.zm, "activePotionsMap", "activeEffects");
         this.B(MappedClasses.zm, "potionsNeedUpdate", "effectsDirty");
-        this.B(MappedClasses.zm, "itemInUseCount", "useItemRemaining");
+        this.B(MappedClasses.zm, "itemInUseCount", "field_184628_bn");
         if (Vape.INSTANCE.isVanillaMinecraftPresent()) {
             this.B(MappedClasses.zm, "field_191988_bg", "zza");
         }
@@ -1056,6 +1056,49 @@ extends MemberNameRemapTable {
             this.t(MappedClasses.uQ, "func_243247_a", "drawInBatch");
             this.t(MappedClasses.uQ, "func_78256_a", "width");
         }
+    }
+
+    protected void forge116SrgCorrections() {
+        this.B(MappedClasses.zc, "wasTouchingWater", "field_70171_ac");
+        this.B(MappedClasses.Yl, "wasUnderwater", "field_204230_bP");
+        this.B(MappedClasses.z5, "sprintTime", "field_71157_e");
+        this.B(MappedClasses.z5, "sprintTriggerTime", "field_71156_d");
+        this.B(MappedClasses.z5, "yBob", "field_71154_f");
+        this.B(MappedClasses.z5, "xBob", "field_71155_g");
+        this.B(MappedClasses.z5, "yBobO", "field_71163_h");
+        this.B(MappedClasses.z5, "xBobO", "field_71164_i");
+        this.B(MappedClasses.zm, "jumping", "field_70703_bu");
+        this.B(MappedClasses.Z, "clientLevelData", "field_239130_d_");
+        this.B(MappedClasses.YQ, "container", "field_75224_c");
+        this.B(MappedClasses.YQ, "index", "field_75225_a");
+        this.B(MappedClasses.Fj, "hardness", "field_235705_i_");
+        this.B(MappedClasses.qD, "yRot", "field_149476_e");
+        this.B(MappedClasses.qD, "xRot", "field_149473_f");
+        this.B(MappedClasses.YN, "msPerTick", "field_194149_e");
+        this.B(MappedClasses.Fa, "location", "field_179713_c");
+        this.B(MappedClasses.s, "id", "field_149458_a");
+        this.B(MappedClasses.s, "x", "field_149456_b");
+        this.B(MappedClasses.s, "y", "field_149457_c");
+        this.B(MappedClasses.s, "z", "field_149454_d");
+        this.B(MappedClasses.s, "yRot", "field_149455_e");
+        this.B(MappedClasses.s, "xRot", "field_149453_f");
+        this.B(MappedClasses.uW, "yRot", "field_148951_f");
+        this.B(MappedClasses.uW, "xRot", "field_148952_g");
+        this.B(MappedClasses.YB, "blockHit", "field_218795_a");
+        this.B(MappedClasses.D7, "yHeadRot", "field_149383_b");
+        this.B(MappedClasses.Zc, "tabListDisplayName", "field_178872_h");
+        this.B(MappedClasses.Db, "u0", "field_110979_l");
+        this.B(MappedClasses.Db, "u1", "field_110980_m");
+        this.B(MappedClasses.Db, "v0", "field_110977_n");
+        this.B(MappedClasses.Db, "v1", "field_110978_o");
+
+        this.t(MappedClasses.FW, "renderLevel", "func_228378_a_");
+        this.t(MappedClasses.z5, "aiStep", "func_70636_d");
+        this.t(MappedClasses.lF, "getNameForDisplay", "func_200262_a");
+        this.t(MappedClasses.zY, "use", "func_77659_a");
+        this.t(MappedClasses.lb, "getPlayerPOVHitResult", "func_219968_a");
+        this.t(MappedClasses.Z, "getEntity", "func_73045_a");
+        this.t(MappedClasses.zc, "isPickable", "func_70067_L");
     }
 }
 

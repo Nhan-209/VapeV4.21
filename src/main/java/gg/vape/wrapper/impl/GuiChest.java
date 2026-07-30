@@ -1,26 +1,26 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MGuiChest;
-
 public class GuiChest
 extends GuiContainer {
-    public String z() {
+    public String getTitle() {
         if (ForgeVersion.MC_1_16_5.d()) {
             return this.F().getFormattedText();
         }
         return this.getLowerChestInventory().getName();
     }
 
-    public GuiChest(Object object) {
-        super(object);
+    public GuiChest(Object chestScreenHandle) {
+        super(chestScreenHandle);
     }
 
     public Inventory getLowerChestInventory() {
         if (ForgeVersion.MC_1_16_5.d()) {
-            Object object = GuiChest.vapeInstance.getMappingsMapperCompat().hK.t(this.I);
-            return new Inventory(MGuiChest.F(GuiChest.vapeInstance.getMappingsMapperCompat().Ch, object));
+            Object containerScreenHandle = GuiChest.vapeInstance.getMappingsMapperCompat().hK.t(this.I);
+            Object inventoryHandle = GuiChest.vapeInstance.getMappingsMapperCompat().guiChest
+                    .getLowerChestInventory(containerScreenHandle);
+            return new Inventory(inventoryHandle);
         }
-        return new Inventory(MGuiChest.F(GuiChest.vapeInstance.getMappingsMapperCompat().Ch, this.I));
+        return new Inventory(GuiChest.vapeInstance.getMappingsMapperCompat().guiChest.getLowerChestInventory(this.I));
     }
 
 }

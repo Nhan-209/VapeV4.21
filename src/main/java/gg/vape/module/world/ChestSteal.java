@@ -276,7 +276,7 @@ implements InventoryActionModule {
 
     private boolean isStandardChest(GuiChest guiChest) {
         Inventory inventory = guiChest.getLowerChestInventory();
-        String chestTitle = guiChest.z();
+        String chestTitle = guiChest.getTitle();
         if (ForgeVersion.MC_1_16_5.d()) {
             String standardChestTitle = ChestStealInventoryState.createTranslation("container.chest", new Object[0]).getFormattedText().toLowerCase();
             String doubleChestTitle = ChestStealInventoryState.createTranslation("container.chestDouble", new Object[0]).getFormattedText().toLowerCase();

@@ -258,7 +258,7 @@ extends Mapping {
                 Class[] classArray20 = new Class[]{MappedClasses.lf};
                 Class clazz30 = MappedClasses.VJ;
                 boolean bl24 = true;
-                String string26 = "getChunkFromBlockCoords";
+                String string26 = ForgeVersion.c() >= 23 ? "getChunk" : "getChunkFromBlockCoords";
                 MWorld mWorld26 = this;
                 this.w = this.Y(string26, bl24, clazz30, classArray20);
                 Class[] classArray21 = new Class[]{MappedClasses.lf};

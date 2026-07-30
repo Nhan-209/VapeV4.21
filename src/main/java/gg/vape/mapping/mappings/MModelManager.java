@@ -8,30 +8,22 @@ import gg.vape.wrapper.impl.ResourceLocationConstantPair;
 
 public class MModelManager
 extends Mapping {
-    private MappingMethod p;
-    private static final String b = "getAtlasOrThrow";
+    private static final String GET_ATLAS_OR_THROW = "getAtlasOrThrow";
+    private final MappingMethod getAtlasMethod;
 
     public MModelManager() {
-        this(ResourceLocationConstantPair.b());
+        this(ResourceLocationConstantPair.getControlFlowState());
     }
 
     private MModelManager(GuiComponent[] guiComponentArray) {
         super(MappedClasses.q4);
-        GuiComponent[] guiComponentArray2 = guiComponentArray;
-        Class[] classArray = new Class[]{MappedClasses.zC};
-        Class clazz = MappedClasses.L;
-        boolean bl = true;
-        String string = b;
-        MModelManager mModelManager = this;
-        this.p = this.Y(string, bl, clazz, classArray);
+        this.getAtlasMethod = this.Y(GET_ATLAS_OR_THROW, true, MappedClasses.L, new Class[]{MappedClasses.zC});
         if (GuiComponent.getLegacyComponentState() == null) {
-            ResourceLocationConstantPair.P(new GuiComponent[1]);
+            ResourceLocationConstantPair.setControlFlowState(new GuiComponent[1]);
         }
     }
 
-
-    public Object t(Object object, Object object2) {
-        return this.p.invokeObject(object, object2);
+    public Object getAtlas(Object modelManagerHandle, Object atlasLocation) {
+        return this.getAtlasMethod.invokeObject(modelManagerHandle, atlasLocation);
     }
 }
-

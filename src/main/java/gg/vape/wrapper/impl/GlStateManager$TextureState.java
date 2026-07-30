@@ -4,16 +4,16 @@ import gg.vape.wrapper.Wrapper;
 
 public class GlStateManager$TextureState
 extends Wrapper {
-    public GlStateManager$TextureState(Object object) {
-        super(object);
+    public GlStateManager$TextureState(Object textureStateHandle) {
+        super(textureStateHandle);
     }
 
-    public int P() {
-        return GlStateManager$TextureState.vapeInstance.getMappingsMapperCompat().hH.R(this.I);
+    public int getTextureName() {
+        return GlStateManager$TextureState.vapeInstance.getMappingsMapperCompat().glTextureState.getTextureName(this.I);
     }
 
-    public void H(int n) {
-        GlStateManager$TextureState.vapeInstance.getMappingsMapperCompat().hH.g(this.I, n);
+    public void setTextureName(int textureName) {
+        GlStateManager$TextureState.vapeInstance.getMappingsMapperCompat().glTextureState
+                .setTextureName(this.I, textureName);
     }
 }
-

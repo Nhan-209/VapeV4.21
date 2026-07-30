@@ -8,15 +8,15 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MPlayerSkin
 extends Mapping {
-    private MappingField k;
-    private MappingField Z;
+    private MappingField bodyField;
+    private MappingField textureField;
 
-    public Object o(Object object) {
-        return this.Z.getObject(object);
+    public Object getTexture(Object playerSkinHandle) {
+        return this.textureField.getObject(playerSkinHandle);
     }
 
-    public Object S(Object object) {
-        return this.k.getObject(object);
+    public Object getBody(Object playerSkinHandle) {
+        return this.bodyField.getObject(playerSkinHandle);
     }
 
 
@@ -24,29 +24,17 @@ extends Mapping {
         this(BlockData.W());
     }
 
-    private MPlayerSkin(String[] stringArray) {
+    private MPlayerSkin(String[] playerSkinMappingState) {
         super(MappedClasses.uZ);
-        if (stringArray != null) {
+        if (playerSkinMappingState != null) {
             if (ForgeVersion.MC_1_21_10.d()) {
-                Class clazz = MappedClasses.zI;
-                boolean bl = true;
-                String string = "body";
-                MPlayerSkin mPlayerSkin = this;
-                this.k = mPlayerSkin.J(string, bl, clazz);
+                this.bodyField = this.J("body", true, MappedClasses.zI);
             } else {
-                Class clazz = MappedClasses.zC;
-                boolean bl = true;
-                String string = "texture";
-                MPlayerSkin mPlayerSkin = this;
-                this.Z = mPlayerSkin.J(string, bl, clazz);
+                this.textureField = this.J("texture", true, MappedClasses.zC);
             }
             return;
         }
-        Class clazz = MappedClasses.zC;
-        boolean bl = true;
-        String string = "texture";
-        MPlayerSkin mPlayerSkin = this;
-        this.Z = mPlayerSkin.J(string, bl, clazz);
+        this.textureField = this.J("texture", true, MappedClasses.zC);
     }
 }
 

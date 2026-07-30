@@ -245,9 +245,13 @@ extends Mapping {
         if (ForgeVersion.MC_1_20_6.v()) {
             Class<Float> clazz = Float.TYPE;
             boolean bl = true;
-            String string = "blockHardness";
-            MBlock mBlock = this;
-            this.x = mBlock.J(string, bl, clazz);
+            if (ForgeVersion.MC_1_16_5.d() && ForgeVersion.MC_1_17.v()) {
+                this.x = this.registerInstanceFieldForOwner(MappedClasses.Fj, "hardness", bl, clazz);
+            } else {
+                String string = "blockHardness";
+                MBlock mBlock = this;
+                this.x = mBlock.J(string, bl, clazz);
+            }
         }
         if (!ForgeVersion.MC_1_16_5.d()) {
             if (ForgeVersion.MC_1_12_2.d()) {
@@ -508,7 +512,7 @@ extends Mapping {
                 Class[] classArray = new Class[]{};
                 Class clazz = MappedClasses.E;
                 boolean bl = true;
-                String string = "getBlockLayer";
+                String string = ForgeVersion.c() >= 23 ? "getRenderLayer" : "getBlockLayer";
                 MBlock mBlock = this;
                 this.S = mBlock.Y(string, bl, clazz, classArray);
                 Class[] classArray23 = new Class[]{MappedClasses.Vv, MappedClasses.zR, MappedClasses.lf};
@@ -619,6 +623,9 @@ extends Mapping {
     }
 
     public float F(Object object) {
+        if (ForgeVersion.MC_1_16_5.d() && ForgeVersion.MC_1_17.v()) {
+            return this.x.getFloat(this.T.getObject(object));
+        }
         return this.x.getFloat(object);
     }
 

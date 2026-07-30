@@ -9,39 +9,26 @@ import java.util.function.Predicate;
 
 public class MEntityRayTraceBridge
 extends Mapping {
-    private static final String b = "getClosesetHit";
-    private final MappingMethod n;
+    private static final String GET_CLOSEST_HIT = "getClosesetHit";
+    private final MappingMethod getClosestHitMethod;
 
-    private Object B(Object object, Object object2, float f, Predicate<Object> predicate) {
-        return this.n.invokeObject(object, object2, Float.valueOf(f), predicate);
-    }
-
-
-    public static Object A(MEntityRayTraceBridge mEntityRayTraceBridge, Object object, Object object2, float f, Predicate predicate) {
-        return mEntityRayTraceBridge.B(object, object2, f, predicate);
+    public Object getClosestHit(Object bridgeHandle, Object entityHandle, float distance, Predicate<Object> predicate) {
+        return this.getClosestHitMethod.invokeObject(bridgeHandle, entityHandle, distance, predicate);
     }
 
     public MEntityRayTraceBridge() {
         this(MItemAttributeModifiersComponent.getItemAttributeModifiersControlFlowState());
     }
 
-    private MEntityRayTraceBridge(GuiComponent[] guiComponentArray) {
+    private MEntityRayTraceBridge(GuiComponent[] controlFlowState) {
         super(MappedClasses.Dr);
-        if (guiComponentArray != null) {
-            Class[] classArray = new Class[]{MappedClasses.zc, Float.TYPE, Predicate.class};
-            Class clazz = MappedClasses.DT;
-            boolean bl = true;
-            String string = b;
-            MEntityRayTraceBridge mEntityRayTraceBridge = this;
-            this.n = mEntityRayTraceBridge.Y(string, bl, clazz, classArray);
+        if (controlFlowState != null) {
+            this.getClosestHitMethod = this.Y(
+                    GET_CLOSEST_HIT, true, MappedClasses.DT, MappedClasses.zc, Float.TYPE, Predicate.class);
             return;
         }
-        Class[] classArray = new Class[]{MappedClasses.zc, Float.TYPE, Predicate.class};
-        Class clazz = MappedClasses.DT;
-        boolean bl = true;
-        String string = b;
-        MEntityRayTraceBridge mEntityRayTraceBridge = this;
-        this.n = mEntityRayTraceBridge.Y(string, bl, clazz, classArray); 
+        this.getClosestHitMethod = this.Y(
+                GET_CLOSEST_HIT, true, MappedClasses.DT, MappedClasses.zc, Float.TYPE, Predicate.class);
         GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 }

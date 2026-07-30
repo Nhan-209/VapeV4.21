@@ -4,16 +4,15 @@ import gg.vape.wrapper.Wrapper;
 
 public class I18n
 extends Wrapper {
-    public I18n(Object object) {
-        super(object);
+    public I18n(Object i18nHandle) {
+        super(i18nHandle);
     }
 
-    public static String f(String string, Object ... objectArray) {
-        return I18n.vapeInstance.getMappingsMapperCompat().DB.R(string, objectArray);
+    public static String format(String translationKey, Object ... arguments) {
+        return I18n.vapeInstance.getMappingsMapperCompat().i18n.format(translationKey, arguments);
     }
 
-    public static Language w() {
-        return new Language(I18n.vapeInstance.getMappingsMapperCompat().DB.S());
+    public static Language getLanguage() {
+        return new Language(I18n.vapeInstance.getMappingsMapperCompat().i18n.getLanguage());
     }
 }
-

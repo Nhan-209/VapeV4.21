@@ -2,12 +2,13 @@ package gg.vape.wrapper.impl;
 
 public class GuiContainerCreativeSlot
 extends Slot {
-    public Slot S() {
-        return new Slot(GuiContainerCreativeSlot.vapeInstance.getMappingsMapperCompat().Db.q(this.I));
+    public Slot getWrappedSlot() {
+        Object slotHandle = GuiContainerCreativeSlot.vapeInstance.getMappingsMapperCompat().guiContainerCreativeSlot
+                .getWrappedSlot(this.I);
+        return new Slot(slotHandle);
     }
 
-    public GuiContainerCreativeSlot(Object object) {
-        super(object);
+    public GuiContainerCreativeSlot(Object creativeSlotHandle) {
+        super(creativeSlotHandle);
     }
 }
-

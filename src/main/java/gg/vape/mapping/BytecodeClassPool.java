@@ -5,6 +5,7 @@ import javassist.ByteArrayClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.NotFoundException;
+import javassist.bytecode.Descriptor;
 
 public class BytecodeClassPool
 extends ClassPool {
@@ -42,9 +43,16 @@ extends ClassPool {
     }
 
     private boolean N(String string) {
-        byte[] byArray = this.W.y(string);
+        String className = string;
+        if (className.startsWith("[")) {
+            className = Descriptor.toClassName(className);
+        }
+        while (className.endsWith("[]")) {
+            className = className.substring(0, className.length() - 2);
+        }
+        byte[] byArray = this.W.y(className);
         if (byArray != null) {
-            this.insertClassPath(new ByteArrayClassPath(string, byArray));
+            this.insertClassPath(new ByteArrayClassPath(className, byArray));
             return true;
         }
         return false;

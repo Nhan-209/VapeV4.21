@@ -71,7 +71,7 @@ public class ItemESPGroup {
         this.stackedItems.clear();
         for (Object entityHandle : this.itemEntities) {
             EntityItem entityItem = new EntityItem(entityHandle);
-            ItemStack itemStack = entityItem.J$src$Lgg_vape_wrapper_impl_ItemStack_$5gv0ko();
+            ItemStack itemStack = entityItem.getItemStack();
             if (!itemStack.isNotNull()) continue;
             if (this.parent.isGroupingEnabled()) {
                 boolean merged = false;

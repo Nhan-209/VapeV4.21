@@ -130,7 +130,8 @@ extends Mod {
         if (!this.isEnabled()) {
             return;
         }
-        eventBlockRenderBounds.getRenderBlocks().M(this.isTargetBlock(eventBlockRenderBounds.getBlock()));
+        eventBlockRenderBounds.getRenderBlocks().setRenderAllFaces(
+                this.isTargetBlock(eventBlockRenderBounds.getBlock()));
     }
 
     @EventHandler

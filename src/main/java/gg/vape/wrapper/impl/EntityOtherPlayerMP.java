@@ -2,12 +2,12 @@ package gg.vape.wrapper.impl;
 
 public class EntityOtherPlayerMP
 extends AbstractClientPlayer {
-    public EntityOtherPlayerMP(Object object) {
-        super(object);
+    public EntityOtherPlayerMP(Object entityHandle) {
+        super(entityHandle);
     }
 
-    public static EntityOtherPlayerMP create(World world, GameProfile _g_02) {
-        return new EntityOtherPlayerMP(EntityOtherPlayerMP.vapeInstance.getMappingsMapperCompat().h_.T(world.getObject(), _g_02.getObject()));
+    public static EntityOtherPlayerMP create(World world, GameProfile gameProfile) {
+        return new EntityOtherPlayerMP(EntityOtherPlayerMP.vapeInstance.getMappingsMapperCompat().entityOtherPlayer.create(
+                world.getObject(), gameProfile.getObject()));
     }
 }
-

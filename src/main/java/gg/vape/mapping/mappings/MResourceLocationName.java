@@ -9,15 +9,15 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MResourceLocationName
 extends Mapping {
-    private final MappingMethod r;
-    private final MappingMethod x;
+    private final MappingMethod completeReportMethod;
+    private final MappingMethod friendlyReportMethod;
 
-    public String L(Object object) {
-        return (String)this.r.invokeObject(object, new Object[0]);
+    public String getCompleteReport(Object reportHandle) {
+        return (String)this.completeReportMethod.invokeObject(reportHandle);
     }
 
-    public String v(Object object, Object object2) {
-        return (String)this.x.invokeObject(object, object2);
+    public String getFriendlyReport(Object reportHandle, Object resourceKeyHandle) {
+        return (String)this.friendlyReportMethod.invokeObject(reportHandle, resourceKeyHandle);
     }
 
 
@@ -25,41 +25,27 @@ extends Mapping {
         this(MResourceLocationKey.A());
     }
 
-    private MResourceLocationName(boolean bl) {
+    private MResourceLocationName(boolean controlFlowState) {
         super(MappedClasses.qA);
-        if (bl) {
+        if (controlFlowState) {
             GuiComponent.setLegacyComponentState(new GuiComponent[1]);
-            this.x = null;
+            this.friendlyReportMethod = null;
             if (ForgeVersion.MC_1_8_9.L()) {
-                Class[] classArray = new Class[]{};
-                Class<String> clazz = String.class;
-                boolean bl2 = true;
-                String string = "getCompleteReport";
-                MResourceLocationName mResourceLocationName = this;
-                mResourceLocationName.Y(string, bl2, clazz, classArray);
+                this.Y("getCompleteReport", true, String.class);
             }
-            this.r = null;
+            this.completeReportMethod = null;
             return;
         }
         if (MappedClasses.qJ != null) {
-            Class[] classArray = new Class[]{MappedClasses.qJ};
-            Class<String> clazz = String.class;
-            boolean bl3 = true;
-            String string = "getFriendlyReport";
-            MResourceLocationName mResourceLocationName = this;
-            this.x = mResourceLocationName.Y(string, bl3, clazz, classArray);
+            this.friendlyReportMethod = this.Y(
+                    "getFriendlyReport", true, String.class, MappedClasses.qJ);
         } else {
-            this.x = null;
+            this.friendlyReportMethod = null;
         }
         if (ForgeVersion.MC_1_8_9.L()) {
-            Class[] classArray = new Class[]{};
-            Class<String> clazz = String.class;
-            boolean bl4 = true;
-            String string = "getCompleteReport";
-            MResourceLocationName mResourceLocationName = this;
-            this.r = mResourceLocationName.Y(string, bl4, clazz, classArray);
+            this.completeReportMethod = this.Y("getCompleteReport", true, String.class);
         } else {
-            this.r = null;
+            this.completeReportMethod = null;
         }
     }
 }

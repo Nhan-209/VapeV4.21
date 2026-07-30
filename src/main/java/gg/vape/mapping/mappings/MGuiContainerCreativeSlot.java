@@ -8,39 +8,27 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MGuiContainerCreativeSlot
 extends Mapping {
-    private final MappingField i;
+    private final MappingField wrappedSlotField;
 
     public MGuiContainerCreativeSlot() {
         this(MSlot.z());
     }
 
-    private MGuiContainerCreativeSlot(int[] nArray) {
+    private MGuiContainerCreativeSlot(int[] slotMappingState) {
         super(MappedClasses.VG);
-        if (nArray != null) {
-            Class clazz = MappedClasses.YQ;
-            boolean bl = true;
-            String string = "slot";
-            MGuiContainerCreativeSlot mGuiContainerCreativeSlot = this;
-            this.i = mGuiContainerCreativeSlot.J(string, bl, clazz);
+        if (slotMappingState != null) {
+            this.wrappedSlotField = this.J("slot", true, MappedClasses.YQ);
             return;
         }
         if (ForgeVersion.MC_1_7_10.L()) {
-            Class clazz = MappedClasses.YQ;
-            boolean bl = Wrapper.isNativeAvailable;
-            String string = "field_148332_b";
-            MGuiContainerCreativeSlot mGuiContainerCreativeSlot = this;
-            this.i = mGuiContainerCreativeSlot.J(string, bl, clazz);
+            this.wrappedSlotField = this.J("field_148332_b", Wrapper.isNativeAvailable, MappedClasses.YQ);
         } else {
-            Class clazz = MappedClasses.YQ;
-            boolean bl = true;
-            String string = "slot";
-            MGuiContainerCreativeSlot mGuiContainerCreativeSlot = this;
-            this.i = mGuiContainerCreativeSlot.J(string, bl, clazz); 
+            this.wrappedSlotField = this.J("slot", true, MappedClasses.YQ);
         }
     }
 
-    public Object q(Object object) {
-        return this.i.getObject(object);
+    public Object getWrappedSlot(Object creativeSlotHandle) {
+        return this.wrappedSlotField.getObject(creativeSlotHandle);
     }
 
 }

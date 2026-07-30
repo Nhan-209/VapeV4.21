@@ -1787,7 +1787,7 @@ extends Mapping {
             Class[] classArray = new Class[]{MappedClasses.zc};
             Class<Float> clazz76 = Float.TYPE;
             boolean bl59 = true;
-            String string76 = "getDistanceToEntity";
+            String string76 = ForgeVersion.c() >= 23 ? "getDistance" : "getDistanceToEntity";
             MEntity mEntity76 = this;
             this.jc = this.Y(string76, bl59, clazz76, classArray);
             Class[] classArray30 = new Class[]{};

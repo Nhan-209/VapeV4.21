@@ -8,40 +8,24 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MRenderStateBuilder
 extends Mapping {
-    private MappingMethod H;
-    private static final String b = "drawWithShader";
+    private static final String DRAW_WITH_SHADER = "drawWithShader";
+    private final MappingMethod drawWithShaderMethod;
 
     public MRenderStateBuilder() {
         this(MEnumHandBridge.s());
     }
 
-    private MRenderStateBuilder(int n) {
+    private MRenderStateBuilder(int controlFlowState) {
         super(MappedClasses.ug);
-        if (n != 0) {
-            Class[] classArray = new Class[]{MappedClasses.qE};
-            Class<Void> clazz = Void.TYPE;
-            boolean bl = true;
-            String string = b;
-            MRenderStateBuilder mRenderStateBuilder = this;
-            this.H = mRenderStateBuilder.registerStaticMethod(string, bl, clazz, classArray);
+        this.drawWithShaderMethod = this.registerStaticMethod(
+                DRAW_WITH_SHADER, true, Void.TYPE, MappedClasses.qE);
+        if (controlFlowState != 0) {
             GuiComponent.setLegacyComponentState(new GuiComponent[1]);
-            return;
         }
-        Class[] classArray = new Class[]{MappedClasses.qE};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = true;
-        String string = b;
-        MRenderStateBuilder mRenderStateBuilder = this;
-        this.H = mRenderStateBuilder.registerStaticMethod(string, bl, clazz, classArray);
     }
 
-
-    public static void E(MRenderStateBuilder mRenderStateBuilder, Object object) {
-        mRenderStateBuilder.Z(object);
-    }
-
-    private void Z(Object object) {
-        this.H.invokeVoid(null, object);
+    public void drawWithShader(Object renderStateHandle) {
+        this.drawWithShaderMethod.invokeVoid(null, renderStateHandle);
     }
 }
 

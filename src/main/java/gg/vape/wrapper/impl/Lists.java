@@ -6,16 +6,15 @@ import java.util.List;
 
 public class Lists
 extends Wrapper {
-    public Lists(Object object) {
-        super(object);
+    public Lists(Object listsHandle) {
+        super(listsHandle);
     }
 
-    public static ArrayList u(Iterable iterable) {
-        return Lists.vapeInstance.getMappingsMapperCompat().hY.V(iterable);
+    public static ArrayList newArrayList(Iterable iterable) {
+        return Lists.vapeInstance.getMappingsMapperCompat().lists.newArrayList(iterable);
     }
 
-    public static List k(List list) {
-        return Lists.vapeInstance.getMappingsMapperCompat().hY.c(list);
+    public static List reverse(List list) {
+        return Lists.vapeInstance.getMappingsMapperCompat().lists.reverse(list);
     }
 }
-

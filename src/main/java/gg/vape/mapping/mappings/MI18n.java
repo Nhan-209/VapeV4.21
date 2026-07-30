@@ -9,43 +9,29 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MI18n
 extends Mapping {
-    private final MappingField j;
-    private final MappingMethod c;
+    private final MappingField languageField;
+    private final MappingMethod formatMethod;
 
 
     public MI18n() {
         this(TimerUtil.p());
     }
 
-    private MI18n(String string) {
+    private MI18n(String timerState) {
         super(MappedClasses.Vm);
-        String string2 = string;
         if (ForgeVersion.MC_1_16_5.d()) {
-            Class clazz = MappedClasses.Fn;
-            boolean bl = true;
-            String string3 = "field_239501_a_";
-            MI18n mI18n = this;
-            this.j = mI18n.registerStaticField(string3, bl, clazz);
+            this.languageField = this.registerStaticField("field_239501_a_", true, MappedClasses.Fn);
         } else {
-            Class clazz = MappedClasses.Fn;
-            boolean bl = true;
-            String string4 = "i18nLocale";
-            MI18n mI18n = this;
-            this.j = mI18n.registerStaticField(string4, bl, clazz);
+            this.languageField = this.registerStaticField("i18nLocale", true, MappedClasses.Fn);
         }
-        Class[] classArray = new Class[]{String.class, Object[].class};
-        Class<String> clazz = String.class;
-        boolean bl = true;
-        String string5 = "format";
-        MI18n mI18n = this;
-        this.c = mI18n.registerStaticMethod(string5, bl, clazz, classArray);
+        this.formatMethod = this.registerStaticMethod("format", true, String.class, String.class, Object[].class);
     }
 
-    public String R(String string, Object ... objectArray) {
-        return (String)this.c.invokeObject(null, string, objectArray);
+    public String format(String translationKey, Object ... arguments) {
+        return (String)this.formatMethod.invokeObject(null, translationKey, arguments);
     }
 
-    public Object S() {
-        return this.j.getObject(null);
+    public Object getLanguage() {
+        return this.languageField.getObject(null);
     }
 }

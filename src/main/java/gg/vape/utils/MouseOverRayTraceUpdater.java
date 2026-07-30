@@ -78,7 +78,7 @@ public class MouseOverRayTraceUpdater {
             AxisAlignedBB axisAlignedBB = entityLivingBase.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().c(vec32.r(d)).z(d4, d4, d4);
             EntityRayTraceResult entityRayTraceResult = MouseOverRayTraceUpdater.o(entityLivingBase, vec3, vec33, axisAlignedBB, d2, f2, null);
             if (entityRayTraceResult.isNotNull()) {
-                Entity entity2 = entityRayTraceResult.L();
+                Entity entity2 = entityRayTraceResult.getHitEntity();
                 Vec3 vec34 = entityRayTraceResult.getHitVec();
                 double d5 = vec3.H(vec34);
                 if (bl && d5 > (double)(f * f)) {
@@ -207,7 +207,7 @@ public class MouseOverRayTraceUpdater {
         if (entity2.isNull()) {
             return new EntityRayTraceResult(null);
         }
-        return EntityRayTraceResult.x(entity2, vec33);
+        return EntityRayTraceResult.create(entity2, vec33);
     }
 
 
@@ -255,7 +255,7 @@ public class MouseOverRayTraceUpdater {
             AxisAlignedBB axisAlignedBB = entityLivingBase.R$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$r19dfl().c(vec32.r(d)).z(d4, d4, d4);
             EntityRayTraceResult entityRayTraceResult = MouseOverRayTraceUpdater.o(entityLivingBase, vec3, vec33, axisAlignedBB, d2, f2, null);
             if (entityRayTraceResult.isNotNull()) {
-                Entity entity2 = entityRayTraceResult.L();
+                Entity entity2 = entityRayTraceResult.getHitEntity();
                 Vec3 vec34 = entityRayTraceResult.getHitVec();
                 double d5 = vec3.H(vec34);
                 if (bl && d5 > (double)(f * f)) {

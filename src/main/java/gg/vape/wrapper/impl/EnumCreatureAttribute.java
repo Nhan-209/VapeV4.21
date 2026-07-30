@@ -1,20 +1,21 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MEnumCreatureAttributeBridge;
 import gg.vape.wrapper.Wrapper;
 
 public class EnumCreatureAttribute
 extends Wrapper {
 
-    public static EnumCreatureAttribute R() {
+    public static EnumCreatureAttribute undefined() {
         if (ForgeVersion.MC_1_21_0.d()) {
             return null;
         }
-        return new EnumCreatureAttribute(MEnumCreatureAttributeBridge.V(EnumCreatureAttribute.vapeInstance.getMappingsMapperCompat().R0));
+        Object attributeHandle = EnumCreatureAttribute.vapeInstance.getMappingsMapperCompat()
+                .enumCreatureAttributeBridge.getUndefined();
+        return new EnumCreatureAttribute(attributeHandle);
     }
 
-    public EnumCreatureAttribute(Object object) {
-        super(object);
+    public EnumCreatureAttribute(Object attributeHandle) {
+        super(attributeHandle);
     }
 }
 

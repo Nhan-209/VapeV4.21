@@ -50,7 +50,7 @@ implements EventListener {
                 baseDamage += (float)attackDamageModifier.getAmount();
             }
         }
-        float enchantmentDamage = EnchantmentHelper.C(itemStack, EnumCreatureAttribute.R());
+        float enchantmentDamage = EnchantmentHelper.C(itemStack, EnumCreatureAttribute.undefined());
         if (baseDamage > 0.0f || enchantmentDamage > 0.0f) {
             if (criticalHit && baseDamage > 0.0f) {
                 baseDamage *= 1.5f;

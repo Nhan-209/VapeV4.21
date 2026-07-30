@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class RenderBlocks
 extends Wrapper {
-    public void M(boolean bl) {
-        Vape.INSTANCE.getMappingsMapperCompat().i.A(this.I, bl);
+    public void setRenderAllFaces(boolean renderAllFaces) {
+        Vape.INSTANCE.getMappingsMapperCompat().renderBlocks.setRenderAllFaces(this.I, renderAllFaces);
     }
 
-    public RenderBlocks(Object object) {
-        super(object);
+    public RenderBlocks(Object renderBlocksHandle) {
+        super(renderBlocksHandle);
     }
 }
-

@@ -5,10 +5,10 @@ import gg.vape.wrapper.impl.Minecraft;
 
 public class ResetTimerThread
 extends Thread {
-    final Step T;
+    final Step step;
 
     public ResetTimerThread(Step step) {
-        this.T = step;
+        this.step = step;
     }
 
     @Override

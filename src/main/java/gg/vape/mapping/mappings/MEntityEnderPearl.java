@@ -9,63 +9,50 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MEntityEnderPearl
 extends Mapping {
-    private MappingMethod T;
-    private MappingField u;
-    private static GuiComponent[] h;
+    private MappingMethod getFuseMethod;
+    private MappingField fuseField;
+    private static GuiComponent[] controlFlowState;
 
-    public int k(Object object) {
+    public int getFuse(Object entityHandle) {
         if (ForgeVersion.MC_1_17.d()) {
-            return this.T.invokeInt(object, new Object[0]);
+            return this.getFuseMethod.invokeInt(entityHandle);
         }
-        return this.u.getInt(object);
+        return this.fuseField.getInt(entityHandle);
     }
 
     public MEntityEnderPearl() {
-        this(MEntityEnderPearl.I());
+        this(MEntityEnderPearl.getEntityControlFlowState());
     }
 
-    private MEntityEnderPearl(GuiComponent[] guiComponentArray) {
+    private MEntityEnderPearl(GuiComponent[] entityControlFlowState) {
         super(MappedClasses.qM);
-        if (guiComponentArray != null) {
+        if (entityControlFlowState != null) {
             if (ForgeVersion.MC_1_17.d()) {
-                Class[] classArray = new Class[]{};
-                Class<Integer> clazz = Integer.TYPE;
-                boolean bl = true;
-                String string = "getFuse";
-                MEntityEnderPearl mEntityEnderPearl = this;
-                this.T = mEntityEnderPearl.Y(string, bl, clazz, classArray);
+                this.getFuseMethod = this.Y("getFuse", true, Integer.TYPE);
             } else {
-                Class<Integer> clazz = Integer.TYPE;
-                boolean bl = true;
-                String string = "fuse";
-                MEntityEnderPearl mEntityEnderPearl = this;
-                this.u = mEntityEnderPearl.J(string, bl, clazz);
+                this.fuseField = this.J("fuse", true, Integer.TYPE);
             }
             if (GuiComponent.getLegacyComponentState() == null) {
-                MEntityEnderPearl.o(new GuiComponent[1]);
+                MEntityEnderPearl.setEntityControlFlowState(new GuiComponent[1]);
             }
             return;
         }
-        Class<Integer> clazz = Integer.TYPE;
-        boolean bl = true;
-        String string = "fuse";
-        MEntityEnderPearl mEntityEnderPearl = this;
-        this.u = mEntityEnderPearl.J(string, bl, clazz); 
+        this.fuseField = this.J("fuse", true, Integer.TYPE);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MEntityEnderPearl.o(new GuiComponent[1]);
+            MEntityEnderPearl.setEntityControlFlowState(new GuiComponent[1]);
         }
     }
 
     static {
-        MEntityEnderPearl.o(new GuiComponent[3]);
+        MEntityEnderPearl.setEntityControlFlowState(new GuiComponent[3]);
     }
 
-    public static GuiComponent[] I() {
-        return h;
+    public static GuiComponent[] getEntityControlFlowState() {
+        return controlFlowState;
     }
 
 
-    public static void o(GuiComponent[] guiComponentArray) {
-        h = guiComponentArray;
+    public static void setEntityControlFlowState(GuiComponent[] state) {
+        controlFlowState = state;
     }
 }

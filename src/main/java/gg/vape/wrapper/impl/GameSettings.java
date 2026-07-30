@@ -132,7 +132,7 @@ extends Wrapper {
     }
 
     public int d() {
-        return GameSettingsGuiScaleValue.s();
+        return GameSettingsGuiScaleValue.getAntialiasingLevel();
     }
 
     public KeyBinding b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362() {

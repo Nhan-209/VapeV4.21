@@ -2,12 +2,13 @@ package gg.vape.wrapper.impl;
 
 public class EmptyDataComponentMap
 extends DataComponentMap {
-    public EmptyDataComponentMap(Object object) {
-        super(object);
+    public EmptyDataComponentMap(Object componentMapHandle) {
+        super(componentMapHandle);
     }
 
-    public static EmptyDataComponentMap J() {
-        return new EmptyDataComponentMap(EmptyDataComponentMap.vapeInstance.getMappingsMapperCompat().RS.L(DataComponentMap.u().getObject()));
+    public static EmptyDataComponentMap create() {
+        Object componentMapHandle = EmptyDataComponentMap.vapeInstance.getMappingsMapperCompat().emptyDataComponentMap
+                .create(DataComponentMap.u().getObject());
+        return new EmptyDataComponentMap(componentMapHandle);
     }
 }
-

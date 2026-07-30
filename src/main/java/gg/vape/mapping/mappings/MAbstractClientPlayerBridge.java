@@ -11,11 +11,11 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MAbstractClientPlayerBridge
 extends Mapping {
-    private MappingField F;
-    private MappingMethod O;
+    private MappingField clientAvatarStateField;
+    private MappingMethod locationSkinMethod;
 
-    public Object x(Object object) {
-        return this.F.getObject(object);
+    public Object getClientAvatarState(Object playerHandle) {
+        return this.clientAvatarStateField.getObject(playerHandle);
     }
 
     public MAbstractClientPlayerBridge() {
@@ -26,61 +26,27 @@ extends Mapping {
         super(MappedClasses.zt);
         if (guiComponentArray != null) {
             if (ForgeVersion.MC_1_21_10.d() && Vape.INSTANCE.isFabricMinecraftPresent()) {
-                Class[] classArray = new Class[]{};
-                Class clazz = MappedClasses.uZ;
-                boolean bl = true;
-                String string = "getSkin";
-                Class clazz2 = MappedClasses.lB;
-                MAbstractClientPlayerBridge mAbstractClientPlayerBridge = this;
-                this.O = mAbstractClientPlayerBridge.registerInstanceMethodForOwner(clazz2, string, bl, clazz, classArray);
+                this.locationSkinMethod = this.registerInstanceMethodForOwner(
+                        MappedClasses.lB, "getSkin", true, MappedClasses.uZ, new Class[]{});
             } else {
-                Class[] classArray = new Class[]{};
-                Class clazz = MappedClasses.zC;
-                boolean bl = true;
-                String string = "getLocationSkin";
-                MAbstractClientPlayerBridge mAbstractClientPlayerBridge = this;
-                this.O = mAbstractClientPlayerBridge.Y(string, bl, clazz, classArray);
+                this.locationSkinMethod = this.Y("getLocationSkin", true, MappedClasses.zC, new Class[]{});
             }
             if (ForgeVersion.MC_1_21_10.d()) {
-                Class clazz = MappedClasses.zT;
-                boolean bl = true;
-                String string = "clientAvatarState";
-                MAbstractClientPlayerBridge mAbstractClientPlayerBridge = this;
-                this.F = mAbstractClientPlayerBridge.J(string, bl, clazz);
+                this.clientAvatarStateField = this.J("clientAvatarState", true, MappedClasses.zT);
             }
             return;
         }
         if (ForgeVersion.MC_1_21_10.d()) {
-            Class[] classArray = new Class[]{};
-            Class clazz = MappedClasses.uZ;
-            boolean bl = true;
-            String string = "getSkin";
-            Class clazz3 = MappedClasses.lB;
-            MAbstractClientPlayerBridge mAbstractClientPlayerBridge = this;
-            this.O = mAbstractClientPlayerBridge.registerInstanceMethodForOwner(clazz3, string, bl, clazz, classArray);
+            this.locationSkinMethod = this.registerInstanceMethodForOwner(
+                    MappedClasses.lB, "getSkin", true, MappedClasses.uZ, new Class[]{});
         }
-        Class[] classArray = new Class[]{};
-        Class clazz = MappedClasses.zC;
-        boolean bl = true;
-        String string = "getLocationSkin";
-        MAbstractClientPlayerBridge mAbstractClientPlayerBridge = this;
-        this.O = mAbstractClientPlayerBridge.Y(string, bl, clazz, classArray); 
+        this.locationSkinMethod = this.Y("getLocationSkin", true, MappedClasses.zC, new Class[]{});
         if (ForgeVersion.MC_1_21_10.d()) {
-            Class clazz4 = MappedClasses.zT;
-            boolean bl2 = true;
-            String string2 = "clientAvatarState";
-            MAbstractClientPlayerBridge mAbstractClientPlayerBridge2 = this;
-            this.F = this.J(string2, bl2, clazz4);
+            this.clientAvatarStateField = this.J("clientAvatarState", true, MappedClasses.zT);
         }
     }
 
-    private Object b(Object object) {
-        return this.O.invokeObject(object, new Object[0]);
-    }
-
-
-    public static Object T(MAbstractClientPlayerBridge mAbstractClientPlayerBridge, Object object) {
-        return mAbstractClientPlayerBridge.b(object);
+    public Object getLocationSkin(Object playerHandle) {
+        return this.locationSkinMethod.invokeObject(playerHandle, new Object[0]);
     }
 }
-

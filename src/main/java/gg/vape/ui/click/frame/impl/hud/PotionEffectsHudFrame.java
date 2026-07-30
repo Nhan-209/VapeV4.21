@@ -91,7 +91,7 @@ extends HudModuleConfigFrameBase {
         double rowHeight = 30.0;
         this.maximumTextWidth = 0;
         SmoothFontRenderer smoothFontRenderer = Vape.INSTANCE.getFontManager().K(0.85, true);
-        if (I18n.w().N()) {
+        if (I18n.getLanguage().isUnicode()) {
             smoothFontRenderer = Vape.INSTANCE.getFontManager().b(FontFamily.NOTO, 0.85f, false);
         }
         for (PotionEffect effect : effects) {
@@ -138,7 +138,7 @@ extends HudModuleConfigFrameBase {
                     11.5, 2.0f, dividerColor);
             String effectName = ForgeVersion.MC_1_16_5.d()
                     ? effect.i().d()
-                    : I18n.f(Potion.getPotionById(effect.C())
+                    : I18n.format(Potion.getPotionById(effect.C())
                             .y$src$Ljava_lang_String_$yl6pfj(), new Object[0]);
             String durationText = this.formatDuration(effect.k());
             int effectNameWidth = (int)smoothFontRenderer.N(effectName);

@@ -4,16 +4,18 @@ import gg.vape.wrapper.Wrapper;
 
 public class MutableBoundingBox
 extends Wrapper {
-    public static MutableBoundingBox Q(int n, int n2, int n3, int n4, int n5, int n6) {
-        return new MutableBoundingBox(MutableBoundingBox.vapeInstance.getMappingsMapperCompat().hM.P(n, n2, n3, n4, n5, n6));
+    public static MutableBoundingBox create(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+        Object boundingBoxHandle = MutableBoundingBox.vapeInstance.getMappingsMapperCompat().mutableBoundingBox
+                .create(minX, minY, minZ, maxX, maxY, maxZ);
+        return new MutableBoundingBox(boundingBoxHandle);
     }
 
-    public MutableBoundingBox(Object object) {
-        super(object);
+    public MutableBoundingBox(Object boundingBoxHandle) {
+        super(boundingBoxHandle);
     }
 
-    public boolean O(MutableBoundingBox jz_12) {
-        return MutableBoundingBox.vapeInstance.getMappingsMapperCompat().hM.D(this.I, jz_12.getObject());
+    public boolean intersects(MutableBoundingBox other) {
+        return MutableBoundingBox.vapeInstance.getMappingsMapperCompat().mutableBoundingBox
+                .intersects(this.I, other.getObject());
     }
 }
-

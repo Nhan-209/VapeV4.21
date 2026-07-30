@@ -180,7 +180,7 @@ extends Mapping {
         String string9 = "DAMAGE";
         MDataComponents mDataComponents9 = this;
         this.E = this.registerStaticField(string9, bl9, clazz9);
-        if (MEmptyDataComponentMap.X() != null) {
+        if (MEmptyDataComponentMap.getControlFlowState() != null) {
             Class clazz10 = MappedClasses.Fz;
             boolean bl10 = true;
             String string10 = "ENCHANTABLE";

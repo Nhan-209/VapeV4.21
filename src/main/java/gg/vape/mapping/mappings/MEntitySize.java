@@ -6,37 +6,20 @@ import gg.vape.mapping.MappingField;
 
 public class MEntitySize
 extends Mapping {
-    private MappingField r;
-    private MappingField c;
-
-    private float C(Object object) {
-        return this.r.getFloat(object);
-    }
-
-    public static float y(MEntitySize mEntitySize, Object object) {
-        return mEntitySize.m(object);
-    }
-
-    public static float A(MEntitySize mEntitySize, Object object) {
-        return mEntitySize.C(object);
-    }
+    private final MappingField widthField;
+    private final MappingField heightField;
 
     public MEntitySize() {
         super(MappedClasses.Ve);
-        Class<Float> clazz = Float.TYPE;
-        boolean bl = true;
-        String string = "width";
-        MEntitySize mEntitySize = this;
-        this.r = this.J(string, bl, clazz);
-        Class<Float> clazz2 = Float.TYPE;
-        boolean bl2 = true;
-        String string2 = "height";
-        MEntitySize mEntitySize2 = this;
-        this.c = this.J(string2, bl2, clazz2);
+        this.widthField = this.J("width", true, Float.TYPE);
+        this.heightField = this.J("height", true, Float.TYPE);
     }
 
-    private float m(Object object) {
-        return this.c.getFloat(object);
+    public float getWidth(Object sizeHandle) {
+        return this.widthField.getFloat(sizeHandle);
+    }
+
+    public float getHeight(Object sizeHandle) {
+        return this.heightField.getFloat(sizeHandle);
     }
 }
-

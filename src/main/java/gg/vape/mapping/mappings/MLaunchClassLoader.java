@@ -19,6 +19,9 @@ extends Mapping {
     private static int[] Q;
 
     public Object getInstance() {
+        if (this.g == null) {
+            return null;
+        }
         if (ForgeVersion.MC_1_16_5.d()) {
             return this.g.getObject(this.C.getObject(null));
         }
@@ -26,7 +29,11 @@ extends Mapping {
     }
 
     public Map cachedClasses(Object object) {
-        return (Map)this.Y.getObject(object);
+        return this.Y == null ? null : (Map)this.Y.getObject(object);
+    }
+
+    public boolean supportsLegacyClassCache() {
+        return this.g != null && this.Y != null && this.L != null;
     }
 
     public static Set l(MLaunchClassLoader mLaunchClassLoader, Object object) {
@@ -64,6 +71,11 @@ extends Mapping {
             MLaunchClassLoader mLaunchClassLoader3 = this;
             this.I = this.Y(string3, bl3, clazz5, classArray);
         } else {
+            if (!MLaunchClassLoader.hasDeclaredField(MappedClasses.D1, "classLoader")
+                    || !MLaunchClassLoader.hasDeclaredField(MappedClasses.uG, "cachedClasses")
+                    || !MLaunchClassLoader.hasDeclaredField(MappedClasses.uG, "invalidClasses")) {
+                return;
+            }
             Class clazz = MappedClasses.uG;
             boolean bl = false;
             String string = "classLoader";
@@ -93,7 +105,20 @@ extends Mapping {
 
 
     private Set V(Object object) {
-        return (Set)this.L.getObject(object);
+        return this.L == null ? null : (Set)this.L.getObject(object);
+    }
+
+    private static boolean hasDeclaredField(Class<?> ownerClass, String fieldName) {
+        if (ownerClass == null) {
+            return false;
+        }
+        try {
+            ownerClass.getDeclaredField(fieldName);
+            return true;
+        }
+        catch (NoSuchFieldException ignored) {
+            return false;
+        }
     }
 }
 

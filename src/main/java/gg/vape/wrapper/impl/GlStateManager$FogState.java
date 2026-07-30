@@ -4,16 +4,17 @@ import gg.vape.wrapper.Wrapper;
 
 public class GlStateManager$FogState
 extends Wrapper {
-    public GlStateManager$FogState(Object object) {
-        super(object);
+    public GlStateManager$FogState(Object fogStateHandle) {
+        super(fogStateHandle);
     }
 
-    public void Q() {
-        GlStateManager$FogState.vapeInstance.getMappingsMapperCompat().R.m(this.I);
+    public void reset() {
+        GlStateManager$FogState.vapeInstance.getMappingsMapperCompat().glFogStateObject.reset(this.I);
     }
 
     public GlStateManagerFogStateBridge getFogMode() {
-        return new GlStateManagerFogStateBridge(GlStateManager$FogState.vapeInstance.getMappingsMapperCompat().R.t(this.I));
+        Object fogModeHandle = GlStateManager$FogState.vapeInstance.getMappingsMapperCompat().glFogStateObject
+                .getCurrent(this.I);
+        return new GlStateManagerFogStateBridge(fogModeHandle);
     }
 }
-

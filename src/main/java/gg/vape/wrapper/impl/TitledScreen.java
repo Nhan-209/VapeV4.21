@@ -2,19 +2,20 @@ package gg.vape.wrapper.impl;
 
 public class TitledScreen
 extends Screen {
-    public String E() {
+    public String getDisplayedTitle() {
         if (ForgeVersion.MC_1_7_10.L()) {
             return "";
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            ITextComponent t3_02 = new ITextComponent(TitledScreen.vapeInstance.getMappingsMapperCompat().ql.o(this.I));
-            return t3_02.getFormattedText();
+            ITextComponent title = new ITextComponent(
+                    TitledScreen.vapeInstance.getMappingsMapperCompat().titledScreen.getDisplayedTitle(this.I));
+            return title.getFormattedText();
         }
-        return (String)TitledScreen.vapeInstance.getMappingsMapperCompat().ql.o(this.I);
+        return (String)TitledScreen.vapeInstance.getMappingsMapperCompat().titledScreen.getDisplayedTitle(this.I);
     }
 
-    public TitledScreen(Object object) {
-        super(object);
+    public TitledScreen(Object titledScreenHandle) {
+        super(titledScreenHandle);
     }
 
 }

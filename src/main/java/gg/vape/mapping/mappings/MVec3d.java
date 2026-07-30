@@ -116,7 +116,7 @@ extends Mapping {
             Class[] classArray = new Class[]{Double.TYPE, Double.TYPE, Double.TYPE};
             Class clazz11 = MappedClasses.qP;
             boolean bl9 = true;
-            String string11 = "addVector";
+            String string11 = ForgeVersion.c() >= 23 ? "add" : "addVector";
             MVec3d mVec3d11 = this;
             this.Z = this.Y(string11, bl9, clazz11, classArray);
         }

@@ -2,6 +2,7 @@ package gg.vape.mapping.runtime;
 
 import gg.vape.Vape;
 import gg.vape.mapping.runtime.MemberLookupSignature;
+import gg.vape.wrapper.impl.ForgeVersion;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +29,8 @@ public class MemberNameRemapTable {
     }
 
     public void registerFieldMapping(Class<?> ownerClass, String sourceName, String runtimeName, Boolean mappedMemberOverride, Class<?> resolvedType) {
-        this.fieldMappings.compute(ownerClass, (ignoredOwner, existingMappings) -> MemberNameRemapTable.lambda$setFieldMapping$0(sourceName, runtimeName, mappedMemberOverride, resolvedType, ignoredOwner, existingMappings));
+        String resolvedRuntimeName = MemberNameRemapTable.resolveRuntimeName(sourceName, runtimeName);
+        this.fieldMappings.compute(ownerClass, (ignoredOwner, existingMappings) -> MemberNameRemapTable.lambda$setFieldMapping$0(sourceName, resolvedRuntimeName, mappedMemberOverride, resolvedType, ignoredOwner, existingMappings));
     }
 
     public void f(Class<?> ownerClass, String sourceName, String runtimeName, boolean mappedMemberOverride) {
@@ -44,7 +46,17 @@ public class MemberNameRemapTable {
     }
 
     public void registerMethodMapping(Class<?> ownerClass, String sourceName, String runtimeName, Boolean mappedMemberOverride, Class<?> returnType, Class<?> ... parameterTypes) {
-        this.methodMappings.compute(ownerClass, (ignoredOwner, existingMappings) -> MemberNameRemapTable.lambda$setMethodMapping$1(sourceName, runtimeName, mappedMemberOverride, returnType, parameterTypes, ignoredOwner, existingMappings));
+        String resolvedRuntimeName = MemberNameRemapTable.resolveRuntimeName(sourceName, runtimeName);
+        this.methodMappings.compute(ownerClass, (ignoredOwner, existingMappings) -> MemberNameRemapTable.lambda$setMethodMapping$1(sourceName, resolvedRuntimeName, mappedMemberOverride, returnType, parameterTypes, ignoredOwner, existingMappings));
+    }
+
+    private static String resolveRuntimeName(String sourceName, String runtimeName) {
+        int minorVersion = ForgeVersion.c();
+        if ((minorVersion == 35 || minorVersion == 36)
+                && !runtimeName.startsWith("func_") && !runtimeName.startsWith("field_")) {
+            return sourceName;
+        }
+        return runtimeName;
     }
 
     @Nullable

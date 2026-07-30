@@ -32,5 +32,9 @@ extends Wrapper {
         return LaunchClassLoader.vapeInstance.getMappingsMapperCompat().C4.cachedClasses(this.I);
     }
 
+    public boolean supportsLegacyClassCache() {
+        return LaunchClassLoader.vapeInstance.getMappingsMapperCompat().C4.supportsLegacyClassCache();
+    }
+
 }
 

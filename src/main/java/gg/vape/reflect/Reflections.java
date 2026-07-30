@@ -16,10 +16,6 @@ public class Reflections {
     public static final Map<Integer, Constructor<?>> CONSTRUCTORS_BY_ID = new HashMap();
 
     public static void getMethod(int id, Class<?> owner, String name, String descriptor, boolean remap, boolean isStatic) throws NoSuchMethodException {
-        if (id == 465) {
-            System.out.println("465");
-            System.out.println(name + " " + owner.getName() + " " + descriptor + " " + remap + " " + isStatic);
-        }
         if (name.equals("<init>")) {
             Reflections.getConstructor(id, owner, descriptor);
             return;
@@ -166,10 +162,6 @@ public class Reflections {
     }
 
     public static void getField(int id, Class<?> owner, String name, String descriptor, boolean remap, boolean isStatic) throws NoSuchFieldException {
-        if (id == 465) {
-            System.out.println("465");
-            System.out.println(name + " " + owner.getName() + " " + descriptor + " " + remap + " " + isStatic);
-        }
         for (Field field : owner.getDeclaredFields()) {
             if (!MappingRegistry.matches(field, name)) continue;
             field.setAccessible(true);

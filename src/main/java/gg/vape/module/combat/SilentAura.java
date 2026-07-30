@@ -385,7 +385,7 @@ extends Mod {
             } else {
                 TitledScreen titledScreen = Minecraft.k();
                 if (titledScreen.isNotNull()) {
-                    String screenTitle = titledScreen.E();
+                    String screenTitle = titledScreen.getDisplayedTitle();
                     if (!this.deathHandled && screenTitle != null && (screenTitle.toLowerCase().contains("died") || screenTitle.toLowerCase().contains("dead"))) {
                         this.deathHandled = true;
                         this.toggle();

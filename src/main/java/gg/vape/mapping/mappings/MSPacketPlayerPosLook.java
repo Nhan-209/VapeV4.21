@@ -56,7 +56,7 @@ extends Mapping {
             if (ForgeVersion.MC_1_7_10.Y()) {
                 this.getRelativeFlagsMethod = this.Y("func_179834_f", Wrapper.isNativeAvailable, Set.class, new Class[]{});
             }
-            if (ForgeVersion.MC_1_8_9.d()) {
+            if (ForgeVersion.MC_1_8_9.Y()) {
                 this.teleportIdField = this.J("teleportId", true, Integer.TYPE);
             }
             if (Vape.INSTANCE.isVanillaMinecraftPresent() && ForgeVersion.MC_1_7_10.Y()) {

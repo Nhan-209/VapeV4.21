@@ -259,7 +259,7 @@ extends Mod {
                 Entity entity = new Entity(entityHandle);
                 if (!entity.isInstance(MappedClasses.zW)) continue;
                 EntityItem entityItem = new EntityItem(entity);
-                if (this.whitelistOnly.getEffectiveValue().booleanValue() && !this.allowedItems.matches(entityItem.J$src$Lgg_vape_wrapper_impl_ItemStack_$5gv0ko())) continue;
+                if (this.whitelistOnly.getEffectiveValue().booleanValue() && !this.allowedItems.matches(entityItem.getItemStack())) continue;
                 this.groups.add(new ItemESPGroup(this, entityItem));
             }
             return;
@@ -280,7 +280,7 @@ extends Mod {
             Entity entity = new Entity(entityObject);
             if (!entity.isInstance(MappedClasses.zW)) continue;
             EntityItem entityItem = new EntityItem(entity);
-            if (this.whitelistOnly.getEffectiveValue().booleanValue() && !this.allowedItems.matches(entityItem.J$src$Lgg_vape_wrapper_impl_ItemStack_$5gv0ko()) || groupedEntities.contains(entityItem.getObject())) continue;
+            if (this.whitelistOnly.getEffectiveValue().booleanValue() && !this.allowedItems.matches(entityItem.getItemStack()) || groupedEntities.contains(entityItem.getObject())) continue;
             double playerDistance = player.getDistanceToEntity(entityItem);
             double groupRadius = Math.max(1.5, playerDistance / 5.0);
             boolean addedToGroup = false;

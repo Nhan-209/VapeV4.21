@@ -20,7 +20,7 @@ extends Wrapper {
             return null;
         }
         if (ForgeVersion.MC_1_20_6.d()) {
-            return new PlayerSkin(object).W();
+            return new PlayerSkin(object).getTexture();
         }
         return new ResourceLocation(object);
     }

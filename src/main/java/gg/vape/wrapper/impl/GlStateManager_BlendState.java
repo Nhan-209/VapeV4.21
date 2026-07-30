@@ -4,18 +4,19 @@ import gg.vape.wrapper.Wrapper;
 
 public class GlStateManager_BlendState
 extends Wrapper {
-    private GlStateManager$BooleanState f = null;
+    private GlStateManager$BooleanState blendEnabledState;
 
-
-    public GlStateManager$BooleanState q() {
-        if (this.f == null) {
-            this.f = new GlStateManager$BooleanState(GlStateManager_BlendState.vapeInstance.getMappingsMapperCompat().qG.F(this.I));
+    public GlStateManager$BooleanState getBlendEnabledState() {
+        if (this.blendEnabledState == null) {
+            Object stateHandle = GlStateManager_BlendState.vapeInstance.getMappingsMapperCompat().glBlendState
+                    .getBlendEnabledState(this.I);
+            this.blendEnabledState = new GlStateManager$BooleanState(stateHandle);
         }
-        return this.f;
+        return this.blendEnabledState;
     }
 
-    public GlStateManager_BlendState(Object object) {
-        super(object);
+    public GlStateManager_BlendState(Object blendStateHandle) {
+        super(blendStateHandle);
     }
 }
 

@@ -1,6 +1,5 @@
 package gg.vape.module.render.proj;
 
-import gg.vape.mapping.mappings.MEnderPearlProjectileBridge;
 import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityEnderPearl;
 
@@ -11,6 +10,8 @@ extends EntityEnderPearl {
     }
 
     public Entity getOwnerEntity() {
-        return new Entity(MEnderPearlProjectileBridge.w(EnderPearlProjectileBridge.vapeInstance.getMappings().CH, this.getObject()));
+        Object ownerHandle = EnderPearlProjectileBridge.vapeInstance.getMappings()
+                .enderPearlProjectileBridge.getOwner(this.getObject());
+        return new Entity(ownerHandle);
     }
 }

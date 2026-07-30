@@ -9,47 +9,39 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MStringTextComponentBridge
 extends Mapping {
-    private MappingField O;
-    private MappingField g;
+    private MappingField nameField;
+    private MappingField itemStackRenderStateField;
 
     public MStringTextComponentBridge() {
         this(MTextComponentTranslationBridge.C());
     }
 
-    private MStringTextComponentBridge(boolean bl) {
+    private MStringTextComponentBridge(boolean controlFlowState) {
         super(MappedClasses.DE);
-        if (bl) {
+        if (controlFlowState) {
             if (GuiComponent.getLegacyComponentState() == null) {
                 MTextComponentTranslationBridge.n(false);
             }
             return;
         }
         if (ForgeVersion.MC_26_1.v()) {
-            Class<String> clazz = String.class;
-            boolean bl2 = true;
-            String string = "name";
-            MStringTextComponentBridge mStringTextComponentBridge = this;
-            this.O = mStringTextComponentBridge.J(string, bl2, clazz);
+            this.nameField = this.J("name", true, String.class);
         }
-        Class clazz = MappedClasses.zE;
-        boolean bl3 = true;
-        String string = "itemStackRenderState";
-        MStringTextComponentBridge mStringTextComponentBridge = this;
-        this.g = mStringTextComponentBridge.J(string, bl3, clazz);
+        this.itemStackRenderStateField = this.J("itemStackRenderState", true, MappedClasses.zE);
         if (GuiComponent.getLegacyComponentState() == null) {
             MTextComponentTranslationBridge.n(true);
         }
     }
 
-    public String q(Object object) {
-        if (this.O == null) {
+    public String getName(Object componentHandle) {
+        if (this.nameField == null) {
             return "";
         }
-        return (String)this.O.getObject(object);
+        return (String)this.nameField.getObject(componentHandle);
     }
 
 
-    public Object W(Object object) {
-        return this.g.getObject(object);
+    public Object getItemStackRenderState(Object componentHandle) {
+        return this.itemStackRenderStateField.getObject(componentHandle);
     }
 }

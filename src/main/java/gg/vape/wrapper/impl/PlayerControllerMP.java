@@ -63,7 +63,7 @@ extends Wrapper {
     public boolean sendUseItem(EntityPlayer entityPlayer, World world, ItemStack itemStack) {
         if (ForgeVersion.MC_1_12_2.d()) {
             EnumActionResult enumActionResult = new EnumActionResult(PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.H(this.I, entityPlayer.getObject(), world.getObject(), EnumHand.mainHand().getObject()));
-            return enumActionResult.equals(EnumActionResult.A());
+            return enumActionResult.equals(EnumActionResult.success());
         }
         return PlayerControllerMP.vapeInstance.getMappingsMapperCompat().hj.Q(this.I, entityPlayer.getObject(), world.getObject(), itemStack.getObject());
     }

@@ -115,7 +115,7 @@ public class ClientSettings {
             AttributeModifier attributeModifier = new AttributeModifier(attributeModifiers.f().toArray()[modifierIndex]);
             damage = attributeModifier.getAmount();
         }
-        return damage += (double)EnchantmentHelper.C(itemStack, EnumCreatureAttribute.R());
+        return damage += (double)EnchantmentHelper.C(itemStack, EnumCreatureAttribute.undefined());
     }
 
     public static void releaseReservedEntityId(int entityId) {
@@ -293,7 +293,7 @@ public class ClientSettings {
 
     public static double getWeaponDamageScore(ItemStack itemStack) {
         double damage = ItemStackScoreUtil.a$src$F$2aw1mh(itemStack);
-        damage += (double)EnchantmentHelper.C(itemStack, EnumCreatureAttribute.R());
+        damage += (double)EnchantmentHelper.C(itemStack, EnumCreatureAttribute.undefined());
         return damage += (double)((float)EnchantmentHelper.q(Enchantment.fireAspect().getId(), itemStack) * 0.01f);
     }
 
@@ -356,4 +356,3 @@ public class ClientSettings {
         return this.lobbyCheck.getEffectiveValue() != false && !Minecraft.thePlayer().C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().c();
     }
 }
-

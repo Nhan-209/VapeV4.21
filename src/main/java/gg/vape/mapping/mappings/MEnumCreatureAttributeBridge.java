@@ -6,24 +6,16 @@ import gg.vape.mapping.MappingField;
 
 public class MEnumCreatureAttributeBridge
 extends Mapping {
-    private final MappingField d;
-    private static final String b = "UNDEFINED";
+    private static final String UNDEFINED_FIELD_NAME = "UNDEFINED";
+    private final MappingField undefinedField;
 
     public MEnumCreatureAttributeBridge() {
         super(MappedClasses.O);
-        Class clazz = MappedClasses.O;
-        boolean bl = true;
-        String string = b;
-        MEnumCreatureAttributeBridge mEnumCreatureAttributeBridge = this;
-        this.d = this.registerStaticField(string, bl, clazz);
+        this.undefinedField = this.registerStaticField(UNDEFINED_FIELD_NAME, true, MappedClasses.O);
     }
 
-    private Object e() {
-        return this.d.getObject(null);
-    }
-
-    public static Object V(MEnumCreatureAttributeBridge mEnumCreatureAttributeBridge) {
-        return mEnumCreatureAttributeBridge.e();
+    public Object getUndefined() {
+        return this.undefinedField.getObject(null);
     }
 }
 

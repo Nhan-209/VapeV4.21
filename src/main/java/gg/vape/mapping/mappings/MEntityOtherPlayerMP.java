@@ -9,42 +9,27 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MEntityOtherPlayerMP
 extends Mapping {
-    private final MappingMethod n;
+    private static final String CONSTRUCTOR = "<init>";
+    private final MappingMethod constructor;
 
-
-    public Object T(Object object, Object object2) {
-        return this.n.newInstance(object, object2);
+    public Object create(Object worldHandle, Object gameProfileHandle) {
+        return this.constructor.newInstance(worldHandle, gameProfileHandle);
     }
 
     public MEntityOtherPlayerMP() {
         this(MEntityPlayerSP.r());
     }
 
-    private MEntityOtherPlayerMP(GuiComponent[] guiComponentArray) {
+    private MEntityOtherPlayerMP(GuiComponent[] legacyComponentState) {
         super(MappedClasses.lG);
-        if (guiComponentArray != null) {
+        if (legacyComponentState != null) {
             if (ForgeVersion.MC_1_16_5.d()) {
-                Class[] classArray = new Class[]{MappedClasses.Z, MappedClasses.VD};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MEntityOtherPlayerMP mEntityOtherPlayerMP = this;
-                this.n = mEntityOtherPlayerMP.Y(string, bl, clazz, classArray);
+                this.constructor = this.Y(CONSTRUCTOR, false, Void.TYPE, MappedClasses.Z, MappedClasses.VD);
             } else {
-                Class[] classArray = new Class[]{MappedClasses.YU, MappedClasses.VD};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MEntityOtherPlayerMP mEntityOtherPlayerMP = this;
-                this.n = mEntityOtherPlayerMP.Y(string, bl, clazz, classArray);
+                this.constructor = this.Y(CONSTRUCTOR, false, Void.TYPE, MappedClasses.YU, MappedClasses.VD);
             }
             return;
         }
-        Class[] classArray = new Class[]{MappedClasses.YU, MappedClasses.VD};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = "<init>";
-        MEntityOtherPlayerMP mEntityOtherPlayerMP = this;
-        this.n = mEntityOtherPlayerMP.Y(string, bl, clazz, classArray); 
+        this.constructor = this.Y(CONSTRUCTOR, false, Void.TYPE, MappedClasses.YU, MappedClasses.VD);
     }
 }

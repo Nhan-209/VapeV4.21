@@ -6,43 +6,39 @@ import gg.vape.mapping.MappingField;
 
 public class MGameSettingsGuiScaleValue
 extends Mapping {
-    private static final String c;
-    private static String s;
-    private MappingField d;
+    private static final String ANTIALIASING_LEVEL_FIELD;
+    private static String controlFlowMarker;
+    private final MappingField antialiasingLevelField;
 
-    public int V() {
-        if (this.d.hasResolutionFailed()) {
+    public int getAntialiasingLevel() {
+        if (this.antialiasingLevelField.hasResolutionFailed()) {
             return 1;
         }
-        return this.d.getInt(null);
+        return this.antialiasingLevelField.getInt(null);
     }
 
     static {
-        MGameSettingsGuiScaleValue.z("x0yBJc");
-        c = "antialiasingLevel";
+        MGameSettingsGuiScaleValue.setControlFlowMarker("x0yBJc");
+        ANTIALIASING_LEVEL_FIELD = "antialiasingLevel";
     }
 
 
-    public static String T() {
-        return s;
+    public static String getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
     public MGameSettingsGuiScaleValue() {
-        this(MGameSettingsGuiScaleValue.T());
+        this(MGameSettingsGuiScaleValue.getControlFlowMarker());
     }
 
-    private MGameSettingsGuiScaleValue(String string) {
+    private MGameSettingsGuiScaleValue(String marker) {
         super(MappedClasses.Ym);
-        Class<Integer> clazz = Integer.TYPE;
-        boolean bl = false;
-        String string2 = c;
-        MGameSettingsGuiScaleValue mGameSettingsGuiScaleValue = this;
-        this.d = this.registerStaticField(string2, bl, clazz);
-        String string3 = string;
+        this.antialiasingLevelField = this.registerStaticField(
+                ANTIALIASING_LEVEL_FIELD, false, Integer.TYPE);
     }
 
-    public static void z(String string) {
-        s = string;
+    public static void setControlFlowMarker(String marker) {
+        controlFlowMarker = marker;
     }
 }
 

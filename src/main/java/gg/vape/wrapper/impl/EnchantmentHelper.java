@@ -74,7 +74,7 @@ extends Wrapper {
         if (enchantment != null && !enchantment.isNull() && (n = EnchantmentHelper.q(enchantment.getId(), itemStack)) > 0) {
             f += 0.5f + 0.5f * (float)n;
         }
-        if (enumCreatureAttribute != null && !enumCreatureAttribute.isNull() && (enumCreatureAttribute2 = EnumCreatureAttribute.R()) != null && !enumCreatureAttribute2.isNull() && enumCreatureAttribute.getObject() != enumCreatureAttribute2.getObject()) {
+        if (enumCreatureAttribute != null && !enumCreatureAttribute.isNull() && (enumCreatureAttribute2 = EnumCreatureAttribute.undefined()) != null && !enumCreatureAttribute2.isNull() && enumCreatureAttribute.getObject() != enumCreatureAttribute2.getObject()) {
             int n2;
             Enchantment enchantment2;
             int n3;

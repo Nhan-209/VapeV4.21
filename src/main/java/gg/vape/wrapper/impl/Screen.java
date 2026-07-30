@@ -5,28 +5,28 @@ import gg.vape.wrapper.Wrapper;
 
 public class Screen
 extends Wrapper {
-    private static int[] s;
+    private static int[] controlFlowState;
 
-    public static void S(int[] nArray) {
-        s = nArray;
+    public static void setControlFlowState(int[] state) {
+        controlFlowState = state;
     }
 
-    public static int[] m$src$AI$1181csu() {
-        return s;
+    public static int[] getControlFlowState() {
+        return controlFlowState;
     }
 
-    public Screen(Object object) {
-        super(object);
+    public Screen(Object screenHandle) {
+        super(screenHandle);
     }
 
     static {
-        if (Screen.m$src$AI$1181csu() != null) {
-            Screen.S(new int[1]);
+        if (Screen.getControlFlowState() != null) {
+            Screen.setControlFlowState(new int[1]);
         }
     }
 
-    public static ResourceLocation k(Holder holder) {
-        return new ResourceLocation(MScreen.i(Screen.vapeInstance.getMappings().RT, holder.getObject()));
+    public static ResourceLocation getMobEffectSprite(Holder holder) {
+        Object spriteLocationHandle = Screen.vapeInstance.getMappings().screen.getMobEffectSprite(holder.getObject());
+        return new ResourceLocation(spriteLocationHandle);
     }
 }
-

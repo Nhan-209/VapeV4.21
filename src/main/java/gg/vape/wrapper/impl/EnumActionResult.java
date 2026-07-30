@@ -1,24 +1,22 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MEnumActionResult;
 import gg.vape.wrapper.Wrapper;
 
 public class EnumActionResult
 extends Wrapper {
-    public EnumActionResult(Object object) {
-        super(object);
+    public EnumActionResult(Object actionResultHandle) {
+        super(actionResultHandle);
     }
 
-    public static EnumActionResult C() {
-        return new EnumActionResult(MEnumActionResult.N(EnumActionResult.vapeInstance.getMappingsMapperCompat().RD));
+    public static EnumActionResult pass() {
+        return new EnumActionResult(EnumActionResult.vapeInstance.getMappingsMapperCompat().enumActionResult.getPass());
     }
 
-    public static EnumActionResult B() {
-        return new EnumActionResult(MEnumActionResult.H(EnumActionResult.vapeInstance.getMappingsMapperCompat().RD));
+    public static EnumActionResult fail() {
+        return new EnumActionResult(EnumActionResult.vapeInstance.getMappingsMapperCompat().enumActionResult.getFail());
     }
 
-    public static EnumActionResult A() {
-        return new EnumActionResult(MEnumActionResult.d(EnumActionResult.vapeInstance.getMappingsMapperCompat().RD));
+    public static EnumActionResult success() {
+        return new EnumActionResult(EnumActionResult.vapeInstance.getMappingsMapperCompat().enumActionResult.getSuccess());
     }
 }
-

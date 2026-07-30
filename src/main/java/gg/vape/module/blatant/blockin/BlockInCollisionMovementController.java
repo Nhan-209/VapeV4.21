@@ -106,7 +106,7 @@ extends AbstractBlockInMovementController {
     private void pushNearbyEntities() {
         List nearbyEntities = this.world.i(this.simulatedPlayer,
                 this.simulatedPlayer.u$src$Lgg_vape_wrapper_impl_AxisAlignedBB_$kogbsu(),
-                EntitySelectors.Z(this.localPlayer));
+                EntitySelectors.pushableBy(this.localPlayer));
         if (!nearbyEntities.isEmpty()) {
             for (Object entityObject : nearbyEntities) {
                 if (MappedClasses.z5.isInstance(entityObject)

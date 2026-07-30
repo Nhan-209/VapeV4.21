@@ -40,7 +40,10 @@ extends Event {
         }
         xRay.onBlockFluidRender(this);
         if (this.isCanceled()) {
-            this.result = Vape.INSTANCE.getMappingsMapperCompat().i.E.invokeBoolean(this.renderBlocksHandle, this.blockHandle, this.x, this.y, this.z, Float.valueOf(1.0f), Float.valueOf(1.0f), Float.valueOf(1.0f));
+            this.result = Vape.INSTANCE.getMappingsMapperCompat().renderBlocks
+                    .renderStandardBlockWithColorMultiplierMethod.invokeBoolean(
+                            this.renderBlocksHandle, this.blockHandle, this.x, this.y, this.z,
+                            Float.valueOf(1.0f), Float.valueOf(1.0f), Float.valueOf(1.0f));
         }
         return this.isCanceled();
     }

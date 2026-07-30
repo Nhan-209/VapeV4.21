@@ -149,7 +149,7 @@ extends Mod {
                 this.deathScreenHandled = false;
             }
         } else {
-            String title = ((TitledScreen)screen).E();
+            String title = ((TitledScreen)screen).getDisplayedTitle();
             deathScreen = title != null
                     && (title.toLowerCase().contains("died") || title.toLowerCase().contains("dead"));
             if (title == null || title.isEmpty()) {

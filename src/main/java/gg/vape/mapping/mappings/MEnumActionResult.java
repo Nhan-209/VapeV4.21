@@ -6,51 +6,27 @@ import gg.vape.mapping.MappingField;
 
 public class MEnumActionResult
 extends Mapping {
-    public final MappingField B;
-    public final MappingField i;
-    public final MappingField m;
+    public final MappingField passField;
+    public final MappingField successField;
+    public final MappingField failField;
 
-    private Object getPass() {
-        return this.B.getObject(null);
-    }
-
-    public static Object N(MEnumActionResult mEnumActionResult) {
-        return mEnumActionResult.getPass();
+    public Object getPass() {
+        return this.passField.getObject(null);
     }
 
     public MEnumActionResult() {
         super(MappedClasses.zr);
-        Class clazz = MappedClasses.zr;
-        boolean bl = true;
-        String string = "SUCCESS";
-        MEnumActionResult mEnumActionResult = this;
-        this.i = this.registerStaticField(string, bl, clazz);
-        Class clazz2 = MappedClasses.zr;
-        boolean bl2 = true;
-        String string2 = "PASS";
-        MEnumActionResult mEnumActionResult2 = this;
-        this.B = this.registerStaticField(string2, bl2, clazz2);
-        Class clazz3 = MappedClasses.zr;
-        boolean bl3 = true;
-        String string3 = "FAIL";
-        MEnumActionResult mEnumActionResult3 = this;
-        this.m = this.registerStaticField(string3, bl3, clazz3);
+        this.successField = this.registerStaticField("SUCCESS", true, MappedClasses.zr);
+        this.passField = this.registerStaticField("PASS", true, MappedClasses.zr);
+        this.failField = this.registerStaticField("FAIL", true, MappedClasses.zr);
     }
 
-    private Object getFail() {
-        return this.m.getObject(null);
+    public Object getFail() {
+        return this.failField.getObject(null);
     }
 
-    public static Object H(MEnumActionResult mEnumActionResult) {
-        return mEnumActionResult.getFail();
-    }
-
-    public static Object d(MEnumActionResult mEnumActionResult) {
-        return mEnumActionResult.getSuccess();
-    }
-
-    private Object getSuccess() {
-        return this.i.getObject(null);
+    public Object getSuccess() {
+        return this.successField.getObject(null);
     }
 }
 

@@ -224,13 +224,8 @@ public class NativeBridge {
     }
 
     public static void start() throws Throwable {
-        try {
-            Class.forName("net.minecraftforge.common.ForgeVersion");
-            forgeAbsent = false;
-        }
-        catch (ClassNotFoundException classNotFoundException) {
-            forgeAbsent = true;
-        }
+        forgeAbsent = !isClassPresent("net.minecraftforge.common.ForgeVersion")
+                && !isClassPresent("net.minecraftforge.fml.loading.FMLLoader");
         Vape vape = new Vape();
         NativeBridge.invokeVoidInit(vape, "loadMappings");
         NativeBridge.sce("LOAD initAccountInfo");
@@ -363,6 +358,19 @@ public class NativeBridge {
             lastFailure = throwable;
         }
 
+        try {
+            Object forgeVersion = readStaticField(
+                    "net.minecraftforge.fml.loading.FMLLoader", "forgeVersion");
+            int parsedVersion = parseForgeVersion(forgeVersion);
+            if (parsedVersion >= 0) {
+                return parsedVersion;
+            }
+            lastFailure = new IllegalStateException("FMLLoader.forgeVersion is not supported: " + forgeVersion);
+        }
+        catch (Throwable throwable) {
+            lastFailure = throwable;
+        }
+
         // Newer Forge versions expose a version string instead of minorVersion.
         try {
             Object forgeVersion = readStaticField(
@@ -383,6 +391,16 @@ public class NativeBridge {
             failure.initCause(lastFailure);
         }
         throw failure;
+    }
+
+    private static boolean isClassPresent(String className) {
+        try {
+            Class.forName(className, false, NativeBridge.class.getClassLoader());
+            return true;
+        }
+        catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 
     private static Object readStaticField(String className, String fieldName) throws Exception {

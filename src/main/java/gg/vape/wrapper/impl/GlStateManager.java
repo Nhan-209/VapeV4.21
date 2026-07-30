@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GlStateManager
 extends Wrapper {
-    private static GlStateManager$TextureState o;
+    private static GlStateManager$TextureState activeTextureState;
     private static Boolean K;
     private static GlStateManager_BlendState F;
     private static final long d;
@@ -60,7 +60,7 @@ extends Wrapper {
         b = "Invalid flag: ";
         d = -4864325950512267159L;
         K = null;
-        o = null;
+        activeTextureState = null;
         F = null;
     }
 
@@ -115,7 +115,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.disableCapability(3042);
             return;
         }
-        GlStateManager.W().q().O(false);
+        GlStateManager.W().getBlendEnabledState().O(false);
         BufferedGuiRenderPrimitives.capabilityState.enableCapability(3042);
     }
 
@@ -146,11 +146,11 @@ extends Wrapper {
             GL11.glBindTexture((int)3553, (int)n);
             return;
         }
-        if (o == null && (objectArray = MGlStateManager.e(GlStateManager.vapeInstance.getMappings().Dt)) != null && objectArray.length > 0 && (object = objectArray[0]) != null) {
-            o = new GlStateManager$TextureState(object);
+        if (activeTextureState == null && (objectArray = MGlStateManager.e(GlStateManager.vapeInstance.getMappings().Dt)) != null && objectArray.length > 0 && (object = objectArray[0]) != null) {
+            activeTextureState = new GlStateManager$TextureState(object);
         }
-        if (o != null && n != o.P()) {
-            o.H(n);
+        if (activeTextureState != null && n != activeTextureState.getTextureName()) {
+            activeTextureState.setTextureName(n);
             GL11.glBindTexture((int)3553, (int)n);
         }
     }
@@ -244,7 +244,7 @@ extends Wrapper {
             OpenGlBackendHolder.backend.enableCapability(3042);
             return;
         }
-        GlStateManager.W().q().O(true);
+        GlStateManager.W().getBlendEnabledState().O(true);
         BufferedGuiRenderPrimitives.capabilityState.enableCapability(3042);
     }
 

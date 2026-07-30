@@ -10,37 +10,26 @@ import java.util.List;
 
 public class MLists
 extends Mapping {
-    public MappingMethod P;
-    public MappingMethod v;
+    public final MappingMethod reverseMethod;
+    public final MappingMethod newArrayListMethod;
 
-    public ArrayList V(Iterable iterable) {
-        return (ArrayList)this.v.invokeObject(null, iterable);
+    public ArrayList newArrayList(Iterable iterable) {
+        return (ArrayList)this.newArrayListMethod.invokeObject(null, iterable);
     }
 
 
-    public List c(List list) {
-        return (List)this.P.invokeObject(null, list);
+    public List reverse(List list) {
+        return (List)this.reverseMethod.invokeObject(null, list);
     }
 
     public MLists() {
         this(MOrdering.getControlFlowMarker());
     }
 
-    private MLists(String string) {
+    private MLists(String controlFlowMarker) {
         super(MappedClasses.VZ);
-        Class[] classArray = new Class[]{List.class};
-        Class<List> clazz = List.class;
-        boolean bl = false;
-        String string2 = "reverse";
-        MLists mLists = this;
-        this.P = this.registerStaticMethod(string2, bl, clazz, classArray);
-        String string3 = string;
-        Class[] classArray2 = new Class[]{Iterable.class};
-        Class<ArrayList> clazz2 = ArrayList.class;
-        boolean bl2 = false;
-        String string4 = "newArrayList";
-        MLists mLists2 = this;
-        this.v = this.registerStaticMethod(string4, bl2, clazz2, classArray2);
+        this.reverseMethod = this.registerStaticMethod("reverse", false, List.class, List.class);
+        this.newArrayListMethod = this.registerStaticMethod("newArrayList", false, ArrayList.class, Iterable.class);
         if (GuiComponent.getLegacyComponentState() == null) {
             MOrdering.setControlFlowMarker("Ze85D");
         }

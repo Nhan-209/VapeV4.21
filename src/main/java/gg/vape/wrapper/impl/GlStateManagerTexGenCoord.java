@@ -4,20 +4,22 @@ import gg.vape.wrapper.Wrapper;
 
 public class GlStateManagerTexGenCoord
 extends Wrapper {
-    public GlStateManagerTexGenCoord(Object object) {
-        super(object);
+    public GlStateManagerTexGenCoord(Object coordinateHandle) {
+        super(coordinateHandle);
     }
 
-    public static GlStateManagerTexGenCoord T() {
-        return new GlStateManagerTexGenCoord(GlStateManagerTexGenCoord.vapeInstance.getMappingsMapperCompat().R_.z());
+    public static GlStateManagerTexGenCoord none() {
+        return new GlStateManagerTexGenCoord(
+                GlStateManagerTexGenCoord.vapeInstance.getMappingsMapperCompat().glTexGenCoord.getNone());
     }
 
-    public static GlStateManagerTexGenCoord K() {
-        return new GlStateManagerTexGenCoord(GlStateManagerTexGenCoord.vapeInstance.getMappingsMapperCompat().R_.m());
+    public static GlStateManagerTexGenCoord server() {
+        return new GlStateManagerTexGenCoord(
+                GlStateManagerTexGenCoord.vapeInstance.getMappingsMapperCompat().glTexGenCoord.getServer());
     }
 
-    public static GlStateManagerTexGenCoord c() {
-        return new GlStateManagerTexGenCoord(GlStateManagerTexGenCoord.vapeInstance.getMappingsMapperCompat().R_.u());
+    public static GlStateManagerTexGenCoord client() {
+        return new GlStateManagerTexGenCoord(
+                GlStateManagerTexGenCoord.vapeInstance.getMappingsMapperCompat().glTexGenCoord.getClient());
     }
 }
-

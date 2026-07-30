@@ -2,16 +2,18 @@ package gg.vape.wrapper.impl;
 
 public class EntityRayTraceResult
 extends RayTraceResult {
-    public Entity L() {
-        return new Entity(EntityRayTraceResult.vapeInstance.getMappingsMapperCompat().qS.w(this.I));
+    public Entity getHitEntity() {
+        return new Entity(EntityRayTraceResult.vapeInstance.getMappingsMapperCompat().entityRayTraceResult
+                .getEntity(this.I));
     }
 
-    public EntityRayTraceResult(Object object) {
-        super(object);
+    public EntityRayTraceResult(Object rayTraceResultHandle) {
+        super(rayTraceResultHandle);
     }
 
-    public static EntityRayTraceResult x(Entity entity, Vec3 vec3) {
-        return new EntityRayTraceResult(EntityRayTraceResult.vapeInstance.getMappingsMapperCompat().qS.z(entity.getObject(), vec3.getObject()));
+    public static EntityRayTraceResult create(Entity entity, Vec3 hitPosition) {
+        Object resultHandle = EntityRayTraceResult.vapeInstance.getMappingsMapperCompat().entityRayTraceResult
+                .create(entity.getObject(), hitPosition.getObject());
+        return new EntityRayTraceResult(resultHandle);
     }
 }
-

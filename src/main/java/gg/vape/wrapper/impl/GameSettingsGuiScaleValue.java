@@ -4,16 +4,17 @@ import gg.vape.wrapper.Wrapper;
 
 public class GameSettingsGuiScaleValue
 extends Wrapper {
-    public static int s() {
-        if (GameSettingsGuiScaleValue.vapeInstance.getMappingsMapperCompat().Dv == null) {
+    public static int getAntialiasingLevel() {
+        if (GameSettingsGuiScaleValue.vapeInstance.getMappingsMapperCompat().gameSettingsGuiScaleValue == null) {
             return 0;
         }
-        return GameSettingsGuiScaleValue.vapeInstance.getMappingsMapperCompat().Dv.V();
+        return GameSettingsGuiScaleValue.vapeInstance.getMappingsMapperCompat().gameSettingsGuiScaleValue
+                .getAntialiasingLevel();
     }
 
 
-    public GameSettingsGuiScaleValue(Object object) {
-        super(object);
+    public GameSettingsGuiScaleValue(Object valueHandle) {
+        super(valueHandle);
     }
 }
 

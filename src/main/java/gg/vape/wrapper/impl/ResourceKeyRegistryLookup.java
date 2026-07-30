@@ -6,16 +6,18 @@ import java.util.Optional;
 
 public class ResourceKeyRegistryLookup
 extends Wrapper {
-    public ResourceKeyRegistryLookup(Object object) {
-        super(object);
+    public ResourceKeyRegistryLookup(Object lookupHandle) {
+        super(lookupHandle);
     }
 
-    public EnchantmentHolder x(ResourceKey jy_12) {
-        return new EnchantmentHolder(ResourceKeyRegistryLookup.vapeInstance.getMappingsMapperCompat().hl.N(this.getObject(), jy_12.getObject()));
+    public EnchantmentHolder getOrThrow(ResourceKey resourceKey) {
+        Object holderHandle = ResourceKeyRegistryLookup.vapeInstance.getMappingsMapperCompat()
+                .resourceKeyRegistryLookup.getOrThrow(this.getObject(), resourceKey.getObject());
+        return new EnchantmentHolder(holderHandle);
     }
 
-    public Optional<Object> U(ResourceKey jy_12) {
-        return ResourceKeyRegistryLookup.vapeInstance.getMappingsMapperCompat().hl.W(this.getObject(), jy_12.getObject());
+    public Optional<Object> get(ResourceKey resourceKey) {
+        return ResourceKeyRegistryLookup.vapeInstance.getMappingsMapperCompat()
+                .resourceKeyRegistryLookup.get(this.getObject(), resourceKey.getObject());
     }
 }
-

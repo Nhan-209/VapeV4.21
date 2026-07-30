@@ -190,7 +190,10 @@ public class EventBuilder {
                         boolean staticMethod, ITramsformNode ... transformNodes) {
         this.eventStartLabel = new LabelNode(new Label());
         if (!Vape.INSTANCE.isForgeAbsent()) {
-            LaunchClassLoader.getLaunchClassLoader().cachedClasses().put(eventClass.getName(), eventClass);
+            LaunchClassLoader launchClassLoader = LaunchClassLoader.getLaunchClassLoader();
+            if (launchClassLoader.supportsLegacyClassCache()) {
+                launchClassLoader.cachedClasses().put(eventClass.getName(), eventClass);
+            }
         }
         for (MethodNode candidate : classNode.methods) {
             if (!methodInfo.matches(candidate.name, candidate.desc)) continue;

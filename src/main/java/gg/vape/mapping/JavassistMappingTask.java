@@ -193,9 +193,12 @@ implements MappingTask {
         if (!Vape.INSTANCE.isForgeAbsent()) {
             ClassBytecodeCache.getClassBytecode(clazz, true);
             String string = clazz.getName();
-            Set set = LaunchClassLoader.getLaunchClassLoader().getClassLoaderExceptions();
-            set.remove(string);
-            LaunchClassLoader.getLaunchClassLoader().cachedClasses().put(string, clazz);
+            LaunchClassLoader launchClassLoader = LaunchClassLoader.getLaunchClassLoader();
+            if (launchClassLoader.supportsLegacyClassCache()) {
+                Set set = launchClassLoader.getClassLoaderExceptions();
+                set.remove(string);
+                launchClassLoader.cachedClasses().put(string, clazz);
+            }
             if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
                 JavassistMappingTask.p(clazz.getSuperclass());
             }
@@ -316,7 +319,10 @@ implements MappingTask {
         }
         V.O(this.E.getClassLoader());
         if (!Vape.INSTANCE.isForgeAbsent()) {
-            LaunchClassLoader.getLaunchClassLoader().cachedClasses().put(this.E.getName(), this.E);
+            LaunchClassLoader launchClassLoader = LaunchClassLoader.getLaunchClassLoader();
+            if (launchClassLoader.supportsLegacyClassCache()) {
+                launchClassLoader.cachedClasses().put(this.E.getName(), this.E);
+            }
         }
         if (this.x() == null) {
             throw new IllegalStateException("Javassist could not parse bytecode for " + this.E.getName());

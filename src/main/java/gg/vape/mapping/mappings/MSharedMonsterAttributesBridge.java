@@ -6,29 +6,20 @@ import gg.vape.mapping.MappingField;
 
 public class MSharedMonsterAttributesBridge
 extends Mapping {
-    private MappingField v;
-    private MappingField f;
+    private final MappingField normalField;
+    private final MappingField seeThroughField;
 
     public MSharedMonsterAttributesBridge() {
         super(MappedClasses.Y8);
-        Class clazz = MappedClasses.Y8;
-        boolean bl = true;
-        String string = "NORMAL";
-        MSharedMonsterAttributesBridge mSharedMonsterAttributesBridge = this;
-        this.v = this.registerStaticField(string, bl, clazz);
-        Class clazz2 = MappedClasses.Y8;
-        boolean bl2 = true;
-        String string2 = "SEE_THROUGH";
-        MSharedMonsterAttributesBridge mSharedMonsterAttributesBridge2 = this;
-        this.f = this.registerStaticField(string2, bl2, clazz2);
+        this.normalField = this.registerStaticField("NORMAL", true, MappedClasses.Y8);
+        this.seeThroughField = this.registerStaticField("SEE_THROUGH", true, MappedClasses.Y8);
     }
 
-    public Object m() {
-        return this.v.getObject(null);
+    public Object getNormal() {
+        return this.normalField.getObject(null);
     }
 
-    public Object K() {
-        return this.f.getObject(null);
+    public Object getSeeThrough() {
+        return this.seeThroughField.getObject(null);
     }
 }
-

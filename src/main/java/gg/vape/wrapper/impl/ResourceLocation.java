@@ -4,16 +4,15 @@ import gg.vape.wrapper.Wrapper;
 
 public class ResourceLocation
 extends Wrapper {
-    public static ResourceLocation create(String string) {
-        return new ResourceLocation(ResourceLocation.vapeInstance.getMappingsMapperCompat().C9.o(string));
+    public static ResourceLocation create(String location) {
+        return new ResourceLocation(ResourceLocation.vapeInstance.getMappingsMapperCompat().resourceLocation.create(location));
     }
 
     public String getResourcePath() {
-        return ResourceLocation.vapeInstance.getMappingsMapperCompat().C9.s(this.I);
+        return ResourceLocation.vapeInstance.getMappingsMapperCompat().resourceLocation.getPath(this.I);
     }
 
-    public ResourceLocation(Object object) {
-        super(object);
+    public ResourceLocation(Object resourceLocationHandle) {
+        super(resourceLocationHandle);
     }
 }
-

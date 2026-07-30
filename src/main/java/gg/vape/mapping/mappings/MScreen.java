@@ -8,58 +8,35 @@ import gg.vape.wrapper.impl.ScaledResolution;
 
 public class MScreen
 extends Mapping {
-    private MappingMethod Y;
+    private MappingMethod getMobEffectSpriteMethod;
 
-    private Object m(Object object) {
-        return this.Y.invokeObject(null, object);
+    public Object getMobEffectSprite(Object effectHolderHandle) {
+        return this.getMobEffectSpriteMethod.invokeObject(null, effectHolderHandle);
     }
 
     public MScreen() {
         this(ScaledResolution.W());
     }
 
-    private MScreen(int n) {
+    private MScreen(int screenControlFlowState) {
         super(MappedClasses.uH);
-        if (n != 0) {
+        if (screenControlFlowState != 0) {
             if (ForgeVersion.MC_1_21_6.d()) {
                 if (ForgeVersion.MC_26_2.d()) {
-                    Class[] classArray = new Class[]{MappedClasses.Vo};
-                    Class clazz = MappedClasses.zC;
-                    boolean bl = true;
-                    String string = "getMobEffectSprite";
-                    Class clazz2 = MappedClasses.zK;
-                    MScreen mScreen = this;
-                    this.Y = mScreen.registerStaticMethodForOwner(clazz2, string, bl, clazz, classArray);
+                    this.getMobEffectSpriteMethod = this.registerStaticMethodForOwner(
+                            MappedClasses.zK, "getMobEffectSprite", true, MappedClasses.zC, MappedClasses.Vo);
                 } else {
-                    Class[] classArray = new Class[]{MappedClasses.Vo};
-                    Class clazz = MappedClasses.zC;
-                    boolean bl = true;
-                    String string = "getMobEffectSprite";
-                    MScreen mScreen = this;
-                    this.Y = mScreen.registerStaticMethod(string, bl, clazz, classArray);
+                    this.getMobEffectSpriteMethod = this.registerStaticMethod(
+                            "getMobEffectSprite", true, MappedClasses.zC, MappedClasses.Vo);
                 }
             }
             return;
         }
         if (ForgeVersion.MC_1_21_6.d()) {
-            Class[] classArray = new Class[]{MappedClasses.Vo};
-            Class clazz = MappedClasses.zC;
-            boolean bl = true;
-            String string = "getMobEffectSprite";
-            Class clazz3 = MappedClasses.zK;
-            MScreen mScreen = this;
-            this.Y = mScreen.registerStaticMethodForOwner(clazz3, string, bl, clazz, classArray);
+            this.getMobEffectSpriteMethod = this.registerStaticMethodForOwner(
+                    MappedClasses.zK, "getMobEffectSprite", true, MappedClasses.zC, MappedClasses.Vo);
         }
-        Class[] classArray = new Class[]{MappedClasses.Vo};
-        Class clazz = MappedClasses.zC;
-        boolean bl = true;
-        String string = "getMobEffectSprite";
-        MScreen mScreen = this;
-        this.Y = mScreen.registerStaticMethod(string, bl, clazz, classArray);
-    }
-
-
-    public static Object i(MScreen mScreen, Object object) {
-        return mScreen.m(object);
+        this.getMobEffectSpriteMethod = this.registerStaticMethod(
+                "getMobEffectSprite", true, MappedClasses.zC, MappedClasses.Vo);
     }
 }

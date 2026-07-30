@@ -97,7 +97,7 @@ public class PotionEntry {
                     ++n3;
                     continue;
                 }
-                string = I18n.f(((Potion)wrapper).y$src$Ljava_lang_String_$yl6pfj(), new Object[0]);
+                string = I18n.format(((Potion)wrapper).y$src$Ljava_lang_String_$yl6pfj(), new Object[0]);
             }
             int n6 = StringUtils.Q(this.name, string);
             if (n6 < n4) {

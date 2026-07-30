@@ -8,50 +8,30 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MNonNullList
 extends Mapping {
-    private final MappingMethod g;
+    private final MappingMethod createMethod;
 
-    private Object F() {
+    public Object create() {
         if (ForgeVersion.MC_1_17.d()) {
-            return this.g.invokeObject(null, new Object[0]);
+            return this.createMethod.invokeObject(null);
         }
-        return this.g.newInstance(new Object[0]);
+        return this.createMethod.newInstance();
     }
 
     public MNonNullList() {
         this(BlockData.W());
     }
 
-    private MNonNullList(String[] stringArray) {
+    private MNonNullList(String[] nonNullListMappingState) {
         super(MappedClasses.Vd);
-        if (stringArray != null) {
+        if (nonNullListMappingState != null) {
             if (ForgeVersion.MC_1_17.d()) {
-                Class[] classArray = new Class[]{};
-                Class clazz = MappedClasses.Vd;
-                boolean bl = true;
-                String string = "create";
-                MNonNullList mNonNullList = this;
-                this.g = mNonNullList.registerStaticMethod(string, bl, clazz, classArray);
+                this.createMethod = this.registerStaticMethod("create", true, MappedClasses.Vd);
             } else {
-                Class[] classArray = new Class[]{};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MNonNullList mNonNullList = this;
-                this.g = mNonNullList.Y(string, bl, clazz, classArray);
+                this.createMethod = this.Y("<init>", false, Void.TYPE);
             }
             return;
         }
-        Class[] classArray = new Class[]{};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = "<init>";
-        MNonNullList mNonNullList = this;
-        this.g = mNonNullList.Y(string, bl, clazz, classArray);
-    }
-
-
-    public static Object f(MNonNullList mNonNullList) {
-        return mNonNullList.F();
+        this.createMethod = this.Y("<init>", false, Void.TYPE);
     }
 }
 

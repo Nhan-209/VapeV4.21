@@ -302,6 +302,7 @@ extends Mod {
     }
 
     public void handleMouseButton(int button) {
+        RenderUtils.C();
         MousePosition mousePosition = RenderUtils.h();
         GuiMouseEvent guiMouseEvent = new GuiMouseEvent(mousePosition.O, mousePosition.H, MouseButton.A((int)button));
         if (guiMouseEvent.fire()) {
@@ -739,6 +740,7 @@ extends Mod {
         try {
             GuiRenderPrimitives.Y();
             RenderUtils.g();
+            RenderUtils.C();
             if (!GuiRenderPrimitives.d()) {
                 if (this.blurBackground.getEffectiveValue().booleanValue()) {
                     ShaderGroupRenderStateManager.getInstance().enable();

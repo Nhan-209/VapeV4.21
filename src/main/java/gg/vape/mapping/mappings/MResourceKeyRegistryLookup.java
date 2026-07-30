@@ -9,37 +9,26 @@ import java.util.Optional;
 
 public class MResourceKeyRegistryLookup
 extends Mapping {
-    private final MappingMethod F;
-    private final MappingMethod J;
+    private final MappingMethod getMethod;
+    private final MappingMethod getOrThrowMethod;
 
 
-    public Object N(Object object, Object object2) {
-        return this.J.invokeObject(object, object2);
+    public Object getOrThrow(Object lookupHandle, Object resourceKeyHandle) {
+        return this.getOrThrowMethod.invokeObject(lookupHandle, resourceKeyHandle);
     }
 
-    public Optional<Object> W(Object object, Object object2) {
-        return (Optional)this.F.invokeObject(object, object2);
+    public Optional<Object> get(Object lookupHandle, Object resourceKeyHandle) {
+        return (Optional)this.getMethod.invokeObject(lookupHandle, resourceKeyHandle);
     }
 
     public MResourceKeyRegistryLookup() {
         this(MRegistryAccess.getControlFlowMarker());
     }
 
-    private MResourceKeyRegistryLookup(String string) {
+    private MResourceKeyRegistryLookup(String controlFlowMarker) {
         super(MappedClasses.u2);
-        Class[] classArray = new Class[]{MappedClasses.qB};
-        Class<Optional> clazz = Optional.class;
-        boolean bl = true;
-        String string2 = "get";
-        MResourceKeyRegistryLookup mResourceKeyRegistryLookup = this;
-        this.F = this.Y(string2, bl, clazz, classArray);
-        Class[] classArray2 = new Class[]{MappedClasses.qB};
-        Class clazz2 = MappedClasses.qx;
-        boolean bl2 = true;
-        String string3 = "getOrThrow";
-        MResourceKeyRegistryLookup mResourceKeyRegistryLookup2 = this;
-        this.J = this.Y(string3, bl2, clazz2, classArray2);
-        String string4 = string;
+        this.getMethod = this.Y("get", true, Optional.class, MappedClasses.qB);
+        this.getOrThrowMethod = this.Y("getOrThrow", true, MappedClasses.qx, MappedClasses.qB);
         if (GuiComponent.getLegacyComponentState() == null) {
             MRegistryAccess.setControlFlowMarker("Th1Gp");
         }

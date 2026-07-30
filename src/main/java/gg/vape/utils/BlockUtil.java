@@ -113,7 +113,7 @@ public class BlockUtil {
         }
         List list = new ArrayList();
         if (ForgeVersion.MC_1_12_2.d()) {
-            list = (List)NonNullList.F().getObject();
+            list = (List)NonNullList.create().getObject();
         }
         item.D(item, list);
         if (list.size() > 0) {
@@ -273,7 +273,7 @@ public class BlockUtil {
         }
         List list = new ArrayList();
         if (ForgeVersion.MC_1_12_2.d()) {
-            list = (List)NonNullList.F().getObject();
+            list = (List)NonNullList.create().getObject();
         }
         item.D(item, list);
         if (list.size() > 0) {

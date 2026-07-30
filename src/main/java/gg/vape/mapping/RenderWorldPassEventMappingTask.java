@@ -20,9 +20,9 @@ extends JavassistMappingTask {
             try {
                 MappingMethod mappingMethod = null;
                 if (ForgeVersion.MC_1_21_10.d()) {
-                    mappingMethod = Vape.INSTANCE.getMappings().Df.a;
+                    mappingMethod = Vape.INSTANCE.getMappings().renderGlobal.extractVisibleEntitiesMethod;
                 } else if (ForgeVersion.MC_1_21_4.d()) {
-                    mappingMethod = Vape.INSTANCE.getMappings().Df.H;
+                    mappingMethod = Vape.INSTANCE.getMappings().renderGlobal.renderEntitiesMethod;
                 }
                 this.c(mappingMethod, EventPreRenderWorldPass.class, "");
                 this.k(mappingMethod, EventPostRenderWorldPass.class, "");

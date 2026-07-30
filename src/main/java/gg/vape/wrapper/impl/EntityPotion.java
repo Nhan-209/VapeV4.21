@@ -1,15 +1,14 @@
 package gg.vape.wrapper.impl;
 
-import gg.vape.mapping.mappings.MEntityPotion;
-
 public class EntityPotion
 extends EntityEnderPearl {
-    public EntityPotion(Object object) {
-        super(object);
+    public EntityPotion(Object potionEntityHandle) {
+        super(potionEntityHandle);
     }
 
     public ItemStack getPotion() {
-        return new ItemStack(MEntityPotion.s(EntityPotion.vapeInstance.getMappingsMapperCompat().hf, this.getObject()));
+        Object itemHandle = EntityPotion.vapeInstance.getMappingsMapperCompat().entityPotion
+                .getPotionItem(this.getObject());
+        return new ItemStack(itemHandle);
     }
 }
-

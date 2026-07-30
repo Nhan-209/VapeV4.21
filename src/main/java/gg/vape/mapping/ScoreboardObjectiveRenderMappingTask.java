@@ -21,11 +21,11 @@ extends ClassTransformer {
             return;
         }
         if (ForgeVersion.MC_1_7_10.L()) {
-            this.injectEventAtEntry(Vape.INSTANCE.getMappings().ql.c, EventScoreboardObjectiveRender.class, new TypedIndexedLocal(1, DescUtils.getDescriptor(MappedClasses.Y)).setDescriptorClass(Object.class), new TypedIndexedLocal(2, "I"), new TypedIndexedLocal(3, "I"), new TypedIndexedLocal(4, DescUtils.getDescriptor(MappedClasses.uQ)).setDescriptorClass(Object.class));
+            this.injectEventAtEntry(Vape.INSTANCE.getMappings().titledScreen.renderScoreboardMethod, EventScoreboardObjectiveRender.class, new TypedIndexedLocal(1, DescUtils.getDescriptor(MappedClasses.Y)).setDescriptorClass(Object.class), new TypedIndexedLocal(2, "I"), new TypedIndexedLocal(3, "I"), new TypedIndexedLocal(4, DescUtils.getDescriptor(MappedClasses.uQ)).setDescriptorClass(Object.class));
         } else if (ForgeVersion.MC_1_16_5.d()) {
-            this.injectEventAtEntry(Vape.INSTANCE.getMappings().ql.c, EventScoreboardObjectiveRender.class, new TypedIndexedLocal(1, DescUtils.getDescriptor(MappedClasses.DQ)).setDescriptorClass(Object.class), new TypedIndexedLocal(2, DescUtils.getDescriptor(MappedClasses.Y)).setDescriptorClass(Object.class));
+            this.injectEventAtEntry(Vape.INSTANCE.getMappings().titledScreen.renderScoreboardMethod, EventScoreboardObjectiveRender.class, new TypedIndexedLocal(1, DescUtils.getDescriptor(MappedClasses.DQ)).setDescriptorClass(Object.class), new TypedIndexedLocal(2, DescUtils.getDescriptor(MappedClasses.Y)).setDescriptorClass(Object.class));
         } else {
-            this.injectEventAtEntry(Vape.INSTANCE.getMappings().ql.c, EventScoreboardObjectiveRender.class, new TypedIndexedLocal(1, DescUtils.getDescriptor(MappedClasses.Y)).setDescriptorClass(Object.class), new TypedIndexedLocal(2, DescUtils.getDescriptor(MappedClasses.Zz)).setDescriptorClass(Object.class));
+            this.injectEventAtEntry(Vape.INSTANCE.getMappings().titledScreen.renderScoreboardMethod, EventScoreboardObjectiveRender.class, new TypedIndexedLocal(1, DescUtils.getDescriptor(MappedClasses.Y)).setDescriptorClass(Object.class), new TypedIndexedLocal(2, DescUtils.getDescriptor(MappedClasses.Zz)).setDescriptorClass(Object.class));
         }
     }
 }

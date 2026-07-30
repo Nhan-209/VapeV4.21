@@ -58,7 +58,8 @@ extends Wrapper {
             try {
                 Holder holder = Holder.A(item.getObject());
                 if (holder.isNotNull()) {
-                    Object object = ItemStack.vapeInstance.getMappings().q8.j(holder.getObject(), 1, EmptyDataComponentMap.J().getObject());
+                    Object object = ItemStack.vapeInstance.getMappings().q8.j(
+                            holder.getObject(), 1, EmptyDataComponentMap.create().getObject());
                     return new ItemStack(object);
                 }
             }

@@ -38,7 +38,7 @@ extends Mapping {
                 Class[] classArray = new Class[]{};
                 Class<Float> clazz3 = Float.TYPE;
                 boolean bl2 = true;
-                String string2 = "getDamageVsEntity";
+                String string2 = ForgeVersion.c() >= 23 ? "getAttackDamage" : "getDamageVsEntity";
                 MItemTool mItemTool2 = this;
                 this.E = this.Y(string2, bl2, clazz3, classArray);
             }

@@ -8,80 +8,44 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MResourceLocation
 extends Mapping {
-    private MappingMethod O;
-    private final MappingMethod A;
+    private MappingMethod createMethod;
+    private final MappingMethod getPathMethod;
 
     public MResourceLocation() {
         this(BlockData.W());
     }
 
-    private MResourceLocation(String[] stringArray) {
+    private MResourceLocation(String[] resourceLocationMappingState) {
         super(MappedClasses.zC);
-        if (stringArray != null) {
+        if (resourceLocationMappingState != null) {
             if (ForgeVersion.MC_1_16_5.d()) {
-                Class[] classArray = new Class[]{};
-                Class<String> clazz = String.class;
-                boolean bl = true;
-                String string = "getPath";
-                MResourceLocation mResourceLocation = this;
-                this.A = mResourceLocation.Y(string, bl, clazz, classArray);
+                this.getPathMethod = this.Y("getPath", true, String.class);
             } else {
-                Class[] classArray = new Class[]{};
-                Class<String> clazz = String.class;
-                boolean bl = true;
-                String string = "getResourcePath";
-                MResourceLocation mResourceLocation = this;
-                this.A = mResourceLocation.Y(string, bl, clazz, classArray);
+                this.getPathMethod = this.Y("getResourcePath", true, String.class);
             }
             if (ForgeVersion.MC_1_21_0.d()) {
-                Class[] classArray = new Class[]{String.class};
-                Class clazz = MappedClasses.zC;
-                boolean bl = true;
-                String string = "parse";
-                MResourceLocation mResourceLocation = this;
-                this.O = mResourceLocation.registerStaticMethod(string, bl, clazz, classArray);
+                this.createMethod = this.registerStaticMethod("parse", true, MappedClasses.zC, String.class);
             } else {
-                Class[] classArray = new Class[]{String.class};
-                Class<Void> clazz = Void.TYPE;
-                boolean bl = false;
-                String string = "<init>";
-                MResourceLocation mResourceLocation = this;
-                this.O = mResourceLocation.Y(string, bl, clazz, classArray);
+                this.createMethod = this.Y("<init>", false, Void.TYPE, String.class);
             }
             return;
         }
-        Class[] classArray = new Class[]{};
-        Class<String> clazz = String.class;
-        boolean bl = true;
-        String string = "getResourcePath";
-        MResourceLocation mResourceLocation = this;
-        this.A = mResourceLocation.Y(string, bl, clazz, classArray);
+        this.getPathMethod = this.Y("getResourcePath", true, String.class);
         if (ForgeVersion.MC_1_21_0.d()) {
-            Class[] classArray2 = new Class[]{String.class};
-            Class clazz2 = MappedClasses.zC;
-            boolean bl2 = true;
-            String string2 = "parse";
-            MResourceLocation mResourceLocation2 = this;
-            mResourceLocation2.registerStaticMethod(string2, bl2, clazz2, classArray2);
+            this.registerStaticMethod("parse", true, MappedClasses.zC, String.class);
         }
-        Class[] classArray3 = new Class[]{String.class};
-        Class<Void> clazz3 = Void.TYPE;
-        boolean bl3 = false;
-        String string3 = "<init>";
-        MResourceLocation mResourceLocation3 = this;
-        this.O = this.Y(string3, bl3, clazz3, classArray3);
+        this.createMethod = this.Y("<init>", false, Void.TYPE, String.class);
     }
 
-
-    public String s(Object object) {
-        return (String)this.A.invokeObject(object, new Object[0]);
+    public String getPath(Object resourceLocationHandle) {
+        return (String)this.getPathMethod.invokeObject(resourceLocationHandle);
     }
 
-    public Object o(String string) {
+    public Object create(String location) {
         if (ForgeVersion.MC_1_21_0.d()) {
-            return this.O.invokeObject(null, string);
+            return this.createMethod.invokeObject(null, location);
         }
-        return this.O.newInstance(string);
+        return this.createMethod.newInstance(location);
     }
 }
 

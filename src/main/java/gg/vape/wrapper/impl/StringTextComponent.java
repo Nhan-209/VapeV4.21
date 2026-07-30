@@ -6,19 +6,21 @@ import gg.vape.wrapper.Wrapper;
 public class StringTextComponent
 extends Wrapper {
 
-    public StringTextComponent(Object object) {
-        super(object);
+    public StringTextComponent(Object componentHandle) {
+        super(componentHandle);
     }
 
-    public TextComponentTranslation H() {
-        return new TextComponentTranslation(StringTextComponent.vapeInstance.getMappingsMapperCompat().DK.W(this.I));
+    public TextComponentTranslation getItemStackRenderState() {
+        Object renderStateHandle = StringTextComponent.vapeInstance.getMappingsMapperCompat().stringTextComponentBridge
+                .getItemStackRenderState(this.I);
+        return new TextComponentTranslation(renderStateHandle);
     }
 
-    public String x() {
+    public String getName() {
         if (MappedClasses.DE != null && ForgeVersion.MC_26_1.d()) {
             return "";
         }
-        return StringTextComponent.vapeInstance.getMappingsMapperCompat().DK.q(this.I);
+        return StringTextComponent.vapeInstance.getMappingsMapperCompat().stringTextComponentBridge.getName(this.I);
     }
 }
 
