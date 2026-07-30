@@ -323,7 +323,7 @@ extends MemberNameRemapTable {
         this.t(MappedClasses.zc, "isSneaking", "isCrouching");
         this.t(MappedClasses.zc, "getCollisionBorderSize", "getPickRadius");
         this.t(MappedClasses.zc, "isOffsetPositionInLiquid", "isFree");
-        this.z(MappedClasses.zc, "setVelocity", "lerpMotion", true, Void.TYPE, MappedClasses.qP);
+        this.registerMethodMapping(MappedClasses.zc, "setVelocity", "lerpMotion", true, Void.TYPE, MappedClasses.qP);
         this.t(MappedClasses.zc, "isWet", "isInWaterOrRain");
         this.t(MappedClasses.zc, "setFire", "igniteForSeconds");
         this.t(MappedClasses.zc, "setFlag", "setSharedFlag");
@@ -379,7 +379,7 @@ extends MemberNameRemapTable {
     }
 
     protected void i0() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             // empty if block
         }
     }
@@ -466,8 +466,8 @@ extends MemberNameRemapTable {
         this.t(MappedClasses.uQ, "func_243247_a", "m_92841_");
         this.t(MappedClasses.uQ, "func_243246_a", Vape.INSTANCE.isVanillaMinecraftPresent() ? "drawShadow" : "m_92763_");
         this.t(MappedClasses.uQ, "func_243248_b", Vape.INSTANCE.isVanillaMinecraftPresent() ? "draw" : "m_92889_");
-        this.z(MappedClasses.uQ, "drawInBatch", "drawInBatch", true, Void.TYPE, String.class, Float.TYPE, Float.TYPE, Integer.TYPE, Boolean.TYPE, MappedClasses.qr, MappedClasses.ZK, MappedClasses.Y8, Integer.TYPE, Integer.TYPE);
-        this.z(MappedClasses.m, "drawString", "drawString", true, Void.TYPE, MappedClasses.uQ, String.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Boolean.TYPE);
+        this.registerMethodMapping(MappedClasses.uQ, "drawInBatch", "drawInBatch", true, Void.TYPE, String.class, Float.TYPE, Float.TYPE, Integer.TYPE, Boolean.TYPE, MappedClasses.qr, MappedClasses.ZK, MappedClasses.Y8, Integer.TYPE, Integer.TYPE);
+        this.registerMethodMapping(MappedClasses.m, "drawString", "drawString", true, Void.TYPE, MappedClasses.uQ, String.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Boolean.TYPE);
     }
 
     protected void i1() {
@@ -505,8 +505,8 @@ extends MemberNameRemapTable {
     }
 
     protected void i6() {
-        this.z(MappedClasses.qt, "getString", "getStringOr", true, String.class, Integer.TYPE, String.class);
-        this.z(MappedClasses.qt, "getCompound", "getCompoundOrEmpty", true, MappedClasses.Yg, Integer.TYPE);
+        this.registerMethodMapping(MappedClasses.qt, "getString", "getStringOr", true, String.class, Integer.TYPE, String.class);
+        this.registerMethodMapping(MappedClasses.qt, "getCompound", "getCompoundOrEmpty", true, MappedClasses.Yg, Integer.TYPE);
     }
 
     protected void qW() {
@@ -594,7 +594,7 @@ extends MemberNameRemapTable {
     }
 
     protected void k() {
-        this.z(MappedClasses.YS, "drawEntityOnScreen", "renderEntityInInventory", true, Void.TYPE, MappedClasses.m, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Float.TYPE, MappedClasses.qb, MappedClasses.z3, MappedClasses.z3, MappedClasses.P);
+        this.registerMethodMapping(MappedClasses.YS, "drawEntityOnScreen", "renderEntityInInventory", true, Void.TYPE, MappedClasses.m, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Float.TYPE, MappedClasses.qb, MappedClasses.z3, MappedClasses.z3, MappedClasses.P);
     }
 
     protected void qv() {
@@ -612,7 +612,7 @@ extends MemberNameRemapTable {
     }
 
     protected void f() {
-        this.z(MappedClasses.Q, "getInputByCode", "getKey", true, MappedClasses.zp, MappedClasses.YM);
+        this.registerMethodMapping(MappedClasses.Q, "getInputByCode", "getKey", true, MappedClasses.zp, MappedClasses.YM);
     }
 
     protected void q3() {
@@ -837,7 +837,7 @@ extends MemberNameRemapTable {
 
     protected void qj() {
         this.B(MappedClasses.lF, "field_175252_a", "f_94518_");
-        this.z(MappedClasses.lF, "getPlayerName", "getNameForDisplay", true, MappedClasses.Yr, MappedClasses.Zc);
+        this.registerMethodMapping(MappedClasses.lF, "getPlayerName", "getNameForDisplay", true, MappedClasses.Yr, MappedClasses.Zc);
     }
 
     protected void E() {
@@ -949,8 +949,8 @@ extends MemberNameRemapTable {
 
     protected void i_() {
         this.B(MappedClasses.Yg, "tagMap", "tags");
-        this.z(MappedClasses.Yg, "getShort", "getShortOr", true, Short.TYPE, String.class, Short.TYPE);
-        this.z(MappedClasses.Yg, "getList", "getListOrEmpty", true, MappedClasses.qt, String.class);
+        this.registerMethodMapping(MappedClasses.Yg, "getShort", "getShortOr", true, Short.TYPE, String.class, Short.TYPE);
+        this.registerMethodMapping(MappedClasses.Yg, "getList", "getListOrEmpty", true, MappedClasses.qt, String.class);
     }
 
     protected void iQ() {
@@ -958,7 +958,7 @@ extends MemberNameRemapTable {
     }
 
     protected void qg() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             // empty if block
         }
     }

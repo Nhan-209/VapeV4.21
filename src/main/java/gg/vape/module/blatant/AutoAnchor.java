@@ -742,7 +742,7 @@ extends Mod {
     }
 
     @Override
-    public boolean X() {
+    public boolean isRequiresBind() {
         return this.onBindMode.isSelected();
     }
 

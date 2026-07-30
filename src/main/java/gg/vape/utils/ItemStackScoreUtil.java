@@ -617,7 +617,7 @@ public class ItemStackScoreUtil {
         if (!ItemStackScoreUtil.I(itemStack.getItem())) {
             return false;
         }
-        return ForgeVersion.MC_1_21_4.d() ? (object = (dataComponentMap = itemStack.getItem().g()).E(DataComponents.X())) != null && (itemCameraTransformBase = (itemCameraTransformType = new ItemCameraTransformType(object)).e()).isInstance(MappedClasses.zo) && (itemCameraTransformSubtypeValue = (itemCameraTransformLeaf = new ItemCameraTransformLeaf(itemCameraTransformBase)).C()).equals(ChestTypeHolder.d()) : (itemSword = new ItemSword(itemStack.getItem())).s().equals(ToolMaterial.S());
+        return ForgeVersion.MC_1_21_4.d() ? (object = (dataComponentMap = itemStack.getItem().g()).E(DataComponents.X())) != null && (itemCameraTransformBase = (itemCameraTransformType = new ItemCameraTransformType(object)).e()).isInstance(MappedClasses.zo) && (itemCameraTransformSubtypeValue = (itemCameraTransformLeaf = new ItemCameraTransformLeaf(itemCameraTransformBase)).getKey()).equals(ChestTypeHolder.d()) : (itemSword = new ItemSword(itemStack.getItem())).s().equals(ToolMaterial.S());
     }
 
     public static double f(ItemStack itemStack) {

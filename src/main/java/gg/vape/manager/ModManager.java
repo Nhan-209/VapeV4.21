@@ -249,7 +249,7 @@ implements EventListener {
     public boolean getState(Class<? extends Mod> clazz) {
         for (Mod mod : this.collectMods()) {
             if (!mod.getClass().equals(clazz)) continue;
-            return mod.r$src$Z$14eylz9();
+            return mod.isEnabled();
         }
         return false;
     }
@@ -261,8 +261,8 @@ implements EventListener {
     public JsonObject getEnabledNonHudModuleStates() {
         JsonObject enabledStates = new JsonObject();
         for (Mod mod : this.getAllModules()) {
-            if (mod instanceof HudModule || !mod.r$src$Z$14eylz9()) continue;
-            enabledStates.addProperty(mod.getName(), Boolean.valueOf(mod.r$src$Z$14eylz9()));
+            if (mod instanceof HudModule || !mod.isEnabled()) continue;
+            enabledStates.addProperty(mod.getName(), Boolean.valueOf(mod.isEnabled()));
         }
         return enabledStates;
     }
@@ -275,10 +275,10 @@ implements EventListener {
             if (mod instanceof HudModule || mod.getCategory().equals(Category.NONE)) continue;
             try {
                 if (enabledStates.has(mod.getName())) {
-                    if (!mod.O()) continue;
+                    if (!mod.isVisible()) continue;
                     try {
-                        if (mod.r$src$Z$14eylz9()) continue;
-                        mod.Y(enabledStates.get(mod.getName()).getAsBoolean());
+                        if (mod.isEnabled()) continue;
+                        mod.setEnabled(enabledStates.get(mod.getName()).getAsBoolean());
                         ++enabledCount;
                     }
                     catch (Exception exception) {
@@ -286,8 +286,8 @@ implements EventListener {
                     }
                     continue;
                 }
-                if (mod instanceof ClientSettings || mod.h() == 0 || !mod.r$src$Z$14eylz9()) continue;
-                mod.F();
+                if (mod instanceof ClientSettings || mod.getGuiColor() == 0 || !mod.isEnabled()) continue;
+                mod.toggle();
             }
             catch (Exception exception) {
                 Vape.logThrowable(exception);
@@ -342,18 +342,18 @@ implements EventListener {
         }
         this.activeModulesByType.put(module.getClass(), module);
         this.activeModuleList.add(module);
-        for (Value<?, ?> value : module.F$src$Ljava_util_List_$1kytx9u()) {
+        for (Value<?, ?> value : module.getValues()) {
             if (!(value instanceof ModeValue)) continue;
             ModeValue modeValue = (ModeValue)value;
             for (ModeSelection modeSelection : modeValue.getModes()) {
                 SubModuleValue subModuleValue;
-                if (!(modeSelection instanceof SubModuleValue) || !((SubModule)(subModuleValue = (SubModuleValue)modeSelection).getInstance()).isEnabled()) continue;
+                if (!(modeSelection instanceof SubModuleValue) || !((SubModule)(subModuleValue = (SubModuleValue)modeSelection).getInstance()).isSubModuleEnabled()) continue;
                 this.registerModule((Mod)subModuleValue.getInstance(), constraintGroups, false);
-                module.k(new SubModule[]{subModuleValue.getInstance()});
+                module.registerSubModule(new SubModule[]{subModuleValue.getInstance()});
             }
         }
         if (enableImmediately) {
-            module.Y(true);
+            module.setEnabled(true);
         }
     }
 
@@ -369,15 +369,15 @@ implements EventListener {
 
     public void finishModuleInitialization() {
         for (Mod mod : this.activeModulesByType.values()) {
-            mod.t();
+            mod.onFinishModuleInitialization();
         }
         if (ForgeVersion.MC_1_8_9.L()) {
             if (Vape.INSTANCE.isOnlineConnected()) {
-                this.getMod(NoClickDelayHudModule.class).Y(true);
-                this.getMod(MouseDelayFix.class).Y(true);
+                this.getMod(NoClickDelayHudModule.class).setEnabled(true);
+                this.getMod(MouseDelayFix.class).setEnabled(true);
             }
-            if (!this.getMod(MouseDelayFix.class).r$src$Z$14eylz9()) {
-                this.getMod(MouseDelayFix.class).Y(true);
+            if (!this.getMod(MouseDelayFix.class).isEnabled()) {
+                this.getMod(MouseDelayFix.class).setEnabled(true);
             }
         }
     }
@@ -389,11 +389,11 @@ implements EventListener {
             String moduleKey = moduleName.replace(" ", "_").toLowerCase();
             translations.append(moduleKey + "=" + moduleName);
             translations.append("\n");
-            if (mod.n() != null && !mod.n().equals("")) {
-                translations.append(moduleKey + ".tooltip=" + mod.n().replace("\n", " "));
+            if (mod.getToolTip() != null && !mod.getToolTip().equals("")) {
+                translations.append(moduleKey + ".tooltip=" + mod.getToolTip().replace("\n", " "));
                 translations.append("\n");
             }
-            for (Value<?, ?> value : mod.F$src$Ljava_util_List_$1kytx9u()) {
+            for (Value<?, ?> value : mod.getValues()) {
                 String valueName = value.getName();
                 String valueKey = moduleKey + "." + value.getName().replace(" ", "_").toLowerCase();
                 translations.append(valueKey + "=" + valueName);
@@ -415,7 +415,7 @@ implements EventListener {
     @EventHandler
     public void onModuleStateChanged(EventModStateChange eventModStateChange) {
         Mod mod = eventModStateChange.getModule();
-        if (mod.r$src$Z$14eylz9()) {
+        if (mod.isEnabled()) {
             this.enabledModules.add(mod);
         } else {
             this.enabledModules.remove(mod);
@@ -424,7 +424,7 @@ implements EventListener {
             mod2.U(mod);
         }
         if (ClientSettings.INSTANCE.isInputEnabled() && mod.q$src$Z$12h8h4c() && Vape.INSTANCE.getPublicProfileSettings().toggleAlerts.getEffectiveValue().booleanValue() && !this.suppressStateNotifications) {
-            mod.B();
+            mod.showToggleNotification();
         }
     }
 
@@ -458,7 +458,7 @@ implements EventListener {
     public int countEnabledModules(Category category) {
         int count = 0;
         for (Mod mod : this.activeModulesByType.values()) {
-            if (mod.getCategory() != category || !mod.r$src$Z$14eylz9()) continue;
+            if (mod.getCategory() != category || !mod.isEnabled()) continue;
             ++count;
         }
         return count;
@@ -472,7 +472,7 @@ implements EventListener {
     public JsonArray toJson(boolean includeDefaults) {
         JsonArray serializedModules = new JsonArray();
         for (Mod mod : this.getTopLevelModules()) {
-            JsonObject serializedModule = mod.q(includeDefaults);
+            JsonObject serializedModule = mod.toJson(includeDefaults);
             if (serializedModule == null) continue;
             serializedModules.add((JsonElement)serializedModule);
         }
@@ -482,8 +482,8 @@ implements EventListener {
     public JsonObject getEnabledHudModuleStates() {
         JsonObject enabledStates = new JsonObject();
         for (Mod mod : this.getAllModules()) {
-            if (!(mod instanceof HudModule) || !mod.r$src$Z$14eylz9()) continue;
-            enabledStates.addProperty(mod.getName(), Boolean.valueOf(mod.r$src$Z$14eylz9()));
+            if (!(mod instanceof HudModule) || !mod.isEnabled()) continue;
+            enabledStates.addProperty(mod.getName(), Boolean.valueOf(mod.isEnabled()));
         }
         return enabledStates;
     }
@@ -500,8 +500,8 @@ implements EventListener {
         for (Mod mod : this.collectMods()) {
             if (!(mod instanceof HudModule) || !enabledStates.has(mod.getName())) continue;
             boolean enabled = enabledStates.get(mod.getName()).getAsBoolean();
-            if (mod.r$src$Z$14eylz9() == enabled) continue;
-            mod.Y(enabled);
+            if (mod.isEnabled() == enabled) continue;
+            mod.setEnabled(enabled);
         }
     }
 
@@ -517,7 +517,7 @@ implements EventListener {
         for (Mod mod : this.activeModulesByType.values()) {
             if (mod.getClass() == moduleType || !(mod instanceof InventoryActionModule)) continue;
             InventoryActionModule inventoryActionModule = (InventoryActionModule)((Object)mod);
-            if (!mod.r$src$Z$14eylz9() || !inventoryActionModule.isPerformingInventoryAction()) continue;
+            if (!mod.isEnabled() || !inventoryActionModule.isPerformingInventoryAction()) continue;
             return true;
         }
         return false;
@@ -526,8 +526,8 @@ implements EventListener {
     public void disableNonHudModules() {
         this.suppressStateNotifications = true;
         for (Mod mod : this.collectMods()) {
-            if (mod.getCategory() == Category.NONE || !mod.r$src$Z$14eylz9() || mod instanceof HudModule) continue;
-            mod.Y(false);
+            if (mod.getCategory() == Category.NONE || !mod.isEnabled() || mod instanceof HudModule) continue;
+            mod.setEnabled(false);
         }
         this.suppressStateNotifications = false;
     }
@@ -547,7 +547,7 @@ implements EventListener {
     public List<Mod> getProfileModules(JsonObject enabledModuleStates) {
         ArrayList<Mod> modules = new ArrayList<Mod>();
         for (Mod mod : this.collectMods()) {
-            if (!enabledModuleStates.has(mod.getName()) || !mod.O() || mod.getCategory() == Category.NONE) continue;
+            if (!enabledModuleStates.has(mod.getName()) || !mod.isVisible() || mod.getCategory() == Category.NONE) continue;
             modules.add(mod);
         }
         return modules;
@@ -590,9 +590,9 @@ implements EventListener {
     public void disableHiddenModules() {
         int disabledCount = 0;
         for (Mod mod : this.collectMods()) {
-            if (mod.O() || mod instanceof ClientSettings || mod.h() == 0 || !mod.r$src$Z$14eylz9()) continue;
+            if (mod.isVisible() || mod instanceof ClientSettings || mod.getGuiColor() == 0 || !mod.isEnabled()) continue;
             ++disabledCount;
-            mod.F();
+            mod.toggle();
         }
         if (disabledCount > 0) {
             Vape.INSTANCE.getNotificationManager().show("Hidden Disabled", disabledCount + " module(s) have been disabled!", NotificationType.WARNING, 2500L);

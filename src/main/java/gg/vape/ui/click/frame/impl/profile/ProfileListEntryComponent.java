@@ -22,15 +22,6 @@ import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.ui.click.component.input.BindableInputComponent;
 import gg.vape.ui.click.frame.CenteredPopupFrame;
 import gg.vape.ui.click.frame.FrameComponent;
-import gg.vape.ui.click.frame.impl.profile.ProfileGlyphIconPanel;
-import gg.vape.ui.click.frame.impl.profile.ProfileListEntryBackgroundComponent;
-import gg.vape.ui.click.frame.impl.profile.ProfileListEntryContainer;
-import gg.vape.ui.click.frame.impl.profile.ProfileListEntryMouseForwardingListener;
-import gg.vape.ui.click.frame.impl.profile.ProfileListEntryOpenSettingsClickHandler;
-import gg.vape.ui.click.frame.impl.profile.ProfileListEntrySettingsPopupPanel;
-import gg.vape.ui.click.frame.impl.profile.ProfileModuleSnapshotListComponent;
-import gg.vape.ui.click.frame.impl.profile.ProfileRenameInputComponent;
-import gg.vape.ui.click.frame.impl.profile.ProfilesSettingsFrame;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.unmap.ColorUtil;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -195,7 +186,7 @@ extends InteractiveComponent {
     }
 
     private static void forceBindModuleToKey161(Mod mod) {
-        mod.a().setBoundInputs(Collections.singletonList(161));
+        mod.getBind().setBoundInputs(Collections.singletonList(161));
     }
 
     @Override

@@ -6,29 +6,29 @@ import gg.vape.mapping.runtime.MappingOverrideSet;
 
 public class MappingOverrideSetV35
 extends MappingOverrideSet {
-    private static boolean P;
+    private static boolean featureFlag;
 
     @Override
     protected void registerOverrides() {
         this.registerOverride(MMinecraft.class, MVertexFormat.class);
     }
 
-    public static void setFeatureFlag(boolean bl) {
-        P = bl;
+    public static void setFeatureFlag(boolean enabled) {
+        featureFlag = enabled;
     }
 
-    public MappingOverrideSetV35(int n) {
-        super(n);
+    public MappingOverrideSetV35(int mappingVersion) {
+        super(mappingVersion);
     }
 
 
     public static boolean isFeatureFlagEnabled() {
-        return P;
+        return featureFlag;
     }
 
     public static boolean isFeatureFlagDisabled() {
-        boolean bl = MappingOverrideSetV35.isFeatureFlagEnabled();
-        return !bl;
+        boolean enabled = MappingOverrideSetV35.isFeatureFlagEnabled();
+        return !enabled;
     }
 
     static {

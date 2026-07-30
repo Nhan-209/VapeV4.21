@@ -37,34 +37,34 @@ extends Mod {
     private final BooleanValue caveModeValue;
 
     public void onChunkRenderRebuild(EventChunkRenderRebuild eventChunkRenderRebuild) {
-        if (!this.r$src$Z$14eylz9()) {
+        if (!this.isEnabled()) {
             return;
         }
         eventChunkRenderRebuild.setCancelled(true);
     }
 
     private void onOpacityChanged(NumberValue numberValue) {
-        if (this.r$src$Z$14eylz9()) {
+        if (this.isEnabled()) {
             this.refreshWorldForOpacity();
         }
     }
 
     public void onBlockFluidRender(EventBlockFluidRender eventBlockFluidRender) {
-        if (!this.r$src$Z$14eylz9()) {
+        if (!this.isEnabled()) {
             return;
         }
         eventBlockFluidRender.setCancelled(true);
     }
 
     public void onBlockModelRender(EventBlockModelRender eventBlockModelRender) {
-        if (!this.r$src$Z$14eylz9()) {
+        if (!this.isEnabled()) {
             return;
         }
         eventBlockModelRender.setCancelled(true);
     }
 
     public void onBlockRenderDecision(EventBlockLayerOverride eventBlockLayerOverride) {
-        if (!this.r$src$Z$14eylz9()) {
+        if (!this.isEnabled()) {
             return;
         }
         eventBlockLayerOverride.setCancelled(true);
@@ -118,7 +118,7 @@ extends Mod {
     }
 
     public void onBlockSideRender(EventBlockShouldRender eventBlockShouldRender) {
-        if (!this.r$src$Z$14eylz9()) {
+        if (!this.isEnabled()) {
             return;
         }
         if (this.isTargetBlock(eventBlockShouldRender.getBlock())) {
@@ -127,7 +127,7 @@ extends Mod {
     }
 
     public void onAmbientOcclusion(EventBlockRenderBounds eventBlockRenderBounds) {
-        if (!this.r$src$Z$14eylz9()) {
+        if (!this.isEnabled()) {
             return;
         }
         eventBlockRenderBounds.getRenderBlocks().M(this.isTargetBlock(eventBlockRenderBounds.getBlock()));

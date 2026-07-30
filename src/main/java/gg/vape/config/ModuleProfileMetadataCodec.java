@@ -23,7 +23,7 @@ public class ModuleProfileMetadataCodec {
             return;
         }
         this.selectedModules.add(module);
-        module.M(true);
+        module.setFavorite(true);
         VisibleModuleListFrame.e();
         Vape.INSTANCE.saveAndStop();
     }
@@ -31,7 +31,7 @@ public class ModuleProfileMetadataCodec {
     public int getVisibleModuleCount() {
         int visibleCount = 0;
         for (Mod module : this.selectedModules) {
-            if (!module.r$src$Z$14eylz9()) continue;
+            if (!module.isEnabled()) continue;
             ++visibleCount;
         }
         return visibleCount;
@@ -47,7 +47,7 @@ public class ModuleProfileMetadataCodec {
             return;
         }
         this.selectedModules.remove(module);
-        module.M(false);
+        module.setFavorite(false);
         VisibleModuleListFrame.e();
         Vape.INSTANCE.saveAndStop();
     }
@@ -70,7 +70,7 @@ public class ModuleProfileMetadataCodec {
             return;
         }
         this.selectedModules.add(module);
-        module.M(true);
+        module.setFavorite(true);
     }
 
     public ModuleProfileMetadataCodec() {

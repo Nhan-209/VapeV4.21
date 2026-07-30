@@ -5,8 +5,6 @@ import gg.vape.config.ClientSettings;
 import gg.vape.input.KeyBindingInputState;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Mod;
-import gg.vape.module.macro.ItemMacro;
-import gg.vape.module.macro.MacroAction;
 import gg.vape.module.render.Animations;
 import gg.vape.utils.RandomUtil;
 import gg.vape.utils.TimerUtil;
@@ -63,7 +61,7 @@ implements MacroAction {
             this.timer.reset();
             Animations animations = Vape.INSTANCE.getModManager().getMod(Animations.class);
             if (ClientSettings.isUseItemButtonDown()) {
-                if (((Mod)animations).r$src$Z$14eylz9() && animations.requiresMouseDown() && ClientSettings.isKeyBindingDown(Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362())) {
+                if (((Mod)animations).isEnabled() && animations.requiresMouseDown() && ClientSettings.isKeyBindingDown(Minecraft.gameSettings().b$src$Lgg_vape_wrapper_impl_KeyBinding_$1yi3362())) {
                     if (animations.getActiveMode().isBlocking() && !animations.getActiveMode().shouldBlock()) {
                         this.phase = 2;
                     }

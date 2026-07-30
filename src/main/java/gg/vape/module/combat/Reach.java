@@ -200,7 +200,7 @@ extends Mod {
 
     private boolean isReachAllowed() {
         if (Packet.h()) {
-            if (!this.r$src$Z$14eylz9() || this.misplace.getEffectiveValue()) {
+            if (!this.isEnabled() || this.misplace.getEffectiveValue()) {
                 return false;
             }
             EntityPlayerSP player = Minecraft.thePlayer();
@@ -209,7 +209,7 @@ extends Mod {
             }
             return !this.onlyWhileSprinting.getEffectiveValue() || player.B$src$Z$f90iek();
         }
-        return this.r$src$Z$14eylz9();
+        return this.isEnabled();
     }
 
     @EventHandler

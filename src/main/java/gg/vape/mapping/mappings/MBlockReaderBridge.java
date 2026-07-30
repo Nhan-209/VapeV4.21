@@ -6,21 +6,16 @@ import gg.vape.mapping.MappingMethod;
 
 public class MBlockReaderBridge
 extends Mapping {
-    private final MappingMethod X;
-    private static final String b = "getBlockState";
+    private static final String GET_BLOCK_STATE_METHOD_NAME = "getBlockState";
+    private final MappingMethod getBlockStateMethod;
 
-    public Object n(Object object, Object object2) {
-        return this.X.invokeObject(object, object2);
+    public Object getBlockState(Object blockReader, Object blockPos) {
+        return this.getBlockStateMethod.invokeObject(blockReader, blockPos);
     }
 
     public MBlockReaderBridge() {
         super(MappedClasses.zJ);
-        Class[] classArray = new Class[]{MappedClasses.lf};
-        Class clazz = MappedClasses.Zl;
-        boolean bl = true;
-        String string = b;
-        MBlockReaderBridge mBlockReaderBridge = this;
-        this.X = this.Y(string, bl, clazz, classArray);
+        this.getBlockStateMethod = this.Y(GET_BLOCK_STATE_METHOD_NAME, true, MappedClasses.Zl, new Class[]{MappedClasses.lf});
     }
 }
 

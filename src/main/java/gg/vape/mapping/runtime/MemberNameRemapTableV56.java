@@ -182,8 +182,8 @@ extends MemberNameRemapTable {
 
     protected void jI() {
         this.B(MappedClasses.Yg, "tagMap", "tags");
-        this.z(MappedClasses.Yg, "getShort", "getShortOr", true, Short.TYPE, String.class, Short.TYPE);
-        this.z(MappedClasses.Yg, "getList", "getListOrEmpty", true, MappedClasses.qt, String.class);
+        this.registerMethodMapping(MappedClasses.Yg, "getShort", "getShortOr", true, Short.TYPE, String.class, Short.TYPE);
+        this.registerMethodMapping(MappedClasses.Yg, "getList", "getListOrEmpty", true, MappedClasses.qt, String.class);
     }
 
     protected void jg() {
@@ -211,7 +211,7 @@ extends MemberNameRemapTable {
     }
 
     protected void jT() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             // empty if block
         }
     }
@@ -346,8 +346,8 @@ extends MemberNameRemapTable {
     }
 
     protected void I() {
-        this.z(MappedClasses.qt, "getString", "getStringOr", true, String.class, Integer.TYPE, String.class);
-        this.z(MappedClasses.qt, "getCompound", "getCompoundOrEmpty", true, MappedClasses.Yg, Integer.TYPE);
+        this.registerMethodMapping(MappedClasses.qt, "getString", "getStringOr", true, String.class, Integer.TYPE, String.class);
+        this.registerMethodMapping(MappedClasses.qt, "getCompound", "getCompoundOrEmpty", true, MappedClasses.Yg, Integer.TYPE);
     }
 
     protected void j3() {
@@ -375,7 +375,7 @@ extends MemberNameRemapTable {
 
     protected void jM() {
         this.B(MappedClasses.lF, "field_175252_a", "f_94518_");
-        this.z(MappedClasses.lF, "getPlayerName", "getNameForDisplay", true, MappedClasses.Yr, MappedClasses.Zc);
+        this.registerMethodMapping(MappedClasses.lF, "getPlayerName", "getNameForDisplay", true, MappedClasses.Yr, MappedClasses.Zc);
     }
 
     protected void Px() {
@@ -446,7 +446,7 @@ extends MemberNameRemapTable {
     }
 
     protected void jt() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             // empty if block
         }
     }
@@ -662,7 +662,7 @@ extends MemberNameRemapTable {
     }
 
     protected void P0() {
-        this.z(MappedClasses.YS, "drawEntityOnScreen", "renderEntityInInventory", true, Void.TYPE, MappedClasses.m, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Float.TYPE, MappedClasses.qb, MappedClasses.z3, MappedClasses.z3, MappedClasses.P);
+        this.registerMethodMapping(MappedClasses.YS, "drawEntityOnScreen", "renderEntityInInventory", true, Void.TYPE, MappedClasses.m, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, Float.TYPE, MappedClasses.qb, MappedClasses.z3, MappedClasses.z3, MappedClasses.P);
     }
 
     protected void Pq() {
@@ -996,8 +996,8 @@ extends MemberNameRemapTable {
         this.t(MappedClasses.uQ, "func_243247_a", "m_92841_");
         this.t(MappedClasses.uQ, "func_243246_a", Vape.INSTANCE.isVanillaMinecraftPresent() ? "drawShadow" : "m_92763_");
         this.t(MappedClasses.uQ, "func_243248_b", Vape.INSTANCE.isVanillaMinecraftPresent() ? "draw" : "m_92889_");
-        this.z(MappedClasses.uQ, "drawInBatch", "drawInBatch", true, Void.TYPE, String.class, Float.TYPE, Float.TYPE, Integer.TYPE, Boolean.TYPE, MappedClasses.qr, MappedClasses.ZK, MappedClasses.Y8, Integer.TYPE, Integer.TYPE);
-        this.z(MappedClasses.m, "drawString", "drawString", true, Void.TYPE, MappedClasses.uQ, String.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Boolean.TYPE);
+        this.registerMethodMapping(MappedClasses.uQ, "drawInBatch", "drawInBatch", true, Void.TYPE, String.class, Float.TYPE, Float.TYPE, Integer.TYPE, Boolean.TYPE, MappedClasses.qr, MappedClasses.ZK, MappedClasses.Y8, Integer.TYPE, Integer.TYPE);
+        this.registerMethodMapping(MappedClasses.m, "drawString", "drawString", true, Void.TYPE, MappedClasses.uQ, String.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Boolean.TYPE);
     }
 
     protected void jX() {

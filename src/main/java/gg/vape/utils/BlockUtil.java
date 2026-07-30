@@ -146,7 +146,7 @@ public class BlockUtil {
             if (block.equals(Blocks.j())) {
                 return false;
             }
-            Object object2 = ChunkSection.u(n5 << 4, ForgeVersion.MC_1_16_5.v() && !world.i().E());
+            Object object2 = ChunkSection.u(n5 << 4, ForgeVersion.MC_1_16_5.v() && !world.i().hasNoSky());
             chunk.R()[n5] = object2;
             object = object2;
         }

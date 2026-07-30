@@ -86,7 +86,7 @@ extends Mod {
     }
 
     @Override
-    public void t() {
+    public void onFinishModuleInitialization() {
         this.initAimAssist();
     }
 

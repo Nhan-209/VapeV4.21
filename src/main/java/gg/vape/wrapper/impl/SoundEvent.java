@@ -9,7 +9,6 @@ extends Wrapper {
     }
 
     public ResourceLocation V() {
-        return new ResourceLocation(SoundEvent.vapeInstance.getMappingsMapperCompat().Cb.q(this.I));
+        return new ResourceLocation(SoundEvent.vapeInstance.getMappingsMapperCompat().Cb.getName(this.I));
     }
 }
-

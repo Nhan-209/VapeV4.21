@@ -6,21 +6,16 @@ import gg.vape.mapping.MappingMethod;
 
 public class MC03PacketPlayerBridge
 extends Mapping {
-    private static final String b = "<init>";
-    private final MappingMethod d;
+    private static final String CONSTRUCTOR_METHOD_NAME = "<init>";
+    private final MappingMethod constructorMethod;
 
-    public Object W(boolean bl, boolean bl2) {
-        return this.d.newInstance(bl, bl2);
+    public Object newInstance(boolean onGround, boolean horizontalCollision) {
+        return this.constructorMethod.newInstance(onGround, horizontalCollision);
     }
 
     public MC03PacketPlayerBridge() {
         super(MappedClasses.Dl);
-        Class[] classArray = new Class[]{Boolean.TYPE, Boolean.TYPE};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = b;
-        MC03PacketPlayerBridge mC03PacketPlayerBridge = this;
-        this.d = this.Y(string, bl, clazz, classArray);
+        this.constructorMethod = this.Y(CONSTRUCTOR_METHOD_NAME, false, Void.TYPE, new Class[]{Boolean.TYPE, Boolean.TYPE});
     }
 }
 

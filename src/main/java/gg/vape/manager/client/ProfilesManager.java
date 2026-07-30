@@ -41,17 +41,17 @@ public class ProfilesManager {
 
     public void resetAllSettings() {
         for (Mod object : Vape.INSTANCE.getModManager().getAllModules()) {
-            if (object.getCategory() == Category.NONE && !(object instanceof Search) || object.r$src$Z$14eylz9()) {
+            if (object.getCategory() == Category.NONE && !(object instanceof Search) || object.isEnabled()) {
                 // empty if block
             }
-            if (object.a().usesOwnKeybindStorage()) {
-                object.a().getBoundInputs().clear();
-                if (object.M$src$I$13um7m9() != 0) {
-                    object.a().getBoundInputs().add(object.M$src$I$13um7m9());
+            if (object.getBind().usesOwnKeybindStorage()) {
+                object.getBind().getBoundInputs().clear();
+                if (object.getDefaultKeybind() != 0) {
+                    object.getBind().getBoundInputs().add(object.getDefaultKeybind());
                 }
             }
-            object.C(object.b());
-            for (Value<?, ?> value : object.V()) {
+            object.setVisibility(object.isDefaultVisible());
+            for (Value<?, ?> value : object.getAllValues()) {
                 value.reset();
             }
         }

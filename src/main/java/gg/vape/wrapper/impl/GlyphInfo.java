@@ -37,7 +37,7 @@ extends Wrapper {
 
     public float F(boolean bl) {
         FontGlyphInfo fontGlyphInfo = this.z();
-        return fontGlyphInfo != null ? fontGlyphInfo.f(bl) : 0.0f;
+        return fontGlyphInfo != null ? fontGlyphInfo.getAdvance(bl) : 0.0f;
     }
 
     public float j() {

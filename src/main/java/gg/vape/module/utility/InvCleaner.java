@@ -64,7 +64,7 @@ implements InventoryActionModule {
 
     @Override
     public boolean isPerformingInventoryAction() {
-        return this.r$src$Z$14eylz9() && this.active && (this.openInventory.getEffectiveValue() != false || Minecraft.currentScreen().isNull());
+        return this.isEnabled() && this.active && (this.openInventory.getEffectiveValue() != false || Minecraft.currentScreen().isNull());
     }
 
     public InvCleaner() {
@@ -80,7 +80,7 @@ implements InventoryActionModule {
         this.onKeyOption = new ModeOption("On Key");
         this.toggleOption = new ModeOption("Toggle");
         this.activation = ModeValue.create((Object)this, "Activation", this.onKeyOption, this.onKeyOption, this.toggleOption);
-        this.R(false);
+        this.setDefaultVisibility(false);
         this.activation.addDependentValues(this.openInventory, this.inventoryOnly);
         this.activation.addActiveMode(this.openInventory, this.onKeyOption);
         this.activation.addActiveMode(this.inventoryOnly, this.toggleOption);
@@ -151,7 +151,7 @@ implements InventoryActionModule {
     }
 
     @Override
-    public boolean X() {
+    public boolean isRequiresBind() {
         return this.activation.getValue() == this.onKeyOption;
     }
 
@@ -279,7 +279,7 @@ implements InventoryActionModule {
         EntityPlayerSP localPlayer = event.getThePlayer();
         if (!this.active) {
             if (this.buildCleanupQueue() && !this.active && this.activation.getValue() == this.onKeyOption) {
-                this.Y(false);
+                this.setEnabled(false);
                 if (this.openInventory.getEffectiveValue().booleanValue()) {
                     this.closeInventoryIfOpen(localPlayer);
                 }
@@ -290,7 +290,7 @@ implements InventoryActionModule {
             return;
         }
         if (this.active && this.openInventory.getEffectiveValue().booleanValue() && !Minecraft.currentScreen().isInstance(MappedClasses.Ft)) {
-            this.F();
+            this.toggle();
             return;
         }
         if (!this.clickQueue.isEmpty()) {
@@ -302,7 +302,7 @@ implements InventoryActionModule {
             return;
         }
         if (this.activation.getValue() == this.onKeyOption) {
-            this.Y(false);
+            this.setEnabled(false);
             if (this.openInventory.getEffectiveValue().booleanValue()) {
                 this.closeInventoryIfOpen(localPlayer);
             }
@@ -310,7 +310,7 @@ implements InventoryActionModule {
             this.active = false;
         }
         if (localPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode() && Minecraft.currentScreen().isInstance(MappedClasses.Ft) && this.activation.getValue() == this.onKeyOption) {
-            this.Y(false);
+            this.setEnabled(false);
         }
     }
 }

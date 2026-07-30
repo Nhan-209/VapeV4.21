@@ -95,7 +95,7 @@ public final class ClientSettingsComponentFactory {
         ArrayList<GuiComponent> arrayList = new ArrayList<GuiComponent>();
         ClientSettingsColorValueEditorComponent clientSettingsColorValueEditorComponent = new ClientSettingsColorValueEditorComponent(clientSettings.guiColor);
         arrayList.add(clientSettingsColorValueEditorComponent);
-        arrayList.add(new BindValueRowComponent("Rebind GUI", clientSettings2.a()).w("Change the bind of the GUI"));
+        arrayList.add(new BindValueRowComponent("Rebind GUI", clientSettings2.getBind()).w("Change the bind of the GUI"));
         arrayList.add(new ColorDividerComponent(themeColors.i));
         return arrayList;
     }

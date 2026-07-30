@@ -20,7 +20,7 @@ extends TileEntity {
             if (openedChestTypeSentinel.isNull()) {
                 return 0;
             }
-            int n = TileEntityOpenedChest.vapeInstance.getMappingsMapperCompat().h5.b(this.getObject()).equals(OpenedChestTypeSentinel.Y().getObject()) ? 0 : 1;
+            int n = TileEntityOpenedChest.vapeInstance.getMappingsMapperCompat().h5.b(this.getObject()).equals(OpenedChestTypeSentinel.basic().getObject()) ? 0 : 1;
             return n;
         }
         return TileEntityOpenedChest.vapeInstance.getMappingsMapperCompat().h5.s(this.getObject());

@@ -84,7 +84,7 @@ extends Mod {
     }
 
     public float getExpansionAmount() {
-        if (!this.r$src$Z$14eylz9()) {
+        if (!this.isEnabled()) {
             return 0.0f;
         }
         return ((Double)this.expandAmount.getValue()).floatValue();

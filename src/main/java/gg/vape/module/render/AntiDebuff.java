@@ -36,7 +36,7 @@ extends Mod {
     public AntiDebuff() {
         super("AntiDebuff", -256, Category.RENDER, "Removes negative visual potion effects");
         this.removeEffects = BooleanValue.create(this, "Remove Effects", false, "Removes non-visual effects\nCan be detected by anti-cheat");
-        this.R(false);
+        this.setDefaultVisibility(false);
         this.addValue(this.removeNausea, this.removeBlindness, this.removeSlowness, this.removeEffects);
     }
 

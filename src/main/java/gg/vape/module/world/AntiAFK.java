@@ -203,7 +203,7 @@ extends Mod {
             this.rotationClaim.release(this);
             if (this.disablePending) {
                 this.disablePending = false;
-                super.Y(false);
+                super.setEnabled(false);
             }
         }
     }

@@ -30,7 +30,7 @@ extends Wrapper {
 
     public GlyphInfo T(char c2) {
         FontGlyph p4_02 = this.G(c2);
-        GlyphInfo glyphInfo = p4_02 != null ? p4_02.x() : null;
+        GlyphInfo glyphInfo = p4_02 != null ? p4_02.asGlyphInfo() : null;
         return glyphInfo;
     }
 

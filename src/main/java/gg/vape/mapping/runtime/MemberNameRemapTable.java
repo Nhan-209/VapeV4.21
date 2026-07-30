@@ -15,60 +15,60 @@ public class MemberNameRemapTable {
     private final HashMap<Class<?>, Map<String, MemberLookupSignature>> methodMappings = new HashMap();
     private static final String initializerMethodName;
 
-    public static String[] C() {
+    public static String[] getControlFlowState() {
         return controlFlowState;
     }
 
-    public void G(Class<?> clazz, String string, String string2, Class<?> clazz2) {
-        this.L(clazz, string, string2, null, clazz2);
+    public void G(Class<?> ownerClass, String sourceName, String runtimeName, Class<?> resolvedType) {
+        this.registerFieldMapping(ownerClass, sourceName, runtimeName, null, resolvedType);
     }
 
-    public void f(Class<?> clazz, String string, String string2, Class<?> clazz2, Class<?> ... classArray) {
-        this.z(clazz, string, string2, null, clazz2, classArray);
+    public void f(Class<?> ownerClass, String sourceName, String runtimeName, Class<?> returnType, Class<?> ... parameterTypes) {
+        this.registerMethodMapping(ownerClass, sourceName, runtimeName, null, returnType, parameterTypes);
     }
 
-    public void L(Class<?> clazz, String string, String string2, Boolean bl, Class<?> clazz2) {
-        this.fieldMappings.compute(clazz, (arg_0, arg_1) -> MemberNameRemapTable.lambda$setFieldMapping$0(string, string2, bl, clazz2, arg_0, arg_1));
+    public void registerFieldMapping(Class<?> ownerClass, String sourceName, String runtimeName, Boolean mappedMemberOverride, Class<?> resolvedType) {
+        this.fieldMappings.compute(ownerClass, (ignoredOwner, existingMappings) -> MemberNameRemapTable.lambda$setFieldMapping$0(sourceName, runtimeName, mappedMemberOverride, resolvedType, ignoredOwner, existingMappings));
     }
 
-    public void f(Class<?> clazz, String string, String string2, boolean bl) {
-        this.L(clazz, string, string2, bl, null);
+    public void f(Class<?> ownerClass, String sourceName, String runtimeName, boolean mappedMemberOverride) {
+        this.registerFieldMapping(ownerClass, sourceName, runtimeName, mappedMemberOverride, null);
     }
 
-    public boolean v() {
+    public boolean isVanillaMinecraftAbsent() {
         return !Vape.INSTANCE.isVanillaMinecraftPresent();
     }
 
-    private static Exception a(Exception exception) {
+    private static Exception identityException(Exception exception) {
         return exception;
     }
 
-    public void z(Class<?> clazz, String string, String string2, Boolean bl, Class<?> clazz2, Class<?> ... classArray) {
-        this.methodMappings.compute(clazz, (arg_0, arg_1) -> MemberNameRemapTable.lambda$setMethodMapping$1(string, string2, bl, clazz2, classArray, arg_0, arg_1));
+    public void registerMethodMapping(Class<?> ownerClass, String sourceName, String runtimeName, Boolean mappedMemberOverride, Class<?> returnType, Class<?> ... parameterTypes) {
+        this.methodMappings.compute(ownerClass, (ignoredOwner, existingMappings) -> MemberNameRemapTable.lambda$setMethodMapping$1(sourceName, runtimeName, mappedMemberOverride, returnType, parameterTypes, ignoredOwner, existingMappings));
     }
 
     @Nullable
-    public MemberLookupSignature U(Class<?> clazz, String string) {
-        Map<String, MemberLookupSignature> map = this.fieldMappings.get(clazz);
-        if (map == null) {
+    public MemberLookupSignature lookupFieldMapping(Class<?> ownerClass, String fieldName) {
+        Map<String, MemberLookupSignature> mappings = this.fieldMappings.get(ownerClass);
+        if (mappings == null) {
             return null;
         }
-        return map.getOrDefault(string, null);
+        return mappings.getOrDefault(fieldName, null);
     }
 
-    public void B(Class<?> clazz, String string, String string2) {
-        this.L(clazz, string, string2, null, null);
+    public void B(Class<?> ownerClass, String sourceName, String runtimeName) {
+        this.registerFieldMapping(ownerClass, sourceName, runtimeName, null, null);
     }
 
-    public void T() {
-        ArrayList<Class<?>> arrayList = new ArrayList<Class<?>>();
-        for (Class<?> clazz = this.getClass(); clazz != null && MemberNameRemapTable.class.isAssignableFrom(clazz) && clazz != MemberNameRemapTable.class; clazz = clazz.getSuperclass()) {
-            arrayList.add(clazz);
+    public void initializeMappings() {
+        ArrayList<Class<?>> tableHierarchy = new ArrayList<Class<?>>();
+        for (Class<?> tableClass = this.getClass(); tableClass != null && MemberNameRemapTable.class.isAssignableFrom(tableClass) && tableClass != MemberNameRemapTable.class; tableClass = tableClass.getSuperclass()) {
+            tableHierarchy.add(tableClass);
         }
-        Collections.reverse(arrayList);
-        for (Class<?> clazz : arrayList) {
-            Method[] methodArray;
-            for (Method method : methodArray = clazz.getDeclaredMethods()) {
+        Collections.reverse(tableHierarchy);
+        for (Class<?> tableClass : tableHierarchy) {
+            Method[] declaredMethods;
+            for (Method method : declaredMethods = tableClass.getDeclaredMethods()) {
                 if (method.getParameterCount() != 0 || initializerMethodName.equals(method.getName())) continue;
                 method.setAccessible(true);
                 try {
@@ -82,44 +82,44 @@ public class MemberNameRemapTable {
     }
 
     @Nullable
-    public MemberLookupSignature B(Class<?> clazz, String string) {
-        Map<String, MemberLookupSignature> map = this.methodMappings.get(clazz);
-        if (map == null) {
+    public MemberLookupSignature lookupMethodMapping(Class<?> ownerClass, String methodName) {
+        Map<String, MemberLookupSignature> mappings = this.methodMappings.get(ownerClass);
+        if (mappings == null) {
             return null;
         }
-        return map.getOrDefault(string, null);
+        return mappings.getOrDefault(methodName, null);
     }
 
-    public static void w(String[] stringArray) {
-        controlFlowState = stringArray;
+    public static void setControlFlowState(String[] state) {
+        controlFlowState = state;
     }
 
-    private static Map lambda$setMethodMapping$1(String string, String string2, Boolean bl, Class clazz, Class[] classArray, Class clazz2, Map hashMap) {
-        if (hashMap == null) {
-            hashMap = new HashMap<String, MemberLookupSignature>();
+    private static Map lambda$setMethodMapping$1(String sourceName, String runtimeName, Boolean mappedMemberOverride, Class returnType, Class[] parameterTypes, Class ignoredOwner, Map mappings) {
+        if (mappings == null) {
+            mappings = new HashMap<String, MemberLookupSignature>();
         }
-        hashMap.put(string, new MemberLookupSignature(string2, bl, clazz, classArray));
-        return hashMap;
+        mappings.put(sourceName, new MemberLookupSignature(runtimeName, mappedMemberOverride, returnType, parameterTypes));
+        return mappings;
     }
 
-    public void t(Class<?> clazz, String string, String string2) {
-        this.f(clazz, string, string2, null, new Class[0]);
+    public void t(Class<?> ownerClass, String sourceName, String runtimeName) {
+        this.f(ownerClass, sourceName, runtimeName, null, new Class[0]);
     }
 
     static {
-        MemberNameRemapTable.w(null);
+        MemberNameRemapTable.setControlFlowState(null);
         initializerMethodName = "initialize";
     }
 
-    public void b(Class<?> clazz, String string, String string2, boolean bl) {
-        this.z(clazz, string, string2, bl, null, new Class[0]);
+    public void b(Class<?> ownerClass, String sourceName, String runtimeName, boolean mappedMemberOverride) {
+        this.registerMethodMapping(ownerClass, sourceName, runtimeName, mappedMemberOverride, null, new Class[0]);
     }
 
-    private static Map lambda$setFieldMapping$0(String string, String string2, Boolean bl, Class clazz, Class clazz2, Map hashMap) {
-        if (hashMap == null) {
-            hashMap = new HashMap<String, MemberLookupSignature>();
+    private static Map lambda$setFieldMapping$0(String sourceName, String runtimeName, Boolean mappedMemberOverride, Class resolvedType, Class ignoredOwner, Map mappings) {
+        if (mappings == null) {
+            mappings = new HashMap<String, MemberLookupSignature>();
         }
-        hashMap.put(string, new MemberLookupSignature(string2, bl, clazz, new Class[0]));
-        return hashMap;
+        mappings.put(sourceName, new MemberLookupSignature(runtimeName, mappedMemberOverride, resolvedType, new Class[0]));
+        return mappings;
     }
 }

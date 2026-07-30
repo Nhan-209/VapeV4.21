@@ -11,13 +11,6 @@ import gg.vape.event.IEvent;
 import gg.vape.event.impl.EventKeyPress;
 import gg.vape.event.impl.EventModStateChange;
 import gg.vape.input.BindActivationMode;
-import gg.vape.module.Category;
-import gg.vape.module.DelayedModuleToggleTask;
-import gg.vape.module.MinecraftVersionConstraint;
-import gg.vape.module.ModDisplayInfo;
-import gg.vape.module.ModuleDisplayScope;
-import gg.vape.module.SubModule;
-import gg.vape.module.UtilityMod;
 import gg.vape.notification.NotificationType;
 import gg.vape.notification.ReusableTextNotification;
 import gg.vape.ui.click.frame.impl.main.ClickGuiModuleCardRenderState;
@@ -47,7 +40,7 @@ EventListener {
     private final ReusableTextNotification toggleNotification;
     private DelayedModuleToggleTask moduleRunnable;
     private final Bendable bind;
-    protected Category E;
+    protected Category category;
     private final List<Value<?, ?>> values;
     private boolean requiresBind;
     private boolean favorited;
@@ -62,7 +55,7 @@ EventListener {
     private final List<Value<?, ?>> allValues = new ArrayList();
     private String tooltip;
 
-    public ModDisplayInfo J() {
+    public ModuleDisplayInfo getModuleDisplayInfo() {
         return null;
     }
 
@@ -70,26 +63,26 @@ EventListener {
         return "";
     }
 
-    public void k(SubModule ... subModuleArray) {
-        this.u().addAll(Arrays.asList(subModuleArray));
+    public void registerSubModule(SubModule ... subModuleArray) {
+        this.getSubModules().addAll(Arrays.asList(subModuleArray));
     }
 
-    public ModuleDisplayScope J$src$Lgg_vape_module_ModuleDisplayScope_$1w905sh() {
+    public ModuleDisplayScope getModuleDisplayScope() {
         return this.displayScope;
     }
 
     public void onEnable() {
     }
 
-    public SubModule a(String string) {
-        for (SubModule subModule : this.u()) {
+    public SubModule getSubModule(String string) {
+        for (SubModule subModule : this.getSubModules()) {
             if (!subModule.getName().equalsIgnoreCase(string)) continue;
             return subModule;
         }
         return null;
     }
 
-    public void C(boolean bl) {
+    public void setVisibility(boolean bl) {
         this.visible = bl;
     }
 
@@ -164,23 +157,23 @@ EventListener {
     }
 
     public Category getCategory() {
-        return this.E;
+        return this.category;
     }
 
-    public void R(boolean bl) {
+    public void setDefaultVisibility(boolean bl) {
         this.defaultVisible = bl;
         this.visible = bl;
     }
 
-    public void B() {
+    public void showToggleNotification() {
         this.toggleNotification.setDefaultDuration(1500L);
-        this.toggleNotification.withTitle("\u00a7f" + this.getName())
-                .withMessage(this.r$src$Z$14eylz9() ? "\u00a72Enabled" : "\u00a7cDisabled").reset();
+        this.toggleNotification.withTitle("§f" + this.getName())
+                .withMessage(this.isEnabled() ? "§2Enabled" : "§cDisabled").reset();
         Vape.INSTANCE.getNotificationManager().show(this.toggleNotification);
     }
 
     @Nullable
-    public JsonObject q(boolean bl) {
+    public JsonObject toJson(boolean bl) {
         JsonArray jsonArray;
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("name", this.getName());
@@ -216,9 +209,9 @@ EventListener {
     }
 
     public void syncSubModuleStates(boolean enabled, boolean bypassVisibilityCheck) {
-        for (SubModule subModule : this.u()) {
+        for (SubModule subModule : this.getSubModules()) {
             if (subModule.isSelectedSubModule()) {
-                if (subModule.r$src$Z$14eylz9() == enabled) continue;
+                if (subModule.isEnabled() == enabled) continue;
                 subModule.setEnabled(enabled, bypassVisibilityCheck);
                 continue;
             }
@@ -242,7 +235,7 @@ EventListener {
         this(string, n, 0, Category.NONE, null);
     }
 
-    public void M(boolean bl) {
+    public void setFavorite(boolean bl) {
         this.favorited = bl;
     }
 
@@ -258,16 +251,20 @@ EventListener {
         return this.getProperty(PropertyContainer.NEW_BADGE);
     }
 
-    public void F() {
-        if (this.X() && this.bind.usesOwnKeybindStorage() && this.bind.getBoundInputs().isEmpty()) {
+    public void toggle() {
+        if (this.isRequiresBind() && this.bind.usesOwnKeybindStorage() && this.bind.getBoundInputs().isEmpty()) {
             return;
         }
-        this.Y(!this.enabled);
+        this.setEnabled(!this.enabled);
+    }
+
+    public void onBindActivated() {
+        this.toggle();
     }
 
     public void setEnabled(boolean enabled, boolean bypassVisibilityCheck) {
         boolean stateChanged = this.enabled != enabled;
-        if (!bypassVisibilityCheck && !this.O() && this.E != Category.NONE && enabled) {
+        if (!bypassVisibilityCheck && !this.isVisible() && this.category != Category.NONE && enabled) {
             if (Vape.INSTANCE.getNotificationManager() != null) {
                 Vape.INSTANCE.getNotificationManager().show("Hidden Module", "Attempted to toggle " + this.getName() + "!", NotificationType.WARNING, 2500L);
             }
@@ -292,7 +289,7 @@ EventListener {
             }
         }
         this.syncSubModuleStates(enabled, bypassVisibilityCheck);
-        if (stateChanged && this.E != Category.NONE) {
+        if (stateChanged && this.category != Category.NONE) {
             Vape.INSTANCE.saveAndStop();
         }
     }
@@ -301,14 +298,10 @@ EventListener {
         return exception;
     }
 
-    public void y() {
-        this.F();
+    public void onFinishModuleInitialization() {
     }
 
-    public void t() {
-    }
-
-    public String n() {
+    public String getToolTip() {
         return this.tooltip;
     }
 
@@ -322,10 +315,10 @@ EventListener {
         Object t = subModuleValue.getInstance();
         Object t2 = subModuleValue2.getInstance();
         if (((SubModule)t).isParentEnabled()) {
-            ((Mod)t).Y(false);
+            ((Mod)t).setEnabled(false);
         }
         if (!((SubModule)t2).isParentEnabled()) {
-            ((Mod)t2).Y(true);
+            ((Mod)t2).setEnabled(true);
         }
     }
 
@@ -357,7 +350,7 @@ EventListener {
         }
     }
 
-    public void Y(boolean bl) {
+    public void setEnabled(boolean bl) {
         this.setEnabled(bl, false);
     }
 
@@ -373,19 +366,19 @@ EventListener {
         return this.name;
     }
 
-    public boolean X() {
+    public boolean isRequiresBind() {
         return this.requiresBind;
     }
 
-    public boolean O() {
+    public boolean isVisible() {
         return this.visible;
     }
 
     public String toString() {
-        return "Module{name='" + this.name + '\'' + ", defaultKeybind=" + this.defaultKeybind + ", guiColor=" + this.guiColor + ", values=" + this.values + ", subModules=" + this.subModules + ", guiCategory=" + this.E + ", enabled=" + this.enabled + ", requiresBind=" + this.requiresBind + ", tooltip='" + this.tooltip + '\'' + ", moduleRunnable=" + this.moduleRunnable + ", defaultVisible=" + this.defaultVisible + ", visible=" + this.visible + ", favorited=" + this.favorited + '}';
+        return "Module{name='" + this.name + '\'' + ", defaultKeybind=" + this.defaultKeybind + ", guiColor=" + this.guiColor + ", values=" + this.values + ", subModules=" + this.subModules + ", guiCategory=" + this.category + ", enabled=" + this.enabled + ", requiresBind=" + this.requiresBind + ", tooltip='" + this.tooltip + '\'' + ", moduleRunnable=" + this.moduleRunnable + ", defaultVisible=" + this.defaultVisible + ", visible=" + this.visible + ", favorited=" + this.favorited + '}';
     }
 
-    public List<SubModule> u() {
+    public List<SubModule> getSubModules() {
         return this.subModules;
     }
 
@@ -402,18 +395,18 @@ EventListener {
         return this::matchesEnabled;
     }
 
-    public boolean b() {
+    public boolean isDefaultVisible() {
         return this.defaultVisible;
     }
 
     public void onScheduledAction() {
     }
 
-    public boolean r$src$Z$14eylz9() {
+    public boolean isEnabled() {
         return this.enabled;
     }
 
-    public static String o() {
+    public static String getStaticName() {
         return staticName;
     }
 
@@ -434,29 +427,29 @@ EventListener {
         if (!this.valueDisplayDescriptors.isEmpty()) {
             return ModuleValueDisplayFormatter.formatDescriptorSummary(this.valueDisplayDescriptors);
         }
-        if (this.F$src$Ljava_util_List_$1kytx9u().isEmpty()) {
+        if (this.getValues().isEmpty()) {
             return "";
         }
-        return ModuleValueDisplayFormatter.formatValueSummary(this.F$src$Ljava_util_List_$1kytx9u());
+        return ModuleValueDisplayFormatter.formatValueSummary(this.getValues());
     }
 
-    public List<Value<?, ?>> V() {
+    public List<Value<?, ?>> getAllValues() {
         return this.allValues;
     }
 
-    public void o(ModuleDisplayScope moduleDisplayScope) {
+    public void setModuleDisplayScope(ModuleDisplayScope moduleDisplayScope) {
         this.displayScope = moduleDisplayScope;
     }
 
     public Value getValue(String string) {
-        for (Value<?, ?> value : this.V()) {
+        for (Value<?, ?> value : this.getAllValues()) {
             if (!value.getId().equalsIgnoreCase(string) && !value.getName().equalsIgnoreCase(string)) continue;
             return value;
         }
         return null;
     }
 
-    public int h() {
+    public int getGuiColor() {
         return this.guiColor;
     }
 
@@ -477,7 +470,7 @@ EventListener {
         Mod.A("r6YMSc");
     }
 
-    public Bendable a() {
+    public Bendable getBind() {
         return this.bind;
     }
 
@@ -485,18 +478,18 @@ EventListener {
     }
 
     private boolean matchesEnabled(IEvent iEvent) {
-        return this.r$src$Z$14eylz9();
+        return this.isEnabled();
     }
 
-    public boolean f$src$Z$148d2ux() {
+    public boolean isFavorite() {
         return this.favorited;
     }
 
-    public int M$src$I$13um7m9() {
+    public int getDefaultKeybind() {
         return this.defaultKeybind;
     }
 
-    public List<ValueDisplayDescriptor> X$src$Ljava_util_List_$6aol0g() {
+    public List<ValueDisplayDescriptor> getValueDisplayDescriptors() {
         return this.valueDisplayDescriptors;
     }
 
@@ -511,7 +504,7 @@ EventListener {
     public void onDisable() {
     }
 
-    public List<Value<?, ?>> F$src$Ljava_util_List_$1kytx9u() {
+    public List<Value<?, ?>> getValues() {
         return this.values;
     }
 
@@ -519,10 +512,10 @@ EventListener {
         if (!this.valueDisplayDescriptors.isEmpty()) {
             return ModuleValueDisplayFormatter.buildDescriptorRenderStates(this.valueDisplayDescriptors);
         }
-        if (this.F$src$Ljava_util_List_$1kytx9u().isEmpty()) {
+        if (this.getValues().isEmpty()) {
             return Collections.emptyList();
         }
-        return ModuleValueDisplayFormatter.buildValueRenderStates(this.F$src$Ljava_util_List_$1kytx9u());
+        return ModuleValueDisplayFormatter.buildValueRenderStates(this.getValues());
     }
 
     public Mod(String string) {
@@ -538,7 +531,7 @@ EventListener {
         this.name = string;
         this.defaultKeybind = n;
         this.guiColor = n2;
-        this.E = category;
+        this.category = category;
         this.tooltip = string2;
         this.bind = this.C$src$Lgg_vape_unmap_Bendable_$1we4j6l();
         if (this.bind.usesOwnKeybindStorage() && n != 0) {
@@ -564,6 +557,6 @@ EventListener {
     }
 
     public boolean boolean_r() {
-        return this.r$src$Z$14eylz9();
+        return this.isEnabled();
     }
 }

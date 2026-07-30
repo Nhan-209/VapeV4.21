@@ -4,12 +4,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class PlayerDiggingAction
 extends Wrapper {
-    public static PlayerDiggingAction s() {
-        return new PlayerDiggingAction(PlayerDiggingAction.vapeInstance.getMappingsMapperCompat().Ci.l());
+    public static PlayerDiggingAction releaseUseItem() {
+        return new PlayerDiggingAction(PlayerDiggingAction.vapeInstance.getMappingsMapperCompat().Ci.getReleaseUseItem());
     }
 
-    public PlayerDiggingAction(Object object) {
-        super(object);
+    public PlayerDiggingAction(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

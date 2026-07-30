@@ -116,7 +116,7 @@ extends Mod {
             return;
         }
         ESP esp = Vape.INSTANCE.getModManager().getMod(ESP.class);
-        if (this.renderingChamsPass || this.renderPass == PASS_LEGACY || esp.r$src$Z$14eylz9() && esp.isOutlineModeActive()) {
+        if (this.renderingChamsPass || this.renderPass == PASS_LEGACY || esp.isEnabled() && esp.isOutlineModeActive()) {
             return;
         }
         if (!this.colored.getEffectiveValue().booleanValue()) {

@@ -5,11 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import gg.vape.Vape;
 import gg.vape.api.ApiHttpClient;
-import gg.vape.config.ClientSettings;
-import gg.vape.config.ConfigJsonUtils;
-import gg.vape.config.ProfileRemoteMetadata;
-import gg.vape.config.ProfileSnapshot;
-import gg.vape.config.PublicProfile;
 import gg.vape.module.Mod;
 import gg.vape.unmap.Bendable;
 import gg.vape.utils.Base64Util;
@@ -220,7 +215,7 @@ implements Comparable<Profile> {
             this.applyEnabledModuleStates();
         }
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-            if (!mod.r$src$Z$14eylz9()) continue;
+            if (!mod.isEnabled()) continue;
             mod.syncSubModuleStates(true, true);
         }
         Vape.INSTANCE.getModManager().disableHiddenModules();

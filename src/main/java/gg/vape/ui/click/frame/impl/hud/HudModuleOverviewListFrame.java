@@ -5,7 +5,6 @@ import gg.vape.module.Mod;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.ui.click.frame.Frame;
-import gg.vape.ui.click.frame.impl.hud.HudModuleToggleComponent;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.NameComparator;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -28,7 +27,7 @@ extends Frame {
         mods.sort(new NameComparator());
         for (Mod mod : mods) {
             HudModule hudModule;
-            if (!(mod instanceof HudModule) || !(hudModule = (HudModule)mod).f$src$Z$148d2ux()) continue;
+            if (!(mod instanceof HudModule) || !(hudModule = (HudModule)mod).isFavorite()) continue;
             HudModuleToggleComponent hudModuleToggleComponent = new HudModuleToggleComponent(hudModule);
             if (hudModule.getConfigFrameClass() != null) {
                 hudModuleToggleComponent.setConfigFrame((Frame)ClientSettings.getFrame(hudModule.getConfigFrameClass()));
@@ -66,7 +65,7 @@ extends Frame {
     private boolean hasFavoriteModule() {
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
             HudModule hudModule;
-            if (!(mod instanceof HudModule) || !(hudModule = (HudModule)mod).f$src$Z$148d2ux()) continue;
+            if (!(mod instanceof HudModule) || !(hudModule = (HudModule)mod).isFavorite()) continue;
             return true;
         }
         return false;

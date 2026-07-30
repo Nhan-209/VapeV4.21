@@ -43,7 +43,7 @@ extends Mod {
     public Speed() {
         super("Speed", 49630, Category.HIDDEN, "Increases your movement with various methods.");
         this.mode = ModeValue.create((Object)this, "Mode", "Speed mode to use.\nAntiCheat B works on various servers\nBhop - Bypasses Old NCP", (ModeSelection)this.bhopMode, this.antiCheatBMode, this.bhopMode);
-        this.R(false);
+        this.setDefaultVisibility(false);
         this.addValue(this.mode);
     }
 

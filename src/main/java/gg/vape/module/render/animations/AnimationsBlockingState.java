@@ -92,10 +92,10 @@ extends AnimationsMode {
 
     private boolean isAutoClickerActive() {
         LeftClicker leftClicker = Vape.INSTANCE.getModManager().getMod(LeftClicker.class);
-        if (leftClicker.r$src$Z$14eylz9()) {
+        if (leftClicker.isEnabled()) {
             return true;
         }
         SilentAura silentAura = Vape.INSTANCE.getModManager().getMod(SilentAura.class);
-        return silentAura.r$src$Z$14eylz9();
+        return silentAura.isEnabled();
     }
 }

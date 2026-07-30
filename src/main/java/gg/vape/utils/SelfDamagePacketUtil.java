@@ -1,4 +1,4 @@
-package gg.vape.movement;
+package gg.vape.utils;
 
 import gg.vape.config.ClientSettings;
 import gg.vape.wrapper.impl.CPacketPlayerPosition;

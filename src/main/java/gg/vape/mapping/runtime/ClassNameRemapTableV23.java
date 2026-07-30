@@ -4,14 +4,14 @@ import gg.vape.mapping.runtime.ClassNameRemapTable;
 
 public class ClassNameRemapTableV23
 extends ClassNameRemapTable {
-    private static String E;
+    private static String controlFlowMarker;
 
     static {
-        ClassNameRemapTableV23.D("LdxEsc");
+        ClassNameRemapTableV23.setControlFlowMarker("LdxEsc");
     }
 
-    public static String K() {
-        return E;
+    public static String getControlFlowMarker() {
+        return controlFlowMarker;
     }
 
     public ClassNameRemapTableV23() {
@@ -84,8 +84,7 @@ extends ClassNameRemapTable {
         this.Q("net/minecraft/network/play/server/S19PacketEntityHeadLook", "net/minecraft/network/play/server/SPacketEntityHeadLook");
     }
 
-    public static void D(String string) {
-        E = string;
+    public static void setControlFlowMarker(String marker) {
+        controlFlowMarker = marker;
     }
 }
-

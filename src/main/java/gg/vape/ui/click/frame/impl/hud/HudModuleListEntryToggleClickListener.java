@@ -7,8 +7,6 @@ import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.GuiComponentContract;
 import gg.vape.ui.click.component.input.BindValueRowComponent;
 import gg.vape.ui.click.component.value.ValueComponentFactory;
-import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrame;
-import gg.vape.ui.click.frame.impl.hud.HudModuleListEntry;
 import gg.vape.value.Value;
 
 public class HudModuleListEntryToggleClickListener
@@ -25,7 +23,7 @@ implements GuiClickListener {
         }
         hudModuleConfigFrame.setSelectedModule(this.module);
         hudModuleConfigFrame.removeMarkedChildren();
-        for (Value<?, ?> value : this.module.F$src$Ljava_util_List_$1kytx9u()) {
+        for (Value<?, ?> value : this.module.getValues()) {
             GuiComponent guiComponent = ValueComponentFactory.createMainValueComponent(value);
             if (guiComponent == null) continue;
             if (value.getParent() != null) {
@@ -36,7 +34,7 @@ implements GuiClickListener {
             hudModuleConfigFrame.h(guiComponent, new Object[0]);
         }
         if (this.module.shouldShowKeybindSetting()) {
-            hudModuleConfigFrame.h(new BindValueRowComponent(KEYBIND_LABEL, this.module.a()), new Object[0]);
+            hudModuleConfigFrame.h(new BindValueRowComponent(KEYBIND_LABEL, this.module.getBind()), new Object[0]);
         }
         this.listEntry.getSettingsButton().setVisible(true);
         hudModuleConfigFrame.setVisible(true);

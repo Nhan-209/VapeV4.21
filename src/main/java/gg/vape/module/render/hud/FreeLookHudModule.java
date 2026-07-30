@@ -14,8 +14,6 @@ import gg.vape.event.impl.EventRenderPlayerPost;
 import gg.vape.event.impl.EventRenderPlayerPre;
 import gg.vape.event.impl.EventTickBase;
 import gg.vape.module.control.SharedModuleControlClaims;
-import gg.vape.module.render.hud.HudModule;
-import gg.vape.module.render.hud.HudModuleGroup;
 import gg.vape.rotation.RotationManager;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
@@ -94,8 +92,8 @@ extends HudModule {
     }
 
     @Override
-    public void y() {
-        if (!this.r$src$Z$14eylz9() || Minecraft.currentScreen().isNotNull()) {
+    public void onBindActivated() {
+        if (!this.isEnabled() || Minecraft.currentScreen().isNotNull()) {
             return;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
@@ -137,7 +135,7 @@ extends HudModule {
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        this.enabled = this.a().areBoundInputsDown();
+        this.enabled = this.getBind().areBoundInputsDown();
         if (!this.enabled) {
             active = false;
             if (this.savedPerspective == -1) {

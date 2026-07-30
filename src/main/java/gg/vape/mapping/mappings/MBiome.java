@@ -9,44 +9,35 @@ import gg.vape.wrapper.impl.ForgeVersion;
 
 public class MBiome
 extends Mapping {
-    private MappingField w;
-    private MappingField g;
+    private MappingField categoryField;
+    private MappingField biomeNameField;
 
     public MBiome() {
-        this(MBiomeRegistrySwitch.L());
+        this(MBiomeRegistrySwitch.getBiomeRegistryControlFlowState());
     }
 
-    private MBiome(int[] nArray) {
+    private MBiome(int[] biomeRegistryControlFlowState) {
         super(MappedClasses.uK);
-        int[] nArray2 = nArray;
         if (ForgeVersion.MC_1_16_5.d() && ForgeVersion.MC_1_20_6.v()) {
-            Class clazz = MappedClasses.h;
-            boolean bl = true;
-            String string = "category";
-            MBiome mBiome = this;
-            this.w = mBiome.J(string, bl, clazz);
+            this.categoryField = this.J("category", true, MappedClasses.h);
         } else if (ForgeVersion.MC_1_16_5.v()) {
-            Class<String> clazz = String.class;
-            boolean bl = true;
-            String string = "biomeName";
-            MBiome mBiome = this;
-            this.g = mBiome.J(string, bl, clazz); 
+            this.biomeNameField = this.J("biomeName", true, String.class);
         }
         if (GuiComponent.getLegacyComponentState() == null) {
-            MBiomeRegistrySwitch.R(new int[1]);
+            MBiomeRegistrySwitch.setBiomeRegistryControlFlowState(new int[1]);
         }
     }
 
-    public static Object D(MBiome mBiome, Object object) {
-        return mBiome.o(object);
+    public static Object getCategory(MBiome mapping, Object biome) {
+        return mapping.readCategory(biome);
     }
 
-    public String q(Object object) {
-        return (String)this.g.getObject(object);
+    public String getBiomeName(Object biome) {
+        return (String)this.biomeNameField.getObject(biome);
     }
 
-    private Object o(Object object) {
-        return this.w.getObject(object);
+    private Object readCategory(Object biome) {
+        return this.categoryField.getObject(biome);
     }
 
 }

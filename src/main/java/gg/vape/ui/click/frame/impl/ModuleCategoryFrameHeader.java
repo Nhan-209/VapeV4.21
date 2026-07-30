@@ -8,13 +8,6 @@ import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.component.gui.TextLabel;
 import gg.vape.ui.click.component.module.ModuleComponent;
 import gg.vape.ui.click.frame.FrameHeaderComponent;
-import gg.vape.ui.click.frame.impl.ModuleCategoryFrame;
-import gg.vape.ui.click.frame.impl.ModuleCategoryFrameHeaderActionClickHandler;
-import gg.vape.ui.click.frame.impl.ModuleCategoryFrameHeaderClearModuleSelectionClickHandler;
-import gg.vape.ui.click.frame.impl.ModuleCategoryFrameHeaderCollapseToggleClickHandler;
-import gg.vape.ui.click.frame.impl.ModuleCategoryFrameHeaderNextModuleClickHandler;
-import gg.vape.ui.click.frame.impl.ModuleCategoryFrameHeaderSearchIconClickHandler;
-import gg.vape.ui.click.frame.impl.ModuleCategoryFrameHeaderSearchLabelClickHandler;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.render.ImageRenderer;
 import gg.vape.utils.render.RenderUtils;
@@ -63,7 +56,7 @@ extends FrameHeaderComponent {
                 guiComponent.setVisible(false);
                 continue;
             }
-            guiComponent.setVisible(!this.i.q() && ((ModuleComponent)guiComponent).getModule().O());
+            guiComponent.setVisible(!this.i.q() && ((ModuleComponent)guiComponent).getModule().isVisible());
         }
         this.w$src$Lgg_vape_ui_click_frame_Frame_$y4htd0().l$src$V$1mibm4x();
     }

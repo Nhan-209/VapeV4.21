@@ -94,7 +94,7 @@ extends ClickerMod {
         if (hitSelect == null) {
             return false;
         }
-        return hitSelect.r$src$Z$14eylz9() && hitSelect.isRightClickCancelActive();
+        return hitSelect.isEnabled() && hitSelect.isRightClickCancelActive();
     }
 
     public boolean shouldAllowClick(EntityPlayerSP player) {

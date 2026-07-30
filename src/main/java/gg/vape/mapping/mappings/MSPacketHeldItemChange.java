@@ -6,21 +6,16 @@ import gg.vape.mapping.MappingMethod;
 
 public class MSPacketHeldItemChange
 extends Mapping {
-    private static final String b = "<init>";
-    final MappingMethod p;
+    private static final String CONSTRUCTOR_METHOD_NAME = "<init>";
+    private final MappingMethod constructorMethod;
 
     public MSPacketHeldItemChange() {
         super(MappedClasses.l7);
-        Class[] classArray = new Class[]{Integer.TYPE};
-        Class<Void> clazz = Void.TYPE;
-        boolean bl = false;
-        String string = b;
-        MSPacketHeldItemChange mSPacketHeldItemChange = this;
-        this.p = this.Y(string, bl, clazz, classArray);
+        this.constructorMethod = this.Y(CONSTRUCTOR_METHOD_NAME, false, Void.TYPE, new Class[]{Integer.TYPE});
     }
 
-    public Object h(int n) {
-        return this.p.newInstance(n);
+    public Object newInstance(int slot) {
+        return this.constructorMethod.newInstance(slot);
     }
 }
 

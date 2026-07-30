@@ -1,8 +1,6 @@
 package gg.vape.config;
 
 import gg.vape.Vape;
-import gg.vape.config.ClientSettingsBindChangeListener;
-import gg.vape.config.PublicProfileSettings;
 import gg.vape.input.BindSet;
 import gg.vape.input.GlfwToVirtualKeyCodeMap;
 import gg.vape.input.KeyBindingInputState;
@@ -159,7 +157,7 @@ public class ClientSettings {
     }
 
     public boolean isTeammate(@Nullable EntityPlayerSP player, Entity entity) {
-        if (this.antiBot == null || !this.antiBot.r$src$Z$14eylz9()) {
+        if (this.antiBot == null || !this.antiBot.isEnabled()) {
             return false;
         }
         return this.antiBot.isTeammate(player, entity);

@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class ServerData
 extends Wrapper {
-    public ServerData(Object object) {
-        super(object);
+    public ServerData(Object wrappedObject) {
+        super(wrappedObject);
     }
 
-    public String f() {
-        return MServerData.T(ServerData.vapeInstance.getMappingsMapperCompat().ht, this.I);
+    public String getServerIp() {
+        return MServerData.getServerIp(ServerData.vapeInstance.getMappingsMapperCompat().ht, this.I);
     }
 }
-

@@ -6,11 +6,10 @@ import gg.vape.wrapper.Wrapper;
 public class BiomeRegistryName
 extends Wrapper {
     public String n() {
-        return MBiomeRegistryName.h(BiomeRegistryName.vapeInstance.getMappingsMapperCompat().hq, this.I);
+        return MBiomeRegistryName.getName(BiomeRegistryName.vapeInstance.getMappingsMapperCompat().hq, this.I);
     }
 
     public BiomeRegistryName(Object object) {
         super(object);
     }
 }
-

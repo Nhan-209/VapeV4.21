@@ -85,10 +85,10 @@ extends InteractiveComponent {
         this.categoryFrame = categoryFrame;
         this.module = module;
         this.fontScale = fontScale;
-        this.bindInput = new BindableInputComponent(module.a());
+        this.bindInput = new BindableInputComponent(module.getBind());
         this.setDisabledOverlayColor(ModuleComponent.J.i);
-        if (module.n() != null) {
-            this.w(module.n());
+        if (module.getToolTip() != null) {
+            this.w(module.getToolTip());
         }
         if (categoryFrame instanceof VisibleModuleListFrame) {
             this.favoriteMode = true;
@@ -115,7 +115,7 @@ extends InteractiveComponent {
             this.bindStatusStage = 0;
         } else if (this.statusText != null && this.statusText.toLowerCase(Locale.ROOT).startsWith("press") && !this.bindInput.isCapturing()) {
             this.setBindStatusStage(1);
-            if (this.module.a().getBindText().length() > 0) {
+            if (this.module.getBind().getBindText().length() > 0) {
                 this.setStatusText("bound to");
             } else {
                 this.setStatusText("bind removed");
@@ -228,7 +228,7 @@ extends InteractiveComponent {
         double contentX = this.G$src$D$1b2f02a() + 6.0;
         Color backgroundColor = this.getDisabledOverlayColor();
         Color activeTextColor = ModuleComponent.J.Z;
-        if (this.module.r$src$Z$14eylz9()) {
+        if (this.module.isEnabled()) {
             backgroundColor = J.z();
             activeTextColor = J.B();
         } else if (this.pressed || this.expanded || this.statusText != null) {
@@ -236,7 +236,7 @@ extends InteractiveComponent {
             activeTextColor = ModuleComponent.J.A;
         }
         double rightContentX = this.G$src$D$1b2f02a() + this.A() - 10.0 - 8.0;
-        if ((this.statusText != null && this.statusText.startsWith("MUST") || this.module.a().hasValidBinding() || this.pressed || this.bindInput.getCaptureTask().isCapturing() || this.expanded) && !ClientSettings.moduleSearchActive) {
+        if ((this.statusText != null && this.statusText.startsWith("MUST") || this.module.getBind().hasValidBinding() || this.pressed || this.bindInput.getCaptureTask().isCapturing() || this.expanded) && !ClientSettings.moduleSearchActive) {
             rightContentX -= this.bindInput.A();
             this.bindInput.K(rightContentX);
             this.bindInput.S(this.n() + 5.0);
@@ -247,7 +247,7 @@ extends InteractiveComponent {
         }
         if (this.expanded && !this.favoriteMode) {
             this.favoriteButton.setVisible(true);
-            this.favoriteButton.setOverrideColor(this.module.f$src$Z$148d2ux() ? ModuleComponent.J.I : (this.module.r$src$Z$14eylz9() ? activeTextColor : null));
+            this.favoriteButton.setOverrideColor(this.module.isFavorite() ? ModuleComponent.J.I : (this.module.isEnabled() ? activeTextColor : null));
             rightContentX -= this.favoriteButton.A();
             this.favoriteButton.K(rightContentX);
             this.favoriteButton.S(this.n());
@@ -283,7 +283,7 @@ extends InteractiveComponent {
                 double toggleInset = 7.0;
                 double innerBorderOffset = 0.5;
                 double centerFillOffset = innerBorderOffset + 0.5;
-                if (this.module.O()) {
+                if (this.module.isVisible()) {
                     GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + toggleInset, this.n() + toggleInset, toggleAreaWidth - toggleInset * 2.0, this.L() - toggleInset * 2.0, J.z());
                     GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + toggleInset + innerBorderOffset, this.n() + toggleInset + innerBorderOffset, toggleAreaWidth - (toggleInset + innerBorderOffset) * 2.0, this.L() - (toggleInset + innerBorderOffset) * 2.0, ModuleComponent.J.r);
                     GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + toggleInset + centerFillOffset, this.n() + toggleInset + centerFillOffset, toggleAreaWidth - (toggleInset + centerFillOffset) * 2.0, this.L() - (toggleInset + centerFillOffset) * 2.0, J.z());
@@ -296,7 +296,7 @@ extends InteractiveComponent {
             this.removeFavoriteButton.setVisible(false);
             this.dragHandleButton.setVisible(false);
             this.settingsButton.setVisible(true);
-            this.settingsButton.setOverrideColor(this.module.r$src$Z$14eylz9() ? activeTextColor : null);
+            this.settingsButton.setOverrideColor(this.module.isEnabled() ? activeTextColor : null);
             this.settingsButton.K(this.G$src$D$1b2f02a() + this.A() - 5.0 - 8.0);
             this.settingsButton.S(this.n());
             this.settingsButton.Y(this.L());
@@ -305,14 +305,14 @@ extends InteractiveComponent {
             this.settingsButton.setVisible(false);
             this.renderStatusTooltip(contentX, textY, activeTextColor);
         } else {
-            fontRenderer.d(this.module.getName(), contentX, textY, this.module.O() ? activeTextColor : ModuleComponent.J.h);
+            fontRenderer.d(this.module.getName(), contentX, textY, this.module.isVisible() ? activeTextColor : ModuleComponent.J.h);
         }
-        if (this.module.r$src$Z$14eylz9()) {
+        if (this.module.isEnabled()) {
             double enabledUnderlineOffset = ClientSettings.moduleSearchActive ? 20 + (this.favoriteMode ? 18 : 0) : 0;
             GuiRenderPrimitives.C(this.G$src$D$1b2f02a() + enabledUnderlineOffset, this.n() + this.L() - 0.5, this.A() - enabledUnderlineOffset, 0.5, ModuleComponent.J.l);
         }
         boolean showingBindStatus = this.statusText != null && (this.statusText.toLowerCase(Locale.ROOT).startsWith("bound") || this.statusText.toLowerCase(Locale.ROOT).startsWith("press") || this.statusText.toLowerCase(Locale.ROOT).startsWith("bind"));
-        boolean showNewBadge = this.module.L() && !this.module.r$src$Z$14eylz9();
+        boolean showNewBadge = this.module.L() && !this.module.isEnabled();
         boolean showUnsafeBadge = this.module.getCategory() == Category.OTHER && (this.categoryFrame instanceof ModuleSearchFrame || this.categoryFrame instanceof ClientSettingsSearchFrame);
         if (showNewBadge && !showingBindStatus) {
             double newBadgeX = contentX + fontRenderer.N(this.module.getName()) + 5.0;
@@ -329,7 +329,7 @@ extends InteractiveComponent {
             Color unsafeBadgeColor = new Color(badgeRgb >> 16 & 0xFF, badgeRgb >> 8 & 0xFF, badgeRgb & 0xFF);
             GuiRenderPrimitives.d(unsafeBadgeX, badgeY, badgeWidth, badgeHeight, unsafeBadgeColor);
             badgeFontRenderer.d(badgeText, unsafeBadgeX + 2.0, badgeY + 1.0, ColorUtil.getContrastingGray(unsafeBadgeColor, 35, 255));
-        } else if (!this.expanded && (this.module.t$src$Z$14g275z() || this.module.Q()) && !this.module.r$src$Z$14eylz9()) {
+        } else if (!this.expanded && (this.module.t$src$Z$14g275z() || this.module.Q()) && !this.module.isEnabled()) {
             double statusBadgeX = contentX + fontRenderer.N(this.module.getName()) + 3.0;
             SmoothFontRenderer badgeFontRenderer = this.getAlternateFontRenderer(0.65f);
             String badgeText = this.module.Q() ? "INDEV" : "BETA";
@@ -441,7 +441,7 @@ extends InteractiveComponent {
     }
 
     public void buildValueComponents() {
-        for (Value<?, ?> value : this.module.F$src$Ljava_util_List_$1kytx9u()) {
+        for (Value<?, ?> value : this.module.getValues()) {
             GuiComponent guiComponent = ValueComponentFactory.createMainValueComponent(value);
             if (guiComponent == null) continue;
             if (value.getParent() != null) {

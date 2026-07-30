@@ -136,12 +136,12 @@ extends Mod {
                 return;
             }
             if (!this.refillRods.getEffectiveValue().booleanValue()) {
-                this.Y(false);
+                this.setEnabled(false);
                 return;
             }
             Slot inventoryRodSlot = ItemStackActionPredicate.findSlotByItemClass(MappedClasses.Yi, MLGImpactState.MAIN_INVENTORY);
             if (inventoryRodSlot == null || inventoryRodSlot.isNull()) {
-                this.Y(false);
+                this.setEnabled(false);
                 return;
             }
             int inventorySlot = inventoryRodSlot.g();
@@ -185,7 +185,7 @@ extends Mod {
             if (this.recastCaught.getEffectiveValue().booleanValue()) {
                 this.recast();
             } else {
-                this.Y(false);
+                this.setEnabled(false);
             }
             return;
         }

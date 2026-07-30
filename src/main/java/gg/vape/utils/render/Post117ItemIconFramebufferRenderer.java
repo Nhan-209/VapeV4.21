@@ -84,7 +84,7 @@ implements ItemIconRenderBackend {
                     int renderTargetTextureId;
                     Object renderTarget;
                     Wrapper renderTargetHandle;
-                    List<String> fogEntries = itemRenderState.S().getFogMode().F();
+                    List<String> fogEntries = itemRenderState.S().getFogMode().getItemStates();
                     if (fogEntries == null || fogEntries.isEmpty()) {
                         OpenGlBackendHolder.backend.popMatrix();
                         return;
@@ -181,7 +181,7 @@ implements ItemIconRenderBackend {
                 int renderTargetTextureId;
                 Object renderTarget;
                 Wrapper renderTargetHandle;
-                List<String> fogEntries = itemRenderState.S().getFogMode().F();
+                List<String> fogEntries = itemRenderState.S().getFogMode().getItemStates();
                 if (fogEntries == null || fogEntries.isEmpty()) {
                     OpenGlBackendHolder.backend.popMatrix();
                     return;

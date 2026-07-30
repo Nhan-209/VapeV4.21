@@ -6,21 +6,16 @@ import gg.vape.mapping.MappingMethod;
 
 public class MFontGlyph
 extends Mapping {
-    private static final String b = "info";
-    private MappingMethod E;
+    private static final String INFO_METHOD_NAME = "info";
+    private final MappingMethod infoMethod;
 
     public MFontGlyph() {
         super(MappedClasses.qd);
-        Class[] classArray = new Class[]{};
-        Class clazz = MappedClasses.g;
-        boolean bl = true;
-        String string = b;
-        MFontGlyph mFontGlyph = this;
-        this.E = this.Y(string, bl, clazz, classArray);
+        this.infoMethod = this.Y(INFO_METHOD_NAME, true, MappedClasses.g, new Class[]{});
     }
 
-    public Object M(Object object) {
-        return this.E.invokeObject(object, new Object[0]);
+    public Object getInfo(Object fontGlyph) {
+        return this.infoMethod.invokeObject(fontGlyph, new Object[0]);
     }
 }
 

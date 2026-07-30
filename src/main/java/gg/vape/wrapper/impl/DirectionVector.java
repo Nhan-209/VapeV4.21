@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class DirectionVector
 extends Wrapper {
-    public DirectionVector(Object object) {
-        super(object);
+    public DirectionVector(Object wrappedObject) {
+        super(wrappedObject);
     }
 
-    public static DirectionVector m$src$Lgg_vape_wrapper_impl_DirectionVector_$1h73psc() {
-        return new DirectionVector(MDirectionVector.U(DirectionVector.vapeInstance.getMappings().qx));
+    public static DirectionVector positive() {
+        return new DirectionVector(MDirectionVector.getPositive(DirectionVector.vapeInstance.getMappings().qx));
     }
 }
-

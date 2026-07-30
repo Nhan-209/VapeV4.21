@@ -49,7 +49,7 @@ public class RuntimeNameMappingRegistry {
         if (memberNameRemapTable == null) {
             return null;
         }
-        return memberNameRemapTable.B(ownerClass, methodName);
+        return memberNameRemapTable.lookupMethodMapping(ownerClass, methodName);
     }
 
     @Nullable
@@ -65,12 +65,12 @@ public class RuntimeNameMappingRegistry {
         if (memberNameRemapTable == null) {
             return null;
         }
-        return memberNameRemapTable.U(ownerClass, fieldName);
+        return memberNameRemapTable.lookupFieldMapping(ownerClass, fieldName);
     }
 
     public static void initializeRegistry() {
-        int n = ForgeVersion.c();
-        switch (n) {
+        int forgeVersion = ForgeVersion.c();
+        switch (forgeVersion) {
             case 35: 
             case 36: {
                 memberNameRemapTable = new MemberNameRemapTableV35V36();
@@ -117,14 +117,14 @@ public class RuntimeNameMappingRegistry {
             }
         }
         if (memberNameRemapTable != null) {
-            memberNameRemapTable.T();
+            memberNameRemapTable.initializeMappings();
         }
     }
 
     static {
         registeredClassNames = new LinkedHashMap<String, String>();
-        int n = ForgeVersion.c();
-        switch (n) {
+        int forgeVersion = ForgeVersion.c();
+        switch (forgeVersion) {
             case 23: {
                 classNameRemapTable = new ClassNameRemapTableV23();
                 break;
@@ -193,7 +193,7 @@ public class RuntimeNameMappingRegistry {
         if (classNameRemapTable == null) {
             return null;
         }
-        return classNameRemapTable.n(sourceClassName);
+        return classNameRemapTable.lookupRemappedClassName(sourceClassName);
     }
 }
 

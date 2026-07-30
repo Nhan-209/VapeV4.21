@@ -4,7 +4,6 @@ import gg.vape.Vape;
 import gg.vape.config.ClientSettings;
 import gg.vape.config.Profile;
 import gg.vape.event.EventListeners;
-import gg.vape.event.impl.EventKeyInputBase;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.module.Mod;
 import gg.vape.wrapper.impl.ForgeVersion;
@@ -56,8 +55,8 @@ extends EventKeyInputBase {
             }
         }
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-            if (mod.a().getBoundInputs().isEmpty()) continue;
-            mod.a().handleInput(inputCode, this.getButtonState());
+            if (mod.getBind().getBoundInputs().isEmpty()) continue;
+            mod.getBind().handleInput(inputCode, this.getButtonState());
         }
         OnlineConnectionManager.INSTANCE.getSettings().handleMouseButton(this);
         return super.fire();

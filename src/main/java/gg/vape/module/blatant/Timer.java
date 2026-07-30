@@ -21,7 +21,7 @@ extends Mod {
 
     public Timer() {
         super("Timer", (int)MODULE_ID, Category.OTHER, "Modifies game timer");
-        this.R(false);
+        this.setDefaultVisibility(false);
         this.addValue(this.speedValue);
     }
 

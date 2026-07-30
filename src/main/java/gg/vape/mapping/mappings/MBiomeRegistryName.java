@@ -8,33 +8,29 @@ import gg.vape.ui.click.component.GuiComponent;
 
 public class MBiomeRegistryName
 extends Mapping {
-    private static final String b = "name";
-    private MappingField l;
+    private static final String NAME_FIELD_NAME = "name";
+    private final MappingField nameField;
 
 
     public MBiomeRegistryName() {
-        this(MBiomeRegistrySwitch.L());
+        this(MBiomeRegistrySwitch.getBiomeRegistryControlFlowState());
     }
 
-    private MBiomeRegistryName(int[] nArray) {
+    private MBiomeRegistryName(int[] biomeRegistryControlFlowState) {
         super(MappedClasses.h);
-        Class<String> clazz = String.class;
-        boolean bl = true;
-        String string = b;
-        MBiomeRegistryName mBiomeRegistryName = this;
-        this.l = this.J(string, bl, clazz);
-        if (nArray != null) {
+        this.nameField = this.J(NAME_FIELD_NAME, true, String.class);
+        if (biomeRegistryControlFlowState != null) {
             return;
         }
         GuiComponent.setLegacyComponentState(new GuiComponent[5]);
     }
 
-    private String J(Object object) {
-        return (String)this.l.getObject(object);
+    private String readName(Object registryName) {
+        return (String)this.nameField.getObject(registryName);
     }
 
-    public static String h(MBiomeRegistryName mBiomeRegistryName, Object object) {
-        return mBiomeRegistryName.J(object);
+    public static String getName(MBiomeRegistryName mapping, Object registryName) {
+        return mapping.readName(registryName);
     }
 }
 

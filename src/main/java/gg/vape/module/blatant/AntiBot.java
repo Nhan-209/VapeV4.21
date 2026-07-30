@@ -118,7 +118,7 @@ extends Mod {
     }
 
     public boolean isServerTeamFilteringEnabled() {
-        return this.r$src$Z$14eylz9() && this.teamsByServer.getEffectiveValue() != false;
+        return this.isEnabled() && this.teamsByServer.getEffectiveValue() != false;
     }
 
     @EventHandler
@@ -351,7 +351,7 @@ extends Mod {
     public MutableColor resolveEntityTeamColor(RenderEntityContext renderEntityContext,
                                                boolean bypassRecolorCheck, boolean allowDisabled) {
         char colorCode;
-        if (!allowDisabled && !this.r$src$Z$14eylz9()) {
+        if (!allowDisabled && !this.isEnabled()) {
             return null;
         }
         if (!bypassRecolorCheck && !this.isVisualRecolorEnabled()) {
@@ -471,7 +471,7 @@ extends Mod {
     }
 
     public boolean isTeammate(@Nullable EntityPlayerSP localPlayer, Entity entity) {
-        if (!this.r$src$Z$14eylz9()) {
+        if (!this.isEnabled()) {
             return false;
         }
         if (!this.isColorTeamFilteringEnabled() && !this.isServerTeamFilteringEnabled()) {
@@ -617,11 +617,11 @@ extends Mod {
     }
 
     public boolean isColorTeamFilteringEnabled() {
-        return this.r$src$Z$14eylz9() && this.teamsByColor.getEffectiveValue() != false;
+        return this.isEnabled() && this.teamsByColor.getEffectiveValue() != false;
     }
 
     public boolean isAntiBotEnabled() {
-        return this.r$src$Z$14eylz9() && this.antiBot.getEffectiveValue() != false;
+        return this.isEnabled() && this.antiBot.getEffectiveValue() != false;
     }
 
     @Nullable
@@ -661,7 +661,7 @@ extends Mod {
     @EventHandler
     public void onTick(EventPreTick eventPreTick) {
         ModeOption modeOption;
-        if (!this.r$src$Z$14eylz9() || !this.teamsByColor.getEffectiveValue().booleanValue() || !this.autoDetectColor.getEffectiveValue().booleanValue() && !ForgeVersion.MC_1_21_11.d()) {
+        if (!this.isEnabled() || !this.teamsByColor.getEffectiveValue().booleanValue() || !this.autoDetectColor.getEffectiveValue().booleanValue() && !ForgeVersion.MC_1_21_11.d()) {
             return;
         }
         EntityPlayerSP entityPlayerSP = eventPreTick.getThePlayer();

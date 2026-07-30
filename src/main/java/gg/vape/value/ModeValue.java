@@ -6,9 +6,7 @@ import gg.vape.module.SubModule;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
-import gg.vape.value.ConditionalValue;
-import gg.vape.value.SubModuleValue;
-import gg.vape.value.Value;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -153,7 +151,7 @@ extends ConditionalValue<ModeSelection, ModeValue> {
             for (ModeSelection mode : modes) {
                 if (!(mode instanceof SubModuleValue)) continue;
                 SubModuleValue subModuleMode = (SubModuleValue)mode;
-                for (Value<?, ?> dependentValue : ((Mod)subModuleMode.getInstance()).V()) {
+                for (Value<?, ?> dependentValue : ((Mod)subModuleMode.getInstance()).getAllValues()) {
                     mod.addValue(dependentValue);
                     this.addActiveMode(dependentValue, subModuleMode);
                 }

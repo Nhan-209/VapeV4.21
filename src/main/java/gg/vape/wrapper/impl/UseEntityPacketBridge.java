@@ -50,7 +50,7 @@ extends Packet {
             CPacketUseEntityAction cPacketUseEntityAction = new CPacketUseEntityAction(MCPacketUseEntityPacket.k(UseEntityPacketBridge.vapeInstance.getMappings().Co, this.I), null);
             if (cPacketUseEntityAction.w().equals(CPacketUseEntity.o())) {
                 CPacketUseEntityActionPacket cPacketUseEntityActionPacket = new CPacketUseEntityActionPacket(cPacketUseEntityAction.getObject());
-                return cPacketUseEntityActionPacket.C();
+                return cPacketUseEntityActionPacket.getLocation();
             }
             return y;
         }
@@ -103,4 +103,3 @@ extends Packet {
         return ForgeVersion.MC_26_1.d() && this.isInstance(MappedClasses.ZW);
     }
 }
-

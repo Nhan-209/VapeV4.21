@@ -8,8 +8,6 @@ import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.gui.InteractiveComponent;
 import gg.vape.ui.click.component.value.BooleanToggleComponent;
 import gg.vape.ui.click.component.value.ValueComponentFactory;
-import gg.vape.ui.click.frame.FrameComponent;
-import gg.vape.ui.click.frame.impl.profile.ProfileSnapshotValueResetButtonComponent;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.value.BooleanValue;
 import gg.vape.value.ConditionalValue;
@@ -137,7 +135,7 @@ public class ProfileSnapshotGuiBuilder {
         for (ModeSelection modeSelection : modeValue.getModes()) {
             if (!(modeSelection instanceof SubModuleValue)) continue;
             SubModuleValue subModuleValue = (SubModuleValue)modeSelection;
-            for (Value<?, ?> value : ((Mod)subModuleValue.getInstance()).V()) {
+            for (Value<?, ?> value : ((Mod)subModuleValue.getInstance()).getAllValues()) {
                 Value<?, ?> value2 = this.proxyBySourceValue.get(value);
                 if (value2 == null) continue;
                 modeValue.addActiveMode(value2, subModuleValue);

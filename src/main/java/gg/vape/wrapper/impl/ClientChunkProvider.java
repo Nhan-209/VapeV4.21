@@ -12,7 +12,7 @@ extends Wrapper {
     }
 
     public List<Chunk> L() {
-        List list = ClientChunkProvider.vapeInstance.getMappingsMapperCompat().Dr.g(this.I);
+        List list = ClientChunkProvider.vapeInstance.getMappingsMapperCompat().Dr.getChunkListing(this.I);
         ArrayList<Chunk> arrayList = new ArrayList<Chunk>();
         for (Object e : list) {
             arrayList.add(new Chunk(e));
@@ -20,4 +20,3 @@ extends Wrapper {
         return arrayList;
     }
 }
-

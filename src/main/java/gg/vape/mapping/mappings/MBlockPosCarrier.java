@@ -6,39 +6,34 @@ import gg.vape.mapping.MappingMethod;
 
 public class MBlockPosCarrier
 extends Mapping {
-    private static int[] j;
-    private MappingMethod w;
-    private static final String b;
+    private static int[] controlFlowState;
+    private final MappingMethod getPosMethod;
+    private static final String GET_POS_METHOD_NAME;
 
     public MBlockPosCarrier() {
         super(MappedClasses.uD);
-        Class[] classArray = new Class[]{};
-        Class clazz = MappedClasses.lf;
-        boolean bl = true;
-        String string = b;
-        MBlockPosCarrier mBlockPosCarrier = this;
-        this.w = this.Y(string, bl, clazz, classArray);
+        this.getPosMethod = this.Y(GET_POS_METHOD_NAME, true, MappedClasses.lf, new Class[]{});
     }
 
     static {
-        MBlockPosCarrier.p(new int[5]);
-        b = "getPos";
+        MBlockPosCarrier.setBlockPosCarrierControlFlowState(new int[5]);
+        GET_POS_METHOD_NAME = "getPos";
     }
 
-    private Object A(Object object) {
-        return this.w.invokeObject(object, new Object[0]);
+    private Object invokeGetPos(Object carrier) {
+        return this.getPosMethod.invokeObject(carrier, new Object[0]);
     }
 
-    public static Object Y(MBlockPosCarrier mBlockPosCarrier, Object object) {
-        return mBlockPosCarrier.A(object);
+    public static Object getPos(MBlockPosCarrier mapping, Object carrier) {
+        return mapping.invokeGetPos(carrier);
     }
 
-    public static int[] S() {
-        return j;
+    public static int[] getBlockPosCarrierControlFlowState() {
+        return controlFlowState;
     }
 
-    public static void p(int[] nArray) {
-        j = nArray;
+    public static void setBlockPosCarrierControlFlowState(int[] state) {
+        controlFlowState = state;
     }
 }
 

@@ -1,7 +1,6 @@
 package gg.vape.module;
 
 import gg.vape.Vape;
-import gg.vape.module.Mod;
 
 public class DelayedModuleToggleTask
 implements Runnable {
@@ -33,7 +32,7 @@ implements Runnable {
         do {
             try {
                 Thread.sleep(this.delayMillis);
-                if (this.module.r$src$Z$14eylz9()) {
+                if (this.module.isEnabled()) {
                     this.module.onScheduledAction();
                 }
             }

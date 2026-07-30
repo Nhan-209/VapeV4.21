@@ -2,7 +2,7 @@ package gg.vape.event.impl;
 
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
-import gg.vape.util.ThreadBoundExecutor;
+import gg.vape.utils.ThreadBoundExecutor;
 import gg.vape.wrapper.impl.DeltaTracker;
 
 public class EventRenderWorldPassExecutorDrain

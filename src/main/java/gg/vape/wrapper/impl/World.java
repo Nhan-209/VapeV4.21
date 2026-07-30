@@ -256,7 +256,7 @@ extends Wrapper {
         if (ForgeVersion.MC_1_17.d()) {
             ArrayList arrayList = new ArrayList();
             ArrayList<Chunk> arrayList2 = new ArrayList<Chunk>();
-            AtomicReferenceArray atomicReferenceArray = this.E().X().b();
+            AtomicReferenceArray atomicReferenceArray = this.E().X().getChunks();
             int n = 0;
             while (n < atomicReferenceArray.length()) {
                 Object chunkHandle;

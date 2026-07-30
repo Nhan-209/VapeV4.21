@@ -13,7 +13,7 @@ import gg.vape.friend.FriendEntry;
 import gg.vape.manager.client.FriendManager;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Mod;
-import gg.vape.module.ModDisplayInfo;
+import gg.vape.module.ModuleDisplayInfo;
 import gg.vape.module.SubModule;
 import gg.vape.module.blatant.blockin.BlockPathPlanner;
 import gg.vape.module.blatant.blockin.BlockPlacementGraph;
@@ -441,7 +441,7 @@ extends SubModule<CrystalAura> {
     }
 
     @Override
-    public ModDisplayInfo J() {
+    public ModuleDisplayInfo getModuleDisplayInfo() {
         if (!this.centerScreen.getEffectiveValue().booleanValue()) {
             return null;
         }
@@ -462,7 +462,7 @@ extends SubModule<CrystalAura> {
             countText = countText + " \u00a7c[" + this.statusLabel + "]";
         }
         String suffix = " " + moduleColor + "(CrystalAura)";
-        return new ModDisplayInfo(countText, countColor, suffix);
+        return new ModuleDisplayInfo(countText, countColor, suffix);
     }
 
     private void reset() {

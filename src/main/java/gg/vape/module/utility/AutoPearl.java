@@ -520,7 +520,7 @@ extends Mod {
                             break;
                         }
                         if (this.state != previousState) continue stateMachine;
-                        this.Y(false);
+                        this.setEnabled(false);
                         break;
                     }
                     if (this.pendingPearl == null) break;
@@ -551,7 +551,7 @@ extends Mod {
                     if (localPlayer.isNull() || inventory.isNull()) continue stateMachine;
                     int pearlSlot = this.findPearlSlot();
                     if (pearlSlot == -1) {
-                        this.Y(false);
+                        this.setEnabled(false);
                         break;
                     }
                     int hotbarIndex = pearlSlot - 36;
@@ -573,7 +573,7 @@ extends Mod {
                     inventory.g(this.savedHotbarSlot);
                     this.resetState();
                     if (!this.onBindMode.isSelected()) break;
-                    this.Y(false);
+                    this.setEnabled(false);
                     stopProcessing = true;
                 }
             }

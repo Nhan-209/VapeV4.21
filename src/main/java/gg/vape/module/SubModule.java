@@ -1,7 +1,6 @@
 package gg.vape.module;
 
 import gg.vape.event.IEvent;
-import gg.vape.module.Mod;
 import gg.vape.value.SubModuleValue;
 import java.util.function.Predicate;
 
@@ -12,7 +11,7 @@ extends Mod {
     private final Mod parentModule;
     private boolean enabled;
 
-    public boolean isEnabled() {
+    public boolean isSubModuleEnabled() {
         return this.enabled;
     }
 
@@ -32,7 +31,7 @@ extends Mod {
     }
 
     private boolean lambda$getEventPredicate$0(IEvent iEvent) {
-        return this.r$src$Z$14eylz9() && this.isSelectedSubModule();
+        return this.isEnabled() && this.isSelectedSubModule();
     }
 
     public static boolean y$src$Z$h2l5ue() {
@@ -69,7 +68,7 @@ extends Mod {
     }
 
     public boolean isParentEnabled() {
-        return super.r$src$Z$14eylz9();
+        return super.isEnabled();
     }
 }
 

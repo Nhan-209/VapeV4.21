@@ -20,7 +20,7 @@ extends Mod {
     }
 
     @Override
-    public void y() {
+    public void onBindActivated() {
     }
 
     public String getKey() {

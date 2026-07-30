@@ -1,4 +1,4 @@
-package gg.vape.util;
+package gg.vape.utils;
 
 import gg.vape.Vape;
 import java.util.Queue;

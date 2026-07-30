@@ -106,7 +106,7 @@ extends ClickGuiPageBase {
         clickGuiModulesSidecarPanel.setDividerVisible(false);
         clickGuiModulesSidecarPanel.setBackAction(this::lambda$openModuleSettings$22);
         clickGuiModulesSidecarPanel.setFavoriteVisible(true);
-        clickGuiModulesSidecarPanel.setFavoriteHighlighted(mod.f$src$Z$148d2ux());
+        clickGuiModulesSidecarPanel.setFavoriteHighlighted(mod.isFavorite());
         clickGuiModulesSidecarPanel.setFavoriteAction(() -> ClickGuiModulesPage.lambda$openModuleSettings$23(mod, clickGuiModulesSidecarPanel, clickGuiModuleCardComponent));
         clickGuiModulesSidecarPanel.setToggleVisible(true);
         clickGuiModulesSidecarPanel.setToggleAction(null);
@@ -115,11 +115,11 @@ extends ClickGuiPageBase {
     }
 
     private static int lambda$filterModuleButtons$14(Mod mod, Mod mod2) {
-        return Boolean.compare(mod2.f$src$Z$148d2ux(), mod.f$src$Z$148d2ux());
+        return Boolean.compare(mod2.isFavorite(), mod.isFavorite());
     }
 
     private static String lambda$openLegitModuleSettings$19(HudModule hudModule) {
-        return hudModule.r$src$Z$14eylz9() ? "ON" : "OFF";
+        return hudModule.isEnabled() ? "ON" : "OFF";
     }
 
     public boolean clearActiveSearch() {
@@ -141,7 +141,7 @@ extends ClickGuiPageBase {
     }
 
     private static String lambda$openModuleSettings$24(Mod mod) {
-        return mod.r$src$Z$14eylz9() ? "ON" : "OFF";
+        return mod.isEnabled() ? "ON" : "OFF";
     }
 
     public static String setModuleSearchQuery(ClickGuiModulesPage page, String query) {
@@ -150,9 +150,9 @@ extends ClickGuiPageBase {
     }
 
     private static void lambda$openModuleSettings$23(Mod mod, ClickGuiModulesSidecarPanel clickGuiModulesSidecarPanel, ClickGuiModuleCardComponent clickGuiModuleCardComponent) {
-        mod.K(!mod.f$src$Z$148d2ux());
-        clickGuiModulesSidecarPanel.setFavoriteHighlighted(mod.f$src$Z$148d2ux());
-        clickGuiModuleCardComponent.setFavoriteHighlighted(!mod.f$src$Z$148d2ux());
+        mod.K(!mod.isFavorite());
+        clickGuiModulesSidecarPanel.setFavoriteHighlighted(mod.isFavorite());
+        clickGuiModuleCardComponent.setFavoriteHighlighted(!mod.isFavorite());
     }
 
     private void lambda$filterModuleButtons$15(ClickGuiLegitModuleCardComponent clickGuiLegitModuleCardComponent) {
@@ -296,7 +296,7 @@ extends ClickGuiPageBase {
         }
         int n = 0;
         for (Mod mod : arrayList) {
-            if (!bl && (this.selectedCategory != Category.FAVORITES ? mod.getCategory() != this.selectedCategory : !mod.f$src$Z$148d2ux())) continue;
+            if (!bl && (this.selectedCategory != Category.FAVORITES ? mod.getCategory() != this.selectedCategory : !mod.isFavorite())) continue;
             if (bl) {
                 ClickGuiLegitModuleCardComponent clickGuiLegitModuleCardComponent = new ClickGuiLegitModuleCardComponent((HudModule)mod);
                 clickGuiLegitModuleCardComponent.o(clickGuiContentPanel.A() / 3.0);
@@ -358,7 +358,7 @@ extends ClickGuiPageBase {
     }
 
     private static boolean lambda$filterModuleButtons$12(Mod mod) {
-        return mod.J$src$Lgg_vape_module_ModuleDisplayScope_$1w905sh() == ModuleDisplayScope.FRAMES_ONLY;
+        return mod.getModuleDisplayScope() == ModuleDisplayScope.FRAMES_ONLY;
     }
 
     private static void lambda$openLegitModuleSettings$20(ClickGuiSidecarPanelBase clickGuiSidecarPanelBase) {
@@ -591,7 +591,7 @@ extends ClickGuiPageBase {
     private void populateSettings(Mod mod, PanelComponent panelComponent) {
         panelComponent.removeMarkedChildren();
         boolean bl = false;
-        for (Value<?, ?> value : mod.F$src$Ljava_util_List_$1kytx9u()) {
+        for (Value<?, ?> value : mod.getValues()) {
             GuiComponent guiComponent;
             if (value == null || (guiComponent = ValueComponentFactory.createValueComponent(value, false, ValueComponentMode.STANDALONE)) == null) continue;
             if (value.getParent() != null) {
@@ -616,7 +616,7 @@ extends ClickGuiPageBase {
             bl = true;
         }
         if (mod instanceof HudModule && ((HudModule)mod).shouldShowKeybindSetting()) {
-            BindValueRowComponent bindValueRow = new BindValueRowComponent("Keybind", mod.a());
+            BindValueRowComponent bindValueRow = new BindValueRowComponent("Keybind", mod.getBind());
             bindValueRow.setShowDisabledOverlay(false);
             bindValueRow.setHorizontalInset(0.0);
             bindValueRow.setExplicitWidth(panelComponent.A() - 1.0);

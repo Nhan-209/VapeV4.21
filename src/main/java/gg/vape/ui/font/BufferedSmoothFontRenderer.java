@@ -1,17 +1,11 @@
 package gg.vape.ui.font;
 
 import gg.vape.Vape;
-import gg.vape.module.none.ClientSettings;
-import gg.vape.ui.font.FontManager;
-import gg.vape.ui.font.SmoothFontGlyph;
-import gg.vape.ui.font.SmoothFontRasterState;
-import gg.vape.ui.font.SmoothFontRenderer;
-import gg.vape.ui.font.StbSmoothFontRenderer;
 import gg.vape.ui.font.stb.StbTrueTypeFontInfo;
 import gg.vape.ui.font.stb.StbTrueTypePackContext;
 import gg.vape.ui.font.stb.StbTrueTypePackRange;
 import gg.vape.ui.font.stb.StbTrueTypePackedChar;
-import gg.vape.util.RenderThreadTaskQueue;
+import gg.vape.utils.RenderThreadTaskQueue;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.render.BufferedGuiRenderPrimitives;
 import gg.vape.utils.render.BufferedRenderPrimitives;

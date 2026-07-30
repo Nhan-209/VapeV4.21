@@ -2,7 +2,6 @@ package gg.vape.protocol.packet;
 
 import gg.vape.manager.client.OnlineDisconnectReason;
 import gg.vape.protocol.ZeusPacketBuffer;
-import gg.vape.protocol.packet.ZeusSerializablePacket;
 
 public class ServerDisconnectPacket
 implements ZeusSerializablePacket {

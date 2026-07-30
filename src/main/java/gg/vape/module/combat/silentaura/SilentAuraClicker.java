@@ -17,7 +17,7 @@ extends ClickerMod {
 
     @Override
     public boolean isClickCycleBlocked() {
-        if (!this.silentAura.r$src$Z$14eylz9()) {
+        if (!this.silentAura.isEnabled()) {
             return true;
         }
         return !this.silentAura.canClickAttack();
@@ -30,7 +30,7 @@ extends ClickerMod {
     }
 
     @Override
-    public boolean O() {
+    public boolean isVisible() {
         return false;
     }
 
@@ -39,6 +39,6 @@ extends ClickerMod {
         this.silentAura = silentAura;
         ClickEngine clickEngine = new ClickEngine(ClickButton.LEFT, silentAura.getAttackRate(), silentAura.getLimitToItems(), silentAura.getAllowedItems(), silentAura.getRequireMouseDown(), null, new BooleanValue((Object)null, "", false), this);
         this.setClickEngine(clickEngine);
-        this.Y(true);
+        this.setEnabled(true);
     }
 }

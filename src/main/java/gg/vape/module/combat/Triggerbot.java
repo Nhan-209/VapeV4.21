@@ -124,7 +124,7 @@ extends Mod {
         if (this.shieldCheck.getEffectiveValue()) {
             boolean enforceShieldCheck = true;
             HitSwap hitSwap = Vape.INSTANCE.getModManager().getMod(HitSwap.class);
-            if (hitSwap != null && hitSwap.r$src$Z$14eylz9() && hitSwap.hasAlternateAxe()) {
+            if (hitSwap != null && hitSwap.isEnabled() && hitSwap.hasAlternateAxe()) {
                 enforceShieldCheck = false;
             }
             if (enforceShieldCheck && entity.isInstance(MappedClasses.lG)
@@ -169,7 +169,7 @@ extends Mod {
             return false;
         }
         HitSwap hitSwap = Vape.INSTANCE.getModManager().getMod(HitSwap.class);
-        if (!hitSwap.r$src$Z$14eylz9()) {
+        if (!hitSwap.isEnabled()) {
             ItemStack offhandItem = Minecraft.thePlayer().i(EnumHand.M());
             return offhandItem.isNotNull() && offhandItem.getItem().isInstance(MappedClasses.zx)
                     && RotationUtil.u(Minecraft.thePlayer());

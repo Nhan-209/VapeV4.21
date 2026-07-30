@@ -12,7 +12,7 @@ extends Mod {
     }
 
     @Override
-    public void t() {
+    public void onFinishModuleInitialization() {
     }
 }
 

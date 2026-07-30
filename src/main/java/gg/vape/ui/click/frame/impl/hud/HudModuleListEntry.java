@@ -9,8 +9,6 @@ import gg.vape.ui.click.animation.ThemeColorAnimation;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.frame.Frame;
-import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
-import gg.vape.ui.click.frame.impl.hud.HudModuleListEntryToggleClickListener;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.unmap.ColorUtil;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -51,7 +49,7 @@ extends GuiComponent {
     }
 
     protected void syncEnabledState() {
-        if (this.module.r$src$Z$14eylz9() != this.enabled || this.enabled != this.isAnimationShowingEnabled() && !this.isToggleAnimating()) {
+        if (this.module.isEnabled() != this.enabled || this.enabled != this.isAnimationShowingEnabled() && !this.isToggleAnimating()) {
             this.toggleModule();
         }
     }
@@ -63,8 +61,8 @@ extends GuiComponent {
             this.activeColorAnimation.J();
             this.togglePositionAnimation.J();
             this.applyConfigFrameState();
-            if (this.module.r$src$Z$14eylz9() != this.enabled) {
-                this.module.Y(this.enabled);
+            if (this.module.isEnabled() != this.enabled) {
+                this.module.setEnabled(this.enabled);
             }
         } else if (this.enabled) {
             this.activeColorAnimation.C();
@@ -168,10 +166,10 @@ extends GuiComponent {
         this.module = hudModule;
         this.moduleName = hudModule.getName();
         this.iconKey = hudModule.getKey();
-        this.enabled = hudModule.r$src$Z$14eylz9();
+        this.enabled = hudModule.isEnabled();
         this.iconScale = f;
-        if (hudModule.n() != null) {
-            this.w(hudModule.n());
+        if (hudModule.getToolTip() != null) {
+            this.w(hudModule.getToolTip());
         }
         this.settingsButton.addClickListener(new HudModuleListEntryToggleClickListener(this, hudModule));
         this.addChildren(this.settingsButton);

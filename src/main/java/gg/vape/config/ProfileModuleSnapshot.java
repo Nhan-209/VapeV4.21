@@ -3,8 +3,6 @@ package gg.vape.config;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import gg.vape.config.ConfigJsonUtils;
-import gg.vape.config.ProfileSnapshot;
 import gg.vape.input.BindActivationMode;
 import gg.vape.input.BindSet;
 import gg.vape.module.Category;
@@ -82,12 +80,12 @@ implements INamed {
                 keybinds = new JsonArray();
             }
             Boolean visible = ConfigJsonUtils.getBoolean(moduleJson, "visible");
-            this.visible = visible != null ? visible.booleanValue() : module.b();
+            this.visible = visible != null ? visible.booleanValue() : module.isDefaultVisible();
         } else {
             keybinds = new JsonArray();
-            this.visible = module.b();
+            this.visible = module.isDefaultVisible();
         }
-        this.bindSnapshot = new ValueSnapshot<>(new BindValue((Object)null, "", new BindSet(ConfigJsonUtils.parseInputCodes(keybinds, false), false, module.a().supportsActivationMode())));
+        this.bindSnapshot = new ValueSnapshot<>(new BindValue((Object)null, "", new BindSet(ConfigJsonUtils.parseInputCodes(keybinds, false), false, module.getBind().supportsActivationMode())));
         String bindMode = moduleJson == null ? null : ConfigJsonUtils.getString(moduleJson, "bind_mode");
         if (bindMode != null && this.bindSnapshot.getValue().supportsActivationMode()) {
             try {
@@ -97,7 +95,7 @@ implements INamed {
                 this.bindSnapshot.getValue().setActivationMode(BindActivationMode.TOGGLE);
             }
         }
-        for (Value<?, ?> value : module.V()) {
+        for (Value<?, ?> value : module.getAllValues()) {
             JsonObject valueJson = valueJsonById.get(value.getId());
             if (valueJson == null) {
                 this.valueSnapshots.add(new ValueSnapshot<>(value));
@@ -147,7 +145,7 @@ implements INamed {
     public JsonObject toJson() {
         JsonObject moduleJson = new JsonObject();
         moduleJson.addProperty("name", this.module.getName());
-        if (this.module.a().usesOwnKeybindStorage()) {
+        if (this.module.getBind().usesOwnKeybindStorage()) {
             if (this.hasBind()) {
                 moduleJson.add("keybinds_2", this.bindSnapshot.getValue().serializeBoundInputs());
             }
@@ -164,7 +162,7 @@ implements INamed {
         if (valuesJson.size() != 0) {
             moduleJson.add("values", (JsonElement)valuesJson);
         }
-        if (this.visible != this.module.b()) {
+        if (this.visible != this.module.isDefaultVisible()) {
             moduleJson.addProperty("visible", Boolean.valueOf(this.visible));
         }
         if (moduleJson.entrySet().size() == 1) {

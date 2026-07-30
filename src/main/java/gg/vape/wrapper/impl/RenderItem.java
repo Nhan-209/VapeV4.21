@@ -71,7 +71,7 @@ extends Wrapper {
         boolean bl2 = bl = !channel.A();
         if (bl) {
             RenderHelper.l();
-            this.I(itemStack, RenderItemContext.d(), false, matrixStack, renderItemFontBridge, 15728880, 0, channel);
+            this.I(itemStack, RenderItemContext.gui(), false, matrixStack, renderItemFontBridge, 15728880, 0, channel);
             renderItemFontBridge.X();
             RenderSystem.n();
             RenderHelper.e();
@@ -81,7 +81,7 @@ extends Wrapper {
             this.e(this.T() - 50.0f);
             return;
         }
-        this.I(itemStack, RenderItemContext.d(), false, matrixStack, renderItemFontBridge, 15728880, 0, channel);
+        this.I(itemStack, RenderItemContext.gui(), false, matrixStack, renderItemFontBridge, 15728880, 0, channel);
         renderItemFontBridge.X();
         RenderSystem.n();
         matrixStack2 = RenderSystem.p();

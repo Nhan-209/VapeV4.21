@@ -2,11 +2,10 @@ package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.Vape;
 import gg.vape.module.Mod;
-import gg.vape.module.ModDisplayInfo;
+import gg.vape.module.ModuleDisplayInfo;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.frame.Frame;
-import gg.vape.ui.click.frame.impl.hud.ActiveModuleStackEntry;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.MathUtil;
 import gg.vape.wrapper.impl.FontRenderer;
@@ -108,30 +107,30 @@ extends Frame {
         }
         ArrayList<ActiveModuleStackEntry> entries = new ArrayList<ActiveModuleStackEntry>();
         for (Mod module : this.activeModules) {
-            ModDisplayInfo modDisplayInfo = module.J();
-            if (modDisplayInfo == null) continue;
-            entries.add(new ActiveModuleStackEntry(module, modDisplayInfo));
+            ModuleDisplayInfo moduleDisplayInfo = module.getModuleDisplayInfo();
+            if (moduleDisplayInfo == null) continue;
+            entries.add(new ActiveModuleStackEntry(module, moduleDisplayInfo));
         }
         boolean showModuleName = entries.size() > 1;
         for (ActiveModuleStackEntry entry : entries) {
-            String text = entry.displayInfo.P();
-            String widthText = entry.displayInfo.z() != null ? entry.displayInfo.z() : text;
+            String text = entry.displayInfo.getLabel();
+            String widthText = entry.displayInfo.getDescription() != null ? entry.displayInfo.getDescription() : text;
             double textWidth = smoothFontRenderer != null
                     ? smoothFontRenderer.N(widthText) : (double)fontRenderer.getStringWidth(widthText);
             double textX = centerX - (double)MathUtil.ceil(textWidth / 2.0);
             if (showModuleName) {
-                String moduleSuffix = entry.displayInfo.u();
+                String moduleSuffix = entry.displayInfo.getSuffix();
                 if (moduleSuffix == null) {
                     moduleSuffix = " \u00a77(" + entry.module.getName() + ")";
                 }
                 text += moduleSuffix;
             }
             if (smoothFontRenderer != null) {
-                smoothFontRenderer.v(text, textX + 1.0, centerY, entry.displayInfo.g());
+                smoothFontRenderer.v(text, textX + 1.0, centerY, entry.displayInfo.getColor());
                 centerY += smoothFontRenderer.d(text) + 4.0;
                 continue;
             }
-            fontRenderer.drawStringWithShadow(text, textX + 1.0, centerY, entry.displayInfo.g());
+            fontRenderer.drawStringWithShadow(text, textX + 1.0, centerY, entry.displayInfo.getColor());
             centerY += (double)(fontRenderer.FONT_HEIGHT(text) + 4);
         }
     }

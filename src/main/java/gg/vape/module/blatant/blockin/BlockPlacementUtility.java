@@ -134,7 +134,7 @@ public final class BlockPlacementUtility {
                 ? jumpBoost.L() + 1.0f : 0.0f;
         int damageDistance = MathUtil.ceil(fallDistance - 3.0f - jumpBoostReduction);
         DamageSource damageSource = ForgeVersion.MC_1_21_4.d()
-                ? entityPlayerSP.B().O() : DamageSource.m$src$Lgg_vape_wrapper_impl_DamageSource_$z0ibym();
+                ? entityPlayerSP.B().fall() : DamageSource.m$src$Lgg_vape_wrapper_impl_DamageSource_$z0ibym();
         return RotationUtil.y(entityPlayerSP, damageSource, damageDistance, false, false);
     }
 

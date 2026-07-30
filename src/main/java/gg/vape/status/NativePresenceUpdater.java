@@ -26,7 +26,7 @@ public class NativePresenceUpdater {
         ServerData serverData = Minecraft.H();
         String serverDescription = "Not in a server";
         if (serverData.isNotNull()) {
-            serverDescription = "Playing legit on " + serverData.f();
+            serverDescription = "Playing legit on " + serverData.getServerIp();
         }
         String clientDescription = Vape.INSTANCE.getModManager().getMod(TextGuiSettings.class).getEnabledModuleNames();
         if (clientDescription.length() >= 128) {

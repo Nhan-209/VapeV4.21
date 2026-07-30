@@ -8,7 +8,7 @@ public class ClassNameRemapTable {
     private final HashMap<String, String> classNameMappings = new HashMap();
     private static int[] controlFlowState;
 
-    public static int[] m() {
+    public static int[] getControlFlowState() {
         return controlFlowState;
     }
 
@@ -25,16 +25,16 @@ public class ClassNameRemapTable {
         }
     }
 
-    public static void O(int[] state) {
+    public static void setControlFlowState(int[] state) {
         controlFlowState = state;
     }
 
-    public String n(String sourceClassName) {
+    public String lookupRemappedClassName(String sourceClassName) {
         return this.classNameMappings.getOrDefault(sourceClassName, null);
     }
 
 
     static {
-        ClassNameRemapTable.O(new int[3]);
+        ClassNameRemapTable.setControlFlowState(new int[3]);
     }
 }

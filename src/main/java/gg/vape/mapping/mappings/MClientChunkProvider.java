@@ -7,20 +7,16 @@ import java.util.List;
 
 public class MClientChunkProvider
 extends Mapping {
-    private MappingField T;
-    private static final String b = "chunkListing";
+    private static final String CHUNK_LISTING_FIELD_NAME = "chunkListing";
+    private final MappingField chunkListingField;
 
     public MClientChunkProvider() {
         super(MappedClasses.le);
-        Class<List> clazz = List.class;
-        boolean bl = true;
-        String string = b;
-        MClientChunkProvider mClientChunkProvider = this;
-        this.T = this.J(string, bl, clazz);
+        this.chunkListingField = this.J(CHUNK_LISTING_FIELD_NAME, true, List.class);
     }
 
-    public List g(Object object) {
-        return (List)this.T.getObject(object);
+    public List getChunkListing(Object clientChunkProvider) {
+        return (List)this.chunkListingField.getObject(clientChunkProvider);
     }
 }
 

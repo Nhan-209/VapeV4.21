@@ -9,15 +9,6 @@ import gg.vape.ui.click.component.FlowLayoutComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.SettingsSubpageFrame;
 import gg.vape.ui.click.frame.impl.ThemeComponentGroupFactory;
-import gg.vape.ui.click.frame.impl.online.OnlineAccountConnectedPageComponent;
-import gg.vape.ui.click.frame.impl.online.OnlineAccountLinkCodePageComponent;
-import gg.vape.ui.click.frame.impl.online.OnlineAccountSettingsPageComponent;
-import gg.vape.ui.click.frame.impl.online.OnlineAccountUnavailablePageComponent;
-import gg.vape.ui.click.frame.impl.online.OnlineConnectionBackdropFrame;
-import gg.vape.ui.click.frame.impl.online.OnlineConnectionBackdropMouseListener;
-import gg.vape.ui.click.frame.impl.online.OnlineConnectionConnectingPageComponent;
-import gg.vape.ui.click.frame.impl.online.OnlineConnectionRetryPageComponent;
-import gg.vape.ui.click.frame.impl.online.OnlineConnectionSettingsPageComponent;
 import gg.vape.ui.click.layout.ComponentLayout;
 
 public class OnlineConnectionSettingsFrame

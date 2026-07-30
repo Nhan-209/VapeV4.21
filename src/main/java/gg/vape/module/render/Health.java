@@ -2,7 +2,7 @@ package gg.vape.module.render;
 
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.ModDisplayInfo;
+import gg.vape.module.ModuleDisplayInfo;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.ui.click.frame.impl.hud.ActiveModuleStackFrame;
 import gg.vape.unmap.NumberFormat;
@@ -26,7 +26,7 @@ extends Mod {
     }
 
     @Override
-    public ModDisplayInfo J() {
+    public ModuleDisplayInfo getModuleDisplayInfo() {
         String heartColorCode;
         EntityPlayerSP player = Minecraft.thePlayer();
         if (player.isNull()) {
@@ -34,12 +34,12 @@ extends Mod {
         }
         double healthHearts = (double)player.w$src$F$15l9epb() / 2.0;
         if (player.p() > 0.0f) {
-            heartColorCode = "\u00a76";
+            heartColorCode = "§6";
             healthHearts += (double)player.p() / 2.0;
         } else {
-            heartColorCode = "\u00a7c";
+            heartColorCode = "§c";
         }
-        String heartText = heartColorCode + "\u2764";
+        String heartText = heartColorCode + "❤";
         String healthText = this.healthFormat.format(Math.floor((healthHearts + 0.25) / 0.5) * 0.5).replace(".0", "");
         String displayText = healthText + " " + heartText;
         Color displayColor = new Color(255, 20, 20);
@@ -48,7 +48,7 @@ extends Mod {
         } else if (healthHearts > 4.0) {
             displayColor = new Color(255, 249, 18);
         }
-        return new ModDisplayInfo(displayText, displayColor, healthText, null);
+        return new ModuleDisplayInfo(displayText, displayColor, healthText, null);
     }
 
     @Override

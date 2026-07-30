@@ -3,7 +3,6 @@ package gg.vape.module.none;
 import gg.vape.Vape;
 import gg.vape.module.MinecraftVersionConstraint;
 import gg.vape.module.Mod;
-import gg.vape.module.none.ConfigSettingsModule;
 import gg.vape.module.none.textgui.TextGuiModuleWidthComparator;
 import gg.vape.unmap.ModeOption;
 import gg.vape.utils.NameComparator;
@@ -61,7 +60,7 @@ extends ConfigSettingsModule {
         }
         String string = "  ";
         for (Mod mod : copyOnWriteArrayList) {
-            if (!mod.r$src$Z$14eylz9() || mod.h() == 0) continue;
+            if (!mod.isEnabled() || mod.getGuiColor() == 0) continue;
             string = string + mod.getName() + ", ";
         }
         if (string.length() > 2) {

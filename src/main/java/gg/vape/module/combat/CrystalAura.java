@@ -6,7 +6,7 @@ import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.MinecraftVersionConstraint;
 import gg.vape.module.Mod;
-import gg.vape.module.ModDisplayInfo;
+import gg.vape.module.ModuleDisplayInfo;
 import gg.vape.module.combat.crystalaura.CrystalAuraPlacementSubModule;
 import gg.vape.module.combat.crystalaura.CrystalAuraTargetSubModule;
 import gg.vape.module.combat.crystalaura.ExplosionType;
@@ -68,7 +68,7 @@ extends Mod {
         if (freecam == null) {
             freecam = Vape.INSTANCE.getModManager().getMod(Freecam.class);
         }
-        return freecam != null && freecam.r$src$Z$14eylz9() || this.rotationClaim.isBlockedFor(this) && !this.rotationClaim.acquire(this, true);
+        return freecam != null && freecam.isEnabled() || this.rotationClaim.isBlockedFor(this) && !this.rotationClaim.acquire(this, true);
     }
 
     protected float applyPotionAndEnchantmentReductions(EntityPlayerSP player, float damage) {
@@ -89,10 +89,10 @@ extends Mod {
 
     @Override
     public String getDetailedSuffix() {
-        if (this.autoSubModule.isSelectedSubModule() && this.autoSubModule.r$src$Z$14eylz9()) {
+        if (this.autoSubModule.isSelectedSubModule() && this.autoSubModule.isEnabled()) {
             return this.autoSubModule.getDetailedSuffix();
         }
-        if (this.manualSubModule.isSelectedSubModule() && this.manualSubModule.r$src$Z$14eylz9()) {
+        if (this.manualSubModule.isSelectedSubModule() && this.manualSubModule.isEnabled()) {
             return this.manualSubModule.getDetailedSuffix();
         }
         return "";
@@ -155,9 +155,9 @@ extends Mod {
     }
 
     @Override
-    public ModDisplayInfo J() {
-        if (this.autoSubModule.isSelectedSubModule() && this.autoSubModule.r$src$Z$14eylz9()) {
-            return this.autoSubModule.J();
+    public ModuleDisplayInfo getModuleDisplayInfo() {
+        if (this.autoSubModule.isSelectedSubModule() && this.autoSubModule.isEnabled()) {
+            return this.autoSubModule.getModuleDisplayInfo();
         }
         return null;
     }

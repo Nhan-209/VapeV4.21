@@ -74,7 +74,7 @@ extends Mod {
     }
 
     private void onModeChanged(ModeValue changedMode) {
-        if (!this.r$src$Z$14eylz9()) {
+        if (!this.isEnabled()) {
             return;
         }
         if (((ModeSelection)this.mode.getValue()).equals(this.gammaMode)) {
@@ -86,7 +86,7 @@ extends Mod {
 
     @Override
     public void setEnabled(boolean enabled, boolean bypassVisibilityCheck) {
-        if (((ModeSelection)this.mode.getValue()).equals(this.gammaMode) && this.fade.getEffectiveValue().booleanValue() && this.r$src$Z$14eylz9()) {
+        if (((ModeSelection)this.mode.getValue()).equals(this.gammaMode) && this.fade.getEffectiveValue().booleanValue() && this.isEnabled()) {
             this.fadingOut = true;
             this.fadingIn = false;
             return;

@@ -320,7 +320,7 @@ extends MemberNameRemapTable {
     }
 
     protected void Aa() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             this.f(MappedClasses.Zn, "binding", "a", false);
         }
     }
@@ -618,7 +618,7 @@ extends MemberNameRemapTable {
     }
 
     protected void X() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             this.f(MappedClasses.U, "state", "a", false);
             this.f(MappedClasses.U, "enabled", "b", false);
         }

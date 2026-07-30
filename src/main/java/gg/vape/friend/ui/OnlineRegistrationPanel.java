@@ -1,7 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.Vape;
-import gg.vape.friend.ui.OnlineFriendsFrame;
 import gg.vape.manager.client.OnlineAccountState;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.module.none.ClientSettings;

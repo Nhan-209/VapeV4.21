@@ -6,20 +6,16 @@ import gg.vape.mapping.MappingField;
 
 public class MChestType
 extends Mapping {
-    private final MappingField V;
-    private static final String b = "FALLDAMAGE_RESETTING";
+    private static final String FALL_DAMAGE_RESETTING_FIELD_NAME = "FALLDAMAGE_RESETTING";
+    private final MappingField fallDamageResettingField;
 
     public MChestType() {
         super(MappedClasses.lN);
-        Class clazz = MappedClasses.lN;
-        boolean bl = true;
-        String string = b;
-        MChestType mChestType = this;
-        this.V = this.registerStaticField(string, bl, clazz);
+        this.fallDamageResettingField = this.registerStaticField(FALL_DAMAGE_RESETTING_FIELD_NAME, true, MappedClasses.lN);
     }
 
-    public Object u() {
-        return this.V.getObject(null);
+    public Object getFallDamageResetting() {
+        return this.fallDamageResettingField.getObject(null);
     }
 }
 

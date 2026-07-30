@@ -15,7 +15,7 @@ extends Packet {
 
     public boolean f() {
         boolean bl;
-        boolean bl2 = ForgeVersion.MC_1_8_9.d() ? this.Z().equals(PlayerDiggingAction.s()) : (bl = this.I() == 5);
+        boolean bl2 = ForgeVersion.MC_1_8_9.d() ? this.Z().equals(PlayerDiggingAction.releaseUseItem()) : (bl = this.I() == 5);
         return bl2;
     }
 

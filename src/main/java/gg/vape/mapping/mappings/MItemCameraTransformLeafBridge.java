@@ -6,20 +6,16 @@ import gg.vape.mapping.MappingField;
 
 public class MItemCameraTransformLeafBridge
 extends Mapping {
-    private static final String b = "key";
-    private MappingField T;
+    private static final String KEY_FIELD_NAME = "key";
+    private final MappingField keyField;
 
-    public Object R(Object object) {
-        return this.T.getObject(object);
+    public Object getKey(Object transform) {
+        return this.keyField.getObject(transform);
     }
 
     public MItemCameraTransformLeafBridge() {
         super(MappedClasses.zo);
-        Class clazz = MappedClasses.qC;
-        boolean bl = true;
-        String string = b;
-        MItemCameraTransformLeafBridge mItemCameraTransformLeafBridge = this;
-        this.T = this.J(string, bl, clazz);
+        this.keyField = this.J(KEY_FIELD_NAME, true, MappedClasses.qC);
     }
 }
 

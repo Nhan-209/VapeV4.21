@@ -27,7 +27,7 @@ extends Mod {
         super("InvWalk", new Color(193, 113, 0).getRGB(), Category.OTHER, "Walk and look around in UI's\nUse arrow keys to look around\nDoes not bypass some anti-cheats!");
         this.sneak = BooleanValue.create(this, "Sneak", false, "Takes sneaking input");
         this.rotate = BooleanValue.create(this, "Rotate", false, "Rotates your head with the arrow keys.");
-        this.R(false);
+        this.setDefaultVisibility(false);
         this.addValue(this.inventoryOnly);
         this.addValue(this.sneak);
         this.addValue(this.rotate);

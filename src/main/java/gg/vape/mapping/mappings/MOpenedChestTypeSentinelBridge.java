@@ -6,20 +6,16 @@ import gg.vape.mapping.MappingField;
 
 public class MOpenedChestTypeSentinelBridge
 extends Mapping {
-    private final MappingField i;
-    private static final String b = "BASIC";
+    private static final String BASIC_FIELD_NAME = "BASIC";
+    private final MappingField basicField;
 
     public MOpenedChestTypeSentinelBridge() {
         super(MappedClasses.q1);
-        Class clazz = MappedClasses.q1;
-        boolean bl = true;
-        String string = b;
-        MOpenedChestTypeSentinelBridge mOpenedChestTypeSentinelBridge = this;
-        this.i = this.registerStaticField(string, bl, clazz);
+        this.basicField = this.registerStaticField(BASIC_FIELD_NAME, true, MappedClasses.q1);
     }
 
-    public Object q() {
-        return this.i.getObject(null);
+    public Object getBasic() {
+        return this.basicField.getObject(null);
     }
 }
 

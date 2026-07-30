@@ -7,20 +7,16 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class MAtomicReferenceArrayBridge
 extends Mapping {
-    private static final String b = "chunks";
-    private MappingField O;
+    private static final String CHUNKS_FIELD_NAME = "chunks";
+    private final MappingField chunksField;
 
     public MAtomicReferenceArrayBridge() {
         super(MappedClasses.zd);
-        Class<AtomicReferenceArray> clazz = AtomicReferenceArray.class;
-        boolean bl = true;
-        String string = b;
-        MAtomicReferenceArrayBridge mAtomicReferenceArrayBridge = this;
-        this.O = this.J(string, bl, clazz);
+        this.chunksField = this.J(CHUNKS_FIELD_NAME, true, AtomicReferenceArray.class);
     }
 
-    public Object G(Object object) {
-        return this.O.getObject(object);
+    public Object getChunks(Object storage) {
+        return this.chunksField.getObject(storage);
     }
 }
 

@@ -4,24 +4,23 @@ import gg.vape.wrapper.Wrapper;
 
 public class FontGlyphInfo
 extends Wrapper {
-    public float z() {
-        return FontGlyphInfo.vapeInstance.getMappingsMapperCompat().hZ.k(this.I);
+    public float getShadowOffset() {
+        return FontGlyphInfo.vapeInstance.getMappingsMapperCompat().hZ.getShadowOffset(this.I);
     }
 
-    public FontGlyphInfo(Object object) {
-        super(object);
+    public FontGlyphInfo(Object wrappedObject) {
+        super(wrappedObject);
     }
 
-    public float L() {
-        return FontGlyphInfo.vapeInstance.getMappingsMapperCompat().hZ.v(this.I);
+    public float getBoldOffset() {
+        return FontGlyphInfo.vapeInstance.getMappingsMapperCompat().hZ.getBoldOffset(this.I);
     }
 
-    public float f(boolean bl) {
-        return FontGlyphInfo.vapeInstance.getMappingsMapperCompat().hZ.e(this.I, bl);
+    public float getAdvance(boolean bold) {
+        return FontGlyphInfo.vapeInstance.getMappingsMapperCompat().hZ.getAdvance(this.I, bold);
     }
 
-    public float C() {
-        return FontGlyphInfo.vapeInstance.getMappingsMapperCompat().hZ.B(this.I);
+    public float getAdvance() {
+        return FontGlyphInfo.vapeInstance.getMappingsMapperCompat().hZ.getAdvance(this.I);
     }
 }
-

@@ -164,7 +164,7 @@ public class EnchantmentUtil {
             return A;
         }
         EnchantmentRegistryAccess enchantmentRegistryAccess = EnchantmentUtil.z();
-        EnchantmentRegistry enchantmentRegistry = enchantmentRegistryAccess.r(ResourceKeyEnchantmentBridge.h());
+        EnchantmentRegistry enchantmentRegistry = enchantmentRegistryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.h());
         Stream<EnchantmentHolder> stream = enchantmentRegistry.x();
         Stream<Enchantment> stream2 = stream.map(EnchantmentUtil::lambda$getVanillaEnchantments_54$0);
         Enchantment[] enchantmentArray = (Enchantment[])stream2.toArray(EnchantmentUtil::lambda$getVanillaEnchantments_54$1);
@@ -213,7 +213,7 @@ public class EnchantmentUtil {
         }
         String string2 = string.contains(":") ? string : "minecraft:" + string;
         EnchantmentRegistryAccess enchantmentRegistryAccess = EnchantmentUtil.z();
-        EnchantmentRegistry enchantmentRegistry = enchantmentRegistryAccess.r(ResourceKeyEnchantmentBridge.h());
+        EnchantmentRegistry enchantmentRegistry = enchantmentRegistryAccess.lookupOrThrow(ResourceKeyEnchantmentBridge.h());
         Stream<EnchantmentHolder> stream = enchantmentRegistry.x();
         Optional<EnchantmentHolder> optional = stream.filter(arg_0 -> EnchantmentUtil.lambda$getEnchantmentByName$2(string2, arg_0)).findFirst();
         return optional.map(EnchantmentUtil::lambda$getEnchantmentByName$3).orElse(null);

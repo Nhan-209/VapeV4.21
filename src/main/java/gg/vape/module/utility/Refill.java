@@ -92,7 +92,7 @@ extends UtilityMod
             }
             this.finished = false;
             this.clickQueue.clear();
-            this.Y(false);
+            this.setEnabled(false);
             return;
         }
         if (!Minecraft.currentScreen().isInstance(MappedClasses.Ft)) {
@@ -244,15 +244,15 @@ extends UtilityMod
     @Override
     public void onEnable() {
         if (Minecraft.thePlayer().isNull()) {
-            this.Y(false);
+            this.setEnabled(false);
             return;
         }
         if (this.findJunkHotbarSlots().isEmpty()) {
-            this.Y(false);
+            this.setEnabled(false);
             return;
         }
         if (!this.hasHealingInInventory()) {
-            this.Y(false);
+            this.setEnabled(false);
         }
     }
 

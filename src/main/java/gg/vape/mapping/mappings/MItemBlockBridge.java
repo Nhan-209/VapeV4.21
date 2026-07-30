@@ -6,20 +6,16 @@ import gg.vape.mapping.MappingField;
 
 public class MItemBlockBridge
 extends Mapping {
-    private static final String b = "block";
-    private MappingField M;
+    private static final String BLOCK_FIELD_NAME = "block";
+    private final MappingField blockField;
 
-    public Object t(Object object) {
-        return this.M.getObject(object);
+    public Object getBlock(Object itemBlock) {
+        return this.blockField.getObject(itemBlock);
     }
 
     public MItemBlockBridge() {
         super(MappedClasses.Vw);
-        Class clazz = MappedClasses.Zk;
-        boolean bl = true;
-        String string = b;
-        MItemBlockBridge mItemBlockBridge = this;
-        this.M = this.J(string, bl, clazz);
+        this.blockField = this.J(BLOCK_FIELD_NAME, true, MappedClasses.Zk);
     }
 }
 

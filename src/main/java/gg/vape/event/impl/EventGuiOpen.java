@@ -22,8 +22,8 @@ extends Event {
             boolean modulesDisabled = false;
             if (this.guiScreen.isInstance(MappedClasses.u5) || this.guiScreen.isInstance(MappedClasses.D6) || this.guiScreen.isInstance(MappedClasses.F_)) {
                 for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-                    if (mod instanceof HudModule || mod.getCategory() == Category.NONE || !mod.r$src$Z$14eylz9()) continue;
-                    mod.Y(false);
+                    if (mod instanceof HudModule || mod.getCategory() == Category.NONE || !mod.isEnabled()) continue;
+                    mod.setEnabled(false);
                     modulesDisabled = true;
                 }
             }

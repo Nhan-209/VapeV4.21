@@ -9,7 +9,7 @@ import java.util.UUID;
 public class MemberNameRemapTableV55
 extends MemberNameRemapTable {
     protected void bv() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             // empty if block
         }
     }
@@ -482,7 +482,7 @@ extends MemberNameRemapTable {
     }
 
     protected void z() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             // empty if block
         }
     }

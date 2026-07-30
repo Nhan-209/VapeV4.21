@@ -83,7 +83,7 @@ import gg.vape.unmap.Bendable;
 import gg.vape.unmap.ColorUtil;
 import gg.vape.unmap.ModeOption;
 import gg.vape.unmap.ModeSelection;
-import gg.vape.util.ThreadBoundExecutor;
+import gg.vape.utils.ThreadBoundExecutor;
 import gg.vape.utils.MutableColor;
 import gg.vape.utils.render.BlurRegionRenderer;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -274,12 +274,12 @@ extends Mod {
         return false;
     }
 
-    public void F() {
-        super.F();
+    public void toggle() {
+        super.toggle();
         if (Minecraft.currentScreen().getObject() != null && !Minecraft.currentScreen().isInstance(MappedClasses.u5)) {
             return;
         }
-        if (this.r$src$Z$14eylz9()) {
+        if (this.isEnabled()) {
             Minecraft.R();
             this.savedChatKeyState = Minecraft.gameSettings().m$src$Z$1s8ei5l();
             Minecraft.gameSettings().P(false);
@@ -507,7 +507,7 @@ extends Mod {
         }
     }
 
-    public void t() {
+    public void onFinishModuleInitialization() {
     }
 
     private static void registerFrame(Frame frame, FrameStackManager ... stacks) {
@@ -966,10 +966,10 @@ extends Mod {
         }
         try {
             if (Minecraft.currentScreen().getObject() != null) {
-                if (Minecraft.currentScreen().isInstance(MappedClasses.u5) && this.a().areBoundInputsDown() && this.inputEnabled) {
-                    this.F();
+                if (Minecraft.currentScreen().isInstance(MappedClasses.u5) && this.getBind().areBoundInputsDown() && this.inputEnabled) {
+                    this.toggle();
                     this.switchFrameStack(sessionSpoofStack);
-                } else if (this.inputEnabled || !this.a().areBoundInputsDown()) {
+                } else if (this.inputEnabled || !this.getBind().areBoundInputsDown()) {
                     // empty if block
                 }
                 if (this.activeStack.equals(sessionSpoofStack) && !Minecraft.currentScreen().isInstance(MappedClasses.u5)) {
@@ -978,11 +978,11 @@ extends Mod {
             } else if (!this.inputEnabled) {
                 if (ForgeVersion.MC_1_16_5.d()) {
                     if (Minecraft.s().Z()) {
-                        this.F();
+                        this.toggle();
                         return;
                     }
                 } else if (Minecraft.a()) {
-                    this.F();
+                    this.toggle();
                     return;
                 }
             }
@@ -1019,7 +1019,7 @@ extends Mod {
             if (eventKeyPress.getKey() == 27 && eventKeyPress.isDown()) {
                 ClickGuiFrameManager clickGuiFrameManager;
                 this.inputEnabled = true;
-                this.Y(false);
+                this.setEnabled(false);
                 if (this.activeStack instanceof ClickGuiFrameManager && (clickGuiFrameManager = (ClickGuiFrameManager)this.activeStack).getOverlaySelector() != null && clickGuiFrameManager.getOverlaySelector().V$src$Z$1xhop3l()) {
                     clickGuiFrameManager.showLayer(ClickGuiLayer.MAIN);
                 }

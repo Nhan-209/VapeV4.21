@@ -6,81 +6,60 @@ import gg.vape.mapping.MappingMethod;
 
 public class MFontGlyphInfo
 extends Mapping {
-    private MappingMethod U;
-    private MappingMethod a;
-    private MappingMethod i;
-    private MappingMethod s;
-    private static int[] y;
+    private final MappingMethod advanceMethod;
+    private final MappingMethod styledAdvanceMethod;
+    private final MappingMethod boldOffsetMethod;
+    private final MappingMethod shadowOffsetMethod;
+    private static int[] controlFlowState;
 
-    public static void M(int[] nArray) {
-        y = nArray;
+    public static void setFontGlyphInfoControlFlowState(int[] state) {
+        controlFlowState = state;
     }
 
-    public float k(Object object) {
-        if (this.s == null || this.s.hasResolutionFailed()) {
+    public float getShadowOffset(Object glyphInfo) {
+        if (this.shadowOffsetMethod == null || this.shadowOffsetMethod.hasResolutionFailed()) {
             return 1.0f;
         }
-        return this.s.invokeFloat(object, new Object[0]);
+        return this.shadowOffsetMethod.invokeFloat(glyphInfo, new Object[0]);
     }
 
-    public float v(Object object) {
-        if (this.i == null || this.i.hasResolutionFailed()) {
+    public float getBoldOffset(Object glyphInfo) {
+        if (this.boldOffsetMethod == null || this.boldOffsetMethod.hasResolutionFailed()) {
             return 1.0f;
         }
-        return this.i.invokeFloat(object, new Object[0]);
+        return this.boldOffsetMethod.invokeFloat(glyphInfo, new Object[0]);
     }
 
-    public static int[] T() {
-        return y;
+    public static int[] getFontGlyphInfoControlFlowState() {
+        return controlFlowState;
     }
 
-    public float e(Object object, boolean bl) {
-        if (this.a == null || this.a.hasResolutionFailed()) {
-            float f = this.B(object);
-            return bl ? f + this.v(object) : f;
+    public float getAdvance(Object glyphInfo, boolean bold) {
+        if (this.styledAdvanceMethod == null || this.styledAdvanceMethod.hasResolutionFailed()) {
+            float advance = this.getAdvance(glyphInfo);
+            return bold ? advance + this.getBoldOffset(glyphInfo) : advance;
         }
-        return this.a.invokeFloat(object, bl);
+        return this.styledAdvanceMethod.invokeFloat(glyphInfo, bold);
     }
 
     static {
-        MFontGlyphInfo.M((int[])null);
+        MFontGlyphInfo.setFontGlyphInfoControlFlowState(null);
     }
 
 
-    public float B(Object object) {
-        if (this.U == null || this.U.hasResolutionFailed()) {
+    public float getAdvance(Object glyphInfo) {
+        if (this.advanceMethod == null || this.advanceMethod.hasResolutionFailed()) {
             return 0.0f;
         }
-        return this.U.invokeFloat(object, new Object[0]);
+        return this.advanceMethod.invokeFloat(glyphInfo, new Object[0]);
     }
 
     public MFontGlyphInfo() {
         super(MappedClasses.g);
-        Class[] classArray = new Class[]{};
-        Class<Float> clazz = Float.TYPE;
-        boolean bl = true;
-        String string = "getAdvance";
-        MFontGlyphInfo mFontGlyphInfo = this;
-        this.U = this.Y(string, bl, clazz, classArray);
-        Class[] classArray2 = new Class[]{Boolean.TYPE};
-        Class<Float> clazz2 = Float.TYPE;
-        boolean bl2 = true;
-        String string2 = "getAdvance";
-        MFontGlyphInfo mFontGlyphInfo2 = this;
-        this.a = this.Y(string2, bl2, clazz2, classArray2);
-        Class[] classArray3 = new Class[]{};
-        Class<Float> clazz3 = Float.TYPE;
-        boolean bl3 = true;
-        String string3 = "getBoldOffset";
-        MFontGlyphInfo mFontGlyphInfo3 = this;
-        this.i = this.Y(string3, bl3, clazz3, classArray3);
-        int[] nArray = MFontGlyphInfo.T();
-        Class[] classArray4 = new Class[]{};
-        Class<Float> clazz4 = Float.TYPE;
-        boolean bl4 = true;
-        String string4 = "getShadowOffset";
-        MFontGlyphInfo mFontGlyphInfo4 = this;
-        this.s = this.Y(string4, bl4, clazz4, classArray4);
+        this.advanceMethod = this.Y("getAdvance", true, Float.TYPE, new Class[]{});
+        this.styledAdvanceMethod = this.Y("getAdvance", true, Float.TYPE, new Class[]{Boolean.TYPE});
+        this.boldOffsetMethod = this.Y("getBoldOffset", true, Float.TYPE, new Class[]{});
+        this.shadowOffsetMethod = this.Y("getShadowOffset", true, Float.TYPE, new Class[]{});
     }
 }
 

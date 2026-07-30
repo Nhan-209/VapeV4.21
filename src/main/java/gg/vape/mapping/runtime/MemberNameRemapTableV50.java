@@ -333,7 +333,7 @@ extends MemberNameRemapTable {
     }
 
     protected void AC() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             this.f(MappedClasses.U, "state", "a", false);
             this.f(MappedClasses.U, "enabled", "b", false);
         }
@@ -500,7 +500,7 @@ extends MemberNameRemapTable {
     }
 
     protected void C$src$V$r2isui() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             this.f(MappedClasses.Zn, "binding", "a", false);
         }
     }

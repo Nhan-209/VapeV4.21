@@ -68,7 +68,7 @@ extends Mod {
                 this.flushPending = true;
                 this.flushQueuedPackets();
                 if (!this.autoSend.getEffectiveValue()) {
-                    super.Y(false);
+                    super.setEnabled(false);
                 }
                 return;
             }
@@ -171,7 +171,7 @@ extends Mod {
                 this.flushPending = true;
                 this.flushQueuedPackets();
                 if (!this.autoSend.getEffectiveValue()) {
-                    super.Y(false);
+                    super.setEnabled(false);
                 }
                 return;
             }

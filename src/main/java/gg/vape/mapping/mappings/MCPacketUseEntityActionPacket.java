@@ -6,20 +6,16 @@ import gg.vape.mapping.MappingField;
 
 public class MCPacketUseEntityActionPacket
 extends Mapping {
-    private final MappingField u;
-    private static final String b = "location";
+    private static final String LOCATION_FIELD_NAME = "location";
+    private final MappingField locationField;
 
     public MCPacketUseEntityActionPacket() {
         super(MappedClasses.uL);
-        Class clazz = MappedClasses.qP;
-        boolean bl = true;
-        String string = b;
-        MCPacketUseEntityActionPacket mCPacketUseEntityActionPacket = this;
-        this.u = this.J(string, bl, clazz);
+        this.locationField = this.J(LOCATION_FIELD_NAME, true, MappedClasses.qP);
     }
 
-    public Object c(Object object) {
-        return this.u.getObject(object);
+    public Object getLocation(Object packet) {
+        return this.locationField.getObject(packet);
     }
 }
 

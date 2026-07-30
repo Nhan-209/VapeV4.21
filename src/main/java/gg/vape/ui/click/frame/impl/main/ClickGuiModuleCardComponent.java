@@ -19,8 +19,6 @@ import gg.vape.ui.click.component.TruncatedTextComponent;
 import gg.vape.ui.click.component.input.BindableInputComponent;
 import gg.vape.ui.click.component.layout.PaddedComponent;
 import gg.vape.ui.click.frame.FrameComponent;
-import gg.vape.ui.click.frame.impl.main.ClickGuiModuleCardDetailComponent;
-import gg.vape.ui.click.frame.impl.main.ClickGuiModuleCardRenderState;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.unmap.ColorUtil;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -168,7 +166,7 @@ extends GuiComponent {
         this.setPropagateMouseEvents(true);
         this.nameLabel = new TruncatedTextComponent(mod.getName(), 50.0, 0.75);
         this.nameLabel.setHorizontalInset(0.0);
-        String string = mod.n();
+        String string = mod.getToolTip();
         this.w(string);
         this.detailComponent = new ClickGuiModuleCardDetailComponent();
         this.detailComponent.Y(this.module.S());
@@ -176,7 +174,7 @@ extends GuiComponent {
         this.detailComponent.setUseExplicitWidth(true);
         this.settingsIcon = new IconGlyphComponent("settingdots", 6.0f, 6.0f);
         this.settingsIcon.setColor(ClickGuiModuleCardComponent.J.W);
-        this.bindInput = new BindableInputComponent(this.module.a(), ClickGuiModuleCardComponent.J.A);
+        this.bindInput = new BindableInputComponent(this.module.getBind(), ClickGuiModuleCardComponent.J.A);
         this.bindInput.setVisible(false);
         this.bindInput.Y(10.0);
         this.reorderIcon = new IconGlyphComponent("newrearrange", 9.0f, 9.0f, ClickGuiModuleCardComponent.J.W);
@@ -300,7 +298,7 @@ extends GuiComponent {
             this.S(this.draggedY);
         }
         boolean bl2 = System.currentTimeMillis() - this.bindWarningTimestamp < 2000L;
-        boolean bl3 = this.module.X() && !this.module.a().hasValidBinding();
+        boolean bl3 = this.module.isRequiresBind() && !this.module.getBind().hasValidBinding();
         double d5 = this.G$src$D$1b2f02a();
         double d6 = this.n();
         double d7 = this.A();
@@ -314,7 +312,7 @@ extends GuiComponent {
             GuiRenderPrimitives.B(d5, d6, d7, d8, this.r(color5), 3.0f);
         }
         Color color6 = ClientSettings.INSTANCE.getAccentColor();
-        Color color7 = color3 = this.module.r$src$Z$14eylz9() ? color6 : ClickGuiModuleCardComponent.J.y;
+        Color color7 = color3 = this.module.isEnabled() ? color6 : ClickGuiModuleCardComponent.J.y;
         if (bl2 && bl3) {
             color3 = ClickGuiModuleCardComponent.J.I;
         } else if (this.favoriteHighlighted) {
@@ -341,11 +339,11 @@ extends GuiComponent {
         boolean bl4 = this.w$src$Z$e457mb() && !bl;
         this.hoverAnimation.u(bl4);
         this.settingsHoverAnimation.u(bl);
-        this.enabledFillAnimation.u(this.module.r$src$Z$14eylz9());
-        this.enabledBackgroundAnimation.u(this.module.r$src$Z$14eylz9());
+        this.enabledFillAnimation.u(this.module.isEnabled());
+        this.enabledBackgroundAnimation.u(this.module.isEnabled());
         this.selectionAnimation.u(this.selected);
         this.selectionOffsetAnimation.u(this.selected);
-        this.enabledToggleAnimation.u(this.module.r$src$Z$14eylz9());
+        this.enabledToggleAnimation.u(this.module.isEnabled());
         this.dimAnimation.u(this.dimmed && !this.selected);
         this.favoriteAnimation.u(this.favoriteHighlighted);
         this.settingsIcon.K(d13);
@@ -358,11 +356,11 @@ extends GuiComponent {
         double d15 = d13 - 12.5 - 10.0;
         double d16 = d9 - 3.5;
         if (!this.reordering) {
-            Color color8 = this.module.r$src$Z$14eylz9() ? color6 : ClickGuiModuleCardComponent.J.K;
+            Color color8 = this.module.isEnabled() ? color6 : ClickGuiModuleCardComponent.J.K;
             GuiRenderPrimitives.j(d15, d16, 12.5, 7.0, this.r(color8));
             double d17 = 5.5;
             double d18 = d15 + 1.5 + 5.5 * this.enabledToggleAnimation.getInterpolatedValue();
-            if (this.module.X() && this.module.a().hasValidBinding()) {
+            if (this.module.isRequiresBind() && this.module.getBind().hasValidBinding()) {
                 d18 += 3.125;
             }
             double d19 = d16 + 1.5;
@@ -371,7 +369,7 @@ extends GuiComponent {
         }
         double d20 = d15 - this.bindInput.A() - 8.0;
         double d21 = d9 - 5.0;
-        boolean bl5 = this.module.a() != null && this.module.a().hasValidBinding();
+        boolean bl5 = this.module.getBind() != null && this.module.getBind().hasValidBinding();
         boolean bl6 = this.bindInput.getCaptureTask().isCapturing();
         boolean bl7 = !this.reordering && (bl5 || bl6 || bl4);
         this.bindInput.K(d20);
@@ -387,15 +385,15 @@ extends GuiComponent {
         double d23 = d5 + 84.0;
         double d24 = Math.max(0.0, d22 - d23);
         boolean bl8 = this.detailComponent.V$src$Z$1xhop3l();
-        Color color10 = this.module.r$src$Z$14eylz9() ? ClickGuiModuleCardComponent.J.A : ClickGuiModuleCardComponent.J.C;
+        Color color10 = this.module.isEnabled() ? ClickGuiModuleCardComponent.J.A : ClickGuiModuleCardComponent.J.C;
         this.detailComponent.n(bl2 ? ClickGuiModuleCardComponent.J.I : this.r(color10));
         this.detailComponent.K(this.getDimmedAlpha());
         this.detailComponent.S(d6);
         this.detailComponent.Y(d8);
-        boolean bl9 = bl2 && this.module.X();
-        boolean bl10 = this.module.L() && !this.module.r$src$Z$14eylz9();
+        boolean bl9 = bl2 && this.module.isRequiresBind();
+        boolean bl10 = this.module.L() && !this.module.isEnabled();
         boolean bl11 = this.module.getCategory() == Category.OTHER && this.unsafeBadgeEnabled;
-        boolean bl12 = !this.module.r$src$Z$14eylz9() && (this.module.t$src$Z$14g275z() || this.module.Q());
+        boolean bl12 = !this.module.isEnabled() && (this.module.t$src$Z$14g275z() || this.module.Q());
         double d25 = 0.0;
         if (bl10 && !bl9) {
             smoothFontRenderer = this.getAlternateFontRenderer(0.65);
@@ -453,10 +451,10 @@ extends GuiComponent {
             this.removeButton.S(d9 - this.removeButton.L() / 2.0);
         }
         d = this.favoriteIcon.A();
-        n = this.favoriteControlVisible || this.module.f$src$Z$148d2ux() && this.favoriteControlVisible ? 1 : 0;
+        n = this.favoriteControlVisible || this.module.isFavorite() && this.favoriteControlVisible ? 1 : 0;
         this.favoriteIcon.setVisible(n != 0);
         if (n != 0) {
-            color = this.module.f$src$Z$148d2ux() ? ClickGuiModuleCardComponent.J.I : ClickGuiModuleCardComponent.J.K;
+            color = this.module.isFavorite() ? ClickGuiModuleCardComponent.J.I : ClickGuiModuleCardComponent.J.K;
             this.favoriteIcon.setColor(this.r(color));
             this.favoriteIcon.K(d3);
             this.favoriteIcon.S(d9 - d / 2.0);
@@ -468,7 +466,7 @@ extends GuiComponent {
         }
         double d30 = bl8 ? Math.max(d3, d23 - 6.0) : d22;
         double d31 = Math.max(0.0, d30 - d3);
-        Color color11 = bl2 && bl3 ? ClickGuiModuleCardComponent.J.I : (this.module.r$src$Z$14eylz9() ? Color.WHITE : ClickGuiModuleCardComponent.J.A);
+        Color color11 = bl2 && bl3 ? ClickGuiModuleCardComponent.J.I : (this.module.isEnabled() ? Color.WHITE : ClickGuiModuleCardComponent.J.A);
         this.nameLabel.setTextColor(this.r(color11));
         this.nameLabel.K(d3);
         this.nameLabel.S(d6);
@@ -516,7 +514,7 @@ extends GuiComponent {
                 return;
             }
             if (this.favoriteIcon.V$src$Z$1xhop3l() && this.favoriteControlVisible && this.favoriteHitbox.J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
-                this.module.K(!this.module.f$src$Z$148d2ux());
+                this.module.K(!this.module.isFavorite());
                 return;
             }
             if (this.settingsHitbox.J(guiMouseEvent.getX(), guiMouseEvent.getY())) {
@@ -528,20 +526,20 @@ extends GuiComponent {
             if (this.bindInput.V$src$Z$1xhop3l() && this.bindInput.i(guiMouseEvent.getX(), guiMouseEvent.getY())) {
                 return;
             }
-            if (this.module.X()) {
+            if (this.module.isRequiresBind()) {
                 this.bindWarningTimestamp = System.currentTimeMillis();
                 return;
             }
-            this.module.setEnabled(!this.module.r$src$Z$14eylz9(), true);
+            this.module.setEnabled(!this.module.isEnabled(), true);
         } else if (guiMouseEvent.getAction() == MouseButton.RIGHT_CLICK && this.settingsAction != null) {
             this.settingsAction.run();
         }
     }
 
     private void initializeAnimations() {
-        this.setAnimationState(this.enabledFillAnimation, this.module.r$src$Z$14eylz9());
-        this.setAnimationState(this.enabledBackgroundAnimation, this.module.r$src$Z$14eylz9());
-        this.setAnimationState(this.enabledToggleAnimation, this.module.r$src$Z$14eylz9());
+        this.setAnimationState(this.enabledFillAnimation, this.module.isEnabled());
+        this.setAnimationState(this.enabledBackgroundAnimation, this.module.isEnabled());
+        this.setAnimationState(this.enabledToggleAnimation, this.module.isEnabled());
         this.setAnimationState(this.selectionAnimation, this.selected);
         this.setAnimationState(this.selectionOffsetAnimation, this.selected);
         this.setAnimationState(this.dimAnimation, this.dimmed && !this.selected);
@@ -557,16 +555,16 @@ extends GuiComponent {
     }
 
     private String getBindLabel() {
-        String string = this.module.a().getBindText();
+        String string = this.module.getBind().getBindText();
         if (string != null && !string.isEmpty()) {
             return string;
         }
-        return this.module.X() ? "Set bind" : "";
+        return this.module.isRequiresBind() ? "Set bind" : "";
     }
 
     private void updateDetailText() {
         if (System.currentTimeMillis() - this.bindWarningTimestamp < 2000L) {
-            if (this.module.X() && this.module.a().hasValidBinding()) {
+            if (this.module.isRequiresBind() && this.module.getBind().hasValidBinding()) {
                 this.detailComponent.Y(Collections.singletonList(ClickGuiModuleCardRenderState.j("Use via keybind while in game")));
             } else {
                 this.detailComponent.Y(Collections.singletonList(ClickGuiModuleCardRenderState.j("Must be bound to use")));

@@ -46,7 +46,7 @@ extends Mod {
         this.lastHorizontalDistance = Math.hypot(player.z() - player.f(), player.h() - player.R());
         if (this.autoDisable.getEffectiveValue().booleanValue()) {
             if (!this.wasOnGround && player.u$src$Z$g120nz() && this.jumpStarted) {
-                this.F();
+                this.toggle();
             }
             if (!this.jumpStarted && this.hasMovementInput(player)) {
                 this.jumpStarted = true;

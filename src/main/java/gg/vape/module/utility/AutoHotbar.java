@@ -110,7 +110,7 @@ implements InventoryActionModule {
     }
 
     @Override
-    public boolean X() {
+    public boolean isRequiresBind() {
         return this.activationMode.getValue() == this.onKeyMode;
     }
 
@@ -123,7 +123,7 @@ implements InventoryActionModule {
         this.toggleMode = new ModeOption("Toggle");
         this.activationMode = ModeValue.create((Object)this, "Activation", this.onKeyMode, this.onKeyMode, this.toggleMode);
         this.openInventoryOption = BooleanValue.create(this, "Open Inventory", true);
-        this.R(false);
+        this.setDefaultVisibility(false);
         this.hotbarRules = HotbarSlotRuleValue.create(this, "hotbar");
         this.activationMode.addActiveMode(this.openInventoryOption, this.toggleMode);
         this.addValue(this.activationMode, this.openInventoryOption, this.delayMs, this.hotbarRules);
@@ -183,7 +183,7 @@ implements InventoryActionModule {
 
     @Override
     public boolean isPerformingInventoryAction() {
-        return this.r$src$Z$14eylz9() && this.clickQueue.size() > 0 && (this.openInventoryOption.getEffectiveValue() != false || Minecraft.currentScreen().isNull());
+        return this.isEnabled() && this.clickQueue.size() > 0 && (this.openInventoryOption.getEffectiveValue() != false || Minecraft.currentScreen().isNull());
     }
 
     @Override
@@ -229,7 +229,7 @@ implements InventoryActionModule {
                     KeyBindingHelper.updateKeyBinding(keyBinding, false, false);
                 }
             } else if (this.activationMode.getValue() == this.onKeyMode) {
-                this.Y(false);
+                this.setEnabled(false);
             }
             return;
         }
@@ -307,7 +307,7 @@ implements InventoryActionModule {
             return;
         }
         if (this.activationMode.getValue() == this.onKeyMode) {
-            this.Y(false);
+            this.setEnabled(false);
         }
         if (!Minecraft.currentScreen().isNull()) {
             Minecraft.thePlayer().Z$src$V$1ie832h();

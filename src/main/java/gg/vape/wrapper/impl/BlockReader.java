@@ -9,7 +9,6 @@ extends Wrapper {
     }
 
     public BlockStatePredicate f(BlockPos blockPos) {
-        return new BlockStatePredicate(BlockReader.vapeInstance.getMappingsMapperCompat().y.n(this.I, blockPos.getObject()));
+        return new BlockStatePredicate(BlockReader.vapeInstance.getMappingsMapperCompat().y.getBlockState(this.I, blockPos.getObject()));
     }
 }
-

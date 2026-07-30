@@ -1,4 +1,4 @@
-package gg.vape.util;
+package gg.vape.utils;
 
 import gg.vape.ui.click.component.GuiComponent;
 import java.util.ArrayDeque;

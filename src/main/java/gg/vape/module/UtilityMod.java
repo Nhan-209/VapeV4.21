@@ -14,7 +14,7 @@ extends Mod {
     }
 
     @Override
-    public boolean X() {
+    public boolean isRequiresBind() {
         return true;
     }
 

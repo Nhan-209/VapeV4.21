@@ -5,11 +5,11 @@ import java.util.List;
 
 public class GlStateManagerFogStateBridge
 extends Wrapper {
-    public List<String> F() {
-        return (List<String>)GlStateManagerFogStateBridge.vapeInstance.getMappingsMapperCompat().q2.y(this.I);
+    public List<String> getItemStates() {
+        return (List<String>)GlStateManagerFogStateBridge.vapeInstance.getMappingsMapperCompat().q2.getItemStates(this.I);
     }
 
-    public GlStateManagerFogStateBridge(Object object) {
-        super(object);
+    public GlStateManagerFogStateBridge(Object wrappedObject) {
+        super(wrappedObject);
     }
 }

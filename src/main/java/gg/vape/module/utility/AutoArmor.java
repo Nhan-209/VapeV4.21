@@ -173,7 +173,7 @@ implements InventoryActionModule {
 
     @Override
     public boolean isPerformingInventoryAction() {
-        return this.r$src$Z$14eylz9() && this.clickQueue.size() > 0;
+        return this.isEnabled() && this.clickQueue.size() > 0;
     }
 
     @Override

@@ -11,11 +11,6 @@ import gg.vape.event.impl.EventPreTick;
 import gg.vape.event.impl.EventRender3D;
 import gg.vape.event.impl.EventWorldChange;
 import gg.vape.event.impl.ProfileChangeEvent;
-import gg.vape.friend.LocalOnlineFriend;
-import gg.vape.friend.OnlineFriend;
-import gg.vape.friend.OnlineFriendActivityState;
-import gg.vape.friend.OnlineFriendColorUtil;
-import gg.vape.friend.PartyState;
 import gg.vape.friend.activity.ActivitySnapshotPayload;
 import gg.vape.input.MouseClickRateTracker;
 import gg.vape.manager.client.OnlineActivityManager;
@@ -54,7 +49,6 @@ import gg.vape.wrapper.impl.WorldClient;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +121,7 @@ implements EventListener {
     private void updateServerAddress(OnlineFriend onlineFriend) {
         OnlineActivityManager onlineActivityManager;
         ServerData serverData = Minecraft.H();
-        String visibleServerAddress = Minecraft.V() ? "Singleplayer" : (serverData.isNotNull() ? serverData.f() : null);
+        String visibleServerAddress = Minecraft.V() ? "Singleplayer" : (serverData.isNotNull() ? serverData.getServerIp() : null);
         String actualServerAddress = visibleServerAddress;
         if (actualServerAddress != null) {
             if (!OnlineConnectionManager.INSTANCE.getSettings().getShareServer().getEffectiveValue().booleanValue()) {
@@ -273,7 +267,7 @@ implements EventListener {
     @Nullable
     public EntityPlayer getCombatTarget() {
         Wrapper wrapper;
-        if (this.killAura.r$src$Z$14eylz9() && !this.killAura.targets.isEmpty()) {
+        if (this.killAura.isEnabled() && !this.killAura.targets.isEmpty()) {
             wrapper = Minecraft.currentScreen();
             if (!this.killAura.guiCheck.getEffectiveValue().booleanValue() || ((GuiScreen)wrapper).isNull()) {
                 for (EntityLivingBase entityLivingBase : this.killAura.targets) {
@@ -282,7 +276,7 @@ implements EventListener {
                 }
             }
         }
-        if (this.silentAura.r$src$Z$14eylz9()) {
+        if (this.silentAura.isEnabled()) {
             wrapper = this.silentAura.getTarget();
             GuiScreen currentScreen = Minecraft.currentScreen();
             if (currentScreen.isNull() && wrapper != null && wrapper.isInstance(MappedClasses.Yl)) {
@@ -290,7 +284,7 @@ implements EventListener {
             }
         }
         EntityLivingBase aimAssistTarget;
-        if (this.aimAssist.r$src$Z$14eylz9() && ((GuiScreen)(wrapper = Minecraft.currentScreen())).isNull() && (aimAssistTarget = this.aimAssist.getCurrentTarget()) != null && aimAssistTarget.isInstance(MappedClasses.Yl)) {
+        if (this.aimAssist.isEnabled() && ((GuiScreen)(wrapper = Minecraft.currentScreen())).isNull() && (aimAssistTarget = this.aimAssist.getCurrentTarget()) != null && aimAssistTarget.isInstance(MappedClasses.Yl)) {
             return new EntityPlayer(aimAssistTarget.getObject());
         }
         if (this.manualTarget != null && System.currentTimeMillis() - this.manualTargetTimestamp < 5000L) {
@@ -440,7 +434,7 @@ implements EventListener {
         double viewerZ = entityPlayerSP.Z() - renderZ;
         double verticalOffset = 7.0;
         NameTags nameTags = Vape.INSTANCE.getModManager().getMod(NameTags.class);
-        if (nameTags.r$src$Z$14eylz9()) {
+        if (nameTags.isEnabled()) {
             verticalOffset += 7.0;
         }
         for (EntityPlayer entityPlayer : players) {

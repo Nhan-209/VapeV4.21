@@ -6,24 +6,20 @@ import gg.vape.mapping.MappingField;
 
 public class MRenderItemContext
 extends Mapping {
-    private static final String b = "GUI";
-    private MappingField F;
+    private static final String GUI_FIELD_NAME = "GUI";
+    private final MappingField guiField;
 
-    public static Object r(MRenderItemContext mRenderItemContext) {
-        return mRenderItemContext.r();
+    public static Object getGui(MRenderItemContext mapping) {
+        return mapping.readGui();
     }
 
     public MRenderItemContext() {
         super(MappedClasses.YK);
-        Class clazz = MappedClasses.YK;
-        boolean bl = true;
-        String string = b;
-        MRenderItemContext mRenderItemContext = this;
-        this.F = this.registerStaticField(string, bl, clazz);
+        this.guiField = this.registerStaticField(GUI_FIELD_NAME, true, MappedClasses.YK);
     }
 
-    private Object r() {
-        return this.F.getObject(null);
+    private Object readGui() {
+        return this.guiField.getObject(null);
     }
 }
 

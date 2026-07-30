@@ -4,20 +4,19 @@ import gg.vape.wrapper.Wrapper;
 
 public class DamageSources
 extends Wrapper {
-    public DamageSource G(EntityPlayer x_2) {
-        return new DamageSource(DamageSources.vapeInstance.getMappingsMapperCompat().h0.J(this.getObject(), x_2.getObject()));
+    public DamageSource playerAttack(EntityPlayer player) {
+        return new DamageSource(DamageSources.vapeInstance.getMappingsMapperCompat().h0.getPlayerAttackDamageSource(this.getObject(), player.getObject()));
     }
 
-    public DamageSource H() {
-        return new DamageSource(DamageSources.vapeInstance.getMappingsMapperCompat().h0.B(this.getObject()));
+    public DamageSource explosion() {
+        return new DamageSource(DamageSources.vapeInstance.getMappingsMapperCompat().h0.getExplosionDamageSource(this.getObject()));
     }
 
-    public DamageSource O() {
-        return new DamageSource(DamageSources.vapeInstance.getMappingsMapperCompat().h0.L(this.getObject()));
+    public DamageSource fall() {
+        return new DamageSource(DamageSources.vapeInstance.getMappingsMapperCompat().h0.getFallDamageSource(this.getObject()));
     }
 
     public DamageSources(Object object) {
         super(object);
     }
 }
-

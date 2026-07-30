@@ -5,27 +5,25 @@ import gg.vape.wrapper.Wrapper;
 
 public class FontGlyph
 extends Wrapper {
-    public boolean l() {
-        boolean bl = MappedClasses.v != null && MappedClasses.v.isInstance(this.I);
-        return bl;
+    public boolean isGlyphInfo() {
+        return MappedClasses.v != null && MappedClasses.v.isInstance(this.I);
     }
 
-    public GlyphInfo x() {
-        if (this.l()) {
+    public GlyphInfo asGlyphInfo() {
+        if (this.isGlyphInfo()) {
             return new GlyphInfo(this.I);
         }
         return null;
     }
 
-    public FontGlyphInfo D() {
-        Object object = FontGlyph.vapeInstance.getMappingsMapperCompat().De.M(this.I);
-        FontGlyphInfo fontGlyphInfo = object != null ? new FontGlyphInfo(object) : null;
-        return fontGlyphInfo;
+    public FontGlyphInfo getInfo() {
+        Object info = FontGlyph.vapeInstance.getMappingsMapperCompat().De.getInfo(this.I);
+        return info != null ? new FontGlyphInfo(info) : null;
     }
 
 
-    public FontGlyph(Object object) {
-        super(object);
+    public FontGlyph(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
 

@@ -1,8 +1,6 @@
 package gg.vape.module.blatant.blockin;
 
 import gg.vape.Vape;
-import gg.vape.module.blatant.blockin.BlockPathPlanner;
-import gg.vape.module.blatant.blockin.BlockPlacementGraphNode;
 import gg.vape.module.combat.Sprint;
 import gg.vape.rotation.AdaptiveRotationController;
 import gg.vape.rotation.MouseRotationController;
@@ -167,7 +165,7 @@ public class BlockPlacementGraph {
         if (sprintMod == null) {
             sprintMod = Vape.INSTANCE.getModManager().getMod(Sprint.class);
         }
-        this.sprintKeyDown = blockPathPlanner.isSprintKeyDown() || sprintMod.r$src$Z$14eylz9();
+        this.sprintKeyDown = blockPathPlanner.isSprintKeyDown() || sprintMod.isEnabled();
     }
 
     private BlockPlacementGraph(double positionX, double positionY, double positionZ,
@@ -325,7 +323,7 @@ public class BlockPlacementGraph {
         if (sprintMod == null) {
             sprintMod = Vape.INSTANCE.getModManager().getMod(Sprint.class);
         }
-        this.sprintKeyDown = gameSettings.r().isKeyDown() || sprintMod.r$src$Z$14eylz9();
+        this.sprintKeyDown = gameSettings.r().isKeyDown() || sprintMod.isEnabled();
     }
 
     public boolean hasSameInputKeys(BlockPlacementGraph other) {

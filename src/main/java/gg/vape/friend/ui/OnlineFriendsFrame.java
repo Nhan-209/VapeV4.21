@@ -1,21 +1,6 @@
 package gg.vape.friend.ui;
 
 import gg.vape.Vape;
-import gg.vape.friend.ui.FriendEntriesPanel;
-import gg.vape.friend.ui.FriendManagementPanel;
-import gg.vape.friend.ui.FriendRequestsPanel;
-import gg.vape.friend.ui.OnlineConnectionStatusPanel;
-import gg.vape.friend.ui.OnlineFriendEntriesPanel;
-import gg.vape.friend.ui.OnlineFriendUiHelper;
-import gg.vape.friend.ui.OnlineFriendsEmptyStatePanel;
-import gg.vape.friend.ui.OnlineFriendsFrameConditionalPopupCloseClickHandler;
-import gg.vape.friend.ui.OnlineFriendsFrameModeToggleComponent;
-import gg.vape.friend.ui.OnlineFriendsFramePopupCloseClickHandler;
-import gg.vape.friend.ui.OnlineFriendsFramePopupOutsideClickListener;
-import gg.vape.friend.ui.OnlineFriendsListPanel;
-import gg.vape.friend.ui.OnlineModeToggleComponent;
-import gg.vape.friend.ui.OnlineRegistrationPanel;
-import gg.vape.friend.ui.PartyInvitesPanel;
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.manager.client.OnlineConnectionState;
 import gg.vape.module.none.ClientSettings;

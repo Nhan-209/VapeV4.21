@@ -247,8 +247,8 @@ extends Mod {
                 String modeName = ConfigJsonUtils.getString(valueJson, "value");
                 if (modeName != null && modeName.contains("Jump")) {
                     profileJson.remove("Velocity");
-                    if (this.r$src$Z$14eylz9()) {
-                        this.Y(false);
+                    if (this.isEnabled()) {
+                        this.setEnabled(false);
                     }
                     Vape.INSTANCE.getNotificationManager().show("Velocity disabled", "Velocity turned off since JumpReset mode is now a standalone module.", NotificationType.WARNING, 10000L);
                 }
@@ -256,12 +256,12 @@ extends Mod {
                     continue;
                 }
                 profileJson.remove("Velocity");
-                if (this.r$src$Z$14eylz9()) {
-                    this.Y(false);
+                if (this.isEnabled()) {
+                    this.setEnabled(false);
                 }
                 VelocityPacketMode velocityPacketMode = Vape.INSTANCE.getModManager().getMod(VelocityPacketMode.class);
                 if (velocityPacketMode != null) {
-                    velocityPacketMode.Y(true);
+                    velocityPacketMode.setEnabled(true);
                 }
                 Vape.INSTANCE.getNotificationManager().show("Velocity disabled", "Velocity Lag mode is now KnockbackDelay under Network.\nKnockbackDelay has been enabled.", NotificationType.WARNING, 10000L);
             }

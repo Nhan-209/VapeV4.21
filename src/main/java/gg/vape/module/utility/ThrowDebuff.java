@@ -55,7 +55,7 @@ extends UtilityMod {
         }
         if (this.itemsToThrow.isEmpty()) {
             if (this.selectHotbarSlotIncrementally(this.savedSlot)) {
-                this.Y(false);
+                this.setEnabled(false);
             }
             return;
         }
@@ -105,7 +105,7 @@ extends UtilityMod {
         this.scrollDelay = NumberValue.create(this, "Scroll delay", "#", "ms", 0.0, 100.0, 200.0);
         this.delayTimer = new TimerUtil();
         this.scrollTimer = new TimerUtil();
-        this.R(false);
+        this.setDefaultVisibility(false);
         this.addValue(this.mode);
         for (BooleanValue booleanValue : this.debuffValues) {
             this.addValue(booleanValue);
@@ -121,7 +121,7 @@ extends UtilityMod {
         if (this.collectDebuffs()) {
             this.savedSlot = Minecraft.thePlayer().V$src$Lgg_vape_wrapper_impl_InventoryPlayer_$erqak6().v();
         } else {
-            this.Y(false);
+            this.setEnabled(false);
         }
     }
 

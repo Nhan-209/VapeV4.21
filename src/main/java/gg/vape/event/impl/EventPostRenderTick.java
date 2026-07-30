@@ -1,8 +1,7 @@
 package gg.vape.event.impl;
 
-import gg.vape.event.impl.EventRenderTickBase;
 import gg.vape.ui.click.GuiScreenNativeCallbackBridge;
-import gg.vape.util.RenderThreadTaskQueue;
+import gg.vape.utils.RenderThreadTaskQueue;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.utils.render.RenderBatchManager;
 

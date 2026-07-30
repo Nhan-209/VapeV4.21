@@ -66,11 +66,11 @@ extends UtilityMod {
     public void onTick(EventPrePlayerTick event) {
         EntityPlayerSP localPlayer = Minecraft.thePlayer();
         if (localPlayer.isNotNull() && localPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode()) {
-            this.Y(false);
+            this.setEnabled(false);
             return;
         }
         if (this.finished) {
-            this.Y(false);
+            this.setEnabled(false);
             return;
         }
         if (!Minecraft.currentScreen().isInstance(MappedClasses.YS)) {
@@ -83,7 +83,7 @@ extends UtilityMod {
                     KeyBindingHelper.updateKeyBinding(keyBinding, false, false);
                 }
             } else {
-                this.Y(false);
+                this.setEnabled(false);
             }
             return;
         }
@@ -107,11 +107,11 @@ extends UtilityMod {
             if (this.findArmorSlots(wearingSet1 ? this.materialByOption.get(this.set2.getValue()) : this.materialByOption.get(this.set1.getValue()))) {
                 this.collecting = true;
             } else {
-                this.Y(false);
+                this.setEnabled(false);
             }
         }
         if (!hasArmor) {
-            this.Y(false);
+            this.setEnabled(false);
         }
     }
 
@@ -172,7 +172,7 @@ extends UtilityMod {
     public void onEnable() {
         EntityPlayerSP localPlayer = Minecraft.thePlayer();
         if (localPlayer.isNotNull() && localPlayer.C$src$Lgg_vape_wrapper_impl_ModelPlayer_$19uhx86().isCreativeMode()) {
-            this.Y(false);
+            this.setEnabled(false);
             return;
         }
         this.slotIndex = FIRST_ARMOR_SLOT;

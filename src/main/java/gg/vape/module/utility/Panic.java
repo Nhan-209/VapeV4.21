@@ -15,7 +15,7 @@ extends UtilityMod {
 
     public Panic() {
         super("Panic", "Disables all currently enabled modules");
-        this.R(false);
+        this.setDefaultVisibility(false);
         this.addValue(this.reEnable);
     }
 
@@ -30,12 +30,12 @@ extends UtilityMod {
 
     @Override
     public void onEnable() {
-        this.Y(false);
+        this.setEnabled(false);
         if (this.reEnable.getEffectiveValue().booleanValue()) {
             this.reEnableActive = !this.reEnableActive;
             if (!this.reEnableActive) {
                 for (Mod mod : this.disabledMods) {
-                    mod.Y(true);
+                    mod.setEnabled(true);
                 }
                 this.disabledMods.clear();
                 return;
@@ -44,8 +44,8 @@ extends UtilityMod {
             this.reEnableActive = false;
         }
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-            if (!mod.r$src$Z$14eylz9() || mod == this) continue;
-            mod.Y(false);
+            if (!mod.isEnabled() || mod == this) continue;
+            mod.setEnabled(false);
             if (!this.reEnable.getEffectiveValue().booleanValue()) continue;
             this.disabledMods.add(mod);
         }

@@ -74,7 +74,7 @@ extends Mod {
     public List<EntityLivingBase> targets;
 
     public boolean hasTargets() {
-        return this.r$src$Z$14eylz9() && !this.targets.isEmpty();
+        return this.isEnabled() && !this.targets.isEmpty();
     }
 
 
@@ -135,7 +135,7 @@ extends Mod {
 
     private boolean handleDeathScreen(EntityPlayerSP player) {
         if (player.M$src$Z$ff28xj() || player.w$src$F$15l9epb() <= 0.0f) {
-            this.F();
+            this.toggle();
             return true;
         }
         Screen screen = ForgeVersion.MC_1_16_5.d() ? Minecraft.currentScreen() : Minecraft.k();
@@ -158,7 +158,7 @@ extends Mod {
         }
         if (!this.deathScreenHandled && deathScreen) {
             this.deathScreenHandled = true;
-            this.F();
+            this.toggle();
             return true;
         }
         return false;
@@ -247,8 +247,8 @@ extends Mod {
     public void onDeathCheck(EventPrePlayerTick event) {
         if (this.disableOnDeath.getEffectiveValue()
                 && (event.getPlayer().M$src$Z$ff28xj() || event.getPlayer().w$src$F$15l9epb() <= 0.0f)
-                && this.r$src$Z$14eylz9()) {
-            this.F();
+                && this.isEnabled()) {
+            this.toggle();
             return;
         }
     }

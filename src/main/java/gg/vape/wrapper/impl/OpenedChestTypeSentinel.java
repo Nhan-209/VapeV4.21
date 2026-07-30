@@ -4,12 +4,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class OpenedChestTypeSentinel
 extends Wrapper {
-    public OpenedChestTypeSentinel(Object object) {
-        super(object);
+    public OpenedChestTypeSentinel(Object wrappedObject) {
+        super(wrappedObject);
     }
 
-    public static OpenedChestTypeSentinel Y() {
-        return new OpenedChestTypeSentinel(OpenedChestTypeSentinel.vapeInstance.getMappingsMapperCompat().CD.q());
+    public static OpenedChestTypeSentinel basic() {
+        return new OpenedChestTypeSentinel(OpenedChestTypeSentinel.vapeInstance.getMappingsMapperCompat().CD.getBasic());
     }
 }
-

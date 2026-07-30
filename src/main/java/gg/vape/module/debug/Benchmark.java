@@ -55,7 +55,7 @@ extends Mod {
         }
         if ((double)this.samples.size() >= (Double)this.testAmount.getValue()) {
             this.logResults();
-            this.F();
+            this.toggle();
             return;
         }
         long elapsedMillis = System.currentTimeMillis() - this.lastTimestamp;

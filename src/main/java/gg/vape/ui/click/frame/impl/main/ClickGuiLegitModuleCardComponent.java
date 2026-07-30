@@ -91,8 +91,8 @@ extends GuiComponent {
             this.enabledColorAnimation.O();
             this.togglePositionAnimation.O();
         }
-        if (this.module.r$src$Z$14eylz9() != this.enabled) {
-            this.module.Y(this.enabled);
+        if (this.module.isEnabled() != this.enabled) {
+            this.module.setEnabled(this.enabled);
         }
     }
 
@@ -136,10 +136,10 @@ extends GuiComponent {
         this.module = hudModule;
         this.moduleName = hudModule.getName();
         this.iconKey = hudModule.getKey();
-        this.enabled = hudModule.r$src$Z$14eylz9();
+        this.enabled = hudModule.isEnabled();
         this.iconScale = f;
-        if (hudModule.n() != null) {
-            this.w(hudModule.n());
+        if (hudModule.getToolTip() != null) {
+            this.w(hudModule.getToolTip());
         }
         this.settingsButton = new IconButtonComponent("settingdots", 0.8);
         this.settingsButton.addClickListener(this::runSettingsAction);
@@ -161,7 +161,7 @@ extends GuiComponent {
     }
 
     private void syncEnabledState() {
-        if (this.module.r$src$Z$14eylz9() != this.enabled || this.enabled != this.isToggleAnimationEnabled() && !this.isToggleAnimating()) {
+        if (this.module.isEnabled() != this.enabled || this.enabled != this.isToggleAnimationEnabled() && !this.isToggleAnimating()) {
             this.toggleEnabled();
         }
     }

@@ -6,21 +6,16 @@ import gg.vape.mapping.MappingMethod;
 
 public class MFluidState
 extends Mapping {
-    private final MappingMethod s;
-    private static final String b = "getHasNoSky";
+    private static final String GET_HAS_NO_SKY_METHOD_NAME = "getHasNoSky";
+    private final MappingMethod getHasNoSkyMethod;
 
     public MFluidState() {
         super(MappedClasses.DJ);
-        Class[] classArray = new Class[]{};
-        Class<Boolean> clazz = Boolean.TYPE;
-        boolean bl = true;
-        String string = b;
-        MFluidState mFluidState = this;
-        this.s = this.Y(string, bl, clazz, classArray);
+        this.getHasNoSkyMethod = this.Y(GET_HAS_NO_SKY_METHOD_NAME, true, Boolean.TYPE, new Class[]{});
     }
 
-    public boolean t(Object object) {
-        return this.s.invokeBoolean(object, new Object[0]);
+    public boolean hasNoSky(Object fluidState) {
+        return this.getHasNoSkyMethod.invokeBoolean(fluidState, new Object[0]);
     }
 }
 

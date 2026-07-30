@@ -13,11 +13,6 @@ import gg.vape.ui.click.component.AnimatedIconButtonComponent;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.component.value.ValueComponentFactory;
 import gg.vape.ui.click.frame.Frame;
-import gg.vape.ui.click.frame.impl.hud.AnchoredHudModuleConfigFrame;
-import gg.vape.ui.click.frame.impl.hud.HudModuleFrameBase;
-import gg.vape.ui.click.frame.impl.hud.HudSettingsFrameBase;
-import gg.vape.ui.click.frame.impl.hud.HudSnapCandidate;
-import gg.vape.ui.click.frame.impl.hud.HudSnapEdge;
 import gg.vape.ui.click.frame.impl.main.ClickGuiFrameManager;
 import gg.vape.utils.render.BlurRegionRenderer;
 import gg.vape.utils.render.GuiRenderPrimitives;
@@ -62,7 +57,7 @@ extends HudModuleFrameBase {
     @Override
     protected void closeHudFrame() {
         this.setHudEditorSelected(false);
-        ((Mod)this.getModule()).Y(false);
+        ((Mod)this.getModule()).setEnabled(false);
         this.setVisible(false);
     }
 
@@ -127,7 +122,7 @@ extends HudModuleFrameBase {
         AnchoredHudModuleConfigFrame<AnimatedIconButtonComponent> anchoredHudModuleConfigFrame = this.getAnchoredSettingsFrameInternal();
         anchoredHudModuleConfigFrame.setHudModule((HudModule)this.getModule());
         anchoredHudModuleConfigFrame.removeMarkedChildren();
-        for (Value<?, ?> value : anchoredHudModuleConfigFrame.getHudModule().F$src$Ljava_util_List_$1kytx9u()) {
+        for (Value<?, ?> value : anchoredHudModuleConfigFrame.getHudModule().getValues()) {
             GuiComponent guiComponent = ValueComponentFactory.createMainValueComponent(value);
             if (guiComponent == null) continue;
             if (value.getParent() != null) {

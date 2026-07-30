@@ -4,10 +4,9 @@ import gg.vape.Vape;
 import gg.vape.config.ClientSettings;
 import gg.vape.event.Event;
 import gg.vape.event.EventListeners;
-import gg.vape.event.impl.EventPostTick;
 import gg.vape.input.KeyboardInput;
 import gg.vape.ui.click.component.GuiComponent;
-import gg.vape.util.ThreadBoundExecutor;
+import gg.vape.utils.ThreadBoundExecutor;
 import gg.vape.utils.render.shader.ShaderProgram;
 import gg.vape.wrapper.impl.Minecraft;
 
@@ -53,7 +52,7 @@ extends Event {
                 ClientSettings.pendingSanityReset = true;
             }
             if ((KeyboardInput.isKeyDown(163) || KeyboardInput.isKeyDown(162) || KeyboardInput.isKeyDown(161)) && KeyboardInput.isKeyDown(36) && this instanceof EventPostTick && Minecraft.currentScreen().isNull()) {
-                Vape.INSTANCE.getModManager().getMod(gg.vape.module.none.ClientSettings.class).F();
+                Vape.INSTANCE.getModManager().getMod(gg.vape.module.none.ClientSettings.class).toggle();
             }
             ShaderProgram.setCurrentProgramId(-1);
         }

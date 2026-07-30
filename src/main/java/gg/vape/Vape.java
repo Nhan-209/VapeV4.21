@@ -612,7 +612,7 @@ public class Vape {
     private void showLoadCompleteNotification() {
         ClientSettings clientSettingsModule = INSTANCE.getModManager().getMod(ClientSettings.class);
         if (clientSettingsModule.guiBindIndicator.getEffectiveValue().booleanValue()) {
-            this.notificationManager.showInfo("Finished Loading", "Press " + clientSettingsModule.a().getBindText() + " to open GUI", 5000L);
+            this.notificationManager.showInfo("Finished Loading", "Press " + clientSettingsModule.getBind().getBindText() + " to open GUI", 5000L);
         }
     }
 

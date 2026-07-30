@@ -36,7 +36,7 @@ extends Mod {
 
 
     public boolean isMurderer(EntityLivingBase entity) {
-        if (!this.r$src$Z$14eylz9()) {
+        if (!this.isEnabled()) {
             return false;
         }
         if (!entity.isInstance(MappedClasses.Yl)) {

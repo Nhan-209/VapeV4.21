@@ -11,18 +11,13 @@ import gg.vape.module.none.ClientSettings;
 import gg.vape.module.none.TextGuiSettingsFrame;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.module.render.hud.HudModuleGroup;
-import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.Frame;
-import gg.vape.ui.click.frame.impl.hud.HudOverlayEntryInteractiveComponent;
-import gg.vape.ui.click.frame.impl.hud.HudOverlayEntryPanel;
-import gg.vape.ui.click.frame.impl.hud.HudOverlayEntrySpec;
 import gg.vape.ui.click.frame.impl.main.ClickGuiLayer;
 import gg.vape.ui.click.frame.impl.target.TargetInfoSettingsFrame;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class HudOverlaySelectorFrame
@@ -61,10 +56,10 @@ extends Frame {
     private static void lambda$getLegitModuleOverlays$2(ModManager modManager, HudModule hudModule, Class clazz) {
         Object obj = modManager.getMod(hudModule.getClass());
         if (obj != null) {
-            ((Mod)obj).F();
+            ((Mod)obj).toggle();
             Object t = ClientSettings.getFrame(clazz);
             if (t != null) {
-                ((Frame)t).setVisible(((Mod)obj).r$src$Z$14eylz9());
+                ((Frame)t).setVisible(((Mod)obj).isEnabled());
             }
         }
     }
@@ -211,7 +206,7 @@ extends Frame {
     }
 
     private static boolean lambda$getLegitModuleOverlays$1(ModManager modManager, HudModule hudModule) {
-        return ((HudModule)modManager.getMod(hudModule.getClass())).r$src$Z$14eylz9();
+        return ((HudModule)modManager.getMod(hudModule.getClass())).isEnabled();
     }
 
     private static int calculateMaxColumns() {

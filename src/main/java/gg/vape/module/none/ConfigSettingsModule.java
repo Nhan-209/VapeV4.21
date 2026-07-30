@@ -7,7 +7,7 @@ import gg.vape.value.Value;
 public class ConfigSettingsModule
 extends Mod {
     public void loadMatchingValues(JsonObject jsonObject) {
-        for (Value<?, ?> value : this.V()) {
+        for (Value<?, ?> value : this.getAllValues()) {
             if (!value.matchesJsonId(jsonObject)) continue;
             value.loadJson(jsonObject);
         }

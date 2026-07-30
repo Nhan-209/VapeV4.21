@@ -4,9 +4,6 @@ import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.module.render.hud.HudModule;
 import gg.vape.ui.click.component.IconButtonComponent;
 import gg.vape.ui.click.frame.FrameHeaderComponent;
-import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrame;
-import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameHeaderCloseClickHandler;
-import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameToggleSelectedModuleClickHandler;
 import gg.vape.ui.font.SmoothFontRenderer;
 import java.awt.Color;
 
@@ -61,7 +58,7 @@ extends FrameHeaderComponent {
             this.favoriteButton.K(this.G$src$D$1b2f02a() + this.A() - 7.5 - 8.0);
             this.favoriteButton.S(this.n());
             this.favoriteButton.Y(this.L());
-            this.favoriteButton.setOverrideColor(selectedModule.f$src$Z$148d2ux() ? HudModuleConfigFrameHeaderComponent.J.I : null);
+            this.favoriteButton.setOverrideColor(selectedModule.isFavorite() ? HudModuleConfigFrameHeaderComponent.J.I : null);
         }
     }
 }

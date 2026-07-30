@@ -6,20 +6,16 @@ import gg.vape.mapping.MappingField;
 
 public class MItemBlock
 extends Mapping {
-    private MappingField G;
-    private static final String b = "storage";
+    private static final String STORAGE_FIELD_NAME = "storage";
+    private final MappingField storageField;
 
-    public Object v(Object object) {
-        return this.G.getObject(object);
+    public Object getStorage(Object itemBlock) {
+        return this.storageField.getObject(itemBlock);
     }
 
     public MItemBlock() {
         super(MappedClasses.I);
-        Class clazz = MappedClasses.zd;
-        boolean bl = true;
-        String string = b;
-        MItemBlock mItemBlock = this;
-        this.G = this.J(string, bl, clazz);
+        this.storageField = this.J(STORAGE_FIELD_NAME, true, MappedClasses.zd);
     }
 }
 

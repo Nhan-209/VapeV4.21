@@ -92,7 +92,7 @@ extends Mod {
     private int blockSlot = -1;
 
     @Override
-    public boolean X() {
+    public boolean isRequiresBind() {
         return true;
     }
 
@@ -197,8 +197,8 @@ extends Mod {
         this.placementNodes.removeIf(BlockPlacementNode::clearCandidatePaths);
         this.clearMovementTask();
         this.updateRotationController();
-        if (this.r$src$Z$14eylz9() && !this.paused) {
-            super.Y(false);
+        if (this.isEnabled() && !this.paused) {
+            super.setEnabled(false);
         }
     }
 

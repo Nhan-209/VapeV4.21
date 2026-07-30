@@ -5,12 +5,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class RenderItemContext
 extends Wrapper {
-    public static RenderItemContext d() {
-        return new RenderItemContext(MRenderItemContext.r(RenderItemContext.vapeInstance.getMappingsMapperCompat().A));
+    public static RenderItemContext gui() {
+        return new RenderItemContext(MRenderItemContext.getGui(RenderItemContext.vapeInstance.getMappingsMapperCompat().A));
     }
 
-    public RenderItemContext(Object object) {
-        super(object);
+    public RenderItemContext(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

@@ -5,7 +5,6 @@ import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MouseButton;
 import gg.vape.ui.click.component.GuiComponent;
 import gg.vape.ui.click.frame.Frame;
-import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import gg.vape.wrapper.impl.Minecraft;
 import gg.vape.wrapper.impl.ScaledResolution;
@@ -54,14 +53,14 @@ extends GuiComponent {
 
     private void toggleEnabled() {
         this.enabled = !this.enabled;
-        this.module.Y(this.enabled);
+        this.module.setEnabled(this.enabled);
         if (this.configFrame != null) {
             this.applyConfigFrameState();
         }
     }
 
     private void syncEnabledState() {
-        if (this.module.r$src$Z$14eylz9() != this.enabled) {
+        if (this.module.isEnabled() != this.enabled) {
             this.toggleEnabled();
         }
     }
@@ -86,7 +85,7 @@ extends GuiComponent {
     public HudModuleToggleComponent(HudModule hudModule, float f) {
         this.module = hudModule;
         this.iconKey = hudModule.getKey();
-        this.enabled = hudModule.r$src$Z$14eylz9();
+        this.enabled = hudModule.isEnabled();
         this.iconScale = f;
     }
 

@@ -5,24 +5,23 @@ import gg.vape.mapping.Mapping;
 
 public class MBiomeRegistrySwitch
 extends Mapping {
-    private static int[] q;
+    private static int[] controlFlowState;
 
     public MBiomeRegistrySwitch() {
         super(MappedClasses.FU);
     }
 
-    public static void R(int[] nArray) {
-        q = nArray;
+    public static void setBiomeRegistryControlFlowState(int[] state) {
+        controlFlowState = state;
     }
 
-    public static int[] L() {
-        return q;
+    public static int[] getBiomeRegistryControlFlowState() {
+        return controlFlowState;
     }
 
     static {
-        if (MBiomeRegistrySwitch.L() == null) {
-            MBiomeRegistrySwitch.R(new int[5]);
+        if (MBiomeRegistrySwitch.getBiomeRegistryControlFlowState() == null) {
+            MBiomeRegistrySwitch.setBiomeRegistryControlFlowState(new int[5]);
         }
     }
 }
-

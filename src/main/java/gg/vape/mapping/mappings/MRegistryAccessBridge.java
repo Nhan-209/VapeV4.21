@@ -6,21 +6,16 @@ import gg.vape.mapping.MappingMethod;
 
 public class MRegistryAccessBridge
 extends Mapping {
-    private final MappingMethod i;
-    private static final String b = "lookupOrThrow";
+    private static final String LOOKUP_OR_THROW_METHOD_NAME = "lookupOrThrow";
+    private final MappingMethod lookupOrThrowMethod;
 
-    public Object m(Object object, Object object2) {
-        return this.i.invokeObject(object, object2);
+    public Object lookupOrThrow(Object registryAccess, Object resourceKey) {
+        return this.lookupOrThrowMethod.invokeObject(registryAccess, resourceKey);
     }
 
     public MRegistryAccessBridge() {
         super(MappedClasses.zi);
-        Class[] classArray = new Class[]{MappedClasses.qB};
-        Class clazz = MappedClasses.l1;
-        boolean bl = true;
-        String string = b;
-        MRegistryAccessBridge mRegistryAccessBridge = this;
-        this.i = this.Y(string, bl, clazz, classArray);
+        this.lookupOrThrowMethod = this.Y(LOOKUP_OR_THROW_METHOD_NAME, true, MappedClasses.l1, new Class[]{MappedClasses.qB});
     }
 }
 

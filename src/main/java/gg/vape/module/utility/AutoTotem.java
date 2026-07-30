@@ -16,7 +16,7 @@ import gg.vape.mapping.ItemMappingEntry;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.ModDisplayInfo;
+import gg.vape.module.ModuleDisplayInfo;
 import gg.vape.module.control.SharedModuleControlClaims;
 import gg.vape.module.none.ClientSettings;
 import gg.vape.module.render.Freecam;
@@ -133,7 +133,7 @@ implements InventoryActionModule {
 
     @Override
     public boolean isPerformingInventoryAction() {
-        return this.r$src$Z$14eylz9() && !this.clickQueue.isEmpty();
+        return this.isEnabled() && !this.clickQueue.isEmpty();
     }
 
     private boolean isDelayElapsed() {
@@ -199,7 +199,7 @@ implements InventoryActionModule {
     }
 
     @Override
-    public ModDisplayInfo J() {
+    public ModuleDisplayInfo getModuleDisplayInfo() {
         if (!this.showTotemCount.getEffectiveValue().booleanValue()) {
             return null;
         }
@@ -214,7 +214,7 @@ implements InventoryActionModule {
         } else if (totemCount >= 2) {
             color = new Color(255, 249, 18);
         }
-        return new ModDisplayInfo(String.valueOf(totemCount), color);
+        return new ModuleDisplayInfo(String.valueOf(totemCount), color);
     }
 
     @Override
@@ -417,7 +417,7 @@ implements InventoryActionModule {
         if (freecam == null) {
             freecam = Vape.INSTANCE.getModManager().getMod(Freecam.class);
         }
-        return freecam != null && freecam.r$src$Z$14eylz9() || this.rotationClaim.isBlockedFor(this) && !this.rotationClaim.acquire(this, true);
+        return freecam != null && freecam.isEnabled() || this.rotationClaim.isBlockedFor(this) && !this.rotationClaim.acquire(this, true);
     }
 
     @EventHandler(priority=EventPriority.HIGHEST)

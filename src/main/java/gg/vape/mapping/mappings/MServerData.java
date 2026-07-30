@@ -6,24 +6,20 @@ import gg.vape.mapping.MappingField;
 
 public class MServerData
 extends Mapping {
-    private final MappingField H;
-    private static final String b = "serverIP";
+    private static final String SERVER_IP_FIELD_NAME = "serverIP";
+    private final MappingField serverIpField;
 
-    private String x(Object object) {
-        return (String)this.H.getObject(object);
+    private String readServerIp(Object serverData) {
+        return (String)this.serverIpField.getObject(serverData);
     }
 
-    public static String T(MServerData mServerData, Object object) {
-        return mServerData.x(object);
+    public static String getServerIp(MServerData mapping, Object serverData) {
+        return mapping.readServerIp(serverData);
     }
 
     public MServerData() {
         super(MappedClasses.uR);
-        Class<String> clazz = String.class;
-        boolean bl = true;
-        String string = b;
-        MServerData mServerData = this;
-        this.H = this.J(string, bl, clazz);
+        this.serverIpField = this.J(SERVER_IP_FIELD_NAME, true, String.class);
     }
 }
 

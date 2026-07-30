@@ -5,10 +5,6 @@ import gg.vape.friend.FriendRequestManager;
 import gg.vape.friend.LocalOnlineFriend;
 import gg.vape.friend.OnlineFriendCache;
 import gg.vape.friend.PartyManager;
-import gg.vape.manager.client.OnlineActivityManager;
-import gg.vape.manager.client.OnlineConnectionManager;
-import gg.vape.manager.client.OnlineConnectionState;
-import gg.vape.manager.client.OnlineInventoryTracker;
 import gg.vape.ui.click.component.GuiComponent;
 
 public class OnlineManager {

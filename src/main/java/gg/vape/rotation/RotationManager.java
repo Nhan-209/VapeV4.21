@@ -32,9 +32,6 @@ import gg.vape.module.combat.Reach;
 import gg.vape.module.render.hud.FreeLookHudModule;
 import gg.vape.movement.MovementInputHelper;
 import gg.vape.movement.PlayerMovementTaskManager;
-import gg.vape.rotation.AdaptiveRotationController;
-import gg.vape.rotation.MouseButtonActionState;
-import gg.vape.rotation.MouseRotationController;
 import gg.vape.unmap.ModeSelection;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.MouseOverRayTraceUpdater;
@@ -812,7 +809,7 @@ implements EventListener {
             return false;
         }
         InvWalk invWalk = Vape.INSTANCE.getModManager().getMod(InvWalk.class);
-        return invWalk == null || !invWalk.r$src$Z$14eylz9() || !invWalk.shouldHandleCurrentScreen();
+        return invWalk == null || !invWalk.isEnabled() || !invWalk.shouldHandleCurrentScreen();
     }
 
     public float getManagedPitch() {

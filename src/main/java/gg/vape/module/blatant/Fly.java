@@ -67,7 +67,7 @@ extends Mod {
     public Fly() {
         super("Fly", 49630, Category.OTHER, "Makes you go zoom.");
         this.verticalSpeed = NumberValue.create(this, "Vertical Speed", "#.#", "", 0.1, 0.2, 5.0, 0.1, "Speed for Normal vertical fly mode.");
-        this.R(false);
+        this.setDefaultVisibility(false);
         this.addValue(this.speed, this.verticalSpeed);
     }
 

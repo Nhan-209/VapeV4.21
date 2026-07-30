@@ -6,24 +6,20 @@ import gg.vape.mapping.MappingField;
 
 public class MDefaultVertexFormats
 extends Mapping {
-    private static final String b = "POSITION_COLOR";
-    private final MappingField p;
+    private static final String POSITION_COLOR_FIELD_NAME = "POSITION_COLOR";
+    private final MappingField positionColorField;
 
-    public static Object T(MDefaultVertexFormats mDefaultVertexFormats) {
-        return mDefaultVertexFormats.p();
+    public static Object getPositionColor(MDefaultVertexFormats mapping) {
+        return mapping.readPositionColor();
     }
 
-    private Object p() {
-        return this.p.getObject(null);
+    private Object readPositionColor() {
+        return this.positionColorField.getObject(null);
     }
 
     public MDefaultVertexFormats() {
         super(MappedClasses.Yo);
-        Class clazz = MappedClasses.zG;
-        boolean bl = true;
-        String string = b;
-        MDefaultVertexFormats mDefaultVertexFormats = this;
-        this.p = this.registerStaticField(string, bl, clazz);
+        this.positionColorField = this.registerStaticField(POSITION_COLOR_FIELD_NAME, true, MappedClasses.zG);
     }
 }
 

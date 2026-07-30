@@ -5,24 +5,23 @@ import gg.vape.mapping.Mapping;
 
 public class MLanguageStateBridge
 extends Mapping {
-    private static int[] q;
+    private static int[] controlFlowState;
 
-    public static void k(int[] nArray) {
-        q = nArray;
+    public static void setLanguageControlFlowState(int[] state) {
+        controlFlowState = state;
     }
 
     public MLanguageStateBridge() {
         super(MappedClasses.FN);
     }
 
-    public static int[] T() {
-        return q;
+    public static int[] getLanguageControlFlowState() {
+        return controlFlowState;
     }
 
     static {
-        if (MLanguageStateBridge.T() == null) {
-            MLanguageStateBridge.k(new int[3]);
+        if (MLanguageStateBridge.getLanguageControlFlowState() == null) {
+            MLanguageStateBridge.setLanguageControlFlowState(new int[3]);
         }
     }
 }
-

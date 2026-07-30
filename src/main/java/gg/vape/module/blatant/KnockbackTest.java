@@ -17,7 +17,7 @@ extends Mod {
     public void onEnable() {
         Vape.debugLog("Trying to knockback " + Minecraft.thePlayer().z() + " " + Minecraft.thePlayer().N() + " " + Minecraft.thePlayer().h());
         Minecraft.thePlayer().E((Double)this.xValue.getValue(), (Double)this.yValue.getValue(), (Double)this.zValue.getValue());
-        this.Y(false);
+        this.setEnabled(false);
     }
 
     public KnockbackTest() {

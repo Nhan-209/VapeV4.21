@@ -3,7 +3,6 @@ package gg.vape.unmap;
 import gg.vape.config.ClientSettings;
 import gg.vape.input.BindActivationMode;
 import gg.vape.module.Mod;
-import gg.vape.unmap.Bendable;
 
 public class ModBendable
 extends Bendable {
@@ -23,7 +22,7 @@ extends Bendable {
 
     @Override
     public void onBindActivated() {
-        this.module.y();
+        this.module.onBindActivated();
     }
 
     public ModBendable(Mod module) {
@@ -40,15 +39,15 @@ extends Bendable {
         }
         if (pressed) {
             if (this.areOtherInputsDown(inputCode)) {
-                if (!this.module.r$src$Z$14eylz9()) {
-                    this.module.Y(true);
+                if (!this.module.isEnabled()) {
+                    this.module.setEnabled(true);
                 }
                 return true;
             }
             return false;
         }
-        if (this.module.r$src$Z$14eylz9()) {
-            this.module.Y(false);
+        if (this.module.isEnabled()) {
+            this.module.setEnabled(false);
             return true;
         }
         return false;

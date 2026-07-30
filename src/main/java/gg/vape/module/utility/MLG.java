@@ -94,7 +94,7 @@ extends Mod {
         if (this.accumulatedFall < 2.0 || localPlayer.q() == 0.0 || capabilities.isCreativeMode() || capabilities.N() || capabilities.isFlying() || localPlayer.Q$src$Z$fh9faz() || localPlayer.M$src$Z$ff28xj() || localPlayer.k$src$Z$15enw27() || ForgeVersion.MC_1_16_5.d() && localPlayer.X$src$Z$1id4hz7() || localPlayer.b$src$Z$fqlxe4() || localPlayer.S$src$Z$151gttj() || localPlayer.h$src$Z$ftwoya() || localPlayer.d() || localPlayer.D$src$Z$fa43la()) {
             return false;
         }
-        if (Vape.INSTANCE.getModManager().getMod(Fly.class).r$src$Z$14eylz9()) {
+        if (Vape.INSTANCE.getModManager().getMod(Fly.class).isEnabled()) {
             return false;
         }
         float predictedDropDistance = 0.0f;

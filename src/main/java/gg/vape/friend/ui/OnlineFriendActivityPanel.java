@@ -5,9 +5,6 @@ import gg.vape.friend.LocalOnlineFriend;
 import gg.vape.friend.OnlineFriendActivityState;
 import gg.vape.friend.OnlineFriendColorUtil;
 import gg.vape.friend.activity.ActivityItemStack;
-import gg.vape.friend.ui.OnlineActivityHeldItemSlotComponent;
-import gg.vape.friend.ui.OnlineActivityPanelOptions;
-import gg.vape.friend.ui.OnlineActivitySettingsFrame;
 import gg.vape.module.Mod;
 import gg.vape.ui.click.component.AnimatedPanelComponent;
 import gg.vape.ui.click.component.ItemStackSlotComponent;
@@ -469,7 +466,7 @@ extends AnimatedPanelComponent {
         this.inventoryPanel.l$src$V$1mibm4x();
         String enabledModules = "";
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-            if (!mod.r$src$Z$14eylz9() || mod.h() == 0) continue;
+            if (!mod.isEnabled() || mod.getGuiColor() == 0) continue;
             enabledModules = enabledModules + mod.getName() + "\n";
         }
         for (ItemStackSlotComponent itemStackSlotComponent : this.inventorySlots) {

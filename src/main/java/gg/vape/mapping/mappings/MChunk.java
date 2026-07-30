@@ -57,7 +57,7 @@ extends Mapping {
     }
 
     public MChunk() {
-        this(MBlockPosCarrier.S());
+        this(MBlockPosCarrier.getBlockPosCarrierControlFlowState());
     }
 
     private MChunk(int[] nArray) {

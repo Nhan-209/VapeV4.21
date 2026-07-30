@@ -111,7 +111,7 @@ implements InventoryActionModule {
 
     @Override
     public boolean isPerformingInventoryAction() {
-        return this.r$src$Z$14eylz9() && this.stealing;
+        return this.isEnabled() && this.stealing;
     }
 
     private void initializeStealQueue() {

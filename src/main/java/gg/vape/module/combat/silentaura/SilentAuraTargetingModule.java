@@ -361,7 +361,7 @@ extends Mod {
         if (this.silentAura == null) {
             this.silentAura = Vape.INSTANCE.getModManager().getMod(SilentAura.class);
         }
-        if (this.silentAura == null || !this.silentAura.r$src$Z$14eylz9() || !this.silentAura.canClickAttack()) {
+        if (this.silentAura == null || !this.silentAura.isEnabled() || !this.silentAura.canClickAttack()) {
             return new EntityLivingBase(null);
         }
         EntityLivingBase target = this.silentAura.getTarget();

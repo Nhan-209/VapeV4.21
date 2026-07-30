@@ -356,20 +356,20 @@ extends Mod {
             this.resetTargeting();
             return;
         }
-        if (this.toggledOff || !this.r$src$Z$14eylz9() || this.breakingBlocks) {
+        if (this.toggledOff || !this.isEnabled() || this.breakingBlocks) {
             this.resetTargeting();
             return;
         }
         if (clicker == null) {
             clicker = Vape.INSTANCE.getModManager().getMod(SilentAuraClicker.class);
         }
-        if (!clicker.r$src$Z$14eylz9()) {
-            clicker.Y(true);
+        if (!clicker.isEnabled()) {
+            clicker.setEnabled(true);
         }
         this.updateRotationColors();
         if (this.disableOnDeath.getEffectiveValue().booleanValue()) {
             if (Minecraft.thePlayer().M$src$Z$ff28xj() || Minecraft.thePlayer().w$src$F$15l9epb() <= 0.0f) {
-                this.F();
+                this.toggle();
                 return;
             }
             if (ForgeVersion.MC_1_16_5.d()) {
@@ -377,7 +377,7 @@ extends Mod {
                 if (guiScreen.isNotNull()) {
                     if (!this.deathHandled && guiScreen.isInstance(MappedClasses.D2)) {
                         this.deathHandled = true;
-                        this.F();
+                        this.toggle();
                         return;
                     }
                     this.deathHandled = false;
@@ -388,7 +388,7 @@ extends Mod {
                     String screenTitle = titledScreen.E();
                     if (!this.deathHandled && screenTitle != null && (screenTitle.toLowerCase().contains("died") || screenTitle.toLowerCase().contains("dead"))) {
                         this.deathHandled = true;
-                        this.F();
+                        this.toggle();
                         return;
                     }
                     if (screenTitle == null || screenTitle.equals("")) {
@@ -639,7 +639,7 @@ extends Mod {
         if (freecam == null) {
             freecam = Vape.INSTANCE.getModManager().getMod(Freecam.class);
         }
-        return this.toggledOff || freecam != null && freecam.r$src$Z$14eylz9() || this.breakingBlocks || this.rotationClaim.isBlockedFor(this) && !this.rotationClaim.acquire(this, true);
+        return this.toggledOff || freecam != null && freecam.isEnabled() || this.breakingBlocks || this.rotationClaim.isBlockedFor(this) && !this.rotationClaim.acquire(this, true);
     }
 
     @Override

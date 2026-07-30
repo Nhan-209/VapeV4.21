@@ -1,4 +1,4 @@
-package gg.vape.util;
+package gg.vape.utils;
 
 public class NoopLogger {
     private static final boolean ENABLED = false;

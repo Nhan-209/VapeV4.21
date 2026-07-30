@@ -7,7 +7,7 @@ import gg.vape.event.impl.EventPreRenderTick;
 import gg.vape.event.impl.EventRenderTickBase;
 import gg.vape.event.impl.EventWorldChange;
 import gg.vape.mapping.MappedClasses;
-import gg.vape.util.RenderThreadTaskQueue;
+import gg.vape.utils.RenderThreadTaskQueue;
 import gg.vape.utils.ItemStackFingerprint;
 import gg.vape.utils.TimerUtil;
 import gg.vape.wrapper.Wrapper;

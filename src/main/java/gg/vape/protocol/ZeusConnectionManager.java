@@ -2,8 +2,6 @@ package gg.vape.protocol;
 
 import gg.vape.manager.client.OnlineConnectionManager;
 import gg.vape.manager.client.OnlineConnectionState;
-import gg.vape.protocol.ZeusClient;
-import gg.vape.protocol.ZeusClientChannelInitializer;
 import gg.vape.protocol.packet.HandshakeResponsePacket;
 import gg.vape.protocol.packet.HandshakeStatus;
 import gg.vape.ui.click.component.GuiComponent;

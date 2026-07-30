@@ -97,11 +97,11 @@ implements InventoryActionModule {
 
     @Override
     public boolean isPerformingInventoryAction() {
-        return this.r$src$Z$14eylz9() && !this.clickQueue.isEmpty() && (this.openInventoryValue.getEffectiveValue() != false || Minecraft.currentScreen().isNull());
+        return this.isEnabled() && !this.clickQueue.isEmpty() && (this.openInventoryValue.getEffectiveValue() != false || Minecraft.currentScreen().isNull());
     }
 
     @Override
-    public boolean X() {
+    public boolean isRequiresBind() {
         return this.activationMode.getValue() == this.onKeyMode;
     }
 
@@ -639,7 +639,7 @@ implements InventoryActionModule {
             return;
         }
         if (this.activationMode.getValue() == this.onKeyMode) {
-            this.Y(false);
+            this.setEnabled(false);
         }
         if (closeScreen && !Minecraft.currentScreen().isNull() && (this.activationMode.getValue() == this.onKeyMode || this.openInventoryValue.getEffectiveValue().booleanValue())) {
             localPlayer.Z$src$V$1ie832h();

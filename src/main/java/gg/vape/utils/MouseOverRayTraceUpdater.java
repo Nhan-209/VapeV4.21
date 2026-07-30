@@ -219,7 +219,7 @@ public class MouseOverRayTraceUpdater {
         if (Minecraft.thePlayer().isNull()) {
             return;
         }
-        if (t.r$src$Z$14eylz9() && !t.getMisplaceSetting().getEffectiveValue().booleanValue() || s.r$src$Z$14eylz9()) {
+        if (t.isEnabled() && !t.getMisplaceSetting().getEffectiveValue().booleanValue() || s.isEnabled()) {
             float f = (float)t.getReachDistance();
             float f2 = bl ? 0.0f : s.getExpansionAmount();
             MouseOverRayTraceUpdater.s(f, f2);

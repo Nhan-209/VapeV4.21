@@ -4,12 +4,11 @@ import gg.vape.wrapper.Wrapper;
 
 public class FluidState
 extends Wrapper {
-    public boolean E() {
-        return FluidState.vapeInstance.getMappingsMapperCompat().RG.t(this.I);
+    public boolean hasNoSky() {
+        return FluidState.vapeInstance.getMappingsMapperCompat().RG.hasNoSky(this.I);
     }
 
-    public FluidState(Object object) {
-        super(object);
+    public FluidState(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

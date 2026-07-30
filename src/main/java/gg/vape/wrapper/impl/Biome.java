@@ -20,10 +20,10 @@ extends Wrapper {
             return b;
         }
         if (ForgeVersion.MC_1_16_5.d()) {
-            BiomeRegistryName biomeRegistryName = new BiomeRegistryName(MBiome.D(Biome.vapeInstance.getMappings().Rm, this.I));
+            BiomeRegistryName biomeRegistryName = new BiomeRegistryName(MBiome.getCategory(Biome.vapeInstance.getMappings().Rm, this.I));
             return biomeRegistryName.n();
         }
-        return Biome.vapeInstance.getMappings().Rm.q(this.I);
+        return Biome.vapeInstance.getMappings().Rm.getBiomeName(this.I);
     }
 
     public Biome(Object object) {

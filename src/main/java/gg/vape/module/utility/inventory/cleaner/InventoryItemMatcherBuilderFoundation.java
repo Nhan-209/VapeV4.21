@@ -1,8 +1,6 @@
 package gg.vape.module.utility.inventory.cleaner;
 
 import gg.vape.inventory.cleaner.InventoryMatcherMarker;
-import gg.vape.module.utility.inventory.cleaner.CompositeInventoryItemMatcher;
-import gg.vape.module.utility.inventory.cleaner.InventoryItemMatcherBuilderBase;
 import gg.vape.wrapper.impl.Item;
 import gg.vape.wrapper.impl.ItemStack;
 import java.util.function.BiPredicate;

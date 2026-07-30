@@ -258,7 +258,7 @@ extends MemberNameRemapTable {
 
     protected void f3() {
         this.B(MappedClasses.lF, "field_175252_a", "f_94518_");
-        this.z(MappedClasses.lF, "getPlayerName", "getNameForDisplay", true, MappedClasses.Yr, MappedClasses.Zc);
+        this.registerMethodMapping(MappedClasses.lF, "getPlayerName", "getNameForDisplay", true, MappedClasses.Yr, MappedClasses.Zc);
     }
 
     protected void v$src$V$fj1e0x() {
@@ -520,7 +520,7 @@ extends MemberNameRemapTable {
     }
 
     protected void j() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             // empty if block
         }
     }
@@ -693,7 +693,7 @@ extends MemberNameRemapTable {
     }
 
     protected void v3() {
-        if (this.v()) {
+        if (this.isVanillaMinecraftAbsent()) {
             // empty if block
         }
     }

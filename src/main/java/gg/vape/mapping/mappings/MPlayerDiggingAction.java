@@ -6,20 +6,16 @@ import gg.vape.mapping.MappingField;
 
 public class MPlayerDiggingAction
 extends Mapping {
-    private MappingField Y;
-    private static final String b = "RELEASE_USE_ITEM";
+    private static final String RELEASE_USE_ITEM_FIELD_NAME = "RELEASE_USE_ITEM";
+    private final MappingField releaseUseItemField;
 
     public MPlayerDiggingAction() {
         super(MappedClasses.FL);
-        Class clazz = MappedClasses.FL;
-        boolean bl = true;
-        String string = b;
-        MPlayerDiggingAction mPlayerDiggingAction = this;
-        this.Y = this.registerStaticField(string, bl, clazz);
+        this.releaseUseItemField = this.registerStaticField(RELEASE_USE_ITEM_FIELD_NAME, true, MappedClasses.FL);
     }
 
-    public Object l() {
-        return this.Y.getObject(null);
+    public Object getReleaseUseItem() {
+        return this.releaseUseItemField.getObject(null);
     }
 }
 

@@ -5,8 +5,6 @@ import gg.vape.event.impl.EventPostRenderTick;
 import gg.vape.event.impl.EventPreEntityRendererMouseUpdate;
 import gg.vape.event.impl.EventPreRenderTick;
 import gg.vape.module.render.Freecam;
-import gg.vape.rotation.PlayerMouseRotationApplier;
-import gg.vape.rotation.RotationManager;
 import gg.vape.utils.MathUtil;
 import gg.vape.utils.SleepUtil;
 import gg.vape.utils.TimerUtil;
@@ -205,7 +203,7 @@ public abstract class MouseRotationController {
         if (freecam == null) {
             freecam = Vape.INSTANCE.getModManager().getMod(Freecam.class);
         }
-        if ((freecam == null || !freecam.r$src$Z$14eylz9()) && screen.isNull()) {
+        if ((freecam == null || !freecam.isEnabled()) && screen.isNull()) {
             this.applyMouseDelta(yawDelta, pitchDelta * (float)pitchDirection);
         }
         this.yawDistance = (float)((double)this.yawDistance + Math.abs((double)yawDelta * 0.15));

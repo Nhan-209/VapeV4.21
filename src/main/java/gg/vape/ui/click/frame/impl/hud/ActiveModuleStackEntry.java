@@ -1,14 +1,14 @@
 package gg.vape.ui.click.frame.impl.hud;
 
 import gg.vape.module.Mod;
-import gg.vape.module.ModDisplayInfo;
+import gg.vape.module.ModuleDisplayInfo;
 
 public class ActiveModuleStackEntry {
     public final Mod module;
-    public final ModDisplayInfo displayInfo;
+    public final ModuleDisplayInfo displayInfo;
 
-    public ActiveModuleStackEntry(Mod mod, ModDisplayInfo modDisplayInfo) {
+    public ActiveModuleStackEntry(Mod mod, ModuleDisplayInfo moduleDisplayInfo) {
         this.module = mod;
-        this.displayInfo = modDisplayInfo;
+        this.displayInfo = moduleDisplayInfo;
     }
 }

@@ -148,7 +148,7 @@ extends AbstractBlockInMovementController {
                 Direction direction = new Direction(facing.getObject());
                 double axisPosition = direction.n().W(localX, 0.0, localZ);
                 double edgeDistance = direction.Q$src$Lgg_vape_wrapper_impl_DirectionVector_$l2h44r()
-                        .equals(DirectionVector.m$src$Lgg_vape_wrapper_impl_DirectionVector_$1h73psc())
+                        .equals(DirectionVector.positive())
                         ? 1.0 - axisPosition : axisPosition;
                 if (edgeDistance >= nearestDistance
                         || this.isPositionClear(blockPos.offset(direction))) {

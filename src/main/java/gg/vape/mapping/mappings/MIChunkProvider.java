@@ -12,7 +12,7 @@ extends Mapping {
     private MappingMethod E;
 
     public MIChunkProvider() {
-        this(MBlockPosCarrier.S());
+        this(MBlockPosCarrier.getBlockPosCarrierControlFlowState());
     }
 
     private MIChunkProvider(int[] nArray) {
@@ -43,7 +43,7 @@ extends Mapping {
                 this.E = mIChunkProvider.Y(string, bl, clazz, classArray);
             }
             if (GuiComponent.getLegacyComponentState() == null) {
-                MBlockPosCarrier.p(new int[2]);
+                MBlockPosCarrier.setBlockPosCarrierControlFlowState(new int[2]);
             }
             return;
         }
@@ -68,7 +68,7 @@ extends Mapping {
         MIChunkProvider mIChunkProvider2 = this;
         this.E = this.Y(string2, bl2, clazz2, classArray2);
         if (GuiComponent.getLegacyComponentState() == null) {
-            MBlockPosCarrier.p(new int[2]);
+            MBlockPosCarrier.setBlockPosCarrierControlFlowState(new int[2]);
         }
     }
 

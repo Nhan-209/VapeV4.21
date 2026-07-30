@@ -3,7 +3,7 @@ package gg.vape.module.blatant;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.ModDisplayInfo;
+import gg.vape.module.ModuleDisplayInfo;
 import gg.vape.module.blatant.scaffold.BlatantScaffoldMode;
 import gg.vape.module.blatant.scaffold.LegitScaffoldMode;
 import gg.vape.module.blatant.scaffold.ScaffoldPointRotationController;
@@ -480,7 +480,7 @@ extends Mod {
     }
 
     @Override
-    public ModDisplayInfo J() {
+    public ModuleDisplayInfo getModuleDisplayInfo() {
         if (!this.isBlockCountDisplayEnabled() || Minecraft.thePlayer().isNull()) {
             return null;
         }
@@ -497,7 +497,7 @@ extends Mod {
         } else if (blockCount >= 16) {
             color = new Color(255, 249, 18);
         }
-        return new ModDisplayInfo(String.valueOf(blockCount), color);
+        return new ModuleDisplayInfo(String.valueOf(blockCount), color);
     }
 
     public void releaseRotation() {

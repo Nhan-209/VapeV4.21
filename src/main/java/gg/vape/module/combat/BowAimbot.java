@@ -337,7 +337,7 @@ extends Mod {
             return false;
         }
         InvWalk invWalk = Vape.INSTANCE.getModManager().getMod(InvWalk.class);
-        return invWalk == null || !invWalk.r$src$Z$14eylz9() || !invWalk.shouldHandleCurrentScreen();
+        return invWalk == null || !invWalk.isEnabled() || !invWalk.shouldHandleCurrentScreen();
     }
 
     private Vec3d predictArrowPosition(EntityArrowBridge arrow) {

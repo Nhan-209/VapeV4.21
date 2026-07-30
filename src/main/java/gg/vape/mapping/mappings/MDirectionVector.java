@@ -6,24 +6,20 @@ import gg.vape.mapping.MappingField;
 
 public class MDirectionVector
 extends Mapping {
-    private static final String b = "POSITIVE";
-    private final MappingField H;
+    private static final String POSITIVE_FIELD_NAME = "POSITIVE";
+    private final MappingField positiveField;
 
-    public static Object U(MDirectionVector mDirectionVector) {
-        return mDirectionVector.W();
+    public static Object getPositive(MDirectionVector mapping) {
+        return mapping.readPositive();
     }
 
     public MDirectionVector() {
         super(MappedClasses.Vy);
-        Class clazz = MappedClasses.Vy;
-        boolean bl = true;
-        String string = b;
-        MDirectionVector mDirectionVector = this;
-        this.H = this.registerStaticField(string, bl, clazz);
+        this.positiveField = this.registerStaticField(POSITIVE_FIELD_NAME, true, MappedClasses.Vy);
     }
 
-    private Object W() {
-        return this.H.getObject(null);
+    private Object readPositive() {
+        return this.positiveField.getObject(null);
     }
 }
 

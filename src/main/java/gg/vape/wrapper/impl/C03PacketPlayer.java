@@ -27,7 +27,7 @@ extends Packet {
     public static C03PacketPlayer newInstance(boolean bl) {
         if (ForgeVersion.MC_1_21_4.d()) {
             EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
-            return CPacketPlayer.R(bl, entityPlayerSP.r());
+            return CPacketPlayer.create(bl, entityPlayerSP.r());
         }
         if (ForgeVersion.MC_1_20_6.d()) {
             EntityPlayerSP entityPlayerSP = Minecraft.thePlayer();
@@ -44,4 +44,3 @@ extends Packet {
         return C03PacketPlayer.vapeInstance.getMappings().Dq.g(this.I);
     }
 }
-

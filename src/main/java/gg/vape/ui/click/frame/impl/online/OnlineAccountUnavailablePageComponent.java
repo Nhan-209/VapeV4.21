@@ -7,7 +7,7 @@ import gg.vape.ui.click.component.SpacerComponent;
 import gg.vape.ui.click.component.WrappingTextLabelComponent;
 import gg.vape.ui.click.component.gui.UnderlinedTextLabel;
 import gg.vape.ui.click.component.layout.PaddedComponent;
-import gg.vape.ui.click.frame.impl.online.OnlineConnectionSettingsPageComponent;
+
 import java.awt.Color;
 
 public class OnlineAccountUnavailablePageComponent

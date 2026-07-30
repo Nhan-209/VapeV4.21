@@ -33,7 +33,7 @@ extends Mod {
     }
 
     @Override
-    public int h() {
+    public int getGuiColor() {
         return this.savingPotion ? -256 : ColorUtil.packGray(160);
     }
 

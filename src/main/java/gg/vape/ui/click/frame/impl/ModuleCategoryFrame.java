@@ -11,7 +11,6 @@ import gg.vape.ui.click.component.module.ModuleComponent;
 import gg.vape.ui.click.frame.CollapsibleFrame;
 import gg.vape.ui.click.frame.FrameHeaderComponent;
 import gg.vape.ui.click.frame.OutlinedFrameBase;
-import gg.vape.ui.click.frame.impl.ModuleCategoryFrameHeader;
 import gg.vape.utils.NameComparator;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +40,7 @@ implements CollapsibleFrame {
         ArrayList<Mod> arrayList = new ArrayList<Mod>(Vape.INSTANCE.getModManager().collectMods());
         Collections.sort(arrayList, new NameComparator());
         for (Mod mod : arrayList) {
-            if (!mod.getCategory().equals(this.Hp) || mod.J$src$Lgg_vape_module_ModuleDisplayScope_$1w905sh() == ModuleDisplayScope.STANDALONE_ONLY) continue;
+            if (!mod.getCategory().equals(this.Hp) || mod.getModuleDisplayScope() == ModuleDisplayScope.STANDALONE_ONLY) continue;
             ModuleComponent moduleComponent = new ModuleComponent(this, mod);
             this.h(moduleComponent, new Object[0]);
             moduleComponent.buildValueComponents();
@@ -65,7 +64,7 @@ implements CollapsibleFrame {
         int n = 0;
         for (GuiComponent guiComponent : this.f()) {
             if (guiComponent instanceof ModuleComponent) {
-                boolean bl = ((ModuleComponent)guiComponent).getModule().O();
+                boolean bl = ((ModuleComponent)guiComponent).getModule().isVisible();
                 ((ModuleComponent)guiComponent).setExpanded(false);
                 if (!bl) {
                     ++n;

@@ -14,7 +14,7 @@ import gg.vape.input.MovementInputLock;
 import gg.vape.mapping.MappedClasses;
 import gg.vape.module.Category;
 import gg.vape.module.Mod;
-import gg.vape.module.ModDisplayInfo;
+import gg.vape.module.ModuleDisplayInfo;
 import gg.vape.module.VisibleModuleList;
 import gg.vape.module.blatant.blockin.BlockInBooleanState;
 import gg.vape.module.blatant.blockin.BlockInPlacementSearchStrategy;
@@ -60,7 +60,6 @@ import gg.vape.wrapper.impl.AxisAlignedBB;
 import gg.vape.wrapper.impl.Block;
 import gg.vape.wrapper.impl.BlockPos;
 import gg.vape.wrapper.impl.BlockState;
-import gg.vape.wrapper.impl.Entity;
 import gg.vape.wrapper.impl.EntityPlayer;
 import gg.vape.wrapper.impl.EntityPlayerSP;
 import gg.vape.wrapper.impl.EnumFacing;
@@ -582,7 +581,7 @@ extends Mod {
     }
 
     @Override
-    public ModDisplayInfo J() {
+    public ModuleDisplayInfo getModuleDisplayInfo() {
         if (!this.showBlockCount.getEffectiveValue().booleanValue()) {
             return null;
         }
@@ -604,7 +603,7 @@ extends Mod {
         }
         String countText = (this.clutchPath == null ? "\u00a7r" : "\u00a76\u00a7l") + blockCount;
         String suffix = " " + statusFormatting + "(" + this.getName() + ")";
-        return new ModDisplayInfo(countText, countColor, suffix);
+        return new ModuleDisplayInfo(countText, countColor, suffix);
     }
 
     private Vec3 computePlacementHit(EntityPlayer player, World world, BlockData blockData, EnumFacing facing) {

@@ -37,7 +37,7 @@ extends Mod {
     }
 
     public boolean shouldBlock() {
-        return this.r$src$Z$14eylz9() && this.getActiveMode().shouldBlock();
+        return this.isEnabled() && this.getActiveMode().shouldBlock();
     }
 
 

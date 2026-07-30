@@ -9,8 +9,6 @@ import gg.vape.module.none.TextGuiSettingsFrame;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.MousePosition;
 import gg.vape.ui.click.component.GuiComponent;
-import gg.vape.ui.click.frame.impl.TextGuiModuleComparator;
-import gg.vape.ui.click.frame.impl.TextGuiModuleRenderState;
 import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrameBase;
 import gg.vape.ui.font.FontFamily;
 import gg.vape.ui.font.SmoothFontRenderer;
@@ -61,7 +59,7 @@ extends GuiComponent {
         if (modeSelection.equals(this.i.customColor)) {
             return this.i.textGuiColor.getMutableColor();
         }
-        return new Color(mod.h());
+        return new Color(mod.getGuiColor());
     }
 
     @Override
@@ -185,7 +183,7 @@ extends GuiComponent {
     private int R() {
         int n = 0;
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-            if (!mod.r$src$Z$14eylz9() || mod.h() == 0 || !mod.q$src$Z$12h8h4c() || this.i.hideModules.getEffectiveValue().booleanValue() && this.i.hiddenModules.matches(mod.getName(), false)) continue;
+            if (!mod.isEnabled() || mod.getGuiColor() == 0 || !mod.q$src$Z$12h8h4c() || this.i.hideModules.getEffectiveValue().booleanValue() && this.i.hiddenModules.matches(mod.getName(), false)) continue;
             ++n;
         }
         for (Mod mod : this.O.keySet()) {
@@ -206,12 +204,12 @@ extends GuiComponent {
             RectData rectData;
             TextGuiModuleRenderState textGuiModuleRenderState = this.O.get(mod);
             if (TextGuiModuleRenderState.J(textGuiModuleRenderState) == null || !(rectData = TextGuiModuleRenderState.J(textGuiModuleRenderState)).J(guiMouseEvent.getX(), guiMouseEvent.getY())) continue;
-            if (mod.r$src$Z$14eylz9()) {
-                mod.Y(false);
+            if (mod.isEnabled()) {
+                mod.setEnabled(false);
                 this.I.add(mod);
                 break;
             }
-            mod.Y(true);
+            mod.setEnabled(true);
             this.I.remove(mod);
             this.R.add(mod);
             break;
@@ -246,7 +244,7 @@ extends GuiComponent {
             double d3 = 10.0;
             CopyOnWriteArrayList<Mod> copyOnWriteArrayList = new CopyOnWriteArrayList<Mod>();
             for (Mod object5 : Vape.INSTANCE.getModManager().collectMods()) {
-                if (!object5.r$src$Z$14eylz9() || object5.h() == 0 || !object5.q$src$Z$12h8h4c() || this.i.hideModules.getEffectiveValue().booleanValue() && this.i.hiddenModules.matches(object5.getName(), false)) continue;
+                if (!object5.isEnabled() || object5.getGuiColor() == 0 || !object5.q$src$Z$12h8h4c() || this.i.hideModules.getEffectiveValue().booleanValue() && this.i.hiddenModules.matches(object5.getName(), false)) continue;
                 copyOnWriteArrayList.add(object5);
             }
             this.l(copyOnWriteArrayList);
@@ -255,7 +253,7 @@ extends GuiComponent {
             for (Mod object7 : this.O.keySet()) {
                 TextGuiModuleRenderState textGuiModuleRenderState = this.O.get(object7);
                 if (this.I.contains(object7)) {
-                    if (object7.r$src$Z$14eylz9()) {
+                    if (object7.isEnabled()) {
                         textGuiModuleRenderState.T(true);
                         textGuiModuleRenderState.f(1.0f);
                         textGuiModuleRenderState.w(true);
@@ -716,7 +714,7 @@ extends GuiComponent {
         double d56 = 10.0;
         CopyOnWriteArrayList<Mod> copyOnWriteArrayList = new CopyOnWriteArrayList<Mod>();
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
-            if (!mod.r$src$Z$14eylz9() || mod.h() == 0 || !mod.q$src$Z$12h8h4c() || this.i.hideModules.getEffectiveValue().booleanValue() && this.i.hiddenModules.matches(mod.getName(), false)) continue;
+            if (!mod.isEnabled() || mod.getGuiColor() == 0 || !mod.q$src$Z$12h8h4c() || this.i.hideModules.getEffectiveValue().booleanValue() && this.i.hiddenModules.matches(mod.getName(), false)) continue;
             copyOnWriteArrayList.add(mod);
         }
         this.l(copyOnWriteArrayList);
@@ -725,7 +723,7 @@ extends GuiComponent {
         for (Mod mod : this.O.keySet()) {
             TextGuiModuleRenderState textGuiModuleRenderState = this.O.get(mod);
             if (this.I.contains(mod)) {
-                if (mod.r$src$Z$14eylz9()) {
+                if (mod.isEnabled()) {
                     textGuiModuleRenderState.T(true);
                     textGuiModuleRenderState.f(1.0f);
                     textGuiModuleRenderState.w(true);
@@ -1207,7 +1205,7 @@ extends GuiComponent {
         }
         for (Mod mod : this.O.keySet()) {
             TextGuiModuleRenderState textGuiModuleRenderState = this.O.get(mod);
-            if (TextGuiModuleRenderState.J(textGuiModuleRenderState) == null || mod.r$src$Z$14eylz9()) continue;
+            if (TextGuiModuleRenderState.J(textGuiModuleRenderState) == null || mod.isEnabled()) continue;
             TextGuiModuleRenderState.H(textGuiModuleRenderState, null);
         }
     }

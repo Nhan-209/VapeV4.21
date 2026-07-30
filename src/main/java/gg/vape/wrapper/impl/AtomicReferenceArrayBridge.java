@@ -5,12 +5,11 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class AtomicReferenceArrayBridge
 extends Wrapper {
-    public AtomicReferenceArray b() {
-        return (AtomicReferenceArray)AtomicReferenceArrayBridge.vapeInstance.getMappingsMapperCompat().H.G(this.I);
+    public AtomicReferenceArray getChunks() {
+        return (AtomicReferenceArray)AtomicReferenceArrayBridge.vapeInstance.getMappingsMapperCompat().H.getChunks(this.I);
     }
 
-    public AtomicReferenceArrayBridge(Object object) {
-        super(object);
+    public AtomicReferenceArrayBridge(Object wrappedObject) {
+        super(wrappedObject);
     }
 }
-

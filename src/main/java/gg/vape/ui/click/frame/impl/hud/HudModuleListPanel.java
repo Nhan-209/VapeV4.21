@@ -8,9 +8,6 @@ import gg.vape.module.render.hud.HudModuleGroup;
 import gg.vape.ui.click.GuiMouseEvent;
 import gg.vape.ui.click.frame.Frame;
 import gg.vape.ui.click.frame.InsetFrameBase;
-import gg.vape.ui.click.frame.impl.hud.HudModuleConfigFrame;
-import gg.vape.ui.click.frame.impl.hud.HudModuleListEntry;
-import gg.vape.ui.click.frame.impl.hud.HudModuleSelectorFrame;
 import gg.vape.ui.font.SmoothFontRenderer;
 import gg.vape.utils.render.GuiRenderPrimitives;
 import java.util.ArrayList;
@@ -36,7 +33,7 @@ extends InsetFrameBase {
             HudModule hudModule = (HudModule)mod;
             HudModuleGroup selectedGroup = this.selectorFrame.getSelectedGroup();
             String searchQuery = this.selectorFrame.getSearchQuery();
-            if (selectedGroup == HudModuleGroup.FAVORITE && !hudModule.f$src$Z$148d2ux()
+            if (selectedGroup == HudModuleGroup.FAVORITE && !hudModule.isFavorite()
                     || selectedGroup != null && selectedGroup != HudModuleGroup.ALL && selectedGroup != HudModuleGroup.FAVORITE && selectedGroup != hudModule.getGroup()
                     || searchQuery != null && !searchQuery.isEmpty() && !hudModule.getName().toLowerCase().contains(searchQuery.toLowerCase())) {
                 continue;
@@ -111,7 +108,7 @@ extends InsetFrameBase {
     private boolean hasFavoriteModule() {
         for (Mod mod : Vape.INSTANCE.getModManager().collectMods()) {
             HudModule hudModule;
-            if (!(mod instanceof HudModule) || !(hudModule = (HudModule)mod).f$src$Z$148d2ux()) continue;
+            if (!(mod instanceof HudModule) || !(hudModule = (HudModule)mod).isFavorite()) continue;
             return true;
         }
         return false;

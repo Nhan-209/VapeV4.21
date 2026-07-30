@@ -40,7 +40,7 @@ extends Event {
     @Override
     public boolean fire() {
         XRay xRay = Vape.INSTANCE.getModManager().getXRayModule();
-        if (xRay != null && xRay.r$src$Z$14eylz9()) {
+        if (xRay != null && xRay.isEnabled()) {
             int blue;
             int green;
             int red;

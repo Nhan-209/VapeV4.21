@@ -48,11 +48,11 @@ extends UtilityMod {
     @Override
     public void onEnable() {
         if (this.active) {
-            this.Y(false);
+            this.setEnabled(false);
             return;
         }
         if (Minecraft.thePlayer().isNull() || Minecraft.currentScreen().isNotNull()) {
-            this.Y(false);
+            this.setEnabled(false);
             return;
         }
         if (!this.active && this.collectHealingItems()) {
@@ -62,7 +62,7 @@ extends UtilityMod {
             this.v(0L, false);
         } else {
             this.itemsToThrow.clear();
-            this.Y(false);
+            this.setEnabled(false);
         }
     }
 
@@ -149,8 +149,8 @@ extends UtilityMod {
 
     @EventHandler
     public void onTick(EventPreTick event) {
-        if (!this.active && this.r$src$Z$14eylz9()) {
-            this.Y(false);
+        if (!this.active && this.isEnabled()) {
+            this.setEnabled(false);
         }
     }
 
